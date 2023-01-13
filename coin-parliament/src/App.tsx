@@ -65,6 +65,7 @@ import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
 import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
+import UpgradePage from "./Components/Profile/UpgradePage";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -793,6 +794,7 @@ if(!firstTimeLogin){
                                           element={<Pool/>}
                                         />
                                       </Route>
+                                      <Route path="/upgrade" element={<UpgradePage/>}/>
                                       <Route
                                         path="influencers"
                                         element={<Influencers/>}

@@ -12,7 +12,7 @@ import styled from "styled-components";
 import NotificationContext from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
 import {isV1} from "../App/App";
-import {Navigate, useLocation} from "react-router-dom";
+import {Navigate, useLocation, useNavigate} from "react-router-dom";
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 import animation from './Comp.json'
 import AnimationReward from "./Animation/AnimationReward";
@@ -40,6 +40,7 @@ const Mine = () => {
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer,setRewardTimer]=useState(1)
+  let navigate = useNavigate()
 const data=[1,2]
   if (isV1()) {
     return (
@@ -67,7 +68,8 @@ const data=[1,2]
 </Player> */}
         {!userInfo?.paid &&
           <Row className="flex-row-reverse" role="button" 
-          onClick={() => showModal(<Upgrade/>)}
+          // onClick={() => showModal(<Upgrade/>)}
+          onClick={()=>navigate('/upgrade')}
           ><MyBadge
             bg="-">{translate("upgrade your account")}</MyBadge></Row>}
          { width>767?  <div className='d-flex justify-content-center'>

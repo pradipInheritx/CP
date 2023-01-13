@@ -46,6 +46,28 @@ font-size:15px;
   background-color: var(--white);
   color: var(--blue-violet);
   border: none !important;
+  position:relative;
+`;
+const Dot = styled.div`
+  border-radius: 50%;
+  position: absolute;
+  font-size: 9px;
+  top: -5px;
+  right: -5px;
+  // text-shadow: -1px 0 1px white;
+  font-weight:300;
+  color: white;
+ 
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+
+    background: red;
+    // border: 2px solid #666;
+    // color: #666;
+    text-align: center;
+
+    
 `;
 type MintingProps = {
   score: number,
@@ -87,6 +109,7 @@ const Minting = ({score,setRewardTimer,rewardTimer}: MintingProps) => {
                                 }, 10000)
                                 }}
                               >
+                                <Dot>10</Dot>
                                 CLAIM YOUR REWARDS
                               </BtnLabelPrimary>
       </div>}
