@@ -1,6 +1,8 @@
+/** @format */
+
 import React from "react";
-import {Leader} from "../Contexts/CoinsContext";
-import {toFollow, UserProps} from "../common/models/User";
+import { Leader } from "../Contexts/CoinsContext";
+import { toFollow, UserProps } from "../common/models/User";
 import UserCard from "./Users/UserCard";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
@@ -38,7 +40,11 @@ const Leaderboard = ({
           return (
             <LeaderItem
               style={{
-                width: window.screen.width<979 && pathname?.includes('/influencers')?"321px":"100%",
+                width:
+                  window.screen.width < 979 &&
+                  pathname?.includes("/influencers")
+                    ? "321px"
+                    : "100%",
                 padding: "0 0 12px 0",
               }}
               key={leader.userId}

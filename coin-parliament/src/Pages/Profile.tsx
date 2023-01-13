@@ -1,24 +1,26 @@
-import React, {useContext, useEffect, useState} from "react";
-import {Col, Container, Row} from "react-bootstrap";
+/** @format */
+
+import React, { useContext, useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 import UserContext from "../Contexts/User";
-import {Outlet, useLocation, useNavigate} from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import UserCard from "../Components/Profile/UserCard";
 import styled from "styled-components";
-import {Gradient2} from "../styledMixins";
-import {isV1, PageContainer} from "../Components/App/App";
+import { Gradient2 } from "../styledMixins";
+import { isV1, PageContainer } from "../Components/App/App";
 import ImageTabs from "../Components/Profile/ImageTabs";
 import Votes from "../Components/icons/votes";
 import Mine from "../Components/icons/mine";
 import Share from "../Components/icons/share";
 import Following from "../Components/icons/Following1";
 import Notifications from "../Components/icons/notifications";
-import NotificationContext, {ToastType} from "../Contexts/Notification";
+import NotificationContext, { ToastType } from "../Contexts/Notification";
 import AvatarsModal from "../Components/Profile/AvatarsModal";
-import {doc, setDoc} from "firebase/firestore";
-import {db} from "../firebase";
-import {AvatarType} from "../assets/avatars/Avatars";
-import {toast} from "react-toastify";
-import {useTranslation} from "../common/models/Dictionary";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { AvatarType } from "../assets/avatars/Avatars";
+import { toast } from "react-toastify";
+import { useTranslation } from "../common/models/Dictionary";
 import Spinner from "../Components/Spinner";
 import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
@@ -43,15 +45,15 @@ export const CardContainer = styled.div`
 `;
 
 export const OuterContainer = styled.div`
-  background: ${window.screen.width<979?'var(--color-d4d0f3)':''};
+  background: ${window.screen.width < 979 ? "var(--color-d4d0f3)" : ""};
   position: relative;
   z-index: 0;
-  padding-bottom: ${window.screen.width<979?'100px':''}
+  padding-bottom: ${window.screen.width < 979 ? "100px" : ""};
 `;
 
 const Profile = () => {
-  const {userInfo, user} = useContext(UserContext);
-  const {showToast} = useContext(NotificationContext);
+  const { userInfo, user } = useContext(UserContext);
+  const { showToast } = useContext(NotificationContext);
   const [avatarMode, setAvatarMode] = useState(false);
   const location = useLocation();
   const pathname = location.pathname.replace("/profile/", "");
@@ -79,7 +81,7 @@ const Profile = () => {
     if (user?.uid) {
       const userRef = doc(db, "users", user?.uid);
       try {
-        await setDoc(userRef, {avatar: type}, {merge: true});
+        await setDoc(userRef, { avatar: type }, { merge: true });
         showToast(translate("user info was updated"));
         toast.dismiss();
       } catch (e) {
@@ -89,15 +91,15 @@ const Profile = () => {
   };
 
   return user ? (
-    <PageContainer fluid color="var(--pixie-powder)" radius={0} shadow="">
+    <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow=''>
       {avatarMode && (
         // <Container className="py-3" fluid>
-          <AvatarsModal
-            {...{
-              onSubmit: onSubmitAvatar,
-              onClose: () => setAvatarMode(false),
-            }}
-          />
+        <AvatarsModal
+          {...{
+            onSubmit: onSubmitAvatar,
+            onClose: () => setAvatarMode(false),
+          }}
+        />
         // </Container>
       )}
       {!avatarMode && (
@@ -105,113 +107,129 @@ const Profile = () => {
           <CardContainer>
             <>
               <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>
-               {  window.screen.width<979 && <Container fluid style={{
-                  paddingTop: 60,
-                  paddingLeft:'0px',
-                  paddingRight:'0px'
-                }}>
-                  {![
-                    ProfileTabs.edit as string,
-                    ProfileTabs.password as string,
-                  ].includes(pathname) && (
-                    <ImageTabs
-                      {...{
-                        chosenByDefault,
-                        handleSelect: (eventKey: string | null) => {
-                          if (isV1() && eventKey === ProfileTabs.mine) {
-                            showToast(translate("Feature will be available soon"), ToastType.INFO);
-                            return;
-                          }
-                          navigate("./" + eventKey, {replace: true});
-                        },
-                        tabs: [
-                          {
-                            component: <></>,
-                            label: ProfileTabs.votes,
-                            icon: <Votes/>,
-                            eventKey: ProfileTabs.votes,
+                {window.screen.width < 979 && (
+                  <Container
+                    fluid
+                    style={{
+                      paddingTop: 60,
+                      paddingLeft: "0px",
+                      paddingRight: "0px",
+                    }}
+                  >
+                    {![
+                      ProfileTabs.edit as string,
+                      ProfileTabs.password as string,
+                    ].includes(pathname) && (
+                      <ImageTabs
+                        {...{
+                          chosenByDefault,
+                          handleSelect: (eventKey: string | null) => {
+                            if (isV1() && eventKey === ProfileTabs.mine) {
+                              showToast(
+                                translate("Feature will be available soon"),
+                                ToastType.INFO
+                              );
+                              return;
+                            }
+                            navigate("./" + eventKey, { replace: true });
                           },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.mine,
-                            icon: <Mine/>,
-                            eventKey: ProfileTabs.mine,
-                          },
-                          {
-                            component: <></>,
-                            label: 'Pool Mining',
-                            icon: <Share/>,
-                            eventKey: ProfileTabs.share,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.followers,
-                            icon: <Following/>,
-                            eventKey: ProfileTabs.followers,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.notifications,
-                            icon: <Notifications/>,
-                            eventKey: ProfileTabs.notifications,
-                          },
-                        ],
-                      }}
-                    />
-                  )}
-                  {[
-                    ProfileTabs.edit as string,
-                    ProfileTabs.password as string,
-                  ].includes(pathname) && window.screen.width<979 && (
-                    <ImageTabs
-                      {...{
-                        chosenByDefault,
-                        handleSelect: (eventKey: string | null) => {
-                          if (isV1() && eventKey === ProfileTabs.mine) {
-                            showToast(translate("Feature will be available soon"), ToastType.INFO);
-                            return;
-                          }
-                          navigate("./" + eventKey, {replace: true});
-                        },
-                        tabs: [
-                          {
-                            component: <></>,
-                            label: ProfileTabs.edit,
-                            icon: <UserIcon/>,
-                            eventKey: ProfileTabs.edit,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.password,
-                            icon: <SecurityIcon/>,
-                            eventKey: ProfileTabs.password,
-                          },
-                         
-                        ],
-                      }}
-                    />
-                  )}
-                </Container>}
+                          tabs: [
+                            {
+                              component: <></>,
+                              label: ProfileTabs.votes,
+                              icon: <Votes />,
+                              eventKey: ProfileTabs.votes,
+                            },
+                            {
+                              component: <></>,
+                              label: ProfileTabs.mine,
+                              icon: <Mine />,
+                              eventKey: ProfileTabs.mine,
+                            },
+                            {
+                              component: <></>,
+                              label: "Pool Mining",
+                              icon: <Share />,
+                              eventKey: ProfileTabs.share,
+                            },
+                            {
+                              component: <></>,
+                              label: ProfileTabs.followers,
+                              icon: <Following />,
+                              eventKey: ProfileTabs.followers,
+                            },
+                            {
+                              component: <></>,
+                              label: ProfileTabs.notifications,
+                              icon: <Notifications />,
+                              eventKey: ProfileTabs.notifications,
+                            },
+                          ],
+                        }}
+                      />
+                    )}
+                    {[
+                      ProfileTabs.edit as string,
+                      ProfileTabs.password as string,
+                    ].includes(pathname) &&
+                      window.screen.width < 979 && (
+                        <ImageTabs
+                          {...{
+                            chosenByDefault,
+                            handleSelect: (eventKey: string | null) => {
+                              if (isV1() && eventKey === ProfileTabs.mine) {
+                                showToast(
+                                  translate("Feature will be available soon"),
+                                  ToastType.INFO
+                                );
+                                return;
+                              }
+                              navigate("./" + eventKey, { replace: true });
+                            },
+                            tabs: [
+                              {
+                                component: <></>,
+                                label: ProfileTabs.edit,
+                                icon: <UserIcon />,
+                                eventKey: ProfileTabs.edit,
+                              },
+                              {
+                                component: <></>,
+                                label: ProfileTabs.password,
+                                icon: <SecurityIcon />,
+                                eventKey: ProfileTabs.password,
+                              },
+                            ],
+                          }}
+                        />
+                      )}
+                  </Container>
+                )}
               </UserCard>
             </>
           </CardContainer>
         </OuterContainer>
       )}
-      <Container className="p-0" style={{minHeight:window.screen.width<979?'56vh':'70vh'}}>
-        <Row style={{color: "var(--black)"}}>
+      <Container
+        className='p-0'
+        style={{ minHeight: window.screen.width < 979 ? "56vh" : "70vh" }}
+      >
+        <Row style={{ color: "var(--black)" }}>
           {/* <Col className="p-0"> */}
-          <Col >
-            <Outlet/>
+          <Col>
+            <Outlet />
           </Col>
         </Row>
       </Container>
     </PageContainer>
-  ) : <div
-    className="d-flex justify-content-center align-items-center"
-    style={{height: "100vh", width: "100vw"}}
-  >
-    <Spinner/>
-  </div>;
+  ) : (
+    <div
+      className='d-flex justify-content-center align-items-center'
+      style={{ height: "100vh", width: "100vw" }}
+    >
+      <Spinner />
+    </div>
+  );
 };
 
 export default Profile;

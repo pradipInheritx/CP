@@ -1,15 +1,17 @@
-import {Button, Container, Nav, Navbar, Offcanvas} from "react-bootstrap";
-import React, {useContext} from "react";
-import {Link} from "react-router-dom";
-import {useTranslation} from "../common/models/Dictionary";
-import {ContentPage} from "../Contexts/ContentContext";
+/** @format */
+
+import { Button, Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { useTranslation } from "../common/models/Dictionary";
+import { ContentPage } from "../Contexts/ContentContext";
 import AppContext from "../Contexts/AppContext";
 import styled from "styled-components";
-import {Gradient2} from "../styledMixins";
+import { Gradient2 } from "../styledMixins";
 import Hamburger from "./Atoms/Hamburger";
-import {useWindowSize} from "../hooks/useWindowSize";
+import { useWindowSize } from "../hooks/useWindowSize";
 import UserContext from "../Contexts/User";
-import {isHomeBg} from "./App/App";
+import { isHomeBg } from "./App/App";
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
@@ -54,8 +56,10 @@ const MenuContainer = styled(Offcanvas)`
 `;
 
 const NavContainer = styled(Navbar)`
-  background: ${(props: { pathname: string }) => isHomeBg(props.pathname) ? "#160133" : "transparent"};
+  background: ${(props: { pathname: string }) =>
+    isHomeBg(props.pathname) ? "#573ed8" : "transparent"};
   position: fixed;
+  border-radius: 0px 0px 100px 0px;
   width: 100%;
   z-index: 1000;
 `;
@@ -67,14 +71,21 @@ const Dot = styled.div`
   top: -20px;
   right: 3px;
   text-shadow: -1px 0 1px white;
-  color: ${(props: { loggedIn: boolean }) => `${props.loggedIn ? "green" : "red"}`}
+  color: ${(props: { loggedIn: boolean }) =>
+    `${props.loggedIn ? "green" : "red"}`};
 `;
-const Menu = ({onSelect, children, items = [], title, pathname}: MenuProps) => {
-  const {menuOpen, setMenuOpen, login, firstTimeLogin} =
+const Menu = ({
+  onSelect,
+  children,
+  items = [],
+  title,
+  pathname,
+}: MenuProps) => {
+  const { menuOpen, setMenuOpen, login, firstTimeLogin } =
     useContext(AppContext);
 
-  const {user} = useContext(UserContext);
-  const {width} = useWindowSize();
+  const { user } = useContext(UserContext);
+  const { width } = useWindowSize();
   const handleClose = () => setMenuOpen(false);
   const handleShow = () => setMenuOpen(true);
   const translate = useTranslation();
@@ -85,49 +96,59 @@ const Menu = ({onSelect, children, items = [], title, pathname}: MenuProps) => {
       <NavContainer
         pathname={pathname}
         collapseOnSelect
-        expand="lg"
+        expand='lg'
         style={{
-          paddingRight:window.screen.width>979?'100px':'',
-          paddingLeft:window.screen.width>979?'20px':'',
+          paddingRight: window.screen.width > 979 ? "100px" : "",
+          paddingLeft: window.screen.width > 979 ? "20px" : "",
           background:
             login || firstTimeLogin || (width && width > 979)
-              ? "var(--color-160133)"
+              ? "linear-gradient(180deg, rgba(93,70,224,1) 40%, rgba(99,82,232,1) 80%)"
               : undefined,
           boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
         }}
       >
         <Container
-          className="text-capitalize align-items-center px-2 justify-content-start"
+          className='text-capitalize align-items-center px-2 justify-content-start'
           fluid={true}
         >
           {!desktop && (
-            <div className="d-flex justify-content-start" style={{flexBasis: "25%"}}>
-              <Button variant="link" onClick={handleShow} className="position-relative">
-                <Hamburger/>
+            <div
+              className='d-flex justify-content-start'
+              style={{ flexBasis: "25%" }}
+            >
+              <Button
+                variant='link'
+                onClick={handleShow}
+                className='position-relative'
+              >
+                <Hamburger />
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
               </Button>
             </div>
           )}
-           {desktop && (
-            <div className="d-flex justify-content-start" >
-              <Button variant="link" onClick={handleShow} className="position-relative">
-                <Hamburger/>
+          {desktop && (
+            <div className='d-flex justify-content-start'>
+              <Button
+                variant='link'
+                onClick={handleShow}
+                className='position-relative'
+              >
+                <Hamburger />
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
               </Button>
             </div>
           )}
           {children}
-         
         </Container>
       </NavContainer>
 
       <MenuContainer show={menuOpen} onHide={handleClose}>
-        <Offcanvas.Header closeButton closeVariant="white">
+        <Offcanvas.Header closeButton closeVariant='white'>
           {title && <Offcanvas.Title>{title}</Offcanvas.Title>}
         </Offcanvas.Header>
 
         <Offcanvas.Body>
-          <Nav onSelect={onSelect} className="flex-column">
+          <Nav onSelect={onSelect} className='flex-column'>
             {items
               .filter((item) => item)
               .map((item, i) => {

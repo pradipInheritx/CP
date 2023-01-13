@@ -1,9 +1,11 @@
+/** @format */
+
 import StatusNav from "./StatusNav";
 import Leaderboard from "../Leaderboard";
-import {UserProps} from "../../common/models/User";
+import { UserProps } from "../../common/models/User";
 import React from "react";
-import {UserTypeProps} from "../../common/models/UserType";
-import {Leader} from "../../Contexts/CoinsContext";
+import { UserTypeProps } from "../../common/models/UserType";
+import { Leader } from "../../Contexts/CoinsContext";
 
 export type InfluencersComponentProps = {
   userTypes: UserTypeProps[];
@@ -22,12 +24,14 @@ const InfluencersComponent = ({
   userInfo,
   setChecked,
 }: InfluencersComponentProps) => {
-  console.log('userType',userTypes)
+  console.log("userType", userTypes);
   return (
     <React.Fragment>
-      <div className="mb-4">
+      <div className='mb-4'>
         <StatusNav
-          userTypes={userTypes.sort((a,b) => a.index - b.index).map((u) => u.name)}
+          userTypes={userTypes
+            .sort((a, b) => a.index - b.index)
+            .map((u) => u.name)}
           setChosen={setChosen}
           chosen={chosen}
         />

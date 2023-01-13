@@ -1,3 +1,5 @@
+/** @format */
+
 import React from "react";
 import styled from "styled-components";
 import {
@@ -5,14 +7,14 @@ import {
   PoppinsMediumWhite7px,
   PoppinsNormalGunsmoke10px,
 } from "../../styledMixins";
-import {getAvatar} from "../../common/models/User";
+import { getAvatar } from "../../common/models/User";
 import Avatar from "./Avatar";
-import {Leader} from "../../Contexts/CoinsContext";
+import { Leader } from "../../Contexts/CoinsContext";
 import Icon from "../Atoms/Checkbox/Icon";
 import AddFollower from "../icons/AddFollower";
 import Following from "../icons/Following";
-import {Link, useLocation} from "react-router-dom";
-import {useTranslation} from "../../common/models/Dictionary";
+import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "../../common/models/Dictionary";
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -22,7 +24,8 @@ const OverlapGroup1 = styled.div`
   align-items: center;
   background-color: var(--white);
   border-radius: 6px;
-  box-shadow: ${(props: { expanded?: boolean }) => `${props.expanded ? "0 3px 6px #00000029" : '0 3px 6px #00000029'}`};
+  box-shadow: ${(props: { expanded?: boolean }) =>
+    `${props.expanded ? "0 3px 6px #00000029" : "0 3px 6px #00000029"}`};
   margin: 0 auto;
   width: 100%;
   justify-content: space-evenly;
@@ -33,9 +36,9 @@ const Component515 = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-   box-shadow: 0px 3px 6px #00000029;
-  max-width:400px;
-  margin:auto;
+  box-shadow: 0px 3px 6px #00000029;
+  max-width: 400px;
+  margin: auto;
   &.component-51-5.component-51-5-1 {
     margin-top: 12px;
   }
@@ -46,17 +49,16 @@ const FlexCol = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-left:5px;
-  
+  margin-left: 5px;
 `;
 
 const UsernameUnique = styled.div`
   ${HelveticaneueRegularNormalBlack13px};
-  
+
   letter-spacing: 0;
   line-height: 13px;
   white-space: nowrap;
-font-size:12px;
+  font-size: 12px;
 `;
 
 export const StatusContainer = styled.div`
@@ -112,7 +114,7 @@ const Component5031 = styled.div`
   align-items: flex-start;
   min-width: 28px;
   background-color: var(--moon-raker);
-  border: 1px solid #6352E8;
+  border: 1px solid #6352e8;
   border-radius: 14px;
 `;
 
@@ -146,10 +148,19 @@ const UserCard = ({
   const location = useLocation();
   const pathname = location.pathname;
   return (
-    <Component515 style={{boxShadow:!pathname?.includes('/followers')?'none':''}}>
-      <OverlapGroup1  expanded={expanded} style={{boxShadow:!pathname?.includes('/followers')?'none':'', height:pathname?.includes('/influencers')?'75px':'',padding:pathname?.includes('/influencers')?'10px 0':'',}}>
+    <Component515
+      style={{ boxShadow: !pathname?.includes("/followers") ? "none" : "" }}
+    >
+      <OverlapGroup1
+        expanded={expanded}
+        style={{
+          boxShadow: !pathname?.includes("/followers") ? "none" : "",
+          height: pathname?.includes("/influencers") ? "75px" : "",
+          padding: pathname?.includes("/influencers") ? "10px 0" : "",
+        }}
+      >
         <ElementsAvatarAImage1>
-          <Avatar url={getAvatar(leader)}/>
+          <Avatar url={getAvatar(leader)} />
         </ElementsAvatarAImage1>
         <FlexCol>
           <UsernameUnique>{leader.displayName}</UsernameUnique>
@@ -157,17 +168,21 @@ const UserCard = ({
             <Minister>{translate(leader.status || "")}</Minister>
           </Group4092>
           <Address>
-            <span className="mx-1">
+            <span className='mx-1'>
               {leader.subscribers} {translate("Followers")}
             </span>
-            <span className="mx-1">
+            <span className='mx-1'>
               {leader.leaders} {translate("Following")}
             </span>
-            {expanded && <span className="mx-1">{Number(Number(leader.pct * 100).toFixed(2))}%</span>}
-            {!expanded && <span className="mx-1"></span>}
+            {expanded && (
+              <span className='mx-1'>
+                {Number(Number(leader.pct * 100).toFixed(2))}%
+              </span>
+            )}
+            {!expanded && <span className='mx-1'></span>}
           </Address>
         </FlexCol>
-        <Component5031 style={{background:checked?'':'white'}}>
+        <Component5031 style={{ background: checked ? "" : "white" }}>
           <Icon
             setChecked={setChecked}
             checked={checked}
