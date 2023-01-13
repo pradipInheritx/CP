@@ -1,0 +1,20 @@
+.login-signin {
+    align-items:center;
+    background-color: var(--light-purple);
+    display: flex;
+    flex-direction: column;
+    height: 812px;
+    padding: 157px 58.7px;
+    width: 390px;
+}
+
+.first-time-login {
+    align-items: flex-start;
+    background-color: var(--light-purple);
+    display: flex;
+    flex-direction: column;
+    height: 812px;
+    padding: 157px 63px;
+    width: 390px;
+}
+
