@@ -19,6 +19,7 @@ import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.svg";
+import ManagersContext from "../Contexts/ManagersContext";
 
 enum EventKeys {
   LOGIN = "login",
@@ -137,12 +138,15 @@ const Header = ({
   const [mounted, setMounted] = useState(false);
   const { width } = useWindowSize();
   const desktop = width && width > 979;
-  const { userInfo } = useContext(UserContext);
+
   const CheckAuth = getAuth();
 
   const { languages, setLang, setLogin, setSignup, setMenuOpen } =
     useContext(AppContext);
   const { pages } = useContext(ContentContext);
+  const { votesLast24Hours, userInfo } = useContext(UserContext);
+  const { VoteRulesMng } = useContext(ManagersContext);
+  const { voteRules } = useContext(AppContext);
 
   const translate = useTranslation();
 
@@ -218,7 +222,15 @@ const Header = ({
 
     setMenuOpen(false);
   };
-  console.log(CheckAuth, "userInfo");
+  // @ts-ignore
+  console.log(
+    Number(voteRules?.maxVotes) +
+      // @ts-ignore
+      Number(userInfo?.rewardStatistics?.extraVote) -
+      Number(votesLast24Hours.length),
+    "userInfo"
+  );
+
   return (
     <div>
       <div className='' style={{ background: "none !important" }}>
@@ -339,15 +351,19 @@ const Header = ({
                       <HeaderCenterMob className=''>
                         <div></div>
                         <p className='ml-4'>
-                          VOTES
+                          VOTES{" "}
                           <span
                             style={{
                               color: "#6352E8",
                             }}
-                          >{` ${
-                            userInfo?.voteStatistics &&
-                            userInfo?.voteStatistics.total
-                          }`}</span>
+                          >
+                            {Number(voteRules?.maxVotes) ||
+                              0 +
+                                // @ts-ignore
+                                Number(userInfo?.rewardStatistics?.extraVote) ||
+                              0 - Number(votesLast24Hours.length) ||
+                              0}
+                          </span>
                         </p>
                         <PlusButtonMob
                           onClick={() => navigate("/votingbooster")}
@@ -428,10 +444,14 @@ const Header = ({
                             style={{
                               color: "#6352E8",
                             }}
-                          >{`${
-                            userInfo?.voteStatistics &&
-                            userInfo?.voteStatistics.total
-                          }`}</span>
+                          >
+                            {Number(voteRules?.maxVotes) ||
+                              0 +
+                                // @ts-ignore
+                                Number(userInfo?.rewardStatistics?.extraVote) ||
+                              0 - Number(votesLast24Hours.length) ||
+                              0}
+                          </span>
                         </p>
                         <PlusButton onClick={() => navigate("/votingbooster")}>
                           <span>+</span>
