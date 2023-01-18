@@ -258,7 +258,7 @@ export const Border1pxPixiePowder = css`
 `;
 
 export const Gradient1 = css`
-  background: rgb(55, 18, 179);
+  background:rgb(55, 18, 179);
   background: transparent
     linear-gradient(
       180deg,
@@ -271,7 +271,7 @@ export const Gradient1 = css`
     0% 0% no-repeat padding-box;
   background: linear-gradient(180deg, #16013f 0%, #6352e8ba 50%, #130331 100%);
 `;
-
+ 
 export const Gradient2 = css`
   background: rgb(99, 82, 232);
   background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;

@@ -56,10 +56,9 @@ const MenuContainer = styled(Offcanvas)`
 `;
 
 const NavContainer = styled(Navbar)`
-  background: ${(props: { pathname: string }) =>
-    isHomeBg(props.pathname) ? "#573ed8" : "transparent"};
   position: fixed;
-  border-radius: 0px 0px 100px 0px;
+  overflow: hidden;
+
   width: 100%;
   z-index: 1000;
 `;
@@ -98,12 +97,12 @@ const Menu = ({
         collapseOnSelect
         expand='lg'
         style={{
-          paddingRight: window.screen.width > 979 ? "100px" : "",
+          paddingRight: window.screen.width > 979 ? "20px" : "",
           paddingLeft: window.screen.width > 979 ? "20px" : "",
-          background:
-            login || firstTimeLogin || (width && width > 979)
-              ? "linear-gradient(180deg, rgba(93,70,224,1) 40%, rgba(99,82,232,1) 80%)"
-              : undefined,
+          // background:
+          //   login || firstTimeLogin || (width && width > 979)
+          //     ? "linear-gradient(180deg, rgba(93,70,224,1) 40%, rgba(99,82,232,1) 80%)"
+          //     : undefined,
           boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
         }}
       >
@@ -114,7 +113,7 @@ const Menu = ({
           {!desktop && (
             <div
               className='d-flex justify-content-start'
-              style={{ flexBasis: "25%" }}
+              style={{ flexBasis: "20%" }}
             >
               <Button
                 variant='link'

@@ -1,5 +1,7 @@
+/** @format */
+
 import React from "react";
-import {Image} from "react-bootstrap";
+import { Image } from "react-bootstrap";
 
 export enum AvatarType {
   Angel = "Angel",
@@ -12,14 +14,14 @@ export enum AvatarType {
 type AvatarsProps = {
   type: AvatarType;
   width?: number;
+  style?: object;
 };
 
 export const importFile = (name: string, ext: string = "png") => {
   let src = { default: "" };
   try {
     src = require(`${name}.${ext}`);
-  } catch (e) {
-  }
+  } catch (e) {}
 
   if (!src) {
     src = { default: "" };
@@ -32,10 +34,14 @@ export const importFile = (name: string, ext: string = "png") => {
   return src;
 };
 
-const Avatars = ({ type = AvatarType.Angel, width = 160 }: AvatarsProps) => {
+const Avatars = ({
+  type = AvatarType.Angel,
+  width = 160,
+  style,
+}: AvatarsProps) => {
   const src = importFile(`./The${type}`).default || "";
 
-  return <Image width={width} roundedCircle={true} src={src} />;
+  return <Image width={width} roundedCircle={true} src={src} style={style} />;
 };
 
 export default Avatars;

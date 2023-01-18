@@ -1,10 +1,12 @@
+/** @format */
+
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import {UserProps} from "../../common/models/User";
-import {useTranslation} from "../../common/models/Dictionary";
+import { UserProps } from "../../common/models/User";
+import { useTranslation } from "../../common/models/Dictionary";
 import Avatar from "../Users/Avatar";
-import {StatusContainer} from "../Users/UserCard";
-import Avatars, {AvatarType} from "../../assets/avatars/Avatars";
+import { StatusContainer } from "../Users/UserCard";
+import Avatars, { AvatarType } from "../../assets/avatars/Avatars";
 import ImageTabs from "./ImageTabs";
 import { isV1 } from "../App/App";
 import UserIcon from "../icons/userIcon";
@@ -98,21 +100,21 @@ export type UserCardProps = {
   children?: React.ReactNode;
 };
 
-const UserCard = ({user, onClick, children}: UserCardProps) => {
+const UserCard = ({ user, onClick, children }: UserCardProps) => {
   const translate = useTranslation();
   const location = useLocation();
   const pathname = location.pathname.replace("/profile/", "");
   const [chosenByDefault, setChosenByDefault] = useState(pathname);
-  const {showToast} = useContext(NotificationContext);
+  const { showToast } = useContext(NotificationContext);
   let navigate = useNavigate();
   useEffect(() => {
     setChosenByDefault(pathname);
-  }, [pathname])
+  }, [pathname]);
   return (
     <>
       <Component515>
         <OverlapGroup1>
-          <ElementsAvatarAImage1 onClick={onClick} role="button">
+          {/* <ElementsAvatarAImage1 onClick={onClick} role="button">
             {user?.avatar && (
               <Avatars type={user?.avatar as AvatarType} width={60}/>
             )}
@@ -125,89 +127,97 @@ const UserCard = ({user, onClick, children}: UserCardProps) => {
             <Group4092>
               <Minister>{translate(user?.status?.name || "")}</Minister>
             </Group4092>
-          </FlexCol><div className='mt-4' >
-          {![
-                    ProfileTabs.edit as string,
-                    ProfileTabs.password as string,
-                  ].includes(pathname) && window.screen.width>979&& (
-                    <ImageTabs
-                      {...{
-                        chosenByDefault,
-                        handleSelect: (eventKey: string | null) => {
-                          if (isV1() && eventKey === ProfileTabs.mine) {
-                            showToast(translate("Feature will be available soon"), ToastType.INFO);
-                            return;
-                          }
-                          navigate("./" + eventKey, {replace: true});
-                        },
-                        tabs: [
-                          {
-                            component: <></>,
-                            label: ProfileTabs.votes,
-                            icon: <Votes/>,
-                            eventKey: ProfileTabs.votes,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.mine,
-                            icon: <Mine/>,
-                            eventKey: ProfileTabs.mine,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.share,
-                            icon: <Share/>,
-                            eventKey: ProfileTabs.share,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.followers,
-                            icon: <Following/>,
-                            eventKey: ProfileTabs.followers,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.notifications,
-                            icon: <Notifications/>,
-                            eventKey: ProfileTabs.notifications,
-                          },
-                        ],
-                      }}
-                    />
-                  )}
-          {[
-                    ProfileTabs.edit as string,
-                    ProfileTabs.password as string,
-                  ].includes(pathname) && window.screen.width>979 && (
-                    <ImageTabs
-                      {...{
-                        chosenByDefault,
-                        handleSelect: (eventKey: string | null) => {
-                          if (isV1() && eventKey === ProfileTabs.mine) {
-                            showToast(translate("Feature will be available soon"), ToastType.INFO);
-                            return;
-                          }
-                          navigate("./" + eventKey, {replace: true});
-                        },
-                        tabs: [
-                          {
-                            component: <></>,
-                            label: ProfileTabs.edit,
-                            icon: <UserIcon/>,
-                            eventKey: ProfileTabs.edit,
-                          },
-                          {
-                            component: <></>,
-                            label: ProfileTabs.password,
-                            icon: <SecurityIcon/>,
-                            eventKey: ProfileTabs.password,
-                          },
-                         
-                        ],
-                      }}
-                    />
-                  )}
-                  </div>
+          </FlexCol> */}
+          <div className='mt-4'>
+            {![
+              ProfileTabs.edit as string,
+              ProfileTabs.password as string,
+            ].includes(pathname) &&
+              window.screen.width > 979 && (
+                <ImageTabs
+                  {...{
+                    chosenByDefault,
+                    handleSelect: (eventKey: string | null) => {
+                      if (isV1() && eventKey === ProfileTabs.mine) {
+                        showToast(
+                          translate("Feature will be available soon"),
+                          ToastType.INFO
+                        );
+                        return;
+                      }
+                      navigate("./" + eventKey, { replace: true });
+                    },
+                    tabs: [
+                      {
+                        component: <></>,
+                        label: ProfileTabs.votes,
+                        icon: <Votes />,
+                        eventKey: ProfileTabs.votes,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.mine,
+                        icon: <Mine />,
+                        eventKey: ProfileTabs.mine,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.share,
+                        icon: <Share />,
+                        eventKey: ProfileTabs.share,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.followers,
+                        icon: <Following />,
+                        eventKey: ProfileTabs.followers,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.notifications,
+                        icon: <Notifications />,
+                        eventKey: ProfileTabs.notifications,
+                      },
+                    ],
+                  }}
+                />
+              )}
+            {[
+              ProfileTabs.edit as string,
+              ProfileTabs.password as string,
+            ].includes(pathname) &&
+              window.screen.width > 979 && (
+                <ImageTabs
+                  {...{
+                    chosenByDefault,
+                    handleSelect: (eventKey: string | null) => {
+                      if (isV1() && eventKey === ProfileTabs.mine) {
+                        showToast(
+                          translate("Feature will be available soon"),
+                          ToastType.INFO
+                        );
+                        return;
+                      }
+                      navigate("./" + eventKey, { replace: true });
+                    },
+                    tabs: [
+                      {
+                        component: <></>,
+                        label: ProfileTabs.edit,
+                        icon: <UserIcon />,
+                        eventKey: ProfileTabs.edit,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.password,
+                        icon: <SecurityIcon />,
+                        eventKey: ProfileTabs.password,
+                      },
+                    ],
+                  }}
+                />
+              )}
+          </div>
         </OverlapGroup1>
       </Component515>
       {children}

@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { FormEvent, useContext, useState } from "react";
 import "./Login.css";
 import { Stack } from "react-bootstrap";
@@ -14,7 +16,7 @@ import { Callback } from "../../common/models/utils";
 import { texts } from "./texts";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import { ToastType } from "../../Contexts/Notification";
-import {useLocation} from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Refer from "../../Pages/Refer";
 import ForgetPassword from "./ForgetPassword";
 
@@ -53,22 +55,26 @@ const LoginAndSignup = ({
   const search = location.search;
   const { setUser } = useContext(UserContext);
   const { signup, setSignup } = useContext(AppContext);
-  const [forgetPassword,setForgetPassword]=useState(false)
+  const [forgetPassword, setForgetPassword] = useState(false);
   const mode = signup ? LoginModes.SIGNUP : LoginModes.LOGIN;
   const refer = new URLSearchParams(search).get("refer");
 
   return (
     <Stack
       gap={2}
-      className=" justify-content-center"
-      style={{ height: "100vh", background:'var(--light-purple)' }}
+      className=' justify-content-center'
+      style={{ height: "100vh", background: "var(--light-purple)" }}
     >
-      <div className="container-center-horizontal">
-        <div className="login-signin screen">
-         {!forgetPassword? <Styles.Title>{translate(title[mode])}</Styles.Title>:<Styles.Title>{translate('Forget Password')}</Styles.Title>}
+      <div className='container-center-horizontal'>
+        <div className='login-signin screen'>
+          {!forgetPassword ? (
+            <Styles.Title>{translate(title[mode])}</Styles.Title>
+          ) : (
+            <Styles.Title>{translate("Forget Password")}</Styles.Title>
+          )}
           {mode === LoginModes.LOGIN && !forgetPassword && (
             <Login
-            setForgetPassword={setForgetPassword}
+              setForgetPassword={setForgetPassword}
               setUser={setUser}
               setSignup={setSignup}
               authProvider={authProvider}
@@ -77,7 +83,7 @@ const LoginAndSignup = ({
           )}
           {mode === LoginModes.LOGIN && forgetPassword && (
             <ForgetPassword
-            setForgetPassword={setForgetPassword}
+              setForgetPassword={setForgetPassword}
               setUser={setUser}
               setSignup={setSignup}
               authProvider={authProvider}
@@ -86,13 +92,15 @@ const LoginAndSignup = ({
           )}
           {mode === LoginModes.SIGNUP && (
             <>
-            {/* {refer && (<Refer />)} */}
-            { <Signup
-              setUser={setUser}
-              setSignup={setSignup}
-              signup={signupAction}
-              authProvider={authProvider}
-            />}
+              {/* {refer && (<Refer />)} */}
+              {
+                <Signup
+                  setUser={setUser}
+                  setSignup={setSignup}
+                  signup={signupAction}
+                  authProvider={authProvider}
+                />
+              }
             </>
           )}
         </div>

@@ -1,7 +1,19 @@
+/** @format */
+
 import styled from "styled-components";
 import Container from "react-bootstrap/Container";
-import {Gradient1, Gradient2, Gradient3, PoppinsMediumWhite12px} from "../../styledMixins";
-import {isAdmin, isCoinsPairs, isProfile, isSinglePage} from "../../common/utils/title";
+import {
+  Gradient1,
+  Gradient2,
+  Gradient3,
+  PoppinsMediumWhite12px,
+} from "../../styledMixins";
+import {
+  isAdmin,
+  isCoinsPairs,
+  isProfile,
+  isSinglePage,
+} from "../../common/utils/title";
 
 export const stage = 1;
 
@@ -11,7 +23,6 @@ export const isV1 = () => stage === 0;
 export const isV2 = () => stage === 2;
 // @ts-ignore
 export const isV3 = () => stage === 3;
-
 
 export type Pathname = { pathname: string; login?: string; width?: number };
 
@@ -59,18 +70,24 @@ const getHeight = (props: Pathname) => {
   return "100vh";
 };
 
-export const isHomeBg = (pathname: string) => ["/", "/influencers"].includes(pathname);
+export const isHomeBg = (pathname: string) =>
+  ["/", "/influencers", "/nftGallery"].includes(pathname);
 
 export const AppContainer = styled(Container)`
-  ${(props: Pathname) => (isHomeBg(props.pathname) ? Gradient1 : (isCoinsPairs(props.pathname) ? Gradient3 : Gradient2))};
+  ${(props: Pathname) =>
+    isHomeBg(props.pathname)
+      ? Gradient1
+      : isCoinsPairs(props.pathname)
+      ? Gradient3
+      : Gradient2};
   ${PoppinsMediumWhite12px};
   opacity: 1;
   min-height: ${(props: Pathname) =>
-          isSinglePage(props.pathname, "coins") ||
-          isProfile(props.pathname) ||
-          isSinglePage(props.pathname, "pairs")
-                  ? ""
-                  : "100vh"};
+    isSinglePage(props.pathname, "coins") ||
+    isProfile(props.pathname) ||
+    isSinglePage(props.pathname, "pairs")
+      ? ""
+      : "100vh"};
   height: ${(props: Pathname) => getHeight(props)};
   border-radius: ${(props: Pathname) =>
     isSinglePage(props.pathname, "coins") ||
@@ -92,8 +109,10 @@ export const HomeContainer = styled(Container)`
   font-family: var(--font-family-poppins);
   font-style: normal;
   width: 100%;
-  min-width: ${(props: { width?: number }) => props.width && props.width > 979 ? "233px" : undefined};
-margin-top:${(props: { width?: number }) => props.width && props.width > 979 ? "170px" : undefined};
+  min-width: ${(props: { width?: number }) =>
+    props.width && props.width > 979 ? "233px" : undefined};
+  margin-top: ${(props: { width?: number }) =>
+    props.width && props.width > 979 ? "170px" : undefined};
   & h2 {
     font-size: var(--font-size-xxxl);
     line-height: 29px;
@@ -103,7 +122,7 @@ margin-top:${(props: { width?: number }) => props.width && props.width > 979 ? "
 
     & span {
       display: ${(props: { width?: number }) =>
-              `${props.width && props.width > 969 ? "inline" : "block"}`};
+        `${props.width && props.width > 969 ? "inline" : "block"}`};
     }
   }
 

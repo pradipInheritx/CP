@@ -1,11 +1,13 @@
+/** @format */
+
 import React from "react";
-import {Nav, Row, Tab} from "react-bootstrap";
+import { Nav, Row, Tab } from "react-bootstrap";
 import styled from "styled-components";
 import Button from "../Atoms/Button/Button";
-import {SelectCallback} from "@restart/ui/types";
-import {random} from "lodash";
-import {ProfileTabs} from "../../Pages/Profile";
-import {isV1} from "../App/App";
+import { SelectCallback } from "@restart/ui/types";
+import { random } from "lodash";
+import { ProfileTabs } from "../../Pages/Profile";
+import { isV1 } from "../App/App";
 
 type ImageTab = {
   component: React.ReactNode;
@@ -59,7 +61,7 @@ const NavLink = styled(Nav.Link)`
   }
 `;
 
-const ImageTabs = ({tabs, chosenByDefault, handleSelect}: ImageTabsProps) => {
+const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
   return (
     <Tab.Container
       id={`image-tabs-${random(100)}`}
@@ -70,15 +72,19 @@ const ImageTabs = ({tabs, chosenByDefault, handleSelect}: ImageTabsProps) => {
     >
       <Row>
         <Nav
-          variant="pills"
-          className="flex-row m-auto align-items-center justify-content-center"
+          variant='pills'
+          className='flex-row m-auto align-items-center justify-content-center'
           onSelect={handleSelect}
         >
           {tabs.map((tab, i) => {
             return (
               <Nav.Item key={i}>
-                <NavLink eventKey={tab.eventKey} style={{padding: 10}}>
-                  <Circle disabled={isV1() && tab.eventKey === ProfileTabs.mine}>{tab.icon}</Circle>
+                <NavLink eventKey={tab.eventKey} style={{ padding: 10 }}>
+                  <Circle
+                    disabled={isV1() && tab.eventKey === ProfileTabs.mine}
+                  >
+                    {tab.icon}
+                  </Circle>
                   {tab.label && <Label>{tab.label}</Label>}
                 </NavLink>
               </Nav.Item>

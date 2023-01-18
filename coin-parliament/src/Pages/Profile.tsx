@@ -40,6 +40,7 @@ export const CardContainer = styled.div`
   ${Gradient2};
   height: 127px;
   padding: 0;
+  margin-top: ${window.screen.width < 979 ? "0px" : "30px"};
   box-shadow: 0 3px 6px #00000029;
   border-radius: 0 0 87px 0;
 `;

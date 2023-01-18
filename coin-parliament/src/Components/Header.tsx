@@ -16,6 +16,9 @@ import { isV1 } from "./App/App";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
+import Avatars, { AvatarType } from "../assets/avatars/Avatars";
+import { translate, useTranslation } from "../common/models/Dictionary";
+import BigLogo from "../assets/svg/logoiconx2.svg";
 
 enum EventKeys {
   LOGIN = "login",
@@ -48,12 +51,12 @@ export const Title = styled.div`
 
 export const HeaderCenter = styled.div`
   background: white;
-  color: #6352e8;
+  color: #3712B3;
   width: 55%;
   height: 35px;
   margin: auto;
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   margin-left: 75px;
    border-radius 50px;
   display: flex;
@@ -63,8 +66,8 @@ export const HeaderCenter = styled.div`
 
 export const HeaderCenterMob = styled.div` 
   background:white;
-  color:#6352E8;
-  width: 45%;
+  color:#3712B3;
+  width: 65%;
   height: 30px;
   
   margin-left:25px;
@@ -72,6 +75,14 @@ export const HeaderCenterMob = styled.div`
   display: flex;
   justify-content:space-around;
   align-items: center;
+`;
+export const MemberText = styled.span`
+  text-transform: uppercase;
+  padding: 2px 10px 2px 10px;
+  background: #d4d0f3;
+  color: #6352e8;
+  border-radius: 10px;
+  font-size: 10px;
 `;
 
 export const PlusButton = styled.div`
@@ -82,6 +93,7 @@ export const PlusButton = styled.div`
   border-radius: 50px;
   padding-top: 3px;
   font-size: 15px;
+  cursor: pointer;
 `;
 export const PlusButtonMob = styled.div`
   width: 20px;
@@ -89,7 +101,7 @@ export const PlusButtonMob = styled.div`
   background: #6352e8;
   color: white;
   text-align: center;
-
+  cursor: pointer;
   border-radius: 50px;
   font-size: 13px;
 `;
@@ -125,10 +137,14 @@ const Header = ({
   const [mounted, setMounted] = useState(false);
   const { width } = useWindowSize();
   const desktop = width && width > 979;
+  const { userInfo } = useContext(UserContext);
+  const CheckAuth = getAuth();
 
   const { languages, setLang, setLogin, setSignup, setMenuOpen } =
     useContext(AppContext);
   const { pages } = useContext(ContentContext);
+
+  const translate = useTranslation();
 
   useEffect(() => {
     if (pages) {
@@ -202,10 +218,10 @@ const Header = ({
 
     setMenuOpen(false);
   };
-
+  console.log(CheckAuth, "userInfo");
   return (
     <div>
-      <div className=''>
+      <div className='' style={{ background: "none !important" }}>
         <MenuContainer
           pathname={pathname}
           onSelect={onSelect}
@@ -292,46 +308,77 @@ const Header = ({
 
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
-              <div className=''>
-                <div
-                  className='d-flex justify-content-between align-items-center '
-                  style={{ position: "relative", height: "80px" }}
-                >
+              <div className='d-flex w-100 '>
+                {CheckAuth && CheckAuth.currentUser != null ? (
                   <div
-                    className=''
-                    style={{
-                      position: "absolute",
-                      // marginLeft: "20px",
-                      // marginTop: "2px",
-                    }}
+                    className='d-flex w-100'
+                    style={{ position: "relative" }}
                   >
-                    <img
-                      src='https://mdbcdn.b-cdn.net/img/new/avatars/1.webp'
-                      className='rounded-circle shadow-4'
+                    <div
+                      className=''
                       style={{
-                        width: "45px",
-                        boxShadow: "1px 0px 5px #6352E8",
+                        position: "absolute",
+                        marginLeft: "48px",
+                        marginTop: "7px",
+                        // border: "1px solid red",
                       }}
-                      alt='Avatar'
-                    />
+                    >
+                      {userInfo?.avatar && (
+                        <Avatars
+                          type={userInfo?.avatar as AvatarType}
+                          style={{
+                            width: "45px",
+                            boxShadow: "1px 0px 5px #6352E8",
+                            // border: "1px solid #6352E8",
+                            backgroundColor: "#6352E8",
+                          }}
+                        />
+                      )}
+                    </div>
+                    <div className='w-100 mt-3' style={{ marginLeft: "50px" }}>
+                      <HeaderCenterMob className=''>
+                        <div></div>
+                        <p className='ml-4'>
+                          VOTES
+                          <span
+                            style={{
+                              color: "#6352E8",
+                            }}
+                          >{` ${
+                            userInfo?.voteStatistics &&
+                            userInfo?.voteStatistics.total
+                          }`}</span>
+                        </p>
+                        <PlusButtonMob
+                          onClick={() => navigate("/votingbooster")}
+                        >
+                          <span>+</span>
+                        </PlusButtonMob>
+                      </HeaderCenterMob>
+                      <div
+                        className='w-25'
+                        style={{ marginLeft: "45px", marginTop: "5px" }}
+                      >
+                        {/* <p>{"unique_Username"}</p> */}
+
+                        <span className='mb-1' style={{ fontSize: "13px" }}>{`${
+                          userInfo?.displayName && userInfo?.displayName
+                        }`}</span>
+                        <br />
+                        <MemberText>
+                          {translate(userInfo?.status?.name || "")}
+                        </MemberText>
+                      </div>
+                    </div>
                   </div>
-                  <HeaderCenterMob className=''>
-                    <div></div>
-                    <p className='ml-4'>VOTES 999</p>
-                    <PlusButtonMob>
-                      <span>+</span>
-                    </PlusButtonMob>
-                  </HeaderCenterMob>
-                  <div>
-                    <Title style={{ width: pathname === "/" ? "50%" : "50%" }}>
-                      {mounted ? title : ""}
-                    </Title>
-                  </div>
+                ) : (
+                  <div className='w-100'></div>
+                )}
+                <div className='mt-2'>
+                  <Title style={{ width: pathname === "/" ? "50%" : "50%" }}>
+                    {mounted ? title : ""}
+                  </Title>
                 </div>
-                {/* <div className=''>
-                  <p>{"unique_Username"}</p>
-                  <strong>{"MEMBER"}</strong>
-                </div> */}
               </div>
             </div>
           )}
@@ -347,64 +394,76 @@ const Header = ({
                 // textAlign: desktop ? undefined : "center",
               }}
             >
-              <div className=''>
-                <div
-                  className='d-flex   w-25 mx-auto '
-                  style={{ position: "relative", height: "100px" }}
-                >
+              <div className='d-flex'>
+                {CheckAuth && CheckAuth.currentUser != null ? (
                   <div
-                    className=''
-                    style={{
-                      position: "absolute",
-                      marginLeft: "40px",
-                      // marginTop: "px",
-                    }}
+                    className='d-flex   w-25 mx-auto '
+                    style={{ position: "relative", height: "50px" }}
                   >
-                    <img
-                      src='https://mdbcdn.b-cdn.net/img/new/avatars/1.webp'
-                      className='rounded-circle shadow-4'
-                      style={{
-                        width: "60px",
-                        boxShadow: "1px 0px 5px #6352E8",
-                      }}
-                      alt='Avatar'
-                    />
-                  </div>
-                  <div className='w-100'>
-                    <HeaderCenter className=''>
-                      <div></div>
-                      <p className='ml-5'>VOTES 999</p>
-                      <PlusButton>
-                        <span>+</span>
-                      </PlusButton>
-                    </HeaderCenter>
                     <div
-                      className=' '
+                      className=''
                       style={{
-                        width: "50%",
-                        marginLeft: "100px",
-                        textAlign: "left",
+                        position: "absolute",
+                        marginLeft: "40px",
+                        // marginTop: "px",
                       }}
                     >
-                      <p className='mb-1'>{"unique_Username"}</p>
-                      <strong
+                      {userInfo?.avatar && (
+                        <Avatars
+                          type={userInfo?.avatar as AvatarType}
+                          style={{
+                            width: "60px",
+                            boxShadow: "1px 0px 5px #6352E8",
+                            backgroundColor: "#6352E8",
+                          }}
+                        />
+                      )}
+                    </div>
+                    <div className='w-100'>
+                      <HeaderCenter className=''>
+                        <div></div>
+                        <p className='ml-5'>
+                          VOTES{" "}
+                          <span
+                            style={{
+                              color: "#6352E8",
+                            }}
+                          >{`${
+                            userInfo?.voteStatistics &&
+                            userInfo?.voteStatistics.total
+                          }`}</span>
+                        </p>
+                        <PlusButton onClick={() => navigate("/votingbooster")}>
+                          <span>+</span>
+                        </PlusButton>
+                      </HeaderCenter>
+                      <div
+                        className=' '
                         style={{
-                          padding: "2px 10px 2px 10px ",
-                          background: "#D4D0F3",
-                          color: "#6352E8",
-                          borderRadius: "10px",
-                          marginTop: "10px",
+                          width: "50%",
+                          marginLeft: "105px",
+                          marginTop: "5px",
+                          textAlign: "left",
+                          fontWeight: "100px",
                         }}
                       >
-                        {"MEMBER"}
-                      </strong>
+                        <span className='mb-1' style={{ fontSize: "16px" }}>{`${
+                          userInfo?.displayName && userInfo?.displayName
+                        }`}</span>
+                        <br />
+                        <MemberText>
+                          {translate(userInfo?.status?.name || "")}
+                        </MemberText>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className='w-100'></div>
+                )}
+                <Navbar.Brand as={Link} to='/'>
+                  <img src={BigLogo} alt='' />
+                </Navbar.Brand>
               </div>
-              {/* <Navbar.Brand as={Link} to='/'>
-                <Logo size={Size.XSMALL} />
-              </Navbar.Brand> */}
             </div>
           ) : (
             <div style={{ width: "25%" }}>&nbsp;</div>
