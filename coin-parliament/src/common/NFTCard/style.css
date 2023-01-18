@@ -1,10 +1,98 @@
 
-.card.lege_border {
+.card.legendary {
   border: #f5e7b5 solid 8px;
 }
+.card.common {
+  border: #d4d0f3 solid 8px;
+}
+.card.epic {
+  border: #6352e8 solid 8px;
+}
+.card.rare {
+  border: #d2d2d2 solid 8px;
+}
+.card.uncommon {
+  border: #d4d0f3 solid 8px;
+}
+.legendary_text {
+  border: #f5e7b5 solid 6px;
+  color: #160133;
+  
+  border-radius: 0px 0px 8px 8px;
+  background-color: #f5e7b5;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: bold;
+  top: 10px;
+}
+.common_text {
+  border: #d4d0f3 solid 6px;
+  color: #160133;
+  
+  border-radius: 0px 0px 8px 8px;
+  background-color: #d4d0f3;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: bold;
+  top: 10px;
+}
+.epic_text {
+  border: #6352e8 solid 6px;
+  color: #160133;
+  
+  border-radius: 0px 0px 8px 8px;
+  background-color: #6352e8;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: bold;
+  top: 10px;
+}
+.rare_text {
+  border: #d2d2d2 solid 6px;
+  color: #160133;
+  
+  border-radius: 0px 0px 8px 8px;
+  background-color: #d2d2d2;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: bold;
+  top: 10px;
+}
+.uncommon_text {
+  border: #d4d0f3 solid 6px;
+  color: #160133;
+  
+  border-radius: 0px 0px 8px 8px;
+  background-color: #d4d0f3;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: bold;
+  top: 10px;
+}
 
-.ptrn4 {
+.legendary {
   background-image: url("../../assets/images/legendary.png") !important;
+  background-size: contain;
+}
+.rare {
+  background-image: url("../../assets/images/rare.png") !important;
+  background-size: contain;
+}
+.common {
+  background-image: url("../../assets/images/common.png") !important;
+  background-size: contain;
+}
+.epic {
+  background-image: url("../../assets/images/epic.png") !important;
+  background-size: contain;
+}
+.uncommon {
+  background-image: url("../../assets/images/uncommon.png") !important;
   background-size: contain;
 }
 .card {

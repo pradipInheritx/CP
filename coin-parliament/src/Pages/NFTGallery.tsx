@@ -4,8 +4,8 @@ import React from "react";
 import styled from "styled-components";
 
 const MenuBar = styled.div`
-  dispaly: flex;
-  overflow: auto;
+  flex-wrap: nowrap;
+  overflow: scroll;
   padding: 7px;
   background-color: #6352e8;
   & span {

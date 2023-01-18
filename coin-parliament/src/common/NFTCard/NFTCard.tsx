@@ -1,11 +1,18 @@
 import React from 'react'
 import './style.css'
 import TheEagle from '../../assets/images/TheEagle.png'
-function NFTCard() {
+type MintingProps = {
+  
+    cardType?:any,
+  
+  }
+function NFTCard({cardType='legendary'}: MintingProps) {
+    const classname=`card shadow ${cardType.toLowerCase()} `
+   console.log('classname',classname)
     return (
-        <div className="card shadow ptrn4 lege_border" >
+        <div className={classname} >
             <div> 
-                <span className="lege_text">&nbsp; Legendary &nbsp; </span> 
+                <span className={`${cardType.toLowerCase()}_text`} >&nbsp; {cardType?.toUpperCase()} &nbsp; </span> 
                 <span className="cardname">THE <strong>HODLER</strong></span>
                 <div className="card-body"> <img src={TheEagle} alt="the hgodler" className="img-fluid"/></div>
             </div>

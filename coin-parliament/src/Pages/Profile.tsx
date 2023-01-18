@@ -216,8 +216,8 @@ const Profile = () => {
         style={{ minHeight: window.screen.width < 979 ? "56vh" : "70vh" }}
       >
         <Row style={{ color: "var(--black)" }}>
-          {/* <Col className="p-0"> */}
-          <Col>
+          <Col className='p-0'>
+            {/* <Col > */}
             <Outlet />
           </Col>
         </Row>
