@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Badge, Col, Container, Row} from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import Collapse from "./Collapse";
@@ -18,6 +18,9 @@ import animation from './Comp.json'
 import AnimationReward from "./Animation/AnimationReward";
 import NFTCard from "../../common/NFTCard/NFTCard";
 
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../firebase";
+
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
   box-shadow: 0 3px 6px #00000029;
@@ -31,17 +34,35 @@ const RewardList = styled.p`
  font-size:10px;
  color:#707070
 `;
+const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
-  const {userInfo} = useContext(UserContext);
+  const {userInfo,user} = useContext(UserContext);
   const {userTypes} = useContext(AppContext);
   const {showModal} = useContext(NotificationContext);
   const {width = 0} = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
-  const [rewardTimer,setRewardTimer]=useState(1)
+  const [rewardTimer,setRewardTimer]=useState(null)
+  const [data,setData]=useState([])
   let navigate = useNavigate()
-const data=[1,2]
+  const rewardList= async()=>{
+    console.log('user Id called')
+    const result = await getRewardTransactions({uid:user?.uid})
+    // @ts-ignore
+    setData(result?.data)
+    console.log('user Id',result)
+  }
+  
+  useEffect(() => {
+    rewardList()
+  }, [rewardTimer])
+  
+
+
+
+
+
   if (isV1()) {
     return (
       <Navigate
@@ -55,8 +76,8 @@ const data=[1,2]
 
   return (<div>
       <Container>
-       
-       {/* {!!rewardTimer&& <AnimationReward/>} */}
+       {/* @ts-ignore */}
+       {!!rewardTimer&& <AnimationReward setRewardTimer={setRewardTimer} rewardTimer={rewardTimer}/>}
        
       {/* <Player
   autoplay
@@ -83,13 +104,13 @@ const data=[1,2]
                
               </div>
               {/* @ts-ignore */}
-              <div style={{marginLeft:'10px'}}><Minting {...{width, score: (userInfo?.voteStatistics?.score ||0 ) - (userInfo?.rewardStatistics?.total *100) || 0, setRewardTimer,rewardTimer}} setRewardTimer={setRewardTimer} rewardTimer={rewardTimer} /></div>
+              <div style={{marginLeft:'10px'}}><Minting {...{width, score: (userInfo?.voteStatistics?.score ||0 ) - (userInfo?.rewardStatistics?.total *100) || 0, setRewardTimer,rewardTimer}} setRewardTimer={setRewardTimer} rewardTimer={rewardTimer} claim={userInfo?.rewardStatistics?.total-userInfo?.rewardStatistics?.claimed} /></div>
             </div>:
         <Row className="flex-row-reverse align-items-stretch mt-1">
           <Col sm={12} md={6}>
             <div className="d-flex justify-content-center align-items-center flex-column mb-2">
               {/* @ts-ignore */}
-              <Minting {...{width, score: (userInfo?.voteStatistics?.score ||0 ) - (userInfo?.rewardStatistics?.total *100) || 0, setRewardTimer,rewardTimer}} setRewardTimer={setRewardTimer} rewardTimer={rewardTimer} />
+              <Minting {...{width, score: (userInfo?.voteStatistics?.score ||0 ) - (userInfo?.rewardStatistics?.total *100) || 0, setRewardTimer,rewardTimer}} setRewardTimer={setRewardTimer} rewardTimer={rewardTimer} claim={userInfo?.rewardStatistics?.total-userInfo?.rewardStatistics?.claimed}/>
             </div>
           </Col>
           <Col sm={12} md={6} className="d-flex flex-column flex-md-column-reverse">
@@ -110,11 +131,14 @@ const data=[1,2]
             <div  style={{background:'white', textAlign:'center', color:'#6352E8', fontSize:'12px', marginTop:'30px'}}>
               <div style={{marginTop:'20px', marginBottom:'20px',fontSize:'12px'}} >REWARD HISTORY</div >
              {data.map((item,index)=><> <div className='d-flex justify-content-around px-5'>
-                <RewardList><span style={{color:'#6352E8'}}>5</span> Votes</RewardList>
-                <RewardList><span style={{color:'#6352E8'}}>2</span> Game Pts</RewardList>
-                <RewardList><span style={{color:'#6352E8'}}>#24</span> Card</RewardList>
+               {/* @ts-ignore */}
+                <RewardList><span style={{color:'#6352E8'}}>{item?.winData?.secondRewardExtraVotes}</span> Votes</RewardList>
+                {/* @ts-ignore */}
+                <RewardList><span style={{color:'#6352E8'}}>{item?.winData?.thirdRewardDiamonds}</span> Game Pts</RewardList>
+                <RewardList><span style={{color:'#6352E8'}}>#1</span> Card</RewardList>
               </div>
-              <p className='px-5' style={{textAlign:'start', color:'#868686', fontSize:'8px',marginTop:'6px', marginLeft:'20px'}}>iddsbfjksdhfkldhsjkhjhsdjkhasdgjkhcdhskljl</p>
+              {/* @ts-ignore */}
+              <p className='px-5' style={{textAlign:'start', color:'#868686', fontSize:'8px',marginTop:'6px', marginLeft:'20px'}}>{item?.user}</p>
               {data?.length-1 != index ?<hr className="solid" style={{margin:'15px 30px 12px 30px'}}/>:<p className="solid" style={{margin:'28px'}}></p>}
               </>)}
               {!data?.length &&<> <div className='d-flex justify-content-around px-5'>

@@ -7,7 +7,12 @@ import cap from './images/cap.png'
 import confettisticker2 from './images/confettisticker2.gif'
 import trader from './images/trader.png'
 import NFTCard from '../../../common/NFTCard/NFTCard';
-function AnimationReward() {
+type MintingProps = {
+  
+  setRewardTimer?:any,
+  rewardTimer?:number
+}
+function AnimationReward({setRewardTimer,rewardTimer}: MintingProps) {
     
 var audios = document.getElementById('audio');
 
@@ -32,51 +37,50 @@ animation
  .to(".b3", {y:-202 , opacity:1} )
  .to(".blueCard2", { y:-191, scale:1, "z-index":4, }, "-=0.5")
 .to(".blueCard2", { y:-19, x:132 })
-.to(".b3", {opacity:0} )
+.to(".b3", {opacity:0,
+  // @ts-ignore
+  // onComplete: () => foo("test"),
+} )
+
+gsap.to('div', {
+  // x: 120,
+  duration: 15,
+  // rotation: 270,
+  // @ts-ignore
+  onComplete:  () => foo("test"),
+  // stagger: .2
+})
+
+function foo() {
+  setRewardTimer(null)
+}
 
 
-
- 
-
+console.log('rewarditem',rewardTimer)
 
 
-
-
-
-// .to(".cap", {y:-40 , duration:0.5 , ease: "circ.out"})
-// .to(".cap", {x:70 , duration:0.2})
-// .to(".cap", {y:70 ,top: -75,left:13,rotate: 64,  duration:0.4,  },"+=0.2")
-// .to(".blast", {y:-202 , opacity:1} , "-=0.2")
-// .to(".trader", { y:-191, scale:1, "z-index":4, duration:1, },"-=0.7")
-// .to(".trader", { y:-73,  },)
-// .to(".blast", {opacity:0,} )
-// .to(".b2", {y:-202 , opacity:1} , "-=0.7")
-// .to(".blueCard1", { y:-191, scale:1, "z-index":4, duration:1, },"-=1.2")
-// .to(".b2", {opacity:0,} )
-// .to(".blueCard1", { y:-19, x:-130 })
-// .to(".blueCard2", { y:-191, scale:1, "z-index":4, duration:1, },"-=0.9")
-// .to(".b3", {y:-202 , opacity:1} , "-=0.5")
-
-// .to(".blueCard2", { y:-19, x:128 })
-// .to(".b3", {opacity:0,},"-=0.2" )
-
-
-   
     return (
-       <> <div className="boxHolder">
+       <> <div className="boxHolder" style={{
+        right: window?.screen?.width<767?'':'0px',
+        width: window?.screen?.width<767?'':'55%',
+       
+
+       }}>
   
 
   
     <div className="cardBg blueCard1 ">
           <div className="whiteRound card_1">
-        <h1>+40</h1>
+            {/* @ts-ignore */}
+        <h1>+{rewardTimer?.data?.thirdRewardDiamonds}</h1>
 
             </div>      
     </div>
     
      <div className="cardBg blueCard2 votes">
           <div className="whiteRound card_1">
-        <h1>+20</h1>
+            {/* @ts-ignore */}
+        <h1>+{rewardTimer?.data?.secondRewardExtraVotes}</h1>
 
             </div>      
        
@@ -96,7 +100,8 @@ animation
     <img className="b3" src={confettisticker2} alt="371908020-CONFETTI-400px"/>
     
  {/* <img className="trader trader_active" src={trader} alt="trader-Image"/>  */}
- <div className="trader"><NFTCard /></div>
+ {/* @ts-ignore */}
+ <div className="trader"><NFTCard cardType={rewardTimer?.data?.firstRewardCardType}/></div>
     
   </div>
   <div className='backdrop'></div>
