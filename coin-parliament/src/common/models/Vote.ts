@@ -145,7 +145,7 @@ export const useCanVote: () => [boolean, string] = () => {
   } = useContext(AppContext);
   const { votesLast24Hours, user } = useContext(UserContext);
   const valid = !!user && votesLast24Hours.length < maxVotes;
-
+console.log('extravote12',votesLast24Hours)
   const timeReturn = new Date(
     Math.min(...votesLast24Hours.map((v) => v.voteTime))
   );

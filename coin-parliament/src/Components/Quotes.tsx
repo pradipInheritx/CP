@@ -45,6 +45,7 @@ const ItemContainer = styled(Container)`
 
 const Text = styled.p`
 font-family: 'Kaushan Script', cursive;
+font-size:17px;
 `;
 
 const Source = styled.p`
@@ -60,12 +61,12 @@ const Item = ({quote}: { quote: Quote }) => {
   // const {width} = useWindowSize();
   return (
     <ItemContainer className="h-100 d-flex justify-content-center align-items-center" style={{width:'330px'}}>
-        <Avatar
+        {/* <Avatar
             roundedCircle={true}
             src={importFile("./mystery", "png").default}
             alt="avatar"
             className="avatar_sm"
-          />
+          /> */}
       <Blockquote>
         <Text className="mb-2">"{quote.text}"</Text>
         <Source>{quote.source}{' '}-</Source>

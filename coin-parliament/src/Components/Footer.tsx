@@ -56,8 +56,18 @@ const Footer = () => {
         <Link
           to="/influencers">Influencers</Link>.
       </p> */}
+      
       <p>PAX BEP20 Total supply 21M | Block number 0 | Next halving 0  </p><p> Minted Quantity 0 | Current block reward 50 | PAX Value 0.04$  </p>
-
+      <p>
+       
+       <span><Link
+         to="/privacy">Privacy {' '} </Link>
+    </span>
+    <span>
+    <Link
+         to="/privacy">Terms & Conditions</Link>
+         </span>
+     </p>
  
 
 

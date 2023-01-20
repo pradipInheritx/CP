@@ -51,9 +51,9 @@ export const myPages: ContentPage[] = [
     slug: "about",
   },
   {
-    title: "Privacy",
+    title: "FAQ",
     content: privacy,
-    slug: "privacy",
+    slug: "FAQ",
   },
 ];
 

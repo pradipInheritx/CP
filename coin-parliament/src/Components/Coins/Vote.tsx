@@ -76,6 +76,9 @@ const Option1 = styled(Buttons.RadiusBottomLeft)`
     background:#6352E8;
     color:white;
     }
+    &:hover .svg-path {
+      stroke: white !important;
+    }
 `;
 
 const Vote = ({
@@ -108,7 +111,7 @@ const Vote = ({
         <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('Cast a vote.'); setLogin(true)}}}>
           <div className="d-flex justify-content-center align-items-center 1" >
             <Option0
-          
+        
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
@@ -127,7 +130,7 @@ const Vote = ({
                   setClickedOption0(true);
                   setTimeout(() => setClickedOption0(false), 1000);
                 },
-                className: ["p-3 confetti-button", clickedOption0 ? "animate" : ""].join(" "),
+                className: ["p-3 confetti-button svg-button", clickedOption0 ? "animate" : ""].join(" "),
                 borderColor,
                 selected: selectedOption === 0,
                 disabled,

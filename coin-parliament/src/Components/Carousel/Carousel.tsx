@@ -22,8 +22,8 @@ const responsive = ({gutter = false, items}: { gutter: boolean, items: number })
   };
 };
 
-const deviceType = (width?: number) => {
-  if (!width) {
+const deviceType = (width?: number,quotes?:Boolean) => {
+  if (!width || quotes) {
     return "mobile";
   }
   if (width > 979) {
@@ -70,6 +70,7 @@ const CarouselWrapper = styled.div`
     .react-multi-carousel-item {
       transform: scale(1);
       max-width: ${(props: { width?: number; centerMode?: boolean; coin?:boolean}) => props.coin && !props.centerMode ? `130px !important` : undefined};
+     width: ${(props: { width?: number; centerMode?: boolean; coin?:boolean}) => props.coin && !props.centerMode ? `130px !important` : undefined};
     }
 
     .react-multi-carousel-item--active {
@@ -107,7 +108,7 @@ const MyCarousel = ({
         transitionDuration={quotes?5000:0}
         containerClass="carousel-container"
         removeArrowOnDeviceType={["mobile"]}
-        deviceType={deviceType(window.screen.width)}
+        deviceType={deviceType(window.screen.width,quotes)}
         shouldResetAutoplay={false}
       >
         {children}

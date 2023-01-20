@@ -63,6 +63,14 @@ const BtnLabelPrimary = styled.button`
   text-transform: capitalize;
   color: var(--blue-violet);
   cursor: pointer;
+  &:disabled {
+    
+    background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 3px 6px #00000029;
+    border-radius: 4px;
+    opacity: 0.3;
+}
 `;
 const Dot = styled.div`
   border-radius: 50%;

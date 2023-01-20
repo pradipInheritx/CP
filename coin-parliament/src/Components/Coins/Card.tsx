@@ -245,7 +245,8 @@ const Card = ({
       {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>}
       {!single && (
         <Component127371>
-          <Buttons.ClickableText onClick={onClick} className="shine2 p-2">
+          {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}
+          <Buttons.ClickableText onClick={onClick} className="p-2">
             <VOTE>VOTE</VOTE>
             <img
               width="6"

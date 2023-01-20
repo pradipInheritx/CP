@@ -49,9 +49,9 @@ export const voteProcedure = ({vote, sound, setConfetti}: {
   vote: () => Promise<void>; sound: React.RefObject<HTMLAudioElement>; setConfetti: (bool: boolean) => void;
 }) => throttle(async () => {
   await vote();
-  sound.current?.play().then(void 0);
-  setConfetti(true);
-  setTimeout(() => {
-    setConfetti(false);
-  }, 6000);
+  // sound.current?.play().then(void 0);
+  // setConfetti(true);
+  // setTimeout(() => {
+  //   setConfetti(false);
+  // }, 6000);
 }, 1000);

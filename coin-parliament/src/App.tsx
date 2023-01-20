@@ -293,7 +293,7 @@ function App() {
   useEffect(() => {
     setMounted(true);
   }, [firstTimeLogin]);
-
+console.log('extravote', votesLast24Hours)
   const [fcmToken, setFcmToken] = useState<string>("");
   const CPMSettingsMng = new CPMSettingsManager(CPMSettings, setCPMSettings);
   const VoteRulesMng = new VoteRulesManager(voteRules, setVoteRules);
@@ -475,20 +475,20 @@ function App() {
             await setUserInfo(doc.data() as UserProps);
             setDisplayName((doc.data() as UserProps).displayName + "");
           });
-          const votesLast24HoursRef = firebase
-            .firestore()
-            .collection("votes")
-            .where("userId", "==", user.uid)
-            .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
-            .where("voteTime", "<=", Date.now());
-
-          await votesLast24HoursRef.onSnapshot((snapshot) => {
-            setVotesLast24Hours(
-              snapshot.docs.map(
-                (doc) => doc.data() as unknown as VoteResultProps
-              )
-            );
-          });
+          // const votesLast24HoursRef = firebase
+          //   .firestore()
+          //   .collection("votes")
+          //   .where("userId", "==", user.uid)
+          //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
+          //   .where("voteTime", "<=", Date.now());
+          //   console.log('extravote11',votesLast24HoursRef)
+          //   await votesLast24HoursRef.onSnapshot((snapshot) => {
+          //     console.log('extravote1')
+          //     setVotesLast24Hours(
+          //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
+          //     );
+          //   });
+         
 
           try {
             if (fcmToken) {
@@ -512,6 +512,27 @@ function App() {
       });
     }
   }, [user, fcmToken, coins]);
+useEffect(() => {
+  if(userUid){
+  const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+const votesLast24HoursRef = firebase
+            .firestore()
+            .collection("votes")
+            .where("userId", "==", user?.uid)
+            // .where("voteTime", ">=", last24Hour)
+            // .where("voteTime", "<=", currentTime);
+// console.log('extravote11',votesLast24HoursRef)
+votesLast24HoursRef.get()
+    .then((snapshot) => {
+        setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+        console.log('extravoteSuccess',snapshot.docs)
+    })
+    .catch((error) => {
+        console.log('extravoteError',error);
+    });
+  }
+}, [userInfo?.voteStatistics?.total])
 
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;

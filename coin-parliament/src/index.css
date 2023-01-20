@@ -46,7 +46,9 @@ html[dir="rtl"] .offcanvas-start.show {
         transform: translateX(250px) rotate(-25deg);
     }
 }
-
+.svg-button:hover .svg-path {
+    stroke: white !important;
+  }
 .shine {
     position: relative;
     overflow: hidden;
