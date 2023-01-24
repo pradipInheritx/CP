@@ -263,7 +263,7 @@ const Header = ({
               label: "Top Influencers",
             },
             {
-              href: "/influencers",
+              href: "/nftGallery",
               label: "Gallery",
             },
             {

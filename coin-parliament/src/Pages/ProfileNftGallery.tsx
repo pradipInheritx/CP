@@ -222,7 +222,9 @@ const ProfileNftGallery = () => {
                         width: "100%",
                         }}
               >        
+              {/* @ts-ignore */}
         <Slider {...settings}>
+           {/* @ts-ignore */}
             {items.map((item:any) => {
               return <>                
                 <NftOneCard                      
