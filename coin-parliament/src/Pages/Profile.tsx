@@ -228,11 +228,11 @@ const Profile = () => {
         className='p-0'
         style={{ minHeight: window.screen.width < 979 ? "56vh" : "70vh" }}
       >
-        <div className='d-flex w-100' style={{ color: "var(--black)" }}>
-          <Col className='p-0'>
+        <div  className="w-100"  style={{ color: "var(--black)" }}>
+          <div className='p-0 col'>
             {/* <Col > */}
             <Outlet />
-          </Col>
+          </div>
         </div>
       </div>
     </PageContainer>

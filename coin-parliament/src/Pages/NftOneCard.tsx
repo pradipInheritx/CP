@@ -11,8 +11,7 @@ import bkgnd from "../assets/images/bkgnd.png";
 import TheEagle from "../assets/images/TheEagle.png";
 
 const Card = styled.div`
-  
-  
+
   border-radius: 0px 0px 8px 8px;
   text-transform: uppercase;
   font-size: 14px;

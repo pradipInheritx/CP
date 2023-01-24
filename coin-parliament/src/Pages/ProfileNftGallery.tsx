@@ -10,6 +10,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import "./styles.css";
+import { Container } from "react-bootstrap";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -205,7 +206,8 @@ const ProfileNftGallery = () => {
     };
 
   return (
-    <div className='h-100'>
+    <div className="d-flex flex-column">
+    <div className='h-100 '>
       <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
         {menuItem.map((item, index) => {
           return (
@@ -255,6 +257,7 @@ const ProfileNftGallery = () => {
           })}
         </SummerCard>               
       </CenterItem>
+      </div>
     </div>
   );
 };
