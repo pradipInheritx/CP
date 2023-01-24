@@ -51,7 +51,7 @@ const Background = ({ pathname }: { pathname: string }) => {
   return (
     <BGContainer
       pathname={pathname}
-      width={width}
+      // width={width}
       scrollPosition={scrollPosition}
     >
       <div>

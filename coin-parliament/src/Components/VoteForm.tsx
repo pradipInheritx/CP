@@ -103,7 +103,7 @@ const VoteForm = function <
                     typeof option1.image === "string" ? (
                       <img src={option1.image} alt={option1.alt} />
                     ) : (
-                      option1.image
+                     <> <p>{option1.image}</p> <p>VOTE</p></>
                     ),
                   buttonProps: {
                     children: undefined,
@@ -114,7 +114,7 @@ const VoteForm = function <
                     typeof option2.image === "string" ? (
                       <img src={option2.image} alt={option2.alt} />
                     ) : (
-                      option2.image
+                      <> <p>{option2.image}</p> <p>VOTE</p></>
                     ),
                   buttonProps: {
                     children: undefined,

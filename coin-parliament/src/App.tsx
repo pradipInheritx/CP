@@ -718,7 +718,7 @@ votesLast24HoursRef.get()
                           fluid
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
-                          width={width}
+                          // width={width}
                         >
                           <Header
                             logo={

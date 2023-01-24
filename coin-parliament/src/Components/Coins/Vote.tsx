@@ -49,6 +49,7 @@ const Option = css`
 const Option0 = styled(Buttons.RadiusTopRight)`
   ${size};
   ${Option};
+  flex-direction: column;
   &:disabled {
     pointer-events: none;  
     cursor:pointer;
@@ -64,7 +65,7 @@ const Option0 = styled(Buttons.RadiusTopRight)`
 const Option1 = styled(Buttons.RadiusBottomLeft)`
   ${size};
   ${Option};
-
+  flex-direction: column;
   &:disabled {
     pointer-events: none;  
     cursor:pointer;
