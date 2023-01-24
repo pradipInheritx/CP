@@ -37,7 +37,7 @@ const BGContainer = styled.div`
         : 120
     }px`};
   width: 100%;
-
+  background:#160133;
   border-radius: 0px 0px 80px 0px;
   overflow: hidden;
   z-index: 1;

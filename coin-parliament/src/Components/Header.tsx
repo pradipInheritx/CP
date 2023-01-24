@@ -263,49 +263,37 @@ const Header = ({
               label: "Top Influencers",
             },
             {
-              href: "/nftGallery",
-              label: "Gallery",
-            },
-            {
               label: "",
             },
-            // user && {
-            //   eventKey: EventKeys.VOTES,
-            //   label: "Votes",
-            // },
-            // !isV1() &&
-            //   user && {
-            //     eventKey: EventKeys.POOL_MINING,
-            //     label: "Pool Mining",
-            //   },
+            user && {
+              eventKey: EventKeys.VOTES,
+              label: "Votes",
+            },
+            !isV1() &&
+              user && {
+                eventKey: EventKeys.POOL_MINING,
+                label: "Pool Mining",
+              },
             user && {
               eventKey: EventKeys.SHARE,
-              label: "My Account",
-            },
-            // user && {
-            //   eventKey: EventKeys.FOLLOWERS,
-            //   label: "Followers",
-            // },
-            user && {
-              eventKey: EventKeys.EDIT,
-              label: "My Profile",
+              label: "Share",
             },
             user && {
-              eventKey: EventKeys.NOTIFICATIONS,
-              label: "My Gallery",
+              eventKey: EventKeys.FOLLOWERS,
+              label: "Followers",
             },
             user && {
               eventKey: EventKeys.NOTIFICATIONS,
               label: "Notifications",
             },
-            // user && {
-            //   eventKey: EventKeys.PASSWORD,
-            //   label: "Password",
-            // },
-            // user && {
-            //   eventKey: EventKeys.EDIT,
-            //   label: "My Profile",
-            // },
+            user && {
+              eventKey: EventKeys.PASSWORD,
+              label: "Password",
+            },
+            user && {
+              eventKey: EventKeys.EDIT,
+              label: "Edit",
+            },
             {
               label: "",
             },

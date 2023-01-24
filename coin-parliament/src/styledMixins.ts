@@ -276,6 +276,7 @@ export const Gradient2 = css`
   background: rgb(99, 82, 232);
   background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;
   background: linear-gradient(180deg, #6352e8 0%, #3712b3 100%);
+  
 `;
 
 export const Gradient3 = css`

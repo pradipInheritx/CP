@@ -13,6 +13,7 @@ import "./styles.css";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
+  margin-top:.2px ;
   overflow: auto;
   overflow: scroll;
   white-space: nowrap;
@@ -30,8 +31,20 @@ width:100%;
     text-align: center;
     opacity: 0.4;
     font-weight: 100;
+ 
+  }
+  &.SmallScreen{
+    & button{
+      padding: 5px 18px;
+      font-size: 9px;
+    }
+  }
+  &.BigScreen{
+    
+    & button{
     padding: 5px 40px;
     font-size: 12px;
+    }
   }
 `;
 const CenterItem = styled.div`
@@ -193,7 +206,7 @@ const ProfileNftGallery = () => {
 
   return (
     <div className='h-100'>
-      <MenuBar>
+      <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
         {menuItem.map((item, index) => {
           return (
             <button
