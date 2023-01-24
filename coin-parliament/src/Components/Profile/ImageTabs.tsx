@@ -70,7 +70,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
         tabs[0].eventKey
       }
     >
-      <Row>
+      <div className='d-flex'>
         <Nav
           variant='pills'
           className='flex-row m-auto align-items-center justify-content-center'
@@ -91,7 +91,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
             );
           })}
         </Nav>
-      </Row>
+      </div >
       <Row>
         <Tab.Content>
           {tabs.map((tab, i) => {
