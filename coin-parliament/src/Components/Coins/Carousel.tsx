@@ -1,8 +1,10 @@
-import React, {useContext, useEffect, useMemo, useState} from "react";
-import {Coin, swipeOptions} from "../../common/models/Coin";
-import {Totals} from "../../Contexts/CoinsContext";
-import {UserProps} from "../../common/models/User";
-import {User as AuthUser} from "@firebase/auth";
+/** @format */
+
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { Coin, swipeOptions } from "../../common/models/Coin";
+import { Totals } from "../../Contexts/CoinsContext";
+import { UserProps } from "../../common/models/User";
+import { User as AuthUser } from "@firebase/auth";
 import {
   Column,
   Row,
@@ -13,14 +15,14 @@ import {
   UsePaginationInstanceProps,
   useTable,
 } from "react-table";
-import {BearVsBullRow} from "../../common/models/CoinTable";
-import {Modify} from "../../common/utils/ts";
-import {PaginationProps} from "../Pagination";
+import { BearVsBullRow } from "../../common/models/CoinTable";
+import { Modify } from "../../common/utils/ts";
+import { PaginationProps } from "../Pagination";
 import Card from "./Card";
-import {User} from "firebase/auth";
+import { User } from "firebase/auth";
 import styled from "styled-components";
-import {useSwipeable} from "react-swipeable";
-import {useWindowSize} from "../../hooks/useWindowSize";
+import { useSwipeable } from "react-swipeable";
+import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
 
@@ -96,7 +98,8 @@ const Indicators = styled.div`
   flex: 1;
   margin: 0 auto;
   height: 56px;
-  width: ${(props: { width?: number }) => `${props.width && props.width < 979 ? "125px" : "100%"}`};
+  width: ${(props: { width?: number }) =>
+    `${props.width && props.width < 979 ? "125px" : "100%"}`};
   align-items: center;
   flex-wrap: wrap;
 
@@ -127,7 +130,7 @@ const Carousel = ({
 }: CarouselProps) => {
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const [active, setActive] = useState(0);
-  const {width} = useWindowSize();
+  const { width } = useWindowSize();
 
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
     () => [
@@ -139,17 +142,15 @@ const Carousel = ({
     []
   );
 
-  const instance: Modify<
-    TableInstance<BearVsBullRow>,
-    {}
-  > = useTable<BearVsBullRow>(
-    {
-      columns,
-      data,
-      initialState: { pageIndex: 0 } as Partial<TableState<BearVsBullRow>>,
-    } as unknown as TableOptions<BearVsBullRow>,
-    usePagination
-  );
+  const instance: Modify<TableInstance<BearVsBullRow>, {}> =
+    useTable<BearVsBullRow>(
+      {
+        columns,
+        data,
+        initialState: { pageIndex: 0 } as Partial<TableState<BearVsBullRow>>,
+      } as unknown as TableOptions<BearVsBullRow>,
+      usePagination
+    );
 
   const { prepareRow, page, pageOptions, gotoPage, setPageSize } =
     instance as unknown as TableInstance<BearVsBullRow> &
@@ -157,7 +158,6 @@ const Carousel = ({
       PaginationProps & {
         page: Row<BearVsBullRow>[];
       };
-
 
   const handlers = useSwipeable(
     swipeOptions({
@@ -168,106 +168,110 @@ const Carousel = ({
       total: pageOptions?.length,
     })
   );
-  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } =
+    useContext(AppContext);
   useEffect(() => {
     gotoPage(index);
   }, [index, data, gotoPage]);
 
   useEffect(() => {
-  
-    const pageData = numRows > 0 ? Math.min(numRows, data?.length) : data?.length
-    setPageSize(pageData?pageData:1);
-   
+    const pageData =
+      numRows > 0 ? Math.min(numRows, data?.length) : data?.length;
+    setPageSize(pageData ? pageData : 1);
   }, [setPageSize, numRows, data?.length]);
-  console.log('data',Object.keys(coins).sort())
+  console.log("data", Object.keys(coins).sort());
   return expanded === false ? (
-    <form id={id} className="carousel slide" data-bs-ride="carousel" onSubmit={e => e.preventDefault()}>
-      <CPCarousel  coin={!(window.screen.width && window.screen.width > 969)} items={window.screen.width && window.screen.width > 969 ? 6 : 3} >{
-        
-        Object.keys(coins)?.sort()?.map((key, i) => {
-         
-          const {symbol} = coins[key];
-          return (
-            <div className='m-1'>
-            <Card
-              key={i}
-              favorite={favorites.includes(symbol)}
-              setFavorite={() => {
-                
-                
-              
-                  onFavClick(favorites, user);
-                  setIndex(index);
-                
-                
-              }}
-              symbol={symbol}
-              coins={coins}
-              totals={totals}
-              onClick={() => {
-                const url = "/coins/" + symbol;
-                if (navigate) {
-                  navigate(url);
-                }
-              }}
-            />
-            </div>
-          );
-        })
-      }</CPCarousel>
+    <form
+      id={id}
+      className='carousel slide'
+      data-bs-ride='carousel'
+      onSubmit={(e) => e.preventDefault()}
+    >
+      <CPCarousel
+        coin={!(window.screen.width && window.screen.width > 969)}
+        items={window.screen.width && window.screen.width > 969 ? 6 : 3}
+      >
+        {Object.keys(coins)
+          ?.sort()
+          ?.map((key, i) => {
+            const { symbol } = coins[key];
+            return (
+              <div className='m-1'>
+                <Card
+                  key={i}
+                  favorite={favorites.includes(symbol)}
+                  setFavorite={() => {
+                    onFavClick(favorites, user);
+                    setIndex(index);
+                  }}
+                  symbol={symbol}
+                  coins={coins}
+                  totals={totals}
+                  onClick={() => {
+                    const url = "/coins/" + symbol;
+                    if (navigate) {
+                      navigate(url);
+                    }
+                  }}
+                />
+              </div>
+            );
+          })}
+      </CPCarousel>
       <ButtonContainer>{children}</ButtonContainer>
     </form>
   ) : (
-    <form id={id} className="carousel slide" data-bs-ride="carousel">
-      <div className="carousel-inner">
-        <div className="carousel-item active">
+    <form id={id} className='carousel slide' data-bs-ride='carousel'>
+      <div className='carousel-inner'>
+        <div className='carousel-item active'>
           <CardsContainer cols={cols} gap={gap} {...handlers}>
-            {page.length > 0 && page.slice(0, page.length).map((row: Row<BearVsBullRow>) => {
-              prepareRow(row);
-              return (
-                <div {...row.getRowProps()} className="d-flex">
-                  {row.cells.map((cell, j) => {
-                    const symbol = cell.value;
+            {page.length > 0 &&
+              page.slice(0, page.length).map((row: Row<BearVsBullRow>) => {
+                prepareRow(row);
+                return (
+                  <div {...row.getRowProps()} className='d-flex'>
+                    {row.cells.map((cell, j) => {
+                      const symbol = cell.value;
 
-                    return (
-                      <div {...cell.getCellProps()} className="w-100" key={j}>
-                        {cell.column.id === "symbol" ? (
-                          <Card
-                            favorite={favorites.includes(symbol)}
-                            setFavorite={() => {
-                              onFavClick(favorites, user);
-                              setIndex(index);
-                            }}
-                            symbol={symbol}
-                            coins={coins}
-                            totals={totals}
-                            onClick={() => {
-                              const url = "/coins/" + symbol;
-                              if (navigate) {
-                                navigate(url);
-                              }
-                            }}
-                          />
-                        ) : (
-                          cell.render("Cell")
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
+                      return (
+                        <div {...cell.getCellProps()} className='w-100' key={j}>
+                          {cell.column.id === "symbol" ? (
+                            <Card
+                              favorite={favorites.includes(symbol)}
+                              setFavorite={() => {
+                                onFavClick(favorites, user);
+                                setIndex(index);
+                              }}
+                              symbol={symbol}
+                              coins={coins}
+                              totals={totals}
+                              onClick={() => {
+                                const url = "/coins/" + symbol;
+                                if (navigate) {
+                                  navigate(url);
+                                }
+                              }}
+                            />
+                          ) : (
+                            cell.render("Cell")
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
           </CardsContainer>
         </div>
       </div>
 
       {pageOptions?.length > 1 && (
         <IndicatorContainer>
-          <Indicators className="carousel-indicators" width={width}>
+          <Indicators className='carousel-indicators' width={width}>
             {pageOptions?.map((o) => (
               <Indicator
                 key={o}
-                type="button"
+                type='button'
                 data-bs-target={`#${id}`}
                 data-bs-slide-to={o}
                 className={o === index ? "active" : ""}
@@ -281,7 +285,7 @@ const Carousel = ({
                     setActive(active + 1);
                   }
                 }}
-                data-bs-slide="next"
+                data-bs-slide='next'
               />
             ))}
           </Indicators>

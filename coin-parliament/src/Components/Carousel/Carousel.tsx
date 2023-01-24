@@ -86,7 +86,7 @@ const MyCarousel = ({
   coin
 }: { children: React.ReactNode, centerMode?: boolean, items?: number,quotes?:boolean,coin?:boolean }) => {
   // const {width} = useWindowSize();
-
+console.log(children,"childrenShow")
   return (
     <CarouselWrapper width={window.screen.width} centerMode={centerMode} coin={coin}>
      {/* @ts-ignore */}

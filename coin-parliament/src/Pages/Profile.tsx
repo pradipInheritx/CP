@@ -24,6 +24,7 @@ import { useTranslation } from "../common/models/Dictionary";
 import Spinner from "../Components/Spinner";
 import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
+import ProfileNftGallery from "./ProfileNftGallery";
 
 export enum ProfileTabs {
   profile = "profile",
@@ -33,23 +34,27 @@ export enum ProfileTabs {
   edit = "edit",
   votes = "votes",
   notifications = "notifications",
+  ProfileNftGallery = "Gallery",
   share = "share",
 }
 
 export const CardContainer = styled.div`
-  ${Gradient2};
+
+&.BigScreen{
+${Gradient2};
   height: 127px;
   padding: 0;
-  margin-top: ${window.screen.width < 979 ? "0px" : "30px"};
   box-shadow: 0 3px 6px #00000029;
   border-radius: 0 0 87px 0;
+}
+  
 `;
 
 export const OuterContainer = styled.div`
   background: ${window.screen.width < 979 ? "var(--color-d4d0f3)" : ""};
   position: relative;
   z-index: 0;
-  padding-bottom: ${window.screen.width < 979 ? "100px" : ""};
+
 `;
 
 const Profile = () => {
@@ -91,8 +96,9 @@ const Profile = () => {
     }
   };
 
+  
   return user ? (
-    <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow=''>
+    <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
         // <Container className="py-3" fluid>
         <AvatarsModal
@@ -105,14 +111,14 @@ const Profile = () => {
       )}
       {!avatarMode && (
         <OuterContainer>
-          <CardContainer>
+          <CardContainer className={`${window.screen.width > 979? "BigScreen":""}`}>
             <>
               <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>
                 {window.screen.width < 979 && (
                   <Container
-                    fluid
+                    fluid                    
                     style={{
-                      paddingTop: 60,
+                      // paddingTop: 60,
                       paddingLeft: "0px",
                       paddingRight: "0px",
                     }}
@@ -143,6 +149,12 @@ const Profile = () => {
                             },
                             {
                               component: <></>,
+                              label: ProfileTabs.ProfileNftGallery,
+                              icon: <Votes />,
+                              eventKey: ProfileTabs.ProfileNftGallery,
+                            },
+                            {
+                              component: <></>,
                               label: ProfileTabs.mine,
                               icon: <Mine />,
                               eventKey: ProfileTabs.mine,
@@ -165,6 +177,7 @@ const Profile = () => {
                               icon: <Notifications />,
                               eventKey: ProfileTabs.notifications,
                             },
+                            
                           ],
                         }}
                       />
@@ -211,7 +224,7 @@ const Profile = () => {
           </CardContainer>
         </OuterContainer>
       )}
-      <Container
+      <div
         className='p-0'
         style={{ minHeight: window.screen.width < 979 ? "56vh" : "70vh" }}
       >
@@ -221,7 +234,7 @@ const Profile = () => {
             <Outlet />
           </Col>
         </Row>
-      </Container>
+      </div>
     </PageContainer>
   ) : (
     <div
