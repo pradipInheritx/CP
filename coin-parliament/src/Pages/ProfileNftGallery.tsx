@@ -18,7 +18,7 @@ const MenuBar = styled.div`
   white-space: nowrap;
   -ms-overflow-style: none;
   scrollbar-width: none;
-
+width:100%;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -35,30 +35,30 @@ const MenuBar = styled.div`
   }
 `;
 const CenterItem = styled.div`
-  background-color: #f8f9fa;
 
+ 
   width:100%;
-  
   & p {
     font-weight: 100;
     text-align: center;
     padding: 30px;
     font-size: 23px;
-    color: #160133;
+    color: #6352E8;
     text-transform: uppercase;
   }
 `;
 const SummerCard = styled.div`
+width:100%;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  background-color: #f8f9fa;
+  background-color: #d9d9d9;
 
   & span {
   }
 `;
 
-const NFTGallery = () => {
+const ProfileNftGallery = () => {
   const [cards, setCards] = useState([
     [
       { cardType: "Common" },
@@ -133,17 +133,31 @@ const NFTGallery = () => {
       setCardValue(allCard);
     }
   };
+    // const settings = {
+    //   className: "center",
+    //   centerMode: true,
+    //   infinite: true,
+    //   centerPadding: "60px",
+    //   slidesToShow: 4,
+    //   speed: 500
+    // };
   var settings = {
       
       dots: true,
-    infinite: false,
+    // infinite: false,
+    //   centerMode: true,
+    //   speed: 500,
+    //   slidesToShow: 5,
+    //   slidesToScroll: 4,
+    // initialSlide: 0,
+    //   prevArrow: false,
+    //   nextArrow: false,
+      className: "center",
       centerMode: true,
-      speed: 500,
+      infinite: true,
+      
       slidesToShow: 5,
-      slidesToScroll: 4,
-    initialSlide: 0,
-      prevArrow: false,
-    nextArrow: false,
+      speed: 500,
       responsive: [
         {
           breakpoint: 1024,
@@ -167,9 +181,11 @@ const NFTGallery = () => {
           breakpoint: 480,
           settings: {
             slidesToShow: 1,
-            slidesToScroll: 1,
-            initialSlide: 2,
+            slidesToScroll: 1,            
+            className: "center",
+            centerMode: true,
             infinite: true,
+            
           }
         }
       ]
@@ -194,19 +210,19 @@ const NFTGallery = () => {
         })}
       </MenuBar>
       <CenterItem>              
-        <div>
+        <div >
           <p>SUMMER COLLECTION</p>
         </div>
 
         <SummerCard>
           {CardValue.map((items, index) => {
             return (             
-              <div className="w-100 m-auto mb-4"
-              
-              > 
-                {/* @ts-ignore */}
-                <Slider {...settings}>
-                  {/* @ts-ignore */}
+              <div className="m-auto mb-4"
+                    style={{
+                        width: "100%",
+                        }}
+              >        
+        <Slider {...settings}>
             {items.map((item:any) => {
               return <>                
                 <NftOneCard                      
@@ -214,6 +230,7 @@ const NFTGallery = () => {
                       HeaderText={item.cardType}
                       HeaderClass={`${item.cardType}_text`}
                       Disable={""} // When you pass CardDisebal this name then card is Disable
+                    //   width={`${window.screen.width > 979 ? "217px" :"250px"}`}
                     />
               </>
           })}
@@ -221,36 +238,10 @@ const NFTGallery = () => {
       </div>
             );
           })}
-        </SummerCard>
-        <div>
-          <p>WINTER COLLECTION</p>
-        </div>
-        <SummerCard>
-          {CardValue.map((items, index) => {
-            return (
-              <div className="w-100 m-auto mb-4"
-              
-              >
-        {/* @ts-ignore */}
-                <Slider {...settings}>
-                  {/* @ts-ignore */}
-            {items.map((item:any) => {
-              return <>                
-                <NftOneCard                      
-                  DivClass={item.cardType}
-                  HeaderText={item.cardType}
-                  HeaderClass={`${item.cardType}_text`}
-                />
-              </>
-          })}
-        </Slider>
-      </div>
-            );
-          })}
-        </SummerCard>
+        </SummerCard>               
       </CenterItem>
     </div>
   );
 };
 
-export default NFTGallery;
+export default ProfileNftGallery;

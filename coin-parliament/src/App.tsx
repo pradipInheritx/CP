@@ -109,6 +109,8 @@ import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeF
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
+import ProfileNftGallery from "./Pages/ProfileNftGallery";
+
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -901,6 +903,10 @@ votesLast24HoursRef.get()
                                           <Route
                                             path={ProfileTabs.notifications}
                                             element={<Notifications />}
+                                          />
+                                          <Route
+                                            path={ProfileTabs.ProfileNftGallery}
+                                            element={<ProfileNftGallery />}
                                           />
                                           <Route
                                             path={ProfileTabs.share}

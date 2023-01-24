@@ -147,14 +147,22 @@ const Header = ({
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
   const { voteRules } = useContext(AppContext);
-
   const translate = useTranslation();
+  const [voteNumber, setVoteNumber] = useState()
 
   useEffect(() => {
     if (pages) {
       setMounted(true);
     }
   }, [pages]);
+
+  useEffect(() => {
+    // @ts-ignore
+    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(votesLast24Hours.length) || 0)
+    // @ts-ignore
+    console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
+    // @ts-ignore
+  }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
   const onSelect = (eventKey: string | null) => {
     const auth = getAuth();
@@ -369,12 +377,13 @@ const Header = ({
                               color: "#6352E8",
                             }}
                           >
-                            {Number(voteRules?.maxVotes) ||
+                            {/* {Number(voteRules?.maxVotes) ||
                               0 +
                                 // @ts-ignore
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
-                              0}
+                              0} */}
+                            {voteNumber}
                           </span>
                         </p>
                         <PlusButtonMob
@@ -457,12 +466,13 @@ const Header = ({
                               color: "#6352E8",
                             }}
                           >
-                            {Number(voteRules?.maxVotes) ||
+                            {/* {Number(voteRules?.maxVotes) ||
                               0 +
                                 // @ts-ignore
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
-                              0}
+                              0} */}
+                            {voteNumber}
                           </span>
                         </p>
                         <PlusButton onClick={() => navigate("/votingbooster")}>

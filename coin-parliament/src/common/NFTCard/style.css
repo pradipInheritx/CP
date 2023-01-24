@@ -1,3 +1,4 @@
+/** @format */
 
 .card.legendary {
   border: #f5e7b5 solid 8px;
@@ -17,7 +18,6 @@
 .legendary_text {
   border: #f5e7b5 solid 6px;
   color: #160133;
-  
   border-radius: 0px 0px 8px 8px;
   background-color: #f5e7b5;
   text-transform: uppercase;
@@ -29,7 +29,7 @@
 .common_text {
   border: #d4d0f3 solid 6px;
   color: #160133;
-  
+
   border-radius: 0px 0px 8px 8px;
   background-color: #d4d0f3;
   text-transform: uppercase;
@@ -41,7 +41,7 @@
 .epic_text {
   border: #6352e8 solid 6px;
   color: #160133;
-  
+
   border-radius: 0px 0px 8px 8px;
   background-color: #6352e8;
   text-transform: uppercase;
@@ -53,7 +53,7 @@
 .rare_text {
   border: #d2d2d2 solid 6px;
   color: #160133;
-  
+
   border-radius: 0px 0px 8px 8px;
   background-color: #d2d2d2;
   text-transform: uppercase;
@@ -65,7 +65,7 @@
 .uncommon_text {
   border: #d4d0f3 solid 6px;
   color: #160133;
-  
+
   border-radius: 0px 0px 8px 8px;
   background-color: #d4d0f3;
   text-transform: uppercase;
@@ -99,12 +99,12 @@
   /* width: 332px; */
   /* height: 472px; */
   width: 100%;
-    height: auto;
-    text-align: center;
+  height: auto;
+  text-align: center;
 }
 
 .shadow {
-  box-shadow: 0 .5rem 1rem rgba(var(--bs-body-color-rgb),.15) !important;
+  box-shadow: 0 0.5rem 1rem rgba(var(--bs-body-color-rgb), 0.15) !important;
 }
 
 .card {
@@ -117,7 +117,9 @@
   --bs-card-border-color: var(--bs-border-color-translucent);
   --bs-card-border-radius: var(--bs-border-radius);
   --bs-card-box-shadow: ;
-  --bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));
+  --bs-card-inner-border-radius: calc(
+    var(--bs-border-radius) - (var(--bs-border-width))
+  );
   --bs-card-cap-padding-y: 0.5rem;
   --bs-card-cap-padding-x: 1rem;
   --bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);
@@ -147,14 +149,14 @@
   color: #160133;
   text-align: center; */
   font-size: 19px;
-    color: #160133;
-    text-align: center;
-    margin-top: 10px;
-    display: block;
+  color: #160133;
+  text-align: center;
+  margin-top: 10px;
+  display: block;
 }
 
 .card-body {
-    width: 100%;
+  width: 100%;
   flex: 1 1 auto;
   padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
   color: var(--bs-card-color);

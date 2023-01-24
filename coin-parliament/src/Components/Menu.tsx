@@ -58,7 +58,6 @@ const MenuContainer = styled(Offcanvas)`
 const NavContainer = styled(Navbar)`
   position: fixed;
   overflow: hidden;
-
   width: 100%;
   z-index: 1000;
 `;
@@ -103,7 +102,7 @@ const Menu = ({
           //   login || firstTimeLogin || (width && width > 979)
           //     ? "linear-gradient(180deg, rgba(93,70,224,1) 40%, rgba(99,82,232,1) 80%)"
           //     : undefined,
-          boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
+          // boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
         }}
       >
         <Container

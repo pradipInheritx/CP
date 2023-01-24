@@ -20,7 +20,7 @@ import Following from "../icons/Following";
 import Notifications from "../icons/notifications";
 
 const OverlapGroup1 = styled.div`
-  height: 75px;
+  
   position: relative;
   display: flex;
   padding: 10px 14px;
@@ -93,6 +93,7 @@ export enum ProfileTabs {
   votes = "votes",
   notifications = "notifications",
   share = "share",
+  ProfileNftGallery = "Gallery",
 }
 export type UserCardProps = {
   user?: UserProps;
@@ -112,8 +113,10 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
   }, [pathname]);
   return (
     <>
+    
       <Component515>
         <OverlapGroup1>
+           
           {/* <ElementsAvatarAImage1 onClick={onClick} role="button">
             {user?.avatar && (
               <Avatars type={user?.avatar as AvatarType} width={60}/>
@@ -155,6 +158,12 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         eventKey: ProfileTabs.votes,
                       },
                       {
+                              component: <></>,
+                              label: ProfileTabs.ProfileNftGallery,
+                              icon: <Votes />,
+                              eventKey: ProfileTabs.ProfileNftGallery,
+                            },
+                      {
                         component: <></>,
                         label: ProfileTabs.mine,
                         icon: <Mine />,
@@ -178,6 +187,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         icon: <Notifications />,
                         eventKey: ProfileTabs.notifications,
                       },
+                      
                     ],
                   }}
                 />
