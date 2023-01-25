@@ -68,7 +68,7 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 75%;
+  width: 70%;
   height: 30px;
   
   margin-left:25px;
@@ -350,7 +350,7 @@ const Header = ({
                       className=''
                       style={{
                         position: "absolute",
-                        marginLeft: "48px",
+                        marginLeft: "15px",
                         marginTop: "7px",
                         // border: "1px solid red",
                       }}
@@ -367,7 +367,7 @@ const Header = ({
                         />
                       )}
                     </div>
-                    <div className='w-100 mt-3' style={{ marginLeft: "50px" }}>
+                    <div className='w-100 mt-3' style={{ marginLeft: "10px" }}>
                       <HeaderCenterMob className=''>
                         <div></div>
                         <p className='ml-4'>

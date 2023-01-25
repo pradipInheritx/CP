@@ -25,6 +25,7 @@ const SelectTimeframes = ({
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const num = getNumTimeframes(timeframes);
 
+  console.log(timeframes,"timeframe")
   
   return (
     <Container style={{maxWidth: 386, margin: "0 auto"}}>

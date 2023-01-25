@@ -68,7 +68,7 @@ const Home = () => {
                   }}
                 >
                   <h2
-                    style={{ zIndex: 1, position: "relative" }}
+                    style={{ zIndex: 0, position: "relative" }}
                     className='d-xl-none d-block'
                   >
                     <strong
@@ -102,7 +102,7 @@ const Home = () => {
           >
             <H2
               style={{
-                zIndex: 1,
+                zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
                 marginTop: "200px",
@@ -159,7 +159,7 @@ const Home = () => {
         </div>
         <div className='mb-5 mx-0'>
           <div className='mb-4'>
-            <H2 style={{ zIndex: 1, fontWeight: "400", position: "relative" }}>
+            <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
               {translate("Influencers")}
             </H2>
           </div>

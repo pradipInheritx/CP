@@ -32,7 +32,7 @@ const BGContainer = styled.div`
         ? props.width && props.width > 979
           ? 120
           : props.scrollPosition < positionBreakpoint
-          ? 100
+          ? 120
           : 120
         : 120
     }px`};
