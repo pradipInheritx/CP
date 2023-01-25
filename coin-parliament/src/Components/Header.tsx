@@ -412,7 +412,7 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "50%" : "50%" }}>
+                  <Title style={{ width: pathname === "/" ? "" : "" }}>
                     {mounted ? title : ""}
                   </Title>
                 </div>

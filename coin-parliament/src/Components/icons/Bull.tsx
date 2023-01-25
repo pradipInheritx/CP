@@ -6,7 +6,7 @@ const Bull = ({ color = "#6352e8" }: { color?: string }) => {
     className='svg-path'
       xmlns="http://www.w3.org/2000/svg"
       width="73.326"
-      height="65.606"
+      height="45.606"
       viewBox="0 0 73.326 65.606"
       stroke='currentColor'
       fill="white"

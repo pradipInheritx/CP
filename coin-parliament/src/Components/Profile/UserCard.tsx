@@ -153,28 +153,30 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                     tabs: [
                       {
                         component: <></>,
-                        label: ProfileTabs.votes,
-                        icon: <Votes />,
-                        eventKey: ProfileTabs.votes,
-                      },
-                      {
-                              component: <></>,
-                              label: ProfileTabs.ProfileNftGallery,
-                              icon: <Votes />,
-                              eventKey: ProfileTabs.ProfileNftGallery,
-                            },
-                      {
-                        component: <></>,
                         label: ProfileTabs.mine,
                         icon: <Mine />,
                         eventKey: ProfileTabs.mine,
                       },
                       {
                         component: <></>,
-                        label: ProfileTabs.share,
+                        label: "Pool Mining",
                         icon: <Share />,
                         eventKey: ProfileTabs.share,
                       },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.votes,
+                        icon: <Votes />,
+                        eventKey: ProfileTabs.votes,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.ProfileNftGallery,
+                        icon: <Votes />,
+                        eventKey: ProfileTabs.ProfileNftGallery,
+                      },
+                      
+                      
                       {
                         component: <></>,
                         label: ProfileTabs.followers,

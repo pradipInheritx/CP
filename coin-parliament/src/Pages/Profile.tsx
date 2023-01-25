@@ -143,18 +143,6 @@ const Profile = () => {
                           tabs: [
                             {
                               component: <></>,
-                              label: ProfileTabs.votes,
-                              icon: <Votes />,
-                              eventKey: ProfileTabs.votes,
-                            },
-                            {
-                              component: <></>,
-                              label: ProfileTabs.ProfileNftGallery,
-                              icon: <Votes />,
-                              eventKey: ProfileTabs.ProfileNftGallery,
-                            },
-                            {
-                              component: <></>,
                               label: ProfileTabs.mine,
                               icon: <Mine />,
                               eventKey: ProfileTabs.mine,
@@ -165,6 +153,20 @@ const Profile = () => {
                               icon: <Share />,
                               eventKey: ProfileTabs.share,
                             },
+                            {
+                              component: <></>,
+                              label: ProfileTabs.votes,
+                              icon: <Votes />,
+                              eventKey: ProfileTabs.votes,
+                            },
+                            {
+                              component: <></>,
+                              label: ProfileTabs.ProfileNftGallery,
+                              icon: <Votes />,
+                              eventKey: ProfileTabs.ProfileNftGallery,
+                            },
+                            
+                            
                             {
                               component: <></>,
                               label: ProfileTabs.followers,
@@ -226,7 +228,7 @@ const Profile = () => {
       )}
       <div
         className='p-0'
-        style={{ minHeight: window.screen.width < 979 ? "56vh" : "70vh" }}
+        style={{ minHeight: window.screen.width < 979 ? "60vh" : "70vh" }}
       >
         <div  className="w-100"  style={{ color: "var(--black)" }}>
           <div className='p-0 col'>

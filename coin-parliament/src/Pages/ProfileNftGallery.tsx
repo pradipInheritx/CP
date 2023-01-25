@@ -49,7 +49,7 @@ width:100%;
   }
 `;
 const CenterItem = styled.div`
-
+overFlow-x:hidden;
  
   width:100%;
   & p {

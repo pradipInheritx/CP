@@ -73,7 +73,7 @@ const Mine = () => {
 
   return (
     <div>
-      <Container>
+      <Container >
         {/* @ts-ignore */}
         {!!rewardTimer && (
           <AnimationReward
@@ -215,7 +215,8 @@ const Mine = () => {
                     Game Pts
                   </RewardList>
                   <RewardList>
-                    <span style={{ color: "#6352E8" }}>#1</span> Card
+                    {/* @ts-ignore */}
+                    <span style={{ color: "#6352E8" }} onClick={()=>navigate('Gallery')}>{item?.winData?.firstRewardCard}</span> Card
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}
