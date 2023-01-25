@@ -13,6 +13,7 @@ import Votes from "../Components/icons/votes";
 import Mine from "../Components/icons/mine";
 import Share from "../Components/icons/share";
 import Following from "../Components/icons/Following1";
+import Gallery from "../Components/icons/Gallery";
 import Notifications from "../Components/icons/notifications";
 import NotificationContext, { ToastType } from "../Contexts/Notification";
 import AvatarsModal from "../Components/Profile/AvatarsModal";
