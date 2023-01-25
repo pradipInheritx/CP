@@ -163,7 +163,7 @@ const Profile = () => {
                             {
                               component: <></>,
                               label: ProfileTabs.ProfileNftGallery,
-                              icon: <Votes />,
+                              icon: <Gallery />,
                               eventKey: ProfileTabs.ProfileNftGallery,
                             },
                             

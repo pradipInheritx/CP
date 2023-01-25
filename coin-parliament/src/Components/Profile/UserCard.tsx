@@ -17,6 +17,7 @@ import Votes from "../icons/votes";
 import Mine from "../icons/mine";
 import Share from "../icons/share";
 import Following from "../icons/Following";
+import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
 
 const OverlapGroup1 = styled.div`
@@ -172,7 +173,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: ProfileTabs.ProfileNftGallery,
-                        icon: <Votes />,
+                        icon: <Gallery />,
                         eventKey: ProfileTabs.ProfileNftGallery,
                       },
                       

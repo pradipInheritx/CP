@@ -11,6 +11,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import "./styles.css";
 import { Container } from "react-bootstrap";
+import SwiperBar from "./SwiperBar";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -206,7 +207,7 @@ const ProfileNftGallery = () => {
     };
 
   return (
-    <div className="d-flex">
+    <div className="">
     <div className='h-100 '>
       <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
         {menuItem.map((item, index) => {
@@ -238,7 +239,7 @@ const ProfileNftGallery = () => {
                         }}
               >        
               {/* @ts-ignore */}
-        <Slider {...settings}>
+        <SwiperBar>
            {/* @ts-ignore */}
             {items.map((item:any) => {
               return <>                
@@ -251,7 +252,7 @@ const ProfileNftGallery = () => {
                     />
               </>
           })}
-        </Slider>
+        </SwiperBar>
       </div>
             );
           })}

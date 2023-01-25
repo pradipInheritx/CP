@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import {Container} from "react-bootstrap";
 
-const Page = styled(Container)`
+const Page = styled.div`
   font-size: 13px;
   line-height: 21px;
   padding: 24px 47px;
   background: white;
   color: #160133;
-  //margin-bottom: -109px;
+  height:82vh;
 
   & h1 {
     color: #6352E8;

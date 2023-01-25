@@ -5,11 +5,10 @@ import styled from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
 import NftOneCard from "./NftOneCard";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+
 
 import "./styles.css";
+import SwiperBar from "./SwiperBar";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -133,48 +132,6 @@ const NFTGallery = () => {
       setCardValue(allCard);
     }
   };
-  var settings = {
-      
-      dots: true,
-    infinite: false,
-      centerMode: true,
-      speed: 500,
-      slidesToShow: 5,
-      slidesToScroll: 4,
-    initialSlide: 0,
-      prevArrow: false,
-    nextArrow: false,
-      responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            infinite: true,
-            dots: true
-          }
-        },
-        {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            initialSlide: 2,
-            infinite: true,
-          }
-        },
-        {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            initialSlide: 2,
-            infinite: true,
-          }
-        }
-      ]
-    };
-
   return (
     <div className='h-100'>
       <MenuBar>
@@ -205,7 +162,7 @@ const NFTGallery = () => {
               
               > 
                 {/* @ts-ignore */}
-                <Slider {...settings}>
+                <SwiperBar >
                   {/* @ts-ignore */}
             {items.map((item:any) => {
               return <>                
@@ -217,7 +174,7 @@ const NFTGallery = () => {
                     />
               </>
           })}
-        </Slider>
+        </SwiperBar>
       </div>
             );
           })}
@@ -232,7 +189,7 @@ const NFTGallery = () => {
               
               >
         {/* @ts-ignore */}
-                <Slider {...settings}>
+                <SwiperBar >
                   {/* @ts-ignore */}
             {items.map((item:any) => {
               return <>                
@@ -243,7 +200,7 @@ const NFTGallery = () => {
                 />
               </>
           })}
-        </Slider>
+        </SwiperBar>
       </div>
             );
           })}

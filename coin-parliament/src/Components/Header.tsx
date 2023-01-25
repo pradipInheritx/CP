@@ -68,7 +68,7 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 65%;
+  width: 75%;
   height: 30px;
   
   margin-left:25px;
