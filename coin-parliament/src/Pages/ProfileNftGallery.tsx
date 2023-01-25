@@ -206,7 +206,7 @@ const ProfileNftGallery = () => {
     };
 
   return (
-    <div className="d-flex flex-column">
+    <div className="d-flex">
     <div className='h-100 '>
       <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
         {menuItem.map((item, index) => {
