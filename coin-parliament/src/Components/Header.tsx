@@ -58,7 +58,7 @@ export const HeaderCenter = styled.div`
   margin: auto;
   margin-top: 10px;
   margin-bottom: 5px;
-  margin-left: 75px;
+  margin-left: 120px;
    border-radius 50px;
   display: flex;
   justify-content: space-around;
@@ -431,7 +431,7 @@ const Header = ({
                 // textAlign: desktop ? undefined : "center",
               }}
             >
-              <div className='d-flex'>
+              <div className='d-flex '>
                 {CheckAuth && CheckAuth.currentUser != null ? (
                   <div
                     className='d-flex   w-25 mx-auto '
@@ -441,7 +441,7 @@ const Header = ({
                       className=''
                       style={{
                         position: "absolute",
-                        marginLeft: "40px",
+                        marginLeft: "90px",
                         // marginTop: "px",
                       }}
                     >
@@ -456,7 +456,7 @@ const Header = ({
                         />
                       )}
                     </div>
-                    <div className='w-100'>
+                    <div className='w-100 '>
                       <HeaderCenter className=''>
                         <div></div>
                         <p className='ml-5'>
@@ -480,10 +480,10 @@ const Header = ({
                         </PlusButton>
                       </HeaderCenter>
                       <div
-                        className=' '
+                        className=''
                         style={{
                           width: "50%",
-                          marginLeft: "105px",
+                          marginLeft: "150px",
                           marginTop: "5px",
                           textAlign: "left",
                           fontWeight: "100px",

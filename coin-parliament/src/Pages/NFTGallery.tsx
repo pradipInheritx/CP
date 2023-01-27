@@ -12,29 +12,47 @@ import SwiperBar from "./SwiperBar";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
+  margin-top:.2px ;
   overflow: auto;
   overflow: scroll;
   white-space: nowrap;
   -ms-overflow-style: none;
   scrollbar-width: none;
-
+  width:100%;
   &::-webkit-scrollbar {
     display: none;
   }
   & button {
     background-color: #6352e8;
     border: none;
-    color: #fff;
+    
     display: inline-block;
     text-align: center;
-    opacity: 0.4;
+    color: white;
     font-weight: 100;
+  &.ActiveColor{
+      opacity: 1;
+    }
+  &.TextColor{
+      opacity: 0.40;
+    }
+  }
+  &.SmallScreen{
+    & button{
+      padding: 5px 18px;
+      font-size: 9px;
+    }
+  }
+  &.BigScreen{
+    & button{
     padding: 5px 40px;
     font-size: 12px;
+    }
   }
 `;
 const CenterItem = styled.div`
   background-color: #f8f9fa;
+  overFlow-x:hidden;
 
   width:100%;
   
@@ -113,7 +131,7 @@ const NFTGallery = () => {
       { cardType: "Legendary" },
     { cardType: "Legendary" },
   ]);
-  const [filterIndex, setfilterIndex] = useState();
+  const [filterIndex, setfilterIndex] = useState(0);
 
   useEffect(() => {
     HandleFilter(filterIndex);
@@ -133,12 +151,14 @@ const NFTGallery = () => {
     }
   };
   return (
-    <div className='h-100'>
-      <MenuBar>
+    <div className="">
+    <div className='h-100 ' >
+      <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"} `}>
         {menuItem.map((item, index) => {
           return (
             <button
               key={index}
+              className={`${filterIndex==index? "ActiveColor":"TextColor"}`}
               onClick={(e) => {
                 {/* @ts-ignore */}
                 setfilterIndex(index);
@@ -206,7 +226,8 @@ const NFTGallery = () => {
           })}
         </SummerCard>
       </CenterItem>
-    </div>
+      </div>
+      </div>
   );
 };
 

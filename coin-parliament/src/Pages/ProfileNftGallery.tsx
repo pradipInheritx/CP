@@ -30,9 +30,14 @@ width:100%;
     border: none;
     color: #fff;
     display: inline-block;
-    text-align: center;
-    opacity: 0.4;
+    text-align: center;    
     font-weight: 100;
+    &.ActiveColor{
+      opacity: 1;
+    }
+  &.TextColor{
+      opacity: 0.40;
+    }
  
   }
   &.SmallScreen{
@@ -129,7 +134,7 @@ const ProfileNftGallery = () => {
       { cardType: "Legendary" },
     { cardType: "Legendary" },
   ]);
-  const [filterIndex, setfilterIndex] = useState();
+  const [filterIndex, setfilterIndex] = useState(0);
 
   useEffect(() => {
     HandleFilter(filterIndex);
@@ -214,6 +219,7 @@ const ProfileNftGallery = () => {
           return (
             <button
               key={index}
+              className={`${filterIndex==index? "ActiveColor":"TextColor"}`}
               onClick={(e) => {
                 {/* @ts-ignore */}
                 setfilterIndex(index);

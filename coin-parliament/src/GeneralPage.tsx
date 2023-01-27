@@ -8,8 +8,8 @@ const Page = styled.div`
   padding: 24px 47px;
   background: white;
   color: #160133;
-  height:82vh;
-
+  font-weight:100;
+  min-height:82vh;
   & h1 {
     color: #6352E8;
     font-size: 18px;
