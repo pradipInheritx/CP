@@ -10,7 +10,7 @@ import Trend from "../Atoms/utils/Trend";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
-
+import arrow from '../../assets/svg/arrow-right.svg'
 const LighCart1 = styled.div`
 
   max-width: 350px;
@@ -251,7 +251,7 @@ const Card = ({
             <img
               width="6"
               height="10"
-              src="https://coin-parliament.com/svg/arrow-right.svg"
+              src={arrow}
               alt="vote"
             />
           </Buttons.ClickableText>

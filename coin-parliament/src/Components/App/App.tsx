@@ -102,7 +102,7 @@ export const AppContainer = styled(Container)`
       ? "0px 0px 87px 0px"
       : ""};
   padding: 0;
-  width: 100vw;
+  // width: 100vw;
 `;
 
 export const HomeContainer = styled(Container)`

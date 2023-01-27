@@ -18,7 +18,7 @@ const MenuBar = styled.div`
   white-space: nowrap;
   -ms-overflow-style: none;
   scrollbar-width: none;
-  width:100%;
+width:100%;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -44,6 +44,7 @@ const MenuBar = styled.div`
     }
   }
   &.BigScreen{
+    
     & button{
     padding: 5px 40px;
     font-size: 12px;
@@ -52,8 +53,7 @@ const MenuBar = styled.div`
 `;
 const CenterItem = styled.div`
   background-color: #f8f9fa;
-  overFlow-x:hidden;
-
+overFlow-x:hidden;
   width:100%;
   
   & p {

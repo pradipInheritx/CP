@@ -51,6 +51,7 @@ function SwiperBar( {children}: { children: React.ReactNode | string }) {
     };
   return (
     <div>
+      {/* @ts-ignore */}
         <Slider {...settings} >
                   {/* @ts-ignore */}
            {children}

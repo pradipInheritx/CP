@@ -34,6 +34,7 @@ enum EventKeys {
   POOL_MINING = "pool",
   SHARE = "share",
   FOLLOWERS = "followers",
+  Gallery='Gallery'
 }
 
 export const Title = styled.div`
@@ -212,6 +213,11 @@ const Header = ({
           replace: true,
         });
         break;
+        case EventKeys.Gallery:
+        navigate(ProfileTabs.profile + "/" + ProfileTabs.ProfileNftGallery, {
+          replace: true,
+        });
+        break;
       case EventKeys.NOTIFICATIONS:
         navigate(ProfileTabs.profile + "/" + ProfileTabs.notifications, {
           replace: true,
@@ -279,7 +285,7 @@ const Header = ({
             //     label: "Pool Mining",
             //   },
             user && {
-              eventKey: EventKeys.SHARE,
+              eventKey: EventKeys.POOL_MINING,
               label: "My Account",
             },
             // user && {
@@ -291,7 +297,7 @@ const Header = ({
               label: "My Profile",
             },
             user && {
-              eventKey: EventKeys.NOTIFICATIONS,
+              eventKey: EventKeys.Gallery,
               label: "My Gallery",
             },
             user && {
