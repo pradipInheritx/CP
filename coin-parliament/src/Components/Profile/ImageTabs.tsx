@@ -44,7 +44,7 @@ const Label = styled.div`
     text-transform: capitalize;
   }
 `;
-
+type Props =  { iconName?: any };
 const NavLink = styled(Nav.Link)`
   &.active {
     & button {
@@ -56,7 +56,13 @@ const NavLink = styled(Nav.Link)`
     background-color: inherit;
 
     * {
-      fill: white;
+    fill: ${(props: Props) =>
+      `${
+        props.iconName !== "Gallery"
+          ? 'white'
+            : ''
+      }`};
+      
     }
   }
 `;
@@ -79,7 +85,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
           {tabs.map((tab, i) => {
             return (
               <Nav.Item key={i}>
-                <NavLink eventKey={tab.eventKey} style={{ padding: "10px 5px" ,}}>
+                <NavLink eventKey={tab.eventKey} style={{ padding: "10px 5px" ,}} iconName={tab.label}>
                   <Circle
                     disabled={isV1() && tab.eventKey === ProfileTabs.mine}
                   >

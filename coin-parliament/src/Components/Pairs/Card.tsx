@@ -9,7 +9,7 @@ import {LogoImgContainer} from "../Coins/Card";
 import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
 import { useLocation } from "react-router-dom";
-
+import arrow from '../../assets/svg/arrow-right.svg'
 const LighCart1 = styled.div`
   //width: 100%;
   max-width: ${(props: { pathname: string,single: boolean }) =>
@@ -274,7 +274,7 @@ const Card = ({
             <img
               width="6"
               height="10"
-              src="https://coin-parliament.com/svg/arrow-right.svg"
+              src={arrow}
               alt="vote"
             />
           </Buttons.ClickableText>

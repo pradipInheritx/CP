@@ -34,6 +34,7 @@ enum EventKeys {
   POOL_MINING = "pool",
   SHARE = "share",
   FOLLOWERS = "followers",
+  Gallery='Gallery'
 }
 
 export const Title = styled.div`
@@ -58,7 +59,7 @@ export const HeaderCenter = styled.div`
   margin: auto;
   margin-top: 10px;
   margin-bottom: 5px;
-  margin-left: 75px;
+  margin-left: 120px;
    border-radius 50px;
   display: flex;
   justify-content: space-around;
@@ -212,6 +213,11 @@ const Header = ({
           replace: true,
         });
         break;
+        case EventKeys.Gallery:
+        navigate(ProfileTabs.profile + "/" + ProfileTabs.ProfileNftGallery, {
+          replace: true,
+        });
+        break;
       case EventKeys.NOTIFICATIONS:
         navigate(ProfileTabs.profile + "/" + ProfileTabs.notifications, {
           replace: true,
@@ -279,7 +285,7 @@ const Header = ({
             //     label: "Pool Mining",
             //   },
             user && {
-              eventKey: EventKeys.SHARE,
+              eventKey: EventKeys.POOL_MINING,
               label: "My Account",
             },
             // user && {
@@ -291,7 +297,7 @@ const Header = ({
               label: "My Profile",
             },
             user && {
-              eventKey: EventKeys.NOTIFICATIONS,
+              eventKey: EventKeys.Gallery,
               label: "My Gallery",
             },
             user && {
@@ -441,7 +447,7 @@ const Header = ({
                       className=''
                       style={{
                         position: "absolute",
-                        marginLeft: "40px",
+                        marginLeft: "90px",
                         // marginTop: "px",
                       }}
                     >
@@ -483,7 +489,7 @@ const Header = ({
                         className=' '
                         style={{
                           width: "50%",
-                          marginLeft: "105px",
+                          marginLeft: "150px",
                           marginTop: "5px",
                           textAlign: "left",
                           fontWeight: "100px",

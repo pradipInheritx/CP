@@ -124,7 +124,7 @@ const Footer = () => {
                 )
               }
             /></p>
-            <p>Copyright © 2022 CoinParliament. All rights reserved.</p>
+            <p>Copyright © 2023 CoinParliament. All rights reserved.</p>
        {/* <p>Coin Parliament © 2022</p> */}
     </FooterContainer>
   );
