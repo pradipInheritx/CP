@@ -12,6 +12,7 @@ import {
 import {
   isAdmin,
   isCoinsPairs,
+  isCommanPage,
   isProfile,
   isSinglePage,
 } from "../../common/utils/title";
@@ -80,6 +81,8 @@ export const AppContainer = styled(Container)`
       ? Gradient1
       : isCoinsPairs(props.pathname)
       ? Gradient3
+      : isCommanPage(props.pathname) ?
+        css`background: white`
       : css`
   background: rgb(99, 82, 232);
   background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;

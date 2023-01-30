@@ -4,14 +4,14 @@ import { useTranslation } from "../../common/models/Dictionary";
 import Copy from "../icons/copy";
 import copy from "copy-to-clipboard";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
+import earn from "../../assets/images/earn.png";
 
 const PoolBox = styled.div`
-  width: 322px;
-  height: 76px;
-  border-radius: 6px;
+  overFlow-x:hidden;
+  min-height: 76px;
+  
   background-color: #6352e8;
   color: white;
-  line-height: 76px;
   box-shadow: 0px 3px 6px #00000029
 `;
 
@@ -35,13 +35,22 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
   return (
-    <PoolBox className="mx-auto" style={{width:window.screen.width<979?'322px':'40%'}}>
+    <PoolBox className="mx-auto d-flex justify-content-center" style={{width:window.screen.width<979?'100%':'40%'}}>
       <Titles style={{textAlign:window.screen.width<979?'center':'start'}}>
-        <div className="d-inline-block mx-3 ml-md-1">
+        <div className="d-flex justify-content-center mt-4">
           <h6 className="text-uppercase">{translate(text)}</h6>
         </div>
-        <div className="d-inline-block">
-          <div className="d-inline-block" style={{margin:window.screen.width<979?'0px 10px':'0px 30px 0px 80px'}}>
+        <div className="d-flex justify-content-center">
+          <img src={earn} alt="" />
+        </div>
+        <div className="d-flex justify-content-center ">
+          <h6 className="text-uppercase">{translate("INVITE FRIENDS & EARN!")}</h6>
+        </div>
+        <div className=" py-2 w-75   m-auto">          
+        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100"}}>When they join and upgrade the account, You will earn CPM VOTES and POINTS.</p>
+        </div>
+        <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
+          <div className="mx-3">
             <span
               onClick={() => {
                 copy(url);
@@ -55,7 +64,8 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
               <Copy />
             </span>
           </div>
-          <div className="d-inline-block " style={{margin:window.screen.width<979?'0px 10px':'0px 30px'}}>
+          
+          <div className="mx-3">
           <I
               className="bi-whatsapp"
               
@@ -79,7 +89,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
               }
             /> */}
           </div>
-          <div className="d-inline-block " style={{margin:window.screen.width<979?'0px 10px':'0px 30px'}}>
+          <div className="mx-3">
             <I
               className="bi-twitter"
               onClick={() =>
@@ -90,7 +100,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
               }
             />
           </div>
-          <div className="d-inline-block mx-2">
+          <div className="mx-3">
             <img
             height='25'
             src={ process.env.PUBLIC_URL + '/images/icons/facebookWhite.png'}
@@ -102,7 +112,9 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
             }
             />
           </div>
+          
         </div>
+        
       </Titles>
     </PoolBox>
   );

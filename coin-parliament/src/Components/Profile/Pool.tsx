@@ -21,7 +21,7 @@ console.log('referal user',children)
 
   return (
     <>
-      <Container className="pt-4">
+      <div className={`${window.screen.width>767?"pt-4":""}`}>
         <div className="mb-3">
           <Share
             url={referralUrl}
@@ -44,7 +44,7 @@ console.log('referal user',children)
             );
           })}
         </div>
-      </Container>
+      </div>
     </>
   );
 };

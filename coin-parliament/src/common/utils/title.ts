@@ -1,5 +1,5 @@
-import {translate} from "../models/Dictionary";
-import {ProfileTabs} from "../../Pages/Profile";
+import { translate } from "../models/Dictionary";
+import { ProfileTabs } from "../../Pages/Profile";
 
 export const titles = {} as { [key: string]: string };
 
@@ -45,5 +45,9 @@ export const isAdmin = (pathname: string = "") => {
 };
 
 export const isCoinsPairs = (pathname: string = "") => {
-  return (pathname || "").includes("coins") || (pathname || "").includes("pairs");
+  return (pathname || "").includes("coins") || (pathname || "").includes("pairs") || (pathname || "").includes("votingbooster");
+};
+
+export const isCommanPage = (pathname: string = "") => {
+  return (pathname || "").includes("about") || (pathname || "").includes("Contact") || (pathname || "").includes("Privacy");
 };
