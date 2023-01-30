@@ -522,8 +522,8 @@ const votesLast24HoursRef = firebase
             .firestore()
             .collection("votes")
             .where("userId", "==", user?.uid)
-            // .where("voteTime", ">=", last24Hour)
-            // .where("voteTime", "<=", currentTime);
+            .where("voteTime", ">=", last24Hour)
+            .where("voteTime", "<=", Date.now());
 // console.log('extravote11',votesLast24HoursRef)
 votesLast24HoursRef.get()
     .then((snapshot) => {
