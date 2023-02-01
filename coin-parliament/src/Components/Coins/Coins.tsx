@@ -84,7 +84,7 @@ const Coins = ({
   const maxWidth = useMemo(() => getMaxWidth(width), [width]);
 
   return (
-    <div className='d-flex flex-column justify-content-center align-items-center py-3'>
+    <div className='d-flex flex-column justify-content-center align-items-center py-3 '>
       {expanded && (
         <Container
           {...{ width }}

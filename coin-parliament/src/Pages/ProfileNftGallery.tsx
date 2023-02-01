@@ -214,14 +214,14 @@ const ProfileNftGallery = () => {
   return (
     <div className="">
     <div className='h-100 '>
-      <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
+      {/* <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
         {menuItem.map((item, index) => {
           return (
             <button
               key={index}
               className={`${filterIndex==index? "ActiveColor":"TextColor"}`}
               onClick={(e) => {
-                {/* @ts-ignore */}
+                
                 setfilterIndex(index);
               }}
             >
@@ -230,7 +230,7 @@ const ProfileNftGallery = () => {
             </button>
           );
         })}
-      </MenuBar>
+      </MenuBar> */}
       <CenterItem>              
         <div >
           <p>SUMMER COLLECTION</p>

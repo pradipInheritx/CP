@@ -1,5 +1,5 @@
 import {Form, OverlayTrigger, Tooltip} from "react-bootstrap";
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import AppContext from "../Contexts/AppContext";
 import SelectTimeframes from "./Coins/SelectTimeframes";
 import {default as CPVote} from "./Coins/Vote";
@@ -51,6 +51,8 @@ const VoteForm = function <
   const { timeframes } = useContext(AppContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
+  
+
   return (
     <Form
       className="mt-3"

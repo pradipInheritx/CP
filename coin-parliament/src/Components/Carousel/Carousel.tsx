@@ -5,6 +5,7 @@ import "react-multi-carousel/lib/styles.css";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import styled from "styled-components";
 
+
 const responsive = ({gutter = false, items}: { gutter: boolean, items: number }) => {
   return {
     desktop: {

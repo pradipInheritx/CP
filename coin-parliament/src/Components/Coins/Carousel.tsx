@@ -25,6 +25,10 @@ import { useSwipeable } from "react-swipeable";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
+import SwiperBar from "../Carousel/SwiperBar";
+import "./Slider.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export type CarouselProps = {
   expanded?: boolean;
@@ -183,13 +187,13 @@ const Carousel = ({
   return expanded === false ? (
     <form
       id={id}
-      className='carousel slide'
+      className='carousel slide HelloSlide'
       data-bs-ride='carousel'
       onSubmit={(e) => e.preventDefault()}
+      
     >
-      <CPCarousel
-        coin={!(window.screen.width && window.screen.width > 969)}
-        items={window.screen.width && window.screen.width > 969 ? 6 : 3}
+      <SwiperBar
+        
       >
         {Object.keys(coins)
           ?.sort()
@@ -217,7 +221,34 @@ const Carousel = ({
               </div>
             );
           })}
-      </CPCarousel>
+      </SwiperBar>
+        {/* {Object.keys(coins)
+          ?.sort()
+          ?.map((key, i) => {
+            const { symbol } = coins[key];
+            return (
+              <div className='m-1'>
+                <Card
+                  key={i}
+                  favorite={favorites.includes(symbol)}
+                  setFavorite={() => {
+                    onFavClick(favorites, user);
+                    setIndex(index);
+                  }}
+                  symbol={symbol}
+                  coins={coins}
+                  totals={totals}
+                  onClick={() => {
+                    const url = "/coins/" + symbol;
+                    if (navigate) {
+                      navigate(url);
+                    }
+                  }}
+                />
+              </div>
+            );
+          })}
+      </CPCarousel> */}
       <ButtonContainer>{children}</ButtonContainer>
     </form>
   ) : (

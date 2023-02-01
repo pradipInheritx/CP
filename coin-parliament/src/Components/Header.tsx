@@ -354,11 +354,13 @@ const Header = ({
                   >
                     <div
                       className=''
+                      onClick={() => navigate("/profile/mine")}
                       style={{
                         position: "absolute",
                         marginLeft: "15px",
                         marginTop: "7px",
-                        // border: "1px solid red",
+                        
+                        cursor:"pointer"
                       }}
                     >
                       {userInfo?.avatar && (
@@ -445,10 +447,12 @@ const Header = ({
                   >
                     <div
                       className=''
+                      onClick={() => navigate("/profile/mine")}
                       style={{
                         position: "absolute",
                         marginLeft: "90px",
                         // marginTop: "px",
+                        cursor:"pointer"
                       }}
                     >
                       {userInfo?.avatar && (

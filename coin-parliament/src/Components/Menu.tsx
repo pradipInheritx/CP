@@ -61,6 +61,13 @@ const NavContainer = styled(Navbar)`
   width: 100%;
   z-index: 1000;
 `;
+const HamburgerBut = styled.button`
+background:none;
+border:none;
+ &:focus {
+    outline:none;
+  }
+`;
 
 const Dot = styled.div`
   border-radius: 50%;
@@ -112,28 +119,33 @@ const Menu = ({
           {!desktop && (
             <div
               className='d-flex justify-content-start'
-              style={{ flexBasis: "20%" }}
+              style={{ flexBasis: "20%" }}              
             >
-              <Button
-                variant='link'
+              <HamburgerBut
+                // variant='link'
                 onClick={handleShow}
                 className='position-relative'
+                style={{
+                  
+                  
+                  
+                }}
               >
                 <Hamburger />
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </Button>
+              </HamburgerBut>
             </div>
           )}
           {desktop && (
-            <div className='d-flex justify-content-start'>
-              <Button
-                variant='link'
+            <div className='d-flex justify-content-start check'>
+              <HamburgerBut
+                // variant='link'
                 onClick={handleShow}
                 className='position-relative'
               >
                 <Hamburger />
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </Button>
+              </HamburgerBut>
             </div>
           )}
           {children}

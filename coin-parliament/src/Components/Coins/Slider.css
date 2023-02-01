@@ -1,0 +1,8 @@
+.slick-prev:before,
+.slick-next:before {
+  background: red;
+}
+
+.HelloSlide{
+  border: 1px solid red;
+}

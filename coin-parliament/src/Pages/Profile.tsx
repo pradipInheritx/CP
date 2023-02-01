@@ -26,10 +26,12 @@ import Spinner from "../Components/Spinner";
 import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
 import ProfileNftGallery from "./ProfileNftGallery";
+import Wallet from "../Components/icons/Wallet";
 
 export enum ProfileTabs {
   profile = "profile",
   password = "password",
+  wallet = "wallet",
   followers = "followers",
   mine = "mine",
   edit = "edit",
@@ -42,11 +44,11 @@ export enum ProfileTabs {
 export const CardContainer = styled.div`
 
 &.BigScreen{
-${Gradient2};
+background:#d4d0f3;
   height: 127px;
   padding: 0;
-  box-shadow: 0 3px 6px #00000029;
-  border-radius: 0 0 87px 0;
+  
+  border-radius: 0 0 0 0;
 }
   
 `;
@@ -144,7 +146,7 @@ const Profile = () => {
                           tabs: [
                             {
                               component: <></>,
-                              label: ProfileTabs.mine,
+                              label: "Mining",
                               icon: <Mine />,
                               eventKey: ProfileTabs.mine,
                             },
@@ -215,6 +217,12 @@ const Profile = () => {
                                 label: ProfileTabs.password,
                                 icon: <SecurityIcon />,
                                 eventKey: ProfileTabs.password,
+                              },
+                              {
+                                component: <></>,
+                                label: ProfileTabs.wallet,
+                                icon: <Wallet/>,
+                                eventKey: ProfileTabs.wallet,
                               },
                             ],
                           }}

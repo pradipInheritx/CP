@@ -241,9 +241,9 @@ const Card = ({
   const pathname = location.pathname;
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
-  console.log('pathname',pathname)
+
   return (
-    <LighCart1 {...{ single,pathname }}>
+    <LighCart1 {...{ single,pathname }} className="">
       <HeartContainer {...{ single }} onClick={
         ()=>{
           if(!user?.uid){

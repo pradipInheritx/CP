@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Col, Container, Form, Modal, Row } from "react-bootstrap";
+import { Col, Container, Form, Modal, Row ,InputGroup} from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import User, { UserProps } from "../../common/models/User";
@@ -10,25 +10,41 @@ import { Buttons } from "../Atoms/Button/Button";
 import { getAuth, sendEmailVerification, signOut, updateEmail } from "firebase/auth";
 import { Logout } from "../../common/models/Login";
 import { useNavigate } from "react-router-dom";
+import SelectTextfield from "../Forms/SelectTextfield";
+import {CountryCode} from "./utils";
+import styled from "styled-components";
+import { Input } from "../Atoms/styles";
+
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
+
+
+
+
 
 const PersonalInfo = () => {
   const { userInfo, user: u, setUserInfo,setUser } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const [edit,setEdit]=useState(false)
+  const [userName,setUserName]=useState('')
   const [firstName,setFirstName]=useState('')
   const [lastName,setLastName]=useState('')
   const [email,setEmail]=useState('')
   const [phone,setPhone]=useState('')
+  const [countryCode,setCountryCode]=useState('')
+  
 const [show,setShow]=useState(false)
 let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
-useEffect(() => {
+  useEffect(() => {
+    console.log(user, "user");
+    
+  setUserName(user?.displayName || '')
   setFirstName(user?.firstName || '')
   setLastName(user?.lastName || '')
   setEmail(user?.email || '')
   setPhone(user?.phone || '')
+  setCountryCode('')
  
 }, [])
 const handleClose=()=>{
@@ -56,7 +72,7 @@ const handleClose=()=>{
           firstName: firstName as string,
           lastName: lastName as string,
           email: email as string,
-          phone: phone as string,
+          phone: countryCode + phone as string,
         };
         if(email===user?.email){
         setUserInfo(newUserInfo);
@@ -79,15 +95,25 @@ const handleClose=()=>{
            
             <TextField
               {...{
+                label: "User Name",
+                name: "UserName",
+                placeholder: "User Name",
+                value: userName ,
+                onChange: async (e) => {                  
+                  // setFirstName(e.target.value)                
+                },
+                edit:true,
+              }}
+              
+            />
+            <TextField
+              {...{
                 label: "First Name",
                 name: "firstName",
                 placeholder: "First Name",
                 value: firstName || "",
                 onChange: async (e) => {
-                  
-                  setFirstName(e.target.value)
-                  
-                  
+                  setFirstName(e.target.value)                                    
                 },
                 edit:!edit,
               }}
@@ -112,15 +138,14 @@ const handleClose=()=>{
                 type: "email",
                 placeholder: "Email",
                 value: email || "",
-                onChange: async (e) => {
-                  
-                  setEmail(e.target.value);
-                  
+                onChange: async (e) => {                  
+                  setEmail(e.target.value);                  
                 },
                 edit:!edit,
               }}
             />
-            <TextField
+            
+            <TextField            
               {...{
                 label: "Phone",
                 name: "phone",
@@ -130,13 +155,39 @@ const handleClose=()=>{
                 value: phone || "",
                 onChange: async (e) => {
                   
-                  setPhone(e.target.value);
-                 
-    
+                  setPhone(e.target.value);           
                 },
                 edit:!edit,
               }}
-            />
+              />
+              <SelectTextfield 
+              label="Phone"
+              name="Phone"
+              ><>
+                <select
+                  
+                  name="cars" id="cars" value={countryCode}                
+                onChange={(e) => {                  
+                  setCountryCode(e.target.value); 
+                
+                }}
+                    style={{ borderRadius: "6px 0px 0px 6px"}}
+                  disabled={!edit}
+                >
+                      <option value="">+ </option>
+                  {CountryCode?.map((code ,index) => {
+                   return  <option  value={code.dial_code}>{code.dial_code} {code.code}</option>
+                        
+                      })}
+                </select>
+                <Input type="text" onChange={(e:any) => {                  
+                  setPhone(e.target.value);   
+                  }}
+                    style={{ borderRadius: "0px 6px 6px 0px"}}
+                disabled={!edit}
+                />
+                </>
+              </SelectTextfield>
           </Col>
           
         </Row>

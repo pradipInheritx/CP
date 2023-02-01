@@ -68,7 +68,14 @@ const getHeight = (props: Pathname) => {
   ) {
     return "233px";
   }
-
+  if (
+    props.pathname.replace("/","").toLowerCase()=="about"  ||
+    props.pathname.replace("/", "").toLowerCase() == "privacy" ||
+    props.pathname.replace("/","").toLowerCase()=="contact" ||
+    props.pathname.replace("/","").toLowerCase()=="faq" 
+  ) {
+    return "auto";
+  }
   return "100vh";
 };
 
@@ -86,7 +93,7 @@ export const AppContainer = styled(Container)`
       : css`
   background: rgb(99, 82, 232);
   background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;
-  background:${window.screen.width < 767 ?"#d4d0f3":"#5f4de4"};
+  background:${window.screen.width < 767 ?"#d4d0f3":"#d4d0f3"};
   
 `};
   ${PoppinsMediumWhite12px};

@@ -114,7 +114,7 @@ const Home = () => {
           {window.screen.width > 979 && (
             <H2
               style={{
-                zIndex: 1,
+                // zIndex: 1,
                 fontWeight: "400",
                 position: "relative",
                 marginTop: "200px",

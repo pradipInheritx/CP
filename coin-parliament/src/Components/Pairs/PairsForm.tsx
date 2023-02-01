@@ -1,4 +1,4 @@
-import React, {RefObject, useCallback, useContext, useMemo, useState} from "react";
+import React, {RefObject, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {useCanVote, voteConverter, VoteResultProps} from "../../common/models/Vote";
 import {Coin} from "../../common/models/Coin";
@@ -85,6 +85,10 @@ const PairsForm = ({
   const [selectedOption, setSelectedOption] = useState<number>();
   const [canVote, tooltipText] = useCanVote();
   const translate = useTranslation();
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    return window.scrollTo(0, 0)
+}, [])
   
   const vote = useCallback(async () => {
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
@@ -137,8 +141,9 @@ const PairsForm = ({
 
   const throttled_vote = useMemo(() => voteProcedure({vote, sound, setConfetti}), [vote, sound, setConfetti]);
 
+
   return (
-    <Container>
+    <Container className="">
       {/* @ts-ignore */}
       <VoteForm
         {...{

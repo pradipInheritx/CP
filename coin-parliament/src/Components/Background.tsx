@@ -14,7 +14,7 @@ type Props = Pathname & { scrollPosition: number };
 export const positionBreakpoint = 84;
 
 const BG = styled.div`
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   ${(props: Props) =>
     isHomeBg(props.pathname)

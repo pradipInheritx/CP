@@ -19,6 +19,7 @@ import Share from "../icons/share";
 import Following from "../icons/Following";
 import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
+import Wallet from "../icons/Wallet";
 
 const OverlapGroup1 = styled.div`
   
@@ -88,6 +89,7 @@ const ElementsAvatarAImage1 = styled.div`
 export enum ProfileTabs {
   profile = "profile",
   password = "password",
+  wallet = "wallet",
   followers = "followers",
   mine = "mine",
   edit = "edit",
@@ -154,7 +156,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                     tabs: [
                       {
                         component: <></>,
-                        label: ProfileTabs.mine,
+                        label: "Mining",
                         icon: <Mine />,
                         eventKey: ProfileTabs.mine,
                       },
@@ -216,15 +218,21 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                     tabs: [
                       {
                         component: <></>,
-                        label: ProfileTabs.edit,
+                        label: "info",
                         icon: <UserIcon />,
                         eventKey: ProfileTabs.edit,
                       },
                       {
                         component: <></>,
-                        label: ProfileTabs.password,
+                        label:"security",
                         icon: <SecurityIcon />,
                         eventKey: ProfileTabs.password,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.wallet,
+                        icon: <Wallet/>,
+                        eventKey: ProfileTabs.wallet,
                       },
                     ],
                   }}

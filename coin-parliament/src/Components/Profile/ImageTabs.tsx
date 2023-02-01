@@ -38,6 +38,7 @@ const Label = styled.div`
   letter-spacing: var(--character-spacing-0);
   color: var(--color-6352e8);
   text-align: center;
+  font-size:${window.screen.width>767?"11px":"9px"};
   opacity: 1;
 
   &:first-letter {
