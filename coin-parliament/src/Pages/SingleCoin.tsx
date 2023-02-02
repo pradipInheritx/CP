@@ -151,13 +151,10 @@ console.log('getVote called 2')
 
 
   const choseTimeFrame = async (timeframe:any) => {
-    console.log('getVote called 3')
-    // if (!mountedRef.current) return null;
-console.log('getVote called 2')
+
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframe});
       if (v) {console.log('timeframe',v.data())
-        // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
        return v
       }
     }
@@ -181,12 +178,6 @@ console.log('getVote called 2')
         // }
       }))
     })
-    // .then(data => {
-    //   console.log('promiseAll',data[0]);
-    //   console.log('promiseAll',data[1]);
-    //   console.log('promiseAll',data[2]);
-    //   console.log('promiseAll',data[3]);
-    // })
     .catch(error => {
       console.error('promiseAll',error);
     });
