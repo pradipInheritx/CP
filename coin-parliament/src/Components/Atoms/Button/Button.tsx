@@ -90,6 +90,7 @@ const RadiusFull = styled(Radius)`
 `;
 
 const Timeframe = styled(RadiusFull)`
+// animation: bull_shake_left 2s ease 2s 3 alternate forwards;
   width: 71px;
   height: 70px;
   background: ${(props: { checked: boolean }) =>
@@ -106,6 +107,7 @@ const Timeframe = styled(RadiusFull)`
 `;
 
 const TimeframeName = styled.span`
+
   font-size: var(--font-size-22);
   font-style: normal;
   font-weight: normal;
@@ -144,22 +146,26 @@ const TimeframeButton = ({
   checked,
   setChecked,
   disabled,
+  showTimer,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
   checked: boolean;
   setChecked?: (c: boolean) => void;
+  showTimer?:boolean;
 }) => {
   return (
     <Timeframe
       as={"div"}
+      style={{opacity:showTimer&&checked?0.48:'', background:showTimer&&checked?'white':''}}
       {...{
+        
         disabled,
         checked,
         onClick: () => !disabled && setChecked && setChecked(!checked),
       }}
     >
-      <TimeframeName {...{ checked }}>
+      <TimeframeName {...{ checked }} style={{color:showTimer&&checked?'var(--color-6352e8)':''}}>
         {timeframeInitials(children)}
       </TimeframeName>
     </Timeframe>

@@ -25,7 +25,8 @@ const CoinsForm = ({
   sound,
   setConfetti,
   selectedTimeFrame,
-  setSelectedTimeFrame
+  setSelectedTimeFrame,
+  selectedTimeFrameArray
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -34,6 +35,7 @@ const CoinsForm = ({
   sound: RefObject<HTMLAudioElement>;
   selectedTimeFrame?:number;
   setSelectedTimeFrame?:(n:number)=>void;
+  selectedTimeFrameArray:any;
 }) => {
   const {user, userInfo} = useContext(UserContext);
   const {showToast} = useContext(NotificationContext);
@@ -108,6 +110,7 @@ console.log('timeframe',selectedTimeFrame)
           setSelectedOption,
           id,
           canVote,
+          selectedTimeFrameArray,
           submit: () => {
             if (selectedTimeFrame !== undefined && selectedOption !== undefined) {
               throttled_vote();
@@ -125,8 +128,8 @@ console.log('timeframe',selectedTimeFrame)
           },
           texts: {
             // yourVote: translate("BULL or BEAR, what’s your VOTE? Vote wisely!"),
-            yourVote: translate("Your vote"),
-            selectTimeFrame: translate("select time frame"),
+            yourVote: translate("Place your vote"),
+            selectTimeFrame: translate("Select voting time frame"),
             tooltip: translate(tooltipText),
           },
         }}

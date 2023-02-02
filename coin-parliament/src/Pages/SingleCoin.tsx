@@ -73,8 +73,11 @@ const SingleCoin = () => {
   const mountedRef = useRef(true);
   const {width, height} = useWindowSize();
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
+  const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading,setGraphLoading]=useState(false)
   const {timeframes} = useContext(AppContext);
+  console.log('choseTimeFrame1',selectedTimeFrameArray)
+  const newTimeframe:any= []
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
@@ -139,12 +142,56 @@ console.log('getVote called 2')
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframes[selectedTimeFrame || 0]?.seconds});
       if (v) {console.log('timeframe',v.data())
         if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
+        if (v.data().timeframe?.seconds===3600) setSelectedTimeFrameArray([...newTimeframe,0])
         setVote(v.data());
         setVoteId(v.id);
       }else  setVote({} as VoteResultProps);
     }
   }, [user?.uid, params?.id,selectedTimeFrame]);
 
+
+  const choseTimeFrame = async (timeframe:any) => {
+    console.log('getVote called 3')
+    // if (!mountedRef.current) return null;
+console.log('getVote called 2')
+    if (user?.uid && params?.id) {
+      const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframe});
+      if (v) {console.log('timeframe',v.data())
+        // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
+       return v
+      }
+    }
+  }
+
+  useEffect(() => {
+    Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
+    .then(responses => {
+      return Promise.all(responses.map((res,index) => {
+
+        if(res) {
+          console.log('choseTimeFrame',res,index)
+          
+          newTimeframe.push(index)
+          console.log('choseTimeFrame1',newTimeframe)
+          setSelectedTimeFrameArray(newTimeframe)
+        }
+        // else{
+        //   console.log('choseTimeFrame',res,index)
+        //   setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
+        // }
+      }))
+    })
+    // .then(data => {
+    //   console.log('promiseAll',data[0]);
+    //   console.log('promiseAll',data[1]);
+    //   console.log('promiseAll',data[2]);
+    //   console.log('promiseAll',data[3]);
+    // })
+    .catch(error => {
+      console.error('promiseAll',error);
+    });
+   
+  }, [user?.uid, params?.id,selectedTimeFrame])
   useEffect(() => {
     return () => {
       mountedRef.current = false;
@@ -255,6 +302,7 @@ console.log('vote',vote)
                       setConfetti={setConfetti}
                       selectedTimeFrame={selectedTimeFrame}
                       setSelectedTimeFrame={setSelectedTimeFrame}
+                      selectedTimeFrameArray={selectedTimeFrameArray}
                     />
                   )}</>
                 )}
@@ -270,7 +318,8 @@ console.log('vote',vote)
                           symbol2,
                           voteId,
                           selectedTimeFrame,
-                          setSelectedTimeFrame
+                          setSelectedTimeFrame,
+                          selectedTimeFrameArray
                         }}
                       />
 

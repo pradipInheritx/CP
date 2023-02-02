@@ -88,7 +88,8 @@ const VotedCard = ({
   symbol2,
   voteId,
   selectedTimeFrame,
-  setSelectedTimeFrame
+  setSelectedTimeFrame,
+  selectedTimeFrameArray
 }: {
   vote: VoteResultProps;
   coins: { [symbol: string]: Coin };
@@ -97,6 +98,7 @@ const VotedCard = ({
   voteId: string;
   selectedTimeFrame?:number;
   setSelectedTimeFrame?:(n:number)=>void;
+  selectedTimeFrameArray?:any;
 }) => {
   const [coin1, coin2] = [
     coins[symbol1] || undefined,
@@ -143,13 +145,14 @@ const VotedCard = ({
               // @ts-ignore
               setSelectedTimeFrame(timeframe.index);
             },
-            title: translate("select time frame"),
+            title: translate("Select voting time frame"),
             voted:true,
+            selectedTimeFrameArray:selectedTimeFrameArray
           }}
         />
       </div>
       <div className="mb-3 mt-4 pt-2">
-        <YourVote>{translate("your vote")}</YourVote>
+        <YourVote>{translate("Place your vote")}</YourVote>
       </div>
       <Rectangle2620>
         <div className="d-flex justify-content-between w-100">

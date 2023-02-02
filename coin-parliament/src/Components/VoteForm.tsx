@@ -5,6 +5,7 @@ import SelectTimeframes from "./Coins/SelectTimeframes";
 import {default as CPVote} from "./Coins/Vote";
 import {Title} from "../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
+import UserContext from "../Contexts/User";
 
 export const colors = ["#6352e8", "white"];
 
@@ -18,6 +19,7 @@ type VoteFormProps<T> = {
     tooltip: string;
   };
   canVote: boolean;
+  selectedTimeFrameArray?:any;
   selectedTimeFrame?: number;
   setSelectedTimeFrame: (n: number) => void;
   selectedOption?: number;
@@ -39,6 +41,7 @@ const VoteForm = function <
   id,
   texts,
   canVote,
+  selectedTimeFrameArray,
   selectedTimeFrame,
   setSelectedTimeFrame,
   selectedOption,
@@ -48,9 +51,11 @@ const VoteForm = function <
   width,
   submit,
 }: VoteFormProps<T>) {
-  const { timeframes } = useContext(AppContext);
+  const { timeframes, login } = useContext(AppContext);
+  const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
+  console.log('loginbutton',!(!!user)&&selectedTimeFrame,selectedTimeFrame)
   return (
     <Form
       className="mt-3"
@@ -70,6 +75,7 @@ const VoteForm = function <
               setSelectedTimeFrame(timeframe.index);
             },
             title: texts.selectTimeFrame,
+            selectedTimeFrameArray:selectedTimeFrameArray
           }}
         />
       </div>
@@ -83,7 +89,9 @@ const VoteForm = function <
               <Tooltip id="button-tooltip" {...props}>
                 {texts.tooltip}
               </Tooltip>
-            ) : (
+            ) : selectedTimeFrame==undefined?<Tooltip id="button-tooltip" {...props}>
+            {texts.tooltip}
+          </Tooltip>:(
               <></>
             )
           }
@@ -95,7 +103,8 @@ const VoteForm = function <
                 setSelectedOption,
               }}
               width={width || 266}
-              disabled={!canVote || disabled}
+              // disabled={!canVote || disabled}
+              disabled={!(!!user)&&selectedTimeFrame!==undefined?false:((!canVote || disabled)?true:false)}
               disabledText={texts.tooltip}
               options={[
                 {

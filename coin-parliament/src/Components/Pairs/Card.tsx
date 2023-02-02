@@ -269,7 +269,7 @@ const Card = ({
       </CardsContainer>
       {!single && (
         <Component127371>
-          <Buttons.ClickableText onClick={onClick} className="shine2 p-2" style={{margin: "-0.5rem"}}>
+          <Buttons.ClickableText onClick={onClick} className=" p-2" style={{margin: "-0.5rem"}}>
             <VOTE>VOTE</VOTE>
             <img
               width="6"

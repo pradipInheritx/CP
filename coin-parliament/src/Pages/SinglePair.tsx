@@ -41,9 +41,11 @@ const SinglePair = () => {
   const {width, height} = useWindowSize();
   const [pct,setPct]=useState(0)
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
+  const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading,setGraphLoading]=useState(false)
   const {timeframes} = useContext(AppContext);
   const mountedRef = useRef(true);
+  const newTimeframe:any= []
   const getCpviData = useCallback(async () => {
     if (voteId) {
       // if (!mountedRef.current) return null;
@@ -81,7 +83,39 @@ const SinglePair = () => {
   //   clearInterval(timer);
   // }
 }, [voteId, getCpviData, vote,totals,selectedTimeFrame])
+const choseTimeFrame = async (timeframe:any) => {
 
+  if (user?.uid && params?.id) {
+    const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframe});
+    if (v) {console.log('timeframe',v.data())
+     return v
+    }
+  }
+}
+
+useEffect(() => {
+  Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
+  .then(responses => {
+    return Promise.all(responses.map((res,index) => {
+
+      if(res) {
+        console.log('choseTimeFrame',res,index)
+        
+        newTimeframe.push(index)
+        console.log('choseTimeFrame1',newTimeframe)
+        setSelectedTimeFrameArray(newTimeframe)
+      }
+      // else{
+      //   console.log('choseTimeFrame',res,index)
+      //   setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
+      // }
+    }))
+  })
+  .catch(error => {
+    console.error('promiseAll',error);
+  });
+ 
+}, [user?.uid, params?.id,selectedTimeFrame])
   useEffect(() => {
     if (user?.uid && params?.id) {
       Vote.getVote({userId: user?.uid, coin: params?.id, timeFrame:timeframes[selectedTimeFrame || 0]?.seconds }).then((v) => {
@@ -193,7 +227,7 @@ const SinglePair = () => {
                     <>
                       <VotedCard
                         {...{vote, coins, totals, symbol1, symbol2, voteId,selectedTimeFrame,
-                          setSelectedTimeFrame }}
+                          setSelectedTimeFrame,selectedTimeFrameArray }}
                       />
                      {graphLoading? <CalculatingVotes/>:<Progress
                         totals={totals}

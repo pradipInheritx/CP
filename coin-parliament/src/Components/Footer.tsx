@@ -40,41 +40,7 @@ const Footer = () => {
   const {appStats, paxData} = useContext(AppContext);
   return (
     <FooterContainer>
-      {/* <p>Coin Parliament © 2022 | Block {paxData?.blocksGiven || 0}, 1PAX = 10USD</p>
-      <p>Total votes = {appStats?.totalVotes || 0} </p>
-      <p>
-        <Link to="/about">About</Link>.
-        <Link to="/faq">FAQ</Link>.
-        <Link
-          to="/contact">Contact</Link>.
-        <Link
-          to="/privacy">Privacy</Link>.
-        <Link
-          to="/coins">Coins</Link>.
-        <Link
-          to="/pairs">Pairs</Link>.
-        <Link
-          to="/influencers">Influencers</Link>.
-      </p> */}
-      
-      <p>PAX BEP20 Total supply 21M | Block number 0 | Next halving 0  </p><p> Minted Quantity 0 | Current block reward 50 | PAX Value 0.04$  </p>
-      <p>
-       
-       <span><Link
-         to="/privacy">Privacy {' '} </Link>
-    </span>
-    <span>
-    <Link
-         to="/privacy">Terms & Conditions</Link>
-         </span>
-     </p>
- 
-
-
-
-
-       {/* <p>Copyright © 2022 CoinParliament. All rights reserved.</p> */}
-       <p style={{marginTop:'10px',marginBottom:'5px'}}><I
+        <p style={{marginBottom:'5px'}}><I
               className="bi-twitter"
               
               onClick={() =>
@@ -124,6 +90,41 @@ const Footer = () => {
                 )
               }
             /></p>
+      {/* <p>Coin Parliament © 2022 | Block {paxData?.blocksGiven || 0}, 1PAX = 10USD</p>
+      <p>Total votes = {appStats?.totalVotes || 0} </p>
+      <p>
+        <Link to="/about">About</Link>.
+        <Link to="/faq">FAQ</Link>.
+        <Link
+          to="/contact">Contact</Link>.
+        <Link
+          to="/privacy">Privacy</Link>.
+        <Link
+          to="/coins">Coins</Link>.
+        <Link
+          to="/pairs">Pairs</Link>.
+        <Link
+          to="/influencers">Influencers</Link>.
+      </p> */}
+      
+      <p>PAX BEP20 Total supply 21M | Block number 0 | Next halving 0  </p><p> Minted Quantity 0 | Current block reward 50 | PAX Value 0.04$  </p>
+      <p style={{marginTop:'10px',marginBottom:'5px'}}>
+       
+       <span><Link
+         to="/privacy">Privacy {' '} </Link>
+    </span>
+    <span>
+    <Link
+         to="/privacy">Terms & Conditions</Link>
+         </span>
+     </p>
+ 
+
+
+
+
+       {/* <p>Copyright © 2022 CoinParliament. All rights reserved.</p> */}
+     
             <p>Copyright © 2023 CoinParliament. All rights reserved.</p>
        {/* <p>Coin Parliament © 2022</p> */}
     </FooterContainer>

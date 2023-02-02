@@ -72,6 +72,7 @@ class Vote implements VoteProps {
   }
 
   static async getVote({ userId, coin,timeFrame }: { userId: string; coin: string; timeFrame?: number; }) {
+   
     const db = getFirestore();
     let q = query(
       collection(db, "votes"),
@@ -90,6 +91,7 @@ class Vote implements VoteProps {
       );
 
       const data = v?.data();
+      console.log('voteapicalled1', timeFrame,data)
       if (!data) {
         return;
       }
@@ -143,8 +145,11 @@ export const useCanVote: () => [boolean, string] = () => {
   const {
     voteRules: { maxVotes },
   } = useContext(AppContext);
+  const {userInfo}=useContext(UserContext)
   const { votesLast24Hours, user } = useContext(UserContext);
-  const valid = !!user && votesLast24Hours.length < maxVotes;
+  // @ts-ignore
+  
+  const valid = !!user && votesLast24Hours.length < maxVotes + Number(userInfo?.rewardStatistics?.extraVote || 0);
 console.log('extravote12',votesLast24Hours)
   const timeReturn = new Date(
     Math.min(...votesLast24Hours.map((v) => v.voteTime))

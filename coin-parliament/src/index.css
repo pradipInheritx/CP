@@ -49,6 +49,7 @@ html[dir="rtl"] .offcanvas-start.show {
 .svg-button:hover .svg-path {
     stroke: white !important;
   }
+  
 .shine {
     position: relative;
     overflow: hidden;
@@ -129,7 +130,39 @@ html[dir="rtl"] .offcanvas-start.show {
     flex-shrink: 0;
     pointer-events: auto;
 }
-
+.glow {
+    
+    border: none;
+    /* width: 200px;
+    height: 200px; */
+    -webkit-animation: glow 5s ease-in-out  alternate;
+    -moz-animation: glow 5s ease-in-out  alternate;
+    animation: glow 5s ease-in-out ;
+  }
+@keyframes glow {
+    0% {
+        border-width: 1px;
+        border: solid 1px #6352e8;
+      }
+      25% {
+        border-width: 0px;
+        border: solid 1px white;
+      }
+      50% {
+        border-width: 1px;
+        border: solid 1px #6352e8;
+      }
+      75% {
+        border-width: 0px;
+        border: solid 1px white;
+      }
+      100% {
+        border-width: 0px;
+        border: solid 0px white;
+      }
+      
+     
+  }
 * {
     box-sizing: border-box;
 }

@@ -178,8 +178,8 @@ const PairsForm = ({
             ...coin2,
           },
           texts: {
-            yourVote: translate("your vote"),
-            selectTimeFrame: translate("select time frame"),
+            yourVote: translate("Place your vote"),
+            selectTimeFrame: translate("Select voting time frame"),
             tooltip: translate(tooltipText),
           },
         }}

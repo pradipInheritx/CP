@@ -6,12 +6,14 @@ import {Buttons} from "../Atoms/Button/Button";
 import {Title} from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 
+
 export type SelectTimeframesProps = {
   timeframes: TimeFrame[];
   selectTimeframe: (c: TimeFrame) => void;
   selected?: number;
   title?: string;
   voted?:boolean;
+  selectedTimeFrameArray?:any;
 };
 
 const SelectTimeframes = ({
@@ -19,16 +21,17 @@ const SelectTimeframes = ({
   timeframes,
   selectTimeframe,
   title,
-  voted
+  voted,
+  selectedTimeFrameArray
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const num = getNumTimeframes(timeframes);
 
-  console.log(timeframes,"timeframe")
+  console.log(timeframes,"timeframevoted",voted,selected)
   
   return (
-    <Container style={{maxWidth: 386, margin: "0 auto"}}>
+    <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
       <Row>
         {num === 1 && (
           <input
@@ -44,7 +47,7 @@ const SelectTimeframes = ({
           </div>
         )}
       </Row>
-      <Row className={symbol2?'row gx-5':"row gx-5"} id='test' style={{minWidth:'310px'}}>
+      <Row className={voted?'row gx-5':selected===undefined?"row gx-5 glow":"row gx-5"} id='test' style={{minWidth:'310px'}}>
         {num > 1 &&
           timeframes.map((timeframe, k) => {
             return (
@@ -66,7 +69,7 @@ const SelectTimeframes = ({
                     </Buttons.TimeframeButton>
                   }
                   iconOff={
-                    <Buttons.TimeframeButton {...{ checked: false }}>
+                    <Buttons.TimeframeButton {...{ checked: selectedTimeFrameArray?.includes(timeframe.index)   }} showTimer={true} >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
                   }

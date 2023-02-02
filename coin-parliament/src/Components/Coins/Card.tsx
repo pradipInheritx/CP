@@ -159,17 +159,17 @@ export type CoinCardProps = {
 export const LogoImgContainer = styled.div`
 margin-top:20px;
   border-radius: 100%;
-  border: 1px solid var(--white);
-  background: var(--white);
+  // border: 1px solid var(--white);
+  // background: var(--white);
   padding: 0;
-  -webkit-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
-  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
+  // -webkit-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
+  // -moz-box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
+  // box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.75);
   cursor: ${(props: { single: boolean }) =>
           props.single ? "default" : "pointer"};
 
   &:hover {
-    background: var(--white);
+    // background: var(--white);
     opacity: 0.8;
   }
 `;
