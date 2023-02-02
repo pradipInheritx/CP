@@ -59,8 +59,7 @@ const CardName = styled.div`
   font-size: 30px;
   color: #160133;
 `;
-const CenterText = styled.div`
-  width: 60%;
+const CenterText = styled.div`  
   margin: auto;
   text-transform: uppercase;
   font-weight: bold;
@@ -99,20 +98,34 @@ export type BoxItems = {
   HeaderClass?: string;
   width?: string;
   Disable?: string;
+  cardNo?: string;
+  cardHeader?: string;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable }: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader}: BoxItems) => {
   const Width:number =window.screen.width 
   return (
     <div className='d-flex m-3 '>
       {/* First Div  */}
       <Card  className={`shadow tex-center ${DivClass} ${Disable}`} >
         <div>
-          {" "}
+          {" "}  
+          <div className="d-flex justify-content-between">
+            <div className="opacity-0" style={{fontSize:"12px"}}>
+              <span className="px-2">{cardNo}</span>
+            </div>
           <CenterText className={HeaderClass}>
             &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
+          
           </CenterText>{" "}
-          <br />
-          <br />
+            <div className="" style={{fontSize:"12px"}}>
+              <span className="px-2">{cardNo}</span>
+            </div>
+            </div>
+          <div >
+            {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
+            <span className="cardname">THE<strong>{cardHeader}</strong></span>
+          </div>
+          <br />          
           <div className='card-body'>
             <img src={TheEagle} alt='the hgodler' className='img-fluid' />
           </div>

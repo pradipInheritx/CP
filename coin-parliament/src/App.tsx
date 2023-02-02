@@ -863,12 +863,12 @@ votesLast24HoursRef.get()
                                         />
                                         <Route
                                           path='nftGallery'
-                                          element={<NFTGalleryType />}
-                                        />
-                                        <Route
-                                          path='nftGallery/:id'
                                           element={<NFTGallery />}
                                         />
+                                        {/* <Route
+                                          path='nftGallery/:id'
+                                          element={<NFTGalleryType />}
+                                        /> */}
                                         <Route
                                           path='coins/:id'
                                           element={<SingleCoin />}
