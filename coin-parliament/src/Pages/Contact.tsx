@@ -53,7 +53,7 @@ const Contact = () => {
 
   return (
     <GeneralPage>
-      <div className="m-auto" style={{width:`${window.screen.width>767?"40%":"100%"}`}}>
+      
       {!sent && (<React.Fragment>
         <h1>Contact Us</h1>
         {sending && (
@@ -98,7 +98,7 @@ const Contact = () => {
           <Link to={"/"}>Go back to homepage</Link>
         </Back>
         </React.Fragment>)}
-        </div>
+        
     </GeneralPage>
   );
 };

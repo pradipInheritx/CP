@@ -1,5 +1,5 @@
 import {Container} from "react-bootstrap";
-import React, {RefObject, useCallback, useContext, useMemo, useState} from "react";
+import React, {RefObject, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {Direction, useCanVote, voteConverter, VoteResultProps} from "../../common/models/Vote";
 import UserContext from "../../Contexts/User";
 import {addDoc, collection} from "firebase/firestore";
@@ -45,6 +45,10 @@ const CoinsForm = ({
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
   const id = "BullVsBearForm";
+    useEffect(() => {
+      window.scrollTo(0, 0)
+      return window.scrollTo(0, 0)
+}, [])
 console.log('timeframe',selectedTimeFrame)
   const vote = useCallback(async () => {
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
@@ -99,7 +103,7 @@ console.log('timeframe',selectedTimeFrame)
   const throttled_vote = useMemo(() => voteProcedure({vote, sound, setConfetti}), [vote, sound, setConfetti]);
 
   return (
-    <Container className='p-0'>
+    <Container className='p-0 '>
       {/* @ts-ignore */}
       <VoteForm
         {...{

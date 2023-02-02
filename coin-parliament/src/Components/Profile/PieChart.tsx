@@ -16,6 +16,7 @@ const PiePseudo = css`
 `;
 
 const Pie = styled.div`
+border:1px solid;
   box-shadow: 0 3px 6px #00000029;
   border-radius: 100%;
   width: ${(props: PieChartProps) => `${props.width}px`};
@@ -107,7 +108,7 @@ const PieChart = (props: PieChartProps & { pax: number }) => {
         <div className="position-absolute">
           <Pie {...{percentage: 100, color: "var(--black)", border, width}} />
         </div>
-        <div className="position-absolute">
+        <div className="position-absolute ">
           <Pie
             {...{
               percentage,

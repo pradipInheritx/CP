@@ -86,6 +86,7 @@ import {
 } from "./Components/App/App";
 import Influencers from "./Pages/Influencers";
 import NFTGallery from "./Pages/NFTGallery";
+import NFTGalleryType from "./Pages/NFTGalleryType";
 import Footer from "./Components/Footer";
 import PersonalInfo from "./Components/Profile/PersonalInfo";
 import Security from "./Components/Profile/Security";
@@ -110,6 +111,7 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
+import GameRule from "./Pages/GameRule";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -124,6 +126,7 @@ function App() {
   const { width } = useWindowSize();
   const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
+
   const showToast = useCallback(
     (
       content: ToastContent,
@@ -862,6 +865,10 @@ votesLast24HoursRef.get()
                                           path='nftGallery'
                                           element={<NFTGallery />}
                                         />
+                                        {/* <Route
+                                          path='nftGallery/:id'
+                                          element={<NFTGalleryType />}
+                                        /> */}
                                         <Route
                                           path='coins/:id'
                                           element={<SingleCoin />}
@@ -931,6 +938,10 @@ votesLast24HoursRef.get()
                                         <Route
                                           path='about'
                                           element={<About />}
+                                        />
+                                        <Route
+                                          path='gamerule'
+                                          element={<GameRule />}
                                         />
                                         <Route
                                           path='contact'

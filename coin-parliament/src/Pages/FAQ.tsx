@@ -3,6 +3,10 @@ import { Accordion, Container } from "react-bootstrap";
 import { faq } from "../common/consts/contents";
 import styled from "styled-components";
 
+const FQbox = styled.div`
+margin:auto;
+  max-width:800px;
+`;
 const Header = styled(Accordion.Header)`
   & .accordion-button {
     color: #6352e8;
@@ -13,11 +17,12 @@ const Header = styled(Accordion.Header)`
   }
 `;
 const Body = styled(Accordion.Body)`
+
   color: #212529;
 `;
 const FAQ = () => {
   return (
-    <>
+    <FQbox>
       <Accordion defaultActiveKey={["0"]} alwaysOpen>
         {faq.map((f, i) => {
           return (
@@ -32,7 +37,7 @@ const FAQ = () => {
           );
         })}
       </Accordion>
-    </>
+    </FQbox>
   );
 };
 

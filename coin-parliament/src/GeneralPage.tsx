@@ -4,11 +4,13 @@ import {Container} from "react-bootstrap";
 
 const Page = styled.div`
   font-size: 13px;
+  margin:auto;
   line-height: 21px;
   padding: 24px 47px;
   background: white;
   color: #160133;
   font-weight:100;
+  max-width:800px;
   min-height:82vh;
   & h1 {
     color: #6352E8;

@@ -78,40 +78,40 @@ const SummerCard = styled.div`
 const NFTGallery = () => {
   const [cards, setCards] = useState([
     [
-      { cardType: "Common" },
-      { cardType: "Common" },
-      { cardType: "Common" },
-      { cardType: "Common" },
-      { cardType: "Common" },
+      { cardType: "Common",cardNo:"CP244",cardHeader:"INVESTOR" },
+      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
+      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
+      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
+      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
     ],
     [
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
+      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR"  },
+      { cardType: "UNCommon",cardNo:"CP245",cardHeader:"INVESTOR"  },
+      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR" },
+      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR" },
+      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR" },
     ],
     [
-      { cardType: "Epic" },
-      { cardType: "Epic" },
-      { cardType: "Epic" },
-      { cardType: "Epic" },
-      { cardType: "Epic" },
+      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
+      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
+      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
+      { cardType: "Epic",cardNo:"CP246",cardHeader:"INVESTOR"  },
+      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
     ],
     [
-      { cardType: "Rare" },
-      { cardType: "Rare" },
-      { cardType: "Rare" },
-      { cardType: "Rare" },
-      { cardType: "Rare" },
+      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
+      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
+      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
+      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
+      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
     ],
 
     [
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
+      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
+      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
+      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
+      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
+      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
     ],
   ]);
   const [menuItem, setMenuItem] = useState([
@@ -150,17 +150,31 @@ const NFTGallery = () => {
       setCardValue(allCard);
     }
   };
+
+  const HandleFilterByInput = (value:string|number) => {
+    var allCard: any = cards;
+    
+      allCard.filter((item: any, ind: number) => {
+        if (item.cardNo.includes(value)) {
+          var cardItem: any = [item];
+          // setCardValue(cardItem);
+          console.log(cardItem,"cardItem")
+        }
+      });
+    
+  }
+
   return (
     <div className="">
     <div className='h-100 ' >
-      <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"} `}>
+      {/* <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"} `}>
         {menuItem.map((item, index) => {
           return (
             <button
               key={index}
               className={`${filterIndex==index? "ActiveColor":"TextColor"}`}
               onClick={(e) => {
-                {/* @ts-ignore */}
+                
                 setfilterIndex(index);
               }}
             >
@@ -169,8 +183,10 @@ const NFTGallery = () => {
             </button>
           );
         })}
-      </MenuBar>
-      <CenterItem>              
+      </MenuBar> */}
+        
+        <CenterItem>      
+        <div className="d-flex justify-content-center mt-5"><input type="text" onChange={(e)=>{HandleFilterByInput(e.target.value)}} /></div>  
         <div>
           <p>SUMMER COLLECTION</p>
         </div>
@@ -190,7 +206,9 @@ const NFTGallery = () => {
                       DivClass={item.cardType}
                       HeaderText={item.cardType}
                       HeaderClass={`${item.cardType}_text`}
-                      Disable={""} // When you pass CardDisebal this name then card is Disable
+                  Disable={""} // When you pass CardDisebal this name then card is Disable
+                  cardHeader={`${item.cardHeader}`}
+                  cardNo={`${item.cardNo}`}
                     />
               </>
           })}
@@ -205,9 +223,7 @@ const NFTGallery = () => {
         <SummerCard>
           {CardValue.map((items, index) => {
             return (
-              <div className="w-100 m-auto mb-4"
-              
-              >
+              <div className="w-100 m-auto mb-4">
         {/* @ts-ignore */}
                 <SwiperBar >
                   {/* @ts-ignore */}
@@ -217,6 +233,8 @@ const NFTGallery = () => {
                   DivClass={item.cardType}
                   HeaderText={item.cardType}
                   HeaderClass={`${item.cardType}_text`}
+                  cardHeader={`${item.cardHeader}`}
+                  cardNo={`${item.cardNo}`}
                 />
               </>
           })}

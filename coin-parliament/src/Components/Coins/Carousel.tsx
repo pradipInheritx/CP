@@ -26,6 +26,8 @@ import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
 
+
+
 export type CarouselProps = {
   expanded?: boolean;
   children?: React.ReactNode | string;
@@ -183,12 +185,12 @@ const Carousel = ({
   return expanded === false ? (
     <form
       id={id}
-      className='carousel slide'
+      className='carousel slide HelloSlide'
       data-bs-ride='carousel'
-      onSubmit={(e) => e.preventDefault()}
-    >
+      onSubmit={(e) => e.preventDefault()}     
+    >        
       <CPCarousel
-        coin={!(window.screen.width && window.screen.width > 969)}
+      coin={!(window.screen.width && window.screen.width > 969)}
         items={window.screen.width && window.screen.width > 969 ? 6 : 3}
       >
         {Object.keys(coins)

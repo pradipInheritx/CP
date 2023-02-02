@@ -4,7 +4,7 @@ import React from "react";
 import styled from "styled-components";
 import { isHomeBg, Pathname } from "./App/App";
 import { Gradient1, Gradient2, Gradient3 } from "../styledMixins";
-import { isCoinsPairs } from "../common/utils/title";
+import { isCoinsPairs, isProfile } from "../common/utils/title";
 import { useWindowSize } from "../hooks/useWindowSize";
 import useScrollPosition from "../hooks/useScrollPosition";
 import { useParams } from "react-router-dom";
@@ -14,7 +14,7 @@ type Props = Pathname & { scrollPosition: number };
 export const positionBreakpoint = 84;
 
 const BG = styled.div`
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   ${(props: Props) =>
     isHomeBg(props.pathname)
@@ -38,7 +38,12 @@ const BGContainer = styled.div`
     }px`};
   width: 100%;
   background:#160133;
-  border-radius: 0px 0px 80px 0px;
+  ${(props: Props) =>
+    isProfile(props.pathname)
+      ? "border-radius: 0px 0px 80px 0px"
+      : "border-radius: 0px 0px 0px 0px"
+      };
+  
   overflow: hidden;
   z-index: 1;
 `;

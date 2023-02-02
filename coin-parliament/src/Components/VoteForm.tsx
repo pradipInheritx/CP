@@ -1,5 +1,5 @@
 import {Form, OverlayTrigger, Tooltip} from "react-bootstrap";
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import AppContext from "../Contexts/AppContext";
 import SelectTimeframes from "./Coins/SelectTimeframes";
 import {default as CPVote} from "./Coins/Vote";
