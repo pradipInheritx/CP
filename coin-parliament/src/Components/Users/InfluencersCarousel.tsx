@@ -138,7 +138,9 @@ const InfluencersCarousel = () => {
   return (
     <React.Fragment>
       <CarouselContainer className="table-responsive m-auto overflow-hidden" style={{maxWidth}}>
-        {<MyCarousel centerMode={!(width && width > 969)}>
+        {<MyCarousel centerMode={!(width && width > 969)}
+        cursorShow={true}
+        >
           {userTypes?.map((userType, i) =>
           <div  style={{minHeight:'272px',margin:'0.3rem'}}>
             <Item userType={userType} key={i}/>

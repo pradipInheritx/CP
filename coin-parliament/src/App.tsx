@@ -127,6 +127,14 @@ function App() {
   const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
 
+  useEffect(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+    });
+      // console.log("scrollTo");
+}, [pathname])
+
   const showToast = useCallback(
     (
       content: ToastContent,
@@ -862,7 +870,7 @@ votesLast24HoursRef.get()
                                           element={<CoinMain />}
                                         />
                                         <Route
-                                          path='nftGallery'
+                                          path='nftAlbum'
                                           element={<NFTGallery />}
                                         />
                                         {/* <Route

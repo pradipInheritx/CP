@@ -35,6 +35,7 @@ const deviceType = (width?: number,quotes?:Boolean) => {
 };
 
 const CarouselWrapper = styled.div`
+
   transition: all 0.3s ease;
   width: ${(props: { width?: number; centerMode?: boolean; coin?:boolean}) => props.centerMode ? `${(props.width || 0) + 60 * 2}px` : undefined};
   overflow-x: hidden;
@@ -80,20 +81,47 @@ const CarouselWrapper = styled.div`
   }
 `;
 
+const SwiperButton = styled.div`
+display: flex;
+  justify-content: space-between;
+  margin:10px;
+  & button{    
+    background:black;
+    color:white;
+    width:30px;
+    height:30px;
+    border-radius:50px;
+  }
+`
+
 const MyCarousel = ({
   children,
   centerMode,
   items = 3,
   quotes,
-  coin
-}: { children: React.ReactNode, centerMode?: boolean, items?: number,quotes?:boolean,coin?:boolean }) => {
+  coin,
+  cursorShow
+}: { children: React.ReactNode, centerMode?: boolean, items?: number,quotes?:boolean,coin?:boolean ,cursorShow?:boolean }) => {
   // const {width} = useWindowSize();
-console.log(children,"childrenShow")
+  console.log(children, "childrenShow")
+  
+  const ButtonGroup = ({ next, previous, goToSlide, ...rest }: any) => {
+      const { carouselState: { currentSlide } } = rest;
+      return (
+          <SwiperButton className="">
+            <button className='' onClick={() => 
+            previous()}> {"<"} </button>
+            <button onClick={() => next()}><span className='' > {">"} </span></button>
+         </SwiperButton>
+      
+       );
+     };
   return (
     <CarouselWrapper width={window.screen.width} centerMode={centerMode} coin={coin}>
      {/* @ts-ignore */}
       <Carousel
-      
+        customButtonGroup={cursorShow==true?<ButtonGroup />:<></>}
+        arrows={cursorShow!=true?true:false}
         swipeable={true}
         draggable={true}
         showDots={true}

@@ -121,7 +121,9 @@ const Carousel = ({
 
   return !expanded ? (
     <form id={id} className="carousel slide " data-bs-ride="carousel" onSubmit={e => e.preventDefault()}>
-      <CPCarousel centerMode={!(window.screen.width && window.screen.width > 969)}>{
+      <CPCarousel centerMode={!(window.screen.width && window.screen.width > 969)}
+      cursorShow={true}
+      >{
         Object.keys(pairs).map((pair, i) => {
           const {current} = getThreePairs(pairs, i);
           const [coin1, coin2] = current;
