@@ -66,6 +66,7 @@ overFlow-x:hidden;
   }
 `;
 const SummerCard = styled.div`
+
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -259,7 +260,7 @@ const NFTGallery = () => {
           <SummerCard>
             {CardValue.map((items, index) => {
               return (
-                <div className='w-100 m-auto mb-4'>
+                <div className='w-100 m-auto mb-4 '>
                   {/* @ts-ignore */}
                   <SwiperBar>
                     {/* @ts-ignore */}

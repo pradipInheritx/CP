@@ -13,8 +13,9 @@
 
 
 
-.card-container{
-  /* width: 230px !important;     */
+.card-container{ 
+  max-width: 250px ; 
+  
   height: 330px;    
   position: relative;
   transform-style: preserve-3d;
@@ -46,10 +47,24 @@
     transition: transform ease 500ms;
   }
   .front {
+    width: 100%;
       z-index: 2;
       transform: rotateY(0deg);              
     }
 .back {
+  width: 100%;
     transform: rotateY(-180deg);   
     font-size: 20px;
+}
+.card-body{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+
+@media screen and (max-width: 450px) {
+  .card-container{ 
+    max-width: 310px;
+  }
 }

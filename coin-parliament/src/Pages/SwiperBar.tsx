@@ -30,7 +30,7 @@ function SwiperBar( {children}: { children: React.ReactNode | string }) {
           }
         },
         {
-          breakpoint: 600,
+          breakpoint: 800,
           settings: {
             slidesToShow: 2,
             slidesToScroll: 2,
@@ -50,14 +50,14 @@ function SwiperBar( {children}: { children: React.ReactNode | string }) {
       ]
     };
   return (
-    <div>
+    <div className=''>
       {/* @ts-ignore */}
-        <Slider {...settings} >
-                  {/* @ts-ignore */}
-           {children}
-        </Slider>
+      <Slider {...settings}>
+        {/* @ts-ignore */}
+        {children}
+      </Slider>
     </div>
-  )
+  );
 }
 
 export default SwiperBar

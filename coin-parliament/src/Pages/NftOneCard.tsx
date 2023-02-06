@@ -9,6 +9,7 @@ import bkgnd3 from "../assets/images/bkgnd3.png";
 import bkgnd2 from "../assets/images/bkgnd2.png";
 import bkgnd from "../assets/images/bkgnd.png";
 import TheEagle from "../assets/images/TheEagle.png";
+import backBg from "../assets/images/backBg.png";
 import {logo} from "../assets/svg/logo";
 
 const Card = styled.div`
@@ -60,6 +61,7 @@ const CardName = styled.div`
   font-size: 30px;
   color: #160133;
 `;
+
 const CenterText = styled.div`  
   margin: auto;
   text-transform: uppercase;
@@ -99,7 +101,7 @@ const CardBack = styled.div`
   overflow: hidden;
   border-radius: 8px 8px 8px 8px;
   text-transform: uppercase;
-  // background-image: url(${bkgnd3}) !important;
+  background-image: url(${backBg}) !important;
   opacity: 1;
   color: #d4d0f3;
   border: #6352e8 solid 8px;
@@ -141,6 +143,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   return (
+    
     <div
       onMouseEnter={() => {
       setFlip(!flip)
@@ -181,7 +184,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
           </div>
           <br />          
           <div className='card-body'>
-            <img src={TheEagle} alt='the hgodler' className='img-fluid' />
+            <img src={TheEagle} alt='the hgodler' className='' width={"200px"}/>
           </div>
         </div>
       </Card>
