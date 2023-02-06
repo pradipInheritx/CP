@@ -78,40 +78,40 @@ const SummerCard = styled.div`
 const NFTGallery = () => {
   const [cards, setCards] = useState([
     [
-      { cardType: "Common",cardNo:"CP244",cardHeader:"INVESTOR" },
-      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
-      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
-      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
-      { cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR" },
+      { id:1, cardType: "Common",cardNo:"CP244",cardHeader:"INVESTOR",type:"SUMMER" },
+      { id:2, cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR",type:"SUMMER"},
+      { id:3, cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR",type:"SUMMER"},
+      { id:4, cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR",type:"WINTER"},
+      { id:5, cardType: "Common" ,cardNo:"CP244",cardHeader:"INVESTOR",type:"WINTER"},
     ],
     [
-      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR"  },
-      { cardType: "UNCommon",cardNo:"CP245",cardHeader:"INVESTOR"  },
-      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR" },
-      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR" },
-      { cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR" },
+      { id:6,cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR" ,type:"SUMMER" },
+      { id:7,cardType: "UNCommon",cardNo:"CP245",cardHeader:"INVESTOR" ,type:"SUMMER" },
+      { id:8,cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR",type:"SUMMER" },
+      { id:9,cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR",type:"WINTER" },
+      { id:10,cardType: "UNCommon" ,cardNo:"CP245",cardHeader:"INVESTOR",type:"WINTER" },
     ],
     [
-      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
-      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
-      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
-      { cardType: "Epic",cardNo:"CP246",cardHeader:"INVESTOR"  },
-      { cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" },
+      { id:11,cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" ,type:"SUMMER"},
+      { id:12,cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" ,type:"SUMMER"},
+      { id:13,cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" ,type:"SUMMER"},
+      { id:14,cardType: "Epic",cardNo:"CP246",cardHeader:"INVESTOR"  ,type:"WINTER"},
+      { id:15,cardType: "Epic" ,cardNo:"CP246",cardHeader:"INVESTOR" ,type:"WINTER"},
     ],
     [
-      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
-      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
-      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
-      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
-      { cardType: "Rare" ,cardNo:"CP248",cardHeader:"INVESTOR" },
+      { id:16,cardType: "Rare" ,cardNo:"CE248",cardHeader:"INVESTOR",type:"SUMMER" },
+      { id:17,cardType: "Rare" ,cardNo:"CE248",cardHeader:"INVESTOR",type:"SUMMER" },
+      { id:18,cardType: "Rare" ,cardNo:"CE248",cardHeader:"INVESTOR",type:"SUMMER" },
+      { id:19,cardType: "Rare" ,cardNo:"CE248",cardHeader:"INVESTOR",type:"WINTER" },
+      { id:20,cardType: "Rare" ,cardNo:"CE248",cardHeader:"INVESTOR",type:"WINTER" },
     ],
 
     [
-      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
-      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
-      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
-      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
-      { cardType: "Legendary",cardNo:"CP240",cardHeader:"INVESTOR"  },
+      { id:21,cardType: "Legendary",cardNo:"CP120",cardHeader:"INVESTOR" ,type:"SUMMER" },
+      { id:22,cardType: "Legendary",cardNo:"CP120",cardHeader:"INVESTOR" ,type:"SUMMER" },
+      { id:23,cardType: "Legendary",cardNo:"CP120",cardHeader:"INVESTOR" ,type:"SUMMER" },
+      { id:24,cardType: "Legendary",cardNo:"CP120",cardHeader:"INVESTOR" ,type:"WINTER" },
+      { id:25,cardType: "Legendary",cardNo:"CP120",cardHeader:"INVESTOR" ,type:"WINTER" },
     ],
   ]);
   const [menuItem, setMenuItem] = useState([
@@ -124,6 +124,7 @@ const NFTGallery = () => {
   ]);
 
   const [CardValue, setCardValue] = useState([]);
+  const [backCards, setBackCards] = useState("");
   const [checkCard, setcheckCard] = useState([
       { cardType: "Legendary" },
       { cardType: "Legendary" },
@@ -150,18 +151,39 @@ const NFTGallery = () => {
       setCardValue(allCard);
     }
   };
+  const BackSideCard = (value:string|number) => {
 
+    // @ts-ignore
+         setBackCards(backCards== value?"":value)
+    // backCards.length > 0  ? backCards.map((items, index) => {
+    //   if (items == value) {
+    //     // @ts-ignore
+    //     backCards.splice(index,1)
+    //   }
+    //   else {
+    //     // @ts-ignore
+    //     // backCards.push(value)
+    //     setBackCards([...backCards,value])
+    //   }
+    //   // @ts-ignore
+    // }) : setBackCards([...backCards,value]);
+    
+  }
+  
   const HandleFilterByInput = (value:string|number) => {
-    var allCard: any = cards;
-    
-      allCard.filter((item: any, ind: number) => {
-        if (item.cardNo.includes(value)) {
-          var cardItem: any = [item];
-          // setCardValue(cardItem);
-          console.log(cardItem,"cardItem")
-        }
-      });
-    
+    // var allCard: any = cards;    
+    // var cardItem = allCard.map((item:any, index:number) => {
+    //     item.map((subItme:any) => {
+    //       Object.keys(subItme).filter((keyItem, index) => {
+    //         if (subItme[keyItem].includes('CP')) {
+          
+    //           return subItme
+    //         }
+    //       });
+    //     });
+    //       });
+    // console.log(cardItem,"cardItem")
+    // setCardValue(allCard)
   }
 
   return (
@@ -186,7 +208,30 @@ const NFTGallery = () => {
       </MenuBar> */}
         
         <CenterItem>      
-        <div className="d-flex justify-content-center mt-5"><input type="text" onChange={(e)=>{HandleFilterByInput(e.target.value)}} /></div>  
+          <div className="d-flex justify-content-center mt-5 ">
+            <input type="text" onChange={(e) => { HandleFilterByInput(e.target.value) }} className="py-2 mx-3 rounded border" />
+            <select name="cars" id="cars" className="bg-white border rounded">
+                <option value="volvo">Filter By</option>
+                <option value="volvo">Card Type</option>
+                <option value="saab">Card NO.</option>
+                <option value="mercedes">Card Name</option>
+                <option value="audi">Collection</option>
+            </select>
+            <select name="cars" id="cars" className="bg-white border rounded mx-2">
+                <option value="volvo">Filter By</option>
+                <option value="volvo">Card Type</option>
+                <option value="saab">Card NO.</option>
+                <option value="mercedes">Card Name</option>
+                <option value="audi">Collection</option>
+            </select>
+            <select name="cars" id="cars" className="bg-white border rounded">
+                <option value="volvo">Filter By</option>
+                <option value="volvo">Card Type</option>
+                <option value="saab">Card NO.</option>
+                <option value="mercedes">Card Name</option>
+                <option value="audi">Collection</option>
+            </select>
+          </div>  
         <div>
           <p>SUMMER COLLECTION</p>
         </div>
@@ -209,6 +254,9 @@ const NFTGallery = () => {
                   Disable={""} // When you pass CardDisebal this name then card is Disable
                   cardHeader={`${item.cardHeader}`}
                   cardNo={`${item.cardNo}`}
+                  id={item.id}
+                  BackSideCard={BackSideCard}
+                  flipCard={backCards==item.id?true:false}
                     />
               </>
           })}
@@ -217,16 +265,16 @@ const NFTGallery = () => {
             );
           })}
         </SummerCard>
-        <div>
+        {/* <div>
           <p>WINTER COLLECTION</p>
         </div>
         <SummerCard>
           {CardValue.map((items, index) => {
             return (
               <div className="w-100 m-auto mb-4">
-        {/* @ts-ignore */}
+        
                 <SwiperBar >
-                  {/* @ts-ignore */}
+                  
             {items.map((item:any) => {
               return <>                
                 <NftOneCard                      
@@ -242,7 +290,7 @@ const NFTGallery = () => {
       </div>
             );
           })}
-        </SummerCard>
+        </SummerCard> */}
       </CenterItem>
       </div>
       </div>

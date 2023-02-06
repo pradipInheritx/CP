@@ -37,7 +37,7 @@ export enum ProfileTabs {
   edit = "edit",
   votes = "votes",
   notifications = "notifications",
-  ProfileNftGallery = "Gallery",
+  ProfileNftGallery = "Album",
   share = "share",
 }
 

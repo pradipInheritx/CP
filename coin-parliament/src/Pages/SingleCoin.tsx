@@ -77,7 +77,8 @@ const SingleCoin = () => {
   const [graphLoading,setGraphLoading]=useState(false)
   const {timeframes} = useContext(AppContext);
   console.log('choseTimeFrame1',selectedTimeFrameArray)
-  const newTimeframe:any= []
+  const newTimeframe: any = []
+
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
@@ -200,6 +201,8 @@ console.log('getVote called 2')
       mountedRef.current = false;
     };
   }, [calcVote,selectedTimeFrame]);
+
+
 
   useEffect(() => {
     if (voteId) {

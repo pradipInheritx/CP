@@ -192,6 +192,7 @@ const Carousel = ({
       <CPCarousel
       coin={!(window.screen.width && window.screen.width > 969)}
         items={window.screen.width && window.screen.width > 969 ? 6 : 3}
+        cursorShow={true}
       >
         {Object.keys(coins)
           ?.sort()

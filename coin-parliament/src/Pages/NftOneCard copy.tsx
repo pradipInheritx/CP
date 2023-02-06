@@ -1,7 +1,7 @@
 /** @format */
 /** @format */
 
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import bkgnd5 from "../assets/images/bkgnd5.png";
@@ -130,25 +130,15 @@ export type BoxItems = {
   Disable?: string;
   cardNo?: string;
   cardHeader?: string;
-  BackSideCard?: (e: any) => void ;
-  id?: string | number;
-  flipCard?:boolean|string
+  onClick?: (e: any) => void;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard}: BoxItems) => {
-  const Width: number = window.screen.width 
-  const [flip, setFlip] = useState(true)
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader}: BoxItems) => {
+  const Width:number =window.screen.width 
   return (
-    <div onMouseEnter={() => {
-      setFlip(!flip)
-    }} onMouseLeave={() => {
-      setFlip(!flip)
-      }} className={`card-container  ${flipCard == true || flip != true ? " flipped" : ""}`}
-      // @ts-ignore
-    onClick={()=>{BackSideCard(id)}}
-    >
-    <div className='front'>
+    <>
+    <div className='d-flex m-3 '>
       {/* First Div  */}
-      <Card  className={`shadow tex-center ${DivClass} ${Disable} `} >
+      <Card  className={`shadow tex-center ${DivClass} ${Disable}`} >
         <div>
           {" "}  
           <div className="d-flex justify-content-between">
@@ -174,8 +164,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         </div>
       </Card>
       </div>
-      <div className="back">
-        <CardBack className="shadow tex-center">
+      <div className="d-flex ">
+        <CardBack className="shadow tex-center m-3">
           <div className="d-flex justify-content-center mt-2">
             <img src={logo} alt=""
             width="60px"
@@ -195,7 +185,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         </CardBack>
 
       </div>
-      </div>
+      </>
   );
 };
 

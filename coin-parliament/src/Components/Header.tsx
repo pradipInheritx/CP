@@ -34,7 +34,7 @@ enum EventKeys {
   POOL_MINING = "pool",
   SHARE = "share",
   FOLLOWERS = "followers",
-  Gallery='Gallery'
+  Gallery='Album'
 }
 
 export const Title = styled.div`
@@ -269,8 +269,8 @@ const Header = ({
               label: "Top Influencers",
             },
             {
-              href: "/nftGallery",
-              label: "Gallery",
+              href: "/nftAlbum",
+              label: "Album",
             },
             {
               label: "",
@@ -298,7 +298,7 @@ const Header = ({
             },
             user && {
               eventKey: EventKeys.Gallery,
-              label: "My Gallery",
+              label: "My Album",
             },
             user && {
               eventKey: EventKeys.NOTIFICATIONS,

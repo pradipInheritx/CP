@@ -47,6 +47,7 @@ const CoinsForm = ({
   const id = "BullVsBearForm";
     useEffect(() => {
       window.scrollTo(0, 0)
+      console.log("hello I am ");
       return window.scrollTo(0, 0)
 }, [])
 console.log('timeframe',selectedTimeFrame)
