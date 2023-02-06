@@ -163,6 +163,19 @@ html[dir="rtl"] .offcanvas-start.show {
       
      
   }
+  .timerBorder{
+      border:1px solid red;
+    transform: rotate3d(0, 0, 1, 0deg);
+    animation: 2s borderSpin linear 4s forwards;
+  }
+  @keyframes borderSpin {
+    from {
+      transform: rotate3d(0, 0, 1, 0deg);
+    }
+    to {
+      transform: rotate3d(0, 0, 1, 20deg);
+    }
+  }
 * {
     box-sizing: border-box;
 }

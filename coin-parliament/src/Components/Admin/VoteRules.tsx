@@ -70,13 +70,14 @@ const VoteRules = () => {
                     type: "number",
                     value: voteRules.maxVotes + "",
                     onChange: (e) => {
-                      const { givenCPM, CPMReturnSuccess, CPMReturnFailure } =
+                      const { givenCPM, CPMReturnSuccess, CPMReturnFailure, timeLimit } =
                         voteRules;
                       setVoteRules({
                         CPMReturnSuccess,
                         CPMReturnFailure,
                         givenCPM,
                         maxVotes: e.target.value as unknown as number,
+                        timeLimit
                       });
                     },
                   }}
@@ -89,13 +90,14 @@ const VoteRules = () => {
                     type: "number",
                     value: voteRules.givenCPM + "",
                     onChange: (e) => {
-                      const { CPMReturnSuccess, CPMReturnFailure, maxVotes } =
+                      const { CPMReturnSuccess, CPMReturnFailure, maxVotes,timeLimit } =
                         voteRules;
                       setVoteRules({
                         CPMReturnSuccess,
                         CPMReturnFailure,
                         givenCPM: e.target.value as unknown as number,
                         maxVotes,
+                        timeLimit
                       });
                     },
                   }}
@@ -109,13 +111,14 @@ const VoteRules = () => {
                     type: "number",
                     value: voteRules.CPMReturnSuccess + "",
                     onChange: (e) => {
-                      const { givenCPM, maxVotes, CPMReturnFailure } =
+                      const { givenCPM, maxVotes, CPMReturnFailure, timeLimit } =
                         voteRules;
                       setVoteRules({
                         CPMReturnSuccess: e.target.value as unknown as number,
                         CPMReturnFailure,
                         givenCPM,
                         maxVotes,
+                        timeLimit
                       });
                     },
                   }}
@@ -129,13 +132,14 @@ const VoteRules = () => {
                     type: "number",
                     value: voteRules.CPMReturnFailure + "",
                     onChange: (e) => {
-                      const { givenCPM, maxVotes, CPMReturnSuccess } =
+                      const { givenCPM, maxVotes, CPMReturnSuccess,timeLimit } =
                         voteRules;
                       setVoteRules({
                         CPMReturnFailure: e.target.value as unknown as number,
                         CPMReturnSuccess,
                         givenCPM,
                         maxVotes,
+                        timeLimit
                       });
                     },
                   }}

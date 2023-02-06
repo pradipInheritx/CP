@@ -294,7 +294,7 @@ let votetime= a.diff(b)
    }, votetime+4000);
   }
  }, [])
- 
+ console.log('vote.coin',coins[vote.coin.split("-")[0]])
   const winner = calculateWinner(vote);
   const pair = vote.coin.split("-").length > 1;
  
@@ -320,17 +320,17 @@ let votetime= a.diff(b)
               <div>
               {vote.direction?
               // @ts-ignore
-                <>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
+                <>  { Math.abs((coins[vote.coin.split("-")[0]]?.price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]]?.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
                 // @ts-ignore
-                <>{(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+                <>{(coins[vote.coin.split("-")[0]]?.price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]]?.price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
                 {/* @ts-ignore */}
-                {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                {(coins[vote.coin.split("-")[0]]?.price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]]?.price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 // @ts-ignore
-                }  </> :<>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
+                }  </> :<>  { Math.abs((coins[vote.coin.split("-")[0]]?.price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]]?.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
                 // @ts-ignore
-                <>{(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+                <>{(coins[vote.coin.split("-")[0]]?.price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]]?.price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
                 {/* @ts-ignore */}
-                {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                {(coins[vote.coin.split("-")[0]]?.price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]]?.price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 }  </>
                 }
               { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}

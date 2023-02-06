@@ -31,7 +31,8 @@ const SelectTimeframes = ({
   console.log(timeframes,"timeframevoted",voted,selected)
   
   return (
-    <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
+    // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
+    <div>
       <Row>
         {num === 1 && (
           <input
@@ -69,7 +70,7 @@ const SelectTimeframes = ({
                     </Buttons.TimeframeButton>
                   }
                   iconOff={
-                    <Buttons.TimeframeButton {...{ checked: selectedTimeFrameArray?.includes(timeframe.index)   }} showTimer={true} >
+                    <Buttons.TimeframeButton  {...{ checked: selectedTimeFrameArray?.includes(timeframe.index)   }} showTimer={true} >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
                   }
@@ -78,7 +79,9 @@ const SelectTimeframes = ({
             );
           })}
       </Row>
-    </Container>
+      
+    {/* </Container> */}
+    </div>
   );
 };
 

@@ -17,7 +17,7 @@ import AppContext from "../Contexts/AppContext";
 
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};  
-  width: 345px;
+  max-width: 345px;
   height: 75px;
   background-color: var(--white);
   border-radius: 38px;
@@ -143,7 +143,7 @@ const VotedCard = ({
   
   return (
     <>
-     <div className="mt-4">
+     <div className="mt-4" style={{paddingLeft:symbol2?'':'24px',paddingRight:symbol2?'':'24px',maxWidth:'450px', margin:'0 auto'}}>
         <SelectTimeframes
           {...{
             selected: selectedTimeFrame,

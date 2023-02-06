@@ -8,6 +8,7 @@ export type VoteRules = {
   givenCPM: number;
   CPMReturnSuccess: number;
   CPMReturnFailure: number;
+  timeLimit:number;
 };
 
 export type CPMSettings = {

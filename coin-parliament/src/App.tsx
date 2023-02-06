@@ -525,10 +525,14 @@ console.log('extravote', votesLast24Hours)
       });
     }
   }, [user, fcmToken, coins]);
+  
 useEffect(() => {
-  if(userUid){
+  if(user?.uid){
+    
   const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+// const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+console.log('timelimit',voteRules.timeLimit)
 const votesLast24HoursRef = firebase
             .firestore()
             .collection("votes")
@@ -545,6 +549,31 @@ votesLast24HoursRef.get()
         console.log('extravoteError',error);
     });
   }
+  let remaining= (Math.min(...votesLast24Hours.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Math.min(...votesLast24Hours.map((v) => v.voteTime))
+  setTimeout(() => {
+    if(user?.uid){
+    
+      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+    // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+    const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+    console.log('timelimit',voteRules.timeLimit)
+    const votesLast24HoursRef = firebase
+                .firestore()
+                .collection("votes")
+                .where("userId", "==", user?.uid)
+                .where("voteTime", ">=", last24Hour)
+                .where("voteTime", "<=", Date.now());
+    // console.log('extravote11',votesLast24HoursRef)
+    votesLast24HoursRef.get()
+        .then((snapshot) => {
+            setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+            console.log('extravoteSuccess',snapshot.docs)
+        })
+        .catch((error) => {
+            console.log('extravoteError',error);
+        });
+      }
+  }, remaining);
 }, [userInfo?.voteStatistics?.total])
 
   useEffect(() => {

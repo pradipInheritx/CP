@@ -164,6 +164,7 @@ const TimeframeButton = ({
         checked,
         onClick: () => !disabled && setChecked && setChecked(!checked),
       }}
+      
     >
       <TimeframeName {...{ checked }} style={{color:showTimer&&checked?'var(--color-6352e8)':''}}>
         {timeframeInitials(children)}

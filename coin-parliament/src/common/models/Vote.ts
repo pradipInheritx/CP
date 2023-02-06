@@ -143,23 +143,24 @@ export default Vote;
 
 export const useCanVote: () => [boolean, string] = () => {
   const {
-    voteRules: { maxVotes },
+    voteRules: { maxVotes,timeLimit },
   } = useContext(AppContext);
   const {userInfo}=useContext(UserContext)
   const { votesLast24Hours, user } = useContext(UserContext);
   // @ts-ignore
   
-  const valid = !!user && votesLast24Hours.length < maxVotes + Number(userInfo?.rewardStatistics?.extraVote || 0);
-console.log('extravote12',votesLast24Hours)
+  const valid = !!user && votesLast24Hours.length < Number(maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0);
+  // @ts-ignore
+console.log('extravote12',Math.min(...votesLast24Hours.map((v) => v.voteTime)))
   const timeReturn = new Date(
-    Math.min(...votesLast24Hours.map((v) => v.voteTime))
+    Math.min(...votesLast24Hours.map((v) => v.voteTime)) + timeLimit * 1000
   );
 
   const text = !user
     ? "Attention! You must be signed-in to cast your vote!"
     : `You have voted ${
         votesLast24Hours.length
-      } times in the last 24 hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}`;
+      } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}`;
 
   return [valid, valid ? "" : text];
 };
