@@ -245,7 +245,7 @@ const NFTGallery = () => {
                 id='cars'
                 className='bg-white border rounded py-2'
               >
-                <option value='volvo'>Filter By</option>
+                <option value='volvo'>Select Sets</option>
                 <option value='volvo'>Card Type</option>
                 <option value='saab'>Card NO.</option>
                 <option value='mercedes'>Card Name</option>
