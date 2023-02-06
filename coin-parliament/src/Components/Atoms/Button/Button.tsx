@@ -157,13 +157,14 @@ const TimeframeButton = ({
   return (
     <Timeframe
       as={"div"}
-      style={{opacity:showTimer&&checked?0.48:'', background:showTimer&&checked?'white':''}}
+      style={{ opacity: showTimer && checked ? 0.48 : '', background: showTimer && checked ? 'white' : '', border: "1px solid blue"}}
       {...{
         
         disabled,
         checked,
         onClick: () => !disabled && setChecked && setChecked(!checked),
       }}
+      
     >
       <TimeframeName {...{ checked }} style={{color:showTimer&&checked?'var(--color-6352e8)':''}}>
         {timeframeInitials(children)}
