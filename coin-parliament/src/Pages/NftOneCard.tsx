@@ -95,28 +95,31 @@ const CenterText = styled.div`
 
 //  back Side Card
 
-const CardBack = styled.div` 
-overFlow:hidden;
-border-radius: 8px 8px 8px 8px;
+const CardBack = styled.div`
+  overflow: hidden;
+  border-radius: 8px 8px 8px 8px;
   text-transform: uppercase;
-  font-size: 14px;
-  line-height: 14px;
-   background-image: url(${bkgnd3}) !important;
-   opacity:1;
-    color: #d4d0f3;
-    border: #6352e8 solid 8px;
-    background-color: #755aff;
+  // background-image: url(${bkgnd3}) !important;
+  opacity: 1;
+  color: #d4d0f3;
+  border: #6352e8 solid 8px;
+  background-color: #7563f9;
 
-    & input{
-      width:95%;
-      border:none;
-      background:none;
-      border-bottom:1px solid #755aff;
-      color:#755aff;
-      margin:3px 5px;
-      
-    }
-`
+  & span {
+    font-weight: 100;
+    opacity: 0.8;
+    font-size: 10px;
+    line-height: 10px;
+    display: inline-block;
+    width: 95%;
+    border: none;
+    background: none;
+    border-bottom: 1px solid #5f4edb;
+    color: #fff;
+    margin: 0px 5px;
+    padding: 0px 0px 2px 0px;
+  }
+`;
   
 
 
@@ -138,13 +141,22 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   return (
-    <div onMouseEnter={() => {
+    <div
+      onMouseEnter={() => {
       setFlip(!flip)
-    }} onMouseLeave={() => {
+      }}
+      onMouseLeave={() => {
       setFlip(!flip)
-      }} className={`card-container  ${flipCard == true || flip != true ? " flipped" : ""}`}
+      }}
+      onFocus={() => {
+      setFlip(!flip)
+      }}
+      onFocusCapture={() => {
+      setFlip(!flip)
+      }}
+      className={`card-container  ${flipCard == true || flip != true ? " flipped" : ""}`}
       // @ts-ignore
-    onClick={()=>{BackSideCard(id)}}
+      onClick={()=>{BackSideCard(id)}}
     >
     <div className='front'>
       {/* First Div  */}
@@ -165,7 +177,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             </div>
           <div >
             {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
-            <span className="cardname">THE<strong>{cardHeader}</strong></span>
+              <span className="cardname">THE<strong> {" "}{cardHeader}</strong></span>
           </div>
           <br />          
           <div className='card-body'>
@@ -183,13 +195,13 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             />
           </div>
           <div className="mt-2 mb-3">
-            <input type="text" name="" id="" placeholder="Sn"/>
-            <input type="text" name="" id="" placeholder="Rarity"/>
-            <input type="text" name="" id="" placeholder="Series"/>
-            <input type="text" name="" id="" placeholder="Minted"/>
-            <input type="text" name="" id="" placeholder="Name"/>
-            <input type="text" name="" id="" placeholder="Sold for"/>
-            <input type="text" name="" id="" placeholder="Sold to"/>
+            <span >Sn</span>
+            <span >Rarity</span>
+            <span >Series</span>
+            <span >Minted</span>
+            <span >Name</span>
+            <span >Sold for</span>
+            <span >Sold to</span>
           </div>
 
         </CardBack>

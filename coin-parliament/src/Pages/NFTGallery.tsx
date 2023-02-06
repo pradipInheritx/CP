@@ -187,9 +187,9 @@ const NFTGallery = () => {
   }
 
   return (
-    <div className="">
-    <div className='h-100 ' >
-      {/* <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"} `}>
+    <div className=''>
+      <div className='h-100 '>
+        {/* <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"} `}>
         {menuItem.map((item, index) => {
           return (
             <button
@@ -206,94 +206,119 @@ const NFTGallery = () => {
           );
         })}
       </MenuBar> */}
-        
-        <CenterItem>      
-          <div className="d-flex justify-content-center mt-5 ">
-            <input type="text" onChange={(e) => { HandleFilterByInput(e.target.value) }} className="py-2 mx-3 rounded border" />
-            <select name="cars" id="cars" className="bg-white border rounded">
-                <option value="volvo">Filter By</option>
-                <option value="volvo">Card Type</option>
-                <option value="saab">Card NO.</option>
-                <option value="mercedes">Card Name</option>
-                <option value="audi">Collection</option>
-            </select>
-            <select name="cars" id="cars" className="bg-white border rounded mx-2">
-                <option value="volvo">Filter By</option>
-                <option value="volvo">Card Type</option>
-                <option value="saab">Card NO.</option>
-                <option value="mercedes">Card Name</option>
-                <option value="audi">Collection</option>
-            </select>
-            <select name="cars" id="cars" className="bg-white border rounded">
-                <option value="volvo">Filter By</option>
-                <option value="volvo">Card Type</option>
-                <option value="saab">Card NO.</option>
-                <option value="mercedes">Card Name</option>
-                <option value="audi">Collection</option>
-            </select>
-          </div>  
-        <div>
-          <p>SUMMER COLLECTION</p>
-        </div>
 
-        <SummerCard>
-          {CardValue.map((items, index) => {
-            return (             
-              <div className="w-100 m-auto mb-4"
-              
-              > 
-                {/* @ts-ignore */}
-                <SwiperBar >
+        <CenterItem>
+          <div className='d-flex justify-content-center mt-5 flex-wrap '>
+            <input
+              type='text'
+              onChange={(e) => {
+                HandleFilterByInput(e.target.value);
+              }}
+              placeholder="Search..."
+              className='py-2 mx-3 rounded border'
+            />
+            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
+              <select
+                name='cars'
+                id='cars'
+                className='bg-white border rounded py-2'
+              >
+                <option value='volvo'>Select Collection</option>
+                <option value='SUMMER'>SUMMER</option>
+                <option value='saab'>WINTER</option>
+              </select>
+              <select
+                name='cars'
+                id='cars'
+                className='bg-white border rounded mx-2 py-2'
+              >
+                <option value='volvo'>Select Type</option>
+                <option value='Legendary'>Legendary</option>
+                <option value='Rare'>Rare</option>
+                <option value='Epic'>Epic</option>
+                <option value='UNCommon'>UNCommon</option>
+                <option value='Common'>Common</option>
+              </select>
+              <select
+                name='cars'
+                id='cars'
+                className='bg-white border rounded py-2'
+              >
+                <option value='volvo'>Filter By</option>
+                <option value='volvo'>Card Type</option>
+                <option value='saab'>Card NO.</option>
+                <option value='mercedes'>Card Name</option>
+                <option value='audi'>Collection</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <p>SUMMER COLLECTION</p>
+          </div>
+
+          <SummerCard>
+            {CardValue.map((items, index) => {
+              return (
+                <div className='w-100 m-auto mb-4'>
                   {/* @ts-ignore */}
-            {items.map((item:any) => {
-              return <>                
-                <NftOneCard                      
-                      DivClass={item.cardType}
-                      HeaderText={item.cardType}
-                      HeaderClass={`${item.cardType}_text`}
-                  Disable={""} // When you pass CardDisebal this name then card is Disable
-                  cardHeader={`${item.cardHeader}`}
-                  cardNo={`${item.cardNo}`}
-                  id={item.id}
-                  BackSideCard={BackSideCard}
-                  flipCard={backCards==item.id?true:false}
-                    />
-              </>
-          })}
-        </SwiperBar>
+                  <SwiperBar>
+                    {/* @ts-ignore */}
+                    {items.map((item: any) => {
+                      return (
+                        <>
+                          <NftOneCard
+                            DivClass={item.cardType}
+                            HeaderText={item.cardType}
+                            HeaderClass={`${item.cardType}_text`}
+                            Disable={""} // When you pass CardDisebal this name then card is Disable
+                            cardHeader={`${item.cardHeader}`}
+                            cardNo={`${item.cardNo}`}
+                            id={item.id}
+                            BackSideCard={BackSideCard}
+                            flipCard={backCards == item.id ? true : false}
+                          />
+                        </>
+                      );
+                    })}
+                  </SwiperBar>
+                </div>
+              );
+            })}
+          </SummerCard>
+          <div>
+            <p>WINTER COLLECTION</p>
+          </div>
+          <SummerCard>
+            {CardValue.map((items, index) => {
+              return (
+                <div className='w-100 m-auto mb-4'>
+                  <SwiperBar>
+                    {/* @ts-ignore */}
+                    {items.map((item: any) => {
+                      return (
+                        <>
+                          <NftOneCard
+                            DivClass={item.cardType}
+                            HeaderText={item.cardType}
+                            HeaderClass={`${item.cardType}_text`}
+                            Disable={""} // When you pass CardDisebal this name then card is Disable
+                            cardHeader={`${item.cardHeader}`}
+                            cardNo={`${item.cardNo}`}
+                            id={item.id}
+                            BackSideCard={BackSideCard}
+                            flipCard={backCards == item.id ? true : false}
+                          />
+                        </>
+                      );
+                    })}
+                  </SwiperBar>
+                </div>
+              );
+            })}
+          </SummerCard>
+        </CenterItem>
       </div>
-            );
-          })}
-        </SummerCard>
-        {/* <div>
-          <p>WINTER COLLECTION</p>
-        </div>
-        <SummerCard>
-          {CardValue.map((items, index) => {
-            return (
-              <div className="w-100 m-auto mb-4">
-        
-                <SwiperBar >
-                  
-            {items.map((item:any) => {
-              return <>                
-                <NftOneCard                      
-                  DivClass={item.cardType}
-                  HeaderText={item.cardType}
-                  HeaderClass={`${item.cardType}_text`}
-                  cardHeader={`${item.cardHeader}`}
-                  cardNo={`${item.cardNo}`}
-                />
-              </>
-          })}
-        </SwiperBar>
-      </div>
-            );
-          })}
-        </SummerCard> */}
-      </CenterItem>
-      </div>
-      </div>
+    </div>
   );
 };
 

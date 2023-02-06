@@ -107,14 +107,19 @@ const MyCarousel = ({
   
   const ButtonGroup = ({ next, previous, goToSlide, ...rest }: any) => {
       const { carouselState: { currentSlide } } = rest;
-      return (
-          <SwiperButton className="">
-            <button className='' onClick={() => 
-            previous()}> {"<"} </button>
-            <button onClick={() => next()}><span className='' > {">"} </span></button>
-         </SwiperButton>
-      
-       );
+    return (
+      <>
+        {window.screen.width >767 ?<SwiperButton className=''>
+          <button className='' onClick={() => previous()}>
+            {" "}
+            {"<"}{" "}
+          </button>
+          <button onClick={() => next()}>
+            <span className=''> {">"} </span>
+          </button>
+        </SwiperButton>:""}
+      </>
+    );
      };
   return (
     <CarouselWrapper width={window.screen.width} centerMode={centerMode} coin={coin}>

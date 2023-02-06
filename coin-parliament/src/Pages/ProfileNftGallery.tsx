@@ -81,40 +81,190 @@ width:100%;
 const ProfileNftGallery = () => {
   const [cards, setCards] = useState([
     [
-      { cardType: "Common" },
-      { cardType: "Common" },
-      { cardType: "Common" },
-      { cardType: "Common" },
-      { cardType: "Common" },
+      {
+        id: 1,
+        cardType: "Common",
+        cardNo: "CP244",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 2,
+        cardType: "Common",
+        cardNo: "CP244",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 3,
+        cardType: "Common",
+        cardNo: "CP244",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 4,
+        cardType: "Common",
+        cardNo: "CP244",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
+      {
+        id: 5,
+        cardType: "Common",
+        cardNo: "CP244",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
     ],
     [
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
-      { cardType: "UNCommon" },
+      {
+        id: 6,
+        cardType: "UNCommon",
+        cardNo: "CP245",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 7,
+        cardType: "UNCommon",
+        cardNo: "CP245",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 8,
+        cardType: "UNCommon",
+        cardNo: "CP245",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 9,
+        cardType: "UNCommon",
+        cardNo: "CP245",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
+      {
+        id: 10,
+        cardType: "UNCommon",
+        cardNo: "CP245",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
     ],
     [
-      { cardType: "Epic" },
-      { cardType: "Epic" },
-      { cardType: "Epic" },
-      { cardType: "Epic" },
-      { cardType: "Epic" },
+      {
+        id: 11,
+        cardType: "Epic",
+        cardNo: "CP246",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 12,
+        cardType: "Epic",
+        cardNo: "CP246",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 13,
+        cardType: "Epic",
+        cardNo: "CP246",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 14,
+        cardType: "Epic",
+        cardNo: "CP246",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
+      {
+        id: 15,
+        cardType: "Epic",
+        cardNo: "CP246",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
     ],
     [
-      { cardType: "Rare" },
-      { cardType: "Rare" },
-      { cardType: "Rare" },
-      { cardType: "Rare" },
-      { cardType: "Rare" },
+      {
+        id: 16,
+        cardType: "Rare",
+        cardNo: "CE248",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 17,
+        cardType: "Rare",
+        cardNo: "CE248",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 18,
+        cardType: "Rare",
+        cardNo: "CE248",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 19,
+        cardType: "Rare",
+        cardNo: "CE248",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
+      {
+        id: 20,
+        cardType: "Rare",
+        cardNo: "CE248",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
     ],
 
     [
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
-      { cardType: "Legendary" },
+      {
+        id: 21,
+        cardType: "Legendary",
+        cardNo: "CP120",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 22,
+        cardType: "Legendary",
+        cardNo: "CP120",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 23,
+        cardType: "Legendary",
+        cardNo: "CP120",
+        cardHeader: "INVESTOR",
+        type: "SUMMER",
+      },
+      {
+        id: 24,
+        cardType: "Legendary",
+        cardNo: "CP120",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
+      {
+        id: 25,
+        cardType: "Legendary",
+        cardNo: "CP120",
+        cardHeader: "INVESTOR",
+        type: "WINTER",
+      },
     ],
   ]);
   const [menuItem, setMenuItem] = useState([
@@ -135,6 +285,7 @@ const ProfileNftGallery = () => {
     { cardType: "Legendary" },
   ]);
   const [filterIndex, setfilterIndex] = useState(0);
+  const [backCards, setBackCards] = useState("");
 
   useEffect(() => {
     HandleFilter(filterIndex);
@@ -211,6 +362,24 @@ const ProfileNftGallery = () => {
       ]
     };
 
+   const BackSideCard = (value: string | number) => {
+     // @ts-ignore
+     setBackCards(backCards == value ? "" : value);
+     // backCards.length > 0  ? backCards.map((items, index) => {
+     //   if (items == value) {
+     //     // @ts-ignore
+     //     backCards.splice(index,1)
+     //   }
+     //   else {
+     //     // @ts-ignore
+     //     // backCards.push(value)
+     //     setBackCards([...backCards,value])
+     //   }
+     //   // @ts-ignore
+     // }) : setBackCards([...backCards,value]);
+   };
+  
+  
   return (
     <div className="">
     <div className='h-100 '>
@@ -248,15 +417,22 @@ const ProfileNftGallery = () => {
         <SwiperBar>
            {/* @ts-ignore */}
             {items.map((item:any) => {
-              return <>                
-                <NftOneCard                      
-                      DivClass={item.cardType}
-                      HeaderText={item.cardType}
-                      HeaderClass={`${item.cardType}_text`}
-                      Disable={""} // When you pass CardDisebal this name then card is Disable
+              return (
+                <>
+                  <NftOneCard
+                    DivClass={item.cardType}
+                    HeaderText={item.cardType}
+                    HeaderClass={`${item.cardType}_text`}
+                    Disable={""} // When you pass CardDisebal this name then card is Disable
                     //   width={`${window.screen.width > 979 ? "217px" :"250px"}`}
-                    />
-              </>
+                    cardHeader={`${item.cardHeader}`}
+                    cardNo={`${item.cardNo}`}
+                    id={item.id}
+                    BackSideCard={BackSideCard}
+                    flipCard={backCards == item.id ? true : false}
+                  />
+                </>
+              );
           })}
         </SwiperBar>
       </div>
