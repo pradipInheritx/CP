@@ -96,7 +96,8 @@ export enum ProfileTabs {
   votes = "votes",
   notifications = "notifications",
   share = "share",
-  ProfileNftGallery = "Gallery",
+  ProfileNftGallery = "Album",
+  ProfileNftGalleryType = "Album/:name",
 }
 export type UserCardProps = {
   user?: UserProps;

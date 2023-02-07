@@ -112,6 +112,7 @@ import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
+import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -920,8 +921,16 @@ votesLast24HoursRef.get()
                                             element={<Notifications />}
                                           />
                                           <Route
-                                            path={ProfileTabs.ProfileNftGallery}
+                                            path={
+                                              ProfileTabs.ProfileNftGallery
+                                            }
                                             element={<ProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<ProfileNftGalleryType />}
                                           />
                                           <Route
                                             path={ProfileTabs.share}

@@ -84,11 +84,11 @@ type CoinProps = {
 };
 
 const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
-  if (Array.isArray(vote.valueExpirationTime) && index !== undefined) {
+  if (Array.isArray(vote?.valueExpirationTime) && index !== undefined) {
     return Number(
       Number(
-        (((vote.valueExpirationTime as number[])[index] || 0) /
-          ((vote.valueVotingTime as number[])[index] || 1) -
+        (((vote?.valueExpirationTime as number[])[index] || 0) /
+          ((vote?.valueVotingTime as number[])[index] || 1) -
           1) *
           100
       ).toFixed(2)
@@ -96,8 +96,8 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
   } else {
     return Number(
       Number(
-        (((vote.valueExpirationTime as number) || 0) /
-          ((vote.valueVotingTime as number) || 1) -
+        (((vote?.valueExpirationTime as number) || 0) /
+          ((vote?.valueVotingTime as number) || 1) -
           1) *
           100
       ).toFixed(2)
@@ -106,14 +106,14 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
 };
 
 const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
-  const voteCoins = vote.coin.split("-");
+  const voteCoins = vote?.coin.split("-");
   const { coins } = useContext(CoinsContext);
   const pair = voteCoins.length > 1;
 
 
   const trend = calculate(vote, index);
   const coin =
-    (index === undefined ? coins[vote.coin] : coins[voteCoins[index]]) || {};
+    (index === undefined ? coins[vote?.coin] : coins[voteCoins[index]]) || {};
 
     
   return pair ? (
@@ -128,17 +128,17 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
           </div>
           <div>{coin.symbol}</div>
           <div>
-            {formatCurrency(
+            {/* {formatCurrency(
               index === undefined
-                ? (vote.valueVotingTime as unknown as number)
-                : (vote.valueVotingTime as number[])[index]
-            )}
+                ? (vote?.valueVotingTime as unknown as number)
+                : (vote?.valueVotingTime as number[])[index]
+            )} */}
           </div>
           <div>
             {vote.valueExpirationTime &&
               formatCurrency(
                 index === undefined
-                  ? (vote.valueVotingTime as unknown as number)
+                  ? (vote?.valueVotingTime as unknown as number)
                   : (vote.valueExpirationTime as number[])[index]
               )}
           </div>
@@ -174,8 +174,8 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                         <span>
                           {formatCurrency(
                             index === undefined
-                              ? (vote.valueVotingTime as unknown as number)
-                              : (vote.valueVotingTime as number[])[index]
+                              ? (vote?.valueVotingTime as unknown as number)
+                              : (vote?.valueVotingTime as number[])[index]
                           )}
                         </span>
                       </CoinCurrency>
@@ -199,9 +199,9 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                   {vote.valueExpirationTime &&
                                     formatCurrency(
                                       index === undefined
-                                        ? (vote.valueVotingTime as unknown as number)
+                                        ? (vote?.valueVotingTime as unknown as number)
                                         : (
-                                            vote.valueExpirationTime as number[]
+                                            vote?.valueExpirationTime as number[]
                                           )[index]
                                     )}
                                 </Col>
@@ -240,13 +240,13 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   </Col>
                   <Col xs={2}>
                  {vote.direction?
-                <>  { vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                <>{vote.valueVotingTime <coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {vote.valueVotingTime>  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                <>  { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
+                <>{vote?.valueVotingTime <coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+                {vote?.valueVotingTime>  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 }  </> :<>
-                { vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                <>{vote.valueVotingTime >coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {vote.valueVotingTime<  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
+                <>{vote?.valueVotingTime >coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+                {vote?.valueVotingTime<  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 } 
                 </>
                 }
@@ -318,24 +318,24 @@ let votetime= a.diff(b)
             </div>
             <div className="align-self-end justify-content-end d-flex flex-column align-items-center">
               <div>
-              {vote.direction?
-              // @ts-ignore
+              {/* {vote.direction?
+              
                 <>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                // @ts-ignore
+                
                 <>{(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {/* @ts-ignore */}
+                
                 {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
-                // @ts-ignore
-                }  </> :<>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                // @ts-ignore
+                
+                }  </> :<>  { Math.abs((coins[vote?.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
+                
                 <>{(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {/* @ts-ignore */}
+                
                 {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 }  </>
-                }
+                } */}
               { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                  { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-                   { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
+              { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
+              { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
               </div>
               <div style={{ minHeight: "100%" }}>
                 <PairsVoteVs>
@@ -367,7 +367,7 @@ let votetime= a.diff(b)
         <Row>
           <Col className="justify-content-center w-100">
             <SmText className="text-center">{`${id} - ${moment(
-              new Date(vote.voteTime)
+              new Date(vote?.voteTime)
             ).format("HH:mm DD/MM/YYYY")}`}</SmText>
           </Col>
         </Row>
