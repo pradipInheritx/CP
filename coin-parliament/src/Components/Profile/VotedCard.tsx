@@ -294,7 +294,7 @@ let votetime= a.diff(b)
    }, votetime+4000);
   }
  }, [])
- console.log('vote.coin',coins[vote.coin.split("-")[0]])
+ 
   const winner = calculateWinner(vote);
   const pair = vote.coin.split("-").length > 1;
  
