@@ -109,31 +109,27 @@ export const getAllPairs: () => Promise<string[]> = async () => {
 };
 
 export const fetchCoinsFromCoinCapAndWazirX = async () => {
-  try {
-    const getAllCoinFromCoinCap = await axios.get(
-      "https://api.coincap.io/v2/rates",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    );
-    console.log("getAllCoinFromCoinCap", getAllCoinFromCoinCap);
+  const getAllCoinFromCoinCap = await axios.get(
+    "https://api.coincap.io/v2/rates",
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+  );
 
-    const getAllCoinFromWazirX = await axios.get(
-      "https://api.wazirx.com/sapi/v1/tickers/24hr",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      }
-    );
-    console.log("getAllCoinFromWazirX", getAllCoinFromWazirX);
-  } catch (error) {
-    console.log("error", error);
-  }
+  /*const getAllCoinFromWazirX = await axios.get(
+    "https://api.wazirx.com/sapi/v1/tickers/24hr",
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    }
+  );*/
+
+  return getAllCoinFromCoinCap.data;
 };
 
 export const fetchCoins = async () => {

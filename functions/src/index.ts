@@ -7,7 +7,7 @@ import env from "./env/env.json";
 
 import cors from "cors";
 import {
-  isAdmin,
+  //isAdmin,
   userConverter,
   UserProps,
   UserTypeProps,
@@ -33,6 +33,7 @@ import {
   Leader,
   prepareCPVI,
   fetchAskBidCoin,
+  fetchCoinsFromCoinCapAndWazirX,
 } from "./common/models/Coin";
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
@@ -187,10 +188,11 @@ exports.setLeadersOnce = functions.https.onCall(async () => {
 });
 
 exports.isAdmin = functions.https.onCall(async (data) => {
-  const { user } = data as { user: string };
-  const getCoins = await fetchCoins();
-  console.log("fetchCoins", getCoins);
-  return await isAdmin(user);
+  // const { user } = data as { user: string };
+  const getCoins = await fetchCoinsFromCoinCapAndWazirX();
+  console.log("fetchCoinsFromCoinCapAndWazirX", getCoins);
+  return getCoins;
+  // return await isAdmin(user);
 });
 
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
