@@ -391,7 +391,21 @@ useEffect(() => {
                           {/* @ts-ignore */}
                        {!voteNumber && votingTimer ?
                           // @ts-ignore
-                         <span style={{marginLeft:'20px'}}> <Countdown daysInHours zeroPadTime={2} date={votingTimer} /></span>
+                         <span style={{marginLeft:'20px'}}> <Countdown daysInHours zeroPadTime={2} date={votingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {
+                        
+                            return (
+                              <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
+                                {/* {hours < 10 ? `0${hours}` : hours}: */}
+                                5 votes in {' '}
+                                {minutes < 10 ? `0${minutes}` : minutes}:
+                                {seconds < 10 ? `0${seconds}` : seconds}
+                              </span>
+                            );
+                          
+                        }}
+                         
+                         /></span>
                         :
                         <> VOTES{" "}
                           <span
@@ -487,7 +501,20 @@ useEffect(() => {
                         <p className='ml-5'>
                         {!voteNumber && votingTimer ?
                           // @ts-ignore
-                         <span style={{marginLeft:'20px'}}> <Countdown date={votingTimer} /></span>
+                         <span style={{marginLeft:'20px'}}> <Countdown date={votingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {
+                        
+                          return (
+                            <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
+                              {/* {hours < 10 ? `0${hours}` : hours}: */}
+                              5 votes in {' '}
+                              {minutes < 10 ? `0${minutes}` : minutes}:
+                              {seconds < 10 ? `0${seconds}` : seconds}
+                            </span>
+                          );
+                        
+                      }}
+                         /></span>
                         :
                         <> VOTES{" "}
                           <span
