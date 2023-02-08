@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Nav, Row, Tab } from "react-bootstrap";
 import styled from "styled-components";
 import Button from "../Atoms/Button/Button";
@@ -18,7 +18,7 @@ type ImageTab = {
 
 type ImageTabsProps = {
   tabs: ImageTab[];
-  chosenByDefault?: string;
+  chosenByDefault?: string | undefined;
   handleSelect: SelectCallback;
 };
 
@@ -59,7 +59,7 @@ const NavLink = styled(Nav.Link)`
     * {
     fill: ${(props: Props) =>
       `${
-        props.iconName !== "Gallery"
+        props.iconName !== "Album"
           ? 'white'
             : ''
       }`};
@@ -68,14 +68,34 @@ const NavLink = styled(Nav.Link)`
   }
 `;
 
+
 const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
+
+  const [activeValue, setActiveValue] = useState("");
+
+   useEffect(() => {
+     activeTab(tabs, chosenByDefault);
+   }, [chosenByDefault]);
+   
+  
+  const activeTab = (tabs: any, chosenByDefault: any) => {
+    tabs.map((tab: any, index: number) => {
+      if (chosenByDefault?.includes(tab.eventKey)) {
+        console.log(tabs[index].eventKey, "eventKey");
+        setActiveValue(tabs[index].eventKey);
+      } 
+    });
+  };
+
   return (
     <Tab.Container
       id={`image-tabs-${random(100)}`}
-      activeKey={
-        tabs.find((tab) => tab.eventKey === chosenByDefault)?.eventKey ||
-        tabs[0].eventKey
-      }
+      // activeKey={
+      //   // tabs.find((tab) => tab.eventKey === chosenByDefault)?.eventKey ||
+      //   // tabs[0].eventKey
+      //   // activeTab(tabs,chosenByDefault)
+      // }
+      activeKey={activeValue}
     >
       <div className='d-flex'>
         <Nav
@@ -86,7 +106,11 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
           {tabs.map((tab, i) => {
             return (
               <Nav.Item key={i}>
-                <NavLink eventKey={tab.eventKey} style={{ padding: "10px 2px" ,}} iconName={tab.label}>
+                <NavLink
+                  eventKey={tab.eventKey}
+                  style={{ padding: "10px 2px" }}
+                  iconName={tab.label}
+                >
                   <Circle
                     disabled={isV1() && tab.eventKey === ProfileTabs.mine}
                   >
@@ -98,7 +122,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
             );
           })}
         </Nav>
-      </div >
+      </div>
       <Row>
         <Tab.Content>
           {tabs.map((tab, i) => {

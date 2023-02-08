@@ -20,6 +20,7 @@ import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
+import Countdown from "react-countdown";
 
 enum EventKeys {
   LOGIN = "login",
@@ -129,10 +130,12 @@ const Header = ({
   title,
   logo = true,
   pathname,
+  remainingTimer
 }: {
   title?: React.ReactNode;
   logo?: boolean;
   pathname: string;
+  remainingTimer:number;
 }) => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
@@ -150,7 +153,12 @@ const Header = ({
   const { voteRules } = useContext(AppContext);
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState()
-
+const [votingTimer,setVotingTimer]=useState(0)
+console.log('votingTimer',votingTimer,remainingTimer)
+useEffect(() => {
+  setVotingTimer(remainingTimer,)
+ 
+}, [remainingTimer])
   useEffect(() => {
     if (pages) {
       setMounted(true);
@@ -379,7 +387,13 @@ const Header = ({
                       <HeaderCenterMob className=''>
                         <div></div>
                         <p className='ml-4'>
-                          VOTES{" "}
+                         
+                          {/* @ts-ignore */}
+                       {!voteNumber && votingTimer ?
+                          // @ts-ignore
+                         <span style={{marginLeft:'20px'}}> <Countdown daysInHours zeroPadTime={2} date={votingTimer} /></span>
+                        :
+                        <> VOTES{" "}
                           <span
                             style={{
                               color: "#6352E8",
@@ -392,8 +406,9 @@ const Header = ({
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
                             {voteNumber}
-                          </span>
+                          </span></>}
                         </p>
+                        
                         <PlusButtonMob
                           onClick={() => navigate("/votingbooster")}
                         >
@@ -470,7 +485,11 @@ const Header = ({
                       <HeaderCenter className=''>
                         <div></div>
                         <p className='ml-5'>
-                          VOTES{" "}
+                        {!voteNumber && votingTimer ?
+                          // @ts-ignore
+                         <span style={{marginLeft:'20px'}}> <Countdown date={votingTimer} /></span>
+                        :
+                        <> VOTES{" "}
                           <span
                             style={{
                               color: "#6352E8",
@@ -483,7 +502,7 @@ const Header = ({
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
                             {voteNumber}
-                          </span>
+                          </span></>}
                         </p>
                         <PlusButton onClick={() => navigate("/votingbooster")}>
                           <span>+</span>

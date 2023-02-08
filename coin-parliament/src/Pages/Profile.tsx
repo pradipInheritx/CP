@@ -38,6 +38,7 @@ export enum ProfileTabs {
   votes = "votes",
   notifications = "notifications",
   ProfileNftGallery = "Album",
+  ProfileNftGalleryType = "Album/:name",
   share = "share",
 }
 

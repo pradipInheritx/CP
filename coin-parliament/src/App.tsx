@@ -112,6 +112,7 @@ import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
+import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -255,6 +256,7 @@ function App() {
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
+  const [remainingTimer,setRemainingTimer]=useState(0)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -527,8 +529,9 @@ console.log('extravote', votesLast24Hours)
   }, [user, fcmToken, coins]);
   
 useEffect(() => {
+  
   if(user?.uid){
-    
+   
   const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
 // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
 const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
@@ -544,15 +547,13 @@ votesLast24HoursRef.get()
     .then((snapshot) => {
         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
         console.log('extravoteSuccess',snapshot.docs)
-    })
-    .catch((error) => {
-        console.log('extravoteError',error);
-    });
-  }
-  let remaining= (Math.min(...votesLast24Hours.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Math.min(...votesLast24Hours.map((v) => v.voteTime))
+        const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+      let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
+  console.log('votingTimer2',remaining)
+  setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
   setTimeout(() => {
     if(user?.uid){
-    
+      console.log('votingTimer2',remaining)
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
@@ -574,6 +575,13 @@ votesLast24HoursRef.get()
         });
       }
   }, remaining);
+    })
+    .catch((error) => {
+        console.log('extravoteError',error);
+    });
+  }
+  
+ 
 }, [userInfo?.voteStatistics?.total])
 
   useEffect(() => {
@@ -763,6 +771,7 @@ votesLast24HoursRef.get()
                           // width={width}
                         >
                           <Header
+                          remainingTimer={remainingTimer}
                             logo={
                               (login && window.screen.width > 979) ||
                               window.screen.width > 979
@@ -949,8 +958,16 @@ votesLast24HoursRef.get()
                                             element={<Notifications />}
                                           />
                                           <Route
-                                            path={ProfileTabs.ProfileNftGallery}
+                                            path={
+                                              ProfileTabs.ProfileNftGallery
+                                            }
                                             element={<ProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<ProfileNftGalleryType />}
                                           />
                                           <Route
                                             path={ProfileTabs.share}
