@@ -1,5 +1,7 @@
 import {ajax_, snapshotAllTickers} from "./Ajax";
 import {ICryptoSnapshotTickers} from "@polygon.io/client-js";
+import {firestore} from "firebase-admin";
+
 
 export const getRateRemote_: () => Promise<
   CoinbaseResponse<Rate[]>
@@ -55,11 +57,42 @@ export type CoinbaseResponse<T> = {
   data: T;
 };
 
+// export const getPrice: (
+//   data: ICryptoSnapshotTickers,
+//   symbol: string
+// ) => number = (data: ICryptoSnapshotTickers, symbol: string) => {
+//   return (
+//     data.tickers?.find((t) => t.ticker === `X:${symbol}USD`)?.lastTrade?.p || 0
+//   );
+// };
+
+
 export const getPrice: (
-  data: ICryptoSnapshotTickers,
   symbol: string
-) => number = (data: ICryptoSnapshotTickers, symbol: string) => {
-  return (
-    data.tickers?.find((t) => t.ticker === `X:${symbol}USD`)?.lastTrade?.p || 0
-  );
+) => any = async (symbol: string) => {
+  const coinRef = firestore()
+      .collection("stats")
+      .doc("coins");
+
+  const coinProps = await coinRef.get();
+  const coinData = coinProps.data();
+  let price = 0;
+  // const timeFrameToAPICallInSecond = 30;
+  // const priceLength = timeframe / timeFrameToAPICallInSecond;
+  // let last24HoursPrice;
+  // console.log('symbol --->', symbol);
+  // console.log('coinData --->', coinData);
+  // console.log('timeframe --->', timeframe);
+  // console.log('coinData?[symbol] --->', coinData[symbol]);
+  // const priceDataArray =  coinData?[symbol].last24HoursPrice || 0
+  if (coinData?.hasOwnProperty(symbol)) {
+    price = coinData[symbol].price;
+    // console.log('coinData?[symbol] --->', coinData[symbol].last24HoursPrice);
+    // last24HoursPrice = coinData[symbol].last24HoursPrice
+    // if (coinData[symbol].last24HoursPrice.length > priceLength) {
+    //   last24HoursPrice.length = priceLength
+    // }
+  }
+
+  return price;
 };

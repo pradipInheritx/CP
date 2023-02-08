@@ -11,6 +11,7 @@ export type VoteProps = {
   direction: Direction;
   valueVotingTime: number | number[];
   status?: UserTypeProps;
+  trendChange?: number;
 };
 
 export const voteConverter: FirestoreDataConverter<VoteResultProps> = {

@@ -4,8 +4,6 @@ import {firestore} from "firebase-admin";
 import {rest} from "./Ajax";
 import {CPVIObj, cpviTaskCoin, cpviTaskPair} from "./CPVI";
 import moment from "moment";
-// import {voteConverter} from "../../common/models/Vote";
-// import {Totals} from "../../common/models/Calculation";
 
 export type Coin = {
   name: string;
@@ -56,11 +54,11 @@ export const calculateCoinsByTicker: (
         return {
           symbol: t.ticker?.substr(2).slice(0, -3) || "",
           price: t.lastTrade?.p || 0,
-          trend: Number(
-              Number(
-                  ((t.lastTrade?.p || 0) / (t.prevDay?.c || 1) - 1) * 100
-              ).toFixed(3)
-          ),
+          // trend: Number(
+          //     Number(
+          //         ((t.lastTrade?.p || 0) / (t.prevDay?.c || 1) - 1) * 100
+          //     ).toFixed(3)
+          // ),
         };
       }
       return undefined;
@@ -68,7 +66,8 @@ export const calculateCoinsByTicker: (
     .filter((t) => t)
     .reduce((total, current) => {
       if (current) {
-        const {symbol, price, trend} = current;
+        // const {symbol, price, trend} = current;
+        const {symbol, price} = current;
         const data = (
           coinList as unknown as {
             [key: string]: {
@@ -80,7 +79,8 @@ export const calculateCoinsByTicker: (
         )[symbol];
         const {id, name} = data || {};
         if (id) {
-          total[symbol] = {price, symbol, id, name, trend};
+          // total[symbol] = {price, symbol, id, name, trend};
+          total[symbol] = {price, symbol, id, name};
         }
       }
       return total;
@@ -117,6 +117,31 @@ export const fetchCoins = async () => {
         .doc("coins")
         .set(filterCoins(newCoins, allCoins), {merge: true});
   }
+};
+
+export const updatePriceArray = async (before: any, after: any) => {
+  const timeFrameToAPICallInSecond = 30;
+  const timesOfAPICallIn24Hours = (60 / timeFrameToAPICallInSecond) * 60 * 24;
+  for (const key in before) {
+    if (key in before) {
+      // your code here
+      const newPriceArray = before[key]?.last24HoursPrice || [];
+      newPriceArray.unshift(after[key].price);
+      if (newPriceArray.length > timesOfAPICallIn24Hours) {
+        newPriceArray.pop();
+      }
+      after[key].last24HoursPrice = newPriceArray;
+      const trend = Number(Number(
+          ((after[key].price || 0) / (newPriceArray[newPriceArray.length - 1] || 1) - 1) * 100
+      ).toFixed(3));
+      after[key].trend = trend;
+    }
+  }
+
+  await firestore()
+      .collection("stats")
+      .doc("coins")
+      .set(after, {merge: true});
 };
 
 export const sequence_operate = (

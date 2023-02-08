@@ -1,6 +1,6 @@
 import {firestore} from "firebase-admin";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
-import {DictionaryKeys} from "./Dictionary";
+// import {DictionaryKeys} from "./Dictionary";
 
 export type UserTypeProps = {
   index: number;
@@ -9,6 +9,7 @@ export type UserTypeProps = {
   weight: number;
   color?: Colors;
   share: number;
+  minVote?: number;
 };
 
 export enum Colors {
@@ -37,6 +38,15 @@ export type UserProps = {
   favorites: string[];
   token?: string;
   wallet?: string;
+  rewardStatistics?: RewardStatistics;
+};
+
+export type RewardStatistics = {
+  total: number;
+  claimed: number;
+  cards: string[];
+  extraVote: number;
+  diamonds: number;
 };
 
 export type VoteStatistics = {
@@ -74,14 +84,16 @@ export const userTypeConverter: FirestoreDataConverter<{
   },
 };
 
-export const defaultUserType: UserTypeProps = {
-  color: Colors.SILVER,
-  givenCPM: 1,
-  index: 0,
-  name: DictionaryKeys.MEMBER,
-  weight: 1,
-  share: 40,
-};
+export const defaultUserType = {};
+// export const defaultUserType: UserTypeProps = {
+//   color: Colors.SILVER,
+//   givenCPM: 1,
+//   index: 0,
+//   name: DictionaryKeys.SPEAKER,
+//   weight: 1,
+//   share: 35,
+//   minVote: 20,
+// };
 
 export const isAdmin: (user: string) => Promise<boolean> = async (
     user: string
