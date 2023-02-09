@@ -174,34 +174,29 @@ const TimeframeButton = ({
     getBorderColor()
   }, [params]);
 
-  // console.log(votedDetails,"votedDetails")
+  console.log(votedDetails,"votedDetails")
   
   
     const getBorderColor = () => {
-      if (symbol2 == undefined ) {
-    
-    if (votedDetails?.direction == 1) {
-      if (coins[params?.id].price > votePrice) {
-        setborderColor("#015117");
+  if (symbol2 == undefined ) {  
+    if (votedDetails?.direction == 1) {  
+      switch (true) {
+      case coins[params?.id].price > votePrice :setborderColor("#015117") ; break;
+      case coins[params?.id].price < votePrice : setborderColor("#74ff5d"); break;
+      case coins[params?.id].price == votePrice : setborderColor("#188c05"); break;
+        default:
+          console.log("not work")
       }
-      else if (coins[params?.id].price < votePrice) {
-        setborderColor("#74ff5d");      
-      }
-      else if (coins[params?.id].price == votePrice) {
-        setborderColor("#188c05");
-      }      
-      }
-    else {
-      if (coins[params?.id].price > votePrice) {
-        setborderColor("#74ff5d");
-      }
-      else if (coins[params?.id].price < votePrice) {
-        setborderColor("#015117");      
-      }
-      else if (coins[params?.id].price == votePrice) {
-        setborderColor("#188c05");
-      }      
-  }
+    }
+    else {        
+      switch (true) {
+      case coins[params?.id].price > votePrice :setborderColor("#74ff5d") ; break;
+      case coins[params?.id].price < votePrice : setborderColor("#015117"); break;
+      case coins[params?.id].price == votePrice : setborderColor("#188c05"); break;
+        default:
+          console.log("not work")
+        }
+        }
       }
       
     }
