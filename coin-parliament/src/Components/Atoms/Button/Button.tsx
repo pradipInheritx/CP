@@ -173,6 +173,7 @@ const TimeframeButton = ({
   var params = useParams();
   const { coins, totals } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
+    // @ts-ignore
   const [votePrice, setvotePrice] = useState<number>(coins[params?.id]?.price)
   useEffect(() => {
     if (buttonDetails != undefined) {      
@@ -210,7 +211,7 @@ const TimeframeButton = ({
       console.log(livePrice < votePrice - PricePer  ,"true or false");
     if (buttonDetails?.direction == 1) {  
       switch (true) {
-      case livePrice  < votePrice + PricePer  && livePrice  > votePrice - PricePer : setborderColor("red"); break;
+      case livePrice  < votePrice + PricePer  && livePrice  > votePrice - PricePer : setborderColor("#74ff5d"); break;
       case livePrice  < votePrice  :setborderColor("#015117") ; break;
       case livePrice  > votePrice  : setborderColor("#74ff5d"); break;
         default:
@@ -222,7 +223,7 @@ const TimeframeButton = ({
       //   case livePrice > votePrice :setborderColor("#74ff5d") ; break;
       // case livePrice < votePrice : setborderColor("#015117"); break;
       // case livePrice + PricePer < votePrice  && livePrice - PricePer > votePrice: setborderColor("blue"); break;      
-      case (livePrice  < (votePrice + PricePer))  && (livePrice  > (votePrice - PricePer)) : setborderColor("blue"); break;
+      case (livePrice  < (votePrice + PricePer))  && (livePrice  > (votePrice - PricePer)) : setborderColor("#74ff5d"); break;
         case livePrice  < votePrice :setborderColor("#74ff5d ") ; break;
       case livePrice  > votePrice : setborderColor("#015117"); break;
         default:
