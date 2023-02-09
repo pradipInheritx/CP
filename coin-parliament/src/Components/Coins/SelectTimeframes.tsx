@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {getNumTimeframes, TimeFrame} from "../../common/models/Vote";
 import Icon from "../Atoms/Checkbox/Icon";
 import {Buttons} from "../Atoms/Button/Button";
 import {Title} from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
+import AppContext from "../../Contexts/AppContext";
 
 
 export type SelectTimeframesProps = {
@@ -33,7 +34,13 @@ const SelectTimeframes = ({
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const num = getNumTimeframes(timeframes);
-
+   const [buttonDetails, setButtonDetails] = useState<any>();
+  const { allButtonTime } = useContext(AppContext);
+  
+  useEffect(() => {
+    setButtonDetails(allButtonTime)
+  }, [allButtonTime])
+  
   console.log(timeframes, "timeframevoted", voted, selected);
   // console.log(votePrice,"votePricevotePrice");
   
@@ -86,8 +93,9 @@ const SelectTimeframes = ({
                       disabled={voted ? voted : false}
                       {...{ checked: voted ? false : true }}
                       cssDegree={cssDegree?.length > 0 ? cssDegree[k] : 0}
-                      votePrice={votePrice?.length > 0 ? votePrice[k] : 0}
-                      votedDetails={votedDetails?.length > 0 ?votedDetails[k] : 0}
+                      // votePrice={votePrice?.length > 0 ? votePrice[k] : 0}
+                      votedDetails={votedDetails?.length > 0 ? votedDetails[k] : 0}
+                      buttonDetails={buttonDetails && buttonDetails[k]}
                     >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
@@ -99,8 +107,9 @@ const SelectTimeframes = ({
                           timeframe.index
                         ),
                         cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
-                        votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
+                        // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
                         votedDetails:votedDetails?.length > 0 ?votedDetails[k] : 0,
+                        buttonDetails:buttonDetails && buttonDetails[k],
                       }}
                       showTimer={true}
                     >

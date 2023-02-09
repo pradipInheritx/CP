@@ -80,7 +80,7 @@ const CoinsForm = ({
           expiration:Date.now() + chosenTimeframe.seconds * 1000 + 2597
         } as VoteResultProps
       );
-
+        
       // showToast(translate("voted successfully"));
       // await getMessaging();
       if (user?.uid) {

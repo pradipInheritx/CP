@@ -75,9 +75,16 @@ const SingleCoin = () => {
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading,setGraphLoading]=useState(false)
-  const {timeframes} = useContext(AppContext);
+  const [cssDegree, setcssDegree] = useState<any>([]);
+  const [votePrice, setvotePrice] = useState<any>([]);
+  const [votedDetails, setVotedDetails] = useState<any>([]);
+  // const [graphLoading,setGraphLoading]=useState(false)
+  const {timeframes,setAllButtonTime,allButtonTime,forRun,setForRun} = useContext(AppContext);
   console.log('choseTimeFrame1',selectedTimeFrameArray)
   const newTimeframe: any = []
+  const AllcssDegree: any = [];
+  const AllvotePrice: any = [];
+  const AllvoteValueObject: any = [];
 
   const getCpviData = useCallback(async () => {
 
@@ -162,13 +169,23 @@ console.log('getVote called 2')
   }
 
   useEffect(() => {
-    Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
+
+    console.log("it is not run")
+    Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
-
-        if(res) {
-          console.log('choseTimeFrame',res,index)
+        if (res) {        
           
+          // console.log('choseTimeFrame',res,index)
+        
+          getLeftTime(res.data(), index);
+          
+          AllvoteValueObject[index] = res.data();
+
+
+          
+          setVotedDetails(AllvoteValueObject);
+          setAllButtonTime(AllvoteValueObject);
           newTimeframe.push(index)
           console.log('choseTimeFrame1',newTimeframe)
           setSelectedTimeFrameArray(newTimeframe)
@@ -183,7 +200,11 @@ console.log('getVote called 2')
       console.error('promiseAll',error);
     });
    
-  }, [user?.uid, params?.id,selectedTimeFrame])
+  }, [user?.uid, params?.id, selectedTimeFrame,forRun,voteId,vote])
+  
+
+
+
   useEffect(() => {
     return () => {
       mountedRef.current = false;
@@ -208,10 +229,39 @@ console.log('getVote called 2')
     if (voteId) {
       onSnapshot(doc(db, "votes", voteId), (doc) => {
         setVote(doc.data() as VoteResultProps);
+        console.log(doc.data(), "doc.data()")
+        var viewData = doc.data()
+                                
+          // AllvoteValueObject = [];  
+          // setAllButtonTime([...allButtonTime,viewData]);
+        
+        
+
       });
+        // setForRun(forRun + 1)
     }
+
   }, [voteId]);
 
+
+console.log(allButtonTime,"AllvoteValueObject")
+  const getLeftTime = (value: any,index:number) => {
+    console.log(value, "CheckvalueId", index);
+    let t = value.voteTime / 1000; //mili
+    let d = value.timeframe.seconds; //second already
+    let liveTime = Date.now() / 1000;
+    let ori = t + d;
+    let val = (ori - liveTime) / d;
+    let deg = val * 360;
+    AllcssDegree[index] = Math.round(deg);
+    AllvotePrice[index] =  value.valueVotingTime;
+    // console.log(vote,"all vote check")
+    if (deg >0) {
+      setcssDegree(AllcssDegree);
+      setvotePrice(AllvotePrice);
+    }
+  }
+  
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
 
@@ -222,7 +272,6 @@ console.log('getVote called 2')
       Date.now() >= vote.expiration
     );
   }, [vote.expiration, vote.success,selectedTimeFrame]);
-console.log('votedata',vote)
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);
