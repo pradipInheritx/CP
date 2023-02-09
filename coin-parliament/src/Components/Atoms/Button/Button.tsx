@@ -5,6 +5,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import CoinContext from "../../../Contexts/CoinsContext";
 import { formatCurrency,  precision } from "../../../common/models/Coin";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../../styledMixins";
+import AppContext from "../../../Contexts/AppContext";
 
 export type Props = Partial<ButtonProps> & {
   children: ReactNode | undefined;
@@ -96,10 +97,11 @@ const Timeframe = styled(RadiusFull)`
   // animation: bull_shake_left 2s ease 2s 3 alternate forwards;
   width: 71px;
   height: 70px;
-  background: ${(props: { checked: boolean, cssDegree: any }) =>
-    props.checked
+  background: ${(props: { checked: boolean, borderDeg:number ,borderColor:string}) =>
+ props.checked    
       ? "var(--color-6352e8) 0% 0% no-repeat padding-box;"
-      : "var(--white) 0% 0% no-repeat padding-box"};
+      : `radial-gradient(white 67%, transparent 55%),conic-gradient(${props.borderColor} 0deg ,${props.borderColor} ${props.borderDeg}deg, white ${props.borderDeg}deg ,white 360deg, green)`};
+      // : "var(--white) 0% 0% no-repeat padding-box"};
   box-shadow: 0 3px 6px #00000029;
   border-radius: 45px;
   opacity: 1;
@@ -117,8 +119,8 @@ const TimeframeName = styled.span`
   line-height: var(--line-spacing-14);
   font-family: var(--font-family-poppins);
   letter-spacing: var(--character-spacing-0);
-  color: ${(props: { checked: boolean }) =>
-    props.checked ? "var(--white)" : "var(--color-6352e8)"};
+  color: ${(props: { checked: boolean }) => props.checked ? "var(--white)" : "var(--color-6352e8)"};
+  // color:"var(--color-6352e8)";
   text-align: center;
 `;
 
@@ -151,8 +153,9 @@ const TimeframeButton = ({
   disabled,
   showTimer,
   cssDegree,
-  votePrice,
+  // votePrice,
   votedDetails,
+  buttonDetails,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -160,64 +163,88 @@ const TimeframeButton = ({
   setChecked?: (c: boolean) => void;
   showTimer?: boolean;
   cssDegree?: any;
-  votePrice?: any;
+  // votePrice?: any;
   votedDetails?: any;
+  buttonDetails?: any;
   }) => {
-  const [borderColor, setborderColor] = useState("")
-  const [borderDeg, setBorderDeg] = useState("")
+  const [borderColor, setborderColor] = useState<string>("white")
+  const [borderDeg, setBorderDeg] = useState<number>(0)
+  const [livePrice, setLivePrice] = useState<number>(0)
   var params = useParams();
   const { coins, totals } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  
+  const [votePrice, setvotePrice] = useState<number>(coins[params?.id]?.price)
   useEffect(() => {
-    // getDeg(votedDetails)
-    getBorderColor()
-  }, [params]);
+    if (buttonDetails != undefined) {      
+      getDeg(buttonDetails);
+      getBorderColor();
+    }
+    // @ts-ignore
+    setLivePrice(coins[params?.id]?.price);
 
-  console.log(votedDetails,"votedDetails")
-  
-  
-    const getBorderColor = () => {
-  if (symbol2 == undefined ) {  
-    if (votedDetails?.direction == 1) {  
-      switch (true) {
-      case coins[params?.id].price > votePrice :setborderColor("#015117") ; break;
-      case coins[params?.id].price < votePrice : setborderColor("#74ff5d"); break;
-      case coins[params?.id].price == votePrice : setborderColor("#188c05"); break;
-        default:
-          console.log("not work")
-      }
+    if (buttonDetails != undefined && buttonDetails?.valueVotingTime) {      
+      setvotePrice(buttonDetails.valueVotingTime );
     }
-    else {        
+    
+  }, [params,buttonDetails]);
+
+  console.log(votePrice, "buttonDetails");
+// @ts-ignore
+  const getDeg = (value) => {
+    if (value !=undefined)
+    {
+    let t = value?.voteTime / 1000; //mili
+    let d = value?.timeframe.seconds; //second already
+    let liveTime = Date.now() / 1000;
+    let ori = t + d;
+    let val = (ori - liveTime) / d;
+    let deg = val * 360;    
+      setBorderDeg(Math.round(deg))      
+    }    
+
+  }
+
+  const getBorderColor = () => {
+      let  PricePer= livePrice/10
+    if (symbol2 == undefined) {      
+      console.log(livePrice < votePrice - PricePer  ,"true or false");
+    if (buttonDetails?.direction == 1) {  
       switch (true) {
-      case coins[params?.id].price > votePrice :setborderColor("#74ff5d") ; break;
-      case coins[params?.id].price < votePrice : setborderColor("#015117"); break;
-      case coins[params?.id].price == votePrice : setborderColor("#188c05"); break;
+      case livePrice  < votePrice + PricePer  && livePrice  > votePrice - PricePer : setborderColor("red"); break;
+      case livePrice  < votePrice  :setborderColor("#015117") ; break;
+      case livePrice  > votePrice  : setborderColor("#74ff5d"); break;
         default:
           console.log("not work")
-        }
-        }
+      }      
+    }
+    else if(buttonDetails?.direction == 0){        
+      switch (true) {
+      //   case livePrice > votePrice :setborderColor("#74ff5d") ; break;
+      // case livePrice < votePrice : setborderColor("#015117"); break;
+      // case livePrice + PricePer < votePrice  && livePrice - PricePer > votePrice: setborderColor("blue"); break;      
+      case (livePrice  < (votePrice + PricePer))  && (livePrice  > (votePrice - PricePer)) : setborderColor("blue"); break;
+        case livePrice  < votePrice :setborderColor("#74ff5d ") ; break;
+      case livePrice  > votePrice : setborderColor("#015117"); break;
+        default:
+          console.log("not work")
       }
+     }
+   }
       
-    }
+  }
+  console.log(borderColor,"borderDeg")
   return (
     <Timeframe
       as={"div"}
       style={{
-        opacity: showTimer && checked ? 0.48 : "",
-        // background: showTimer && checked ? "white" : "",
-        background:
-          showTimer && checked
-            ? `radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor} ${
-                cssDegree || 0
-              }deg, white ${cssDegree || 0}deg ,white 360deg, green)`
-            : "",
-        // border: showTimer && checked ? "1px solid red" : "",
+        opacity: showTimer && checked ? 0.48 : "",       
+        background:showTimer && checked  ?`radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor } ${ borderDeg}deg, white ${borderDeg}deg ,white 360deg, green)`:"",        
       }}
       {...{
         disabled,
-        checked,
-        cssDegree,
+        checked, 
+        borderDeg,
+        borderColor,
         onClick: () => !disabled && setChecked && setChecked(!checked),
       }}
     >

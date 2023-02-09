@@ -222,6 +222,8 @@ function App() {
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
   const [authStateChanged, setAuthStateChanged] = useState(false);
+  const [allButtonTime, setAllButtonTime] = useState<any>([]);
+  const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
@@ -593,7 +595,11 @@ votesLast24HoursRef.get()
             }}
           >
             <AppContext.Provider
-              value={{
+                value={{
+                  allButtonTime,
+                  forRun,
+                  setForRun,
+                setAllButtonTime,
                 chosenUserType,
                 setChosenUserType,
                 setLoginRedirectMessage,

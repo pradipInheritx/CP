@@ -79,7 +79,7 @@ const CoinsForm = ({
           userId: user?.uid,
         } as VoteResultProps
       );
-
+        
       // showToast(translate("voted successfully"));
       // await getMessaging();
       if (user?.uid) {
