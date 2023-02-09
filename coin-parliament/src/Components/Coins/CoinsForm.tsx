@@ -26,31 +26,37 @@ const CoinsForm = ({
   setConfetti,
   selectedTimeFrame,
   setSelectedTimeFrame,
-  selectedTimeFrameArray
+  selectedTimeFrameArray,
+  cssDegree,
+  votePrice,
+  votedDetails,
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
   setLoading: (bool: boolean) => void;
   setConfetti: (bool: boolean) => void;
   sound: RefObject<HTMLAudioElement>;
-  selectedTimeFrame?:number;
-  setSelectedTimeFrame?:(n:number)=>void;
-  selectedTimeFrameArray:any;
+  selectedTimeFrame?: number;
+  setSelectedTimeFrame?: (n: number) => void;
+  selectedTimeFrameArray: any;
+  cssDegree?: any;
+  votePrice?: any;
+  votedDetails?: any;
 }) => {
-  const {user, userInfo} = useContext(UserContext);
-  const {showToast} = useContext(NotificationContext);
+  const { user, userInfo } = useContext(UserContext);
+  const { showToast } = useContext(NotificationContext);
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
-  const {timeframes} = useContext(AppContext);
+  const { timeframes } = useContext(AppContext);
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
   const id = "BullVsBearForm";
-    useEffect(() => {
-      window.scrollTo(0, 0)
-      console.log("hello I am ");
-      return window.scrollTo(0, 0)
-}, [])
-console.log('timeframe',selectedTimeFrame)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    console.log("hello I am ");
+    return window.scrollTo(0, 0);
+  }, []);
+  console.log("timeframe", selectedTimeFrame);
   const vote = useCallback(async () => {
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
@@ -71,9 +77,9 @@ console.log('timeframe',selectedTimeFrame)
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-        } as VoteResultProps,
+        } as VoteResultProps
       );
-      
+
       // showToast(translate("voted successfully"));
       // await getMessaging();
       if (user?.uid) {
@@ -98,11 +104,14 @@ console.log('timeframe',selectedTimeFrame)
 
   const disabled = useMemo(
     () => selectedTimeFrame === undefined || !canVote,
-    [selectedTimeFrame, canVote],
+    [selectedTimeFrame, canVote]
   );
 
-  const throttled_vote = useMemo(() => voteProcedure({vote, sound, setConfetti}), [vote, sound, setConfetti]);
-
+  const throttled_vote = useMemo(
+    () => voteProcedure({ vote, sound, setConfetti }),
+    [vote, sound, setConfetti]
+  );
+  
   return (
     <Container className='p-0 '>
       {/* @ts-ignore */}
@@ -116,8 +125,14 @@ console.log('timeframe',selectedTimeFrame)
           id,
           canVote,
           selectedTimeFrameArray,
+          cssDegree,
+          votePrice,
+          votedDetails,
           submit: () => {
-            if (selectedTimeFrame !== undefined && selectedOption !== undefined) {
+            if (
+              selectedTimeFrame !== undefined &&
+              selectedOption !== undefined
+            ) {
               throttled_vote();
             }
           },
@@ -127,7 +142,7 @@ console.log('timeframe',selectedTimeFrame)
             ...coin,
           },
           option2: {
-            image: <Bear/>,
+            image: <Bear />,
             alt: "bear",
             ...coin,
           },

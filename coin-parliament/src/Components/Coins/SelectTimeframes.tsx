@@ -12,8 +12,11 @@ export type SelectTimeframesProps = {
   selectTimeframe: (c: TimeFrame) => void;
   selected?: number;
   title?: string;
-  voted?:boolean;
-  selectedTimeFrameArray?:any;
+  voted?: boolean;
+  selectedTimeFrameArray?: any;
+  cssDegree?: any;
+  votePrice?: any;
+  votedDetails?: any;
 };
 
 const SelectTimeframes = ({
@@ -22,54 +25,87 @@ const SelectTimeframes = ({
   selectTimeframe,
   title,
   voted,
-  selectedTimeFrameArray
+  selectedTimeFrameArray,
+  cssDegree,
+  votePrice,
+  votedDetails,
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const num = getNumTimeframes(timeframes);
 
-  console.log(timeframes,"timeframevoted",voted,selected)
+  console.log(timeframes, "timeframevoted", voted, selected);
+  // console.log(votePrice,"votePricevotePrice");
   
+
   return (
-    <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
+    <Container
+      className='timeframAnimation'
+      style={{ maxWidth: 386, margin: "0 auto" }}
+    >
       <Row>
         {num === 1 && (
           <input
-            type="hidden"
-            name="timeframe"
-            id="timeframe"
+            type='hidden'
+            name='timeframe'
+            id='timeframe'
             value={timeframes.filter((t) => t.chosen)[0].index}
           />
         )}
         {num > 1 && title && (
-          <div className="mb-3">
+          <div className='mb-3'>
             <Title>{title}</Title>
           </div>
         )}
       </Row>
-      <Row className={voted?'row gx-5':selected===undefined?"row gx-5 glow":"row gx-5"} id='test' style={{minWidth:'310px'}}>
+      <Row
+        className={
+          voted
+            ? "row gx-5"
+            : selected === undefined
+            ? "row gx-5 glow"
+            : "row gx-5"
+        }
+        id='test'
+        style={{ minWidth: "310px" }}
+      >
         {num > 1 &&
           timeframes.map((timeframe, k) => {
             return (
-              <Col key={k} className="p-0">
+              <Col key={k} className='p-0'>
                 <Icon
-                
-                  inline="d-flex justify-content-center"
+                  inline='d-flex justify-content-center'
                   checked={timeframe.index === selected}
                   setChecked={() => {
                     selectTimeframe(timeframe);
                   }}
-                  name="timeframe"
-                  type="radio"
+                  name='timeframe'
+                  type='radio'
                   id={"timeframe-" + timeframe.index}
                   value={timeframe.name}
                   iconOn={
-                    <Buttons.TimeframeButton disabled={voted?voted:false} {...{ checked: voted?false:true }}>
+                    <Buttons.TimeframeButton
+                      disabled={voted ? voted : false}
+                      {...{ checked: voted ? false : true }}
+                      cssDegree={cssDegree?.length > 0 ? cssDegree[k] : 0}
+                      votePrice={votePrice?.length > 0 ? votePrice[k] : 0}
+                      votedDetails={votedDetails?.length > 0 ?votedDetails[k] : 0}
+                    >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
                   }
                   iconOff={
-                    <Buttons.TimeframeButton {...{ checked: selectedTimeFrameArray?.includes(timeframe.index)   }} showTimer={true} >
+                    <Buttons.TimeframeButton
+                      {...{
+                        checked: selectedTimeFrameArray?.includes(
+                          timeframe.index
+                        ),
+                        cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
+                        votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
+                        votedDetails:votedDetails?.length > 0 ?votedDetails[k] : 0,
+                      }}
+                      showTimer={true}
+                    >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
                   }

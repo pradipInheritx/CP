@@ -13,7 +13,7 @@ import Leaders from "../Components/Pairs/Leaders";
 import {default as CPCard} from "../Components/Coins/Card";
 import {useTranslation} from "../common/models/Dictionary";
 import {remove, union} from "lodash";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import {Buttons} from "../Components/Atoms/Button/Button";
 import {CardContainer, PageContainer} from "../Components/App/App";
 import {LineData} from "lightweight-charts";
@@ -74,10 +74,18 @@ const SingleCoin = () => {
   const {width, height} = useWindowSize();
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
+  const [cssDegree, setcssDegree] = useState<any>([]);
+  const [votePrice, setvotePrice] = useState<any>([]);
+  const [votedDetails, setVotedDetails] = useState<any>([]);
   const [graphLoading,setGraphLoading]=useState(false)
+  // const [graphLoading,setGraphLoading]=useState(false)
   const {timeframes} = useContext(AppContext);
   console.log('choseTimeFrame1',selectedTimeFrameArray)
   const newTimeframe: any = []
+  const AllcssDegree: any = [];
+  const AllvotePrice: any = [];
+  const AllvoteValueObject: any = [];
+  
 
   const getCpviData = useCallback(async () => {
 
@@ -85,7 +93,7 @@ const SingleCoin = () => {
       // if (!mountedRef.current) return null;
       console.log('timeframeforcpvi',{vote})
       const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: vote.timeframe.seconds });
-     
+      
       return data.data as unknown as LineData[];
     }
   }, [params?.id, voteId, vote]);
@@ -103,6 +111,7 @@ const SingleCoin = () => {
       }
    
   }, [voteId, getCpviData, vote]);
+  
 // useEffect(() => {
 //   console.log('livedata',vote.timeframe)
 //   if(vote.timeframe && cpviData?.length) {
@@ -165,12 +174,15 @@ console.log('getVote called 2')
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
-
-        if(res) {
-          console.log('choseTimeFrame',res,index)
+        if (res) {        
           
+          // console.log('choseTimeFrame',res,index)
+
+          getLeftTime(res.data(), index);
+          AllvoteValueObject[index] = res.data();
+          setVotedDetails(AllvoteValueObject);
           newTimeframe.push(index)
-          console.log('choseTimeFrame1',newTimeframe)
+          // console.log('choseTimeFrame1',newTimeframe)
           setSelectedTimeFrameArray(newTimeframe)
         }
         // else{
@@ -212,6 +224,23 @@ console.log('getVote called 2')
     }
   }, [voteId]);
 
+  const getLeftTime = (value: any,index:number) => {
+    console.log(value, "CheckvalueId", index);
+    let t = value.voteTime / 1000; //mili
+    let d = value.timeframe.seconds; //second already
+    let liveTime = Date.now() / 1000;
+    let ori = t + d;
+    let val = (ori - liveTime) / d;
+    let deg = val * 360;
+    AllcssDegree[index] = Math.round(deg);
+    AllvotePrice[index] =  value.valueVotingTime;
+    // console.log(vote,"all vote check")
+    if (deg >0) {
+      setcssDegree(AllcssDegree);
+      setvotePrice(AllvotePrice);
+    }
+  }
+  
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
 
@@ -244,13 +273,10 @@ console.log('vote',vote)
 
   return (
     <>
-      <audio className="d-none" ref={sound}>
-        <source src={src} type="audio/mpeg"/>
+      <audio className='d-none' ref={sound}>
+        <source src={src} type='audio/mpeg' />
       </audio>
-      {confetti && <Confetti
-        width={width}
-        height={height}
-      />}
+      {confetti && <Confetti width={width} height={height} />}
       <PageContainer fluid radius={87}>
         <>
           {coin ? (
@@ -275,7 +301,7 @@ console.log('vote',vote)
                           { merge: true }
                         ));
                     } else {
-                      showModal(<NotLoggedInPopup/>);
+                      showModal(<NotLoggedInPopup />);
                     }
                   }}
                   symbol={coin.symbol}
@@ -285,22 +311,27 @@ console.log('vote',vote)
               </CardContainer>
               <Container>
                 {canVote && (
-                  <>{loading  ? (
-                    <CalculatingVotes/>
-                  ) : (
-                    <CoinsForm
-                      sound={sound}
-                      coin={coin}
-                      setVoteId={setVoteId}
-                      setLoading={setLoading}
-                      setConfetti={setConfetti}
-                      selectedTimeFrame={selectedTimeFrame}
-                      setSelectedTimeFrame={setSelectedTimeFrame}
-                      selectedTimeFrameArray={selectedTimeFrameArray}
-                    />
-                  )}</>
+                  <>
+                    {loading ? (
+                      <CalculatingVotes />
+                    ) : (
+                      <CoinsForm
+                        sound={sound}
+                        coin={coin}
+                        setVoteId={setVoteId}
+                        setLoading={setLoading}
+                        setConfetti={setConfetti}
+                        selectedTimeFrame={selectedTimeFrame}
+                        setSelectedTimeFrame={setSelectedTimeFrame}
+                        selectedTimeFrameArray={selectedTimeFrameArray}
+                        cssDegree={cssDegree}
+                        votePrice={votePrice}
+                        votedDetails={votedDetails}
+                      />
+                    )}
+                  </>
                 )}
-                <div className="text-center">
+                <div className='text-center'>
                   {!graphLoading && !canVote && user && voteId && (
                     <>
                       <VotedCard
@@ -313,25 +344,30 @@ console.log('vote',vote)
                           voteId,
                           selectedTimeFrame,
                           setSelectedTimeFrame,
-                          selectedTimeFrameArray
+                          selectedTimeFrameArray,
+                          cssDegree,
+                          votePrice,
+                          votedDetails
                         }}
                       />
 
-                      { cpviData?.length && params?.id && (
-                        graphLoading?  <CalculatingVotes/>: 
-                        
-                        <Graph
-                          data={cpviData}
-                          totals={totals}
-                          symbol={params?.id}
-                        />
-                      )}
+                      {cpviData?.length &&
+                        params?.id &&
+                        (graphLoading ? (
+                          <CalculatingVotes />
+                        ) : (
+                          <Graph
+                            data={cpviData}
+                            totals={totals}
+                            symbol={params?.id}
+                          />
+                        ))}
                     </>
                   )}
                 </div>
               </Container>
-              <div className="d-flex justify-content-center align-items-center mt-5 pb-5 mb-5">
-                <Link to="/coins" style={{textDecoration:'none'}}>
+              <div className='d-flex justify-content-center align-items-center mt-5 pb-5 mb-5'>
+                <Link to='/coins' style={{ textDecoration: "none" }}>
                   <Other>{translate("vote for other coins")}</Other>
                 </Link>
               </div>
@@ -341,8 +377,8 @@ console.log('vote',vote)
           )}
         </>
       </PageContainer>
-      <Container style={{marginTop:'-15px'}}>
-        <div className="text-center">
+      <Container style={{ marginTop: "-15px" }}>
+        <div className='text-center'>
           <div>
             <Leaders
               symbol={coin.symbol}
