@@ -100,6 +100,7 @@ useEffect(() => {
 
       if(res) {
         console.log('choseTimeFrame',res,index)
+        console.log('pair data',res.data())
         
         newTimeframe.push(index)
         console.log('choseTimeFrame1',newTimeframe)
@@ -157,6 +158,7 @@ useEffect(() => {
   }, [selectedTimeFrame]);
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
+
 
   return (
     <>

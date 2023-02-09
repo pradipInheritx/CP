@@ -1,6 +1,9 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { ButtonProps } from "react-bootstrap";
-import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
+import CoinContext from "../../../Contexts/CoinsContext";
+import { formatCurrency,  precision } from "../../../common/models/Coin";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../../styledMixins";
 
 export type Props = Partial<ButtonProps> & {
@@ -90,10 +93,10 @@ const RadiusFull = styled(Radius)`
 `;
 
 const Timeframe = styled(RadiusFull)`
-// animation: bull_shake_left 2s ease 2s 3 alternate forwards;
+  // animation: bull_shake_left 2s ease 2s 3 alternate forwards;
   width: 71px;
   height: 70px;
-  background: ${(props: { checked: boolean }) =>
+  background: ${(props: { checked: boolean, cssDegree: any }) =>
     props.checked
       ? "var(--color-6352e8) 0% 0% no-repeat padding-box;"
       : "var(--white) 0% 0% no-repeat padding-box"};
@@ -147,26 +150,86 @@ const TimeframeButton = ({
   setChecked,
   disabled,
   showTimer,
+  cssDegree,
+  votePrice,
+  votedDetails,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
   checked: boolean;
   setChecked?: (c: boolean) => void;
-  showTimer?:boolean;
-}) => {
+  showTimer?: boolean;
+  cssDegree?: any;
+  votePrice?: any;
+  votedDetails?: any;
+  }) => {
+  const [borderColor, setborderColor] = useState("")
+  const [borderDeg, setBorderDeg] = useState("")
+  var params = useParams();
+  const { coins, totals } = useContext(CoinContext);
+  const [symbol1, symbol2] = (params?.id || "").split("-");
+  
+  useEffect(() => {
+    // getDeg(votedDetails)
+    getBorderColor()
+  }, [params]);
+
+  // console.log(votedDetails,"votedDetails")
+  
+  
+    const getBorderColor = () => {
+      if (symbol2 == undefined ) {
+    
+    if (votedDetails?.direction == 1) {
+      if (coins[params?.id].price > votePrice) {
+        setborderColor("#015117");
+      }
+      else if (coins[params?.id].price < votePrice) {
+        setborderColor("#74ff5d");      
+      }
+      else if (coins[params?.id].price == votePrice) {
+        setborderColor("#188c05");
+      }      
+      }
+    else {
+      if (coins[params?.id].price > votePrice) {
+        setborderColor("#74ff5d");
+      }
+      else if (coins[params?.id].price < votePrice) {
+        setborderColor("#015117");      
+      }
+      else if (coins[params?.id].price == votePrice) {
+        setborderColor("#188c05");
+      }      
+  }
+      }
+      
+    }
   return (
     <Timeframe
       as={"div"}
-      style={{ opacity: showTimer && checked ? 0.48 : '', background: showTimer && checked ? 'white' : ''}}
+      style={{
+        opacity: showTimer && checked ? 0.48 : "",
+        // background: showTimer && checked ? "white" : "",
+        background:
+          showTimer && checked
+            ? `radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor} ${
+                cssDegree || 0
+              }deg, white ${cssDegree || 0}deg ,white 360deg, green)`
+            : "",
+        // border: showTimer && checked ? "1px solid red" : "",
+      }}
       {...{
-        
         disabled,
         checked,
+        cssDegree,
         onClick: () => !disabled && setChecked && setChecked(!checked),
       }}
-      
     >
-      <TimeframeName {...{ checked }} style={{color:showTimer&&checked?'var(--color-6352e8)':''}}>
+      <TimeframeName
+        {...{ checked }}
+        style={{ color: showTimer && checked ? "var(--color-6352e8)" : "" }}
+      >
         {timeframeInitials(children)}
       </TimeframeName>
     </Timeframe>

@@ -46,7 +46,7 @@ const Group3991 = styled.div`
 const Logo = ({symbol, single}: BearVsBullRow & { single: boolean }) => {
   return (
     <Image
-      src={process.env.PUBLIC_URL + `/images/logos/${symbol.toUpperCase()}.svg`}
+      src={process.env.PUBLIC_URL + `/images/logos/${symbol?.toUpperCase()}.svg`}
       style={{
         margin: "0 auto",
         width: single ? 50 : 35,

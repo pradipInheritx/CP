@@ -89,7 +89,10 @@ const VotedCard = ({
   voteId,
   selectedTimeFrame,
   setSelectedTimeFrame,
-  selectedTimeFrameArray
+  selectedTimeFrameArray,
+  cssDegree,
+  votePrice,
+  
 }: {
   vote: VoteResultProps;
   coins: { [symbol: string]: Coin };
@@ -97,8 +100,11 @@ const VotedCard = ({
   symbol2: string;
   voteId: string;
   selectedTimeFrame?:number;
-  setSelectedTimeFrame?:(n:number)=>void;
-  selectedTimeFrameArray?:any;
+  setSelectedTimeFrame?: (n: number) => void;  
+  selectedTimeFrameArray?: any;
+  cssDegree?:any;
+  votePrice?:any;
+  
 }) => {
   const [coin1, coin2] = [
     coins[symbol1] || undefined,
@@ -139,7 +145,7 @@ const VotedCard = ({
   }
 
 
-
+console.log(vote,"voteCheck")
   
   return (
     <>
@@ -154,7 +160,9 @@ const VotedCard = ({
             },
             title: translate("Select voting time frame"),
             voted:true,
-            selectedTimeFrameArray:selectedTimeFrameArray
+            selectedTimeFrameArray: selectedTimeFrameArray,
+            cssDegree:cssDegree,
+            votePrice:votePrice,
           }}
         />
       </div>
@@ -184,7 +192,7 @@ const VotedCard = ({
             <Text2 >
             {coin2===undefined && <img  style={{marginLeft:'3px', border:vote.direction?(vote.valueVotingTime <coin1.price ?'2px solid blue':''):vote.valueVotingTime >coin1.price?'2px solid blue':'',borderRadius:vote.direction?(vote.valueVotingTime <coin1.price ?'50%':''):vote.valueVotingTime >coin1.price?'50%':''}} src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
               {/* @ts-ignore */}
-             {coin2 && <img  style={{marginLeft:'3px', border:vote.direction?((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score ?'2px solid blue':''):(coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'2px solid blue':'',borderRadius:vote.direction?((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score ?'50%':''):(coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'50%':''}} src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+                {coin2 && <img style={{ marginLeft: '3px', border: vote.direction ? ((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '2px solid blue' : '') : (coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '2px solid blue' : '', borderRadius: vote.direction ? ((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '50%' : '') : (coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '50%' : '' }} src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`} />}
         
          
               </Text2>
