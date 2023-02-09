@@ -63,6 +63,7 @@ console.log('rewarditem',rewardTimer)
        <> <div className="boxHolder" style={{
         right: window?.screen?.width<767?'':'0px',
         width: window?.screen?.width<767?'':'55%',
+        marginLeft:window?.screen?.width<365?'74px':''
        
 
        }}>

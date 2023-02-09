@@ -77,6 +77,7 @@ const CoinsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 2597
         } as VoteResultProps
       );
 

@@ -141,7 +141,7 @@ const VotedCard = ({
       
     row2 = coin2
       ? `${vote.timeframe.name} ${valueVotingTime}`
-      : `${voted} - ${vote.timeframe.name} $${valueVotingTime}`;
+      : `${voted} - ${vote.timeframe.name} $${valueVotingTime || 'loading'}`;
   }
 
 

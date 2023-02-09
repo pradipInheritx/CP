@@ -181,18 +181,18 @@ const TimeframeButton = ({
   if (symbol2 == undefined ) {  
     if (votedDetails?.direction == 1) {  
       switch (true) {
-      case coins[params?.id].price > votePrice :setborderColor("#015117") ; break;
-      case coins[params?.id].price < votePrice : setborderColor("#74ff5d"); break;
-      case coins[params?.id].price == votePrice : setborderColor("#188c05"); break;
+      case coins[params?.id || 'BTC'].price > votePrice :setborderColor("#015117") ; break;
+      case coins[params?.id || 'BTC'].price < votePrice : setborderColor("#74ff5d"); break;
+      case coins[params?.id || 'BTC'].price == votePrice : setborderColor("#188c05"); break;
         default:
           console.log("not work")
       }
     }
     else {        
       switch (true) {
-      case coins[params?.id].price > votePrice :setborderColor("#74ff5d") ; break;
-      case coins[params?.id].price < votePrice : setborderColor("#015117"); break;
-      case coins[params?.id].price == votePrice : setborderColor("#188c05"); break;
+      case coins[params?.id || 'BTC'].price > votePrice :setborderColor("#74ff5d") ; break;
+      case coins[params?.id || 'BTC'].price < votePrice : setborderColor("#015117"); break;
+      case coins[params?.id || 'BTC'].price == votePrice : setborderColor("#188c05"); break;
         default:
           console.log("not work")
         }
