@@ -397,7 +397,8 @@ useEffect(() => {
                             return (
                               <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
                                 {/* {hours < 10 ? `0${hours}` : hours}: */}
-                                5 votes in {' '}
+                                {Number(voteRules?.maxVotes)} votes in {' '}
+                                {hours < 1 ? null : hours}:
                                 {minutes < 10 ? `0${minutes}` : minutes}:
                                 {seconds < 10 ? `0${seconds}` : seconds}
                               </span>
