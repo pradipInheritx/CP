@@ -278,7 +278,8 @@ const calculateWinner = (vote: VoteResultProps) =>
 
 const VotedCard = ({ vote, id,coinSocketData,callbackFun }: VotedCardProps) => {
   const { coins } = useContext(CoinsContext);
- 
+  //  Math.abs((coins[vote.coin.split("-")[0]].price
+   console.log('votecardata',coins,vote.coin)
  useEffect(() => {
    
    if(!vote.valueExpirationTime){
