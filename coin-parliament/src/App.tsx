@@ -438,11 +438,11 @@ console.log('extravote', votesLast24Hours)
       });
     });
 
-    onSnapshot(doc(db, "stats", "coins"), (doc) => {
-      const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-      setCoins(newAllCoins);
-      saveCoins(newAllCoins);
-    });
+    // onSnapshot(doc(db, "stats", "coins"), (doc) => {
+    //   const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
+    //   setCoins(newAllCoins);
+    //   saveCoins(newAllCoins);
+    // });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);

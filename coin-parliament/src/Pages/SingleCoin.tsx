@@ -181,19 +181,17 @@ console.log('getVote called 2')
           getLeftTime(res.data(), index);
           
           AllvoteValueObject[index] = res.data();
-
-
-          
           setVotedDetails(AllvoteValueObject);
           setAllButtonTime(AllvoteValueObject);
           newTimeframe.push(index)
           console.log('choseTimeFrame1',newTimeframe)
           setSelectedTimeFrameArray(newTimeframe)
         }
-        // else{
-        //   console.log('choseTimeFrame',res,index)
-        //   setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
-        // }
+        else{
+          // console.log('choseTimeFrame',res,index)
+          // setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
+          setAllButtonTime();
+        }
       }))
     })
     .catch(error => {
