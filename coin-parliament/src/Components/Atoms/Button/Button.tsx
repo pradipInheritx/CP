@@ -211,7 +211,7 @@ const TimeframeButton = ({
       console.log(livePrice < votePrice - PricePer  ,"true or false");
     if (buttonDetails?.direction == 1) {  
       switch (true) {
-      case livePrice  < votePrice + PricePer  && livePrice  > votePrice - PricePer : setborderColor("#74ff5d"); break;
+      case livePrice  < votePrice + PricePer  && livePrice  > votePrice - PricePer : setborderColor("#188c05"); break;
       case livePrice  < votePrice  :setborderColor("#015117") ; break;
       case livePrice  > votePrice  : setborderColor("#74ff5d"); break;
         default:
@@ -223,7 +223,7 @@ const TimeframeButton = ({
       //   case livePrice > votePrice :setborderColor("#74ff5d") ; break;
       // case livePrice < votePrice : setborderColor("#015117"); break;
       // case livePrice + PricePer < votePrice  && livePrice - PricePer > votePrice: setborderColor("blue"); break;      
-      case (livePrice  < (votePrice + PricePer))  && (livePrice  > (votePrice - PricePer)) : setborderColor("#74ff5d"); break;
+      case (livePrice  < (votePrice + PricePer))  && (livePrice  > (votePrice - PricePer)) : setborderColor("#188c05"); break;
         case livePrice  < votePrice :setborderColor("#74ff5d ") ; break;
       case livePrice  > votePrice : setborderColor("#015117"); break;
         default:
