@@ -1,4 +1,5 @@
 import {ContentPage} from "../../Contexts/ContentContext";
+// import GameRule from "../../Pages/GameRule";
 
 const headers = [
   "What is the purpose of the Coin Parliament?",
@@ -43,13 +44,19 @@ const about =
   "Coin Parliament aims to provide a community environment where all of our users can share their opinions and vote freely and learn from each other. Everyone is welcome to come to our platform and provide insightful, delightful and informative thoughts, but we also hope to provide a space where everyone respects each other without spam, abuse or promotional messages. We want all users to feel comfortable and safe being in the space. Therefore, we are setting up some community rules to define what is acceptable and what is not — all users are expected to follow our community guidelines!\n\nWhoever fails to follow our rules will have their messages deleted, and further action taken if necessary. Coin Parliament could temporarily or permanently suspend accounts from being able to post, comment, repost or share any messages from the Coin Parliament discussion feature if community rules are repeatedly violated.";
 
 const privacy = ``;
+const GameRule = ``;
 
 export const myPages: ContentPage[] = [
   {
     title: "About",
     content: about,
     slug: "about",
-  },
+  },  
+  {
+    title: "Game Rule",
+    content: GameRule,
+    slug: "gamerule",
+  },    
   {
     title: "FAQ",
     content: privacy,

@@ -140,12 +140,14 @@ useEffect(() => {
   // return () => {
   //   clearInterval(timer);
   // }
-}, [voteId, getCpviData, vote,totals[params?.id ?? 'BTC']?.total,selectedTimeFrame])
+}, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
+  
 console.log('selected time frame',cpviData)
-  const calcVote = useCallback(async () => {
+ 
+const calcVote = useCallback(async () => {
     console.log('getVote called 3')
     // if (!mountedRef.current) return null;
-console.log('getVote called 2')
+    console.log('getVote called 2')
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframes[selectedTimeFrame || 0]?.seconds});
       if (v) {console.log('timeframe',v.data())
@@ -214,9 +216,10 @@ console.log('getVote called 2')
   useEffect(() => {
     console.log('get vote fun called')
     calcVote().then(void 0);
+    
     return () => {
       mountedRef.current = false;
-    };
+    };    
   }, [calcVote,selectedTimeFrame]);
 
 
@@ -224,10 +227,14 @@ console.log('getVote called 2')
   useEffect(() => {
     if (voteId) {
       onSnapshot(doc(db, "votes", voteId), (doc) => {
-        setVote(doc.data() as VoteResultProps);
-        console.log(doc.data(), "doc.data()")
-        var viewData = doc.data()
-                                
+
+        // if () {
+          
+          setVote(doc.data() as VoteResultProps);
+        // }
+
+        // console.log(doc.data(), "doc.data()")  
+        console.log(voteId,"voteId")
           // AllvoteValueObject = [];  
           // setAllButtonTime([...allButtonTime,viewData]);
         
