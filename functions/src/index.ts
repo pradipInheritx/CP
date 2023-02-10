@@ -608,11 +608,13 @@ exports.onCreatePaxTransaction = functions.firestore
     }
   });
 
-exports.fetchCoins = functions.pubsub.schedule("0 * * * *").onRun(async () => {
-  [0, 30].forEach((i) => {
-    setTimeout(async () => await fetchCoins(), i * 1000);
+exports.fetchCoins = functions.pubsub
+  .schedule("30 11 * * *")
+  .onRun(async () => {
+    [0, 30].forEach((i) => {
+      setTimeout(async () => await fetchCoins(), i * 1000);
+    });
   });
-});
 
 // ws.onmessage = async ({data}) => {
 //   // console.log('firebaseFunction message')
