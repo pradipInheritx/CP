@@ -94,13 +94,14 @@ const UpgradePage = () => {
         style={{
           background: "#160133",
           height: `${screenHeight()}`,
+          // width: `${window.screen.width > 979 ? "730px" : "100%"}`,
         }}
       >
         <div
           className=''
           style={{
             background: "#160133",
-            width: `${window.screen.width > 979 ? "60%" : "100%"}`,
+            width: `${window.screen.width > 979 ? "730px" : "100%"}`,
           }}
         >
           <TextContainer

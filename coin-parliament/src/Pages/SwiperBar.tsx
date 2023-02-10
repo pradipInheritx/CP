@@ -14,7 +14,7 @@ function SwiperBar( {children}: { children: React.ReactNode | string }) {
     infinite: false,
       centerMode: true,
       speed: 500,
-      slidesToShow: 5,
+    slidesToShow: 5,
       slidesToScroll: 4,
     initialSlide: 0,
       prevArrow: false,

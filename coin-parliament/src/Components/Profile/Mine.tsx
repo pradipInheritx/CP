@@ -175,7 +175,7 @@ const Mine = () => {
             </Col>
           </Row>
         )}
-        <Row className='align-items-stretch mt-1'>
+        <Row className='align-items-stretch mt-1 d-flex justify-content-center'>
           <div
             style={{
               background: "white",
@@ -183,6 +183,7 @@ const Mine = () => {
               color: "#6352E8",
               fontSize: "12px",
               marginTop: "30px",
+              width:`${window.screen.width>767?"730px":"100%"}`
             }}
           >
             <div

@@ -140,12 +140,14 @@ useEffect(() => {
   // return () => {
   //   clearInterval(timer);
   // }
-}, [voteId, getCpviData, vote,totals[params?.id ?? 'BTC']?.total,selectedTimeFrame])
+}, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
+  
 console.log('selected time frame',cpviData)
-  const calcVote = useCallback(async () => {
+ 
+const calcVote = useCallback(async () => {
     console.log('getVote called 3')
     // if (!mountedRef.current) return null;
-console.log('getVote called 2')
+    console.log('getVote called 2')
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframes[selectedTimeFrame || 0]?.seconds});
       if (v) {console.log('timeframe',v.data())
@@ -174,26 +176,22 @@ console.log('getVote called 2')
     Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
-        if (res) {        
-          
-          // console.log('choseTimeFrame',res,index)
-        
-          getLeftTime(res.data(), index);
-          
+        if (res) {                  
+          // console.log('choseTimeFrame',res,index)        
+          getLeftTime(res.data(), index);          
+
+
           AllvoteValueObject[index] = res.data();
-
-
-          
-          setVotedDetails(AllvoteValueObject);
           setAllButtonTime(AllvoteValueObject);
+          setVotedDetails(AllvoteValueObject);
           newTimeframe.push(index)
           console.log('choseTimeFrame1',newTimeframe)
           setSelectedTimeFrameArray(newTimeframe)
         }
-        // else{
-        //   console.log('choseTimeFrame',res,index)
-        //   setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
-        // }
+        else{                    
+          // setAllButtonTime();
+          // console.log('choseTimeFramesdfasd',allButtonTime)
+        }
       }))
     })
     .catch(error => {
@@ -204,9 +202,9 @@ console.log('getVote called 2')
   
 
 
-
   useEffect(() => {
     return () => {
+      setAllButtonTime();
       mountedRef.current = false;
     };
   }, []);
@@ -218,9 +216,10 @@ console.log('getVote called 2')
   useEffect(() => {
     console.log('get vote fun called')
     calcVote().then(void 0);
+    
     return () => {
       mountedRef.current = false;
-    };
+    };    
   }, [calcVote,selectedTimeFrame]);
 
 
@@ -228,10 +227,14 @@ console.log('getVote called 2')
   useEffect(() => {
     if (voteId) {
       onSnapshot(doc(db, "votes", voteId), (doc) => {
-        setVote(doc.data() as VoteResultProps);
-        console.log(doc.data(), "doc.data()")
-        var viewData = doc.data()
-                                
+
+        // if () {
+          
+          setVote(doc.data() as VoteResultProps);
+        // }
+
+        // console.log(doc.data(), "doc.data()")  
+        console.log(voteId,"voteId")
           // AllvoteValueObject = [];  
           // setAllButtonTime([...allButtonTime,viewData]);
         
