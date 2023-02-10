@@ -100,7 +100,7 @@ useEffect(() => {
 
       if(res) {
         console.log('choseTimeFrame',res,index)
-        console.log('pair data',res.data())
+        console.log('pair coin data data',res.data())
         
         newTimeframe.push(index)
         console.log('choseTimeFrame1',newTimeframe)

@@ -174,23 +174,21 @@ console.log('getVote called 2')
     Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
-        if (res) {        
-          
-          // console.log('choseTimeFrame',res,index)
-        
-          getLeftTime(res.data(), index);
-          
+        if (res) {                  
+          // console.log('choseTimeFrame',res,index)        
+          getLeftTime(res.data(), index);          
+
+
           AllvoteValueObject[index] = res.data();
-          setVotedDetails(AllvoteValueObject);
           setAllButtonTime(AllvoteValueObject);
+          setVotedDetails(AllvoteValueObject);
           newTimeframe.push(index)
           console.log('choseTimeFrame1',newTimeframe)
           setSelectedTimeFrameArray(newTimeframe)
         }
-        else{
-          // console.log('choseTimeFrame',res,index)
-          // setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
-          setAllButtonTime();
+        else{                    
+          // setAllButtonTime();
+          // console.log('choseTimeFramesdfasd',allButtonTime)
         }
       }))
     })
@@ -202,9 +200,9 @@ console.log('getVote called 2')
   
 
 
-
   useEffect(() => {
     return () => {
+      setAllButtonTime();
       mountedRef.current = false;
     };
   }, []);
