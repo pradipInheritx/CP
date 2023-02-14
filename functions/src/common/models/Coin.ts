@@ -272,7 +272,6 @@ export const getAllUpdated24HourRecords = async () => {
 };
 
 export const updateTrendInAllCoins = async (allOldCoinsValue: any) => {
-  console.info("allOldCoinsValue", allOldCoinsValue);
   const getAllDataCoins = await firestore()
     .collection("stats")
     .doc("coins")
@@ -280,8 +279,6 @@ export const updateTrendInAllCoins = async (allOldCoinsValue: any) => {
   const getAllCoinsData = getAllDataCoins.data();
   for (const coin in getAllCoinsData) {
     if (allOldCoinsValue[coin] && getAllCoinsData[coin]) {
-      console.info("Previous Value", allOldCoinsValue[coin]);
-      console.info("Latest Value", getAllCoinsData[coin]);
       const trend = Number(
         Number(
           ((allOldCoinsValue[coin].price || 0) /
