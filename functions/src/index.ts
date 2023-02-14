@@ -37,7 +37,7 @@ import {
   Leader,
   prepareCPVI,
   fetchAskBidCoin,
-  updatePriceArray,
+  //updatePriceArray,
 } from "./common/models/Coin";
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
@@ -346,7 +346,7 @@ exports.onUpdateUser = functions.firestore
     await addCpmTransaction(snapshot.after.id, amount);
   });
 
-exports.onUpdateCoinPrice = functions.firestore
+/*exports.onUpdateCoinPrice = functions.firestore
   .document("stats/coins")
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data();
@@ -356,7 +356,7 @@ exports.onUpdateCoinPrice = functions.firestore
     );
     console.log("priceChanged --->", priceChanged);
     if (priceChanged) await updatePriceArray(before, after);
-  });
+  });*/
 
 exports.onEnteringAddress = functions.firestore
   .document("users/{id}")
@@ -427,38 +427,20 @@ function setTime(
 exports.onVote = functions.firestore
   .document("votes/{id}")
   .onCreate(async (snapshot) => {
-    // console.log("vote created", snapshot.data());
     console.log("function called for firebase");
-    // axios.get('https://api.coincap.io/v2/rates')
-    //   .then(function (response) {
-    //     // handle success
-    //     console.log(response);
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    //   })
-    //   .finally(function () {
-    //     // always executed
-    //   });
 
     await updateVotesTotal();
     const data = snapshot.data() as VoteResultProps;
     const voteTime = admin.firestore.Timestamp.now().toMillis();
     const timeframe = data.timeframe;
     const expiration = voteTime + calculateOffset(timeframe);
-    // const rate = await getRateRemote();
-    // console.log('rate --->', rate);
     const [coin1, coin2] = data.coin.split("-");
     let valueVotingTime;
-    // if (coin2) {
-    //   valueVotingTime = [coin1, coin2].map((coin) => getPrice(rate, coin));
-    // } else {
-    //   valueVotingTime = getPrice(rate, coin1);
-    // }
 
     if (coin2) {
-      valueVotingTime = [coin1, coin2].map((coin) => getPrice(coin));
+      const coinFirst = await getPrice(coin1);
+      const coinSecond = await getPrice(coin2);
+      valueVotingTime = [coinFirst, coinSecond];
     } else {
       valueVotingTime = await getPrice(coin1);
     }
