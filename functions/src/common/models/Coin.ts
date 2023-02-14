@@ -213,12 +213,101 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
   };
 };
 
+export const insertNewCoinsWthTimestamp = async (newCoins: any) => {
+  let getCurrentTimestamp = firestore.Timestamp.fromDate(
+    moment().add(5, "hour").add(30, "minutes").toDate()
+  )
+    .toMillis()
+    .toString();
+  await firestore()
+    .collection("stats")
+    .doc("last24HoursPrice")
+    .collection(getCurrentTimestamp)
+    .doc("allCoins")
+    .create(newCoins);
+};
+
+export const getAllUpdated24HourRecords = async () => {
+  const getAllTimestampFromLast24Hour = await firestore()
+    .collection("stats")
+    .doc("last24HoursPrice")
+    .listCollections();
+
+  const startTime = firestore.Timestamp.fromDate(
+    moment().subtract(24, "hour").add(5, "hours").add(30, "minutes").toDate()
+  )
+    .toMillis()
+    .toString();
+  const endTime = firestore.Timestamp.fromDate(
+    moment().add(5, "hour").add(30, "minutes").toDate()
+  )
+    .toMillis()
+    .toString();
+
+  const getAllStoredTimestampIds = getAllTimestampFromLast24Hour
+    .map((timestamp) =>
+      timestamp.id > startTime && timestamp.id < endTime
+        ? timestamp.id
+        : undefined
+    )
+    .filter((timestamp) => timestamp !== "undefined")
+    .sort();
+
+  if (getAllStoredTimestampIds && getAllStoredTimestampIds.length) {
+    const getTimeStampDcument: string =
+      getAllStoredTimestampIds[0] || "undefined";
+    const getTimestampDocuments = await firestore()
+      .collection("stats")
+      .doc("last24HoursPrice")
+      .collection(getTimeStampDcument)
+      .get();
+
+    let getLast24HourOldCoinsData = {};
+
+    getTimestampDocuments.docs.forEach((getAllCoins) => {
+      getLast24HourOldCoinsData = getAllCoins.data();
+    });
+    await updateTrendInAllCoins(getLast24HourOldCoinsData);
+  }
+};
+
+export const updateTrendInAllCoins = async (allOldCoinsValue: any) => {
+  console.info("allOldCoinsValue", allOldCoinsValue);
+  const getAllDataCoins = await firestore()
+    .collection("stats")
+    .doc("coins")
+    .get();
+  const getAllCoinsData = getAllDataCoins.data();
+  for (const coin in getAllCoinsData) {
+    if (allOldCoinsValue[coin] && getAllCoinsData[coin]) {
+      console.info("Previous Value", allOldCoinsValue[coin]);
+      console.info("Latest Value", getAllCoinsData[coin]);
+      const trend = Number(
+        Number(
+          ((allOldCoinsValue[coin].price || 0) /
+            (getAllCoinsData[coin].price || 1) -
+            1) *
+            100
+        ).toFixed(3)
+      );
+      getAllCoinsData[coin].trend = trend;
+    }
+    const allCoins = await getAllCoins();
+    await firestore()
+      .collection("stats")
+      .doc("coins")
+      .set(filterCoins(getAllCoinsData, allCoins), { merge: true });
+  }
+};
+
 export const fetchCoins = async () => {
   const res: IWazirXSnapshotMetaData = await fetchCoinsFromCoinCapAndWazirX();
   if (res && res.count) {
     const newCoins = calculateCoinsByWazirXAndCoinCap(res);
     if (newCoins) {
       const allCoins = await getAllCoins();
+      await insertNewCoinsWthTimestamp(newCoins);
+      await getAllUpdated24HourRecords();
       await firestore()
         .collection("stats")
         .doc("coins")
@@ -238,6 +327,7 @@ export const updatePriceArray = async (before: any, after: any) => {
       if (newPriceArray.length > timesOfAPICallIn24Hours) {
         newPriceArray.pop();
       }
+
       after[key].last24HoursPrice = newPriceArray;
       const trend = Number(
         Number(
