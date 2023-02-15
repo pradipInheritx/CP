@@ -153,7 +153,7 @@ const Security = () => {
                         <FormControl
                           type="password"
                           value={oldPassword || ""}
-                          // onChange={(e) => setOldPassword(e.target.value)}
+                          onChange={(e) => setOldPassword(e.target.value)}
                           disabled={!changePassword}
                         />                           
                       </>                                            

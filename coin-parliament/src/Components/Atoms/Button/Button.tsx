@@ -97,7 +97,7 @@ const Timeframe = styled(RadiusFull)`
   // animation: bull_shake_left 2s ease 2s 3 alternate forwards;
   width: 71px;
   height: 70px;
-  background: ${(props: { checked: boolean, borderDeg:number ,borderColor:string}) =>
+  background: ${(props: { checked: boolean, borderDeg:any ,borderColor:string}) =>
  props.checked    
       ? "var(--color-6352e8) 0% 0% no-repeat padding-box;"
     : `radial-gradient(white 67%, transparent 55%),conic-gradient(${props.borderColor} 0deg ,${props.borderColor} ${props.borderDeg}deg, white ${props.borderDeg}deg ,white 360deg, green)`};
@@ -156,6 +156,7 @@ const TimeframeButton = ({
   // votePrice,
   votedDetails,
   buttonDetails,
+  PariButtonDetails,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -166,93 +167,100 @@ const TimeframeButton = ({
   // votePrice?: any;
   votedDetails?: any;
   buttonDetails?: any;
-  }) => {
-  const [borderColor, setborderColor] = useState<string>("white")
-  const [borderDeg, setBorderDeg] = useState<number>(0)
-  const [livePrice, setLivePrice] = useState<number>(0)
+  PariButtonDetails?: any;
+}) => {
+  const [borderColor, setborderColor] = useState<string>("white");
+  const [borderDeg, setBorderDeg] = useState<number>(0);
+
+  const [livePrice, setLivePrice] = useState<number>(0);
   var params = useParams();
   const { coins, totals } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
-    // @ts-ignore
-  const [votePrice, setvotePrice] = useState<number>(coins[params?.id]?.price)
+  // @ts-ignore
+  const [votePrice, setvotePrice] = useState<number>(coins[params?.id]?.price);
   useEffect(() => {
-    if (buttonDetails != undefined) {      
+    if (buttonDetails != undefined) {
       getDeg(buttonDetails);
       getBorderColor();
     }
     // @ts-ignore
     setLivePrice(coins[params?.id]?.price);
 
-    if (buttonDetails != undefined && buttonDetails?.valueVotingTime) {      
-      setvotePrice(buttonDetails.valueVotingTime );
+    if (buttonDetails != undefined && buttonDetails?.valueVotingTime) {
+      setvotePrice(buttonDetails.valueVotingTime);
     }
-    
-  }, [params,buttonDetails]);
+  }, [params, buttonDetails]);
 
-  console.log(votePrice, "buttonDetails");
-// @ts-ignore
   
-  const getDeg = (value) => {
-    if (value !=undefined)
-    {
-    let t = value?.voteTime / 1000; //mili
-    let d = value?.timeframe.seconds; //second already
-    let liveTime = Date.now() / 1000;
-    let ori = t + d;
-    let val = (ori - liveTime) / d;
-    let deg = val * 360;    
-      setBorderDeg(Math.round(deg))      
-    }    
-  }
-  // const ShowDeg = setInterval(() => {
-  // if(borderDeg != 0)
-  // {
-  //   getDeg(buttonDetails)
-  // }
-  // else {
-  //     clearInterval(ShowDeg)
-  // }  
-  // }
-  // , 0);
+  // @ts-ignore
 
-  const getBorderColor = () => {
-      let  PricePer= livePrice/100
-    if (symbol2 == undefined) {      
-      console.log(livePrice < votePrice - PricePer  ,"true or false");
-    if (buttonDetails?.direction == 1) {  
-      // #218b17 #015117 #74ff5d
-      switch (true) {
-      case livePrice  < votePrice + PricePer  && livePrice  > votePrice - PricePer : setborderColor("#218b17"); break;
-      case livePrice  < votePrice  :setborderColor("#218b17") ; break;
-      case livePrice  > votePrice  : setborderColor("#218b17"); break;
-        default:
-          console.log("not work")
-      }      
+  const getDeg = (value) => {
+    if (value != undefined) {
+      let t = value?.voteTime / 1000; //mili
+      let d = value?.timeframe.seconds; //second already
+      let liveTime = Date.now() / 1000;
+      let ori = t + d;
+      let val = (ori - liveTime) / d;
+      let deg = val * 360;
+      setBorderDeg(Math.round(deg));
     }
-    else if(buttonDetails?.direction == 0){        
-      switch (true) {          
-        //#218b17 #74ff5d #015117
-      case (livePrice  < (votePrice + PricePer))  && (livePrice  > (votePrice - PricePer)) : setborderColor("#218b17"); break;
-      case livePrice  < votePrice :setborderColor("#218b17") ; break;
-      case livePrice  > votePrice : setborderColor("#218b17"); break;
-        default:
-          console.log("not work")
+  };
+
+  
+  const getBorderColor = () => {
+    let PricePer = livePrice / 100;
+    if (symbol2 == undefined) {
+      console.log(livePrice < votePrice - PricePer, "true or false");
+      if (buttonDetails?.direction == 1) {
+        // #218b17 #015117 #74ff5d
+        switch (true) {
+          case livePrice < votePrice + PricePer &&
+            livePrice > votePrice - PricePer:
+            setborderColor("#218b17");
+            break;
+          case livePrice < votePrice:
+            setborderColor("#218b17");
+            break;
+          case livePrice > votePrice:
+            setborderColor("#218b17");
+            break;
+          default:
+            console.log("not work");
+        }
+      } else if (buttonDetails?.direction == 0) {
+        switch (true) {
+          //#218b17 #74ff5d #015117
+          case livePrice < votePrice + PricePer &&
+            livePrice > votePrice - PricePer:
+            setborderColor("#218b17");
+            break;
+          case livePrice < votePrice:
+            setborderColor("#218b17");
+            break;
+          case livePrice > votePrice:
+            setborderColor("#218b17");
+            break;
+          default:
+            console.log("not work");
+        }
       }
-     }
-   }
-      
-  }
-  console.log(borderColor,"borderDeg")
+    }
+  };
+  
   return (
     <Timeframe
       as={"div"}
       style={{
-        opacity: showTimer && checked ? 0.48 : borderColor!="white" ?0.48:"",       
-        background: showTimer && checked  ?`radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor } ${ borderDeg}deg, white ${borderDeg}deg ,white 360deg, green)`:"",        
+        opacity:
+          showTimer && checked ? 0.48 : borderColor != "white" ? 0.48 : "",
+        background:
+          showTimer && checked
+            ? `radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor} ${borderDeg}deg, white ${borderDeg}deg ,white 360deg, green)`
+            : "",
       }}
       {...{
         disabled,
-        checked, 
+        checked,
         borderDeg,
         borderColor,
         onClick: () => !disabled && setChecked && setChecked(!checked),
