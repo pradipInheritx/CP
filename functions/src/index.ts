@@ -713,7 +713,3 @@ exports.sendEmail = functions.https.onCall(async () => {
   };
   await sgMail.send(msg);
 });
-
-exports.removeCoinsRateMoreThan24Hours = functions.pubsub
-  .schedule("every 1 hours")
-  .onRun(async (context) => {});
