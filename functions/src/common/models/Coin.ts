@@ -11,6 +11,7 @@ import {
   defaultHeader,
   successMessage,
 } from "../consts/config";
+import allCoinsDecimalFixedVaues from "../consts/coins.constant.json";
 
 export type Coin = {
   name: string;
@@ -47,6 +48,21 @@ export type IWazirXSnapshotMetaData = {
   tickers?: IWazirXSnapshotTickers[];
 };
 
+export type CoinsWithKey = {
+  [key: string]: {
+    id: number;
+    price: any;
+    symbol: string;
+    name: string;
+  };
+};
+
+export type CoinsWithFixedDecimalValue = {
+  [key: string]: {
+    fixedValue: number;
+  };
+};
+
 export const filterCoins: (
   input: { [p: string]: Coin },
   allCoins: string[]
@@ -64,48 +80,6 @@ export const filterCoins: (
 
   return cs;
 };
-
-/* export const calculateCoinsByTicker: (
-  res: ICryptoSnapshotTickers
-) => { [p: string]: Coin } | undefined = (res: ICryptoSnapshotTickers) => {
-  return res.tickers
-    ?.map((t) => {
-      if (t.ticker?.slice(-3) === "USD") {
-        return {
-          symbol: t.ticker?.substr(2).slice(0, -3) || "",
-          price: t.lastTrade?.p || 0,
-          // trend: Number(
-          //     Number(
-          //         ((t.lastTrade?.p || 0) / (t.prevDay?.c || 1) - 1) * 100
-          //     ).toFixed(3)
-          // ),
-        };
-      }
-      return undefined;
-    })
-    .filter((t) => t)
-    .reduce((total, current) => {
-      if (current) {
-        // const {symbol, price, trend} = current;
-        const { symbol, price } = current;
-        const data = (
-          coinList as unknown as {
-            [key: string]: {
-              id: number;
-              name: string;
-              symbol: string;
-            };
-          }
-        )[symbol];
-        const { id, name } = data || {};
-        if (id) {
-          // total[symbol] = {price, symbol, id, name, trend};
-          total[symbol] = { price, symbol, id, name };
-        }
-      }
-      return total;
-    }, {} as { [key: string]: Coin });
-};*/
 
 export const calculateCoinsByWazirXAndCoinCap = (
   getCoins: IWazirXSnapshotMetaData
@@ -213,8 +187,8 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
   };
 };
 
-export const insertNewCoinsWthTimestamp = async (newCoins: any) => {
-  let getCurrentTimestamp = firestore.Timestamp.fromDate(
+export const insertNewCoinsWthTimestamp = async (newCoins: CoinsWithKey) => {
+  const getCurrentTimestamp = firestore.Timestamp.fromDate(
     moment().add(5, "hour").add(30, "minutes").toDate()
   )
     .toMillis()
@@ -271,30 +245,86 @@ export const getAllUpdated24HourRecords = async () => {
   }
 };
 
-export const updateTrendInAllCoins = async (allOldCoinsValue: any) => {
+export const removeTheBefore24HoursData = async () => {
+  // const timestamp24hrsBefore = firestore.Timestamp.fromDate(
+  //   moment().subtract(48, "hour").add(5, "hours").add(30, "minutes").toDate()
+  // )
+  //   .toMillis()
+  //   .toString();
+  const getAllPrevious24HoursCollection = await firestore()
+    .collection("stats")
+    .doc("last24HoursPrice")
+    .listCollections();
+
+  const getAllStoredTimestampIds = getAllPrevious24HoursCollection.map(
+    (timestamp) => timestamp.id
+  );
+
+  const collectionRef = await firestore().collection(
+    getAllStoredTimestampIds[0]
+  );
+
+  const query = collectionRef.limit(10);
+  const snapshot = await query.get();
+
+  const batchSize = snapshot.size;
+  if (batchSize === 0) {
+    // When there are no documents left, we are done
+    console.info("No Document Left");
+  }
+
+  const batch = await firestore().batch();
+  // console.log("batch =>", batch);
+  snapshot.docs.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+  await batch.commit();
+};
+
+export const updateTrendInAllCoins = async (allOldCoinsValue: CoinsWithKey) => {
   const getAllDataCoins = await firestore()
     .collection("stats")
     .doc("coins")
     .get();
   const getAllCoinsData = getAllDataCoins.data();
   for (const coin in getAllCoinsData) {
-    if (allOldCoinsValue[coin] && getAllCoinsData[coin]) {
-      const trend = Number(
-        Number(
-          ((allOldCoinsValue[coin].price || 0) /
-            (getAllCoinsData[coin].price || 1) -
-            1) *
-            100
-        ).toFixed(3)
-      );
-      getAllCoinsData[coin].trend = trend;
+    if (coin in getAllCoinsData) {
+      if (allOldCoinsValue[coin] && getAllCoinsData[coin]) {
+        const trend = Number(
+          Number(
+            ((allOldCoinsValue[coin].price || 0) /
+              (getAllCoinsData[coin].price || 1) -
+              1) *
+              100
+          ).toFixed(3)
+        );
+        getAllCoinsData[coin].trend = trend;
+        const allCoins = await getAllCoins();
+        await firestore()
+          .collection("stats")
+          .doc("coins")
+          .set(filterCoins(getAllCoinsData, allCoins), { merge: true });
+      }
     }
-    const allCoins = await getAllCoins();
-    await firestore()
-      .collection("stats")
-      .doc("coins")
-      .set(filterCoins(getAllCoinsData, allCoins), { merge: true });
   }
+};
+
+export const updateFixedValueInAllCoins = async (getAllCoins: CoinsWithKey) => {
+  const allCoinsDecimalFixedVauesFromJson: CoinsWithFixedDecimalValue =
+    allCoinsDecimalFixedVaues;
+
+  for (const coin in getAllCoins) {
+    if (coin in getAllCoins) {
+      getAllCoins[coin].price =
+        allCoinsDecimalFixedVauesFromJson[coin] &&
+        allCoinsDecimalFixedVauesFromJson[coin].fixedValue
+          ? Number(getAllCoins[coin].price).toFixed(
+              allCoinsDecimalFixedVauesFromJson[coin].fixedValue
+            )
+          : Number(getAllCoins[coin].price).toFixed(2);
+    }
+  }
+  return getAllCoins;
 };
 
 export const fetchCoins = async () => {
@@ -305,10 +335,16 @@ export const fetchCoins = async () => {
       const allCoins = await getAllCoins();
       await insertNewCoinsWthTimestamp(newCoins);
       await getAllUpdated24HourRecords();
+      //await removeTheBefore24HoursData();
+      const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
+        filterCoins(newCoins, allCoins)
+      );
       await firestore()
         .collection("stats")
         .doc("coins")
-        .set(filterCoins(newCoins, allCoins), { merge: true });
+        .set(getUpdateFixedValueInAllCoins, {
+          merge: true,
+        });
     }
   }
 };

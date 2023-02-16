@@ -1,0 +1,62 @@
+{
+    "BTC": {
+        "fixedValue": 2
+    },
+    "ETH": {
+        "fixedValue": 2
+    },
+    "BNB": {
+        "fixedValue": 2
+    },
+    "ADA": {
+        "fixedValue": 4
+    },
+    "SOL": {
+        "fixedValue": 2
+    },
+    "XRP": {
+        "fixedValue": 4
+    },
+    "DOGE": {
+        "fixedValue": 4
+    },
+    "DOT": {
+        "fixedValue": 2
+    },
+    "SHIB": {
+        "fixedValue": 7
+    },
+    "MATIC": {
+        "fixedValue": 4
+    },
+    "CRO": {
+        "fixedValue": 4
+    },
+    "LTC": {
+        "fixedValue": 2
+    },
+    "LINK": {
+        "fixedValue": 2
+    },
+    "UNI": {
+        "fixedValue": 2
+    },
+    "TRX": {
+        "fixedValue": 5
+    },
+    "XLM": {
+        "fixedValue": 4
+    },
+    "MANA": {
+        "fixedValue": 2
+    },
+    "HBAR": {
+        "fixedValue": 4
+    },
+    "VET": {
+        "fixedValue": 5
+    },
+    "SAND": {
+        "fixedValue": 2
+    }
+}

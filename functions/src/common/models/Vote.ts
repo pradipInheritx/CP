@@ -1,6 +1,5 @@
-// import {firestore} from "firebase-admin";
 import * as admin from "firebase-admin";
-import {UserTypeProps} from "./User";
+import { UserTypeProps } from "./User";
 import Timestamp = admin.firestore.Timestamp;
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 
@@ -19,7 +18,7 @@ export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
     return modelObject;
   },
   fromFirestore(
-      snapshot: FirebaseFirestore.QueryDocumentSnapshot
+    snapshot: FirebaseFirestore.QueryDocumentSnapshot
   ): VoteResultProps {
     const data = snapshot.data();
     return data as VoteResultProps;
@@ -32,7 +31,7 @@ export type VoteResultProps = VoteProps & {
   valueExpirationTime?: number | number[];
   success?: number;
   score?: number;
-  CPMRangePercentage: number
+  CPMRangePercentage: number;
 };
 
 export type TimeFrame = {
@@ -47,32 +46,35 @@ export enum Direction {
 }
 
 export const calculateOffset: (timeframe: TimeFrame) => number = (
-    timeframe: TimeFrame,
+  timeframe: TimeFrame
 ) => timeframe.seconds * 1000;
 
 export const updateVotesTotal = async () => {
   console.log("Beginning execution of updateVotesTotal 2 --->");
-  const app = await admin.firestore()
-      .collection("stats").doc("app").get();
+  const app = await admin.firestore().collection("stats").doc("app").get();
   console.log("Beginning execution of updateVotesTotal --->");
   if (!app.exists || (app.exists && !app.data()?.totalVotes)) {
-    const votes = await admin.firestore()
-        .collection("votes").get();
+    const votes = await admin.firestore().collection("votes").get();
 
-    await admin.firestore()
-        .collection("stats").doc("app").set({totalVotes: votes.size}, {merge: true});
+    await admin
+      .firestore()
+      .collection("stats")
+      .doc("app")
+      .set({ totalVotes: votes.size }, { merge: true });
   } else {
-    await admin.firestore()
-        .collection("stats").doc("app").update({totalVotes: admin.firestore.FieldValue.increment(1)});
+    await admin
+      .firestore()
+      .collection("stats")
+      .doc("app")
+      .update({ totalVotes: admin.firestore.FieldValue.increment(1) });
   }
   console.log("Finished execution of updateVotesTotal --->");
   return;
 };
 
-
 export const updateVotesTotalForSingleCoin = async (coin: any) => {
-  console.log("Beginning execution of updateVotesTotalForSingleCoin --->");
   const data = await admin.firestore().collection("stats").doc("totals").get();
+
   const mappedData = data.data();
 
   const obj: any = {};
@@ -82,17 +84,14 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
       total: mappedData[coin].total + 1,
     };
 
-    await admin.firestore()
-        .collection("stats").doc("totals").update(obj);
+    await admin.firestore().collection("stats").doc("totals").update(obj);
   } else {
-    console.log("else");
     obj[`${coin}`] = {
       success: 0,
       total: 1,
     };
-
     const test = await admin.firestore().collection("stats").doc("totals");
-    await test.set(obj, {merge: true});
+    await test.set(obj, { merge: true });
   }
 
   console.log("Finished execution of updateVotesTotalForSingleCoin --->");
