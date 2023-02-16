@@ -123,7 +123,7 @@ useEffect(() => {
     console.error('promiseAll',error);
   });
  
-}, [user?.uid, params?.id, selectedTimeFrame])
+}, [user?.uid, params?.id, selectedTimeFrame,voteId,vote])
   useEffect(() => {
     return () => {
       setAllPariButtonTime();

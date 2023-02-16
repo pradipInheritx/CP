@@ -176,8 +176,10 @@ const TimeframeButton = ({
   var params = useParams();
   const { coins, totals } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
+  
+
   // @ts-ignore
-  const [votePrice, setvotePrice] = useState<number>(coins[params?.id]?.price);
+  const [votePrice, setvotePrice] = useState<any>(coins[params?.id]?.price);
   useEffect(() => {
     if (buttonDetails != undefined) {
       getDeg(buttonDetails);
@@ -187,10 +189,11 @@ const TimeframeButton = ({
     setLivePrice(coins[params?.id]?.price);
 
     if (buttonDetails != undefined && buttonDetails?.valueVotingTime) {
-      setvotePrice(buttonDetails.valueVotingTime);
+      setvotePrice(buttonDetails?.valueVotingTime);
     }
   }, [params, buttonDetails]);
 
+  
   
   // @ts-ignore
 
@@ -209,8 +212,7 @@ const TimeframeButton = ({
   
   const getBorderColor = () => {
     let PricePer = livePrice / 100;
-    if (symbol2 == undefined) {
-      console.log(livePrice < votePrice - PricePer, "true or false");
+    if (symbol2 == undefined) {    
       if (buttonDetails?.direction == 1) {
         // #218b17 #015117 #74ff5d
         switch (true) {
@@ -229,7 +231,7 @@ const TimeframeButton = ({
         }
       } else if (buttonDetails?.direction == 0) {
         switch (true) {
-          //#218b17 #74ff5d #015117
+          //#218b17 #74ff5d #015117 
           case livePrice < votePrice + PricePer &&
             livePrice > votePrice - PricePer:
             setborderColor("#218b17");
@@ -244,6 +246,67 @@ const TimeframeButton = ({
             console.log("not work");
         }
       }
+    } else if (symbol2 !== undefined) {
+      let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+      let bothCurrentPrice = [
+        buttonDetails?.valueVotingTime[0],
+        buttonDetails?.valueVotingTime[1],
+      ];
+      let diff = [
+        bothCurrentPrice[0] / bothLivePrice[0],
+        bothCurrentPrice[1] / bothLivePrice[1],
+      ];
+      let winner = diff[0] < diff[1] ? 1 : 0;
+      const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+      if ((averageValue == averageValue)) {
+        setborderColor("#218b17");
+      } else {
+        if (buttonDetails?.direction == 1) {
+          winner == buttonDetails?.direction
+            ? setborderColor("#74ff5d") 
+            : setborderColor("#015117");
+        } else if (buttonDetails?.direction == 0) {
+          winner != buttonDetails?.direction
+            ? setborderColor("#74ff5d")
+            : setborderColor("#015117");
+        }
+      }
+        // if (buttonDetails?.direction == 1) {
+        //   // #218b17 #015117 #74ff5d
+
+        //   let FirstPricePer = bothLivePrice[1] / 100;
+        //   switch (true) {
+        //     case bothLivePrice[1] < bothCurrentPrice[1] + FirstPricePer &&
+        //       bothLivePrice[1] > bothCurrentPrice[1] - FirstPricePer:
+        //       setborderColor("#218b17");
+        //       break;
+        //     case bothLivePrice[1] < bothCurrentPrice[1]:
+        //       setborderColor("#218b17");
+        //       break;
+        //     case bothLivePrice[1] > bothCurrentPrice[1]:
+        //       setborderColor("#218b17");
+        //       break;
+        //     default:
+        //       console.log("not work");
+        //   }
+        // } else if (buttonDetails?.direction == 0) {
+        //   let SectPricePer = bothLivePrice[0] / 100;
+        //   switch (true) {
+        //     //#218b17 #74ff5d #015117
+        //     case bothLivePrice[0] < bothCurrentPrice[1] + SectPricePer &&
+        //       bothLivePrice[0] > bothCurrentPrice[1] - SectPricePer:
+        //       setborderColor("#218b17");
+        //       break;
+        //     case bothLivePrice[0] < bothCurrentPrice[1]:
+        //       setborderColor("#218b17");
+        //       break;
+        //     case bothLivePrice[0] > bothCurrentPrice[1]:
+        //       setborderColor("#218b17");
+        //       break;
+        //     default:
+        //       console.log("not work");
+        //   }
+        // }
     }
   };
   
