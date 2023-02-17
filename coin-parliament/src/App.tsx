@@ -113,6 +113,7 @@ import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
+import SingalCard from "./Pages/SingalCard";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -218,6 +219,7 @@ function App() {
     classes.forEach((c) => body.classList.add(c.toLowerCase()));
   }, [pathname]);
   const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  const [changePrice, setChangePrice] = useState<any>(0);
   const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
@@ -439,11 +441,12 @@ console.log('extravote', votesLast24Hours)
       });
     });
 
-    // onSnapshot(doc(db, "stats", "coins"), (doc) => {
-    //   const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-    //   setCoins(newAllCoins);
-    //   saveCoins(newAllCoins);
-    // });
+    onSnapshot(doc(db, "stats", "coins"), (doc) => {
+      const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
+      // setChangePrice(changePrice + 1)
+      setCoins(newAllCoins);
+      saveCoins(newAllCoins);
+    });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);
@@ -459,6 +462,7 @@ console.log('extravote', votesLast24Hours)
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
+      
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
     });
@@ -739,7 +743,9 @@ votesLast24HoursRef.get()
                 }}
               >
                 <CoinsContext.Provider
-                  value={{
+                    value={{
+                      changePrice,
+                    setChangePrice,
                     ws,
                     rest,
                     coins,
@@ -778,7 +784,8 @@ votesLast24HoursRef.get()
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
                           // width={width}
-                        >
+                          >
+                            
                           <Header
                           remainingTimer={remainingTimer}
                             logo={
@@ -923,6 +930,10 @@ votesLast24HoursRef.get()
                                         <Route
                                           path='nftAlbum/:name'
                                           element={<NFTGalleryType />}
+                                        />
+                                        <Route
+                                          path='singalCard/:id'
+                                          element={<SingalCard />}
                                         />
                                         <Route
                                           path='coins/:id'

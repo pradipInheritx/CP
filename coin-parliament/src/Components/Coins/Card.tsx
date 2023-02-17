@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import {Heart} from "../Atoms/Checkbox/Icon";
 import {BearVsBullRow, getVotes} from "../../common/models/CoinTable";
 import {Image} from "react-bootstrap";
 import {Coin, formatCurrency, precision} from "../../common/models/Coin";
-import {Totals} from "../../Contexts/CoinsContext";
+import CoinsContext, {Totals} from "../../Contexts/CoinsContext";
 import {Buttons} from "../Atoms/Button/Button";
 import Trend from "../Atoms/utils/Trend";
 import UserContext from "../../Contexts/User";
@@ -86,8 +86,9 @@ const Price = styled.div`
   min-width: 56px;
   font-family: var(--font-family-poppins);
   font-weight: 400;
-  color: ${(props: { single: boolean }) =>
-          props.single ? "var(--white)" : "#23036a"};
+  color: ${(props: { single: boolean }) => props.single ? "var(--white)" : "#23036a"};
+          
+
   font-size: ${(props: { single: boolean }) =>
           props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
   text-align: center;
@@ -186,12 +187,86 @@ const Card = ({
 }: CoinCardProps) => {
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
+  // const [changeColor, setChangeColor] = useState<string>("blue")
+  // const [currentPrice, setCurrentPrice] = useState<any>("")
+  // const { changePrice } = useContext(CoinsContext);
+  // @ts-ignore
+ 
+  // const [ changePrice,setChangePrice ] = useState<any>(0);
+  
+  
+//   const runForColor = () => {
+//     setInterval(() => {
+//       dispatch({ type: "CHECKPRICE",  livePrice:coins[symbol]?.price });
+//     }, 5000);
+// }
+//   // @ts-ignore
+//   const reducer = (state, action) => {  
+//     if (state != undefined) {
+//       if (state == action.livePrice) {
+//         setChangeColor("gray")
+//         setCurrentPrice(action.livePrice)
+//       }
+//       else if (state < action.livePrice) {
+//         setChangeColor("Green")
+//         setCurrentPrice(action.livePrice)
+//       }
+//       else if (state > action.livePrice) {
+//         setChangeColor("Red")
+//         setCurrentPrice(action.livePrice)
+//       }
+//     }
+//     else {
+//       setChangeColor("blue")
+//       setCurrentPrice(action.livePrice)
+//     }
+// };
+
+  
+  // const OnlyCheckColor = () => {
+  //   setInterval(() => {
+  //     if (Number(coins[symbol]?.price > currentPrice)) {
+  //     setCurrentPrice(Number(coins[symbol]?.price) + 2 )  
+  //     }
+  //     if (Number(coins[symbol]?.price < currentPrice)) {
+  //       setCurrentPrice(Number(coins[symbol]?.price) -3)
+  //     }      
+  //   }, 1000);
+  // }
+  
+// useEffect(() => {
+//   runForColor()
+//   // OnlyCheckColor()
+//   }, [])
+
+//  const [todos, dispatch] = useReducer(reducer, currentPrice);
+// setCurrentPrice((prevState: any) => {
+//         // console.log(prevState,"prevState");
+//         if (prevState != undefined ) {                
+//         console.log( "newprevState")
+//           prevState == coins[symbol]?.price ? setChangeColor("gray")
+//             : prevState < coins[symbol]?.price ? setChangeColor("Green") : setChangeColor("Red")
+//           // setCurrentPrice()
+          
+//           return Number(coins[symbol]?.price)
+//       }
+//       else {        
+//         setChangeColor("blue")
+//         return coins[symbol]?.price
+//       }
+    
+//     })
+
+  
+  // console.log(changeColor,currentPrice,"changeColor");
+
   let params = useParams();
-  console.log('params',params)
+  
   return (
     <LighCart1
       {...{ single }}
     >
+      {/* <button onClick={()=>{setChangePrice(changePrice + 1)}}>Click me</button> */}
       <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-180px'}} onClick={
         ()=>{
           if(!user?.uid){
@@ -237,7 +312,9 @@ const Card = ({
         </div>
       </LogoContainer>
       <Group3991>
-        <Price {...{single}}>{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
+        <Price {...{ single }}
+        // style={{color:`${changeColor}`}}
+        >{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
         <Trend1 {...{single}}>
           <Trend num={coins[symbol]?.trend || 0}/>
         </Trend1>

@@ -11,11 +11,10 @@ import bkgnd from "../assets/images/bkgnd.png";
 import TheEagle from "../assets/images/TheEagle.png";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Card = styled.div`
-
-
 
   border-radius: 0px 0px 8px 8px;
   text-transform: uppercase;
@@ -147,10 +146,11 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
-  
+  const navigate = useNavigate();
   
 
   return (
+    
     <div
       onMouseEnter={() => {
         setFlip(!flip);
@@ -164,7 +164,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       onFocusCapture={() => {
         setFlip(!flip);
       }}
-      className={`card-container  ${
+      className={`card-container ${
         flipCard == true || flip != true ? " flipped" : ""
       }`}
       onClick={() => {
@@ -224,11 +224,10 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             <span>
               {pathnameName[1] == "profile" ? "Quantity" : "Total quantity"}
             </span>
-            <span>
-              {pathnameName[1] == "profile"
-                ? "Minted Time"
-                : "Number of holders"}
-            </span>
+            {pathnameName[1] == "profile" ? <span>Minted Time</span> : <span>Number of holders: 10<u onClick={() => {
+              navigate(`/singalCard/${id}`)
+            }}
+            >  View all </u> </span>}
           </div>
         </CardBack>
       </div>
