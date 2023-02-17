@@ -109,14 +109,7 @@ const ProfileNftGalleryType = () => {
         cardNo: "CP244",
         cardHeader: "INVESTOR",
         type: "WINTER",
-      },
-      {
-        id: 5,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
+      },      
     ],
     [
       {
@@ -146,14 +139,7 @@ const ProfileNftGalleryType = () => {
         cardNo: "CP245",
         cardHeader: "INVESTOR",
         type: "WINTER",
-      },
-      {
-        id: 10,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
+      },      
     ],
     [
       {
@@ -183,14 +169,7 @@ const ProfileNftGalleryType = () => {
         cardNo: "CP246",
         cardHeader: "INVESTOR",
         type: "WINTER",
-      },
-      {
-        id: 15,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
+      },      
     ],
     [
       {
@@ -220,14 +199,7 @@ const ProfileNftGalleryType = () => {
         cardNo: "CE248",
         cardHeader: "INVESTOR",
         type: "WINTER",
-      },
-      {
-        id: 20,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
+      },    
     ],
 
     [
@@ -258,14 +230,7 @@ const ProfileNftGalleryType = () => {
         cardNo: "CP120",
         cardHeader: "INVESTOR",
         type: "WINTER",
-      },
-      {
-        id: 25,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
+      },      
     ],
   ]);
   const [menuItem, setMenuItem] = useState([

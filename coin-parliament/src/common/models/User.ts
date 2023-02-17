@@ -28,6 +28,7 @@ export type UserProps = {
   lang?: string;
   token?: string;
   wallet?: string;
+  rewardStatistics?:RewardStatistics;
 };
 
 class User implements UserProps {
@@ -47,6 +48,7 @@ class User implements UserProps {
   private readonly _status: UserTypeProps | undefined;
   private readonly _subscribers: string[];
   private readonly _voteStatistics: VoteStatistics | undefined;
+  private readonly _rewardStatistics: RewardStatistics | undefined;
   private readonly _favorites: string[];
 
   constructor({user}: { user: UserProps }) {
@@ -65,6 +67,7 @@ class User implements UserProps {
     this._status = user.status;
     this._subscribers = user.subscribers;
     this._voteStatistics = user.voteStatistics;
+    this._rewardStatistics = user.rewardStatistics;
     this._favorites = user.favorites;
   }
 
@@ -131,6 +134,9 @@ class User implements UserProps {
   get voteStatistics(): VoteStatistics | undefined {
     return this._voteStatistics;
   }
+  get rewardStatistics(): RewardStatistics | undefined {
+    return this._rewardStatistics;
+  }
 
   get admin(): boolean | undefined {
     return this._admin;
@@ -144,6 +150,13 @@ export type VoteStatistics = {
   rank: number;
   commission: number;
   pax: number;
+};
+export type RewardStatistics = {
+  total: number;
+  diamonds: number;
+  extraVote: number;
+  cards: string[];
+  claimed: number;
 };
 
 export const userConverter = {

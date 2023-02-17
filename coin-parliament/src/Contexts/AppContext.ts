@@ -26,6 +26,10 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  allButtonTime:any;
+  setForRun?:any;
+  forRun?:any;
+  setAllButtonTime:any;
   chosenUserType:string;
   setChosenUserType:(lang: string) => void;
   authStateChanged: boolean;
