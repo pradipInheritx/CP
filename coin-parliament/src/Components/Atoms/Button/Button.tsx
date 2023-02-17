@@ -204,16 +204,16 @@ const TimeframeButton = ({
       setBorderDeg(Math.round(deg))      
     }    
   }
-  // const ShowDeg = setInterval(() => {
-  // if(borderDeg != 0)
-  // {
-  //   getDeg(buttonDetails)
-  // }
-  // else {
-  //     clearInterval(ShowDeg)
-  // }  
-  // }
-  // , 0);
+  const ShowDeg = setInterval(() => {
+  if(borderDeg != 0)
+  {
+    getDeg(buttonDetails)
+  }
+  else {
+      clearInterval(ShowDeg)
+  }  
+  }
+  , 10);
 
   const getBorderColor = () => {
       let  PricePer= livePrice/100
@@ -247,7 +247,7 @@ const TimeframeButton = ({
     <Timeframe
       as={"div"}
       style={{
-        opacity: showTimer && checked ? 0.48 : borderColor!="white" ?0.48:"",       
+        opacity: showTimer && checked ? 0.48 : showTimer && borderColor!="white" ?0.48:"",       
         background: showTimer && checked  ?`radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor } ${ borderDeg}deg, white ${borderDeg}deg ,white 360deg, green)`:"",        
       }}
       {...{
