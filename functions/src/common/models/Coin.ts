@@ -144,6 +144,7 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
       coinCapAPIEndPoint,
       defaultHeader
     );
+    console.info("getAllCoinFromCoinCap", getAllCoinFromCoinCap);
     if (
       getAllCoinFromCoinCap &&
       getAllCoinFromCoinCap.data.data &&
@@ -161,6 +162,7 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
       wazirXAPIEndPoint,
       defaultHeader
     );
+    console.info("getAllCoinFromWazirX", getAllCoinFromWazirX);
     if (
       getAllCoinFromWazirX &&
       getAllCoinFromWazirX.data &&
@@ -361,7 +363,7 @@ export const fetchCoins = async () => {
       const allCoins = await getAllCoins();
       await insertNewCoinsWthTimestamp(newCoins);
       await getAllUpdated24HourRecords();
-      await removeTheBefore24HoursData();
+      //await removeTheBefore24HoursData();
       const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
         filterCoins(newCoins, allCoins)
       );
