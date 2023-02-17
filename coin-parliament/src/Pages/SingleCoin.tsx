@@ -274,7 +274,7 @@ console.log(allButtonTime,"AllvoteValueObject")
       (vote.expiration && vote.success !== undefined) ||
       Date.now() >= vote.expiration
     );
-  }, [vote.expiration, vote.success,selectedTimeFrame]);
+  }, [vote.expiration, vote.success ]);
   console.log('canvote',canVote,vote)
   useEffect(() => {
     if (!canVote && loading) {
