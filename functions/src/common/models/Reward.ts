@@ -80,7 +80,7 @@ const getAllCards = (): any => async () => {
   const docs = await firestore().collection("settings").doc("cards").get();
 
   console.log("docs.data() --->", docs.data()?.cards);
-  return docs.data()?.cards || []
+  return docs.data()?.cards || [];
 };
 
 const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
@@ -91,9 +91,9 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   //   Epic: ["OPD", "WNN", "CHD", "AUL", "SYI"],
   //   Legendary: ["XFL", "MHG", "FKU", "CSJ", "ZCW"],
   // };
-  const cardData = await getAllCards()
-console.log('cardData --->', cardData);
-  
+  const cardData = await getAllCards();
+  console.log("cardData --->", cardData);
+
   // console.log('data --->', data);
   // const cardsByTier: { [key: number]: string[] } = {
   //   1: ["ABC", "DEF", "GHI", "JKL", "MNO"],
@@ -109,11 +109,11 @@ console.log('cardData --->', cardData);
     tierName : string
   }
 
-  cardData.map((e : cardType)  => {
-    cardsByTier[e.tierName] = e.cardList
-  })
-  
-  
+  cardData.map((e : cardType) => {
+    cardsByTier[e.tierName] = e.cardList;
+  });
+
+
   const randomIndex = Math.floor(Math.random() * percentageArr.length);
   const selectedTier = percentageArr[randomIndex];
   const selectedCardTier = Object.keys(cardsByTier)[selectedTier];
