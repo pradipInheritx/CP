@@ -1,5 +1,5 @@
-export const wazirXAPIEndPoint = "http://api.wazirx.com/sapi/v1/tickers/24hr";
-export const coinCapAPIEndPoint = "http://api.coincap.io/v2/rates";
+export const wazirXAPIEndPoint = "https://api.wazirx.com/sapi/v1/tickers/24hr";
+export const coinCapAPIEndPoint = "https://api.coincap.io/v2/rates";
 export const defaultHeader = {
   headers: {
     "Content-Type": "application/json",
