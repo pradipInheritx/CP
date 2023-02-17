@@ -187,7 +187,7 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
       tickers: mergedMappedCoins,
     };
   } catch (error) {
-    Logging("fetchCoinsFromCoinCapAndWazirX", "ERROR", error);
+    errorLogging("fetchCoinsFromCoinCapAndWazirX", "ERROR", error);
     return {
       count: 0,
       status: "Something went wrong in fetchCoinsFromCoinCapAndWazirX function",
@@ -288,7 +288,11 @@ export const removeTheBefore24HoursData = async () => {
       const batchSize = snapshot.size;
 
       if (batchSize === 0) {
-        Logging("removeTheBefore24HoursData", "WARNING", "No documents left");
+        errorLogging(
+          "removeTheBefore24HoursData",
+          "WARNING",
+          "No documents left"
+        );
       }
 
       const batch = await firestore().batch();
@@ -299,7 +303,7 @@ export const removeTheBefore24HoursData = async () => {
       await batch.commit();
     }
   } catch (error) {
-    Logging("removeTheBefore24HoursData", "ERROR", error);
+    errorLogging("removeTheBefore24HoursData", "ERROR", error);
   }
 };
 
@@ -527,6 +531,10 @@ export const prepareCPVI = async (hours: number, table: string) => {
   // });
 };
 
-export const Logging = async (funcName: string, type: string, error: any) => {
+export const errorLogging = async (
+  funcName: string,
+  type: string,
+  error: any
+) => {
   console.log(funcName, type, error); // We will modify later
 };
