@@ -14,6 +14,7 @@ import InputField from "../Atoms/Input/InputField";
 import { Buttons } from "../Atoms/Button/Button";
 
 
+
 const SignUp = styled.div`
 margin-left:5px;
 margin-right:7px;
@@ -58,7 +59,7 @@ const ForgetPassword = ({ setForgetPassword,setUser, setSignup, authProvider, lo
 sendPasswordResetEmail(auth, email)
   .then(() => {
    
-    showToast('Password reset link has been sent to your email.', ToastType.SUCCESS)
+    showToast(texts.PasswordResetLinkSent, ToastType.SUCCESS)
     setForgetPassword(false)
     // Password reset email sent!
     // ..

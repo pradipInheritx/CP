@@ -25,7 +25,6 @@ import {
   PhoneMultiFactorGenerator,
   RecaptchaVerifier,
 } from "firebase/auth";
-import { texts } from "../LoginComponent/texts";
 
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
@@ -48,93 +47,91 @@ const BtnLabelPrimary = styled(BtnLabel)`
 `;
 
 const Security = () => {
-  const { userInfo, user: u, setUserInfo } = useContext(UserContext);
-  const { showToast } = useContext(NotificationContext);
-  const user = userInfo ? new User({ user: userInfo }) : ({} as User);
-  const [changePassword, setChangePassword] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [show, setShow] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [countryCode,setCountryCode]= useState('972')
-  const [verificationCodeSent, setVerifiactionCodeSent] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [verificationIdData, setVerificationIdData] = useState("");
-  useEffect(() => {
-    setPhone(user?.phone || '')
-  }, [])
-  const handleClose = () => {
-    setShow(false);
-    setVerifiactionCodeSent(false)
-  };
-  const onSubmit = async (newUserInfo: UserProps) => {
-    if (u?.uid) {
-      const userRef = doc(db, "users", u?.uid);
-      try {
-        await updateDoc(userRef, newUserInfo);
-        showToast(texts.UserInfoUpdate);
-      } catch (e) {
-        showToast(texts.UserFailUpdate, ToastType.ERROR);
-      }
-    }
-  };
+  // const { userInfo, user: u, setUserInfo } = useContext(UserContext);
+  // const { showToast } = useContext(NotificationContext);
+  // const user = userInfo ? new User({ user: userInfo }) : ({} as User);
+  // const [changePassword, setChangePassword] = useState(false);
+  // const [newPassword, setNewPassword] = useState("");
+  // const [show, setShow] = useState(false);
+  // const [phone, setPhone] = useState("");
+  // const [countryCode,setCountryCode]= useState('972')
+  // const [verificationCodeSent, setVerifiactionCodeSent] = useState(false);
+  // const [verificationCode, setVerificationCode] = useState("");
+  // const [verificationIdData, setVerificationIdData] = useState("");
+  // useEffect(() => {
+  //   setPhone(user?.phone || '')
+  // }, [])
+  // const handleClose = () => {
+  //   setShow(false);
+  //   setVerifiactionCodeSent(false)
+  // };
+  // const onSubmit = async (newUserInfo: UserProps) => {
+  //   if (u?.uid) {
+  //     const userRef = doc(db, "users", u?.uid);
+  //     try {
+  //       await updateDoc(userRef, newUserInfo);
+  //       showToast("user info was updated");
+  //     } catch (e) {
+  //       showToast("user failed to be updated", ToastType.ERROR);
+  //     }
+  //   }
+  // };
   
-  const auth = getAuth();
-  const authMFA = () => {
-    const recaptchaVerifier = new RecaptchaVerifier(
-      "recaptcha-container-id",
-      {
-        size: "invisible",
-        callback: function () {
-          // reCAPTCHA solved, you can proceed with
-          // phoneAuthProvider.verifyPhoneNumber(...).
-          // onSolvedRecaptcha();
+  // const auth = getAuth();
+  // const authMFA = () => {
+  //   const recaptchaVerifier = new RecaptchaVerifier(
+  //     "recaptcha-container-id",
+  //     {
+  //       size: "invisible",
+  //       callback: function () {
+  //         // reCAPTCHA solved, you can proceed with
+  //         // phoneAuthProvider.verifyPhoneNumber(...).
+  //         // onSolvedRecaptcha();
          
-        },
-      },
-      auth
-    );
-    // @ts-ignore
-    multiFactor(auth?.currentUser)
-      .getSession()
-      .then(function (multiFactorSession) {
-        // Specify the phone number and pass the MFA session.
-        const phoneInfoOptions = {
-          phoneNumber: `+${countryCode}${phone}`,
-          session: multiFactorSession,
-        };
+  //       },
+  //     },
+  //     auth
+  //   );
+  //   // @ts-ignore
+  //   multiFactor(auth?.currentUser)
+  //     .getSession()
+  //     .then(function (multiFactorSession) {
+  //       // Specify the phone number and pass the MFA session.
+  //       const phoneInfoOptions = {
+  //         phoneNumber: `+${countryCode}${phone}`,
+  //         session: multiFactorSession,
+  //       };
 
-        const phoneAuthProvider = new PhoneAuthProvider(auth);
+  //       const phoneAuthProvider = new PhoneAuthProvider(auth);
         
-        // Send SMS verification code.
-        return phoneAuthProvider.verifyPhoneNumber(
-          phoneInfoOptions,
-          recaptchaVerifier
-        );
-      })
-      .then(function (verificationId) {
-        console.log("verificationcode", verificationId);
-        // Ask user for the verification code. Then:
-        setVerificationIdData(verificationId);
-        setVerifiactionCodeSent(true);
-      })
-      .catch((err) => console.log("err", err?.message));
-  };
-  const verifyCode = () => {
-    const cred = PhoneAuthProvider.credential(
-      verificationIdData,
-      verificationCode
-    );
-    const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(cred);
+  //       // Send SMS verification code.
+  //       return phoneAuthProvider.verifyPhoneNumber(
+  //         phoneInfoOptions,
+  //         recaptchaVerifier
+  //       );
+  //     })
+  //     .then(function (verificationId) {
+  //       console.log("verificationcode", verificationId);
+  //       // Ask user for the verification code. Then:
+  //       setVerificationIdData(verificationId);
+  //       setVerifiactionCodeSent(true);
+  //     })
+  //     .catch((err) => console.log("err", err?.message));
+  // };
+  // const verifyCode = () => {
+  //   const cred = PhoneAuthProvider.credential(
+  //     verificationIdData,
+  //     verificationCode
+  //   );
+  //   const multiFactorAssertion = PhoneMultiFactorGenerator.assertion(cred);
 
-    // Complete enrollment.
-    // @ts-ignore
-    return multiFactor(auth?.currentUser).enroll(multiFactorAssertion, phone);
-  };
+  //   // Complete enrollment.
+  //   // @ts-ignore
+  //   return multiFactor(auth?.currentUser).enroll(multiFactorAssertion, phone);
+  // };
   return (
     <>
-      <Form className="mt-1" onSubmit={(e) => e.preventDefault()} >
+      {/* <Form className="mt-1" onSubmit={(e) => e.preventDefault()} >
         <div id="recaptcha-container-id"></div>
         <Container
           style={{ minHeight: window.screen.width < 979 ? "59vh" : "67vh" }}
@@ -145,70 +142,36 @@ const Security = () => {
                 <Form.Check>
                   <Row>
                     <Col>
-                      <Label>Old Password</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>                                            
-                      <>
-                        <FormControl
-                          type="password"
-                          value={oldPassword || ""}
-                          onChange={(e) => setOldPassword(e.target.value)}
-                          disabled={!changePassword}
-                        />                           
-                      </>                                            
+                      <Label>Password</Label>
                     </Col>
                   </Row>
                   <Row>
                     <Col>
-                      <Label>New Password</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>                                            
-                      <>
-                        <FormControl
-                          type="password"
-                          value={newPassword || ""}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          disabled={!changePassword}
-                        />                           
-                      </>                                            
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Label>Confirm Password</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>                                           
-                      <>
-                        <FormControl
-                          type="password"
-                          value={confirmPassword || ""}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          disabled={!changePassword}
-                        />                           
-                      </>                                             
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="d-flex justify-content-between mt-3">
-                      <>                            
-                    {changePassword && (
-                      
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setChangePassword(false);
-                          }}
-                        >
-                          <span aria-hidden="true">Cancel</span>
-                        </Button>
+                      <InputGroup>
+                        {!changePassword && (
+                          <FormControl
+                            disabled={!changePassword}
+                            type="password"
+                            defaultValue="*******"
+                          />
                         )}
-                        </>
+                        {changePassword && (
+                          <>
+                            <FormControl
+                              type="password"
+                              value={newPassword || ""}
+                              onChange={(e) => setNewPassword(e.target.value)}
+                            />
+                            <Button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setChangePassword(false);
+                              }}
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </Button>
+                          </>
+                        )}
                         <Button
                           onClick={async (e) => {
                             e.preventDefault();
@@ -219,17 +182,17 @@ const Security = () => {
                                 u &&
                                 userInfo?.displayName &&
                                 validatePassword(
-                                  confirmPassword,
-                                  newPassword,                                  
+                                  newPassword,
                                   userInfo?.displayName
                                 )
                               ) {
                                 await updatePassword(u, newPassword);
-                                showToast(texts.PasswordUpdatSuccess);
+                                showToast("Password updated successfully.");
                                 setChangePassword(false);
                               } else {
                                 showToast(
-                                  texts.PasswordMustContain,ToastType.ERROR
+                                  "Password must contain at least 1 capital letter(s) (ABCDEFGHIJKLMNOPQRSTUVWXYZ). It must contain at least 1 numeric character(s) (0123456789). It must not contain more than 3 identical consecutive characters (AAA, iiii, $$$$$ ...). It must not contain your user name.",
+                                  ToastType.ERROR
                                 );
                               }
                             }
@@ -237,6 +200,7 @@ const Security = () => {
                         >
                           {changePassword ? "submit" : "change"}
                         </Button>
+                      </InputGroup>
                     </Col>
                   </Row>
                   <Row>
@@ -317,23 +281,23 @@ const Security = () => {
                                 onClick={async (e) => {
                                   // @ts-ignore
                                   var options = multiFactor(auth?.currentUser).enrolledFactors;
-// Present user the option to unenroll.
-console.log('option',options)
-// @ts-ignore
-return multiFactor(auth?.currentUser).unenroll(options[0])
-  .then(function(res) {
-    // User successfully unenrolled selected factor.
-    
-    const newUserInfo = {
-      ...(userInfo as UserProps),
-      mfa: false,
-    };
-    setUserInfo(newUserInfo);
-     onSubmit(newUserInfo);
-  }).catch(function(error) {
-    // Handler error.
-  });
-                                
+                                    // Present user the option to unenroll.
+                                    console.log('option',options)
+                                    // @ts-ignore
+                                    return multiFactor(auth?.currentUser).unenroll(options[0])
+                                      .then(function(res) {
+                                        // User successfully unenrolled selected factor.
+                                        
+                                        const newUserInfo = {
+                                          ...(userInfo as UserProps),
+                                          mfa: false,
+                                        };
+                                        setUserInfo(newUserInfo);
+                                        onSubmit(newUserInfo);
+                                      }).catch(function(error) {
+                                        // Handler error.
+                                      });
+                                                                      
                                 }}
                                 htmlFor="mfa-disable"
                                 className="w-100"
@@ -402,7 +366,7 @@ return multiFactor(auth?.currentUser).unenroll(options[0])
                   };
                   setUserInfo(newUserInfo);
                    onSubmit(newUserInfo);
-                  showToast(texts.FASecurityAdded)}).catch(err=>showToast(texts.WrongCode, ToastType.ERROR));
+                  showToast("2FA security added to your account.")}).catch(err=>showToast("Wrong code please try again.", ToastType.ERROR));
                 handleClose();
               } else {
                 authMFA();
@@ -413,7 +377,7 @@ return multiFactor(auth?.currentUser).unenroll(options[0])
             CONTINUE
           </Buttons.Primary>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

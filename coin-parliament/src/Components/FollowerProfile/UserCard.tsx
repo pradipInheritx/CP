@@ -188,12 +188,12 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         icon: <Following />,
                         eventKey: ProfileTabs.followers,
                       },
-                      {
-                        component: <></>,
-                        label: ProfileTabs.notifications,
-                        icon: <Notifications />,
-                        eventKey: ProfileTabs.notifications,
-                      },
+                      // {
+                      //   component: <></>,
+                      //   label: ProfileTabs.notifications,
+                      //   icon: <Notifications />,
+                      //   eventKey: ProfileTabs.notifications,
+                      // },
                       
                     ],
                   }}

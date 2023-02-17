@@ -44,10 +44,10 @@ const FirstTimeFoundationSelection = ({ user ,setFirstTimeFoundationSelection}: 
       const userRef = doc(db, "users", user?.uid);
       try {
         await setDoc(userRef, {avatar: type}, {merge: true});
-        showToast(translate("user info was updated"));
+        showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
       } catch (e) {
-        showToast(translate("user failed to be updated"), ToastType.ERROR);
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }
     }
   };
