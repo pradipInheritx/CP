@@ -37,7 +37,7 @@ import {
   Leader,
   prepareCPVI,
   fetchAskBidCoin,
-  updatePriceArray,
+  // updatePriceArray,
 } from "./common/models/Coin";
 import {pullAll, union, uniq} from "lodash";
 import Refer from "./common/models/Refer";
@@ -133,20 +133,6 @@ exports.getAccessToken = () =>
 
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
-  // const userTypeRef = await admin.firestore()
-  //     .collection("settings")
-  //     .doc("userTypes")
-  //     .get();
-
-  // const status = (
-  //   userTypeRef.data() as { userTypes: UserTypeProps[] }
-  // ).userTypes.reduce((total, current) => {
-  //   if (Number(current.share) >= Number(total.share || 0)) {
-  //     return current;
-  //   } else {
-  //     return Object.keys(total).length > 0 ? total : current;
-  //   }
-  // }, {} as UserTypeProps);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
@@ -339,23 +325,12 @@ exports.onUpdateUser = functions.firestore
       const after = snapshot.after.data() as UserProps;
       await addReward(snapshot.after.id, before, after);
       await getCards();
+      await fetchCoins();
       const [should, amount] = shouldHaveTransaction(before, after);
       if (!should || !amount) {
         return;
       }
       await addCpmTransaction(snapshot.after.id, amount);
-    });
-
-exports.onUpdateCoinPrice = functions.firestore
-    .document("stats/coins")
-    .onUpdate(async (snapshot) => {
-      const before = snapshot.before.data();
-      const after = snapshot.after.data();
-      const priceChanged = Object.keys(before).some(
-          (eachCoin) => before[eachCoin].price !== after[eachCoin].price
-      );
-      console.log("priceChanged --->", priceChanged);
-      if (priceChanged) await updatePriceArray(before, after);
     });
 
 exports.onEnteringAddress = functions.firestore
@@ -415,7 +390,7 @@ function setTime(
 
       console.log("this is before calculation");
       if (price) {
-        const calc = new Calculation(vote, price, id);
+        const calc = new Calculation(vote, Number(price), id);
         await calc.calc(snapshot.ref);
       }
       console.log("Ending setTimeOut");
@@ -427,38 +402,20 @@ function setTime(
 exports.onVote = functions.firestore
     .document("votes/{id}")
     .onCreate(async (snapshot) => {
-    // console.log("vote created", snapshot.data());
       console.log("function called for firebase");
-      // axios.get('https://api.coincap.io/v2/rates')
-      //   .then(function (response) {
-      //     // handle success
-      //     console.log(response);
-      //   })
-      //   .catch(function (error) {
-      //     // handle error
-      //     console.log(error);
-      //   })
-      //   .finally(function () {
-      //     // always executed
-      //   });
 
       await updateVotesTotal();
       const data = snapshot.data() as VoteResultProps;
       const voteTime = admin.firestore.Timestamp.now().toMillis();
       const timeframe = data.timeframe;
       const expiration = voteTime + calculateOffset(timeframe);
-      // const rate = await getRateRemote();
-      // console.log('rate --->', rate);
       const [coin1, coin2] = data.coin.split("-");
       let valueVotingTime;
-      // if (coin2) {
-      //   valueVotingTime = [coin1, coin2].map((coin) => getPrice(rate, coin));
-      // } else {
-      //   valueVotingTime = getPrice(rate, coin1);
-      // }
 
       if (coin2) {
-        valueVotingTime = [coin1, coin2].map((coin) => getPrice(coin));
+        const coinFirst = await getPrice(coin1);
+        const coinSecond = await getPrice(coin2);
+        valueVotingTime = [coinFirst, coinSecond];
       } else {
         valueVotingTime = await getPrice(coin1);
       }
@@ -472,11 +429,6 @@ exports.onVote = functions.firestore
         voteTime,
         valueVotingTime,
       } as unknown as VoteResultProps;
-
-      // await admin.firestore()
-      //   .collection("cpvi")
-      //   .doc("results")
-      //   .set( );
 
       await snapshot.ref.update(vote);
 
@@ -550,6 +502,7 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
     }[]
   );
 });
+
 async function getRewardTransactions(id: string) {
   const transactions = await admin
       .firestore()
@@ -622,45 +575,6 @@ exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
   });
 });
 
-// ws.onmessage = async ({data}) => {
-//   // console.log('firebaseFunction message')
-//   const [message] = JSON.parse(data);
-//   const uniqCoins = await getUniqCoins();
-//   const uniqPairs = await getUniqPairsBothCombinations();
-
-//   switch (message.ev) {
-//     case "status": {
-//       if (message.status === "connected") {
-//         ws.send("{\"action\":\"subscribe\", \"params\":\"XQ.*\"}");
-//       }
-//       break;
-//     }
-//     case "XQ": {
-//       const {bp: bidPrice, ap: askPrice, t} = message;
-//       const coin = (message.pair || "").replace("-USD", "");
-
-//       if (uniqCoins.includes(coin) || uniqPairs.includes(coin)) {
-//         try {
-//           await admin.firestore()
-//             .collection("askBidStats")
-//             .doc("results")
-//             .collection(coin)
-//             .doc(t + "")
-//             .set({
-//               coin,
-//               direction0: askPrice,
-//               direction1: bidPrice,
-//               timestamp: admin.firestore.Timestamp.fromDate(new Date(Date.now())),
-//             }, {merge: true});
-//         } catch (e) {
-//           console.log(e);
-//         }
-//       }
-//       break;
-//     }
-//   }
-// };
-
 exports.prepareEveryFiveMinuteCPVI = functions.pubsub
     .schedule("*/3 * * * *")
     .onRun(async () => {
@@ -716,13 +630,8 @@ exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
 
-// app.get("/test", async (req, res) => {
-//   const results = await getCPVIForVote({id: "90iz9NssPGVrrCvtL8NA"});
-//   // res.status(200).json(results);
-//   res.status(200).send(JSON.stringify(results));
-// });
-
 type GetVotesProps = { start: number; end: number; userId: string };
+
 const getVotes = async ({start, end, userId}: GetVotesProps) => {
   console.log("voteCoinApi called");
   // const votes = await admin.firestore()

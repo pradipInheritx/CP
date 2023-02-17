@@ -147,9 +147,11 @@ export const useCanVote: () => [boolean, string] = () => {
   } = useContext(AppContext);
   const {userInfo}=useContext(UserContext)
   const { votesLast24Hours, user } = useContext(UserContext);
+  const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;
+  const voted=Number(votesLast24Hours.length) <Number(maxVotes)? Number(votesLast24Hours.length):Number(maxVotes)
   // @ts-ignore
-  
-  const valid = !!user && votesLast24Hours.length < Number(maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0);
+ 
+  const valid = !!user && voted < Number(maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0);
   // @ts-ignore
 console.log('extravote12',Math.min(...votesLast24Hours.map((v) => v.voteTime)))
   const timeReturn = new Date(

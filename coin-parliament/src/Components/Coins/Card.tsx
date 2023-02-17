@@ -187,7 +187,7 @@ const Card = ({
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
   let params = useParams();
-  console.log('params',params)
+  
   return (
     <LighCart1
       {...{ single }}

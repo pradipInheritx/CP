@@ -166,8 +166,9 @@ useEffect(() => {
   }, [pages]);
 
   useEffect(() => {
+    const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(votesLast24Hours.length) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
     // @ts-ignore
     console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
     // @ts-ignore
@@ -395,10 +396,10 @@ useEffect(() => {
                          renderer={({ hours, minutes, seconds, completed }) => {
                         
                             return (
-                              <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
+                              <span style={{color:'#6352e8',fontSize:'14px',fontWeight:400}}>
                                 {/* {hours < 10 ? `0${hours}` : hours}: */}
                                 {Number(voteRules?.maxVotes)} votes in {' '}
-                                {hours < 1 ? null : hours}:
+                                {hours < 1 ? null : `${hours} :` }
                                 {minutes < 10 ? `0${minutes}` : minutes}:
                                 {seconds < 10 ? `0${seconds}` : seconds}
                               </span>
@@ -509,6 +510,7 @@ useEffect(() => {
                             <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
                               {/* {hours < 10 ? `0${hours}` : hours}: */}
                               5 votes in {' '}
+                              {hours < 1 ? null : `${hours} :` }
                               {minutes < 10 ? `0${minutes}` : minutes}:
                               {seconds < 10 ? `0${seconds}` : seconds}
                             </span>
