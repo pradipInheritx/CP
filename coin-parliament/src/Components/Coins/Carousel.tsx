@@ -181,7 +181,7 @@ const Carousel = ({
       numRows > 0 ? Math.min(numRows, data?.length) : data?.length;
     setPageSize(pageData ? pageData : 1);
   }, [setPageSize, numRows, data?.length]);
-  console.log("data", Object.keys(coins).sort());
+  // console.log("data", Object.keys(coins).sort());
   return expanded === false ? (
     <form
       id={id}

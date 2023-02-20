@@ -99,7 +99,7 @@ const Item = ({userType}: { userType: UserTypeProps }) => {
   const {setChosenUserType}=useContext(AppContext)
   const translate = useTranslation();
   let navigate = useNavigate();
-console.log('leader',leaders)
+
   return (
     <ItemContainer className=" d-flex justify-content-center align-items-center ">
       <H2>TOP {userType.name.toUpperCase()}S</H2>

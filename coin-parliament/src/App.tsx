@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import {texts} from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
@@ -278,12 +279,22 @@ function App() {
     defaultUserType,
   ] as UserTypeProps[]);
 
-  const updateUser = useCallback(async (user?: User) => {
+  const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
+    console.log(user,"userInfoId");
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
+
+  
+  // const FollowerData = async(id:any) => {     
+  //   const Followerinfo =  await getFollowerInfo(id);
+  //   return Followerinfo
+  // }
+
+  // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
+  
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined) {
       setLoader(true);
