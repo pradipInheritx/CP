@@ -144,6 +144,7 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
         coinCapAPIEndPoint,
         defaultHeader
     );
+    console.info("getAllCoinFromCoinCap", getAllCoinFromCoinCap);
     if (
       getAllCoinFromCoinCap &&
       getAllCoinFromCoinCap.data.data &&
@@ -161,6 +162,7 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
         wazirXAPIEndPoint,
         defaultHeader
     );
+    console.info("getAllCoinFromWazirX", getAllCoinFromWazirX);
     if (
       getAllCoinFromWazirX &&
       getAllCoinFromWazirX.data &&
@@ -187,7 +189,7 @@ export const fetchCoinsFromCoinCapAndWazirX = async () => {
       tickers: mergedMappedCoins,
     };
   } catch (error) {
-    // Logging("fetchCoinsFromCoinCapAndWazirX", "ERROR", error);
+    errorLogging("fetchCoinsFromCoinCapAndWazirX", "ERROR", error);
     return {
       count: 0,
       status: "Something went wrong in fetchCoinsFromCoinCapAndWazirX function",
@@ -288,7 +290,11 @@ export const removeTheBefore24HoursData = async () => {
       const batchSize = snapshot.size;
 
       if (batchSize === 0) {
-        // Logging("removeTheBefore24HoursData", "WARNING", "No documents left");
+        errorLogging(
+            "removeTheBefore24HoursData",
+            "WARNING",
+            "No documents left"
+        );
       }
 
       const batch = await firestore().batch();
@@ -299,7 +305,7 @@ export const removeTheBefore24HoursData = async () => {
       await batch.commit();
     }
   } catch (error) {
-    // Logging("removeTheBefore24HoursData", "ERROR", error);
+    errorLogging("removeTheBefore24HoursData", "ERROR", error);
   }
 };
 
@@ -357,7 +363,7 @@ export const fetchCoins = async () => {
       const allCoins = await getAllCoins();
       await insertNewCoinsWthTimestamp(newCoins);
       await getAllUpdated24HourRecords();
-      await removeTheBefore24HoursData();
+      // await removeTheBefore24HoursData();
       const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
           filterCoins(newCoins, allCoins)
       );
@@ -527,6 +533,10 @@ export const prepareCPVI = async (hours: number, table: string) => {
   // });
 };
 
-// export const Logging = async (funcName: string, type: string, error: any) => {
-//   console.log(funcName, type, error); // We will modify later
-// };
+export const errorLogging = async (
+    funcName: string,
+    type: string,
+    error: any
+) => {
+  console.log(funcName, type, error); // We will modify later
+};
