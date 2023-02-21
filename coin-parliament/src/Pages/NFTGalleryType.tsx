@@ -1,12 +1,15 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
+import AppContext from "../Contexts/AppContext";
 import NftOneCard from "./NftOneCard";
-
+import { db } from "../firebase";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
@@ -78,6 +81,8 @@ const SummerCard = styled.div`
 `;
 
 const NFTGalleryType = () => {
+//     const { nftAlbumData,setNftAlbumData} = useContext(AppContext);
+
   const [cards, setCards] = useState([
     [
       {
@@ -239,7 +244,7 @@ const NFTGalleryType = () => {
     { name: "Rare" },
     { name: "Legendary" },
   ]);
-
+    const [nftAlbumData,setNftAlbumData] = useState<any>();
   const [CardValue, setCardValue] = useState([]);
   const [backCards, setBackCards] = useState<any>([]);
   const [checkCard, setcheckCard] = useState([
@@ -268,6 +273,10 @@ const NFTGalleryType = () => {
       setCardValue(allCard);
     }
   };
+
+
+
+
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
      let allBackCard = backCards;
@@ -306,6 +315,40 @@ const NFTGalleryType = () => {
   let params = useParams();
   const { name } = params;
 
+
+   const getNftCard = () => {
+  const votesLast24HoursRef = firebase
+            .firestore()
+            .collection("nft_gallery")
+    votesLast24HoursRef.get()
+      .then((snapshot) => {        
+        // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+       let allcollection= snapshot.docs.map((doc) => doc.data())
+          // setCollectionType(allcollection)
+        console.log(allcollection,"allcollection")
+        allcollection?.map((card) => {
+
+          if (card?.collectionName==name) {
+            setNftAlbumData(card?.setDetails)
+          }          
+        })
+      }).catch((error) => {
+        console.log(error,"error");
+      })
+      ;    
+}
+
+useEffect(() => {
+    getNftCard()
+  }, [params])
+
+const ChangeText=(string:string)=> {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+  
+  
+
+console.log(nftAlbumData,"nftAlbumData")
   return (
     <div className=''>
       <div className='h-100 '>
@@ -377,23 +420,26 @@ const NFTGalleryType = () => {
           </div>
 
           <SummerCard>
-            {CardValue.map((items, index) => {
+            {nftAlbumData?.map((items:any, index:number) => {
               return (
                 <div className='w-100 m-auto mb-4 '>
                   {/* @ts-ignore */}
                   <SwiperBar>
                     {/* @ts-ignore */}
-                    {items.map((item: any) => {
+                    {items?.cards.map((item: any) => {
+                      console.log("ChangeText",ChangeText(item.type))
                       return (
                         <>
                           <NftOneCard
-                            DivClass={item.cardType}
-                            HeaderText={item.cardType}
-                            HeaderClass={`${item.cardType}_text`}
-                            Disable={""} // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item.cardHeader}`}
+                            
+                            DivClass={ChangeText(item.type)}
+                            HeaderText={ChangeText(item.type)}
+                            HeaderClass={`${ChangeText(item.type)}_text`}
+                            // Disable={"CardDisebal"}
+                            // When you pass CardDisebal this name then card is Disable
+                            cardHeader={`${item.name}`}
                             cardNo={`${item.cardNo}`}
-                            id={item.id}
+                            id={item.cardId}
                             BackSideCard={BackSideCard}
                             // flipCard={backCards == item.id ? true : false}
                             flipCard={backCards.includes(item.id)}
@@ -406,6 +452,37 @@ const NFTGalleryType = () => {
               );
             })}
           </SummerCard>
+
+          
+          {/* <SummerCard>
+            {CardValue.map((items, index) => {
+              return (
+                <div className='w-100 m-auto mb-4 '>
+                  
+                  <SwiperBar>
+                    
+                    {items.map((item: any) => {
+                      return (
+                        <>
+                          <NftOneCard
+                            DivClass={item.cardType}
+                            HeaderText={item.cardType}
+                            HeaderClass={`${item.cardType}_text`}
+                            Disable={""}                            
+                            cardHeader={`${item.cardHeader}`}
+                            cardNo={`${item.cardNo}`}
+                            id={item.id}
+                            BackSideCard={BackSideCard}                            
+                            flipCard={backCards.includes(item.id)}
+                          />
+                        </>
+                      );
+                    })}
+                  </SwiperBar>
+                </div>
+              );
+            })}
+          </SummerCard> */}
           {/* <div>
             <p>WINTER COLLECTION</p>
           </div>

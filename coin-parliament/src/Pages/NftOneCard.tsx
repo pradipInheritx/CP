@@ -34,6 +34,12 @@ const Card = styled.div`
     border: #d2d2d2 solid 8px;
     background-color: #d2d2d2;
   }
+  &.RARE {
+    background-image: url(${bkgnd5}) !important;
+    color: #160133;
+    border: #d2d2d2 solid 8px;
+    background-color: #d2d2d2;
+  }
   &.Epic {
     background-image: url(${bkgnd3}) !important;
     color: #d4d0f3;
@@ -77,6 +83,10 @@ const CenterText = styled.div`
     background-color: #f5e7b5;
   }
   &.Rare_text {
+    border: #d2d2d2 solid 6px;
+    background-color: #d2d2d2;
+  }
+  &.RARE_text {
     border: #d2d2d2 solid 6px;
     background-color: #d2d2d2;
   }
@@ -147,22 +157,32 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
-  
+  console.log(Disable,"Disable")
 
   return (
     
     <div
       onMouseEnter={() => {
-        setFlip(!flip);
+        if (Disable == "") {          
+          setFlip(!flip);
+        }
       }}
       onMouseLeave={() => {
-        setFlip(!flip);
+        if (Disable == "") {          
+          setFlip(!flip);
+        }        
       }}
       onFocus={() => {
-        setFlip(!flip);
+        if (Disable == "") {          
+          setFlip(!flip);
+        }
+        // setFlip(!flip);
       }}
       onFocusCapture={() => {
-        setFlip(!flip);
+        if (Disable == "") {          
+          setFlip(!flip);
+        }
+        // setFlip(!flip);
       }}
       className={`card-container ${
         flipCard == true || flip != true ? " flipped" : ""
@@ -185,7 +205,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
               <div className='' style={{ fontSize: "12px" }}>
-                <span className='px-2'>{cardNo}</span>
+                <span className='px-2'>{cardNo || ""}</span>
               </div>
             </div>
             <div>

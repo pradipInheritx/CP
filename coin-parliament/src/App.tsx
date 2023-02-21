@@ -226,6 +226,7 @@ function App() {
   const [authStateChanged, setAuthStateChanged] = useState(false);
   const [allButtonTime, setAllButtonTime] = useState<any>([]);
   const [allPariButtonTime, setAllPariButtonTime] = useState<any>([]);
+  const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
@@ -637,6 +638,8 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  setNftAlbumData,
+                  nftAlbumData,
                   setAllPariButtonTime,
                   allPariButtonTime,
                   allButtonTime,

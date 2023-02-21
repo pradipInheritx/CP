@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
@@ -13,6 +13,10 @@ import "./styles.css";
 import { Container } from "react-bootstrap";
 import SwiperBar from "./SwiperBar";
 import { useParams } from "react-router-dom";
+import { db } from "../firebase";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import firebase from "firebase/compat";
+import AppContext from "../Contexts/AppContext";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -79,7 +83,9 @@ width:100%;
   }
 `;
 
+
 const ProfileNftGalleryType = () => {
+  
   const [cards, setCards] = useState([
     [
       {
@@ -253,6 +259,17 @@ const ProfileNftGalleryType = () => {
   const [filterIndex, setfilterIndex] = useState(0);
   const [backCards, setBackCards] = useState<any>([]);
 
+
+
+  
+//   useEffect(() => {
+//   //  onSnapshot(doc(db, "nft_gallery","WINTER"), (doc) => {
+//   //     // setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
+//   //     console.log("nft_gallery", doc.data());
+//   //   });
+//   // getNftCard();
+// }, [])
+  
   useEffect(() => {
     HandleFilter(filterIndex);
   }, [filterIndex]);

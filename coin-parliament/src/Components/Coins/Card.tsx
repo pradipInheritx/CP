@@ -209,7 +209,9 @@ const Card = ({
   useEffect(() => {
     prevCountRef.current = currentPrice;    
     OnlyCheckColor()        
-  }, [coins[symbol]?.price])
+  }, [
+    // coins[symbol]?.price
+  ])
   
   console.log(prevCountRef.current,currentPrice,changeColor,"changeColor");
 
