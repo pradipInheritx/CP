@@ -10,9 +10,12 @@ import bkgnd2 from "../assets/images/bkgnd2.png";
 import bkgnd from "../assets/images/bkgnd.png";
 import TheEagle from "../assets/images/TheEagle.png";
 import backBg from "../assets/images/backBg.png";
-import {logo} from "../assets/svg/logo";
+import { logo } from "../assets/svg/logo";
+
 
 const Card = styled.div`
+
+
 
   border-radius: 0px 0px 8px 8px;
   text-transform: uppercase;
@@ -142,75 +145,94 @@ export type BoxItems = {
 const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard}: BoxItems) => {
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
+  const pathname = window.location.pathname;
+  const pathnameName = pathname.split("/")
+  
+  
+
   return (
-    
     <div
       onMouseEnter={() => {
-      setFlip(!flip)
+        setFlip(!flip);
       }}
       onMouseLeave={() => {
-      setFlip(!flip)
+        setFlip(!flip);
       }}
       onFocus={() => {
-      setFlip(!flip)
+        setFlip(!flip);
       }}
       onFocusCapture={() => {
-      setFlip(!flip)
+        setFlip(!flip);
       }}
-      className={`card-container  ${flipCard == true || flip != true ? " flipped" : ""}`}
-      // @ts-ignore
-      onClick={()=>{BackSideCard(id)}}
+      className={`card-container  ${
+        flipCard == true || flip != true ? " flipped" : ""
+      }`}
+      onClick={() => {
+        // @ts-ignore
+        BackSideCard(id);
+      }}
     >
-    <div className='front'>
-      {/* First Div  */}
-      <Card  className={`shadow tex-center ${DivClass} ${Disable} `} >
-        <div>
-          {" "}  
-          <div className="d-flex justify-content-between">
-            <div className="opacity-0" style={{fontSize:"12px"}}>
-              <span className="px-2">{cardNo}</span>
+      <div className='front'>
+        {/* First Div  */}
+        <Card className={`shadow tex-center ${DivClass} ${Disable} `}>
+          <div>
+            {" "}
+            <div className='d-flex justify-content-between'>
+              <div className='opacity-0' style={{ fontSize: "12px" }}>
+                <span className='px-2'>{cardNo}</span>
+              </div>
+              <CenterText className={HeaderClass}>
+                &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
+              </CenterText>{" "}
+              <div className='' style={{ fontSize: "12px" }}>
+                <span className='px-2'>{cardNo}</span>
+              </div>
             </div>
-          <CenterText className={HeaderClass}>
-            &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
-          
-          </CenterText>{" "}
-            <div className="" style={{fontSize:"12px"}}>
-              <span className="px-2">{cardNo}</span>
+            <div>
+              {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
+              <span className='cardname'>
+                THE<strong> {cardHeader}</strong>
+              </span>
             </div>
+            <br />
+            <div className='card-body'>
+              <img
+                src={TheEagle}
+                alt='the hgodler'
+                className=''
+                width={"200px"}
+              />
             </div>
-          <div >
-            {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
-              <span className="cardname">THE<strong> {" "}{cardHeader}</strong></span>
           </div>
-          <br />          
-          <div className='card-body'>
-            <img src={TheEagle} alt='the hgodler' className='' width={"200px"}/>
-          </div>
-        </div>
-      </Card>
+        </Card>
       </div>
-      <div className="back">
-        <CardBack className="shadow tex-center">
-          <div className="d-flex justify-content-center mt-2">
-            <img src={logo} alt=""
-            width="60px"
-            height="60px"
-            />
+      <div className='back'>
+        <CardBack className='shadow tex-center'>
+          <div className='d-flex justify-content-center mt-2'>
+            <img src={logo} alt='' width='60px' height='60px' />
           </div>
-          <div className="mt-2 mb-3">
-            <span >Sn</span>
-            <span >Rarity</span>
-            <span >Series</span>
-            <span >Minted</span>
-            <span >Name</span>
-            <span >Sold for</span>
-            <span >Sold to</span>
+          <div className='mt-2 mb-3'>
+            <span>
+              {pathnameName[1] == "profile"
+                ? "Private Card Serial No."
+                : "General Card Serial No."}
+            </span>
+            <span>Collection</span>
+            <span>Set (Serie)</span>
+            <span>Name</span>
+            <span>Rarity</span>
+            <span>
+              {pathnameName[1] == "profile" ? "Quantity" : "Total quantity"}
+            </span>
+            <span>
+              {pathnameName[1] == "profile"
+                ? "Minted Time"
+                : "Number of holders"}
+            </span>
           </div>
-
         </CardBack>
-
       </div>
-      </div>
+    </div>
   );
 };
 

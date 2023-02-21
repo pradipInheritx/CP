@@ -179,8 +179,6 @@ const calcVote = useCallback(async () => {
         if (res) {                  
           // console.log('choseTimeFrame',res,index)        
           getLeftTime(res.data(), index);          
-
-
           AllvoteValueObject[index] = res.data();
           setAllButtonTime(AllvoteValueObject);
           setVotedDetails(AllvoteValueObject);

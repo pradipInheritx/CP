@@ -251,7 +251,7 @@ const ProfileNftGalleryType = () => {
     { cardType: "Legendary" },
   ]);
   const [filterIndex, setfilterIndex] = useState(0);
-  const [backCards, setBackCards] = useState("");
+  const [backCards, setBackCards] = useState<any>([]);
 
   useEffect(() => {
     HandleFilter(filterIndex);
@@ -270,24 +270,9 @@ const ProfileNftGalleryType = () => {
       setCardValue(allCard);
     }
   };
-  // const settings = {
-  //   className: "center",
-  //   centerMode: true,
-  //   infinite: true,
-  //   centerPadding: "60px",
-  //   slidesToShow: 4,
-  //   speed: 500
-  // };
+
   var settings = {
-    dots: true,
-    // infinite: false,
-    //   centerMode: true,
-    //   speed: 500,
-    //   slidesToShow: 5,
-    //   slidesToScroll: 4,
-    // initialSlide: 0,
-    //   prevArrow: false,
-    //   nextArrow: false,
+    dots: true,  
     className: "center",
     centerMode: true,
     infinite: true,
@@ -327,25 +312,27 @@ const ProfileNftGalleryType = () => {
   };
 
   const BackSideCard = (value: string | number) => {
+    let allBackCard = backCards;
     // @ts-ignore
-    setBackCards(backCards == value ? "" : value);
-    // backCards.length > 0  ? backCards.map((items, index) => {
-    //   if (items == value) {
-    //     // @ts-ignore
-    //     backCards.splice(index,1)
-    //   }
-    //   else {
-    //     // @ts-ignore
-    //     // backCards.push(value)
-    //     setBackCards([...backCards,value])
-    //   }
-    //   // @ts-ignore
-    // }) : setBackCards([...backCards,value]);
+    // setBackCards(backCards == value ? "" : value);
+    backCards.length > 0  ? backCards?.map((items:any, index:number) => {
+      if (items == value) {
+        // @ts-ignore
+        allBackCard.splice(index, 1);
+        setBackCards(allBackCard);
+      }
+      else {
+        // @ts-ignore
+        
+        setBackCards([...backCards,value])
+      }
+      // @ts-ignore
+    }) : setBackCards([...backCards,value]);
   };
 
       let params = useParams();
   const { name } = params;
-    console.log(name, "name");
+    
 
   return (
     <div className=''>
@@ -397,7 +384,7 @@ const ProfileNftGalleryType = () => {
                             cardNo={`${item.cardNo}`}
                             id={item.id}
                             BackSideCard={BackSideCard}
-                            flipCard={backCards == item.id ? true : false}
+                            flipCard={backCards.includes(item.id)}
                           />
                         </>
                       );
