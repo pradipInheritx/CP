@@ -269,10 +269,11 @@ console.log(allButtonTime,"AllvoteValueObject")
   const canVote = useMemo(() => {
     return (
       (!vote.expiration && vote.success === undefined) ||
-      (vote.expiration && vote.success !== undefined) ||
+      (vote.expiration && vote.valueExpirationTime !== undefined) ||
       Date.now() >= vote.expiration
     );
-  }, [vote.expiration, vote.success,selectedTimeFrame]);
+  }, [vote.expiration, vote.valueExpirationTime,selectedTimeFrame]);
+  console.log('canvote',canVote,vote)
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);

@@ -167,8 +167,9 @@ useEffect(() => {
   }, [pages]);
 
   useEffect(() => {
+    const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(votesLast24Hours.length) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
     // @ts-ignore
     console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
     // @ts-ignore
@@ -397,27 +398,13 @@ useEffect(() => {
                             <span className="" style={{ marginLeft: '0px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={1676465801000} 
                          renderer={({ hours, minutes, seconds, completed }) => {                        
                             return (
-                              <div
-                                className='d-flex flex-column'
-                                style={{
-                                  width: "84%",
-                                  color: "#6352e8",
-                                  fontSize: "10px",
-                                  fontWeight: 400,
-                                  marginLeft: "20px",
-                                  textTransform: "none",
-                                }}
-                              >
+                              <span style={{color:'#6352e8',fontSize:'14px',fontWeight:400}}>
                                 {/* {hours < 10 ? `0${hours}` : hours}: */}
-                                <span>
-                                  Get {Number(voteRules?.maxVotes)} new votes in: {" "}
-                                </span>
-                                <span className='text-center'>
-                                  {hours < 1 ? null : hours + ":"}
-                                  {minutes < 10 ? `0${minutes}` : minutes + ":"}
-                                  {seconds < 10 ? `0${seconds}` : seconds}
-                                </span>
-                              </div>
+                                {Number(voteRules?.maxVotes)} votes in {' '}
+                                {hours < 1 ? null : `${hours} :` }
+                                {minutes < 10 ? `0${minutes}` : minutes}:
+                                {seconds < 10 ? `0${seconds}` : seconds}
+                              </span>
                             );
                           
                         }}
@@ -521,6 +508,7 @@ useEffect(() => {
                             <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
                               {/* {hours < 10 ? `0${hours}` : hours}: */}
                               5 votes in {' '}
+                              {hours < 1 ? null : `${hours} :` }
                               {minutes < 10 ? `0${minutes}` : minutes}:
                               {seconds < 10 ? `0${seconds}` : seconds}
                             </span>
