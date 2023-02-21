@@ -931,11 +931,11 @@ votesLast24HoursRef.get()
                                           element={<NFTGallery />}
                                         />
                                         <Route
-                                          path='nftAlbum/:name'
+                                          path='nftAlbum/:type'
                                           element={<NFTGalleryType />}
                                         />
                                         <Route
-                                          path='singalCard/:id'
+                                          path='singalCard/:type/:id'
                                           element={<SingalCard />}
                                         />
                                         <Route

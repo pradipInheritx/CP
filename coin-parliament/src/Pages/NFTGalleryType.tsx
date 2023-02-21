@@ -313,14 +313,14 @@ const NFTGalleryType = () => {
     // setCardValue(allCard)
   };
   let params = useParams();
-  const { name } = params;
+  const { type } = params;
 
 
    const getNftCard = () => {
-  const votesLast24HoursRef = firebase
+  const getCards = firebase
             .firestore()
             .collection("nft_gallery")
-    votesLast24HoursRef.get()
+    getCards.get()
       .then((snapshot) => {        
         // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
        let allcollection= snapshot.docs.map((doc) => doc.data())
@@ -328,7 +328,7 @@ const NFTGalleryType = () => {
         console.log(allcollection,"allcollection")
         allcollection?.map((card) => {
 
-          if (card?.collectionName==name) {
+          if (card?.collectionName==type) {
             setNftAlbumData(card?.setDetails)
           }          
         })
@@ -342,9 +342,7 @@ useEffect(() => {
     getNftCard()
   }, [params])
 
-const ChangeText=(string:string)=> {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+
   
   
 
@@ -416,7 +414,7 @@ console.log(nftAlbumData,"nftAlbumData")
             </div>
           </div>
           <div>
-            <p>{`${name}`} COLLECTION</p>
+            <p>{`${type}`} COLLECTION</p>
           </div>
 
           <SummerCard>
@@ -427,14 +425,19 @@ console.log(nftAlbumData,"nftAlbumData")
                   <SwiperBar>
                     {/* @ts-ignore */}
                     {items?.cards.map((item: any) => {
-                      console.log("ChangeText",ChangeText(item.type))
+                      
                       return (
                         <>
                           <NftOneCard
                             
-                            DivClass={ChangeText(item.type)}
-                            HeaderText={ChangeText(item.type)}
-                            HeaderClass={`${ChangeText(item.type)}_text`}
+                            DivClass={item.type}
+                            HeaderText={item.type}
+                            HeaderClass={`${item.type}_text`}
+                            Serie={items.name}
+                            BackCardName={item.name}
+                            Rarity={item.type}
+                            Quantity={item.quantity}
+                            holderNo={item?.noOfCardHolders}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
                             cardHeader={`${item.name}`}
@@ -442,7 +445,7 @@ console.log(nftAlbumData,"nftAlbumData")
                             id={item.cardId}
                             BackSideCard={BackSideCard}
                             // flipCard={backCards == item.id ? true : false}
-                            flipCard={backCards.includes(item.id)}
+                            flipCard={backCards.includes(item.cardId)}
                           />
                         </>
                       );

@@ -111,7 +111,7 @@ useEffect(() => {
                   name="username"
                   required
                   value={username}
-                  // maxlength={10}
+                  maxlength={10}
                   onChange={(e) => {
                     setUsername(e.target.value.replace(" ", "_").toLowerCase());
                     setUserNameErr(false)
