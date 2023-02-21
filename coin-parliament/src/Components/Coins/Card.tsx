@@ -192,7 +192,7 @@ const Card = ({
     <LighCart1
       {...{ single }}
     >
-      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-180px'}} onClick={
+      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{
           if(!user?.uid){
             setLoginRedirectMessage('add coin to favorites.')
@@ -242,7 +242,8 @@ const Card = ({
           <Trend num={coins[symbol]?.trend || 0}/>
         </Trend1>
       </Group3991>
-      {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>}
+      {/* {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>} */}
+      
       {!single && (
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}

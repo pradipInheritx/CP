@@ -80,7 +80,7 @@ const SingleCoin = () => {
   const [votedDetails, setVotedDetails] = useState<any>([]);
   // const [graphLoading,setGraphLoading]=useState(false)
   const {timeframes,setAllButtonTime,allButtonTime,forRun,setForRun} = useContext(AppContext);
-  console.log('choseTimeFrame1',selectedTimeFrameArray)
+  // console.log('choseTimeFrame1',selectedTimeFrameArray)
   const newTimeframe: any = []
   const AllcssDegree: any = [];
   const AllvotePrice: any = [];
@@ -247,7 +247,7 @@ const calcVote = useCallback(async () => {
   }, [voteId]);
 
 
-console.log(allButtonTime,"AllvoteValueObject")
+
   const getLeftTime = (value: any,index:number) => {
     console.log(value, "CheckvalueId", index);
     let t = value.voteTime / 1000; //mili
@@ -267,7 +267,7 @@ console.log(allButtonTime,"AllvoteValueObject")
   
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-
+console.log('i am rendering')
   const canVote = useMemo(() => {
     return (
       (!vote.expiration && vote.success === undefined) ||
