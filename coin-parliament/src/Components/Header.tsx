@@ -155,7 +155,7 @@ const Header = ({
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState()
 const [votingTimer,setVotingTimer]=useState(0)
-console.log('votingTimer',votingTimer,remainingTimer)
+
 useEffect(() => {
   setVotingTimer(remainingTimer,)
  
@@ -247,13 +247,13 @@ useEffect(() => {
     setMenuOpen(false);
   };
   // @ts-ignore
-  console.log(
-    Number(voteRules?.maxVotes) +
-      // @ts-ignore
-      Number(userInfo?.rewardStatistics?.extraVote) -
-      Number(votesLast24Hours.length),
-    "userInfo"
-  );
+  // console.log(
+  //   Number(voteRules?.maxVotes) +
+  //     // @ts-ignore
+  //     Number(userInfo?.rewardStatistics?.extraVote) -
+  //     Number(votesLast24Hours.length),
+  //   "userInfo"
+  // );
 
   return (
     <div>
@@ -392,10 +392,10 @@ useEffect(() => {
                          
                           {/* @ts-ignore */}
                           
-                       {voteNumber  ?
+                       {!voteNumber && votingTimer  ?
                           // @ts-ignore
                             
-                            <span className="" style={{ marginLeft: '0px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={1676465801000} 
+                            <span className="" style={{ marginLeft: '0px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer} 
                          renderer={({ hours, minutes, seconds, completed }) => {                        
                             return (
                               <span style={{color:'#6352e8',fontSize:'14px',fontWeight:400}}>

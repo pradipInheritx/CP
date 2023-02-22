@@ -145,7 +145,7 @@ const VotedCard = ({
   }
 
 
-console.log(vote,"voteCheck")
+// console.log(vote,"voteCheck")
   
   return (
     <>

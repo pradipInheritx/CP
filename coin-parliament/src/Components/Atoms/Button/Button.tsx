@@ -218,7 +218,7 @@ const TimeframeButton = ({
       clearInterval(ShowDeg)
   }  
   }
-  , 10);
+  , 10000);
 
   
   const getBorderColor = () => {

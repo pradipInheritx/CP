@@ -91,7 +91,7 @@ class Vote implements VoteProps {
       );
 
       const data = v?.data();
-      console.log('voteapicalled1', timeFrame,data)
+      
       if (!data) {
         return;
       }
@@ -153,7 +153,7 @@ export const useCanVote: () => [boolean, string] = () => {
  
   const valid = !!user && voted < Number(maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0);
   // @ts-ignore
-console.log('extravote12',Math.min(...votesLast24Hours.map((v) => v.voteTime)))
+
   const timeReturn = new Date(
     Math.min(...votesLast24Hours.map((v) => v.voteTime)) + timeLimit * 1000
   );
