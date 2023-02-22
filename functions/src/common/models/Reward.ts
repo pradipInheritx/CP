@@ -270,22 +270,31 @@ export const addRewardTransaction: (
 // get all rewards for specific User
 export const getAllRewardsOfUser = async (uid: string) => {
   // console.log("getAllRewardsOfUser")
-  var winCards: { cardID: number, cardName: string, cardSrNo: number }[] = []
+
+  var winCards: {
+    firstRewardCard: string,
+    firstRewardCardCollection: string,
+    firstRewardCardId: number,
+    firstRewardCardSerialNo : string,
+    firstRewardCardType : string,
+    secondRewardExtraVotes : number,
+    thirdRewardDiamonds : number
+  }[] = []
   await firestore()
-    .collection("reward_transaction")
+    .collection("reward_transcations")
     .where("user", "==", uid)
     .get()
     .then((doc) => {
       // console.log("getAllRewardsOfUser",doc)
       doc.forEach((cards) => {
-        const winCards = cards.data().winData
-        winCards.push(winCards)
+        console.log("getAllRewardsOfUser -- ",cards.data().winData)
+        winCards.push(cards.data().winData)
       })
     })
     .catch((error) => {
       console.log("getAllRewardsOfUser Error", error)
     })
-  // console.log("getAllRewardsOfUser",winCards)
+  console.log("getAllRewardsOfUser",winCards)
   return winCards
 }
 
@@ -293,7 +302,7 @@ export const claimReward: (
   uid: string
 ) => { [key: string]: any } = async (uid: string) => {
   console.log("Beginning execution claimReward function", uid);
-  // getAllRewardsOfUser(uid);
+  getAllRewardsOfUser(uid);
   const userRef = firestore()
     .collection("users")
     .doc(uid)
