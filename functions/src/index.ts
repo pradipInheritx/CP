@@ -59,7 +59,7 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
-import {claimReward, addReward} from "./common/models/Reward";
+import {claimReward, addReward, cardHolderListing} from "./common/models/Reward";
 import {
   cpviTaskCoin,
   cpviTaskPair,
@@ -143,6 +143,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     color: Colors.PLATINUM,
   };
   const userData: UserProps = {
+    uid: user.uid,
     address: "",
     avatar: user.photoURL,
     country: "",
@@ -529,6 +530,13 @@ exports.claimReward = functions.https.onCall(async (data) => {
   const reward = await claimReward(uid);
   console.log("reward --->", reward);
   return reward;
+});
+
+exports.cardHolderListing = functions.https.onCall(async(data) => {
+  const { cardId } = data as { cardId: number };
+  const userList = await cardHolderListing(cardId);
+  console.log("userList --->", userList);
+  return userList;
 });
 
 exports.checkPendingTransactions = functions.pubsub
