@@ -57,7 +57,7 @@ const Card = styled.div`
     
   }
   &.CardDisebal{
-    opacity: 0.3;
+    opacity: 0.5;
   }
 `;
 const CardName = styled.div`
@@ -145,15 +145,18 @@ export type BoxItems = {
   BackCardName?:string;
    Rarity?:string;
    Quantity?:string;
-   holderNo?:string|number;
+  holderNo?: string | number;
+  MintedTime?: string | number;
+  PrivateSerialNo?: string | number;
+  GeneralSerialNo?: string | number;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo}: BoxItems) => {
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
-  console.log(Disable, "Disable")
+  console.log(cardNo, "Disable")
   
       let params = useParams();
   const { type} = params;
@@ -188,8 +191,11 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         flipCard == true || flip != true ? " flipped" : ""
       }`}
       onClick={() => {
-        // @ts-ignore
+        if (Disable == "" || Disable == undefined) { 
+          // @ts-ignore
         BackSideCard(id);
+        }
+        
       }}
     >
       <div className='front'>
@@ -198,15 +204,15 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
           <div>
             {" "}
             <div className='d-flex justify-content-between'>
-              {/* <div className='opacity-0' style={{ fontSize: "12px" }}>
+              <div className='opacity-0' style={{ fontSize: "12px" }}>
                 <span className='px-2'>{cardNo}</span>
-              </div> */}
+              </div>
               <CenterText className={HeaderClass}>
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
-              {/* <div className='' style={{ fontSize: "12px" }}>
-                <span className='px-2'>{cardNo || ""}</span>
-              </div> */}
+              <div className='' style={{ fontSize: "12px" }}>
+                <span className='px-2 py-2'>{cardNo || ""}</span>
+              </div>
             </div>
             <div>
               {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
@@ -234,8 +240,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
           <div className='mt-2 mb-3'>
             <span>
               {pathnameName[1] == "profile"
-                ? "Private Card Serial No."
-                : "General Card Serial No."}
+                ? `Private Card Serial No. : ${PrivateSerialNo || ""}`
+                : `General Card Serial No. : ${GeneralSerialNo || ""}` }
             </span>
             <span>Collection : {type}</span>
             <span>Set (Serie) : {Serie}</span>
@@ -244,7 +250,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             <span>
               {pathnameName[1] == "profile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {pathnameName[1] == "profile" ? <span>Minted Time</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{ holderNo }<u onClick={() => {navigate(`/singalCard/${type}/${id}`)} }> View All</u></span> : 0} </span>}
+            {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{ holderNo }<u onClick={() => {navigate(`/singalCard/${type}/${id}`)} }> View All</u></span> : 0} </span>}
           </div>
         </CardBack>
       </div>

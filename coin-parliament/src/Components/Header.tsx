@@ -155,7 +155,7 @@ const Header = ({
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState()
 const [votingTimer,setVotingTimer]=useState(0)
-console.log('votingTimer',votingTimer,remainingTimer)
+
 useEffect(() => {
   setVotingTimer(remainingTimer,)
  

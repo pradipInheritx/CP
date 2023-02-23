@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
@@ -11,6 +11,9 @@ import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
+import UserContext from "../Contexts/User";
+
+// import { Firestore } from "firebase/firestore";
 
 const GalleryType = styled.div`
   margin: auto;
@@ -29,6 +32,7 @@ const GalleryType = styled.div`
 `;
 
 const ProfileNftGallery = () => {
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
 
@@ -49,10 +53,15 @@ const ProfileNftGallery = () => {
       ;    
 }
 
-useEffect(() => {
-    getNftCard()
-  }, [])
 
+  
+  
+useEffect(() => {
+  getNftCard()
+}, [])
+  
+// console.log(getAllRewardsOfUser(`${user?.uid}`),"CheckAllCArd")
+// console.log((user?.uid),"user?.uid")
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       <GalleryType

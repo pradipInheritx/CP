@@ -430,22 +430,23 @@ console.log(nftAlbumData,"nftAlbumData")
                         <>
                           <NftOneCard
                             
-                            DivClass={item.type}
-                            HeaderText={item.type}
-                            HeaderClass={`${item.type}_text`}
-                            Serie={items.name}
-                            BackCardName={item.name}
-                            Rarity={item.type}
-                            Quantity={item.quantity}
+                            DivClass={item?.type}
+                            HeaderText={item?.type}
+                            HeaderClass={`${item?.type}_text`}
+                            Serie={items?.name}
+                            BackCardName={item?.name}
+                            Rarity={item?.type}
+                            Quantity={item?.quantity}
                             holderNo={item?.noOfCardHolders}
+                            cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item.name}`}
-                            cardNo={`${item.cardNo}`}
-                            id={item.cardId}
+                            cardHeader={`${item?.name}`}
+                            // cardNo={`${item.cardNo}`}
+                            id={item?.cardId}
                             BackSideCard={BackSideCard}
                             // flipCard={backCards == item.id ? true : false}
-                            flipCard={backCards.includes(item.cardId)}
+                            flipCard={backCards?.includes(item?.cardId)}
                           />
                         </>
                       );
