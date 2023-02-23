@@ -259,6 +259,7 @@ const handleClick=()=>{
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
   const [authStateChanged, setAuthStateChanged] = useState(false);
   const [allButtonTime, setAllButtonTime] = useState<any>([]);
+  const [allPariButtonTime, setAllPariButtonTime] = useState<any>([]);
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
@@ -670,6 +671,8 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  setAllPariButtonTime,
+                  allPariButtonTime,
                   allButtonTime,
                   forRun,
                   setForRun,

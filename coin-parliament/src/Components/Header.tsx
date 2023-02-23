@@ -70,14 +70,14 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 70%;
+  width: 82%;
   height: 30px;
   
   margin-left:25px;
   border-radius 50px;
   display: flex;
   justify-content:space-around;
-  align-items: center;
+  // align-items: center;
 `;
 export const MemberText = styled.span`
   text-transform: uppercase;
@@ -107,6 +107,7 @@ export const PlusButtonMob = styled.div`
   cursor: pointer;
   border-radius: 50px;
   font-size: 13px;
+  margin-top:5px
 `;
 
 export const OuterContainer = styled.div`
@@ -366,7 +367,7 @@ useEffect(() => {
                       onClick={() => navigate("/profile/mine")}
                       style={{
                         position: "absolute",
-                        marginLeft: "15px",
+                        // marginLeft: "15px",
                         marginTop: "7px",
                         
                         cursor:"pointer"
@@ -384,17 +385,18 @@ useEffect(() => {
                         />
                       )}
                     </div>
-                    <div className='w-100 mt-3' style={{ marginLeft: "10px" }}>
+                    <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
                       <HeaderCenterMob className=''>
                         <div></div>
-                        <p className='ml-4'>
+                        <div className=''>
                          
                           {/* @ts-ignore */}
-                       {!voteNumber && votingTimer ?
+                          
+                       {voteNumber  ?
                           // @ts-ignore
-                         <span style={{marginLeft:'20px'}}> <Countdown daysInHours zeroPadTime={2} date={votingTimer} 
-                         renderer={({ hours, minutes, seconds, completed }) => {
-                        
+                            
+                            <span className="" style={{ marginLeft: '0px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={1676465801000} 
+                         renderer={({ hours, minutes, seconds, completed }) => {                        
                             return (
                               <span style={{color:'#6352e8',fontSize:'14px',fontWeight:400}}>
                                 {/* {hours < 10 ? `0${hours}` : hours}: */}
@@ -415,15 +417,11 @@ useEffect(() => {
                               color: "#6352E8",
                             }}
                           >
-                            {/* {Number(voteRules?.maxVotes) ||
-                              0 +
-                                // @ts-ignore
-                                Number(userInfo?.rewardStatistics?.extraVote) ||
-                              0 - Number(votesLast24Hours.length) ||
-                              0} */}
+                            
                             {voteNumber}
-                          </span></>}
-                        </p>
+                              </span>
+                            </>}
+                        </div>
                         
                         <PlusButtonMob
                           onClick={() => navigate("/votingbooster")}
