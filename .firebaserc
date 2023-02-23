@@ -2,6 +2,14 @@
   "projects": {
     "staging": "coinparliament-51ae1"
   },
-  "targets": {},
+  "targets": {
+    "coinparliament-51ae1": {
+      "hosting": {
+        "qa": [
+          "staging"
+        ]
+      }
+    }
+  },
   "etags": {}
 }

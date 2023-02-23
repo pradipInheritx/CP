@@ -4,14 +4,10 @@ import {firestore} from "firebase-admin";
 // import { rest } from "./Ajax";
 import {CPVIObj, cpviTaskCoin, cpviTaskPair} from "./CPVI";
 import moment from "moment";
-import axios from "axios";
-import {
-  wazirXAPIEndPoint,
-  coinCapAPIEndPoint,
-  defaultHeader,
-  successMessage,
-} from "../consts/config";
+import {successMessage} from "../consts/config";
 import allCoinsDecimalFixedVaues from "../consts/coins.constant.json";
+import {WebSocket} from "ws";
+import wazirXCoinsFromJson from "../consts/wazirXCoins.json";
 
 export type Coin = {
   name: string;
@@ -136,58 +132,26 @@ export const getAllPairs: () => Promise<string[]> = async () => {
   });
 };
 
-export const fetchCoinsFromCoinCapAndWazirX = async () => {
+export const fetchCoinsFromCoinCapAndWazirX = async (
+    getUpdatedCoinsRate: any
+) => {
   try {
-    let getMappedCoinCapCoins: any;
-    let getMappedWazirXCoins: any;
-    const getAllCoinFromCoinCap = await axios.get(
-        coinCapAPIEndPoint,
-        defaultHeader
-    );
-    console.info("getAllCoinFromCoinCap", getAllCoinFromCoinCap);
-    if (
-      getAllCoinFromCoinCap &&
-      getAllCoinFromCoinCap.data.data &&
-      getAllCoinFromCoinCap.data.data.length
-    ) {
-      getMappedCoinCapCoins = await getAllCoinFromCoinCap.data.data.map(
+    if (getUpdatedCoinsRate && getUpdatedCoinsRate.length) {
+      const mergedMappedCoins = [...getUpdatedCoinsRate].map(
           (getCoins: any, index: number) => ({
-            name: getCoins.id.toUpperCase(),
-            symbol: getCoins.symbol.toUpperCase(),
-            price: getCoins.rateUsd,
+            id: index + 1,
+            ...getCoins,
           })
       );
+      return {
+        count: mergedMappedCoins.length,
+        status: successMessage,
+        tickers: mergedMappedCoins,
+      };
+    } else {
+      console.info("getUpdatedCoinsRate", getUpdatedCoinsRate);
+      return false;
     }
-    const getAllCoinFromWazirX = await axios.get(
-        wazirXAPIEndPoint,
-        defaultHeader
-    );
-    console.info("getAllCoinFromWazirX", getAllCoinFromWazirX);
-    if (
-      getAllCoinFromWazirX &&
-      getAllCoinFromWazirX.data &&
-      getAllCoinFromWazirX.data.length
-    ) {
-      getMappedWazirXCoins = await getAllCoinFromWazirX.data.map(
-          (getCoins: any, index: number) => ({
-            name: getCoins.symbol.toUpperCase(),
-            symbol: getCoins.baseAsset.toUpperCase(),
-            price: getCoins.lastPrice,
-          })
-      );
-    }
-    const mergedMappedCoins = [
-      ...getMappedWazirXCoins,
-      ...getMappedCoinCapCoins,
-    ].map((getCoins: any, index: number) => ({
-      id: index + 1,
-      ...getCoins,
-    }));
-    return {
-      count: mergedMappedCoins.length,
-      status: successMessage,
-      tickers: mergedMappedCoins,
-    };
   } catch (error) {
     errorLogging("fetchCoinsFromCoinCapAndWazirX", "ERROR", error);
     return {
@@ -274,7 +238,7 @@ export const removeTheBefore24HoursData = async () => {
         timestamp.id < timestamp24hrsBefore ? timestamp.id : "null"
     );
 
-    console.log("getAllStoredTimestampIds", getAllStoredTimestampIds);
+    // console.log("getAllStoredTimestampIds", getAllStoredTimestampIds);
 
     for (
       let storedCoin = 0;
@@ -355,24 +319,122 @@ export const updateFixedValueInAllCoins = async (getAllCoins: CoinsWithKey) => {
   return getAllCoins;
 };
 
-export const fetchCoins = async () => {
-  const res: any = await fetchCoinsFromCoinCapAndWazirX();
-  if (res && res.count) {
-    const newCoins = calculateCoinsByWazirXAndCoinCap(res);
-    if (newCoins) {
-      const allCoins = await getAllCoins();
-      await insertNewCoinsWthTimestamp(newCoins);
-      await getAllUpdated24HourRecords();
-      // await removeTheBefore24HoursData();
-      const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
-          filterCoins(newCoins, allCoins)
-      );
+export const getUpdatedDataFromWebsocket = () => {
+  const base = "wss://stream.wazirx.com/stream";
+  const client = new WebSocket(base);
+
+  client.onerror = function() {
+    console.log("Connection Error"); // Add logs
+  };
+
+  client.onopen = function() {
+    console.log("WebSocket Client Connected"); // Add logs info
+
+    client.send(JSON.stringify({event: "ping"}));
+    client.send(
+        JSON.stringify({
+          event: "subscribe",
+          streams: [
+            "btcinr@trades",
+            "ethinr@trades",
+            "bnbinr@trades",
+            "adainr@trades",
+            "solinr@trades",
+            "xrpinr@trades",
+            "dogeinr@trades",
+            "dotinr@trades",
+            "shibinr@trades",
+            "maticinr@trades",
+            "ltcinr@trades",
+            "linkinr@trades",
+            "uniinr@trades",
+            "trxinr@trades",
+            "xlminr@trades",
+            "manainr@trades",
+            "hbarinr@trades",
+            "vetinr@trades",
+            "sandinr@trades",
+          ],
+        })
+    );
+  };
+
+  client.onclose = function() {
+    console.log("echo-protocol Client Closed"); // Add Logs
+  };
+
+  client.onmessage = async function(e: any) {
+    if (typeof e.data === "string") {
+      const parseCoinsRateData: any = JSON.parse(e.data);
+      if (parseCoinsRateData.data.trades) {
+        await updateLatestCoinRate(parseCoinsRateData);
+      }
+    } else {
+      // Add log went wrong while fetch the updated data
+    }
+  };
+};
+
+export const updateLatestCoinRate = async (latestCoinRate: any) => {
+  if (latestCoinRate && latestCoinRate.data && latestCoinRate.data.trades) {
+    const getCoinSymbolData: any = wazirXCoinsFromJson.find(
+        (coin) => coin.name === latestCoinRate.data.trades[0].s
+    );
+    if (getCoinSymbolData) {
+      console.log("getCoinSymbolData =>", {
+        ...getCoinSymbolData,
+        price: latestCoinRate.data.trades[0].p,
+        timestamp: latestCoinRate.data.trades[0].E,
+      });
       await firestore()
-          .collection("stats")
-          .doc("coins")
-          .set(getUpdateFixedValueInAllCoins, {
-            merge: true,
+          .collection("latestUpdatedCoins")
+          .add({
+            ...getCoinSymbolData,
+            price: latestCoinRate.data.trades[0].p,
+            timestamp: latestCoinRate.data.trades[0].E,
           });
+    }
+  } else {
+    console.log("come here");
+  }
+};
+
+export const fetchCoins = async () => {
+  const allUpdatedCoinsRates: any = [];
+
+  const getAllLatestCoinsRateRef: any = await firestore().collection(
+      "latestUpdatedCoins"
+  );
+
+  const coinRateSnapshot = await getAllLatestCoinsRateRef.get();
+  if (coinRateSnapshot.empty) {
+    console.log("No matching documents."); // Add logging
+  } else {
+    coinRateSnapshot.forEach((doc: any) => {
+      console.log(doc.id, "=>", doc.data());
+      allUpdatedCoinsRates.push(doc.data());
+    });
+
+    const res: any = await fetchCoinsFromCoinCapAndWazirX(allUpdatedCoinsRates);
+
+    if (res && res.count) {
+      await getUpdatedDataFromWebsocket();
+      const newCoins = calculateCoinsByWazirXAndCoinCap(res);
+      if (newCoins) {
+        const allCoins = await getAllCoins();
+        await insertNewCoinsWthTimestamp(newCoins);
+        await getAllUpdated24HourRecords();
+        // await removeTheBefore24HoursData();
+        const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
+            filterCoins(newCoins, allCoins)
+        );
+        await firestore()
+            .collection("stats")
+            .doc("coins")
+            .set(getUpdateFixedValueInAllCoins, {
+              merge: true,
+            });
+      }
     }
   }
 };
@@ -499,7 +561,7 @@ export const prepareCPVI = async (hours: number, table: string) => {
       continue;
     }
     const {direction0, direction1} = data.docs.reduce(
-        (total, doc) => {
+        (total: any, doc: any) => {
           const {direction0, direction1} = doc.data() as CPVIObj;
           return {
             direction0: total.direction0 + direction0,
