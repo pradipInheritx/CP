@@ -9,7 +9,7 @@ export const texts = {
   continue: "continue",
   firstTimeLoginModalTitle: "Do you want to continue?",
   firstTimeLoginModalText:
-    "Notice that once you choose a username, you can't change it again. Are you sure you want {username} as a username?",
+    "Choose wisely—because once you get a name, you can’t change it.",
   signUp: "signup",
   agree: "I agree to {terms & conditions} of the site",
   termsConditions: "terms & conditions",
@@ -20,9 +20,9 @@ export const texts = {
   generate: "generate",
   chooseUserName: "choose username",
   chooseUserNameText:
-    "Your username is how other community members will see you.",
-  FoundationSelect:'For every vote you cast, CP will match it and donate to one of The following foundations',
-  ForgetPasswordText:`Don't remember password ?`,
+    "Other members of the community will identify you by your username.",
+  FoundationSelect:'For every vote you cast, Coin Parliament will match it and donate to one of The following foundations,',
+  ForgetPasswordText:`Don't remember your password ?`,
   UserNameValidation:'User name should be unique and between 8 to 15 characters.'
 };
 

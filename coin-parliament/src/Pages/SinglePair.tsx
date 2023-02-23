@@ -40,7 +40,7 @@ const SinglePair = () => {
   const [confetti, setConfetti] = useState(false);
   const {width, height} = useWindowSize();
   const [pct,setPct]=useState(0)
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading,setGraphLoading]=useState(false)
   const {
@@ -171,7 +171,7 @@ useEffect(() => {
   }, [selectedTimeFrame]);
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-
+console.log('vote',vote)
 
   return (
     <>

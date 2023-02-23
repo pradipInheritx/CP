@@ -147,7 +147,7 @@ useEffect(() => {
           </div>
         </div>
       </Stack>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} style={{zIndex:9999}}>
         <Modal.Header >
           <Modal.Title>{translate(texts.firstTimeLoginModalTitle)}</Modal.Title>
         </Modal.Header>
