@@ -241,7 +241,7 @@ const NFTGalleryType = () => {
   ]);
 
   const [CardValue, setCardValue] = useState([]);
-  const [backCards, setBackCards] = useState("");
+  const [backCards, setBackCards] = useState<any>([]);
   const [checkCard, setcheckCard] = useState([
     { cardType: "Legendary" },
     { cardType: "Legendary" },
@@ -270,19 +270,23 @@ const NFTGalleryType = () => {
   };
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
-    setBackCards(backCards == value ? "" : value);
-    // backCards.length > 0  ? backCards.map((items, index) => {
-    //   if (items == value) {
-    //     // @ts-ignore
-    //     backCards.splice(index,1)
-    //   }
-    //   else {
-    //     // @ts-ignore
-    //     // backCards.push(value)
-    //     setBackCards([...backCards,value])
-    //   }
-    //   // @ts-ignore
-    // }) : setBackCards([...backCards,value]);
+     let allBackCard = backCards;
+     // @ts-ignore
+     // setBackCards(backCards == value ? "" : value);
+     backCards.length > 0
+       ? backCards?.map((items: any, index: number) => {
+           if (items == value) {
+             // @ts-ignore
+             allBackCard.splice(index, 1);
+             setBackCards(allBackCard);
+           } else {
+             // @ts-ignore
+
+             setBackCards([...backCards, value]);
+           }
+           // @ts-ignore
+         })
+       : setBackCards([...backCards, value]);
   };
 
   const HandleFilterByInput = (value: string | number) => {
@@ -391,7 +395,8 @@ const NFTGalleryType = () => {
                             cardNo={`${item.cardNo}`}
                             id={item.id}
                             BackSideCard={BackSideCard}
-                            flipCard={backCards == item.id ? true : false}
+                            // flipCard={backCards == item.id ? true : false}
+                            flipCard={backCards.includes(item.id)}
                           />
                         </>
                       );

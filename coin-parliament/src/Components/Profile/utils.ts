@@ -6,7 +6,7 @@ export const validatePassword = (newPassword: string, username: string, confirmP
   const check2 = !new RegExp(/\b^.*([a-zA-Z0-9])\1\1+.*\b/gm).test(newPassword);
   const check4 = newPassword === confirmPassword;
   const check3 = !newPassword.includes(username);
-  return check1 && check2 && check3;
+  return check1 && check2 && check3 && check4;
 };
 
 export const CountryCode = [

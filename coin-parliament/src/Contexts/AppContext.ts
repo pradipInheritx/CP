@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  allPariButtonTime: any;
+  setAllPariButtonTime: any;
   allButtonTime:any;
   setForRun?:any;
   forRun?:any;
