@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+// import { type } from "os";
 import { userConverter, UserProps } from "../models/User";
 
 
@@ -418,8 +419,13 @@ export const cardHolderListing: (
 ) => { [key: string]: any } = async (cardId: number) => {
   let transData: {
     winData: {
+      firstRewardCard: string,
+      firstRewardCardCollection: string,
       firstRewardCardId: number,
-      firstRewardCardName: string
+      firstRewardCardSerialNo : string,
+      firstRewardCardType : string,
+      secondRewardExtraVotes : number,
+      thirdRewardDiamonds : number
     },
     user: String
   }[] = await getRewardTransactionsByCardId(cardId);
@@ -430,3 +436,64 @@ export const cardHolderListing: (
   // console.log("users cardHolderListing---", users)
   return users;
 }
+
+// type NtfCards = {
+//   collectionId: number,
+//   collectionName: string,
+//   setQuantity: number,
+//   setsDeatils: {
+//     setId: number,
+//     setName: string,
+//     cards: {
+//       cardId: number,
+//       cardName: string,
+//       cardQuantity: number,
+//       noOfCardHolders: number,
+//       cardType: string,
+//       serialNo: string[]
+//     }[]
+//   }[]
+
+// }[]
+
+// // Add multiple nft cards in ntf_gallery
+
+// export const addMultipleCards =async () => {
+//   var cards: NtfCards = [
+//     {
+//       collectionId : 3,
+//       collectionName : "Monsoon",
+//       setQuantity : 1,
+//       setsDeatils : [
+//         {
+//           setId : 1,
+//           setName : "Monsoon_set_1",
+//           cards :[
+//             {
+//               cardId : 1,
+//               cardName : "Monsoon_1",
+//               cardQuantity : 1,
+//               noOfCardHolders : 1,
+//               cardType : "RARE",
+//               serialNo : [
+//                 "151",
+//                 "152",
+//                 "153"
+//               ]
+
+//             }
+//           ]
+//         }
+//       ]
+//     }
+//   ]
+
+//   const db = await firestore().batch()
+//   cards.forEach((ntfSingleCard)=>{
+//     db.set(
+//       firestore().collection('nft_gallery').doc(),
+//       ntfSingleCard
+//     )
+//   })
+  
+// }
