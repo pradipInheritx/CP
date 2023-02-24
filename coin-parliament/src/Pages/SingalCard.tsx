@@ -244,7 +244,7 @@ setFollowersDetails(FollowerList)
                   color: "black",
                   fontWeight: 500,
                 fontSize:"15px"
-                }}>Card Holder</span>                
+                }}>Card Holders</span>                
 
           </div>   
            <div>

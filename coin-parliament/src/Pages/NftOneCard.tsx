@@ -205,7 +205,9 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
     >
       <div className='front'>
         {/* First Div  */}
-        <Card className={`shadow tex-center ${DivClass} ${Disable} `}>
+        <Card className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+        minHeight: "318px",
+      }}>
           <div>
             {" "}
             <div className='d-flex justify-content-between'>
@@ -238,7 +240,9 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         </Card>
       </div>
       <div className='back'>
-        <CardBack className='shadow tex-center'>
+        <CardBack className='shadow tex-center' style={{
+        minHeight: "318px",
+      }}>
           <div className='d-flex justify-content-center mt-2'>
             <img src={logo} alt='' width='60px' height='60px' />
           </div>
