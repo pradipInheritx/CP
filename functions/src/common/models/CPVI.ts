@@ -45,7 +45,7 @@ export const calculateTotal = (votes: VoteResultProps[]) => {
       {
         direction0: 0,
         direction1: 0,
-      },
+      }
   );
 };
 
@@ -89,20 +89,23 @@ export const getRemote = (coin: string, pair?: boolean) => {
     }
   });
 };
+
 export const getUniqCoins = async () => {
   const allData = await firestore().collection("settings").doc("coins").get();
   return allData ?
     uniq(
         (allData.data() as { coins: { symbol: string }[] }).coins.map(
-            (d) => d.symbol,
-        ),
+            (d) => d.symbol
+        )
     ) :
     [];
 };
 
 export const getUniqPairsBothCombinations = async () => {
   const firstCombination = await getUniqPairs();
-  const secondCombination = firstCombination.map((pair) => pair.split("-").reverse().join("-"));
+  const secondCombination = firstCombination.map((pair) =>
+    pair.split("-").reverse().join("-")
+  );
   return [...firstCombination, ...secondCombination];
 };
 
@@ -111,8 +114,8 @@ export const getUniqPairs = async () => {
   return allData ?
     uniq(
         (
-        allData.data() as { pairs: { symbol1: string; symbol2: string }[] }
-        ).pairs.map((d) => `${d.symbol1}-${d.symbol2}`),
+          allData.data() as { pairs: { symbol1: string; symbol2: string }[] }
+        ).pairs.map((d) => `${d.symbol1}-${d.symbol2}`)
     ) :
     [];
 };
@@ -219,7 +222,7 @@ export const getStartTime = (hours = 3600) => {
 };
 
 export const cpviTaskCoin = async (
-    callback: (result: { [key: string]: CPVIObj }) => void,
+    callback: (result: { [key: string]: CPVIObj }) => void
 ) => {
   const result: { [key: string]: CPVIObj } = {};
   const uniqCoins = await getUniqCoins();
@@ -234,7 +237,7 @@ export const cpviTaskCoin = async (
 };
 
 export const cpviTaskPair = async (
-    callback: (result: { [key: string]: CPVIObj }) => void,
+    callback: (result: { [key: string]: CPVIObj }) => void
 ) => {
   const result: { [key: string]: CPVIObj } = {};
   const uniqCoins = await getUniqPairs();
@@ -248,17 +251,31 @@ export const cpviTaskPair = async (
   sequence_operate(arr, 0, 50);
 };
 
-export const cpviRealTimeData = async ({id, lastTimeFrame}: { id: string, lastTimeFrame: number }) => {
+export const cpviRealTimeData = async ({
+  id,
+  lastTimeFrame,
+}: {
+  id: string;
+  lastTimeFrame: number;
+}) => {
   const orderBookCoin = await firestore()
       .collection("askBidStats")
-      .doc("results").collection(id)
-      .where("timestamp", ">", firestore.Timestamp.fromDate(new Date(lastTimeFrame)))
+      .doc("results")
+      .collection(id)
+      .where(
+          "timestamp",
+          ">",
+          firestore.Timestamp.fromDate(new Date(lastTimeFrame))
+      )
       .get();
 
   const finalData = orderBookCoin.docs
       .map((d) => d.data())
       .map((doc) => {
-        const value = doc.direction0 > doc.direction1 ? doc.direction1 = doc.direction1 * 0.25 : doc.direction0 = doc.direction0 * 0.25;
+        const value =
+        doc.direction0 > doc.direction1 ?
+          (doc.direction1 = doc.direction1 * 0.25) :
+          (doc.direction0 = doc.direction0 * 0.25);
         return {
           time: moment(new Date(doc.timestamp.seconds * 1000)).format("x"),
           value,
@@ -279,7 +296,6 @@ export const cpviRealTimeData = async ({id, lastTimeFrame}: { id: string, lastTi
 //       .get();
 
 //   const dates = getDatesArray(timeFrame, new Date(start).getTime(), new Date(end).getTime());
-
 
 //   const docs = votes.docs
 //       .map((d) => d.data() as VoteProps as VoteResultProps)
@@ -309,13 +325,21 @@ export const cpviRealTimeData = async ({id, lastTimeFrame}: { id: string, lastTi
 //   ).sort((a, b) => Number(a.time) - Number(b.time));
 // };
 
-
-export const getCPVIForVote = async ({id, voteForTimeInHour}: { id: string, voteForTimeInHour: number }) => {
+export const getCPVIForVote = async ({
+  id,
+  voteForTimeInHour,
+}: {
+  id: string;
+  voteForTimeInHour: number;
+}) => {
   const end = Number(moment().utc().format("x"));
-  const orderBookWeight = 0;
+  console.log("end", end);
+  // const voteForTimeInHour = 1
   const fromTimeData = (voteForTimeInHour / 3600) * 50;
   const timeFrame = voteForTimeInHour;
-  const start = Number(moment().subtract(fromTimeData, "hours").utc().format("x"));
+  const start = Number(
+      moment().subtract(fromTimeData, "hours").utc().format("x")
+  );
   const hoursTimeFrame: any = {
     3600: "hourly",
     14400: "fourHourly",
@@ -332,7 +356,6 @@ export const getCPVIForVote = async ({id, voteForTimeInHour}: { id: string, vote
       .get();
   const toArray = votes.docs[0].data().coin.split("-");
 
-
   const docs = votes.docs
       .map((d) => d.data() as VoteProps as VoteResultProps)
       .map((doc) => {
@@ -344,21 +367,34 @@ export const getCPVIForVote = async ({id, voteForTimeInHour}: { id: string, vote
         };
       });
 
-
   console.log("toArray --->", toArray);
   if (Array.isArray(toArray) && toArray.length === 2) {
     const orderBookCoin1 = await firestore()
         .collection("askBidStats")
-        .doc(table).collection(toArray[0])
+        .doc(table)
+        .collection(toArray[0])
         .where("timestamp", "<", firestore.Timestamp.fromDate(moment().toDate()))
-        .where("timestamp", ">", firestore.Timestamp.fromDate(moment().subtract(fromTimeData, "hours").toDate()))
+        .where(
+            "timestamp",
+            ">",
+            firestore.Timestamp.fromDate(
+                moment().subtract(fromTimeData, "hours").toDate()
+            )
+        )
         .get();
 
     const orderBookCoin2 = await firestore()
         .collection("askBidStats")
-        .doc(table).collection(toArray[1])
+        .doc(table)
+        .collection(toArray[1])
         .where("timestamp", "<", firestore.Timestamp.fromDate(moment().toDate()))
-        .where("timestamp", ">", firestore.Timestamp.fromDate(moment().subtract(fromTimeData, "hours").toDate()))
+        .where(
+            "timestamp",
+            ">",
+            firestore.Timestamp.fromDate(
+                moment().subtract(fromTimeData, "hours").toDate()
+            )
+        )
         .get();
 
     if (!orderBookCoin1.docs.length || !orderBookCoin2.docs.length) {
@@ -367,41 +403,46 @@ export const getCPVIForVote = async ({id, voteForTimeInHour}: { id: string, vote
       console.log("orderBookData.docs --->", "OK");
     }
 
-
     let totalVote = 0;
     let upvote = 0;
 
-    let {
-      orderBookCoin1UpVote,
-    } = orderBookCoin1.docs.reduce((total, doc) => {
-      const {direction0} = doc.data() as CPVIObj;
-      return {
-        orderBookCoin1UpVote: total.orderBookCoin1UpVote + direction0,
-      };
-    }, {
-      orderBookCoin1UpVote: 0,
-    });
+    let {orderBookCoin1UpVote} = orderBookCoin1.docs.reduce(
+        (total, doc) => {
+          const {direction0} = doc.data() as CPVIObj;
+          return {
+            orderBookCoin1UpVote: total.orderBookCoin1UpVote + direction0,
+          };
+        },
+        {
+          orderBookCoin1UpVote: 0,
+        }
+    );
     console.log("orderBookCoin1UpVote --->", orderBookCoin1UpVote);
-    let {
-      orderBookCoin2UpVote,
-    } = orderBookCoin2.docs.reduce((total, doc) => {
-      const {direction0} = doc.data() as CPVIObj;
-      return {
-        orderBookCoin2UpVote: total.orderBookCoin2UpVote + direction0,
-      };
-    }, {
-      orderBookCoin2UpVote: 0,
-    });
+    let {orderBookCoin2UpVote} = orderBookCoin2.docs.reduce(
+        (total, doc) => {
+          const {direction0} = doc.data() as CPVIObj;
+          return {
+            orderBookCoin2UpVote: total.orderBookCoin2UpVote + direction0,
+          };
+        },
+        {
+          orderBookCoin2UpVote: 0,
+        }
+    );
     console.log("orderBookCoin2UpVote --->", orderBookCoin2UpVote);
     let orderBookCPVI = null;
     if (orderBookCoin1UpVote > 0 || orderBookCoin2UpVote > 0) {
-      orderBookCoin1UpVote > orderBookCoin2UpVote ? Math.trunc(orderBookCoin2UpVote = orderBookCoin2UpVote * 0.25) : Math.trunc(orderBookCoin1UpVote = orderBookCoin1UpVote * 0.25);
-      orderBookCPVI = (orderBookCoin1UpVote / (orderBookCoin1UpVote + orderBookCoin2UpVote)) * 100;
+      orderBookCoin1UpVote > orderBookCoin2UpVote ?
+        Math.trunc((orderBookCoin2UpVote = orderBookCoin2UpVote * 0.25)) :
+        Math.trunc((orderBookCoin1UpVote = orderBookCoin1UpVote * 0.25));
+      orderBookCPVI =
+        (orderBookCoin1UpVote / (orderBookCoin1UpVote + orderBookCoin2UpVote)) *
+        100;
     }
     console.log("orderBookCPVI --->", orderBookCPVI);
     docs.map((e) => {
       if (e?.CPM) totalVote += Number(e?.CPM);
-      e.direction == 0 && e?.CPM ? upvote += Number(e?.CPM) : null;
+      e.direction == 0 && e?.CPM ? (upvote += Number(e?.CPM)) : null;
     });
 
     const normalCPVI = (upvote / totalVote) * 100;
@@ -478,16 +519,17 @@ export const getCPVIForVote = async ({id, voteForTimeInHour}: { id: string, vote
             }
             console.log("calculatedUpVote --->", calculatedUpVote);
             console.log("calculatedDownVote --->", calculatedDownVote);
-            console.log("calculatedUpVote + calculatedDownVote --->", calculatedUpVote + calculatedDownVote);
-            orderBookValue = ((calculatedUpVote / (calculatedUpVote + calculatedDownVote)) * 100);
+            console.log(
+                "calculatedUpVote + calculatedDownVote --->",
+                calculatedUpVote + calculatedDownVote
+            );
+            orderBookValue =
+            (calculatedUpVote / (calculatedUpVote + calculatedDownVote)) * 100;
           }
           console.log("orderBookValue --->", orderBookValue);
           let totalValue = 0;
           if (orderBookValue && realValue) {
-            // totalValue = (realValue + orderBookValue) / 2;
-
-            // Calculating By orderBook Weight
-            totalValue = Number((((realValue * (100 - orderBookWeight)) + (orderBookValue * orderBookWeight)) / 100).toFixed(2));
+            totalValue = (realValue + orderBookValue) / 2;
           } else if (orderBookValue) {
             totalValue = orderBookValue;
           } else {
@@ -503,16 +545,20 @@ export const getCPVIForVote = async ({id, voteForTimeInHour}: { id: string, vote
         }, {} as { [key: string]: LineData })
     ).sort((a, b) => Number(a.time) - Number(b.time));
 
+    const secondLastTimeframe =
+      Number(finalArray[finalArray.length - 2].time) * 1000;
 
-    const secondLastTimeframe = Number(finalArray[finalArray.length - 2].time) * 1000;
-
-    const lastTimeFrameByVoting = docs.filter((e) => Number(e.time) > secondLastTimeframe).sort((a, b) => Number(a.time) - Number(b.time));
+    const lastTimeFrameByVoting = docs
+        .filter((e) => Number(e.time) > secondLastTimeframe)
+        .sort((a, b) => Number(a.time) - Number(b.time));
     console.log("lastTimeFrameByVoting --->", lastTimeFrameByVoting);
 
     const pushArr: any = [];
-    let value = 0; let upvote = 0; let totalWeight = 0;
+    let value = 0;
+    let upvote = 0;
+    let totalWeight = 0;
     lastTimeFrameByVoting.forEach((e, i) => {
-      e.direction == 0 && e?.weight ? upvote += Number(e.weight) : null;
+      e.direction == 0 && e?.weight ? (upvote += Number(e.weight)) : null;
 
       if (e?.weight) {
         totalWeight += Number(e.weight);
@@ -528,7 +574,6 @@ export const getCPVIForVote = async ({id, voteForTimeInHour}: { id: string, vote
     return [...finalArray, ...pushArr];
   }
 };
-
 
 // export const getCPVIForVote = async ({id}: { id: string }) => {
 //   const end = moment().utc().format();

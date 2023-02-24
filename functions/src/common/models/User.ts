@@ -1,6 +1,6 @@
-import {firestore} from "firebase-admin";
+import { firestore } from "firebase-admin";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
-// import {DictionaryKeys} from "./Dictionary";
+import { DictionaryKeys } from "./Dictionary";
 
 export type UserTypeProps = {
   index: number;
@@ -95,10 +95,12 @@ export const defaultUserType = {};
 //   minVote: 20,
 // };
 
+
 export const isAdmin: (user: string) => Promise<boolean> = async (
-    user: string
+  user: string
 ) => {
   try {
+    console.log("user", user);
     const admins = await firestore().collection("settings").doc("admins").get();
     return !!admins.data()?.admins.includes(user);
   } catch (e) {
