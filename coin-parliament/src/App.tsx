@@ -482,7 +482,7 @@ const handleClick=()=>{
      
       const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
       setCoins(newAllCoins);
-      saveCoins(newAllCoins);
+      // saveCoins(newAllCoins);
     });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
@@ -675,6 +675,7 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  remainingTimer,
                   setNftAlbumData,
                   nftAlbumData,
                   setAllPariButtonTime,
