@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import Leaderboard from "../Components/Leaderboard";
 import NftOneCard from "./NftOneCard";
@@ -16,6 +16,8 @@ import { db } from "../firebase";
 import { functions } from "../firebase";
 import { httpsCallable } from "@firebase/functions";
 import firebase from "firebase/compat";
+import { Other } from "./SingleCoin";
+import { translate, useTranslation } from "../common/models/Dictionary";
 
 const CenterItem = styled.div`
   background-color: #f2f2f2;  
@@ -97,8 +99,9 @@ const SingalCard = () => {
   const [followersDetails, setFollowersDetails] = useState<any>()
   const [followersShow, setFollowersShow] = useState<any>([])
   let params = useParams();
+  const translate = useTranslation();
   const { type, id } = params;
-  
+   const navigate = useNavigate();
 
   console.log(params,"params")
 // const claimReward = httpsCallable(functions, "claimReward");
@@ -221,13 +224,19 @@ setFollowersDetails(FollowerList)
                       }
                       
                     })}
-                  
+                  <div className="d-flex justify-content-center  pt-2 pb-4">
+                    <Other onClick={() => {
+                      navigate(-1);
+                    }}>{translate("Veiw All Cards")}</Other>
+                  </div>              
                 </div>
               );
             })}
+              
           </SummerCard>
-
+          
           </div>
+          
           <div>  
             <div>
           <div className="text-center my-3">
@@ -235,7 +244,8 @@ setFollowersDetails(FollowerList)
                   color: "black",
                   fontWeight: 500,
                 fontSize:"15px"
-                }}>Card Holder</span>
+                }}>Card Holder</span>                
+
           </div>   
            <div>
             <Leaderboard            
