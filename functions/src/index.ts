@@ -449,6 +449,7 @@ exports.onVote = functions.firestore
       console.log("setTimeOut completed");
     });
 
+
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
     const {parent, child} = data as { parent: string; child: string };
@@ -532,8 +533,8 @@ exports.claimReward = functions.https.onCall(async (data) => {
   return reward;
 });
 
-exports.cardHolderListing = functions.https.onCall(async(data) => {
-  const { cardId } = data as { cardId: number };
+exports.cardHolderListing = functions.https.onCall(async (data) => {
+  const {cardId} = data as { cardId: number };
   const userList = await cardHolderListing(cardId);
   console.log("userList --->", userList);
   return userList;
