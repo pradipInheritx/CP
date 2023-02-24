@@ -113,6 +113,7 @@ import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
+import SingalCard from "./Pages/SingalCard";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -254,12 +255,14 @@ const handleClick=()=>{
     classes.forEach((c) => body.classList.add(c.toLowerCase()));
   }, [pathname]);
   const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  const [changePrice, setChangePrice] = useState<any>(0);
   const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
   const [authStateChanged, setAuthStateChanged] = useState(false);
   const [allButtonTime, setAllButtonTime] = useState<any>([]);
   const [allPariButtonTime, setAllPariButtonTime] = useState<any>([]);
+  const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
@@ -496,6 +499,7 @@ const handleClick=()=>{
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
+      
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
     });
@@ -671,6 +675,8 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  setNftAlbumData,
+                  nftAlbumData,
                   setAllPariButtonTime,
                   allPariButtonTime,
                   allButtonTime,
@@ -777,7 +783,9 @@ votesLast24HoursRef.get()
                 }}
               >
                 <CoinsContext.Provider
-                  value={{
+                    value={{
+                      changePrice,
+                    setChangePrice,
                     ws,
                     rest,
                     coins,
@@ -816,7 +824,8 @@ votesLast24HoursRef.get()
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
                           // width={width}
-                        >
+                          >
+                            
                           <Header
                           remainingTimer={remainingTimer}
                             logo={
@@ -965,8 +974,12 @@ votesLast24HoursRef.get()
                                           element={<NFTGallery />}
                                         />
                                         <Route
-                                          path='nftAlbum/:name'
+                                          path='nftAlbum/:type'
                                           element={<NFTGalleryType />}
+                                        />
+                                        <Route
+                                          path='singalCard/:type/:id'
+                                          element={<SingalCard />}
                                         />
                                         <Route
                                           path='coins/:id'

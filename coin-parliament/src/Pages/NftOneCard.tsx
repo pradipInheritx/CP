@@ -11,44 +11,44 @@ import bkgnd from "../assets/images/bkgnd.png";
 import TheEagle from "../assets/images/TheEagle.png";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 
 const Card = styled.div`
-
-
 
   border-radius: 0px 0px 8px 8px;
   text-transform: uppercase;
   font-size: 14px;
   line-height: 14px;
 
-  &.Legendary {
+  &.LEGENDARY {
     background-image: url(${bkgnd4}) !important;
     color: #160133;
     border: #f5e7b5 solid 8px;
     background-color: #f5e7b5;
   }
+  
 
-  &.Rare {
+  &.RARE {
     background-image: url(${bkgnd5}) !important;
     color: #160133;
     border: #d2d2d2 solid 8px;
     background-color: #d2d2d2;
-  }
-  &.Epic {
+  }  
+  &.EPIC {
     background-image: url(${bkgnd3}) !important;
     color: #d4d0f3;
     border: #6352e8 solid 8px;
     background-color: #6352e8;
   }
-  &.UNCommon {
+  &.UNCOMMON {
     background-image: url(${bkgnd2}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
     border-radius: 0px 0px 8px 8px;
     background-color: #d4d0f3;
   }
-  &.Common {
+  &.COMMON {
     background-image: url(${bkgnd}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
@@ -57,7 +57,7 @@ const Card = styled.div`
     
   }
   &.CardDisebal{
-    opacity: 0.3;
+    opacity: 0.5;
   }
 `;
 const CardName = styled.div`
@@ -73,26 +73,26 @@ const CenterText = styled.div`
   border-radius: 0px 0px 8px 8px;
 
   text-align: center;
-  &.Legendary_text {
+  &.LEGENDARY_text {
     border: #f5e7b5 solid 6px;
     background-color: #f5e7b5;
-  }
-  &.Rare_text {
+  }  
+  &.RARE_text {
     border: #d2d2d2 solid 6px;
     background-color: #d2d2d2;
   }
 
-  &.Epic_text {
+  &.EPIC_text {
     border: #6352e8 solid 6px;
 
     background-color: #6352e8;
   }
 
-  &.UNCommon_text {
+  &.UNCOMMON_text {
     border: #d4d0f3 solid 6px;
     background-color: #d4d0f3;
   }
-  &.Common_text {
+  &.COMMON_text {
     border: #d4d0f3 solid 6px;
     background-color: #d4d0f3;
   }
@@ -140,36 +140,62 @@ export type BoxItems = {
   cardHeader?: string;
   BackSideCard?: (e: any) => void ;
   id?: string | number;
-  flipCard?:boolean|string
+  flipCard?: boolean | string;  
+  Serie?:string;
+  BackCardName?:string;
+   Rarity?:string;
+   Quantity?:string;
+  holderNo?: string | number;
+  MintedTime?: string | number;
+  PrivateSerialNo?: string | number;
+  GeneralSerialNo?: string | number;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo}: BoxItems) => {
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
+  const navigate = useNavigate();
+  console.log(cardNo, "Disable")
   
+      let params = useParams();
+  const { type} = params;
   
 
   return (
+    
     <div
       onMouseEnter={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {          
+          setFlip(!flip);
+        }
       }}
       onMouseLeave={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {                 
+          setFlip(!flip);
+        }        
       }}
       onFocus={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {          
+          setFlip(!flip);
+        }
+        // setFlip(!flip);
       }}
       onFocusCapture={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {          
+          setFlip(!flip);
+        }
+        // setFlip(!flip);
       }}
-      className={`card-container  ${
+      className={`card-container ${
         flipCard == true || flip != true ? " flipped" : ""
       }`}
       onClick={() => {
-        // @ts-ignore
+        if (Disable == "" || Disable == undefined) { 
+          // @ts-ignore
         BackSideCard(id);
+        }
+        
       }}
     >
       <div className='front'>
@@ -185,7 +211,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
               <div className='' style={{ fontSize: "12px" }}>
-                <span className='px-2'>{cardNo}</span>
+                <span className='px-2 py-2'>{cardNo || ""}</span>
               </div>
             </div>
             <div>
@@ -214,21 +240,17 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
           <div className='mt-2 mb-3'>
             <span>
               {pathnameName[1] == "profile"
-                ? "Private Card Serial No."
-                : "General Card Serial No."}
+                ? `Private Card Serial No. : ${PrivateSerialNo || ""}`
+                : `General Card Serial No. : ${GeneralSerialNo || ""}` }
             </span>
-            <span>Collection</span>
-            <span>Set (Serie)</span>
-            <span>Name</span>
-            <span>Rarity</span>
+            <span>Collection : {type}</span>
+            <span>Set (Serie) : {Serie}</span>
+            <span>Name : {BackCardName}</span>
+            <span>Rarity : {Rarity}</span>
             <span>
-              {pathnameName[1] == "profile" ? "Quantity" : "Total quantity"}
+              {pathnameName[1] == "profile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            <span>
-              {pathnameName[1] == "profile"
-                ? "Minted Time"
-                : "Number of holders"}
-            </span>
+            {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{ holderNo }<u onClick={() => {navigate(`/singalCard/${type}/${id}`)} }> View All</u></span> : 0} </span>}
           </div>
         </CardBack>
       </div>

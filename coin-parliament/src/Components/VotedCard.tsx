@@ -14,18 +14,20 @@ import moment from "moment";
 import {isEmpty} from "lodash";
 import SelectTimeframes from "./Coins/SelectTimeframes";
 import AppContext from "../Contexts/AppContext";
+import RangeSilder from "./Users/RangeSilder";
 
 const Rectangle2620 = styled.div`
-  ${Border1pxBlueViolet};  
+  ${Border1pxBlueViolet};    
   max-width: 345px;
   height: 75px;
-  background-color: var(--white);
+  background-color: var(--white);  
   border-radius: 38px;
   box-shadow: 0 3px 6px #00000029;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 16px 35px;
+  // padding: 16px 35px;  
+  
   margin: 0 auto 23px;
 `;
 
@@ -105,7 +107,10 @@ const VotedCard = ({
   cssDegree?:any;
   votePrice?:any;
   
-}) => {
+  }) => {
+  
+  
+  
   const [coin1, coin2] = [
     coins[symbol1] || undefined,
     coins[symbol2] || undefined,
@@ -174,14 +179,14 @@ const VotedCard = ({
      
                
             
-        <div className="d-flex justify-content-between w-100">
+        <div className="d-flex justify-content-center w-100 ">
           <div>
             <BitcoinBTCBULL24H3864490
-              className={coin2 ? "flex-row" : "flex-row"}
+              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
             >
               <Row1 className="poppins-normal-blackcurrant-14px mx-2">{row1}</Row1>
               <Row2 className="poppins-normal-blue-violet-14px-2">{row2}</Row2>
-              
+             
             </BitcoinBTCBULL24H3864490>
             
             <div className="d-flex justify-content-around align-items-center">
@@ -209,9 +214,7 @@ const VotedCard = ({
                
               
               </Text2>
-              
-            
-          </div>
+              </div>
             <ID13020221942>
               {voteId} - {moment(vote.voteTime).format("MM.DD.YYYY HH:mm")}
             </ID13020221942>

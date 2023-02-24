@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  nftAlbumData: any;
+  setNftAlbumData: any;
   allPariButtonTime: any;
   setAllPariButtonTime: any;
   allButtonTime:any;
