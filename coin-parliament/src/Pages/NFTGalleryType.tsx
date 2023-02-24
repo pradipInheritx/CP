@@ -279,7 +279,7 @@ const NFTGalleryType = () => {
 
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
-     let allBackCard = backCards;
+     let allBackCard = [...backCards];
      // @ts-ignore
      // setBackCards(backCards == value ? "" : value);
      backCards.length > 0

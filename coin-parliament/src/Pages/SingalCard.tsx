@@ -66,6 +66,9 @@ const SingalCard = () => {
   const { userTypes } = useContext(AppContext);
   const [chosen, setChosen] = useState<string | undefined>();
   
+
+// console.log(user, userInfo , leaders,"useruserInfoleaders")
+
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
     let allBackCard = backCards;
@@ -91,6 +94,8 @@ const SingalCard = () => {
 
   const [cardsDetails, setCardsDetails] = useState<any>()
   const [nftAlbumData, setNftAlbumData] = useState<any>()
+  const [followersDetails, setFollowersDetails] = useState<any>()
+  const [followersShow, setFollowersShow] = useState<any>([])
   let params = useParams();
   const { type, id } = params;
   
@@ -100,8 +105,34 @@ const SingalCard = () => {
   const getList = httpsCallable(functions, `cardHolderListing`);
 
   const getFollwersList = async(id:any) => {
-    const result = await getList({cardId:Number(id)}).then((list) => {
-      console.log(list,"alllist" );
+    const result = await getList({ cardId: Number(id) }).then((list) => {
+      // @ts-ignore
+      const FollowerList= list?.data?.map((items: any) => {                 
+        return {
+          leaders: items?.leader?.length || 0,
+          displayName:items?.displayName,
+          userId: items?.uid,
+          avatar: items?.avatar,
+          status: items?.status?.name,
+          phone:items?.phone,
+          country: items?.country,
+          score: items?.voteStatistics?.score,
+          totalVote: items?.voteStatistics?.total,
+          subscribers: 5,
+          pct: items?.voteStatistics?.successful / items?.voteStatistics?.total,
+          firstName: items?.firstName,
+          email:items?.email,
+          lastName: items?.lastName,
+        }
+      })
+setFollowersDetails(FollowerList)
+
+
+      // @ts-ignore          
+      // list?.data?.map((items: any) => {
+      //   console.log(items,"items")
+        
+      // })
     }).catch((error) => {
       console.log(`error: ${JSON.stringify(error)}`);
     });;
@@ -129,17 +160,14 @@ const SingalCard = () => {
       })
       ;    
 }
-
-
-console.log(nftAlbumData,"nftAlbumData")
   useEffect(() => {      
     getFollwersList(id)
     getNftCard()
     // alllist= getList({cardID:id})
-  }, [params])
-
-
-
+  }, []) 
+  console.log(followersDetails,"followersDetails")
+  
+  
   return (
     <div className=''>
       <div className='h-100 '>
@@ -154,33 +182,7 @@ console.log(nftAlbumData,"nftAlbumData")
               backgroundColor: "white",  
               borderRadius: "0px 0px 87px 0px",
               boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
-            }}>
-          {/* <SummerCard  className="">            
-                      <div className=''
-                      style={{width:`${window.screen.width<767?"70%":"38%"}`}}
-                      >                
-                        <>
-                          <NftOneCard
-                            DivClass={cards.cardType}
-                            HeaderText={cards.cardType}
-                            HeaderClass={`${cards.cardType}_text`}
-                            Disable={""} // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${cards.cardHeader}`}
-                            cardNo={`${cards.cardNo}`}
-                            id={cards.id}
-                            Serie={cards?.name }
-                            BackCardName={cards?.name}
-                            Rarity={cards?.type}
-                            Quantity={cards?.quantity}
-                            holderNo={cards?.noOfCardHolders}
-                            // BackSideCard={BackSideCard}
-                            // flipCard={backCards == cards.id ? true : false}
-                            // flipCard={backCards.includes(cards.id)}
-                          />
-                        </>
-                </div>            
-            </SummerCard>      */}
-
+            }}>        
           <SummerCard>
             {nftAlbumData?.map((items:any, index:number) => {
               return (
@@ -239,11 +241,12 @@ console.log(nftAlbumData,"nftAlbumData")
             <Leaderboard            
           {...{
           expanded: true,
-          leaders: leaders.filter((leader) => {
+          leaders: followersDetails?.filter((leader:any) => {
             return (
-              leader.status?.toLowerCase() === chosen?.toLowerCase() || !chosen
+              // @ts-ignore
+              leader?.status?.toLowerCase() === chosen?.toLowerCase() || !chosen
             );
-          }),
+          }),          
           userInfo,
           setChecked:setChecked(leaders, user),
         }}
