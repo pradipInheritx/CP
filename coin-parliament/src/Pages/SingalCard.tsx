@@ -138,6 +138,8 @@ console.log(nftAlbumData,"nftAlbumData")
     // alllist= getList({cardID:id})
   }, [params])
 
+
+
   return (
     <div className=''>
       <div className='h-100 '>
