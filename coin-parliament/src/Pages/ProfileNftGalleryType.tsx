@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import firebase from "firebase/compat";
-
+import UserContext from "../Contexts/User";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -85,7 +85,7 @@ width:100%;
 
 
 const ProfileNftGalleryType = () => {
-  
+  const { user } = useContext(UserContext);
   const [cards, setCards] = useState([
     [
       {
@@ -258,6 +258,7 @@ const ProfileNftGalleryType = () => {
   ]);
   const [filterIndex, setfilterIndex] = useState(0);
   const [backCards, setBackCards] = useState<any>([]);
+  const [winerCard, setWinerCard] = useState<any>([]);
 
 
 
@@ -328,12 +329,91 @@ console.log(type,"type")
         console.log(error,"error");
       })
       ;    
+     }
+  
+  
+  const getAllRewardsOfUser = async (uid: string) => {
+  // console.log("getAllRewardsOfUser")
+  var winCards: {
+    firstRewardCard: string,
+    firstRewardCardCollection: string,
+    firstRewardCardId: number,
+    firstRewardCardSerialNo : string,
+    firstRewardCardType : string,
+    secondRewardExtraVotes : number,
+    thirdRewardDiamonds : number
+    
+  }[] = []
+   await firebase
+  .firestore()
+    .collection("reward_transactions")
+    .where("user", "==", uid)
+    .get()
+    .then((doc:any) => {
+      // console.log("getAllRewardsOfUser",doc)
+      doc.forEach((cards:any,index:number) => {
+        // console.log("getAllRewardsOfUser -- ",cards.data())
+        // winCards.push(cards.data().)
+        winCards.push({...cards.data().winData ,...cards.data().transactionTime})
+        
+      })
+    })
+    .catch((error:any) => {
+      console.log("getAllRewardsOfUser Error", error)
+    })
+  // console.log("winCardsgetAllRewardsOfUser",winCards)
+   setWinerCard(winCards)
 }
 
 useEffect(() => {
-    getNftCard()
+  getNftCard()
+   getAllRewardsOfUser(`${user?.uid}`)
+  
   }, [params])
 
+  const CheckCardDisable = (cardId: any) => {   
+  var disableCard;
+  let cardTrue = winerCard?.find((winCard: any, index: number) =>
+  {
+    if (winCard?.firstRewardCardId != cardId) {
+      disableCard = "CardDisebal"       
+      return false
+    }
+    if (winCard?.firstRewardCardId == cardId) {
+      disableCard = undefined
+      return true
+    }
+    
+  })
+    
+      
+    return disableCard
+  }
+  
+
+  const getMintedTime = (cardId: any) => {
+    var getMIntedTime;
+      let  mintedTime= winerCard?.find((winCard:any,index:number) => {
+        if (winCard?.firstRewardCardId == cardId) {
+              const date = new Date(winCard?.seconds*1000);
+          getMIntedTime = date.toLocaleString()
+          return true
+              }            
+          })
+          return getMIntedTime 
+  }
+  
+  const getPriSerialNo = (cardId: any) => {
+    var seriaNo;
+      let  PriSerialNo= winerCard?.find((winCard:any,index:number) => {
+        if (winCard?.firstRewardCardId == cardId) {              
+               seriaNo= winCard?.firstRewardCardSerialNo
+                return "hello"
+            }            
+          })
+          return seriaNo    
+  }
+  console.log(winerCard,"winerCard")
   return (
     <div className=''>
       <div className='h-100 '>
@@ -358,8 +438,8 @@ useEffect(() => {
           <div>
             <p>{type} COLLECTION</p>
           </div>
-<SummerCard>
-                    {nftAlbumData?.map((items: any, index: number) => {
+            <SummerCard>
+            {nftAlbumData?.map((items: any, index: number) => {
               
               return (
                 <div className='w-100 m-auto mb-4 '>
@@ -371,25 +451,30 @@ useEffect(() => {
                       return (
                         <>
                           <NftOneCard                            
-                            DivClass={item.type}
-                            HeaderText={item.type}
-                            HeaderClass={`${item.type}_text`}
-                            Serie={items.name}
-                            BackCardName={item.name}
-                            Rarity={item.type}
-                            Quantity={item.quantity}
+                            DivClass={item?.type}
+                            HeaderText={item?.type}
+                            HeaderClass={`${item?.type}_text`}
+                            Serie={items?.name}
+                            BackCardName={item?.name}
+                            Rarity={item?.type}
+                            Quantity={item?.quantity}
                             holderNo={item?.noOfCardHolders}
+                            MintedTime={getMintedTime(item?.cardId)}
+                            PrivateSerialNo={getPriSerialNo(item?.cardId)}
+                            // MintedTime={CheckCardDisable({WorkType:"CardDisable", cardId:item.cardId})
                             // Serice={item.name}
                             // CardName={item.cards.name}
                             
+                            Disable={CheckCardDisable(item?.cardId)}
                             // Disable={"CardDisebal"}
+                            
                             // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item.name}`}
-                            cardNo={`${item.cardNo}`}
-                            id={item.cardId}
+                            cardHeader={`${item?.name}`}
+                            cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                            id={item?.cardId}
                             BackSideCard={BackSideCard}
                             // flipCard={backCards == item.id ? true : false}
-                            flipCard={backCards.includes(item.cardId)}
+                            flipCard={backCards.includes(item?.cardId)}
                           />
                         </>
                       );

@@ -344,7 +344,26 @@ useEffect(() => {
 
 
   
-  
+  const HandelonchangeFilter = (e:any) => {
+    let name =e.target.name
+    let value =e.target.value
+    let allCard = nftAlbumData;
+    let filterItem = allCard?.map((items: any, ind: number) => {      
+     
+     return  Object.keys(items?.cards[ind]).every((keyValue: any, index: number) => {
+        //  console.log(items?.cards[index][key],"allKEy") 
+        //  console.log(allCard[ind]?.cards[index],"allKEy") 
+        //  console.log(items.card[index][keyValue] ,"allKEy") 
+        // return items.cards[ind][keyValue]
+        if (items.cards[ind][keyValue] == value) {          
+          // return items?.cards[index][keyValue];
+           return items?.cards[ind]
+        }
+      })
+    })
+    console.log(filterItem,value,"filterItem")
+    // console.log(filterItem,"filterItem")
+  }
 
 console.log(nftAlbumData,"nftAlbumData")
   return (
@@ -372,11 +391,15 @@ console.log(nftAlbumData,"nftAlbumData")
           <div className='d-flex justify-content-center mt-5 flex-wrap '>
             <input
               type='text'
-              onChange={(e) => {
-                HandleFilterByInput(e.target.value);
-              }}
+              name="hello"
+              // onChange={(e) => {
+              //   HandleFilterByInput(e.target.value);
+              // }}
+              // onChange={(e)=>{HandelonchangeFilter(e)}}
               placeholder='Search...'
               className='py-2 mx-3 rounded border'
+              // style={{ width: "200px" }}
+              
             />
             <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
               <select
@@ -389,11 +412,12 @@ console.log(nftAlbumData,"nftAlbumData")
                 <option value='saab'>WINTER</option>
               </select>
               <select
-                name='cars'
-                id='cars'
+                name='type'
+                id='type'
                 className='bg-white border rounded mx-2 py-2'
+                // onChange={(e)=>{HandelonchangeFilter(e)}}
               >
-                <option value='volvo'>Select Type</option>
+                <option value=''>Select Type</option>
                 <option value='Legendary'>Legendary</option>
                 <option value='Rare'>Rare</option>
                 <option value='Epic'>Epic</option>
@@ -430,22 +454,23 @@ console.log(nftAlbumData,"nftAlbumData")
                         <>
                           <NftOneCard
                             
-                            DivClass={item.type}
-                            HeaderText={item.type}
-                            HeaderClass={`${item.type}_text`}
-                            Serie={items.name}
-                            BackCardName={item.name}
-                            Rarity={item.type}
-                            Quantity={item.quantity}
+                            DivClass={item?.type}
+                            HeaderText={item?.type}
+                            HeaderClass={`${item?.type}_text`}
+                            Serie={items?.name}
+                            BackCardName={item?.name}
+                            Rarity={item?.type}
+                            Quantity={item?.quantity}
                             holderNo={item?.noOfCardHolders}
+                            cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item.name}`}
-                            cardNo={`${item.cardNo}`}
-                            id={item.cardId}
+                            cardHeader={`${item?.name}`}
+                            // cardNo={`${item.cardNo}`}
+                            id={item?.cardId}
                             BackSideCard={BackSideCard}
                             // flipCard={backCards == item.id ? true : false}
-                            flipCard={backCards.includes(item.cardId)}
+                            flipCard={backCards?.includes(item?.cardId)}
                           />
                         </>
                       );
