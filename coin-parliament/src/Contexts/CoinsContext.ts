@@ -93,6 +93,8 @@ export const coinDataConverter = {
 };
 
 export type CoinContextProps = {
+  changePrice: any;
+  setChangePrice: any;
   coins: { [symbol: string]: Coin };
   setCoins: (coins: { [symbol: string]: Coin }) => void;
   totals: { [key: string]: Totals };

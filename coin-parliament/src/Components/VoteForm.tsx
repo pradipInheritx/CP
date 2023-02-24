@@ -61,7 +61,7 @@ const VoteForm = function <
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  console.log("loginbutton", !!!user && selectedTimeFrame, selectedTimeFrame);
+  // console.log("loginbutton", !!!user && selectedTimeFrame, selectedTimeFrame);
   // console.log("cssDegreesdfkjsdklf", votePrice);
   
   

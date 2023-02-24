@@ -113,6 +113,7 @@ import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
+import SingalCard from "./Pages/SingalCard";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -140,7 +141,7 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
 
 const handleClick=()=>{
-  alert('clicked')
+  
   setDisplayFullscreen('none')
   if (isMobile && fullscreenEnabled) {
     const elem = document.documentElement;
@@ -254,12 +255,14 @@ const handleClick=()=>{
     classes.forEach((c) => body.classList.add(c.toLowerCase()));
   }, [pathname]);
   const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  const [changePrice, setChangePrice] = useState<any>(0);
   const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
   const [authStateChanged, setAuthStateChanged] = useState(false);
   const [allButtonTime, setAllButtonTime] = useState<any>([]);
   const [allPariButtonTime, setAllPariButtonTime] = useState<any>([]);
+  const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
@@ -496,6 +499,7 @@ const handleClick=()=>{
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
+      
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
     });
@@ -671,6 +675,8 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  setNftAlbumData,
+                  nftAlbumData,
                   setAllPariButtonTime,
                   allPariButtonTime,
                   allButtonTime,
@@ -777,7 +783,9 @@ votesLast24HoursRef.get()
                 }}
               >
                 <CoinsContext.Provider
-                  value={{
+                    value={{
+                      changePrice,
+                    setChangePrice,
                     ws,
                     rest,
                     coins,
@@ -816,7 +824,8 @@ votesLast24HoursRef.get()
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
                           // width={width}
-                        >
+                          >
+                            
                           <Header
                           remainingTimer={remainingTimer}
                             logo={
@@ -882,12 +891,12 @@ votesLast24HoursRef.get()
                               </HomeContainer>
                             }
                           />
-                          <div id="fullscreen-modal" className="modal" style={{display:displayFullscreen}}>
+                        { isMobile &&  <div id="fullscreen-modal" className="modal" style={{display:displayFullscreen}}>
   <div className="modal-content" >
     <p className='fullscreentext'>Click the button below to enter fullscreen mode.</p>
     <div className='d-flex justify-content-between'><button className="btn btn-outline-primary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>handleClick()}>YES</button> <button className="btn btn-outline-secondary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>setDisplayFullscreen('none')}>No</button></div>
   </div>
-</div>
+</div>}
                           {user && firstTimeLogin && (
                             <FirstTimeLogin
                               setFirstTimeAvatarSelection={
@@ -965,8 +974,12 @@ votesLast24HoursRef.get()
                                           element={<NFTGallery />}
                                         />
                                         <Route
-                                          path='nftAlbum/:name'
+                                          path='nftAlbum/:type'
                                           element={<NFTGalleryType />}
+                                        />
+                                        <Route
+                                          path='singalCard/:type/:id'
+                                          element={<SingalCard />}
                                         />
                                         <Route
                                           path='coins/:id'
