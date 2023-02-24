@@ -187,6 +187,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         }
         // setFlip(!flip);
       }}
+      // @ts-ignore
+      
       className={`card-container ${
         flipCard == true || flip != true ? " flipped" : ""
       }`}
