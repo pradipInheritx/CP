@@ -233,7 +233,7 @@ console.log(nftAlbumData,"nftAlbumData")
                   color: "black",
                   fontWeight: 500,
                 fontSize:"15px"
-                }}>Card Holder</span>
+                }}>Card Name</span>
           </div>   
            <div>
             <Leaderboard            
