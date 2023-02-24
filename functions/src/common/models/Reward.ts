@@ -85,11 +85,11 @@ function createArrayByPercentageForPickingTier(cmp: number) {
 };*/
 
 // get all collection data
-async function getAllCards() {
-  const docs = await firestore().collection("settings").doc("cards").get();
-  console.log("docs.data() --->", docs.data()?.cards);
-  return docs.data()?.cards || [];
-}
+// async function getAllCards() {
+//   const docs = await firestore().collection("settings").doc("cards").get();
+//   console.log("docs.data() --->", docs.data()?.cards);
+//   return docs.data()?.cards || [];
+// }
 
 // get all collection data
 async function getAllNftGallery() {
@@ -175,8 +175,8 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   //   Epic: ["OPD", "WNN", "CHD", "AUL", "SYI"],
   //   Legendary: ["XFL", "MHG", "FKU", "CSJ", "ZCW"],
   // };
-  const cardData = await getAllCards();
-  console.log("cardData Response--->", cardData);
+  // const cardData = await getAllCards();
+  // console.log("cardData Response--->", cardData);
 
   const nftGalleryData = await getAllNftGallery();
   console.log("nftGalleryData --->", nftGalleryData);
@@ -208,17 +208,17 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   //   5: ["XFL", "MHG", "FKU", "CSJ", "ZCW"],
   // };
 
-  const oldcardsByTier: { [key: string]: string[] } = {};
-  interface cardType {
-    cardList: string[],
-    tierName: string
-  }
+  // const oldcardsByTier: { [key: string]: string[] } = {};
+  // interface cardType {
+  //   cardList: string[],
+  //   tierName: string
+  // }
 
-  cardData.map((e: cardType) => {
-    oldcardsByTier[e.tierName] = e.cardList;
-  });
+  // cardData.map((e: cardType) => {
+  //   oldcardsByTier[e.tierName] = e.cardList;
+  // });
 
-  console.log("CARDS TIER", oldcardsByTier);
+  // console.log("CARDS TIER", oldcardsByTier);
   const randomIndex = Math.floor(Math.random() * percentageArr.length);
 
   console.log("RANDOM INDEX", randomIndex);
@@ -315,7 +315,7 @@ export const claimReward: (
     const transData: any = await getRewardTransactionsByCardId(cardData.cardId);
     console.log("transData---", transData);
     const userIds = transData.map((item: any) => item.user);
-    cardData.noOfCardHolders = Array.from(new Set(userIds)).length;
+    cardData.noOfCardHolders = Array.from(new Set(userIds)).length+1;
 
     await firestore()
         .collection("nft_gallery")
@@ -428,13 +428,14 @@ export const cardHolderListing: (
     },
     user: string
   }[] = await getRewardTransactionsByCardId(cardId);
-  // console.log("transData cardHolderListing---", transData)
+  console.log("transData cardHolderListing---", transData);
   const userIds = transData.map((item: any) => item.user);
-  // console.log("users map cardHolderListing---", userIds)
+  console.log("users map cardHolderListing---", userIds);
   const users: any = await getMultipleUsersByUserIds(userIds);
   // console.log("users cardHolderListing---", users)
   return users;
 };
+
 
 // type NtfCards = {
 //   collectionId: number,

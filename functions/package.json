@@ -8,7 +8,7 @@
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
     "dev": "tsc-watch",
-    "deploy": "firebase deploy --only functions:cardHolderListing",
+    "deploy": "firebase deploy --only functions:claimReward",
     "logs": "firebase functions:log"
   },
   "engines": {

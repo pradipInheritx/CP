@@ -308,16 +308,16 @@ exports.subscribe = functions.https.onCall(async (data) => {
   }
 });
 
-async function getCards() {
-  const docs = await admin
-      .firestore()
-      .collection("settings")
-      .doc("cards")
-      .get();
+// async function getCards() {
+//   const docs = await admin
+//       .firestore()
+//       .collection("settings")
+//       .doc("cards")
+//       .get();
 
-  console.log("docs.data() --->", docs.data()?.cards);
-  return docs.data()?.cards || [];
-}
+//   console.log("docs.data() --->", docs.data()?.cards);
+//   return docs.data()?.cards || [];
+// }
 
 exports.onUpdateUser = functions.firestore
     .document("users/{id}")
@@ -325,7 +325,7 @@ exports.onUpdateUser = functions.firestore
       const before = snapshot.before.data() as UserProps;
       const after = snapshot.after.data() as UserProps;
       await addReward(snapshot.after.id, before, after);
-      await getCards();
+      // await getCards();
       const [should, amount] = shouldHaveTransaction(before, after);
       if (!should || !amount) {
         return;
