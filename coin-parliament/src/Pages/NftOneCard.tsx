@@ -197,6 +197,9 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         }
         
       }}
+      style={{
+        minHeight: "330px",
+      }}
     >
       <div className='front'>
         {/* First Div  */}
