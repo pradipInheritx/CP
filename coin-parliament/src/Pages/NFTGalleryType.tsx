@@ -463,6 +463,7 @@ console.log(nftAlbumData,"nftAlbumData")
                             Quantity={item?.quantity}
                             holderNo={item?.noOfCardHolders}
                             cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                            GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3)+ ((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
                             cardHeader={`${item?.name}`}
