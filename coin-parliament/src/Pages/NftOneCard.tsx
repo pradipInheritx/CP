@@ -266,7 +266,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
             onClick={() => {
                 navigate(`/singalCard/${type}/${id}`)            
-                setSingalCardData({...fulldata, myID:userId})
+                setSingalCardData({ ...fulldata, myID: userId })
+                localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
             }}> View All</u></span> : 0} </span>}
           </div>
         </CardBack>
