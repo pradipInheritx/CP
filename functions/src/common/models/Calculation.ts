@@ -1,4 +1,10 @@
-import {userConverter, UserProps, userTypeConverter, UserTypeProps, VoteStatistics} from "./User";
+import {
+  userConverter,
+  UserProps,
+  userTypeConverter,
+  UserTypeProps,
+  VoteStatistics,
+} from "./User";
 import {Direction, voteConverter, VoteResultProps} from "./Vote";
 import {firestore} from "firebase-admin";
 import Refer, {VoteRules} from "./Refer";
@@ -30,18 +36,21 @@ export type Leader = {
 //     Number(voteRules.CPMReturnSuccess) :
 //     Number(voteRules.CPMReturnFailure));
 
-export const returnValue: (success: number, voteRules: VoteRules, status: any) => number = (
-    success = 0,
-    voteRules,
-    status
-) => {
+export const returnValue: (
+  success: number,
+  voteRules: VoteRules,
+  status: any
+) => number = (success = 0, voteRules, status) => {
   let CPMReturn: number;
   if (success === 1) {
-    CPMReturn = (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnSuccess);
+    CPMReturn =
+      (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnSuccess);
   } else if (success === 2) {
-    CPMReturn = (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnInRange);
+    CPMReturn =
+      (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnInRange);
   } else {
-    CPMReturn = (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
+    CPMReturn =
+      (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
   }
   return (Number(voteRules.givenCPM) || 1) * CPMReturn;
 };
@@ -80,6 +89,7 @@ class Calculation {
   async updateVote(
       ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
+    console.log("this.voteResult =>", this.voteResult);
     await ref.update(this.voteResult);
   }
 
@@ -174,28 +184,29 @@ class Calculation {
   //     }
   //   }
   // }
+
   calcSuccess(): void {
     const {voteResult} = this;
     const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
+
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
       const endValue = voteResult?.valueExpirationTime;
-      const upRange = Number(startValue) + (Number(startValue) * CPMReturnRangePercentage / 100);
-      const downRange = Number(startValue) - (Number(startValue) * CPMReturnRangePercentage / 100);
+      const upRange =
+        Number(startValue) +
+        (Number(startValue) * CPMReturnRangePercentage) / 100;
+      const downRange =
+        Number(startValue) -
+        (Number(startValue) * CPMReturnRangePercentage) / 100;
 
-      if (
-        typeof startValue === "number" &&
-        typeof endValue === "number"
-      ) {
-        const trendChange = Number(Number(
-            ((endValue || 0) / (startValue || 1) - 1) * 100
-        ).toFixed(3));
+      if (typeof startValue === "number" && typeof endValue === "number") {
+        const trendChange = Number(
+            Number(((endValue || 0) / (startValue || 1) - 1) * 100).toFixed(3)
+        );
         voteResult.trendChange = trendChange;
       }
 
-
-      if (endValue && (endValue < upRange && endValue > downRange)) {
-        console.log("successValue Changed");
+      if (endValue && endValue < upRange && endValue > downRange) {
         this.voteResult.success = 2;
       } else {
         console.log("successValue Changed rand point not working");
@@ -221,6 +232,12 @@ class Calculation {
 
         const winner = diff[0] < diff[1] ? 1 : 0;
         const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+        console.info(
+            "averageValue",
+            averageValue,
+            "CPMReturnRangePercentage",
+            CPMReturnRangePercentage
+        );
         if (averageValue <= CPMReturnRangePercentage) {
           this.voteResult.success = 2;
         } else {
@@ -265,7 +282,7 @@ const getLeaders = async () => {
           subscribers: subscribers?.length || 0,
           leaders: leader?.length || 0,
           pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
-          totalVote: (voteStatistics?.total || 0),
+          totalVote: voteStatistics?.total || 0,
         } as Leader;
       })
       .sort((a, b) => Number(b.score) - Number(a.score));
@@ -304,7 +321,6 @@ const getLeaders = async () => {
 //         .set({leaders}, {merge: true});
 //   };
 
-
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
     let leaders = await getLeaders();
@@ -315,25 +331,34 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         .withConverter(userTypeConverter)
         .get();
 
-    const sortedUserType: UserTypeProps[] = userTypes.data()?.userTypes.sort((a, b) => Number(a.share) - Number(b.share)) as UserTypeProps[];
-    leaders = leaders.filter((e) => (e?.totalVote || 0) > (sortedUserType[sortedUserType.length - 1].minVote || 20));
-    // console.log('leaders --->', leaders);
+    const sortedUserType: UserTypeProps[] = userTypes
+        .data()
+      ?.userTypes.sort(
+        (a, b) => Number(a.share) - Number(b.share)
+      ) as UserTypeProps[];
+    leaders = leaders.filter(
+        (e) =>
+          (e?.totalVote || 0) >
+        (sortedUserType[sortedUserType.length - 1].minVote || 20)
+    );
     let updatableUser = leaders;
     const leaderStatus: Leader[] = [];
 
-
-    // sortedUserType.forEach(async (eachType, index) => {
     for (let j = 0; j < sortedUserType.length; j++) {
       const eachType = sortedUserType[j];
       const eachSplit = [];
       const remainUser = [];
-      const userLengthForThisUserType = Math.floor((leaders.length * eachType.share) / 100);
-      const minimumUserRequirement = Math.floor(100 / (Number(eachType.share)));
-      // console.log('userLengthForThisUserType --->', userLengthForThisUserType);
+      const userLengthForThisUserType = Math.floor(
+          (leaders.length * eachType.share) / 100
+      );
+      const minimumUserRequirement = Math.floor(100 / Number(eachType.share));
       for (let i = 0; i < updatableUser.length; i++) {
         const eachUser = updatableUser[i];
         if ((eachUser.totalVote || 0) >= (eachType.minVote || 20)) {
-          if (minimumUserRequirement > userLengthForThisUserType || eachSplit.length < userLengthForThisUserType) {
+          if (
+            minimumUserRequirement > userLengthForThisUserType ||
+            eachSplit.length < userLengthForThisUserType
+          ) {
             eachSplit.push(eachUser);
             eachUser.status = eachType.name;
             leaderStatus.push(eachUser);
@@ -346,23 +371,21 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           remainUser.push(eachUser);
         }
       }
-      // console.log('remainUser --->', j, remainUser);
       updatableUser = remainUser;
     }
-    // });
-    // console.log('leaderStatus --->', leaderStatus);
     return await firestore()
         .collection("stats")
         .doc("leaders")
         .set({leaders: leaderStatus}, {merge: true});
   };
 
-
 export const calculateStatus: (
   pct: number,
-  userTypes: UserTypeProps[],
+  userTypes: UserTypeProps[]
 ) => UserTypeProps | undefined = (pct: number, userTypes: UserTypeProps[]) => {
-  const sortedUserTypes = userTypes.slice().sort((a, b) => Number(a.share) - Number(b.share))
+  const sortedUserTypes = userTypes
+      .slice()
+      .sort((a, b) => Number(a.share) - Number(b.share))
       .reduce((total, current, i, arr) => {
         const partial = arr.slice(0, i + 1);
         const newTotal = partial.reduce((total, current) => {
@@ -386,7 +409,9 @@ export const calculateStatus: (
         return is ? type : undefined;
       })
       .filter((result) => result) || []
-  ).reverse().pop();
+  )
+      .reverse()
+      .pop();
 
   if (userType) {
     return userType;

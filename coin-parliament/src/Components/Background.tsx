@@ -52,7 +52,7 @@ const Background = ({ pathname }: { pathname: string }) => {
   let params = useParams();
   const { width } = useWindowSize();
   const scrollPosition = useScrollPosition();
-  console.log("data", isCoinsPairs(pathname), pathname, params);
+  
   return (
     <BGContainer
       pathname={pathname}
