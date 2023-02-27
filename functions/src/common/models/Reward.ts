@@ -1,5 +1,10 @@
-import {firestore} from "firebase-admin";
-import {userConverter, UserProps} from "../models/User";
+import { firestore } from "firebase-admin";
+import { userConverter, UserProps } from "../models/User";
+// import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+// const admin = require("firebase-admin");
+// const firebase = require('firebase')
+
 
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -102,36 +107,36 @@ async function getAllNftGallery() {
 }
 
 // get collection data by document id
-async function getNftCollectionDataById(docId : any) {
+async function getNftCollectionDataById(docId: any) {
   let collectionData = await firestore()
-      .collection("nft_gallery")
-      .doc(docId)
-      .get();
+    .collection("nft_gallery")
+    .doc(docId)
+    .get();
   return collectionData.data();
 }
 
 // get all reward transactions by card id
-async function getRewardTransactionsByCardId(cardId : number) {
+async function getRewardTransactionsByCardId(cardId: number) {
   const transaction = await firestore()
-      .collection("reward_transactions")
-      .where('winData.firstRewardCardId', '==',cardId)
-      .get();
-    let transData : any = [];
-    transaction.forEach((item:any)=>{
-      transData.push(item.data());
-    })
+    .collection("reward_transactions")
+    .where('winData.firstRewardCardId', '==', cardId)
+    .get();
+  let transData: any = [];
+  transaction.forEach((item: any) => {
+    transData.push(item.data());
+  })
   return transData;
 }
 
 // get multiple users by user ids
-async function getMultipleUsersByUserIds(userIds : Array<string>) {
-  let userList : any = await firestore()
-  .collection("users")
-  .where('uid', 'in',userIds)
-  .get();
+async function getMultipleUsersByUserIds(userIds: Array<string>) {
+  let userList: any = await firestore()
+    .collection("users")
+    .where('uid', 'in', userIds)
+    .get();
 
-  let users : any = [];
-  userList.forEach((item:any)=>{
+  let users: any = [];
+  userList.forEach((item: any) => {
     users.push(item.data());
   })
   return users;
@@ -178,24 +183,24 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   const nftGalleryData = await getAllNftGallery()
   console.log('nftGalleryData --->', nftGalleryData);
 
-  let cards:Object[] = []
+  let cards: Object[] = []
   nftGalleryData.forEach((element: any) => {
     console.log("Element =>", element);
     let collectionId = element.collectionId;
     let collectionName = element.collectionName;
     let collectionDocId = element.id;
 
-    element.setDetails.forEach((setDetail : any) => {
+    element.setDetails.forEach((setDetail: any) => {
       let setId = setDetail.id;
-      setDetail.cards.forEach((cardDetail : any) => {
-        cards.push({collectionId, collectionName, collectionDocId, setId, ...cardDetail})
+      setDetail.cards.forEach((cardDetail: any) => {
+        cards.push({ collectionId, collectionName, collectionDocId, setId, ...cardDetail })
       })
     })
   });
 
   console.log("CARDLIST =>", cards);
-  let groupByType:any = groupBy(['type']);
-  let cardsByTier:any = groupByType(cards)
+  let groupByType: any = groupBy(['type']);
+  let cardsByTier: any = groupByType(cards)
   console.log('cardsByTier --->', cardsByTier);
   // const cardsByTier: { [key: number]: string[] } = {
   //   1: ["ABC", "DEF", "GHI", "JKL", "MNO"],
@@ -208,10 +213,10 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   const oldcardsByTier: { [key: string]: string[] } = {};
   interface cardType {
     cardList: string[],
-    tierName : string
+    tierName: string
   }
 
-  cardData.map((e : cardType)  => {
+  cardData.map((e: cardType) => {
     oldcardsByTier[e.tierName] = e.cardList
   })
 
@@ -228,7 +233,7 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   const pickedTierArray = cardsByTier[selectedCardTier];
 
   console.log("PICKED TIER ARRAY", pickedTierArray)
-  return {tierName: selectedCardTier, pickedTierArray};
+  return { tierName: selectedCardTier, pickedTierArray };
 };
 
 const groupBy = <T>(keys: (keyof T)[]) => (array: T[]): Record<string, T[]> =>
@@ -236,7 +241,7 @@ const groupBy = <T>(keys: (keyof T)[]) => (array: T[]): Record<string, T[]> =>
     const value = keys.map((key) => obj[key]).join('-');
     objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
     return objectsByKeyValue;
-}, {} as Record<string, T[]>);
+  }, {} as Record<string, T[]>);
 
 
 const pickRandomValueFromArray = (arr: string[]): string => {
@@ -272,46 +277,47 @@ export const claimReward: (
   uid: string
 ) => { [key: string]: any } = async (uid: string) => {
   console.log("Beginning execution claimReward function");
+  // imageUpload('functions/src/images/nature.jpg')
   const userRef = firestore()
-      .collection("users")
-      .doc(uid)
-      .withConverter(userConverter);
+    .collection("users")
+    .doc(uid)
+    .withConverter(userConverter);
 
   const userProps = await userRef.get();
   const userData = userProps.data();
 
-  const {total, claimed} = userData?.rewardStatistics || {total: 0, claimed: 0};
+  const { total, claimed } = userData?.rewardStatistics || { total: 0, claimed: 0 };
 
   if ((total - claimed) > 0) {
     const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
     const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
-    const {pickedTierArray, tierName} = await pickCardTierByPercentageArray(tierPickupArray);
+    const { pickedTierArray, tierName } = await pickCardTierByPercentageArray(tierPickupArray);
     const firstRewardCardObj: any = pickRandomValueFromArray(pickedTierArray);
     console.log("FIRST REWARD CARD", firstRewardCardObj);
     const firstRewardCard = firstRewardCardObj['name'];
     const firstRewardCardSerialNo = pickRandomValueFromArray(firstRewardCardObj['sno']);
-    console.log("firstRewardCardSerialNo---", firstRewardCardSerialNo, typeof(firstRewardCardSerialNo));
+    console.log("firstRewardCardSerialNo---", firstRewardCardSerialNo, typeof (firstRewardCardSerialNo));
     const secondRewardExtraVotes = getRandomNumber(distribution[cmp].extraVotePickFromRange);
     const thirdRewardDiamonds = getRandomNumber(distribution[cmp].diamondsPickFromRange);
-    const rewardObj = userData?.rewardStatistics || {total: 0, claimed: 0, cards: [], extraVote: 0, diamonds: 0};
+    const rewardObj = userData?.rewardStatistics || { total: 0, claimed: 0, cards: [], extraVote: 0, diamonds: 0 };
     rewardObj.claimed += 1;
     rewardObj?.cards?.length ? rewardObj.cards.push(firstRewardCard) : rewardObj.cards = [firstRewardCard];
     rewardObj?.extraVote ? rewardObj.extraVote += secondRewardExtraVotes : rewardObj.extraVote = secondRewardExtraVotes;
     rewardObj?.diamonds ? rewardObj.diamonds += thirdRewardDiamonds : rewardObj.diamonds = thirdRewardDiamonds;
 
     await firestore()
-        .collection("users")
-        .doc(uid)
-        .set({rewardStatistics: rewardObj}, {merge: true});
+      .collection("users")
+      .doc(uid)
+      .set({ rewardStatistics: rewardObj }, { merge: true });
 
-    let collectionData : any = await getNftCollectionDataById(firstRewardCardObj.collectionDocId);
-    let setDetails = collectionData.setDetails.find((data:any)=> data.id == firstRewardCardObj.setId);
-    let cardData = setDetails.cards.find((item:any)=> item.cardId == firstRewardCardObj.cardId)
-    cardData.sno = cardData.sno.filter((item:any)=> item != firstRewardCardSerialNo);
+    let collectionData: any = await getNftCollectionDataById(firstRewardCardObj.collectionDocId);
+    let setDetails = collectionData.setDetails.find((data: any) => data.id == firstRewardCardObj.setId);
+    let cardData = setDetails.cards.find((item: any) => item.cardId == firstRewardCardObj.cardId)
+    cardData.sno = cardData.sno.filter((item: any) => item != firstRewardCardSerialNo);
     cardData.quantity = cardData.sno.length;
-    let transData : any= await getRewardTransactionsByCardId(cardData.cardId);
-    console.log("transData---",transData)
-    let userIds = transData.map((item:any) => item.user);
+    let transData: any = await getRewardTransactionsByCardId(cardData.cardId);
+    console.log("transData---", transData)
+    let userIds = transData.map((item: any) => item.user);
     cardData.noOfCardHolders = Array.from(new Set(userIds)).length;
 
     await firestore()
@@ -395,14 +401,14 @@ export const addReward: (
     const claimedUpdated = before.rewardStatistics?.claimed || 0;
     // console.log('newReward --->', newReward);
     await firestore()
-        .collection("users")
-        .doc(userId)
-        .set({
-          rewardStatistics: {
-            total: newReward,
-            claimed: claimedUpdated,
-          },
-        }, {merge: true});
+      .collection("users")
+      .doc(userId)
+      .set({
+        rewardStatistics: {
+          total: newReward,
+          claimed: claimedUpdated,
+        },
+      }, { merge: true });
 
     console.log("Finished execution addReward function");
     return;
@@ -413,9 +419,99 @@ export const addReward: (
 export const cardHolderListing: (
   cardId: number
 ) => { [key: string]: any } = async (cardId: number) => {
-  let transData : any= await getRewardTransactionsByCardId(cardId);
-  let userIds = transData.map((item:any) => item.user);
-  let users : any = await getMultipleUsersByUserIds(userIds);
-  console.log("users---",users)
+  let transData: any = await getRewardTransactionsByCardId(cardId);
+  let userIds = transData.map((item: any) => item.user);
+  let users: any = await getMultipleUsersByUserIds(userIds);
+  console.log("users---", users)
   return users;
 }
+
+// //Image Upload into Storage
+// export const imageUpload = async (imagePath: string) => {
+//   console.log("image Upload Function12")
+
+//   // const storageRef = admin.storage().ref()
+
+//   // // const file = storageRef.child(imagePath)
+
+//   // storageRef.child('cards').put(imagePath).then((snapshot: any) => {
+//   //   console.log("ImageUpload THEN : ", snapshot.ref.getDownloadURL())
+//   // }).catch((error: any) => {
+//   //   console.log("imageUpload ERROR ", error)
+//   // })
+
+//   // const bucket = admin.storage().bucket('default-bucket')
+
+//   // console.log("imagePath", imagePath)
+//   // const file = bucket.file(imagePath)
+//   // console.log("imageUpload -- file Name", file.name)
+//   // const stream = file.createWriteStream({
+//   //   metadata: {
+//   //     contentType: 'image/jpg'
+//   //   }
+//   // });
+//   // stream.on('error', (err: any) => {
+//   //   console.error("imageUpload Error : ", err);
+//   // });
+//   // stream.on('finish', () => {
+//   //   console.log(`File uploaded to ${file.name}`);
+//   // });
+//   // stream.end(Buffer.from('...binary image data...'));
+  
+
+//   const storage = getStorage();
+  
+//   // Create the file metadata
+//   /** @type {any} */
+//   const metadata = {
+//     contentType: 'image/jpeg'
+//   };
+//   const file = 'functions\src\images\nature.jpg'
+//   // Upload file and metadata to the object 'images/mountains.jpg'
+//   const storageRef = ref(storage, 'images/nature.jpg');
+
+//   storageRef.name 
+//   // const uploadTask = uploadBytesResumable(storageRef, metadata);
+  
+//   // Listen for state changes, errors, and completion of the upload.
+//   // uploadTask.on('state_changed',
+//   //   (snapshot) => {
+//   //     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+//   //     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//   //     console.log('Upload is ' + progress + '% done');
+//   //     switch (snapshot.state) {
+//   //       case 'paused':
+//   //         console.log('Upload is paused');
+//   //         break;
+//   //       case 'running':
+//   //         console.log('Upload is running');
+//   //         break;
+//   //     }
+//   //   }, 
+//   //   (error) => {
+//   //     // A full list of error codes is available at
+//   //     // https://firebase.google.com/docs/storage/web/handle-errors
+//   //     switch (error.code) {
+//   //       case 'storage/unauthorized':
+//   //         // User doesn't have permission to access the object
+//   //         break;
+//   //       case 'storage/canceled':
+//   //         // User canceled the upload
+//   //         break;
+  
+//   //       // ...
+  
+//   //       case 'storage/unknown':
+//   //         // Unknown error occurred, inspect error.serverResponse
+//   //         break;
+//   //     }
+//   //   }, 
+//   //   () => {
+//   //     // Upload completed successfully, now we can get the download URL
+//   //     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+//   //       console.log('File available at', downloadURL);
+//   //     });
+//   //   }
+//   // );
+// }
+
