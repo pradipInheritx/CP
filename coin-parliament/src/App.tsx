@@ -262,6 +262,7 @@ const handleClick=()=>{
   const [authStateChanged, setAuthStateChanged] = useState(false);
   const [allButtonTime, setAllButtonTime] = useState<any>([]);
   const [allPariButtonTime, setAllPariButtonTime] = useState<any>([]);
+  const [singalCardData, setSingalCardData] = useState<any>([]);
   const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
@@ -482,7 +483,7 @@ const handleClick=()=>{
      
       const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
       setCoins(newAllCoins);
-      saveCoins(newAllCoins);
+      // saveCoins(newAllCoins);
     });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
@@ -675,6 +676,9 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  singalCardData,
+                  setSingalCardData,
+                  remainingTimer,
                   setNftAlbumData,
                   nftAlbumData,
                   setAllPariButtonTime,

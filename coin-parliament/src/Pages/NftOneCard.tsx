@@ -1,7 +1,7 @@
 /** @format */
 /** @format */
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import bkgnd5 from "../assets/images/bkgnd5.png";
@@ -12,6 +12,7 @@ import TheEagle from "../assets/images/TheEagle.png";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import AppContext from "../Contexts/AppContext";
 
 
 const Card = styled.div`
@@ -149,13 +150,16 @@ export type BoxItems = {
   MintedTime?: string | number;
   PrivateSerialNo?: string | number;
   GeneralSerialNo?: string | number;
+  fulldata?:any;
+  userId?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo,fulldata,userId}: BoxItems) => {
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
+  const { singalCardData,setSingalCardData} = useContext(AppContext);
   console.log(cardNo, "Disable")
   
       let params = useParams();
@@ -187,6 +191,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         }
         // setFlip(!flip);
       }}
+      // @ts-ignore
+      
       className={`card-container ${
         flipCard == true || flip != true ? " flipped" : ""
       }`}
@@ -197,10 +203,15 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         }
         
       }}
+      style={{
+        minHeight: "330px",
+      }}
     >
       <div className='front'>
         {/* First Div  */}
-        <Card className={`shadow tex-center ${DivClass} ${Disable} `}>
+        <Card className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+        minHeight: "318px",
+      }}>
           <div>
             {" "}
             <div className='d-flex justify-content-between'>
@@ -233,7 +244,9 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         </Card>
       </div>
       <div className='back'>
-        <CardBack className='shadow tex-center'>
+        <CardBack className='shadow tex-center' style={{
+        minHeight: "318px",
+      }}>
           <div className='d-flex justify-content-center mt-2'>
             <img src={logo} alt='' width='60px' height='60px' />
           </div>
@@ -250,7 +263,11 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             <span>
               {pathnameName[1] == "profile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{ holderNo }<u onClick={() => {navigate(`/singalCard/${type}/${id}`)} }> View All</u></span> : 0} </span>}
+            {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
+            onClick={() => {
+                navigate(`/singalCard/${type}/${id}`)            
+                setSingalCardData({...fulldata, myID:userId})
+            }}> View All</u></span> : 0} </span>}
           </div>
         </CardBack>
       </div>

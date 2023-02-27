@@ -157,13 +157,13 @@ export const useCanVote: () => [boolean, string] = () => {
   const timeReturn = new Date(
     Math.min(...votesLast24Hours.map((v) => v.voteTime)) + timeLimit * 1000
   );
+  
+
 
   const text = !user
     ? "Hey there, To make your voice heard, you've got to sign in and vote"
-    : `You have voted ${
-        votesLast24Hours.length
-      } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}`;
-      // Well done, you've used up all your votes! Time to grab a snack and come back in hh:mm:ss for more votes.
+    : `Well done, you've used up all your votes! Time to grab a snack and come back in`;
+      
 
       // You have voted ${votesLast24Hours.length } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}
   return [valid, valid ? "" : text];

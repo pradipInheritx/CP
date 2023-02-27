@@ -26,7 +26,10 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
-  nftAlbumData: any;
+  remainingTimer?:any;
+  nftAlbumData?: any;
+  singalCardData?:any,
+  setSingalCardData?:any,
   setNftAlbumData: any;
   allPariButtonTime: any;
   setAllPariButtonTime: any;

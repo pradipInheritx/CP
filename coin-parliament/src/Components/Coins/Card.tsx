@@ -187,7 +187,7 @@ const Card = ({
 }: CoinCardProps) => {
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
-  const [changeColor, setChangeColor] = useState<string>("blue");
+  const [changeColor, setChangeColor] = useState<string>("black");
   const [currentPrice, setCurrentPrice] = useState<any>(0)
   
  const prevCountRef = useRef(currentPrice)
@@ -195,7 +195,7 @@ const Card = ({
   const OnlyCheckColor = () => {          
     // setInterval(() => {            
     if (coins[symbol]?.price == prevCountRef.current) {   
-      setChangeColor("gray")
+      setChangeColor("black")
       }
     else if (coins[symbol]?.price > prevCountRef.current) {
       setChangeColor("Green")            

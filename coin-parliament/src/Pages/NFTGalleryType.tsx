@@ -81,161 +81,9 @@ const SummerCard = styled.div`
 `;
 
 const NFTGalleryType = () => {
-//     const { nftAlbumData,setNftAlbumData} = useContext(AppContext);
+    const { singalCardData,setSingalCardData} = useContext(AppContext);
 
-  const [cards, setCards] = useState([
-    [
-      {
-        id: 1,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 2,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 3,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 4,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 6,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 7,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 8,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 9,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 11,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 12,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 13,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 14,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 16,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 17,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 18,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 19,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },    
-    ],
-
-    [
-      {
-        id: 21,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 22,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 23,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 24,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-  ]);
+  
   const [menuItem, setMenuItem] = useState([
     { name: "View All" },
     { name: "Common" },
@@ -261,17 +109,17 @@ const NFTGalleryType = () => {
   }, [filterIndex]);
 
   const HandleFilter = (filterIndex?: number | string | undefined) => {
-    var allCard: any = cards;
-    if (filterIndex && filterIndex > 0) {
-      allCard.filter((item: any, ind: number) => {
-        if (ind + 1 == filterIndex) {
-          var cardItem: any = [item];
-          setCardValue(cardItem);
-        }
-      });
-    } else {
-      setCardValue(allCard);
-    }
+    // var allCard: any = cards;
+    // if (filterIndex && filterIndex > 0) {
+    //   allCard.filter((item: any, ind: number) => {
+    //     if (ind + 1 == filterIndex) {
+    //       var cardItem: any = [item];
+    //       setCardValue(cardItem);
+    //     }
+    //   });
+    // } else {
+    //   setCardValue(allCard);
+    // }
   };
 
 
@@ -279,7 +127,7 @@ const NFTGalleryType = () => {
 
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
-     let allBackCard = backCards;
+     let allBackCard = [...backCards];
      // @ts-ignore
      // setBackCards(backCards == value ? "" : value);
      backCards.length > 0
@@ -463,12 +311,16 @@ console.log(nftAlbumData,"nftAlbumData")
                             Quantity={item?.quantity}
                             holderNo={item?.noOfCardHolders}
                             cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                            GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                            userId={items?.id}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
                             cardHeader={`${item?.name}`}
+                            
                             // cardNo={`${item.cardNo}`}
                             id={item?.cardId}
                             BackSideCard={BackSideCard}
+                            fulldata={item}
                             // flipCard={backCards == item.id ? true : false}
                             flipCard={backCards?.includes(item?.cardId)}
                           />

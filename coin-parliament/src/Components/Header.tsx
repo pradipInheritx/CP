@@ -395,7 +395,7 @@ useEffect(() => {
                        {!voteNumber && votingTimer  ?
                           // @ts-ignore
                             
-                            <span className="" style={{ marginLeft: '0px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer} 
+                            <span className="" style={{ marginLeft: '20px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer} 
                          renderer={({ hours, minutes, seconds, completed }) => {                        
                             return (
                               <span style={{color:'#6352e8',fontSize:'14px',fontWeight:400}}>

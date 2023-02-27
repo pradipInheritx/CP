@@ -126,6 +126,7 @@ useEffect(() => {
 }, [user?.uid, params?.id, selectedTimeFrame,voteId,vote])
   useEffect(() => {
     return () => {
+      setAllButtonTime();
       setAllPariButtonTime();
       mountedRef.current = false;
     };
