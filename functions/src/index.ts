@@ -37,6 +37,7 @@ import {
   Leader,
   prepareCPVI,
   fetchAskBidCoin,
+  getUpdatedDataFromWebsocket,
   // updatePriceArray,
 } from "./common/models/Coin";
 import {pullAll, union, uniq} from "lodash";
@@ -307,16 +308,16 @@ exports.subscribe = functions.https.onCall(async (data) => {
   }
 });
 
-async function getCards() {
-  const docs = await admin
-      .firestore()
-      .collection("settings")
-      .doc("cards")
-      .get();
+// async function getCards() {
+//   const docs = await admin
+//       .firestore()
+//       .collection("settings")
+//       .doc("cards")
+//       .get();
 
-  console.log("docs.data() --->", docs.data()?.cards);
-  return docs.data()?.cards || [];
-}
+//   console.log("docs.data() --->", docs.data()?.cards);
+//   return docs.data()?.cards || [];
+// }
 
 exports.onUpdateUser = functions.firestore
     .document("users/{id}")
@@ -324,8 +325,7 @@ exports.onUpdateUser = functions.firestore
       const before = snapshot.before.data() as UserProps;
       const after = snapshot.after.data() as UserProps;
       await addReward(snapshot.after.id, before, after);
-      await getCards();
-      await fetchCoins();
+      // await getCards();
       const [should, amount] = shouldHaveTransaction(before, after);
       if (!should || !amount) {
         return;
@@ -448,6 +448,7 @@ exports.onVote = functions.firestore
       await setTime(coin1, coin2, vote, snapshot, id, timeframe);
       console.log("setTimeOut completed");
     });
+
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
@@ -573,6 +574,10 @@ exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
   [0, 30].forEach((i) => {
     setTimeout(async () => await fetchCoins(), i * 1000);
   });
+});
+
+exports.getUpdatedDataFromWebsocket = functions.https.onCall(async () => {
+  await getUpdatedDataFromWebsocket();
 });
 
 exports.prepareEveryFiveMinuteCPVI = functions.pubsub

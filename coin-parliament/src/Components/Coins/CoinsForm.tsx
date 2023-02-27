@@ -55,10 +55,10 @@ const CoinsForm = ({
   const id = "BullVsBearForm";
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log("hello I am ");
+    // console.log("hello I am ");
     return window.scrollTo(0, 0);
   }, []);
-  console.log("timeframe", selectedTimeFrame);
+  // console.log("timeframe", selectedTimeFrame);
   const vote = useCallback(async () => {
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
@@ -79,7 +79,7 @@ const CoinsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 2597
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
         } as VoteResultProps
       );
       const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;

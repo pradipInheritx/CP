@@ -40,12 +40,20 @@ const SinglePair = () => {
   const [confetti, setConfetti] = useState(false);
   const {width, height} = useWindowSize();
   const [pct,setPct]=useState(0)
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading,setGraphLoading]=useState(false)
-  const {timeframes} = useContext(AppContext);
+  const {
+    timeframes,
+    setAllPariButtonTime,
+    allPariButtonTime,
+    setAllButtonTime,
+    allButtonTime,
+  } = useContext(AppContext);
+  
   const mountedRef = useRef(true);
   const newTimeframe:any= []
+  const AllvoteValueObject: any = [];
   const getCpviData = useCallback(async () => {
     if (voteId) {
       // if (!mountedRef.current) return null;
@@ -54,11 +62,7 @@ const SinglePair = () => {
       return data;
     }
   }, [params?.id, voteId, vote,selectedTimeFrame]);
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
+  
   useEffect(() => {
     console.log('cpvidata api called',vote.timeframe)
     if(vote.timeframe) {
@@ -100,7 +104,10 @@ useEffect(() => {
 
       if(res) {
         console.log('choseTimeFrame',res,index)
-        console.log('pair coin data data',res.data())
+        
+        AllvoteValueObject[index] = res.data();
+        // setAllPariButtonTime(AllvoteValueObject);
+        setAllButtonTime(AllvoteValueObject);
         
         newTimeframe.push(index)
         console.log('choseTimeFrame1',newTimeframe)
@@ -116,7 +123,14 @@ useEffect(() => {
     console.error('promiseAll',error);
   });
  
-}, [user?.uid, params?.id,selectedTimeFrame])
+}, [user?.uid, params?.id, selectedTimeFrame,voteId,vote])
+  useEffect(() => {
+    return () => {
+      setAllButtonTime();
+      setAllPariButtonTime();
+      mountedRef.current = false;
+    };
+  }, []);
   useEffect(() => {
     if (user?.uid && params?.id) {
       Vote.getVote({userId: user?.uid, coin: params?.id, timeFrame:timeframes[selectedTimeFrame || 0]?.seconds }).then((v) => {
@@ -158,7 +172,7 @@ useEffect(() => {
   }, [selectedTimeFrame]);
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-
+console.log('vote',vote)
 
   return (
     <>

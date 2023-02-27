@@ -18,6 +18,7 @@ import ContentContext from "../Contexts/ContentContext";
 import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
 
+
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
   text-align: center;
@@ -41,10 +42,12 @@ const Home = () => {
   const { width } = useWindowSize();
   const src = `/hpbanner${width && width > 979 ? "" : "_m"}.png`;
 
+  
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
         <div style={{ background: "#160133" }}>
+          
           <HomeContainer width={width} className='mb-4 p-0'>
             {!(login || firstTimeLogin) && (
               <>

@@ -70,14 +70,14 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 70%;
+  width: 82%;
   height: 30px;
   
   margin-left:25px;
   border-radius 50px;
   display: flex;
   justify-content:space-around;
-  align-items: center;
+  // align-items: center;
 `;
 export const MemberText = styled.span`
   text-transform: uppercase;
@@ -107,6 +107,7 @@ export const PlusButtonMob = styled.div`
   cursor: pointer;
   border-radius: 50px;
   font-size: 13px;
+  margin-top:5px
 `;
 
 export const OuterContainer = styled.div`
@@ -143,8 +144,8 @@ const Header = ({
   const { width } = useWindowSize();
   const desktop = width && width > 979;
 
-  const CheckAuth = getAuth();
-
+  
+ 
   const { languages, setLang, setLogin, setSignup, setMenuOpen } =
     useContext(AppContext);
   const { pages } = useContext(ContentContext);
@@ -152,9 +153,9 @@ const Header = ({
   const { VoteRulesMng } = useContext(ManagersContext);
   const { voteRules } = useContext(AppContext);
   const translate = useTranslation();
-  const [voteNumber, setVoteNumber] = useState()
+  const [voteNumber, setVoteNumber] = useState(0)
 const [votingTimer,setVotingTimer]=useState(0)
-console.log('votingTimer',votingTimer,remainingTimer)
+
 useEffect(() => {
   setVotingTimer(remainingTimer,)
  
@@ -246,13 +247,13 @@ useEffect(() => {
     setMenuOpen(false);
   };
   // @ts-ignore
-  console.log(
-    Number(voteRules?.maxVotes) +
-      // @ts-ignore
-      Number(userInfo?.rewardStatistics?.extraVote) -
-      Number(votesLast24Hours.length),
-    "userInfo"
-  );
+  // console.log(
+  //   Number(voteRules?.maxVotes) +
+  //     // @ts-ignore
+  //     Number(userInfo?.rewardStatistics?.extraVote) -
+  //     Number(votesLast24Hours.length),
+  //   "userInfo"
+  // );
 
   return (
     <div>
@@ -356,7 +357,7 @@ useEffect(() => {
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
               <div className='d-flex w-100 '>
-                {CheckAuth && CheckAuth.currentUser != null ? (
+                {user?.uid  ? (
                   <div
                     className='d-flex w-100'
                     style={{ position: "relative" }}
@@ -366,7 +367,7 @@ useEffect(() => {
                       onClick={() => navigate("/profile/mine")}
                       style={{
                         position: "absolute",
-                        marginLeft: "15px",
+                        // marginLeft: "15px",
                         marginTop: "7px",
                         
                         cursor:"pointer"
@@ -384,24 +385,26 @@ useEffect(() => {
                         />
                       )}
                     </div>
-                    <div className='w-100 mt-3' style={{ marginLeft: "10px" }}>
+                    <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
                       <HeaderCenterMob className=''>
                         <div></div>
-                        <p className='ml-4'>
+                        <div className='mt-1'>
                          
                           {/* @ts-ignore */}
-                       {!voteNumber && votingTimer ?
+                          
+                       {!voteNumber && votingTimer  ?
                           // @ts-ignore
-                         <span style={{marginLeft:'20px'}}> <Countdown daysInHours zeroPadTime={2} date={votingTimer} 
-                         renderer={({ hours, minutes, seconds, completed }) => {
-                        
+                            
+                            <span className="" style={{ marginLeft: '20px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {                        
                             return (
                               <span style={{color:'#6352e8',fontSize:'14px',fontWeight:400}}>
                                 {/* {hours < 10 ? `0${hours}` : hours}: */}
                                 {Number(voteRules?.maxVotes)} votes in {' '}
-                                {hours < 1 ? null : `${hours} :` }
-                                {minutes < 10 ? `0${minutes}` : minutes}:
-                                {seconds < 10 ? `0${seconds}` : seconds}
+                              {hours < 1 ? null : `${hours} :` }
+                              {minutes < 10 ? `0${minutes}` : minutes}:
+                              {seconds < 10 ? `0${seconds}` : seconds}
+                               
                               </span>
                             );
                           
@@ -409,21 +412,17 @@ useEffect(() => {
                          
                          /></span>
                         :
-                        <> VOTES{" "}
+                        <> 
                           <span
                             style={{
                               color: "#6352E8",
                             }}
                           >
-                            {/* {Number(voteRules?.maxVotes) ||
-                              0 +
-                                // @ts-ignore
-                                Number(userInfo?.rewardStatistics?.extraVote) ||
-                              0 - Number(votesLast24Hours.length) ||
-                              0} */}
-                            {voteNumber}
-                          </span></>}
-                        </p>
+                            
+                            {voteNumber>0? voteNumber:0} votes left
+                              </span>
+                            </>}
+                        </div>
                         
                         <PlusButtonMob
                           onClick={() => navigate("/votingbooster")}
@@ -471,7 +470,7 @@ useEffect(() => {
               }}
             >
               <div className='d-flex '>
-                {CheckAuth && CheckAuth.currentUser != null ? (
+                {user?.uid ? (
                   <div
                     className='d-flex   w-25 mx-auto '
                     style={{ position: "relative", height: "50px" }}
@@ -509,7 +508,7 @@ useEffect(() => {
                           return (
                             <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
                               {/* {hours < 10 ? `0${hours}` : hours}: */}
-                              5 votes in {' '}
+                              {Number(voteRules?.maxVotes)} votes in {' '}
                               {hours < 1 ? null : `${hours} :` }
                               {minutes < 10 ? `0${minutes}` : minutes}:
                               {seconds < 10 ? `0${seconds}` : seconds}
@@ -519,7 +518,7 @@ useEffect(() => {
                       }}
                          /></span>
                         :
-                        <> VOTES{" "}
+                        <> 
                           <span
                             style={{
                               color: "#6352E8",
@@ -531,7 +530,7 @@ useEffect(() => {
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
-                            {voteNumber}
+                            {voteNumber>0? voteNumber:0} votes left
                           </span></>}
                         </p>
                         <PlusButton onClick={() => navigate("/votingbooster")}>

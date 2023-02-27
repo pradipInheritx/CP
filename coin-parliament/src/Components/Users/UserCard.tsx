@@ -165,7 +165,8 @@ const UserCard = ({
         <FlexCol>
           <UsernameUnique>{leader.displayName}</UsernameUnique>
           <Group4092>
-            <Minister>{translate(leader.status || "")}</Minister>
+            <Minister>{translate(leader?.status || "")}</Minister>
+            {/* <Minister>{translate(leader?.status?.name || "")}</Minister> */}
           </Group4092>
           <Address>
             <span className='mx-1'>

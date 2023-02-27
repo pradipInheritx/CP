@@ -27,9 +27,10 @@ import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
 import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
+import { texts } from "../Components/LoginComponent/texts";
 
-export enum ProfileTabs {
-  profile = "profile",
+export enum FollowerProfileTabs {
+  FollowerProfile = "followerProfile",
   password = "password",
   wallet = "wallet",
   followers = "followers",
@@ -38,7 +39,7 @@ export enum ProfileTabs {
   votes = "votes",
   notifications = "notifications",
   ProfileNftGallery = "Album",
-  ProfileNftGalleryType = "Album/:type",
+  ProfileNftGalleryType = "Album/:name",
   share = "share",
 }
 
@@ -61,12 +62,12 @@ export const OuterContainer = styled.div`
 
 `;
 
-const Profile = () => {
+const FollowerProfile = () => {
   const { userInfo, user } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const [avatarMode, setAvatarMode] = useState(false);
   const location = useLocation();
-  const pathname = location.pathname.replace("/profile/", "");
+  const pathname = location.pathname.replace("/FollowerProfile/", "");
   const [chosenByDefault, setChosenByDefault] = useState(pathname);
   let navigate = useNavigate();
   const translate = useTranslation();
@@ -92,10 +93,11 @@ const Profile = () => {
       const userRef = doc(db, "users", user?.uid);
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
-        showToast(translate("user info was updated"));
+        showToast(translate(texts.UserInfoUpdate));
+        
         toast.dismiss();
       } catch (e) {
-        showToast(translate("user failed to be updated"), ToastType.ERROR);
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }
     }
   };
@@ -128,16 +130,16 @@ const Profile = () => {
                     }}
                   >
                     {![
-                      ProfileTabs.edit as string,
-                      ProfileTabs.password as string,
+                      FollowerProfileTabs.edit as string,
+                      FollowerProfileTabs.password as string,
                     ].includes(pathname) && (
                       <ImageTabs
                         {...{
                           chosenByDefault,
                           handleSelect: (eventKey: string | null) => {
-                            if (isV1() && eventKey === ProfileTabs.mine) {
+                            if (isV1() && eventKey === FollowerProfileTabs.mine) {
                               showToast(
-                                translate("Feature will be available soon"),
+                                translate(texts.FeatureAvailableSoon),
                                 ToastType.INFO
                               );
                               return;
@@ -149,57 +151,57 @@ const Profile = () => {
                               component: <></>,
                               label: "Mining",
                               icon: <Mine />,
-                              eventKey: ProfileTabs.mine,
+                              eventKey: FollowerProfileTabs.mine,
                             },
                             {
                               component: <></>,
                               label: "Pool Mining",
                               icon: <Share />,
-                              eventKey: ProfileTabs.share,
+                              eventKey: FollowerProfileTabs.share,
                             },
                             {
                               component: <></>,
-                              label: ProfileTabs.votes,
+                              label: FollowerProfileTabs.votes,
                               icon: <Votes />,
-                              eventKey: ProfileTabs.votes,
+                              eventKey: FollowerProfileTabs.votes,
                             },
                             {
                               component: <></>,
-                              label: ProfileTabs.ProfileNftGallery,
+                              label: FollowerProfileTabs.ProfileNftGallery,
                               icon: <Gallery />,
-                              eventKey: ProfileTabs.ProfileNftGallery,
+                              eventKey: FollowerProfileTabs.ProfileNftGallery,
                             },
                             
                             
                             {
                               component: <></>,
-                              label: ProfileTabs.followers,
+                              label: FollowerProfileTabs.followers,
                               icon: <Following />,
-                              eventKey: ProfileTabs.followers,
+                              eventKey: FollowerProfileTabs.followers,
                             },
-                            {
-                              component: <></>,
-                              label: ProfileTabs.notifications,
-                              icon: <Notifications />,
-                              eventKey: ProfileTabs.notifications,
-                            },
+                            // {
+                            //   component: <></>,
+                            //   label: FollowerProfileTabs.notifications,
+                            //   icon: <Notifications />,
+                            //   eventKey: FollowerProfileTabs.notifications,
+                            // },
                             
                           ],
                         }}
                       />
                     )}
                     {[
-                      ProfileTabs.edit as string,
-                      ProfileTabs.password as string,
+                      FollowerProfileTabs.edit as string,
+                      FollowerProfileTabs.password as string,
                     ].includes(pathname) &&
                       window.screen.width < 979 && (
                         <ImageTabs
                           {...{
                             chosenByDefault,
                             handleSelect: (eventKey: string | null) => {
-                              if (isV1() && eventKey === ProfileTabs.mine) {
+                              if (isV1() && eventKey === FollowerProfileTabs.mine) {
                                 showToast(
-                                  translate("Feature will be available soon"),
+                                  translate(texts.FeatureAvailableSoon),
                                   ToastType.INFO
                                 );
                                 return;
@@ -209,21 +211,21 @@ const Profile = () => {
                             tabs: [
                               {
                                 component: <></>,
-                                label: ProfileTabs.edit,
+                                label: FollowerProfileTabs.edit,
                                 icon: <UserIcon />,
-                                eventKey: ProfileTabs.edit,
+                                eventKey: FollowerProfileTabs.edit,
                               },
                               {
                                 component: <></>,
-                                label: ProfileTabs.password,
+                                label: FollowerProfileTabs.password,
                                 icon: <SecurityIcon />,
-                                eventKey: ProfileTabs.password,
+                                eventKey: FollowerProfileTabs.password,
                               },
                               {
                                 component: <></>,
-                                label: ProfileTabs.wallet,
+                                label: FollowerProfileTabs.wallet,
                                 icon: <Wallet/>,
-                                eventKey: ProfileTabs.wallet,
+                                eventKey: FollowerProfileTabs.wallet,
                               },
                             ],
                           }}
@@ -258,4 +260,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default FollowerProfile;
