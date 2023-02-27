@@ -3,7 +3,6 @@ import * as admin from "firebase-admin";
 // import {credential, firestore, initializeApp, messaging, ServiceAccount} from "firebase-admin";
 import express from "express";
 import * as bodyParser from "body-parser";
-// import axios from 'axios';
 import env from "./env/env.json";
 
 import cors from "cors";
@@ -38,7 +37,8 @@ import {
   prepareCPVI,
   fetchAskBidCoin,
   getUpdatedDataFromWebsocket,
-  // updatePriceArray,
+  getAllUpdated24HourRecords,
+  removeTheBefore24HoursData,
 } from "./common/models/Coin";
 import {pullAll, union, uniq} from "lodash";
 import Refer from "./common/models/Refer";
@@ -60,7 +60,11 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
-import {claimReward, addReward, cardHolderListing} from "./common/models/Reward";
+import {
+  claimReward,
+  addReward,
+  cardHolderListing,
+} from "./common/models/Reward";
 import {
   cpviTaskCoin,
   cpviTaskPair,
@@ -326,6 +330,8 @@ exports.onUpdateUser = functions.firestore
       const after = snapshot.after.data() as UserProps;
       await addReward(snapshot.after.id, before, after);
       await getCards();
+      // await getUpdatedDataFromWebsocket();
+      // await fetchCoins();
       const [should, amount] = shouldHaveTransaction(before, after);
       if (!should || !amount) {
         return;
@@ -532,8 +538,8 @@ exports.claimReward = functions.https.onCall(async (data) => {
   return reward;
 });
 
-exports.cardHolderListing = functions.https.onCall(async(data) => {
-  const { cardId } = data as { cardId: number };
+exports.cardHolderListing = functions.https.onCall(async (data) => {
+  const {cardId} = data as { cardId: number };
   const userList = await cardHolderListing(cardId);
   console.log("userList --->", userList);
   return userList;
@@ -570,14 +576,23 @@ exports.onCreatePaxTransaction = functions.firestore
     });
 
 exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-  [0, 30].forEach((i) => {
+  [0, 60].forEach((i) => {
     setTimeout(async () => await fetchCoins(), i * 1000);
   });
 });
 
-exports.getUpdatedDataFromWebsocket = functions.https.onCall(async () => {
-  await getUpdatedDataFromWebsocket();
-});
+exports.getUpdatedDataFromWebsocket = functions.pubsub
+    .schedule("every 2 minutes")
+    .onRun(async () => {
+      await getUpdatedDataFromWebsocket();
+    });
+
+exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+    .schedule("every 5 minutes")
+    .onRun(async () => {
+      await getAllUpdated24HourRecords();
+      await removeTheBefore24HoursData();
+    });
 
 exports.prepareEveryFiveMinuteCPVI = functions.pubsub
     .schedule("*/3 * * * *")
@@ -657,7 +672,6 @@ const getVotes = async ({start, end, userId}: GetVotesProps) => {
     getAllCoins(),
     getAllPairs(),
   ]);
-  // console.log("voteCoinApi called1", coins, pairs, votes);
   const allVotes = votes.docs
       .map((v) => {
         return {...v.data(), id: v.id};
