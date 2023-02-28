@@ -48,16 +48,17 @@ const NFTGallery = () => {
   const [allCard,setAllCard]=useState<any>([])
   const [cardType,setCardType]=useState<any>('all')
   const [searchTerm,setSearchTerm]=useState<any>('')
-  const [collection, setCollection] = useState<any>()
+  const [selectCollection, setSelectCollection] = useState<any>('none')
   const [backCards, setBackCards] = useState<any>([]);
   const [equalPart, setEqualPart] = useState<any>([]);
+  const [cardShow, setCardShow] = useState<any>(false);
     const getNftCard = () => {
   const getCollectionType = firebase
             .firestore()
             .collection("nft_gallery")
     getCollectionType.get()
-      .then((snapshot) => {        
-        // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+      .then((snapshot) => {          
+        // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));        
        let allcollection= snapshot.docs.map((doc) => doc.data())
         setCollectionType(allcollection)
         
@@ -98,15 +99,32 @@ const NFTGallery = () => {
         
       }).catch((error) => {
         console.log(error,"error");
-      })
-      ;    
+      });    
 }
-const onSearch=(searchTerm:any)=>{
+  const onSearch = (searchTerm: any) => {
+  
   setSearchTerm(searchTerm)
-  if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-  else setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type!=cardType.toUpperCase()))
+  if (searchTerm?.length || selectCollection!="none") {
+    setCardShow(true)
+  }
+  else {
+    setCardShow(false)
+  }
+    
+  if(cardType==='all' &&  selectCollection ==="none") setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+  else {    
+    setSearchedCard(allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type != cardType.toUpperCase() && card?.collectionName === selectCollection))
+  }
 }
-const onCollectionChange=(collectionName:any)=>{
+  const onCollectionChange = (collectionName: any) => {
+  
+if (searchTerm?.length || collectionName!="none") {
+    setCardShow(true)
+  }
+  else {
+    setCardShow(false)
+  }
+
   if(collectionName==='none') {
     const getCollectionType = firebase
   .firestore()
@@ -134,7 +152,8 @@ const cards: any = [];
       });
     });
   });
-  setAllCard(cards)
+  setAllCard(cards)  
+  
 console.log("nft_gallery", data);
 }).catch((error) => {
 console.log(error,"error");
@@ -152,6 +171,7 @@ const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
 });
+setCardShow(true)
 setAllCardArray(data)
 const cards: any = [];
   data.forEach((element: any) => {
@@ -169,26 +189,52 @@ const cards: any = [];
     });
   });
   setAllCard(cards)
-console.log("Array", data);
+// const cardItems:any=[]
+//   cards.map((cardValue: any) => {
+//     cardItems.push(cardValue)
+//   })
+//   setSearchedCard(cardItems)
+  if (cardType == "all") {
+    setSearchedCard(cards.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm?.toLowerCase())))
+  }
+  else {
+    setSearchedCard(cards.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) && card.type == cardType ?.toUpperCase()))
+  }
+  // setCardShow(true)
+console.log("Arraydata", cards);
 
 }).catch((error) => {
 console.log(error,"error");
 });    }
-}
+  }
+  
+
+
 const onSelectType=(cardType:any)=>{
   setCardType(cardType)
   
-  if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.type!=cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-  else{setSearchedCard(
-    (prev:any)=>allCard.filter((card:any)=>card.type===cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))}
+  if (cardType === 'all') {
+    // console.log(cardType,"cardType")
+    setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+  }
+  else {    
+    setCardShow(true)
+  setSearchedCard((prev: any) => allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))}
 }
 useEffect(() => {
     getNftCard()
   }, [])
+useEffect(() => {
+    onCollectionChange(selectCollection)
+  }, [selectCollection])
+  
   useEffect(() => {
    onSearch(searchTerm)
    onSelectType(cardType)
-  }, [allCard])
+  }, [
+    // allCard
+    searchTerm, cardType    
+  ])
      
   
   console.log("searchedcard",searchedCard,searchedCard?.length);
@@ -208,7 +254,6 @@ useEffect(() => {
              setBackCards(allBackCard);
            } else {
              // @ts-ignore
-
              setBackCards([...backCards, value]);
            }
            // @ts-ignore
@@ -229,15 +274,18 @@ function sliceDived(arr:any, partSize:any) {
   
 }
 
-  useEffect(() => {
-    if (searchedCard?.length > 0) {      
-      sliceDived(searchedCard, 4)
-}
+useEffect(() => {
+  if (searchedCard?.length > 0) {      
+    sliceDived(searchedCard, 4)
+  }
+  else {      
+      sliceDived(searchedCard,4)
+    // setCardShow(false)
+  }
   },[searchedCard])
-// const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-// console.log(,"sliceDived");
 
 
+console.log(cardShow,"searchTerm")
 
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
@@ -258,15 +306,15 @@ function sliceDived(arr:any, partSize:any) {
                 name='cars'
                 id='cars'
                 className='bg-white border rounded py-2'
-                onChange={e=>onCollectionChange(e.target.value)}
+                // onChange={e=>onCollectionChange(e.target.value)}
+                onChange={e=>setSelectCollection(e.target.value)}
               >
             <option value='none'>Select Collection</option>
             
 
             {collectionType?.map((data:any) => {
-              return  <option value={data?.collectionName}>{data?.collectionName}</option>
-        
-        })}
+              return  <option value={data?.collectionName}>{data?.collectionName}</option>        
+            })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
                 <option value='Monsoon'>Monsoon</option> */}
@@ -305,22 +353,20 @@ function sliceDived(arr:any, partSize:any) {
         <div onClick={() => navigate("/nftAlbum/Summer")}>
           <p>SUMMER COLLECTION</p>
         </div> */}
-        {collectionType?.map((data:any) => {
+        {!cardShow && collectionType?.map((data:any) => {
           return <div onClick={() => { navigate(`/nftAlbum/${data?.collectionName}`)}}>
           <p>{data?.collectionName} COLLECTION</p>
         </div>
         })}
        
       </GalleryType>
-      <SummerCard className="">
-            {equalPart?.map((cardPart:any) => {
-          
-          return  <div className='w-100 m-auto mb-4 '>                  
+      {searchedCard?.length > 0 ?
+        <SummerCard className="mt-4">
+            {!!cardShow ? equalPart?.map((cardPart:any) => {                    
+              return <div className='w-100 m-auto mb-4'>                  
                   <SwiperBar>                    
-                    {cardPart?.map((item: any) => {
-                      
-                      return (
-                        
+                    {cardPart?.map((item: any) => {                      
+                      return (                        
                           <NftOneCard                            
                             DivClass={item?.type}
                             HeaderText={item?.type}
@@ -340,17 +386,21 @@ function sliceDived(arr:any, partSize:any) {
                             BackSideCard={BackSideCard}
                             fulldata={item}                            
                             flipCard={backCards?.includes(item?.cardId)}
-                          />
-                        
+                          />                        
                       );
                     })}
                   </SwiperBar>
-                </div>
-              
-            })}
-                
-            
-          </SummerCard>
+                </div>              
+            })          
+          : ""          
+          }                          
+      </SummerCard> :
+        <div  className="d-flex justify-content-center mt-5">
+          {cardShow == true ?<p style={{
+            color:"black"
+          }}>Data Not Found</p>:""}
+        </div>
+      }
     </div>
   );
 };

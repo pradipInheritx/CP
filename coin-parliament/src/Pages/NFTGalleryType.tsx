@@ -100,6 +100,7 @@ const NFTGalleryType = () => {
   const [CardValue, setCardValue] = useState([]);
   const [equalPart, setEqualPart] = useState<any>([]);
   const [backCards, setBackCards] = useState<any>([]);
+  const [cardShow, setCardShow] = useState<any>(false);
   
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
@@ -184,10 +185,16 @@ console.log(error,"error");
 });    
   
 }
-  const onSearch=(searchTerm:any)=>{
+  const onSearch = (searchTerm: any) => {
+    if (searchTerm?.length) {
+    setCardShow(true)
+  }
+  else {
+    setCardShow(false)
+  }
   setSearchTerm(searchTerm)
   if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-  else setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type!=cardType.toUpperCase()))
+  else setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type==cardType.toUpperCase()))
 }
   
   const onSelectType=(cardType:any)=>{
@@ -311,38 +318,44 @@ console.log(nftAlbumData,"nftAlbumData")
           <div>
             <p>{`${type}`} COLLECTION</p>
           </div>        
-          <SummerCard className="">
-            {equalPart?.map((cardPart:any) => {          
-          return  <div className='w-100 m-auto mb-4'>                  
-                  <SwiperBar>                    
-                    {cardPart?.map((item: any) => {                      
-                      return (                        
-                          <NftOneCard                            
-                            DivClass={item?.type}
-                            HeaderText={item?.type}
-                            HeaderClass={`${item?.type}_text`}
-                            Serie={item?.setName}
-                            BackCardName={item?.name}
-                            Rarity={item?.type}
-                            Quantity={item?.quantity}
-                            holderNo={item?.noOfCardHolders}
-                            cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                            GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                            userId={item?.setId}
-                            CollectionType={item?.collectionName}
-                            // Disable={"CardDisebal"}                            
-                            cardHeader={`${item?.name}`}                                                        
-                            id={item?.cardId}
-                            BackSideCard={BackSideCard}
-                            fulldata={item}                            
-                            flipCard={backCards?.includes(item?.cardId)}
-                          />                        
-                      );
-                    })}
-                  </SwiperBar>
-                </div>              
-            })}                          
-          </SummerCard>                 
+          {searchedCard?.length > 0 ? <SummerCard className="">
+            {equalPart?.map((cardPart: any) => {
+              return <div className='w-100 m-auto mb-4'>
+                <SwiperBar>
+                  {cardPart?.map((item: any) => {
+                    return (
+                      <NftOneCard
+                        DivClass={item?.type}
+                        HeaderText={item?.type}
+                        HeaderClass={`${item?.type}_text`}
+                        Serie={item?.setName}
+                        BackCardName={item?.name}
+                        Rarity={item?.type}
+                        Quantity={item?.quantity}
+                        holderNo={item?.noOfCardHolders}
+                        cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                        GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                        userId={item?.setId}
+                        CollectionType={item?.collectionName}
+                        // Disable={"CardDisebal"}                            
+                        cardHeader={`${item?.name}`}
+                        id={item?.cardId}
+                        BackSideCard={BackSideCard}
+                        fulldata={item}
+                        flipCard={backCards?.includes(item?.cardId)}
+                      />
+                    );
+                  })}
+                </SwiperBar>
+              </div>
+            })}
+          </SummerCard> :
+            <div className="d-flex justify-content-center">
+              {cardShow == true ? <p style={{
+                color: "black",
+                fontSize:"14px"
+              }}>Data Not Found</p> : ""}
+            </div>}
         </CenterItem>
       </div>
     </div>
