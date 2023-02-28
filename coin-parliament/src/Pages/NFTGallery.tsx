@@ -52,7 +52,6 @@ const NFTGallery = () => {
       })
       ;    
 }
-
 useEffect(() => {
     getNftCard()
   }, [])
@@ -73,9 +72,7 @@ useEffect(() => {
       })
     })
     
-  }
-  
-  
+  }  
   console.log(childCollection,"allcollection");
 
   return (
