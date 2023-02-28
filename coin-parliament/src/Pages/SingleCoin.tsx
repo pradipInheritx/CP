@@ -290,7 +290,7 @@ const calcVote = useCallback(async () => {
       }, 2400);
     
   }, [selectedTimeFrame]);
-
+console.log('vote',vote)
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
 
