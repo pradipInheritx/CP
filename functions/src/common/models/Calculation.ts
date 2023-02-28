@@ -95,28 +95,34 @@ class Calculation {
 
   async giveAway(): Promise<void> {
     const {voteResult} = this;
-    const settings = await firestore()
-        .collection("settings")
-        .doc("settings")
-        .get();
+    const settings : any = await getSettingsFromSettings();
 
     const ref = this.db.collection("users").doc(voteResult.userId);
     const user = (await ref.get()).data() as UserProps;
 
-    const voteStatistics: VoteStatistics =
-      user.voteStatistics || ({} as VoteStatistics);
+    const voteStatistics: VoteStatistics = user.voteStatistics || ({} as VoteStatistics);
     voteStatistics.successful += voteResult.success ? 1 : 0;
     // voteStatistics.total += 1;
     const score = returnValue(
-        voteResult.success || 0,
-      settings.data()?.voteRules,
+      voteResult.success || 0,
+      settings?.voteRules,
       user.status
     );
+    let foundationData = await getFoundationDataByName(user.foundationName ?? "");
+    let settingsData : any = await getSettingsFromSettings();
+    let totalCmp : number = foundationData[0].totalCmp;
+    totalCmp += (score * settingsData.CPMSettings.foundationRewardPercentage) / 100;
+    let foundationId : string = foundationData[0].id;
+    // update totalCmp of the foundation
+    await firestore()
+      .collection("foundations")
+      .doc(foundationId)
+      .update({totalCmp});
 
     await firestore()
-        .collection("votes")
-        .doc(this.id)
-        .set({score}, {merge: true});
+      .collection("votes")
+      .doc(this.id)
+      .set({score}, {merge: true});
 
     voteStatistics.score += score;
     await ref.set({voteStatistics}, {merge: true});
@@ -247,7 +253,33 @@ class Calculation {
     }
   }
 }
+// ---------------model functions start-----------------
 
+// get settings document from settings collection
+const getSettingsFromSettings = async () => {
+  const settingsData : any= await firestore()
+  .collection("settings")
+  .doc("settings")
+  .get();
+  // console.log("getRewardTransactionsByCardId transaction -- ", transaction)
+  const response: any = settingsData.data();
+  return response;
+}
+
+// get foundation data by foundation name
+const getFoundationDataByName = async (foundationName:string) => {
+  let foundationData = await firestore()
+      .collection("foundations")
+      .where("name", "==", foundationName ?? "")
+      .get();
+    let response : any = [];
+    foundationData.forEach((item) => {
+      response.push(item.data());
+    });
+  return response;
+}
+
+// ---------------model functions end-----------------
 const getLeaders = async () => {
   const snapshotUsers = await firestore()
       .collection("users")

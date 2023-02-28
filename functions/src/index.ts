@@ -147,6 +147,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     uid: user.uid,
     address: "",
     avatar: user.photoURL,
+    foundationName: user.foundationName,
     country: "",
     email: user.email,
     firstName: "",

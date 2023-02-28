@@ -40,6 +40,7 @@ export type UserProps = {
   token?: string;
   wallet?: string;
   rewardStatistics?: RewardStatistics;
+  foundationName?: string;
 };
 
 export type RewardStatistics = {
