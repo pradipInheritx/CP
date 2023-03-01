@@ -4,6 +4,9 @@ import * as admin from "firebase-admin";
 import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
+const {v4: uuidv4} = require('uuid');
+const generator = require('generate-password')
+import moment from 'moment';
 
 import cors from "cors";
 import {
@@ -13,6 +16,9 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
+import {
+  adminProps
+} from "./common/models/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
@@ -74,6 +80,9 @@ import {
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
 // import {ws} from "./common/models/Ajax";
+import { AdminSignupTemplate }  from "./common/emailTemplates/adminSignupTemplate"
+import { hashPassword } from "./common/helpers/commonFunction.helper"
+import { sendEmail } from "./common/services/emailServices"
 
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
 
@@ -189,6 +198,52 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   } catch (e) {
     return false;
   }
+});
+
+exports.createAdminUser = functions.https.onCall(async (data) => {
+  const { firstName, lastName, email, webAppAccess, status , user_type } = data as { firstName: string, lastName: string, email: string, webAppAccess: string[], status:number, user_type:number};
+  console.log("***create Admin User**");
+
+  const query = await admin.firestore().collection("admin").where("email", "==", email).get();
+
+  if(!query.empty) {
+    throw new functions.https.HttpsError("already-exists", 'Admin user with this email id already exists. Please enter different email id.');
+  }
+
+  const id = uuidv4();
+  console.log("----data:",data)
+  let password = generator.generate({
+    length: 10,
+    numbers: true
+  });
+
+  let hashedPassword = await hashPassword(password);
+
+  const adminData : adminProps = {
+    id,
+    email,
+    firstName,
+    lastName,
+    webAppAccess,
+    status,
+    password: hashedPassword,
+    user_type,
+    createdAt: parseInt(moment().format('X')),
+    updatedAt:  parseInt(moment().format('X'))
+  };
+  console.log("----AdminData:",adminData)
+
+  const resp = await admin
+    .firestore()
+    .collection("admin")
+    .doc(id)
+    .set(adminData);
+  console.log("----resp:",resp)
+
+  const title = 'Your account has been created';
+  await sendEmail(email, 'Account created', AdminSignupTemplate(email, password, title));
+
+  return resp;
 });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
