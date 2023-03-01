@@ -16,7 +16,7 @@ import {
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
-import Calculation, {
+import {
   getLeaderUsers,
   getLeaderUsersByIds,
   setLeaders,
@@ -28,6 +28,7 @@ import {
   updateVotesTotalForSingleCoin,
   voteConverter,
   VoteResultProps,
+  getOldAndCurrentPriceAndMakeCalculation,
 } from "./common/models/Vote";
 import {
   fetchCoins,
@@ -370,39 +371,6 @@ exports.onCreateCpmTransaction = functions.firestore
     await createPaxTransaction(transaction);
   });
 
-function setTime(
-  coin1: string,
-  coin2: string,
-  vote: VoteResultProps,
-  snapshot: any,
-  id: string,
-  timeframe: any
-) {
-  new Promise<void>((resolve) => {
-    setTimeout(async () => {
-      console.log("starting setTimeOut");
-      // const rate = await getRateRemote();
-      // console.log("rate --->", rate);
-      let price;
-      if (coin2) {
-        price = [coin1, coin2].map(async (coin) => await getPrice(coin));
-      } else {
-        price = await getPrice(coin1);
-      }
-      // price = 32862.51
-      console.log("price --->", price);
-
-      console.log("this is before calculation");
-      if (price) {
-        const calc = new Calculation(vote, Number(price), id);
-        await calc.calc(snapshot.ref);
-      }
-      console.log("Ending setTimeOut");
-      resolve();
-    }, calculateOffset(timeframe));
-  });
-}
-
 exports.onVote = functions.firestore
   .document("votes/{id}")
   .onCreate(async (snapshot) => {
@@ -426,7 +394,6 @@ exports.onVote = functions.firestore
 
     await updateVotesTotalForSingleCoin(data.coin);
 
-    const { id } = snapshot;
     const vote = {
       ...snapshot.data(),
       expiration,
@@ -444,13 +411,6 @@ exports.onVote = functions.firestore
       .update({
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
-    console.log("calculateOffset(timeframe) --->", calculateOffset(timeframe));
-    console.log(
-      "calculateOffset(timeframe) --->",
-      typeof calculateOffset(timeframe)
-    );
-    await setTime(coin1, coin2, vote, snapshot, id, timeframe);
-    console.log("setTimeOut completed");
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
@@ -625,6 +585,12 @@ exports.prepareWeeklyCPVI = functions.pubsub
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
   return await getCPVIForVote(data);
 });
+
+exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
+  async (data) => {
+    return await getOldAndCurrentPriceAndMakeCalculation(data);
+  }
+);
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
