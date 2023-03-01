@@ -46,8 +46,7 @@ const SelectTimeframes = ({
     setPariButtonDetails(allPariButtonTime);
   }, [allPariButtonTime]);
   
-  console.log(timeframes, "timeframevoted", voted, selected);
-  // console.log(votePrice,"votePricevotePrice");
+  
   
 
   return (

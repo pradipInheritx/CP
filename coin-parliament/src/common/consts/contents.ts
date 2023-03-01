@@ -53,7 +53,7 @@ export const myPages: ContentPage[] = [
     slug: "about",
   },  
   {
-    title: "Game Rule",
+    title: "Game Rules",
     content: GameRule,
     slug: "gamerule",
   },    

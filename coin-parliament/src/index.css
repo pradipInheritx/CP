@@ -264,7 +264,7 @@ html[dir="rtl"] .offcanvas-start.show {
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     left: 0;
-    top: 30%;
+    
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
@@ -274,6 +274,7 @@ html[dir="rtl"] .offcanvas-start.show {
   /* Modal Content */
   .modal-content {
     background-color: #fefefe;
+    top: 30%;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;

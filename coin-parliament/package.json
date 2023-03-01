@@ -118,7 +118,7 @@
     "remove_plugins_public": "rm -rf ../plugins/coin-parliament/public",
     "copy_plugins_public": "cp -a ../public ../plugins/coin-parliament",
     "test": "node scripts/test.js",
-    "deploy": "firebase deploy",
+    "deploy": "firebase deploy ",
     "emulate": "firebase emulators:start --inspect-functions --import=../functions/dir",
     "emulate:empty": "firebase emulators:start ",
     "emulators:export": " firebase emulators:export ../functions/dir",
