@@ -118,7 +118,7 @@ const NFTGallery = () => {
 }
   const onCollectionChange = (collectionName: any) => {
   
-if (searchTerm?.length || collectionName!="none") {
+if (searchTerm?.length || cardType.length || collectionName!="none") {
     setCardShow(true)
   }
   else {
