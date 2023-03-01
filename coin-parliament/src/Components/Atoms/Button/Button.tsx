@@ -212,40 +212,54 @@ const TimeframeButton = ({
   
   const getBorderColor = () => {
     let PricePer = livePrice / 100;
-    if (symbol2 == undefined) {    
-      if (buttonDetails?.direction == 1) {
-        // #218b17 #015117 #74ff5d
-        switch (true) {
-          case livePrice < votePrice + PricePer &&
-            livePrice > votePrice - PricePer:
-            setborderColor("#218b17");
-            break;
-          case livePrice < votePrice:
-            setborderColor("#218b17");
-            break;
-          case livePrice > votePrice:
-            setborderColor("#218b17");
-            break;
-          default:
-            console.log("not work");
+    if (symbol2 == undefined) { 
+      
+        if(votePrice + PricePer && livePrice > votePrice - PricePer) {         
+              setborderColor("#218b17");
         }
-      } else if (buttonDetails?.direction == 0) {
-        switch (true) {
-          //#218b17 #74ff5d #015117 
-          case livePrice < votePrice + PricePer &&
-            livePrice > votePrice - PricePer:
-            setborderColor("#218b17");
-            break;
-          case livePrice < votePrice:
-            setborderColor("#218b17");
-            break;
-          case livePrice > votePrice:
-            setborderColor("#218b17");
-            break;
-          default:
-            console.log("not work");
+        else{
+          if(buttonDetails?.direction == 1){
+            livePrice < votePrice ?setborderColor("#218b17"):setborderColor("#218b17");
+          }else if(buttonDetails?.direction == 0){
+            livePrice > votePrice ? setborderColor("#218b17"):setborderColor("#218b17");
+          }
+
         }
-      }
+
+
+      // if (buttonDetails?.direction == 1) {
+      //   // #218b17 #015117 #74ff5d
+      //   switch (true) {
+      //     case livePrice < votePrice + PricePer &&
+      //       livePrice > votePrice - PricePer:
+      //       setborderColor("#218b17");
+      //       break;
+      //     case livePrice < votePrice:
+      //       setborderColor("#218b17");
+      //       break;
+      //     case livePrice > votePrice:
+      //       setborderColor("#218b17");
+      //       break;
+      //     default:
+      //       console.log("not work");
+      //   }
+      // } else if (buttonDetails?.direction == 0) {
+      //   switch (true) {
+      //     //#218b17 #74ff5d #015117 
+      //     case livePrice < votePrice + PricePer &&
+      //       livePrice > votePrice - PricePer:
+      //       setborderColor("#218b17");
+      //       break;
+      //     case livePrice < votePrice:
+      //       setborderColor("#218b17");
+      //       break;
+      //     case livePrice > votePrice:
+      //       setborderColor("#218b17");
+      //       break;
+      //     default:
+      //       console.log("not work");
+      //   }
+      // }
     } else if (symbol2 !== undefined) {
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
       let bothCurrentPrice = [
