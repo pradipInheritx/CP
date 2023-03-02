@@ -5,6 +5,7 @@
     "firebase-functions": "^3.24.0",
     "generate-password": "^1.7.0",
     "lodash": "^4.17.21",
+    "jsonwebtoken": "^9.0.0",
     "uuid": "^9.0.0"
   }
 }

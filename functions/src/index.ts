@@ -18,6 +18,8 @@ import {
 } from "./common/models/User";
 import {
   adminProps,
+  admin_login,
+  generateAuthTokens,
   subAdminListingProps,
   getAllSubAdmins
 } from "./common/models/Admin";
@@ -162,7 +164,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     uid: user.uid,
     address: "",
     avatar: user.photoURL,
-    foundationName: user.foundationName,
+    //foundationName: user.foundationName,
     country: "",
     email: user.email,
     firstName: "",
@@ -219,6 +221,7 @@ exports.createAdminUser = functions.https.onCall(async (data) => {
     numbers: true
   });
 
+  console.log("Password", password);
   let hashedPassword = await hashPassword(password);
 
   const adminData : adminProps = {
@@ -230,6 +233,8 @@ exports.createAdminUser = functions.https.onCall(async (data) => {
     status,
     password: hashedPassword,
     user_type,
+    auth_tokens: [],
+    refresh_tokens: '',
     createdAt: parseInt(moment().format('X')),
     updatedAt:  parseInt(moment().format('X'))
   };
@@ -261,6 +266,19 @@ exports.getAllSubAdmins = functions.https.onCall(async (data) => {
 
   return subAdminList;
 });
+
+exports.admin_login = functions.https.onCall(async (data) => {
+  const {email, password} = data as { email: string, password: string };
+  let response = await admin_login(email, password);
+  return response;
+});
+
+exports.get_auth_tokens = functions.https.onCall(async (data) => {
+  const { refresh_tokens } = data as { refresh_tokens: string };
+  let response = await generateAuthTokens(refresh_tokens);
+  return response;
+});
+
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
