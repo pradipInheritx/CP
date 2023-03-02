@@ -17,7 +17,9 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 import {
-  adminProps
+  adminProps,
+  subAdminListingProps,
+  getAllSubAdmins
 } from "./common/models/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
@@ -199,7 +201,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
-
+// creating Sub Admin User for now
 exports.createAdminUser = functions.https.onCall(async (data) => {
   const { firstName, lastName, email, webAppAccess, status , user_type } = data as { firstName: string, lastName: string, email: string, webAppAccess: string[], status:number, user_type:number};
   console.log("***create Admin User**");
@@ -244,6 +246,20 @@ exports.createAdminUser = functions.https.onCall(async (data) => {
   await sendEmail(email, 'Account created', AdminSignupTemplate(email, password, title));
 
   return resp;
+});
+
+// GET all sub admins
+exports.getAllSubAdmins = functions.https.onCall(async (data) => {
+  console.log("***GET all Sub-Admins***");
+  const { pageNumber, limit, sortBy, search } = data as subAdminListingProps;
+
+  const subAdminList : any = await getAllSubAdmins({ pageNumber, limit, sortBy, search });
+  console.log("----subAdminList:",subAdminList)
+  if(!subAdminList || !subAdminList.length) {
+    throw new functions.https.HttpsError("not-found", "No Data Found");
+  }
+
+  return subAdminList;
 });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
