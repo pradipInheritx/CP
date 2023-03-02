@@ -1038,7 +1038,8 @@ votesLast24HoursRef.get()
                                               element={<FwPool />}
                                           />
                                           </Route>
-                                          {/* Fowller component  end*/}
+                                          
+                                        {/* Fowller component  end*/}
                                         <Route
                                           path='/upgrade'
                                           element={<UpgradePage />}

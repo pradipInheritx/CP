@@ -82,14 +82,14 @@ const FwMine = () => {
           />
         )}
 
-        {/* <Player
-  autoplay
-  loop
-  src={animation}
-  style={{ height: '300px', width: '300px' }}
->
-  <Controls visible={true} buttons={['play', 'repeat', 'frame', 'debug']} />
-</Player> */}
+              {/* <Player
+        autoplay
+        loop
+        src={animation}
+        style={{ height: '300px', width: '300px' }}
+      >
+        <Controls visible={true} buttons={['play', 'repeat', 'frame', 'debug']} />
+      </Player> */}
         {!userInfo?.paid && (
           <Row
             className='flex-row-reverse'
