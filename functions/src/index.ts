@@ -583,6 +583,7 @@ exports.prepareWeeklyCPVI = functions.pubsub
   });
 
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
+  // console.log("getCPVIForVote(data) =>", data);
   return await getCPVIForVote(data);
 });
 
