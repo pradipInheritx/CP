@@ -103,7 +103,7 @@ const MyCarousel = ({
   cursorShow
 }: { children: React.ReactNode, centerMode?: boolean, items?: number,quotes?:boolean,coin?:boolean ,cursorShow?:boolean }) => {
   // const {width} = useWindowSize();
-  // console.log(children, "childrenShow")
+  
   
   const ButtonGroup = ({ next, previous, goToSlide, ...rest }: any) => {
       const { carouselState: { currentSlide } } = rest;

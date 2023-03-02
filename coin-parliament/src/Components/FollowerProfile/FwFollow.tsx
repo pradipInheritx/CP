@@ -8,7 +8,8 @@ import { capitalize } from "lodash";
 import { follow, Leader } from "../../Contexts/CoinsContext";
 import UserCard from "../Users/UserCard";
 import { toFollow } from "../../common/models/User";
-
+import firebase from "firebase/compat";
+import AppContext from "../../Contexts/AppContext";
 export type Follower = {
   username: string;
   id: string;
@@ -37,15 +38,35 @@ export const getUsers = ({
 };
 
 const FwFollow = () => {
-  const { user, userInfo } = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const[userInfo,setUserInfo]=useState<any>()
+  const{followerUserId}=useContext(AppContext)
   const translate = useTranslation();
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
+  const getFollowerData =()=>{
+    const getCollectionType = firebase
+  .firestore()
+  .collection("users")
+  .where("uid", "==", followerUserId)
+getCollectionType.get()
+.then((snapshot) => {        
+// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+snapshot.docs?.map(doc=>setUserInfo(doc.data()))
+console.log('snapshot',)
+ 
+ 
 
+}).catch((error) => {
+console.log(error,"error");
+});    
+  }
   useEffect(() => {
     getUsers({ users: userInfo?.leader, setUsers: setLeaders });
     getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
-  }, [userInfo?.leader, userInfo?.subscribers]);
+    getFollowerData()
+  }, [userInfo?.leader?.length, userInfo?.subscribers?.length]);
+  console.log('snapshot',userInfo)
 console.log('leaders',leaders,userInfo)
   return (
     <Tabs

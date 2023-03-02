@@ -18,7 +18,8 @@ const Influencers = () => {
       setChosenUserType('')
     }
   }, [chosenUserType])
-  // console.log(leaders,"allleaders");
+
+  console.log(user, "userInfo");
   return (
     <div>
       <InfluencersComponent

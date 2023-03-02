@@ -12,7 +12,7 @@ const Down = styled.span`
   color: var(--danger);
 `;
 
-const Trend = ({ num = 0, toFixed = 2 }: { num: number; toFixed?: number }) => {
+const Trend = ({ num = 0, toFixed = 5 }: { num: number; toFixed?: number }) => {
   return num >= 0 ? (
     <Up>
       {num > 0 ? "+" : ""}

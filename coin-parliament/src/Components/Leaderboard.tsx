@@ -32,11 +32,12 @@ const Leaderboard = ({
 }) => {
   const location = useLocation();
   const pathname = location.pathname;
+  console.log(leaders,"userInfo")
   return (
     <div>
       <LeadersContainer>
-        {leaders.map((leader) => {
-          const checked = !toFollow(userInfo?.leader || [], leader.userId);
+        {leaders?.map((leader) => {
+          const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (
             <LeaderItem
               style={{

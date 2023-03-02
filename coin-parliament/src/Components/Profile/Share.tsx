@@ -48,7 +48,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
           <h6 className="text-uppercase">{translate("INVITE FRIENDS & EARN!")}</h6>
         </div>
         <div className=" py-2 w-75   m-auto">          
-        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100"}}>When they join and upgrade the account, You will earn CPM VOTES and POINTS.</p>
+        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100"}}>When they join and upgrade the account, You will earn extra CPM, VOTES and POINTS.</p>
         </div>
         <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
           <div className="mx-3">

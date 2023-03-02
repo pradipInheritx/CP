@@ -144,7 +144,7 @@ const Minting = ({
             width={width > 767 ? 194 : 154}
           />
         </div>
-        {width > 767 && (
+        {/* {width > 767 && (
           <BtnLabelPrimary
             className='w-100'
             style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "1px" }}
@@ -163,9 +163,9 @@ const Minting = ({
             {!!claim && <Dot>{claim}</Dot>}
             {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"}
           </BtnLabelPrimary>
-        )}
+        )} */}
       </Container>
-      {width < 767 && (
+      {/* {width < 767 && (
         <div
           style={{ marginTop: width > 767 ? 16 : 7.5, marginBottom: "16.31px" }}
         >
@@ -188,7 +188,7 @@ const Minting = ({
             {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"}
           </BtnLabelPrimary>
         </div>
-      )}
+      )} */}
     </React.Fragment>
   );
 };
