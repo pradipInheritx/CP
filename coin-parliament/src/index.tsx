@@ -37,7 +37,7 @@ const sw =
     : "../firebase-messaging-sw.js";
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
+  navigator?.serviceWorker
     .register(sw)
     .then(function (registration) {
       console.log("Registration successful, scope is:", registration.scope);

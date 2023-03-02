@@ -189,7 +189,8 @@ function App() {
   );
 
   useEffect(() => {
-    navigator.serviceWorker.addEventListener("message", (message) => {
+    if('serviceWorker' in navigator) {
+    navigator?.serviceWorker?.addEventListener("message", (message) => {
       const {
         notification: { body, title },
       } = message.data["firebase-messaging-msg-data"] as {
@@ -202,6 +203,7 @@ function App() {
         </div>
       );
     });
+  }
   });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
@@ -321,8 +323,11 @@ console.log('extravote', votesLast24Hours)
   const TimeframesMng = new TimeframesManager(timeframes, setTimeframes);
   const UserTypeMng = new UserTypeManager(userTypes, setUserTypes);
 
+
+
+
   if (langDetector.current) {
-    (langDetector.current as unknown as HTMLInputElement).addEventListener(
+    (langDetector?.current as unknown as HTMLInputElement)?.addEventListener(
       "change",
       (event) => {
         const target = event.target as HTMLInputElement;

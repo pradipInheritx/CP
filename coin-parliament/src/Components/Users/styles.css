@@ -1,10 +1,38 @@
-#myinput {
-  background: linear-gradient(to right, #82CFD0 0%, #82CFD0 50%, #fff 50%, #fff 100%);
-  border: solid 1px #82CFD0;
-  border-radius: 8px;
-  height: 7px;
-  width: 356px;
-  outline: none;
-  transition: background 450ms ease-in;
-  -webkit-appearance: none;
+.rengeInput{
+   -webkit-appearance: none;
+  /* margin-right: 15px; */
+  width:100%;
+  height: 7px; 
+  /* background-image: linear-gradient(to right, #dfc3f4, #d9b2f6, #d2a1f8, #cb90f9, #c47efa, #be72fb, #b866fb, #b15afc, #aa52fc, #a349fd, #9c40fd, #9437fe); */
+  /* background: transparent linear-gradient(180deg, #6352E8 0%, #3712B3 100%) 0% 0% no-repeat padding-box; */
+background: rgb(212,208,243);
+background: linear-gradient(90deg, rgba(212,208,243,1) 0%, rgba(99,82,232,1) 41%, rgba(59,23,183,1) 82%);
+  
+}
+
+.rengeInput::-webkit-slider-thumb {
+   -webkit-appearance: none;
+  border: 1px solid black;
+  border-radius: 50px;
+  width: 20px;
+  height: 20px;
+  background-image: url("../../assets/images/ReangDot.png");
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+  background-position: center;
+  padding: 10px;  
+}
+.rengeInput::-moz-range-thumb {
+   /* -webkit-appearance: none; */
+  border: 1px solid black;
+  border-radius: 50px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  background-image: url("../../assets/images/ReangDot.png");
+  
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+  background-position: center;
+  /* padding: 10px;   */
 }

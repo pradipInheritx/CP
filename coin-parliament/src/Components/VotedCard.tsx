@@ -19,7 +19,8 @@ import RangeSilder from "./Users/RangeSilder";
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
   max-width: 345px;
-  height: 75px;
+  // height: 75px;
+  padding:20px 0px;
   background-color: var(--white);  
   border-radius: 38px;
   box-shadow: 0 3px 6px #00000029;
@@ -110,7 +111,64 @@ const VotedCard = ({
   }) => {
   
   
+  const [borderColor, setBorderColor] = useState<any>("#6352e8");const getBorderColor = () => {
+    // let PricePer = livePrice / 100;   
+     if (symbol2 !== undefined) {
+         let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+        // @ts-ignore
+      let bothCurrentPrice = [...vote?.valueVotingTime];
+    //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
+    let diff = [
+        bothCurrentPrice[0] / bothLivePrice[0],
+        bothCurrentPrice[1] / bothLivePrice[1],
+    ];
+     console.log(diff,"bothCurrentPrice")     
+      let winner = diff[0] < diff[1] ? 1 : 0;
+      const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+      if ((averageValue == averageValue)) {        
+        setBorderColor("#6352e8") 
+      } else {
+        if (vote?.direction == 1) {
+            winner == vote?.direction
+                ?
+                  setBorderColor("#d4d0f3")              
+                :             
+                  setBorderColor("#3b17b7") 
+             
+        } else if (vote?.direction == 0) {
+          winner != vote?.direction
+            ?            
+            setBorderColor("#d4d0f3") 
+            :
+            setBorderColor("#3b17b7") 
+
+        }
+      }       
+     } else if (symbol2 == undefined) {    
+       let livePrice =coins[symbol1]?.price
+       let votePrice =Number(vote?.valueVotingTime)
+       let PricePer = livePrice;
+       if(livePrice < PricePer + 10 &&
+         livePrice > PricePer - 10) { 
+          setBorderColor(50);
+        }
+        else{
+          if(vote?.direction == 1){
+            livePrice < votePrice ?setBorderColor("#3b17b7"):setBorderColor("#d4d0f3");
+          }else if(vote?.direction == 0){
+            livePrice > votePrice ? setBorderColor("#d4d0f3"):setBorderColor("#3b17b7");
+          }
+        }     
+    }
+};
   
+ useEffect(() => {
+    getBorderColor()
+  }, [coins[symbol1]?.price ,coins[symbol2]?.price])
+
+
+
+
   const [coin1, coin2] = [
     coins[symbol1] || undefined,
     coins[symbol2] || undefined,
@@ -148,9 +206,8 @@ const VotedCard = ({
       ? `${vote.timeframe.name} ${valueVotingTime}`
       : `${voted} - ${vote.timeframe.name} $${valueVotingTime || 'loading'}`;
   }
-
-
-console.log(vote,"voteCheck")
+//   console.log(vote,"CheckvalueVotingTime") 
+// console.log(vote,"voteCheck")
   
   return (
     <>
@@ -175,24 +232,19 @@ console.log(vote,"voteCheck")
         <YourVote>{translate("Place your vote")}</YourVote>
       </div>
       {/* @ts-ignore */}
-      <Rectangle2620 style={{border:coin2===undefined? (vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime <coin1.price?'1px solid #07501a':'1px solid ##7afd67')):(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime >coin1.price?'1px solid #07501a':'1px solid ##7afd67'))):(vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')):(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')
-    ))  
-    
-    }}>
-     
-               
-            
+      {/* <Rectangle2620 className="" style={{border:coin2===undefined? (vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime <coin1.price?'1px solid #07501a':'1px solid ##7afd67')):(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime >coin1.price?'1px solid #07501a':'1px solid ##7afd67'))):(vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')):(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')))}}>     */}
+      <Rectangle2620 className="" style={{border:`1px solid ${borderColor}`}}>    
         <div className="d-flex justify-content-center w-100 ">
-          <div className="">
+          <div className="w-100 px-3">
             <BitcoinBTCBULL24H3864490
               className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
             >
-              <Row1 className="poppins-normal-blackcurrant-14px mx-2">{row1}</Row1>
-              <Row2 className="poppins-normal-blue-violet-14px-2">{row2}</Row2> 
-
-             <MyCountdown expirationTime={expirationTime} />
+              <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1>
+              <Row2 className="poppins-normal-blue-violet-14px-2">{row2}</Row2>              
             </BitcoinBTCBULL24H3864490>
-            
+            <div className="my-2">
+              <MyCountdown expirationTime={expirationTime} />
+            </div>
             <div>
               <RangeSilder
               vote={vote}
