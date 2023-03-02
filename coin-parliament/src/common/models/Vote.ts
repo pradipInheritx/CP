@@ -91,7 +91,7 @@ class Vote implements VoteProps {
       );
 
       const data = v?.data();
-      console.log('voteapicalled1', timeFrame,data)
+      
       if (!data) {
         return;
       }
@@ -153,17 +153,19 @@ export const useCanVote: () => [boolean, string] = () => {
  
   const valid = !!user && voted < Number(maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0);
   // @ts-ignore
-console.log('extravote12',Math.min(...votesLast24Hours.map((v) => v.voteTime)))
+
   const timeReturn = new Date(
     Math.min(...votesLast24Hours.map((v) => v.voteTime)) + timeLimit * 1000
   );
+  
+
 
   const text = !user
-    ? "Attention! You must be signed-in to cast your vote!"
-    : `You have voted ${
-        votesLast24Hours.length
-      } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}`;
+    ? "Hey there, To make your voice heard, you've got to sign in and vote"
+    : `Well done, you've used up all your votes! Time to grab a snack and come back in`;
+      
 
+      // You have voted ${votesLast24Hours.length } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}
   return [valid, valid ? "" : text];
 };
 

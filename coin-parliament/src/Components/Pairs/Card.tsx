@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {Heart} from "../Atoms/Checkbox/Icon";
 import {Image} from "react-bootstrap";
@@ -195,11 +195,15 @@ const Price = styled.div`
 `;
 
 const CoinCard = ({
+  color,
   coin,
   onClick,
   single,
   coins,
-}: { coin: Coin; onClick: () => void; single: boolean, coins: { [symbol: string]: Coin }; }) => (
+}: { color: string; coin: Coin; onClick: () => void; single: boolean, coins: { [symbol: string]: Coin }; }) => (
+
+
+
   <LogoContainer>
     <Buttons.ClickableText onClick={onClick} style={{cursor: single ? "default" : undefined}}>
       <LogoImgContainer {...{single}}>
@@ -220,7 +224,9 @@ const CoinCard = ({
     </div>
     {single && <div className="my-2">
       <Group3991>
-        <Price {...{single}}>{formatCurrency(coins[coin.symbol]?.price, precision[coin.symbol])}</Price>
+        <Price
+          style={{color:`${color}`}}
+          {...{ single }}>{formatCurrency(coins[coin.symbol]?.price, precision[coin.symbol])}</Price>
       </Group3991>
     </div>}
   </LogoContainer>
@@ -240,8 +246,59 @@ const Card = ({
   const location = useLocation();
   const pathname = location.pathname;
   const {user} = useContext(UserContext);
-  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
+  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
+  const [colorFirst, setColorFirst] = useState<string>("black");
+  const [colorSec, setColorSec] = useState<string>("black");
+  const [priceFist, setPriceFist] = useState<any>(0)
+  const [priceSec, setPriceSec] = useState<any>(0)
 
+  const prevFirstRef = useRef(priceFist)
+  const prevSecRef = useRef(priceSec)
+
+
+const firstColor= ()=>{
+  if (coins[coin1?.symbol]?.price == prevFirstRef.current) {   
+      setColorFirst("black")
+      }
+    else if (coins[coin1?.symbol]?.price > prevFirstRef.current) {
+      setColorFirst("Green")            
+      }
+      else if (coins[coin1?.symbol]?.price < prevFirstRef.current) {
+      setColorFirst("Red")            
+      }      
+    // },5000);
+    setPriceFist(coins[coin1?.symbol]?.price)
+}
+
+const secColor= ()=>{
+  if (coins[coin2?.symbol]?.price == prevSecRef.current) {   
+      setColorSec("black")
+      }
+    else if (coins[coin2?.symbol]?.price > prevSecRef.current) {
+      setColorSec("Green")            
+      }
+      else if (coins[coin2?.symbol]?.price < prevSecRef.current) {
+      setColorSec("Red")            
+      }      
+    // },5000);
+    setPriceSec(coins[coin2?.symbol]?.price)
+}
+
+  useEffect(() => {
+    prevFirstRef.current = priceFist;
+    firstColor()
+  }, [
+    coins[coin1?.symbol]?.price
+  ])
+  useEffect(() => {
+    prevSecRef.current = priceSec;
+    secColor()
+  }, [
+    coins[coin2?.symbol]?.price
+  ])
+
+
+  
   return (
     <LighCart1 {...{ single,pathname }} className="">
       <HeartContainer {...{ single }} onClick={
@@ -261,11 +318,11 @@ const Card = ({
         />
       </HeartContainer>
       <CardsContainer>
-        <CoinCard coin={coin1} onClick={onClick} single={single} coins={coins}/>
+        <CoinCard color={colorFirst} coin={coin1} onClick={onClick} single={single} coins={coins}/>
         <OverlapGroup>
           <VS {...{single}}>VS</VS>
         </OverlapGroup>
-        <CoinCard coin={coin2} onClick={onClick} single={single} coins={coins}/>
+        <CoinCard color={colorFirst} coin={coin2} onClick={onClick} single={single} coins={coins}/>
       </CardsContainer>
       {!single && (
         <Component127371>

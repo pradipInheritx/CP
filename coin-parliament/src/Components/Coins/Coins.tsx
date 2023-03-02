@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { Input } from "../Atoms/styles";
+import CoinsContext from "../../Contexts/CoinsContext";
 
 const Container = styled.div`
   display: grid;
@@ -63,6 +64,7 @@ const Coins = ({
     [expanded, width]
   );
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
+            // const { changePrice, setChangePrice } = useContext(CoinsContext);
 
   useEffect(() => {
     setData(getFilteredData(filter, coins, totals, allCoins));
@@ -140,6 +142,8 @@ const Coins = ({
               size={24}
             />
           </div>
+
+      {/* <button onClick={()=>setChangePrice(changePrice + 1)}>Click me</button> */}
         </Container>
       )}
       <div className='px-0 m-auto w-100' style={{ maxWidth }}>

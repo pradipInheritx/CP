@@ -218,7 +218,7 @@ const TimeframeButton = ({
       clearInterval(ShowDeg)
   }  
   }
-  , 10);
+  , 10000);
 
   
   const getBorderColor = () => {
@@ -257,7 +257,7 @@ const TimeframeButton = ({
             console.log("not work");
         }
       }
-    } else if (symbol2 !== undefined) {
+    } else if (symbol2 !== undefined && buttonDetails?.valueVotingTime) {
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
       let bothCurrentPrice = [
         buttonDetails?.valueVotingTime[0],

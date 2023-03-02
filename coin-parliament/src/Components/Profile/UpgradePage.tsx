@@ -263,7 +263,7 @@ const UpgradePage = () => {
             </button>
           </div>
 
-          <TextContainer
+          {/* <TextContainer
             className=' d-xl-none'
             style={{
               textTransform: "none",
@@ -314,7 +314,7 @@ const UpgradePage = () => {
                 <span>$34.99</span>
               </div>
             </PriceCard>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

@@ -308,16 +308,16 @@ exports.subscribe = functions.https.onCall(async (data) => {
   }
 });
 
-async function getCards() {
-  const docs = await admin
-      .firestore()
-      .collection("settings")
-      .doc("cards")
-      .get();
+// async function getCards() {
+//   const docs = await admin
+//       .firestore()
+//       .collection("settings")
+//       .doc("cards")
+//       .get();
 
-  console.log("docs.data() --->", docs.data()?.cards);
-  return docs.data()?.cards || [];
-}
+//   console.log("docs.data() --->", docs.data()?.cards);
+//   return docs.data()?.cards || [];
+// }
 
 exports.onUpdateUser = functions.firestore
     .document("users/{id}")
@@ -325,7 +325,7 @@ exports.onUpdateUser = functions.firestore
       const before = snapshot.before.data() as UserProps;
       const after = snapshot.after.data() as UserProps;
       await addReward(snapshot.after.id, before, after);
-      await getCards();
+      // await getCards();
       const [should, amount] = shouldHaveTransaction(before, after);
       if (!should || !amount) {
         return;
@@ -449,6 +449,7 @@ exports.onVote = functions.firestore
       console.log("setTimeOut completed");
     });
 
+
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
     const {parent, child} = data as { parent: string; child: string };
@@ -532,8 +533,8 @@ exports.claimReward = functions.https.onCall(async (data) => {
   return reward;
 });
 
-exports.cardHolderListing = functions.https.onCall(async(data) => {
-  const { cardId } = data as { cardId: number };
+exports.cardHolderListing = functions.https.onCall(async (data) => {
+  const {cardId} = data as { cardId: number };
   const userList = await cardHolderListing(cardId);
   console.log("userList --->", userList);
   return userList;
