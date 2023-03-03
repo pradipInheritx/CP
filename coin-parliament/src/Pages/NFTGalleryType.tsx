@@ -289,7 +289,7 @@ console.log(nftAlbumData,"nftAlbumData")
               className='py-2 mx-3 rounded border'
               // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>              
+            <div className={`${window.screen.width < 767 ? "" : ""}`}>              
               <select
                 name='type'
                 id='type'
@@ -303,7 +303,7 @@ console.log(nftAlbumData,"nftAlbumData")
                 <option value='UNCommon'>UNCommon</option>
                 <option value='Common'>Common</option>
               </select>
-              <select
+              {/* <select
                 name='cars'
                 id='cars'
                 className='bg-white border rounded py-2'
@@ -313,7 +313,7 @@ console.log(nftAlbumData,"nftAlbumData")
                 <option value='saab'>Card NO.</option>
                 <option value='mercedes'>Card Name</option>
                 
-              </select>
+              </select> */}
             </div>
           </div>
           <div>
