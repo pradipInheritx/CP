@@ -280,7 +280,9 @@ console.log(error,"error");
     setCardShow(false)
   }
   if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.type!=cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-  else{setSearchedCard(
+  else {
+    setCardShow(true)
+    setSearchedCard(
     (prev:any)=>allCard.filter((card:any)=>card.type===cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))}
 }
 
@@ -403,7 +405,7 @@ console.log(equalPart,"setEqualPart")
               className='py-2 mx-3 rounded border'
               // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>              
+            <div className={`${window.screen.width < 767 ? "" : ""}`}>              
               <select
                 name='type'
                 id='type'
@@ -417,7 +419,7 @@ console.log(equalPart,"setEqualPart")
                 <option value='UNCommon'>UNCommon</option>
                 <option value='Common'>Common</option>
               </select>
-              <select
+              {/* <select
                 name='cars'
                 id='cars'
                 className='bg-white border rounded py-2'
@@ -427,7 +429,7 @@ console.log(equalPart,"setEqualPart")
                 <option value='saab'>Card NO.</option>
                 <option value='mercedes'>Card Name</option>
                 
-              </select>
+              </select> */}
             </div>
           </div>
 
