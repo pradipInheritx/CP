@@ -280,7 +280,9 @@ console.log(error,"error");
     setCardShow(false)
   }
   if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.type!=cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-  else{setSearchedCard(
+  else {
+    setCardShow(true)
+    setSearchedCard(
     (prev:any)=>allCard.filter((card:any)=>card.type===cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))}
 }
 

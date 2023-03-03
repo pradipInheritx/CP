@@ -115,7 +115,8 @@ const NFTGallery = () => {
   else {    
     setSearchedCard(allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type != cardType.toUpperCase() && card?.collectionName === selectCollection))
   }
-}
+  }
+  
   const onCollectionChange = (collectionName: any) => {
   console.log(selectCollection,"selectCollection")
 if (searchTerm?.length || cardType?.length || selectCollection!="none") {
