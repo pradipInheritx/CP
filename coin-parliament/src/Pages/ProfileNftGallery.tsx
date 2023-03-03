@@ -161,7 +161,7 @@ const cards: any = [];
     });
   });
   setAllCard(cards)  
-  
+  setCardShow(false)
 console.log("nft_gallery", data);
 }).catch((error) => {
 console.log(error,"error");

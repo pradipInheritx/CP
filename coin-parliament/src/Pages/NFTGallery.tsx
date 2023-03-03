@@ -117,8 +117,8 @@ const NFTGallery = () => {
   }
 }
   const onCollectionChange = (collectionName: any) => {
-  
-if (searchTerm?.length || cardType.length || collectionName!="none") {
+  console.log(selectCollection,"selectCollection")
+if (searchTerm?.length || cardType?.length || selectCollection!="none") {
     setCardShow(true)
   }
   else {
@@ -153,7 +153,7 @@ const cards: any = [];
     });
   });
   setAllCard(cards)  
-  
+  setCardShow(false)
 console.log("nft_gallery", data);
 }).catch((error) => {
 console.log(error,"error");
@@ -171,7 +171,7 @@ const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
 });
-setCardShow(true)
+
 setAllCardArray(data)
 const cards: any = [];
   data.forEach((element: any) => {
@@ -211,8 +211,7 @@ console.log(error,"error");
 
 
 const onSelectType=(cardType:any)=>{
-  setCardType(cardType)
-  
+  setCardType(cardType)  
   if (cardType === 'all') {
     // console.log(cardType,"cardType")
     setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
@@ -285,7 +284,7 @@ useEffect(() => {
   },[searchedCard])
 
 
-console.log(cardShow,"searchTerm")
+console.log(selectCollection,"searchTerm")
 
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
