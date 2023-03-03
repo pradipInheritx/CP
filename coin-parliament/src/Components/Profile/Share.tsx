@@ -5,6 +5,7 @@ import Copy from "../icons/copy";
 import copy from "copy-to-clipboard";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import earn from "../../assets/images/earn.png";
+import { texts } from "../LoginComponent/texts";
 
 const PoolBox = styled.div`
   overFlow-x:hidden;
@@ -55,7 +56,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
               onClick={() => {
                 copy(url);
                 showToast(
-                  `${url} ${translate("copied to clipboard")}`,
+                  `${url} ${translate(texts.CopiedClipboard)}`,
                   ToastType.SUCCESS
                 );
               }}

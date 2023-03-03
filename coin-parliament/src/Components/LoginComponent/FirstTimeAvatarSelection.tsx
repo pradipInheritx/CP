@@ -8,6 +8,7 @@ import { AvatarType } from "../../assets/avatars/Avatars";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { toast } from "react-toastify";
+import { texts } from "./texts";
 
 
 
@@ -23,11 +24,11 @@ const FirstTimeAvatarSelection = ({ user,setFirstTimeAvatarSelection }: FirstTim
       const userRef = doc(db, "users", user?.uid);
       try {
         await setDoc(userRef, {avatar: type}, {merge: true});
-        showToast(translate("user info was updated"));
+        showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
         setFirstTimeAvatarSelection(false)
       } catch (e) {
-        showToast(translate("user failed to be updated"), ToastType.ERROR);
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }
     }
   };

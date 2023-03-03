@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import {
   HelveticaneueRegularNormalBlack13px,
@@ -13,8 +13,9 @@ import { Leader } from "../../Contexts/CoinsContext";
 import Icon from "../Atoms/Checkbox/Icon";
 import AddFollower from "../icons/AddFollower";
 import Following from "../icons/Following";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "../../common/models/Dictionary";
+import AppContext from "../../Contexts/AppContext";
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -147,6 +148,8 @@ const UserCard = ({
   const translate = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
+  const navigate = useNavigate()
+  const{setFollowerUserId}=useContext(AppContext)
   return (
     <Component515
       style={{ boxShadow: !pathname?.includes("/followers") ? "none" : "" }}
@@ -159,7 +162,11 @@ const UserCard = ({
           padding: pathname?.includes("/influencers") ? "10px 0" : "",
         }}
       >
-        <ElementsAvatarAImage1>
+        <ElementsAvatarAImage1 onClick={e=>{
+          if(leader!=undefined && setFollowerUserId!=undefined)setFollowerUserId(leader?.userId)
+          navigate('/followerProfile/mine')
+      
+      }}>
           <Avatar url={getAvatar(leader)} />
         </ElementsAvatarAImage1>
         <FlexCol>

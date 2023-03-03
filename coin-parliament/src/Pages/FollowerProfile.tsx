@@ -4,11 +4,11 @@ import React, { useContext, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import UserContext from "../Contexts/User";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import UserCard from "../Components/Profile/UserCard";
+import UserCard from "../Components/FollowerProfile/UserCard";
 import styled from "styled-components";
 import { Gradient2 } from "../styledMixins";
 import { isV1, PageContainer } from "../Components/App/App";
-import ImageTabs from "../Components/Profile/ImageTabs";
+import ImageTabs from "../Components/FollowerProfile/ImageTabs";
 import Votes from "../Components/icons/votes";
 import Mine from "../Components/icons/mine";
 import Share from "../Components/icons/share";
@@ -16,7 +16,7 @@ import Following from "../Components/icons/Following1";
 import Gallery from "../Components/icons/Gallery";
 import Notifications from "../Components/icons/notifications";
 import NotificationContext, { ToastType } from "../Contexts/Notification";
-import AvatarsModal from "../Components/Profile/AvatarsModal";
+import AvatarsModal from "../Components/FollowerProfile/AvatarsModal";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AvatarType } from "../assets/avatars/Avatars";
@@ -72,11 +72,13 @@ const FollowerProfile = () => {
   let navigate = useNavigate();
   const translate = useTranslation();
 
+  
   useEffect(() => {
     setChosenByDefault(pathname);
+   
     return () => setAvatarMode(false);
   }, [pathname]);
-
+ 
   // if (!user) {
   //   return (
   //     <Navigate
@@ -87,6 +89,8 @@ const FollowerProfile = () => {
   //     />
   //   );
   // }
+
+ 
 
   const onSubmitAvatar = async (type: AvatarType) => {
     if (user?.uid) {
