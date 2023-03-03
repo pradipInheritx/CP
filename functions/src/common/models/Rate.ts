@@ -1,7 +1,12 @@
-import {ajax_, snapshotAllTickers} from "./Ajax";
-import {ICryptoSnapshotTickers} from "@polygon.io/client-js";
-import {firestore} from "firebase-admin";
+import { ajax_, snapshotAllTickers } from "./Ajax";
+import { ICryptoSnapshotTickers } from "@polygon.io/client-js";
+import { firestore } from "firebase-admin";
+import axios from "axios";
 
+import {
+  getDataFromTimestampBaseURL,
+  defaultHeaderForgetDataFromTimestamp,
+} from "../consts/config";
 
 export const getRateRemote_: () => Promise<
   CoinbaseResponse<Rate[]>
@@ -66,13 +71,8 @@ export type CoinbaseResponse<T> = {
 //   );
 // };
 
-
-export const getPrice: (
-  symbol: string
-) => any = async (symbol: string) => {
-  const coinRef = firestore()
-      .collection("stats")
-      .doc("coins");
+export const getPrice: (symbol: string) => any = async (symbol: string) => {
+  const coinRef = firestore().collection("stats").doc("coins");
 
   const coinProps = await coinRef.get();
   const coinData = coinProps.data();
@@ -95,4 +95,15 @@ export const getPrice: (
   }
 
   return price;
+};
+
+export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
+  console.info("In Function", "coin", coin, "timestamp", timestamp);
+  const getCoinPrice = await axios.get(
+    getDataFromTimestampBaseURL(coin, timestamp),
+    defaultHeaderForgetDataFromTimestamp
+  );
+  return getCoinPrice.data && getCoinPrice.data[0] && getCoinPrice.data[0].price
+    ? getCoinPrice.data[0].price
+    : 0;
 };
