@@ -98,7 +98,9 @@ const SingalCard = () => {
   const [nftAlbumData, setNftAlbumData] = useState<any>()
   const [followersDetails, setFollowersDetails] = useState<any>()
   const [followersShow, setFollowersShow] = useState<any>([])
-  const { singalCardData,setSingalCardData} = useContext(AppContext);
+  const [singalCardData, setSingalCardData] = useState<any>([])
+  // const { singalCardData,setSingalCardData} = useContext(AppContext);
+  
   let params = useParams();
   const translate = useTranslation();
   const { type, id } = params;
@@ -192,11 +194,13 @@ setFollowersDetails(FollowerList)
     getFollwersList(id)
     getNftCard()
     // alllist= getList({cardID:id})
+    
   }, []) 
   useEffect(() => {      
-  
-    // alllist= getList({cardID:id})
+    // @ts-ignore
+  setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))
   }, []) 
+
   console.log(singalCardData,"singalCardData")
   
   

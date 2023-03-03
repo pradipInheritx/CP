@@ -86,159 +86,7 @@ width:100%;
 
 const ProfileNftGalleryType = () => {
   const { user } = useContext(UserContext);
-  const [cards, setCards] = useState([
-    [
-      {
-        id: 1,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 2,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 3,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 4,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 6,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 7,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 8,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 9,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 11,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 12,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 13,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 14,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 16,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 17,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 18,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 19,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },    
-    ],
-
-    [
-      {
-        id: 21,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 22,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 23,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 24,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-  ]);
+  
   const [menuItem, setMenuItem] = useState([
     { name: "View All" },
     { name: "Common" },
@@ -259,7 +107,13 @@ const ProfileNftGalleryType = () => {
   const [filterIndex, setfilterIndex] = useState(0);
   const [backCards, setBackCards] = useState<any>([]);
   const [winerCard, setWinerCard] = useState<any>([]);
-
+  const [searchTerm, setSearchTerm] = useState<any>('')
+  const [allCard, setAllCard] = useState<any>([])
+  const [searchedCard, setSearchedCard] = useState<any>([])
+  const [cardType,setCardType]=useState<any>('all')
+  const [allCardArray,setAllCardArray]=useState<any>([])
+  const [equalPart, setEqualPart] = useState<any>([]);
+  const [cardShow, setCardShow] = useState<any>(false);
 
 
   
@@ -271,23 +125,25 @@ const ProfileNftGalleryType = () => {
 //   // getNftCard();
 // }, [])
   
-  useEffect(() => {
-    HandleFilter(filterIndex);
-  }, [filterIndex]);
+  // useEffect(() => {
+  //   HandleFilter(filterIndex);
+  // }, [filterIndex]);
 
-  const HandleFilter = (filterIndex?: number | string | undefined) => {
-    var allCard: any = cards;
-    if (filterIndex && filterIndex > 0) {
-      allCard.filter((item: any, ind: number) => {
-        if (ind + 1 == filterIndex) {
-          var cardItem: any = [item];
-          setCardValue(cardItem);
-        }
-      });
-    } else {
-      setCardValue(allCard);
-    }
-  };  
+  // const HandleFilter = (filterIndex?: number | string | undefined) => {
+  //   var allCard: any = cards;
+  //   if (filterIndex && filterIndex > 0) {
+  //     allCard.filter((item: any, ind: number) => {
+  //       if (ind + 1 == filterIndex) {
+  //         var cardItem: any = [item];
+  //         setCardValue(cardItem);
+  //       }
+  //     });
+  //   } else {
+  //     setCardValue(allCard);
+  //   }
+  // };
+
+  
   const BackSideCard = (value: string | number) => {
     let allBackCard = backCards;
     // @ts-ignore
@@ -360,16 +216,92 @@ console.log(type,"type")
     })
     .catch((error:any) => {
       console.log("getAllRewardsOfUser Error", error)
-    })
-  // console.log("winCardsgetAllRewardsOfUser",winCards)
+    })  
    setWinerCard(winCards)
+  }
+  
+
+
+const onCollectionChange=()=>{ 
+  
+  const getCollectionType = firebase
+  .firestore()
+  .collection("nft_gallery")
+  .where("collectionName", "==", type)
+getCollectionType.get()
+.then((snapshot) => {        
+// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+const data:any=[]
+snapshot.forEach((doc) => {
+data.push({id: doc.id, ...doc.data()});
+});
+setAllCardArray(data)
+const cards: any = [];
+  data.forEach((element: any) => {
+    console.log("Element =>", element);
+    const collectionId = element.collectionId;
+    const collectionName = element.collectionName;
+    const collectionDocId = element.id;
+
+    element.setDetails.forEach((setDetail: any) => {
+      const setId = setDetail.id;
+      const setName = setDetail?.name;
+      setDetail.cards.forEach((cardDetail: any) => {
+        cards.push({collectionId, collectionName, collectionDocId, setId,setName, ...cardDetail});
+      });
+    });
+  });
+  setAllCard(cards)
+console.log("Array", data);
+
+}).catch((error) => {
+console.log(error,"error");
+});    
+  
+}
+  const onSearch = (searchTerm: any) => {    
+    if (searchTerm?.length) {
+    setCardShow(true)
+  }
+  else {
+    setCardShow(false)
+  }
+  setSearchTerm(searchTerm)
+  if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+  else setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type==cardType.toUpperCase()))
+}
+  
+  const onSelectType=(cardType:any)=>{
+  setCardType(cardType)
+    if (searchedCard?.length) {
+    setCardShow(true)
+  }
+  else {
+    setCardShow(false)
+  }
+  if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.type!=cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+  else{setSearchedCard(
+    (prev:any)=>allCard.filter((card:any)=>card.type===cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))}
 }
 
 useEffect(() => {
   getNftCard()
    getAllRewardsOfUser(`${user?.uid}`)
   
-  }, [params])
+}, [params])
+  
+  
+  useEffect(() => {  
+  onCollectionChange()  
+  }, [])
+  
+  useEffect(() => {
+  // getNftCard()
+  // onCollectionChange(type)
+  onSearch(searchTerm)
+  onSelectType(cardType)
+}, [allCard])
+  
 
   const CheckCardDisable = (cardId: any) => {   
   var disableCard;
@@ -388,8 +320,7 @@ useEffect(() => {
       return true
     }
     
-  })
-    
+  })    
       
     return disableCard
   }
@@ -417,7 +348,30 @@ useEffect(() => {
           })
           return seriaNo    
   }
+   
+  
+function sliceDived(arr: any, partSize: any) {
+    const res = [];
+    for (let i = 0; i < arr.length; i += partSize) {
+        const DivideEqual = arr.slice(i, i + partSize);
+        res.push(DivideEqual);
+    }  
+  setEqualPart(res)
+  
+}
+  
+useEffect(() => {
+    if (searchedCard?.length > 0) {      
+      sliceDived(searchedCard, 4)
+    }
+    else {
+      sliceDived(searchedCard,4)
+  }
+  },[searchedCard])
  
+console.log(searchedCard,"searchedCard")
+console.log(equalPart,"setEqualPart")
+
   return (
     <div className=''>
       <div className='h-100 '>
@@ -439,17 +393,55 @@ useEffect(() => {
         })}
       </MenuBar> */}
         <CenterItem>
+          <div className='d-flex justify-content-center pt-5 flex-wrap '>
+            <input
+              type='text'
+              name="hello"
+              onChange={e =>onSearch(e.target.value)}
+              // onChange={(e)=>{HandelonchangeFilter(e)}}
+              placeholder='Search...'
+              className='py-2 mx-3 rounded border'
+              // style={{ width: "200px" }}              
+            />
+            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>              
+              <select
+                name='type'
+                id='type'
+                className='bg-white border rounded mx-2 py-2'
+                onChange={(e)=>{onSelectType(e.target.value)}}
+              >
+                <option value='all'>Select Type</option>
+                <option value='Legendary'>Legendary</option>
+                <option value='Rare'>Rare</option>
+                <option value='Epic'>Epic</option>
+                <option value='UNCommon'>UNCommon</option>
+                <option value='Common'>Common</option>
+              </select>
+              <select
+                name='cars'
+                id='cars'
+                className='bg-white border rounded py-2'
+              >
+                <option value='volvo'>Select Sets</option>
+                
+                <option value='saab'>Card NO.</option>
+                <option value='mercedes'>Card Name</option>
+                
+              </select>
+            </div>
+          </div>
+
           <div>
             <p>{type} COLLECTION</p>
           </div>
-            <SummerCard>
+            {/* <SummerCard>
             {nftAlbumData?.map((items: any, index: number) => {
               
               return (
                 <div className='w-100 m-auto mb-4 '>
-                  {/* @ts-ignore */}
+                  
                   <SwiperBar>
-                    {/* @ts-ignore */}
+                    
                     {items?.cards.map((item: any) => {
                    
                       return (
@@ -464,20 +456,13 @@ useEffect(() => {
                             Quantity={item?.quantity}
                             holderNo={item?.noOfCardHolders}
                             MintedTime={getMintedTime(item?.cardId)}
-                            PrivateSerialNo={getPriSerialNo(item?.cardId)}
-                            // MintedTime={CheckCardDisable({WorkType:"CardDisable", cardId:item.cardId})
-                            // Serice={item.name}
-                            // CardName={item.cards.name}
-                            
-                            Disable={winerCard.length?CheckCardDisable(item?.cardId):'CardDisebal'}
-                            // Disable={"CardDisebal"}
-                            
-                            // When you pass CardDisebal this name then card is Disable
+                            PrivateSerialNo={getPriSerialNo(item?.cardId)}                            
+                            Disable={winerCard.length?CheckCardDisable(item?.cardId):'CardDisebal'}                                                      
                             cardHeader={`${item?.name}`}
                             cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
                             id={item?.cardId}
                             BackSideCard={BackSideCard}
-                            // flipCard={backCards == item.id ? true : false}
+                            
                             flipCard={backCards.includes(item?.cardId)}
                           />
                         </>
@@ -487,8 +472,50 @@ useEffect(() => {
                 </div>
               );
             })}
-          </SummerCard>
-
+          </SummerCard> */}
+          {searchedCard?.length > 0 ?
+                  <SummerCard className="mt-4">
+                      {equalPart?.map((cardPart:any) => {                    
+                        return <div className='w-100 m-auto mb-4'>                  
+                            <SwiperBar>                    
+                              {cardPart?.map((item: any) => {                      
+                                return (                        
+                                    <NftOneCard                            
+                                      DivClass={item?.type}
+                                      HeaderText={item?.type}
+                                      HeaderClass={`${item?.type}_text`}
+                                      Serie={item?.setName}
+                                      BackCardName={item?.name}
+                                      Rarity={item?.type}
+                                      Quantity={item?.quantity}
+                                      holderNo={item?.noOfCardHolders}
+                                      cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                      // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                      MintedTime={getMintedTime(item?.cardId)}
+                                      PrivateSerialNo={getPriSerialNo(item?.cardId)}                                                        
+                                      Disable={winerCard.length?CheckCardDisable(item?.cardId):'CardDisebal'}
+                                      userId={item?.setId}
+                                      CollectionType={item?.collectionName}
+                                      // Disable={"CardDisebal"}                            
+                                      cardHeader={`${item?.name}`}                                                        
+                                      id={item?.cardId}
+                                      BackSideCard={BackSideCard}
+                                      fulldata={item}                            
+                                      flipCard={backCards?.includes(item?.cardId)}
+                                    />                        
+                                );
+                              })}
+                            </SwiperBar>
+                          </div>              
+                      })}                          
+                </SummerCard> :
+                  <div  className="d-flex justify-content-center">
+                    {cardShow == true ?<p style={{
+                color: "black",
+                      fontSize:"14px"
+                    }}>Data Not Found</p>:""}
+                  </div>
+                }
 
           {/* <SummerCard>
             {CardValue.map((items, index) => {

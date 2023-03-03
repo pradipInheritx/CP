@@ -152,8 +152,9 @@ export type BoxItems = {
   GeneralSerialNo?: string | number;
   fulldata?:any;
   userId?:any;
+  CollectionType?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo,fulldata,userId}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo,fulldata,userId,CollectionType}: BoxItems) => {
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
@@ -205,12 +206,14 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       }}
       style={{
         minHeight: "330px",
+        minWidth:"250px",
       }}
     >
       <div className='front'>
         {/* First Div  */}
         <Card className={`shadow tex-center ${DivClass} ${Disable} `} style={{
-        minHeight: "318px",
+          minHeight: "318px",
+          minWidth:"250px"
       }}>
           <div>
             {" "}
@@ -245,7 +248,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       </div>
       <div className='back'>
         <CardBack className='shadow tex-center' style={{
-        minHeight: "318px",
+          minHeight: "318px",
+          minWidth:"250px",
       }}>
           <div className='d-flex justify-content-center mt-2'>
             <img src={logo} alt='' width='60px' height='60px' />
@@ -256,7 +260,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
                 ? `Private Card Serial No. : ${PrivateSerialNo || ""}`
                 : `General Card Serial No. : ${GeneralSerialNo || ""}` }
             </span>
-            <span>Collection : {type}</span>
+            <span>Collection : {CollectionType || type}</span>
             <span>Set (Serie) : {Serie}</span>
             <span>Name : {BackCardName}</span>
             <span>Rarity : {Rarity}</span>
@@ -265,8 +269,9 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             </span>
             {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
             onClick={() => {
-                navigate(`/singalCard/${type}/${id}`)            
-                setSingalCardData({...fulldata, myID:userId})
+                navigate(`/singalCard/${CollectionType || type}/${id}`)            
+                setSingalCardData({ ...fulldata, myID: userId })
+                localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
             }}> View All</u></span> : 0} </span>}
           </div>
         </CardBack>

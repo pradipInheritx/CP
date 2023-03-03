@@ -6,7 +6,6 @@ import {default as CPVote} from "./Coins/Vote";
 import {Title} from "../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import UserContext from "../Contexts/User";
-import Countdown from "react-countdown";
 
 export const colors = ["#6352e8", "white"];
 
@@ -58,11 +57,11 @@ const VoteForm = function <
   votePrice,
   votedDetails,
 }: VoteFormProps<T>) {
-  const { timeframes, login,remainingTimer } = useContext(AppContext);
+  const { timeframes, login } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  // console.log("loginbutton", !!!user && selectedTimeFrame, selectedTimeFrame);
+  console.log("loginbutton", !!!user && selectedTimeFrame, selectedTimeFrame);
   // console.log("cssDegreesdfkjsdklf", votePrice);
   
   
@@ -102,22 +101,6 @@ const VoteForm = function <
             disabled ? (
               <Tooltip id='button-tooltip' {...props}>
                 {texts.tooltip}
-                {/* @ts-ignore */}
-              {texts?.tooltip?.includes(`Well done, you've used up all your votes! Time to grab a snack and come back in`)&& <>  <Countdown date={remainingTimer} 
-                         renderer={({ hours, minutes, seconds, completed }) => {
-                        
-                          return (
-                            <span style={{fontWeight:400}}>
-                              {/* {hours < 10 ? `0${hours}` : hours}: */}
-                              
-                              {hours < 1 ? null : `${hours} :` }
-                              {minutes < 10 ? `0${minutes}` : minutes}:
-                              {seconds < 10 ? `0${seconds}` : seconds}
-                            </span>
-                          );
-                        
-                      }}
-                         />{' '}for more votes.</>}
               </Tooltip>
             ) : selectedTimeFrame == undefined ? (
               <Tooltip id='button-tooltip' {...props}>
