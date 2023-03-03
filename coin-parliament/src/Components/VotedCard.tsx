@@ -229,7 +229,7 @@ const VotedCard = ({
         />
       </div>
       <div className="mb-3 mt-4 pt-2">
-        <YourVote>{translate("Place your vote")}</YourVote>
+        {/* <YourVote>{translate("Place your vote")}</YourVote> */}
       </div>
       {/* @ts-ignore */}
       {/* <Rectangle2620 className="" style={{border:coin2===undefined? (vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime <coin1.price?'1px solid #07501a':'1px solid ##7afd67')):(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime >coin1.price?'1px solid #07501a':'1px solid ##7afd67'))):(vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')):(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')))}}>     */}
@@ -244,6 +244,10 @@ const VotedCard = ({
             </BitcoinBTCBULL24H3864490>
             <div className="my-2">
               <MyCountdown expirationTime={expirationTime} />
+            </div>
+            <div className="my-2">
+            <YourVote>YOUR VOTE IMPACT</YourVote> 
+             
             </div>
             <div>
               <RangeSilder
