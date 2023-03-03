@@ -1,7 +1,7 @@
 /** @format */
 /** @format */
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import bkgnd5 from "../assets/images/bkgnd5.png";
@@ -11,7 +11,8 @@ import bkgnd from "../assets/images/bkgnd.png";
 import TheEagle from "../assets/images/TheEagle.png";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import AppContext from "../Contexts/AppContext";
 
 
 const Card = styled.div`
@@ -21,33 +22,34 @@ const Card = styled.div`
   font-size: 14px;
   line-height: 14px;
 
-  &.Legendary {
+  &.LEGENDARY {
     background-image: url(${bkgnd4}) !important;
     color: #160133;
     border: #f5e7b5 solid 8px;
     background-color: #f5e7b5;
   }
+  
 
-  &.Rare {
+  &.RARE {
     background-image: url(${bkgnd5}) !important;
     color: #160133;
     border: #d2d2d2 solid 8px;
     background-color: #d2d2d2;
-  }
-  &.Epic {
+  }  
+  &.EPIC {
     background-image: url(${bkgnd3}) !important;
     color: #d4d0f3;
     border: #6352e8 solid 8px;
     background-color: #6352e8;
   }
-  &.UNCommon {
+  &.UNCOMMON {
     background-image: url(${bkgnd2}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
     border-radius: 0px 0px 8px 8px;
     background-color: #d4d0f3;
   }
-  &.Common {
+  &.COMMON {
     background-image: url(${bkgnd}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
@@ -56,7 +58,7 @@ const Card = styled.div`
     
   }
   &.CardDisebal{
-    opacity: 0.3;
+    opacity: 0.5;
   }
 `;
 const CardName = styled.div`
@@ -72,26 +74,26 @@ const CenterText = styled.div`
   border-radius: 0px 0px 8px 8px;
 
   text-align: center;
-  &.Legendary_text {
+  &.LEGENDARY_text {
     border: #f5e7b5 solid 6px;
     background-color: #f5e7b5;
-  }
-  &.Rare_text {
+  }  
+  &.RARE_text {
     border: #d2d2d2 solid 6px;
     background-color: #d2d2d2;
   }
 
-  &.Epic_text {
+  &.EPIC_text {
     border: #6352e8 solid 6px;
 
     background-color: #6352e8;
   }
 
-  &.UNCommon_text {
+  &.UNCOMMON_text {
     border: #d4d0f3 solid 6px;
     background-color: #d4d0f3;
   }
-  &.Common_text {
+  &.COMMON_text {
     border: #d4d0f3 solid 6px;
     background-color: #d4d0f3;
   }
@@ -139,42 +141,77 @@ export type BoxItems = {
   cardHeader?: string;
   BackSideCard?: (e: any) => void ;
   id?: string | number;
-  flipCard?:boolean|string
+  flipCard?: boolean | string;  
+  Serie?:string;
+  BackCardName?:string;
+   Rarity?:string;
+   Quantity?:string;
+  holderNo?: string | number;
+  MintedTime?: string | number;
+  PrivateSerialNo?: string | number;
+  GeneralSerialNo?: string | number;
+  fulldata?:any;
+  userId?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo,fulldata,userId}: BoxItems) => {
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
+  const { singalCardData,setSingalCardData} = useContext(AppContext);
+  console.log(cardNo, "Disable")
+  
+      let params = useParams();
+  const { type} = params;
   
 
   return (
     
     <div
       onMouseEnter={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {          
+          setFlip(!flip);
+        }
       }}
       onMouseLeave={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {                 
+          setFlip(!flip);
+        }        
       }}
       onFocus={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {          
+          setFlip(!flip);
+        }
+        // setFlip(!flip);
       }}
       onFocusCapture={() => {
-        setFlip(!flip);
+        if (Disable == "" || Disable == undefined) {          
+          setFlip(!flip);
+        }
+        // setFlip(!flip);
       }}
+      // @ts-ignore
+      
       className={`card-container ${
         flipCard == true || flip != true ? " flipped" : ""
       }`}
       onClick={() => {
-        // @ts-ignore
+        if (Disable == "" || Disable == undefined) { 
+          // @ts-ignore
         BackSideCard(id);
+        }
+        
+      }}
+      style={{
+        minHeight: "330px",
       }}
     >
       <div className='front'>
         {/* First Div  */}
-        <Card className={`shadow tex-center ${DivClass} ${Disable} `}>
+        <Card className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+        minHeight: "318px",
+      }}>
           <div>
             {" "}
             <div className='d-flex justify-content-between'>
@@ -185,7 +222,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
               <div className='' style={{ fontSize: "12px" }}>
-                <span className='px-2'>{cardNo}</span>
+                <span className='px-2 py-2'>{cardNo || ""}</span>
               </div>
             </div>
             <div>
@@ -207,27 +244,30 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         </Card>
       </div>
       <div className='back'>
-        <CardBack className='shadow tex-center'>
+        <CardBack className='shadow tex-center' style={{
+        minHeight: "318px",
+      }}>
           <div className='d-flex justify-content-center mt-2'>
             <img src={logo} alt='' width='60px' height='60px' />
           </div>
           <div className='mt-2 mb-3'>
             <span>
               {pathnameName[1] == "profile"
-                ? "Private Card Serial No."
-                : "General Card Serial No."}
+                ? `Private Card Serial No. : ${PrivateSerialNo || ""}`
+                : `General Card Serial No. : ${GeneralSerialNo || ""}` }
             </span>
-            <span>Collection</span>
-            <span>Set (Serie)</span>
-            <span>Name</span>
-            <span>Rarity</span>
+            <span>Collection : {type}</span>
+            <span>Set (Serie) : {Serie}</span>
+            <span>Name : {BackCardName}</span>
+            <span>Rarity : {Rarity}</span>
             <span>
-              {pathnameName[1] == "profile" ? "Quantity" : "Total quantity"}
+              {pathnameName[1] == "profile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {pathnameName[1] == "profile" ? <span>Minted Time</span> : <span>Number of holders: 10<u onClick={() => {
-              navigate(`/singalCard/${id}`)
-            }}
-            >  View all </u> </span>}
+            {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
+            onClick={() => {
+                navigate(`/singalCard/${type}/${id}`)            
+                setSingalCardData({...fulldata, myID:userId})
+            }}> View All</u></span> : 0} </span>}
           </div>
         </CardBack>
       </div>

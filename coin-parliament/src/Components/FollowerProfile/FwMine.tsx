@@ -21,8 +21,8 @@ import AnimationReward from "./Animation/AnimationReward";
 import NFTCard from "../../common/NFTCard/NFTCard";
 
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../firebase";
-
+import { db, functions } from "../../firebase";
+import firebase from "firebase/compat";
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
   box-shadow: 0 3px 6px #00000029;
@@ -39,7 +39,9 @@ const RewardList = styled.p`
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const FwMine = () => {
-  const { userInfo, user } = useContext(UserContext);
+  const {  user } = useContext(UserContext);
+  const{followerUserId}=useContext(AppContext)
+  const[userInfo,setUserInfo]=useState<any>()
   const { userTypes } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
@@ -48,16 +50,44 @@ const FwMine = () => {
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
   let navigate = useNavigate();
+  
   const rewardList = async () => {
     console.log("user Id called");
-    const result = await getRewardTransactions({ uid: user?.uid });
+    const result = await getRewardTransactions({ uid: followerUserId });
     // @ts-ignore
     setData(result?.data);
     console.log("user Id", result);
   };
 
+  console.log(data,"userfollowerdata")
+  const getFollowerData =()=>{
+  //   const DocumentType = firebase
+  // .firestore()
+  // .collection("votes")
+  // .doc('01Z9rbB0WNk8njwDGowp').delete().then((res)=>console.log('deleted'));
+
+// e4EgEKB7pMSU3sIBuoXb6k9pJfR2
+  const getCollectionType = firebase
+  .firestore()
+  .collection("users")
+  .where("uid", "==", followerUserId)
+getCollectionType.get()
+.then((snapshot) => {        
+// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+snapshot.docs?.map(doc=>setUserInfo(doc.data()))
+console.log('snapshot',)
+ 
+ 
+
+}).catch((error) => {
+console.log(error,"error");
+});    
+  }
+
+  console.log(userInfo,"userInfomine")
   useEffect(() => {
     rewardList();
+    getFollowerData()
   }, [rewardTimer]);
 
   if (isV1()) {
@@ -75,12 +105,7 @@ const FwMine = () => {
     <div>
       <Container >
         {/* @ts-ignore */}
-        {!!rewardTimer && (
-          <AnimationReward
-            setRewardTimer={setRewardTimer}
-            rewardTimer={rewardTimer}
-          />
-        )}
+        {!!rewardTimer && ( <AnimationReward setRewardTimer={setRewardTimer}rewardTimer={rewardTimer} />)}
 
               {/* <Player
         autoplay
@@ -97,7 +122,7 @@ const FwMine = () => {
             // onClick={() => showModal(<Upgrade/>)}
             onClick={() => navigate("/upgrade")}
           >
-            <MyBadge bg='-'>{translate("upgrade your account")}</MyBadge>
+            {/* <MyBadge bg='-'>{translate("upgrade your account")}</MyBadge> */}
           </Row>
         )}
         {width > 767 ? (

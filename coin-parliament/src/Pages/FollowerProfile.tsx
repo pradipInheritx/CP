@@ -72,11 +72,13 @@ const FollowerProfile = () => {
   let navigate = useNavigate();
   const translate = useTranslation();
 
+  
   useEffect(() => {
     setChosenByDefault(pathname);
+   
     return () => setAvatarMode(false);
   }, [pathname]);
-
+ 
   // if (!user) {
   //   return (
   //     <Navigate
@@ -87,6 +89,8 @@ const FollowerProfile = () => {
   //     />
   //   );
   // }
+
+ 
 
   const onSubmitAvatar = async (type: AvatarType) => {
     if (user?.uid) {

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import styled from "styled-components";
 import {Heart} from "../Atoms/Checkbox/Icon";
 import {BearVsBullRow, getVotes} from "../../common/models/CoinTable";
@@ -187,78 +187,33 @@ const Card = ({
 }: CoinCardProps) => {
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
-  // const [changeColor, setChangeColor] = useState<string>("blue")
-  // const [currentPrice, setCurrentPrice] = useState<any>("")
-  // const { changePrice } = useContext(CoinsContext);
-  // @ts-ignore
- 
-  // const [ changePrice,setChangePrice ] = useState<any>(0);
+  const [changeColor, setChangeColor] = useState<string>("black");
+  const [currentPrice, setCurrentPrice] = useState<any>(0)
   
-  
-//   const runForColor = () => {
-//     setInterval(() => {
-//       dispatch({ type: "CHECKPRICE",  livePrice:coins[symbol]?.price });
-//     }, 5000);
-// }
-//   // @ts-ignore
-//   const reducer = (state, action) => {  
-//     if (state != undefined) {
-//       if (state == action.livePrice) {
-//         setChangeColor("gray")
-//         setCurrentPrice(action.livePrice)
-//       }
-//       else if (state < action.livePrice) {
-//         setChangeColor("Green")
-//         setCurrentPrice(action.livePrice)
-//       }
-//       else if (state > action.livePrice) {
-//         setChangeColor("Red")
-//         setCurrentPrice(action.livePrice)
-//       }
-//     }
-//     else {
-//       setChangeColor("blue")
-//       setCurrentPrice(action.livePrice)
-//     }
-// };
+ const prevCountRef = useRef(currentPrice)
 
+  const OnlyCheckColor = () => {          
+    // setInterval(() => {            
+    if (coins[symbol]?.price == prevCountRef.current) {   
+      setChangeColor("black")
+      }
+    else if (coins[symbol]?.price > prevCountRef.current) {
+      setChangeColor("Green")            
+      }
+      else if (coins[symbol]?.price < prevCountRef.current) {
+      setChangeColor("Red")            
+      }      
+    // },5000);
+    setCurrentPrice(coins[symbol]?.price)
+  }
+  useEffect(() => {
+    prevCountRef.current = currentPrice;    
+    OnlyCheckColor()        
+  }, [
+    coins[symbol]?.price
+  ])
   
-  // const OnlyCheckColor = () => {
-  //   setInterval(() => {
-  //     if (Number(coins[symbol]?.price > currentPrice)) {
-  //     setCurrentPrice(Number(coins[symbol]?.price) + 2 )  
-  //     }
-  //     if (Number(coins[symbol]?.price < currentPrice)) {
-  //       setCurrentPrice(Number(coins[symbol]?.price) -3)
-  //     }      
-  //   }, 1000);
-  // }
-  
-// useEffect(() => {
-//   runForColor()
-//   // OnlyCheckColor()
-//   }, [])
-
-//  const [todos, dispatch] = useReducer(reducer, currentPrice);
-// setCurrentPrice((prevState: any) => {
-//         // console.log(prevState,"prevState");
-//         if (prevState != undefined ) {                
-//         console.log( "newprevState")
-//           prevState == coins[symbol]?.price ? setChangeColor("gray")
-//             : prevState < coins[symbol]?.price ? setChangeColor("Green") : setChangeColor("Red")
-//           // setCurrentPrice()
-          
-//           return Number(coins[symbol]?.price)
-//       }
-//       else {        
-//         setChangeColor("blue")
-//         return coins[symbol]?.price
-//       }
-    
-//     })
-
-  
-  // console.log(changeColor,currentPrice,"changeColor");
+  // console.log(prevCountRef.current,currentPrice,changeColor,"changeColor");
 
   let params = useParams();
   
@@ -266,8 +221,7 @@ const Card = ({
     <LighCart1
       {...{ single }}
     >
-      {/* <button onClick={()=>{setChangePrice(changePrice + 1)}}>Click me</button> */}
-      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-180px'}} onClick={
+      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{
           if(!user?.uid){
             setLoginRedirectMessage('add coin to favorites.')
@@ -313,13 +267,14 @@ const Card = ({
       </LogoContainer>
       <Group3991>
         <Price {...{ single }}
-        // style={{color:`${changeColor}`}}
+        style={{color:`${changeColor}`}}
         >{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
         <Trend1 {...{single}}>
           <Trend num={coins[symbol]?.trend || 0}/>
         </Trend1>
       </Group3991>
-      {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>}
+      {/* {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>} */}
+      
       {!single && (
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}

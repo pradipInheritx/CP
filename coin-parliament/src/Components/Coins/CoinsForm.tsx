@@ -2,7 +2,7 @@ import {Container} from "react-bootstrap";
 import React, {RefObject, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {Direction, useCanVote, voteConverter, VoteResultProps} from "../../common/models/Vote";
 import UserContext from "../../Contexts/User";
-import {addDoc, collection} from "firebase/firestore";
+import {addDoc, collection, doc, updateDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import {Coin} from "../../common/models/Coin";
 import AppContext from "../../Contexts/AppContext";
@@ -12,6 +12,7 @@ import Bear from "../icons/Bear";
 import Bull from "../icons/Bull";
 import NotificationContext, {ToastType} from "../../Contexts/Notification";
 import {voteProcedure} from "../Pairs/utils";
+import { UserProps } from "../../common/models/User";
 
 export const directions = {
   [Direction.BEAR]: {direction: "rise", name: "BEAR"},
@@ -43,20 +44,21 @@ const CoinsForm = ({
   votePrice?: any;
   votedDetails?: any;
 }) => {
-  const { user, userInfo } = useContext(UserContext);
+  const { votesLast24Hours,user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
-  const { timeframes } = useContext(AppContext);
+  const { timeframes , voteRules: { maxVotes,timeLimit }} = useContext(AppContext);
+ 
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
   const id = "BullVsBearForm";
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log("hello I am ");
+    // console.log("hello I am ");
     return window.scrollTo(0, 0);
   }, []);
-  console.log("timeframe", selectedTimeFrame);
+  // console.log("timeframe", selectedTimeFrame);
   const vote = useCallback(async () => {
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
@@ -77,10 +79,24 @@ const CoinsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 2597
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
         } as VoteResultProps
       );
-        
+      const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;
+      if(!updateExtravote){
+        const userRef = doc(db, "users", user?.uid);
+        const newUserInfo = {
+          ...(userInfo as UserProps),
+          rewardStatistics:{
+            ...userInfo?.rewardStatistics,
+
+          // @ts-ignore
+            extraVote: userInfo?.rewardStatistics?.extraVote-1,
+           
+        }
+        };
+        await updateDoc(userRef, newUserInfo);
+      }
       // showToast(translate("voted successfully"));
       // await getMessaging();
       if (user?.uid) {
