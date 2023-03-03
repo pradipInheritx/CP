@@ -254,9 +254,7 @@ const TimeframeButton = ({
     }
   };
   
-/* #d4d0f3  */
- /* #6352e8 */
- /* #3b17b7 */
+
 
   return (
     <Timeframe
