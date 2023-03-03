@@ -3,7 +3,7 @@ export const coinCapAPIEndPoint = "https://api.coincap.io/v2/rates";
 export const defaultHeader = {
   headers: {
     "Content-Type": "application/json",
-    "Accept": "application/json",
+    Accept: "application/json",
   },
 };
 export const successMessage =
@@ -34,3 +34,13 @@ export const allTradeCoinsRate = [
   "vetusdt@trades",
   "sandusdt@trades",
 ];
+
+export const getDataFromTimestampBaseURL = (symbol: string, timestamp: any) =>
+  `https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
+
+export const defaultHeaderForgetDataFromTimestamp = {
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+};
