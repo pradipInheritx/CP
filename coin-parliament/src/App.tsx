@@ -643,6 +643,21 @@ votesLast24HoursRef.get()
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
+  
+// useEffect(() => {
+//   async function removeData() {
+//     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
+//     const batch = firebase.firestore().batch();
+//     voteData.forEach(doc => {
+//       batch.delete(doc.ref);
+//     });
+//     await batch.commit();
+  
+//     console.log("User vote data deleted");
+//   }
+//   removeData()
+// }, [])
+
 
   return loader ? (
     <div

@@ -57,6 +57,8 @@ export const Other = styled(Buttons.ClickableText)`
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 // const getDatas = httpsCallable(functions, "getDatas");
 const cpviRealTimeData = httpsCallable(functions, "cpviRealTimeData");
+const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+
 const SingleCoin = () => {
   let params = useParams();
   const translate = useTranslation();
@@ -96,8 +98,21 @@ const SingleCoin = () => {
       return data.data as unknown as LineData[];
     }
   }, [params?.id, voteId, vote]);
-
+// const getResultForPendingVote=async()=>{
+//   const data = await getResultPrice({
+//     "coin1": "ETH",
+//     "coin2": "",
+//     "voteId": "3zfJPRSw0Rvo7XB1Tmfi",
+//     "voteTime": "1677833599700",
+//     "valueVotingTime": "34.50609151365605",
+//     "expiration": "1677833899700",
+//     "timestamp": "1677654796"
+// });
+     
+//       return data.data as unknown as LineData[];
+// }
   useEffect(() => {
+    // getResultForPendingVote()
     // console.log('cpvidata api called',vote.timeframe)
     if(vote.timeframe) {
       setTimeout(() => {
