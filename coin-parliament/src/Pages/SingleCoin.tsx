@@ -98,21 +98,22 @@ const SingleCoin = () => {
       return data.data as unknown as LineData[];
     }
   }, [params?.id, voteId, vote]);
+  
 // const getResultForPendingVote=async()=>{
 //   const data = await getResultPrice({
-//     "coin1": "ETH",
-//     "coin2": "",
-//     "voteId": "3zfJPRSw0Rvo7XB1Tmfi",
-//     "voteTime": "1677833599700",
-//     "valueVotingTime": "34.50609151365605",
-//     "expiration": "1677833899700",
-//     "timestamp": "1677654796"
+//     coin1: "ETH",
+//     coin2: "",
+//     voteId: 'kJEjAQa6IwmwZGS3DRMI',
+//     voteTime: '1677839924282',
+//     valueVotingTime: '1563.00',
+//     expiration: '1677839984282',
+//     timestamp: '1677839984282'
 // });
      
 //       return data.data as unknown as LineData[];
 // }
   useEffect(() => {
-    // getResultForPendingVote()
+    // 
     // console.log('cpvidata api called',vote.timeframe)
     if(vote.timeframe) {
       setTimeout(() => {
@@ -240,6 +241,7 @@ const calcVote = useCallback(async () => {
 
   useEffect(() => {
     if (voteId) {
+      // getResultForPendingVote()
       onSnapshot(doc(db, "votes", voteId), (doc) => {
 
         // if () {
