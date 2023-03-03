@@ -29,6 +29,8 @@ import { db, functions } from "../firebase";
 import firebase from "firebase/compat";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
+import { follow } from "../Contexts/CoinsContext";
+import { toFollow } from "../common/models/User";
 
 enum EventKeys {
   LOGIN = "login",
@@ -300,7 +302,12 @@ console.log(followerInfo,"followerInfo")
   //     Number(votesLast24Hours.length),
   //   "userInfo"
   // );
-console.log(followerPage , followerInfo != "" ?true:false ," checkbothcon")
+  console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
+  // const checkFollow = !toFollow(userInfo?.leader || [], followerInfo?.uid);
+
+
+
+  console.log(followerInfo,"followerInfouseid")
   return (
     <div>
       <div className='' style={{ background: "none !important" }}>
@@ -479,7 +486,14 @@ console.log(followerPage , followerInfo != "" ?true:false ," checkbothcon")
                               // htmlFor={id || name}
                               className="mt-1"
                             bsPrefix="label"
-                            onClick={()=>{setFollowUnfollow(!followUnfollow)}}
+                            onClick={ async () =>
+                            {
+                              setFollowUnfollow(!followUnfollow)
+                              // @ts-ignore
+                            //  await follow(followerInfo , user, checkFollow )
+                            }
+                            
+                            }
                             >
                               {/* {checked && iconOn}
                               {!checked && iconOff} */}
