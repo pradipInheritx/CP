@@ -4,7 +4,11 @@ import {firestore} from "firebase-admin";
 // import { rest } from "./Ajax";
 import {CPVIObj, cpviTaskCoin, cpviTaskPair} from "./CPVI";
 import moment from "moment";
-import {successMessage, webSocketBaseURL, allTradeCoinsRate} from "../consts/config";
+import {
+  successMessage,
+  webSocketBaseURL,
+  allTradeCoinsRate,
+} from "../consts/config";
 import allCoinsDecimalFixedVaues from "../consts/coins.constant.json";
 import {WebSocket} from "ws";
 import wazirXCoinsFromJson from "../consts/wazirXCoins.json";
@@ -363,6 +367,15 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
         (coin) => coin.name === latestCoinRate.data.trades[0].s
     );
     if (getCoinSymbolData) {
+      // @Delete all previous data of coin which needs to be add
+      const deleteAllPreviousDataOfCoin = await firestore()
+          .collection("latestUpdatedCoins")
+          .where("name", "==", latestCoinRate.data.trades[0].s);
+      await deleteAllPreviousDataOfCoin.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          doc.ref.delete();
+        });
+      });
       await firestore()
           .collection("latestUpdatedCoins")
           .add({

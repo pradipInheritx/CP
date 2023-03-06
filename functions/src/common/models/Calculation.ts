@@ -5,9 +5,9 @@ import {
   UserTypeProps,
   VoteStatistics,
 } from "./User";
-import { Direction, voteConverter, VoteResultProps } from "./Vote";
-import { firestore } from "firebase-admin";
-import Refer, { VoteRules } from "./Refer";
+import {Direction, voteConverter, VoteResultProps} from "./Vote";
+import {firestore} from "firebase-admin";
+import Refer, {VoteRules} from "./Refer";
 
 export type Totals = {
   total: number;
@@ -61,9 +61,9 @@ class Calculation {
   private readonly id: string;
 
   constructor(
-    voteResult: VoteResultProps,
-    price: number | number[],
-    id: string
+      voteResult: VoteResultProps,
+      price: number | number[],
+      id: string
   ) {
     console.log("voteResult =>", voteResult);
 
@@ -74,7 +74,7 @@ class Calculation {
   }
 
   async calc(
-    ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
+      ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
     console.log("calcValueExpirationTime");
     this.calcValueExpirationTime();
@@ -89,35 +89,35 @@ class Calculation {
   }
 
   async updateVote(
-    ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
+      ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
     await ref.update(this.voteResult);
   }
 
   async giveAway(): Promise<void> {
     try {
-      const { voteResult } = this;
+      const {voteResult} = this;
       const settings = await firestore()
-        .collection("settings")
-        .doc("settings")
-        .get();
+          .collection("settings")
+          .doc("settings")
+          .get();
       const ref = this.db.collection("users").doc(voteResult.userId);
       const user = (await ref.get()).data() as UserProps;
       const voteStatistics: VoteStatistics =
         user.voteStatistics || ({} as VoteStatistics);
       voteStatistics.successful += voteResult.success ? 1 : 0;
       const score = returnValue(
-        voteResult.success || 0,
+          voteResult.success || 0,
         settings.data()?.voteRules,
         user.status
       );
       await firestore()
-        .collection("votes")
-        .doc(this.id)
-        .set({ score }, { merge: true });
+          .collection("votes")
+          .doc(this.id)
+          .set({score}, {merge: true});
 
       voteStatistics.score += score;
-      await ref.set({ voteStatistics }, { merge: true });
+      await ref.set({voteStatistics}, {merge: true});
 
       if (user.parent) {
         const refer = new Refer(user.parent, "");
@@ -129,17 +129,17 @@ class Calculation {
   }
 
   async setTotals(): Promise<FirebaseFirestore.WriteResult> {
-    const { coin } = this.voteResult;
+    const {coin} = this.voteResult;
     const snapshotVotes = await firestore()
-      .collection("votes")
-      .where("coin", "==", coin)
-      .withConverter(voteConverter)
-      .get();
+        .collection("votes")
+        .where("coin", "==", coin)
+        .withConverter(voteConverter)
+        .get();
     const totals = {} as { [key: string]: Totals };
 
     snapshotVotes.docs.forEach((doc) => {
-      const { success, coin } = doc.data();
-      const currentStats = totals[coin] || { total: 0, success: 0 };
+      const {success, coin} = doc.data();
+      const currentStats = totals[coin] || {total: 0, success: 0};
 
       totals[coin] = {
         total: currentStats.total + 1,
@@ -148,9 +148,9 @@ class Calculation {
     });
 
     return await firestore()
-      .collection("stats")
-      .doc("totals")
-      .set(totals, { merge: true });
+        .collection("stats")
+        .doc("totals")
+        .set(totals, {merge: true});
   }
 
   calcValueExpirationTime(): void {
@@ -187,7 +187,7 @@ class Calculation {
   // }
 
   calcSuccess(): void {
-    const { voteResult } = this;
+    const {voteResult} = this;
     const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
 
     if (typeof this.price === "number") {
@@ -202,7 +202,7 @@ class Calculation {
 
       if (typeof startValue === "number" && typeof endValue === "number") {
         const trendChange = Number(
-          Number(((endValue || 0) / (startValue || 1) - 1) * 100).toFixed(3)
+            Number(((endValue || 0) / (startValue || 1) - 1) * 100).toFixed(3)
         );
         voteResult.trendChange = trendChange;
       }
@@ -234,10 +234,10 @@ class Calculation {
         const winner = diff[0] < diff[1] ? 1 : 0;
         const averageValue = Math.abs(diff[0] - diff[1]) * 100;
         console.info(
-          "averageValue",
-          averageValue,
-          "CPMReturnRangePercentage",
-          CPMReturnRangePercentage
+            "averageValue",
+            averageValue,
+            "CPMReturnRangePercentage",
+            CPMReturnRangePercentage
         );
         if (averageValue <= CPMReturnRangePercentage) {
           this.voteResult.success = 2;
@@ -251,42 +251,42 @@ class Calculation {
 
 const getLeaders = async () => {
   const snapshotUsers = await firestore()
-    .collection("users")
-    .withConverter(userConverter)
-    .get();
+      .collection("users")
+      .withConverter(userConverter)
+      .get();
 
   return snapshotUsers.docs
-    .map((u) => {
-      const {
-        displayName,
-        subscribers,
-        avatar,
-        voteStatistics,
-        email,
-        firstName,
-        lastName,
-        country,
-        phone,
-        leader,
-      } = u.data();
-      const { score = 0 } = voteStatistics || {};
-      return {
-        displayName: displayName,
-        email,
-        avatar,
-        userId: u.id,
-        score,
-        firstName,
-        lastName,
-        country,
-        phone,
-        subscribers: subscribers?.length || 0,
-        leaders: leader?.length || 0,
-        pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
-        totalVote: voteStatistics?.total || 0,
-      } as Leader;
-    })
-    .sort((a, b) => Number(b.score) - Number(a.score));
+      .map((u) => {
+        const {
+          displayName,
+          subscribers,
+          avatar,
+          voteStatistics,
+          email,
+          firstName,
+          lastName,
+          country,
+          phone,
+          leader,
+        } = u.data();
+        const {score = 0} = voteStatistics || {};
+        return {
+          displayName: displayName,
+          email,
+          avatar,
+          userId: u.id,
+          score,
+          firstName,
+          lastName,
+          country,
+          phone,
+          subscribers: subscribers?.length || 0,
+          leaders: leader?.length || 0,
+          pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
+          totalVote: voteStatistics?.total || 0,
+        } as Leader;
+      })
+      .sort((a, b) => Number(b.score) - Number(a.score));
 };
 
 // export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
@@ -327,19 +327,19 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let leaders = await getLeaders();
     // console.log('leaders --->', leaders);
     const userTypes = await firestore()
-      .collection("settings")
-      .doc("userTypes")
-      .withConverter(userTypeConverter)
-      .get();
+        .collection("settings")
+        .doc("userTypes")
+        .withConverter(userTypeConverter)
+        .get();
 
     const sortedUserType: UserTypeProps[] = userTypes
-      .data()
+        .data()
       ?.userTypes.sort(
         (a, b) => Number(a.share) - Number(b.share)
       ) as UserTypeProps[];
     leaders = leaders.filter(
-      (e) =>
-        (e?.totalVote || 0) >
+        (e) =>
+          (e?.totalVote || 0) >
         (sortedUserType[sortedUserType.length - 1].minVote || 20)
     );
     let updatableUser = leaders;
@@ -350,7 +350,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       const eachSplit = [];
       const remainUser = [];
       const userLengthForThisUserType = Math.floor(
-        (leaders.length * eachType.share) / 100
+          (leaders.length * eachType.share) / 100
       );
       const minimumUserRequirement = Math.floor(100 / Number(eachType.share));
       for (let i = 0; i < updatableUser.length; i++) {
@@ -364,9 +364,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             eachUser.status = eachType.name;
             leaderStatus.push(eachUser);
             await firestore()
-              .collection("users")
-              .doc(eachUser.userId)
-              .set({ status: eachType }, { merge: true });
+                .collection("users")
+                .doc(eachUser.userId)
+                .set({status: eachType}, {merge: true});
           }
         } else {
           remainUser.push(eachUser);
@@ -375,9 +375,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       updatableUser = remainUser;
     }
     return await firestore()
-      .collection("stats")
-      .doc("leaders")
-      .set({ leaders: leaderStatus }, { merge: true });
+        .collection("stats")
+        .doc("leaders")
+        .set({leaders: leaderStatus}, {merge: true});
   };
 
 export const calculateStatus: (
@@ -385,17 +385,17 @@ export const calculateStatus: (
   userTypes: UserTypeProps[]
 ) => UserTypeProps | undefined = (pct: number, userTypes: UserTypeProps[]) => {
   const sortedUserTypes = userTypes
-    .slice()
-    .sort((a, b) => Number(a.share) - Number(b.share))
-    .reduce((total, current, i, arr) => {
-      const partial = arr.slice(0, i + 1);
-      const newTotal = partial.reduce((total, current) => {
-        return Number(total) + Number(current.share);
-      }, 0);
-      const newCurrent = { ...current };
-      newCurrent.share = newTotal;
-      return [...total, newCurrent];
-    }, [] as UserTypeProps[]);
+      .slice()
+      .sort((a, b) => Number(a.share) - Number(b.share))
+      .reduce((total, current, i, arr) => {
+        const partial = arr.slice(0, i + 1);
+        const newTotal = partial.reduce((total, current) => {
+          return Number(total) + Number(current.share);
+        }, 0);
+        const newCurrent = {...current};
+        newCurrent.share = newTotal;
+        return [...total, newCurrent];
+      }, [] as UserTypeProps[]);
 
   const userType = (
     sortedUserTypes
@@ -411,8 +411,8 @@ export const calculateStatus: (
       })
       .filter((result) => result) || []
   )
-    .reverse()
-    .pop();
+      .reverse()
+      .pop();
 
   if (userType) {
     return userType;
@@ -426,9 +426,9 @@ export const getStatus: (
   currentUserType: UserTypeProps,
   prevUserType?: UserTypeProps
 ) => [boolean, UserTypeProps] = (
-  percentage: number,
-  currentUserType: UserTypeProps,
-  prevUserType?: UserTypeProps
+    percentage: number,
+    currentUserType: UserTypeProps,
+    prevUserType?: UserTypeProps
 ) => {
   return [
     percentage >= (prevUserType?.share || 0) &&
@@ -441,52 +441,52 @@ export default Calculation;
 
 export const getLeaderUsers = async (userId: string) => {
   const userObj = await firestore()
-    .collection("users")
-    .withConverter(userConverter)
-    .doc(userId)
-    .get();
+      .collection("users")
+      .withConverter(userConverter)
+      .doc(userId)
+      .get();
 
   const leaders =
     !!userObj.data()?.leader?.length &&
     (await firestore()
-      .collection("users")
-      .withConverter(userConverter)
-      .where(firestore.FieldPath.documentId(), "in", userObj.data()?.leader)
-      .get());
+        .collection("users")
+        .withConverter(userConverter)
+        .where(firestore.FieldPath.documentId(), "in", userObj.data()?.leader)
+        .get());
 
   const subscribers =
     !!userObj.data()?.subscribers?.length &&
     (await firestore()
-      .collection("users")
-      .withConverter(userConverter)
-      .where(
-        firestore.FieldPath.documentId(),
-        "in",
+        .collection("users")
+        .withConverter(userConverter)
+        .where(
+            firestore.FieldPath.documentId(),
+            "in",
         userObj.data()?.subscribers
-      )
-      .get());
+        )
+        .get());
 
   const allLeaders = await getLeaders();
 
   return {
-    leaders: leaders
-      ? leaders.docs
+    leaders: leaders ?
+      leaders.docs
           .map((leader) => {
-            const { status } = leader.data();
+            const {status} = leader.data();
             const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-            return leaderObj ? { ...leaderObj, status } : undefined;
+            return leaderObj ? {...leaderObj, status} : undefined;
           })
-          .filter((l) => l)
-      : undefined,
-    subscribers: subscribers
-      ? subscribers.docs
+          .filter((l) => l) :
+      undefined,
+    subscribers: subscribers ?
+      subscribers.docs
           .map((leader) => {
-            const { status } = leader.data();
+            const {status} = leader.data();
             const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-            return leaderObj ? { ...leaderObj, status } : undefined;
+            return leaderObj ? {...leaderObj, status} : undefined;
           })
-          .filter((l) => l)
-      : undefined,
+          .filter((l) => l) :
+      undefined,
   } as {
     leaders?: Leader[];
     subscribers?: Leader[];
@@ -495,26 +495,26 @@ export const getLeaderUsers = async (userId: string) => {
 
 export const getLeaderUsersByIds = async (userIds: string[]) => {
   const leaders = await firestore()
-    .collection("users")
-    .withConverter(userConverter)
-    .where(firestore.FieldPath.documentId(), "in", userIds)
-    .get();
+      .collection("users")
+      .withConverter(userConverter)
+      .where(firestore.FieldPath.documentId(), "in", userIds)
+      .get();
 
   const allLeaders = await getLeaders();
 
   return leaders.docs
-    .map((leader) => {
-      const { status } = leader.data();
-      const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-      return leaderObj ? { ...leaderObj, status: status?.name } : undefined;
-    })
-    .filter((l) => l);
+      .map((leader) => {
+        const {status} = leader.data();
+        const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+        return leaderObj ? {...leaderObj, status: status?.name} : undefined;
+      })
+      .filter((l) => l);
 };
 
 export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
+    funcName: string,
+    type: string,
+    error: any
 ) => {
   console.log(funcName, type, error); // We will modify later
 };
