@@ -935,12 +935,7 @@ votesLast24HoursRef.get()
                               </HomeContainer>
                             }
                           />
-                        { isMobile &&  <div id="fullscreen-modal" className="modal" style={{display:displayFullscreen}}>
-  <div className="modal-content" >
-    <p className='fullscreentext'>Click the button below to enter fullscreen mode.</p>
-    <div className='d-flex justify-content-between'><button className="btn btn-outline-primary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>handleClick()}>YES</button> <button className="btn btn-outline-secondary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>setDisplayFullscreen('none')}>No</button></div>
-  </div>
-</div>}
+                       
                           {user && firstTimeLogin && (
                             <FirstTimeLogin
                               setFirstTimeAvatarSelection={

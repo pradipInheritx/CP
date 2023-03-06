@@ -242,7 +242,7 @@ console.log(error,"error");
                   </RewardList>
                   <RewardList>
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" }} onClick={()=>navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> Card
+                    <span style={{ color: "#6352E8" }} >{item?.winData?.firstRewardCard}</span> Card
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}

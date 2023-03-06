@@ -132,33 +132,12 @@ const navigate = useNavigate();
               className='d-flex justify-content-start'
               style={{ flexBasis: "20%" }}              
             >
-              <HamburgerBut
-                // variant='link'
-                onClick={handleShow}
-                className='position-relative'
-                style={{
-                  
-                  
-                  
-                }}
-              >
-                
-                {followerPage ? <BackArrow /> :<Hamburger />}
-                {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </HamburgerBut>
+             
             </div>
           )}
           {desktop && (
             <div className='d-flex justify-content-start check'>
-              <HamburgerBut
-                // variant='link'
-                onClick={handleShow}
-                className='position-relative'
-              >
-                {/* <Hamburger /> */}
-                {followerPage ? <BackArrow/> : <Hamburger />}
-                {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </HamburgerBut>
+            
             </div>
           )}
           {children}

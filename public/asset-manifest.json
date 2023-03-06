@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.43c8ffe7.chunk.css",
-    "main.js": "/static/js/main.974a6806.chunk.js",
-    "main.js.map": "/static/js/main.974a6806.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.4a42361f.js",
-    "runtime-main.js.map": "/static/js/runtime-main.4a42361f.js.map",
+    "main.css": "/static/css/main.c248898f.chunk.css",
+    "main.js": "/static/js/main.0817847d.chunk.js",
+    "main.js.map": "/static/js/main.0817847d.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.bd562623.js",
+    "runtime-main.js.map": "/static/js/runtime-main.bd562623.js.map",
     "static/css/2.faef79cc.chunk.css": "/static/css/2.faef79cc.chunk.css",
-    "static/js/2.6452a758.chunk.js": "/static/js/2.6452a758.chunk.js",
-    "static/js/2.6452a758.chunk.js.map": "/static/js/2.6452a758.chunk.js.map",
-    "static/js/3.5a0096a0.chunk.js": "/static/js/3.5a0096a0.chunk.js",
-    "static/js/3.5a0096a0.chunk.js.map": "/static/js/3.5a0096a0.chunk.js.map",
+    "static/js/2.23669039.chunk.js": "/static/js/2.23669039.chunk.js",
+    "static/js/2.23669039.chunk.js.map": "/static/js/2.23669039.chunk.js.map",
+    "static/js/3.20701a82.chunk.js": "/static/js/3.20701a82.chunk.js",
+    "static/js/3.20701a82.chunk.js.map": "/static/js/3.20701a82.chunk.js.map",
     "index.html": "/index.html",
     "static/css/2.faef79cc.chunk.css.map": "/static/css/2.faef79cc.chunk.css.map",
-    "static/css/main.43c8ffe7.chunk.css.map": "/static/css/main.43c8ffe7.chunk.css.map",
-    "static/js/2.6452a758.chunk.js.LICENSE.txt": "/static/js/2.6452a758.chunk.js.LICENSE.txt",
+    "static/css/main.c248898f.chunk.css.map": "/static/css/main.c248898f.chunk.css.map",
+    "static/js/2.23669039.chunk.js.LICENSE.txt": "/static/js/2.23669039.chunk.js.LICENSE.txt",
     "static/media/TheAngel.png": "/static/media/TheAngel.850094f6.png",
     "static/media/TheEagle.b8e9754e.png": "/static/media/TheEagle.b8e9754e.png",
     "static/media/TheFounder.png": "/static/media/TheFounder.238df72d.png",
@@ -45,10 +45,10 @@
     "static/media/upgrade2.b9f3b923.svg": "/static/media/upgrade2.b9f3b923.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.4a42361f.js",
+    "static/js/runtime-main.bd562623.js",
     "static/css/2.faef79cc.chunk.css",
-    "static/js/2.6452a758.chunk.js",
-    "static/css/main.43c8ffe7.chunk.css",
-    "static/js/main.974a6806.chunk.js"
+    "static/js/2.23669039.chunk.js",
+    "static/css/main.c248898f.chunk.css",
+    "static/js/main.0817847d.chunk.js"
   ]
 }

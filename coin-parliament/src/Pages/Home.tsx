@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext } from "react";
-import { Image } from "react-bootstrap";
+import {  Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
 import Pairs from "../Components/Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -17,7 +17,7 @@ import Quotes from "../Components/Quotes";
 import ContentContext from "../Contexts/ContentContext";
 import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
-
+import { Buttons } from "../Components/Atoms/Button/Button";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -35,7 +35,8 @@ const TextContainer = styled.div`
 const Home = () => {
   const translate = useTranslation();
   const { user } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,  
+    setSignup } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
@@ -127,7 +128,8 @@ const Home = () => {
               {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
             </H2>
           )}
-          <Coins
+         
+          {/* <Coins
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
@@ -137,9 +139,15 @@ const Home = () => {
                 // showModal(<NotLoggedInPopup/>);
               }
             }}
-          />
+          /> */}
+          <div className='d-sx-none'> {window.screen.width > 979 &&<Buttons.Primary style={{margin:'auto', marginTop:'4rem', fontSize:'2rem', padding:'2rem'}} onClick={e=>{  setLogin(true)
+        setSignup(true)}}>BECOME A MEMBER</Buttons.Primary>}</div>
+          <div className='d-xl-none'> {window.screen.width < 979 &&<Buttons.Primary style={{margin:'auto', marginTop:'2rem', fontSize:'1rem', padding:'1rem'}} onClick={e=>{
+              setLogin(true)
+              setSignup(true)
+          }}>BECOME A MEMBER</Buttons.Primary>}</div>
         </div>
-        <div className='mb-4 mx-0'>
+        {/* <div className='mb-4 mx-0'>
           <H2
             style={{
               zIndex: 1,
@@ -177,7 +185,7 @@ const Home = () => {
           <div>
             <Quotes quotes={quotes} />
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
