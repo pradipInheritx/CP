@@ -25,6 +25,7 @@ import {
   PhoneMultiFactorGenerator,
   RecaptchaVerifier,
 } from "firebase/auth";
+import { texts } from "../LoginComponent/texts";
 
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
@@ -72,9 +73,9 @@ const Security = () => {
       const userRef = doc(db, "users", u?.uid);
       try {
         await updateDoc(userRef, newUserInfo);
-        showToast("user info was updated");
+        showToast(texts.UserInfoUpdate);
       } catch (e) {
-        showToast("user failed to be updated", ToastType.ERROR);
+        showToast(texts.UserFailUpdate, ToastType.ERROR);
       }
     }
   };
@@ -224,12 +225,11 @@ const Security = () => {
                                 )
                               ) {
                                 await updatePassword(u, newPassword);
-                                showToast("Password updated successfully.");
+                                showToast(texts.PasswordUpdatSuccess);
                                 setChangePassword(false);
                               } else {
                                 showToast(
-                                  "Password must contain at least 1 capital letter(s) (ABCDEFGHIJKLMNOPQRSTUVWXYZ). It must contain at least 1 numeric character(s) (0123456789). It must not contain more than 3 identical consecutive characters (AAA, iiii, $$$$$ ...). It must not contain your user name.",
-                                  ToastType.ERROR
+                                  texts.PasswordMustContain,ToastType.ERROR
                                 );
                               }
                             }
@@ -402,7 +402,7 @@ return multiFactor(auth?.currentUser).unenroll(options[0])
                   };
                   setUserInfo(newUserInfo);
                    onSubmit(newUserInfo);
-                  showToast("2FA security added to your account.")}).catch(err=>showToast("Wrong code please try again.", ToastType.ERROR));
+                  showToast(texts.FASecurityAdded)}).catch(err=>showToast(texts.WrongCode, ToastType.ERROR));
                 handleClose();
               } else {
                 authMFA();

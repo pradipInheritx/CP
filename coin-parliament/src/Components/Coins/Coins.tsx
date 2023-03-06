@@ -69,7 +69,7 @@ const Coins = ({
   useEffect(() => {
     setData(getFilteredData(filter, coins, totals, allCoins));
   }, [filter, coins, totals, allCoins]);
-  console.table(coins);
+ 
   useEffect(() => {
     if (filterByFav) {
       setFilter("");

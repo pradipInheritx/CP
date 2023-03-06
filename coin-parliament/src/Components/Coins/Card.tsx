@@ -187,7 +187,7 @@ const Card = ({
 }: CoinCardProps) => {
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
-  const [changeColor, setChangeColor] = useState<string>("blue");
+  const [changeColor, setChangeColor] = useState<string>("black");
   const [currentPrice, setCurrentPrice] = useState<any>(0)
   
  const prevCountRef = useRef(currentPrice)
@@ -195,7 +195,7 @@ const Card = ({
   const OnlyCheckColor = () => {          
     // setInterval(() => {            
     if (coins[symbol]?.price == prevCountRef.current) {   
-      setChangeColor("gray")
+      setChangeColor("black")
       }
     else if (coins[symbol]?.price > prevCountRef.current) {
       setChangeColor("Green")            
@@ -213,7 +213,7 @@ const Card = ({
     coins[symbol]?.price
   ])
   
-  console.log(prevCountRef.current,currentPrice,changeColor,"changeColor");
+  // console.log(prevCountRef.current,currentPrice,changeColor,"changeColor");
 
   let params = useParams();
   
@@ -221,8 +221,7 @@ const Card = ({
     <LighCart1
       {...{ single }}
     >
-      {/* <button onClick={()=>{setChangePrice(changePrice + 1)}}>Click me</button> */}
-      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-180px'}} onClick={
+      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{
           if(!user?.uid){
             setLoginRedirectMessage('add coin to favorites.')
@@ -274,7 +273,8 @@ const Card = ({
           <Trend num={coins[symbol]?.trend || 0}/>
         </Trend1>
       </Group3991>
-      {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>}
+      {/* {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>} */}
+      
       {!single && (
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}

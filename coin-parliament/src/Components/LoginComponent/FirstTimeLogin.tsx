@@ -111,6 +111,7 @@ useEffect(() => {
                   name="username"
                   required
                   value={username}
+                  // @ts-ignore
                   maxlength={10}
                   onChange={(e) => {
                     setUsername(e.target.value.replace(" ", "_").toLowerCase());
@@ -148,7 +149,7 @@ useEffect(() => {
           </div>
         </div>
       </Stack>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} style={{zIndex:9999}}>
         <Modal.Header >
           <Modal.Title>{translate(texts.firstTimeLoginModalTitle)}</Modal.Title>
         </Modal.Header>

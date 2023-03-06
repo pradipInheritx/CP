@@ -19,6 +19,7 @@ export enum Colors {
 }
 
 export type UserProps = {
+  uid?: string;
   paid?: boolean;
   displayName?: string;
   address?: string;

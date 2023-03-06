@@ -26,7 +26,12 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
-  nftAlbumData: any;
+  followerUserId?:string;
+  setFollowerUserId?:(lang: string) => void;
+  remainingTimer?:any;
+  nftAlbumData?: any;
+  singalCardData?:any,
+  setSingalCardData?:any,
   setNftAlbumData: any;
   allPariButtonTime: any;
   setAllPariButtonTime: any;

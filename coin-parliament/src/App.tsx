@@ -3,6 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
+import {texts} from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
@@ -15,6 +17,7 @@ import {
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
 import Profile, { ProfileTabs } from "./Pages/Profile";
+import FollowerProfile, { FollowerProfileTabs } from "./Pages/FollowerProfile";
 import Header from "./Components/Header";
 import NotificationContext, { ToastType } from "./Contexts/Notification";
 import CoinsContext, { Leader, Totals } from "./Contexts/CoinsContext";
@@ -114,6 +117,10 @@ import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
+import FwMine from "./Components/FollowerProfile/FwMine";
+import FwFollow from "./Components/FollowerProfile/FwFollow";
+import FwVotes from "./Components/FollowerProfile/FwVotes";
+import FwPool from "./Components/FollowerProfile/FwPool";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -128,7 +135,43 @@ function App() {
   const { width } = useWindowSize();
   const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
+  const [displayFullscreen,setDisplayFullscreen]=useState('none')
+// fullscreen mode
+useEffect(() => {
+  const modal = document.getElementById("fullscreen-modal");
+window.addEventListener('load', () => {
+  setDisplayFullscreen('block')
+});
+}, [])
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+// @ts-ignore
+const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
 
+const handleClick=()=>{
+  
+  setDisplayFullscreen('none')
+  if (isMobile && fullscreenEnabled) {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } 
+    // @ts-ignore
+    else if (elem?.webkitRequestFullscreen) {
+       // @ts-ignore
+      elem?.webkitRequestFullscreen();
+    }
+     // @ts-ignore 
+    else if (elem?.mozRequestFullScreen) {
+       // @ts-ignore
+      elem?.mozRequestFullScreen();
+    }
+     // @ts-ignore
+     else if (elem?.msRequestFullscreen) {
+        // @ts-ignore
+      elem?.msRequestFullscreen();
+    }
+  }
+}
   useEffect(() => {
       window.scrollTo({
         top: 0,
@@ -228,6 +271,7 @@ function App() {
   const [authStateChanged, setAuthStateChanged] = useState(false);
   const [allButtonTime, setAllButtonTime] = useState<any>([]);
   const [allPariButtonTime, setAllPariButtonTime] = useState<any>([]);
+  const [singalCardData, setSingalCardData] = useState<any>([]);
   const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
@@ -265,6 +309,7 @@ function App() {
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [remainingTimer,setRemainingTimer]=useState(0)
+  const [followerUserId,setFollowerUserId]=useState<string>('')
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -275,12 +320,22 @@ function App() {
     defaultUserType,
   ] as UserTypeProps[]);
 
-  const updateUser = useCallback(async (user?: User) => {
+  const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
+    console.log(user,"userInfoId");
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
+
+  
+  // const FollowerData = async(id:any) => {     
+  //   const Followerinfo =  await getFollowerInfo(id);
+  //   return Followerinfo
+  // }
+
+  // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
+  
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined) {
       setLoader(true);
@@ -316,7 +371,7 @@ function App() {
   useEffect(() => {
     setMounted(true);
   }, [firstTimeLogin]);
-console.log('extravote', votesLast24Hours)
+
   const [fcmToken, setFcmToken] = useState<string>("");
   const CPMSettingsMng = new CPMSettingsManager(CPMSettings, setCPMSettings);
   const VoteRulesMng = new VoteRulesManager(voteRules, setVoteRules);
@@ -375,7 +430,7 @@ console.log('extravote', votesLast24Hours)
   useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
       setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
-      console.log("livedata", doc.data());
+      
     });
 
     onSnapshot(
@@ -448,10 +503,10 @@ console.log('extravote', votesLast24Hours)
     });
 
     onSnapshot(doc(db, "stats", "coins"), (doc) => {
+     
       const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-      // setChangePrice(changePrice + 1)
       setCoins(newAllCoins);
-      saveCoins(newAllCoins);
+      // saveCoins(newAllCoins);
     });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
@@ -483,7 +538,7 @@ console.log('extravote', votesLast24Hours)
       );
     });
   }, [user?.uid]);
-  console.log("user", userInfo);
+  
   useEffect(() => {
     const auth = getAuth();
 
@@ -548,7 +603,7 @@ useEffect(() => {
   const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
 // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
 const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-console.log('timelimit',voteRules.timeLimit)
+
 const votesLast24HoursRef = firebase
             .firestore()
             .collection("votes")
@@ -559,18 +614,19 @@ const votesLast24HoursRef = firebase
 votesLast24HoursRef.get()
     .then((snapshot) => {
         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-        console.log('extravoteSuccess',snapshot.docs)
+      
         const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
       let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
-  console.log('votingTimer2',remaining)
+  
   setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+  
   setTimeout(() => {
     if(user?.uid){
-      console.log('votingTimer2',remaining)
+    
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-    console.log('timelimit',voteRules.timeLimit)
+   
     const votesLast24HoursRef = firebase
                 .firestore()
                 .collection("votes")
@@ -581,7 +637,7 @@ votesLast24HoursRef.get()
     votesLast24HoursRef.get()
         .then((snapshot) => {
             setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-            console.log('extravoteSuccess',snapshot.docs)
+           
         })
         .catch((error) => {
             console.log('extravoteError',error);
@@ -610,6 +666,21 @@ votesLast24HoursRef.get()
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
+  
+// useEffect(() => {
+//   async function removeData() {
+//     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
+//     const batch = firebase.firestore().batch();
+//     voteData.forEach(doc => {
+//       batch.delete(doc.ref);
+//     });
+//     await batch.commit();
+  
+//     console.log("User vote data deleted");
+//   }
+//   removeData()
+// }, [])
+
 
   return loader ? (
     <div
@@ -643,6 +714,11 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  followerUserId,
+                  setFollowerUserId,
+                  singalCardData,
+                  setSingalCardData,
+                  remainingTimer,
                   setNftAlbumData,
                   nftAlbumData,
                   setAllPariButtonTime,
@@ -700,7 +776,7 @@ votesLast24HoursRef.get()
                     );
                   } else {
                     if (u.every((uu) => uu.share)) {
-                      showToast("total share must be 100%", ToastType.ERROR);
+                      showToast(texts.Total100, ToastType.ERROR);
                     }
                   }
                 },
@@ -859,6 +935,12 @@ votesLast24HoursRef.get()
                               </HomeContainer>
                             }
                           />
+                        { isMobile &&  <div id="fullscreen-modal" className="modal" style={{display:displayFullscreen}}>
+  <div className="modal-content" >
+    <p className='fullscreentext'>Click the button below to enter fullscreen mode.</p>
+    <div className='d-flex justify-content-between'><button className="btn btn-outline-primary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>handleClick()}>YES</button> <button className="btn btn-outline-secondary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>setDisplayFullscreen('none')}>No</button></div>
+  </div>
+</div>}
                           {user && firstTimeLogin && (
                             <FirstTimeLogin
                               setFirstTimeAvatarSelection={
@@ -982,6 +1064,12 @@ votesLast24HoursRef.get()
                                             element={<Votes />}
                                           />
                                           <Route
+                                              path={ProfileTabs.share}
+                                              element={<Pool />}
+                                          />
+                                    
+
+                                          <Route
                                             path={ProfileTabs.notifications}
                                             element={<Notifications />}
                                           />
@@ -997,11 +1085,34 @@ votesLast24HoursRef.get()
                                             }
                                             element={<ProfileNftGalleryType />}
                                           />
-                                          <Route
-                                            path={ProfileTabs.share}
-                                            element={<Pool />}
-                                          />
                                         </Route>
+                                        {/* Fowller component  start*/}
+                                        <Route
+                                          path={FollowerProfileTabs.FollowerProfile}
+                                          element={<FollowerProfile />}
+                                        >
+                                          {!isV1() && (
+                                            <Route
+                                              path={FollowerProfileTabs.mine}
+                                              element={<FwMine />}
+                                            />
+                                          )}
+                                          
+                                           <Route
+                                            path={FollowerProfileTabs.followers}
+                                            element={<FwFollow />}
+                                          />
+                                          <Route
+                                            path={FollowerProfileTabs.votes}
+                                            element={<FwVotes />}
+                                          />
+                                          <Route
+                                              path={FollowerProfileTabs.share}
+                                              element={<FwPool />}
+                                          />
+                                          </Route>
+                                          
+                                        {/* Fowller component  end*/}
                                         <Route
                                           path='/upgrade'
                                           element={<UpgradePage />}

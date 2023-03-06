@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import Leaderboard from "../Components/Leaderboard";
 import NftOneCard from "./NftOneCard";
@@ -16,6 +16,8 @@ import { db } from "../firebase";
 import { functions } from "../firebase";
 import { httpsCallable } from "@firebase/functions";
 import firebase from "firebase/compat";
+import { Other } from "./SingleCoin";
+import { translate, useTranslation } from "../common/models/Dictionary";
 
 const CenterItem = styled.div`
   background-color: #f2f2f2;  
@@ -66,6 +68,9 @@ const SingalCard = () => {
   const { userTypes } = useContext(AppContext);
   const [chosen, setChosen] = useState<string | undefined>();
   
+
+// console.log(user, userInfo , leaders,"useruserInfoleaders")
+
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
     let allBackCard = backCards;
@@ -91,17 +96,47 @@ const SingalCard = () => {
 
   const [cardsDetails, setCardsDetails] = useState<any>()
   const [nftAlbumData, setNftAlbumData] = useState<any>()
+  const [followersDetails, setFollowersDetails] = useState<any>()
+  const [followersShow, setFollowersShow] = useState<any>([])
+  const { singalCardData,setSingalCardData} = useContext(AppContext);
   let params = useParams();
+  const translate = useTranslation();
   const { type, id } = params;
-  
+   const navigate = useNavigate();
 
   console.log(params,"params")
 // const claimReward = httpsCallable(functions, "claimReward");
   const getList = httpsCallable(functions, `cardHolderListing`);
 
   const getFollwersList = async(id:any) => {
-    const result = await getList({cardId:Number(id)}).then((list) => {
-      console.log(list,"alllist" );
+    const result = await getList({ cardId: Number(id) }).then((list) => {
+      // @ts-ignore
+      const FollowerList= list?.data?.map((items: any) => {                 
+        return {
+          leaders: items?.leader?.length || 0,
+          displayName:items?.displayName,
+          userId: items?.uid,
+          avatar: items?.avatar,
+          status: items?.status?.name,
+          phone:items?.phone,
+          country: items?.country,
+          score: items?.voteStatistics?.score,
+          totalVote: items?.voteStatistics?.total,
+          subscribers: 5,
+          pct: items?.voteStatistics?.successful / items?.voteStatistics?.total,
+          firstName: items?.firstName,
+          email:items?.email,
+          lastName: items?.lastName,
+        }
+      })
+setFollowersDetails(FollowerList)
+
+
+      // @ts-ignore          
+      // list?.data?.map((items: any) => {
+      //   console.log(items,"items")
+        
+      // })
     }).catch((error) => {
       console.log(`error: ${JSON.stringify(error)}`);
     });;
@@ -111,35 +146,60 @@ const SingalCard = () => {
    const getNftCard = () => {
   const getCards = firebase
             .firestore()
-            .collection("nft_gallery")
+    .collection("nft_gallery")
+  .where("collectionName", "==", type)
     getCards.get()
       .then((snapshot) => {                
        let allcollection= snapshot.docs.map((doc) => doc.data())        
-        console.log(allcollection,"allcollection")
-        allcollection?.map((card) => {
-          if (card?.collectionName==type) {
-            setNftAlbumData(card?.setDetails)
-            // card?.map(() => {
-              
-            // })
-          }          
+        console.log(allcollection, "allcollection")
+        const collectionType = allcollection?.map((allCard:any) => {
+          return allCard?.setDetails
+        })    
+        console.log(collectionType, "collectionType")
+        const oneCard = collectionType?.map((cardById: any) => {
+          // if (cardById?.cardId == id) {
+            return cardById
+             
+          // }
+          // return cardById
         })
+        console.log(oneCard, "oneCard")
+        const cardWithId = oneCard?.map((lateCard) => {
+          
+          
+        })
+        // console.log(oneCard,"oneCard")
+        // const collectionType = allcollection?.map((card) => {
+        //   if (card?.collectionName==type) {
+        //     // setNftAlbumData(card?.setDetails)
+        //     return card?.setDetails
+        //   }           
+        //   console.log(card,"card")
+        // })
+        // const Onecard = collectionType?.map((childItem:any) => {
+        //       if (childItem?.cardId == id) {
+        //         console.log(childItem,"childItem")
+        //         // return childItem
+        //       }              
+        //     })
+        //     setNftAlbumData(Onecard)
       }).catch((error) => {
         console.log(error,"error");
       })
       ;    
 }
-
-
-console.log(nftAlbumData,"nftAlbumData")
   useEffect(() => {      
     getFollwersList(id)
     getNftCard()
     // alllist= getList({cardID:id})
-  }, [params])
-
-
-
+  }, []) 
+  useEffect(() => {      
+  
+    // alllist= getList({cardID:id})
+  }, []) 
+  console.log(singalCardData,"singalCardData")
+  
+  
   return (
     <div className=''>
       <div className='h-100 '>
@@ -154,78 +214,58 @@ console.log(nftAlbumData,"nftAlbumData")
               backgroundColor: "white",  
               borderRadius: "0px 0px 87px 0px",
               boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
-            }}>
-          {/* <SummerCard  className="">            
-                      <div className=''
-                      style={{width:`${window.screen.width<767?"70%":"38%"}`}}
-                      >                
-                        <>
-                          <NftOneCard
-                            DivClass={cards.cardType}
-                            HeaderText={cards.cardType}
-                            HeaderClass={`${cards.cardType}_text`}
-                            Disable={""} // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${cards.cardHeader}`}
-                            cardNo={`${cards.cardNo}`}
-                            id={cards.id}
-                            Serie={cards?.name }
-                            BackCardName={cards?.name}
-                            Rarity={cards?.type}
-                            Quantity={cards?.quantity}
-                            holderNo={cards?.noOfCardHolders}
-                            // BackSideCard={BackSideCard}
-                            // flipCard={backCards == cards.id ? true : false}
-                            // flipCard={backCards.includes(cards.id)}
-                          />
-                        </>
-                </div>            
-            </SummerCard>      */}
-
+            }}>        
           <SummerCard>
-            {nftAlbumData?.map((items:any, index:number) => {
-              return (
+            {/* {nftAlbumData?.map((items:any, index:number) => {
+              return ( */}
                 <div className=''
                  style={{width:`${window.screen.width<767?"70%":"38%"}`}}
                 >
                   {/* @ts-ignore */}
                   
                   {/* @ts-ignore */}                  
-                    {items?.cards.map((item: any) => {
-                      if (item?.cardId == id) {
-                        return (
+                    {/* {items?.cards.map((item: any) => {
+                      if (item?.cardId == id) {                        
+                        return ( */}
                         <>
-                          <NftOneCard
-                            
-                            DivClass={item?.type}
-                            HeaderText={item?.type}
-                            HeaderClass={`${item?.type}_text`}
-                            Serie={items?.name}
-                            BackCardName={item?.name}
-                            Rarity={item?.type}
-                            Quantity={item?.quantity}
-                              holderNo={item?.noOfCardHolders}
-                              cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                          <NftOneCard                            
+                            DivClass={singalCardData?.type}
+                            HeaderText={singalCardData?.type}
+                            HeaderClass={`${singalCardData?.type}_text`}
+                            Serie={singalCardData?.name}
+                            BackCardName={singalCardData?.name}
+                            Rarity={singalCardData?.type}
+                            Quantity={singalCardData?.quantity}
+                            holderNo={singalCardData?.noOfCardHolders}
+                            cardNo={`${((singalCardData?.name)?.toUpperCase())?.slice(0, 3) + singalCardData?.myID}`}
+                            GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((singalCardData?.name)?.toUpperCase())?.slice(0, 3) + singalCardData?.myID}`}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item?.name}`}
-                            // cardNo={`${item.cardNo}`}
-                            id={item?.cardId}
+                            cardHeader={`${singalCardData?.name}`}
+                            // cardNo={`${singalCardData.cardNo}`}
+                            id={singalCardData?.cardId}
                             BackSideCard={BackSideCard}
-                            // flipCard={backCards == item.id ? true : false}
-                            flipCard={backCards?.includes(item?.cardId)}
+                            // flipCard={backCards == singalCardData.id ? true : false}
+                            flipCard={backCards?.includes(singalCardData?.cardId)}
                           />
                         </>
-                      );
+                      {/* );
                       }
                       
-                    })}
-                  
+                    })}                                */}
                 </div>
-              );
-            })}
+              {/* );
+            })} */}
+              
           </SummerCard>
-
+          <div className="d-flex justify-content-center  pt-2 pb-4">
+                    <Other onClick={() => {
+                      navigate(-1);
+                    }}>{translate("Veiw All Cards")}</Other>
+                  </div> 
+            
           </div>
+          
           <div>  
             <div>
           <div className="text-center my-3">
@@ -233,17 +273,19 @@ console.log(nftAlbumData,"nftAlbumData")
                   color: "black",
                   fontWeight: 500,
                 fontSize:"15px"
-                }}>Card Holder</span>
+                }}>Card Holders</span>                
+
           </div>   
            <div>
             <Leaderboard            
           {...{
           expanded: true,
-          leaders: leaders.filter((leader) => {
+          leaders: followersDetails?.filter((leader:any) => {
             return (
-              leader.status?.toLowerCase() === chosen?.toLowerCase() || !chosen
+              // @ts-ignore
+              leader?.status?.toLowerCase() === chosen?.toLowerCase() || !chosen
             );
-          }),
+          }),          
           userInfo,
           setChecked:setChecked(leaders, user),
         }}

@@ -373,13 +373,17 @@ useEffect(() => {
 
   const CheckCardDisable = (cardId: any) => {   
   var disableCard;
+  console.log('winCard?.firstRewardCardId',winerCard)
   let cardTrue = winerCard?.find((winCard: any, index: number) =>
   {
+
     if (winCard?.firstRewardCardId != cardId) {
+      
       disableCard = "CardDisebal"       
       return false
     }
     if (winCard?.firstRewardCardId == cardId) {
+      
       disableCard = undefined
       return true
     }
@@ -413,7 +417,7 @@ useEffect(() => {
           })
           return seriaNo    
   }
-  console.log(winerCard,"winerCard")
+ 
   return (
     <div className=''>
       <div className='h-100 '>
@@ -465,7 +469,7 @@ useEffect(() => {
                             // Serice={item.name}
                             // CardName={item.cards.name}
                             
-                            Disable={CheckCardDisable(item?.cardId)}
+                            Disable={winerCard.length?CheckCardDisable(item?.cardId):'CardDisebal'}
                             // Disable={"CardDisebal"}
                             
                             // When you pass CardDisebal this name then card is Disable

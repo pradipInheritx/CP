@@ -5,6 +5,7 @@ import Copy from "../icons/copy";
 import copy from "copy-to-clipboard";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import earn from "../../assets/images/earn.png";
+import { texts } from "../LoginComponent/texts";
 
 const PoolBox = styled.div`
   overFlow-x:hidden;
@@ -47,7 +48,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
           <h6 className="text-uppercase">{translate("INVITE FRIENDS & EARN!")}</h6>
         </div>
         <div className=" py-2 w-75   m-auto">          
-        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100"}}>When they join and upgrade the account, You will earn CPM VOTES and POINTS.</p>
+        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100"}}>When they join and upgrade the account, You will earn extra CPM, VOTES and POINTS.</p>
         </div>
         <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
           <div className="mx-3">
@@ -55,7 +56,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
               onClick={() => {
                 copy(url);
                 showToast(
-                  `${url} ${translate("copied to clipboard")}`,
+                  `${url} ${translate(texts.CopiedClipboard)}`,
                   ToastType.SUCCESS
                 );
               }}

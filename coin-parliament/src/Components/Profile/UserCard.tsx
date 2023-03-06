@@ -20,6 +20,7 @@ import Following from "../icons/Following";
 import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
 import Wallet from "../icons/Wallet";
+import { texts } from "../LoginComponent/texts";
 
 const OverlapGroup1 = styled.div`
   
@@ -147,7 +148,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                     handleSelect: (eventKey: string | null) => {
                       if (isV1() && eventKey === ProfileTabs.mine) {
                         showToast(
-                          translate("Feature will be available soon"),
+                          translate(texts.FeatureAvailableSoon),
                           ToastType.INFO
                         );
                         return;
@@ -209,7 +210,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                     handleSelect: (eventKey: string | null) => {
                       if (isV1() && eventKey === ProfileTabs.mine) {
                         showToast(
-                          translate("Feature will be available soon"),
+                          translate(texts.FeatureAvailableSoon),
                           ToastType.INFO
                         );
                         return;

@@ -14,6 +14,7 @@ import SelectTextfield from "../Forms/SelectTextfield";
 import {CountryCode} from "./utils";
 import styled from "styled-components";
 import { Input } from "../Atoms/styles";
+import { texts } from "../LoginComponent/texts";
 
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
@@ -55,9 +56,9 @@ const handleClose=()=>{
       const userRef = doc(db, "users", u?.uid);
       try {
         await updateDoc(userRef, newUserInfo);
-        showToast("user info was updated");
+        showToast(texts.UserInfoUpdate);
       } catch (e) {
-        showToast("user failed to be updated", ToastType.ERROR);
+        showToast(texts.UserFailUpdate, ToastType.ERROR);
       }
     }
   };
@@ -210,7 +211,7 @@ const handleClose=()=>{
             const auth = getAuth();
             // @ts-ignore
             updateEmail(auth?.currentUser, email).then(() => {
-              showToast("user info was updated");
+              showToast(texts.UserInfoUpdate);
               // @ts-ignore
                sendEmailVerification(auth?.currentUser);
               signOut(auth)
@@ -225,7 +226,7 @@ const handleClose=()=>{
           });
               // ...
             }).catch((error) => {
-              showToast("user failed to be updated", ToastType.ERROR);
+              showToast(texts.UserFailUpdate, ToastType.ERROR);
               // ...
             });
             // await triggerSaveUsername();
