@@ -1,3 +1,7 @@
 {
-    "URL_EXPIRE_TIME": "2h"
+    "URL_EXPIRE_TIME": "2h",
+    "USER_TYPE": {
+        "SUPER_ADMIN": 1,
+        "SUB_ADMIN": 2
+    }
 }

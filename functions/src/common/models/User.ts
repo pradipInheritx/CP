@@ -1,5 +1,7 @@
 import {firestore} from "firebase-admin";
+import { paginate, queryParams } from ".././helpers/commonFunction.helper";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
+const _ = require("lodash");
 // import {DictionaryKeys} from "./Dictionary";
 
 export type UserTypeProps = {
@@ -41,6 +43,9 @@ export type UserProps = {
   wallet?: string;
   rewardStatistics?: RewardStatistics;
   foundationName?: string;
+  createdAt?:number;
+  updatedAt?:number;
+  lastLoginTime?:number;
 };
 
 export type RewardStatistics = {
@@ -108,3 +113,102 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
     return false;
   }
 };
+
+export async function getAllUsers({ pageNumber, limit, sortBy, search }: queryParams) {
+  let array = await getAllUsersData();
+  console.log("array---",array)
+
+  // Sort by any field of users collection
+  if (sortBy) {
+    let parts = sortBy.split(':');
+    let sortByField = parts[0];
+    let sortOrder = parts[1];
+    array = _.orderBy(array, sortByField, sortOrder);
+  }
+
+  // Pagination implemented
+  if (pageNumber && limit) {
+    array = paginate(array, limit, pageNumber);
+  }
+
+  // Search on firstName, lastName or email
+  if (search) {
+    array = array.filter(( item:any ) =>{ return item.firstName == search 
+      || item.lastName == search 
+      || item.displayName == search 
+      || item.email == search
+    });
+    // array.
+    // return { data: array, totalUsers: array.length };
+  }
+
+  const finalUserResponse : any = array.map((item:any) => {
+    return {
+      firstName: item.firstName,
+      lastName: item.lastName,
+      userName: item.displayName,
+      email: item.email,
+      status: 1, // Currently keeping 1 = Active By default. will change to dynamic later
+      memberType: item.status?.name ? item.status.name : "",
+      paid: item.paid
+    }
+  })
+  console.log("finalUserResponse---",finalUserResponse, "length---",finalUserResponse.length)
+  return { data: finalUserResponse, totalUsers: finalUserResponse.length };
+}
+
+// get collection data by document id
+async function getUserDetailsById(uid: any) {
+  const collectionData = await firestore()
+      .collection("users")
+      .doc(uid)
+      .get();
+  return collectionData.data();
+}
+
+// get collection data by document id
+async function getAllUsersData() {
+  let users = await firestore().collection("users").get();
+  let array: any = [];
+  users.forEach(( item:any ) => {
+    array.push(item.data());
+  });
+  return array;
+}
+
+export const getUserDetails: (
+  uid: string
+) => { [key: string]: any } = async (uid: string) => {
+  const user:any = await getUserDetailsById(uid);
+
+  // Finding parent of the user
+  let allUsers = await getAllUsersData();
+  const parent:any = allUsers.find((item:any) => {
+    return item.children?.length && item.children.includes(uid);
+  })
+
+  return {
+    "userId": user.uid,
+    "userName": user.displayName,
+    "address": user.address,
+    "firstName": user.firstName,
+    "lastName": user.lastName,
+    "email": user.email,
+    "avatar": user.avatar,
+    "phone": user.phone,
+    "country": user.country,
+    "status": 1,
+    "parent": {
+      "id": parent.uid,
+      "username": parent.displayName,
+      "firstName": parent.firstName,
+      "lastName": parent.lastName
+    },
+    "uniqueRefferalLink": "",
+    "noOfChildren": user.children.length,
+    "foundationName": user.foundationName,
+    "registrationTime": user.createdAt,
+    "lastLoginTime": user.lastLoginTime,
+    "plan": user.paid ? "Miner Voting Pass" : "Free Voting Pass"
+  }
+}

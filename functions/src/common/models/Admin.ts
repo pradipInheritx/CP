@@ -1,13 +1,7 @@
 import {firestore} from "firebase-admin";
-import { paginate } from ".././helpers/commonFunction.helper"
+import { paginate, queryParams } from ".././helpers/commonFunction.helper";
 const _ = require("lodash");
 
-export type subAdminListingProps = { 
-    pageNumber: number; 
-    limit: number; 
-    sortBy: string; 
-    search:string
-};
 import * as functions from "firebase-functions";
 import moment from 'moment';
 
@@ -33,7 +27,7 @@ export type adminProps = {
 };
 
 // GET List of all Sub-Admins
-export async function getAllSubAdmins({ pageNumber, limit, sortBy, search }: subAdminListingProps) {
+export async function getAllSubAdmins({ pageNumber, limit, sortBy, search }: queryParams) {
     let query = firestore().collection("admin").where("user_type", "==", constants.USER_TYPE['SUB_ADMIN']);
     let subAdmins = await query.get();
     let array: any = [];

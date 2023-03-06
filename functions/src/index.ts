@@ -15,12 +15,13 @@ import {
   userConverter,
   UserProps,
   UserTypeProps,
+  getAllUsers,
+  getUserDetails
 } from "./common/models/User";
 import {
   adminProps,
   admin_login,
   generateAuthTokens,
-  subAdminListingProps,
   getAllSubAdmins
 } from "./common/models/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
@@ -86,7 +87,7 @@ import {
 import sgMail from "@sendgrid/mail";
 // import {ws} from "./common/models/Ajax";
 import { AdminSignupTemplate }  from "./common/emailTemplates/adminSignupTemplate"
-import { hashPassword } from "./common/helpers/commonFunction.helper"
+import { hashPassword, queryParams } from "./common/helpers/commonFunction.helper"
 import { sendEmail } from "./common/services/emailServices"
 
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
@@ -192,6 +193,9 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    createdAt: parseInt(moment().format('X')),
+    updatedAt:  parseInt(moment().format('X')),
+    lastLoginTime: user.lastLoginTime
   };
 
   try {
@@ -257,7 +261,7 @@ exports.createAdminUser = functions.https.onCall(async (data) => {
 // GET all sub admins
 exports.getAllSubAdmins = functions.https.onCall(async (data) => {
   console.log("***GET all Sub-Admins***");
-  const { pageNumber, limit, sortBy, search } = data as subAdminListingProps;
+  const { pageNumber, limit, sortBy, search } = data as queryParams;
 
   const subAdminList : any = await getAllSubAdmins({ pageNumber, limit, sortBy, search });
   console.log("----subAdminList:",subAdminList)
@@ -280,6 +284,32 @@ exports.get_auth_tokens = functions.https.onCall(async (data) => {
   return response;
 });
 
+// GET All Users fronm users collection in ADMIN Panel(pagination/sorting/searching implemented)
+exports.userListing = functions.https.onCall(async (data) => {
+  console.log("***GET all Users***");
+  const { pageNumber, limit, sortBy, search } = data as queryParams;
+  const users : any = await getAllUsers({ pageNumber, limit, sortBy, search });
+  console.log("----users:",users)
+  if(!users || !users.data.length || !users.totalUsers) {
+    throw new functions.https.HttpsError("not-found", "No Users Found");
+  }
+  return { 
+    data: users.data, 
+    total_no_of_users:users.totalUsers 
+  };
+});
+
+// GET user details for ADMIN Panel
+exports.getUserDetails = functions.https.onCall(async (data) => {
+  console.log("***GET User Details***");
+  const { uid } = data as { uid: string };
+  const user = await getUserDetails(uid);
+  console.log("user --->", user);
+  if(!user) {
+    throw new functions.https.HttpsError("not-found", "User Details Not Found");
+  }
+  return user;
+});
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };

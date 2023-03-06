@@ -3,7 +3,12 @@ import moment from 'moment';
 
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
-
+export type queryParams = { 
+    pageNumber: number; 
+    limit: number; 
+    sortBy: string; 
+    search: string
+};
 export async function hashPassword(password: any) {
     let hashPwd = await bcrypt.hash(password,10);
 
