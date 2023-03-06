@@ -163,18 +163,18 @@ const FollowerProfile = () => {
                               icon: <Share />,
                               eventKey: FollowerProfileTabs.share,
                             },
-                            // {
-                            //   component: <></>,
-                            //   label: FollowerProfileTabs.votes,
-                            //   icon: <Votes />,
-                            //   eventKey: FollowerProfileTabs.votes,
-                            // },
-                            // {
-                            //   component: <></>,
-                            //   label: FollowerProfileTabs.ProfileNftGallery,
-                            //   icon: <Gallery />,
-                            //   eventKey: FollowerProfileTabs.ProfileNftGallery,
-                            // },
+                            {
+                              component: <></>,
+                              label: FollowerProfileTabs.votes,
+                              icon: <Votes />,
+                              eventKey: FollowerProfileTabs.votes,
+                            },
+                            {
+                              component: <></>,
+                              label: FollowerProfileTabs.ProfileNftGallery,
+                              icon: <Gallery />,
+                              eventKey: FollowerProfileTabs.ProfileNftGallery,
+                            },
                             
                             
                             {

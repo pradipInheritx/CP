@@ -168,18 +168,18 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         icon: <Share />,
                         eventKey: ProfileTabs.share,
                       },
-                      // {
-                      //   component: <></>,
-                      //   label: ProfileTabs.votes,
-                      //   icon: <Votes />,
-                      //   eventKey: ProfileTabs.votes,
-                      // },
-                      // {
-                      //   component: <></>,
-                      //   label: ProfileTabs.ProfileNftGallery,
-                      //   icon: <Gallery />,
-                      //   eventKey: ProfileTabs.ProfileNftGallery,
-                      // },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.votes,
+                        icon: <Votes />,
+                        eventKey: ProfileTabs.votes,
+                      },
+                      {
+                        component: <></>,
+                        label: ProfileTabs.ProfileNftGallery,
+                        icon: <Gallery />,
+                        eventKey: ProfileTabs.ProfileNftGallery,
+                      },
                       
                       
                       {

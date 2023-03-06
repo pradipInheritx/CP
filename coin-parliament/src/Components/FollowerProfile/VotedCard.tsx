@@ -30,6 +30,20 @@ const ProfilePairVote = styled.div`
   opacity: 1;
 `;
 
+interface Rdiv {
+  // submit: boolean,
+  backcolor: string
+}
+const RoundDiv = styled.div<Rdiv>`
+width:16px ;
+height:16px;
+border-radius:50px;
+border:1px solid red;
+background:${Props => Props.backcolor};
+`;
+
+
+
 const SmText = styled.div`
   font-size: 10px;
   line-height: 15px;
@@ -335,6 +349,13 @@ let votetime= a.diff(b)
                 {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 }  </>
                 } */}
+
+                {/* // #D4D0F3
+// #6352E8
+// #3712B3 */}
+                <RoundDiv backcolor={vote.score ===1 ?"#3712B3": vote.score ===0.5 ? "#6352E8":vote.score ===0.25?"#D4D0F3":""}>
+
+                </RoundDiv>
               { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
               { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
               { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
