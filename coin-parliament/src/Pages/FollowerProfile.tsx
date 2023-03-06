@@ -39,7 +39,7 @@ export enum FollowerProfileTabs {
   votes = "votes",
   notifications = "notifications",
   ProfileNftGallery = "Album",
-  ProfileNftGalleryType = "Album/:name",
+  ProfileNftGalleryType = "Album/:type",
   share = "share",
 }
 

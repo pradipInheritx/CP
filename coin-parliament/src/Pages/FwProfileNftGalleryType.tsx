@@ -17,6 +17,7 @@ import { db } from "../firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import firebase from "firebase/compat";
 import UserContext from "../Contexts/User";
+import AppContext from "../Contexts/AppContext";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -84,7 +85,7 @@ width:100%;
 `;
 
 
-const ProfileNftGalleryType = () => {
+const FwProfileNftGalleryType = () => {
   const { user } = useContext(UserContext);
   
   const [menuItem, setMenuItem] = useState([
@@ -105,6 +106,7 @@ const ProfileNftGalleryType = () => {
     { cardType: "Legendary" },
   ]);
   const [filterIndex, setfilterIndex] = useState(0);
+  const{followerUserId}=useContext(AppContext)
   const [backCards, setBackCards] = useState<any>([]);
   const [winerCard, setWinerCard] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState<any>('')
@@ -114,36 +116,10 @@ const ProfileNftGalleryType = () => {
   const [allCardArray,setAllCardArray]=useState<any>([])
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
-
-
   
-//   useEffect(() => {
-//   //  onSnapshot(doc(db, "nft_gallery","WINTER"), (doc) => {
-//   //     // setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
-//   //     console.log("nft_gallery", doc.data());
-//   //   });
-//   // getNftCard();
-// }, [])
-  
-  // useEffect(() => {
-  //   HandleFilter(filterIndex);
-  // }, [filterIndex]);
 
-  // const HandleFilter = (filterIndex?: number | string | undefined) => {
-  //   var allCard: any = cards;
-  //   if (filterIndex && filterIndex > 0) {
-  //     allCard.filter((item: any, ind: number) => {
-  //       if (ind + 1 == filterIndex) {
-  //         var cardItem: any = [item];
-  //         setCardValue(cardItem);
-  //       }
-  //     });
-  //   } else {
-  //     setCardValue(allCard);
-  //   }
-  // };
 
-  
+
   const BackSideCard = (value: string | number) => {
     let allBackCard = backCards;
     // @ts-ignore
@@ -165,7 +141,8 @@ const ProfileNftGalleryType = () => {
 
       let params = useParams();
   const { type } = params;
-console.log(type,"type")
+
+console.log(params,"checktype")
   const [nftAlbumData,setNftAlbumData] = useState<any>();
 
      const getNftCard = () => {
@@ -190,6 +167,7 @@ console.log(type,"type")
   
   const getAllRewardsOfUser = async (uid: string) => {
   // console.log("getAllRewardsOfUser")
+    console.log(followerUserId,"checkfollowerUserId23")
   var winCards: {
     firstRewardCard: string,
     firstRewardCardCollection: string,
@@ -203,13 +181,14 @@ console.log(type,"type")
    await firebase
   .firestore()
     .collection("reward_transactions")
-    .where("user", "==", uid)
+    .where("user", "==", uid && uid )
     .get()
     .then((doc:any) => {
       // console.log("getAllRewardsOfUser",doc)
       doc.forEach((cards:any,index:number) => {
         // console.log("getAllRewardsOfUser -- ",cards.data())
         // winCards.push(cards.data().)
+        // console.log({...cards.data().winData},"checkfollowerUserId2323")
         winCards.push({...cards.data().winData ,...cards.data().transactionTime})
         
       })
@@ -217,6 +196,7 @@ console.log(type,"type")
     .catch((error:any) => {
       console.log("getAllRewardsOfUser Error", error)
     })  
+    console.log(winCards,"checkfollowerUserId2323")
    setWinerCard(winCards)
   }
   
@@ -288,9 +268,9 @@ console.log(error,"error");
 
 useEffect(() => {
   getNftCard()
-   getAllRewardsOfUser(`${user?.uid}`)
+   getAllRewardsOfUser(`${followerUserId && followerUserId}`)
   
-}, [params])
+}, [params,followerUserId])
   
   
   useEffect(() => {  
@@ -304,7 +284,8 @@ useEffect(() => {
   onSelectType(cardType)
 }, [allCard])
   
-
+// console.log(followerUserId,"followerUserId")
+  console.log(followerUserId,"checkfollowerUserId")
   const CheckCardDisable = (cardId: any) => {   
   var disableCard;
   console.log('winCard?.firstRewardCardId',winerCard)
@@ -371,8 +352,9 @@ useEffect(() => {
   }
   },[searchedCard])
  
-console.log(searchedCard,"searchedCard")
-console.log(equalPart,"setEqualPart")
+// console.log(searchedCard,"searchedCard")
+// console.log(equalPart,"setEqualPart")
+console.log(searchedCard,"winerCard")
 
   return (
     <div className=''>
@@ -561,4 +543,4 @@ console.log(equalPart,"setEqualPart")
   );
 };
 
-export default ProfileNftGalleryType;
+export default FwProfileNftGalleryType;

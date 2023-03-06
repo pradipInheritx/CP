@@ -121,6 +121,8 @@ import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
+import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
+import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -1089,6 +1091,18 @@ votesLast24HoursRef.get()
                                           <Route
                                               path={FollowerProfileTabs.share}
                                               element={<FwPool />}
+                                          />
+                                          <Route
+                                            path={
+                                              FollowerProfileTabs.ProfileNftGallery
+                                            }
+                                            element={<FwProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              FollowerProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<FwProfileNftGalleryType />}
                                           />
                                           </Route>
                                           
