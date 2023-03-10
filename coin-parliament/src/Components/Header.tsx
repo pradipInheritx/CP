@@ -1,6 +1,6 @@
 /** @format */
 
-import { Container, Form, Navbar } from "react-bootstrap";
+import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
@@ -31,6 +31,7 @@ import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
 import { follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
+import "./styles.css";
 
 enum EventKeys {
   LOGIN = "login",
@@ -65,7 +66,7 @@ export const Title = styled.div`
 export const HeaderCenter = styled.div`
   background: white;
   color: #3712B3;
-  width: 55%;
+  width: 58%;
   height: 35px;
   margin: auto;
   margin-top: 10px;
@@ -166,42 +167,42 @@ const Header = ({
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
   const[followerInfo,setFollowerInfo]=useState<any>()
-  const[followUnfollow,setFollowUnfollow]=useState<any>(false)
+  const [followUnfollow, setFollowUnfollow] = useState<any>(false)
+  const [show, setShow] = useState(false);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
+  const pageTrue = urlName.includes("pairs" || "coins")
   // const urlname = location.pathname;
 
   
   const getFollowerData =()=>{
   
-// e4EgEKB7pMSU3sIBuoXb6k9pJfR2  
-    // const DocumentType = firebase
-    //   .firestore()
-    //   .collection("votes")
-    //   .doc('01Z9rbB0WNk8njwDGowp').delete().then((res)=>console.log('deleted'));
       const getCollectionType = firebase
           .firestore()
           .collection("users")
           .where("uid", "==", followerUserId)
         getCollectionType.get()
-        .then((snapshot) => {        
-        // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+        .then((snapshot) => {          
         snapshot.docs?.map(doc=>setFollowerInfo(doc.data()))
-        // console.log('snapshot',snapshot.docs)
         }).catch((error) => {
         console.log(error,"error");
         });    
   }
   
   useEffect(() => {
-  getFollowerData()  
+    getFollowerData()  
   }, [followerUserId])
   
-// setTimeout(() => {
-//     getFollowerData()  
-//   }, 2000);
-
-console.log(followerInfo,"followerInfo")
+  useEffect(() => {
+    if (voteNumber == 0 && votingTimer  && pageTrue) {
+      console.log("checkbuthurlName")
+      setShow(true) 
+    } else {
+      
+      setShow(false) 
+    }
+    
+  },[voteNumber,votingTimer,urlName])
 
   useEffect(() => {
   
@@ -218,9 +219,7 @@ console.log(followerInfo,"followerInfo")
     const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
     // @ts-ignore
     setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
-    // @ts-ignore
-    console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
-    // @ts-ignore
+
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
   const onSelect = (eventKey: string | null) => {
@@ -237,8 +236,7 @@ console.log(followerInfo,"followerInfo")
         break;
       case EventKeys.LOGOUT:
         signOut(auth)
-          .then((res) => {
-            console.log("logout", res);
+          .then((res) => {          
             Logout(setUser);
           })
           .catch((error) => {
@@ -294,20 +292,9 @@ console.log(followerInfo,"followerInfo")
 
     setMenuOpen(false);
   };
-  // @ts-ignore
-  // console.log(
-  //   Number(voteRules?.maxVotes) +
-  //     // @ts-ignore
-  //     Number(userInfo?.rewardStatistics?.extraVote) -
-  //     Number(votesLast24Hours.length),
-  //   "userInfo"
-  // );
-  console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
-  // const checkFollow = !toFollow(userInfo?.leader || [], followerInfo?.uid);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-
-
-  console.log(followerInfo,"followerInfouseid")
   return (
     <div>
       <div className='' style={{ background: "none !important" }}>
@@ -398,13 +385,7 @@ console.log(followerInfo,"followerInfo")
               label: "Signup",
             },
           ].map((i) => (i ? i : undefined))}
-        >
-          {/* {!desktop && (
-        <Title style={{ width: pathname === "/" ? "50%" : "50%" }}>
-          {mounted ? title : ""}
-        </Title>
-      )} */}
-
+        >        
           {/* {for center modile size} */}
 
           {!desktop && (
@@ -455,12 +436,13 @@ console.log(followerInfo,"followerInfo")
                                 <span className="" style={{ marginLeft: '20px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
                                   renderer={({ hours, minutes, seconds, completed }) => {
                                     return (
-                                      <span style={{ color: '#6352e8', fontSize: '14px', fontWeight: 400 }}>
-                                        {Number(voteRules?.maxVotes)} votes in {' '}
-                                        {hours < 1 ? null : `${hours} :`}
+                                      <span style={{color:'#6352e8',fontSize:'8px',fontWeight:100}}>                            
+                                        Wait {" "}
+                                        {hours < 1 ? null : `${hours} :` }
                                         {minutes < 10 ? `0${minutes}` : minutes}:
-                                        {seconds < 10 ? `0${seconds}` : seconds}
-                               
+                                        {seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes 
+                                        {/* <br /> */}
+                                         {/* or buy extra votes now. */}
                                       </span>
                                     );
                           
@@ -586,10 +568,11 @@ console.log(followerInfo,"followerInfo")
                           return (
                             <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
                               {/* {hours < 10 ? `0${hours}` : hours}: */}
-                              {Number(voteRules?.maxVotes)} votes in {' '}
+                              Wait {" "}
                               {hours < 1 ? null : `${hours} :` }
                               {minutes < 10 ? `0${minutes}` : minutes}:
-                              {seconds < 10 ? `0${seconds}` : seconds}
+                              {seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes 
+                              <p style={{marginLeft:'30px'}}> or buy extra votes now.</p>
                             </span>
                           );
                         
@@ -668,10 +651,51 @@ console.log(followerInfo,"followerInfo")
             <div style={{ width: "25%" }}>&nbsp;</div>
           )}
           {/* {desktop && <Title style={{flexBasis: "50%", textAlign: "center"}}>{mounted ? title : ""}</Title>} */}
+          <div>
+            {/* <Button variant="primary" onClick={handleShow}>
+        Launch static backdrop modal
+      </Button> */}                            
+            <Modal
+        dialogClassName="modal-35w"
+        show={show}
+                onHide={handleClose}
+        aria-labelledby="contained-modal-title-vcenter"
+              centered
+              style={{ opacity: 1 }}
+              className="borderColor"
+              // animation={false}
+      >
+        <Modal.Header closeButton>
+          
+        </Modal.Header>
+              <Modal.Body>
+                <p> Out of votes? </p> <Link to="/votingbooster" onClick={() => {                  
+                  // navigate("/votingbooster")
+                  setShow(false)
+                }} >Buy</Link> extra votes now or wait, <span>
+                   {/* @ts-ignore */}
+                  <Countdown date={votingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {                        
+                          return (
+                            <span >
+                              {/* {hours < 10 ? `0${hours}` : hours}: */}
+                              {Number(voteRules?.maxVotes)} votes in {' '}
+                              {hours < 1 ? null : `${hours} :` }
+                              {minutes < 10 ? `0${minutes}` : minutes}:
+                              {seconds < 10 ? `0${seconds}` : seconds}
+                            </span>
+                          );
+                        
+                      }}
+                      /></span>
+              </Modal.Body>                    
+      </Modal>
+          </div>
         </MenuContainer>
       </div>
     </div>
   );
 };
+
 
 export default Header;

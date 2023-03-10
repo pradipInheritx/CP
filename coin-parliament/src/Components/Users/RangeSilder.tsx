@@ -27,14 +27,15 @@ function RangeSilder(
 
 {
 
-  console.log(vote?.valueVotingTime, "chekcvote")
+  console.log(vote, "chekcvote")
   
   const [persentValue, setPersentValue] = useState<any>(0)
 
 const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
      if (symbol2 !== undefined) {
-         let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+       
         // @ts-ignore
       let bothCurrentPrice = [...vote?.valueVotingTime];
     //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
@@ -84,7 +85,9 @@ const getBorderColor = () => {
   console.log(vote,"CheckvalueVotingTime")
   
   useEffect(() => { 
-    getBorderColor()
+    
+      getBorderColor()
+    
   }, [coins[symbol1]?.price ,coins[symbol2]?.price])
   
   return (
