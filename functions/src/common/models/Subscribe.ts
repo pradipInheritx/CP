@@ -1,36 +1,36 @@
-import { firestore, messaging } from "firebase-admin";
-import { Direction, VoteResultProps } from "./Vote";
-import { userConverter } from "./User";
-import { sendNotification } from "./Notification";
+import {firestore, messaging} from "firebase-admin";
+import {Direction, VoteResultProps} from "./Vote";
+import {userConverter} from "./User";
+import {sendNotification} from "./Notification";
 
 export const subscribeToTopic: (token: string, userId: string) => void = (
-  token: string,
-  userId: string
+    token: string,
+    userId: string
 ) => {
   messaging()
-    .subscribeToTopic([token], userId)
-    .then(void 0)
-    .catch((error) => {
-      console.log("Error subscribing to topic:", error);
-    });
+      .subscribeToTopic([token], userId)
+      .then(void 0)
+      .catch((error) => {
+        console.log("Error subscribing to topic:", error);
+      });
 };
 
 export const unsubscribeToTopic: (token: string, userId: string) => void = (
-  token: string,
-  userId: string
+    token: string,
+    userId: string
 ) => {
   messaging()
-    .unsubscribeFromTopic([token], userId)
-    .then((response) => {
-      console.log("Successfully unsubscribed from topic:", response);
-    })
-    .catch((error) => {
-      console.log("Error unsubscribing from topic:", error);
-    });
+      .unsubscribeFromTopic([token], userId)
+      .then((response) => {
+        console.log("Successfully unsubscribed from topic:", response);
+      })
+      .catch((error) => {
+        console.log("Error unsubscribing from topic:", error);
+      });
 };
 
 export const sendToTopic: (vote: VoteResultProps) => Promise<void> = async (
-  vote: VoteResultProps
+    vote: VoteResultProps
 ) => {
   const topic = vote.userId;
 
@@ -67,13 +67,13 @@ export const sendToTopic: (vote: VoteResultProps) => Promise<void> = async (
 };
 
 export const sendToTokens: (vote: VoteResultProps) => Promise<void> = async (
-  vote: VoteResultProps
+    vote: VoteResultProps
 ) => {
   const leader = vote.userId;
   const userRef = firestore()
-    .collection("users")
-    .doc(leader)
-    .withConverter(userConverter);
+      .collection("users")
+      .doc(leader)
+      .withConverter(userConverter);
 
   const userProps = await userRef.get();
 
@@ -84,23 +84,23 @@ export const sendToTokens: (vote: VoteResultProps) => Promise<void> = async (
     return;
   }
   const subscribers = await firestore()
-    .collection("users")
-    .where(
-      firestore.FieldPath.documentId(),
-      "in",
+      .collection("users")
+      .where(
+          firestore.FieldPath.documentId(),
+          "in",
       userProps.data()?.subscribers
-    )
-    .withConverter(userConverter)
-    .get();
+      )
+      .withConverter(userConverter)
+      .get();
 
   console.log(
-    "going to send to subscribers:",
-    subscribers.docs.map((s) => s.data().email)
+      "going to send to subscribers:",
+      subscribers.docs.map((s) => s.data().email)
   );
 
   const tokens: string[] = subscribers.docs
-    .map((doc) => doc.data().token as string)
-    .filter((t) => t);
+      .map((doc) => doc.data().token as string)
+      .filter((t) => t);
 
   const name = userProps.data()?.displayName || userProps.data()?.email;
 

@@ -1,4 +1,4 @@
-import { firestore, messaging } from "firebase-admin";
+import {firestore, messaging} from "firebase-admin";
 
 export const sendNotification = async ({
   token,
