@@ -156,44 +156,44 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       navigate("./" + eventKey, { replace: true });
                     },
                     tabs: [
-                      {
-                        component: <></>,
-                        label: "Mining",
-                        icon: <Mine />,
-                        eventKey: ProfileTabs.mine,
-                      },
+                      // {
+                      //   component: <></>,
+                      //   label: "Mining",
+                      //   icon: <Mine />,
+                      //   eventKey: ProfileTabs.mine,
+                      // },
                       {
                         component: <></>,
                         label: "Pool Mining",
                         icon: <Share />,
                         eventKey: ProfileTabs.share,
                       },
-                      {
-                        component: <></>,
-                        label: ProfileTabs.votes,
-                        icon: <Votes />,
-                        eventKey: ProfileTabs.votes,
-                      },
-                      {
-                        component: <></>,
-                        label: ProfileTabs.ProfileNftGallery,
-                        icon: <Gallery />,
-                        eventKey: ProfileTabs.ProfileNftGallery,
-                      },
+                      // {
+                      //   component: <></>,
+                      //   label: ProfileTabs.votes,
+                      //   icon: <Votes />,
+                      //   eventKey: ProfileTabs.votes,
+                      // },
+                      // {
+                      //   component: <></>,
+                      //   label: ProfileTabs.ProfileNftGallery,
+                      //   icon: <Gallery />,
+                      //   eventKey: ProfileTabs.ProfileNftGallery,
+                      // },
                       
                       
-                      {
-                        component: <></>,
-                        label: ProfileTabs.followers,
-                        icon: <Following />,
-                        eventKey: ProfileTabs.followers,
-                      },
-                      {
-                        component: <></>,
-                        label: ProfileTabs.notifications,
-                        icon: <Notifications />,
-                        eventKey: ProfileTabs.notifications,
-                      },
+                      // {
+                      //   component: <></>,
+                      //   label: ProfileTabs.followers,
+                      //   icon: <Following />,
+                      //   eventKey: ProfileTabs.followers,
+                      // },
+                      // {
+                      //   component: <></>,
+                      //   label: ProfileTabs.notifications,
+                      //   icon: <Notifications />,
+                      //   eventKey: ProfileTabs.notifications,
+                      // },
                       
                     ],
                   }}

@@ -14,7 +14,7 @@ const Pool = () => {
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
   );
-console.log('referal user',children)
+// console.log('referal user',children)
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
   }, [userInfo?.children]);
@@ -35,10 +35,10 @@ console.log('referal user',children)
             cpm={childrenActivity || 0}
           />
         </div>
-        <div>
+        <div className='pb-2'>
           {children.map((child) => {
             return (
-              <div className="mb-2">
+              <div className="mb-2" key={child?.userId}>
                 <PoolMiningCard user={child} />
               </div>
             );

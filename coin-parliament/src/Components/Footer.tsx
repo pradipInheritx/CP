@@ -54,11 +54,11 @@ const Footer = () => {
             style={{margin:'5px', marginTop:'-3px'}}
             height='17'
             src={ process.env.PUBLIC_URL + '/images/icons/facebook.svg'}
-            // onClick={() =>
-            //   window.open(
-            //     "https://www.facebook.com/CoinParliament","_blank"
-            //   )
-            // }
+            onClick={() =>
+              window.open(
+                "https://www.facebook.com/CoinParliament","_blank"
+              )
+            }
             />
             {/* <img
             style={{marginTop:'-5px'}}
@@ -111,12 +111,12 @@ const Footer = () => {
       <p style={{marginTop:'10px',marginBottom:'5px'}}>
        
        <span><Link
-         to="/privacy">Privacy {' '} </Link>
+         to="/privacy">Privacy Policy</Link>
     </span>
-    <span>
+    {/* <span>
     <Link
          to="/privacy">Terms & Conditions</Link>
-         </span>
+         </span> */}
      </p>
  
 

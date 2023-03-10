@@ -125,6 +125,26 @@ import FwPool from "./Components/FollowerProfile/FwPool";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
+// let userData=false
+// const request = indexedDB.open("firebaseLocalStorageDb");
+// request.onerror = (event) => {
+//   console.error("Why didn't you allow my web app to use IndexedDB?!");
+// };
+// request.onsuccess = (event) => {
+// //  @ts-ignore
+ 
+//   const db = event?.target?.result
+//   db
+//   .transaction("firebaseLocalStorage")
+//   .objectStore("firebaseLocalStorage").getAll().onsuccess = (event:any) => {
+//     userData=event.target.result[0]?.value?.uid
+//     console.log('Got all customers:', event.target.result[0]?.value?.uid);
+   
+//   }
+// //   .get("444-44-4444").onsuccess = (event) => {
+// //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
+// // };
+// };
 
 function App() {
   const location = useLocation();
@@ -136,6 +156,7 @@ function App() {
   const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
   const [displayFullscreen,setDisplayFullscreen]=useState('none')
+  
 // fullscreen mode
 useEffect(() => {
   const modal = document.getElementById("fullscreen-modal");
@@ -239,6 +260,7 @@ const handleClick=()=>{
       } = message.data["firebase-messaging-msg-data"] as {
         notification: { body: string; title: string };
       };
+      
       showToast(
         <div>
           <h5>{title}</h5>
@@ -319,10 +341,23 @@ const handleClick=()=>{
   const [userTypes, setUserTypes] = useState<UserTypeProps[]>([
     defaultUserType,
   ] as UserTypeProps[]);
+  useEffect(() => {
+    if ( user?.email && userInfo?.displayName === undefined) {
+      setLoader(true);
+//   .get("444-44-4444").onsuccess = (event) => {
+//   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
+// };
 
+      // setLoader(true);
+    } else {
+      // setTimeout(() => {
+        setLoader(false);
+      // }, 2000);
+    }
+  }, [user, userInfo]);
   const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
-    console.log(user,"userInfoId");
+    // console.log(user,"userInfoId");
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
@@ -336,15 +371,7 @@ const handleClick=()=>{
 
   // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
   
-  useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined) {
-      setLoader(true);
-    } else {
-      setTimeout(() => {
-        setLoader(false);
-      }, 2000);
-    }
-  }, [user, userInfo]);
+
   useEffect(() => {
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
@@ -363,7 +390,9 @@ const handleClick=()=>{
   // }, [user]);
 
   useEffect(() => {
-    if (user && userInfo && userInfo?.displayName === "" && userUid) {
+   
+    // @ts-ignore
+    if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
     }
   }, [userInfo]);
@@ -416,16 +445,16 @@ const handleClick=()=>{
     }
   }, [lang, user?.uid]);
 
-  const isAdmin = useCallback(async (uid?: string) => {
-    if (uid) {
-      const func = httpsCallable(functions, "isAdmin");
-      return !!(await func({ user: uid })).data;
-    }
-  }, []);
+  // const isAdmin = useCallback(async (uid?: string) => {
+  //   if (uid) {
+  //     const func = httpsCallable(functions, "isAdmin");
+  //     return !!(await func({ user: uid })).data;
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
-  }, [user?.uid, isAdmin]);
+  // useEffect(() => {
+  //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
+  // }, [user?.uid, isAdmin]);
 
   useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
@@ -640,18 +669,19 @@ votesLast24HoursRef.get()
            
         })
         .catch((error) => {
-            console.log('extravoteError',error);
+            // console.log('extravoteError',error);
         });
       }
   }, remaining);
     })
     .catch((error) => {
-        console.log('extravoteError',error);
+        // console.log('extravoteError',error);
     });
   }
   
  
 }, [userInfo?.voteStatistics?.total])
+
 
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
@@ -1004,7 +1034,7 @@ votesLast24HoursRef.get()
                                     >
                                       <Routes>
                                         <Route path='/' element={<Home />} />
-                                        <Route
+                                        {/* <Route
                                           path='coins'
                                           element={<CoinMain />}
                                         />
@@ -1080,9 +1110,20 @@ votesLast24HoursRef.get()
                                             }
                                             element={<ProfileNftGalleryType />}
                                           />
+                                        </Route> 
+                                        */}
+                                          <Route
+                                          path={ProfileTabs.profile}
+                                          element={<Profile />}
+                                        >
+                                         
+                                          <Route
+                                              path={ProfileTabs.share}
+                                              element={<Pool />}
+                                          />
                                         </Route>
                                         {/* Fowller component  start*/}
-                                        <Route
+                                        {/* <Route
                                           path={FollowerProfileTabs.FollowerProfile}
                                           element={<FollowerProfile />}
                                         >
@@ -1105,10 +1146,10 @@ votesLast24HoursRef.get()
                                               path={FollowerProfileTabs.share}
                                               element={<FwPool />}
                                           />
-                                          </Route>
+                                          </Route> */}
                                           
                                         {/* Fowller component  end*/}
-                                        <Route
+                                        {/* <Route
                                           path='/upgrade'
                                           element={<UpgradePage />}
                                         />
@@ -1119,10 +1160,10 @@ votesLast24HoursRef.get()
                                         <Route
                                           path='influencers'
                                           element={<Influencers />}
-                                        />
+                                        /> */}
 
                                         {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
-                                        <Route path='faq' element={<FAQ />} />
+                                        {/* <Route path='faq' element={<FAQ />} />
                                         <Route
                                           path='about'
                                           element={<About />}
@@ -1136,6 +1177,10 @@ votesLast24HoursRef.get()
                                           element={<Contact />}
                                         />
                                         <Route
+                                          path='privacy'
+                                          element={<PrivacyPolicy />}
+                                        /> */}
+                                         <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         />

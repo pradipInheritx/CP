@@ -40,7 +40,7 @@ const Avatars = ({
   style,
 }: AvatarsProps) => {
   const src = importFile(`./The${type}`).default ;
-console.log(type,"imgtype")
+// console.log(type,"imgtype")
   return <Image width={width} roundedCircle={true} src={src} style={style} />;
 };
 

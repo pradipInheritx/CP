@@ -5,6 +5,7 @@ export const generateUsername = () => {
     exactly: 1,
     wordsPerString: 2,
     join: "",
-    maxLength: 7
+    min:8,
+    maxLength: 4
   });
 };

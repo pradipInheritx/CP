@@ -45,7 +45,7 @@ const Label = styled.div`
     text-transform: capitalize;
   }
 `;
-type Props =  { iconName?: any };
+type Props =  { iconname?: any };
 const NavLink = styled(Nav.Link)`
   &.active {
     & button {
@@ -59,7 +59,7 @@ const NavLink = styled(Nav.Link)`
     * {
     fill: ${(props: Props) =>
       `${
-        props.iconName !== "Album"
+        props.iconname !== "Album"
           ? 'white'
             : ''
       }`};
@@ -81,7 +81,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
   const activeTab = (tabs: any, chosenByDefault: any) => {
     tabs.map((tab: any, index: number) => {
       if (chosenByDefault?.includes(tab.eventKey)) {
-        console.log(tabs[index].eventKey, "eventKey");
+        // console.log(tabs[index].eventKey, "eventKey");
         setActiveValue(tabs[index].eventKey);
       } 
     });
@@ -109,7 +109,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
                 <NavLink
                   eventKey={tab.eventKey}
                   style={{ padding: "10px 2px" }}
-                  iconName={tab.label}
+                  iconname={tab.label}
                 >
                   <Circle
                     disabled={isV1() && tab.eventKey === ProfileTabs.mine}

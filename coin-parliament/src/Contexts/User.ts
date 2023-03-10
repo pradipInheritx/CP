@@ -46,6 +46,10 @@ export const saveUsername = async (uid: string, displayName: string,avatar:strin
   await setDoc(userRef, { displayName, avatar }, { merge: true });
 };
 
+export const saveFoundation = async (uid: string, foundationName: string) => {
+  const userRef = doc(db, "users", uid);
+  await setDoc(userRef, { foundationName }, { merge: true });
+};
 
 export default UserContext;
 

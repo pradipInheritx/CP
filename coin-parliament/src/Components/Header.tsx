@@ -99,9 +99,9 @@ export const MemberText = styled.span`
 `;
 
 export const PlusButton = styled.div`
-  width: 27px;
-  height: 27px;
-  background: #6352e8;
+  // width: 27px;
+  // height: 27px;
+  // background: #6352e8;
   color: white;
   border-radius: 50px;
   padding-top: 3px;
@@ -109,15 +109,15 @@ export const PlusButton = styled.div`
   cursor: pointer;
 `;
 export const PlusButtonMob = styled.div`
-  width: 27px;
-  height: 27px;
-  background: #6352e8;
-  color: white;
-  border-radius: 50px;
-  padding: 3px 8px;
-  margin-top:1px;
-  font-size: 15px;
-  cursor: pointer;
+  // width: 27px;
+  // height: 27px;
+  // background: #6352e8;
+  // color: white;
+  // border-radius: 50px;
+  // padding: 3px 8px;
+  // margin-top:1px;
+  // font-size: 15px;
+  // cursor: pointer;
 `;
 
 export const OuterContainer = styled.div`
@@ -201,7 +201,7 @@ const Header = ({
 //     getFollowerData()  
 //   }, 2000);
 
-console.log(followerInfo,"followerInfo")
+// console.log(followerInfo,"followerInfo")
 
   useEffect(() => {
   
@@ -219,7 +219,7 @@ console.log(followerInfo,"followerInfo")
     // @ts-ignore
     setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
     // @ts-ignore
-    console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
+    // console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
     // @ts-ignore
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
@@ -238,7 +238,7 @@ console.log(followerInfo,"followerInfo")
       case EventKeys.LOGOUT:
         signOut(auth)
           .then((res) => {
-            console.log("logout", res);
+            // console.log("logout", res);
             Logout(setUser);
           })
           .catch((error) => {
@@ -302,12 +302,12 @@ console.log(followerInfo,"followerInfo")
   //     Number(votesLast24Hours.length),
   //   "userInfo"
   // );
-  console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
+  // console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
   // const checkFollow = !toFollow(userInfo?.leader || [], followerInfo?.uid);
 
 
 
-  console.log(followerInfo,"followerInfouseid")
+  // console.log(followerInfo,"followerInfouseid")
   return (
     <div>
       <div className='' style={{ background: "none !important" }}>
@@ -319,25 +319,25 @@ console.log(followerInfo,"followerInfo")
               href: "/",
               label: "Home",
             },
-            {
-              href: "/coins",
-              label: "Coin Vote",
-            },
-            {
-              href: "/pairs",
-              label: "Pairs Vote",
-            },
-            {
-              href: "/influencers",
-              label: "Top Influencers",
-            },
-            {
-              href: "/nftAlbum",
-              label: "Album",
-            },
-            {
-              label: "",
-            },
+            // {
+            //   href: "/coins",
+            //   label: "Coin Vote",
+            // },
+            // {
+            //   href: "/pairs",
+            //   label: "Pairs Vote",
+            // },
+            // {
+            //   href: "/influencers",
+            //   label: "Top Influencers",
+            // },
+            // {
+            //   href: "/nftAlbum",
+            //   label: "Album",
+            // },
+            // {
+            //   label: "",
+            // },
             // user && {
             //   eventKey: EventKeys.VOTES,
             //   label: "Votes",
@@ -348,25 +348,25 @@ console.log(followerInfo,"followerInfo")
             //     label: "Pool Mining",
             //   },
             user && {
-              eventKey: EventKeys.POOL_MINING,
+              eventKey: EventKeys.SHARE,
               label: "My Account",
             },
             // user && {
             //   eventKey: EventKeys.FOLLOWERS,
             //   label: "Followers",
             // },
-            user && {
-              eventKey: EventKeys.EDIT,
-              label: "My Profile",
-            },
-            user && {
-              eventKey: EventKeys.Gallery,
-              label: "My Album",
-            },
-            user && {
-              eventKey: EventKeys.NOTIFICATIONS,
-              label: "Notifications",
-            },
+            // user && {
+            //   eventKey: EventKeys.EDIT,
+            //   label: "My Profile",
+            // },
+            // user && {
+            //   eventKey: EventKeys.Gallery,
+            //   label: "My Album",
+            // },
+            // user && {
+            //   eventKey: EventKeys.NOTIFICATIONS,
+            //   label: "Notifications",
+            // },
             // user && {
             //   eventKey: EventKeys.PASSWORD,
             //   label: "Password",
@@ -375,13 +375,13 @@ console.log(followerInfo,"followerInfo")
             //   eventKey: EventKeys.EDIT,
             //   label: "My Profile",
             // },
-            {
-              label: "",
-            },
-            {
-              label: "",
-            },
-            ...(pages || []).map(convertPageToMenuItem),
+            // {
+            //   label: "",
+            // },
+            // {
+            //   label: "",
+            // },
+            // ...(pages || []).map(convertPageToMenuItem),
             {
               label: "-",
             },
@@ -395,7 +395,7 @@ console.log(followerInfo,"followerInfo")
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Signup",
+              label: "Become a member",
             },
           ].map((i) => (i ? i : undefined))}
         >
@@ -417,7 +417,7 @@ console.log(followerInfo,"followerInfo")
                   >
                     <div
                       className=''
-                      onClick={() => navigate("/profile/mine")}
+                      // onClick={() => navigate("/profile/mine")}
                       style={{
                         position: "absolute",
                         // marginLeft: "15px",
@@ -439,7 +439,7 @@ console.log(followerInfo,"followerInfo")
                       )}
                     </div>
                     <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
-                      <HeaderCenterMob className=''>
+                     {userInfo?.displayName&& <HeaderCenterMob className=''>
                         <div></div>
                         <div className='mt-1'>
                          
@@ -452,21 +452,7 @@ console.log(followerInfo,"followerInfo")
                           {
                             followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
                             // @ts-ignore */
-                                <span className="" style={{ marginLeft: '20px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
-                                  renderer={({ hours, minutes, seconds, completed }) => {
-                                    return (
-                                      <span style={{ color: '#6352e8', fontSize: '14px', fontWeight: 400 }}>
-                                        {Number(voteRules?.maxVotes)} votes in {' '}
-                                        {hours < 1 ? null : `${hours} :`}
-                                        {minutes < 10 ? `0${minutes}` : minutes}:
-                                        {seconds < 10 ? `0${seconds}` : seconds}
-                               
-                                      </span>
-                                    );
-                          
-                                  }}
-                         
-                                /></span>
+                                <span > {userInfo?.displayName}</span>
                                 :
                                 <>
                                   <span
@@ -475,7 +461,7 @@ console.log(followerInfo,"followerInfo")
                                     }}
                                   >
                             
-                                    {voteNumber > 0 ? voteNumber : 0} votes left
+                            {userInfo?.displayName}
                                   </span>
                                 </>}
                         </div>
@@ -500,26 +486,24 @@ console.log(followerInfo,"followerInfo")
                             {followUnfollow == true ?  <Following/> :  <AddFollower/>}
                         </Form.Check.Label>
                           :
-                        <PlusButtonMob onClick={() => navigate("/votingbooster")}>
-                          <span>+</span>
+                        <PlusButtonMob >
+                          <span></span>
                         </PlusButtonMob> 
 
                         }
-                      </HeaderCenterMob>
+                      </HeaderCenterMob>}
                       <div
                         className='w-25'
                         style={{ marginLeft: "45px", marginTop: "5px" }}
                       >
                         {/* <p>{"unique_Username"}</p> */}
 
-                        {followerPage && followerInfo != ""?  <></> :<span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${
-                         userInfo?.displayName && userInfo?.displayName
-                        }`}</span>}
+                        
                         {/* <br /> */}
-                        <MemberText>
+                      {userInfo?.displayName&&  <MemberText>
                           {/* {translate(followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || "")} */}
                           {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
-                        </MemberText>
+                        </MemberText>}
                       </div>
                     </div>
                   </div>
@@ -554,7 +538,7 @@ console.log(followerInfo,"followerInfo")
                   >
                     <div
                       className=''
-                      onClick={() => navigate("/profile/mine")}
+                      // onClick={() => navigate("/profile/mine")}
                       style={{
                         position: "absolute",
                         marginLeft: "90px",
@@ -575,26 +559,12 @@ console.log(followerInfo,"followerInfo")
                       )}
                     </div>
                     <div className='w-100 '>
-                      <HeaderCenter className=''>
+                     { userInfo?.displayName&&<HeaderCenter className=''>
                         <div></div>
                         <p className='ml-5'>
                        { followerPage && followerInfo != "" ? followerInfo?.displayName :!voteNumber && votingTimer ?
                           // @ts-ignore
-                         <span style={{marginLeft:'20px'}}> <Countdown date={votingTimer} 
-                         renderer={({ hours, minutes, seconds, completed }) => {
-                        
-                          return (
-                            <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
-                              {/* {hours < 10 ? `0${hours}` : hours}: */}
-                              {Number(voteRules?.maxVotes)} votes in {' '}
-                              {hours < 1 ? null : `${hours} :` }
-                              {minutes < 10 ? `0${minutes}` : minutes}:
-                              {seconds < 10 ? `0${seconds}` : seconds}
-                            </span>
-                          );
-                        
-                      }}
-                         /></span>
+                         <span > {userInfo?.displayName}</span>
                         :
                         <> 
                           <span
@@ -608,7 +578,7 @@ console.log(followerInfo,"followerInfo")
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
-                            {voteNumber>0? voteNumber:0} votes left
+                           {userInfo?.displayName}
                           </span></>}
                         </p>
                         {followerPage && followerInfo != "" ?
@@ -630,7 +600,7 @@ console.log(followerInfo,"followerInfo")
                         </PlusButton> 
 
                         }
-                      </HeaderCenter>
+                      </HeaderCenter>}
                       <div
                         className=''
                         style={{
@@ -646,13 +616,10 @@ console.log(followerInfo,"followerInfo")
                         }`}</span>
                         <br /> */}
 
-                        {followerPage && followerInfo != ""?  <></> :<span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${
-                         userInfo?.displayName && userInfo?.displayName
-                        }`}</span>}
-
-                        <MemberText>
+                       
+                      {userInfo?.displayName&&  <MemberText>
                           {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
-                        </MemberText>
+                        </MemberText>}
                       </div>
                     </div>
                   </div>

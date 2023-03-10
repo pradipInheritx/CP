@@ -96,10 +96,11 @@ const Video = styled.video`
 `;
 
 const Body = styled(Card.Body)`
+flex-direction:column;
   font-size: 14px;
   line-height: 18px;
   color: #fff;
-  margin: 0 20px;
+  // margin: 0 20px;
   padding-top:0;
 `;
 
@@ -132,7 +133,7 @@ const Paragraph=styled.p`
 font-weight:300;`
 const NFT = ({ setSelectedAvatar,id }: NFTProps) => {
   return (
-    <Container>
+    <Container style={{marginTop:'15px'}}>
      
           <CloseButton aria-hidden="true" onClick={()=>setSelectedAvatar('')}>&times;</CloseButton>
         

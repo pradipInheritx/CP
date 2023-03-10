@@ -15,10 +15,14 @@ import { Link } from "react-router-dom";
 const SignupForm = ({
   emailValue,
   callback,
-  signup
+  signup,
+  signupLoading,
+  setSignupLoading,
 }: {
   emailValue:string;
   callback: Callback<User>;
+  signupLoading?:any;
+  setSignupLoading?:(k: boolean) => void;
   signup: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
@@ -45,7 +49,10 @@ useEffect(() => {
   return (
     <Form
       onSubmit={async (e) => {
+        if(signupLoading)return
         e.preventDefault();
+        // @ts-ignore
+        setSignupLoading(true)
         await signup(
           {
             email,
@@ -93,7 +100,7 @@ useEffect(() => {
 
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" >
-          {strings.continue}
+          {signupLoading?'Wait...':strings.continue}
         </Buttons.Primary>
       </div>
 

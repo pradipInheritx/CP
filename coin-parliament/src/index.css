@@ -139,6 +139,9 @@ html[dir="rtl"] .offcanvas-start.show {
     -moz-animation: glow 5s ease-in-out  alternate;
     animation: glow 5s ease-in-out ;
   }
+  strong {
+    font-weight: bold;
+}
 @keyframes glow {
     0% {
         border-width: 1px;
