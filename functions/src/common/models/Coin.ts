@@ -4,7 +4,11 @@ import {firestore} from "firebase-admin";
 // import { rest } from "./Ajax";
 import {CPVIObj, cpviTaskCoin, cpviTaskPair} from "./CPVI";
 import moment from "moment";
-import {successMessage} from "../consts/config";
+import {
+  successMessage,
+  webSocketBaseURL,
+  allTradeCoinsRate,
+} from "../consts/config";
 import allCoinsDecimalFixedVaues from "../consts/coins.constant.json";
 import {WebSocket} from "ws";
 import wazirXCoinsFromJson from "../consts/wazirXCoins.json";
@@ -192,7 +196,6 @@ export const getAllUpdated24HourRecords = async () => {
   )
       .toMillis()
       .toString();
-
   const getAllStoredTimestampIds = getAllTimestampFromLast24Hour
       .map((timestamp) =>
       timestamp.id > startTime && timestamp.id < endTime ?
@@ -201,7 +204,6 @@ export const getAllUpdated24HourRecords = async () => {
       )
       .filter((timestamp) => timestamp !== "undefined")
       .sort();
-
   if (getAllStoredTimestampIds && getAllStoredTimestampIds.length) {
     const getTimeStampDcument: string =
       getAllStoredTimestampIds[0] || "undefined";
@@ -210,9 +212,7 @@ export const getAllUpdated24HourRecords = async () => {
         .doc("last24HoursPrice")
         .collection(getTimeStampDcument)
         .get();
-
     let getLast24HourOldCoinsData = {};
-
     getTimestampDocuments.docs.forEach((getAllCoins) => {
       getLast24HourOldCoinsData = getAllCoins.data();
     });
@@ -227,19 +227,14 @@ export const removeTheBefore24HoursData = async () => {
     )
         .toMillis()
         .toString();
-
     const getAllPrevious24HoursCollection = await firestore()
         .collection("stats")
         .doc("last24HoursPrice")
         .listCollections();
-
     const getAllStoredTimestampIds = getAllPrevious24HoursCollection.map(
         (timestamp) =>
         timestamp.id < timestamp24hrsBefore ? timestamp.id : "null"
     );
-
-    // console.log("getAllStoredTimestampIds", getAllStoredTimestampIds);
-
     for (
       let storedCoin = 0;
       storedCoin < getAllStoredTimestampIds.length;
@@ -248,11 +243,9 @@ export const removeTheBefore24HoursData = async () => {
       const collectionRef = await firestore().collection(
           `/stats/last24HoursPrice/${getAllStoredTimestampIds[storedCoin]}`
       );
-
       const query = collectionRef;
       const snapshot = await query.get();
       const batchSize = snapshot.size;
-
       if (batchSize === 0) {
         errorLogging(
             "removeTheBefore24HoursData",
@@ -260,9 +253,7 @@ export const removeTheBefore24HoursData = async () => {
             "No documents left"
         );
       }
-
       const batch = await firestore().batch();
-
       snapshot.docs.forEach(async (doc) => {
         await batch.delete(doc.ref);
       });
@@ -320,71 +311,70 @@ export const updateFixedValueInAllCoins = async (getAllCoins: CoinsWithKey) => {
 };
 
 export const getUpdatedDataFromWebsocket = () => {
-  const base = "wss://stream.wazirx.com/stream";
-  const client = new WebSocket(base);
-
-  client.onerror = function() {
-    console.log("Connection Error"); // Add logs
+  const client = new WebSocket(webSocketBaseURL);
+  client.onerror = async function() {
+    await getUpdatedDataFromWebsocket();
+    errorLogging("getUpdatedDataFromWebsocket", "ERROR", "Connection Error");
   };
-
   client.onopen = function() {
-    console.log("WebSocket Client Connected"); // Add logs info
-
+    errorLogging(
+        "getUpdatedDataFromWebsocket",
+        "INFO ON OPEN",
+        "WebSocket Client Connected"
+    );
     client.send(JSON.stringify({event: "ping"}));
     client.send(
         JSON.stringify({
           event: "subscribe",
-          streams: [
-            "btcinr@trades",
-            "ethinr@trades",
-            "bnbinr@trades",
-            "adainr@trades",
-            "solinr@trades",
-            "xrpinr@trades",
-            "dogeinr@trades",
-            "dotinr@trades",
-            "shibinr@trades",
-            "maticinr@trades",
-            "ltcinr@trades",
-            "linkinr@trades",
-            "uniinr@trades",
-            "trxinr@trades",
-            "xlminr@trades",
-            "manainr@trades",
-            "hbarinr@trades",
-            "vetinr@trades",
-            "sandinr@trades",
-          ],
+          streams: allTradeCoinsRate,
         })
     );
   };
-
-  client.onclose = function() {
-    console.log("echo-protocol Client Closed"); // Add Logs
+  client.onclose = async function() {
+    await getUpdatedDataFromWebsocket();
+    errorLogging(
+        "getUpdatedDataFromWebsocket",
+        "INFO ON CLOSE",
+        "Echo Protocol Client Closed"
+    );
   };
-
   client.onmessage = async function(e: any) {
+    console.log("e.data =>", e.data);
     if (typeof e.data === "string") {
       const parseCoinsRateData: any = JSON.parse(e.data);
       if (parseCoinsRateData.data.trades) {
         await updateLatestCoinRate(parseCoinsRateData);
       }
     } else {
-      // Add log went wrong while fetch the updated data
+      errorLogging(
+          "getUpdatedDataFromWebsocket",
+          "ERROR",
+          "Something went wrong while fetching the updated data"
+      );
     }
   };
 };
 
 export const updateLatestCoinRate = async (latestCoinRate: any) => {
+  errorLogging(
+      "updateLatestCoinRate",
+      "INFO ON UPDATE LATEST COIN RATE",
+      "Comes in updateLatestCoinRate"
+  );
+
   if (latestCoinRate && latestCoinRate.data && latestCoinRate.data.trades) {
     const getCoinSymbolData: any = wazirXCoinsFromJson.find(
         (coin) => coin.name === latestCoinRate.data.trades[0].s
     );
     if (getCoinSymbolData) {
-      console.log("getCoinSymbolData =>", {
-        ...getCoinSymbolData,
-        price: latestCoinRate.data.trades[0].p,
-        timestamp: latestCoinRate.data.trades[0].E,
+      // @Delete all previous data of coin which needs to be add
+      const deleteAllPreviousDataOfCoin = await firestore()
+          .collection("latestUpdatedCoins")
+          .where("name", "==", latestCoinRate.data.trades[0].s);
+      await deleteAllPreviousDataOfCoin.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          doc.ref.delete();
+        });
       });
       await firestore()
           .collection("latestUpdatedCoins")
@@ -395,45 +385,53 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
           });
     }
   } else {
-    console.log("come here");
+    errorLogging(
+        "updateLatestCoinRate",
+        "INFO ON UPDATE LATEST COIN RATE",
+        "Comes in ELSE part"
+    );
   }
 };
 
 export const fetchCoins = async () => {
   const allUpdatedCoinsRates: any = [];
-
   const getAllLatestCoinsRateRef: any = await firestore().collection(
       "latestUpdatedCoins"
   );
-
-  const coinRateSnapshot = await getAllLatestCoinsRateRef.get();
+  const coinRateSnapshot = await getAllLatestCoinsRateRef
+      .orderBy("timestamp", "desc")
+      .get();
   if (coinRateSnapshot.empty) {
-    console.log("No matching documents."); // Add logging
+    errorLogging("fetchCoins", "INFO ON FETCH COINS", "No matching documents.");
   } else {
     coinRateSnapshot.forEach((doc: any) => {
-      console.log(doc.id, "=>", doc.data());
       allUpdatedCoinsRates.push(doc.data());
     });
-
     const res: any = await fetchCoinsFromCoinCapAndWazirX(allUpdatedCoinsRates);
-
     if (res && res.count) {
-      await getUpdatedDataFromWebsocket();
       const newCoins = calculateCoinsByWazirXAndCoinCap(res);
       if (newCoins) {
         const allCoins = await getAllCoins();
-        await insertNewCoinsWthTimestamp(newCoins);
-        await getAllUpdated24HourRecords();
-        // await removeTheBefore24HoursData();
         const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
             filterCoins(newCoins, allCoins)
         );
+
         await firestore()
             .collection("stats")
             .doc("coins")
             .set(getUpdateFixedValueInAllCoins, {
               merge: true,
             });
+
+        await firestore()
+            .collection("latestUpdatedCoins")
+            .get()
+            .then((queryLatestUpdatedCoinsSnapshot) => {
+              queryLatestUpdatedCoinsSnapshot.docs.forEach((snapshot) => {
+                snapshot.ref.delete();
+              });
+            });
+        await insertNewCoinsWthTimestamp(newCoins);
       }
     }
   }

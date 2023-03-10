@@ -65,6 +65,8 @@ class Calculation {
       price: number | number[],
       id: string
   ) {
+    console.log("voteResult =>", voteResult);
+
     this.voteResult = voteResult;
     this.price = price;
     this.id = id;
@@ -89,47 +91,40 @@ class Calculation {
   async updateVote(
       ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
-    console.log("this.voteResult =>", this.voteResult);
     await ref.update(this.voteResult);
   }
 
   async giveAway(): Promise<void> {
-    const {voteResult} = this;
-    const settings : any = await getSettingsFromSettings();
+    try {
+      const {voteResult} = this;
+      const settings = await firestore()
+          .collection("settings")
+          .doc("settings")
+          .get();
+      const ref = this.db.collection("users").doc(voteResult.userId);
+      const user = (await ref.get()).data() as UserProps;
+      const voteStatistics: VoteStatistics =
+        user.voteStatistics || ({} as VoteStatistics);
+      voteStatistics.successful += voteResult.success ? 1 : 0;
+      const score = returnValue(
+          voteResult.success || 0,
+        settings.data()?.voteRules,
+        user.status
+      );
+      await firestore()
+          .collection("votes")
+          .doc(this.id)
+          .set({score}, {merge: true});
 
-    const ref = this.db.collection("users").doc(voteResult.userId);
-    const user = (await ref.get()).data() as UserProps;
+      voteStatistics.score += score;
+      await ref.set({voteStatistics}, {merge: true});
 
-    const voteStatistics: VoteStatistics = user.voteStatistics || ({} as VoteStatistics);
-    voteStatistics.successful += voteResult.success ? 1 : 0;
-    // voteStatistics.total += 1;
-    const score = returnValue(
-      voteResult.success || 0,
-      settings?.voteRules,
-      user.status
-    );
-    let foundationData = await getFoundationDataByName(user.foundationName ?? "");
-    let settingsData : any = await getSettingsFromSettings();
-    let totalCmp : number = foundationData[0].totalCmp;
-    totalCmp += (score * settingsData.CPMSettings.foundationRewardPercentage) / 100;
-    let foundationId : string = foundationData[0].id;
-    // update totalCmp of the foundation
-    await firestore()
-      .collection("foundations")
-      .doc(foundationId)
-      .update({totalCmp});
-
-    await firestore()
-      .collection("votes")
-      .doc(this.id)
-      .set({score}, {merge: true});
-
-    voteStatistics.score += score;
-    await ref.set({voteStatistics}, {merge: true});
-
-    if (user.parent) {
-      const refer = new Refer(user.parent, "");
-      await refer.payParent(score);
+      if (user.parent) {
+        const refer = new Refer(user.parent, "");
+        await refer.payParent(score);
+      }
+    } catch (error) {
+      errorLogging("giveAway", "ERROR", error);
     }
   }
 
@@ -540,4 +535,12 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
         return leaderObj ? {...leaderObj, status: status?.name} : undefined;
       })
       .filter((l) => l);
+};
+
+export const errorLogging = async (
+    funcName: string,
+    type: string,
+    error: any
+) => {
+  console.log(funcName, type, error); // We will modify later
 };
