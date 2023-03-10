@@ -64,8 +64,7 @@ const CoinNameXYZ = styled.div`
   flex: 1;
   font-family: var(--font-family-poppins);
   color: var(--ebony);
-  font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-12)"};
+  font-size: ${(props: { single: boolean }) => props.single ? "var(--font-size-18)" : "var(--font-size-14)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 1.1;
@@ -187,7 +186,7 @@ const Price = styled.div`
   color: ${(props: { single: boolean }) =>
           props.single ? "var(--white)" : "#23036a"};
   font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
+          props.single ? "var(--font-size-18)" : "var(--font-size-15)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 16px;
@@ -327,7 +326,7 @@ const secColor= ()=>{
       {!single && (
         <Component127371>
           <Buttons.ClickableText onClick={onClick} className=" p-2" style={{margin: "-0.5rem"}}>
-            <VOTE>VOTE</VOTE>
+            <VOTE>To VOTE</VOTE>
             <img
               width="6"
               height="10"

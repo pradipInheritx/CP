@@ -23,6 +23,7 @@ import {useWindowSize} from "../hooks/useWindowSize";
 import CalculatingVotes from "../Components/CalculatingVotes";
 import { httpsCallable } from "firebase/functions";
 import AppContext from "../Contexts/AppContext";
+import Countdown from "react-countdown";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
@@ -30,7 +31,7 @@ const SinglePair = () => {
   const {coins, totals} = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [coin1, coin2] = [coins[symbol1], coins[symbol2]];
-  const {user, userInfo} = useContext(UserContext);
+  const {user, userInfo,votesLast24Hours} = useContext(UserContext);
   const {showModal} = useContext(NotificationContext);
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
   const [voteId, setVoteId] = useState<string>();
@@ -42,13 +43,16 @@ const SinglePair = () => {
   const [pct,setPct]=useState(0)
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
-  const [graphLoading,setGraphLoading]=useState(false)
+  const [graphLoading, setGraphLoading] = useState(false)
+  const [voteNumber, setVoteNumber] = useState(0)
   const {
     timeframes,
     setAllPariButtonTime,
     allPariButtonTime,
     setAllButtonTime,
     allButtonTime,
+    remainingTimer,
+    voteRules
   } = useContext(AppContext);
   
   const mountedRef = useRef(true);
@@ -170,6 +174,12 @@ useEffect(() => {
       }, 2400);
     
   }, [selectedTimeFrame]);
+  useEffect(() => {
+    const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
+  setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
+    
+  }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length])
+  
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
 console.log('vote',vote)
@@ -253,7 +263,33 @@ console.log('vote',vote)
                       />} 
                     </>
                   )}
-                  <div className="d-flex justify-content-center align-items-center mt-5 pb-5 mb-5">
+                  <div className="d-flex justify-content-center align-items-center mt-5 ">
+                    <Link to="" style={{textDecoration:'none'}}>
+                      <Other>
+                      {!voteNumber && remainingTimer ?                          
+                          <span style={{ marginLeft: '20px' }}>
+                            {/* @ts-ignore */}
+                            <Countdown date={remainingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {
+                        
+                          return (
+                            <span style={{color:'#6352e8',fontSize:'12px',fontWeight:400}}>
+                              {/* {hours < 10 ? `0${hours}` : hours}: */}
+                              {Number(voteRules?.maxVotes)} votes in {' '}
+                              {hours < 1 ? null : `${hours} :` }
+                              {minutes < 10 ? `0${minutes}` : minutes}:
+                              {seconds < 10 ? `0${seconds}` : seconds}
+                            </span>
+                          );
+                        
+                      }}
+                          /></span>
+                         :""}
+
+                      </Other>
+                    </Link>
+                  </div>
+                  <div className="d-flex justify-content-center align-items-center mt-3 pb-5 mb-5">
                     <Link to="/pairs" style={{textDecoration:'none'}}>
                       <Other>{translate("vote for other pairs")}</Other>
                     </Link>

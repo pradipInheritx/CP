@@ -109,7 +109,7 @@ const PairsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
+          // expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));
@@ -162,6 +162,7 @@ const PairsForm = ({
           id,
           canVote,
           option1: {
+            // buttonText:["vote","BULL"],
             alt: coin1.symbol,
             image: <span style={{fontWeight:'600',fontSize:'24px'}}>{coin1.symbol}</span>,
             title: (
@@ -173,6 +174,7 @@ const PairsForm = ({
             ...coin1,
           },
           option2: {
+            // buttonText:["vote","BEAR"],
             alt: coin2.symbol,
             image: <span style={{fontWeight:'600',fontSize:'24px'}}>{coin2.symbol}</span>,
             title: (
@@ -184,8 +186,10 @@ const PairsForm = ({
             ...coin2,
           },
           texts: {
-            yourVote: translate("Place your vote"),
-            selectTimeFrame: translate("Select voting time frame"),
+            // yourVote: translate("Place your vote"),
+            yourVote: translate("Vote for your winner"),
+            // selectTimeFrame: translate("Select voting time frame"),
+            selectTimeFrame: translate("Select a time frame for your vote"),
             tooltip: translate(tooltipText),
           },
         }}

@@ -162,8 +162,8 @@ const VotedCard = ({
     }
 };
   
- useEffect(() => {
-    getBorderColor()
+ useEffect(() => {    
+      getBorderColor()    
   }, [coins[symbol1]?.price ,coins[symbol2]?.price])
 
 
@@ -206,8 +206,9 @@ const VotedCard = ({
       ? `${vote.timeframe.name} ${valueVotingTime}`
       : `${voted} - ${vote.timeframe.name} $${valueVotingTime || 'loading'}`;
   }
-//   console.log(vote,"CheckvalueVotingTime") 
-// console.log(vote,"voteCheck")
+
+     //   console.log(vote,"CheckvalueVotingTime")
+    // console.log(vote,"voteCheck")
   
   return (
     <>
@@ -220,7 +221,9 @@ const VotedCard = ({
               // @ts-ignore
               setSelectedTimeFrame(timeframe.index);
             },
-            title: translate("Select voting time frame"),
+            // title: translate("Select voting time frame"),
+            title: translate("Select a time frame for your vote"),
+            // select a time frame for your vote
             voted:true,
             selectedTimeFrameArray: selectedTimeFrameArray,
             cssDegree:cssDegree,
@@ -239,6 +242,7 @@ const VotedCard = ({
             <BitcoinBTCBULL24H3864490
               className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
             >
+              {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
               <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1>
               <Row2 className="poppins-normal-blue-violet-14px-2">{row2}</Row2>              
             </BitcoinBTCBULL24H3864490>
@@ -246,11 +250,11 @@ const VotedCard = ({
               <MyCountdown expirationTime={expirationTime} />
             </div>
             <div className="my-2">
-            <YourVote>YOUR VOTE IMPACT</YourVote> 
+            <YourVote>YOUR CURRENT VOTE IMPACT</YourVote> 
              
             </div>
             <div>
-              <RangeSilder
+               <RangeSilder
               vote={vote}
               coins={coins}
               symbol1={symbol1}
@@ -285,7 +289,7 @@ const VotedCard = ({
             </ID13020221942>
           </div>
           
-          
+          <p>Hello</p>
         </div>
       </Rectangle2620>
     </>

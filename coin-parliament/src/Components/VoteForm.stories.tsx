@@ -65,7 +65,8 @@ const Template: ComponentStory<typeof CPVoteForm> = () => {
         }}
         canVote={true}
         texts={{
-          yourVote: translate("Place your vote"),
+          // yourVote: translate("Place your vote"),
+          yourVote: translate("Vote for your winner"),
           selectTimeFrame: translate("select time frame"),
           tooltip: translate("you must be logged in to vote"),
         }}
