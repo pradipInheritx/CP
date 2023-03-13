@@ -32,8 +32,10 @@ const Votes = () => {
           end: start + pageSize,
           userId: user?.uid,
         });
-        if (newVotes?.data) {
-          setVotes(newVotes?.data);
+        // @ts-ignore
+        let result= JSON.parse(newVotes?.data)
+        if (newVotes?.data) {          
+          setVotes(result);
           const coinStat=newVotes?.data?.coins?.votes?.map(item=>item?.coin)
           // const pairStat=[]
            // @ts-ignore
@@ -123,7 +125,7 @@ const callbackFun=()=>{
 }
 
    
-console.log('vote',votes)
+// console.log('vote',votes)
   return (
     <Tabs
       defaultActiveKey="coins"

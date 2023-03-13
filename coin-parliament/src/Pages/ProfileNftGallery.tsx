@@ -11,6 +11,7 @@ import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
+import UserContext from "../Contexts/User";
 
 
 // import { Firestore } from "firebase/firestore";
@@ -57,6 +58,7 @@ const ProfileNftGallery = () => {
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
   const [winerCard, setWinerCard] = useState<any>([]);
+  const {user}=useContext(UserContext)
 
   const getNftCard = () => {
   const getCollectionType = firebase
@@ -267,6 +269,7 @@ const onSelectType=(cardType:any)=>{
   
   useEffect(() => {
     getNftCard()
+    // @ts-ignore
     getAllRewardsOfUser(`${user?.uid}`)
 }, [])
 

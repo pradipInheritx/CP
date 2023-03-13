@@ -301,12 +301,12 @@ const Header = ({
   //     Number(votesLast24Hours.length),
   //   "userInfo"
   // );
-  console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
+  // console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
   // const checkFollow = !toFollow(userInfo?.leader || [], followerInfo?.uid);
 
 
 
-  console.log(followerInfo,"followerInfouseid")
+  // console.log(followerInfo,"followerInfouseid")
   const handleClose = () => {
     setShow(false)
   };

@@ -185,7 +185,9 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                     {!vote.valueExpirationTime && (
                       <Row className="text-body profile_coin_vote_txt">
                         <Col >
-                          <MyCountdown expirationTime={vote.expiration || 0} vote={vote } voteId={id } coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1] }  />
+                            <MyCountdown expirationTime={vote.expiration || 0}
+                              // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                            />
                         </Col>
                       </Row>
                     )}
@@ -320,7 +322,7 @@ let votetime= a.diff(b)
             </div>
             <div className="align-self-end justify-content-end d-flex flex-column align-items-center">
               <div>
-              <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>
+              {/* <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/> */}
               {/* {vote.direction?
               
                 <>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
@@ -352,7 +354,9 @@ let votetime= a.diff(b)
                     <strong>{vote.score} CMP</strong>
                   )}
                   {!vote.valueExpirationTime && (
-                    <MyCountdown expirationTime={vote?.expiration || 0} vote={vote } voteId={id } coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1] } />
+                    <MyCountdown expirationTime={vote?.expiration || 0}
+                      // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                    />
                   )}
                 </CoinVoteTimer>
               </div>
