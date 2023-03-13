@@ -1,6 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Coin } from "../../common/models/Coin";
-import {VoteResultProps} from "../../common/models/Vote";
+import { VoteResultProps } from "../../common/models/Vote";
+import "./styles.css";
+import styled from "styled-components";
+
+const InputRange = styled.input`
+    width:100%;
+    & ::-webkit-slider-runnable-track{
+      border-radius: 1px;
+    }
+`;
+
+
 function RangeSilder(
     {
     vote,
@@ -12,16 +23,19 @@ function RangeSilder(
     coins: { [symbol: string]: Coin };
     symbol1: string;
     symbol2: string;
-        })
+    })
 
 {
 
-    console.log(vote?.valueVotingTime,"chekcvote")
+  console.log(vote, "chekcvote")
+  
+  const [persentValue, setPersentValue] = useState<any>(0)
+
 const getBorderColor = () => {
-    // let PricePer = livePrice / 100;
-   
+    // let PricePer = livePrice / 100;   
      if (symbol2 !== undefined) {
-         let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+       
         // @ts-ignore
       let bothCurrentPrice = [...vote?.valueVotingTime];
     //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
@@ -29,49 +43,65 @@ const getBorderColor = () => {
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
     ];
-     console.log(diff,"bothCurrentPrice")
-     
+     console.log(diff,"bothCurrentPrice")     
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      if ((averageValue == averageValue)) {
-        // setborderColor("#218b17");
-          console.log("i am winner quail")
+      if ((averageValue == averageValue)) {        
+        setPersentValue(50) 
       } else {
         if (vote?.direction == 1) {
             winner == vote?.direction
                 ?
-                //   setborderColor("#74ff5d") 
-                console.log("i am winner 1")
-                :
-                //   setborderColor("#015117");
-                console.log("i am not winner 1");
+                  setPersentValue(25)              
+                :             
+                  setPersentValue(75) 
+             
         } else if (vote?.direction == 0) {
           winner != vote?.direction
-              ?console.log("i am winner 0")
-            //   setborderColor("#74ff5d")
-              :
-              console.log("i am not winner 0")
-            //   setborderColor("#015117");
+            ?            
+            setPersentValue(25) 
+            :
+            setPersentValue(75) 
+
         }
       }       
+     } else if (symbol2 == undefined) {    
+       let livePrice =coins[symbol1]?.price
+       let votePrice =Number(vote?.valueVotingTime)
+       let PricePer = livePrice;
+       if(livePrice < PricePer + 10 &&
+         livePrice > PricePer - 10) { 
+          setPersentValue(50);
+        }
+        else{
+          if(vote?.direction == 1){
+            livePrice < votePrice ?setPersentValue(75):setPersentValue(25);
+          }else if(vote?.direction == 0){
+            livePrice > votePrice ? setPersentValue(25):setPersentValue(75);
+          }
+        }     
     }
   };
-
-    useEffect(() => { 
-    getBorderColor()
-     }, [])
+  console.log(vote,"CheckvalueVotingTime")
+  
+  useEffect(() => { 
     
+      getBorderColor()
+    
+  }, [coins[symbol1]?.price ,coins[symbol2]?.price])
+  
   return (
-      <div>
-          <div className="d-flex justify-content-around">                                                    
-              <input type="range" className="form-range" id="myinput"  value={-3}></input>
+    <div className=''>
+          {/* <p style={{color:"black"}} className="py-2">YOUR VOTE IMPACT</p> */}
+          <div className="d-flex justify-content-around w-100 ">                                                    
+              <input type="range"  id="myinput"  min={0} max={100} value={persentValue} className="rengeInput w-100"></input>
             </div>
-            <div className="d-flex justify-content-between"
+            <div className="d-flex justify-content-between mt-2"
             style={{color:"black"}}
             >                                                    
-              <p>LOW</p>
-              <p>MID</p>
-              <p>HIGH</p>
+              <span>LOW</span>
+              <span>MID</span>
+              <span>HIGH</span>
             </div>
     </div>
   )

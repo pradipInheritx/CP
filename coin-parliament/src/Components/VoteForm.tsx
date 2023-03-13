@@ -93,13 +93,14 @@ const VoteForm = function <
         />
       </div>
       <div className='mt-4 pt-2'>
+        {/* @ts-ignore */}
         <div className='mb-3'>
           <Title>{texts.yourVote}</Title>
         </div>
         <OverlayTrigger
           overlay={(props) =>
             disabled ? (
-              <Tooltip id='button-tooltip' {...props}>
+              <Tooltip id='button-tooltip' {...props} >
                 {texts.tooltip}
               </Tooltip>
             ) : selectedTimeFrame == undefined ? (
@@ -134,8 +135,10 @@ const VoteForm = function <
                       <img src={option1.image} alt={option1.alt} />
                     ) : (
                       <>
-                        {" "}
-                        <p>{option1.image} </p>vote
+                          {" "}
+                          {/* <p>vote {option1.image} BEAR</p> */}
+                          {/* @ts-ignore */}
+                          {option1?.buttonText ?<p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p>: <> <p>{option1.image}</p>Vote </>}
                       </>
                     ),
                   buttonProps: {
@@ -149,7 +152,9 @@ const VoteForm = function <
                     ) : (
                       <>
                         {" "}
-                        <p>{option2.image} </p>vote
+                          {/* <p>vote {option2.image} BEAR</p> */}
+                          {/* @ts-ignore */}
+                        {option2?.buttonText ?<p>{option2?.buttonText[0]} {option2.image} {option2?.buttonText[1]}</p>: <> <p>{option2.image}</p>Vote </>}
                       </>
                     ),
                   buttonProps: {

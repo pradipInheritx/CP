@@ -49,8 +49,8 @@ const Logo = ({symbol, single}: BearVsBullRow & { single: boolean }) => {
       src={process.env.PUBLIC_URL + `/images/logos/${symbol?.toUpperCase()}.svg`}
       style={{
         margin: "0 auto",
-        width: single ? 50 : 35,
-        height: single ? 50 : 35,
+        width: single ? 70 : 50,
+        height: single ? 70 : 50,
       }}
       onError={(e) =>
         ((e.target as HTMLImageElement).src = "/images/no_logo.png")
@@ -63,8 +63,7 @@ const CoinNameXYZ = styled.div`
   flex: 1;
   font-family: var(--font-family-poppins);
   color: var(--ebony);
-  font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-18)" : "var(--font-size-12)"};
+  // font-size: ${(props: { single: boolean }) => props.single ? "var(--font-size-18)" : "var(--font-size-12)"};
   line-height: 1.1;
   text-align: center;
   letter-spacing: 0;
@@ -90,7 +89,7 @@ const Price = styled.div`
           
 
   font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
+          props.single ? "var(--font-size-18)" : "var(--font-size-16)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 16px;
@@ -244,9 +243,9 @@ const Card = ({
         </LogoImgContainer>
         <div className="my-2">
           <CoinNameXYZ {...{single}}>
-            <Span0>
+            <Span0 style={{fontSize:"20px" }}>
               {single && (
-                <span className="fw-bolder">{coins[symbol]?.name}</span>
+                <span className="fw-bolder" >{coins[symbol]?.name}</span>
               )}
               {!single && (
                 <Buttons.ClickableText onClick={onClick}>
@@ -254,7 +253,7 @@ const Card = ({
                 </Buttons.ClickableText>
               )}
             </Span0>
-            <Span1>
+            <Span1 style={{fontSize:"20px" }}>
               {single && <span>{coins[symbol]?.symbol}</span>}
               {!single && (
                 <Buttons.ClickableText onClick={onClick}>
@@ -269,9 +268,9 @@ const Card = ({
         <Price {...{ single }}
         style={{color:`${changeColor}`}}
         >{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
-        <Trend1 {...{single}}>
+        {/* <Trend1 {...{single}}>
           <Trend num={coins[symbol]?.trend || 0}/>
-        </Trend1>
+        </Trend1> */}
       </Group3991>
       {/* {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>} */}
       
@@ -279,7 +278,7 @@ const Card = ({
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}
           <Buttons.ClickableText onClick={onClick} className="p-2">
-            <VOTE>VOTE</VOTE>
+            <VOTE>To VOTE</VOTE>
             <img
               width="6"
               height="10"

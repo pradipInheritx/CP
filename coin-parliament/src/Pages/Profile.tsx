@@ -31,11 +31,11 @@ import { texts } from "../Components/LoginComponent/texts";
 
 export enum ProfileTabs {
   profile = "profile",
-  password = "password",
-  wallet = "wallet",
+  password = "password",  
   followers = "followers",
   mine = "mine",
   edit = "edit",
+  wallet = "wallet",
   votes = "votes",
   notifications = "notifications",
   ProfileNftGallery = "Album",
@@ -132,6 +132,7 @@ const Profile = () => {
                     {![
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
+                      ProfileTabs.wallet as string,
                     ].includes(pathname) && (
                       <ImageTabs
                         {...{
@@ -193,6 +194,7 @@ const Profile = () => {
                     {[
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
+                      ProfileTabs.wallet as string,
                     ].includes(pathname) &&
                       window.screen.width < 979 && (
                         <ImageTabs

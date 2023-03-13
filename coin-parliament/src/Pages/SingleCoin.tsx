@@ -27,6 +27,7 @@ import Confetti from "react-confetti";
 import CalculatingVotes from "../Components/CalculatingVotes";
 import { setInterval } from "timers";
 import AppContext from "../Contexts/AppContext";
+import Countdown from "react-countdown";
 
 export const Title = styled.h2`
   font: var(--font-style-normal) normal var(--font-weight-normal)
@@ -57,10 +58,12 @@ export const Other = styled(Buttons.ClickableText)`
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 // const getDatas = httpsCallable(functions, "getDatas");
 const cpviRealTimeData = httpsCallable(functions, "cpviRealTimeData");
+const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+
 const SingleCoin = () => {
   let params = useParams();
   const translate = useTranslation();
-  const {user, userInfo} = useContext(UserContext);
+  const {user, userInfo,votesLast24Hours} = useContext(UserContext);
   const {coins, totals} = useContext(CoinContext);
   const {showModal} = useContext(NotificationContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -78,8 +81,11 @@ const SingleCoin = () => {
   const [cssDegree, setcssDegree] = useState<any>([]);
   const [votePrice, setvotePrice] = useState<any>([]);
   const [votedDetails, setVotedDetails] = useState<any>([]);
+  const [voteNumber, setVoteNumber] = useState<any>([]);
   // const [graphLoading,setGraphLoading]=useState(false)
-  const {timeframes,setAllButtonTime,allButtonTime,forRun,setForRun} = useContext(AppContext);
+  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun,
+    remainingTimer,
+    voteRules} = useContext(AppContext);
   // console.log('choseTimeFrame1',selectedTimeFrameArray)
   const newTimeframe: any = []
   const AllcssDegree: any = [];
@@ -96,8 +102,22 @@ const SingleCoin = () => {
       return data.data as unknown as LineData[];
     }
   }, [params?.id, voteId, vote]);
-
+  
+// const getResultForPendingVote=async()=>{
+//   const data = await getResultPrice({
+//     coin1: "ETH",
+//     coin2: "",
+//     voteId: 'kJEjAQa6IwmwZGS3DRMI',
+//     voteTime: '1677839924282',
+//     valueVotingTime: '1563.00',
+//     expiration: '1677839984282',
+//     timestamp: '1677839984282'
+// });
+     
+//       return data.data as unknown as LineData[];
+// }
   useEffect(() => {
+    // 
     // console.log('cpvidata api called',vote.timeframe)
     if(vote.timeframe) {
       setTimeout(() => {
@@ -141,6 +161,12 @@ useEffect(() => {
   //   clearInterval(timer);
   // }
 }, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
+  
+  useEffect(() => {
+    const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
+  setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
+    
+  }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length])
   
 // console.log('selected time frame',cpviData)
  
@@ -225,6 +251,7 @@ const calcVote = useCallback(async () => {
 
   useEffect(() => {
     if (voteId) {
+      // getResultForPendingVote()
       onSnapshot(doc(db, "votes", voteId), (doc) => {
 
         // if () {
@@ -271,7 +298,7 @@ const calcVote = useCallback(async () => {
     return (
       (!vote.expiration && vote.success === undefined) ||
       (vote.expiration && vote.success !== undefined) ||
-      Date.now() >= vote.expiration
+      Date.now() >= vote?.expiration
     );
   }, [vote.expiration, vote.success,selectedTimeFrame ]);
   // console.log('canvote',canVote,vote)
@@ -293,6 +320,8 @@ const calcVote = useCallback(async () => {
 console.log('vote',vote)
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
+
+console.log(cpviData,"cpviData")
 
   return (
     <>
@@ -382,6 +411,32 @@ console.log('vote',vote)
                   )}
                 </div>
               </Container>
+              <div className="d-flex justify-content-center align-items-center mt-5 ">
+                    <Link to="" style={{textDecoration:'none'}}>
+                      <Other>
+                      {!voteNumber && remainingTimer ?                          
+                          <span style={{ marginLeft: '20px' }}>
+                            {/* @ts-ignore */}
+                            <Countdown date={remainingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {
+                        
+                          return (
+                            <span style={{color:'#6352e8',fontSize:'12px',fontWeight:400}}>
+                              {/* {hours < 10 ? `0${hours}` : hours}: */}
+                              {Number(voteRules?.maxVotes)} votes in {' '}
+                              {hours < 1 ? null : `${hours} :` }
+                              {minutes < 10 ? `0${minutes}` : minutes}:
+                              {seconds < 10 ? `0${seconds}` : seconds}
+                            </span>
+                          );
+                        
+                      }}
+                          /></span>
+                         :""}
+
+                      </Other>
+                    </Link>
+                </div>
               <div className="d-flex justify-content-center align-items-center mt-5 pb-5 mb-5">
                 <Link to="/coins" style={{textDecoration:'none'}}>
                   <Other>{translate("vote for other coins")}</Other>

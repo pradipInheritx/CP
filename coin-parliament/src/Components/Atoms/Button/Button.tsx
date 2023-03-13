@@ -198,66 +198,34 @@ const TimeframeButton = ({
   // @ts-ignore
 
   const getDeg = (value) => {
-    if (value !=undefined)
-    {
-    let t = value?.voteTime / 1000; //mili
-    let d = value?.timeframe.seconds; //second already
-    let liveTime = Date.now() / 1000;
-    let ori = t + d;
-    let val = (ori - liveTime) / d;
-    let deg = val * 360;    
-      setBorderDeg(Math.round(deg))      
-    }    
-  }
-  const ShowDeg = setInterval(() => {
-  if(borderDeg != 0)
-  {
-    getDeg(buttonDetails)
-  }
-  else {
-      clearInterval(ShowDeg)
-  }  
-  }
-  , 10000);
+    if (value != undefined) {
+      let t = value?.voteTime / 1000; //mili
+      let d = value?.timeframe.seconds; //second already
+      let liveTime = Date.now() / 1000;
+      let ori = t + d;
+      let val = (ori - liveTime) / d;
+      let deg = val * 360;
+      setBorderDeg(Math.round(deg));
+    }
+  };
 
   
   const getBorderColor = () => {
     let PricePer = livePrice / 100;
-    if (symbol2 == undefined) {    
-      if (buttonDetails?.direction == 1) {
-        // #218b17 #015117 #74ff5d
-        switch (true) {
-          case livePrice < votePrice + PricePer &&
-            livePrice > votePrice - PricePer:
-            setborderColor("#218b17");
-            break;
-          case livePrice < votePrice:
-            setborderColor("#218b17");
-            break;
-          case livePrice > votePrice:
-            setborderColor("#218b17");
-            break;
-          default:
-            console.log("not work");
+    if (symbol2 == undefined) { 
+      
+        if(votePrice + PricePer && livePrice > votePrice - PricePer) {         
+              setborderColor("#6352e8");
         }
-      } else if (buttonDetails?.direction == 0) {
-        switch (true) {
-          //#218b17 #74ff5d #015117 
-          case livePrice < votePrice + PricePer &&
-            livePrice > votePrice - PricePer:
-            setborderColor("#218b17");
-            break;
-          case livePrice < votePrice:
-            setborderColor("#218b17");
-            break;
-          case livePrice > votePrice:
-            setborderColor("#218b17");
-            break;
-          default:
-            console.log("not work");
-        }
-      }
-    } else if (symbol2 !== undefined && buttonDetails?.valueVotingTime) {
+        else{
+          if(buttonDetails?.direction == 1){
+            livePrice < votePrice ?setborderColor("#218b17"):setborderColor("#218b17");
+          }else if(buttonDetails?.direction == 0){
+            livePrice > votePrice ? setborderColor("#218b17"):setborderColor("#218b17");
+          }
+
+        }  
+    } else if (symbol2 !== undefined) {
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
       let bothCurrentPrice = [
         buttonDetails?.valueVotingTime[0],
@@ -270,63 +238,34 @@ const TimeframeButton = ({
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
       if ((averageValue == averageValue)) {
-        setborderColor("#218b17");
+        setborderColor("#6352e8");
       } else {
         if (buttonDetails?.direction == 1) {
           winner == buttonDetails?.direction
-            ? setborderColor("#74ff5d") 
-            : setborderColor("#015117");
+            ? setborderColor("#3b17b7") 
+            : setborderColor("#d4d0f3");
         } else if (buttonDetails?.direction == 0) {
           winner != buttonDetails?.direction
-            ? setborderColor("#74ff5d")
-            : setborderColor("#015117");
+            ? setborderColor("#3b17b7")
+            : setborderColor("#d4d0f3");
         }
       }
-        // if (buttonDetails?.direction == 1) {
-        //   // #218b17 #015117 #74ff5d
 
-        //   let FirstPricePer = bothLivePrice[1] / 100;
-        //   switch (true) {
-        //     case bothLivePrice[1] < bothCurrentPrice[1] + FirstPricePer &&
-        //       bothLivePrice[1] > bothCurrentPrice[1] - FirstPricePer:
-        //       setborderColor("#218b17");
-        //       break;
-        //     case bothLivePrice[1] < bothCurrentPrice[1]:
-        //       setborderColor("#218b17");
-        //       break;
-        //     case bothLivePrice[1] > bothCurrentPrice[1]:
-        //       setborderColor("#218b17");
-        //       break;
-        //     default:
-        //       console.log("not work");
-        //   }
-        // } else if (buttonDetails?.direction == 0) {
-        //   let SectPricePer = bothLivePrice[0] / 100;
-        //   switch (true) {
-        //     //#218b17 #74ff5d #015117
-        //     case bothLivePrice[0] < bothCurrentPrice[1] + SectPricePer &&
-        //       bothLivePrice[0] > bothCurrentPrice[1] - SectPricePer:
-        //       setborderColor("#218b17");
-        //       break;
-        //     case bothLivePrice[0] < bothCurrentPrice[1]:
-        //       setborderColor("#218b17");
-        //       break;
-        //     case bothLivePrice[0] > bothCurrentPrice[1]:
-        //       setborderColor("#218b17");
-        //       break;
-        //     default:
-        //       console.log("not work");
-        //   }
-        // }
     }
   };
   
+
+
   return (
     <Timeframe
       as={"div"}
       style={{
-        opacity: showTimer && checked ? 0.48 : showTimer && borderColor!="white" ?0.48:"",       
-        background: showTimer && checked  ?`radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor } ${ borderDeg}deg, white ${borderDeg}deg ,white 360deg, green)`:"",        
+        opacity:
+          showTimer && checked ? 0.48 : borderColor != "white" ? 0.48 : "",
+        background:
+          showTimer && checked
+            ? `radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor} ${borderDeg}deg, white ${borderDeg}deg ,white 360deg, green)`
+            : "",
       }}
       {...{
         disabled,

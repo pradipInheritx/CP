@@ -123,6 +123,7 @@ import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
+import Wallet from "./Components/Profile/Wallet";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -234,7 +235,8 @@ const handleClick=()=>{
   );
 
   useEffect(() => {
-    navigator.serviceWorker.addEventListener("message", (message) => {
+    if('serviceWorker' in navigator) {
+    navigator?.serviceWorker?.addEventListener("message", (message) => {
       const {
         notification: { body, title },
       } = message.data["firebase-messaging-msg-data"] as {
@@ -247,6 +249,7 @@ const handleClick=()=>{
         </div>
       );
     });
+  }
   });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
@@ -378,8 +381,11 @@ const handleClick=()=>{
   const TimeframesMng = new TimeframesManager(timeframes, setTimeframes);
   const UserTypeMng = new UserTypeManager(userTypes, setUserTypes);
 
+
+
+
   if (langDetector.current) {
-    (langDetector.current as unknown as HTMLInputElement).addEventListener(
+    (langDetector?.current as unknown as HTMLInputElement)?.addEventListener(
       "change",
       (event) => {
         const target = event.target as HTMLInputElement;
@@ -663,6 +669,21 @@ votesLast24HoursRef.get()
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
+  
+// useEffect(() => {
+//   async function removeData() {
+//     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
+//     const batch = firebase.firestore().batch();
+//     voteData.forEach(doc => {
+//       batch.delete(doc.ref);
+//     });
+//     await batch.commit();
+  
+//     console.log("User vote data deleted");
+//   }
+//   removeData()
+// }, [])
+
 
   return loader ? (
     <div
@@ -1031,6 +1052,14 @@ votesLast24HoursRef.get()
                                             path={ProfileTabs.password}
                                             element={<Security />}
                                           />
+                                          <Route
+                                            path={
+                                              ProfileTabs.wallet
+                                            }
+                                            element={<Wallet />}
+                                          /> 
+                                          
+
                                           {!isV1() && (
                                             <Route
                                               path={ProfileTabs.mine}
@@ -1048,9 +1077,7 @@ votesLast24HoursRef.get()
                                           <Route
                                               path={ProfileTabs.share}
                                               element={<Pool />}
-                                          />
-                                    
-
+                                          />                                    
                                           <Route
                                             path={ProfileTabs.notifications}
                                             element={<Notifications />}
@@ -1067,6 +1094,7 @@ votesLast24HoursRef.get()
                                             }
                                             element={<ProfileNftGalleryType />}
                                           />
+                                         
                                         </Route>
                                         {/* Fowller component  start*/}
                                         <Route

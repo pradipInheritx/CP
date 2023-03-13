@@ -52,10 +52,12 @@ border: 2px solid var(--color-6352e8);
 box-shadow: 0 3px 6px #00000029;
 border-radius: 0 20px 20px 20px;
 opacity: 1;
-font: var(--font-style-normal) normal var(--font-weight-normal) var(--font-size-11)/var(--line-spacing-13) var(--font-family-poppins);
+font: var(--font-style-normal) normal var(--font-weight-normal) var(--font-size-12)/var(--line-spacing-13) var(--font-family-poppins);
 letter-spacing: var(--character-spacing-0);
 color: var(--color-ffffff);
-text-align: left;
+text-align: center;
+padding:15px;
+// font-size:13px;
 }
 `
 export type LoginProps = {

@@ -185,7 +185,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                     {!vote.valueExpirationTime && (
                       <Row className="text-body profile_coin_vote_txt">
                         <Col >
-                          <MyCountdown expirationTime={vote.expiration || 0} />
+                          <MyCountdown expirationTime={vote.expiration || 0} vote={vote } voteId={id } coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1] }  />
                         </Col>
                       </Row>
                     )}
@@ -279,7 +279,8 @@ const calculateWinner = (vote: VoteResultProps) =>
 const VotedCard = ({ vote, id,coinSocketData,callbackFun }: VotedCardProps) => {
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
-   console.log('votecardata',coins,vote.coin)
+  // console.log('votecardata', coins, vote.coin)
+  const voteCoins = vote?.coin.split("-");
  useEffect(() => {
    
    if(!vote.valueExpirationTime){
@@ -351,7 +352,7 @@ let votetime= a.diff(b)
                     <strong>{vote.score} CMP</strong>
                   )}
                   {!vote.valueExpirationTime && (
-                    <MyCountdown expirationTime={vote.expiration || 0} />
+                    <MyCountdown expirationTime={vote?.expiration || 0} vote={vote } voteId={id } coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1] } />
                   )}
                 </CoinVoteTimer>
               </div>

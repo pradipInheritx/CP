@@ -140,6 +140,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
             {![
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
+              ProfileTabs.wallet as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -202,6 +203,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
             {[
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
+              ProfileTabs.wallet as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
