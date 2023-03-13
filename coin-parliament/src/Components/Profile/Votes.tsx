@@ -32,8 +32,8 @@ const Votes = () => {
           end: start + pageSize,
           userId: user?.uid,
         });
-        if (newVotes.data) {
-          setVotes(newVotes.data);
+        if (newVotes?.data) {
+          setVotes(newVotes?.data);
           const coinStat=newVotes?.data?.coins?.votes?.map(item=>item?.coin)
           // const pairStat=[]
            // @ts-ignore
@@ -84,7 +84,7 @@ const Votes = () => {
   // }, [])
  
   const MyVotedCard = useCallback(({ v,coinSocketData,callbackFun }: { v: VoteSnap, coinSocketData?:any,callbackFun?:any }) => {
-    return <VotedCard vote={v} id={v.id} coinSocketData={coinSocketData} callbackFun={callbackFun}/>;
+    return <VotedCard vote={v} id={v.id} coinSocketData={coinSocketData} callbackFun={callbackFun} />;
   }, []);
 
   const getButtons = useCallback(

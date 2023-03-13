@@ -313,14 +313,17 @@ const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMa
 
 export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol2}:
   {
-    expirationTime?: number, vote?: any, voteId?: any
+    expirationTime: number, vote?: any, voteId?: any
   coins?:any,symbol1?:any,symbol2?:any
   }) => {
 
-  const [coin1, coin2] = [
-    coins[symbol1]?.symbol.toLowerCase() || "",
-    coins[symbol2]?.symbol.toLowerCase() || "",
-  ];
+  
+  // const [coin1, coin2] = [
+  //   coins[symbol1]?.symbol.toLowerCase() || "",
+  //   coins[symbol2]?.symbol.toLowerCase() || "",
+  // ];
+  const coin1 = `${coins && symbol1? coins[symbol1]?.symbol.toLowerCase() || "":""}`
+  const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
   
   const checkprice = async() => {
    const data = await getPriceCalculation({            
@@ -348,11 +351,11 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
     <Countdown
       date={expirationTime}
       renderer={({ hours, minutes, seconds, completed }) => {
-        if (completed) {
+        if (completed ) {
           
           checkprice()
       // return data;
-          return <span style={{color:"red"}}>loading...</span>;
+          return <span >loading...</span>;
         } else {
           return (
             <span className="" style={{color:'#6352e8',fontSize:'17px',fontWeight:400,marginLeft:"10px"}}>
