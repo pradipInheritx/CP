@@ -34,7 +34,7 @@ const Votes = () => {
         });
         // @ts-ignore
         let result= JSON.parse(newVotes?.data)
-        if (newVotes?.data) {          
+        if (newVotes?.data) {
           setVotes(result);
           const coinStat=newVotes?.data?.coins?.votes?.map(item=>item?.coin)
           // const pairStat=[]
