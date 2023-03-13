@@ -184,7 +184,8 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   <Col>
                     {!vote.valueExpirationTime && (
                       <Row className="text-body profile_coin_vote_txt">
-                        <Col >
+                          <Col >
+                            
                           <MyCountdown expirationTime={vote.expiration || 0} />
                         </Col>
                       </Row>
