@@ -1,6 +1,13 @@
-import {firestore} from "firebase-admin";
-// import { type } from "os";
-import {userConverter, UserProps} from "../models/User";
+import { firestore } from "firebase-admin";
+import * as admin from 'firebase-admin';
+// import { getStorage, getDownloadURL,ref } from "firebase/storage"
+// import path from "path";
+import { userConverter, UserProps } from "../models/User";
+// import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+// const admin = require("firebase-admin");
+// const firebase = require('firebase')
+
 
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -96,7 +103,7 @@ async function getAllNftGallery() {
   const snapshot = await firestore().collection("nft_gallery").get();
   const array: any = [];
   snapshot.forEach((doc) => {
-    array.push({id: doc.id, ...doc.data()});
+    array.push({ id: doc.id, ...doc.data() });
   });
   console.log("Array", array);
   return array;
@@ -105,33 +112,31 @@ async function getAllNftGallery() {
 // get collection data by document id
 async function getNftCollectionDataById(docId: any) {
   const collectionData = await firestore()
-      .collection("nft_gallery")
-      .doc(docId)
-      .get();
+    .collection("nft_gallery")
+    .doc(docId)
+    .get();
   return collectionData.data();
 }
 
 // get all reward transactions by card id
 async function getRewardTransactionsByCardId(cardId: number) {
   const transaction = await firestore()
-      .collection("reward_transactions")
-      .where("winData.firstRewardCardId", "==", cardId)
-      .get();
-  // console.log("getRewardTransactionsByCardId transaction -- ", transaction)
-  const transData: any = [];
+    .collection("reward_transactions")
+    .where('winData.firstRewardCardId', '==', cardId)
+    .get();
+  let transData: any = [];
   transaction.forEach((item: any) => {
     transData.push(item.data());
-  });
-  console.log("getRewardTransactionsByCardId -- ", transData);
+  })
   return transData;
 }
 
 // get multiple users by user ids
 async function getMultipleUsersByUserIds(userIds: Array<string>) {
   const userList: any = await firestore()
-      .collection("users")
-      .where("uid", "in", userIds)
-      .get();
+    .collection("users")
+    .where("uid", "in", userIds)
+    .get();
 
   const users: any = [];
   userList.forEach((item: any) => {
@@ -191,7 +196,7 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
     element.setDetails.forEach((setDetail: any) => {
       const setId = setDetail.id;
       setDetail.cards.forEach((cardDetail: any) => {
-        cards.push({collectionId, collectionName, collectionDocId, setId, ...cardDetail});
+        cards.push({ collectionId, collectionName, collectionDocId, setId, ...cardDetail });
       });
     });
   });
@@ -231,7 +236,7 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   const pickedTierArray = cardsByTier[selectedCardTier];
 
   console.log("PICKED TIER ARRAY", pickedTierArray);
-  return {tierName: selectedCardTier, pickedTierArray};
+  return { tierName: selectedCardTier, pickedTierArray };
 };
 
 const groupBy = <T>(keys: (keyof T)[]) => (array: T[]): Record<string, T[]> =>
@@ -275,20 +280,22 @@ export const claimReward: (
   uid: string
 ) => { [key: string]: any } = async (uid: string) => {
   console.log("Beginning execution claimReward function");
+  uploadImage()
+  // imageUpload('functions/src/images/nature.jpg')
   const userRef = firestore()
-      .collection("users")
-      .doc(uid)
-      .withConverter(userConverter);
+    .collection("users")
+    .doc(uid)
+    .withConverter(userConverter);
 
   const userProps = await userRef.get();
   const userData = userProps.data();
 
-  const {total, claimed} = userData?.rewardStatistics || {total: 0, claimed: 0};
+  const { total, claimed } = userData?.rewardStatistics || { total: 0, claimed: 0 };
 
   if ((total - claimed) > 0) {
     const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
     const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
-    const {pickedTierArray, tierName} = await pickCardTierByPercentageArray(tierPickupArray);
+    const { pickedTierArray, tierName } = await pickCardTierByPercentageArray(tierPickupArray);
     const firstRewardCardObj: any = pickRandomValueFromArray(pickedTierArray);
     console.log("FIRST REWARD CARD", firstRewardCardObj);
     const firstRewardCard = firstRewardCardObj["name"];
@@ -296,16 +303,16 @@ export const claimReward: (
     console.log("firstRewardCardSerialNo---", firstRewardCardSerialNo, typeof (firstRewardCardSerialNo));
     const secondRewardExtraVotes = getRandomNumber(distribution[cmp].extraVotePickFromRange);
     const thirdRewardDiamonds = getRandomNumber(distribution[cmp].diamondsPickFromRange);
-    const rewardObj = userData?.rewardStatistics || {total: 0, claimed: 0, cards: [], extraVote: 0, diamonds: 0};
+    const rewardObj = userData?.rewardStatistics || { total: 0, claimed: 0, cards: [], extraVote: 0, diamonds: 0 };
     rewardObj.claimed += 1;
     rewardObj?.cards?.length ? rewardObj.cards.push(firstRewardCard) : rewardObj.cards = [firstRewardCard];
     rewardObj?.extraVote ? rewardObj.extraVote += secondRewardExtraVotes : rewardObj.extraVote = secondRewardExtraVotes;
     rewardObj?.diamonds ? rewardObj.diamonds += thirdRewardDiamonds : rewardObj.diamonds = thirdRewardDiamonds;
 
     await firestore()
-        .collection("users")
-        .doc(uid)
-        .set({rewardStatistics: rewardObj}, {merge: true});
+      .collection("users")
+      .doc(uid)
+      .set({ rewardStatistics: rewardObj }, { merge: true });
 
     const collectionData: any = await getNftCollectionDataById(firstRewardCardObj.collectionDocId);
     const setDetails = collectionData.setDetails.find((data: any) => data.id == firstRewardCardObj.setId);
@@ -315,12 +322,12 @@ export const claimReward: (
     const transData: any = await getRewardTransactionsByCardId(cardData.cardId);
     console.log("transData---", transData);
     const userIds = transData.map((item: any) => item.user);
-    cardData.noOfCardHolders = Array.from(new Set(userIds)).length+1;
+    cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1;
 
     await firestore()
-        .collection("nft_gallery")
-        .doc(firstRewardCardObj.collectionDocId)
-        .set(collectionData);
+      .collection("nft_gallery")
+      .doc(firstRewardCardObj.collectionDocId)
+      .set(collectionData);
 
     const winData: winRewardData = {
       firstRewardCardType: tierName,
@@ -398,14 +405,14 @@ export const addReward: (
     const claimedUpdated = before.rewardStatistics?.claimed || 0;
     // console.log('newReward --->', newReward);
     await firestore()
-        .collection("users")
-        .doc(userId)
-        .set({
-          rewardStatistics: {
-            total: newReward,
-            claimed: claimedUpdated,
-          },
-        }, {merge: true});
+      .collection("users")
+      .doc(userId)
+      .set({
+        rewardStatistics: {
+          total: newReward,
+          claimed: claimedUpdated,
+        },
+      }, { merge: true });
 
     console.log("Finished execution addReward function");
     return;
@@ -421,10 +428,10 @@ export const cardHolderListing: (
       firstRewardCard: string,
       firstRewardCardCollection: string,
       firstRewardCardId: number,
-      firstRewardCardSerialNo : string,
-      firstRewardCardType : string,
-      secondRewardExtraVotes : number,
-      thirdRewardDiamonds : number
+      firstRewardCardSerialNo: string,
+      firstRewardCardType: string,
+      secondRewardExtraVotes: number,
+      thirdRewardDiamonds: number
     },
     user: string
   }[] = await getRewardTransactionsByCardId(cardId);
@@ -435,7 +442,73 @@ export const cardHolderListing: (
   // console.log("users cardHolderListing---", users)
   return users;
 };
+const uploadImage = async () => {
+  const ref = await admin.storage().bucket('default-bucket')
+  console.log("File name --- ")
 
+  const metaData = {
+    contentType: 'Image/jpg'
+  }
+  ref.upload("./src/images/nature.jpg", metaData)
+    .then(() => getImageUrl("SWnA6wLlv9bPVRIlHKHY", 1, 0))
+    .catch((error: any) => {
+      console.log("EROROR image", error)
+    });
+
+  // const [file] = await ref.file("nature.jpg").makePublic();
+
+
+  // .then((snapshot: any) => {
+  //   // snapshot.ref.getDownloadURL()
+  //   console.log("snapshot.ref() -- ", snapshot["File"])
+  //   // console.log("snapshot[0].File.metaData -- ", snapshot[0])
+  // })
+  // .then((url: any) => console.log("Url ", url))
+
+}
+
+const getImageUrl = async (collectionId: string, setID: number, cardId: number) => {
+  const ref = await admin.storage().bucket('default-bucket')
+  const [, , meta] = await ref.getFiles({
+    maxResults: 1
+  })
+  const url = meta.items.filter((f: any) => f.contentType !== 'text/plain').shift().mediaLink;
+  console.log("Iamge Url ", url)
+
+  const collectionData: any = await firestore()
+    .collection("ntf_gallery")
+    .doc("SWnA6wLlv9bPVRIlHKHY")
+    .get();
+  console.log("collectionData--- ", collectionData.data())
+  const collection = collectionData.data();
+  const setDetails = collection.setDetails.find((data: any) => {
+    console.log("data.id, setId", data.id, setID)
+    data.id == setID
+  })
+  console.log("setDeatils --- ", setDetails)
+  const cardData = setDetails.cards.find((item: any) => {
+    console.log("data.id, setId", item.id, cardId)
+    item.cardId == cardId
+  });
+  cardData.imageUpload = url
+
+
+
+  await firestore() 
+    .collection("nft_gallery")
+    .doc(collectionId)
+    .set(collectionData);
+
+  // const ntfGallery = await firestore()
+  //   .collection("nft_gallery")
+  //   .doc('SWnA6wLlv9bPVRIlHKHY')
+
+  // // Atomically add a new region to the "regions" array field.
+  // ntfGallery.update({
+  //   regions: firestore.FieldValue.arrayUnion("greater_virginia")
+  // });
+
+}
 
 // type NtfCards = {
 //   collectionId: number,
