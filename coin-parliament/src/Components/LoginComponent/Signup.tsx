@@ -22,6 +22,7 @@ import { functions } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 
+
 const Login = styled.div`
   margin-left:5px;
   margin-right:7px;
@@ -98,7 +99,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
               provider={provider}
               onClick={() =>
                 // @ts-ignore
-                {agree? refer?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,refer):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast('You must agree to t&c', ToastType.ERROR)}
+                {agree? refer?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,refer):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast(texts.AgreetNc, ToastType.ERROR)}
               }
             />
           </div>

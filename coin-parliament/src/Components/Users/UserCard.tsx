@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import {
   HelveticaneueRegularNormalBlack13px,
@@ -13,8 +13,10 @@ import { Leader } from "../../Contexts/CoinsContext";
 import Icon from "../Atoms/Checkbox/Icon";
 import AddFollower from "../icons/AddFollower";
 import Following from "../icons/Following";
-import { Link, useLocation } from "react-router-dom";
+import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "../../common/models/Dictionary";
+import AppContext from "../../Contexts/AppContext";
+import UserContext from "../../Contexts/User";
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -147,6 +149,26 @@ const UserCard = ({
   const translate = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
+  const navigate = useNavigate()
+  const { setFollowerUserId } = useContext(AppContext)
+  const {userInfo } = useContext(UserContext);
+  
+  // console.log(userInfo?.uid,"checkuserid")
+
+  const redirectTab = () => {
+    if (leader != undefined && setFollowerUserId != undefined) setFollowerUserId(leader?.userId)
+    {
+      // @ts-ignore
+      if (userInfo?.uid == leader?.userId) {
+        // console.log("ProfileDone")
+        navigate('/Profile/mine')
+      } else {
+        navigate('/followerProfile/mine')
+        // console.log("ProfileNotDone")
+      }
+    }
+}
+
   return (
     <Component515
       style={{ boxShadow: !pathname?.includes("/followers") ? "none" : "" }}
@@ -159,7 +181,12 @@ const UserCard = ({
           padding: pathname?.includes("/influencers") ? "10px 0" : "",
         }}
       >
-        <ElementsAvatarAImage1>
+        <ElementsAvatarAImage1 onClick={e => {
+          
+          redirectTab()
+          
+      
+      }}>
           <Avatar url={getAvatar(leader)} />
         </ElementsAvatarAImage1>
         <FlexCol>

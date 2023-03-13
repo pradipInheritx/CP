@@ -3,6 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
+import {texts} from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
@@ -15,6 +17,7 @@ import {
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
 import Profile, { ProfileTabs } from "./Pages/Profile";
+import FollowerProfile, { FollowerProfileTabs } from "./Pages/FollowerProfile";
 import Header from "./Components/Header";
 import NotificationContext, { ToastType } from "./Contexts/Notification";
 import CoinsContext, { Leader, Totals } from "./Contexts/CoinsContext";
@@ -114,6 +117,10 @@ import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
+import FwMine from "./Components/FollowerProfile/FwMine";
+import FwFollow from "./Components/FollowerProfile/FwFollow";
+import FwVotes from "./Components/FollowerProfile/FwVotes";
+import FwPool from "./Components/FollowerProfile/FwPool";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -300,6 +307,7 @@ const handleClick=()=>{
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [remainingTimer,setRemainingTimer]=useState(0)
+  const [followerUserId,setFollowerUserId]=useState<string>('')
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -310,12 +318,22 @@ const handleClick=()=>{
     defaultUserType,
   ] as UserTypeProps[]);
 
-  const updateUser = useCallback(async (user?: User) => {
+  const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
+    console.log(user,"userInfoId");
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
+
+  
+  // const FollowerData = async(id:any) => {     
+  //   const Followerinfo =  await getFollowerInfo(id);
+  //   return Followerinfo
+  // }
+
+  // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
+  
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined) {
       setLoader(true);
@@ -676,6 +694,8 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  followerUserId,
+                  setFollowerUserId,
                   singalCardData,
                   setSingalCardData,
                   remainingTimer,
@@ -736,7 +756,7 @@ votesLast24HoursRef.get()
                     );
                   } else {
                     if (u.every((uu) => uu.share)) {
-                      showToast("total share must be 100%", ToastType.ERROR);
+                      showToast(texts.Total100, ToastType.ERROR);
                     }
                   }
                 },
@@ -1024,6 +1044,12 @@ votesLast24HoursRef.get()
                                             element={<Votes />}
                                           />
                                           <Route
+                                              path={ProfileTabs.share}
+                                              element={<Pool />}
+                                          />
+                                    
+
+                                          <Route
                                             path={ProfileTabs.notifications}
                                             element={<Notifications />}
                                           />
@@ -1039,11 +1065,34 @@ votesLast24HoursRef.get()
                                             }
                                             element={<ProfileNftGalleryType />}
                                           />
-                                          <Route
-                                            path={ProfileTabs.share}
-                                            element={<Pool />}
-                                          />
                                         </Route>
+                                        {/* Fowller component  start*/}
+                                        <Route
+                                          path={FollowerProfileTabs.FollowerProfile}
+                                          element={<FollowerProfile />}
+                                        >
+                                          {!isV1() && (
+                                            <Route
+                                              path={FollowerProfileTabs.mine}
+                                              element={<FwMine />}
+                                            />
+                                          )}
+                                          
+                                           <Route
+                                            path={FollowerProfileTabs.followers}
+                                            element={<FwFollow />}
+                                          />
+                                          <Route
+                                            path={FollowerProfileTabs.votes}
+                                            element={<FwVotes />}
+                                          />
+                                          <Route
+                                              path={FollowerProfileTabs.share}
+                                              element={<FwPool />}
+                                          />
+                                          </Route>
+                                          
+                                        {/* Fowller component  end*/}
                                         <Route
                                           path='/upgrade'
                                           element={<UpgradePage />}

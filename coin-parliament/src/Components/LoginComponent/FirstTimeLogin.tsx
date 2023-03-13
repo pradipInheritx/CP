@@ -111,6 +111,7 @@ useEffect(() => {
                   name="username"
                   required
                   value={username}
+                  // @ts-ignore
                   maxlength={10}
                   onChange={(e) => {
                     setUsername(e.target.value.replace(" ", "_").toLowerCase());

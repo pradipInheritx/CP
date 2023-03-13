@@ -27,6 +27,7 @@ import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
 import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
+import { texts } from "../Components/LoginComponent/texts";
 
 export enum ProfileTabs {
   profile = "profile",
@@ -92,10 +93,11 @@ const Profile = () => {
       const userRef = doc(db, "users", user?.uid);
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
-        showToast(translate("user info was updated"));
+        showToast(translate(texts.UserInfoUpdate));
+        
         toast.dismiss();
       } catch (e) {
-        showToast(translate("user failed to be updated"), ToastType.ERROR);
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }
     }
   };
@@ -137,7 +139,7 @@ const Profile = () => {
                           handleSelect: (eventKey: string | null) => {
                             if (isV1() && eventKey === ProfileTabs.mine) {
                               showToast(
-                                translate("Feature will be available soon"),
+                                translate(texts.FeatureAvailableSoon),
                                 ToastType.INFO
                               );
                               return;
@@ -199,7 +201,7 @@ const Profile = () => {
                             handleSelect: (eventKey: string | null) => {
                               if (isV1() && eventKey === ProfileTabs.mine) {
                                 showToast(
-                                  translate("Feature will be available soon"),
+                                  translate(texts.FeatureAvailableSoon),
                                   ToastType.INFO
                                 );
                                 return;

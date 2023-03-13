@@ -18,8 +18,8 @@ const Influencers = () => {
       setChosenUserType('')
     }
   }, [chosenUserType])
-
-  console.log(user, "userInfo");
+// @ts-ignore
+  console.log(user, "checkbothuserid");
   return (
     <div>
       <InfluencersComponent

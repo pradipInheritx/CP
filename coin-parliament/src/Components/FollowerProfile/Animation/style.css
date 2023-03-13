@@ -1,0 +1,79 @@
+.boxHolder {position:absolute ; margin-left:93px; margin-top:100px; z-index:99999}
+
+.box { position:absolute ; z-index:2}
+.cap {
+  position: absolute;
+  top: -44px;
+  left: 2px;
+  z-index: 3;
+}
+
+.cardBg{ background: url(images/points.png) no-repeat; width: 123px; height: 116px; display: flex;
+  justify-content: center;}
+
+
+  .cardBg.votes{ background: url(images/votes.png) no-repeat; width: 123px; height: 116px; display: flex;
+    justify-content: center;}
+
+.blast {position:absolute; z-index:1 ; opacity:0 ; width:200px ; left:-10px}
+.b2 {position:absolute; z-index:-5 ; opacity:0 ; width:200px ; left:-10px}
+.b3 {position:absolute; z-index:-5 ; opacity:0 ; width:200px ; left:-10px}
+
+.whiteRound { width:78px; height:78px;  text-align:center; color:#6252e6;  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;}
+
+
+.whiteRound h1 {
+  font-family: arial;
+  font-size: 36px;
+  font-weight: bold;
+  margin-top: 19px;
+  padding-top: 7px;
+  margin-bottom: 0;
+}
+
+
+
+
+.trader {
+  /* position: absolute;
+  left: 0;
+  scale: 0.1; z-index:2; */
+  position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    scale: 0.1;
+    z-index:2;
+    width: 161px;
+}
+.trader.trader_active {}
+.boxBlank { z-index:3}
+
+.blueCard1 {
+  z-index: 2;
+  position: absolute;
+  left: 20px;
+  top: 63px;
+  scale: 0.1;
+}
+
+.blueCard2 {
+  z-index: 2;
+  position: absolute;
+  left: 16px;
+  top: 63px;
+  scale: 0.1;
+}
+.backdrop{
+  position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.50);
+    z-index: 9999;
+}
+
+/* .trader { display: none !important;}
+
+.cardBg { display: none !important;} */
