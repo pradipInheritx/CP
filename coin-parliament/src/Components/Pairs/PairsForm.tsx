@@ -109,6 +109,7 @@ const PairsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));

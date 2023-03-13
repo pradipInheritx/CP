@@ -74,11 +74,9 @@ const VoteForm = function <
         e.preventDefault();
         submit();
       }}
+      style={{maxWidth:'450px', margin:'0 auto'}}
     >
-      <div
-        className='mt-4'
-        style={{ minWidth: "342px", marginLeft: symbol2 ? "-22px" : "" }}
-      >
+      <div className="mt-4" style={{marginLeft:symbol2?'':'24px',marginRight:symbol2?'':'24px'}}>
         <SelectTimeframes
           {...{
             selected: selectedTimeFrame,

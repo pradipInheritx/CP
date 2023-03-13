@@ -8,6 +8,7 @@ export type VoteRules = {
   givenCPM: number;
   CPMReturnSuccess: number;
   CPMReturnFailure: number;
+  timeLimit:number;
 };
 
 export type CPMSettings = {
@@ -25,6 +26,13 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  remainingTimer?:any;
+  nftAlbumData?: any;
+  singalCardData?:any,
+  setSingalCardData?:any,
+  setNftAlbumData: any;
+  allPariButtonTime: any;
+  setAllPariButtonTime: any;
   allButtonTime:any;
   setForRun?:any;
   forRun?:any;

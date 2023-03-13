@@ -94,13 +94,14 @@ const UpgradePage = () => {
         style={{
           background: "#160133",
           height: `${screenHeight()}`,
+          // width: `${window.screen.width > 979 ? "730px" : "100%"}`,
         }}
       >
         <div
           className=''
           style={{
             background: "#160133",
-            width: `${window.screen.width > 979 ? "60%" : "100%"}`,
+            width: `${window.screen.width > 979 ? "730px" : "100%"}`,
           }}
         >
           <TextContainer
@@ -262,7 +263,7 @@ const UpgradePage = () => {
             </button>
           </div>
 
-          <TextContainer
+          {/* <TextContainer
             className=' d-xl-none'
             style={{
               textTransform: "none",
@@ -313,7 +314,7 @@ const UpgradePage = () => {
                 <span>$34.99</span>
               </div>
             </PriceCard>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

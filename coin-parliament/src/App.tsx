@@ -113,6 +113,7 @@ import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
+import SingalCard from "./Pages/SingalCard";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -127,7 +128,43 @@ function App() {
   const { width } = useWindowSize();
   const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
+  const [displayFullscreen,setDisplayFullscreen]=useState('none')
+// fullscreen mode
+useEffect(() => {
+  const modal = document.getElementById("fullscreen-modal");
+window.addEventListener('load', () => {
+  setDisplayFullscreen('block')
+});
+}, [])
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+// @ts-ignore
+const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
 
+const handleClick=()=>{
+  
+  setDisplayFullscreen('none')
+  if (isMobile && fullscreenEnabled) {
+    const elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } 
+    // @ts-ignore
+    else if (elem?.webkitRequestFullscreen) {
+       // @ts-ignore
+      elem?.webkitRequestFullscreen();
+    }
+     // @ts-ignore 
+    else if (elem?.mozRequestFullScreen) {
+       // @ts-ignore
+      elem?.mozRequestFullScreen();
+    }
+     // @ts-ignore
+     else if (elem?.msRequestFullscreen) {
+        // @ts-ignore
+      elem?.msRequestFullscreen();
+    }
+  }
+}
   useEffect(() => {
       window.scrollTo({
         top: 0,
@@ -218,11 +255,15 @@ function App() {
     classes.forEach((c) => body.classList.add(c.toLowerCase()));
   }, [pathname]);
   const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  const [changePrice, setChangePrice] = useState<any>(0);
   const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
   const [authStateChanged, setAuthStateChanged] = useState(false);
   const [allButtonTime, setAllButtonTime] = useState<any>([]);
+  const [allPariButtonTime, setAllPariButtonTime] = useState<any>([]);
+  const [singalCardData, setSingalCardData] = useState<any>([]);
+  const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
@@ -258,6 +299,7 @@ function App() {
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
+  const [remainingTimer,setRemainingTimer]=useState(0)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -309,7 +351,7 @@ function App() {
   useEffect(() => {
     setMounted(true);
   }, [firstTimeLogin]);
-console.log('extravote', votesLast24Hours)
+
   const [fcmToken, setFcmToken] = useState<string>("");
   const CPMSettingsMng = new CPMSettingsManager(CPMSettings, setCPMSettings);
   const VoteRulesMng = new VoteRulesManager(voteRules, setVoteRules);
@@ -365,7 +407,7 @@ console.log('extravote', votesLast24Hours)
   useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
       setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
-      console.log("livedata", doc.data());
+      
     });
 
     onSnapshot(
@@ -438,9 +480,10 @@ console.log('extravote', votesLast24Hours)
     });
 
     onSnapshot(doc(db, "stats", "coins"), (doc) => {
+     
       const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
       setCoins(newAllCoins);
-      saveCoins(newAllCoins);
+      // saveCoins(newAllCoins);
     });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
@@ -457,6 +500,7 @@ console.log('extravote', votesLast24Hours)
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
+      
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
     });
@@ -471,7 +515,7 @@ console.log('extravote', votesLast24Hours)
       );
     });
   }, [user?.uid]);
-  console.log("user", userInfo);
+  
   useEffect(() => {
     const auth = getAuth();
 
@@ -528,10 +572,15 @@ console.log('extravote', votesLast24Hours)
       });
     }
   }, [user, fcmToken, coins]);
+  
 useEffect(() => {
-  if(userUid){
+  
+  if(user?.uid){
+   
   const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+// const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
 const votesLast24HoursRef = firebase
             .firestore()
             .collection("votes")
@@ -542,12 +591,43 @@ const votesLast24HoursRef = firebase
 votesLast24HoursRef.get()
     .then((snapshot) => {
         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-        console.log('extravoteSuccess',snapshot.docs)
+      
+        const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+      let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
+  
+  setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+  
+  setTimeout(() => {
+    if(user?.uid){
+    
+      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+    // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+    const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+   
+    const votesLast24HoursRef = firebase
+                .firestore()
+                .collection("votes")
+                .where("userId", "==", user?.uid)
+                .where("voteTime", ">=", last24Hour)
+                .where("voteTime", "<=", Date.now());
+    // console.log('extravote11',votesLast24HoursRef)
+    votesLast24HoursRef.get()
+        .then((snapshot) => {
+            setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+           
+        })
+        .catch((error) => {
+            console.log('extravoteError',error);
+        });
+      }
+  }, remaining);
     })
     .catch((error) => {
         console.log('extravoteError',error);
     });
   }
+  
+ 
 }, [userInfo?.voteStatistics?.total])
 
   useEffect(() => {
@@ -596,6 +676,13 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  singalCardData,
+                  setSingalCardData,
+                  remainingTimer,
+                  setNftAlbumData,
+                  nftAlbumData,
+                  setAllPariButtonTime,
+                  allPariButtonTime,
                   allButtonTime,
                   forRun,
                   setForRun,
@@ -700,7 +787,9 @@ votesLast24HoursRef.get()
                 }}
               >
                 <CoinsContext.Provider
-                  value={{
+                    value={{
+                      changePrice,
+                    setChangePrice,
                     ws,
                     rest,
                     coins,
@@ -739,8 +828,10 @@ votesLast24HoursRef.get()
                           pathname={pathname}
                           login={login || firstTimeLogin ? "true" : "false"}
                           // width={width}
-                        >
+                          >
+                            
                           <Header
+                          remainingTimer={remainingTimer}
                             logo={
                               (login && window.screen.width > 979) ||
                               window.screen.width > 979
@@ -804,6 +895,12 @@ votesLast24HoursRef.get()
                               </HomeContainer>
                             }
                           />
+                        { isMobile &&  <div id="fullscreen-modal" className="modal" style={{display:displayFullscreen}}>
+  <div className="modal-content" >
+    <p className='fullscreentext'>Click the button below to enter fullscreen mode.</p>
+    <div className='d-flex justify-content-between'><button className="btn btn-outline-primary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>handleClick()}>YES</button> <button className="btn btn-outline-secondary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>setDisplayFullscreen('none')}>No</button></div>
+  </div>
+</div>}
                           {user && firstTimeLogin && (
                             <FirstTimeLogin
                               setFirstTimeAvatarSelection={
@@ -881,8 +978,12 @@ votesLast24HoursRef.get()
                                           element={<NFTGallery />}
                                         />
                                         <Route
-                                          path='nftAlbum/:name'
+                                          path='nftAlbum/:type'
                                           element={<NFTGalleryType />}
+                                        />
+                                        <Route
+                                          path='singalCard/:type/:id'
+                                          element={<SingalCard />}
                                         />
                                         <Route
                                           path='coins/:id'

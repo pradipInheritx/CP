@@ -278,7 +278,8 @@ const calculateWinner = (vote: VoteResultProps) =>
 
 const VotedCard = ({ vote, id,coinSocketData,callbackFun }: VotedCardProps) => {
   const { coins } = useContext(CoinsContext);
- 
+  //  Math.abs((coins[vote.coin.split("-")[0]].price
+   console.log('votecardata',coins,vote.coin)
  useEffect(() => {
    
    if(!vote.valueExpirationTime){
@@ -318,6 +319,7 @@ let votetime= a.diff(b)
             </div>
             <div className="align-self-end justify-content-end d-flex flex-column align-items-center">
               <div>
+              <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>
               {/* {vote.direction?
               
                 <>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:

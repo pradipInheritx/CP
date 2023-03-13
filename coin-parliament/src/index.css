@@ -159,9 +159,23 @@ html[dir="rtl"] .offcanvas-start.show {
       100% {
         border-width: 0px;
         border: solid 0px white;
+        
       }
       
      
+  }
+  .timerBorder{
+      border:1px solid red;
+    transform: rotate3d(0, 0, 1, 0deg);
+    animation: 2s borderSpin linear 4s forwards;
+  }
+  @keyframes borderSpin {
+    from {
+      transform: rotate3d(0, 0, 1, 0deg);
+    }
+    to {
+      transform: rotate3d(0, 0, 1, 20deg);
+    }
   }
 * {
     box-sizing: border-box;
@@ -239,8 +253,41 @@ html[dir="rtl"] .offcanvas-start.show {
     --line-spacing-16: 16px;
     --line-spacing-25: 25px;
     --text-transform-uppercase: uppercase;
+    
+        touch-action: pan-x pan-y;
+        height: 100% ;
+      
 }
-
+/* The modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    top: 30%;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+  }
+  .fullscreentext{
+    color: #25145c;
+    padding: 5px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    text-transform: capitalize;
+  }
+  
 /* Character Styles */
 .character-style-1 {
     font-family: var(--font-family-poppins);

@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import styled from "styled-components";
 import {Heart} from "../Atoms/Checkbox/Icon";
 import {BearVsBullRow, getVotes} from "../../common/models/CoinTable";
 import {Image} from "react-bootstrap";
 import {Coin, formatCurrency, precision} from "../../common/models/Coin";
-import {Totals} from "../../Contexts/CoinsContext";
+import CoinsContext, {Totals} from "../../Contexts/CoinsContext";
 import {Buttons} from "../Atoms/Button/Button";
 import Trend from "../Atoms/utils/Trend";
 import UserContext from "../../Contexts/User";
@@ -86,8 +86,9 @@ const Price = styled.div`
   min-width: 56px;
   font-family: var(--font-family-poppins);
   font-weight: 400;
-  color: ${(props: { single: boolean }) =>
-          props.single ? "var(--white)" : "#23036a"};
+  color: ${(props: { single: boolean }) => props.single ? "var(--white)" : "#23036a"};
+          
+
   font-size: ${(props: { single: boolean }) =>
           props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
   text-align: center;
@@ -186,13 +187,41 @@ const Card = ({
 }: CoinCardProps) => {
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
+  const [changeColor, setChangeColor] = useState<string>("black");
+  const [currentPrice, setCurrentPrice] = useState<any>(0)
+  
+ const prevCountRef = useRef(currentPrice)
+
+  const OnlyCheckColor = () => {          
+    // setInterval(() => {            
+    if (coins[symbol]?.price == prevCountRef.current) {   
+      setChangeColor("black")
+      }
+    else if (coins[symbol]?.price > prevCountRef.current) {
+      setChangeColor("Green")            
+      }
+      else if (coins[symbol]?.price < prevCountRef.current) {
+      setChangeColor("Red")            
+      }      
+    // },5000);
+    setCurrentPrice(coins[symbol]?.price)
+  }
+  useEffect(() => {
+    prevCountRef.current = currentPrice;    
+    OnlyCheckColor()        
+  }, [
+    coins[symbol]?.price
+  ])
+  
+  console.log(prevCountRef.current,currentPrice,changeColor,"changeColor");
+
   let params = useParams();
-  console.log('params',params)
+  
   return (
     <LighCart1
       {...{ single }}
     >
-      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-180px'}} onClick={
+      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{
           if(!user?.uid){
             setLoginRedirectMessage('add coin to favorites.')
@@ -237,12 +266,15 @@ const Card = ({
         </div>
       </LogoContainer>
       <Group3991>
-        <Price {...{single}}>{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
+        <Price {...{ single }}
+        style={{color:`${changeColor}`}}
+        >{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
         <Trend1 {...{single}}>
           <Trend num={coins[symbol]?.trend || 0}/>
         </Trend1>
       </Group3991>
-      {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>}
+      {/* {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>} */}
+      
       {!single && (
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}

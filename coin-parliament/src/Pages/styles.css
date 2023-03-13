@@ -10,13 +10,20 @@
 .slick-next:before {
    display:none;
 }
-
+/* .slick-slider{
+  
+  
+  
+} */
+/* .slick-list{
+  border:1px solid red;
+  width :730px;
+} */
 
 
 .card-container{ 
-  max-width: 250px ; 
-  
-  height: 330px;    
+  max-width: 250px !important; 
+  min-height: 330px !important;    
   position: relative;
   transform-style: preserve-3d;
   box-sizing: border-box;

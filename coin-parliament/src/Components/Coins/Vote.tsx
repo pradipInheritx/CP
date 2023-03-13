@@ -104,9 +104,10 @@ const Vote = ({
   
   return (
     <div
-      className="container"
+      // className="container"
       // style={{width: typeof width === "number" ? `${width}px` : `${width}px`}}
-      style={{width:window.screen.width<979?'306px':'400px'}}      
+      // style={{width:window.screen.width<979?'306px':'400px'}}      
+      
     >
       <Row >
         <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('Cast a vote.'); setLogin(true)}}}>

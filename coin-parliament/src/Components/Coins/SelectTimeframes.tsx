@@ -35,21 +35,23 @@ const SelectTimeframes = ({
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const num = getNumTimeframes(timeframes);
    const [buttonDetails, setButtonDetails] = useState<any>();
-  const { allButtonTime } = useContext(AppContext);
+   const [pariButtonDetails, setPariButtonDetails] = useState<any>();
+  const { allButtonTime, allPariButtonTime } = useContext(AppContext);
   
   useEffect(() => {
     setButtonDetails(allButtonTime)
   }, [allButtonTime])
+
+  useEffect(() => {
+    setPariButtonDetails(allPariButtonTime);
+  }, [allPariButtonTime]);
   
-  console.log(timeframes, "timeframevoted", voted, selected);
-  // console.log(votePrice,"votePricevotePrice");
+  
   
 
   return (
-    <Container
-      className='timeframAnimation'
-      style={{ maxWidth: 386, margin: "0 auto" }}
-    >
+    // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
+    <div>
       <Row>
         {num === 1 && (
           <input
@@ -98,6 +100,7 @@ const SelectTimeframes = ({
                       // votePrice={votePrice?.length > 0 ? votePrice[k] : 0}
                       votedDetails={votedDetails?.length > 0 ? votedDetails[k] : 0}
                       buttonDetails={buttonDetails && buttonDetails[k]}
+                      PariButtonDetails={pariButtonDetails && pariButtonDetails[k]}
                     >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
@@ -111,7 +114,8 @@ const SelectTimeframes = ({
                         cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
                         // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
                         votedDetails:votedDetails?.length > 0 ?votedDetails[k] : 0,
-                        buttonDetails:buttonDetails && buttonDetails[k],
+                        buttonDetails: buttonDetails && buttonDetails[k],
+                        PariButtonDetails:pariButtonDetails && pariButtonDetails[k]
                       }}
                       showTimer={true}
                     >
@@ -123,7 +127,9 @@ const SelectTimeframes = ({
             );
           })}
       </Row>
-    </Container>
+      
+    {/* </Container> */}
+    </div>
   );
 };
 
