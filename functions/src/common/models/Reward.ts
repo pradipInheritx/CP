@@ -3,6 +3,7 @@ import * as admin from 'firebase-admin';
 // import { getStorage, getDownloadURL,ref } from "firebase/storage"
 // import path from "path";
 import { userConverter, UserProps } from "../models/User";
+const { v4: uuidv4 } = require('uuid');
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 // const admin = require("firebase-admin");
@@ -280,7 +281,9 @@ export const claimReward: (
   uid: string
 ) => { [key: string]: any } = async (uid: string) => {
   console.log("Beginning execution claimReward function");
-  uploadImage()
+  getAllCardsOfNftGallery()
+  // addRewardNFT("SWnA6wLlv9bPVRIlHKHY", 1, "image")
+  // uploadImage()
   // imageUpload('functions/src/images/nature.jpg')
   const userRef = firestore()
     .collection("users")
@@ -442,15 +445,15 @@ export const cardHolderListing: (
   // console.log("users cardHolderListing---", users)
   return users;
 };
-const uploadImage = async () => {
+const uploadImage = async (cardImage: any, collectionId: string, setId: number, cardId: number) => {
   const ref = await admin.storage().bucket('default-bucket')
   console.log("File name --- ")
 
   const metaData = {
     contentType: 'Image/jpg'
   }
-  ref.upload("./src/images/nature.jpg", metaData)
-    .then(() => getImageUrl("SWnA6wLlv9bPVRIlHKHY", 1, 0))
+  ref.upload(cardImage, metaData)
+    .then(() => getImageUrl(collectionId, setId, cardId))
     .catch((error: any) => {
       console.log("EROROR image", error)
     });
@@ -467,38 +470,37 @@ const uploadImage = async () => {
 
 }
 
-const getImageUrl = async (collectionId: string, setID: number, cardId: number) => {
+const getImageUrl = async (collectionId: string, setId: number, cardId: number) => {
   const ref = await admin.storage().bucket('default-bucket')
   const [, , meta] = await ref.getFiles({
     maxResults: 1
   })
   const url = meta.items.filter((f: any) => f.contentType !== 'text/plain').shift().mediaLink;
-  console.log("Iamge Url ", url)
+  console.log("Image Url ", url)
 
   const collectionData: any = await firestore()
-    .collection("ntf_gallery")
-    .doc("SWnA6wLlv9bPVRIlHKHY")
+    .collection("nft_gallery")
+    .doc(collectionId)
     .get();
   console.log("collectionData--- ", collectionData.data())
   const collection = collectionData.data();
   const setDetails = collection.setDetails.find((data: any) => {
-    console.log("data.id, setId", data.id, setID)
-    data.id == setID
+    console.log("data.id, setId", data.id, setId)
+    return data.id == setId
   })
   console.log("setDeatils --- ", setDetails)
   const cardData = setDetails.cards.find((item: any) => {
     console.log("data.id, setId", item.id, cardId)
-    item.cardId == cardId
+    return item.cardId == cardId
   });
   cardData.imageUpload = url
 
-
-
-  await firestore() 
+  await firestore()
     .collection("nft_gallery")
     .doc(collectionId)
     .set(collectionData);
 
+  return url
   // const ntfGallery = await firestore()
   //   .collection("nft_gallery")
   //   .doc('SWnA6wLlv9bPVRIlHKHY')
@@ -510,63 +512,90 @@ const getImageUrl = async (collectionId: string, setID: number, cardId: number) 
 
 }
 
-// type NtfCards = {
-//   collectionId: number,
-//   collectionName: string,
-//   setQuantity: number,
-//   setsDeatils: {
-//     setId: number,
-//     setName: string,
-//     cards: {
-//       cardId: number,
-//       cardName: string,
-//       cardQuantity: number,
-//       noOfCardHolders: number,
-//       cardType: string,
-//       serialNo: string[]
-//     }[]
-//   }[]
+type NewCardNft = {
+  name: string,
+  type: string,
+  quantity: number,
+  totalQuantity: number,
+  sno: string[],
+  cardImage: any,
+  noOfCardHolder: number,
+  cardStatus : boolean
+}
 
-// }[]
+// add new NFT card
+export const addRewardNFT = async (collectionId: string, setId: number, cardDetail: any) => {
 
-// // Add multiple nft cards in ntf_gallery
+  try {
+    const id = uuidv4()
+    const newCardNft: NewCardNft = {
+      name: cardDetail.name,
+      type: cardDetail.type,
+      quantity: cardDetail.quantity,
+      totalQuantity: cardDetail.totalQuantity,
+      sno: cardDetail.sno,
+      cardImage: cardDetail.image ? await uploadImage(cardDetail.image, collectionId, setId, id) : "",
+      noOfCardHolder: cardDetail.noOfCardHolder || 0,
+      cardStatus : cardDetail.status
+    }
 
-// export const addMultipleCards =async () => {
-//   var cards: NtfCards = [
-//     {
-//       collectionId : 3,
-//       collectionName : "Monsoon",
-//       setQuantity : 1,
-//       setsDeatils : [
-//         {
-//           setId : 1,
-//           setName : "Monsoon_set_1",
-//           cards :[
-//             {
-//               cardId : 1,
-//               cardName : "Monsoon_1",
-//               cardQuantity : 1,
-//               noOfCardHolders : 1,
-//               cardType : "RARE",
-//               serialNo : [
-//                 "151",
-//                 "152",
-//                 "153"
-//               ]
+    const getCollectionRef = await firestore()
+      .collection('nft_gallery')
+      .doc(collectionId)
+      .get();
 
-//             }
-//           ]
-//         }
-//       ]
-//     }
-//   ]
+    let collectionDetails = getCollectionRef.data();
+    console.log("collectionDeatils >>>>>", collectionDetails?.setDetails)
+    const setDetails = collectionDetails?.setDetails.find((data: any) => {
+      console.log("data.id, setId", data.id, setId)
+      return data.id == setId
+    })
+    // let setDeatils = collectionDetails?.setDeatils;
 
-//   const db = await firestore().batch()
-//   cards.forEach((ntfSingleCard)=>{
-//     db.set(
-//       firestore().collection('nft_gallery').doc(),
-//       ntfSingleCard
-//     )
-//   })
+    console.log("setDeatils >>>>>", setDetails)
+    setDetails.cards.push(newCardNft)
 
-// }
+    await firestore()
+      .collection('nft_gallery')
+      .doc(collectionId)
+      .set({ setDetails })
+
+    console.log("addRewardNFT DONE >>>>>>>>", newCardNft)
+  } catch (error) {
+    console.log("addRewardNFT ERROR >>>>>", error)
+  }
+};
+
+
+// get all cards from whole 
+export const getAllCardsOfNftGallery = async () => {
+  // const cards :any = []
+  // const collectionRef = await firestore()
+  //   .collection('nft_gallery')
+  //   .get();
+
+  // const collData = await collectionRef.docs.map(doc => doc.data())
+  // collData.forEach((data)=>{
+  //   let cardData = data.setDetails
+  //   console.log("CollData >>>>",cardData)
+  // })
+  const nftGalleryData = await getAllNftGallery();
+  const cards: any = [];
+  nftGalleryData.forEach((element: any) => {
+    console.log("Element =>", element);
+    const collectionId = element.collectionId;
+    const collectionName = element.collectionName;
+    const collectionDocId = element.id;
+
+    element.setDetails.forEach((setDetail: any) => {
+      const setId = setDetail.id;
+      setDetail.cards.forEach((cardDetail: any) => {
+        cards.push({ collectionId, collectionName, collectionDocId, setId, ...cardDetail });
+      });
+    });
+  });
+
+  console.log("get all cards list >>>>>>>>>", cards);
+  return cards;
+}
+
