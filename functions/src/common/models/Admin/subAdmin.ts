@@ -15,7 +15,13 @@ export const subAdminList = async (req: any, res: any, next: any) => {
       .collection("subAdmin")
       .get();
 
-    const getsubAdminList = databaseQuery.docs.map((doc) => doc.data());
+    const getsubAdminList = databaseQuery.docs.map((doc) => {
+      const getData = doc.data();
+      return {
+        id: doc.id,
+        ...getData,
+      };
+    });
 
     res.status(200).send({
       status: true,
