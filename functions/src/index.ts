@@ -13,15 +13,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import {
-  admin_create,
-  admin_login,
-  generateAuthTokens,
-  admin_forgotPassword,
-  admin_changePassword,
-  admin_resetPassword,
-  admin_logout,
-} from "./common/models/Admin";
+import { generateAuthTokens } from "./common/models/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
@@ -344,17 +336,6 @@ exports.subscribe = functions.https.onCall(async (data) => {
     }
   }
 });
-
-// async function getCards() {
-//   const docs = await admin
-//       .firestore()
-//       .collection("settings")
-//       .doc("cards")
-//       .get();
-
-//   console.log("docs.data() --->", docs.data()?.cards);
-//   return docs.data()?.cards || [];
-// }
 
 exports.onUpdateUser = functions.firestore
   .document("users/{id}")
