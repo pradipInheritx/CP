@@ -87,8 +87,8 @@ import sgMail from "@sendgrid/mail";
 import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
 // import {ws} from "./common/models/Ajax";
 
-import { auth } from "./common/middleware/authentication"
 import subAdminRouter from "./routes/SubAdmin.routes";
+import authAdminRouter from "./routes/Auth.routes";
 
 // import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
@@ -123,6 +123,7 @@ main.use(bodyParser.urlencoded({ extended: false }));
  * @description Added admin routes seperately
  */
 app.use("/admin/sub-admin", subAdminRouter);
+app.use("/admin/auth", authAdminRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -130,12 +131,6 @@ app.get("/calculateCoinCPVI", async (req, res) => {
 app.get("/calculatePairCPVI", async (req, res) => {
   await cpviTaskPair((result) => res.status(200).json(result));
 });
-app.post("/createAdminUser", admin_create);
-app.post("/admin/login", admin_login);
-app.post("/admin/forgot-password", admin_forgotPassword);
-app.post("/admin/change-password", auth, admin_changePassword);
-app.post("/admin/reset-password", admin_resetPassword);
-app.post("/admin/logout", auth, admin_logout);
 
 exports.api = functions.https.onRequest(main);
 admin.initializeApp({
