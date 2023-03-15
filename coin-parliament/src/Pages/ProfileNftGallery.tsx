@@ -13,7 +13,6 @@ import "./styles.css";
 import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
 
-
 // import { Firestore } from "firebase/firestore";
 
 const GalleryType = styled.div`
@@ -44,7 +43,7 @@ const SummerCard = styled.div`
 `;
 
 const ProfileNftGallery = () => {
-  
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])

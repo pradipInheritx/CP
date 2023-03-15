@@ -13,7 +13,7 @@ import { Leader } from "../../Contexts/CoinsContext";
 import Icon from "../Atoms/Checkbox/Icon";
 import AddFollower from "../icons/AddFollower";
 import Following from "../icons/Following";
-import { Link, redirect, useLocation, useNavigate } from "react-router-dom";
+import { Link,  useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "../../common/models/Dictionary";
 import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";

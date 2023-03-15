@@ -52,6 +52,7 @@ const NFTGallery = () => {
   const [backCards, setBackCards] = useState<any>([]);
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
+  const [collection,setCollection]= useState<any>()
     const getNftCard = () => {
   const getCollectionType = firebase
             .firestore()
