@@ -201,7 +201,7 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
   
   
   }, [width, chartElement, height, options]);
-// console.log('chart',lineOptions)
+
   useEffect(() => {
     if (!chart) return;
 
@@ -214,7 +214,7 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
 
   useEffect(() => {
     let updateData = data[data?.length-1]
-    console.log(data[data?.length - 1], "updateData")
+    
     
     
     if (lineSeries && updateData?.value!=0) {            

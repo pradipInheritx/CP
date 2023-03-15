@@ -75,7 +75,7 @@ export const LoginAuthProvider = async (
     // await sendEmail().then(()=>console.log('welcome mail')).catch(err=>console.log('welcome error',err))
     if(callback){
       
-      console.log('callback called for refeer',user)
+      // console.log('callback called for refeer',user)
       callback({parent: refer, child: user.uid})}
 
     if (isFirstLogin?.isNewUser) {
@@ -97,7 +97,7 @@ export const LoginAuthProvider = async (
         multiFactorHint: resolver?.hints[0],
         session: resolver?.session
     };
-    console.log('phonebook',phoneInfoOptions)
+    // console.log('phonebook',phoneInfoOptions)
     const phoneAuthProvider = new PhoneAuthProvider(auth);
     const recaptchaVerifier = new RecaptchaVerifier(
       "loginId",
@@ -112,7 +112,7 @@ export const LoginAuthProvider = async (
       },
       auth
     );
-    console.log('captcha',recaptchaVerifier)
+    // console.log('captcha',recaptchaVerifier)
 phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
     .then(function (verificationId) {
        // @ts-ignore

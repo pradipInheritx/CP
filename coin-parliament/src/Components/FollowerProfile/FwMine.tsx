@@ -52,30 +52,27 @@ const FwMine = () => {
   let navigate = useNavigate();
   
   const rewardList = async () => {
-    console.log("user Id called");
+  
     const result = await getRewardTransactions({ uid: followerUserId });
     // @ts-ignore
     setData(result?.data);
-    console.log("user Id", result);
+  
   };
 
-  console.log(data,"userfollowerdata")
+  
   const getFollowerData =()=>{
-  //   const DocumentType = firebase
-  // .firestore()
-  // .collection("votes")
-  // .doc('01Z9rbB0WNk8njwDGowp').delete().then((res)=>console.log('deleted'));
+  
 
-// e4EgEKB7pMSU3sIBuoXb6k9pJfR2
+
   const getCollectionType = firebase
   .firestore()
   .collection("users")
   .where("uid", "==", followerUserId)
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 snapshot.docs?.map(doc=>setUserInfo(doc.data()))
-console.log('snapshot',)
+
  
  
 
@@ -84,7 +81,7 @@ console.log(error,"error");
 });    
   }
 
-  console.log(userInfo,"userInfomine")
+
   useEffect(() => {
     rewardList();
     getFollowerData()
@@ -223,7 +220,7 @@ console.log(error,"error");
             {data.map((item, index) => (
               <>
                 {" "}
-                <div className='d-flex justify-content-around px-5'>
+                <div className='d-flex justify-content-around px-5' key={index}>
                   {/* @ts-ignore */}
                   <RewardList>
                     <span style={{ color: "#6352E8" }}>

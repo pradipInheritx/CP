@@ -56,7 +56,7 @@ function foo() {
 }
 
 
-console.log('rewarditem',rewardTimer)
+
 
 
     return (

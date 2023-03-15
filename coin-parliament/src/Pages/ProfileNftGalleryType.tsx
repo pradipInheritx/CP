@@ -120,7 +120,7 @@ const ProfileNftGalleryType = () => {
 //   useEffect(() => {
 //   //  onSnapshot(doc(db, "nft_gallery","WINTER"), (doc) => {
 //   //     // setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
-//   //     console.log("nft_gallery", doc.data());
+
 //   //   });
 //   // getNftCard();
 // }, [])
@@ -165,7 +165,7 @@ const ProfileNftGalleryType = () => {
 
       let params = useParams();
   const { type } = params;
-console.log(type,"type")
+
   const [nftAlbumData,setNftAlbumData] = useState<any>();
 
      const getNftCard = () => {
@@ -175,7 +175,7 @@ console.log(type,"type")
     getCards.get()
       .then((snapshot) => {                
        let allcollection= snapshot.docs.map((doc) => doc.data())        
-        console.log(allcollection,"allcollection")
+        
         allcollection?.map((card) => {
           if (card?.collectionName==type) {
             setNftAlbumData(card?.setDetails)
@@ -189,7 +189,7 @@ console.log(type,"type")
   
   
   const getAllRewardsOfUser = async (uid: string) => {
-  // console.log("getAllRewardsOfUser")
+  
   var winCards: {
     firstRewardCard: string,
     firstRewardCardCollection: string,
@@ -206,9 +206,9 @@ console.log(type,"type")
     .where("user", "==", uid)
     .get()
     .then((doc:any) => {
-      // console.log("getAllRewardsOfUser",doc)
+      
       doc.forEach((cards:any,index:number) => {
-        // console.log("getAllRewardsOfUser -- ",cards.data())
+        
         // winCards.push(cards.data().)
         winCards.push({...cards.data().winData ,...cards.data().transactionTime})
         
@@ -230,15 +230,14 @@ const onCollectionChange=()=>{
   .where("collectionName", "==", type)
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
 });
 setAllCardArray(data)
 const cards: any = [];
-  data.forEach((element: any) => {
-    console.log("Element =>", element);
+  data.forEach((element: any) => {    
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -252,7 +251,7 @@ const cards: any = [];
     });
   });
   setAllCard(cards)
-console.log("Array", data);
+
 
 }).catch((error) => {
 console.log(error,"error");
@@ -307,7 +306,7 @@ useEffect(() => {
 
   const CheckCardDisable = (cardId: any) => {   
   var disableCard;
-  console.log('winCard?.firstRewardCardId',winerCard)
+  
   let cardTrue = winerCard?.find((winCard: any, index: number) =>
   {
 
@@ -371,8 +370,7 @@ useEffect(() => {
   }
   },[searchedCard])
  
-console.log(searchedCard,"searchedCard")
-console.log(equalPart,"setEqualPart")
+
 
   return (
     <div className=''>
@@ -477,12 +475,13 @@ console.log(equalPart,"setEqualPart")
           </SummerCard> */}
           {searchedCard?.length > 0 ?
                   <SummerCard className="mt-4">
-                      {equalPart?.map((cardPart:any) => {                    
-                        return <div className='w-100 m-auto mb-4'>                  
+                      {equalPart?.map((cardPart:any ,ind:number) => {                    
+                        return <div className='w-100 m-auto mb-4' key={ind}>                  
                             <SwiperBar>                    
-                              {cardPart?.map((item: any) => {                      
+                              {cardPart?.map((item: any,index:number) => {                      
                                 return (                        
-                                    <NftOneCard                            
+                                  <NftOneCard  
+                                    key={index}
                                       DivClass={item?.type}
                                       HeaderText={item?.type}
                                       HeaderClass={`${item?.type}_text`}

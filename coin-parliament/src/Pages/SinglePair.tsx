@@ -62,13 +62,13 @@ const SinglePair = () => {
     if (voteId) {
       // if (!mountedRef.current) return null;
       const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: vote.timeframe.seconds });
-      console.log('pair data',data)
+      
       return data;
     }
   }, [params?.id, voteId, vote,selectedTimeFrame]);
   
   useEffect(() => {
-    console.log('cpvidata api called',vote.timeframe)
+    
     if(vote.timeframe) {
       setTimeout(() => {
         getCpviData().then((data) => data && setPct(Number(data.data)));  
@@ -80,9 +80,9 @@ const SinglePair = () => {
   
    
     // const timer = setInterval( async() => {
-    //   console.log('settimeout1',vote.timeframe)
+    
       if(vote.timeframe) {
-        console.log('settimeout2')
+        
         getCpviData().then((data) => data && setPct(Number(data.data)));  
     }
     // }, 5000);
@@ -95,7 +95,8 @@ const choseTimeFrame = async (timeframe:any) => {
 
   if (user?.uid && params?.id) {
     const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframe});
-    if (v) {console.log('timeframe',v.data())
+    if (v) {
+      
      return v
     }
   }
@@ -107,18 +108,18 @@ useEffect(() => {
     return Promise.all(responses.map((res,index) => {
 
       if(res) {
-        console.log('choseTimeFrame',res,index)
+        
         
         AllvoteValueObject[index] = res.data();
         // setAllPariButtonTime(AllvoteValueObject);
         setAllButtonTime(AllvoteValueObject);
         
         newTimeframe.push(index)
-        console.log('choseTimeFrame1',newTimeframe)
+        
         setSelectedTimeFrameArray(newTimeframe)
       }
       // else{
-      //   console.log('choseTimeFrame',res,index)
+      
       //   setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
       // }
     }))
@@ -182,7 +183,7 @@ useEffect(() => {
   
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-console.log('vote',vote)
+
 
   return (
     <>

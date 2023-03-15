@@ -51,9 +51,9 @@ const FwFollow = () => {
   .where("uid", "==", followerUserId)
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 snapshot.docs?.map(doc=>setUserInfo(doc.data()))
-console.log('snapshot',)
+
  
  
 
@@ -66,8 +66,7 @@ console.log(error,"error");
     getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
     getFollowerData()
   }, [userInfo?.leader?.length, userInfo?.subscribers?.length]);
-  console.log('snapshot',userInfo)
-console.log('leaders',leaders,userInfo)
+
   return (
     <Tabs
       defaultActiveKey="following"

@@ -125,7 +125,7 @@ const callbackFun=()=>{
 }
 
    
-// console.log('vote',votes)
+
   return (
     <Tabs
       defaultActiveKey="coins"

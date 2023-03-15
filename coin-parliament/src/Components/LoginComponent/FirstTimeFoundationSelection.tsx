@@ -59,7 +59,7 @@ const FirstTimeFoundationSelection = ({ user ,setFirstTimeFoundationSelection}: 
     >
             <Title>{translate(texts.FoundationSelect)}</Title>  
             <div style={{width:window.screen.width>979?'25%':'75%', alignSelf:'center'}}>
-              {FoundationArray?.map(item=> <Buttons.Primary style={{fontSize:'17px',fontWeight:300, padding:'10px', width:'10%',margin:'10px 0px'}} fullWidth={true} onClick={()=>setFirstTimeFoundationSelection(false)}>
+              {FoundationArray?.map((item,i)=> <Buttons.Primary key={i} style={{fontSize:'17px',fontWeight:300, padding:'10px', width:'10%',margin:'10px 0px'}} fullWidth={true} onClick={()=>setFirstTimeFoundationSelection(false)}>
          {item}
       </Buttons.Primary> )}
       </div>

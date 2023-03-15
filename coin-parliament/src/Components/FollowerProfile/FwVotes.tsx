@@ -62,7 +62,7 @@ const FwVotes = () => {
   //   console.count('messageSocket')
   //   ws.onmessage = ({data}) => {
   //     const [message] = JSON.parse(data);
-  //   console.log('socketMessage',JSON.parse(data))
+  
   //   setCoinSocketData(JSON.parse(data))
   //   // if(coindata[0]?.pair?.includes(coin?.symbol)){
   //   //   console.log('Data Compare', socketData[0]?.p, socketData[0]?.pair)
@@ -125,7 +125,7 @@ const callbackFun=()=>{
 }
 
    
-console.log('vote',votes)
+
   return (
     <Tabs
       defaultActiveKey="coins"

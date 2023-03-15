@@ -16,7 +16,7 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
   const translate = useTranslation();
   const { avatar, displayName, status, subscribers, leaders, pct, score } =
     user;
-    console.log(avatar)
+    
     
   return (
     <div className="user_card mx-auto shadow-sm" style={{boxShadow: '0px 3px 6px #00000029',width:window.screen.width<979?'322px':'40%'}} >

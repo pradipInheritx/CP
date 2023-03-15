@@ -259,7 +259,7 @@ console.log(vote,"voteCoins")
                 <>{vote?.valueVotingTime <coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
                 {vote?.valueVotingTime>  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 }  </> :<>
-                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
+                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
                 <>{vote?.valueVotingTime >coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
                 {vote?.valueVotingTime<  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 } 

@@ -161,7 +161,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
   const { singalCardData,setSingalCardData} = useContext(AppContext);
-  console.log(cardNo, "Disable")
+  
   
       let params = useParams();
   const { type} = params;

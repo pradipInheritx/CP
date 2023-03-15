@@ -58,7 +58,7 @@ const NFTGallery = () => {
             .collection("nft_gallery")
     getCollectionType.get()
       .then((snapshot) => {          
-        // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));        
+               
        let allcollection= snapshot.docs.map((doc) => doc.data())
         setCollectionType(allcollection)
         
@@ -69,10 +69,10 @@ const NFTGallery = () => {
     data.push({id: doc.id, ...doc.data()});
   });
   setAllCardArray(data)
-  // console.log("Array", allCardArray);
+  
   const cards: any = [];
   data.forEach((element: any) => {
-    console.log("Element =>", element);
+  
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -80,7 +80,7 @@ const NFTGallery = () => {
     element.setDetails.forEach((setDetail: any) => {
       const setId = setDetail.id;
       const setName = setDetail?.name;
-      console.log(setDetail,"setDetail")
+  
       setDetail.cards.forEach((cardDetail: any) => {
         cards.push({collectionId, collectionName, collectionDocId, setId,setName, ...cardDetail});
       });
@@ -95,7 +95,7 @@ const NFTGallery = () => {
 
         // setAllTypeofCard
 
-        // console.log(allcollection,"allcollection")
+  
         
       }).catch((error) => {
         console.log(error,"error");
@@ -118,7 +118,7 @@ const NFTGallery = () => {
   }
   
   const onCollectionChange = (collectionName: any) => {
-  console.log(selectCollection,"selectCollection")
+  
 if (searchTerm?.length || cardType?.length || selectCollection!="none") {
     setCardShow(true)
   }
@@ -132,7 +132,7 @@ if (searchTerm?.length || cardType?.length || selectCollection!="none") {
   .collection("nft_gallery")
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
@@ -140,7 +140,7 @@ data.push({id: doc.id, ...doc.data()});
 setAllCardArray(data)
 const cards: any = [];
   data.forEach((element: any) => {
-    console.log("Element =>", element);
+
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -155,7 +155,7 @@ const cards: any = [];
   });
   setAllCard(cards)  
   setCardShow(false)
-console.log("nft_gallery", data);
+
 }).catch((error) => {
 console.log(error,"error");
 });    
@@ -167,7 +167,7 @@ console.log(error,"error");
   .where("collectionName", "==", collectionName)
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
@@ -176,7 +176,7 @@ data.push({id: doc.id, ...doc.data()});
 setAllCardArray(data)
 const cards: any = [];
   data.forEach((element: any) => {
-    console.log("Element =>", element);
+
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -202,7 +202,7 @@ const cards: any = [];
     setSearchedCard(cards.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) && card.type == cardType ?.toUpperCase()))
   }
   // setCardShow(true)
-console.log("Arraydata", cards);
+
 
 }).catch((error) => {
 console.log(error,"error");
@@ -214,7 +214,7 @@ console.log(error,"error");
 const onSelectType=(cardType:any)=>{
   setCardType(cardType)  
   if (cardType === 'all') {
-    // console.log(cardType,"cardType")
+    
     setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
   }
   else {    
@@ -237,7 +237,7 @@ useEffect(() => {
   ])
      
   
-  console.log("searchedcard",searchedCard,searchedCard?.length);
+  
 // use searched card for showing searchdata
   
   
@@ -260,7 +260,7 @@ useEffect(() => {
          })
        : setBackCards([...backCards, value]);
   };
-  // console.log(collectionType, "collectionType")
+  
   
 function sliceDived(arr:any, partSize:any) {
     const res = [];
@@ -269,7 +269,7 @@ function sliceDived(arr:any, partSize:any) {
         res.push(DivideEqual);
     }
     // return res;
-  // console.log(res,"res")
+  
   setEqualPart(res)
   
 }
@@ -285,7 +285,7 @@ useEffect(() => {
   },[searchedCard])
 
 
-console.log(selectCollection,"searchTerm")
+
 
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
@@ -312,8 +312,8 @@ console.log(selectCollection,"searchTerm")
             <option value='none'>Select Collection</option>
             
 
-            {collectionType?.map((data:any) => {
-              return  <option value={data?.collectionName}>{data?.collectionName}</option>        
+            {collectionType?.map((data:any ,index:number) => {
+              return  <option value={data?.collectionName} key={index}>{data?.collectionName}</option>        
             })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
@@ -353,8 +353,8 @@ console.log(selectCollection,"searchTerm")
         <div onClick={() => navigate("/nftAlbum/Summer")}>
           <p>SUMMER COLLECTION</p>
         </div> */}
-        {!cardShow && collectionType?.map((data:any) => {
-          return <div onClick={() => { navigate(`/nftAlbum/${data?.collectionName}`)}}>
+        {!cardShow && collectionType?.map((data:any ,index:number) => {
+          return <div onClick={() => { navigate(`/nftAlbum/${data?.collectionName}`)}} key={index}>
           <p>{data?.collectionName} COLLECTION</p>
         </div>
         })}
@@ -362,12 +362,13 @@ console.log(selectCollection,"searchTerm")
       </GalleryType>
       {searchedCard?.length > 0 ?
         <SummerCard className="mt-4">
-            {!!cardShow ? equalPart?.map((cardPart:any) => {                    
-              return <div className='w-100 m-auto mb-4'>                  
+            {!!cardShow ? equalPart?.map((cardPart:any ,ind:number) => {                    
+              return <div className='w-100 m-auto mb-4' key={ind}>                  
                   <SwiperBar>                    
-                    {cardPart?.map((item: any) => {                      
+                    {cardPart?.map((item: any ,index:number) => {                      
                       return (                        
-                          <NftOneCard                            
+                        <NftOneCard                      
+                          key={index}
                             DivClass={item?.type}
                             HeaderText={item?.type}
                             HeaderClass={`${item?.type}_text`}

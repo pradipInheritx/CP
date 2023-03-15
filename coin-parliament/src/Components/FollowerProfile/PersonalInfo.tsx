@@ -38,7 +38,7 @@ const [show,setShow]=useState(false)
 let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
   useEffect(() => {
-    console.log(user, "user");
+    
     
   setUserName(user?.displayName || '')
   setFirstName(user?.firstName || '')
@@ -177,7 +177,7 @@ const handleClose=()=>{
                 >
                       <option value="">+ </option>
                   {CountryCode?.map((code ,index) => {
-                   return  <option  value={code.dial_code}>{code.dial_code} {code.code}</option>
+                   return  <option key={index}  value={code.dial_code}>{code.dial_code} {code.code}</option>
                         
                       })}
                 </select>

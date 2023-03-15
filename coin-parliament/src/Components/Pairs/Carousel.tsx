@@ -132,10 +132,10 @@ const Carousel = ({
             coin2.symbol,
           ]);
           return (
-            <div className='mx-1'>
+            <div className='mx-1' key={i}>
             <Card
             
-              key={i}
+              // key={i}
               coins={coins}
               favorite={favorites.includes(combination)}
               setFavorite={() => {

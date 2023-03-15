@@ -151,11 +151,11 @@ const Minting = ({
             onClick={async () => {
               if (claim) {
                 setLoading(true);
-                console.log("reward");
+                
                 const result = await claimReward({ uid: user?.uid });
                 setRewardTimer(result);
                 setLoading(false);
-                console.log("reward", result);
+                
               }
             }}
             disabled={!claim || loading}
@@ -175,11 +175,11 @@ const Minting = ({
             onClick={async () => {
               if (claim) {
                 setLoading(true);
-                console.log("reward");
+                
                 const result = await claimReward({ uid: user?.uid });
                 setRewardTimer(result);
                 setLoading(false);
-                console.log("reward", result);
+                
               }
             }}
             disabled={!claim || loading}

@@ -180,7 +180,7 @@ const handleClick=()=>{
         top: 0,
         behavior: 'smooth',
     });
-      // console.log("scrollTo");
+      
 }, [pathname])
 
   const showToast = useCallback(
@@ -325,7 +325,7 @@ const handleClick=()=>{
 
   const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
-    console.log(user,"userInfoId");
+    
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
@@ -337,7 +337,7 @@ const handleClick=()=>{
   //   return Followerinfo
   // }
 
-  // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
+  
   
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined) {
@@ -584,7 +584,7 @@ const handleClick=()=>{
                   { token: fcmToken },
                   { merge: true }
                 );
-                console.log("push enabled");
+                // console.log("push enabled");
               } catch (e) {
                 console.log(e);
               }
@@ -705,7 +705,11 @@ votesLast24HoursRef.get()
             type='hidden'
             id='lang-detector'
             ref={langDetector}
-            onChange={(e) => console.log(e.target.value)}
+              onChange={(e) => {
+                
+                // console.log(e.target.value)
+              }
+              }
           />
           <ManagersContext.Provider
             value={{
@@ -1208,7 +1212,7 @@ votesLast24HoursRef.get()
             onSubmit={async (e) => {
               e.preventDefault();
               const resp = await sendPassword({ password });
-              console.log(resp.data);
+              // console.log(resp.data);
               if (resp.data === true) {
                 enable(true);
               }

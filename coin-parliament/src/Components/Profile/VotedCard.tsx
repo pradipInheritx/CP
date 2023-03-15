@@ -30,6 +30,20 @@ const ProfilePairVote = styled.div`
   opacity: 1;
 `;
 
+interface Rdiv {
+  // submit: boolean,
+  backcolor: string
+}
+const RoundDiv = styled.div<Rdiv>`
+width:16px ;
+height:16px;
+border-radius:50px;
+// border:1px solid red;
+background:${Props => Props.backcolor};
+`;
+
+
+
 const SmText = styled.div`
   font-size: 10px;
   line-height: 15px;
@@ -107,6 +121,7 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
 
 const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
   const voteCoins = vote?.coin.split("-");
+  
   const { coins } = useContext(CoinsContext);
   const pair = voteCoins.length > 1;
 
@@ -184,7 +199,8 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   <Col>
                     {!vote.valueExpirationTime && (
                       <Row className="text-body profile_coin_vote_txt">
-                        <Col >
+                          <Col >
+                            
                             <MyCountdown expirationTime={vote.expiration || 0}
                               // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
                             />
@@ -242,21 +258,22 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   </Col>
                   <Col xs={2}>
                  {vote.direction?
-                <>  { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                <>{vote?.valueVotingTime <coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {vote?.valueVotingTime>  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                <>  { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
+                <>{vote?.valueVotingTime <coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
+                {vote?.valueVotingTime>  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 }  </> :<>
-                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                <>{vote?.valueVotingTime >coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {vote?.valueVotingTime<  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
+                <>{vote?.valueVotingTime >coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
+                {vote?.valueVotingTime<  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 } 
                 </>
                 }
                  
                   
-                  { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+                  {/* { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
                   { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-                   { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
+                   { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
+                      
                   </Col>
                 </Row>
                 <Row>
@@ -281,7 +298,7 @@ const calculateWinner = (vote: VoteResultProps) =>
 const VotedCard = ({ vote, id,coinSocketData,callbackFun }: VotedCardProps) => {
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
-  // console.log('votecardata', coins, vote.coin)
+  
   const voteCoins = vote?.coin.split("-");
  useEffect(() => {
    
@@ -291,8 +308,7 @@ var b = moment();
 let votetime= a.diff(b)
 
    setTimeout(() => {
-     console.count('votetime')
-     console.log('votetime', vote)
+     
     if(callbackFun)callbackFun()
 
    }, votetime+4000);
@@ -301,7 +317,7 @@ let votetime= a.diff(b)
  
   const winner = calculateWinner(vote);
   const pair = vote.coin.split("-").length > 1;
- 
+
   return pair ? (
     <ProfilePairVote style={{minWidth:window.screen.width<979?'':'480px',maxWidth:window.screen.width<979?'':'480px'}}>
       <Container>
@@ -338,9 +354,16 @@ let votetime= a.diff(b)
                 {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 }  </>
                 } */}
-              { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+
+                {/* // #D4D0F3
+// #6352E8
+// #3712B3 */}
+                <RoundDiv backcolor={vote.score ===1 ?"#3712B3": vote.score ===0.5 ? "#6352E8":vote.score ===0.25?"#D4D0F3":"#6352E8"}>
+
+                </RoundDiv>
+              {/* { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
               { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-              { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
+              { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
               </div>
               <div style={{ minHeight: "100%" }}>
                 <PairsVoteVs>
@@ -354,7 +377,7 @@ let votetime= a.diff(b)
                     <strong>{vote.score} CMP</strong>
                   )}
                   {!vote.valueExpirationTime && (
-                    <MyCountdown expirationTime={vote?.expiration || 0}
+                    <MyCountdown expirationTime={vote.expiration || 0}
                       // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
                     />
                   )}
