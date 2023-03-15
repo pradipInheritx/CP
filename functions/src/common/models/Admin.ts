@@ -10,7 +10,7 @@ import env from "../../env/env.json";
 import constants from "../config/constants.json";
 import { sendEmail } from "../services/emailServices";
 import { AdminSignupTemplate } from "../emailTemplates/adminSignupTemplate";
-// import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
+import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 import { hashPassword } from "../../common/helpers/commonFunction.helper";
 // import {ws} from "../../common/models/Ajax";
 
@@ -101,7 +101,6 @@ export async function admin_login(req: any, res: any, next: any) {
             .where("email", "==", email)
             .get();
 
-        // console.log(`from Admin Login Start \n email.... ${email} \npassword ... ${password} \n Query....${query}`)
         if (query.empty || query.docs[0].data() == undefined) {
             throw new functions.https.HttpsError("not-found", 'Entered email id is not registered.');
         }
@@ -204,10 +203,10 @@ export async function admin_forgotPassword(req: any, res: any, next: any) {
             .doc(userData.id)
             .set(userData);
 
-        // const url = "https://coinparliamentstaging.firebaseapp.com/" + `/reset-password?token=`+  reset_password_token
+        const url = "https://coinparliamentstaging.firebaseapp.com/" + `/reset-password?token=` + reset_password_token
 
         //sendEmail
-        // await sendEmail(email, 'Forgot Password', AdminForgotPasswordTemplate(url, "Forgot Password"));
+        await sendEmail(email, 'Forgot Password', AdminForgotPasswordTemplate(url, "Forgot Password"));
 
         res.status(200).send({
             message: "Please check your email to reset password, your link will be expired in an hour "
@@ -227,7 +226,7 @@ export const admin_logout = async (req: any, res: any) => {
         const userData = snapshot.data();
 
         userData.auth_tokens = userData.auth_tokens.filter((item: any) => item.token !== req.token)
-        
+
         await admin.firestore()
             .collection("admin")
             .doc(userData.id)
@@ -292,28 +291,19 @@ export const admin_resetPassword = async (req: any, res: any) => {
 
         const restPassword = await req.body.reset_password_token
         const newPasswordData = await req.body.newPassword;
-         
-        console.log("resr passwrod ==>" , restPassword);
-        console.log("new password ==>" , newPasswordData);
 
         const userRef = await admin
             .firestore()
             .collection('admin')
             .where("reset_password_token", "==", restPassword)
-            .get()
-            // .catch(()=>{
-            //     throw new functions.https.HttpsError("not-found", 'User does not exist.');
-            // })
+            .get();
 
-        console.log("userRef.empty >>>>>",userRef.empty)
-            // console.log("userRef.docs[0].data() >>>>>",userRef.docs[0].data())
         if (userRef.empty) {
-            return res.status(404).send("User does not exist.")
-            // throw new functions.https.HttpsError("not-found", 'User does not exist.');
-        }
+            return res.status(404).send("User does not exist.");
+        };
 
         const user = userRef.docs[0].data();
-        console.log("USER userRef.docs[0].data() >>>>>>>",user);
+        console.log("USER userRef.docs[0].data() >>>>>>>", user);
 
         const newPassword = await hashPassword(newPasswordData);
         user.password = newPassword;
@@ -327,7 +317,7 @@ export const admin_resetPassword = async (req: any, res: any) => {
             .doc(user.id)
             .set(user)
             .then(() => console.log("ResetPassword done..."))
-            .catch((error) => console.log("ResetPassword changed...", error))
+            .catch((error) => console.log("ResetPassword changed...", error));
 
         res.status(200).send("Your Password reset successfully.")
     } catch (error) {

@@ -14,7 +14,6 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 import {
-  adminProps,
   admin_create,
   admin_login,
   generateAuthTokens,
@@ -89,13 +88,9 @@ import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCusto
 // import {ws} from "./common/models/Ajax";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
+import authAdminRouter from "./routes/Auth.routes";
 
-import { auth } from "./common/middleware/authentication";
-import * as generator from "generate-password";
-const { v4: uuidv4 } = require("uuid");
-import moment from "moment";
 // import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
-import { hashPassword } from "./common/helpers/commonFunction.helper";
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
 
 cors({
@@ -128,6 +123,7 @@ main.use(bodyParser.urlencoded({ extended: false }));
  * @description Added admin routes seperately
  */
 app.use("/admin/sub-admin", subAdminRouter);
+app.use("/admin/auth", authAdminRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -135,12 +131,6 @@ app.get("/calculateCoinCPVI", async (req, res) => {
 app.get("/calculatePairCPVI", async (req, res) => {
   await cpviTaskPair((result) => res.status(200).json(result));
 });
-app.post("/createAdminUser", admin_create);
-app.post("/admin/login", admin_login);
-app.post("/admin/forgot-password", admin_forgotPassword);
-app.post("/admin/change-password", auth, admin_changePassword);
-app.post("/admin/reset-password", admin_resetPassword);
-app.post("/admin/logout", auth, admin_logout);
 
 exports.api = functions.https.onRequest(main);
 admin.initializeApp({
@@ -222,92 +212,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
-
-exports.createAdminUser = functions.https.onCall(async (data) => {
-  const { firstName, lastName, email, webAppAccess, status, user_type } =
-    data as {
-      firstName: string;
-      lastName: string;
-      email: string;
-      webAppAccess: string[];
-      status: number;
-      user_type: number;
-    };
-  console.log("***create Admin User**");
-
-  const query = await admin
-    .firestore()
-    .collection("admin")
-    .where("email", "==", email)
-    .get();
-
-  if (!query.empty) {
-    throw new functions.https.HttpsError(
-      "already-exists",
-      "Admin user with this email id already exists. Please enter different email id."
-    );
-  }
-
-  const id = uuidv4();
-  console.log("----data:", data);
-  let password = generator.generate({
-    length: 10,
-    numbers: true,
-  });
-
-  console.log("Password", password);
-  let hashedPassword = await hashPassword(password);
-
-  const adminData: adminProps = {
-    id,
-    email,
-    firstName,
-    lastName,
-    webAppAccess,
-    status,
-    password: hashedPassword,
-    user_type,
-    auth_tokens: [],
-    refresh_tokens: "",
-    createdAt: parseInt(moment().format("X")),
-    updatedAt: parseInt(moment().format("X")),
-  };
-  console.log("----AdminData:", adminData);
-
-  const resp = await admin
-    .firestore()
-    .collection("admin")
-    .doc(id)
-    .set(adminData);
-  console.log("----resp:", resp);
-
-  // const title = 'Your account has been created';
-  // await sendEmail(email, 'Account created', AdminSignupTemplate(email, password, title));
-
-  return resp;
-});
-
-// exports.admin_login = functions.https.onCall(async (data) => {
-//   console.log("data from admin_Login---", data)
-//   const { email, password } = data as { email: string, password: string };
-//   let response = await admin_login(email, password);
-//   return response;
-// });
-
-// exports.forgotPassword = functions.https.onCall(async (data, context) => {
-
-//   console.log("Forgot called ...")
-//   const { email } = data as { email: string };
-//   let response = await forgotPassword(email);
-//   return response;
-// });
-
-// exports.adminLogOut = functions.https.onCall(async (data, context) => {
-//   console.log("Admin Logout called ...")
-//   const { email } = data as { email: string };
-//   let response = await adminLogOut(email);
-//   return response;
-// });
 
 exports.get_auth_tokens = functions.https.onCall(async (data) => {
   const { refresh_tokens } = data as { refresh_tokens: string };
