@@ -26,7 +26,7 @@ const OverlapGroup1 = styled.div`
   
   position: relative;
   display: flex;
-  padding: 10px 14px;
+  // padding: 10px 14px;
   align-items: center;
   min-width: 321px;
   border-radius: 6px;
@@ -42,7 +42,7 @@ const Component515 = styled.div`
   align-items: flex-start;
 
   &.component-51-5.component-51-5-1 {
-    margin-top: 12px;
+    // margin-top: 12px;
   }
 `;
 
@@ -136,7 +136,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               <Minister>{translate(user?.status?.name || "")}</Minister>
             </Group4092>
           </FlexCol> */}
-          <div className='mt-4'>
+          <div className='mt-4' >
             {![
               ProfileTabs.edit as string,
               ProfileTabs.password as string,

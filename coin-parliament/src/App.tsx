@@ -121,7 +121,7 @@ import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
-
+import { pwaInstallHandler } from 'pwa-install-handler'
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -341,6 +341,33 @@ const handleClick=()=>{
   const [userTypes, setUserTypes] = useState<UserTypeProps[]>([
     defaultUserType,
   ] as UserTypeProps[]);
+  const [supportsPWA, setSupportsPWA] = useState(false);
+  const [promptInstall, setPromptInstall] = useState(null);
+const [pwaPopUp,setPwaPopUp]=useState('block')
+  useEffect(() => {
+    const handler = (e:any) => {
+      e.preventDefault();
+      console.log("we are being triggered :D");
+      setSupportsPWA(true);
+      setPromptInstall(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+
+    return () => window.removeEventListener("transitionend", handler);
+  }, []);
+
+  const onClick = (evt:any) => {
+    // evt.preventDefault();
+    console.log('not supported',promptInstall)
+    if (!promptInstall) {
+      return;
+    }
+    // @ts-ignore
+    else promptInstall.prompt();
+  };
+  if (!supportsPWA) {
+    console.log('not supported')
+  }
   useEffect(() => {
     if ( user?.email && userInfo?.displayName === undefined) {
       setLoader(true);
@@ -372,16 +399,16 @@ const handleClick=()=>{
   // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
   
 
-  useEffect(() => {
-    const refer = new URLSearchParams(search).get("refer");
-    if (refer && !user) {
-      setLogin(true);
-      setSignup(true);
-    } else {
-      setLogin(false);
-      setSignup(false);
-    }
-  }, [location, search, user]);
+  // useEffect(() => {
+  //   const refer = new URLSearchParams(search).get("refer");
+  //   if (refer && !user) {
+  //     setLogin(true);
+  //     setSignup(true);
+  //   } else {
+  //     setLogin(false);
+  //     setSignup(false);
+  //   }
+  // }, [location, search, user]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -395,6 +422,9 @@ const handleClick=()=>{
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
     }
+    pwaInstallHandler.addListener((canInstall) => {
+     canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
+    })
   }, [userInfo]);
 
   useEffect(() => {
@@ -427,7 +457,7 @@ const handleClick=()=>{
       vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
     }).then((token) => setFcmToken(token));
   }, []);
-
+console.log('fmctoken',fcmToken)
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
     if (localStorageLang && languages.includes(localStorageLang)) {
@@ -892,6 +922,7 @@ votesLast24HoursRef.get()
                     {(getSubdomain() !== "admin" ||
                       (getSubdomain() === "admin" && !user)) && (
                       <>
+                     
                         <Background pathname={pathname} />
                         <AppContainer
                           fluid
@@ -1032,6 +1063,29 @@ votesLast24HoursRef.get()
                                         }px 0 0`,
                                       }}
                                     >
+                                    <div className='pwaPopup'  style={{display:pwaPopUp}}>
+                                      <span>Install CoinParliament app for best experience</span>
+                                    <button
+      className="link-button"
+      id="setup_button"
+      aria-label="Install app"
+      title="Install app"
+      onClick={onClick}
+      style={{zIndex:99999}}
+    >
+      Install
+    </button>
+    <span
+      className="link-button"
+      id="setup_button"
+      aria-label="Install app"
+      title="Install app"
+      onClick={e=>setPwaPopUp('none')}
+      style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px'}}
+    >
+      x
+    </span>
+                                      </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />
                                         {/* <Route

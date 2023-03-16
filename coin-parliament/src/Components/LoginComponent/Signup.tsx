@@ -168,7 +168,11 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
             setSignupLoading(false)
           },
             
-          errorFunc: (e) => {showToast(e.message, ToastType.ERROR)
+          errorFunc: (e) => {
+            let message = e.message=='Firebase: Error (auth/email-already-in-use).'?'Email already in use':e.message
+
+            showToast(message, ToastType.ERROR)
+            
             setSignupLoading(false)},
         }}
       />}

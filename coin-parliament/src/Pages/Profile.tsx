@@ -117,11 +117,12 @@ const Profile = () => {
       )}
       {!avatarMode && (
         <OuterContainer>
-          <CardContainer className={`${window.screen.width > 979? "BigScreen":""}`}>
+          <CardContainer className={`${window.screen.width > 979? "BigScreen":""}`} >
             <>
-              <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>
+              <UserCard user={userInfo} onClick={() => setAvatarMode(true)} >
                 {window.screen.width < 979 && (
                   <Container
+                  
                     fluid                    
                     style={{
                       // paddingTop: 60,

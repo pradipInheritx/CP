@@ -26,7 +26,7 @@ const Pool = () => {
           <Share
             url={referralUrl}
             text={"share & earn"}
-            shareText={"coin parliament"}
+            shareText={`Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`}
           />
         </div>
         <div className="mb-3">
