@@ -141,7 +141,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
           <div>
             <strong>{coin.name}</strong>
           </div>
-          <div>{coin.symbol}</div>
+          <div>{coin.symbol}</div> 
           <div>
             {/* {formatCurrency(
               index === undefined
