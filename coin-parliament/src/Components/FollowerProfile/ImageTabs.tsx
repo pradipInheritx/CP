@@ -81,7 +81,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
   const activeTab = (tabs: any, chosenByDefault: any) => {
     tabs.map((tab: any, index: number) => {
       if (chosenByDefault?.includes(tab.eventKey)) {
-        console.log(tabs[index].eventKey, "eventKey");
+        
         setActiveValue(tabs[index].eventKey);
       } 
     });

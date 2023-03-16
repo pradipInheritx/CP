@@ -157,7 +157,7 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
 //     //       });
 //     //     });
 //     //       });
-//     // console.log(cardItem,"cardItem")
+
 //     // setCardValue(allCard)
 //   };
 //   let params = useParams();
@@ -170,10 +170,10 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
 //             .collection("nft_gallery")
 //     getCards.get()
 //       .then((snapshot) => {        
-//         // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 //        let allcollection= snapshot.docs.map((doc) => doc.data())
 //           // setCollectionType(allcollection)
-//         console.log(allcollection,"allcollection")
+
 //         allcollection?.map((card) => {
 
 //           if (card?.collectionName==type) {
@@ -190,30 +190,6 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
 //     getNftCard()
 //   }, [params])
 
-
-  
-//   const HandelonchangeFilter = (e:any) => {
-//     let name =e.target.name
-//     let value =e.target.value
-//     let allCard = nftAlbumData;
-//     let filterItem = allCard?.map((items: any, ind: number) => {      
-     
-//      return  Object.keys(items?.cards[ind]).every((keyValue: any, index: number) => {
-//         //  console.log(items?.cards[index][key],"allKEy") 
-//         //  console.log(allCard[ind]?.cards[index],"allKEy") 
-//         //  console.log(items.card[index][keyValue] ,"allKEy") 
-//         // return items.cards[ind][keyValue]
-//         if (items.cards[ind][keyValue] == value) {          
-//           // return items?.cards[index][keyValue];
-//            return items?.cards[ind]
-//         }
-//       })
-//     })
-//     console.log(filterItem,value,"filterItem")
-//     // console.log(filterItem,"filterItem")
-//   }
-
-// console.log(nftAlbumData,"nftAlbumData")
   return (
     <div className=''>
       <div className='h-100 '>
@@ -296,12 +272,12 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
                   {/* @ts-ignore */}
                   <SwiperBar>
                     {/* @ts-ignore */}
-                    {data?.map((item: any) => {
+                    {data?.map((item: any , index:number) => {
                       
                       return (
                         <>
                           <NftOneCard
-                            
+                            key={index}
                             DivClass={item?.type}
                             HeaderText={item?.type}
                             HeaderClass={`${item?.type}_text`}

@@ -69,7 +69,7 @@ const SingalCard = () => {
   const [chosen, setChosen] = useState<string | undefined>();
   
 
-// console.log(user, userInfo , leaders,"useruserInfoleaders")
+
 
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
@@ -106,7 +106,7 @@ const SingalCard = () => {
   const { type, id } = params;
    const navigate = useNavigate();
 
-  console.log(params,"params")
+  
 // const claimReward = httpsCallable(functions, "claimReward");
   const getList = httpsCallable(functions, `cardHolderListing`);
 
@@ -136,14 +136,14 @@ setFollowersDetails(FollowerList)
 
       // @ts-ignore          
       // list?.data?.map((items: any) => {
-      //   console.log(items,"items")
+      
         
       // })
     }).catch((error) => {
       console.log(`error: ${JSON.stringify(error)}`);
     });;
                 // setRewardTimer(result);
-                // console.log("reward", result);  
+                
   }
    const getNftCard = () => {
   const getCards = firebase
@@ -153,38 +153,14 @@ setFollowersDetails(FollowerList)
     getCards.get()
       .then((snapshot) => {                
        let allcollection= snapshot.docs.map((doc) => doc.data())        
-        console.log(allcollection, "allcollection")
+        
         const collectionType = allcollection?.map((allCard:any) => {
           return allCard?.setDetails
         })    
-        console.log(collectionType, "collectionType")
-        const oneCard = collectionType?.map((cardById: any) => {
-          // if (cardById?.cardId == id) {
-            return cardById
-             
-          // }
-          // return cardById
-        })
-        console.log(oneCard, "oneCard")
-        const cardWithId = oneCard?.map((lateCard) => {
-          
-          
-        })
-        // console.log(oneCard,"oneCard")
-        // const collectionType = allcollection?.map((card) => {
-        //   if (card?.collectionName==type) {
-        //     // setNftAlbumData(card?.setDetails)
-        //     return card?.setDetails
-        //   }           
-        //   console.log(card,"card")
-        // })
-        // const Onecard = collectionType?.map((childItem:any) => {
-        //       if (childItem?.cardId == id) {
-        //         console.log(childItem,"childItem")
-        //         // return childItem
-        //       }              
-        //     })
-        //     setNftAlbumData(Onecard)
+        
+        // const oneCard = collectionType?.map((cardById: any) => {      
+        //     return cardById                                 
+        // })                      
       }).catch((error) => {
         console.log(error,"error");
       })
@@ -201,7 +177,7 @@ setFollowersDetails(FollowerList)
   setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))
   }, []) 
 
-  console.log(singalCardData,"singalCardData")
+  
   
   
   return (

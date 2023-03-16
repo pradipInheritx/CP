@@ -73,7 +73,7 @@ const StatusNav = ({userTypes, setChosen, chosen}: StatusNavProps) => {
           );
         } else {
           return (
-            <ButtonGroupMr1>
+            <ButtonGroupMr1 key={i}>
               <UnChosen onClick={() => setChosen(u)}>
                 {translate(u + "s")}
               </UnChosen>

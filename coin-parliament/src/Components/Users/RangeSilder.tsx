@@ -25,10 +25,7 @@ function RangeSilder(
     symbol2: string;
     })
 
-{
-
-  console.log(vote, "chekcvote")
-  
+{ 
   const [persentValue, setPersentValue] = useState<any>(0)
 
 const getBorderColor = () => {
@@ -43,7 +40,7 @@ const getBorderColor = () => {
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
     ];
-     console.log(diff,"bothCurrentPrice")     
+         
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
       if ((averageValue == averageValue)) {        
@@ -82,7 +79,7 @@ const getBorderColor = () => {
         }     
     }
   };
-  console.log(vote,"CheckvalueVotingTime")
+  
   
   useEffect(() => { 
     

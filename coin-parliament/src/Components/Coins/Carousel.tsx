@@ -181,7 +181,7 @@ const Carousel = ({
       numRows > 0 ? Math.min(numRows, data?.length) : data?.length;
     setPageSize(pageData ? pageData : 1);
   }, [setPageSize, numRows, data?.length]);
-  // console.log("data", Object.keys(coins).sort());
+  
   return expanded === false ? (
     <form
       id={id}
@@ -199,9 +199,9 @@ const Carousel = ({
           ?.map((key, i) => {
             const { symbol } = coins[key];
             return (
-              <div className='m-1'>
+              <div className='m-1' key={i}>
                 <Card
-                  key={i}
+                  // key={i}
                   favorite={favorites.includes(symbol)}
                   setFavorite={() => {
                     onFavClick(favorites, user);
@@ -229,10 +229,10 @@ const Carousel = ({
         <div className='carousel-item active'>
           <CardsContainer cols={cols} gap={gap} {...handlers}>
             {page.length > 0 &&
-              page.slice(0, page.length).map((row: Row<BearVsBullRow>) => {
+              page.slice(0, page.length).map((row: Row<BearVsBullRow>,i:number) => {
                 prepareRow(row);
                 return (
-                  <div {...row.getRowProps()} className='d-flex'>
+                  <div {...row.getRowProps()} className='d-flex' key={i}>
                     {row.cells.map((cell, j) => {
                       const symbol = cell.value;
 
@@ -240,6 +240,7 @@ const Carousel = ({
                         <div {...cell.getCellProps()} className='w-100' key={j}>
                           {cell.column.id === "symbol" ? (
                             <Card
+                              // key={i}
                               favorite={favorites.includes(symbol)}
                               setFavorite={() => {
                                 onFavClick(favorites, user);

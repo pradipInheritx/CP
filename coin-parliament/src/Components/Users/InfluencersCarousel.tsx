@@ -142,8 +142,8 @@ const InfluencersCarousel = () => {
         cursorShow={true}
         >
           {userTypes?.map((userType, i) =>
-          <div  style={{minHeight:'272px',margin:'0.3rem'}}>
-            <Item userType={userType} key={i}/>
+          <div  style={{minHeight:'272px',margin:'0.3rem'}} key={i}>
+            <Item userType={userType} />
             </div>)}
           
         </MyCarousel>}

@@ -44,19 +44,17 @@ const observeTopics = httpsCallable(functions, "observeTopics");
 export const getFollowerInfo = async (id?: string) => {
   // const FollowerDetails=[]
   if (id) {
-    // console.log(id, "checkid");
+
+    
     const ref = doc(db, "users", id);
-    console.log(ref,"ref");
+
     const userinfo = await getDoc(ref);
-    console.log(userinfo.data(), "ref userinfo");
+
     
     // FollowerDetails.push(userinfo.data()) 
 
     // const info = userinfo.data();
 
-    // console.log(info,"info");
-    
-    // console.log(info, "infoOnly");
     // return info;
     // if (info?.leader) {
     //   observeTopics({ leaders: info.leader }).then(() => void 0);

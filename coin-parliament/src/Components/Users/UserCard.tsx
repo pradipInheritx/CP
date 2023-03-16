@@ -153,18 +153,18 @@ const UserCard = ({
   const { setFollowerUserId } = useContext(AppContext)
   const {userInfo } = useContext(UserContext);
   
-  // console.log(userInfo?.uid,"checkuserid")
+  
 
   const redirectTab = () => {
     if (leader != undefined && setFollowerUserId != undefined) setFollowerUserId(leader?.userId)
     {
       // @ts-ignore
       if (userInfo?.uid == leader?.userId) {
-        // console.log("ProfileDone")
+        
         navigate('/Profile/mine')
       } else {
         navigate('/followerProfile/mine')
-        // console.log("ProfileNotDone")
+        
       }
     }
 }

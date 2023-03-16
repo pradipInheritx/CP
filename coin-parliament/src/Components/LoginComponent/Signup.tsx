@@ -72,6 +72,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   const [agree, setAgree] = useState(true);
   const { user, userInfo } = useContext(UserContext);
   const[smsVerification,setSmsVerification]=useState('')
+  const [signupLoading,setSignupLoading]=useState(false)
   let navigate = useNavigate();
   const search = useLocation().search;
   const refer = new URLSearchParams(search).get("refer");
@@ -154,6 +155,8 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
       
       :
       <SignupForm
+      signupLoading={signupLoading}
+      setSignupLoading={setSignupLoading}
       emailValue={email}
         signup={signup}
         callback={{
@@ -162,10 +165,11 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
             if(refer)  await assign({parent: refer, child: params.uid});
             setSignup(false)
             setLogin(true)
-            
+            setSignupLoading(false)
           },
             
-          errorFunc: (e) => showToast(e.message, ToastType.ERROR),
+          errorFunc: (e) => {showToast(e.message, ToastType.ERROR)
+            setSignupLoading(false)},
         }}
       />}
        <div className='d-flex'>

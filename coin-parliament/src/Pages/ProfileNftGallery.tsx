@@ -43,7 +43,7 @@ const SummerCard = styled.div`
 `;
 
 const ProfileNftGallery = () => {
-  const { user } = useContext(UserContext);
+  // const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
@@ -64,7 +64,7 @@ const ProfileNftGallery = () => {
             .collection("nft_gallery")
     getCollectionType.get()
       .then((snapshot) => {          
-        // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));        
+             
        let allcollection= snapshot.docs.map((doc) => doc.data())
         setCollectionType(allcollection)
         
@@ -75,10 +75,10 @@ const ProfileNftGallery = () => {
     data.push({id: doc.id, ...doc.data()});
   });
   setAllCardArray(data)
-  // console.log("Array", allCardArray);
+  
   const cards: any = [];
   data.forEach((element: any) => {
-    console.log("Element =>", element);
+    
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -86,7 +86,7 @@ const ProfileNftGallery = () => {
     element.setDetails.forEach((setDetail: any) => {
       const setId = setDetail.id;
       const setName = setDetail?.name;
-      console.log(setDetail,"setDetail")
+      
       setDetail.cards.forEach((cardDetail: any) => {
         cards.push({collectionId, collectionName, collectionDocId, setId,setName, ...cardDetail});
       });
@@ -101,7 +101,7 @@ const ProfileNftGallery = () => {
 
         // setAllTypeofCard
 
-        // console.log(allcollection,"allcollection")
+        
         
       }).catch((error) => {
         console.log(error,"error");
@@ -139,7 +139,7 @@ if (searchTerm?.length || cardType.length || collectionName!="none") {
   .collection("nft_gallery")
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
@@ -147,7 +147,7 @@ data.push({id: doc.id, ...doc.data()});
 setAllCardArray(data)
 const cards: any = [];
   data.forEach((element: any) => {
-    console.log("Element =>", element);
+    
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -162,7 +162,7 @@ const cards: any = [];
   });
   setAllCard(cards)  
   setCardShow(false)
-console.log("nft_gallery", data);
+
 }).catch((error) => {
 console.log(error,"error");
 });    
@@ -174,7 +174,7 @@ console.log(error,"error");
   .where("collectionName", "==", collectionName)
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
@@ -183,7 +183,7 @@ setCardShow(true)
 setAllCardArray(data)
 const cards: any = [];
   data.forEach((element: any) => {
-    console.log("Element =>", element);
+    
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -209,7 +209,7 @@ const cards: any = [];
     setSearchedCard(cards.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) && card.type == cardType ?.toUpperCase()))
   }
   // setCardShow(true)
-console.log("Arraydata", cards);
+
 
 }).catch((error) => {
 console.log(error,"error");
@@ -222,7 +222,7 @@ const onSelectType=(cardType:any)=>{
   setCardType(cardType)
   
   if (cardType === 'all') {
-    // console.log(cardType,"cardType")
+    
     setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
   }
   else {    
@@ -232,7 +232,7 @@ const onSelectType=(cardType:any)=>{
  
   
    const getAllRewardsOfUser = async (uid: string) => {
-  // console.log("getAllRewardsOfUser")
+  
   var winCards: {
     firstRewardCard: string,
     firstRewardCardCollection: string,
@@ -249,9 +249,9 @@ const onSelectType=(cardType:any)=>{
     .where("user", "==", uid)
     .get()
     .then((doc:any) => {
-      // console.log("getAllRewardsOfUser",doc)
+      
       doc.forEach((cards:any,index:number) => {
-        // console.log("getAllRewardsOfUser -- ",cards.data())
+      
         // winCards.push(cards.data().)
         winCards.push({...cards.data().winData ,...cards.data().transactionTime})
         
@@ -260,7 +260,7 @@ const onSelectType=(cardType:any)=>{
     .catch((error:any) => {
       console.log("getAllRewardsOfUser Error", error)
     })
-  // console.log("winCardsgetAllRewardsOfUser",winCards)
+  
    setWinerCard(winCards)
 }
   
@@ -306,7 +306,7 @@ useEffect(() => {
          })
        : setBackCards([...backCards, value]);
   };
-  // console.log(collectionType, "collectionType")
+  
   
 function sliceDived(arr:any, partSize:any) {
     const res = [];
@@ -315,7 +315,7 @@ function sliceDived(arr:any, partSize:any) {
         res.push(DivideEqual);
     }
     // return res;
-  // console.log(res,"res")
+  
   setEqualPart(res)
   
 }
@@ -332,7 +332,7 @@ useEffect(() => {
 
 const CheckCardDisable = (cardId: any) => {   
   var disableCard;
-  console.log('winCard?.firstRewardCardId',winerCard)
+  
   let cardTrue = winerCard?.find((winCard: any, index: number) =>
   {
 
@@ -400,8 +400,8 @@ const CheckCardDisable = (cardId: any) => {
             <option value='none'>Select Collection</option>
             
 
-            {collectionType?.map((data:any) => {
-              return  <option value={data?.collectionName}>{data?.collectionName}</option>        
+            {collectionType?.map((data:any ,index:number ) => {
+              return  <option value={data?.collectionName} key={index}>{data?.collectionName}</option>        
             })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
@@ -437,8 +437,8 @@ const CheckCardDisable = (cardId: any) => {
         className=''
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
-        {!cardShow && collectionType?.map((data:any) => {
-          return <div onClick={() => { navigate(`/profile/Album/${data?.collectionName}`)}}>
+        {!cardShow && collectionType?.map((data:any,index:number) => {
+          return <div onClick={() => { navigate(`/profile/Album/${data?.collectionName}`)}} key={index}>
           <p>{data?.collectionName} COLLECTION</p>
         </div>
         })}
@@ -446,12 +446,13 @@ const CheckCardDisable = (cardId: any) => {
 
       {searchedCard?.length > 0 ?
         <SummerCard className="mt-4">
-            {!!cardShow ? equalPart?.map((cardPart:any) => {                    
-              return <div className='w-100 m-auto mb-4'>                  
+            {!!cardShow ? equalPart?.map((cardPart:any,ind:number) => {                    
+              return <div className='w-100 m-auto mb-4' key={ind}>                  
                   <SwiperBar>                    
-                    {cardPart?.map((item: any) => {                      
+                    {cardPart?.map((item: any,index:number) => {                      
                       return (                        
-                          <NftOneCard                            
+                        <NftOneCard              
+                          key={index}
                             DivClass={item?.type}
                             HeaderText={item?.type}
                             HeaderClass={`${item?.type}_text`}

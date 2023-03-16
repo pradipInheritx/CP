@@ -121,9 +121,10 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
 
 const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
   const voteCoins = vote?.coin.split("-");
+  
   const { coins } = useContext(CoinsContext);
   const pair = voteCoins.length > 1;
-console.log(vote,"voteCoins")
+
 
   const trend = calculate(vote, index);
   const coin =
@@ -200,7 +201,9 @@ console.log(vote,"voteCoins")
                       <Row className="text-body profile_coin_vote_txt">
                           <Col >
                             
-                          <MyCountdown expirationTime={vote.expiration || 0} />
+                            <MyCountdown expirationTime={vote.expiration || 0}
+                              // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                            />
                         </Col>
                       </Row>
                     )}
@@ -259,7 +262,7 @@ console.log(vote,"voteCoins")
                 <>{vote?.valueVotingTime <coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
                 {vote?.valueVotingTime>  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 }  </> :<>
-                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
+                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
                 <>{vote?.valueVotingTime >coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
                 {vote?.valueVotingTime<  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 } 
@@ -270,6 +273,7 @@ console.log(vote,"voteCoins")
                   {/* { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
                   { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
                    { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
+                      
                   </Col>
                 </Row>
                 <Row>
@@ -294,7 +298,8 @@ const calculateWinner = (vote: VoteResultProps) =>
 const VotedCard = ({ vote, id,coinSocketData,callbackFun }: VotedCardProps) => {
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
-   console.log('votecardata',coins,vote.coin)
+  
+  const voteCoins = vote?.coin.split("-");
  useEffect(() => {
    
    if(!vote.valueExpirationTime){
@@ -303,8 +308,7 @@ var b = moment();
 let votetime= a.diff(b)
 
    setTimeout(() => {
-     console.count('votetime')
-     console.log('votetime', vote)
+     
     if(callbackFun)callbackFun()
 
    }, votetime+4000);
@@ -373,7 +377,9 @@ let votetime= a.diff(b)
                     <strong>{vote.score} CMP</strong>
                   )}
                   {!vote.valueExpirationTime && (
-                    <MyCountdown expirationTime={vote.expiration || 0} />
+                    <MyCountdown expirationTime={vote.expiration || 0}
+                      // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                    />
                   )}
                 </CoinVoteTimer>
               </div>

@@ -212,7 +212,7 @@ const Card = ({
     coins[symbol]?.price
   ])
   
-  // console.log(prevCountRef.current,currentPrice,changeColor,"changeColor");
+  
 
   let params = useParams();
   

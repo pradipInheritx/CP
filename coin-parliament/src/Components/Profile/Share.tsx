@@ -111,6 +111,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
                 "_blank"
               )
             }
+            style={{ cursor: "pointer" }}
             />
           </div>
           

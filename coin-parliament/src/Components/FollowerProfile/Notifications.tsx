@@ -19,9 +19,9 @@ const Notifications = () => {
   return (
     <Container className="py-4">
       {!notifications.length && <P>{translate("you have no notifications")}</P>}
-      {notifications.map(notification => {
+      {notifications.map((notification,i) => {
         const date = (notification.time && notification.time.toDate()) || undefined;
-        return <Notification date={date} title={notification.message.title} body={notification.message.body}/>;
+        return <Notification key={i} date={date} title={notification.message.title} body={notification.message.body}/>;
       })}
     </Container>
   );

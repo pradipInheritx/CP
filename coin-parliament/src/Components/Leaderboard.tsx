@@ -32,7 +32,7 @@ const Leaderboard = ({
 }) => {
   const location = useLocation();
   const pathname = location.pathname;
-  console.log(leaders,"userInfo")
+  
   return (
     <div>
       <LeadersContainer>

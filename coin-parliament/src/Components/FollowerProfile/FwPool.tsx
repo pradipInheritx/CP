@@ -21,7 +21,7 @@ const FwPool = () => {
   .where("uid", "==", followerUserId)
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 snapshot.docs?.map(doc=>setUserInfo(doc.data()))
 
  
@@ -34,12 +34,12 @@ console.log(error,"error");
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
   );
-console.log('referal user',children)
+
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
     getFollowerData()
   }, [userInfo?.children]);
-  console.log('snapshot',userInfo)
+  
   return (
     <>
       <div className={`${window.screen.width>767?"pt-4":""}`}>
@@ -57,10 +57,10 @@ console.log('referal user',children)
           />
         </div>
         <div>
-          {children.map((child) => {
+          {children.map((child,i) => {
             return (
               <div className="mb-2">
-                <PoolMiningCard user={child} />
+                <PoolMiningCard user={child} key={i} />
               </div>
             );
           })}

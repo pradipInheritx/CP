@@ -86,7 +86,7 @@ const SingleCoin = () => {
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun,
     remainingTimer,
     voteRules} = useContext(AppContext);
-  // console.log('choseTimeFrame1',selectedTimeFrameArray)
+  
   const newTimeframe: any = []
   const AllcssDegree: any = [];
   const AllvotePrice: any = [];
@@ -96,7 +96,7 @@ const SingleCoin = () => {
 
     if (voteId) {
       // if (!mountedRef.current) return null;
-      // console.log('timeframeforcpvi',{vote})
+      
       const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: vote.timeframe.seconds });
      
       return data.data as unknown as LineData[];
@@ -118,7 +118,7 @@ const SingleCoin = () => {
 // }
   useEffect(() => {
     // 
-    // console.log('cpvidata api called',vote.timeframe)
+    
     if(vote.timeframe) {
       setTimeout(() => {
         getCpviData().then((data) => data && setCpviData(data));  
@@ -131,11 +131,11 @@ const SingleCoin = () => {
    
   }, [voteId, getCpviData, vote]);
 // useEffect(() => {
-//   console.log('livedata',vote.timeframe)
+
 //   if(vote.timeframe && cpviData?.length) {
 //   var timer = setInterval( async() => {
 //     //  @ts-ignore
-//      console.log('livedata1',cpviData[50])
+
     
 //       //  @ts-ignore
 //         cpviRealTimeData({id: params?.id, lastTimeFrame: cpviData[50].time}).then((data) => console.log('live data',data));  
@@ -150,9 +150,9 @@ useEffect(() => {
   
    
     // const timer = setInterval( async() => {
-    //   console.log('settimeout1',vote.timeframe)
+    
       if(vote.timeframe) {
-      //  console.log('getcpvi',vote.timeframe)
+      
         getCpviData().then((data) => data && setCpviData(data));  
     }
     // }, 5000);
@@ -168,15 +168,15 @@ useEffect(() => {
     
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length])
   
-// console.log('selected time frame',cpviData)
+
  
 const calcVote = useCallback(async () => {
-    // console.log('getVote called 3')
+    
     // if (!mountedRef.current) return null;
-    // console.log('getVote called 2')
+    
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframes[selectedTimeFrame || 0]?.seconds});
-      if (v) {console.log('timeframe',v.data())
+      if (v) {
         if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
         if (v.data().timeframe?.seconds===3600) setSelectedTimeFrameArray([...newTimeframe,0])
         setVote(v.data());
@@ -191,7 +191,7 @@ const calcVote = useCallback(async () => {
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframe});
       if (v) {
-        // console.log('timeframe',v.data())
+        
        return v
       }
     }
@@ -199,23 +199,23 @@ const calcVote = useCallback(async () => {
 
   useEffect(() => {
 
-    // console.log("it is not run")
+    
     Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
         if (res) {                  
-          // console.log('choseTimeFrame',res,index)        
+                 
           // getLeftTime(res.data(), index);          
           AllvoteValueObject[index] = res.data();
           setAllButtonTime(AllvoteValueObject);
           setVotedDetails(AllvoteValueObject);
           newTimeframe.push(index)
-          // console.log('choseTimeFrame1',newTimeframe)
+          
           setSelectedTimeFrameArray(newTimeframe)
         }
         else{                    
           // setAllButtonTime();
-          // console.log('choseTimeFramesdfasd',allButtonTime)
+          
         }
       }))
     })
@@ -239,7 +239,7 @@ const calcVote = useCallback(async () => {
   //   setVoteId('');
   // }, [selectedTimeFrame]);
   useEffect(() => {
-    // console.log('get vote fun called')
+    
     calcVote().then(void 0);
     
     return () => {
@@ -259,7 +259,7 @@ const calcVote = useCallback(async () => {
           setVote(doc.data() as VoteResultProps);
         // }
 
-        // console.log(doc.data(), "doc.data()")  
+        
         
           // AllvoteValueObject = [];  
           // setAllButtonTime([...allButtonTime,viewData]);
@@ -275,7 +275,7 @@ const calcVote = useCallback(async () => {
 
 
   const getLeftTime = (value: any,index:number) => {
-    // console.log(value, "CheckvalueId", index);
+    
     let t = value.voteTime / 1000; //mili
     let d = value.timeframe.seconds; //second already
     let liveTime = Date.now() / 1000;
@@ -284,7 +284,7 @@ const calcVote = useCallback(async () => {
     let deg = val * 360;
     AllcssDegree[index] = Math.round(deg);
     AllvotePrice[index] =  value.valueVotingTime;
-    // console.log(vote,"all vote check")
+    
     if (deg >0) {
       setcssDegree(AllcssDegree);
       setvotePrice(AllvotePrice);
@@ -293,7 +293,7 @@ const calcVote = useCallback(async () => {
   
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-// console.log('i am rendering')
+
   const canVote = useMemo(() => {
     return (
       (!vote.expiration && vote.success === undefined) ||
@@ -301,7 +301,7 @@ const calcVote = useCallback(async () => {
       Date.now() >= vote?.expiration
     );
   }, [vote.expiration, vote.success,selectedTimeFrame ]);
-  // console.log('canvote',canVote,vote)
+
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);
@@ -317,11 +317,11 @@ const calcVote = useCallback(async () => {
       }, 2400);
     
   }, [selectedTimeFrame]);
-console.log('vote',vote)
+
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
 
-console.log(cpviData,"cpviData")
+
 
   return (
     <>

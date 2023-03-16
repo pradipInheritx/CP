@@ -114,7 +114,7 @@ const Security = () => {
         );
       })
       .then(function (verificationId) {
-        console.log("verificationcode", verificationId);
+        
         // Ask user for the verification code. Then:
         setVerificationIdData(verificationId);
         setVerifiactionCodeSent(true);
@@ -318,7 +318,7 @@ const Security = () => {
                                   // @ts-ignore
                                   var options = multiFactor(auth?.currentUser).enrolledFactors;
 // Present user the option to unenroll.
-console.log('option',options)
+
 // @ts-ignore
 return multiFactor(auth?.currentUser).unenroll(options[0])
   .then(function(res) {

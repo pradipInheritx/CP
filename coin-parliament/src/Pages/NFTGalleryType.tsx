@@ -132,10 +132,10 @@ const NFTGalleryType = () => {
   //           .collection("nft_gallery")
   //   getCards.get()
   //     .then((snapshot) => {        
-  //       // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+  
   //      let allcollection= snapshot.docs.map((doc) => doc.data())
   //         // setCollectionType(allcollection)
-  //       console.log(allcollection,"allcollection")
+  
   //       allcollection?.map((card) => {
 
   //         if (card?.collectionName==type) {
@@ -156,7 +156,7 @@ const onCollectionChange=()=>{
   .where("collectionName", "==", type)
 getCollectionType.get()
 .then((snapshot) => {        
-// console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+
 const data:any=[]
 snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
@@ -164,7 +164,7 @@ data.push({id: doc.id, ...doc.data()});
 setAllCardArray(data)
 const cards: any = [];
   data.forEach((element: any) => {
-    console.log("Element =>", element);
+    
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -178,7 +178,7 @@ const cards: any = [];
     });
   });
   setAllCard(cards)
-console.log("Array", data);
+
 
 }).catch((error) => {
 console.log(error,"error");
@@ -231,32 +231,9 @@ useEffect(() => {
       sliceDived(searchedCard, 4)
 }
   },[searchedCard])
-
-
-console.log(searchedCard,"setAllCard")
   
-  // const HandelonchangeFilter = (e:any) => {
-  //   let name =e.target.name
-  //   let value =e.target.value
-  //   let allCard = nftAlbumData;
-  //   let filterItem = allCard?.map((items: any, ind: number) => {      
-     
-  //    return  Object.keys(items?.cards[ind]).every((keyValue: any, index: number) => {
-  //       //  console.log(items?.cards[index][key],"allKEy") 
-  //       //  console.log(allCard[ind]?.cards[index],"allKEy") 
-  //       //  console.log(items.card[index][keyValue] ,"allKEy") 
-  //       // return items.cards[ind][keyValue]
-  //       if (items.cards[ind][keyValue] == value) {          
-  //         // return items?.cards[index][keyValue];
-  //          return items?.cards[ind]
-  //       }
-  //     })
-  //   })
-  //   console.log(filterItem,value,"filterItem")
-  //   // console.log(filterItem,"filterItem")
-  // }
 
-console.log(nftAlbumData,"nftAlbumData")
+
   return (
     <div className=''>
       <div className='h-100 '>
@@ -320,12 +297,13 @@ console.log(nftAlbumData,"nftAlbumData")
             <p>{`${type}`} COLLECTION</p>
           </div>        
           {searchedCard?.length > 0 ? <SummerCard className="">
-            {equalPart?.map((cardPart: any) => {
-              return <div className='w-100 m-auto mb-4'>
+            {equalPart?.map((cardPart: any ,ind:number) => {
+              return <div className='w-100 m-auto mb-4' key={ind}>
                 <SwiperBar>
-                  {cardPart?.map((item: any) => {
+                  {cardPart?.map((item: any ,index:number) => {
                     return (
                       <NftOneCard
+                        key={index}
                         DivClass={item?.type}
                         HeaderText={item?.type}
                         HeaderClass={`${item?.type}_text`}

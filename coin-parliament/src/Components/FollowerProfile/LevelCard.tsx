@@ -53,7 +53,7 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
             const opacity =
               userInfo?.status?.name === userType.name ? "" : " opacity-50";
             return (
-              <Badge className={"rounded-pill mt-1" + opacity}>
+              <Badge className={"rounded-pill mt-1" + opacity} key={i}>
                 {userType.name}
               </Badge>
             );

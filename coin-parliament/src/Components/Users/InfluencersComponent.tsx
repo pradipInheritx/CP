@@ -24,7 +24,7 @@ const InfluencersComponent = ({
   userInfo,
   setChecked,
 }: InfluencersComponentProps) => {
-  console.log("userType", userTypes);
+  
   return (
     <React.Fragment>
       <div className='mb-4'>

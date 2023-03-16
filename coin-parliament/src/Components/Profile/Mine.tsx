@@ -49,11 +49,11 @@ const Mine = () => {
   const [data, setData] = useState([]);
   let navigate = useNavigate();
   const rewardList = async () => {
-    console.log("user Id called");
+    // console.log("user Id called");
     const result = await getRewardTransactions({ uid: user?.uid });
     // @ts-ignore
     setData(result?.data);
-    console.log("user Id", result);
+    // console.log("user Id", result);
   };
 
   useEffect(() => {
@@ -196,7 +196,7 @@ const Mine = () => {
               REWARD HISTORY
             </div>
             {data.map((item, index) => (
-              <>
+              <div key={index}>
                 {" "}
                 <div className='d-flex justify-content-around px-5'>
                   {/* @ts-ignore */}
@@ -242,7 +242,7 @@ const Mine = () => {
                 ) : (
                   <p className='solid' style={{ margin: "28px" }}></p>
                 )}
-              </>
+              </div>
             ))}
             {!data?.length && (
               <>

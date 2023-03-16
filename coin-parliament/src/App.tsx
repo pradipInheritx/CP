@@ -124,7 +124,7 @@ import FwPool from "./Components/FollowerProfile/FwPool";
 import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
 import Wallet from "./Components/Profile/Wallet";
-
+import { pwaInstallHandler } from 'pwa-install-handler'
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -180,7 +180,7 @@ const handleClick=()=>{
         top: 0,
         behavior: 'smooth',
     });
-      // console.log("scrollTo");
+      
 }, [pathname])
 
   const showToast = useCallback(
@@ -322,10 +322,50 @@ const handleClick=()=>{
   const [userTypes, setUserTypes] = useState<UserTypeProps[]>([
     defaultUserType,
   ] as UserTypeProps[]);
+  const [supportsPWA, setSupportsPWA] = useState(false);
+  const [promptInstall, setPromptInstall] = useState(null);
+const [pwaPopUp,setPwaPopUp]=useState('block')
+  useEffect(() => {
+    const handler = (e:any) => {
+      e.preventDefault();
+      console.log("we are being triggered :D");
+      setSupportsPWA(true);
+      setPromptInstall(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
 
+    return () => window.removeEventListener("transitionend", handler);
+  }, []);
+
+  const onClick = (evt:any) => {
+    // evt.preventDefault();
+    console.log('not supported',promptInstall)
+    if (!promptInstall) {
+      return;
+    }
+    // @ts-ignore
+    else promptInstall.prompt();
+  };
+  if (!supportsPWA) {
+    console.log('not supported')
+  }
+  useEffect(() => {
+    if ( user?.email && userInfo?.displayName === undefined) {
+      setLoader(true);
+//   .get("444-44-4444").onsuccess = (event) => {
+//   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
+// };
+
+      // setLoader(true);
+    } else {
+      // setTimeout(() => {
+        setLoader(false);
+      // }, 2000);
+    }
+  }, [user, userInfo]);
   const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
-    console.log(user,"userInfoId");
+    
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
@@ -337,7 +377,7 @@ const handleClick=()=>{
   //   return Followerinfo
   // }
 
-  // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
+  
   
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined) {
@@ -366,9 +406,14 @@ const handleClick=()=>{
   // }, [user]);
 
   useEffect(() => {
-    if (user && userInfo && userInfo?.displayName === "" && userUid) {
+   
+    // @ts-ignore
+    if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
     }
+    pwaInstallHandler.addListener((canInstall) => {
+     canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
+    })
   }, [userInfo]);
 
   useEffect(() => {
@@ -419,16 +464,16 @@ const handleClick=()=>{
     }
   }, [lang, user?.uid]);
 
-  const isAdmin = useCallback(async (uid?: string) => {
-    if (uid) {
-      const func = httpsCallable(functions, "isAdmin");
-      return !!(await func({ user: uid })).data;
-    }
-  }, []);
+  // const isAdmin = useCallback(async (uid?: string) => {
+  //   if (uid) {
+  //     const func = httpsCallable(functions, "isAdmin");
+  //     return !!(await func({ user: uid })).data;
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
-  }, [user?.uid, isAdmin]);
+  // useEffect(() => {
+  //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
+  // }, [user?.uid, isAdmin]);
 
   useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
@@ -584,7 +629,7 @@ const handleClick=()=>{
                   { token: fcmToken },
                   { merge: true }
                 );
-                console.log("push enabled");
+                // console.log("push enabled");
               } catch (e) {
                 console.log(e);
               }
@@ -705,7 +750,11 @@ votesLast24HoursRef.get()
             type='hidden'
             id='lang-detector'
             ref={langDetector}
-            onChange={(e) => console.log(e.target.value)}
+              onChange={(e) => {
+                
+                // console.log(e.target.value)
+              }
+              }
           />
           <ManagersContext.Provider
             value={{
@@ -938,12 +987,7 @@ votesLast24HoursRef.get()
                               </HomeContainer>
                             }
                           />
-                        { isMobile &&  <div id="fullscreen-modal" className="modal" style={{display:displayFullscreen}}>
-  <div className="modal-content" >
-    <p className='fullscreentext'>Click the button below to enter fullscreen mode.</p>
-    <div className='d-flex justify-content-between'><button className="btn btn-outline-primary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>handleClick()}>YES</button> <button className="btn btn-outline-secondary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>setDisplayFullscreen('none')}>No</button></div>
-  </div>
-</div>}
+                       
                           {user && firstTimeLogin && (
                             <FirstTimeLogin
                               setFirstTimeAvatarSelection={
@@ -1010,6 +1054,29 @@ votesLast24HoursRef.get()
                                         }px 0 0`,
                                       }}
                                     >
+                                    <div className='pwaPopup'  style={{display:pwaPopUp}}>
+                                      <span>Install CoinParliament app for best experience</span>
+                                    <button
+      className="link-button"
+      id="setup_button"
+      aria-label="Install app"
+      title="Install app"
+      onClick={onClick}
+      style={{zIndex:99999}}
+    >
+      Install
+    </button>
+    <span
+      className="link-button"
+      id="setup_button"
+      aria-label="Install app"
+      title="Install app"
+      onClick={e=>setPwaPopUp('none')}
+      style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px'}}
+    >
+      x
+    </span>
+                                      </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />
                                         <Route
@@ -1208,7 +1275,7 @@ votesLast24HoursRef.get()
             onSubmit={async (e) => {
               e.preventDefault();
               const resp = await sendPassword({ password });
-              console.log(resp.data);
+              // console.log(resp.data);
               if (resp.data === true) {
                 enable(true);
               }

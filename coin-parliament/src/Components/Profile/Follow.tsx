@@ -46,7 +46,7 @@ const Follow = () => {
     getUsers({ users: userInfo?.leader, setUsers: setLeaders });
     getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
   }, [userInfo?.leader, userInfo?.subscribers]);
-console.log('leaders',leaders,userInfo)
+
   return (
     <Tabs
       defaultActiveKey="following"
