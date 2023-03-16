@@ -11,7 +11,7 @@ export type subAdminProps = {
 export const subAdminList = async (req: any, res: any, next: any) => {
   try {
     const { adminId } = req.params;
-    let { page, limit } = req.query;
+    let { page = 1, limit = 5 } = req.query;
     limit = parseInt(limit);
 
     const databaseQuery = await admin

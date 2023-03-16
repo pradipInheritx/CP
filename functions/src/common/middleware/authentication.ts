@@ -34,9 +34,4 @@ export async function auth(req: any, res: any, next: any) {
   } catch (error) {
     res.send(error);
   }
-
-  // console.log("decodeedToken----", decodeedToken)
-
-  // context.rawRequest.headers.authorization = String(decodeedToken);
-  // return next(context)
 }

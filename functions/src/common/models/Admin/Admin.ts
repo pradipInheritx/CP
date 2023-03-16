@@ -12,11 +12,10 @@ import {
 } from "../../helpers/commonFunction.helper";
 import env from "../../../env/env.json";
 import constants from "../../config/constants.json";
-// import { sendEmail } from "../services/emailServices";
-// import { AdminSignupTemplate } from "../emailTemplates/adminSignupTemplate";
-// import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
+import { sendEmail } from "../../services/emailServices";
+import { AdminSignupTemplate } from "../../emailTemplates/adminSignupTemplate";
+import { AdminForgotPasswordTemplate } from "../../emailTemplates/adminForgotPassword";
 import { hashPassword } from "../../helpers/commonFunction.helper";
-// import {ws} from "../../common/models/Ajax";
 
 export type adminUserProps = {
   firstName?: string;
@@ -99,11 +98,11 @@ export const adminCreate = async (req: any, res: any, next: any) => {
 
     const getAdminAdded = await getResponse.get();
 
-    // await sendEmail(
-    //   email,
-    //   "Account created",
-    //   AdminSignupTemplate(email, password, "Your account has been created")
-    // );
+    await sendEmail(
+      email,
+      "Account created",
+      AdminSignupTemplate(email, password, "Your account has been created")
+    );
 
     res.status(201).send({
       status: true,
@@ -252,17 +251,16 @@ export async function adminForgotPassword(req: any, res: any) {
 
     await admin.firestore().collection("admin").doc(adminUserId).set(userData);
 
-    // const url =
-    //   "https://coinparliamentstaging.firebaseapp.com/" +
-    //   `/reset-password?token=` +
-    //   reset_password_token;
+    const url =
+      "https://coinparliamentstaging.firebaseapp.com/" +
+      `/reset-password?token=` +
+      reset_password_token;
 
-    //sendEmail
-    // await sendEmail(
-    //   email,
-    //   "Forgot Password",
-    //   AdminForgotPasswordTemplate(url, "Forgot Password")
-    // );
+    await sendEmail(
+      email,
+      "Forgot Password",
+      AdminForgotPasswordTemplate(url, "Forgot Password")
+    );
 
     res.status(200).send({
       status: true,
