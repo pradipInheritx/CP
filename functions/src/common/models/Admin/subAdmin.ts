@@ -1,4 +1,4 @@
-import * as subAdmin from "firebase-admin";
+import * as admin from "firebase-admin";
 
 export type subAdminProps = {
   firstName?: string;
@@ -10,34 +10,72 @@ export type subAdminProps = {
 
 export const subAdminList = async (req: any, res: any, next: any) => {
   try {
-    const databaseQuery = await subAdmin
+    const { adminId } = req.params;
+    let { page, limit } = req.query;
+    limit = parseInt(limit);
+
+    const databaseQuery = await admin
       .firestore()
-      .collection("subAdmin")
+      .collection("admin")
+      .where("adminUserId", "==", adminId)
+      .offset((page - 1) * limit)
+      .limit(limit)
       .get();
 
-    const getsubAdminList = databaseQuery.docs.map((doc) => {
-      const getData = doc.data();
+    const subAdminList = databaseQuery.docs.map((doc) => {
+      const data = doc.data();
       return {
         id: doc.id,
-        ...getData,
+        ...data,
       };
     });
-
     res.status(200).send({
       status: true,
-      message: "Sub admin fetched successfully",
-      result: getsubAdminList,
+      message: "Sub-admins fetched successfully",
+      result: subAdminList,
     });
   } catch (error) {
-    errorLogging("subAdminList", "ERROR", error);
-    res.status(500).send(error);
+    console.error("Error while fetching sub-admins: ", error);
+    res.status(500).send({
+      status: false,
+      message: "Error fetching sub-admins",
+      error: error,
+    });
   }
 };
 
 export const updateStatus = async (req: any, res: any, next: any) => {
   try {
+    const { status } = req.body;
+    const { subAdminId } = req.params;
+    const databaseQuery = await admin
+      .firestore()
+      .collection("admin")
+      .doc(subAdminId)
+      .get();
+
+    let getSubAdminData: any = databaseQuery.data();
+    getSubAdminData.status = status;
+
+    const statusUpdate = await admin
+      .firestore()
+      .collection("admin")
+      .doc(subAdminId)
+      .set(getSubAdminData);
+
+    const databaseQueryAfterUpdate = await admin
+      .firestore()
+      .collection("admin")
+      .doc(subAdminId)
+      .get();
+
     res.status(201).send({
-      message: "Status update successfully. ",
+      status: true,
+      message: "Status updated successfully.",
+      result: {
+        metadata: statusUpdate,
+        data: databaseQueryAfterUpdate.data(),
+      },
     });
   } catch (error) {
     errorLogging("updateStatus", "ERROR", error);
@@ -47,8 +85,13 @@ export const updateStatus = async (req: any, res: any, next: any) => {
 
 export const deleteSubAdmin = async (req: any, res: any, next: any) => {
   try {
-    res.status(201).send({
-      message: "Sub Admin deleted successfully. ",
+    const { subAdminId } = req.params;
+    const subAdminRef = admin.firestore().collection("admin").doc(subAdminId);
+    await subAdminRef.delete();
+    res.status(200).send({
+      status: true,
+      message: "Sub Admin deleted successfully.",
+      result: null,
     });
   } catch (error) {
     errorLogging("deleteSubAdmin", "ERROR", error);

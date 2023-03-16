@@ -13,7 +13,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import { generateAuthTokens } from "./common/models/Admin";
+import { generateAuthTokens } from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";

@@ -7,8 +7,8 @@ import {
 
 const subAdminRouter = express.Router();
 
-subAdminRouter.get("/subAdminList", subAdminList);
-subAdminRouter.put("/updateStatus", updateStatus);
-subAdminRouter.delete("/deleteSubAdmin", deleteSubAdmin);
+subAdminRouter.get("/subAdminList/:adminId", subAdminList);
+subAdminRouter.put("/updateStatus/:subAdminId", updateStatus);
+subAdminRouter.delete("/deleteSubAdmin/:subAdminId", deleteSubAdmin);
 
 export default subAdminRouter;
