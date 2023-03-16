@@ -214,10 +214,11 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
 
   useEffect(() => {
     let updateData = data[data?.length-1]
-   console.log(updateData,"updateData")
-    if (lineSeries) {
-      
-      lineSeries.update(updateData);
+    console.log(data[data?.length - 1], "updateData")
+    
+    
+    if (lineSeries && updateData?.value!=0) {            
+      // lineSeries.update(updateData);
     }
     if (!series) return;
     series.setData(data);

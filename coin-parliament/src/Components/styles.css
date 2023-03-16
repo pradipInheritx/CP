@@ -8,4 +8,5 @@
 
 .modal-backdrop{
     display: none;
+    /* opacity: 1; */
 }

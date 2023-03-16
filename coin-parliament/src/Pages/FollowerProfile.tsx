@@ -25,7 +25,6 @@ import { useTranslation } from "../common/models/Dictionary";
 import Spinner from "../Components/Spinner";
 import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
-import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
 import { texts } from "../Components/LoginComponent/texts";
 
@@ -39,7 +38,7 @@ export enum FollowerProfileTabs {
   votes = "votes",
   notifications = "notifications",
   ProfileNftGallery = "Album",
-  ProfileNftGalleryType = "Album/:name",
+  ProfileNftGalleryType = "Album/:type",
   share = "share",
 }
 
@@ -163,18 +162,18 @@ const FollowerProfile = () => {
                               icon: <Share />,
                               eventKey: FollowerProfileTabs.share,
                             },
-                            // {
-                            //   component: <></>,
-                            //   label: FollowerProfileTabs.votes,
-                            //   icon: <Votes />,
-                            //   eventKey: FollowerProfileTabs.votes,
-                            // },
-                            // {
-                            //   component: <></>,
-                            //   label: FollowerProfileTabs.ProfileNftGallery,
-                            //   icon: <Gallery />,
-                            //   eventKey: FollowerProfileTabs.ProfileNftGallery,
-                            // },
+                            {
+                              component: <></>,
+                              label: FollowerProfileTabs.votes,
+                              icon: <Votes />,
+                              eventKey: FollowerProfileTabs.votes,
+                            },
+                            {
+                              component: <></>,
+                              label: FollowerProfileTabs.ProfileNftGallery,
+                              icon: <Gallery />,
+                              eventKey: FollowerProfileTabs.ProfileNftGallery,
+                            },
                             
                             
                             {

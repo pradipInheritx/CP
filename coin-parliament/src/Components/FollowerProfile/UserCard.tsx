@@ -87,8 +87,9 @@ const ElementsAvatarAImage1 = styled.div`
   margin-top: 1px;
   display: flex;
 `;
-export enum ProfileTabs {
-  profile = "profile",
+export enum FollowerProfileTabs {
+FollowerProfile = "followerProfile",
+  // profile = "profile",
   password = "password",
   wallet = "wallet",
   followers = "followers",
@@ -138,15 +139,15 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
           </FlexCol> */}
           <div className='mt-4'>
             {![
-              ProfileTabs.edit as string,
-              ProfileTabs.password as string,
+              FollowerProfileTabs.edit as string,
+              FollowerProfileTabs.password as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
                   {...{
                     chosenByDefault,
                     handleSelect: (eventKey: string | null) => {
-                      if (isV1() && eventKey === ProfileTabs.mine) {
+                      if (isV1() && eventKey === FollowerProfileTabs.mine) {
                         showToast(
                           translate(texts.FeatureAvailableSoon),
                           ToastType.INFO
@@ -160,33 +161,33 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         component: <></>,
                         label: "Mining",
                         icon: <Mine />,
-                        eventKey: ProfileTabs.mine,
+                        eventKey: FollowerProfileTabs.mine,
                       },
                       {
                         component: <></>,
                         label: "Pool Mining",
                         icon: <Share />,
-                        eventKey: ProfileTabs.share,
+                        eventKey: FollowerProfileTabs.share,
                       },
-                      // {
-                      //   component: <></>,
-                      //   label: ProfileTabs.votes,
-                      //   icon: <Votes />,
-                      //   eventKey: ProfileTabs.votes,
-                      // },
-                      // {
-                      //   component: <></>,
-                      //   label: ProfileTabs.ProfileNftGallery,
-                      //   icon: <Gallery />,
-                      //   eventKey: ProfileTabs.ProfileNftGallery,
-                      // },
+                      {
+                        component: <></>,
+                        label: FollowerProfileTabs.votes,
+                        icon: <Votes />,
+                        eventKey: FollowerProfileTabs.votes,
+                      },
+                      {
+                        component: <></>,
+                        label: FollowerProfileTabs.ProfileNftGallery,
+                        icon: <Gallery />,
+                        eventKey: FollowerProfileTabs.ProfileNftGallery,
+                      },
                       
                       
                       {
                         component: <></>,
-                        label: ProfileTabs.followers,
+                        label: FollowerProfileTabs.followers,
                         icon: <Following />,
-                        eventKey: ProfileTabs.followers,
+                        eventKey: FollowerProfileTabs.followers,
                       },
                       // {
                       //   component: <></>,
@@ -200,15 +201,15 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                 />
               )}
             {[
-              ProfileTabs.edit as string,
-              ProfileTabs.password as string,
+              FollowerProfileTabs.edit as string,
+              FollowerProfileTabs.password as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
                   {...{
                     chosenByDefault,
                     handleSelect: (eventKey: string | null) => {
-                      if (isV1() && eventKey === ProfileTabs.mine) {
+                      if (isV1() && eventKey === FollowerProfileTabs.mine) {
                         showToast(
                           translate(texts.FeatureAvailableSoon),
                           ToastType.INFO
@@ -222,19 +223,19 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         component: <></>,
                         label: "info",
                         icon: <UserIcon />,
-                        eventKey: ProfileTabs.edit,
+                        eventKey: FollowerProfileTabs.edit,
                       },
                       {
                         component: <></>,
                         label:"security",
                         icon: <SecurityIcon />,
-                        eventKey: ProfileTabs.password,
+                        eventKey: FollowerProfileTabs.password,
                       },
                       {
                         component: <></>,
-                        label: ProfileTabs.wallet,
+                        label: FollowerProfileTabs.wallet,
                         icon: <Wallet/>,
-                        eventKey: ProfileTabs.wallet,
+                        eventKey: FollowerProfileTabs.wallet,
                       },
                     ],
                   }}

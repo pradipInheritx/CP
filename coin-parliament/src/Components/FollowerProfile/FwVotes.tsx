@@ -32,8 +32,10 @@ const FwVotes = () => {
           end: start + pageSize,
           userId: user?.uid,
         });
+        // @ts-ignore
+        let result= JSON.parse(newVotes?.data)
         if (newVotes.data) {
-          setVotes(newVotes.data);
+          setVotes(result);
           const coinStat=newVotes?.data?.coins?.votes?.map(item=>item?.coin)
           // const pairStat=[]
            // @ts-ignore
@@ -98,7 +100,7 @@ const FwVotes = () => {
             Prev
           </Button>
           <Button
-            disabled={index >= v.total - pageSize}
+            disabled={index >= v?.total - pageSize}
             onClick={() => setIndex(index + pageSize)}
           >
             Next
@@ -135,7 +137,7 @@ console.log('vote',votes)
           title: capitalize(translate("pair")),
           pane: (
             <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.pairs.votes.map((v, i) => (
+              {votes?.pairs?.votes.map((v, i) => (
                 <div className="mb-2" key={i}>
                   <MyVotedCard v={v} callbackFun={callbackFun} />
                 </div>
@@ -149,7 +151,7 @@ console.log('vote',votes)
           title: capitalize(translate("coin")),
           pane: (
             <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.coins.votes.map((v, i) => (
+              {votes?.coins?.votes.map((v, i) => (
                 <div className="mb-2" key={i}>
                   <MyVotedCard v={v} coinSocketData={coinSocketData} callbackFun={callbackFun}/>
                 </div>

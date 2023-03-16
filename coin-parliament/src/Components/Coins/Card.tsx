@@ -49,8 +49,8 @@ const Logo = ({symbol, single}: BearVsBullRow & { single: boolean }) => {
       src={process.env.PUBLIC_URL + `/images/logos/${symbol?.toUpperCase()}.svg`}
       style={{
         margin: "0 auto",
-        width: single ? 60 : 40,
-        height: single ? 60 : 40,
+        width: single ? 70 : 50,
+        height: single ? 70 : 50,
       }}
       onError={(e) =>
         ((e.target as HTMLImageElement).src = "/images/no_logo.png")

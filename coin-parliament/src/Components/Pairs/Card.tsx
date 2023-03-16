@@ -46,7 +46,7 @@ export type LogoProps = {
   width?: number;
 };
 
-export const Logo = ({ symbol, width = 35 }: LogoProps) => {
+export const Logo = ({ symbol, width = 40 }: LogoProps) => {
   return (
     <Image
       src={process.env.PUBLIC_URL + `/images/logos/${symbol.toUpperCase()}.svg`}
@@ -206,7 +206,7 @@ const CoinCard = ({
   <LogoContainer>
     <Buttons.ClickableText onClick={onClick} style={{cursor: single ? "default" : undefined}}>
       <LogoImgContainer {...{single}}>
-        <Logo {...{symbol: coin.symbol, width: single ? 40 : 35}} />
+        <Logo {...{symbol: coin.symbol, width: single ? 45 : 40}} />
       </LogoImgContainer>
     </Buttons.ClickableText>
     <div className="my-2">

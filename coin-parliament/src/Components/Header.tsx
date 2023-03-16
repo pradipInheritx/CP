@@ -171,7 +171,7 @@ const Header = ({
   const [show, setShow] = useState(false);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
-  const pageTrue = urlName.includes("pairs" || "coins")
+  const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
   // const urlname = location.pathname;
 
   
@@ -194,15 +194,16 @@ const Header = ({
   }, [followerUserId])
   
   useEffect(() => {
-    if (voteNumber == 0 && votingTimer  && pageTrue) {
-      console.log("checkbuthurlName")
+    if (voteNumber == 0 && votingTimer  && pageTrue && urlName.length>2) {
+      
       setShow(true) 
     } else {
-      
       setShow(false) 
     }
     
-  },[voteNumber,votingTimer,urlName])
+  },[voteNumber , votingTimer])
+
+
 
   useEffect(() => {
   
@@ -292,8 +293,24 @@ const Header = ({
 
     setMenuOpen(false);
   };
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // @ts-ignore
+  // console.log(
+  //   Number(voteRules?.maxVotes) +
+  //     // @ts-ignore
+  //     Number(userInfo?.rewardStatistics?.extraVote) -
+  //     Number(votesLast24Hours.length),
+  //   "userInfo"
+  // );
+  // console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
+  // const checkFollow = !toFollow(userInfo?.leader || [], followerInfo?.uid);
+
+
+
+  // console.log(followerInfo,"followerInfouseid")
+  const handleClose = () => {
+    setShow(false)
+  };
+  
 
   return (
     <div>
@@ -433,22 +450,22 @@ const Header = ({
                           {
                             followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
                             // @ts-ignore */
-                                <span className="" style={{ marginLeft: '20px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
+                                <div className="" style={{ marginLeft: '20px', marginTop: "0px",lineHeight: "90%" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
                                   renderer={({ hours, minutes, seconds, completed }) => {
                                     return (
-                                      <span style={{color:'#6352e8',fontSize:'8px',fontWeight:100}}>                            
+                                      <span style={{color:'#6352e8',fontSize:'8px',fontWeight:100 ,lineHeight: "10%"}}>                            
                                         Wait {" "}
                                         {hours < 1 ? null : `${hours} :` }
                                         {minutes < 10 ? `0${minutes}` : minutes}:
                                         {seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes 
-                                        {/* <br /> */}
-                                         {/* or buy extra votes now. */}
+                                        <br />
+                                         or buy extra votes now.
                                       </span>
                                     );
                           
                                   }}
                          
-                                /></span>
+                                /></div>
                                 :
                                 <>
                                   <span
@@ -664,11 +681,18 @@ const Header = ({
               style={{ opacity: 1 }}
               className="borderColor"
               // animation={false}
-      >
-        <Modal.Header closeButton>
-          
-        </Modal.Header>
+            >             
+              {/* <Modal.Header>
+
+              </Modal.Header> */}
               <Modal.Body>
+                <div className="d-flex justify-content-end">
+                <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
+                  setShow(false)
+                  }}></button>
+                </div>
+<div className="my-2 " style={{width:"100%",height:"1px",border:".8px solid #dee2e6" ,opacity:"" }}></div>
+                {/* <hr /> */}
                 <p> Out of votes? </p> <Link to="/votingbooster" onClick={() => {                  
                   // navigate("/votingbooster")
                   setShow(false)

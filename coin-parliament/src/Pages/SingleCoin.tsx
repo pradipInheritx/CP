@@ -298,7 +298,7 @@ const calcVote = useCallback(async () => {
     return (
       (!vote.expiration && vote.success === undefined) ||
       (vote.expiration && vote.success !== undefined) ||
-      Date.now() >= vote.expiration
+      Date.now() >= vote?.expiration
     );
   }, [vote.expiration, vote.success,selectedTimeFrame ]);
   // console.log('canvote',canVote,vote)
@@ -320,6 +320,8 @@ const calcVote = useCallback(async () => {
 console.log('vote',vote)
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
+
+console.log(cpviData,"cpviData")
 
   return (
     <>

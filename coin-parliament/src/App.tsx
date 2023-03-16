@@ -121,6 +121,9 @@ import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
+import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
+import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
+import Wallet from "./Components/Profile/Wallet";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -1049,6 +1052,14 @@ votesLast24HoursRef.get()
                                             path={ProfileTabs.password}
                                             element={<Security />}
                                           />
+                                          <Route
+                                            path={
+                                              ProfileTabs.wallet
+                                            }
+                                            element={<Wallet />}
+                                          /> 
+                                          
+
                                           {!isV1() && (
                                             <Route
                                               path={ProfileTabs.mine}
@@ -1066,9 +1077,7 @@ votesLast24HoursRef.get()
                                           <Route
                                               path={ProfileTabs.share}
                                               element={<Pool />}
-                                          />
-                                    
-
+                                          />                                    
                                           <Route
                                             path={ProfileTabs.notifications}
                                             element={<Notifications />}
@@ -1085,6 +1094,7 @@ votesLast24HoursRef.get()
                                             }
                                             element={<ProfileNftGalleryType />}
                                           />
+                                         
                                         </Route>
                                         {/* Fowller component  start*/}
                                         <Route
@@ -1109,6 +1119,18 @@ votesLast24HoursRef.get()
                                           <Route
                                               path={FollowerProfileTabs.share}
                                               element={<FwPool />}
+                                          />
+                                          <Route
+                                            path={
+                                              FollowerProfileTabs.ProfileNftGallery
+                                            }
+                                            element={<FwProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              FollowerProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<FwProfileNftGalleryType />}
                                           />
                                           </Route>
                                           

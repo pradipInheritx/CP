@@ -12,6 +12,7 @@ import firebase from "firebase/compat";
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
+import AppContext from "../Contexts/AppContext";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -42,8 +43,9 @@ const SummerCard = styled.div`
   
 `;
 
-const ProfileNftGallery = () => {
+const FwProfileNftGallery = () => {
   const { user } = useContext(UserContext);
+  const{followerUserId}=useContext(AppContext)
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
@@ -217,7 +219,7 @@ console.log(error,"error");
   }
   
 
-
+console.log(followerUserId,"followerUserId")
 const onSelectType=(cardType:any)=>{
   setCardType(cardType)
   
@@ -267,8 +269,7 @@ const onSelectType=(cardType:any)=>{
   
   useEffect(() => {
     getNftCard()
-    // @ts-ignore
-    getAllRewardsOfUser(`${user?.uid}`)
+    getAllRewardsOfUser(`${followerUserId}`)
 }, [])
 
   
@@ -438,7 +439,7 @@ const CheckCardDisable = (cardId: any) => {
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
         {!cardShow && collectionType?.map((data:any) => {
-          return <div onClick={() => { navigate(`/profile/Album/${data?.collectionName}`)}}>
+          return <div onClick={() => { navigate(`/followerProfile/Album/${data?.collectionName}`)}}>
           <p>{data?.collectionName} COLLECTION</p>
         </div>
         })}
@@ -493,4 +494,4 @@ const CheckCardDisable = (cardId: any) => {
   );
 };
 
-export default ProfileNftGallery;
+export default FwProfileNftGallery;

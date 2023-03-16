@@ -256,7 +256,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
           </div>
           <div className='mt-2 mb-3'>
             <span>
-              {pathnameName[1] == "profile"
+              {pathnameName[1] == "profile" || "followerProfile"
                 ? `Private Card Serial No. : ${PrivateSerialNo || ""}`
                 : `General Card Serial No. : ${GeneralSerialNo || ""}` }
             </span>
@@ -265,9 +265,9 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
             <span>Name : {BackCardName}</span>
             <span>Rarity : {Rarity}</span>
             <span>
-              {pathnameName[1] == "profile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
+              {pathnameName[1] == "profile" || "followerProfile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
+            {pathnameName[1] == "profile" || "followerProfile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
             onClick={() => {
                 navigate(`/singalCard/${CollectionType || type}/${id}`)            
                 setSingalCardData({ ...fulldata, myID: userId })
