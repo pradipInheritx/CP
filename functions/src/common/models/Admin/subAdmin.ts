@@ -10,17 +10,17 @@ export type subAdminProps = {
 
 export const subAdminList = async (req: any, res: any, next: any) => {
   try {
-    const { adminId } = req.params;
-    let { page = 1, limit = 5 } = req.query;
+    const {adminId} = req.params;
+    let {page = 1, limit = 5} = req.query;
     limit = parseInt(limit);
 
     const databaseQuery = await admin
-      .firestore()
-      .collection("admin")
-      .where("adminUserId", "==", adminId)
-      .offset((page - 1) * limit)
-      .limit(limit)
-      .get();
+        .firestore()
+        .collection("admin")
+        .where("adminUserId", "==", adminId)
+        .offset((page - 1) * limit)
+        .limit(limit)
+        .get();
 
     const subAdminList = databaseQuery.docs.map((doc) => {
       const data = doc.data();
@@ -46,28 +46,28 @@ export const subAdminList = async (req: any, res: any, next: any) => {
 
 export const updateStatus = async (req: any, res: any, next: any) => {
   try {
-    const { status } = req.body;
-    const { subAdminId } = req.params;
+    const {status} = req.body;
+    const {subAdminId} = req.params;
     const databaseQuery = await admin
-      .firestore()
-      .collection("admin")
-      .doc(subAdminId)
-      .get();
+        .firestore()
+        .collection("admin")
+        .doc(subAdminId)
+        .get();
 
-    let getSubAdminData: any = databaseQuery.data();
+    const getSubAdminData: any = databaseQuery.data();
     getSubAdminData.status = status;
 
     const statusUpdate = await admin
-      .firestore()
-      .collection("admin")
-      .doc(subAdminId)
-      .set(getSubAdminData);
+        .firestore()
+        .collection("admin")
+        .doc(subAdminId)
+        .set(getSubAdminData);
 
     const databaseQueryAfterUpdate = await admin
-      .firestore()
-      .collection("admin")
-      .doc(subAdminId)
-      .get();
+        .firestore()
+        .collection("admin")
+        .doc(subAdminId)
+        .get();
 
     res.status(201).send({
       status: true,
@@ -85,7 +85,7 @@ export const updateStatus = async (req: any, res: any, next: any) => {
 
 export const deleteSubAdmin = async (req: any, res: any, next: any) => {
   try {
-    const { subAdminId } = req.params;
+    const {subAdminId} = req.params;
     const subAdminRef = admin.firestore().collection("admin").doc(subAdminId);
     await subAdminRef.delete();
     res.status(200).send({
@@ -100,9 +100,9 @@ export const deleteSubAdmin = async (req: any, res: any, next: any) => {
 };
 
 export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
+    funcName: string,
+    type: string,
+    error: any
 ) => {
   console.info(funcName, type, error);
 };

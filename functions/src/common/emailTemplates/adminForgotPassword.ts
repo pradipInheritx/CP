@@ -1,5 +1,5 @@
 export const AdminForgotPasswordTemplate = (url:any, title:any) => {
-    return `
+  return `
           <!DOCTYPE html>
           <html>
           <head>
@@ -170,4 +170,4 @@ export const AdminForgotPasswordTemplate = (url:any, title:any) => {
           </body>
           </html>
           `;
-  };  
+};

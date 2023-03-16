@@ -1,5 +1,5 @@
-const express = require("express");
-import { auth } from "../common/middleware/authentication";
+import express from "express";
+import {auth} from "../common/middleware/authentication";
 
 import {
   adminCreate,

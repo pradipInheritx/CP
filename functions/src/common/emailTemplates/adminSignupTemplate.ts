@@ -1,5 +1,5 @@
 export const AdminSignupTemplate = (email:any, password:any, title:any) => {
-    return `
+  return `
           <!DOCTYPE html>
           <html>
           <head>
@@ -170,4 +170,4 @@ export const AdminSignupTemplate = (email:any, password:any, title:any) => {
           </body>
           </html>
           `;
-  };  
+};

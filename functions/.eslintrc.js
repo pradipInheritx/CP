@@ -28,5 +28,6 @@ module.exports = {
     "camelcase": 0,
     "require-jsdoc": 0,
     "max-len": 0,
+    "new-cap": 0,
   },
 };
