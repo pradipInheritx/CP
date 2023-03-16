@@ -9,13 +9,13 @@ import {
   generateAuthToken,
   generateRefreshToken,
   verifyRefreshToken,
-} from "../helpers/commonFunction.helper";
-import env from "../../env/env.json";
-import constants from "../config/constants.json";
+} from "../../helpers/commonFunction.helper";
+import env from "../../../env/env.json";
+import constants from "../../config/constants.json";
 // import { sendEmail } from "../services/emailServices";
 // import { AdminSignupTemplate } from "../emailTemplates/adminSignupTemplate";
 // import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
-import { hashPassword } from "../../common/helpers/commonFunction.helper";
+import { hashPassword } from "../../helpers/commonFunction.helper";
 // import {ws} from "../../common/models/Ajax";
 
 export type adminUserProps = {
@@ -73,7 +73,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
       length: 10,
       numbers: true,
     });
-    console.log("Password >>>>", password)
+    console.log("Password >>>>", password);
 
     let hashedPassword = await hashPassword(password);
 
@@ -134,8 +134,7 @@ export async function login(req: any, res: any) {
     if (getAdminUserData && getAdminUserData.length == 0) {
       return res.status(409).json({
         status: false,
-        message:
-          "Please enter valid email address",
+        message: "Please enter valid email address",
         result: null,
       });
     }
@@ -148,26 +147,22 @@ export async function login(req: any, res: any) {
     if (!isPasswordValid) {
       return res.status(401).json({
         status: false,
-        message:
-          "Please enter valid email and password",
+        message: "Please enter valid email and password",
         result: null,
       });
     }
 
-    let authTokenObj = await generateAuthToken({ id: adminUserId, ...adminUser });
+    let authTokenObj = await generateAuthToken({
+      id: adminUserId,
+      ...adminUser,
+    });
 
-    let refreshToken = await generateRefreshToken(
-      adminUser
-    );
+    let refreshToken = await generateRefreshToken(adminUser);
 
     adminUser.authTokens.push(authTokenObj);
     adminUser.refreshToken = refreshToken;
 
-    await admin
-      .firestore()
-      .collection("admin")
-      .doc(adminUserId)
-      .set(adminUser);
+    await admin.firestore().collection("admin").doc(adminUserId).set(adminUser);
 
     res.status(200).send({
       status: true,
@@ -186,8 +181,6 @@ export async function login(req: any, res: any) {
 
 export async function generateAuthTokens(refresh_tokens: string) {
   const decodedUser = await verifyRefreshToken(refresh_tokens);
-
-  console.log("DECODED USER", decodedUser);
 
   if (!decodedUser) {
     throw new functions.https.HttpsError(
@@ -224,7 +217,6 @@ export async function adminForgotPassword(req: any, res: any) {
   const { email } = req.body;
 
   try {
-    console.log("Forgot Password :::::", email);
     const query = await admin
       .firestore()
       .collection("admin")
@@ -235,8 +227,7 @@ export async function adminForgotPassword(req: any, res: any) {
     if (getAdminUserData && getAdminUserData.length == 0) {
       return res.status(404).json({
         status: false,
-        message:
-          "User does not exist.",
+        message: "User does not exist",
         result: null,
       });
     }
@@ -259,11 +250,7 @@ export async function adminForgotPassword(req: any, res: any) {
 
     userData.reset_password_token = reset_password_token;
 
-    await admin
-      .firestore()
-      .collection("admin")
-      .doc(adminUserId)
-      .set(userData);
+    await admin.firestore().collection("admin").doc(adminUserId).set(userData);
 
     // const url =
     //   "https://coinparliamentstaging.firebaseapp.com/" +
@@ -279,8 +266,9 @@ export async function adminForgotPassword(req: any, res: any) {
 
     res.status(200).send({
       status: true,
-      message: "Please check your email to reset password, your link will be expired in an hour ",
-      result: null
+      message:
+        "Please check your email to reset password, your link will be expired in an hour ",
+      result: null,
     });
   } catch (error) {
     errorLogging("adminForgotPassword", "ERROR", error);
@@ -294,16 +282,15 @@ export async function adminForgotPassword(req: any, res: any) {
 
 export const logout = async (req: any, res: any) => {
   try {
-
     const { id } = req.user;
-    console.log("ID >>>>>>",id)
+
     const existingUser = await admin
       .firestore()
       .collection("admin")
       .doc(id)
       .get();
 
-    const userData :any = existingUser.data();
+    const userData: any = existingUser.data();
 
     userData.auth_tokens = userData.auth_tokens.filter(
       (item: any) => item.token !== req.token
@@ -315,18 +302,17 @@ export const logout = async (req: any, res: any) => {
       .doc(userData.id)
       .set(userData)
       .then(() => {
-        console.log("Logout Successfully..");
+        console.log("Logout Successfully In Callback");
       })
       .catch((error: any) => {
-        console.log("logout error....", error);
+        errorLogging("logout", "ERROR", error);
       });
 
     res.status(200).send({
       status: true,
-      message: "Logout successfully.",
-      result: null
+      message: "User logged out successfully",
+      result: null,
     });
-
   } catch (error) {
     errorLogging("logout", "ERROR", error);
     res.status(500).send({
@@ -347,12 +333,11 @@ export const adminChangePassword = async (req: any, res: any) => {
       .get();
 
     const user = adminData.data();
-    console.log("ADMIN DAT FROM CHANGEPASSWORD", adminData)
+    console.log("ADMIN DAT FROM CHANGEPASSWORD", adminData);
     if (!user) {
       return res.status(404).json({
         status: false,
-        message:
-          "User does not exist.",
+        message: "User does not exist.",
         result: null,
       });
     }
@@ -362,8 +347,7 @@ export const adminChangePassword = async (req: any, res: any) => {
     if (!passwordCheck) {
       return res.status(401).json({
         status: false,
-        message:
-          "Old password does not match.",
+        message: "Old password does not match.",
         result: null,
       });
     }
@@ -396,19 +380,18 @@ export const adminChangePassword = async (req: any, res: any) => {
 export const adminResetPassword = async (req: any, res: any) => {
   try {
     const { reset_password_token, newPassword } = await req.body;
-    console.log("RESET PASSWORD >>>>", req.body)
+    console.log("RESET PASSWORD >>>>", req.body);
     const query = await admin
       .firestore()
       .collection("admin")
       .where("reset_password_token", "==", reset_password_token)
       .get();
 
-    console.log("QUERY >>>>>>", query)
+    console.log("QUERY >>>>>>", query);
     if (query.empty) {
       return res.status(404).json({
         status: false,
-        message:
-          "User does not exist.",
+        message: "User does not exist.",
         result: null,
       });
     }
@@ -417,17 +400,11 @@ export const adminResetPassword = async (req: any, res: any) => {
     const userData = snapshot.data();
     const adminUserId = snapshot.id;
 
-
-
     const newHashPassword = await hashPassword(newPassword);
     userData.password = newHashPassword;
     userData.reset_password_token = null;
 
-    await admin
-      .firestore()
-      .collection("admin")
-      .doc(adminUserId)
-      .set(userData);
+    await admin.firestore().collection("admin").doc(adminUserId).set(userData);
 
     res.status(200).send({
       status: true,

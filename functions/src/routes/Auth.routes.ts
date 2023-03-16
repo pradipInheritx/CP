@@ -8,7 +8,7 @@ import {
   adminChangePassword,
   adminResetPassword,
   logout,
-} from "../common/models/Admin";
+} from "../common/models/Admin/Admin";
 
 const authAdminRouter = express.Router();
 
