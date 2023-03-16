@@ -412,7 +412,7 @@ const Header = ({
                         cursor:"pointer"
                       }}
                     >
-                      {userInfo?.avatar && (
+                      {/* {userInfo?.avatar && ( */}
                         <Avatars
                           type={followerPage && followerInfo != "" ?  followerInfo?.avatar || "Founder" as AvatarType  : userInfo?.avatar as AvatarType}
                           style={{
@@ -422,7 +422,7 @@ const Header = ({
                             backgroundColor: "#6352E8",
                           }}
                         />
-                      )}
+                      {/* )} */}
                     </div>
                     <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
                       <HeaderCenterMob className=''>
@@ -549,7 +549,7 @@ const Header = ({
                         cursor:"pointer"
                       }}
                     >
-                      {userInfo?.avatar && (
+                      {/* {userInfo?.avatar && ( */}
                         <Avatars
                           // type={userInfo?.avatar as AvatarType}
                           type={ followerPage && followerInfo != ""?  followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
@@ -559,7 +559,7 @@ const Header = ({
                             backgroundColor: "#6352E8",
                           }}
                         />
-                      )}
+                      {/* )} */}
                     </div>
                     <div className='w-100 '>
                       <HeaderCenter className=''>

@@ -351,7 +351,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
     <Countdown
       date={expirationTime}
       renderer={({ hours, minutes, seconds, completed }) => {
-        if (completed ) {
+        if (completed) {
           if (vote && voteId) {            
             checkprice()
           }
