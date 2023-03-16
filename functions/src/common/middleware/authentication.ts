@@ -12,13 +12,13 @@ export async function auth(req: any, res: any, next: any) {
         const token = req.header('Authorization')?.toString().replace('Bearer ', '');
         // console.log("bearerToken----", token)
         if (!token) throw new functions.https.HttpsError("internal", 'User Not Found');
-        const decodedToken = jwt.verify(token, env.JWT_AUTH_SECRET) as JwtPayload
-        console.log("decodedToken....", decodedToken.id)
+        const decodedToken: any = jwt.verify(token, env.JWT_AUTH_SECRET) as JwtPayload
+        // console.log("decodedToken....", decodedToken.userAdmin.id)
         const user = await firestore()
             .collection('admin')
-            .doc(decodedToken.id)
+            .doc(decodedToken.userAdmin.id)
             .get()
-        // console.log("Middleware ............. user ",user.data())
+        // console.log("Middleware ............. user ", user.data())
         if (!user.data()) throw new functions.https.HttpsError("internal", "User Not Found")
         req.user = user.data()
         req.token = token;

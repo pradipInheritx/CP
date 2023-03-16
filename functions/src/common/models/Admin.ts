@@ -12,9 +12,9 @@ import {
 } from "../helpers/commonFunction.helper";
 import env from "../../env/env.json";
 import constants from "../config/constants.json";
-import { sendEmail } from "../services/emailServices";
-import { AdminSignupTemplate } from "../emailTemplates/adminSignupTemplate";
-import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
+// import { sendEmail } from "../services/emailServices";
+// import { AdminSignupTemplate } from "../emailTemplates/adminSignupTemplate";
+// import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 import { hashPassword } from "../../common/helpers/commonFunction.helper";
 // import {ws} from "../../common/models/Ajax";
 
@@ -27,8 +27,8 @@ export type adminUserProps = {
   password?: string;
   webAppAccess: string[];
   status?: string;
-  auth_tokens: Object[];
-  refresh_tokens: any;
+  authTokens: Object[];
+  refreshToken: any;
   createdAt?: number;
   updatedAt?: number;
 };
@@ -73,6 +73,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
       length: 10,
       numbers: true,
     });
+    console.log("Password >>>>", password)
 
     let hashedPassword = await hashPassword(password);
 
@@ -83,8 +84,8 @@ export const adminCreate = async (req: any, res: any, next: any) => {
       webAppAccess,
       status,
       password: hashedPassword,
-      auth_tokens: [],
-      refresh_tokens: null,
+      authTokens: [],
+      refreshToken: null,
       isAdmin,
       adminUserId,
       createdAt: parseInt(moment().format("X")),
@@ -98,11 +99,11 @@ export const adminCreate = async (req: any, res: any, next: any) => {
 
     const getAdminAdded = await getResponse.get();
 
-    await sendEmail(
-      email,
-      "Account created",
-      AdminSignupTemplate(email, password, "Your account has been created")
-    );
+    // await sendEmail(
+    //   email,
+    //   "Account created",
+    //   AdminSignupTemplate(email, password, "Your account has been created")
+    // );
 
     res.status(201).send({
       status: true,
@@ -119,62 +120,67 @@ export const adminCreate = async (req: any, res: any, next: any) => {
   }
 };
 
-export async function login(req: any, res: any, next: any) {
+export async function login(req: any, res: any) {
   try {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
+
     const query = await admin
       .firestore()
       .collection("admin")
       .where("email", "==", email)
       .get();
 
-    if (query.empty || query.docs[0].data() == undefined) {
-      throw new functions.https.HttpsError(
-        "not-found",
-        "Entered email id is not registered."
-      );
+    const getAdminUserData = query.docs;
+    if (getAdminUserData && getAdminUserData.length == 0) {
+      return res.status(409).json({
+        status: false,
+        message:
+          "Please enter valid email address",
+        result: null,
+      });
     }
-    const snapshot = query.docs[0];
+    const snapshot = query.docs[getAdminUserData.length - 1];
     const adminUser = snapshot.data();
+    const adminUserId = snapshot.id;
 
-    console.log("Admin User Data ==>", adminUser);
+    let isPasswordValid = await validPassword(password, adminUser.password);
 
-    let passwordCheck = await validPassword(password, adminUser.password);
-
-    console.log("PASSWORD CHECK", passwordCheck);
-
-    if (!passwordCheck) {
-      throw new functions.https.HttpsError(
-        "invalid-argument",
-        "Enter a valid email or password."
-      );
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        status: false,
+        message:
+          "Please enter valid email and password",
+        result: null,
+      });
     }
 
-    let authTokenObj = await generateAuthToken(
-      adminUser.id,
-      adminUser.user_type
-    );
-    let refresh_tokens = await generateRefreshToken(
-      adminUser.id,
-      adminUser.user_type
+    let authTokenObj = await generateAuthToken({ id: adminUserId, ...adminUser });
+
+    let refreshToken = await generateRefreshToken(
+      adminUser
     );
 
-    adminUser.auth_tokens.push(authTokenObj);
-    adminUser.refresh_tokens = refresh_tokens;
+    adminUser.authTokens.push(authTokenObj);
+    adminUser.refreshToken = refreshToken;
 
     await admin
       .firestore()
       .collection("admin")
-      .doc(adminUser.id)
+      .doc(adminUserId)
       .set(adminUser);
 
-    adminUser.auth_tokens =
-      adminUser.auth_tokens[adminUser.auth_tokens.length - 1];
-
-    res.status(200).send(adminUser);
+    res.status(200).send({
+      status: true,
+      message: "User logged in successfully",
+      result: adminUser,
+    });
   } catch (error) {
-    res.status(500).send(error);
+    errorLogging("login", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
   }
 }
 
@@ -203,7 +209,7 @@ export async function generateAuthTokens(refresh_tokens: string) {
 
     console.log("Admin User Data ==>", adminUser);
 
-    let newToken = await generateAuthToken(adminUser.id, adminUser.user_type);
+    let newToken = await generateAuthToken(adminUser);
 
     return newToken;
   } else {
@@ -214,25 +220,33 @@ export async function generateAuthTokens(refresh_tokens: string) {
   }
 }
 
-export async function adminForgotPassword(req: any, res: any, next: any) {
-  const email = req.body.email;
+export async function adminForgotPassword(req: any, res: any) {
+  const { email } = req.body;
 
   try {
     console.log("Forgot Password :::::", email);
-    const existingUser = await admin
+    const query = await admin
       .firestore()
       .collection("admin")
       .where("email", "==", email)
       .get();
 
-    if (existingUser.empty) {
-      throw new functions.https.HttpsError("not-found", "User does not exist.");
+    const getAdminUserData = query.docs;
+    if (getAdminUserData && getAdminUserData.length == 0) {
+      return res.status(404).json({
+        status: false,
+        message:
+          "User does not exist.",
+        result: null,
+      });
     }
-    const snapshot = existingUser.docs[0];
+
+    const snapshot = query.docs[0];
     const userData = snapshot.data();
+    const adminUserId = snapshot.id;
 
     userData.updatedAt = parseInt(moment().format("X"));
-    console.log("userData", userData);
+
     let reset_password_token = jwt.sign(
       {
         data: email,
@@ -245,42 +259,51 @@ export async function adminForgotPassword(req: any, res: any, next: any) {
 
     userData.reset_password_token = reset_password_token;
 
-    await admin.firestore().collection("admin").doc(userData.id).set(userData);
+    await admin
+      .firestore()
+      .collection("admin")
+      .doc(adminUserId)
+      .set(userData);
 
-    const url =
-      "https://coinparliamentstaging.firebaseapp.com/" +
-      `/reset-password?token=` +
-      reset_password_token;
+    // const url =
+    //   "https://coinparliamentstaging.firebaseapp.com/" +
+    //   `/reset-password?token=` +
+    //   reset_password_token;
 
     //sendEmail
-    await sendEmail(
-      email,
-      "Forgot Password",
-      AdminForgotPasswordTemplate(url, "Forgot Password")
-    );
+    // await sendEmail(
+    //   email,
+    //   "Forgot Password",
+    //   AdminForgotPasswordTemplate(url, "Forgot Password")
+    // );
 
     res.status(200).send({
-      message:
-        "Please check your email to reset password, your link will be expired in an hour ",
+      status: true,
+      message: "Please check your email to reset password, your link will be expired in an hour ",
+      result: null
     });
-  } catch (err) {
-    throw new functions.https.HttpsError(
-      "internal",
-      "Something went wrong. Please try again later."
-    );
+  } catch (error) {
+    errorLogging("adminForgotPassword", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
   }
 }
 
 export const logout = async (req: any, res: any) => {
   try {
+
+    const { id } = req.user;
+    console.log("ID >>>>>>",id)
     const existingUser = await admin
       .firestore()
       .collection("admin")
-      .where("id", "==", req.user.id)
+      .doc(id)
       .get();
 
-    const snapshot = existingUser.docs[0];
-    const userData = snapshot.data();
+    const userData :any = existingUser.data();
 
     userData.auth_tokens = userData.auth_tokens.filter(
       (item: any) => item.token !== req.token
@@ -298,41 +321,51 @@ export const logout = async (req: any, res: any) => {
         console.log("logout error....", error);
       });
 
-    // return { message: "Logout Successfully.." }
     res.status(200).send({
+      status: true,
       message: "Logout successfully.",
+      result: null
     });
+
   } catch (error) {
-    console.log("logout ", error);
-    throw new functions.https.HttpsError(
-      "internal",
-      "Something went wrong. Please try again later."
-    );
+    errorLogging("logout", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
   }
 };
 
 export const adminChangePassword = async (req: any, res: any) => {
-  const oldPassword: string = req.body.oldPassword;
-  const newPassword: string = req.body.newPassword;
+  const { oldPassword, newPassword } = req.body;
   try {
-    const userData = await admin
+    const adminData = await admin
       .firestore()
       .collection("admin")
       .doc(req.user.id)
       .get();
 
-    const user = userData.data();
+    const user = adminData.data();
+    console.log("ADMIN DAT FROM CHANGEPASSWORD", adminData)
     if (!user) {
-      throw new functions.https.HttpsError("not-found", "User does not exist.");
+      return res.status(404).json({
+        status: false,
+        message:
+          "User does not exist.",
+        result: null,
+      });
     }
 
     let passwordCheck = await validPassword(oldPassword, user.password);
 
     if (!passwordCheck) {
-      throw new functions.https.HttpsError(
-        "internal",
-        "Old password does not match."
-      );
+      return res.status(401).json({
+        status: false,
+        message:
+          "Old password does not match.",
+        result: null,
+      });
     }
 
     let hashedPassword = await hashPassword(newPassword);
@@ -346,56 +379,68 @@ export const adminChangePassword = async (req: any, res: any) => {
       .catch((error) => console.log("ChangePassword changed...", error));
 
     res.status(200).send({
+      status: true,
       message: "Your password changed successfully.",
+      result: null,
     });
   } catch (error) {
-    throw new functions.https.HttpsError(
-      "internal",
-      "Something went wrong. Please try again later."
-    );
+    errorLogging("adminChangePassword", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
   }
 };
 
 export const adminResetPassword = async (req: any, res: any) => {
   try {
-    const restPassword = await req.body.reset_password_token;
-    const newPasswordData = await req.body.newPassword;
-
-    const userRef = await admin
+    const { reset_password_token, newPassword } = await req.body;
+    console.log("RESET PASSWORD >>>>", req.body)
+    const query = await admin
       .firestore()
       .collection("admin")
-      .where("reset_password_token", "==", restPassword)
+      .where("reset_password_token", "==", reset_password_token)
       .get();
 
-    if (userRef.empty) {
-      return res.status(404).send("User does not exist.");
+    console.log("QUERY >>>>>>", query)
+    if (query.empty) {
+      return res.status(404).json({
+        status: false,
+        message:
+          "User does not exist.",
+        result: null,
+      });
     }
 
-    const user = userRef.docs[0].data();
-    console.log("USER userRef.docs[0].data() >>>>>>>", user);
+    const snapshot = query.docs[0];
+    const userData = snapshot.data();
+    const adminUserId = snapshot.id;
 
-    const newPassword = await hashPassword(newPasswordData);
-    user.password = newPassword;
-    user.reset_password_token = null;
 
-    console.log(
-      `user.password >>>> ${user.password} \n user.rest_password >>>> ${user.reset_password_token}`
-    );
+
+    const newHashPassword = await hashPassword(newPassword);
+    userData.password = newHashPassword;
+    userData.reset_password_token = null;
 
     await admin
       .firestore()
       .collection("admin")
-      .doc(user.id)
-      .set(user)
-      .then(() => console.log("ResetPassword done..."))
-      .catch((error) => console.log("ResetPassword changed...", error));
+      .doc(adminUserId)
+      .set(userData);
 
-    res.status(200).send("Your Password reset successfully.");
+    res.status(200).send({
+      status: true,
+      message: "Your Password reset successfully.",
+      result: null,
+    });
   } catch (error) {
-    throw new functions.https.HttpsError(
-      "internal",
-      "Something went wrong. Please try again later.>>>>>>>>"
-    );
+    errorLogging("adminResetPassword", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
   }
 };
 
