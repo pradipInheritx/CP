@@ -139,7 +139,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
   // console.info("This is before calculation =>");
 
   if (price) {
-    const calc = new Calculation(vote, Number(price), voteId);
+    const calc = new Calculation(vote, price, voteId);
     await calc.calc(getVoteRef);
   }
 };

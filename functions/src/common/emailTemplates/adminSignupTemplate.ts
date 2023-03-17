@@ -1,4 +1,4 @@
-export const AdminSignupTemplate = (email:any, password:any, title:any) => {
+export const adminSignupTemplate = (email: any, password: any, title: any) => {
   return `
           <!DOCTYPE html>
           <html>

@@ -114,8 +114,8 @@ main.use(bodyParser.urlencoded({extended: false}));
  * @author Mukut Prasad
  * @description Added admin routes seperately
  */
-app.use("/admin/sub-admin", subAdminRouter);
-app.use("/admin/auth", authAdminRouter);
+main.use("/admin/sub-admin", subAdminRouter);
+main.use("/admin/auth", authAdminRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));

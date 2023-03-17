@@ -1,4 +1,4 @@
-import express from "express";
+import {Router} from "express";
 
 import {
   subAdminList,
@@ -6,7 +6,7 @@ import {
   deleteSubAdmin,
 } from "../common/models/Admin/subAdmin";
 
-const subAdminRouter = express.Router();
+const subAdminRouter = Router();
 
 subAdminRouter.get("/subAdminList/:adminId", subAdminList);
 subAdminRouter.put("/updateStatus/:subAdminId", updateStatus);

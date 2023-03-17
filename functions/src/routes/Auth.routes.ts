@@ -1,4 +1,4 @@
-import express from "express";
+import {Router} from "express";
 import {auth} from "../common/middleware/authentication";
 
 import {
@@ -10,13 +10,13 @@ import {
   logout,
 } from "../common/models/Admin/Admin";
 
-const authAdminRouter = express.Router();
+const authRouter = Router();
 
-authAdminRouter.post("/createAdminUser", adminCreate);
-authAdminRouter.post("/login", login);
-authAdminRouter.post("/forgot-password", adminForgotPassword);
-authAdminRouter.post("/change-password", auth, adminChangePassword);
-authAdminRouter.post("/reset-password", adminResetPassword);
-authAdminRouter.post("/logout", auth, logout);
+authRouter.post("/createAdminUser", adminCreate);
+authRouter.post("/login", login);
+authRouter.post("/forgot-password", adminForgotPassword);
+authRouter.post("/change-password", auth, adminChangePassword);
+authRouter.post("/reset-password", adminResetPassword);
+authRouter.post("/logout", auth, logout);
 
-export default authAdminRouter;
+export default authRouter;

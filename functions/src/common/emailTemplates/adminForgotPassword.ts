@@ -1,4 +1,4 @@
-export const AdminForgotPasswordTemplate = (url:any, title:any) => {
+export const adminForgotPasswordTemplate = (url: any, title: any) => {
   return `
           <!DOCTYPE html>
           <html>

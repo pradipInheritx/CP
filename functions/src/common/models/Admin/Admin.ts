@@ -14,8 +14,8 @@ import {
 import env from "../../../env/env.json";
 import constants from "../../config/constants.json";
 import {sendEmail} from "../../services/emailServices";
-import {AdminSignupTemplate} from "../../emailTemplates/adminSignupTemplate";
-import {AdminForgotPasswordTemplate} from "../../emailTemplates/adminForgotPassword";
+import {adminSignupTemplate} from "../../emailTemplates/adminSignupTemplate";
+import {adminForgotPasswordTemplate} from "../../emailTemplates/adminForgotPassword";
 
 export type adminUserProps = {
   firstName?: string;
@@ -101,7 +101,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
     await sendEmail(
         email,
         "Account created",
-        AdminSignupTemplate(email, password, "Your account has been created")
+        adminSignupTemplate(email, password, "Your account has been created")
     );
 
     res.status(201).send({
@@ -259,7 +259,7 @@ export async function adminForgotPassword(req: any, res: any) {
     await sendEmail(
         email,
         "Forgot Password",
-        AdminForgotPasswordTemplate(url, "Forgot Password")
+        adminForgotPasswordTemplate(url, "Forgot Password")
     );
 
     res.status(200).send({
