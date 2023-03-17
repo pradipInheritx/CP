@@ -154,7 +154,7 @@ class Calculation {
   }
 
   calcValueExpirationTime(): void {
-    console.log("calcValueExpirationTime");
+    console.log("calcValueExpirationTime", this.price, typeof this.price);
     this.voteResult.valueExpirationTime = this.price;
   }
 
