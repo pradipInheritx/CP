@@ -281,7 +281,10 @@ export const claimReward: (
   uid: string
 ) => { [key: string]: any } = async (uid: string) => {
   console.log("Beginning execution claimReward function");
-  getAllCardsOfNftGallery()
+  // getAllCardsOfNftGallery()
+  // addAlbumNft(1, "RoseWinter", 5)
+  // addSetNft("eGGxIlx3EvnsTHiqsikm", 101, "Manali")
+  generateSerialNumber(0, 11, 0, 5)
   // addRewardNFT("SWnA6wLlv9bPVRIlHKHY", 1, "image")
   // uploadImage()
   // imageUpload('functions/src/images/nature.jpg')
@@ -511,6 +514,18 @@ const getImageUrl = async (collectionId: string, setId: number, cardId: number) 
   // });
 
 }
+type AlbumNft = {
+  collectionId: number,
+  collectionName: string,
+  setQuantity: number
+  setDetails: object[]
+}
+
+type SetNft = {
+  setId: number,
+  setName: string,
+  cardsDetails: object[]
+}
 
 type NewCardNft = {
   name: string,
@@ -520,24 +535,89 @@ type NewCardNft = {
   sno: string[],
   cardImage: any,
   noOfCardHolder: number,
-  cardStatus : boolean
+  cardStatus: boolean
+}
+
+// generate serial number
+export const generateSerialNumber = async (collectionId: number, setId: number, cardType: any, quantity: number) => {
+  let serialNumber: string[] = []
+  for (let i = 0; i < quantity; i++) {
+    let card = String(collectionId) + String(setId) + String(cardType) + String(i);
+    serialNumber.push(card);
+  }
+  return serialNumber
+}
+
+// Add Album in nft_gallery
+export const addAlbumNft = async (collectionId: any, albumName: string, setQuantity: number) => {
+  try {
+
+    let collectionData: AlbumNft = {
+      collectionId,
+      collectionName: albumName,
+      setQuantity: setQuantity,
+      setDetails: []
+    }
+
+    await firestore()
+      .collection("nft_gallery")
+      .doc()
+      .set(collectionData)
+      .then((data) => console.log("DATA from addAlbumNft >>>", data))
+      .catch((error) => console.log("Error from addAlbumNft >>>", error));
+
+  } catch (error) {
+    console.log("addAlbumNft Error >>>>>>", error)
+  }
+}
+
+// add set NFT 
+export const addSetNft = async (collectionId: string, setId: number, setName: string) => {
+  try {
+
+    let setData: SetNft = {
+      setId: setId,
+      setName: setName,
+      cardsDetails: []
+    }
+
+    const getCollectionRef = await firestore()
+      .collection("nft_gallery")
+      .doc(collectionId)
+      .get();
+
+    const collectionData: any = getCollectionRef.data();
+    collectionData.setDetails.push(setData);
+    console.log("Collection Data >>>", collectionData, setData);
+
+    await firestore()
+      .collection("nft_gallery")
+      .doc(collectionId)
+      .update(collectionData)
+      .then((data) => console.log("DATA from addSetNft >>>", data))
+      .catch((error) => console.log("Error from addSetNft >>>", error));
+
+  } catch (error) {
+    console.log("addAlbumNft Error >>>>>>", error)
+  }
 }
 
 // add new NFT card
-export const addRewardNFT = async (collectionId: string, setId: number, cardDetail: any) => {
+export const addRewardNFT = async (cardDetail: any) => {
 
   try {
-    const id = uuidv4()
+    const { collectionId, setId } = cardDetail;
+    const id = uuidv4();
     const newCardNft: NewCardNft = {
       name: cardDetail.name,
       type: cardDetail.type,
       quantity: cardDetail.quantity,
       totalQuantity: cardDetail.totalQuantity,
-      sno: cardDetail.sno,
+      sno: await generateSerialNumber(collectionId, setId, cardDetail.type, cardDetail.quantity),
       cardImage: cardDetail.image ? await uploadImage(cardDetail.image, collectionId, setId, id) : "",
       noOfCardHolder: cardDetail.noOfCardHolder || 0,
-      cardStatus : cardDetail.status
-    }
+      cardStatus: cardDetail.status
+    };
 
     const getCollectionRef = await firestore()
       .collection('nft_gallery')
@@ -567,18 +647,8 @@ export const addRewardNFT = async (collectionId: string, setId: number, cardDeta
 };
 
 
-// get all cards from whole 
+// get all cards from nft_gallary
 export const getAllCardsOfNftGallery = async () => {
-  // const cards :any = []
-  // const collectionRef = await firestore()
-  //   .collection('nft_gallery')
-  //   .get();
-
-  // const collData = await collectionRef.docs.map(doc => doc.data())
-  // collData.forEach((data)=>{
-  //   let cardData = data.setDetails
-  //   console.log("CollData >>>>",cardData)
-  // })
   const nftGalleryData = await getAllNftGallery();
   const cards: any = [];
   nftGalleryData.forEach((element: any) => {

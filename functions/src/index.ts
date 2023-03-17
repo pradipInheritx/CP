@@ -623,6 +623,8 @@ exports.checkValidUsername = functions.https.onCall(async (data) => {
 
 exports.addRewardNFT = functions.https.onCall(async (data) => {
   const cardDetail = {
+    collectionId: data.collectionId,
+    setId: data.setId,
     name: data.name,
     type: data.type,
     quantity: data.quantity,
@@ -631,8 +633,7 @@ exports.addRewardNFT = functions.https.onCall(async (data) => {
     cardImage: data.image,
     noOfCardHolder: data.noOfCardHolder
   }
-  const { collectionId, setId } = data as { collectionId: string, setId: number };
-  return await addRewardNFT(collectionId, setId, cardDetail)
+  return await addRewardNFT(cardDetail)
 })
 
 type GetVotesProps = { start: number; end: number; userId: string };
