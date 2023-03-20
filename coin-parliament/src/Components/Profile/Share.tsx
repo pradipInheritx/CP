@@ -39,16 +39,23 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
     <PoolBox className="mx-auto d-flex justify-content-center" style={{width:window.screen.width<979?'100%':'40%'}}>
       <Titles style={{textAlign:window.screen.width<979?'center':'start'}}>
         <div className="d-flex justify-content-center mt-4">
-          <h6 className="text-uppercase">{translate(text)}</h6>
+          <h6 className="text-uppercase">{translate('We believe in Partnerships! ')}</h6>
         </div>
         <div className="d-flex justify-content-center">
           <img src={earn} alt="" />
         </div>
         <div className="d-flex justify-content-center ">
-          <h6 className="text-uppercase">{translate("INVITE FRIENDS & EARN!")}</h6>
+          <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>Invite your friends to become <strong>CoinParliament</strong> members and enjoy the benefits of being our partner.</h6>
+         
+        </div>
+        <div className="d-flex justify-content-center ">
+        <h6 className=" mx-4"style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>{translate("Your friends will be an integral part of your progress and income FOREVER!  ")}</h6>
         </div>
         <div className=" py-2 w-75   m-auto">          
-        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100"}}>When they join and upgrade the account, You will earn extra CPM, VOTES and POINTS.</p>
+        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100",textAlign:'center'}}>What you’ll get:
+
+<br/>Accelerate your mining progress.
+Lifetime passive income direct to your wallet.</p>
         </div>
         <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
           <div className="mx-3">
@@ -107,7 +114,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
             src={ process.env.PUBLIC_URL + '/images/icons/facebookWhite.png'}
             onClick={() =>
               window.open(
-                `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                `https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`,
                 "_blank"
               )
             }

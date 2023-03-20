@@ -326,6 +326,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
   const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
   
   const checkprice = async() => {
+    console.log('price called')
    const data = await getPriceCalculation({            
         coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
         coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,

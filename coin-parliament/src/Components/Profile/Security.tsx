@@ -219,11 +219,13 @@ const Security = () => {
                                 u &&
                                 userInfo?.displayName &&
                                 validatePassword(
-                                  confirmPassword,
+                                  
                                   newPassword,                                  
-                                  userInfo?.displayName
+                                  userInfo?.displayName,
+                                  confirmPassword,
                                 )
                               ) {
+                                console.log('password')
                                 await updatePassword(u, newPassword);
                                 showToast(texts.PasswordUpdatSuccess);
                                 setChangePassword(false);
