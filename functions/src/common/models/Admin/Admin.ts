@@ -278,49 +278,6 @@ export async function adminForgotPassword(req: any, res: any) {
   }
 }
 
-export const logout = async (req: any, res: any) => {
-  try {
-    const { id } = req.user;
-
-    const existingUser = await admin
-      .firestore()
-      .collection("admin")
-      .doc(id)
-      .get();
-
-    const userData: any = existingUser.data();
-
-    userData.authTokens = userData.authTokens.filter(
-      (item: any) => item.token !== req.token
-    );
-
-    await admin
-      .firestore()
-      .collection("admin")
-      .doc(req.user.id)
-      .set(userData)
-      .then(() => {
-        console.log("Logout Successfully In Callback");
-      })
-      .catch((error: any) => {
-        errorLogging("logout", "ERROR", error);
-      });
-
-    res.status(200).send({
-      status: true,
-      message: "User logged out successfully",
-      result: null,
-    });
-  } catch (error) {
-    errorLogging("logout", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in server",
-      result: error,
-    });
-  }
-};
-
 export const adminChangePassword = async (req: any, res: any) => {
   const { oldPassword, newPassword } = req.body;
   try {
@@ -416,6 +373,51 @@ export const adminResetPassword = async (req: any, res: any) => {
   }
 };
 
+
+export const logout = async (req: any, res: any) => {
+  try {
+    const { id } = req.user;
+
+    const existingUser = await admin
+      .firestore()
+      .collection("admin")
+      .doc(id)
+      .get();
+
+    const userData: any = existingUser.data();
+
+    userData.authTokens = userData.authTokens.filter(
+      (item: any) => item.token !== req.token
+    );
+
+    await admin
+      .firestore()
+      .collection("admin")
+      .doc(req.user.id)
+      .set(userData)
+      .then(() => {
+        console.log("Logout Successfully In Callback");
+      })
+      .catch((error: any) => {
+        errorLogging("logout", "ERROR", error);
+      });
+
+    res.status(200).send({
+      status: true,
+      message: "User logged out successfully",
+      result: null,
+    });
+  } catch (error) {
+    errorLogging("logout", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
+  }
+};
+
+
 export const errorLogging = async (
   funcName: string,
   type: string,
@@ -423,3 +425,4 @@ export const errorLogging = async (
 ) => {
   console.info(funcName, type, error);
 };
+
