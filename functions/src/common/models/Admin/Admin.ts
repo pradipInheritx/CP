@@ -324,7 +324,6 @@ export const logout = async (req: any, res: any) => {
 export const adminChangePassword = async (req: any, res: any) => {
   const { oldPassword, newPassword } = req.body;
   try {
-    console.log("REQ>USER>ID ........", req.user.id);
     const adminData = await admin
       .firestore()
       .collection("admin")
@@ -378,14 +377,12 @@ export const adminChangePassword = async (req: any, res: any) => {
 export const adminResetPassword = async (req: any, res: any) => {
   try {
     const { reset_password_token, newPassword } = await req.body;
-    console.log("RESET PASSWORD >>>>", req.body);
     const query = await admin
       .firestore()
       .collection("admin")
       .where("reset_password_token", "==", reset_password_token)
       .get();
 
-    console.log("QUERY >>>>>>", query);
     if (query.empty) {
       return res.status(404).json({
         status: false,
