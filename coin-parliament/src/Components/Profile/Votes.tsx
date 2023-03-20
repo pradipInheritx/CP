@@ -17,9 +17,7 @@ const Votes = () => {
   const pageSize = useMemo(() => 3, []);
   const {user} = useContext(UserContext);
   const translate = useTranslation();
-  const [index, setIndex] = useState(0);
-  const [comCoins, setComCoins] = useState<any>([]);
-  const [comPair, setComPair] = useState<any>([]);
+  const [index, setIndex] = useState(0);  
   const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
   
   const [votes, setVotes] = useState<GetVotesResponse>({
@@ -38,7 +36,7 @@ const Votes = () => {
           userId: user?.uid,
         });
         // @ts-ignore
-        let result = JSON.parse(newVotes?.data)        
+        let result = JSON.parse(newVotes?.data)      
         if (newVotes?.data) {
           setVotes(result);                    
           const coinStat = newVotes?.data?.coins?.votes?.map(item => item?.coin);
@@ -55,20 +53,21 @@ const Votes = () => {
     },
     [user?.uid, pageSize]
   );  
+  console.log(votes,"all vote check")
   useEffect(() => {
     // @ts-ignore
     const { coins, pairs } = votes
     
     let AllCoins = coins?.votes.filter((item: any) => {
       if (item.expiration < Date.now() && !item.success) {
-        setComCoins({ ...comCoins, item })
+        
         return item
       }    
     })
 
     let AllPairs = pairs?.votes.filter((item: any) => {
       if (item.expiration< Date.now() && !item.success) {
-        setComPair({ ...comPair, item })
+        
         return item
       }
     })  
@@ -128,8 +127,8 @@ const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
         expiration: vote?.expiration,
         timestamp: Date.now()
     }).then((data:any)=>{
-      if(data==null){
-        console.log("all Done")
+      if(data.data==null){
+             getVotes(index).then(void 0);     
       }
     }).catch((err:any )=> {
         if (err && err.message) {

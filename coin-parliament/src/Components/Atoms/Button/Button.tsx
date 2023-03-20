@@ -261,7 +261,7 @@ const TimeframeButton = ({
       as={"div"}
       style={{
         opacity:
-          showTimer && checked ? 0.48 : borderColor != "white" ? 0.48 : "",
+          showTimer && checked ? 0.48 : 1,
         background:
           showTimer && checked
             ? `radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor} ${borderDeg}deg, white ${borderDeg}deg ,white 360deg, green)`

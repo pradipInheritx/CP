@@ -334,10 +334,12 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
         valueVotingTime: vote?.valueVotingTime,
         expiration: vote?.expiration,
         timestamp: Date.now()
-    }).then((data)=>{
-      if(data==null){
-        console.log("all Done")
-      }
+   }).then((data) => {
+      // console.log(data.data,"checkdata")
+     
+      // if(data==null){
+      //   console.log("all Done")
+      // }
     }).catch(err => {
         if (err && err.message) {
             console.log(err.message);
@@ -352,11 +354,11 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
       date={expirationTime}
       renderer={({ hours, minutes, seconds, completed }) => {
         if (completed) {
-          if (vote && voteId) {            
+          if (vote && !vote?.sucess) {            
             checkprice()
           }
       // return data;
-          return <span >loading...</span>;
+          return <span style={{color:"#7767f7"}}>loading...</span>;
         } else {
           return (
             <span className="" style={{color:'#6352e8',fontSize:'17px',fontWeight:400,marginLeft:"10px"}}>

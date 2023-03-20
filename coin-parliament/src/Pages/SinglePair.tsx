@@ -37,7 +37,7 @@ const SinglePair = () => {
   const [voteId, setVoteId] = useState<string>();
   const [loading, setLoading] = useState(false);
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
-  const combination = symbolCombination([coin1.symbol, coin2.symbol]);
+  const combination = symbolCombination([coin1?.symbol, coin2?.symbol]);
   const [confetti, setConfetti] = useState(false);
   const {width, height} = useWindowSize();
   const [pct,setPct]=useState(0)
@@ -67,15 +67,15 @@ const SinglePair = () => {
     }
   }, [params?.id, voteId, vote,selectedTimeFrame]);
   
-  useEffect(() => {
+  // useEffect(() => {
     
-    if(vote.timeframe) {
-      setTimeout(() => {
-        getCpviData().then((data) => data && setPct(Number(data.data)));  
-      }, 2000);
-      }
+  //   if(vote.timeframe) {
+  //     setTimeout(() => {
+  //       getCpviData().then((data) => data && setPct(Number(data.data)));  
+  //     }, 2000);
+  //     }
    
-  }, [voteId, getCpviData]);
+  // }, [voteId, getCpviData]);
   useEffect(() => {
   
    

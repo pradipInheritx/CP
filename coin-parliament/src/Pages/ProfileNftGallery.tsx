@@ -43,7 +43,7 @@ const SummerCard = styled.div`
 `;
 
 const ProfileNftGallery = () => {
-  // const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
