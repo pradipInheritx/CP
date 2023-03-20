@@ -160,7 +160,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
-  const { singalCardData,setSingalCardData} = useContext(AppContext);
+  const { singalCardData, setSingalCardData } = useContext(AppContext);
+  
   
   
       let params = useParams();
