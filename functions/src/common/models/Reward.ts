@@ -653,14 +653,10 @@ export const getAllCardsOfNftGallery = async () => {
   const cards: any = [];
   nftGalleryData.forEach((element: any) => {
     console.log("Element =>", element);
-    const collectionId = element.collectionId;
-    const collectionName = element.collectionName;
-    const collectionDocId = element.id;
 
     element.setDetails.forEach((setDetail: any) => {
-      const setId = setDetail.id;
       setDetail.cards.forEach((cardDetail: any) => {
-        cards.push({ collectionId, collectionName, collectionDocId, setId, ...cardDetail });
+        cards.push({ collectionId: element.collectionId, collectionName: element.collectionName, collectionDocId: element.id, setId: setDetail.id, ...cardDetail });
       });
     });
   });
