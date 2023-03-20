@@ -250,7 +250,7 @@ const Card = ({
   const [colorSec, setColorSec] = useState<string>("black");
   const [priceFist, setPriceFist] = useState<any>(0)
   const [priceSec, setPriceSec] = useState<any>(0)
-
+const [zoom, setZoom] = useState(false)
   const prevFirstRef = useRef(priceFist)
   const prevSecRef = useRef(priceSec)
 
@@ -299,7 +299,11 @@ const secColor= ()=>{
 
   
   return (
-    <LighCart1 {...{ single,pathname }} className="">
+    <LighCart1 {...{ single, pathname }} className=""
+      style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.05)" : "scale(1)"}` }}
+    onMouseEnter={()=>setZoom(true)}
+    onMouseLeave={()=>setZoom(false)}  
+    >
       <HeartContainer {...{ single }} onClick={
         ()=>{
           if(!user?.uid){

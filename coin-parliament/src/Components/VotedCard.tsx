@@ -216,6 +216,8 @@ const VotedCard = ({
     row3=`${vote.timeframe.name}`
   }    
   
+
+  console.log(vote,"votecheck")
   return (
     <>
      <div className="mt-4" style={{paddingLeft:symbol2?'':'24px',paddingRight:symbol2?'':'24px',maxWidth:'450px', margin:'0 auto'}}>
@@ -229,6 +231,7 @@ const VotedCard = ({
             },
             // title: translate("Select voting time frame"),
             title: translate("Select a time frame for your vote"),
+          votedTitle: translate("Select another time frame"),
             // select a time frame for your vote
             voted:true,
             selectedTimeFrameArray: selectedTimeFrameArray,

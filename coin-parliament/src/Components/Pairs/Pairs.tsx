@@ -127,7 +127,7 @@ const Pairs = ({
         </Container>
       )}
 
-      <div className="table-responsive m-auto overflow-hidden px-0" style={{maxWidth}}>
+      <div className="table-responsive m-auto overflow-hidden px-0" style={{maxWidth }}>
         <Carousel
           {...{
             id: "Pairs",

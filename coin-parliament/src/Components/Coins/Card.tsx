@@ -12,7 +12,7 @@ import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import arrow from '../../assets/svg/arrow-right.svg'
 const LighCart1 = styled.div`
-
+  cursor: pointer;
   max-width: 350px;
   position: relative;
   display: flex;
@@ -188,8 +188,8 @@ const Card = ({
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
   const [changeColor, setChangeColor] = useState<string>("black");
   const [currentPrice, setCurrentPrice] = useState<any>(0)
-  
- const prevCountRef = useRef(currentPrice)
+  const [zoom, setZoom] = useState(false)  
+  const prevCountRef = useRef(currentPrice)
 
   const OnlyCheckColor = () => {          
     // setInterval(() => {            
@@ -219,6 +219,9 @@ const Card = ({
   return (
     <LighCart1
       {...{ single }}
+    style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.07)" : "scale(1)"}` }}
+    onMouseEnter={()=>setZoom(true)}
+    onMouseLeave={()=>setZoom(false)}  
     >
       <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{

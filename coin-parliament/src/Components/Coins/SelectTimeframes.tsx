@@ -13,6 +13,7 @@ export type SelectTimeframesProps = {
   selectTimeframe: (c: TimeFrame) => void;
   selected?: number;
   title?: string;
+  votedTitle?: string;
   voted?: boolean;
   selectedTimeFrameArray?: any;
   cssDegree?: any;
@@ -25,6 +26,7 @@ const SelectTimeframes = ({
   timeframes,
   selectTimeframe,
   title,
+  votedTitle,
   voted,
   selectedTimeFrameArray,
   cssDegree,
@@ -48,7 +50,7 @@ const SelectTimeframes = ({
   
   
   
-
+console.log(voted,"checkvoted")
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
     <div>
@@ -63,7 +65,7 @@ const SelectTimeframes = ({
         )}
         {num > 1 && title && (
           <div className='mb-3'>
-            <Title>{title}</Title>
+            <Title>{voted ? votedTitle:title}</Title>
           </div>
         )}
       </Row>

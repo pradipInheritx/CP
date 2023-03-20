@@ -12,6 +12,8 @@ import firebase from "firebase/compat";
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
+// @ts-ignore
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4';
 
 // import { Firestore } from "firebase/firestore";
 
@@ -19,13 +21,19 @@ const GalleryType = styled.div`
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content:space-around;
   color: black;
   & div {
-    border: 1px solid #5f4ce3;
+    // border: 1px solid #5f4ce3;
+    width:${window.screen.width < 767?"80%":"240px" };
+    height:${window.screen.width < 767?"91px":"71px" };
+    // height:71px;
     margin: 50px 10px;
-    cursor: pointer;
-    padding: 20px 20px;
+    
+    cursor:pointer;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+    // padding: 20px 20px;
+    text-align:center;
     $ p {
     }
   }
@@ -40,6 +48,14 @@ const SummerCard = styled.div`
   background-color: #f8f9fa;
 
   
+`;
+
+const Video = styled.video`
+  width: 100%;
+  // max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+  // border-radius: 20px;
 `;
 
 const ProfileNftGallery = () => {
@@ -57,6 +73,11 @@ const ProfileNftGallery = () => {
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
   const [winerCard, setWinerCard] = useState<any>([]);
+  const [allVideo, setAllVideo] = useState<any>({
+    Monsoon: Monsoon,
+    Winter: Winter,
+    Summer: Summer
+  });
 
   const getNftCard = () => {
   const getCollectionType = firebase
@@ -438,8 +459,14 @@ const CheckCardDisable = (cardId: any) => {
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
         {!cardShow && collectionType?.map((data:any,index:number) => {
-          return <div onClick={() => { navigate(`/profile/Album/${data?.collectionName}`)}} key={index}>
-          <p>{data?.collectionName} COLLECTION</p>
+          return <div onClick={() => { navigate(`/profile/Album/${data?.collectionName}`) }} key={index}>
+             <Video  autoPlay={true} loop={true}>
+          <source
+            src={allVideo[`${data?.collectionName}`]}
+            type="video/mp4"
+          />
+        </Video>
+          {/* <p>{data?.collectionName} COLLECTION</p> */}
         </div>
         })}
       </GalleryType>
