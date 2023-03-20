@@ -129,16 +129,11 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
   if (coin2) {
     const priceOne = await getPriceOnParticularTime(coin1, timestamp);
     const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
-    price = [priceOne, priceTwo];
+    price = [Number(priceOne), Number(priceTwo)];
+    const calc = new Calculation(vote, price, voteId);
+    await calc.calc(getVoteRef);
   } else {
     price = await getPriceOnParticularTime(coin1, timestamp);
-  }
-  console.log("price =>", price);
-  // console.info("Get Price On Timestamp =>", price);
-
-  // console.info("This is before calculation =>");
-
-  if (price) {
     const calc = new Calculation(vote, Number(price), voteId);
     await calc.calc(getVoteRef);
   }

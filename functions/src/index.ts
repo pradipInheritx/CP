@@ -13,6 +13,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
+// import {generateAuthTokens} from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
@@ -22,6 +23,7 @@ import {
   setLeaders,
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
+// import {middleware} from "../middleware/authentication";
 import {
   calculateOffset,
   updateVotesTotal,
@@ -78,6 +80,10 @@ import sgMail from "@sendgrid/mail";
 import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
 // import {ws} from "./common/models/Ajax";
 
+import subAdminRouter from "./routes/SubAdmin.routes";
+import authAdminRouter from "./routes/Auth.routes";
+
+// import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
 
 cors({
@@ -100,10 +106,17 @@ cors({
 const app = express();
 const main = express();
 
-// add the path to receive request and set json as bodyParser to process the body
+// Add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
+
+/**
+ * @author Mukut Prasad
+ * @description Added admin routes seperately
+ */
+app.use("/admin/sub-admin", subAdminRouter);
+app.use("/admin/auth", authAdminRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -154,6 +167,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     uid: user.uid,
     address: "",
     avatar: user.photoURL,
+    // foundationName: user.foundationName,
     country: "",
     email: user.email,
     firstName: "",
@@ -192,6 +206,12 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+
+// exports.getAuthTokens = functions.https.onCall(async (data) => {
+//   const {refresh_tokens} = data as { refresh_tokens: string };
+//   const response = await generateAuthTokens(refresh_tokens);
+//   return response;
+// });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -318,17 +338,6 @@ exports.subscribe = functions.https.onCall(async (data) => {
     }
   }
 });
-
-// async function getCards() {
-//   const docs = await admin
-//       .firestore()
-//       .collection("settings")
-//       .doc("cards")
-//       .get();
-
-//   console.log("docs.data() --->", docs.data()?.cards);
-//   return docs.data()?.cards || [];
-// }
 
 exports.onUpdateUser = functions.firestore
   .document("users/{id}")
@@ -683,8 +692,7 @@ const getVotes = async ({ start, end, userId }: GetVotesProps) => {
         pairs: VoteResultProps[];
       }
     );
-
-  return {
+  const getAllVotesData = {
     coins: {
       votes: allVotes.coins.slice(start, end),
       total: allVotes.coins.length,
@@ -694,6 +702,7 @@ const getVotes = async ({ start, end, userId }: GetVotesProps) => {
       total: allVotes.pairs.length,
     },
   };
+  return JSON.stringify(getAllVotesData);
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
