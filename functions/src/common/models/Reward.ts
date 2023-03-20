@@ -3,12 +3,11 @@ import * as admin from 'firebase-admin';
 // import { getStorage, getDownloadURL,ref } from "firebase/storage"
 // import path from "path";
 import { userConverter, UserProps } from "../models/User";
-const { v4: uuidv4 } = require('uuid');
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 // const admin = require("firebase-admin");
 // const firebase = require('firebase')
-
+import { getAllCardsOfNftGallery } from "./Admin/Rewards";
 
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -100,7 +99,7 @@ function createArrayByPercentageForPickingTier(cmp: number) {
 // }
 
 // get all collection data
-async function getAllNftGallery() {
+export async function getAllNftGallery() {
   const snapshot = await firestore().collection("nft_gallery").get();
   const array: any = [];
   snapshot.forEach((doc) => {
@@ -185,11 +184,11 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   // console.log("cardData Response--->", cardData);
 
   const nftGalleryData = await getAllNftGallery();
-  console.log("nftGalleryData --->", nftGalleryData);
+  // console.log("nftGalleryData --->", nftGalleryData);
 
   const cards: any = [];
   nftGalleryData.forEach((element: any) => {
-    console.log("Element =>", element);
+    // console.log("Element =>", element);
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
@@ -202,10 +201,10 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
     });
   });
 
-  console.log("CARDLIST =>", cards);
+  // console.log("CARDLIST =>", cards);
   const groupByType: any = groupBy(["type"]);
   const cardsByTier: any = groupByType(cards);
-  console.log("cardsByTier --->", cardsByTier);
+  // console.log("cardsByTier --->", cardsByTier);
   // const cardsByTier: { [key: number]: string[] } = {
   //   1: ["ABC", "DEF", "GHI", "JKL", "MNO"],
   //   2: ["AYF", "AKO", "BSR", "WTE", "SHT"],
@@ -281,10 +280,10 @@ export const claimReward: (
   uid: string
 ) => { [key: string]: any } = async (uid: string) => {
   console.log("Beginning execution claimReward function");
-  // getAllCardsOfNftGallery()
+  getAllCardsOfNftGallery()
   // addAlbumNft(1, "RoseWinter", 5)
   // addSetNft("eGGxIlx3EvnsTHiqsikm", 101, "Manali")
-  generateSerialNumber(0, 11, 0, 5)
+  // generateSerialNumber(0, 11, 0, 5)
   // addRewardNFT("SWnA6wLlv9bPVRIlHKHY", 1, "image")
   // uploadImage()
   // imageUpload('functions/src/images/nature.jpg')
@@ -448,7 +447,9 @@ export const cardHolderListing: (
   // console.log("users cardHolderListing---", users)
   return users;
 };
-const uploadImage = async (cardImage: any, collectionId: string, setId: number, cardId: number) => {
+
+// Upload Image for Cards
+export const uploadImage = async (cardImage: any, collectionId: string, setId: number, cardId: number) => {
   const ref = await admin.storage().bucket('default-bucket')
   console.log("File name --- ")
 
@@ -460,19 +461,9 @@ const uploadImage = async (cardImage: any, collectionId: string, setId: number, 
     .catch((error: any) => {
       console.log("EROROR image", error)
     });
-
-  // const [file] = await ref.file("nature.jpg").makePublic();
-
-
-  // .then((snapshot: any) => {
-  //   // snapshot.ref.getDownloadURL()
-  //   console.log("snapshot.ref() -- ", snapshot["File"])
-  //   // console.log("snapshot[0].File.metaData -- ", snapshot[0])
-  // })
-  // .then((url: any) => console.log("Url ", url))
-
 }
 
+// get Image url and add into firestore
 const getImageUrl = async (collectionId: string, setId: number, cardId: number) => {
   const ref = await admin.storage().bucket('default-bucket')
   const [, , meta] = await ref.getFiles({
@@ -514,154 +505,3 @@ const getImageUrl = async (collectionId: string, setId: number, cardId: number) 
   // });
 
 }
-type AlbumNft = {
-  collectionId: number,
-  collectionName: string,
-  setQuantity: number
-  setDetails: object[]
-}
-
-type SetNft = {
-  setId: number,
-  setName: string,
-  cardsDetails: object[]
-}
-
-type NewCardNft = {
-  name: string,
-  type: string,
-  quantity: number,
-  totalQuantity: number,
-  sno: string[],
-  cardImage: any,
-  noOfCardHolder: number,
-  cardStatus: boolean
-}
-
-// generate serial number
-export const generateSerialNumber = async (collectionId: number, setId: number, cardType: any, quantity: number) => {
-  let serialNumber: string[] = []
-  for (let i = 0; i < quantity; i++) {
-    let card = String(collectionId) + String(setId) + String(cardType) + String(i);
-    serialNumber.push(card);
-  }
-  return serialNumber
-}
-
-// Add Album in nft_gallery
-export const addAlbumNft = async (collectionId: any, albumName: string, setQuantity: number) => {
-  try {
-
-    let collectionData: AlbumNft = {
-      collectionId,
-      collectionName: albumName,
-      setQuantity: setQuantity,
-      setDetails: []
-    }
-
-    await firestore()
-      .collection("nft_gallery")
-      .doc()
-      .set(collectionData)
-      .then((data) => console.log("DATA from addAlbumNft >>>", data))
-      .catch((error) => console.log("Error from addAlbumNft >>>", error));
-
-  } catch (error) {
-    console.log("addAlbumNft Error >>>>>>", error)
-  }
-}
-
-// add set NFT 
-export const addSetNft = async (collectionId: string, setId: number, setName: string) => {
-  try {
-
-    let setData: SetNft = {
-      setId: setId,
-      setName: setName,
-      cardsDetails: []
-    }
-
-    const getCollectionRef = await firestore()
-      .collection("nft_gallery")
-      .doc(collectionId)
-      .get();
-
-    const collectionData: any = getCollectionRef.data();
-    collectionData.setDetails.push(setData);
-    console.log("Collection Data >>>", collectionData, setData);
-
-    await firestore()
-      .collection("nft_gallery")
-      .doc(collectionId)
-      .update(collectionData)
-      .then((data) => console.log("DATA from addSetNft >>>", data))
-      .catch((error) => console.log("Error from addSetNft >>>", error));
-
-  } catch (error) {
-    console.log("addAlbumNft Error >>>>>>", error)
-  }
-}
-
-// add new NFT card
-export const addRewardNFT = async (cardDetail: any) => {
-
-  try {
-    const { collectionId, setId } = cardDetail;
-    const id = uuidv4();
-    const newCardNft: NewCardNft = {
-      name: cardDetail.name,
-      type: cardDetail.type,
-      quantity: cardDetail.quantity,
-      totalQuantity: cardDetail.totalQuantity,
-      sno: await generateSerialNumber(collectionId, setId, cardDetail.type, cardDetail.quantity),
-      cardImage: cardDetail.image ? await uploadImage(cardDetail.image, collectionId, setId, id) : "",
-      noOfCardHolder: cardDetail.noOfCardHolder || 0,
-      cardStatus: cardDetail.status
-    };
-
-    const getCollectionRef = await firestore()
-      .collection('nft_gallery')
-      .doc(collectionId)
-      .get();
-
-    let collectionDetails = getCollectionRef.data();
-    console.log("collectionDeatils >>>>>", collectionDetails?.setDetails)
-    const setDetails = collectionDetails?.setDetails.find((data: any) => {
-      console.log("data.id, setId", data.id, setId)
-      return data.id == setId
-    })
-    // let setDeatils = collectionDetails?.setDeatils;
-
-    console.log("setDeatils >>>>>", setDetails)
-    setDetails.cards.push(newCardNft)
-
-    await firestore()
-      .collection('nft_gallery')
-      .doc(collectionId)
-      .set({ setDetails })
-
-    console.log("addRewardNFT DONE >>>>>>>>", newCardNft)
-  } catch (error) {
-    console.log("addRewardNFT ERROR >>>>>", error)
-  }
-};
-
-
-// get all cards from nft_gallary
-export const getAllCardsOfNftGallery = async () => {
-  const nftGalleryData = await getAllNftGallery();
-  const cards: any = [];
-  nftGalleryData.forEach((element: any) => {
-    console.log("Element =>", element);
-
-    element.setDetails.forEach((setDetail: any) => {
-      setDetail.cards.forEach((cardDetail: any) => {
-        cards.push({ collectionId: element.collectionId, collectionName: element.collectionName, collectionDocId: element.id, setId: setDetail.id, ...cardDetail });
-      });
-    });
-  });
-
-  console.log("get all cards list >>>>>>>>>", cards);
-  return cards;
-}
-

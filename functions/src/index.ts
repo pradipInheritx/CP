@@ -63,11 +63,11 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
+import { addRewardNFT } from "./common/models/Admin/Rewards"
 import {
   claimReward,
   addReward,
   cardHolderListing,
-  addRewardNFT
 } from "./common/models/Reward";
 import {
   cpviTaskCoin,
