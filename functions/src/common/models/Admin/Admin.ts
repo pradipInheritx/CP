@@ -21,6 +21,7 @@ export type adminUserProps = {
   firstName?: string;
   lastName?: string;
   email?: string;
+  phone?:number;
   isAdmin?: boolean;
   adminUserId?: string;
   password?: string;
@@ -38,6 +39,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
       firstName,
       lastName,
       email,
+      phone,
       webAppAccess,
       status,
       isAdmin,
@@ -78,6 +80,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
 
     const adminData: adminUserProps = {
       email,
+      phone,
       firstName,
       lastName,
       webAppAccess,
@@ -153,13 +156,21 @@ export async function login(req: any, res: any) {
 
     const authTokenObj = await generateAuthToken({
       id: adminUserId,
-      ...adminUser,
+      isAdmin : adminUser.isAdmin,
+      adminUserId : adminUser.adminUserId
     });
 
-    const refreshToken = await generateRefreshToken(adminUser);
+    console.log("authTokenObj >>>",authTokenObj);
+
+    const refreshToken = await generateRefreshToken({
+      id: adminUserId,
+      isAdmin : adminUser.isAdmin,
+      adminUserId : adminUser.adminUserId
+    });
 
     adminUser.authTokens.push(authTokenObj);
     adminUser.refreshToken = refreshToken;
+
 
     await admin.firestore().collection("admin").doc(adminUserId).set(adminUser);
 

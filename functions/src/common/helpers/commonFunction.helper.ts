@@ -17,6 +17,7 @@ export async function validPassword(password: string, hashedPassword: string) {
 
 // Generating auth token
 export async function generateAuthToken(userAdmin: any) {
+  console.log("USERADMIN >>>>>>>",userAdmin)
   const token = jwt.sign(
       {
         userAdmin,
@@ -28,6 +29,7 @@ export async function generateAuthToken(userAdmin: any) {
   );
 
   const tokenExpiresAt = moment().add(1, "days").format("X");
+
   const authTokenObj = {token, tokenExpiresAt};
 
   return authTokenObj;
