@@ -80,14 +80,15 @@ import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCusto
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
+import voteSettingRouter from "./routes/voteSetting.routes";
 
 // initialize express server
 const app = express();
 const main = express();
-//Enable The CORS
+// Enable The CORS
 app.use(cors({ origin: "*" }));
 main.use(cors({ origin: "*" }));
-//End
+// End
 // Add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
 main.use(bodyParser.json());
@@ -99,6 +100,7 @@ main.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
+app.use("/admin/voteSetting", voteSettingRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));

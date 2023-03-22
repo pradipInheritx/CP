@@ -13,9 +13,9 @@ import {
 } from "../../helpers/commonFunction.helper";
 import env from "../../../env/env.json";
 import constants from "../../config/constants.json";
-import { sendEmail } from "../../services/emailServices";
-import { adminSignupTemplate } from "../../emailTemplates/adminSignupTemplate";
-import { adminForgotPasswordTemplate } from "../../emailTemplates/adminForgotPassword";
+import {sendEmail} from "../../services/emailServices";
+import {adminSignupTemplate} from "../../emailTemplates/adminSignupTemplate";
+import {adminForgotPasswordTemplate} from "../../emailTemplates/adminForgotPassword";
 
 export type adminUserProps = {
   firstName?: string;
@@ -45,10 +45,10 @@ export const adminCreate = async (req: any, res: any, next: any) => {
     } = req.body;
 
     const query = await admin
-      .firestore()
-      .collection("admin")
-      .where("email", "==", email)
-      .get();
+        .firestore()
+        .collection("admin")
+        .where("email", "==", email)
+        .get();
 
     if (!isAdmin && !adminUserId) {
       return res.status(400).json({
@@ -92,16 +92,16 @@ export const adminCreate = async (req: any, res: any, next: any) => {
     };
 
     const getResponse = await admin
-      .firestore()
-      .collection("admin")
-      .add(adminData);
+        .firestore()
+        .collection("admin")
+        .add(adminData);
 
     const getAdminAdded = await getResponse.get();
 
     await sendEmail(
-      email,
-      "Account created",
-      adminSignupTemplate(email, password, "Your account has been created")
+        email,
+        "Account created",
+        adminSignupTemplate(email, password, "Your account has been created")
     );
 
     res.status(201).send({
@@ -121,13 +121,13 @@ export const adminCreate = async (req: any, res: any, next: any) => {
 
 export async function login(req: any, res: any) {
   try {
-    const { email, password } = req.body;
+    const {email, password} = req.body;
 
     const query = await admin
-      .firestore()
-      .collection("admin")
-      .where("email", "==", email)
-      .get();
+        .firestore()
+        .collection("admin")
+        .where("email", "==", email)
+        .get();
 
     const getAdminUserData = query.docs;
     if (getAdminUserData && getAdminUserData.length == 0) {
@@ -183,16 +183,16 @@ export async function generateAuthTokens(refresh_tokens: string) {
 
   if (!decodedUser) {
     throw new functions.https.HttpsError(
-      "unauthenticated",
-      "Unauthorized, please login."
+        "unauthenticated",
+        "Unauthorized, please login."
     );
   }
 
   const query = await admin
-    .firestore()
-    .collection("admin")
-    .where("id", "==", decodedUser.id)
-    .get();
+      .firestore()
+      .collection("admin")
+      .where("id", "==", decodedUser.id)
+      .get();
 
   console.log("QUERY", query.empty);
   if (!query.empty) {
@@ -206,21 +206,21 @@ export async function generateAuthTokens(refresh_tokens: string) {
     return newToken;
   } else {
     throw new functions.https.HttpsError(
-      "unauthenticated",
-      "Unauthorized, please login."
+        "unauthenticated",
+        "Unauthorized, please login."
     );
   }
 }
 
 export async function adminForgotPassword(req: any, res: any) {
-  const { email } = req.body;
+  const {email} = req.body;
 
   try {
     const query = await admin
-      .firestore()
-      .collection("admin")
-      .where("email", "==", email)
-      .get();
+        .firestore()
+        .collection("admin")
+        .where("email", "==", email)
+        .get();
 
     const getAdminUserData = query.docs;
     if (getAdminUserData && getAdminUserData.length == 0) {
@@ -238,13 +238,13 @@ export async function adminForgotPassword(req: any, res: any) {
     userData.updatedAt = parseInt(moment().format("X"));
 
     const reset_password_token = jwt.sign(
-      {
-        data: email,
-      },
-      env.JWT_AUTH_SECRET,
-      {
-        expiresIn: constants.URL_EXPIRE_TIME,
-      }
+        {
+          data: email,
+        },
+        env.JWT_AUTH_SECRET,
+        {
+          expiresIn: constants.URL_EXPIRE_TIME,
+        }
     );
 
     userData.reset_password_token = reset_password_token;
@@ -257,9 +257,9 @@ export async function adminForgotPassword(req: any, res: any) {
       reset_password_token;
 
     await sendEmail(
-      email,
-      "Forgot Password",
-      adminForgotPasswordTemplate(url, "Forgot Password")
+        email,
+        "Forgot Password",
+        adminForgotPasswordTemplate(url, "Forgot Password")
     );
 
     res.status(200).send({
@@ -279,13 +279,13 @@ export async function adminForgotPassword(req: any, res: any) {
 }
 
 export const adminChangePassword = async (req: any, res: any) => {
-  const { oldPassword, newPassword } = req.body;
+  const {oldPassword, newPassword} = req.body;
   try {
     const adminData = await admin
-      .firestore()
-      .collection("admin")
-      .doc(req.user.id)
-      .get();
+        .firestore()
+        .collection("admin")
+        .doc(req.user.id)
+        .get();
 
     const user = adminData.data();
     if (!user) {
@@ -309,12 +309,12 @@ export const adminChangePassword = async (req: any, res: any) => {
     const hashedPassword = await hashPassword(newPassword);
     user.password = hashedPassword;
     await admin
-      .firestore()
-      .collection("admin")
-      .doc(req.user.id)
-      .set(user)
-      .then(() => console.log("ChangePassword done..."))
-      .catch((error) => console.log("ChangePassword changed...", error));
+        .firestore()
+        .collection("admin")
+        .doc(req.user.id)
+        .set(user)
+        .then(() => console.log("ChangePassword done..."))
+        .catch((error) => console.log("ChangePassword changed...", error));
 
     res.status(200).send({
       status: true,
@@ -333,12 +333,12 @@ export const adminChangePassword = async (req: any, res: any) => {
 
 export const adminResetPassword = async (req: any, res: any) => {
   try {
-    const { reset_password_token, newPassword } = await req.body;
+    const {reset_password_token, newPassword} = await req.body;
     const query = await admin
-      .firestore()
-      .collection("admin")
-      .where("reset_password_token", "==", reset_password_token)
-      .get();
+        .firestore()
+        .collection("admin")
+        .where("reset_password_token", "==", reset_password_token)
+        .get();
 
     if (query.empty) {
       return res.status(404).json({
@@ -376,31 +376,31 @@ export const adminResetPassword = async (req: any, res: any) => {
 
 export const logout = async (req: any, res: any) => {
   try {
-    const { id } = req.user;
+    const {id} = req.user;
 
     const existingUser = await admin
-      .firestore()
-      .collection("admin")
-      .doc(id)
-      .get();
+        .firestore()
+        .collection("admin")
+        .doc(id)
+        .get();
 
     const userData: any = existingUser.data();
 
     userData.authTokens = userData.authTokens.filter(
-      (item: any) => item.token !== req.token
+        (item: any) => item.token !== req.token
     );
 
     await admin
-      .firestore()
-      .collection("admin")
-      .doc(req.user.id)
-      .set(userData)
-      .then(() => {
-        console.log("Logout Successfully In Callback");
-      })
-      .catch((error: any) => {
-        errorLogging("logout", "ERROR", error);
-      });
+        .firestore()
+        .collection("admin")
+        .doc(req.user.id)
+        .set(userData)
+        .then(() => {
+          console.log("Logout Successfully In Callback");
+        })
+        .catch((error: any) => {
+          errorLogging("logout", "ERROR", error);
+        });
 
     res.status(200).send({
       status: true,
@@ -419,9 +419,9 @@ export const logout = async (req: any, res: any) => {
 
 
 export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
+    funcName: string,
+    type: string,
+    error: any
 ) => {
   console.info(funcName, type, error);
 };
