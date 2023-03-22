@@ -17,20 +17,20 @@ export async function validPassword(password: string, hashedPassword: string) {
 
 // Generating auth token
 export async function generateAuthToken(userAdmin: any) {
-  console.log("USERADMIN >>>>>>>",userAdmin)
+  console.log("USERADMIN >>>>>>>", userAdmin);
   const token = jwt.sign(
-      {
-        userAdmin,
-      },
-      env.JWT_AUTH_SECRET,
-      {
-        expiresIn: "1d",
-      }
+    {
+      userAdmin,
+    },
+    env.JWT_AUTH_SECRET,
+    {
+      expiresIn: "1d",
+    }
   );
 
   const tokenExpiresAt = moment().add(1, "days").format("X");
 
-  const authTokenObj = {token, tokenExpiresAt};
+  const authTokenObj = { token, tokenExpiresAt };
 
   return authTokenObj;
 }
@@ -38,10 +38,10 @@ export async function generateAuthToken(userAdmin: any) {
 // Generating refresh token
 export async function generateRefreshToken(userAdmin: any) {
   const refresh_tokens = jwt.sign(
-      {
-        userAdmin,
-      },
-      env.JWT_REFRESH_SECRET
+    {
+      userAdmin,
+    },
+    env.JWT_REFRESH_SECRET
   );
 
   return refresh_tokens;
