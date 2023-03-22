@@ -21,6 +21,7 @@ export type adminUserProps = {
   firstName?: string;
   lastName?: string;
   email?: string;
+  phone?: number;
   isAdmin?: boolean;
   adminUserId?: string;
   password?: string;
@@ -38,6 +39,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
       firstName,
       lastName,
       email,
+      phone,
       webAppAccess,
       status,
       isAdmin,
@@ -78,6 +80,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
 
     const adminData: adminUserProps = {
       email,
+      phone,
       firstName,
       lastName,
       webAppAccess,
@@ -104,10 +107,12 @@ export const adminCreate = async (req: any, res: any, next: any) => {
         adminSignupTemplate(email, password, "Your account has been created")
     );
 
+    const getAdminData = { id: getAdminAdded.id, ...getAdminAdded.data() };
+
     res.status(201).send({
       status: true,
       message: "User created successfully. ",
-      result: getAdminAdded.data(),
+      result: getAdminData,
     });
   } catch (error) {
     errorLogging("adminCreate", "ERROR", error);
@@ -151,12 +156,19 @@ export async function login(req: any, res: any) {
       });
     }
 
+    const currentAdminUser = Object.assign({}, adminUser);
+    delete currentAdminUser.authTokens;
+    delete currentAdminUser.refreshToken;
+
     const authTokenObj = await generateAuthToken({
       id: adminUserId,
-      ...adminUser,
+      ...currentAdminUser,
     });
 
-    const refreshToken = await generateRefreshToken(adminUser);
+    const refreshToken = await generateRefreshToken({
+      id: adminUserId,
+      ...currentAdminUser,
+    });
 
     adminUser.authTokens.push(authTokenObj);
     adminUser.refreshToken = refreshToken;
@@ -194,12 +206,9 @@ export async function generateAuthTokens(refresh_tokens: string) {
       .where("id", "==", decodedUser.id)
       .get();
 
-  console.log("QUERY", query.empty);
   if (!query.empty) {
     const snapshot = query.docs[0];
     const adminUser = snapshot.data();
-
-    console.log("Admin User Data ==>", adminUser);
 
     const newToken = await generateAuthToken(adminUser);
 
@@ -373,7 +382,6 @@ export const adminResetPassword = async (req: any, res: any) => {
   }
 };
 
-
 export const logout = async (req: any, res: any) => {
   try {
     const {id} = req.user;
@@ -417,7 +425,6 @@ export const logout = async (req: any, res: any) => {
   }
 };
 
-
 export const errorLogging = async (
     funcName: string,
     type: string,
@@ -425,4 +432,3 @@ export const errorLogging = async (
 ) => {
   console.info(funcName, type, error);
 };
-
