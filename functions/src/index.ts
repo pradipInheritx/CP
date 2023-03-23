@@ -63,6 +63,7 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
+import { addRewardNFT } from "./common/models/Admin/Rewards"
 import {
   claimReward,
   addReward,
@@ -615,6 +616,21 @@ const checkValidUsername = async (username: string) => {
 exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
+
+exports.addRewardNFT = functions.https.onCall(async (data) => {
+  const cardDetail = {
+    collectionId: data.collectionId,
+    setId: data.setId,
+    name: data.name,
+    type: data.type,
+    quantity: data.quantity,
+    totalQuantity: data.totalQuantity,
+    sno: data.sno,
+    cardImage: data.image,
+    noOfCardHolder: data.noOfCardHolder
+  }
+  return await addRewardNFT(cardDetail)
+})
 
 type GetVotesProps = { start: number; end: number; userId: string };
 
