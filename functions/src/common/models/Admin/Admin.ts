@@ -107,7 +107,7 @@ export const adminCreate = async (req: any, res: any, next: any) => {
         adminSignupTemplate(email, password, "Your account has been created")
     );
 
-    const getAdminData = { id: getAdminAdded.id, ...getAdminAdded.data() };
+    const getAdminData = {id: getAdminAdded.id, ...getAdminAdded.data()};
 
     res.status(201).send({
       status: true,

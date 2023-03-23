@@ -69,7 +69,7 @@ export const updateStatus = async (req: any, res: any, next: any) => {
       .doc(subAdminId)
       .get();
 
-    res.status(201).send({
+    res.status(200).send({
       status: true,
       message: "Status updated successfully.",
       result: {

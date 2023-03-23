@@ -1,6 +1,6 @@
 import * as firebaseAdmin from "firebase-admin";
 
-export type voteSettingProps = {
+export type timeframeProps = {
   chosen: boolean;
   index: number;
   name: string;
@@ -13,7 +13,7 @@ export const createTimeframe = async (req: any, res: any, next: any) => {
   try {
     const { chosen, index, name, seconds } = req.body;
 
-    const voteTimeData: voteSettingProps = {
+    const voteTimeData: timeframeProps = {
       chosen,
       index,
       name,
@@ -123,6 +123,47 @@ export const deleteTimeframeById = async (req: any, res: any, next: any) => {
   } catch (error) {
     errorLogging("deleteTimeframeById", "ERROR", error);
     res.status(500).send(error);
+  }
+};
+
+export const updateTimeframe = async (req: any, res: any, next: any) => {
+  try {
+    const { chosen, index, name, seconds } = req.body;
+    const { timeFrameId } = req.params;
+
+    const databaseQuery = await firebaseAdmin
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .doc(timeFrameId)
+      .get();
+
+    const getTimeframeData: any = databaseQuery.data();
+    console.log("getTimeframeData =>", getTimeframeData);
+
+    const updatedTimeframeData = {
+      chosen,
+      index,
+      name,
+      seconds,
+    };
+    await firebaseAdmin
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .doc(timeFrameId)
+      .update(updatedTimeframeData);
+
+    res.status(200).send({
+      status: true,
+      message: "Time frame updated successfully.",
+      result: updatedTimeframeData,
+    });
+  } catch (error) {
+    errorLogging("updateTimeframe", "ERROR", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 

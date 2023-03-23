@@ -80,7 +80,8 @@ import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCusto
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
-import voteSettingRouter from "./routes/voteSetting.routes";
+import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
+import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
 
 // initialize express server
 const app = express();
@@ -100,7 +101,8 @@ main.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
-app.use("/admin/voteSetting", voteSettingRouter);
+app.use("/admin/voteSetting", timeframeRouter);
+app.use("/admin/voteSetting", perUserVoteRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
