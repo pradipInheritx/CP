@@ -63,7 +63,6 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
-import { addRewardNFT } from "./common/models/Admin/Rewards"
 import {
   claimReward,
   addReward,
@@ -82,6 +81,7 @@ import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCusto
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
 import voteSettingRouter from "./routes/voteSetting.routes";
+import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
 
 // initialize express server
 const app = express();
@@ -101,6 +101,7 @@ main.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
+app.use("/admin/rewards", rewardNftAdminRouter);
 app.use("/admin/voteSetting", voteSettingRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
@@ -614,21 +615,6 @@ const checkValidUsername = async (username: string) => {
 exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
-
-exports.addRewardNFT = functions.https.onCall(async (data) => {
-  const cardDetail = {
-    collectionId: data.collectionId,
-    setId: data.setId,
-    name: data.name,
-    type: data.type,
-    quantity: data.quantity,
-    totalQuantity: data.totalQuantity,
-    sno: data.sno,
-    cardImage: data.image,
-    noOfCardHolder: data.noOfCardHolder
-  }
-  return await addRewardNFT(cardDetail)
-})
 
 type GetVotesProps = { start: number; end: number; userId: string };
 
