@@ -78,34 +78,18 @@ import {
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
 import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
-// import {ws} from "./common/models/Ajax";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
-
-// import { AdminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
-const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
-
-cors({
-  origin: function (
-    origin: string | undefined,
-    callback: (
-      err: Error | null,
-      origin?: boolean | string | RegExp | (boolean | string | RegExp)[]
-    ) => void
-  ) {
-    if (whitelist.indexOf(origin + "") !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-});
+import voteSettingRouter from "./routes/voteSetting.routes";
 
 // initialize express server
 const app = express();
 const main = express();
-
+// Enable The CORS
+app.use(cors({ origin: "*" }));
+main.use(cors({ origin: "*" }));
+// End
 // Add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
 main.use(bodyParser.json());
@@ -117,6 +101,7 @@ main.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
+app.use("/admin/voteSetting", voteSettingRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
