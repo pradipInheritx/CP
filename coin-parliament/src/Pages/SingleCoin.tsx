@@ -231,7 +231,6 @@ const calcVote = useCallback(async () => {
    
   }, [user?.uid, params?.id, selectedTimeFrame,forRun,voteId,vote])
   
-console.log('vote',allButtonTime,selectedTimeFrameArray)
 
   useEffect(() => {
     return () => {
@@ -326,7 +325,14 @@ console.log('vote',allButtonTime,selectedTimeFrameArray)
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
 
-
+  useEffect(() => {
+    console.log('component mounter')
+  
+    return () => {
+      console.log('component unmounted')
+  
+    }
+  }, [])
 
   return (
     <>

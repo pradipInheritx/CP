@@ -156,8 +156,10 @@ const UserCard = ({
   
 
   const redirectTab = () => {
-    if (leader != undefined && setFollowerUserId != undefined) setFollowerUserId(leader?.userId)
-    {
+    if (leader != undefined && setFollowerUserId != undefined) {setFollowerUserId(leader?.userId)
+    window.localStorage.setItem('followerId',leader?.userId)
+    }
+    
       // @ts-ignore
       if (userInfo?.uid == leader?.userId) {
         
@@ -166,7 +168,7 @@ const UserCard = ({
         navigate('/followerProfile/mine')
         
       }
-    }
+    
 }
 
   return (

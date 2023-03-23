@@ -106,7 +106,7 @@ import Background from "./Components/Background";
 import Spinner from "./Components/Spinner";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
-import useScrollPosition from "./hooks/useScrollPosition";
+// import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
 import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
@@ -136,45 +136,43 @@ function App() {
   const langDetector = useRef(null);
   let navigate = useNavigate();
   const { width } = useWindowSize();
-  const scrollPosition = useScrollPosition();
+  // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
-  const [displayFullscreen,setDisplayFullscreen]=useState('none')
-// fullscreen mode
-useEffect(() => {
-  const modal = document.getElementById("fullscreen-modal");
-window.addEventListener('load', () => {
-  setDisplayFullscreen('block')
-});
-}, [])
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-// @ts-ignore
-const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
+//   const [displayFullscreen,setDisplayFullscreen]=useState('none')
+// // fullscreen mode
+// useEffect(() => {
+// window.addEventListener('load', () => {
+//   setDisplayFullscreen('block')
+// });
+// }, [])
+// const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+// // @ts-ignore
+// const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
 
-const handleClick=()=>{
-  
-  setDisplayFullscreen('none')
-  if (isMobile && fullscreenEnabled) {
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } 
-    // @ts-ignore
-    else if (elem?.webkitRequestFullscreen) {
-       // @ts-ignore
-      elem?.webkitRequestFullscreen();
-    }
-     // @ts-ignore 
-    else if (elem?.mozRequestFullScreen) {
-       // @ts-ignore
-      elem?.mozRequestFullScreen();
-    }
-     // @ts-ignore
-     else if (elem?.msRequestFullscreen) {
-        // @ts-ignore
-      elem?.msRequestFullscreen();
-    }
-  }
-}
+// const handleClick=()=>{
+//   setDisplayFullscreen('none')
+//   if (isMobile && fullscreenEnabled) {
+//     const elem = document.documentElement;
+//     if (elem.requestFullscreen) {
+//       elem.requestFullscreen();
+//     } 
+//     // @ts-ignore
+//     else if (elem?.webkitRequestFullscreen) {
+//        // @ts-ignore
+//       elem?.webkitRequestFullscreen();
+//     }
+//      // @ts-ignore 
+//     else if (elem?.mozRequestFullScreen) {
+//        // @ts-ignore
+//       elem?.mozRequestFullScreen();
+//     }
+//      // @ts-ignore
+//      else if (elem?.msRequestFullscreen) {
+//         // @ts-ignore
+//       elem?.msRequestFullscreen();
+//     }
+//   }
+// }
   useEffect(() => {
       window.scrollTo({
         top: 0,
@@ -593,6 +591,7 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
+        console.log('provider',user?.providerData[0]?.providerId)
         if (
           user?.emailVerified ||
           user?.providerData[0]?.providerId === "facebook.com"
@@ -728,6 +727,7 @@ votesLast24HoursRef.get()
 //   }
 //   removeData()
 // }, [])
+
 
 
   return loader ? (

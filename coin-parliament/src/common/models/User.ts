@@ -197,6 +197,7 @@ export const setChecked =
     async (userId: string, check: boolean) => {
       const ll = leaders.find((l) => l.userId === userId);
       if (user && ll) {
+        console.log('user follower',ll, user, check)
         await follow(ll, user, check);
       }
     };

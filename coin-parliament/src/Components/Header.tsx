@@ -29,7 +29,7 @@ import { db, functions } from "../firebase";
 import firebase from "firebase/compat";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
-import { follow } from "../Contexts/CoinsContext";
+import CoinsContext, { follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
 
@@ -169,6 +169,7 @@ const Header = ({
   const[followerInfo,setFollowerInfo]=useState<any>()
   const [followUnfollow, setFollowUnfollow] = useState<any>(false)
   const [show, setShow] = useState(false);
+  const { leaders } = useContext(CoinsContext);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
   const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
@@ -475,7 +476,13 @@ const Header = ({
                             bsPrefix="label"
                             onClick={ async () =>
                             {
-                              setFollowUnfollow(!followUnfollow)
+                              setFollowUnfollow(!followUnfollow) 
+                              console.log('folower',followerInfo)
+                              const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+                              if (user && ll) {
+                               
+                                await follow(ll, user, !followUnfollow);
+                              }
                               // @ts-ignore
                             //  await follow(followerInfo , user, checkFollow )
                             }
@@ -606,7 +613,20 @@ const Header = ({
                               // htmlFor={id || name}
                               // className={className}
                             bsPrefix="label"
-                            onClick={()=>{setFollowUnfollow(!followUnfollow)}}
+                            onClick={ async () =>
+                              {
+                                setFollowUnfollow(!followUnfollow) 
+                                console.log('folower',followerInfo)
+                                const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+                                if (user && ll) {
+                                 
+                                  await follow(ll, user, !followUnfollow);
+                                }
+                                // @ts-ignore
+                              //  await follow(followerInfo , user, checkFollow )
+                              }
+                              
+                              }
                             >
                               {/* {checked && iconOn}
                               {!checked && iconOff} */}
