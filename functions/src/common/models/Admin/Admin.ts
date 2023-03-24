@@ -1,9 +1,7 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import moment from "moment";
 import * as jwt from "jsonwebtoken";
 import * as generator from "generate-password";
-import speakeasy from "speakeasy";
 
 import {
   validPassword,
@@ -17,6 +15,7 @@ import constants from "../../config/constants.json";
 import { sendEmail } from "../../services/emailServices";
 import { adminSignupTemplate } from "../../emailTemplates/adminSignupTemplate";
 import { adminForgotPasswordTemplate } from "../../emailTemplates/adminForgotPassword";
+import speakeasy from "speakeasy";
 
 export type adminUserProps = {
   firstName?: string;
@@ -191,34 +190,49 @@ export async function login(req: any, res: any) {
   }
 }
 
-export async function generateAuthTokens(refresh_tokens: string) {
-  const decodedUser: any = await verifyRefreshToken(refresh_tokens);
+export async function generateAuthTokens(req: any, res: any) {
+  const { refreshToken } = req.body;
+  try {
+    const decodedUser: any = await verifyRefreshToken(refreshToken);
 
-  if (!decodedUser) {
-    throw new functions.https.HttpsError(
-      "unauthenticated",
-      "Unauthorized, please login."
-    );
-  }
+    const user = decodedUser.userAdmin;
+    const id = user.id;
 
-  const query = await admin
-    .firestore()
-    .collection("admin")
-    .where("id", "==", decodedUser.id)
-    .get();
+    if (!decodedUser) {
+      return res.status(401).send({
+        status: false,
+        message: "Unauthorized, please login.",
+        result: null,
+      });
+    }
+    const query = await admin.firestore().collection("admin").doc(id).get();
 
-  if (!query.empty) {
-    const snapshot = query.docs[0];
-    const adminUser = snapshot.data();
+    if (!query) {
+      return res.status(404).send({
+        status: false,
+        message: "User not found.",
+        result: null,
+      });
+    }
+    const adminUser = query.data();
+    const currentAdminUser = Object.assign({}, adminUser);
+    delete currentAdminUser.authTokens;
+    delete currentAdminUser.refreshToken;
 
-    const newToken = await generateAuthToken(adminUser);
+    const newToken = await generateAuthToken(currentAdminUser);
 
-    return newToken;
-  } else {
-    throw new functions.https.HttpsError(
-      "unauthenticated",
-      "Unauthorized, please login."
-    );
+    res.status(200).send({
+      status: true,
+      message: "new token generated.",
+      result: newToken,
+    });
+  } catch (error) {
+    errorLogging("generateAuthTokens", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
   }
 }
 
