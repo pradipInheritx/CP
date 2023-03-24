@@ -10,12 +10,14 @@ import Button from "../Atoms/Button/Button";
 import Tabs from "./Tabs";
 import VotedCard from "./VotedCard";
 import { fetchCoins, subscribe, unsubscribe, ws } from "../../common/models/Socket";
+import AppContext from "../../Contexts/AppContext";
 
 const getVotesFunc = httpsCallable<{ start: number; end: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const FwVotes = () => {
   const pageSize = useMemo(() => 3, []);
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const {followerUserId } = useContext(AppContext);
   const translate = useTranslation();
   const [index, setIndex] = useState(0);  
   const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
@@ -29,11 +31,11 @@ const FwVotes = () => {
   const [coinSocketData,setCoinSocketData]=useState([])
   const getVotes = useCallback(
     async (start: number) => {
-      if (user?.uid) {
+      if (followerUserId) {
         const newVotes = await getVotesFunc({
           start,
           end: start + pageSize,
-          userId: user?.uid,
+          userId: followerUserId,
         });
         // @ts-ignore
         let result = JSON.parse(newVotes?.data)      

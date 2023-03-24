@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
-import { UserTypeProps } from "./User";
-import { firestore } from "firebase-admin";
-import { getPriceOnParticularTime } from "../models/Rate";
+import {UserTypeProps} from "./User";
+import {firestore} from "firebase-admin";
+import {getPriceOnParticularTime} from "../models/Rate";
 import Calculation from "../models/Calculation";
 import Timestamp = admin.firestore.Timestamp;
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
@@ -21,7 +21,7 @@ export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
     return modelObject;
   },
   fromFirestore(
-    snapshot: FirebaseFirestore.QueryDocumentSnapshot
+      snapshot: FirebaseFirestore.QueryDocumentSnapshot
   ): VoteResultProps {
     const data = snapshot.data();
     return data as VoteResultProps;
@@ -49,7 +49,7 @@ export enum Direction {
 }
 
 export const calculateOffset: (timeframe: TimeFrame) => number = (
-  timeframe: TimeFrame
+    timeframe: TimeFrame
 ) => timeframe.seconds * 1000;
 
 export const updateVotesTotal = async () => {
@@ -60,16 +60,16 @@ export const updateVotesTotal = async () => {
     const votes = await admin.firestore().collection("votes").get();
 
     await admin
-      .firestore()
-      .collection("stats")
-      .doc("app")
-      .set({ totalVotes: votes.size }, { merge: true });
+        .firestore()
+        .collection("stats")
+        .doc("app")
+        .set({totalVotes: votes.size}, {merge: true});
   } else {
     await admin
-      .firestore()
-      .collection("stats")
-      .doc("app")
-      .update({ totalVotes: admin.firestore.FieldValue.increment(1) });
+        .firestore()
+        .collection("stats")
+        .doc("app")
+        .update({totalVotes: admin.firestore.FieldValue.increment(1)});
   }
   console.log("Finished execution of updateVotesTotal --->");
   return;
@@ -94,7 +94,7 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
       total: 1,
     };
     const test = await admin.firestore().collection("stats").doc("totals");
-    await test.set(obj, { merge: true });
+    await test.set(obj, {merge: true});
   }
 
   console.log("Finished execution of updateVotesTotalForSingleCoin --->");
@@ -102,7 +102,7 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
 };
 
 export const getOldAndCurrentPriceAndMakeCalculation = async (
-  requestBody: any
+    requestBody: any
 ) => {
   let price: any;
   const {
@@ -127,17 +127,13 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
   } as unknown as VoteResultProps;
 
   if (coin2) {
-    price = [coin1, coin2].map(
-      async (coin) => await getPriceOnParticularTime(coin, timestamp)
-    );
+    const priceOne = await getPriceOnParticularTime(coin1, timestamp);
+    const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
+    price = [Number(priceOne), Number(priceTwo)];
+    const calc = new Calculation(vote, price, voteId);
+    await calc.calc(getVoteRef);
   } else {
     price = await getPriceOnParticularTime(coin1, timestamp);
-  }
-  // console.info("Get Price On Timestamp =>", price);
-
-  // console.info("This is before calculation =>");
-
-  if (price) {
     const calc = new Calculation(vote, Number(price), voteId);
     await calc.calc(getVoteRef);
   }

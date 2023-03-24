@@ -1,6 +1,7 @@
 import {firestore, messaging} from "firebase-admin";
 import {Direction, VoteResultProps} from "./Vote";
 import {userConverter} from "./User";
+import {sendNotification} from "./Notification";
 
 export const subscribeToTopic: (token: string, userId: string) => void = (
     token: string,
@@ -87,12 +88,15 @@ export const sendToTokens: (vote: VoteResultProps) => Promise<void> = async (
       .where(
           firestore.FieldPath.documentId(),
           "in",
-      userProps.data()?.subscribers,
+      userProps.data()?.subscribers
       )
       .withConverter(userConverter)
       .get();
 
-  console.log("going to send to subscribers:", subscribers.docs.map((s) => s.data().email));
+  console.log(
+      "going to send to subscribers:",
+      subscribers.docs.map((s) => s.data().email)
+  );
 
   const tokens: string[] = subscribers.docs
       .map((doc) => doc.data().token as string)
@@ -133,39 +137,5 @@ export const sendToTokens: (vote: VoteResultProps) => Promise<void> = async (
         message,
       });
     }
-  }
-};
-
-export const sendNotification = async ({
-  token,
-  id,
-  body,
-  title,
-  message,
-}: {
-  token: string;
-  id: string;
-  title: string;
-  body:
-    | string
-    | {
-        body: string;
-        requireInteraction: boolean;
-      };
-  message: messaging.Message;
-}) => {
-  try {
-    const response = await messaging().send(message);
-    console.log("Successfully sent message:", response, token);
-    await firestore().collection("notifications").doc().set({
-      user: id,
-      message: {
-        title,
-        body,
-      },
-      time: firestore.FieldValue.serverTimestamp(),
-    });
-  } catch (e) {
-    console.log("Error sending message:", e, token);
   }
 };

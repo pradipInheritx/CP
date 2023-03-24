@@ -3,7 +3,7 @@ import {firestore, messaging} from "firebase-admin";
 import {uniq} from "lodash";
 import {Change} from "firebase-functions/v1";
 import {QueryDocumentSnapshot} from "firebase-functions/v1/firestore";
-import {sendNotification} from "./Subscribe";
+import {sendNotification} from "./Notification";
 
 export const shouldHaveTransaction: (
   before: UserProps,
