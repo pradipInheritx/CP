@@ -203,6 +203,7 @@ const calcVote = useCallback(async () => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
+        console.log('vote',res,index)
         if (res) {                  
                  
           // getLeftTime(res.data(), index);          
@@ -213,8 +214,13 @@ const calcVote = useCallback(async () => {
           
           setSelectedTimeFrameArray(newTimeframe)
         }
-        else{                    
-          // setAllButtonTime();
+        else{     
+          // AllvoteValueObject.splice(index, 1);               
+          // setAllButtonTime(AllvoteValueObject);
+          //  setVotedDetails(AllvoteValueObject);
+          //  newTimeframe.splice(index, 1);  
+          
+          //  setSelectedTimeFrameArray(newTimeframe)
           
         }
       }))
@@ -225,7 +231,6 @@ const calcVote = useCallback(async () => {
    
   }, [user?.uid, params?.id, selectedTimeFrame,forRun,voteId,vote])
   
-
 
   useEffect(() => {
     return () => {
@@ -301,7 +306,6 @@ const calcVote = useCallback(async () => {
       Date.now() >= vote?.expiration
     );
   }, [vote.expiration, vote.success,selectedTimeFrame ]);
-
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);
@@ -321,7 +325,14 @@ const calcVote = useCallback(async () => {
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
 
-
+  useEffect(() => {
+    console.log('component mounter')
+  
+    return () => {
+      console.log('component unmounted')
+  
+    }
+  }, [])
 
   return (
     <>

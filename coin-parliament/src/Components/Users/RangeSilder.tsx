@@ -43,6 +43,10 @@ const getBorderColor = () => {
          
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+      if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
+        setPersentValue(50) 
+        return
+      }
       if ((averageValue == averageValue)) {        
         setPersentValue(50) 
       } else {
@@ -63,17 +67,30 @@ const getBorderColor = () => {
         }
       }       
      } else if (symbol2 == undefined) {    
-       let livePrice =coins[symbol1]?.price
+       let livePrice =Number(coins[symbol1]?.price)
        let votePrice =Number(vote?.valueVotingTime)
        let PricePer = livePrice;
-       if(livePrice < PricePer + 10 &&
-         livePrice > PricePer - 10) { 
+       console.log('price',livePrice < votePrice + 1 &&
+        livePrice > votePrice - 1,{
+          livePrice,
+          votePrice,
+          vote
+        }
+        
+        
+        )
+        if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
+          setPersentValue(50) 
+          return
+        }
+       if(livePrice < votePrice + 1 &&
+         livePrice > votePrice - 1) { 
           setPersentValue(50);
         }
         else{
-          if(vote?.direction == 1){
-            livePrice < votePrice ?setPersentValue(75):setPersentValue(25);
-          }else if(vote?.direction == 0){
+          if(vote?.direction == 0){
+            livePrice > votePrice ?setPersentValue(75):setPersentValue(25);
+          }else if(vote?.direction == 1){
             livePrice > votePrice ? setPersentValue(25):setPersentValue(75);
           }
         }     
@@ -85,7 +102,7 @@ const getBorderColor = () => {
     
       getBorderColor()
     
-  }, [coins[symbol1]?.price ,coins[symbol2]?.price])
+  }, [coins[symbol1]?.price ,coins[symbol2]?.price,vote?.valueVotingTime])
   
   return (
     <div className=''>

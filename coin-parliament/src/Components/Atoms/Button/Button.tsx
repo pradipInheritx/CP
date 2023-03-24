@@ -107,7 +107,7 @@ const Timeframe = styled(RadiusFull)`
   opacity: 1;
 
   &[disabled] {
-    opacity: 0.48;
+    opacity: 0.48 !important;
   }
 `;
 

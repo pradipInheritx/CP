@@ -34,12 +34,15 @@ console.log(error,"error");
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
   );
-
+  useEffect(() => {
+    getFollowerData()
+  }, [])
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
-    getFollowerData()
+    // getFollowerData()
   }, [userInfo?.children]);
-  
+ 
+  console.log('userInfo',userInfo)
   return (
     <>
       <div className={`${window.screen.width>767?"pt-4":""}`}>

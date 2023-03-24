@@ -169,7 +169,14 @@ const VotedCard = ({
   }, [coins[symbol1]?.price ,coins[symbol2]?.price])
 
 
-
+  useEffect(() => {
+    console.log('component mounter vote')
+  
+    return () => {
+      console.log('component unmounted vote')
+  
+    }
+  }, [])
 
   const [coin1, coin2] = [
     coins[symbol1] || undefined,
@@ -217,7 +224,7 @@ const VotedCard = ({
   }    
   
 
-  console.log(vote,"votecheck")
+  
   return (
     <>
      <div className="mt-4" style={{paddingLeft:symbol2?'':'24px',paddingRight:symbol2?'':'24px',maxWidth:'450px', margin:'0 auto'}}>
@@ -329,6 +336,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
   const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
   
   const checkprice = async() => {
+    console.log('price called')
    const data = await getPriceCalculation({            
         coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
         coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,

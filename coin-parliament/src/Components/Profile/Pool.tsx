@@ -26,7 +26,7 @@ const Pool = () => {
           <Share
             url={referralUrl}
             text={"share & earn"}
-            shareText={"coin parliament"}
+            shareText={`Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`}
           />
         </div>
         <div className="mb-3">
@@ -35,10 +35,10 @@ const Pool = () => {
             cpm={childrenActivity || 0}
           />
         </div>
-        <div>
-          {children.map((child ,i) => {
+        <div className='pb-2'>
+          {children.map((child) => {
             return (
-              <div className="mb-2" key={i}>
+              <div className="mb-2" key={child?.userId}>
                 <PoolMiningCard user={child} />
               </div>
             );
