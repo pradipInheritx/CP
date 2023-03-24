@@ -7,7 +7,6 @@ import { userConverter, UserProps } from "../models/User";
 
 // const admin = require("firebase-admin");
 // const firebase = require('firebase')
-import { getAllCardsOfNftGallery } from "./Admin/Rewards";
 
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -280,7 +279,6 @@ export const claimReward: (
   uid: string
 ) => { [key: string]: any } = async (uid: string) => {
   console.log("Beginning execution claimReward function");
-  getAllCardsOfNftGallery()
   // addAlbumNft(1, "RoseWinter", 5)
   // addSetNft("eGGxIlx3EvnsTHiqsikm", 101, "Manali")
   // generateSerialNumber(0, 11, 0, 5)

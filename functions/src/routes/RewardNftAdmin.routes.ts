@@ -11,8 +11,8 @@ import {
 const rewardNftAdminRouter = Router();
 
 rewardNftAdminRouter.post("/createAlbum", auth, addAlbumNft);
-rewardNftAdminRouter.post("/createSet", auth, addSetNft);
+rewardNftAdminRouter.post("/createSet/:albumId", auth, addSetNft);
 rewardNftAdminRouter.post("/createCard", auth, addRewardNFT);
-rewardNftAdminRouter.post("/addImage", auth, getAllCardsOfNftGallery);
+rewardNftAdminRouter.get("/getAllCards", auth, getAllCardsOfNftGallery);
 
 export default rewardNftAdminRouter;
