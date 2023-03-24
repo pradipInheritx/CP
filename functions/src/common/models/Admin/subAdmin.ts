@@ -74,7 +74,7 @@ export const updateStatus = async (req: any, res: any, next: any) => {
       message: "Status updated successfully.",
       result: {
         metadata: statusUpdate,
-        data: databaseQueryAfterUpdate.data(),
+        data: { subAdminId, ...databaseQueryAfterUpdate.data() },
       },
     });
   } catch (error) {

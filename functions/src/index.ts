@@ -13,7 +13,6 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-// import {generateAuthTokens} from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
@@ -192,11 +191,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
-// exports.getAuthTokens = functions.https.onCall(async (data) => {
-//   const {refresh_tokens} = data as { refresh_tokens: string };
-//   const response = await generateAuthTokens(refresh_tokens);
-//   return response;
-// });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
