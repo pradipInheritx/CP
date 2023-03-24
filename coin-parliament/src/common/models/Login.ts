@@ -86,7 +86,7 @@ export const LoginAuthProvider = async (
       const firstTimeLogin:Boolean=true
       const userRef = doc(db, "users", user.uid);
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
-    
+      console.log('firsttimelogin success')
     setTimeout(() => {
       setUser(user);
     }, 100);
@@ -158,7 +158,7 @@ export const LoginRegular = async (
       password
     );
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-
+console.log('firsttimelogin',isFirstLogin)
     if(auth?.currentUser?.emailVerified){
       if (isFirstLogin?.isNewUser) {
         saveUsername(userCredential?.user?.uid,'','')
@@ -166,7 +166,7 @@ export const LoginRegular = async (
         const firstTimeLogin:Boolean=true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
-       
+        console.log('firsttimelogin success')
         // await sendEmail();
       setTimeout(() => {
         callback.successFunc(userCredential.user) 
@@ -225,6 +225,7 @@ export const SignupRegular = async (
 
     const userRef = doc(db, "users", auth?.currentUser?.uid);
     await setDoc(userRef, { firstTimeLogin }, { merge: true })
+    console.log('firsttimelogin success')
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid,'','')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))

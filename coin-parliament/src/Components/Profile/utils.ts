@@ -8,7 +8,7 @@ export const validatePassword = (newPassword: string, username: string, confirmP
   const check4 = newPassword === confirmPassword;
   const check3 = !newPassword.includes(username);
   console.log('password1',check1 , check2,check3, check4)
-  return  check2 && check4;
+  return  check1 && check4;
 };
 
 export const CountryCode = [
