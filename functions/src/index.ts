@@ -63,7 +63,7 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
-import { addRewardNFT } from "./common/models/Admin/Rewards"
+import { addRewardNFT } from "./common/models/Admin/Rewards";
 import {
   claimReward,
   addReward,
@@ -181,6 +181,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    firstTimeLogin: true,
   };
 
   try {
@@ -627,10 +628,10 @@ exports.addRewardNFT = functions.https.onCall(async (data) => {
     totalQuantity: data.totalQuantity,
     sno: data.sno,
     cardImage: data.image,
-    noOfCardHolder: data.noOfCardHolder
-  }
-  return await addRewardNFT(cardDetail)
-})
+    noOfCardHolder: data.noOfCardHolder,
+  };
+  return await addRewardNFT(cardDetail);
+});
 
 type GetVotesProps = { start: number; end: number; userId: string };
 
