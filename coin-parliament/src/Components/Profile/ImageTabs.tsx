@@ -97,7 +97,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
       // }
       activeKey={activeValue}
     >
-      <div className='d-flex'>
+      <div className='d-flex '>
         <Nav
           variant='pills'
           className='flex-row m-auto align-items-center justify-content-center'

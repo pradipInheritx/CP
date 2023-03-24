@@ -221,7 +221,8 @@ const Card = ({
       {...{ single }}
     style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.07)" : "scale(1)"}` }}
     onMouseEnter={()=>setZoom(true)}
-    onMouseLeave={()=>setZoom(false)}  
+      onMouseLeave={() => setZoom(false)}  
+    onClick={onClick}
     >
       <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{
@@ -281,7 +282,7 @@ const Card = ({
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}
           <Buttons.ClickableText onClick={onClick} className="p-2">
-            <VOTE>To VOTE</VOTE>
+            <VOTE>TO VOTE</VOTE>
             <img
               width="6"
               height="10"

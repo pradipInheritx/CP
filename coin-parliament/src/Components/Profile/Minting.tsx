@@ -147,7 +147,7 @@ const Minting = ({
         {width > 767 && (
           <BtnLabelPrimary
             className='w-100'
-            style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "1px" }}
+            style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "8px" }}
             onClick={async () => {
               if (claim) {
                 setLoading(true);
@@ -167,10 +167,10 @@ const Minting = ({
       </Container>
       {width < 767 && (
         <div
-          style={{ marginTop: width > 767 ? 16 : 7.5, marginBottom: "16.31px" }}
+          style={{ marginTop: width > 767 ? 17 : 8.5, marginBottom: "16.31px" }}
         >
           <BtnLabelPrimary
-            className='w-100'
+            className='w-100 mt-2'
             style={{ boxShadow: "0px 3px 6px #00000029" }}
             onClick={async () => {
               if (claim) {

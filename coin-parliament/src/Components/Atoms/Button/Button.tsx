@@ -113,7 +113,7 @@ const Timeframe = styled(RadiusFull)`
 
 const TimeframeName = styled.span`
 
-  font-size: var(--font-size-22);
+  font-size: var(--font-size-14);
   font-style: normal;
   font-weight: normal;
   line-height: var(--line-spacing-14);
@@ -286,12 +286,16 @@ const TimeframeButton = ({
 };
 
 export const timeframeInitials = (timeframe: string | React.ReactNode) => {
+  // console.log(timeframe?.replace(/[^a-zA-Z]/g, ""), "onlynumber")
   return typeof timeframe === "string"
     ? timeframe
         .split(" ")
-        .map((t) => t.includes('hour') || t.includes('week')? t.toUpperCase().slice(0, 1):t.toUpperCase().slice(0, 2))
+        .map((t) => t.includes('hour') || t.includes('week')? t.toUpperCase().slice(0, 1):t.replace(/[^0-9]/g, '') + " " +t.replace(/[^a-zA-Z]/g, '').toUpperCase().slice(0, 3))
         .join("")
     : timeframe;
+  
+  
+  
 };
 export const Buttons = {
   Default: Button,

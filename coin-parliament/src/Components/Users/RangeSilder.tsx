@@ -43,9 +43,10 @@ const getBorderColor = () => {
          
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
+      // if(!vote?.valueVotingTime || vote?.valueVotingTime == NaN){
+      if(!vote?.valueVotingTime){
         setPersentValue(50) 
-        return
+        return false
       }
       if ((averageValue == averageValue)) {        
         setPersentValue(50) 
@@ -79,9 +80,10 @@ const getBorderColor = () => {
         
         
         )
-        if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
+        // if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
+        if(!vote?.valueVotingTime ){
           setPersentValue(50) 
-          return
+          return false
         }
        if(livePrice < votePrice + 1 &&
          livePrice > votePrice - 1) { 

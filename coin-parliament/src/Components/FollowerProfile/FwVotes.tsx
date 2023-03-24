@@ -16,7 +16,8 @@ const getVotesFunc = httpsCallable<{ start: number; end: number; userId: string 
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const FwVotes = () => {
   const pageSize = useMemo(() => 3, []);
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const {followerUserId } = useContext(AppContext);
   const translate = useTranslation();
   const [index, setIndex] = useState(0);  
   const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
@@ -28,10 +29,10 @@ const FwVotes = () => {
 
   const [ coinSubscription,setCoinSubscription]=useState([])
   const [coinSocketData,setCoinSocketData]=useState([])
-  const{followerUserId}=useContext(AppContext)
+  
   const getVotes = useCallback(
     async (start: number) => {
-      if (user?.uid) {
+      if (followerUserId) {
         const newVotes = await getVotesFunc({
           start,
           end: start + pageSize,

@@ -138,7 +138,7 @@ const VoteForm = function <
                           {" "}
                           {/* <p>vote {option1.image} BEAR</p> */}
                           {/* @ts-ignore */}
-                          {option1?.buttonText ?<p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p>: <> <p>{option1.image}</p>Vote </>}
+                          {option1?.buttonText ?<p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p>: <> Vote<p>{option1.image}</p> </>}
                       </>
                     ),
                   buttonProps: {
@@ -154,7 +154,7 @@ const VoteForm = function <
                         {" "}
                           {/* <p>vote {option2.image} BEAR</p> */}
                           {/* @ts-ignore */}
-                        {option2?.buttonText ?<p>{option2?.buttonText[0]} {option2.image} {option2?.buttonText[1]}</p>: <> <p>{option2.image}</p>Vote </>}
+                        {option2?.buttonText ?<p>{option2?.buttonText[0]} {option2.image} {option2?.buttonText[1]}</p>: <> Vote<p>{option2.image}</p> </>}
                       </>
                     ),
                   buttonProps: {

@@ -13,6 +13,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
+// import {generateAuthTokens} from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
@@ -22,6 +23,7 @@ import {
   setLeaders,
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
+// import {middleware} from "../middleware/authentication";
 import {
   calculateOffset,
   updateVotesTotal,
@@ -61,6 +63,7 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
+import { addRewardNFT } from "./common/models/Admin/Rewards"
 import {
   claimReward,
   addReward,
@@ -74,34 +77,31 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
-// import {ws} from "./common/models/Ajax";
+import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
 
-const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
-
-cors({
-  origin: function (
-    origin: string | undefined,
-    callback: (
-      err: Error | null,
-      origin?: boolean | string | RegExp | (boolean | string | RegExp)[]
-    ) => void
-  ) {
-    if (whitelist.indexOf(origin + "") !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-});
+import subAdminRouter from "./routes/SubAdmin.routes";
+import authAdminRouter from "./routes/Auth.routes";
+import voteSettingRouter from "./routes/voteSetting.routes";
 
 // initialize express server
 const app = express();
 const main = express();
-
-// add the path to receive request and set json as bodyParser to process the body
+// Enable The CORS
+app.use(cors({ origin: "*" }));
+main.use(cors({ origin: "*" }));
+// End
+// Add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
+
+/**
+ * @author Mukut Prasad
+ * @description Added admin routes seperately
+ */
+app.use("/admin/sub-admin", subAdminRouter);
+app.use("/admin/auth", authAdminRouter);
+app.use("/admin/voteSetting", voteSettingRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -152,6 +152,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     uid: user.uid,
     address: "",
     avatar: user.photoURL,
+    // foundationName: user.foundationName,
     country: "",
     email: user.email,
     firstName: "",
@@ -190,6 +191,12 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+
+// exports.getAuthTokens = functions.https.onCall(async (data) => {
+//   const {refresh_tokens} = data as { refresh_tokens: string };
+//   const response = await generateAuthTokens(refresh_tokens);
+//   return response;
+// });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -255,6 +262,10 @@ exports.sendMessage = functions.https.onCall(async (data) => {
     });
 });
 
+exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
+  await sendCustomNotificationOnSpecificUsers(requestBody);
+});
+
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
   const { auth } = context;
@@ -313,23 +324,13 @@ exports.subscribe = functions.https.onCall(async (data) => {
   }
 });
 
-// async function getCards() {
-//   const docs = await admin
-//       .firestore()
-//       .collection("settings")
-//       .doc("cards")
-//       .get();
-
-//   console.log("docs.data() --->", docs.data()?.cards);
-//   return docs.data()?.cards || [];
-// }
-
 exports.onUpdateUser = functions.firestore
   .document("users/{id}")
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
+    await getUpdatedDataFromWebsocket();
     // await getCards();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
@@ -614,6 +615,21 @@ exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
 
+exports.addRewardNFT = functions.https.onCall(async (data) => {
+  const cardDetail = {
+    collectionId: data.collectionId,
+    setId: data.setId,
+    name: data.name,
+    type: data.type,
+    quantity: data.quantity,
+    totalQuantity: data.totalQuantity,
+    sno: data.sno,
+    cardImage: data.image,
+    noOfCardHolder: data.noOfCardHolder
+  }
+  return await addRewardNFT(cardDetail)
+})
+
 type GetVotesProps = { start: number; end: number; userId: string };
 
 const getVotes = async ({ start, end, userId }: GetVotesProps) => {
@@ -661,8 +677,7 @@ const getVotes = async ({ start, end, userId }: GetVotesProps) => {
         pairs: VoteResultProps[];
       }
     );
-
-  return {
+  const getAllVotesData = {
     coins: {
       votes: allVotes.coins.slice(start, end),
       total: allVotes.coins.length,
@@ -672,6 +687,7 @@ const getVotes = async ({ start, end, userId }: GetVotesProps) => {
       total: allVotes.pairs.length,
     },
   };
+  return JSON.stringify(getAllVotesData);
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
