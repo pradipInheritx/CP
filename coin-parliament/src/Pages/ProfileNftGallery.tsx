@@ -14,6 +14,7 @@ import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
 // @ts-ignore
 import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4';
+import { Form } from "react-bootstrap";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -25,8 +26,8 @@ const GalleryType = styled.div`
   color: black;
   & div {
     // border: 1px solid #5f4ce3;
-    width:${window.screen.width < 767?"80%":"240px" };
-    height:${window.screen.width < 767?"91px":"71px" };
+    width:${window.screen.width < 767?"80%":"340px" };
+    height:${window.screen.width < 767?"91px":"100px" };
     // height:71px;
     margin: 50px 10px;
     
@@ -73,6 +74,7 @@ const ProfileNftGallery = () => {
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
   const [winerCard, setWinerCard] = useState<any>([]);
+  const [myCards, setMyCards] = useState<any>(false)
   const [allVideo, setAllVideo] = useState<any>({
     Monsoon: Monsoon,
     Winter: Winter,
@@ -251,6 +253,7 @@ const onSelectType=(cardType:any)=>{
   setSearchedCard((prev: any) => allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))}
 }
  
+ 
   
    const getAllRewardsOfUser = async (uid: string) => {
   
@@ -283,6 +286,24 @@ const onSelectType=(cardType:any)=>{
     })
   
    setWinerCard(winCards)
+}
+  
+   const allWinerCard = () => {
+    // if (myCards) {
+    //   setSearchedCard(winerCard.length && winerCard?.map((winItem:any) => {
+    //     {
+    //       allCard.filter((card: any) => {
+    //         console.log(card,)
+    //           card.cardId == winItem.firstRewardCardId
+    //       }
+          
+    //       )
+    //   }
+    // }))
+    // }
+    // else {
+    //   setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+    // }
 }
   
   
@@ -410,7 +431,7 @@ const CheckCardDisable = (cardId: any) => {
               // style={{ width: "200px" }}
               
             />
-            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
+            <div className={`${window.screen.width < 767 ? "py-3 px-3" : ""}`}>
               <select
                 name='cars'
                 id='cars'
@@ -452,13 +473,26 @@ const CheckCardDisable = (cardId: any) => {
                 <option value='mercedes'>Card Name</option>
                 <option value='audi'>Collection</option>
               </select> */}
+        </div>
+         <div
+            className="d-flex  justify-content-start align-items-center "
+            >
+              
+              <Form.Check 
+            style={{fontSize:"20px" , marginRight:"10px"}}    
+              type="checkbox"
+              id={`default-checkbox`}
+                // label={`default checkbox`}
+                onClick={()=>{setMyCards(!myCards)}}
+              />
+              <label htmlFor="default-checkbox">Available cards</label>
             </div>
           </div>
       <GalleryType
         className=''
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
-        {!cardShow && collectionType?.map((data:any,index:number) => {
+        {!myCards && !cardShow && collectionType?.map((data:any,index:number) => {
           return <div onClick={() => { navigate(`/profile/Album/${data?.collectionName}`) }} key={index}>
              <Video  autoPlay={true} loop={true}>
           <source
@@ -477,7 +511,40 @@ const CheckCardDisable = (cardId: any) => {
               return <div className='w-100 m-auto mb-4' key={ind}>                  
                   <SwiperBar>                    
                     {cardPart?.map((item: any,index:number) => {                      
-                      return (                        
+                      if (myCards) {
+                        if (winerCard.length && winerCard?.find((WinerItem: any) => WinerItem?.firstRewardCardId == item?.cardId)) {
+                          return (
+                            <NftOneCard
+                              key={index}
+                              DivClass={item?.type}
+                              HeaderText={item?.type}
+                              HeaderClass={`${item?.type}_text`}
+                              Serie={item?.setName}
+                              BackCardName={item?.name}
+                              Rarity={item?.type}
+                              Quantity={item?.quantity}
+                              holderNo={item?.noOfCardHolders}
+                              cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                              // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                              MintedTime={getMintedTime(item?.cardId)}
+                              PrivateSerialNo={getPriSerialNo(item?.cardId)}
+                              Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
+                              userId={item?.setId}
+                              CollectionType={item?.collectionName}
+                              // Disable={"CardDisebal"}                            
+                              cardHeader={`${item?.name}`}
+                              id={item?.cardId}
+                              BackSideCard={BackSideCard}
+                              fulldata={item}
+                              flipCard={backCards?.includes(item?.cardId)}
+                            />
+                          );
+                        } else {
+                          // return <div  className="d-flex justify-content-center"> <p style={{ color: "black", fontSize:"14px" }}>Data Not Found</p></div>
+                        }
+                      }
+                      else {
+                        return (                        
                         <NftOneCard              
                           key={index}
                             DivClass={item?.type}
@@ -503,6 +570,7 @@ const CheckCardDisable = (cardId: any) => {
                             flipCard={backCards?.includes(item?.cardId)}
                           />                        
                       );
+                      }
                     })}
                   </SwiperBar>
                 </div>              

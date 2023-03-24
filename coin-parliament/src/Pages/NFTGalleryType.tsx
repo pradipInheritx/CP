@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
@@ -13,6 +13,7 @@ import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
+import { Other } from "./SingleCoin";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -256,6 +257,11 @@ useEffect(() => {
       </MenuBar> */}
 
         <CenterItem>
+          {/* <div className="d-flex justify-content-center align-items-center  pt-4">
+                <Link to="/nftAlbum" style={{textDecoration:'none'}}>
+                  <Other>{"Back to all Card"}</Other>
+                </Link>
+              </div> */}
           <div className='d-flex justify-content-center pt-5 flex-wrap '>
             <input
               type='text'

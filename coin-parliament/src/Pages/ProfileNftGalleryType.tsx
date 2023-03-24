@@ -10,13 +10,15 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import "./styles.css";
-import { Container } from "react-bootstrap";
+import { Container, Form } from "react-bootstrap";
 import SwiperBar from "./SwiperBar";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import firebase from "firebase/compat";
 import UserContext from "../Contexts/User";
+import { Other } from "./SingleCoin";
+import BackArrow from "../Components/icons/BackArrow";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -111,7 +113,9 @@ const ProfileNftGalleryType = () => {
   const [allCard, setAllCard] = useState<any>([])
   const [searchedCard, setSearchedCard] = useState<any>([])
   const [cardType,setCardType]=useState<any>('all')
-  const [allCardArray,setAllCardArray]=useState<any>([])
+  const [allCardArray, setAllCardArray] = useState<any>([])
+  const [myCards, setMyCards] = useState<any>(false)
+  
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
 
@@ -369,12 +373,15 @@ useEffect(() => {
       sliceDived(searchedCard,4)
   }
   },[searchedCard])
- 
+  const OnlyMyCard = () => {
+   
+ }
 
 
   return (
     <div className=''>
       <div className='h-100 '>
+        
         {/* <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
         {menuItem.map((item, index) => {
           return (
@@ -391,9 +398,18 @@ useEffect(() => {
             </button>
           );
         })}
-      </MenuBar> */}
+      </MenuBar> */}        
         <CenterItem>
-          <div className='d-flex justify-content-center pt-5 flex-wrap '>
+          {/* <div className="d-flex justify-content-start align-items-center  pt-4 " style={{color:"#6352e8"}} >
+                <Link to="/profile/Album" style={{textDecoration:'none'}} className="mx-3">
+              <Other>{"Back to all Card"}</Other>
+              <BackArrow
+              
+              />              
+                </Link>
+              </div> */}
+
+          <div className='d-flex justify-content-center pt-3 flex-wrap '>
             <input
               type='text'
               name="hello"
@@ -428,6 +444,19 @@ useEffect(() => {
                 <option value='mercedes'>Card Name</option>
                 
               </select> */}
+            </div>
+            <div
+            className="d-flex  justify-content-start align-items-center "
+            >
+              
+              <Form.Check 
+            style={{fontSize:"20px" , marginRight:"10px"}}    
+              type="checkbox"
+              id={`default-checkbox`}
+                // label={`default checkbox`}
+                onClick={()=>{setMyCards(!myCards)}}
+              />
+              <label htmlFor="default-checkbox">Available cards</label>
             </div>
           </div>
 
@@ -478,8 +507,10 @@ useEffect(() => {
                       {equalPart?.map((cardPart:any ,ind:number) => {                    
                         return <div className='w-100 m-auto mb-4' key={ind}>                  
                             <SwiperBar>                    
-                              {cardPart?.map((item: any,index:number) => {                      
-                                return (                        
+                            {cardPart?.map((item: any, index: number) => {  
+                              if (myCards) {
+                                if (winerCard.length && winerCard?.find((WinerItem: any) => WinerItem?.firstRewardCardId == item?.cardId)) {
+                                  return (                        
                                   <NftOneCard  
                                     key={index}
                                       DivClass={item?.type}
@@ -505,6 +536,41 @@ useEffect(() => {
                                       flipCard={backCards?.includes(item?.cardId)}
                                     />                        
                                 );
+                                } 
+                                else {
+                                  // return <div  className="d-flex justify-content-center"> <p style={{ color: "black", fontSize:"14px" }}>Data Not Found</p></div>
+                                }
+                              }
+                              else
+                                {
+                                  return (                        
+                                  <NftOneCard  
+                                    key={index}
+                                      DivClass={item?.type}
+                                      HeaderText={item?.type}
+                                      HeaderClass={`${item?.type}_text`}
+                                      Serie={item?.setName}
+                                      BackCardName={item?.name}
+                                      Rarity={item?.type}
+                                      Quantity={item?.quantity}
+                                      holderNo={item?.noOfCardHolders}
+                                      cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                      // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                      MintedTime={getMintedTime(item?.cardId)}
+                                      PrivateSerialNo={getPriSerialNo(item?.cardId)}                                                        
+                                      Disable={winerCard.length?CheckCardDisable(item?.cardId):'CardDisebal'}
+                                      userId={item?.setId}
+                                      CollectionType={item?.collectionName}
+                                      // Disable={"CardDisebal"}                            
+                                      cardHeader={`${item?.name}`}                                                        
+                                      id={item?.cardId}
+                                      BackSideCard={BackSideCard}
+                                      fulldata={item}                            
+                                      flipCard={backCards?.includes(item?.cardId)}
+                                    />                        
+                                );
+                                }                                
+                                
                               })}
                             </SwiperBar>
                           </div>              

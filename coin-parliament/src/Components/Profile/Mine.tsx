@@ -90,18 +90,18 @@ const Mine = () => {
 >
   <Controls visible={true} buttons={['play', 'repeat', 'frame', 'debug']} />
 </Player> */}
-        {!userInfo?.paid && (
+        {/* {!userInfo?.paid && (
           <Row
             className='flex-row-reverse'
             role='button'
-            // onClick={() => showModal(<Upgrade/>)}
+          
             onClick={() => navigate("/upgrade")}
           >
             <MyBadge bg='-'>{translate("upgrade your account")}</MyBadge>
           </Row>
-        )}
+        )} */}
         {width > 767 ? (
-          <div className='d-flex justify-content-center'>
+          <div className='d-flex justify-content-center mt-2'>
             <div>
               <div>
                 {" "}
@@ -135,7 +135,7 @@ const Mine = () => {
             </div>
           </div>
         ) : (
-          <Row className='flex-row-reverse align-items-stretch mt-1'>
+          <Row className='flex-row-reverse align-items-stretch mt-2'>
             <Col sm={12} md={6}>
               <div className='d-flex justify-content-center align-items-center flex-column mb-2'>
                 {/* @ts-ignore */}

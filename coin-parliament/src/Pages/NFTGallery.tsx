@@ -25,8 +25,8 @@ const GalleryType = styled.div`
   color: black;
   & div {
     // border: 1px solid #5f4ce3;
-    width:${window.screen.width < 767?"80%":"240px" };
-    height:${window.screen.width < 767?"91px":"71px" };
+    width:${window.screen.width < 767?"80%":"340px" };
+    height:${window.screen.width < 767?"91px":"100px" };
     // height:71px;
     margin: 50px 10px;
     
@@ -50,7 +50,7 @@ const SummerCard = styled.div`
 `; 
 const Video = styled.video`
   width: 100%;
-  // max-width: 300px;
+  
   height: auto;
   margin: 0 auto;
   // border-radius: 20px;

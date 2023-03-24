@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Badge, Col, Container, Row } from "react-bootstrap";
 import UserContext from "../Contexts/User";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import UserCard from "../Components/Profile/UserCard";
@@ -47,7 +47,7 @@ export const CardContainer = styled.div`
 
 &.BigScreen{
 background:#d4d0f3;
-  height: 127px;
+  height: 140px;
   padding: 0;
   
   border-radius: 0 0 0 0;
@@ -58,8 +58,18 @@ background:#d4d0f3;
 export const OuterContainer = styled.div`
   background: ${window.screen.width < 979 ? "var(--color-d4d0f3)" : ""};
   position: relative;
+  // border:3px solid red; 
   z-index: 0;
 
+`;
+const MyBadge = styled(Badge)`
+  background-color: var(--color-6352e8);
+  box-shadow: 0 3px 6px #00000029;
+  border-radius: 0 0 6px 6px;
+  font-size: 14px;
+  opacity: 1;
+  width: auto;
+  color: var(--white);
 `;
 
 const Profile = () => {
@@ -117,8 +127,19 @@ const Profile = () => {
       )}
       {!avatarMode && (
         <OuterContainer>
-          <CardContainer className={`${window.screen.width > 979? "BigScreen":""}`}>
+          
+          <CardContainer className={`${window.screen.width > 979 ? "BigScreen" : ""}`}>
             <>
+              {!userInfo?.paid && (
+          <Row
+            className='d-flex justify-content-center w-100'
+            role='button'
+          
+            onClick={() => navigate("/upgrade")}
+          >
+            <MyBadge bg='-'>{translate("upgrade your account")}</MyBadge>
+          </Row>
+        )}
               <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>
                 {window.screen.width < 979 && (
                   <Container

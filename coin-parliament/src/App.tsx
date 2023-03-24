@@ -1057,25 +1057,25 @@ votesLast24HoursRef.get()
                                     <div className='pwaPopup'  style={{display:pwaPopUp}}>
                                       <span>Install CoinParliament app for best experience</span>
                                     <button
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={onClick}
-      style={{zIndex:99999}}
-    >
-      Install
-    </button>
-    <span
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={e=>setPwaPopUp('none')}
-      style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px'}}
-    >
-      x
-    </span>
+                                        className="link-button"
+                                        id="setup_button"
+                                        aria-label="Install app"
+                                        title="Install app"
+                                        onClick={onClick}
+                                        style={{zIndex:99999}}
+                                      >
+                                        Install
+                                      </button>
+                                        <span
+                                          className="link-button"
+                                          id="setup_button"
+                                          aria-label="Install app"
+                                          title="Install app"
+                                          onClick={e=>setPwaPopUp('none')}
+                                          style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}
+                                        >
+                                          x
+                                        </span>
                                       </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />

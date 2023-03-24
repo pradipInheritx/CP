@@ -29,19 +29,15 @@ const FwVotes = () => {
 
   const [ coinSubscription,setCoinSubscription]=useState([])
   const [coinSocketData,setCoinSocketData]=useState([])
-  const{followerUserId}=useContext(AppContext)
+  
   const getVotes = useCallback(
     async (start: number) => {
       if (followerUserId) {
         const newVotes = await getVotesFunc({
           start,
           end: start + pageSize,
-<<<<<<< HEAD
-          userId: followerUserId,
-=======
           // @ts-ignore
           userId:followerUserId,
->>>>>>> 1b09a1e4376f1acd16c0f236b2f286a86f35d07b
         });
         // @ts-ignore
         let result = JSON.parse(newVotes?.data)      

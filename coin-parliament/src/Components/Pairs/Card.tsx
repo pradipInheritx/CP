@@ -12,8 +12,9 @@ import { useLocation } from "react-router-dom";
 import arrow from '../../assets/svg/arrow-right.svg'
 const LighCart1 = styled.div`
   //width: 100%;
-  max-width: ${(props: { pathname: string,single: boolean }) =>
+  max-width: ${(props: { pathname: string, single: boolean }) =>
   props.pathname?.includes('/pairs') ? "236px" : ''};
+  cursor: pointer;
   width:  ${(props: { pathname: string,single: boolean }) =>
   props.pathname?.includes('/pairs') ? "236px" : ''};
   position: relative;
@@ -302,7 +303,8 @@ const secColor= ()=>{
     <LighCart1 {...{ single, pathname }} className=""
       style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.05)" : "scale(1)"}` }}
     onMouseEnter={()=>setZoom(true)}
-    onMouseLeave={()=>setZoom(false)}  
+      onMouseLeave={() => setZoom(false)}  
+      onClick={onClick}
     >
       <HeartContainer {...{ single }} onClick={
         ()=>{
@@ -330,7 +332,7 @@ const secColor= ()=>{
       {!single && (
         <Component127371>
           <Buttons.ClickableText onClick={onClick} className=" p-2" style={{margin: "-0.5rem"}}>
-            <VOTE>To VOTE</VOTE>
+            <VOTE>TO VOTE</VOTE>
             <img
               width="6"
               height="10"

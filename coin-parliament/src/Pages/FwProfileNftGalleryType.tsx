@@ -12,12 +12,13 @@ import "slick-carousel/slick/slick-theme.css";
 import "./styles.css";
 import { Container } from "react-bootstrap";
 import SwiperBar from "./SwiperBar";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import firebase from "firebase/compat";
 import UserContext from "../Contexts/User";
 import AppContext from "../Contexts/AppContext";
+import { Other } from "./SingleCoin";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -409,6 +410,11 @@ useEffect(() => {
                 
               </select> */}
             </div>
+            {/* <div className="d-flex justify-content-center align-items-center  pt-4">
+                <Link to="/nftAlbum" style={{textDecoration:'none'}}>
+                  <Other>{"Back to all Card"}</Other>
+                </Link>
+              </div> */}
           </div>
 
           <div>
