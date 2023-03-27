@@ -143,15 +143,14 @@ export const addSetNft = async (req: any, res: any) => {
 };
 
 // add new NFT card
-export const addRewardNFT = async (req: any, res: any) => {
+export const addRewardCardNft = async (req: any, res: any) => {
+  const { albumId } = req.params;
   const {
     cardName,
     cardType,
     quantity,
-    totalQuantity,
     noOfCardHolder,
     cardStatus,
-    albumId,
     setId,
     cardImage,
   } = req.body;
@@ -161,7 +160,7 @@ export const addRewardNFT = async (req: any, res: any) => {
       cardName,
       cardType,
       quantity,
-      totalQuantity,
+      totalQuantity: quantity,
       noOfCardHolder,
       cardStatus,
       sno: await generateSerialNumber(albumId, setId, cardType, quantity),
@@ -171,26 +170,33 @@ export const addRewardNFT = async (req: any, res: any) => {
     };
 
     const getCollectionRef = await firestore()
-      .collection("nft_gallery")
+      .collection("nftGallery")
       .doc(albumId)
       .get();
 
-    let collectionDetails = getCollectionRef.data();
-    const setDetails = collectionDetails?.setDetails.find((data: any) => {
-      return data.id == setId;
+    let collectionDetails: any = getCollectionRef.data();
+    let setDetails = collectionDetails?.setDetails.find((data: any) => {
+      return data.setId == setId;
     });
+    setDetails.cardsDetails.push(newCardNft);
+    console.log("set Detials after push >>>", setDetails, albumId);
 
-    setDetails.cards.push(newCardNft);
+    console.log("COLLECTION ->", collectionDetails);
 
-    const newCard = await firestore()
-      .collection("nft_gallery")
+    await firestore()
+      .collection("nftGallery")
       .doc(albumId)
-      .set({ setDetails });
+      .set(collectionDetails);
+
+    const getCard = await firestore()
+      .collection("nftGallery")
+      .doc(albumId)
+      .get();
 
     res.status(200).send({
       status: true,
       message: "new card added.",
-      result: newCard,
+      result: getCard.data(),
     });
   } catch (error) {
     errorLogging("addRewardNFT", "ERROR", error);
@@ -206,10 +212,11 @@ export const addRewardNFT = async (req: any, res: any) => {
 export const getAllCardsOfNftGallery = async (req: any, res: any) => {
   try {
     const nftGalleryData = await getAllNftGallery();
+    console.log("nftGalleryData >>>>>>", nftGalleryData);
     const cards: any = [];
     nftGalleryData.forEach((albumDetails: any) => {
       albumDetails.setDetails.forEach((setDetail: any) => {
-        setDetail.cards.forEach((cardDetail: any) => {
+        setDetail.cardsDetails.forEach((cardDetail: any) => {
           cards.push({
             collectionId: albumDetails.collectionId,
             collectionName: albumDetails.collectionName,
