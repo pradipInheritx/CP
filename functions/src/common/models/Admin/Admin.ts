@@ -450,6 +450,7 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
         result: null,
       });
     }
+
     const adminUserData = await admin
       .firestore()
       .collection("admin")

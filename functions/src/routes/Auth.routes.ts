@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { auth } from "../common/middleware/authentication";
+import {Router} from "express";
+import {auth} from "../common/middleware/authentication";
 
 import {
   adminCreate,

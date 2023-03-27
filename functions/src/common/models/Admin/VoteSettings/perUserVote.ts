@@ -10,7 +10,7 @@ export type perUserVoteProps = {
 
 export const createPerUserVote = async (req: any, res: any, next: any) => {
   try {
-    const { quantity, pair, coin } = req.body;
+    const {quantity, pair, coin} = req.body;
 
     const perUserVoteData: perUserVoteProps = {
       quantity,
@@ -21,11 +21,11 @@ export const createPerUserVote = async (req: any, res: any, next: any) => {
     };
 
     const perUserVoteResponse = await firebaseAdmin
-      .firestore()
-      .collection("settings")
-      .doc("voteSettings")
-      .collection("perUserVote")
-      .add(perUserVoteData);
+        .firestore()
+        .collection("settings")
+        .doc("voteSettings")
+        .collection("perUserVote")
+        .add(perUserVoteData);
 
     const getPerUserVoteResponse = await perUserVoteResponse.get();
 
@@ -47,17 +47,17 @@ export const createPerUserVote = async (req: any, res: any, next: any) => {
 export const getPerUserVote = async (req: any, res: any, next: any) => {
   try {
     const getAllPerUserVotes = await firebaseAdmin
-      .firestore()
-      .collection("settings")
-      .doc("voteSettings")
-      .collection("perUserVote")
-      .get();
+        .firestore()
+        .collection("settings")
+        .doc("voteSettings")
+        .collection("perUserVote")
+        .get();
 
     const getAllPerUserVotesResponse = getAllPerUserVotes.docs.map(
-      (doc: any) => ({
-        perUserVoteId: doc.id,
-        ...doc.data(),
-      })
+        (doc: any) => ({
+          perUserVoteId: doc.id,
+          ...doc.data(),
+        })
     );
     res.status(200).send({
       status: true,
@@ -75,15 +75,15 @@ export const getPerUserVote = async (req: any, res: any, next: any) => {
 
 export const getPerUserVoteById = async (req: any, res: any, next: any) => {
   try {
-    const { perUserVoteId } = req.params;
+    const {perUserVoteId} = req.params;
 
     const databaseQuery = await firebaseAdmin
-      .firestore()
-      .collection("settings")
-      .doc("voteSettings")
-      .collection("perUserVote")
-      .doc(perUserVoteId)
-      .get();
+        .firestore()
+        .collection("settings")
+        .doc("voteSettings")
+        .collection("perUserVote")
+        .doc(perUserVoteId)
+        .get();
 
     const data = databaseQuery.data();
     res.status(200).send({
@@ -105,16 +105,16 @@ export const getPerUserVoteById = async (req: any, res: any, next: any) => {
 
 export const updatePerUserVoteById = async (req: any, res: any, next: any) => {
   try {
-    const { quantity, pair, coin } = req.body;
-    const { perUserVoteId } = req.params;
+    const {quantity, pair, coin} = req.body;
+    const {perUserVoteId} = req.params;
 
     const databaseQuery = await firebaseAdmin
-      .firestore()
-      .collection("settings")
-      .doc("voteSettings")
-      .collection("perUserVote")
-      .doc(perUserVoteId)
-      .get();
+        .firestore()
+        .collection("settings")
+        .doc("voteSettings")
+        .collection("perUserVote")
+        .doc(perUserVoteId)
+        .get();
 
     const getPerUserVoteData: any = databaseQuery.data();
     console.log("getTimeframeData =>", getPerUserVoteData);
@@ -125,12 +125,12 @@ export const updatePerUserVoteById = async (req: any, res: any, next: any) => {
       coin,
     };
     await firebaseAdmin
-      .firestore()
-      .collection("settings")
-      .doc("voteSettings")
-      .collection("perUserVote")
-      .doc(perUserVoteId)
-      .update(updatedPerUserVote);
+        .firestore()
+        .collection("settings")
+        .doc("voteSettings")
+        .collection("perUserVote")
+        .doc(perUserVoteId)
+        .update(updatedPerUserVote);
 
     res.status(200).send({
       status: true,
@@ -145,13 +145,13 @@ export const updatePerUserVoteById = async (req: any, res: any, next: any) => {
 
 export const deletePerUserVoteById = async (req: any, res: any, next: any) => {
   try {
-    const { perUserVoteId } = req.params;
+    const {perUserVoteId} = req.params;
     const perUserVoteRef = firebaseAdmin
-      .firestore()
-      .collection("settings")
-      .doc("voteSettings")
-      .collection("perUserVote")
-      .doc(perUserVoteId);
+        .firestore()
+        .collection("settings")
+        .doc("voteSettings")
+        .collection("perUserVote")
+        .doc(perUserVoteId);
 
     await perUserVoteRef.delete();
     res.status(200).send({
@@ -166,9 +166,9 @@ export const deletePerUserVoteById = async (req: any, res: any, next: any) => {
 };
 
 export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
+    funcName: string,
+    type: string,
+    error: any
 ) => {
   console.info(funcName, type, error);
 };
