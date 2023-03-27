@@ -442,11 +442,19 @@ export const logout = async (req: any, res: any) => {
 
 export const generateGoogleAuthOTP = async (req: any, res: any) => {
   try {
-    const { userId } = req.body;
-    if (!userId) {
-      return res.status(404).json({
+    const { userId, userType } = req.body;
+    if (!userId || !userType) {
+      return res.status(400).json({
         status: false,
-        message: "UserId must be required.",
+        message: "userId and userType are required.",
+        result: null,
+      });
+    }
+
+    if (userType !== "ADMIN" && userType !== "USER") {
+      return res.status(400).json({
+        status: false,
+        message: "Please provide valid userType.",
         result: null,
       });
     }
