@@ -209,11 +209,18 @@ const TimeframeButton = ({
     }
   };
 
-  // const timer = setTimeout(() => {
-  //   getDeg(buttonDetails)
-  //   console.log("i am working")
-  // }, 1000);
-
+  const timer = setTimeout(() => {
+    getDeg(buttonDetails)
+    console.log("i am working")
+  }, 1000);
+  
+  useEffect(() => {
+    
+  
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [])
   
   const getBorderColor = () => {
     let PricePer = livePrice / 100;
