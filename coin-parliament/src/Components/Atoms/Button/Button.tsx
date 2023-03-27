@@ -187,7 +187,7 @@ const TimeframeButton = ({
     }
     // @ts-ignore
     setLivePrice(coins[params?.id]?.price);
-
+    
     if (buttonDetails != undefined && buttonDetails?.valueVotingTime) {
       setvotePrice(buttonDetails?.valueVotingTime);
     }
@@ -208,6 +208,11 @@ const TimeframeButton = ({
       setBorderDeg(Math.round(deg));
     }
   };
+
+  // const timer = setTimeout(() => {
+  //   getDeg(buttonDetails)
+  //   console.log("i am working")
+  // }, 1000);
 
   
   const getBorderColor = () => {
@@ -253,6 +258,7 @@ const TimeframeButton = ({
 
     }
   };
+  
   
 
 
