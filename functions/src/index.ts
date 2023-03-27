@@ -13,7 +13,6 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-// import {generateAuthTokens} from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
@@ -80,8 +79,8 @@ import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCusto
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
-import voteSettingRouter from "./routes/voteSetting.routes";
-import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
+import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
+import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
 
 // initialize express server
 const app = express();
@@ -101,8 +100,8 @@ main.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
-app.use("/admin/rewards", rewardNftAdminRouter);
-app.use("/admin/voteSetting", voteSettingRouter);
+app.use("/admin/voteSetting", timeframeRouter);
+app.use("/admin/voteSetting", perUserVoteRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -180,6 +179,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    firstTimeLogin: true,
   };
 
   try {
@@ -192,12 +192,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
-
-// exports.getAuthTokens = functions.https.onCall(async (data) => {
-//   const {refresh_tokens} = data as { refresh_tokens: string };
-//   const response = await generateAuthTokens(refresh_tokens);
-//   return response;
-// });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };

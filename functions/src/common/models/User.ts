@@ -40,6 +40,7 @@ export type UserProps = {
   token?: string;
   wallet?: string;
   rewardStatistics?: RewardStatistics;
+  firstTimeLogin?: boolean;
 };
 
 export type RewardStatistics = {

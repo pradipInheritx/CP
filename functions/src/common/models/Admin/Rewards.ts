@@ -1,18 +1,18 @@
 import { firestore } from "firebase-admin";
-const { v4: uuidv4 } = require("uuid");
+import { v4 as uuidv4 } from "uuid";
 import { getAllNftGallery, uploadImage } from "../Reward";
 
 type AlbumNft = {
   albumId: number;
   albumName: string;
   setQuantity: number;
-  setDetails: object[];
+  setDetails: any[];
 };
 
 type SetNft = {
   setId: number;
   setName: string;
-  cardsDetails: object[];
+  cardsDetails: any[];
 };
 
 type NewCardNft = {
@@ -33,9 +33,9 @@ export const generateSerialNumber = async (
   cardType: any,
   quantity: number
 ) => {
-  let serialNumber: string[] = [];
+  const serialNumber: string[] = [];
   for (let i = 0; i < quantity; i++) {
-    let card =
+    const card =
       String(collectionId) + String(setId) + String(cardType) + String(i);
     serialNumber.push(card);
   }
@@ -98,7 +98,7 @@ export const addSetNft = async (req: any, res: any) => {
   const { albumId } = req.params;
   const { setId, setName } = req.body;
   try {
-    let setData: SetNft = {
+    const setData: SetNft = {
       setId: setId,
       setName: setName,
       cardsDetails: [],
@@ -212,7 +212,6 @@ export const addRewardCardNft = async (req: any, res: any) => {
 export const getAllCardsOfNftGallery = async (req: any, res: any) => {
   try {
     const nftGalleryData = await getAllNftGallery();
-    console.log("nftGalleryData >>>>>>", nftGalleryData);
     const cards: any = [];
     nftGalleryData.forEach((albumDetails: any) => {
       albumDetails.setDetails.forEach((setDetail: any) => {
