@@ -5,9 +5,7 @@ import * as admin from "firebase-admin";
 import {userConverter, UserProps} from "../models/User";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-// const admin = require("firebase-admin");
-// const firebase = require('firebase')
-import {getAllCardsOfNftGallery} from "./Admin/Rewards";
+
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
   0: {
@@ -99,7 +97,7 @@ function createArrayByPercentageForPickingTier(cmp: number) {
 
 // get all collection data
 export async function getAllNftGallery() {
-  const snapshot = await firestore().collection("nft_gallery").get();
+  const snapshot = await firestore().collection("nftGallery").get();
   const array: any = [];
   snapshot.forEach((doc) => {
     array.push({id: doc.id, ...doc.data()});
@@ -111,9 +109,9 @@ export async function getAllNftGallery() {
 // get collection data by document id
 async function getNftCollectionDataById(docId: any) {
   const collectionData = await firestore()
-      .collection("nft_gallery")
-      .doc(docId)
-      .get();
+    .collection("nftGallery")
+    .doc(docId)
+    .get();
   return collectionData.data();
 }
 
@@ -290,12 +288,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
     uid: string
 ) => {
   console.log("Beginning execution claimReward function");
-  getAllCardsOfNftGallery();
-  // addAlbumNft(1, "RoseWinter", 5)
-  // addSetNft("eGGxIlx3EvnsTHiqsikm", 101, "Manali")
-  // generateSerialNumber(0, 11, 0, 5)
-  // addRewardNFT("SWnA6wLlv9bPVRIlHKHY", 1, "image")
-  // uploadImage()
+    // uploadImage()
   // imageUpload('functions/src/images/nature.jpg')
   const userRef = firestore()
       .collection("users")
