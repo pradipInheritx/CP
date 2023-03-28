@@ -19,7 +19,7 @@ import { getPrice } from "./common/models/Rate";
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
-  setLeaders,
+  setLeaders
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
@@ -326,6 +326,7 @@ exports.onUpdateUser = functions.firestore
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
     await getUpdatedDataFromWebsocket();
+    await setLeaders()
     // await getCards();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
