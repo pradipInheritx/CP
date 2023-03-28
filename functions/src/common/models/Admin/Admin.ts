@@ -451,7 +451,20 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
       });
     }
 
-    if (userType !== "ADMIN" && userType !== "USER") {
+    let adminUserData: any
+    if (userType === "ADMIN") {
+      adminUserData = await admin
+        .firestore()
+        .collection("admin")
+        .doc(userId)
+        .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
       return res.status(400).json({
         status: false,
         message: "Please provide valid userType.",
@@ -459,14 +472,8 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
       });
     }
 
-    const adminUserData = await admin
-      .firestore()
-      .collection("admin")
-      .doc(userId)
-      .get();
-
     const getUserData: any = adminUserData.data();
-
+    console.info("getUserData", getUserData)
     const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
       issuer: "inheritx.com",
       name: getUserData.firstName,
