@@ -122,15 +122,20 @@ export const addSetNft = async (req: any, res: any) => {
     }
     albumData.setDetails.push(setData);
 
-    const newSet = await firestore()
+    await firestore().collection("nftGallery").doc(albumId).update(albumData);
+
+    const getSetRef = await firestore()
       .collection("nftGallery")
       .doc(albumId)
-      .update(albumData);
-
+      .get();
+    const getSetData: any = getSetRef.data();
+    const getSet = getSetData.setDetails.find((data: any) => {
+      return data.setId == setId;
+    });
     res.status(200).send({
       status: true,
       message: "New Set added.",
-      result: newSet,
+      result: getSet,
     });
   } catch (error) {
     errorLogging("addSetNft", "ERROR", error);

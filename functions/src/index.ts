@@ -80,6 +80,7 @@ import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCusto
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
+import coinRouter from "./routes/Coin.routes";
 import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
 import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
 import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
@@ -103,6 +104,7 @@ main.use(bodyParser.urlencoded({ extended: false }));
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
 app.use("/admin/rewards", rewardNftAdminRouter);
+app.use("/admin/coins", coinRouter);
 app.use("/admin/voteSetting", timeframeRouter);
 app.use("/admin/voteSetting", perUserVoteRouter);
 
