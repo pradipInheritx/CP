@@ -178,7 +178,7 @@ export async function login(req: any, res: any) {
     res.status(200).send({
       status: true,
       message: "User logged in successfully",
-      result: adminUser,
+      result: { id: adminUserId, ...adminUser },
     });
   } catch (error) {
     errorLogging("login", "ERROR", error);
