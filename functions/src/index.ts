@@ -19,7 +19,8 @@ import { getPrice } from "./common/models/Rate";
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
-  setLeaders
+  setLeaders,
+
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
@@ -377,9 +378,17 @@ exports.onVote = functions.firestore
 
     await updateVotesTotal();
     const data = snapshot.data() as VoteResultProps;
+    console.log("data =>", data);
+
     const voteTime = admin.firestore.Timestamp.now().toMillis();
+    console.log("voteTime =>", voteTime);
+
     const timeframe = data.timeframe;
+    console.log("timeframe =>", timeframe);
+
     const expiration = voteTime + calculateOffset(timeframe);
+    console.log("expiration =>", expiration);
+
     const [coin1, coin2] = data.coin.split("-");
     let valueVotingTime;
 
@@ -390,6 +399,7 @@ exports.onVote = functions.firestore
     } else {
       valueVotingTime = await getPrice(coin1);
     }
+    console.log("coin1, coin2", coin1, coin2);
 
     await updateVotesTotalForSingleCoin(data.coin);
 
@@ -399,10 +409,11 @@ exports.onVote = functions.firestore
       voteTime,
       valueVotingTime,
     } as unknown as VoteResultProps;
+    console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
-
     await sendToTokens(vote);
+
     await admin
       .firestore()
       .collection("users")
@@ -411,6 +422,18 @@ exports.onVote = functions.firestore
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
   });
+
+exports.noActivityIn24Hours = functions.pubsub
+  .schedule("every 1 minutes")
+  .onRun((context) => {
+    const currentDate = new Date();
+    const last24HoursDate = new Date(currentDate.getTime() - (24 * 60 * 60 * 1000));
+    console.log("Current date => ", currentDate);
+    console.log("Last 24 hours date => ", last24HoursDate);
+    console.log("This function will run every minute.");
+    return null;
+  });
+
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
