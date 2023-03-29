@@ -10,6 +10,7 @@ import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
 import { useLocation } from "react-router-dom";
 import arrow from '../../assets/svg/arrow-right.svg'
+import { texts } from "../LoginComponent/texts";
 const LighCart1 = styled.div`
   //width: 100%;
   max-width: ${(props: { pathname: string, single: boolean }) =>
@@ -332,7 +333,7 @@ const secColor= ()=>{
       {!single && (
         <Component127371>
           <Buttons.ClickableText onClick={onClick} className=" p-2" style={{margin: "-0.5rem"}}>
-            <VOTE>TO VOTE</VOTE>
+            <VOTE>{texts.ToVote}</VOTE>
             <img
               width="6"
               height="10"

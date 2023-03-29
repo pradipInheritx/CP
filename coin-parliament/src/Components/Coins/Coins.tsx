@@ -21,6 +21,7 @@ import styled from "styled-components";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { Input } from "../Atoms/styles";
 import CoinsContext from "../../Contexts/CoinsContext";
+import { texts } from "../LoginComponent/texts";
 
 const Container = styled.div`
   display: grid;
@@ -100,7 +101,8 @@ const Coins = ({
                 marginLeft: "20px",
               }}
             >
-              What's Your Coin Vote ?
+              {/* {("What's Your Coin Vote ?").toUpperCase()} */}
+              {texts.WhatYourCoinVote}
             </div>
           ) : (
             <div />
@@ -175,7 +177,8 @@ const Coins = ({
               }}
               style={{ color: "var(--white)", fontWeight: "400" }}
             >
-              {upperCase(translate("view all"))}
+              {/* {upperCase(translate("view all"))} */}
+              {texts.ViewAll}
             </Buttons.ClickableText>
           )}
         </Carousel>

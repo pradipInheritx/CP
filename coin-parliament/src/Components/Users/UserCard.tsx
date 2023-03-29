@@ -17,6 +17,7 @@ import { Link,  useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "../../common/models/Dictionary";
 import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
+import { texts } from "../LoginComponent/texts";
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -223,7 +224,10 @@ const UserCard = ({
         </Component5031>
         {viewAllLink && (
           <div>
-            <ViewAll to={viewAllLink}>{translate("view all")}</ViewAll>
+            <ViewAll to={viewAllLink}>
+              {/* {translate("view all")} */}
+            {texts.ViewAll}
+            </ViewAll>
           </div>
         )}
       </OverlapGroup1>

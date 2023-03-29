@@ -17,6 +17,7 @@ import Quotes from "../Components/Quotes";
 import ContentContext from "../Contexts/ContentContext";
 import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
+import { texts } from "../Components/LoginComponent/texts";
 
 
 const H2 = styled.h2`
@@ -111,7 +112,8 @@ const Home = () => {
                 marginTop: "200px",
               }}
             >
-              {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
+              {texts.HereYourChance}
+              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
@@ -124,7 +126,8 @@ const Home = () => {
                 fontSize: "30px",
               }}
             >
-              {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
+              {texts.HereYourChance}
+              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           )}
           <Coins
@@ -163,7 +166,8 @@ const Home = () => {
         <div className='mb-5 mx-0'>
           <div className='mb-4'>
             <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
-              {translate("Influencers")}
+              {/* {translate("Influencers").toUpperCase()} */}
+              {texts.Influencers}
             </H2>
           </div>
           <InfluencersCarousel />

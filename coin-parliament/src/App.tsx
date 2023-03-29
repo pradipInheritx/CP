@@ -1055,7 +1055,7 @@ votesLast24HoursRef.get()
                                       }}
                                     >
                                     <div className='pwaPopup'  style={{display:pwaPopUp}}>
-                                      <span>Install CoinParliament app for best experience</span>
+                                        <span>{texts.InstallCoinParliament}</span>
                                     <button
                                         className="link-button"
                                         id="setup_button"
@@ -1064,7 +1064,7 @@ votesLast24HoursRef.get()
                                         onClick={onClick}
                                         style={{zIndex:99999}}
                                       >
-                                        Install
+                                        {texts.Install}
                                       </button>
                                         <span
                                           className="link-button"

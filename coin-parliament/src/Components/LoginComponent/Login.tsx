@@ -125,11 +125,11 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
         />
       </div>
       <div className='d-flex'>
-       <ForgetPasswordText  onClick={() => setForgetPassword(true)}>{`${capitalize(translate('Forget password?'))}`}</ForgetPasswordText>
+       <ForgetPasswordText  onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
       </div>
       <div className='d-flex  mt-2'>
-      <DontHaveAccountText className="mr-5"> {`${capitalize(translate(texts.noAccount))} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setSignup(true)}>{`${capitalize(translate(texts.signUp))}`}</SignUp>
+      <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount.toUpperCase())} `}</DontHaveAccountText> 
+      <SignUp  onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
       </div>
       <div id="loginId"></div>
       <Modal show={smsVerification?true:false} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>

@@ -22,6 +22,7 @@ import Carousel from "./Carousel";
 import styled from "styled-components";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import {getMaxWidth} from "../Coins/Coins";
+import { texts } from "../LoginComponent/texts";
 
 const Container = styled.div`
   display: grid;
@@ -94,7 +95,10 @@ const Pairs = ({
       {expanded && (
         <Container {...{width}} className="table-responsive m-auto" style={{maxWidth, padding:width > 979?'20px 0 50px 0':'"0 -15px'}}>
           {width > 979?
-           <div style={{fontSize:'20px',fontWeight:'400',marginLeft:'20px'}}>What's Your Pair Vote ?</div>
+            <div style={{ fontSize: '20px', fontWeight: '400', marginLeft: '20px' }}>
+              {/* {("What's Your Pair Vote ?").toUpperCase()} */}
+              {texts.WhatYourPairVote}
+            </div>
           : <div/> }
           <div className="px-3" style={{position:'relative'}}>
           <i className="bi bi-search" style={{position:'absolute',top:'9px',right:'30px',fontSize:'18px'}}></i>
@@ -156,7 +160,8 @@ const Pairs = ({
               }}
               style={{ color: "var(--white)",fontWeight:'400' }}
             >
-              {upperCase(translate("view all"))}
+              {/* {upperCase(translate("view all"))} */}
+              {texts.ViewAll}
             </Buttons.ClickableText>
           )}
         </Carousel>

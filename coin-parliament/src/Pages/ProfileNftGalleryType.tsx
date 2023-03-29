@@ -19,6 +19,7 @@ import firebase from "firebase/compat";
 import UserContext from "../Contexts/User";
 import { Other } from "./SingleCoin";
 import BackArrow from "../Components/icons/BackArrow";
+import { texts } from "../Components/LoginComponent/texts";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -88,16 +89,6 @@ width:100%;
 
 const ProfileNftGalleryType = () => {
   const { user } = useContext(UserContext);
-  
-  const [menuItem, setMenuItem] = useState([
-    { name: "View All" },
-    { name: "Common" },
-    { name: "UnCommon" },
-    { name: "Epic" },
-    { name: "Rare" },
-    { name: "Legendary" },
-  ]);
-
   const [CardValue, setCardValue] = useState([]);
   const [checkCard, setcheckCard] = useState([
     { cardType: "Legendary" },
@@ -111,11 +102,12 @@ const ProfileNftGalleryType = () => {
   const [winerCard, setWinerCard] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState<any>('')
   const [allCard, setAllCard] = useState<any>([])
+    const [setsValue, setSetsValue] = useState<any>([])
   const [searchedCard, setSearchedCard] = useState<any>([])
   const [cardType,setCardType]=useState<any>('all')
   const [allCardArray, setAllCardArray] = useState<any>([])
   const [myCards, setMyCards] = useState<any>(false)
-  
+  const [setsCardId, setSetsCardId] = useState<any>('none')
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
 
@@ -240,7 +232,8 @@ snapshot.forEach((doc) => {
 data.push({id: doc.id, ...doc.data()});
 });
 setAllCardArray(data)
-const cards: any = [];
+  const cards: any = [];
+  const idSets: any = [];
   data.forEach((element: any) => {    
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
@@ -249,12 +242,14 @@ const cards: any = [];
     element.setDetails.forEach((setDetail: any) => {
       const setId = setDetail.id;
       const setName = setDetail?.name;
+      idSets.push({setId,setName})
       setDetail.cards.forEach((cardDetail: any) => {
         cards.push({collectionId, collectionName, collectionDocId, setId,setName, ...cardDetail});
       });
     });
   });
   setAllCard(cards)
+  setSetsValue(idSets)
 
 
 }).catch((error) => {
@@ -270,8 +265,20 @@ console.log(error,"error");
     setCardShow(false)
   }
   setSearchTerm(searchTerm)
-  if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-  else setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type==cardType.toUpperCase()))
+    if (cardType === 'all'&& setsCardId === "none") {
+      // setSearchedCard(allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+      const serchresult = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      setSearchedCard((pev:any)=>serchresult)
+    }
+    else {
+      // const serchCard= allCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+      // setSearchedCard(serchCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type == cardType.toUpperCase()))
+      const serchValue = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+     const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+     const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase() )
+    //  console.log(serchresult, "serchCard")
+     setSearchedCard(serchresult)
+    }
 }
   
   const onSelectType=(cardType:any)=>{
@@ -282,12 +289,34 @@ console.log(error,"error");
   else {
     setCardShow(false)
   }
-  if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.type!=cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+    if (cardType === 'all') {
+       const typeCard = allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    setSearchedCard(typeCard.filter((card:any)=>setsCardId != "none" ?card?.setId ==setsCardId:card.setId !==setsCardId))
+      // setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+    }
   else {
     setCardShow(true)
-    setSearchedCard(
-    (prev:any)=>allCard.filter((card:any)=>card.type===cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))}
+    const typeCard = allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    // setSearchedCard((prev: any) => allCard.filter((card: any) => card.type === cardType.toUpperCase() && setsCardId != "none" ? card?.setId == setsCardId : card.setId != setsCardId && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+      setSearchedCard(typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId))
+    }
+  }
+
+  
+const onSelectSets=(cardId:any)=>{
+  setSetsCardId(cardId)
+  if (cardId === 'none') {
+    const cardWithId=allCard.filter((card: any) => card.setId !== cardId )
+    setSearchedCard(cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );    
+  }
+  else {    
+    setCardShow(true);
+    // setSearchedCard((prev: any) => allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+     const cardWithId=allCard.filter((card: any) => card.setId == cardId )
+    setSearchedCard(cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type== cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );        
+  }
 }
+
 
 useEffect(() => {
   getNftCard()
@@ -304,7 +333,8 @@ useEffect(() => {
   // getNftCard()
   // onCollectionChange(type)
   onSearch(searchTerm)
-  onSelectType(cardType)
+    onSelectType(cardType)
+    onSelectSets(setsCardId)
 }, [allCard])
   
 
@@ -380,8 +410,7 @@ useEffect(() => {
 
   return (
     <div className=''>
-      <div className='h-100 '>
-        
+      <div className='h-100 '>        
         {/* <MenuBar className={`${window.screen.width<932?"SmallScreen":"BigScreen"}`}>
         {menuItem.map((item, index) => {
           return (
@@ -419,19 +448,32 @@ useEffect(() => {
               className='py-2 mx-3 rounded border'
               // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "" : ""}`}>              
+            <div className={`${window.screen.width < 767 ? "" : ""}`}>        
+             <select
+                name='cars'
+                id='cars'
+                className='bg-white border rounded py-2 mx-2'
+                // onChange={e=>onCollectionChange(e.target.value)}
+                onChange={e=>onSelectSets(e.target.value)}
+              >
+            <option value='none'>{texts.SelectSets}</option>            
+            {setsValue?.map((data:any ,index:number ) => {
+              return  <option value={ data?.setId} key={index}>{`${((data?.setName)?.toUpperCase())?.slice(0, 3) + data?.setId}`}</option>        
+            })}            
+              </select>
+              
               <select
                 name='type'
                 id='type'
                 className='bg-white border rounded mx-2 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
-                <option value='all'>Select Type</option>
-                <option value='Legendary'>Legendary</option>
-                <option value='Rare'>Rare</option>
-                <option value='Epic'>Epic</option>
-                <option value='UNCommon'>UNCommon</option>
-                <option value='Common'>Common</option>
+                <option value='all'>{texts.SelectType}</option>
+                <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
+                <option value={`${texts.Rare}`}>{texts.Rare}</option>
+                <option value={`${texts.Epic}`}>{texts.Epic}</option>
+                <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
+                <option value={`${texts.Common}`}>{texts.Common}</option>
               </select>
               {/* <select
                 name='cars'
@@ -456,7 +498,7 @@ useEffect(() => {
                 // label={`default checkbox`}
                 onClick={()=>{setMyCards(!myCards)}}
               />
-              <label htmlFor="default-checkbox">Available cards</label>
+              <label htmlFor="default-checkbox">{texts.AvailableCards}</label>
             </div>
           </div>
 

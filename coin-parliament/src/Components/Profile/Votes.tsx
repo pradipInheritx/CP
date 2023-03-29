@@ -10,6 +10,7 @@ import Button from "../Atoms/Button/Button";
 import Tabs from "./Tabs";
 import VotedCard from "./VotedCard";
 import { fetchCoins, subscribe, unsubscribe, ws } from "../../common/models/Socket";
+import { texts } from "../LoginComponent/texts";
 
 const getVotesFunc = httpsCallable<{ start: number; end: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -191,13 +192,13 @@ const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
             disabled={index < pageSize}
             onClick={() => setIndex(index - pageSize)}
           >
-            Prev
+            {texts.Prev}
           </Button>
           <Button
             disabled={index >= v.total - pageSize}
             onClick={() => setIndex(index + pageSize)}
           >
-            Next
+            {texts.Next}
           </Button>
         </ButtonGroup>
       );
@@ -228,7 +229,7 @@ const callbackFun=()=>{
       tabs={[
         {
           eventKey: "pairs",
-          title: capitalize(translate("pair")),
+          title: capitalize(translate(`${texts.Pair}`)),
           pane: (
             <div className="d-flex justify-content-center align-items-center flex-column">
               {votes.pairs.votes.map((v, i) => (
@@ -242,7 +243,7 @@ const callbackFun=()=>{
         },
         {
           eventKey: "coins",
-          title: capitalize(translate("coin")),
+          title: capitalize(translate(`${texts.Coin}`)),
           pane: (
             <div className="d-flex justify-content-center align-items-center flex-column">
               {votes.coins.votes.map((v, i) => (

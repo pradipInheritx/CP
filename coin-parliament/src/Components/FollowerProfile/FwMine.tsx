@@ -23,6 +23,7 @@ import NFTCard from "../../common/NFTCard/NFTCard";
 import { httpsCallable } from "firebase/functions";
 import { db, functions } from "../../firebase";
 import firebase from "firebase/compat";
+import { texts } from "../LoginComponent/texts";
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
   box-shadow: 0 3px 6px #00000029;
@@ -35,6 +36,7 @@ const MyBadge = styled(Badge)`
 const RewardList = styled.p`
   font-size: 10px;
   color: #707070;
+  cursor: pointer;
 `;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
@@ -215,7 +217,7 @@ console.log(error,"error");
                 fontSize: "12px",
               }}
             >
-              REWARD HISTORY
+              {texts.REWARDHISTORY}
             </div>
             {data.map((item, index) => (
               <>
@@ -227,7 +229,7 @@ console.log(error,"error");
                       {/* @ts-ignore */}
                       {item?.winData?.secondRewardExtraVotes}
                     </span>{" "}
-                    Votes
+                    {texts.Votes}
                   </RewardList>
                   {/* @ts-ignore */}
                   <RewardList>
@@ -235,11 +237,11 @@ console.log(error,"error");
                       {/* @ts-ignore */}
                       {item?.winData?.thirdRewardDiamonds}
                     </span>{" "}
-                    Game Pts
+                    {texts.GamePts}
                   </RewardList>
-                  <RewardList>
+                  <RewardList onClick={()=>navigate('/followerProfile/Album')}>
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" }} >{item?.winData?.firstRewardCard}</span> Card
+                    <span style={{ color: "#6352E8" }} onClick={()=>navigate('/followerProfile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}

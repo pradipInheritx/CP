@@ -11,6 +11,7 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import arrow from '../../assets/svg/arrow-right.svg'
+import { texts } from "../LoginComponent/texts";
 const LighCart1 = styled.div`
   cursor: pointer;
   max-width: 350px;
@@ -282,7 +283,7 @@ const Card = ({
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}
           <Buttons.ClickableText onClick={onClick} className="p-2">
-            <VOTE>TO VOTE</VOTE>
+            <VOTE>{texts.ToVote}</VOTE>
             <img
               width="6"
               height="10"

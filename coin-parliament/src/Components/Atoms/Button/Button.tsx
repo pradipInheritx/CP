@@ -211,7 +211,7 @@ const TimeframeButton = ({
 
   const timer = setTimeout(() => {
     getDeg(buttonDetails)
-    console.log("i am working")
+    
   }, 1000);
   
   useEffect(() => {
