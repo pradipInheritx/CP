@@ -2,7 +2,8 @@ import React from "react";
 import {Link} from "react-router-dom";
 import GeneralPage from "../GeneralPage";
 
-const GameRule = () => {
+const
+  GameRule = () => {
   return (
     <GeneralPage>
       <div >

@@ -1,12 +1,15 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
+import AppContext from "../Contexts/AppContext";
 import NftOneCard from "./NftOneCard";
-
+import { db } from "../firebase";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
@@ -78,194 +81,9 @@ const SummerCard = styled.div`
 `;
 
 const NFTGalleryType = () => {
-  const [cards, setCards] = useState([
-    [
-      {
-        id: 1,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 2,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 3,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 4,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-      {
-        id: 5,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-    ],
-    [
-      {
-        id: 6,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 7,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 8,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 9,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-      {
-        id: 10,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-    ],
-    [
-      {
-        id: 11,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 12,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 13,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 14,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-      {
-        id: 15,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-    ],
-    [
-      {
-        id: 16,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 17,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 18,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 19,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-      {
-        id: 20,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-    ],
+    const { singalCardData,setSingalCardData} = useContext(AppContext);
 
-    [
-      {
-        id: 21,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 22,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 23,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 24,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-      {
-        id: 25,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },
-    ],
-  ]);
+  
   const [menuItem, setMenuItem] = useState([
     { name: "View All" },
     { name: "Common" },
@@ -274,9 +92,9 @@ const NFTGalleryType = () => {
     { name: "Rare" },
     { name: "Legendary" },
   ]);
-
+    const [nftAlbumData,setNftAlbumData] = useState<any>();
   const [CardValue, setCardValue] = useState([]);
-  const [backCards, setBackCards] = useState("");
+  const [backCards, setBackCards] = useState<any>([]);
   const [checkCard, setcheckCard] = useState([
     { cardType: "Legendary" },
     { cardType: "Legendary" },
@@ -291,33 +109,41 @@ const NFTGalleryType = () => {
   }, [filterIndex]);
 
   const HandleFilter = (filterIndex?: number | string | undefined) => {
-    var allCard: any = cards;
-    if (filterIndex && filterIndex > 0) {
-      allCard.filter((item: any, ind: number) => {
-        if (ind + 1 == filterIndex) {
-          var cardItem: any = [item];
-          setCardValue(cardItem);
-        }
-      });
-    } else {
-      setCardValue(allCard);
-    }
+    // var allCard: any = cards;
+    // if (filterIndex && filterIndex > 0) {
+    //   allCard.filter((item: any, ind: number) => {
+    //     if (ind + 1 == filterIndex) {
+    //       var cardItem: any = [item];
+    //       setCardValue(cardItem);
+    //     }
+    //   });
+    // } else {
+    //   setCardValue(allCard);
+    // }
   };
+
+
+
+
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
-    setBackCards(backCards == value ? "" : value);
-    // backCards.length > 0  ? backCards.map((items, index) => {
-    //   if (items == value) {
-    //     // @ts-ignore
-    //     backCards.splice(index,1)
-    //   }
-    //   else {
-    //     // @ts-ignore
-    //     // backCards.push(value)
-    //     setBackCards([...backCards,value])
-    //   }
-    //   // @ts-ignore
-    // }) : setBackCards([...backCards,value]);
+     let allBackCard = [...backCards];
+     // @ts-ignore
+     // setBackCards(backCards == value ? "" : value);
+     backCards.length > 0
+       ? backCards?.map((items: any, index: number) => {
+           if (items == value) {
+             // @ts-ignore
+             allBackCard.splice(index, 1);
+             setBackCards(allBackCard);
+           } else {
+             // @ts-ignore
+
+             setBackCards([...backCards, value]);
+           }
+           // @ts-ignore
+         })
+       : setBackCards([...backCards, value]);
   };
 
   const HandleFilterByInput = (value: string | number) => {
@@ -335,8 +161,59 @@ const NFTGalleryType = () => {
     // setCardValue(allCard)
   };
   let params = useParams();
-  const { name } = params;
+  const { type } = params;
 
+
+   const getNftCard = () => {
+  const getCards = firebase
+            .firestore()
+            .collection("nft_gallery")
+    getCards.get()
+      .then((snapshot) => {        
+        // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
+       let allcollection= snapshot.docs.map((doc) => doc.data())
+          // setCollectionType(allcollection)
+        console.log(allcollection,"allcollection")
+        allcollection?.map((card) => {
+
+          if (card?.collectionName==type) {
+            setNftAlbumData(card?.setDetails)
+          }          
+        })
+      }).catch((error) => {
+        console.log(error,"error");
+      })
+      ;    
+}
+
+useEffect(() => {
+    getNftCard()
+  }, [params])
+
+
+  
+  const HandelonchangeFilter = (e:any) => {
+    let name =e.target.name
+    let value =e.target.value
+    let allCard = nftAlbumData;
+    let filterItem = allCard?.map((items: any, ind: number) => {      
+     
+     return  Object.keys(items?.cards[ind]).every((keyValue: any, index: number) => {
+        //  console.log(items?.cards[index][key],"allKEy") 
+        //  console.log(allCard[ind]?.cards[index],"allKEy") 
+        //  console.log(items.card[index][keyValue] ,"allKEy") 
+        // return items.cards[ind][keyValue]
+        if (items.cards[ind][keyValue] == value) {          
+          // return items?.cards[index][keyValue];
+           return items?.cards[ind]
+        }
+      })
+    })
+    console.log(filterItem,value,"filterItem")
+    // console.log(filterItem,"filterItem")
+  }
+
+console.log(nftAlbumData,"nftAlbumData")
   return (
     <div className=''>
       <div className='h-100 '>
@@ -362,11 +239,15 @@ const NFTGalleryType = () => {
           <div className='d-flex justify-content-center mt-5 flex-wrap '>
             <input
               type='text'
-              onChange={(e) => {
-                HandleFilterByInput(e.target.value);
-              }}
+              name="hello"
+              // onChange={(e) => {
+              //   HandleFilterByInput(e.target.value);
+              // }}
+              // onChange={(e)=>{HandelonchangeFilter(e)}}
               placeholder='Search...'
               className='py-2 mx-3 rounded border'
+              // style={{ width: "200px" }}
+              
             />
             <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
               <select
@@ -379,11 +260,12 @@ const NFTGalleryType = () => {
                 <option value='saab'>WINTER</option>
               </select>
               <select
-                name='cars'
-                id='cars'
+                name='type'
+                id='type'
                 className='bg-white border rounded mx-2 py-2'
+                // onChange={(e)=>{HandelonchangeFilter(e)}}
               >
-                <option value='volvo'>Select Type</option>
+                <option value=''>Select Type</option>
                 <option value='Legendary'>Legendary</option>
                 <option value='Rare'>Rare</option>
                 <option value='Epic'>Epic</option>
@@ -404,29 +286,43 @@ const NFTGalleryType = () => {
             </div>
           </div>
           <div>
-            <p>{`${name}`} COLLECTION</p>
+            <p>{`${type}`} COLLECTION</p>
           </div>
 
           <SummerCard>
-            {CardValue.map((items, index) => {
+            {nftAlbumData?.map((items:any, index:number) => {
               return (
                 <div className='w-100 m-auto mb-4 '>
                   {/* @ts-ignore */}
                   <SwiperBar>
                     {/* @ts-ignore */}
-                    {items.map((item: any) => {
+                    {items?.cards.map((item: any) => {
+                      
                       return (
                         <>
                           <NftOneCard
-                            DivClass={item.cardType}
-                            HeaderText={item.cardType}
-                            HeaderClass={`${item.cardType}_text`}
-                            Disable={""} // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item.cardHeader}`}
-                            cardNo={`${item.cardNo}`}
-                            id={item.id}
+                            
+                            DivClass={item?.type}
+                            HeaderText={item?.type}
+                            HeaderClass={`${item?.type}_text`}
+                            Serie={items?.name}
+                            BackCardName={item?.name}
+                            Rarity={item?.type}
+                            Quantity={item?.quantity}
+                            holderNo={item?.noOfCardHolders}
+                            cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                            GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                            userId={items?.id}
+                            // Disable={"CardDisebal"}
+                            // When you pass CardDisebal this name then card is Disable
+                            cardHeader={`${item?.name}`}
+                            
+                            // cardNo={`${item.cardNo}`}
+                            id={item?.cardId}
                             BackSideCard={BackSideCard}
-                            flipCard={backCards == item.id ? true : false}
+                            fulldata={item}
+                            // flipCard={backCards == item.id ? true : false}
+                            flipCard={backCards?.includes(item?.cardId)}
                           />
                         </>
                       );
@@ -436,6 +332,37 @@ const NFTGalleryType = () => {
               );
             })}
           </SummerCard>
+
+          
+          {/* <SummerCard>
+            {CardValue.map((items, index) => {
+              return (
+                <div className='w-100 m-auto mb-4 '>
+                  
+                  <SwiperBar>
+                    
+                    {items.map((item: any) => {
+                      return (
+                        <>
+                          <NftOneCard
+                            DivClass={item.cardType}
+                            HeaderText={item.cardType}
+                            HeaderClass={`${item.cardType}_text`}
+                            Disable={""}                            
+                            cardHeader={`${item.cardHeader}`}
+                            cardNo={`${item.cardNo}`}
+                            id={item.id}
+                            BackSideCard={BackSideCard}                            
+                            flipCard={backCards.includes(item.id)}
+                          />
+                        </>
+                      );
+                    })}
+                  </SwiperBar>
+                </div>
+              );
+            })}
+          </SummerCard> */}
           {/* <div>
             <p>WINTER COLLECTION</p>
           </div>

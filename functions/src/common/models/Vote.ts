@@ -1,6 +1,8 @@
-// import {firestore} from "firebase-admin";
 import * as admin from "firebase-admin";
 import {UserTypeProps} from "./User";
+import {firestore} from "firebase-admin";
+import {getPriceOnParticularTime} from "../models/Rate";
+import Calculation from "../models/Calculation";
 import Timestamp = admin.firestore.Timestamp;
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 
@@ -32,7 +34,7 @@ export type VoteResultProps = VoteProps & {
   valueExpirationTime?: number | number[];
   success?: number;
   score?: number;
-  CPMRangePercentage: number
+  CPMRangePercentage: number;
 };
 
 export type TimeFrame = {
@@ -47,32 +49,35 @@ export enum Direction {
 }
 
 export const calculateOffset: (timeframe: TimeFrame) => number = (
-    timeframe: TimeFrame,
+    timeframe: TimeFrame
 ) => timeframe.seconds * 1000;
 
 export const updateVotesTotal = async () => {
   console.log("Beginning execution of updateVotesTotal 2 --->");
-  const app = await admin.firestore()
-      .collection("stats").doc("app").get();
+  const app = await admin.firestore().collection("stats").doc("app").get();
   console.log("Beginning execution of updateVotesTotal --->");
   if (!app.exists || (app.exists && !app.data()?.totalVotes)) {
-    const votes = await admin.firestore()
-        .collection("votes").get();
+    const votes = await admin.firestore().collection("votes").get();
 
-    await admin.firestore()
-        .collection("stats").doc("app").set({totalVotes: votes.size}, {merge: true});
+    await admin
+        .firestore()
+        .collection("stats")
+        .doc("app")
+        .set({totalVotes: votes.size}, {merge: true});
   } else {
-    await admin.firestore()
-        .collection("stats").doc("app").update({totalVotes: admin.firestore.FieldValue.increment(1)});
+    await admin
+        .firestore()
+        .collection("stats")
+        .doc("app")
+        .update({totalVotes: admin.firestore.FieldValue.increment(1)});
   }
   console.log("Finished execution of updateVotesTotal --->");
   return;
 };
 
-
 export const updateVotesTotalForSingleCoin = async (coin: any) => {
-  console.log("Beginning execution of updateVotesTotalForSingleCoin --->");
   const data = await admin.firestore().collection("stats").doc("totals").get();
+
   const mappedData = data.data();
 
   const obj: any = {};
@@ -82,19 +87,54 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
       total: mappedData[coin].total + 1,
     };
 
-    await admin.firestore()
-        .collection("stats").doc("totals").update(obj);
+    await admin.firestore().collection("stats").doc("totals").update(obj);
   } else {
-    console.log("else");
     obj[`${coin}`] = {
       success: 0,
       total: 1,
     };
-
     const test = await admin.firestore().collection("stats").doc("totals");
     await test.set(obj, {merge: true});
   }
 
   console.log("Finished execution of updateVotesTotalForSingleCoin --->");
   return;
+};
+
+export const getOldAndCurrentPriceAndMakeCalculation = async (
+    requestBody: any
+) => {
+  let price: any;
+  const {
+    coin1,
+    coin2,
+    voteId,
+    voteTime,
+    valueVotingTime,
+    expiration,
+    timestamp,
+  } = requestBody;
+  // Snapshot Get From ID
+  const getVoteRef = firestore().collection("votes").doc(voteId);
+  const getVoteInstance = await getVoteRef.get();
+  const getVoteData = getVoteInstance.data();
+
+  const vote = {
+    ...getVoteData,
+    expiration,
+    voteTime,
+    valueVotingTime,
+  } as unknown as VoteResultProps;
+
+  if (coin2) {
+    const priceOne = await getPriceOnParticularTime(coin1, timestamp);
+    const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
+    price = [Number(priceOne), Number(priceTwo)];
+    const calc = new Calculation(vote, price, voteId);
+    await calc.calc(getVoteRef);
+  } else {
+    price = await getPriceOnParticularTime(coin1, timestamp);
+    const calc = new Calculation(vote, Number(price), voteId);
+    await calc.calc(getVoteRef);
+  }
 };

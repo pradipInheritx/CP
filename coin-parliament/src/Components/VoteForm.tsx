@@ -6,6 +6,7 @@ import {default as CPVote} from "./Coins/Vote";
 import {Title} from "../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import UserContext from "../Contexts/User";
+import Countdown from "react-countdown";
 
 export const colors = ["#6352e8", "white"];
 
@@ -19,7 +20,7 @@ type VoteFormProps<T> = {
     tooltip: string;
   };
   canVote: boolean;
-  selectedTimeFrameArray?:any;
+  selectedTimeFrameArray?: any;
   selectedTimeFrame?: number;
   setSelectedTimeFrame: (n: number) => void;
   selectedOption?: number;
@@ -28,6 +29,9 @@ type VoteFormProps<T> = {
   children?: React.ReactNode;
   disabled?: boolean;
   width?: number | string;
+  cssDegree?: any;
+  votePrice?: any;
+  votedDetails?: any;
 };
 const VoteForm = function <
   T extends {
@@ -50,15 +54,21 @@ const VoteForm = function <
   disabled,
   width,
   submit,
+  cssDegree,
+  votePrice,
+  votedDetails,
 }: VoteFormProps<T>) {
-  const { timeframes, login } = useContext(AppContext);
+  const { timeframes, login,remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  console.log('loginbutton',!(!!user)&&selectedTimeFrame,selectedTimeFrame)
+  // console.log("loginbutton", !!!user && selectedTimeFrame, selectedTimeFrame);
+  // console.log("cssDegreesdfkjsdklf", votePrice);
+  
+  
   return (
     <Form
-      className="mt-3"
+      className='mt-3'
       id={id}
       noValidate={true}
       onSubmit={(e) => {
@@ -76,28 +86,49 @@ const VoteForm = function <
               setSelectedTimeFrame(timeframe.index);
             },
             title: texts.selectTimeFrame,
-            selectedTimeFrameArray:selectedTimeFrameArray
+            selectedTimeFrameArray: selectedTimeFrameArray,
+            cssDegree,
+            votePrice,
+            votedDetails
           }}
         />
       </div>
-      <div className="mt-4 pt-2">
-        <div className="mb-3">
+      <div className='mt-4 pt-2'>
+        <div className='mb-3'>
           <Title>{texts.yourVote}</Title>
         </div>
         <OverlayTrigger
           overlay={(props) =>
             disabled ? (
-              <Tooltip id="button-tooltip" {...props}>
+              <Tooltip id='button-tooltip' {...props}>
+                {texts.tooltip}
+                {/* @ts-ignore */}
+              {texts?.tooltip?.includes(`Well done, you've used up all your votes! Time to grab a snack and come back in`)&& <>  <Countdown date={remainingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {
+                        
+                          return (
+                            <span style={{fontWeight:400}}>
+                              {/* {hours < 10 ? `0${hours}` : hours}: */}
+                              
+                              {hours < 1 ? null : `${hours} :` }
+                              {minutes < 10 ? `0${minutes}` : minutes}:
+                              {seconds < 10 ? `0${seconds}` : seconds}
+                            </span>
+                          );
+                        
+                      }}
+                         />{' '}for more votes.</>}
+              </Tooltip>
+            ) : selectedTimeFrame == undefined ? (
+              <Tooltip id='button-tooltip' {...props}>
                 {texts.tooltip}
               </Tooltip>
-            ) : selectedTimeFrame==undefined?<Tooltip id="button-tooltip" {...props}>
-            {texts.tooltip}
-          </Tooltip>:(
+            ) : (
               <></>
             )
           }
         >
-          <div >
+          <div>
             <CPVote
               {...{
                 selectedOption,
@@ -105,7 +136,13 @@ const VoteForm = function <
               }}
               width={width || 266}
               // disabled={!canVote || disabled}
-              disabled={!(!!user)&&selectedTimeFrame!==undefined?false:((!canVote || disabled)?true:false)}
+              disabled={
+                !!!user && selectedTimeFrame !== undefined
+                  ? false
+                  : !canVote || disabled
+                  ? true
+                  : false
+              }
               disabledText={texts.tooltip}
               options={[
                 {
@@ -113,7 +150,10 @@ const VoteForm = function <
                     typeof option1.image === "string" ? (
                       <img src={option1.image} alt={option1.alt} />
                     ) : (
-                     <> <p>{option1.image} </p>vote</>
+                      <>
+                        {" "}
+                        <p>{option1.image} </p>vote
+                      </>
                     ),
                   buttonProps: {
                     children: undefined,
@@ -124,7 +164,10 @@ const VoteForm = function <
                     typeof option2.image === "string" ? (
                       <img src={option2.image} alt={option2.alt} />
                     ) : (
-                      <> <p>{option2.image} </p>vote</>
+                      <>
+                        {" "}
+                        <p>{option2.image} </p>vote
+                      </>
                     ),
                   buttonProps: {
                     children: undefined,

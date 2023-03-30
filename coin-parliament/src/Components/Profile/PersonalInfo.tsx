@@ -100,8 +100,9 @@ const handleClose=()=>{
                 placeholder: "User Name",
                 value: userName ,
                 onChange: async (e) => {                  
-                  // setFirstName(e.target.value)                
-                },
+                  setUserName(e.target.value)                
+                  },
+                maxlength:10,
                 edit:true,
               }}
               

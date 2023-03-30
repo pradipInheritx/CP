@@ -72,18 +72,25 @@ const SingleCoin = () => {
   const [cpviData, setCpviData] = useState<LineData[]>();
   const mountedRef = useRef(true);
   const {width, height} = useWindowSize();
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading,setGraphLoading]=useState(false)
-  const {timeframes} = useContext(AppContext);
-  console.log('choseTimeFrame1',selectedTimeFrameArray)
+  const [cssDegree, setcssDegree] = useState<any>([]);
+  const [votePrice, setvotePrice] = useState<any>([]);
+  const [votedDetails, setVotedDetails] = useState<any>([]);
+  // const [graphLoading,setGraphLoading]=useState(false)
+  const {timeframes,setAllButtonTime,allButtonTime,forRun,setForRun} = useContext(AppContext);
+  // console.log('choseTimeFrame1',selectedTimeFrameArray)
   const newTimeframe: any = []
+  const AllcssDegree: any = [];
+  const AllvotePrice: any = [];
+  const AllvoteValueObject: any = [];
 
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
       // if (!mountedRef.current) return null;
-      console.log('timeframeforcpvi',{vote})
+      // console.log('timeframeforcpvi',{vote})
       const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: vote.timeframe.seconds });
      
       return data.data as unknown as LineData[];
@@ -91,7 +98,7 @@ const SingleCoin = () => {
   }, [params?.id, voteId, vote]);
 
   useEffect(() => {
-    console.log('cpvidata api called',vote.timeframe)
+    // console.log('cpvidata api called',vote.timeframe)
     if(vote.timeframe) {
       setTimeout(() => {
         getCpviData().then((data) => data && setCpviData(data));  
@@ -125,7 +132,7 @@ useEffect(() => {
     // const timer = setInterval( async() => {
     //   console.log('settimeout1',vote.timeframe)
       if(vote.timeframe) {
-       console.log('getcpvi',vote.timeframe)
+      //  console.log('getcpvi',vote.timeframe)
         getCpviData().then((data) => data && setCpviData(data));  
     }
     // }, 5000);
@@ -133,12 +140,14 @@ useEffect(() => {
   // return () => {
   //   clearInterval(timer);
   // }
-}, [voteId, getCpviData, vote,totals[params?.id ?? 'BTC']?.total,selectedTimeFrame])
-console.log('selected time frame',cpviData)
-  const calcVote = useCallback(async () => {
-    console.log('getVote called 3')
+}, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
+  
+// console.log('selected time frame',cpviData)
+ 
+const calcVote = useCallback(async () => {
+    // console.log('getVote called 3')
     // if (!mountedRef.current) return null;
-console.log('getVote called 2')
+    // console.log('getVote called 2')
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframes[selectedTimeFrame || 0]?.seconds});
       if (v) {console.log('timeframe',v.data())
@@ -155,37 +164,46 @@ console.log('getVote called 2')
 
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframe});
-      if (v) {console.log('timeframe',v.data())
+      if (v) {
+        // console.log('timeframe',v.data())
        return v
       }
     }
   }
 
   useEffect(() => {
-    Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
+
+    // console.log("it is not run")
+    Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
-
-        if(res) {
-          console.log('choseTimeFrame',res,index)
-          
+        if (res) {                  
+          // console.log('choseTimeFrame',res,index)        
+          // getLeftTime(res.data(), index);          
+          AllvoteValueObject[index] = res.data();
+          setAllButtonTime(AllvoteValueObject);
+          setVotedDetails(AllvoteValueObject);
           newTimeframe.push(index)
-          console.log('choseTimeFrame1',newTimeframe)
+          // console.log('choseTimeFrame1',newTimeframe)
           setSelectedTimeFrameArray(newTimeframe)
         }
-        // else{
-        //   console.log('choseTimeFrame',res,index)
-        //   setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
-        // }
+        else{                    
+          // setAllButtonTime();
+          // console.log('choseTimeFramesdfasd',allButtonTime)
+        }
       }))
     })
     .catch(error => {
       console.error('promiseAll',error);
     });
    
-  }, [user?.uid, params?.id,selectedTimeFrame])
+  }, [user?.uid, params?.id, selectedTimeFrame,forRun,voteId,vote])
+  
+
+
   useEffect(() => {
     return () => {
+      setAllButtonTime();
       mountedRef.current = false;
     };
   }, []);
@@ -195,11 +213,12 @@ console.log('getVote called 2')
   //   setVoteId('');
   // }, [selectedTimeFrame]);
   useEffect(() => {
-    console.log('get vote fun called')
+    // console.log('get vote fun called')
     calcVote().then(void 0);
+    
     return () => {
       mountedRef.current = false;
-    };
+    };    
   }, [calcVote,selectedTimeFrame]);
 
 
@@ -207,22 +226,55 @@ console.log('getVote called 2')
   useEffect(() => {
     if (voteId) {
       onSnapshot(doc(db, "votes", voteId), (doc) => {
-        setVote(doc.data() as VoteResultProps);
+
+        // if () {
+          
+          setVote(doc.data() as VoteResultProps);
+        // }
+
+        // console.log(doc.data(), "doc.data()")  
+        
+          // AllvoteValueObject = [];  
+          // setAllButtonTime([...allButtonTime,viewData]);
+        
+        
+
       });
+        // setForRun(forRun + 1)
     }
+
   }, [voteId]);
 
+
+
+  const getLeftTime = (value: any,index:number) => {
+    // console.log(value, "CheckvalueId", index);
+    let t = value.voteTime / 1000; //mili
+    let d = value.timeframe.seconds; //second already
+    let liveTime = Date.now() / 1000;
+    let ori = t + d;
+    let val = (ori - liveTime) / d;
+    let deg = val * 360;
+    AllcssDegree[index] = Math.round(deg);
+    AllvotePrice[index] =  value.valueVotingTime;
+    // console.log(vote,"all vote check")
+    if (deg >0) {
+      setcssDegree(AllcssDegree);
+      setvotePrice(AllvotePrice);
+    }
+  }
+  
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-
+// console.log('i am rendering')
   const canVote = useMemo(() => {
     return (
       (!vote.expiration && vote.success === undefined) ||
       (vote.expiration && vote.success !== undefined) ||
       Date.now() >= vote.expiration
     );
-  }, [vote.expiration, vote.success,selectedTimeFrame]);
-console.log('vote',vote)
+  }, [vote.expiration, vote.success,selectedTimeFrame ]);
+  // console.log('canvote',canVote,vote)
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);

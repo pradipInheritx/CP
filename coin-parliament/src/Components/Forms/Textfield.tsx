@@ -15,7 +15,8 @@ export type TextFieldProps = {
   step?: number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   color?: string;
-  edit?:boolean;
+  edit?: boolean;
+  maxlength?: string | number;
 };
 
 export const Label = styled(Form.Label)`
@@ -49,6 +50,7 @@ const TextField = ({
   step,
   color,
   edit,
+  maxlength,
 }: TextFieldProps) => {
   let formControl: Partial<FormControlProps> & { name: string; rows?: number } =
     {
@@ -86,6 +88,7 @@ const TextField = ({
               max={max}
               step={step}
               disabled={edit}
+              maxlength={maxlength}
             />
           </Col>
         </Row>
