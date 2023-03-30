@@ -21,6 +21,7 @@ import {
   getLeaderUsers,
   getLeaderUsersByIds,
   setLeaders,
+
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
@@ -80,7 +81,10 @@ import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCusto
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
-import voteSettingRouter from "./routes/voteSetting.routes";
+import coinRouter from "./routes/Coin.routes";
+import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
+import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
+import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
 
 // initialize express server
 const app = express();
@@ -100,7 +104,10 @@ main.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
-app.use("/admin/voteSetting", voteSettingRouter);
+app.use("/admin/rewards", rewardNftAdminRouter);
+app.use("/admin/coins", coinRouter);
+app.use("/admin/voteSetting", timeframeRouter);
+app.use("/admin/voteSetting", perUserVoteRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -177,6 +184,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    firstTimeLogin: true,
   };
 
   try {
@@ -189,12 +197,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
-
-// exports.getAuthTokens = functions.https.onCall(async (data) => {
-//   const {refresh_tokens} = data as { refresh_tokens: string };
-//   const response = await generateAuthTokens(refresh_tokens);
-//   return response;
-// });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -329,6 +331,7 @@ exports.onUpdateUser = functions.firestore
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
     await getUpdatedDataFromWebsocket();
+    await setLeaders()
     // await getCards();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
@@ -377,9 +380,17 @@ exports.onVote = functions.firestore
 
     await updateVotesTotal();
     const data = snapshot.data() as VoteResultProps;
+    console.log("data =>", data);
+
     const voteTime = admin.firestore.Timestamp.now().toMillis();
+    console.log("voteTime =>", voteTime);
+
     const timeframe = data.timeframe;
+    console.log("timeframe =>", timeframe);
+
     const expiration = voteTime + calculateOffset(timeframe);
+    console.log("expiration =>", expiration);
+
     const [coin1, coin2] = data.coin.split("-");
     let valueVotingTime;
 
@@ -390,6 +401,7 @@ exports.onVote = functions.firestore
     } else {
       valueVotingTime = await getPrice(coin1);
     }
+    console.log("coin1, coin2", coin1, coin2);
 
     await updateVotesTotalForSingleCoin(data.coin);
 
@@ -399,10 +411,11 @@ exports.onVote = functions.firestore
       voteTime,
       valueVotingTime,
     } as unknown as VoteResultProps;
+    console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
-
     await sendToTokens(vote);
+
     await admin
       .firestore()
       .collection("users")
@@ -411,6 +424,18 @@ exports.onVote = functions.firestore
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
   });
+
+exports.noActivityIn24Hours = functions.pubsub
+  .schedule("every 1 minutes")
+  .onRun((context) => {
+    const currentDate = new Date();
+    const last24HoursDate = new Date(currentDate.getTime() - (24 * 60 * 60 * 1000));
+    console.log("Current date => ", currentDate);
+    console.log("Last 24 hours date => ", last24HoursDate);
+    console.log("This function will run every minute.");
+    return null;
+  });
+
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
