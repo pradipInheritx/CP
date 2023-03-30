@@ -450,9 +450,9 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
         result: null,
       });
     }
-    console.log(" userId, userType =>", userId, userType)
+    console.log(" userId, userType =>", userId, userType);
 
-    let adminUserData: any
+    let adminUserData: any;
     if (userType === "ADMIN") {
       adminUserData = await admin
         .firestore()
@@ -472,17 +472,17 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
         result: null,
       });
     }
-    console.log(" adminUserData =>", adminUserData)
+    console.log(" adminUserData =>", adminUserData);
 
     const getUserData: any = adminUserData.data();
-    console.info("getUserData", getUserData)
+    console.info("getUserData", getUserData);
     const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
       issuer: "inheritx.com",
       name: getUserData.firstName,
       length: 15,
     });
 
-    console.log(" getUserData =>", getUserData)
+    console.log(" getUserData =>", getUserData);
 
     getUserData.googleAuthenticatorData = {
       otp_ascii: ascii,
@@ -491,7 +491,7 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
       otp_hex: hex,
     };
 
-    console.log("googleAuthenticatorData =>", getUserData)
+    console.log("googleAuthenticatorData =>", getUserData);
 
     if (userType === "ADMIN") {
       await admin.firestore().collection("admin").doc(userId).set(getUserData);
@@ -534,11 +534,11 @@ export const verifyGoogleAuthOTP = async (req: any, res: any) => {
       });
     }
 
-    let adminUserData: any
+    let adminUserData: any;
 
     if (userType === "ADMIN") {
-      adminUserData
-        = await admin
+      adminUserData =
+        await admin
           .firestore()
           .collection("admin")
           .doc(userId)
@@ -564,6 +564,7 @@ export const verifyGoogleAuthOTP = async (req: any, res: any) => {
       encoding: "base32",
       token,
     });
+    console.log("verified", verified)
 
     if (!verified) {
       return res.status(401).json({
@@ -577,7 +578,7 @@ export const verifyGoogleAuthOTP = async (req: any, res: any) => {
       otp_enabled: true,
       otp_verified: true,
     };
-    
+
     if (userType === "ADMIN") {
       await admin.firestore().collection("admin").doc(userId).set(getUserData);
     } else if (userType === "USER") {
