@@ -428,12 +428,24 @@ exports.onVote = functions.firestore
 
 exports.noActivityIn24Hours = functions.pubsub
     .schedule("every 1 minutes")
-    .onRun((context) => {
-      const currentDate = new Date();
-      const last24HoursDate = new Date(currentDate.getTime() - (24 * 60 * 60 * 1000));
+    .onRun(async (context) => {
+      const currentDate = admin.firestore.Timestamp.now().toMillis();
       console.log("Current date => ", currentDate);
+      const last24HoursMillis = 24 * 60 * 60 * 1000;
+      console.log("last24HoursMillis => ", last24HoursMillis);
+      const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
       console.log("Last 24 hours date => ", last24HoursDate);
+      const getUsers = await admin.firestore().collection("users").get();
+      const getAllUsers = getUsers.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          ...data,
+        };
+      });
       console.log("This function will run every minute.");
+      console.log("getAllUsers =>", getAllUsers[0]);
+
+
       return null;
     });
 
