@@ -450,9 +450,9 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
         result: null,
       });
     }
-    console.log(" userId, userType =>", userId, userType)
+    console.log(" userId, userType =>", userId, userType);
 
-    let adminUserData: any
+    let adminUserData: any;
     if (userType === "ADMIN") {
       adminUserData = await admin
         .firestore()
@@ -472,17 +472,17 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
         result: null,
       });
     }
-    console.log(" adminUserData =>", adminUserData)
+    console.log(" adminUserData =>", adminUserData);
 
     const getUserData: any = adminUserData.data();
-    console.info("getUserData", getUserData)
+    console.info("getUserData", getUserData);
     const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
       issuer: "inheritx.com",
       name: getUserData.firstName,
       length: 15,
     });
 
-    console.log(" getUserData =>", getUserData)
+    console.log(" getUserData =>", getUserData);
 
     getUserData.googleAuthenticatorData = {
       otp_ascii: ascii,
@@ -490,9 +490,20 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
       otp_base32: base32,
       otp_hex: hex,
     };
-    console.log("getUserData.googleAuthenticatorData =>", getUserData.googleAuthenticatorData)
 
-    await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    console.log("googleAuthenticatorData =>", getUserData);
+
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return res.status(400).json({
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      });
+    }
 
     res.status(200).send({
       status: true,
@@ -514,7 +525,7 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
 
 export const verifyGoogleAuthOTP = async (req: any, res: any) => {
   try {
-    const { userId, token } = req.body;
+    const { userId, token, userType } = req.body;
     if (!userId) {
       return res.status(404).json({
         status: false,
@@ -523,11 +534,28 @@ export const verifyGoogleAuthOTP = async (req: any, res: any) => {
       });
     }
 
-    const adminUserData = await admin
-      .firestore()
-      .collection("admin")
-      .doc(userId)
-      .get();
+    let adminUserData: any;
+
+    if (userType === "ADMIN") {
+      adminUserData =
+        await admin
+          .firestore()
+          .collection("admin")
+          .doc(userId)
+          .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
+      return res.status(400).json({
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      });
+    }
 
     const getUserData: any = adminUserData.data();
 
@@ -536,6 +564,7 @@ export const verifyGoogleAuthOTP = async (req: any, res: any) => {
       encoding: "base32",
       token,
     });
+    console.log("verified", verified)
 
     if (!verified) {
       return res.status(401).json({
@@ -550,7 +579,17 @@ export const verifyGoogleAuthOTP = async (req: any, res: any) => {
       otp_verified: true,
     };
 
-    await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return res.status(400).json({
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      });
+    }
 
     res.status(200).send({
       status: true,

@@ -185,6 +185,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     favorites: [],
     status,
     firstTimeLogin: true,
+    googleAuthenticatorData: {},
   };
 
   try {
@@ -331,7 +332,7 @@ exports.onUpdateUser = functions.firestore
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
     await getUpdatedDataFromWebsocket();
-    await setLeaders()
+    await setLeaders();
     // await getCards();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
