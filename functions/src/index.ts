@@ -185,6 +185,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     favorites: [],
     status,
     firstTimeLogin: true,
+    googleAuthenticatorData: {}
   };
 
   try {
