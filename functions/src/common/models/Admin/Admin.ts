@@ -450,6 +450,7 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
         result: null,
       });
     }
+    console.log(" userId, userType =>", userId, userType)
 
     let adminUserData: any
     if (userType === "ADMIN") {
@@ -471,6 +472,7 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
         result: null,
       });
     }
+    console.log(" adminUserData =>", adminUserData)
 
     const getUserData: any = adminUserData.data();
     console.info("getUserData", getUserData)
@@ -480,12 +482,15 @@ export const generateGoogleAuthOTP = async (req: any, res: any) => {
       length: 15,
     });
 
+    console.log(" getUserData =>", getUserData)
+
     getUserData.googleAuthenticatorData = {
       otp_ascii: ascii,
       otp_auth_url: otpauth_url,
       otp_base32: base32,
       otp_hex: hex,
     };
+    console.log("getUserData.googleAuthenticatorData =>", getUserData.googleAuthenticatorData)
 
     await admin.firestore().collection("admin").doc(userId).set(getUserData);
 
