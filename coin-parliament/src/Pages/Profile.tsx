@@ -137,7 +137,10 @@ const Profile = () => {
           
             onClick={() => navigate("/upgrade")}
           >
-            <MyBadge bg='-'>{translate("upgrade your account")}</MyBadge>
+                  <MyBadge bg='-'>
+                    {/* {translate("upgrade your account")} */}
+                    {texts.UpgradeYourAccount}
+                  </MyBadge>
           </Row>
         )}
               <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>

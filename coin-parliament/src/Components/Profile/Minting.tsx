@@ -12,6 +12,7 @@ import UserContext from "../../Contexts/User";
 import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
 import { stubFalse } from "lodash";
+import { texts } from "../LoginComponent/texts";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -135,7 +136,8 @@ const Minting = ({
             className='box_title d-md-block text-white d-none mb-4'
             {...{ width }}
           >
-            {translate("CP Minting")}
+            {/* {translate("CP Minting")} */}
+            {texts.CPMinting}
           </Title>
           <I className='bi bi-info-circle'></I>
           <PieChart
@@ -161,7 +163,7 @@ const Minting = ({
             disabled={!claim || loading}
           >
             {!!claim && <Dot>{claim}</Dot>}
-            {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"}
+            {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
           </BtnLabelPrimary>
         )}
       </Container>
@@ -185,7 +187,8 @@ const Minting = ({
             disabled={!claim || loading}
           >
             {!!claim && <Dot>{claim}</Dot>}
-            {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"}
+            {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}
+            {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
           </BtnLabelPrimary>
         </div>
       )}

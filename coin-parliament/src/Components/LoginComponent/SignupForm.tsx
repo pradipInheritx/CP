@@ -40,10 +40,10 @@ useEffect(() => {
 }, [])
   const strings = {
     email: capitalize(translate(texts.email)),
-    confirmPassword: capitalize(translate(texts.confirmPassword)),
-    password: capitalize(translate(texts.password)),
-    continue: capitalize(translate(texts.continue)),
-    agree: capitalize(translate(texts.agree)),
+    confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
+    password: capitalize(translate(texts.password.toUpperCase())),
+    continue: capitalize(translate(texts.continue.toUpperCase())),
+    agree: capitalize(translate(texts.agree.toUpperCase())),
   };
 
   return (
@@ -100,7 +100,7 @@ useEffect(() => {
 
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" >
-          {signupLoading?'Wait...':strings.continue}
+          {signupLoading?'Wait...':strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
 
@@ -110,10 +110,10 @@ useEffect(() => {
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
-                {t}{" "}
+                {t.toUpperCase()}{" "}
                 {!i && (
                   <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
+                    {translate(texts.termsConditions.toUpperCase())}
                   </Link>
                 )}
               </React.Fragment>

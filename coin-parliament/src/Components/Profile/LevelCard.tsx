@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { UserTypeProps } from "../../common/models/UserType";
 import { UserProps } from "../../common/models/User";
 import { useTranslation } from "../../common/models/Dictionary";
+import { texts } from "../LoginComponent/texts";
 
 type LevelCardProps = {
   userTypes: UserTypeProps[];
@@ -47,7 +48,8 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
       <I className="bi bi-info-circle" ></I>
       <div className="d-flex justify-content-center align-items-center flex-column">
         <h6 className="mt-1 box_title card-header mb-2" style={{fontSize:'12px'}}>
-          {translate("Your Level")}
+          {/* {translate("Your Level")} */}
+          {texts.YourLevel}
         </h6>
         {userTypes.sort((a,b) => b.index - a.index).map((userType, i) => {
             const opacity =

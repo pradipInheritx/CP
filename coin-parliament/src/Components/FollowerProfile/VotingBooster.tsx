@@ -115,7 +115,7 @@ const VotingBooster = () => {
                 fontSize: "20px",
               }}
             >
-              {translate("Boost your voting power")}
+              {translate("Boost your voting power").toUpperCase()}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
@@ -127,7 +127,7 @@ const VotingBooster = () => {
                 // paddingTop: "30px",
               }}
             >
-              {translate("Boost your voting power")}
+              {translate("Boost your voting power").toUpperCase()}
             </H2>
           )}
           <div className='d-flex justify-content-around mt-4 text-center px-3'>

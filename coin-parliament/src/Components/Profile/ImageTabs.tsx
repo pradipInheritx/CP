@@ -116,7 +116,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
                   >
                     {tab.icon}
                   </Circle>
-                  {tab.label && <Label>{tab.label}</Label>}
+                  {tab.label && <Label>{tab.label.toUpperCase()}</Label>}
                 </NavLink>
               </Nav.Item>
             );

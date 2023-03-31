@@ -49,7 +49,7 @@ const LoginWith = ({
   const translate = useTranslation();
 
   const continueWith = (provider: LoginProviders = LoginProviders.GOOGLE) =>
-    `${translate(texts.continueWith)} ${translate(provider)}`;
+    `${translate(texts.continueWith)} ${translate(provider.toUpperCase())}`;
 
   return (
     <LoginButton {...{ onClick }}  style={{boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}>

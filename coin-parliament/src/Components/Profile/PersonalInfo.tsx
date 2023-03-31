@@ -102,7 +102,7 @@ const handleClose=()=>{
            
             <TextField
               {...{
-                label: "User Name",
+                label: `${texts.USERNAME}`,
                 name: "UserName",
                 placeholder: "User Name",
                 value: userName ,
@@ -116,7 +116,7 @@ const handleClose=()=>{
             />
             <TextField
               {...{
-                label: "First Name",
+                label: `${texts.FIRSTNAME}`,
                 name: "firstName",
                 placeholder: "First Name",
                 value: firstName || "",
@@ -129,7 +129,7 @@ const handleClose=()=>{
             />
             <TextField
               {...{
-                label: "Last Name",
+                label: `${texts.LASTNAME}`,
                 name: "lastName",
                 placeholder: "Last Name",
                 value: lastName,
@@ -141,7 +141,7 @@ const handleClose=()=>{
             />
             <TextField
               {...{
-                label: "Email",
+                label: `${texts.EMAIL}`,
                 name: "email",
                 type: "email",
                 placeholder: "Email",
@@ -169,7 +169,7 @@ const handleClose=()=>{
               }}
               /> */}
               <SelectTextfield                 
-              label="Phone"
+              label={`${texts.PHONE}`}
               name="Phone"
               ><>
                 {/* <select                  
@@ -215,7 +215,7 @@ const handleClose=()=>{
         </Row>
       </Container>
     </Form>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} centered>
       <Modal.Header >
         <Modal.Title>Change email</Modal.Title>
       </Modal.Header>

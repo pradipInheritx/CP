@@ -285,7 +285,10 @@ If you have not set up 2FA, please do so now to enhance the security of your acc
       </Row>
     </Container>
   </Form>
-    <Modal show={show} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
+    <Modal show={show} onHide={handleClose}
+      style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' ,}}
+
+    >
     <Modal.Header >
       <Modal.Title>2FA</Modal.Title>
     </Modal.Header>

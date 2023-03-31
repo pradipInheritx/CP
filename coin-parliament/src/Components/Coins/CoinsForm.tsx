@@ -168,9 +168,9 @@ const CoinsForm = ({
           texts: {
             // yourVote: translate("BULL or BEAR, what’s your VOTE? Vote wisely!"),
             // yourVote: translate("Place your vote"),
-            yourVote: translate("Vote for your winner"),
+            yourVote: translate("Vote for your winner").toUpperCase(),
             // selectTimeFrame: translate("Select voting time frame"),
-            selectTimeFrame: translate("Select a time frame for your vote"),
+            selectTimeFrame: translate("Select a time frame for your vote").toUpperCase(),
             tooltip: translate(tooltipText),
           },
         }}

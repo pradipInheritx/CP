@@ -13,6 +13,7 @@ import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
+import { texts } from "../Components/LoginComponent/texts";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -231,7 +232,7 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
                 id='cars'
                 className='bg-white border rounded py-2'
               >
-                <option value='volvo'>Select Collection</option>
+                <option value='volvo'>{texts.SelectCollection}</option>
                 <option value='SUMMER'>SUMMER</option>
                 <option value='saab'>WINTER</option>
               </select>
@@ -239,14 +240,14 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
                 name='type'
                 id='type'
                 className='bg-white border rounded mx-2 py-2'
-                // onChange={(e)=>{HandelonchangeFilter(e)}}
+                // onChange={(e)=>{onSelectType(e.target.value)}}
               >
-                <option value=''>Select Type</option>
-                <option value='Legendary'>Legendary</option>
-                <option value='Rare'>Rare</option>
-                <option value='Epic'>Epic</option>
-                <option value='UNCommon'>UNCommon</option>
-                <option value='Common'>Common</option>
+                <option value='all'>{texts.SelectType}</option>
+                <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
+                <option value={`${texts.Rare}`}>{texts.Rare}</option>
+                <option value={`${texts.Epic}`}>{texts.Epic}</option>
+                <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
+                <option value={`${texts.Common}`}>{texts.Common}</option>
               </select>
               <select
                 name='cars'

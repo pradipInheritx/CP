@@ -145,7 +145,7 @@ const Security = () => {
                 <Form.Check>
                   <Row>
                     <Col>
-                      <Label>Old Password</Label>
+                      <Label>{texts.OLDPASSWORD}</Label>
                     </Col>
                   </Row>
                   <Row>
@@ -162,7 +162,7 @@ const Security = () => {
                   </Row>
                   <Row>
                     <Col>
-                      <Label>New Password</Label>
+                      <Label>{texts.NEWPASSWORD}</Label>
                     </Col>
                   </Row>
                   <Row>
@@ -179,7 +179,7 @@ const Security = () => {
                   </Row>
                   <Row>
                     <Col>
-                      <Label>Confirm Password</Label>
+                      <Label>{ texts.confirmPassword}</Label>
                     </Col>
                   </Row>
                   <Row>

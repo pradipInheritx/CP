@@ -70,7 +70,7 @@ const LoginAndSignup = ({
           {!forgetPassword ? (
             <Styles.Title>{translate(title[mode])}</Styles.Title>
           ) : (
-            <Styles.Title>{translate("Forget Password")}</Styles.Title>
+            <Styles.Title>{translate("Forget Password".toUpperCase())}</Styles.Title>
           )}
           {mode === LoginModes.LOGIN && !forgetPassword && (
             <Login

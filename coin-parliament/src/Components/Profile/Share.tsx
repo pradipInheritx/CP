@@ -39,7 +39,10 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
     <PoolBox className="mx-auto d-flex justify-content-center" style={{width:window.screen.width<979?'100%':'40%'}}>
       <Titles style={{textAlign:window.screen.width<979?'center':'start'}}>
         <div className="d-flex justify-content-center mt-4">
-          <h6 className="text-uppercase">{translate('We believe in Partnerships! ')}</h6>
+          <h6 className="text-uppercase">
+            {/* {translate('We believe in Partnerships! ')} */}
+            {texts.WEBELIEVEINPARTNERSHIPS}
+          </h6>
         </div>
         <div className="d-flex justify-content-center">
           <img src={earn} alt="" />
@@ -54,8 +57,8 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
         <div className=" py-2 w-75   m-auto">          
         <p   style={{width:"100%",fontSize:"12px",fontWeight:"100",textAlign:'center'}}>What you’ll get:
 
-<br/>Accelerate your mining progress.
-Lifetime passive income direct to your wallet.</p>
+          <br/>Accelerate your mining progress.
+          Lifetime passive income direct to your wallet.</p>
         </div>
         <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
           <div className="mx-3">

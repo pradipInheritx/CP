@@ -464,7 +464,7 @@ const calcVote = useCallback(async () => {
           <div>
             <Leaders
               symbol={coin.symbol}
-              texts={{ topInfluencers: "top Influencers" }}
+              texts={{ topInfluencers: ("top Influencers").toUpperCase() }}
             />
           </div>
         </div>

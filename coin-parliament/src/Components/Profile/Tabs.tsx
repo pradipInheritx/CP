@@ -57,7 +57,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs }: TabsProps) => {
           {tabs.map((t, i) => {
             return (
               <Nav.Item key={i}>
-                <Nav.Link eventKey={t.eventKey} style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>{t.title}</Nav.Link>
+                <Nav.Link eventKey={t.eventKey} style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>{t.title.toUpperCase()}</Nav.Link>
               </Nav.Item>
             );
           })}

@@ -102,7 +102,7 @@ const handleClose=()=>{
            
             <TextField
               {...{
-                label: "User Name",
+                label: `${texts.USERNAME}`,
                 name: "UserName",
                 placeholder: "User Name",
                 value: userName ,

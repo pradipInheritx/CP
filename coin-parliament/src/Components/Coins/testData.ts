@@ -3,6 +3,7 @@ import { Coin } from "../../common/models/Coin";
 import { TimeFrame } from "../../common/models/Vote";
 import { Leader } from "../../Contexts/CoinsContext";
 import { User } from "firebase/auth";
+import { texts } from "../LoginComponent/texts";
 
 export const pages = [
   {
@@ -42,19 +43,19 @@ export const pages = [
 ];
 
 export const userTypes: string[] = [
-  "member",
-  "council",
-  "speaker",
-  "ambassador",
-  "minister",
+  `${texts.Member}`,
+  `${texts.Council}`,
+  `${texts.Speaker}`,
+  `${texts.Ambassador}`,
+  `${texts.Minister}`,  
 ];
 
 export const userTypesProps: UserTypeProps[] = [
-  { name: "member" } as UserTypeProps,
-  { name: "council" } as UserTypeProps,
-  { name: "speaker" } as UserTypeProps,
-  { name: "ambassador" } as UserTypeProps,
-  { name: "minister" } as UserTypeProps,
+  { name: `${texts.Member}` } as UserTypeProps,
+  { name: `${texts.Council}` } as UserTypeProps,
+  { name: `${texts.Speaker}` } as UserTypeProps,
+  { name: `${texts.Ambassador}` } as UserTypeProps,
+  { name: `${texts.Minister}` } as UserTypeProps,
 ];
 
 export const leaders: Leader[] = [

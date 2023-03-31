@@ -8,6 +8,7 @@ import { capitalize } from "lodash";
 import { follow, Leader } from "../../Contexts/CoinsContext";
 import UserCard from "../Users/UserCard";
 import { toFollow } from "../../common/models/User";
+import { texts } from "../LoginComponent/texts";
 
 export type Follower = {
   username: string;
@@ -55,7 +56,7 @@ const Follow = () => {
       tabs={[
         {
           eventKey: "following",
-          title: capitalize(translate("following")),
+          title: capitalize(translate(`${texts.Following}`)),
           pane: (
             <div>
               {(leaders || []).map((u, i) => {
@@ -82,7 +83,7 @@ const Follow = () => {
         },
         {
           eventKey: "followers",
-          title: capitalize(translate("followers")),
+          title: capitalize(translate(`${texts.Followers}`)),
           pane: (
             <>
               {(subscribers || []).map((s, i) => {

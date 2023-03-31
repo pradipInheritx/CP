@@ -17,6 +17,7 @@ import AppContext from "../Contexts/AppContext";
 import RangeSilder from "./Users/RangeSilder";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../firebase";
+import { texts } from "./LoginComponent/texts";
 
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
@@ -237,8 +238,8 @@ const VotedCard = ({
               setSelectedTimeFrame(timeframe.index);
             },
             // title: translate("Select voting time frame"),
-            title: translate("Select a time frame for your vote"),
-          votedTitle: translate("Select another time frame"),
+            title: translate("Select a time frame for your vote").toUpperCase(),
+          votedTitle: translate("Select another time frame").toUpperCase(),
             // select a time frame for your vote
             voted:true,
             selectedTimeFrameArray: selectedTimeFrameArray,
@@ -370,7 +371,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
             checkprice()
           }
       // return data;
-          return <span style={{color:"#7767f7"}}>loading...</span>;
+          return <span style={{color:"#7767f7"}}>{texts.LoadingText}</span>;
         } else {
           return (
             <span className="" style={{color:'#6352e8',fontSize:'17px',fontWeight:400,marginLeft:"10px"}}>

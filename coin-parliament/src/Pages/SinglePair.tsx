@@ -306,7 +306,7 @@ useEffect(() => {
       <Container style={{marginTop:'-15px'}}>
         <Leaders
           symbol={params?.id || ""}
-          texts={{ topInfluencers: "top influencers" }}
+          texts={{ topInfluencers: ("top influencers").toUpperCase() }}
         />
       </Container>
     </>

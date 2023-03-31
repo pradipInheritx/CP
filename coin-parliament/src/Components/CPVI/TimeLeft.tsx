@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { calcTimeLeft } from "../../common/utils/time";
+import { texts } from "../LoginComponent/texts";
 
 const TimeLeft = ({ expirationTime }: { expirationTime: number }) => {
   const [timeLeft, setTimeLeft] = useState<string | undefined>(
@@ -15,7 +16,7 @@ const TimeLeft = ({ expirationTime }: { expirationTime: number }) => {
   return (
     <>
       {timeLeft && <div>{timeLeft}</div>}
-      {!timeLeft && <div>loading...</div>}
+      {!timeLeft && <div>{texts.LoadingText}</div>}
     </>
   );
 };

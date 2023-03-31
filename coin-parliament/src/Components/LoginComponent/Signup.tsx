@@ -79,10 +79,10 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   
   const strings = {
     email: capitalize(translate(texts.email)),
-    confirmPassword: capitalize(translate(texts.confirmPassword)),
-    password: capitalize(translate(texts.password)),
-    continue: capitalize(translate(texts.continue)),
-    agree: capitalize(translate(texts.agree)),
+    confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
+    password: capitalize(translate(texts.password.toUpperCase())),
+    continue: capitalize(translate(texts.continue.toUpperCase())),
+    agree: capitalize(translate(texts.agree.toUpperCase())),
   };
   // const assignReferrer =  (params: User) => {
   //   const assign = httpsCallable(functions, "assignReferrer");
@@ -129,7 +129,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
       </Form.Group>
       <div className="my-1">
         <Buttons.Primary fullWidth={true} type="submit"  >
-          {strings.continue}
+          {strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
       <Form.Group className="mb-2 mt-3" controlId="agree">
@@ -138,10 +138,10 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
-                {t}{" "}
+                {t.toUpperCase()}{" "}
                 {!i && (
                   <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
+                    {translate(texts.termsConditions.toUpperCase())}
                   </Link>
                 )}
               </React.Fragment>
@@ -173,8 +173,8 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
         }}
       />}
        <div className='d-flex'>
-      <HaveAccountText className="mr-5"> {`${capitalize(translate(texts.haveAccount))} `}</HaveAccountText>
-      <Login  onClick={() => setSignup(false)}>{`${capitalize(translate(texts.login))}`}</Login>
+      <HaveAccountText className="mr-5"> {`${translate(texts.haveAccount.toUpperCase())} `}</HaveAccountText>
+      <Login  onClick={() => setSignup(false)}>{`${translate(texts.login.toUpperCase())}`}</Login>
       </div>
     </>
   );

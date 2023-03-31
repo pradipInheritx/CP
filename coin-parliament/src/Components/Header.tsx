@@ -442,7 +442,7 @@ const Header = ({
                                 <div className="" style={{ marginLeft: '20px', marginTop: "0px",lineHeight: "90%" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
                                   renderer={({ hours, minutes, seconds, completed }) => {
                                     return (
-                                      <span style={{color:'#6352e8',fontSize:'8px',fontWeight:100 ,lineHeight: "10%"}}>                            
+                                      <span className="text-uppercase" style={{color:'#6352e8',fontSize:'8px',fontWeight:100 ,lineHeight: "10%"}}>                            
                                         Wait {" "}
                                         {hours < 1 ? null : `${hours} :` }
                                         {minutes < 10 ? `0${minutes}` : minutes}:
@@ -578,7 +578,7 @@ const Header = ({
                          renderer={({ hours, minutes, seconds, completed }) => {
                         
                           return (
-                            <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
+                            <span className="text-uppercase" style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
                               {/* {hours < 10 ? `0${hours}` : hours}: */}
                               Wait {" "}
                               {hours < 1 ? null : `${hours} :` }
@@ -649,11 +649,6 @@ const Header = ({
                           fontWeight: "100px",
                         }}
                       >
-                        {/* <span className='mb-1' style={{ fontSize: "16px" }}>{`${
-                         followerPage && followerInfo != ""?  followerInfo?.displayName : userInfo?.displayName && userInfo?.displayName
-                        }`}</span>
-                        <br /> */}
-
                         {followerPage && followerInfo != ""?  <></> :<span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${
                          userInfo?.displayName && userInfo?.displayName
                         }`}</span>}
@@ -693,18 +688,18 @@ const Header = ({
               {/* <Modal.Header>
 
               </Modal.Header> */}
-              <Modal.Body>
-                <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-end">
                 <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
                   setShow(false)
                   }}></button>
                 </div>
-<div className="my-2 " style={{width:"100%",height:"1px",border:".8px solid #dee2e6" ,opacity:"" }}></div>
+              <Modal.Body>
+                              
                 {/* <hr /> */}
-                <p> Out of votes? </p> <Link to="/votingbooster" onClick={() => {                  
+                <p className="text-uppercase"> Out of votes? </p> <Link className="text-uppercase" to="/votingbooster" onClick={() => {                  
                   // navigate("/votingbooster")
                   setShow(false)
-                }} >Buy</Link> extra votes now or wait, <span>
+                }} >Buy</Link> {"extra votes now or wait,".toUpperCase()} <span className="text-uppercase">
                    {/* @ts-ignore */}
                   <Countdown date={votingTimer} 
                          renderer={({ hours, minutes, seconds, completed }) => {                        
