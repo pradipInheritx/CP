@@ -123,6 +123,8 @@ class Calculation {
 
       if (user.parent) {
         const refer = new Refer(user.parent, "");
+
+        // Send Notification For CMP Change
         await refer.payParent(score);
       }
     } catch (error) {
