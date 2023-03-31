@@ -92,6 +92,7 @@ const ChangePassword = () => {
                 .then(() => {
                   setOldPassword("");
                   setNewPassword("");
+                  setConfirmPassword('')
                   showToast(texts.PasswordUpdatSuccess);
                   // setErrorMessage("");
                 })

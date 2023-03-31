@@ -395,11 +395,14 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   useEffect(() => {
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
-      setLogin(true);
-      setSignup(true);
+      setLogin(false);
+      setSignup(false);
     } else {
-      // setLogin(false);
-      // setSignup(false);
+      if(!user){
+        setLogin(false);
+        setSignup(false);
+      }
+     
     }
   }, [location, search, userInfo?.uid]);
 
@@ -662,11 +665,9 @@ const votesLast24HoursRef = firebase
             .where("userId", "==", user?.uid)
             .where("voteTime", ">=", last24Hour)
             .where("voteTime", "<=", Date.now());
-// console.log('extravote11',votesLast24HoursRef)
 votesLast24HoursRef.get()
     .then((snapshot) => {
         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-      
         const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
       let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
   

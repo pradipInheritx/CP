@@ -136,11 +136,12 @@ useEffect(() => {
       mountedRef.current = false;
     };
   }, []);
+  console.log('selectedTimeframe',selectedTimeFrameArray)
   useEffect(() => {
     if (user?.uid && params?.id) {
       Vote.getVote({userId: user?.uid, coin: params?.id, timeFrame:timeframes[selectedTimeFrame || 0]?.seconds }).then((v) => {
         if (v) {
-          if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
+          // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
           setVote(v.data());
           setVoteId(v.id);
         }else setVote({} as VoteResultProps);

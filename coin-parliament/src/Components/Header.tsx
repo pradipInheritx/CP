@@ -162,7 +162,7 @@ const Header = ({
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules,followerUserId } = useContext(AppContext);
+  const { voteRules,followerUserId,login } = useContext(AppContext);
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
@@ -221,7 +221,7 @@ const Header = ({
     const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
     // @ts-ignore
     setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
-
+console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
   const onSelect = (eventKey: string | null) => {
@@ -397,7 +397,7 @@ const Header = ({
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
               <div className='d-flex w-100 '>
-                {user?.uid  ? (
+                {user?.uid && !login  ? (
                   <div
                     className='d-flex w-100'
                     style={{ position: "relative" }}
@@ -541,7 +541,7 @@ const Header = ({
               }}
             >
               <div className='d-flex '>
-                {user?.uid ? (
+                {user?.uid && !login? (
                   <div
                     className='d-flex   w-25 mx-auto '
                     style={{ position: "relative", height: "50px" }}
