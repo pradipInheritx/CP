@@ -75,6 +75,7 @@ import LoginAndSignup from "./Components/LoginComponent/LoginAndSignup";
 import {
   LoginAuthProvider,
   LoginRegular,
+  Logout,
   SignupRegular,
 } from "./common/models/Login";
 import FirstTimeLogin from "./Components/LoginComponent/FirstTimeLogin";
@@ -125,11 +126,15 @@ import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
 import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
+import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
+import Login2fa from "./Components/LoginComponent/Login2fa";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 
 function App() {
+  const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+  
   const location = useLocation();
   const search = location.search;
   const pathname = location.pathname;
@@ -334,7 +339,8 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
 
     return () => window.removeEventListener("transitionend", handler);
   }, []);
-
+  // @ts-ignore
+  if (isMFAPassed=='true' && !login ) Logout(setUser)
   const onClick = (evt:any) => {
     // evt.preventDefault();
     console.log('not supported',promptInstall)
@@ -348,7 +354,7 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
     console.log('not supported')
   }
   useEffect(() => {
-    if ( user?.email && userInfo?.displayName === undefined) {
+    if ( user?.email && userInfo?.displayName === undefined && !login) {
       setLoader(true);
 //   .get("444-44-4444").onsuccess = (event) => {
 //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
@@ -378,7 +384,7 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   
   
   useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined) {
+    if (user?.email && userInfo?.displayName === undefined && !login) {
       setLoader(true);
     } else {
       setTimeout(() => {
@@ -392,10 +398,10 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
       setLogin(true);
       setSignup(true);
     } else {
-      setLogin(false);
-      setSignup(false);
+      // setLogin(false);
+      // setSignup(false);
     }
-  }, [location, search, user]);
+  }, [location, search, userInfo?.uid]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -587,7 +593,6 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   
   useEffect(() => {
     const auth = getAuth();
-
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
@@ -596,8 +601,8 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
           user?.emailVerified ||
           user?.providerData[0]?.providerId === "facebook.com"
         ) {
-          setLogin(false);
-          setSignup(false);
+          // setLogin(false);
+          // setSignup(false);
           setLoginRedirectMessage("");
           await updateUser(user);
           setUserUid(user?.uid);
@@ -1031,6 +1036,11 @@ votesLast24HoursRef.get()
                                     loginAction: LoginRegular,
                                     signupAction: SignupRegular,
                                   }}
+                                />
+                              )}
+                              {user && login && (
+                                <Login2fa
+                                  setLogin={setLogin}
                                 />
                               )}
                               {!login &&
