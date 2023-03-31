@@ -156,8 +156,7 @@ setFollowersDetails(FollowerList)
         
         const collectionType = allcollection?.map((allCard:any) => {
           return allCard?.setDetails
-        })    
-        
+        })            
         // const oneCard = collectionType?.map((cardById: any) => {      
         //     return cardById                                 
         // })                      

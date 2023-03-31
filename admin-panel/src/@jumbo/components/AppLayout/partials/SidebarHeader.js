@@ -42,6 +42,8 @@ const useStyles = makeStyles(theme => ({
 const SidebarHeader = () => {
   const { sidebarTheme } = useContext(SidebarThemeContext);
   const classes = useStyles({ sidebarTheme });
+  const userDetalis = JSON.parse(localStorage.getItem("userData"))
+  // const {firstName,lastName,email,phone}=userDetalis
   const dispatch = useDispatch();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -74,9 +76,13 @@ const SidebarHeader = () => {
           }}>
           <div className="mr-2">
             <Typography className={classes.userTitle} component="h3" variant="h6">
-              Robert Johnson
+              {/* Robert Johnson */}
+              {userDetalis?.firstName} {userDetalis?.lastName}
             </Typography>
-            <Typography className={classes.userSubTitle}>robert.johnson@gmail.com</Typography>
+            <Typography className={classes.userSubTitle}>
+              {/* robert.johnson@gmail.com */}
+              {userDetalis?.email}
+            </Typography>
           </div>
           <ArrowDropDownIcon />
         </div>

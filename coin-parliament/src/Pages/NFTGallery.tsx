@@ -30,7 +30,7 @@ const GalleryType = styled.div`
     height:${window.screen.width < 767?"91px":"100px" };
     // height:71px;
     margin: 50px 10px;
-    
+     
     cursor:pointer;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
     // padding: 20px 20px;
@@ -377,9 +377,8 @@ useEffect(() => {
 
 
   return (
-    <div className='' style={{ background: "white", minHeight: "80vh" }}>
-
-<div className='d-flex justify-content-center pt-5 flex-wrap '>
+    <div className='' style={{ background: "white", minHeight: "80vh",  }}>
+    <div className='d-flex justify-content-center pt-5 flex-wrap w-100' >
             <input
               type='text'
               name="hello"
@@ -390,11 +389,11 @@ useEffect(() => {
               // style={{ width: "200px" }}
               
             />
-            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
+            <div className={`${window.screen.width < 767 ? "py-3 d-flex" : ""} `}>
               <select
                 name='cars'
                 id='cars'
-                className='bg-white border rounded py-2'
+                className='bg-white border rounded py-2 mx-2'
                 // onChange={e=>onCollectionChange(e.target.value)}
                 onChange={e=>setSelectCollection(e.target.value)}
               >
@@ -411,7 +410,7 @@ useEffect(() => {
           <select
                 name='cars'
                 id='cars'
-                className='bg-white border rounded py-2 mx-2'
+                className='bg-white border rounded py-2 mx-1'
                 // onChange={e=>onCollectionChange(e.target.value)}
                 onChange={e=>onSelectSets(e.target.value)}
               >
@@ -420,10 +419,12 @@ useEffect(() => {
               return  <option value={ data?.setId} key={index}>{`${((data?.setName)?.toUpperCase())?.slice(0, 3) + data?.setId}`}</option>        
             })}            
           </select>
+          </div>
+          <div className={`${window.screen.width < 767 ? " d-flex" : ""} `}>
               <select
                 name='type'
                 id='type'
-                className='bg-white border rounded mx-2 py-2'
+                className='bg-white border rounded mx-1 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
                 <option value='all'>{texts.SelectType}</option>

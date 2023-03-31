@@ -9,7 +9,7 @@ import FilterListIcon from "@material-ui/icons/FilterList";
 import PropTypes from "prop-types";
 import {Button, Chip, Menu, MenuItem} from "@material-ui/core";
 import {useDispatch} from "react-redux";
-import {deleteBulkUsers} from "../../../../redux/actions/Users";
+import {deleteBulkSubAdmin} from "../../../../redux/actions/SubAdmin";
 import ConfirmDialog from "../../../../@jumbo/components/Common/ConfirmDialog";
 import CmtSearch from "../../../../@coremat/CmtSearch";
 import useStyles from "./index.style";
@@ -49,7 +49,7 @@ const UserTableToolbar = ({
 
   const handleConfirmDelete = () => {
     setOpenConfirmDialog(false);
-    dispatch(deleteBulkUsers(selected, () => setSelected([])));
+    dispatch(deleteBulkSubAdmin(selected, () => setSelected([])));
   };
 
   const handleCancelDelete = () => {
@@ -97,9 +97,9 @@ const UserTableToolbar = ({
             id="tableTitle"
             component="div"
           >
-            Users{" "}
+            {/* Users{" "} */}
             <Button color="primary" onClick={() => onUserAdd(true)}>
-              Add New User
+              Add New Sub Admin
             </Button>
           </Typography>
         )}

@@ -18,9 +18,9 @@ import {Box, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch} from "react-redux";
 import {
-  sentMailToUser,
-  updateUserStatus
-} from "../../../../redux/actions/Users";
+  sentMailToSubAdmin,
+  updateSubAdminStatus
+} from "../../../../redux/actions/SubAdmin";
 
 const useStyles = makeStyles(theme => ({
   titleRoot: {
@@ -32,18 +32,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getUserActions = user => {
+  console.log(user,"userstatus")
   const actions = [
     {action: "view", label: "View", icon: <Visibility />},
     {action: "edit", label: "Edit", icon: <Edit />},
     {action: "email", label: "Email", icon: <Mail />}
   ];
 
-  if (user.status === "active") {
-    actions.push({action: "suspend", label: "Suspend", icon: <Block />});
+  if (user?.status.trim() === "Active") {
+    actions.push({action: "Inactive", label: "Inactive", icon: <Block />});
   } else {
     actions.push({
-      action: "activate",
-      label: "Reactivate",
+      action: "Active",
+      label: "Active",
       icon: <CheckCircleOutline />
     });
   }
@@ -58,39 +59,43 @@ const UserListRow = ({
   onRowClick,
   onUserEdit,
   onUserDelete,
-  onUserView
+  onUserView,
+  onUserStatusUpdate
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const onUserMenuClick = menu => {
+    // console.log(  row,"menuData")
     if (menu.action === "view") {
       onUserView(row);
     } else if (menu.action === "edit") {
       onUserEdit(row);
     } else if (menu.action === "email") {
-      dispatch(sentMailToUser());
-    } else if (menu.action === "suspend") {
-      dispatch(updateUserStatus({id: row.id, status: "suspended"}));
-    } else if (menu.action === "activate") {
-      dispatch(updateUserStatus({id: row.id, status: "active"}));
+      dispatch(sentMailToSubAdmin());
+    } else if (menu.action === "Inactive") {
+      // dispatch(updateSubAdminStatus(row?.id,{ status: "Inactive"}));
+      onUserStatusUpdate(row)
+    } else if (menu.action === "Active") {
+      // dispatch(updateSubAdminStatus(row?.id ,{ status: "Active"}));
+      onUserStatusUpdate(row)
     } else if (menu.action === "delete") {
       onUserDelete(row);
     }
   };
 
-  const labelId = `enhanced-table-checkbox-${row.id}`;
-  const isItemSelected = isSelected(row.id);
+  const labelId = `enhanced-table-checkbox-${row?.id}`;
+  const isItemSelected = isSelected(row?.id);
   const userActions = getUserActions(row);
 
   return (
     <TableRow
       hover
-      onClick={event => onRowClick(event, row.id)}
+      onClick={event => onRowClick(event, row?.id)}
       role="checkbox"
       aria-checked={isItemSelected}
       tabIndex={-1}
-      key={row.id}
+      key={row?.id}
       selected={isItemSelected}
     >
       <TableCell padding="checkbox">
@@ -101,29 +106,30 @@ const UserListRow = ({
       </TableCell>
       <TableCell component="th" id={labelId} scope="row" padding="none">
         <Box display="flex" alignItems="center">
-          <Box mr={{xs: 4, md: 5}}>
+          {/* <Box mr={{xs: 4, md: 5}}>
             <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
-          </Box>
+          </Box> */}
           <div>
             <Typography
               className={classes.titleRoot}
               component="div"
               variant="h4"
             >
-              {row.name}
+              {row?.firstName} {row?.lastName}
             </Typography>
           </div>
         </Box>
       </TableCell>
-      <TableCell>{row.email}</TableCell>
+      <TableCell>{row?.email}</TableCell>
+      <TableCell>{row?.phone}</TableCell>
       <TableCell>
-        {row.status === "suspended" ? (
-          `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})`
+        {row?.status === "suspended" ? (
+          `Suspended by ${row?.suspendedBy} (${timeFromNow(row?.suspendedAt)})`
         ) : (
-          row.status
+          row?.status
         )}
       </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
+      <TableCell>{timeFromNow(row?.lastLoginAt)}</TableCell>
       {/* <TableCell align="right">{row.emailUsage} GB</TableCell> */}
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu

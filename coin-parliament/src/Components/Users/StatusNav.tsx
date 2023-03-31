@@ -53,8 +53,12 @@ const ButtonGroupMr1 = styled(ButtonGroup)`
 `;
 const StatusNav = ({userTypes, setChosen, chosen}: StatusNavProps) => {
   const translate = useTranslation();
+  console.log(userTypes,chosen,"chosen")
   return (
-    <Toolbar>
+    <Toolbar
+      className={`${window.screen.width<767? "": "d-flex justify-content-center" }`}
+      
+    >
       {/* {userTypes.includes(chosen || "") && (
         <ButtonGroupMr1>
           <UnChosen onClick={() => setChosen()}>            
@@ -71,6 +75,7 @@ const StatusNav = ({userTypes, setChosen, chosen}: StatusNavProps) => {
         </ButtonGroupMr1>
       )} */}
       {userTypes.map((u, i) => {
+        
         if (chosen === u ) {
           return (
             <ButtonGroupMr1 key={i}>

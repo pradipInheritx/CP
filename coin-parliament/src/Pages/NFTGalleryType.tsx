@@ -329,14 +329,14 @@ useEffect(() => {
               onChange={e =>onSearch(e.target.value)}
               // onChange={(e)=>{HandelonchangeFilter(e)}}
               placeholder='Search...'
-              className='py-2 mx-3 rounded border'
+              className='py-2 mx-2 rounded border'
               // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "" : ""}`}> 
+            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}> 
                  <select
                 name='cars'
                 id='cars'
-                className='bg-white border rounded py-2 mx-2'
+                className='bg-white border rounded py-2 '
                 // onChange={e=>onCollectionChange(e.target.value)}
                 onChange={e=>onSelectSets(e.target.value)}
               >

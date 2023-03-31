@@ -20,7 +20,7 @@ const Wallet = () => {
   const translate = useTranslation();
   return (
     <Container fluid style={{ paddingTop: 100}}>
-       <Title>Coming soon</Title>
+       <Title>{"Coming soon".toUpperCase()}</Title>
      
       {/* <Title>Wallet your account <strong>To Earn Crypto & NFT</strong></Title>
       <Buttons.Primary fullWidth={true}>{capitalize(translate("Wallet account"))}</Buttons.Primary> */}

@@ -44,12 +44,16 @@ const RestrictedRoute = ({component: Component, ...rest}) => {
 const Routes = () => {
   const {authUser} = useSelector(({auth}) => auth);
   const location = useLocation();
+  console.log(authUser,"authUser")
 
-  if (location.pathname === "" || location.pathname === "/") {
+  if (location.pathname === "" || location.pathname === "/" ) {
     return <Redirect to={"/dashboard"} />;
   } else if (authUser && location.pathname === "/signin") {
     return <Redirect to={"/dashboard"} />;
+  }else if (!authUser && location.pathname !== "/signin" && location.pathname !== "/signup" && location.pathname !== "/forgot-password") {
+    return <Redirect to={"/signin"} />;
   }
+
 
   return (
     <React.Fragment>
@@ -70,9 +74,9 @@ const Routes = () => {
         />
         <RestrictedRoute path="/calendar" component={Calendar} />
         <RestrictedRoute path="/users" component={UsersModule} />
-        <Route path="/signin" component={Login} />
-        <Route path="/signup" component={Signup} />
-        <Route path="/forgot-password" component={ForgotPassword} />
+        <Route  path="/signin" component={Login} />
+        <Route  path="/signup" component={Signup} />
+        <Route  path="/forgot-password" component={ForgotPassword} />
         {/*<Route path="/layout-builder" component={LayoutBuilder} />*/}
       </Switch>
 

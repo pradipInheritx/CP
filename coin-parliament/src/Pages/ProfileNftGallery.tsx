@@ -486,11 +486,11 @@ const CheckCardDisable = (cardId: any) => {
       <div className='d-flex justify-content-center pt-5 flex-wrap '>
             <input
               type='text'
-              name="hello"
+                            
               onChange={e =>onSearch(e.target.value)}
               // onChange={(e)=>{HandelonchangeFilter(e)}}
               placeholder='Search...'
-              className='py-2 mx-3 rounded border'
+              className='py-2 mx-2 rounded border'
               // style={{ width: "200px" }}
               
             />
@@ -522,12 +522,13 @@ const CheckCardDisable = (cardId: any) => {
               return  <option value={ data?.setId} key={index}>{`${((data?.setName)?.toUpperCase())?.slice(0, 3) + data?.setId}`}</option>        
             })}            
           </select>
-          
+          </div>
+          <div className={`${window.screen.width < 767 ? "" : ""}`}>
           
               <select
                 name='type'
                 id='type'
-                className='bg-white border rounded mx-2 py-2'
+                className='bg-white border rounded mx-1 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
                 <option value='all'>{texts.SelectType}</option>

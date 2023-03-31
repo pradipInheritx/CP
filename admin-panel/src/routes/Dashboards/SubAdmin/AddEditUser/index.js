@@ -23,7 +23,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CancelIcon from "@material-ui/icons/Cancel";
 import {isValidEmail} from "../../../../@jumbo/utils/commonHelper";
-import {addNewUser, updateUser} from "../../../../redux/actions/Users";
+import {addNewSubAdmin, updateSubAdmin} from "../../../../redux/actions/SubAdmin";
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -44,15 +44,15 @@ function NumberFormatCustom({onChange, ...other}){
       onValueChange={values => {
         onChange(values.formattedValue);
       }}
-      format="(###) ###-####"
+      format="#####-#####"
     />
   );
 }
 
 const labels = [
-  {title: "Home", slug: "home"},
-  {title: "Office", slug: "office"},
-  {title: "Other", slug: "other"}
+  {title: "Zerodha", slug: "Zerodha"},
+  {title: "WazirX", slug: "WazirX"},
+  // {title: "Other", slug: "other"}
 ];
 
 const splitName = user => {
@@ -66,7 +66,8 @@ const splitName = user => {
 
 const AddEditUser = ({open, onCloseDialog}) => {
   const classes = useStyles();
-  const {currentUser} = useSelector(({usersReducer}) => usersReducer);
+  const { currentUser } = useSelector(({ subAdmin }) => subAdmin);
+  
 
   const [ firstName, setFirstName ] = useState("");
   const [ lastName, setLastName ] = useState("");
@@ -74,12 +75,14 @@ const AddEditUser = ({open, onCloseDialog}) => {
   const [ profile_pic, setProfile_pic ] = useState("");
   const [ company, setCompany ] = useState("");
   const [ designation, setDesignation ] = useState("");
-  const [ phones, setPhones ] = useState([ {phone: "", label: "home"} ]);
-
+  const [ phone, setPhone ] = useState("");
+  const [ lastNameError, setLastNameError ] = useState("");
   const [ firstNameError, setFirstNameError ] = useState("");
   const [ emailError, setEmailError ] = useState("");
   const [ phoneError, setPhoneError ] = useState("");
-
+  const [ appAccessError, setAppAccessError ] = useState("");
+  const [ appAccess, setAppAccess ] = useState([]);
+const adminDetelis= JSON.parse(localStorage.getItem("userData"))
   const {getRootProps, getInputProps} = useDropzone({
     accept: "image/*",
     onDrop: acceptedFiles => {
@@ -87,93 +90,107 @@ const AddEditUser = ({open, onCloseDialog}) => {
     }
   });
 
+  
   const dispatch = useDispatch();
 
   useEffect(
     () => {
       if (currentUser) {
-        const [ fName, lName ] = splitName(currentUser);
-        setFirstName(fName);
-        setLastName(lName);
-        setProfile_pic(currentUser.profile_pic);
+        // const [ fistName, lastName ] = splitName(currentUser);
+        setFirstName(currentUser.firstName);
+        setLastName(currentUser.lastName);
+        // setProfile_pic(currentUser.profile_pic);
         setEmail(currentUser.email);
-        setCompany(currentUser.company);
-        setDesignation(currentUser.designation);
-        setPhones(currentUser.phones);
+        // setCompany(currentUser.company);
+        // setDesignation(currentUser.designation);
+        setPhone(currentUser.phone);
+        setAppAccess(currentUser.webAppAccess);
       }
     },
     [ currentUser ]
   );
 
-  const onPhoneNoAdd = (number, index) => {
-    const updatedList = [ ...phones ];
-    updatedList[index].phone = number;
-    setPhones(updatedList);
-    setPhoneError("");
-  };
+  // const onPhoneNoAdd = (number, index) => {
+  //   const updatedList = [ ...phone ];
+  //   updatedList[index].phone = number;
+  //   setPhone(updatedList);
+  //   setPhoneError("");
+  // };
 
-  const onPhoneRowRemove = index => {
-    const updatedList = [ ...phones ];
-    updatedList.splice(index, 1);
-    setPhones(updatedList);
-  };
+  // const onPhoneRowRemove = index => {
+  //   const updatedList = [ ...phone ];
+  //   updatedList.splice(index, 1);
+  //   setPhone(updatedList);
+  // };
 
-  const onPhoneRowAdd = () => {
-    setPhones(phones.concat({phone: "", label: "home"}));
-  };
+  // const onPhoneRowAdd = () => {
+  //   setPhone(phone.concat({phone: "", label: "home"}));
+  // };
 
-  const onLabelChange = (value, index) => {
-    const updatedList = [ ...phones ];
-    updatedList[index].label = value;
-    setPhones(updatedList);
-  };
+  // const onLabelChange = (value, index) => {
+  //   const updatedList = [ ...phone ];
+  //   updatedList[index].label = value;
+  //   setPhone(updatedList);
+  // };
 
-  const onSubmitClick = () => {
-    const phoneNumbers = phones.filter(item => item.phone.trim());
+  const  onSubmitClick = () => {
+    // const phoneNumbers = phone.filter(item => item.phone.trim());
     if (!firstName) {
       setFirstNameError(requiredMessage);
-    } else if (!email) {
+    }else if (!lastName) {
+      setLastNameError(requiredMessage);
+    }else if (!email) {
       setEmailError(requiredMessage);
     } else if (!isValidEmail(email)) {
       setEmailError(emailNotValid);
-    } else if (phoneNumbers.length === 0) {
+    }
+    else if (phone.length === 0) {
       setPhoneError(requiredMessage);
-    } else {
-      onUserSave(phoneNumbers);
+    }
+    else if (appAccess.length === 0) {
+      setAppAccessError(requiredMessage);
+    }
+    else {
+      onUserSave();
     }
   };
 
-  const onUserSave = phoneNumbers => {
+  const onUserSave = () => {
     const userDetail = {
-      profile_pic,
-      name: `${firstName} ${lastName}`,
+      // profile_pic,
+      // name: `${firstName} ${lastName}`,
+      lastName,
+      firstName,
       email,
-      phones: phoneNumbers,
-      company,
-      designation
+      phone,
+       status:"Active",
+      // company,       
+      webAppAccess: [...appAccess],
+      isAdmin: false,
+      adminUserId: adminDetelis?.id
     };
 
     if (currentUser) {
       dispatch(
-        updateUser({...currentUser, ...userDetail}, () => {
+        updateSubAdmin({...currentUser, ...userDetail}, () => {
           onCloseDialog();
         })
       );
     } else {
       dispatch(
-        addNewUser(userDetail, () => {
+        addNewSubAdmin(userDetail, () => {
           onCloseDialog();
         })
       );
     }
   };
 
-  const isPhonesMultiple = phones.length > 1;
+  // const isPhonesMultiple = phone.length > 1;
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
       <DialogTitle className={classes.dialogTitleRoot}>
-        {currentUser ? "Edit User Details" : "Create New User"}
+        {currentUser ? "Edit  Sub Admin Details" : "Create New Sub Admin"}
       </DialogTitle>
       <DialogContent dividers>
         <Box
@@ -182,7 +199,7 @@ const AddEditUser = ({open, onCloseDialog}) => {
           alignItems="center"
           mb={{xs: 6, md: 5}}
         >
-          <Box
+          {/* <Box
             {...getRootProps()}
             mr={{xs: 0, md: 5}}
             mb={{xs: 3, md: 0}}
@@ -190,7 +207,7 @@ const AddEditUser = ({open, onCloseDialog}) => {
           >
             <input {...getInputProps()} />
             <CmtAvatar size={70} src={profile_pic} />
-          </Box>
+          </Box> */}
           <GridContainer>
             <Grid item xs={12} sm={6}>
               <AppTextInput
@@ -211,7 +228,11 @@ const AddEditUser = ({open, onCloseDialog}) => {
                 variant="outlined"
                 label="Last name"
                 value={lastName}
-                onChange={e => setLastName(e.target.value)}
+                onChange={e => {
+                  setLastName(e.target.value)
+                  setLastNameError("")
+                }}
+                helperText={lastNameError}
               />
             </Grid>
           </GridContainer>
@@ -229,45 +250,37 @@ const AddEditUser = ({open, onCloseDialog}) => {
             helperText={emailError}
           />
         </Box>
-        <CmtList
-          data={phones}
-          renderRow={(item, index) => (
-            <GridContainer style={{marginBottom: 12}} key={index}>
-              <Grid item xs={12} sm={isPhonesMultiple ? 6 : 8}>
+        
+            <GridContainer style={{marginBottom: 12}} >
+              <Grid item xs={12} sm={12}>
                 <AppTextInput
                   fullWidth
                   variant="outlined"
                   label="Phone"
-                  value={item.phone}
-                  onChange={number => onPhoneNoAdd(number, index)}
+                  value={phone}
+                  onChange={number => setPhone(number)}
                   helperText={phoneError}
                   InputProps={{
                     inputComponent: NumberFormatCustom
                   }}
                 />
               </Grid>
-              <Grid item xs={isPhonesMultiple ? 10 : 12} sm={4}>
+              <Grid item xs={ 12} sm={12}>
                 <AppSelectBox
                   fullWidth
                   data={labels}
-                  label="Label"
+                  label="App Access"
                   valueKey="slug"
                   variant="outlined"
                   labelKey="title"
-                  value={item.label}
-                  onChange={e => onLabelChange(e.target.value, index)}
+                  multiple={true}
+                  value={appAccess}
+                  onChange={e => setAppAccess(e.target.value)}
+                  helperText={appAccessError}
                 />
-              </Grid>
-              {index > 0 && (
-                <Grid item xs={2} sm={2}>
-                  <IconButton onClick={() => onPhoneRowRemove(index)}>
-                    <CancelIcon />
-                  </IconButton>
-                </Grid>
-              )}
+              </Grid>              
             </GridContainer>
-          )}
-        />
+        
         {/* <Box
           mb={{ xs: 6, md: 5 }}
           display="flex"

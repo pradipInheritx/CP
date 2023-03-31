@@ -18,6 +18,7 @@ import RangeSilder from "./Users/RangeSilder";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../firebase";
 import { texts } from "./LoginComponent/texts";
+import { Button, Modal } from "react-bootstrap";
 
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
@@ -98,6 +99,7 @@ const VotedCard = ({
   selectedTimeFrameArray,
   cssDegree,
   votePrice,
+  setpopUpOpen
   
 }: {
   vote: VoteResultProps;
@@ -110,7 +112,7 @@ const VotedCard = ({
   selectedTimeFrameArray?: any;
   cssDegree?:any;
   votePrice?:any;
-  
+  setpopUpOpen?:any
   }) => {
   
   
@@ -164,6 +166,8 @@ const VotedCard = ({
         }     
     }
 };
+  
+
   
  useEffect(() => {    
       getBorderColor()    
@@ -225,7 +229,6 @@ const VotedCard = ({
   }    
   
 
-  
   return (
     <>
      <div className="mt-4" style={{paddingLeft:symbol2?'':'24px',paddingRight:symbol2?'':'24px',maxWidth:'450px', margin:'0 auto'}}>
@@ -270,7 +273,7 @@ const VotedCard = ({
               <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1>              
             </BitcoinBTCBULL24H3864490>
             <div className="my-2">
-              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2}
+              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
               />
             </div>
             <div className="my-2">
@@ -312,7 +315,7 @@ const VotedCard = ({
               {voteId} - {moment(vote.voteTime).format("MM.DD.YYYY HH:mm")}
             </ID13020221942>
           </div>
-                  
+          
         </div>
       </Rectangle2620>
     </>
@@ -323,10 +326,10 @@ export default VotedCard;
 
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol2}:
+export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup}:
   {
     expirationTime: number, vote?: any, voteId?: any
-  coins?:any,symbol1?:any,symbol2?:any
+  coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any
   }) => {
 
   
@@ -348,11 +351,10 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
         expiration: vote?.expiration,
         timestamp: Date.now()
    }).then((data) => {
-      // console.log(data.data,"checkdata")
-     
-      // if(data==null){
-      //   console.log("all Done")
-      // }
+      if(data.data==null){
+        // getVotes(index).then(void 0);
+        openPopup(true)
+      }
     }).catch(err => {
         if (err && err.message) {
             console.log(err.message);

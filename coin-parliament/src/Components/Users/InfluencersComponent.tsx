@@ -29,6 +29,7 @@ const InfluencersComponent = ({
     <React.Fragment>
       <div className='mb-4'>
         <StatusNav
+        
           userTypes={userTypes
             .sort((a, b) => a.index - b.index)
             .map((u) => u.name.toUpperCase())}
