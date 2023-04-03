@@ -30,6 +30,7 @@ import {
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
+  checkInActivityOfVotesAndSendNotification
 } from "./common/models/Vote";
 import {
   fetchCoins,
@@ -426,17 +427,12 @@ exports.onVote = functions.firestore
   });
 
 exports.noActivityIn24Hours = functions.pubsub
-  .schedule("every 1 minutes")
-  .onRun((context) => {
-    const currentDate = new Date();
-    const last24HoursDate = new Date(
-      currentDate.getTime() - 24 * 60 * 60 * 1000
-    );
-    console.log("Current date => ", currentDate);
-    console.log("Last 24 hours date => ", last24HoursDate);
-    console.log("This function will run every minute.");
-    return null;
+  .schedule("every 5 minutes")
+  .onRun(async (context) => {
+
+    await checkInActivityOfVotesAndSendNotification()
   });
+
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {

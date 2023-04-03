@@ -1,4 +1,6 @@
 import * as admin from "firebase-admin";
+import { messaging } from "firebase-admin";
+import { sendNotification } from "../Notification";
 
 export type subAdminProps = {
   firstName?: string;
@@ -98,6 +100,76 @@ export const deleteSubAdmin = async (req: any, res: any, next: any) => {
     res.status(500).send(error);
   }
 };
+
+export const noActivityIn24Hours = async (req: any, res: any, next: any) => {
+  try {
+    const currentDate = admin.firestore.Timestamp.now().toMillis();
+    console.log("Current date => ", currentDate);
+
+    const last24HoursMillis = 24 * 60 * 60 * 1000;
+    console.log("last24HoursMillis => ", last24HoursMillis);
+
+    const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
+    console.log("Last 24 hours date => ", last24HoursDate);
+
+    const getUsers = await admin.firestore().collection("users").get();
+    const getAllUsers: any = getUsers.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+      };
+    });
+
+    for (let user = 0; user < getAllUsers.length; user++) {
+      const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).orderBy('voteTime', 'desc').limit(1).get();
+      let lastVotedData: any = [];
+      getLastUserVoteSnapshot.forEach(doc => {
+        lastVotedData.push({ id: doc.id, ...doc.data() })
+        console.info(doc.id, '=>', doc.data());
+      });
+      if (lastVotedData && lastVotedData.length) {
+        const body = "Don't forget to make your daily vote";
+        let token = getAllUsers[user].token;
+
+        console.info("Token,", token);
+        const message: messaging.Message = {
+          token,
+          notification: {
+            title: "Don't forget to make your daily vote",
+            body,
+          },
+          webpush: {
+            headers: {
+              Urgency: "high",
+            },
+            fcmOptions: {
+              link: "#", // TODO: put link for deep linking
+            },
+          },
+        };
+        console.info("Id,", getAllUsers[user].id);
+        await sendNotification({
+          token,
+          message,
+          body,
+          title: "Don't forget to make your daily vote",
+          id: getAllUsers[user].id,
+        });
+      }
+    }
+
+    res.status(200).send({
+      status: true,
+      message: "Last 24 hours Data.",
+      result: getAllUsers,
+    });
+  } catch (error) {
+    errorLogging("deleteSubAdmin", "ERROR", error);
+    res.status(500).send(error);
+  }
+};
+
 
 export const errorLogging = async (
   funcName: string,
