@@ -399,16 +399,17 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
   
 
-  // useEffect(() => {
-  //   const refer = new URLSearchParams(search).get("refer");
-  //   if (refer && !user) {
-  //     setLogin(true);
-  //     setSignup(true);
-  //   } else {
-  //     setLogin(false);
-  //     setSignup(false);
-  //   }
-  // }, [location, search, user]);
+  useEffect(() => {
+    const refer = new URLSearchParams(search).get("refer");
+    // if (refer && !user) {
+    //   setLogin(true);
+    //   setSignup(true);
+    // } else
+    if(!user){
+      setLogin(false);
+      setSignup(false);
+    }
+  }, [location, search]);
 
   // useEffect(() => {
   //   if (!user) {
