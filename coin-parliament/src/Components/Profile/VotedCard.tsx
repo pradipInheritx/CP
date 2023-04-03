@@ -22,7 +22,7 @@ const ProfilePairVote = styled.div`
   max-width: 350px;
   min-width:350px;
   width: 100%;
-  height: 152px;
+  // height: 152px;
   vertical-align: middle;
   border-radius: 6px;
   background: var(--white) 0 0% no-repeat padding-box;
@@ -51,13 +51,13 @@ const SmText = styled.div`
 `;
 
 const PairsVoteVs = styled.span`
-  font-size: 14px;
+  font-size: ${window.screen.width>676? "14px":"10px"};
   color: #6352e8;
 `;
 
 const CoinVoteTimer = styled.span`
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 14px;
+  line-height: 14px;
   color: #6352e8;
 `;
 
@@ -133,7 +133,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
     
   return pair ? (
     <CoinContainer winner={vote?.direction === index}>
-      <div className="d-flex w-100 justify-content-center align-items-center flex-column mt-2">
+      <div className="d-flex w-100 justify-content-center align-items-center flex-column mt-2 ">
         <div >
           <Logo {...{ symbol: coin.symbol || "", width: 30 }} />
         </div>
@@ -162,11 +162,11 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
       </div>
     </CoinContainer>
   ) : (
-    <div className="profile_coin_vote shadow-sm" style={{minWidth:window.screen.width<979?'':'480px'}}>
-      <Container className="p-0">
+    <div className="profile_coin_vote shadow-sm" style={{minWidth:window.screen.width<979?'':'480px' }}>
+      <Container className="p-0 ">
         <Row>
           <Col>
-            <div className="hstack justify-content-center">
+            <div className=" d-flex justify-content-center  align-items-center">
               <div className="col-2" style={{paddingBottom:'20px'}}>
                 <div className="h-100 d-flex w-100 justify-content-center align-items-center">
                   <Logo {...{ symbol: vote.coin || "", width: 30 }} />
@@ -208,12 +208,12 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       </Row>
                     )}
                     {vote.valueExpirationTime && (
-                      <Row className="text-body profile_coin_vote_txt">
+                      <Row className="text-body profile_coin_vote_txt ">
                         <Col xs={6}>
                           <Row>
                             <Col>
-                              <Row className="flex-column text-center">
-                                <Col style={{fontSize:'8px'}}>
+                              <Row className="flex-column text-center ">
+                                <Col style={{fontSize:'8px'}} className="">
                                   {vote.valueExpirationTime &&
                                     formatCurrency(
                                       index === undefined
@@ -224,7 +224,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                     )}
                                 </Col>
                                 
-                                <Col>
+                                <Col className="">
                                   {vote.valueExpirationTime && (
                                     <Trend num={trend} />
                                   )}
@@ -236,7 +236,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                           </Row>
                         </Col>
                         
-                        <Col xs={5}>
+                        <Col xs={6}>
                           
                           <Row className="text_prpl">
                             <Col>
@@ -256,7 +256,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       </Row>
                     )}
                   </Col>
-                  <Col xs={2}>
+                  {!vote.valueExpirationTime && <Col xs={2} className="">
                  {vote.direction?
                 <>  { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
                 <>{vote?.valueVotingTime <coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
@@ -274,10 +274,10 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
                    { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
                       
-                  </Col>
+                  </Col>}
                 </Row>
                 <Row>
-                  <Col>
+                  <Col className="">
                     <span className="sm_txt">{`${id} - ${moment(
                       new Date(vote.voteTime)
                     ).format("HH:mm DD/MM/YYYY")}`}</span>
@@ -319,7 +319,7 @@ let votetime= a.diff(b)
   const pair = vote.coin.split("-").length > 1;
 
   return pair ? (
-    <ProfilePairVote style={{minWidth:window.screen.width<979?'':'480px',maxWidth:window.screen.width<979?'':'480px'}}>
+    <ProfilePairVote  style={{minWidth:window.screen.width<979?'':'480px',maxWidth:window.screen.width<979?'':'480px' , }} >
       <Container>
         <Row className="mx-auto" style={{ marginBottom: 14 }}>
           <Col className="col-4">
@@ -330,7 +330,7 @@ let votetime= a.diff(b)
               id={id}
             />
           </Col>
-          <Col className="col-4 flex-column justify-content-end align-items-center h-100">
+          <Col className="col-4 flex-column justify-content-end align-items-center h-100 ">
             <div className="d-flex align-items-center justify-content-center">
               <LineImg>
                 <Line />
@@ -371,7 +371,7 @@ let votetime= a.diff(b)
                   {timeframeInitials(vote.timeframe.name)}
                 </PairsVoteVs>
               </div>
-              <div style={{ minHeight: "100%" }}>
+              <div style={{ minHeight: "100%" }} className="">
                 <CoinVoteTimer>
                   {vote.valueExpirationTime && vote.score && (
                     <strong>{vote.score} CMP</strong>
@@ -394,8 +394,9 @@ let votetime= a.diff(b)
             />
           </Col>
         </Row>
-        <Row>
-          <Col className="justify-content-center w-100">
+        
+        <Row className="">
+          <Col className="justify-content-center w-100 mb-2">
             <SmText className="text-center">{`${id} - ${moment(
               new Date(vote?.voteTime)
             ).format("HH:mm DD/MM/YYYY")}`}</SmText>

@@ -513,6 +513,8 @@ const CheckCardDisable = (cardId: any) => {
               return  <option value={ data?.setId} key={index}>{`${((data?.setName)?.toUpperCase())?.slice(0, 3) + data?.setId}`}</option>        
             })}            
           </select>
+          </div>
+          <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
               <select
                 name='type'
                 id='type'

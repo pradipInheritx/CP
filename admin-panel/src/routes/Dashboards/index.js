@@ -10,7 +10,7 @@ const Dashboards = ({match}) => {
         <Redirect
           exact
           from={`${requestedUrl}/`}
-          to={`${requestedUrl}/crypto`}
+          to={`${requestedUrl}/subAdmin`}
         />
         <Route
           path={`${requestedUrl}/crypto`}

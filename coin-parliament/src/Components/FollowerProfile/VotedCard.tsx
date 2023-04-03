@@ -51,13 +51,13 @@ const SmText = styled.div`
 `;
 
 const PairsVoteVs = styled.span`
-  font-size: 14px;
+  font-size: ${window.screen.width>676? "14px":"10px"};
   color: #6352e8;
 `;
 
 const CoinVoteTimer = styled.span`
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 14px;
+  line-height: 14px;
   color: #6352e8;
 `;
 
@@ -166,7 +166,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
       <Container className="p-0">
         <Row>
           <Col>
-            <div className="hstack justify-content-center">
+            <div className="hstack d-flex justify-content-center align-items-center">
               <div className="col-2" style={{paddingBottom:'20px'}}>
                 <div className="h-100 d-flex w-100 justify-content-center align-items-center">
                   <Logo {...{ symbol: vote.coin || "", width: 30 }} />
@@ -196,7 +196,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       </CoinCurrency>
                     </p>
                   </Col>
-                  <Col>
+                  <Col className="">
                     {!vote.valueExpirationTime && (
                       <Row className="text-body profile_coin_vote_txt">
                           <Col >
@@ -256,7 +256,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       </Row>
                     )}
                   </Col>
-                  <Col xs={2}>
+                  {!vote.valueExpirationTime && <Col xs={2} className="">
                  {vote.direction?
                 <>  { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
                 <>{vote?.valueVotingTime <coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
@@ -274,7 +274,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
                    { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
                       
-                  </Col>
+                  </Col>}
                 </Row>
                 <Row>
                   <Col>
@@ -395,7 +395,7 @@ let votetime= a.diff(b)
           </Col>
         </Row>
         <Row>
-          <Col className="justify-content-center w-100">
+          <Col className="justify-content-center w-100 mb-2">
             <SmText className="text-center">{`${id} - ${moment(
               new Date(vote?.voteTime)
             ).format("HH:mm DD/MM/YYYY")}`}</SmText>

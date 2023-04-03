@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const AppSelectBox = props => {
+const AppMultSelectBox = props => {
   const classes = useStyles(props);
   const {
     data,
@@ -40,8 +40,11 @@ const AppSelectBox = props => {
     labelKey,
     backgroundColor,
     label,
+    multiple,
     ...rest
   } = props;
+
+
 
   return (
     <FormControl
@@ -49,12 +52,12 @@ const AppSelectBox = props => {
       size={size}
       fullWidth={fullWidth}
       required={required}
-      className={clsx(classes.formControlRoot, 'form-control')}
-    >
+      className={clsx(classes.formControlRoot, 'form-control')}>
       {label && <InputLabel id={'label-' + id || name}>{label}</InputLabel>}
       <Select
         {...rest}
         name={name}
+        multiple={multiple}
         labelId={'label-' + id || name}
         id={id || name}
         value={value}
@@ -72,13 +75,14 @@ const AppSelectBox = props => {
             </MenuItem>
           ),
         )}
+        
       </Select>
       {helperText && <FormHelperText error={error || helperText !== ''}>{helperText}</FormHelperText>}
     </FormControl>
   );
 };
 
-AppSelectBox.prototype = {
+AppMultSelectBox.prototype = {
   data: PropTypes.array.isRequired,
   renderRow: PropTypes.node,
   placeholder: PropTypes.string,
@@ -95,10 +99,11 @@ AppSelectBox.prototype = {
   onChange: PropTypes.func,
   error: PropTypes.bool,
   helperText: PropTypes.bool,
+  multiple:PropTypes.bool,
   backgroundColor: PropTypes.string,
 };
 
-AppSelectBox.defaultProps = {
+AppMultSelectBox.defaultProps = {
   data: [],
   fullWidth: true,
   displayEmpty: true,
@@ -108,7 +113,8 @@ AppSelectBox.defaultProps = {
   helperText: '',
   valueKey: 'id',
   labelKey: 'title',
+  multiple:false,
   backgroundColor: 'transparent',
 };
 
-export default AppSelectBox;
+export default AppMultSelectBox;

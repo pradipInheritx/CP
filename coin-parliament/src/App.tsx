@@ -133,7 +133,7 @@ const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 
 function App() {
-  const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+  
   
   const location = useLocation();
   const search = location.search;
@@ -328,6 +328,7 @@ function App() {
   const [supportsPWA, setSupportsPWA] = useState(false);
   const [promptInstall, setPromptInstall] = useState(null);
 const [pwaPopUp,setPwaPopUp]=useState('block')
+const[mfaLogin,setMfaLogin]=useState(false)
   useEffect(() => {
     const handler = (e:any) => {
       e.preventDefault();
@@ -340,7 +341,16 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
     return () => window.removeEventListener("transitionend", handler);
   }, []);
   // @ts-ignore
-  if (isMFAPassed=='true' && !login ) Logout(setUser)
+  useEffect(() => {
+    const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+    if (isMFAPassed=='true' && !login ) {
+    
+      console.log('2faCalled')
+      // @ts-ignore
+      Logout(setUser)}
+  }, [])
+  
+  
   const onClick = (evt:any) => {
     // evt.preventDefault();
     console.log('not supported',promptInstall)
@@ -398,13 +408,15 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
       setLogin(false);
       setSignup(false);
     } else {
-      if(!user){
+      const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+      if(!user && isMFAPassed!=='true' ){
+        console.log('2faCalled3')
         setLogin(false);
         setSignup(false);
       }
      
     }
-  }, [location, search, userInfo?.uid]);
+  }, [location, search]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -705,7 +717,7 @@ votesLast24HoursRef.get()
   
  
 }, [userInfo?.voteStatistics?.total])
-
+console.log('usermfa',user,userInfo)
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
     const key = getKeyByLang(lang);
@@ -1030,7 +1042,7 @@ votesLast24HoursRef.get()
                             )}
                           {!firstTimeLogin && (
                             <>
-                              {!user && login && (
+                              {!user && login && !mfaLogin && (
                                 <LoginAndSignup
                                   {...{
                                     authProvider: LoginAuthProvider,
@@ -1039,9 +1051,10 @@ votesLast24HoursRef.get()
                                   }}
                                 />
                               )}
-                              {user && login && (
+                              {(user || userInfo?.uid) && login && (
                                 <Login2fa
                                   setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
                                 />
                               )}
                               {!login &&

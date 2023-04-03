@@ -14,7 +14,7 @@ export const TaskDetailAddCommentHeight = 72;
 export const ChatSidebarHeaderHeight = 124;
 export const ChatSidebarTabContainerHeight = 49;
 export const ChatFooterHeight = 70;
-export const CurrentAuthMethod = 'basic'; //jwtAuth,firebase,basic
+export const CurrentAuthMethod = 'jwtAuth'; //jwtAuth,firebase,basic
 
 export const getAppSidebarHeight = (width, visibleAppFooter) => {
   switch (width) {

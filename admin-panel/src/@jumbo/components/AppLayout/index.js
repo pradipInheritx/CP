@@ -43,8 +43,10 @@ const AppLayout = ({ children }) => {
   const classes = useStyles();
   const location = useLocation();
   globalStyles();
+  
 
   useEffect(() => {
+    
     dispatch(AuhMethods[CurrentAuthMethod].getAuthUser());
     setLayoutLoader(false);
 

@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {Link, useParams} from "react-router-dom";
-import {Container} from "react-bootstrap";
+import {Button, Container, Modal} from "react-bootstrap";
 import CoinContext from "../Contexts/CoinsContext";
 
 import {Coin} from "../common/models/Coin";
@@ -28,6 +28,7 @@ import CalculatingVotes from "../Components/CalculatingVotes";
 import { setInterval } from "timers";
 import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
+import ModalForResult from "./ModalForResult";
 
 export const Title = styled.h2`
   font: var(--font-style-normal) normal var(--font-weight-normal)
@@ -335,6 +336,10 @@ const calcVote = useCallback(async () => {
     }
   }, [])
 
+  const [popUpOpen, setpopUpOpen] = useState(false);
+
+  console.log(popUpOpen,"popUpOpen")
+
   return (
     <>
       <audio className="d-none" ref={sound}>
@@ -393,6 +398,7 @@ const calcVote = useCallback(async () => {
                     />
                   )}</>
                 )}
+                
                 <div className="text-center">
                   {!graphLoading && !canVote && user && voteId && (
                     <>
@@ -406,7 +412,8 @@ const calcVote = useCallback(async () => {
                           voteId,
                           selectedTimeFrame,
                           setSelectedTimeFrame,
-                          selectedTimeFrameArray
+                          selectedTimeFrameArray,
+                          setpopUpOpen
                         }}
                       />
 
@@ -419,9 +426,30 @@ const calcVote = useCallback(async () => {
                           symbol={params?.id}
                         />
                       )}
+                      
                     </>
                   )}
                 </div>
+                {/* <div>
+                    <Modal show={show} onHide={handleClose}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Modal heading</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                          Close
+                        </Button>
+                        <Button variant="primary" onClick={handleClose}>
+                          Save Changes
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </div>      */}
+                {/* <ModalForResult
+                  popUpOpen={popUpOpen}
+
+                /> */}
               </Container>
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{textDecoration:'none'}}>

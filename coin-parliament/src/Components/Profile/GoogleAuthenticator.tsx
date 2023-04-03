@@ -59,6 +59,18 @@ const GoogleAuthenticator = () => {
   const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`;
 
   const createPost = async (id: string) => {
+    // @ts-ignore
+    if(userInfo?.googleAuthenticatorData?.otp_auth_url){
+      // @ts-ignore
+      setSecretKey(userInfo?.googleAuthenticatorData?.otp_base32);
+      // @ts-ignore
+      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url).then(
+        (dataUrl: string) => {
+          setQrCodeDataUrl(dataUrl);
+        }
+      );
+      return
+    }
     const data = {
       userId: id,
       userType: "USER",
@@ -99,9 +111,9 @@ const GoogleAuthenticator = () => {
 
   // console.log('user',userInfo,u)
   useEffect(() => {
-    createPost(userInfo?.uid as string);
+    if(!userInfo?.mfa)createPost(userInfo?.uid as string);
     return () => setCopied(false);
-  }, []);
+  }, [userInfo?.mfa]);
 
   const handleClose = () => {
     setShow(false);

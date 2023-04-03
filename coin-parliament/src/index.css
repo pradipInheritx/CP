@@ -858,7 +858,7 @@ p.firebase-emulator-warning + iframe {
 
 .profile_coin_vote {
     width:350px;
-    height: 90px;
+    /* height: 90px; */
     border-radius: 6px;
     background: white;
 }

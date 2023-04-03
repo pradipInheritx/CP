@@ -129,7 +129,7 @@ const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
         timestamp: Date.now()
     }).then((data:any)=>{
       if(data.data==null){
-             getVotes(index).then(void 0);     
+          getVotes(index).then(void 0);     
       }
     }).catch((err:any )=> {
         if (err && err.message) {

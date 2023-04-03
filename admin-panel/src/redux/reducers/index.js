@@ -11,6 +11,7 @@ import ProfileApp from './ProfileApp';
 import WallApp from './WallApp';
 import Auth from './Auth';
 import Users from './Users';
+import SubAdmin from './SubAdmin';
 
 export default history =>
   combineReducers({
@@ -25,4 +26,5 @@ export default history =>
     profileApp: ProfileApp,
     wallApp: WallApp,
     usersReducer: Users,
+    subAdmin: SubAdmin,
   });

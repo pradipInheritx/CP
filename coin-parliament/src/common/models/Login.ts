@@ -45,10 +45,12 @@ export const providers = {
 };
 
 export const Logout = (setUser: () => void) => {
+ 
   const auth = getAuth();
   signOut(auth)
     .then(() => {
       setUser();
+      window.localStorage.setItem('mfa_passed','false')
     })
     .catch((error) => {
       const errorMessage = error.message;
