@@ -1,8 +1,8 @@
-import {firestore} from "firebase-admin";
+import { firestore } from "firebase-admin";
 import * as admin from "firebase-admin";
 // import { getStorage, getDownloadURL,ref } from "firebase/storage"
 // import path from "path";
-import {userConverter, UserProps} from "../models/User";
+import { userConverter, UserProps } from "../models/User";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -98,7 +98,7 @@ export async function getAllNftGallery() {
   const snapshot = await firestore().collection("nftGallery").get();
   const array: any = [];
   snapshot.forEach((doc) => {
-    array.push({id: doc.id, ...doc.data()});
+    array.push({ id: doc.id, ...doc.data() });
   });
   console.log("Array", array);
   return array;
@@ -107,18 +107,18 @@ export async function getAllNftGallery() {
 // get collection data by document id
 async function getNftCollectionDataById(docId: any) {
   const collectionData = await firestore()
-      .collection("nftGallery")
-      .doc(docId)
-      .get();
+    .collection("nftGallery")
+    .doc(docId)
+    .get();
   return collectionData.data();
 }
 
 // get all reward transactions by card id
 async function getRewardTransactionsByCardId(cardId: number) {
   const transaction = await firestore()
-      .collection("reward_transactions")
-      .where("winData.firstRewardCardId", "==", cardId)
-      .get();
+    .collection("reward_transactions")
+    .where("winData?.firstRewardCardId", "==", cardId)
+    .get();
   const transData: any = [];
   transaction.forEach((item: any) => {
     transData.push(item.data());
@@ -130,9 +130,9 @@ async function getRewardTransactionsByCardId(cardId: number) {
 async function getMultipleUsersByUserIds(userIds: Array<string>) {
   console.log("getMultipleUsersByUserIds............");
   const userList: any = await firestore()
-      .collection("users")
-      .where("uid", "in", userIds)
-      .get();
+    .collection("users")
+    .where("uid", "in", userIds)
+    .get();
 
   console.log("userLIST >>>>>>>", userList);
   const users: any = [];
@@ -242,17 +242,17 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   const pickedTierArray = cardsByTier[selectedCardTier];
 
   console.log("PICKED TIER ARRAY", pickedTierArray);
-  return {tierName: selectedCardTier, pickedTierArray};
+  return { tierName: selectedCardTier, pickedTierArray };
 };
 
 const groupBy =
   <T>(keys: (keyof T)[]) =>
-    (array: T[]): Record<string, T[]> =>
-      array.reduce((objectsByKeyValue, obj) => {
-        const value = keys.map((key) => obj[key]).join("-");
-        objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-        return objectsByKeyValue;
-      }, {} as Record<string, T[]>);
+  (array: T[]): Record<string, T[]> =>
+    array.reduce((objectsByKeyValue, obj) => {
+      const value = keys.map((key) => obj[key]).join("-");
+      objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+      return objectsByKeyValue;
+    }, {} as Record<string, T[]>);
 
 const pickRandomValueFromArray = (arr: string[]): string => {
   // generate a random index
@@ -273,9 +273,9 @@ export const addRewardTransaction: (
   winData: winRewardData,
   winningTime: number
 ) => Promise<void> = async (
-    user: string,
-    winData: winRewardData,
-    winningTime: number
+  user: string,
+  winData: winRewardData,
+  winningTime: number
 ) => {
   console.log("Beginning execution addRewardTransaction function");
   const obj: RewardTransaction = {
@@ -289,18 +289,18 @@ export const addRewardTransaction: (
 };
 
 export const claimReward: (uid: string) => { [key: string]: any } = async (
-    uid: string
+  uid: string
 ) => {
   console.log("Beginning execution claimReward function");
   const userRef = firestore()
-      .collection("users")
-      .doc(uid)
-      .withConverter(userConverter);
+    .collection("users")
+    .doc(uid)
+    .withConverter(userConverter);
 
   const userProps = await userRef.get();
   const userData = userProps.data();
 
-  const {total, claimed} = userData?.rewardStatistics || {
+  const { total, claimed } = userData?.rewardStatistics || {
     total: 0,
     claimed: 0,
   };
@@ -308,21 +308,21 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
   if (total - claimed > 0) {
     const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
     const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
-    const {pickedTierArray, tierName} = await pickCardTierByPercentageArray(
-        tierPickupArray
+    const { pickedTierArray, tierName } = await pickCardTierByPercentageArray(
+      tierPickupArray
     );
     const firstRewardCardObj: any = pickRandomValueFromArray(pickedTierArray);
     console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
     const firstRewardCard = firstRewardCardObj["cardName"];
     const firstRewardCardSerialNo = pickRandomValueFromArray(
-        firstRewardCardObj["sno"]
+      firstRewardCardObj["sno"]
     );
 
     const secondRewardExtraVotes = getRandomNumber(
-        distribution[cmp].extraVotePickFromRange
+      distribution[cmp].extraVotePickFromRange
     );
     const thirdRewardDiamonds = getRandomNumber(
-        distribution[cmp].diamondsPickFromRange
+      distribution[cmp].diamondsPickFromRange
     );
     const rewardObj = userData?.rewardStatistics || {
       total: 0,
@@ -332,52 +332,54 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       diamonds: 0,
     };
     rewardObj.claimed += 1;
-    rewardObj?.cards?.length ?
-      rewardObj.cards.push(firstRewardCard) :
-      (rewardObj.cards = [firstRewardCard]);
-    rewardObj?.extraVote ?
-      (rewardObj.extraVote += secondRewardExtraVotes) :
-      (rewardObj.extraVote = secondRewardExtraVotes);
-    rewardObj?.diamonds ?
-      (rewardObj.diamonds += thirdRewardDiamonds) :
-      (rewardObj.diamonds = thirdRewardDiamonds);
+    rewardObj?.cards?.length
+      ? rewardObj.cards.push(firstRewardCard)
+      : (rewardObj.cards = [firstRewardCard]);
+    rewardObj?.extraVote
+      ? (rewardObj.extraVote += secondRewardExtraVotes)
+      : (rewardObj.extraVote = secondRewardExtraVotes);
+    rewardObj?.diamonds
+      ? (rewardObj.diamonds += thirdRewardDiamonds)
+      : (rewardObj.diamonds = thirdRewardDiamonds);
 
     await firestore()
-        .collection("users")
-        .doc(uid)
-        .set({rewardStatistics: rewardObj}, {merge: true});
+      .collection("users")
+      .doc(uid)
+      .set({ rewardStatistics: rewardObj }, { merge: true });
 
     const collectionData: any = await getNftCollectionDataById(
-        firstRewardCardObj.docId
+      firstRewardCardObj.docId
     );
 
     console.log("collectionData", collectionData);
     const setDetails = collectionData.setDetails.find(
-        (data: any) => data.setId == firstRewardCardObj.setId
+      (data: any) => data.setId == firstRewardCardObj.setId
     );
 
     console.log("SET DETAILS", setDetails);
     const cardData = setDetails.cardsDetails.find(
-        (item: any) => item.cardId == firstRewardCardObj.cardId
+      (item: any) => item.cardId == firstRewardCardObj.cardId
     );
     cardData.sno = cardData.sno.filter(
-        (item: any) => item != firstRewardCardSerialNo
+      (item: any) => item != firstRewardCardSerialNo
     );
     cardData.quantity = cardData.sno.length;
     const transData: any = await getRewardTransactionsByCardId(cardData.cardId);
+
+    console.log("TRANSDATSA", transData);
     const userIds = transData.map((item: any) => item.user);
     cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1;
 
     await firestore()
-        .collection("nftGallery")
-        .doc(firstRewardCardObj.collectionDocId)
-        .set(collectionData);
+      .collection("nftGallery")
+      .doc(firstRewardCardObj.docId)
+      .set(collectionData);
 
     const winData: winRewardData = {
       firstRewardCardType: tierName,
       firstRewardCardId: firstRewardCardObj["cardId"],
       firstRewardCard,
-      firstRewardCardCollection: firstRewardCardObj["collectionName"],
+      firstRewardCardCollection: firstRewardCardObj["albumName"],
       firstRewardCardSerialNo,
       secondRewardExtraVotes,
       thirdRewardDiamonds,
@@ -448,17 +450,17 @@ export const addReward: (
     const claimedUpdated = before.rewardStatistics?.claimed || 0;
     // console.log('newReward --->', newReward);
     await firestore()
-        .collection("users")
-        .doc(userId)
-        .set(
-            {
-              rewardStatistics: {
-                total: newReward,
-                claimed: claimedUpdated,
-              },
-            },
-            {merge: true}
-        );
+      .collection("users")
+      .doc(userId)
+      .set(
+        {
+          rewardStatistics: {
+            total: newReward,
+            claimed: claimedUpdated,
+          },
+        },
+        { merge: true }
+      );
 
     console.log("Finished execution addReward function");
     return;
@@ -491,10 +493,10 @@ export const cardHolderListing: (cardId: number) => {
 
 // Upload Image for Cards
 export const uploadImage = async (
-    cardImage: any,
-    collectionId: any,
-    setId: any,
-    cardId: string
+  cardImage: any,
+  collectionId: any,
+  setId: any,
+  cardId: string
 ) => {
   const ref = await admin.storage().bucket("default-bucket");
   console.log("File name --- ");
@@ -503,32 +505,32 @@ export const uploadImage = async (
     contentType: "Image/jpg",
   };
   ref
-      .upload(cardImage, metaData)
-      .then(() => getImageUrl(collectionId, setId, cardId))
-      .catch((error: any) => {
-        console.log("EROROR image", error);
-      });
+    .upload(cardImage, metaData)
+    .then(() => getImageUrl(collectionId, setId, cardId))
+    .catch((error: any) => {
+      console.log("EROROR image", error);
+    });
 };
 
 // get Image url and add into firestore
 const getImageUrl = async (
-    collectionId: string,
-    setId: number,
-    cardId: string
+  collectionId: string,
+  setId: number,
+  cardId: string
 ) => {
   const ref = await admin.storage().bucket("default-bucket");
   const [, , meta] = await ref.getFiles({
     maxResults: 1,
   });
   const url = meta.items
-      .filter((f: any) => f.contentType !== "text/plain")
-      .shift().mediaLink;
+    .filter((f: any) => f.contentType !== "text/plain")
+    .shift().mediaLink;
   console.log("Image Url ", url);
 
   const collectionData: any = await firestore()
-      .collection("nft_gallery")
-      .doc(collectionId)
-      .get();
+    .collection("nft_gallery")
+    .doc(collectionId)
+    .get();
   console.log("collectionData--- ", collectionData.data());
   const collection = collectionData.data();
   const setDetails = collection.setDetails.find((data: any) => {
@@ -543,9 +545,9 @@ const getImageUrl = async (
   cardData.imageUpload = url;
 
   await firestore()
-      .collection("nft_gallery")
-      .doc(collectionId)
-      .set(collectionData);
+    .collection("nft_gallery")
+    .doc(collectionId)
+    .set(collectionData);
 
   return url;
   // const ntfGallery = await firestore()
