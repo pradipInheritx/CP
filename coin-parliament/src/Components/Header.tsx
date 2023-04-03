@@ -32,6 +32,7 @@ import Following from "./icons/Following";
 import CoinsContext, { follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
+import { handleSoundClick } from "../common/utils/SoundClick";
 
 enum EventKeys {
   LOGIN = "login",
@@ -225,6 +226,7 @@ console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
   const onSelect = (eventKey: string | null) => {
+    handleSoundClick()
     const auth = getAuth();
 
     switch (eventKey) {
@@ -298,6 +300,7 @@ console.log('votenumber',voteNumber, Number(voted))
   
   const handleClose = () => {
     setShow(false)
+  
   };
   
 
@@ -521,7 +524,7 @@ console.log('votenumber',voteNumber, Number(voted))
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "" : "" }}>
+                  <Title style={{ width: pathname === "/" ? "" : "" }} onClick={handleSoundClick}>
                     {mounted ? title : ""}
                   </Title>
                 </div>
@@ -662,7 +665,7 @@ console.log('votenumber',voteNumber, Number(voted))
                 ) : (
                   <div className='w-100'></div>
                 )}
-                <Navbar.Brand as={Link} to='/'>
+                <Navbar.Brand as={Link} to='/' onClick={handleSoundClick}>
                   <img src={BigLogo} alt='' />
                 </Navbar.Brand>
               </div>

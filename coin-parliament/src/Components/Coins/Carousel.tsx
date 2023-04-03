@@ -25,6 +25,7 @@ import { useSwipeable } from "react-swipeable";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 
 
@@ -214,6 +215,7 @@ const Carousel = ({
                     const url = "/coins/" + symbol;
                     if (navigate) {
                       navigate(url);
+                      handleSoundClick()
                     }
                   }}
                 />
@@ -253,6 +255,7 @@ const Carousel = ({
                                 const url = "/coins/" + symbol;
                                 if (navigate) {
                                   navigate(url);
+                                  handleSoundClick()
                                 }
                               }}
                             />

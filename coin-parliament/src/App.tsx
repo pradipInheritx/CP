@@ -128,6 +128,7 @@ import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
 import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
+import { handleSoundClick } from "./common/utils/SoundClick";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -403,6 +404,12 @@ const[mfaLogin,setMfaLogin]=useState(false)
     }
   }, [user, userInfo]);
   useEffect(() => {
+    const buttons = document.getElementsByTagName('button');
+    console.log('buttondata',buttons);
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', handleSoundClick);
+    }
+    
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
       setLogin(false);
@@ -415,6 +422,11 @@ const[mfaLogin,setMfaLogin]=useState(false)
         setSignup(false);
       }
      
+    }
+    return () => {
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].removeEventListener('click', handleSoundClick);
+      }
     }
   }, [location, search]);
 

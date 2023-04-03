@@ -13,6 +13,7 @@ import { useWindowSize } from "../hooks/useWindowSize";
 import UserContext from "../Contexts/User";
 import { isHomeBg } from "./App/App";
 import BackArrow from "./icons/BackArrow";
+import { handleSoundClick } from "../common/utils/SoundClick";
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
@@ -94,7 +95,8 @@ const navigate = useNavigate();
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
   const { width } = useWindowSize();
-  const handleClose = () => setMenuOpen(false);
+  const handleClose = () =>{ setMenuOpen(false);
+    handleSoundClick()}
   const handleShow = () => {
     if (followerPage) {      
       navigate(-1)
@@ -134,7 +136,8 @@ const navigate = useNavigate();
             >
               <HamburgerBut
                 // variant='link'
-                onClick={handleShow}
+                onClick={()=>{handleShow()
+                  handleSoundClick()}}
                 className='position-relative'
                 style={{
                   
@@ -189,7 +192,9 @@ const navigate = useNavigate();
                     key={i}
                     as={Link}
                     to={item.href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() =>{ setMenuOpen(false)
+                      handleSoundClick()
+                    }}
                   >
                     {translate(item.label)}
                   </Nav.Link>
