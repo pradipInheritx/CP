@@ -115,12 +115,15 @@ async function getNftCollectionDataById(docId: any) {
 
 // get all reward transactions by card id
 async function getRewardTransactionsByCardId(cardId: number) {
+  console.log("cardID >>>>", cardId);
   const transaction = await firestore()
     .collection("reward_transactions")
-    .where("winData?.firstRewardCardId", "==", cardId)
+    .where("winData.firstRewardCardId", "==", cardId)
     .get();
   const transData: any = [];
+  console.log("trasnaction >>>>>>", transaction);
   transaction.forEach((item: any) => {
+    console.log("item.data ?>>>>>>>", item.data());
     transData.push(item.data());
   });
   return transData;
@@ -364,16 +367,6 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       (item: any) => item != firstRewardCardSerialNo
     );
     cardData.quantity = cardData.sno.length;
-    const transData: any = await getRewardTransactionsByCardId(cardData.cardId);
-
-    console.log("TRANSDATSA", transData);
-    const userIds = transData.map((item: any) => item.user);
-    cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1;
-
-    await firestore()
-      .collection("nftGallery")
-      .doc(firstRewardCardObj.docId)
-      .set(collectionData);
 
     const winData: winRewardData = {
       firstRewardCardType: tierName,
@@ -385,6 +378,16 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       thirdRewardDiamonds,
     };
     await addRewardTransaction(uid, winData, claimed + 1);
+    const transData: any = await getRewardTransactionsByCardId(cardData.cardId);
+
+    console.log("TRANSDATSA", transData);
+    const userIds = transData.map((item: any) => item.user);
+    cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1;
+
+    await firestore()
+      .collection("nftGallery")
+      .doc(firstRewardCardObj.docId)
+      .set(collectionData);
     console.log("Finished execution claimReward function");
     return winData;
   }
