@@ -1,7 +1,6 @@
 import { firestore } from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
 
-// temp
 import { getAllCoins as getAllCoin } from "../Coin";
 import { getPriceOnParticularTime } from "../Rate";
 
@@ -144,7 +143,7 @@ export const getCoinById = async (req: any, res: any) => {
   }
 };
 
-export const getCoinData = async (req: any, res: any) => {
+export const getCoinCurrentAndPastDataDiffernce = async () => {
   const getCoins = await getAllCoin();
   var currentCoinAndPrise: any = [];
   const currentTime = Date.now();
@@ -173,11 +172,6 @@ export const getCoinData = async (req: any, res: any) => {
       arr.push(`${coin.coinName} Gone Up`);
     }
   });
-
-  // console.log("differnce --->",differnceInPercentag,differncePrise);
-  // console.log("prise current--->", currentTime, priseCurrent);
-  // console.log("prise 4hourBefore--->", beforeFourHoursTime, priseFourBefore);
-  res.send(arr);
 };
 
 export const errorLogging = async (

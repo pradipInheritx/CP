@@ -78,6 +78,7 @@ import {
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
 import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
+import { getCoinCurrentAndPastDataDiffernce } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
@@ -504,7 +505,6 @@ async function getRewardTransactions(id: string) {
     .map((e) => e.data())
     .sort((a, b) => b.winningTime - a.winningTime);
   const afterAddingTime = rewardTransactionData.map((x) => {
-    console.log("X---->>>>>>", x, x.transactionTime);
     x.transactionTime = x.transactionTime?.toDate();
     return x;
   });
@@ -607,6 +607,12 @@ exports.prepareWeeklyCPVI = functions.pubsub
   .schedule("0 0 * * 0")
   .onRun(async () => {
     await prepareCPVI(24 * 7, "weekly");
+  });
+
+exports.getCoinCurrentAndPastDataDiffernce = functions.pubsub
+  .schedule("*/5 * * * *")
+  .onRun(async () => {
+    await getCoinCurrentAndPastDataDiffernce();
   });
 
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
