@@ -144,7 +144,9 @@ function ModalForResult({ popUpOpen,vote,type}: {
                     </div>
                     <div>
                       <Col className="">
-                        <span className="sm_txt">{`${vote?.id} - ${moment(
+                        {/* // ${vote?.id} -  */}
+                        <span className="sm_txt">{`
+                        ${moment(
                           new Date(vote.voteTime)
                         ).format("HH:mm DD/MM/YYYY")}`}</span>
                       </Col>
@@ -291,7 +293,9 @@ function ModalForResult({ popUpOpen,vote,type}: {
                 </div>
 
                  <Col className="text-center">
-                    <span className="sm_txt">{`${vote?.id} - ${moment(
+                   {/* ${vote?.id} - */}
+                  <span className="sm_txt">{`
+                     ${moment(
                       new Date(vote?.voteTime)
                     ).format("HH:mm DD/MM/YYYY")}`}</span>
                   </Col>
