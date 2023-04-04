@@ -6,7 +6,6 @@ import {
   updateStatusOfCoin,
   getAllCoins,
   getCoinById,
-  getCoinData
 } from "../common/models/Admin/Coin";
 
 const coinRouter = Router();
@@ -15,7 +14,5 @@ coinRouter.post("/createCoin", auth, addCoin);
 coinRouter.patch("/updateCoinStatus/:coinId", auth, updateStatusOfCoin);
 coinRouter.get("/getAllCoins", auth, getAllCoins);
 coinRouter.get("/getCoin/:coinId", auth, getCoinById);
-coinRouter.get("/getCoins", getCoinData);
-
 
 export default coinRouter;
