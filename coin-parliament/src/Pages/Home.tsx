@@ -135,7 +135,7 @@ const Home = () => {
               if (user) {
                 await calcFavorites(...args);
               } else {
-                setLoginRedirectMessage("add coin to favorites.");
+                setLoginRedirectMessage("add coin to favorites");
                 setLogin(true);
                 // showModal(<NotLoggedInPopup/>);
               }
