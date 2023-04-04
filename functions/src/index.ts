@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/sa.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -31,7 +31,7 @@ import {
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
-  checkInActivityOfVotesAndSendNotification
+  // checkInActivityOfVotesAndSendNotification
 } from "./common/models/Vote";
 import {
   fetchCoins,
@@ -430,13 +430,14 @@ exports.noActivityIn24Hours = functions.pubsub
   .schedule("every 1 minutes")
   .onRun((context) => {
     const currentDate = new Date();
-    const last24HoursDate = new Date(currentDate.getTime() - (24 * 60 * 60 * 1000));
+    const last24HoursDate = new Date(
+      currentDate.getTime() - 24 * 60 * 60 * 1000
+    );
     console.log("Current date => ", currentDate);
     console.log("Last 24 hours date => ", last24HoursDate);
     console.log("This function will run every minute.");
     return null;
   });
-
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
@@ -503,7 +504,8 @@ async function getRewardTransactions(id: string) {
     .map((e) => e.data())
     .sort((a, b) => b.winningTime - a.winningTime);
   const afterAddingTime = rewardTransactionData.map((x) => {
-    x.transactionTime = x.transactionTime.toDate();
+    console.log("X---->>>>>>", x, x.transactionTime);
+    x.transactionTime = x.transactionTime?.toDate();
     return x;
   });
   return afterAddingTime;
@@ -729,5 +731,3 @@ exports.sendEmail = functions.https.onCall(async () => {
   };
   await sgMail.send(msg);
 });
-
-
