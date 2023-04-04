@@ -420,7 +420,7 @@ useEffect(() => {
             })}            
           </select>
           </div>
-          <div className={`${window.screen.width < 767 ? " d-flex" : ""} `}>
+          <div className={`${window.screen.width < 767 ? "py-3" : ""} `}>
               <select
                 name='type'
                 id='type'

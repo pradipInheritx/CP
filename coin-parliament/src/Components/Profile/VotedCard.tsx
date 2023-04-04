@@ -121,7 +121,7 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
 
 const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
   const voteCoins = vote?.coin.split("-");
-  
+  console.log(vote ," checkvoteid")
   const { coins } = useContext(CoinsContext);
   const pair = voteCoins.length > 1;
 
@@ -129,6 +129,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
   const trend = calculate(vote, index);
   const coin =
     (index === undefined ? coins[vote?.coin] : coins[voteCoins[index]]) || {};
+  
 
     
   return pair ? (
@@ -295,7 +296,8 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
 const calculateWinner = (vote: VoteResultProps) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-const VotedCard = ({ vote, id,coinSocketData,callbackFun }: VotedCardProps) => {
+const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) => {
+
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
   
