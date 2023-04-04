@@ -110,7 +110,7 @@ const Vote = ({
       
     >
       <Row className="">
-        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('Cast your vote.'); setLogin(true)}}} style={{width:"50%"}}>
+        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast your vote'); setLogin(true)}}} style={{width:"50%"}}>
           <div className="d-flex justify-content-around align-items-center 1" 
           
             // style={{width:`${window.screen.width<676?"50%":"100%"}`}}
@@ -148,7 +148,7 @@ const Vote = ({
           </div>
         </Col>
         {children}
-        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast a vote'); setLogin(true)}}} style={{width:"50%"}}>
+        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast your vote'); setLogin(true)}}} style={{width:"50%"}}>
           <div className="d-flex justify-content-center align-items-center"
           style={{width:"100%"}}
           >
