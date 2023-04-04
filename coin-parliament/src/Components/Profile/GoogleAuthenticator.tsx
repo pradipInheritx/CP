@@ -19,7 +19,7 @@ import {
 import { texts } from "../LoginComponent/texts";
 import axios from "axios";
 import QRCode from "qrcode";
-
+import BigLogo from "../../assets/svg/logoiconx2.svg";
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
@@ -253,6 +253,12 @@ const GoogleAuthenticator = () => {
                               className="m-0"
                               style={{ justifyContent: "center" }}
                             >
+                               
+                               <img
+                                src={BigLogo}
+                                alt="QR code for Google Authenticator"
+                                style={{ maxWidth: "100px" }}
+                              />
                               <img
                                 src={qrCodeDataUrl}
                                 alt="QR code for Google Authenticator"
