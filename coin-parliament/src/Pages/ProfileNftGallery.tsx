@@ -563,13 +563,21 @@ const CheckCardDisable = (cardId: any) => {
               />
               <label htmlFor="default-checkbox">{texts.AvailableCards}</label>
             </div>
-          </div>
+      </div>
+      
+
+
+
       <GalleryType
         className=''
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
         {!myCards && !cardShow && collectionType?.map((data:any,index:number) => {
-          return <div onClick={() => { navigate(`/profile/Album/${data?.collectionName}`) }} key={index}>
+          return <div
+            style={{
+                width: "600px"
+          }}
+            onClick={() => { navigate(`/profile/Album/${data?.collectionName}`) }} key={index}>
              <Video  autoPlay={true} loop={true}>
           <source
             src={allVideo[`${data?.collectionName}`]}

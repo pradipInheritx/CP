@@ -31,6 +31,7 @@ const Container = styled.div`
         text-align: center;
         opacity: 1;
         border: 0;
+        border-bottom:${window.screen.width <767? "3px solid #fff":"3px solid #5d49e0" };
       }
     }
   }
@@ -50,20 +51,21 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs }: TabsProps) => {
         defaultActiveKey,
         id,
         onSelect,
-      }}
+      }}      
+      
     >
       <Container className="d-flex justify-content-center align-items-center" style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>
-        <Nav variant="tabs">
+        <Nav variant="tabs" className="">
           {tabs.map((t, i) => {
             return (
-              <Nav.Item key={i}>
+              <Nav.Item key={i} >
                 <Nav.Link eventKey={t.eventKey} style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>{t.title.toUpperCase()}</Nav.Link>
               </Nav.Item>
             );
           })}
         </Nav>
       </Container>
-      <div>
+      <div >
         <Tab.Content>
           <Content>
             {tabs.map((t, i) => {

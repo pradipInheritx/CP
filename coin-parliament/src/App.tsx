@@ -75,6 +75,7 @@ import LoginAndSignup from "./Components/LoginComponent/LoginAndSignup";
 import {
   LoginAuthProvider,
   LoginRegular,
+  Logout,
   SignupRegular,
 } from "./common/models/Login";
 import FirstTimeLogin from "./Components/LoginComponent/FirstTimeLogin";
@@ -125,11 +126,16 @@ import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
 import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
+import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
+import Login2fa from "./Components/LoginComponent/Login2fa";
+import { handleSoundClick } from "./common/utils/SoundClick";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 
 function App() {
+  
+  
   const location = useLocation();
   const search = location.search;
   const pathname = location.pathname;
@@ -323,6 +329,7 @@ function App() {
   const [supportsPWA, setSupportsPWA] = useState(false);
   const [promptInstall, setPromptInstall] = useState(null);
 const [pwaPopUp,setPwaPopUp]=useState('block')
+const[mfaLogin,setMfaLogin]=useState(false)
   useEffect(() => {
     const handler = (e:any) => {
       e.preventDefault();
@@ -334,7 +341,17 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
 
     return () => window.removeEventListener("transitionend", handler);
   }, []);
-
+  // @ts-ignore
+  useEffect(() => {
+    const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+    if (isMFAPassed=='true' && !login ) {
+    
+      console.log('2faCalled')
+      // @ts-ignore
+      Logout(setUser)}
+  }, [])
+  
+  
   const onClick = (evt:any) => {
     // evt.preventDefault();
     console.log('not supported',promptInstall)
@@ -348,7 +365,7 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
     console.log('not supported')
   }
   useEffect(() => {
-    if ( user?.email && userInfo?.displayName === undefined) {
+    if ( user?.email && userInfo?.displayName === undefined && !login) {
       setLoader(true);
 //   .get("444-44-4444").onsuccess = (event) => {
 //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
@@ -378,7 +395,7 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   
   
   useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined) {
+    if (user?.email && userInfo?.displayName === undefined && !login) {
       setLoader(true);
     } else {
       setTimeout(() => {
@@ -387,15 +404,31 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
     }
   }, [user, userInfo]);
   useEffect(() => {
+    const buttons = document.getElementsByTagName('button');
+    console.log('buttondata',buttons);
+    for (let i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', handleSoundClick);
+    }
+    
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
-      setLogin(true);
-      setSignup(true);
-    } else {
       setLogin(false);
       setSignup(false);
+    } else {
+      const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+      if(!user && isMFAPassed!=='true' ){
+        console.log('2faCalled3')
+        setLogin(false);
+        setSignup(false);
+      }
+     
     }
-  }, [location, search, user]);
+    return () => {
+      for (let i = 0; i < buttons.length; i++) {
+        buttons[i].removeEventListener('click', handleSoundClick);
+      }
+    }
+  }, [location, search]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -587,7 +620,6 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   
   useEffect(() => {
     const auth = getAuth();
-
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
@@ -596,8 +628,8 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
           user?.emailVerified ||
           user?.providerData[0]?.providerId === "facebook.com"
         ) {
-          setLogin(false);
-          setSignup(false);
+          // setLogin(false);
+          // setSignup(false);
           setLoginRedirectMessage("");
           await updateUser(user);
           setUserUid(user?.uid);
@@ -657,11 +689,9 @@ const votesLast24HoursRef = firebase
             .where("userId", "==", user?.uid)
             .where("voteTime", ">=", last24Hour)
             .where("voteTime", "<=", Date.now());
-// console.log('extravote11',votesLast24HoursRef)
 votesLast24HoursRef.get()
     .then((snapshot) => {
         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-      
         const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
       let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
   
@@ -699,7 +729,7 @@ votesLast24HoursRef.get()
   
  
 }, [userInfo?.voteStatistics?.total])
-
+console.log('usermfa',user,userInfo)
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
     const key = getKeyByLang(lang);
@@ -1024,13 +1054,19 @@ votesLast24HoursRef.get()
                             )}
                           {!firstTimeLogin && (
                             <>
-                              {!user && login && (
+                              {!user && login && !mfaLogin && (
                                 <LoginAndSignup
                                   {...{
                                     authProvider: LoginAuthProvider,
                                     loginAction: LoginRegular,
                                     signupAction: SignupRegular,
                                   }}
+                                />
+                              )}
+                              {(user || userInfo?.uid) && login && (
+                                <Login2fa
+                                  setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
                                 />
                               )}
                               {!login &&

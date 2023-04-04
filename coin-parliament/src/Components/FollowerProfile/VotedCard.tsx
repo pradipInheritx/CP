@@ -185,7 +185,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                         {/* {coinSocketData && coinSocketData[0]?.pair?.includes(coin?.symbol) && coinSocketData[0]?.pair && <CoinTitle>test - {coinSocketData[0]?.pair } - { coinSocketData[0]?.p }</CoinTitle>}  */}
                       </CoinTitle>
                       <CoinCurrency >
-                        {vote.direction ? "BULL" : "BEAR"} - 1H &nbsp;
+                        {vote.direction==0 ? "BULL" : "BEAR"} - 1H &nbsp;
                         <span>
                           {formatCurrency(
                             index === undefined

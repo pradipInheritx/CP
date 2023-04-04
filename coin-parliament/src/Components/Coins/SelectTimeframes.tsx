@@ -6,6 +6,7 @@ import {Buttons} from "../Atoms/Button/Button";
 import {Title} from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import AppContext from "../../Contexts/AppContext";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 
 export type SelectTimeframesProps = {
@@ -87,8 +88,10 @@ console.log(voted,"checkvoted")
                 <Icon
                   inline='d-flex justify-content-center'
                   checked={timeframe.index === selected}
+                  
                   setChecked={() => {
                     selectTimeframe(timeframe);
+                    handleSoundClick()
                   }}
                   name='timeframe'
                   type='radio'

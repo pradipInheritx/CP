@@ -32,6 +32,7 @@ import Following from "./icons/Following";
 import CoinsContext, { follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
+import { handleSoundClick } from "../common/utils/SoundClick";
 
 enum EventKeys {
   LOGIN = "login",
@@ -162,7 +163,7 @@ const Header = ({
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules,followerUserId } = useContext(AppContext);
+  const { voteRules,followerUserId,login } = useContext(AppContext);
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
@@ -221,10 +222,11 @@ const Header = ({
     const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
     // @ts-ignore
     setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
-
+console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
   const onSelect = (eventKey: string | null) => {
+    handleSoundClick()
     const auth = getAuth();
 
     switch (eventKey) {
@@ -298,6 +300,7 @@ const Header = ({
   
   const handleClose = () => {
     setShow(false)
+  
   };
   
 
@@ -397,7 +400,7 @@ const Header = ({
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
               <div className='d-flex w-100 '>
-                {user?.uid  ? (
+                {user?.uid && !login  ? (
                   <div
                     className='d-flex w-100'
                     style={{ position: "relative" }}
@@ -521,7 +524,7 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "" : "" }}>
+                  <Title style={{ width: pathname === "/" ? "" : "" }} onClick={handleSoundClick}>
                     {mounted ? title : ""}
                   </Title>
                 </div>
@@ -541,7 +544,7 @@ const Header = ({
               }}
             >
               <div className='d-flex '>
-                {user?.uid ? (
+                {user?.uid && !login? (
                   <div
                     className='d-flex   w-25 mx-auto '
                     style={{ position: "relative", height: "50px" }}
@@ -662,7 +665,7 @@ const Header = ({
                 ) : (
                   <div className='w-100'></div>
                 )}
-                <Navbar.Brand as={Link} to='/'>
+                <Navbar.Brand as={Link} to='/' onClick={handleSoundClick}>
                   <img src={BigLogo} alt='' />
                 </Navbar.Brand>
               </div>

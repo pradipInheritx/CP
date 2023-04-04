@@ -120,6 +120,18 @@ const Component5031 = styled.div`
   border: 1px solid #6352e8;
   border-radius: 14px;
 `;
+const Componentdiv = styled.div`
+  height: 28px;
+  margin-top: 3px;
+  display: flex;
+  padding: 6.2px 3.3px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  min-width: 28px;
+  // background-color: var(--moon-raker);
+  // border: 1px solid #6352e8;
+  // border-radius: 14px;
+`;
 
 const ViewAll = styled(Link)`
   font: var(--font-style-normal) normal medium 9px / var(--line-spacing-13)
@@ -213,7 +225,7 @@ const UserCard = ({
             {!expanded && <span className='mx-1'></span>}
           </Address>
         </FlexCol>
-        <Component5031 style={{ background: checked ? "" : "white" }}>
+        {userInfo?.uid !==leader?.userId ? <Component5031 style={{ background: checked ? "" : "white" }}>
           <Icon
             setChecked={setChecked}
             checked={checked}
@@ -221,7 +233,7 @@ const UserCard = ({
             iconOn={<Following />}
             name={`leader-${leader.userId}`}
           />
-        </Component5031>
+        </Component5031>:<Componentdiv></Componentdiv>}
         {viewAllLink && (
           <div>
             <ViewAll to={viewAllLink}>

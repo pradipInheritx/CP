@@ -93,12 +93,13 @@ const SingleCoin = () => {
   const AllvotePrice: any = [];
   const AllvoteValueObject: any = [];
 
+
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
       // if (!mountedRef.current) return null;
       
-      const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: vote.timeframe.seconds });
+      const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: 86400 });
      
       return data.data as unknown as LineData[];
     }
@@ -178,7 +179,7 @@ const calcVote = useCallback(async () => {
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframes[selectedTimeFrame || 0]?.seconds});
       if (v) {
-        if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
+        // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
         if (v.data().timeframe?.seconds===3600) setSelectedTimeFrameArray([...newTimeframe,0])
         setVote(v.data());
         setVoteId(v.id);

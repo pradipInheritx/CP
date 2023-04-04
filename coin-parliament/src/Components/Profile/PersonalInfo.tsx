@@ -71,6 +71,7 @@ const handleClose=()=>{
 
   return (
     <>
+      
     <Form className="mt-1 d-flex flex-column"  onSubmit={async (e) => {
       e.preventDefault();
       if(edit){
@@ -92,7 +93,8 @@ const handleClose=()=>{
         setEdit(true)
       }
       // await login(e, callback);
-    }}>
+      }}>
+        
       <Buttons.Primary style={{maxWidth:'100px', placeSelf:'end', margin:'20px', marginBottom:'0px'}} >{edit?'SAVE':'EDIT'}</Buttons.Primary>
       <Container>
       

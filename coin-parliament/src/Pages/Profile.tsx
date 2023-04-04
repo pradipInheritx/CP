@@ -65,11 +65,13 @@ export const OuterContainer = styled.div`
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
   box-shadow: 0 3px 6px #00000029;
-  border-radius: 0 0 6px 6px;
+  // border-radius: 0 0 6px 6px;
   font-size: 14px;
   opacity: 1;
   width: auto;
   color: var(--white);
+  padding:13px;
+  margin-top:10px;
 `;
 
 const Profile = () => {

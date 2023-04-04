@@ -19,6 +19,7 @@ const PoolBox = styled.div`
 const Titles = styled.div`
   font-size: 20px;
   color: white;
+  text-transform: uppercase;
   
 `;
 
@@ -56,7 +57,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
         </div>
         <div className=" py-2 w-75   m-auto">          
         <p   style={{width:"100%",fontSize:"12px",fontWeight:"100",textAlign:'center'}}>What you’ll get:
-
+<br/>50% REVENUE SHARE LIFETIME!
           <br/>Accelerate your mining progress.
           Lifetime passive income direct to your wallet.</p>
         </div>

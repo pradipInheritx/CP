@@ -110,8 +110,10 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
                   eventKey={tab.eventKey}
                   style={{ padding: "10px 2px" }}
                   iconName={tab.label}
+                  className="d-flex flex-column align-items-center"
                 >
                   <Circle
+                    className="border"
                     disabled={isV1() && tab.eventKey === ProfileTabs.mine}
                   >
                     {tab.icon}
