@@ -457,7 +457,9 @@ useEffect(() => {
         </div> */}
         {!cardShow && collectionType?.map((data:any ,index:number) => {
           return <div onClick={() => { navigate(`/nftAlbum/${data?.collectionName}`) }} key={index}
-          
+           style={{
+                width: "600px"
+          }}
           >            
         <Video  autoPlay={true} loop={true}>
           <source

@@ -136,7 +136,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               <Minister>{translate(user?.status?.name || "")}</Minister>
             </Group4092>
           </FlexCol> */}
-          <div className='mt-4'>
+          <div className=''>
             {![
               ProfileTabs.edit as string,
               ProfileTabs.password as string,

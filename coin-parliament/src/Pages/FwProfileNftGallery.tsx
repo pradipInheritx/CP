@@ -546,7 +546,11 @@ const CheckCardDisable = (cardId: any) => {
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
         {!cardShow && collectionType?.map((data:any ,index:number) => {
-          return <div onClick={() => { navigate(`/followerProfile/Album/${data?.collectionName}`) }} key={index}>
+          return <div onClick={() => { navigate(`/followerProfile/Album/${data?.collectionName}`) }} key={index}
+           style={{
+                width: "600px"
+          }}
+          >
              <Video  autoPlay={true} loop={true}>
           <source
             src={allVideo[`${data?.collectionName}`]}

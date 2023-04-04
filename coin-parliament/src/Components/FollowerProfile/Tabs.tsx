@@ -31,6 +31,7 @@ const Container = styled.div`
         text-align: center;
         opacity: 1;
         border: 0;
+        border-bottom:${window.screen.width <767? "3px solid #fff":"3px solid #5d49e0" };
       }
     }
   }

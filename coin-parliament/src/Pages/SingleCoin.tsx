@@ -446,10 +446,11 @@ const calcVote = useCallback(async () => {
                       </Modal.Footer>
                     </Modal>
                   </div>      */}
-                {/* <ModalForResult
+                <ModalForResult
                   popUpOpen={popUpOpen}
-
-                /> */}
+                  vote={vote}
+                  type={"coin"}
+                />
               </Container>
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{textDecoration:'none'}}>

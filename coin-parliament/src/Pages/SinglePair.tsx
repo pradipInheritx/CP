@@ -24,6 +24,7 @@ import CalculatingVotes from "../Components/CalculatingVotes";
 import { httpsCallable } from "firebase/functions";
 import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
+import ModalForResult from "./ModalForResult";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
@@ -54,6 +55,7 @@ const SinglePair = () => {
     remainingTimer,
     voteRules
   } = useContext(AppContext);
+  const [popUpOpen, setpopUpOpen] = useState(false);
   
   const mountedRef = useRef(true);
   const newTimeframe:any= []
@@ -185,7 +187,6 @@ useEffect(() => {
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
 
-
   return (
     <>
       <audio className="d-none" ref={sound}>
@@ -255,7 +256,7 @@ useEffect(() => {
                     <>
                       <VotedCard
                         {...{vote, coins, totals, symbol1, symbol2, voteId,selectedTimeFrame,
-                          setSelectedTimeFrame,selectedTimeFrameArray }}
+                          setSelectedTimeFrame,selectedTimeFrameArray , setpopUpOpen}}
                       />
                      {graphLoading? <CalculatingVotes/>:<Progress
                         totals={totals}
@@ -265,6 +266,11 @@ useEffect(() => {
                       />} 
                     </>
                   )}
+                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime &&  <ModalForResult
+                    popUpOpen={popUpOpen}
+                    vote={vote && vote}
+                    type={"pair"}
+                  />}
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{textDecoration:'none'}}>
                       <Other>

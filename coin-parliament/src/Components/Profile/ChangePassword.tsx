@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
+  ButtonGroup,
   Col,
   Container,
   Form,
@@ -17,6 +18,7 @@ import styled from "styled-components";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../styledMixins";
 import { getAuth, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import { validatePassword } from "./utils";
+import infobtn from '../../assets/images/info-btn.png'
 import {
   multiFactor,
   PhoneAuthProvider,
@@ -47,6 +49,19 @@ const BtnLabelPrimary = styled(BtnLabel)`
   color: var(--white);
   border: none !important;
 `;
+const PasswordInfo = styled.div`
+  // border:1px solid red;
+  // display: flex;
+  // justify-content: center;
+     margin: auto;
+    
+    background-color: #d4d0f3;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 100;
+    line-height: 2;
+  
+`;
 
 const ChangePassword = () => {
   const { userInfo, user: u, setUserInfo } = useContext(UserContext);
@@ -61,7 +76,29 @@ const ChangePassword = () => {
 
 
   return (
-    <Form className="mt-1" onSubmit={async (e) => {
+    <>
+      <PasswordInfo style={{ 
+
+        width: `${window.screen.width > 767 ?"44%":"90%"}`
+      }}>
+        <div className='p-3'>
+          <img src={infobtn} alt="" width={"15px"} /> 
+          &nbsp; 
+          <span className='' style={{fontWeight:"500"}}>Choosing Strong Password</span>
+          <hr />
+        <div>
+          <ul>
+            <li>Passwords must be at least 8 characters in length.</li>
+            <li>The password must contain a mix of upper and lower case letters, numbers, and/or special characters.</li>
+            <li>The password is case-sensitive.</li>
+            <li>Successive passwords should not follow a pattern.</li>
+            <li>Do not post or share your password or send your password to others by email.</li>
+          </ul>
+          </div>
+        </div>
+      </PasswordInfo>
+    
+    <Form className="mt-3" onSubmit={async (e) => {
       e.preventDefault();
      
         if (
@@ -154,24 +191,33 @@ const ChangePassword = () => {
                     />                           
                   </>                                            
                 </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Label>New Password</Label>
-                </Col>
-              </Row>
-              <Row>
-                <Col>                                            
-                  <>
-                    <FormControl
-                      type="password"
-                      value={newPassword || ""}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                    />                           
-                  </>                                            
-                </Col>
-              </Row>
+                  </Row>
+                  <div className={`${window.screen.width<767?"flex-column":""} w-100 d-flex mt-2`}>
+                    <div                      
+                    style={{width:`${window.screen.width < 767 ? "100%" : "48%"}`}}
+                    >
+                    <Row>
+                      <Col>
+                        <Label>New Password</Label>
+                      </Col>
+                    </Row>
+                    <Row >
+                      <Col>                                            
+                        <>
+                          <FormControl
+                            type="password"
+                            value={newPassword || ""}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                          />                           
+                        </>                                            
+                      </Col>
+                      </Row>
+                    </div>
+                    <div
+                      
+                      style={{width:`${window.screen.width < 767 ? "100%" : "48%"}` , margin:`${window.screen.width < 767 ? "10px 0px 0px 0px":"0px 0px 0px 25px"}`}}
+                    >
               <Row>
                 <Col>
                   <Label>Confirm Password</Label>
@@ -188,27 +234,29 @@ const ChangePassword = () => {
                     />                           
                   </>                                             
                 </Col>
-              </Row>
+                      </Row>
+                      </div>
+                </div>
               <Row>
                 <Col className="d-flex justify-content-between mt-3">
                   <>                            
                 {changePassword && (
                   
-                    <Button
+                    <Buttons.Primary
                       onClick={(e) => {
                         e.preventDefault();
                         setChangePassword(false);
                       }}
                     >
                       <span aria-hidden="true">Cancel</span>
-                    </Button>
+                    </Buttons.Primary>
                     )}
                     </>
-                    <Button
+                    <Buttons.Primary
                     
                     >
-                     SUBMIT
-                    </Button>
+                     UPDATE
+                    </Buttons.Primary>
                 </Col>
               </Row>
 
@@ -218,6 +266,7 @@ const ChangePassword = () => {
       </Row>
     </Container>
   </Form>
-  );
+  </>
+      );
 };
 export default ChangePassword;
