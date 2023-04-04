@@ -310,7 +310,7 @@ const secColor= ()=>{
       <HeartContainer {...{ single }} onClick={
         ()=>{
           if(!user?.uid){
-            setLoginRedirectMessage('add pairs to favorites.')
+            setLoginRedirectMessage('add pairs to favorites')
             setLogin(true)
           }
         }}>

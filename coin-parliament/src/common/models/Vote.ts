@@ -161,8 +161,8 @@ export const useCanVote: () => [boolean, string] = () => {
 
 
   const text = !user
-    ? "Hey there, To make your voice heard, you've got to sign in and vote"
-    : `Well done, you've used up all your votes! Time to grab a snack and come back in`;
+    ? "Hey there, to make your voice heard, you've got to sign in and vote"
+    : `Well done, you've used up all your votes! time to grab a snack and come back in`;
       
 
       // You have voted ${votesLast24Hours.length } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}

@@ -228,7 +228,7 @@ const Card = ({
       <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{
           if(!user?.uid){
-            setLoginRedirectMessage('add coin to favorites.')
+            setLoginRedirectMessage('add coin to favorites')
             setLogin(true)
           }
         }

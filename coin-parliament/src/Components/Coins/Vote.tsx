@@ -148,7 +148,7 @@ const Vote = ({
           </div>
         </Col>
         {children}
-        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('Cast a vote.'); setLogin(true)}}} style={{width:"50%"}}>
+        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast a vote'); setLogin(true)}}} style={{width:"50%"}}>
           <div className="d-flex justify-content-center align-items-center"
           style={{width:"100%"}}
           >
