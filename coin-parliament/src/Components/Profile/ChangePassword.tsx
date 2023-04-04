@@ -55,7 +55,7 @@ const PasswordInfo = styled.div`
   // justify-content: center;
      margin: auto;
     
-    background-color: #cff4fc;
+    background-color: #d4d0f3;
     border-radius: 7px;
     font-size: 12px;
     font-weight: 100;
