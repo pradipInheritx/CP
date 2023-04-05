@@ -233,20 +233,45 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   // });
 
   // console.log("CARDS TIER", oldcardsByTier);
-  const randomIndex = Math.floor(Math.random() * percentageArr.length);
 
+  let selectedTier = getRandomSelectedTier(cardsByTier, percentageArr);
+  console.log("RETURN SELECTED TIER VALUE -> ", selectedTier);
+  /*const randomIndex = Math.floor(Math.random() * percentageArr.length);
   console.log("RANDOM INDEX", randomIndex);
+
   const selectedTier = percentageArr[randomIndex];
+  console.log("SELECTED TIER", selectedTier);*/
 
-  console.log("SELECTED TIER", selectedTier);
   const selectedCardTier = Object.keys(cardsByTier)[selectedTier];
-
   console.log("SELECTED CARD TIER", selectedCardTier);
-  const pickedTierArray = cardsByTier[selectedCardTier];
 
+  const pickedTierArray = cardsByTier[selectedCardTier];
   console.log("PICKED TIER ARRAY", pickedTierArray);
+
   return { tierName: selectedCardTier, pickedTierArray };
 };
+
+function getRandomSelectedTier(cardsByTier: any, percentageArr: any): number {
+  const randomIndex = Math.floor(Math.random() * percentageArr.length);
+  console.log("RANDOM INDEX", randomIndex);
+
+  const selectedTier = percentageArr[randomIndex];
+  console.log("SELECTED TIER", selectedTier);
+  console.log(
+    "Object.keys(cardsByTier).length",
+    Object.keys(cardsByTier).length
+  );
+
+  let returnValue;
+
+  returnValue = selectedTier;
+
+  if (selectedTier >= Object.keys(cardsByTier).length) {
+    returnValue = getRandomSelectedTier(cardsByTier, percentageArr);
+  }
+
+  return returnValue;
+}
 
 const groupBy =
   <T>(keys: (keyof T)[]) =>
@@ -347,7 +372,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
     rewardObj?.diamonds
       ? (rewardObj.diamonds += thirdRewardDiamonds)
       : (rewardObj.diamonds = thirdRewardDiamonds);
-      console.log("rewardObj2......", rewardObj);
+    console.log("rewardObj2......", rewardObj);
     await firestore()
       .collection("users")
       .doc(uid)
