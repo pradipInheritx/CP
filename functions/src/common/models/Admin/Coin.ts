@@ -2,7 +2,12 @@ import { firestore } from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
 
 import { getAllCoins as getAllCoin } from "../Coin";
-import { getPriceOnParticularTime } from "../Rate";
+import {
+  getDataFromTimestampBaseURL,
+  defaultHeaderForgetDataFromTimestamp,
+} from "../../consts/config";
+import axios from "axios";
+// import { sendNotification } from "../Notification";
 
 type Coin = {
   coinId: any;
@@ -142,36 +147,78 @@ export const getCoinById = async (req: any, res: any) => {
     });
   }
 };
+const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
+  try {
+    const getCoinPrice = await axios.get(
+      getDataFromTimestampBaseURL(coin, timestamp),
+      defaultHeaderForgetDataFromTimestamp
+    );
+
+    // console.info("getCoinPrice", getCoinPrice.data);
+    return getCoinPrice.data &&
+      getCoinPrice.data[0] &&
+      getCoinPrice.data[0].price
+      ? getCoinPrice?.data[0]?.price
+      : 0;
+  } catch (err) {
+    console.log("Error(getPriceOnpaticularTime): ", err);
+    return 0;
+  }
+};
+
+const getAllUsersAndSendNotification = async () => {
+  const getAllUsers: any = [];
+  const getAllUsersRef = await firestore().collection("users").get();
+  getAllUsersRef.forEach((data) => {
+    getAllUsers.push(data.data());
+  });
+
+  for (var user = 0; user <= getAllUsers.length; user++) {}
+};
 
 export const getCoinCurrentAndPastDataDiffernce = async () => {
-  const getCoins = await getAllCoin();
-  var currentCoinAndPrise: any = [];
-  const currentTime = Date.now();
-  const beforeFourHoursTime = currentTime - 4 * 3600000;
+  try {
+    const getCoins = await getAllCoin();
+    const currentTime = Date.now();
+    const beforeFourHoursTime = currentTime - 4 * 3600000;
 
-  getCoins.forEach(async (data) => {
-    const coin = data.toLowerCase() + "usdt";
-    const priseCurrent = await getPriceOnParticularTime(coin, currentTime);
-    const priseFourBefore = await getPriceOnParticularTime(
-      coin,
-      beforeFourHoursTime
-    );
-    console.log("priseCurrent >>>>", coin, priseCurrent, priseFourBefore);
-    const differncePrise = priseFourBefore - priseCurrent;
-    const differnceInPercentag = (differncePrise / beforeFourHoursTime) * 100;
+    const currentCoinAndPrise: any = [];
 
-    currentCoinAndPrise.push({ coinName: data, differnceInPercentag });
-    console.log("Array >>>>", currentCoinAndPrise);
-  });
-  const arr: any = [];
-  currentCoinAndPrise.forEach((coin: any) => {
-    if (coin.differnceInPercentag < -5) {
-      arr.push(`${coin.coinName} Gone Down`);
+    const arr: any = [];
+
+    for (const data of getCoins) {
+      const coin = data.toLowerCase() + "usdt";
+      const priseCurrent = await getPriceOnpaticularTime(coin, currentTime);
+      const priseFourBefore = await getPriceOnpaticularTime(
+        coin,
+        beforeFourHoursTime
+      );
+      console.log("priseCurrent >>>", priseCurrent);
+      if (priseCurrent !== 0 && priseFourBefore !== 0) {
+        console.log("priseCurrent >>>>", coin, priseCurrent, priseFourBefore);
+        const differncePrise = priseFourBefore - priseCurrent;
+        const differnceInPercentag =
+          (differncePrise / beforeFourHoursTime) * 100;
+
+        currentCoinAndPrise.push({ coinName: data, differnceInPercentag });
+      }
     }
-    if (coin.differnceInPercentag > 5) {
-      arr.push(`${coin.coinName} Gone Up`);
-    }
-  });
+
+    currentCoinAndPrise.forEach((coin: any) => {
+      if (coin.differnceInPercentag < -5) {
+        // Write Notification
+        getAllUsersAndSendNotification();
+        arr.push(`${coin.coinName} Gone Down`);
+      }
+      if (coin.differnceInPercentag > 5) {
+        // Write Notification
+        arr.push(`${coin.coinName} Gone Up`);
+      }
+    });
+    console.log("currentCoinAndPrise >>>", currentCoinAndPrise);
+  } catch (err) {
+    console.log("Error (getCoinCurrentAndPastDataDiffernce): ", err);
+  }
 };
 
 export const errorLogging = async (
