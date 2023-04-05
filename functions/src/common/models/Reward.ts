@@ -287,6 +287,7 @@ export const addRewardTransaction: (
     winData,
     transactionTime: firestore.FieldValue.serverTimestamp(),
   };
+  console.log("addRewardTransaction.......", obj);
   await firestore().collection("reward_transactions").doc().set(obj);
   console.log("Finished execution addRewardTransaction function");
 };
@@ -334,6 +335,8 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       extraVote: 0,
       diamonds: 0,
     };
+
+    console.log("rewardObj1......", rewardObj);
     rewardObj.claimed += 1;
     rewardObj?.cards?.length
       ? rewardObj.cards.push(firstRewardCard)
@@ -344,7 +347,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
     rewardObj?.diamonds
       ? (rewardObj.diamonds += thirdRewardDiamonds)
       : (rewardObj.diamonds = thirdRewardDiamonds);
-
+      console.log("rewardObj2......", rewardObj);
     await firestore()
       .collection("users")
       .doc(uid)
