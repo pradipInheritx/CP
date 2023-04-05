@@ -105,7 +105,7 @@ const UpgradePage = () => {
           }}
         >
           <TextContainer
-            className='d-xl-none '
+            className='d-xl-none d-md-none'
             style={
               {
                 // textTransform: "none",
@@ -133,7 +133,7 @@ const UpgradePage = () => {
               }}
             >
               {translate(
-                "By upgrading your Voting pass you will be able to mint PAX token, Earn NFTs and power up the voting"
+                "By upgrading your voting pass you will be able to mint PAX token, earn NFTs and power up the voting"
               )}
             </p>
           </TextContainer>
@@ -154,7 +154,7 @@ const UpgradePage = () => {
               style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
             >
               {translate(
-                "By upgrading your Voting pass you will be able to mint PAX token, Earn NFTs and power up the voting"
+                "By upgrading your voting pass you will be able to mint PAX token, earn NFTs and power up the voting"
               )}
             </P>
           )}
