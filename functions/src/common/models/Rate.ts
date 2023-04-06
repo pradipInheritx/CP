@@ -105,7 +105,7 @@ export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
         defaultHeaderForgetDataFromTimestamp
     );
 
-    console.info("getCoinPrice", getCoinPrice.data);
+    // console.info("getCoinPrice", getCoinPrice.data);
     return getCoinPrice.data &&
       getCoinPrice.data[0] &&
       getCoinPrice.data[0].price ?

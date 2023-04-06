@@ -1,6 +1,9 @@
 import { firestore } from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
 
+import { getAllCoins as getAllCoin } from "../Coin";
+import { getPriceOnParticularTime } from "../Rate";
+
 type Coin = {
   coinId: any;
   coinName: string;
@@ -138,6 +141,37 @@ export const getCoinById = async (req: any, res: any) => {
       result: error,
     });
   }
+};
+
+export const getCoinCurrentAndPastDataDiffernce = async () => {
+  const getCoins = await getAllCoin();
+  var currentCoinAndPrise: any = [];
+  const currentTime = Date.now();
+  const beforeFourHoursTime = currentTime - 4 * 3600000;
+
+  getCoins.forEach(async (data) => {
+    const coin = data.toLowerCase() + "usdt";
+    const priseCurrent = await getPriceOnParticularTime(coin, currentTime);
+    const priseFourBefore = await getPriceOnParticularTime(
+      coin,
+      beforeFourHoursTime
+    );
+    console.log("priseCurrent >>>>", coin, priseCurrent, priseFourBefore);
+    const differncePrise = priseFourBefore - priseCurrent;
+    const differnceInPercentag = (differncePrise / beforeFourHoursTime) * 100;
+
+    currentCoinAndPrise.push({ coinName: data, differnceInPercentag });
+    console.log("Array >>>>", currentCoinAndPrise);
+  });
+  const arr: any = [];
+  currentCoinAndPrise.forEach((coin: any) => {
+    if (coin.differnceInPercentag < -5) {
+      arr.push(`${coin.coinName} Gone Down`);
+    }
+    if (coin.differnceInPercentag > 5) {
+      arr.push(`${coin.coinName} Gone Up`);
+    }
+  });
 };
 
 export const errorLogging = async (

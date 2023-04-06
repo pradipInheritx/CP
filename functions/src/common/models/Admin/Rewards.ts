@@ -16,6 +16,7 @@ type SetNft = {
 };
 
 type NewCardNft = {
+  cardId: number;
   cardName: string;
   cardType: string;
   quantity: number;
@@ -151,6 +152,7 @@ export const addSetNft = async (req: any, res: any) => {
 export const addRewardCardNft = async (req: any, res: any) => {
   const { albumId } = req.params;
   const {
+    cardId,
     cardName,
     cardType,
     quantity,
@@ -162,6 +164,7 @@ export const addRewardCardNft = async (req: any, res: any) => {
   try {
     const id = uuidv4();
     const newCardNft: NewCardNft = {
+      cardId,
       cardName,
       cardType,
       quantity,
