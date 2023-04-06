@@ -1,10 +1,11 @@
 import * as admin from "firebase-admin";
-import {UserTypeProps} from "./User";
-import {firestore} from "firebase-admin";
-import {getPriceOnParticularTime} from "../models/Rate";
+import { UserTypeProps } from "./User";
+import { firestore, messaging } from "firebase-admin";
+import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import Timestamp = admin.firestore.Timestamp;
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
+import { sendNotification } from "./Notification";
 
 export type VoteProps = {
   coin: string;
@@ -21,7 +22,7 @@ export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
     return modelObject;
   },
   fromFirestore(
-      snapshot: FirebaseFirestore.QueryDocumentSnapshot
+    snapshot: FirebaseFirestore.QueryDocumentSnapshot
   ): VoteResultProps {
     const data = snapshot.data();
     return data as VoteResultProps;
@@ -49,7 +50,7 @@ export enum Direction {
 }
 
 export const calculateOffset: (timeframe: TimeFrame) => number = (
-    timeframe: TimeFrame
+  timeframe: TimeFrame
 ) => timeframe.seconds * 1000;
 
 export const updateVotesTotal = async () => {
@@ -60,16 +61,16 @@ export const updateVotesTotal = async () => {
     const votes = await admin.firestore().collection("votes").get();
 
     await admin
-        .firestore()
-        .collection("stats")
-        .doc("app")
-        .set({totalVotes: votes.size}, {merge: true});
+      .firestore()
+      .collection("stats")
+      .doc("app")
+      .set({ totalVotes: votes.size }, { merge: true });
   } else {
     await admin
-        .firestore()
-        .collection("stats")
-        .doc("app")
-        .update({totalVotes: admin.firestore.FieldValue.increment(1)});
+      .firestore()
+      .collection("stats")
+      .doc("app")
+      .update({ totalVotes: admin.firestore.FieldValue.increment(1) });
   }
   console.log("Finished execution of updateVotesTotal --->");
   return;
@@ -94,15 +95,73 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
       total: 1,
     };
     const test = await admin.firestore().collection("stats").doc("totals");
-    await test.set(obj, {merge: true});
+    await test.set(obj, { merge: true });
   }
 
   console.log("Finished execution of updateVotesTotalForSingleCoin --->");
   return;
 };
 
+export const checkInActivityOfVotesAndSendNotification = async () => {
+  const currentDate = admin.firestore.Timestamp.now().toMillis();
+  console.log("Current date => ", currentDate);
+
+  const last24HoursMillis = 24 * 60 * 60 * 1000;
+  console.log("last24HoursMillis => ", last24HoursMillis);
+
+  const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
+  console.log("Last 24 hours date => ", last24HoursDate);
+
+  const getUsers = await admin.firestore().collection("users").get();
+  const getAllUsers: any = getUsers.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+    };
+  });
+
+  for (let user = 0; user < getAllUsers.length; user++) {
+    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).orderBy('voteTime', 'desc').limit(1).get();
+    let lastVotedData: any = [];
+    getLastUserVoteSnapshot.forEach(doc => {
+      lastVotedData.push({ id: doc.id, ...doc.data() })
+      console.info(doc.id, '=>', doc.data());
+    });
+    if (lastVotedData && lastVotedData.length) {
+      const body = "Don't forget to make your daily vote";
+      let token = getAllUsers[user].token;
+
+      console.info("Token,", token);
+      const message: messaging.Message = {
+        token,
+        notification: {
+          title: "Don't forget to make your daily vote",
+          body,
+        },
+        webpush: {
+          headers: {
+            Urgency: "high",
+          },
+          fcmOptions: {
+            link: "#", // TODO: put link for deep linking
+          },
+        },
+      };
+      console.info("Id,", getAllUsers[user].id);
+      await sendNotification({
+        token,
+        message,
+        body,
+        title: "Don't forget to make your daily vote",
+        id: getAllUsers[user].id,
+      });
+    }
+  }
+}
+
 export const getOldAndCurrentPriceAndMakeCalculation = async (
-    requestBody: any
+  requestBody: any
 ) => {
   let price: any;
   const {
