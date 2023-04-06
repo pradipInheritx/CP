@@ -4,6 +4,8 @@ import * as admin from "firebase-admin";
 // import path from "path";
 import { userConverter, UserProps } from "../models/User";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { sendNotification } from "./Notification";
+import { messaging } from "firebase-admin";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
   0: {
@@ -188,7 +190,6 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
     element.setDetails.forEach((setDetail: any) => {
       const setId = setDetail.id;
       setDetail.cardsDetails.forEach((cardDetail: any) => {
-
         cards.push({
           albumId,
           albumName,
@@ -297,7 +298,6 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
     total: 0,
     claimed: 0,
   };
-  
 
   if (total - claimed > 0) {
     const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
@@ -310,8 +310,8 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
     const firstRewardCardSerialNo = pickRandomValueFromArray(
       firstRewardCardObj["sno"]
     );
-   
-      const secondRewardExtraVotes = getRandomNumber(
+
+    const secondRewardExtraVotes = getRandomNumber(
       distribution[cmp].extraVotePickFromRange
     );
     const thirdRewardDiamonds = getRandomNumber(
@@ -448,10 +448,42 @@ export const addReward: (
         },
         { merge: true }
       );
-
+    sendNotificationForCpm(userId);
     console.log("Finished execution addReward function");
     return;
   }
+};
+
+const sendNotificationForCpm = async (userId: any) => {
+  const userRef = await firestore().collection("users").doc(userId).get();
+  const user: any = userRef.data();
+  console.log("user >>>>>>", user);
+  const token = user.token || "";
+  if (!token) return;
+
+  const message: messaging.Message = {
+    token,
+    notification: {
+      title: "Wow",
+      body: "Claim your rewards now!",
+    },
+    webpush: {
+      headers: {
+        Urgency: "high",
+      },
+      fcmOptions: {
+        link: "#", // TODO: put link for deep linking
+      },
+    },
+  };
+
+  await sendNotification({
+    token,
+    message,
+    body: "Claim your rewards now!",
+    title: "Wow",
+    id: user.uid,
+  });
 };
 
 // User listing for a particular card holders

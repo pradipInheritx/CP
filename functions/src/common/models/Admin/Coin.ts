@@ -173,13 +173,19 @@ const getAllUsersAndSendNotification = async (
 ) => {
   const getAllUsers: any = [];
   const getAllUsersRef = await firestore().collection("users").get();
-
   getAllUsersRef.forEach((data) => {
     getAllUsers.push(data.data());
   });
+  console.log("getAllUsers >>>>", getAllUsers);
   const title = `🚨 ${coinName} coin  price ALERT! ⚠️`;
   for (var i = 0; i <= getAllUsers.length; i++) {
-    const token = getAllUsers?.token;
+      // console.log("getAllUser >>>>>>", getAllUsers[i]);
+    const token = getAllUsers.token || "";
+    if (!token) {
+      console.log("token not found !!!!!!!!!!!!");
+      return;
+    }
+
     const message: messaging.Message = {
       token,
       notification: {
@@ -195,7 +201,7 @@ const getAllUsersAndSendNotification = async (
         },
       },
     };
-
+    console.log("message >>>>>>", message);
     await sendNotification({
       token,
       message,
@@ -232,17 +238,19 @@ export const getCoinCurrentAndPastDataDiffernce = async () => {
       }
     }
 
-    currentCoinAndPrise.forEach((coin: any) => {
-      if (coin.differnceInPercentag < -5 || coin.differnceInPercentag > 5) {
+    currentCoinAndPrise.forEach(async (coin: any) => {
+    
+      if (coin.differnceInPercentag < -5) {
         // Write Notification
-        getAllUsersAndSendNotification(
+        await getAllUsersAndSendNotification(
           coin.coinName,
           `Coin ${coin.coinName}  is on fire! Make your vote now! ⏫`
         );
+        console.log("sent notification.....");
       }
       if (coin.differnceInPercentag > 5) {
         // Write Notification
-        getAllUsersAndSendNotification(
+        await getAllUsersAndSendNotification(
           coin.coinName,
           `Coin ${coin.coinName}  value drop! Make your vote now! ⏬`
         );
