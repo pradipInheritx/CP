@@ -13,6 +13,7 @@ import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
+import { cardFlip } from "../common/utils/SoundClick";
 
 
 const Card = styled.div`
@@ -174,22 +175,26 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       onMouseEnter={() => {
         if (Disable == "" || Disable == undefined) {          
           setFlip(!flip);
-        }
+          cardFlip()
+        }        
       }}
       onMouseLeave={() => {
         if (Disable == "" || Disable == undefined) {                 
           setFlip(!flip);
+          cardFlip()
         }        
       }}
       onFocus={() => {
         if (Disable == "" || Disable == undefined) {          
           setFlip(!flip);
+          cardFlip()
         }
         // setFlip(!flip);
       }}
       onFocusCapture={() => {
         if (Disable == "" || Disable == undefined) {          
           setFlip(!flip);
+          cardFlip()
         }
         // setFlip(!flip);
       }}
@@ -201,7 +206,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       onClick={() => {
         if (Disable == "" || Disable == undefined) { 
           // @ts-ignore
-        BackSideCard(id);
+          BackSideCard(id);
+          cardFlip()
         }
         
       }}

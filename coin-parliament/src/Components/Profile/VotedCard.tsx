@@ -152,11 +152,13 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
           </div>
           <div>
             {vote.valueExpirationTime &&
+              
               formatCurrency(
                 index === undefined
-                  ? (vote?.valueVotingTime as unknown as number)
-                  : (vote.valueExpirationTime as number[])[index]
-              )}
+                    ? (vote?.valueVotingTime as unknown as number)
+                    : (vote.valueExpirationTime as number[])[index]  
+              )
+            }
           </div>
           <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
         </CoinName>
@@ -186,13 +188,13 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                         {/* {coinSocketData && coinSocketData[0]?.pair?.includes(coin?.symbol) && coinSocketData[0]?.pair && <CoinTitle>test - {coinSocketData[0]?.pair } - { coinSocketData[0]?.p }</CoinTitle>}  */}
                       </CoinTitle>
                       <CoinCurrency >
-                        {vote.direction==0 ? "BULL" : "BEAR"} - 1H &nbsp;
+                        {vote.direction==0 ? "BULL" : "BEAR"} - {timeframeInitials(vote.timeframe.name)}&nbsp;
                         <span>
-                          {formatCurrency(
-                            index === undefined
+                          {/* {formatCurrency( */}
+                            {index === undefined
                               ? (vote?.valueVotingTime as unknown as number)
-                              : (vote?.valueVotingTime as number[])[index]
-                          )}
+                              : (vote?.valueVotingTime as number[])[index]}
+                          {/* )} */}
                         </span>
                       </CoinCurrency>
                     </p>
@@ -216,13 +218,14 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                               <Row className="flex-column text-center ">
                                 <Col style={{fontSize:'8px'}} className="">
                                   {vote.valueExpirationTime &&
-                                    formatCurrency(
+                                    formatCurrency(                                                                          
                                       index === undefined
                                         ? (vote?.valueVotingTime as unknown as number)
                                         : (
                                             vote?.valueExpirationTime as number[]
-                                          )[index]
-                                    )}
+                                      )[index]
+                                      )
+                                    }
                                 </Col>
                                 
                                 <Col className="">

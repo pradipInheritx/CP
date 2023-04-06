@@ -238,23 +238,24 @@ function App() {
     []
   );
 
-  useEffect(() => {
-    if('serviceWorker' in navigator) {
-    navigator?.serviceWorker?.addEventListener("message", (message) => {
-      const {
-        notification: { body, title },
-      } = message.data["firebase-messaging-msg-data"] as {
-        notification: { body: string; title: string };
-      };
-      showToast(
-        <div>
-          <h5>{title}</h5>
-          <p>{body}</p>
-        </div>
-      );
-    });
-  }
-  });
+  // useEffect(() => {
+  //   if('serviceWorker' in navigator) {
+  //   navigator?.serviceWorker?.addEventListener("message", (message) => {
+  //     const {
+  //       notification: { body, title },
+  //     } = message.data["firebase-messaging-msg-data"] as {
+  //       notification: { body: string; title: string };
+  //     };
+  //     showToast(
+  //       <div>
+  //         <h5>{title}</h5>
+  //         <p>{body}</p>
+  //       </div>
+  //     );
+  //   });
+  // }
+  // });
+
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -317,6 +318,7 @@ function App() {
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [remainingTimer,setRemainingTimer]=useState(0)
   const [followerUserId,setFollowerUserId]=useState<string>('')
+  const [showBack,setShowBack]=useState<any>(false)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -404,11 +406,11 @@ const[mfaLogin,setMfaLogin]=useState(false)
     }
   }, [user, userInfo]);
   useEffect(() => {
-    const buttons = document.getElementsByTagName('button');
-    console.log('buttondata',buttons);
-    for (let i = 0; i < buttons.length; i++) {
-      buttons[i].addEventListener('click', handleSoundClick);
-    }
+    // const buttons = document.getElementsByTagName('button');
+    // console.log('buttondata',buttons);
+    // for (let i = 0; i < buttons.length; i++) {
+    //   buttons[i].addEventListener('click', handleSoundClick);
+    // }
     
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
@@ -423,11 +425,11 @@ const[mfaLogin,setMfaLogin]=useState(false)
       }
      
     }
-    return () => {
-      for (let i = 0; i < buttons.length; i++) {
-        buttons[i].removeEventListener('click', handleSoundClick);
-      }
-    }
+    // return () => {
+    //   for (let i = 0; i < buttons.length; i++) {
+    //     buttons[i].removeEventListener('click', handleSoundClick);
+    //   }
+    // }
   }, [location, search]);
 
   // useEffect(() => {
@@ -442,10 +444,16 @@ const[mfaLogin,setMfaLogin]=useState(false)
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
     }
-    pwaInstallHandler.addListener((canInstall) => {
+   
+  }, [userInfo]);
+
+useEffect(() => {
+  pwaInstallHandler.addListener((canInstall) => {
      canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
     })
-  }, [userInfo]);
+}, [])
+
+
 
   useEffect(() => {
     setMounted(true);
@@ -796,6 +804,8 @@ console.log('usermfa',user,userInfo)
           >
             <AppContext.Provider
                 value={{
+                  showBack,
+                  setShowBack,
                   followerUserId,
                   setFollowerUserId,
                   singalCardData,

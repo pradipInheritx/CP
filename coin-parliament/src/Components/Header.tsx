@@ -1,7 +1,7 @@
 /** @format */
 
 import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import UserContext from "../Contexts/User";
@@ -33,6 +33,7 @@ import CoinsContext, { follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
 import { handleSoundClick } from "../common/utils/SoundClick";
+import CountUp from "react-countup";
 
 enum EventKeys {
   LOGIN = "login",
@@ -176,6 +177,7 @@ const Header = ({
   const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
   // const urlname = location.pathname;
 
+  const prevCountRef = useRef(voteNumber)
   
   const getFollowerData =()=>{
   
@@ -221,12 +223,18 @@ const Header = ({
   useEffect(() => {
     const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
+    
+    prevCountRef.current = voteNumber; 
+
 console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
+
+
+
   const onSelect = (eventKey: string | null) => {
-    handleSoundClick()
+    // handleSoundClick()
     const auth = getAuth();
 
     switch (eventKey) {
@@ -466,7 +474,9 @@ console.log('votenumber',voteNumber, Number(voted))
                                     }}
                                   >
                             
-                                    {voteNumber > 0 ? voteNumber : 0} votes left
+                                  {/* {voteNumber > 0 ? voteNumber : 0} */}
+                                  <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                  votes left
                                   </span>
                                 </>}
                         </div>
@@ -497,7 +507,10 @@ console.log('votenumber',voteNumber, Number(voted))
                             {followUnfollow == true ?  <Following/> :  <AddFollower/>}
                         </Form.Check.Label>
                           :
-                        <PlusButtonMob onClick={() => navigate("/votingbooster")}>
+                          <PlusButtonMob onClick={() => {
+                            handleSoundClick()
+                            navigate("/votingbooster")
+                          }}>
                           <span>+</span>
                         </PlusButtonMob> 
 
@@ -524,7 +537,9 @@ console.log('votenumber',voteNumber, Number(voted))
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "" : "" }} onClick={handleSoundClick}>
+                  <Title style={{ width: pathname === "/" ? "" : "" }}
+                    // onClick={handleSoundClick}
+                  >
                     {mounted ? title : ""}
                   </Title>
                 </div>
@@ -606,7 +621,9 @@ console.log('votenumber',voteNumber, Number(voted))
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
-                            {voteNumber>0? voteNumber:0} votes left
+                                {/* {voteNumber > 0 ? voteNumber : 0} */}
+                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                votes left
                           </span></>}
                         </p>
                         {followerPage && followerInfo != "" ?
@@ -636,7 +653,10 @@ console.log('votenumber',voteNumber, Number(voted))
                             {followUnfollow == true ?  <Following/> :  <AddFollower/>}
                         </Form.Check.Label>
                           :
-                        <PlusButton onClick={() => navigate("/votingbooster")}>
+                          <PlusButton onClick={() => {
+                            handleSoundClick()
+                            navigate("/votingbooster")
+                          }}>
                           <span>+</span>
                         </PlusButton> 
 
@@ -665,7 +685,9 @@ console.log('votenumber',voteNumber, Number(voted))
                 ) : (
                   <div className='w-100'></div>
                 )}
-                <Navbar.Brand as={Link} to='/' onClick={handleSoundClick}>
+                <Navbar.Brand as={Link} to='/'
+                  // onClick={handleSoundClick}
+                >
                   <img src={BigLogo} alt='' />
                 </Navbar.Brand>
               </div>
@@ -699,8 +721,9 @@ console.log('votenumber',voteNumber, Number(voted))
               <Modal.Body>
                               
                 {/* <hr /> */}
-                <p className="text-uppercase"> Out of votes? </p> <Link className="text-uppercase" to="/votingbooster" onClick={() => {                  
-                  // navigate("/votingbooster")
+                <p className="text-uppercase"> Out of votes? </p> <Link className="text-uppercase" to="/votingbooster" onClick={() => {
+                  handleSoundClick()
+                  navigate("/votingbooster")
                   setShow(false)
                 }} >Buy</Link> {"extra votes now or wait,".toUpperCase()} <span className="text-uppercase">
                    {/* @ts-ignore */}

@@ -12,6 +12,7 @@ import {useSwipeable} from "react-swipeable";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import CoinsContext from "../../Contexts/CoinsContext";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 export type CarouselProps = {
   children?: React.ReactNode | string;
@@ -149,7 +150,8 @@ const Carousel = ({
               }}
               coin1={coin1}
               coin2={coin2}
-              onClick={() => {
+                onClick={() => {
+                handleSoundClick()
                 const url = "/pairs/" + combination;
                 if (navigate) {
                   navigate(url);
@@ -210,6 +212,7 @@ const Carousel = ({
                           coin1={coin1}
                           coin2={coin2}
                           onClick={() => {
+                            handleSoundClick()
                             const url = "/pairs/" + combination;
                             if (navigate) {
                               navigate(url);

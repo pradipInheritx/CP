@@ -96,7 +96,8 @@ const navigate = useNavigate();
   const followerPage = urlName.includes("followerProfile")
   const { width } = useWindowSize();
   const handleClose = () =>{ setMenuOpen(false);
-    handleSoundClick()}
+    // handleSoundClick()
+  }
   const handleShow = () => {
     if (followerPage) {      
       navigate(-1)
@@ -137,7 +138,8 @@ const navigate = useNavigate();
               <HamburgerBut
                 // variant='link'
                 onClick={()=>{handleShow()
-                  handleSoundClick()}}
+                  // handleSoundClick()
+                }}
                 className='position-relative'
                 style={{
                   
@@ -193,7 +195,7 @@ const navigate = useNavigate();
                     as={Link}
                     to={item.href}
                     onClick={() =>{ setMenuOpen(false)
-                      handleSoundClick()
+                      // handleSoundClick()
                     }}
                   >
                     {translate(item.label)}

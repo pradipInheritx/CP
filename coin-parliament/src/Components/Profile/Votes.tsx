@@ -60,14 +60,14 @@ const Votes = () => {
     const { coins, pairs } = votes
     
     let AllCoins = coins?.votes.filter((item: any) => {
-      if (item.expiration < Date.now() && !item.success) {
+      if (item.expiration < Date.now() && item.success == undefined) {
         
         return item
       }    
     })
 
     let AllPairs = pairs?.votes.filter((item: any) => {
-      if (item.expiration< Date.now() && !item.success) {
+      if (item.expiration< Date.now() && item.success == undefined) {
         
         return item
       }
@@ -104,14 +104,14 @@ let allCoinsPair= [...AllCoins,...AllPairs]
     // .catch(error => {
     //   console.error('promiseAll',error);
     // });
-     if (allCoinsPrais.length>0) {
+     if (allCoinsPrais.length > 0) {
        allCoinsPrais?.map((voteItem:any) => {
          checkprice(voteItem);
        })    
      }
      
-  }, [allCoinsPrais])
-
+  }, [allCoinsPrais.length])
+  
 
 
   const checkprice = async (vote: any) => {

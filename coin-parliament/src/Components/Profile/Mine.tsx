@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useEffect, useState } from "react";
-import { Badge, Col, Container, Row } from "react-bootstrap";
+import { Badge, Button, Col, Container, Modal, Row } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import Collapse from "./Collapse";
 import PAXCard from "./PAXCard";
@@ -14,7 +14,7 @@ import styled from "styled-components";
 import NotificationContext from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
 import { isV1 } from "../App/App";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import animation from "./Comp.json";
 import AnimationReward from "./Animation/AnimationReward";
@@ -23,6 +23,8 @@ import NFTCard from "../../common/NFTCard/NFTCard";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import { texts } from "../LoginComponent/texts";
+import { Other } from "../../Pages/SingleCoin";
+import { Buttons } from "../Atoms/Button/Button";
 
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
@@ -42,13 +44,14 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes } = useContext(AppContext);
+  const { userTypes ,showBack,setShowBack} = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
+   const [modalShow, setModalShow] = React.useState(false);
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -58,10 +61,26 @@ const Mine = () => {
     // console.log("user Id", result);
   };
 
+  const handleClose = () => setModalShow(false);
+  const handleShow = () => setModalShow(true);
+
   useEffect(() => {
     rewardList();
   }, [rewardTimer]);
 
+  useEffect(() => {
+  
+    if (showBack) {
+           setTimeout(() => {
+             console.log(showBack, "viewshow")
+             handleShow()
+          setShowBack(false)
+        }, 2000);
+        }       
+    }, []);
+
+  console.log(showBack, "viewshow back")
+  
   if (isV1()) {
     return (
       <Navigate
@@ -73,15 +92,21 @@ const Mine = () => {
     );
   }
 
+	const goBack = () => {
+		navigate(-1);
+	}
+
+
   return (
     <div>
       <Container >
         {/* @ts-ignore */}
-        {!!rewardTimer && (
+        {!!rewardTimer && (        
           <AnimationReward
             setRewardTimer={setRewardTimer}
             rewardTimer={rewardTimer}
           />
+          
         )}
 
         {/* <Player
@@ -260,6 +285,32 @@ const Mine = () => {
           </div>
         </Row>
       </Container>
+      <div>
+        <Modal
+      show={modalShow} onHide={handleClose}
+      // size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <div className="d-flex justify-content-end">
+        <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
+          handleClose()
+          }}></button>
+        </div>
+      <Modal.Body>
+            {/* continue voting */}
+      <div className='py-2  d-flex  justify-content-center'><p>If you want continue voting press yes</p></div>
+
+      </Modal.Body>
+          {/* <Modal.Footer> */}
+          <div className="d-flex justify-content-center ">
+            <Buttons.Primary className="mx-2" onClick={goBack}>Yes</Buttons.Primary>
+            <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default>
+          </div>
+      {/* </Modal.Footer>       */}
+    </Modal>
+  </div>
+
     </div>
   );
 };
