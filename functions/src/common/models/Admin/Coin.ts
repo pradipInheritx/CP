@@ -7,7 +7,8 @@ import {
   defaultHeaderForgetDataFromTimestamp,
 } from "../../consts/config";
 import axios from "axios";
-// import { sendNotification } from "../Notification";
+import { sendNotification } from "../Notification";
+import { messaging } from "firebase-admin";
 
 type Coin = {
   coinId: any;
@@ -166,14 +167,43 @@ const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
   }
 };
 
-const getAllUsersAndSendNotification = async () => {
+const getAllUsersAndSendNotification = async (
+  coinName: string,
+  body: string
+) => {
   const getAllUsers: any = [];
   const getAllUsersRef = await firestore().collection("users").get();
+
   getAllUsersRef.forEach((data) => {
     getAllUsers.push(data.data());
   });
+  const title = `🚨 ${coinName} coin  price ALERT! ⚠️`;
+  for (var i = 0; i <= getAllUsers.length; i++) {
+    const token = getAllUsers?.token;
+    const message: messaging.Message = {
+      token,
+      notification: {
+        title,
+        body,
+      },
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: "#", // TODO: put link for deep linking
+        },
+      },
+    };
 
-  for (var user = 0; user <= getAllUsers.length; user++) {}
+    await sendNotification({
+      token,
+      message,
+      body,
+      title,
+      id: getAllUsers[i].uid,
+    });
+  }
 };
 
 export const getCoinCurrentAndPastDataDiffernce = async () => {
@@ -183,8 +213,6 @@ export const getCoinCurrentAndPastDataDiffernce = async () => {
     const beforeFourHoursTime = currentTime - 4 * 3600000;
 
     const currentCoinAndPrise: any = [];
-
-    const arr: any = [];
 
     for (const data of getCoins) {
       const coin = data.toLowerCase() + "usdt";
@@ -205,20 +233,37 @@ export const getCoinCurrentAndPastDataDiffernce = async () => {
     }
 
     currentCoinAndPrise.forEach((coin: any) => {
-      if (coin.differnceInPercentag < -5) {
+      if (coin.differnceInPercentag < -5 || coin.differnceInPercentag > 5) {
         // Write Notification
-        getAllUsersAndSendNotification();
-        arr.push(`${coin.coinName} Gone Down`);
+        getAllUsersAndSendNotification(
+          coin.coinName,
+          `Coin ${coin.coinName}  is on fire! Make your vote now! ⏫`
+        );
       }
       if (coin.differnceInPercentag > 5) {
         // Write Notification
-        arr.push(`${coin.coinName} Gone Up`);
+        getAllUsersAndSendNotification(
+          coin.coinName,
+          `Coin ${coin.coinName}  value drop! Make your vote now! ⏬`
+        );
       }
     });
     console.log("currentCoinAndPrise >>>", currentCoinAndPrise);
   } catch (err) {
     console.log("Error (getCoinCurrentAndPastDataDiffernce): ", err);
   }
+};
+
+export const blockCompleted = async (req: any, res: any) => {
+  const { userId } = req.params;
+  console.log("userId >>>>>>>>", userId);
+  const getUserRef = await firestore().collection("users").doc(userId).get();
+  const getUserData: any = getUserRef.data();
+
+  const getUserScore = getUserData.voteStatistics.score;
+  const getUserTotal = getUserData.voteStatistics.total;
+  console.log("getUserScore,getUserTotal >>>>", getUserScore, getUserTotal);
+  res.send(getUserScore, getUserTotal);
 };
 
 export const errorLogging = async (
