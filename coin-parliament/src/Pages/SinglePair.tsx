@@ -25,11 +25,12 @@ import { httpsCallable } from "firebase/functions";
 import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
+import { Coin } from "../common/models/Coin";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
   const translate = useTranslation();
-  const {coins, totals} = useContext(CoinContext);
+  const {coins, totals,ws} = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [coin1, coin2] = [coins[symbol1], coins[symbol2]];
   const {user, userInfo,votesLast24Hours} = useContext(UserContext);
@@ -46,6 +47,7 @@ const SinglePair = () => {
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
   const [voteNumber, setVoteNumber] = useState(0)
+  const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
   const {
     timeframes,
     setAllPariButtonTime,
@@ -68,7 +70,27 @@ const SinglePair = () => {
       return data;
     }
   }, [params?.id, voteId, vote,selectedTimeFrame]);
+  useEffect(() => {
+    if (!ws) return
+    console.log('websocket connected')
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      const symbol =message?.s?.slice(0, -4)
   
+    if (symbol && (symbol==symbol1 ||symbol==symbol2)) {
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        [symbol]: {
+          ...prevCoins[symbol],
+          price: message.c,
+        },
+      }));
+    }
+  
+    };
+  
+   
+  }, [ws])
   // useEffect(() => {
     
   //   if(vote.timeframe) {
@@ -202,7 +224,7 @@ useEffect(() => {
             <div>
               <CardContainer>
                 <CPCard
-                  coins={coins}
+                  coins={coinUpdated}
                   single={true}
                   onClick={() => {
                   }}
@@ -255,7 +277,7 @@ useEffect(() => {
                   {!graphLoading&& !canVote && user && voteId && (
                     <>
                       <VotedCard
-                        {...{vote, coins, totals, symbol1, symbol2, voteId,selectedTimeFrame,
+                        {...{vote, coins:coinUpdated, totals, symbol1, symbol2, voteId,selectedTimeFrame,
                           setSelectedTimeFrame,selectedTimeFrameArray , setpopUpOpen}}
                       />
                      {graphLoading? <CalculatingVotes/>:<Progress

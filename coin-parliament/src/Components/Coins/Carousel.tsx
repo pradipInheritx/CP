@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Coin, swipeOptions } from "../../common/models/Coin";
-import { Totals } from "../../Contexts/CoinsContext";
+import CoinsContext, { Totals } from "../../Contexts/CoinsContext";
 import { UserProps } from "../../common/models/User";
 import { User as AuthUser } from "@firebase/auth";
 import {
@@ -134,7 +134,9 @@ const Carousel = ({
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const [active, setActive] = useState(0);
   const { width } = useWindowSize();
-
+  const {ws} = useContext(CoinsContext);
+  const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
+  
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
     () => [
       {
@@ -182,7 +184,32 @@ const Carousel = ({
       numRows > 0 ? Math.min(numRows, data?.length) : data?.length;
     setPageSize(pageData ? pageData : 1);
   }, [setPageSize, numRows, data?.length]);
+
+
   
+ 
+  useEffect(() => {
+    if (!ws) return
+    
+    
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      // console.log('cro',message)
+const symbol =message?.s?.slice(0, -4)
+    if (symbol) {
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        [symbol]: {
+          ...prevCoins[symbol],
+          price: message.c,
+        },
+      }));
+    }
+    };
+  
+   
+  }, [ws])
+  // console.log('allcoin1',coinUpdated)
   return expanded === false ? (
     <form
       id={id}
@@ -209,7 +236,7 @@ const Carousel = ({
                     setIndex(index);
                   }}
                   symbol={symbol}
-                  coins={coins}
+                  coins={coinUpdated}
                   totals={totals}
                   onClick={() => {
                     const url = "/coins/" + symbol;
@@ -249,7 +276,7 @@ const Carousel = ({
                                 setIndex(index);
                               }}
                               symbol={symbol}
-                              coins={coins}
+                              coins={coinUpdated}
                               totals={totals}
                               onClick={() => {
                                 const url = "/coins/" + symbol;

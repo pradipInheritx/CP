@@ -67,7 +67,7 @@ import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
 import { getToken } from "firebase/messaging";
 import { Form } from "react-bootstrap";
-import { rest, ws } from "./common/models/Socket";
+import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
 import ContentContext, { ContentPage } from "./Contexts/ContentContext";
 import Content from "./Pages/Content";
@@ -129,10 +129,12 @@ import { pwaInstallHandler } from 'pwa-install-handler'
 import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
 import { handleSoundClick } from "./common/utils/SoundClick";
+import createFastContext from "./hooks/createFastContext";
+
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
-
+let ws:any;
 function App() {
   
   
@@ -238,23 +240,23 @@ function App() {
     []
   );
 
-  useEffect(() => {
-    if('serviceWorker' in navigator) {
-    navigator?.serviceWorker?.addEventListener("message", (message) => {
-      const {
-        notification: { body, title },
-      } = message.data["firebase-messaging-msg-data"] as {
-        notification: { body: string; title: string };
-      };
-      showToast(
-        <div>
-          <h5>{title}</h5>
-          <p>{body}</p>
-        </div>
-      );
-    });
-  }
-  });
+  // useEffect(() => {
+  //   if('serviceWorker' in navigator) {
+  //   navigator?.serviceWorker?.addEventListener("message", (message) => {
+  //     const {
+  //       notification: { body, title },
+  //     } = message.data["firebase-messaging-msg-data"] as {
+  //       notification: { body: string; title: string };
+  //     };
+  //     // showToast(
+  //     //   <div>
+  //     //     <h5>{title}</h5>
+  //     //     <p>{body}</p>
+  //     //   </div>
+  //     // );
+  //   });
+  // }
+  // });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -581,12 +583,21 @@ const[mfaLogin,setMfaLogin]=useState(false)
       });
     });
 
-    onSnapshot(doc(db, "stats", "coins"), (doc) => {
+    // onSnapshot(doc(db, "stats", "coins"), (doc) => {
      
-      const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-      setCoins(newAllCoins);
-      // saveCoins(newAllCoins);
-    });
+    //   const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
+    //   setCoins(newAllCoins);
+    //   // console.log('allcoins',coins)
+    //   // saveCoins(newAllCoins);
+    // });
+    const coinData = firebase
+    .firestore()
+    .collection("stats").doc('coins')
+    coinData.get()
+  .then((snapshot:any) => {        
+//  console.log('allcoin',snapshot.data())
+ setCoins(snapshot.data());
+  });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);
@@ -729,7 +740,8 @@ votesLast24HoursRef.get()
   
  
 }, [userInfo?.voteStatistics?.total])
-console.log('usermfa',user,userInfo)
+// console.log('usermfa',user,userInfo)
+
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
     const key = getKeyByLang(lang);
@@ -759,7 +771,46 @@ console.log('usermfa',user,userInfo)
 // }, [])
 
 
+useEffect(() => {
+  
+if(Object.keys(coins).length === 0) return
+ ws = new WebSocket('wss://stream.binance.com:9443/ws');
+  
+const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      method: 'SUBSCRIBE',
+      params: coinTikerList,
+      id: 1
+    }));
+  };
+ 
+  // const socket = new WebSocket('wss://stream.crypto.com/v2/market');
 
+  // socket.onopen = () => {
+  //   const req = {
+  //     id: 1,
+  //     method: 'subscribe',
+  //     params: {
+  //       channels: ['ticker.CRO_USDT'],
+  //     },
+  //   };
+  //   socket.send(JSON.stringify(req));
+  // };
+
+  // socket.onmessage = (event) => {
+  //   const data = JSON.parse(event.data);
+  //   console.log('cryptoCoin', data?.result?.data[0])
+  //   if (data && data.data && data.data[0] && data.data[0].a) {
+  //     // setPrice(data.data[0].a);
+  //     console.log('cryptoCoin', data.data[0].a)
+     
+  //   }
+  // };
+  return () => {
+    ws.close();
+  };
+}, [Object.keys(coins).length]);
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -940,6 +991,7 @@ console.log('usermfa',user,userInfo)
                       setVotesLast24Hours,
                     }}
                   >
+                    
                     {getSubdomain() === "admin" && user && <Admin />}
                     {(getSubdomain() !== "admin" ||
                       (getSubdomain() === "admin" && !user)) && (

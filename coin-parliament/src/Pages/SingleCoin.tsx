@@ -65,7 +65,7 @@ const SingleCoin = () => {
   let params = useParams();
   const translate = useTranslation();
   const {user, userInfo,votesLast24Hours} = useContext(UserContext);
-  const {coins, totals} = useContext(CoinContext);
+  const {coins, totals,ws} = useContext(CoinContext);
   const {showModal} = useContext(NotificationContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
@@ -83,6 +83,7 @@ const SingleCoin = () => {
   const [votePrice, setvotePrice] = useState<any>([]);
   const [votedDetails, setVotedDetails] = useState<any>([]);
   const [voteNumber, setVoteNumber] = useState<any>([]);
+  const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun,
     remainingTimer,
@@ -93,7 +94,27 @@ const SingleCoin = () => {
   const AllvotePrice: any = [];
   const AllvoteValueObject: any = [];
 
-
+  useEffect(() => {
+    if (!ws) return
+    console.log('websocket connected')
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      const symbol =message?.s?.slice(0, -4)
+  
+    if (symbol && symbol == params?.id) {
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        [symbol]: {
+          ...prevCoins[symbol],
+          price: message.c,
+        },
+      }));
+    }
+  
+    };
+  
+   
+  }, [ws])
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
@@ -118,6 +139,24 @@ const SingleCoin = () => {
      
 //       return data.data as unknown as LineData[];
 // }
+// useEffect(() => {
+//   ws.onmessage = (event) => {
+//     const message = JSON.parse(event.data);
+//    console.log(message.c)
+//   // const updatedCoin= { ...coins};
+//   // updatedCoin.BTC={
+//   //   ...coins?.BTC,
+//   //   price:message.c
+//   // }
+//   // console.log('allcoin1',updatedCoin,coins)
+//     // 
+//     // const newPrice = parseFloat(message.k.c);
+//     // setCoins(updatedCoin);
+//   };
+
+ 
+// }, [])
+
   useEffect(() => {
     // 
     
@@ -377,7 +416,7 @@ const calcVote = useCallback(async () => {
                     }
                   }}
                   symbol={coin.symbol}
-                  coins={coins}
+                  coins={coinUpdated}
                   totals={totals}
                 />
               </CardContainer>
@@ -405,7 +444,7 @@ const calcVote = useCallback(async () => {
                       <VotedCard
                         {...{
                           vote,
-                          coins,
+                          coins:coinUpdated,
                           totals,
                           symbol1,
                           symbol2,
