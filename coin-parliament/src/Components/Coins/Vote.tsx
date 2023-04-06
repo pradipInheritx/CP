@@ -8,6 +8,7 @@ import NotLoggedInPopup from "../App/NotLoggedInPopup";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 export type VoteOption = {
   icon: React.ReactNode;
@@ -122,6 +123,7 @@ const Vote = ({
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
+                  handleSoundClick()
                   if (disabled && disabledText) {
                     if (!user) {
                      
@@ -156,6 +158,7 @@ const Vote = ({
               {...{
                 ...option1.buttonProps,
                 onClick: () => {
+                  handleSoundClick()
                   if (disabled && disabledText) {
                     if (!user) {
                       showModal(<NotLoggedInPopup/>);

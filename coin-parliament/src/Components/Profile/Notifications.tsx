@@ -1,9 +1,10 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import UserContext from "../../Contexts/User";
 import Notification from "./Notification";
 import {useTranslation} from "../../common/models/Dictionary";
 import styled from "styled-components";
 import {Container} from "react-bootstrap";
+import { NotificationWait } from "../../common/utils/SoundClick";
 
 const P = styled.p`
   text-align: center;
@@ -14,7 +15,15 @@ const P = styled.p`
   }
 `
 const Notifications = () => {
-  const {notifications} = useContext(UserContext)
+  const { notifications } = useContext(UserContext)
+  useEffect(() => {
+    
+    if (notifications.length) {
+    NotificationWait()
+  }
+ 
+  }, [notifications])
+  
   const translate = useTranslation()
   return (
     <Container className="py-4">

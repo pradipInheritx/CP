@@ -10,6 +10,8 @@ import Line from '../Components/icons/line';
 import { timeframeInitials } from '../Components/Atoms/Button/Button';
 import { Link } from 'react-router-dom';
 import { Other } from './SingleCoin';
+import AppContext from '../Contexts/AppContext';
+import { voteEndFinish } from '../common/utils/SoundClick';
 
 
 const CoinContainer = styled.div`
@@ -83,15 +85,18 @@ function ModalForResult({ popUpOpen,vote,type}: {
 }) {
   useEffect(() => {
     if (popUpOpen) {        
-      handleShow()      
+      handleShow()  
+      voteEndFinish()
     }    
-    }, [popUpOpen])
+  }, [popUpOpen])
+  
     
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   
   const { coins } = useContext(CoinsContext);
+  const { showBack,setShowBack} = useContext(AppContext);
   const winner = calculateWinner(vote);
   // console.log(vote,"allVote")
   const voteCoins = vote?.coin?.split("-");
@@ -103,6 +108,8 @@ function ModalForResult({ popUpOpen,vote,type}: {
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
  const votelength =Object.keys(vote).length
+  
+  console.log(vote?.valueExpirationTimem,"valueExpirationTime")
   
   return (
          <div>
@@ -133,13 +140,13 @@ function ModalForResult({ popUpOpen,vote,type}: {
                       {coin.name} - {coin.symbol}
                     </span>
                     <div>
-                      {vote.direction ? "BULL" : "BEAR"} - 1H &nbsp;
+                      {vote?.direction ? "BULL" : "BEAR"} - {timeframeInitials(vote?.timeframe?.name)} &nbsp;
                       <span>
-                        {formatCurrency(
-                          type === "coin"
+                        {/* {formatCurrency( */}
+                          {type === "coin"
                             ? (vote?.valueVotingTime as unknown as number)
-                            : (vote?.valueVotingTime as number[])[1]
-                        )}
+                            : (vote?.valueVotingTime as number[])[1]}
+                         {/* )} */}
                       </span>
                     </div>
                     <div>
@@ -159,13 +166,14 @@ function ModalForResult({ popUpOpen,vote,type}: {
                     <div>
                       <div>
                         {vote.valueExpirationTime &&
-                          formatCurrency(
+                          // formatCurrency(
                             type === "coin"
                               ? (vote?.valueVotingTime as unknown as number)
                               : (
                                 vote?.valueExpirationTime as number[]
                               )[1]
-                          )}
+                          // )
+                          }
                       </div>
                       <div>
                         {vote.valueExpirationTime && (
@@ -219,9 +227,10 @@ function ModalForResult({ popUpOpen,vote,type}: {
                    
                     <div>
                       {vote?.valueExpirationTime &&
-                        formatCurrency(                                              
+                        // formatCurrency(                                              
                           (vote?.valueExpirationTime as number[])[0]
-                        )}
+                        // )
+                        }
                     </div>
                     <div>{vote?.valueExpirationTime && <Trend num={trend} />}</div>
                   </div>
@@ -280,10 +289,11 @@ function ModalForResult({ popUpOpen,vote,type}: {
                    
                     <div>
                       {vote.valueExpirationTime &&
-                        formatCurrency(
+                        // formatCurrency(
                         
                            (vote.valueExpirationTime as number[])[1]
-                        )}
+                        // )
+                        }
                     </div>
                     <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
                   </div>
@@ -305,8 +315,12 @@ function ModalForResult({ popUpOpen,vote,type}: {
             
 
           <div className='py-2  d-flex  justify-content-center'>
-                <Link to="/profile/votes" style={{textDecoration:'none' }}>
-                      <Other>{("vote histery")}</Other>
+            <Link to="/profile/mine" style={{ textDecoration: 'none' }}
+              onClick={() => {
+                setShowBack(true);
+            }}
+            >
+                      <Other>{("View Mining")}</Other>
             </Link>
             </div>
                 </Modal.Body>

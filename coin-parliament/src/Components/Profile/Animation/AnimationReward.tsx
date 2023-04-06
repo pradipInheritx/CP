@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './style.css'
 import { gsap } from "gsap";
 import container from './images/container.png'
@@ -7,6 +7,7 @@ import cap from './images/cap.png'
 import confettisticker2 from './images/confettisticker2.gif'
 import trader from './images/trader.png'
 import NFTCard from '../../../common/NFTCard/NFTCard';
+import { claimyourreward } from '../../../common/utils/SoundClick';
 type MintingProps = {
   
   setRewardTimer?:any,
@@ -55,6 +56,9 @@ function foo() {
   setRewardTimer(null)
 }
 
+useEffect(() => {
+  claimyourreward()
+}, [])
 
 
 

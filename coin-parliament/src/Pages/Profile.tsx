@@ -28,6 +28,7 @@ import SecurityIcon from "../Components/icons/securityIcon";
 import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
 import { texts } from "../Components/LoginComponent/texts";
+import { handleSoundClick } from "../common/utils/SoundClick";
 
 export enum ProfileTabs {
   profile = "profile",
@@ -44,7 +45,7 @@ export enum ProfileTabs {
 }
 
 export const CardContainer = styled.div`
-
+overflow:hidden;
 &.BigScreen{
 background:#d4d0f3;
   height: 140px;
@@ -134,12 +135,12 @@ const Profile = () => {
             <>
               {!userInfo?.paid && (
           <Row
-            className='d-flex justify-content-center w-100'
-            role='button'
-          
-            onClick={() => navigate("/upgrade")}
+            className='d-flex justify-content-center'                      
           >
-                  <MyBadge bg='-'>
+                  <MyBadge bg='-' onClick={() => {
+                    handleSoundClick()
+                    navigate("/upgrade")
+                  }} style={{ cursor: "pointer" }} >
                     {/* {translate("upgrade your account")} */}
                     {texts.UpgradeYourAccount}
                   </MyBadge>

@@ -13,6 +13,7 @@ import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
 import { stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -151,10 +152,12 @@ const Minting = ({
             className='w-100'
             style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "8px" }}
             onClick={async () => {
+              handleSoundClick()
               if (claim) {
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
+                
                 setRewardTimer(result);
                 setLoading(false);
                 console.log("reward", result);

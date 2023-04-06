@@ -22,6 +22,7 @@ import upgrade1 from "../../assets/svg/upgrade1.svg";
 import upgrade2 from "../../assets/svg/upgrade2.svg";
 import upgrade3 from "../../assets/svg/upgrade3.svg";
 import UpgradeCopy from "./UpgradeCopy";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -247,7 +248,10 @@ const UpgradePage = () => {
             <button
               type='button'
               className='btn '
-              onClick={() => showModal(<UpgradeCopy />)}
+              onClick={() => {
+                handleSoundClick()
+                showModal(<UpgradeCopy />)
+              }}
               style={{
                 background:
                   " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" /* fallback for old browsers */,

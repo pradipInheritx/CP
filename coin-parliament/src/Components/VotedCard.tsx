@@ -19,6 +19,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "../firebase";
 import { texts } from "./LoginComponent/texts";
 import { Button, Modal } from "react-bootstrap";
+import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
@@ -212,7 +213,7 @@ const VotedCard = ({
       valueVotingTime = vote.valueVotingTime;
     }
 
-    valueVotingTime = Number(Number(valueVotingTime).toFixed(2));
+    valueVotingTime = Number(Number(valueVotingTime));
     row1 = coin2
       ? `${votedCoin.symbol} - `
       : `${voted} ${votedCoin.symbol}`;
@@ -326,7 +327,7 @@ export default VotedCard;
 
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup}:
+export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup}:
   {
     expirationTime: number, vote?: any, voteId?: any
   coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any
@@ -337,6 +338,11 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
   //   coins[symbol1]?.symbol.toLowerCase() || "",
   //   coins[symbol2]?.symbol.toLowerCase() || "",
   // ];
+  const TenSec = expirationTime - (expirationTime - 10000)
+  // console.log(TenSec ,"TenSec")
+  // if (expirationTime == TenSec) {
+  //   console.log("i am working")
+  // }
   const coin1 = `${coins && symbol1? coins[symbol1]?.symbol.toLowerCase() || "":""}`
   const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
   
@@ -368,6 +374,11 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins,symbol1,symbol
     <Countdown
       date={expirationTime}
       renderer={({ hours, minutes, seconds, completed }) => {
+
+        if (seconds> 0 && seconds< 11) {
+          lastTensecWait()
+        }
+        
         if (completed) {
           if (vote && !vote?.sucess) {            
             checkprice()
