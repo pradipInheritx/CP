@@ -213,7 +213,8 @@ const VotedCard = ({
       valueVotingTime = vote.valueVotingTime;
     }
 
-    valueVotingTime = Number(Number(valueVotingTime));
+    // valueVotingTime = Number(valueVotingTime);
+    console.log('votetime',valueVotingTime)
     row1 = coin2
       ? `${votedCoin.symbol} - `
       : `${voted} ${votedCoin.symbol}`;
@@ -228,7 +229,7 @@ const VotedCard = ({
 
     row3=`${vote.timeframe.name}`
   }    
-  
+  // console.log('votetime',vote)
 
   return (
     <>

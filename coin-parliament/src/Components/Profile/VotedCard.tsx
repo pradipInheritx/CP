@@ -158,7 +158,8 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
               //       ? (vote?.valueVotingTime as unknown as number)
               //       : (vote.valueExpirationTime as number[])[index]
               // )
-              index !== undefined && index==0?(vote.valueExpirationTime as number[])[0]:(vote.valueExpirationTime as number[])[1]
+              // @ts-ignore
+              index !== undefined && index==0?vote?.valueVotingTime[0]:vote.valueVotingTime[1]
             }
           </div>
           <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>

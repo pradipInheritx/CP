@@ -234,7 +234,7 @@ function ModalForResult({ popUpOpen,vote,type}: {
                         // formatCurrency(                                              
                         //   (vote?.valueExpirationTime as number[])[0]
                         // )
-                              vote?.valueExpirationTime[0]
+                              vote?.valueVotingTime[0]
                         }
                     </div>
                     <div>{vote?.valueExpirationTime && <Trend num={trend} />}</div>
@@ -298,7 +298,7 @@ function ModalForResult({ popUpOpen,vote,type}: {
                         // (vote.valueExpirationTime as number[])[1]
                            
                         // )
-                              vote.valueExpirationTime[1]
+                              vote.valueVotingTime[1]
                         }
                     </div>
                     <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
