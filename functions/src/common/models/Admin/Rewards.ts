@@ -29,15 +29,15 @@ type NewCardNft = {
 
 // generate serial number
 export const generateSerialNumber = async (
-  collectionId: number,
+  albumId: number,
   setId: number,
   cardType: any,
   quantity: number
 ) => {
+  console.log("albumId>>>>>>", albumId);
   const serialNumber: string[] = [];
   for (let i = 0; i < quantity; i++) {
-    const card =
-      String(collectionId) + String(setId) + String(cardType) + String(i);
+    const card = String(albumId) + String(setId) + String(cardType) + String(i);
     serialNumber.push(card);
   }
   return serialNumber;
@@ -162,6 +162,12 @@ export const addRewardCardNft = async (req: any, res: any) => {
     cardImage,
   } = req.body;
   try {
+    const getCollectionRef = await firestore()
+      .collection("nftGallery")
+      .doc(albumId)
+      .get();
+    let collectionDetails: any = getCollectionRef.data();
+    console.log("collectionDetails >>>>>", collectionDetails);
     const id = uuidv4();
     const newCardNft: NewCardNft = {
       cardId,
@@ -171,18 +177,17 @@ export const addRewardCardNft = async (req: any, res: any) => {
       totalQuantity: quantity,
       noOfCardHolder,
       cardStatus,
-      sno: await generateSerialNumber(albumId, setId, cardType, quantity),
+      sno: await generateSerialNumber(
+        collectionDetails.albumId,
+        setId,
+        cardType,
+        quantity
+      ),
       cardImage: cardImage
         ? await uploadImage(cardImage, albumId, setId, id)
         : "",
     };
 
-    const getCollectionRef = await firestore()
-      .collection("nftGallery")
-      .doc(albumId)
-      .get();
-
-    let collectionDetails: any = getCollectionRef.data();
     let setDetails = collectionDetails?.setDetails.find((data: any) => {
       return data.setId == setId;
     });
