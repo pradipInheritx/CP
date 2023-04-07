@@ -127,20 +127,20 @@ function ModalForResult({ popUpOpen,vote,type}: {
           {type == "coin" && vote?
             <div className=' p-2 w-100 m-auto'
               style={{
-                boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
+                // boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
               }}
             >
               <div className={`${window.screen.width < 767 ? "flex-column" : ""} d-flex justify-content-center align-items-center`}>
-                <div className="w-25 d-flex justify-content-center">
+                <div className="w-25 d-flex justify-content-center pb-2">
                   <Logo {...{ symbol: vote?.coin || "", width: 30 }} />
                 </div>
-                <div className={`${window.screen.width < 767 ? "flex-column" : ""} w-75 d-flex justify-content-between`}>
+                <div className={`${window.screen.width < 767 ? "flex-column" : ""} w-100 d-flex justify-content-between`}>
                   <div className={`${window.screen.width < 767 ? "w-100" : "w-50"}`}>
                     <span>
                       {coin.name} - {coin.symbol}
                     </span>
                     <div style={{color:"#6352E8"}}>
-                      {vote?.direction ? "BULL" : "BEAR"} - {timeframeInitials(vote?.timeframe?.name)} &nbsp;
+                      {vote?.direction==0 ? "BULL" : "BEAR"} - {timeframeInitials(vote?.timeframe?.name)} &nbsp;
                       <span>
                         {
                           // formatCurrency(
@@ -207,7 +207,7 @@ function ModalForResult({ popUpOpen,vote,type}: {
             {
             type == "pair" && votelength ?
               <div className=' w-100 '
-                style={{boxShadow:" rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}
+                // style={{boxShadow:" rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}
               >
                 <div
                   // className={`${window.screen.width < 767 ? "" : ""}`}
@@ -217,11 +217,11 @@ function ModalForResult({ popUpOpen,vote,type}: {
             <div className=' text-center' style={{width:`${window.screen.width < 767 ?"100%" :"30%"}`}}>                  
               <CoinContainer winner={vote?.direction === 0}>
                 <div className=" ">
-                    <div >
+                    <div className='p-2'>
                        {/* @ts-ignore */}
                     <Logo {...{ symbol:  paircoin[0]?.symbol || "", width: 30 }} />
                   </div>
-                  <div className=""  style={{lineHeight:'16px'}}>
+                  <div className=""  style={{lineHeight:'20px'}}>
                       <div>
                         {/* @ts-ignore */}
                       <strong>{paircoin[0]?.name}</strong>
@@ -262,8 +262,8 @@ function ModalForResult({ popUpOpen,vote,type}: {
               </div>
               <div style={{ minHeight: "100%" }}>
                 <PairsVoteVs>
-                  {vote?.coin?.split("-")[vote?.direction]} -{" "}
-                  {timeframeInitials(vote?.timeframe?.name)}
+                  {vote?.coin?.split("-")[vote?.direction]} {" "}
+                 <p> {timeframeInitials(vote?.timeframe?.name)}</p>
                 </PairsVoteVs>
               </div>
               <div style={{ minHeight: "100%" }} className="">
@@ -280,11 +280,11 @@ function ModalForResult({ popUpOpen,vote,type}: {
               <div className=' text-center ' style={{width:`${window.screen.width < 767 ?"100%" :"30%"}`}}>                  
               <CoinContainer winner={vote?.direction === 1}>
                 <div className="">
-                    <div >
+                    <div className='p-2'>
                        {/* @ts-ignore */}
                     <Logo {...{ symbol:paircoin[1]?.symbol|| "", width: 30 }} />
                   </div>
-                  <div className="" style={{lineHeight:'16px'}}>
+                  <div className="" style={{lineHeight:'20px'}}>
                       <div>
                           {/* @ts-ignore */}
                       <strong>{paircoin[1]?.name}</strong>
@@ -326,7 +326,7 @@ function ModalForResult({ popUpOpen,vote,type}: {
                 setShowBack(true);
             }}
             >
-                      <Other>{("View Mining")}</Other>
+                      <Other>{("CHECK PROGRESS")}</Other>
             </Link>
             </div>
                 </Modal.Body>
