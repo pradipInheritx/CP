@@ -14,25 +14,18 @@ const PiePseudo = css`
   position: absolute;
   border-radius: 50%;
 `;
-
-const Pie = styled.div`
-border:1px solid;
-  box-shadow: 0 3px 6px #00000029;
-  border-radius: 100%;
-  width: ${(props: PieChartProps) => `${props.width}px`};
-  
-  aspect-ratio: 1;
-  position: relative;
-  display: inline-grid;
-  margin: 5px;
-  place-content: center;
-  font-size: 25px;
-  font-weight: bold;
-  font-family: sans-serif;
-  
-  &:before {
-    ${PiePseudo};
-    inset: 0;         
+const small = css`
+    inset: 0;
+    background: conic-gradient(${(props: PieChartProps) => `${props.color}`} calc(${(props: PieChartProps) => `${props.percentage}`} * 1%),#0000 0);     
+    -webkit-mask: radial-gradient(farthest-side,
+    #0000 calc(99% - ${(props: PieChartProps) => `${props.border}px`}),
+    #000 calc(100% - ${(props: PieChartProps) => `${props.border}px`}));
+    mask: radial-gradient(farthest-side,
+    #0000 calc(99% - ${(props: PieChartProps) => `${props.border}px`}),
+    #000 calc(100% - ${(props: PieChartProps) => `${props.border}px`}));
+`;
+const big = css`
+   inset: 0;         
   animation: example 0.5s  both;
    @keyframes example {
       0% {
@@ -85,22 +78,28 @@ border:1px solid;
         mask: radial-gradient(farthest-side,
         #0000 calc(99% - ${(props: PieChartProps) => `${props.border}px`}),
         #000 calc(100% - ${(props: PieChartProps) => `${props.border}px`}));
-      }     
-      // background: linear-gradient(to right, red 50%, black 50%); 
+      }       
+`;
+
+const Pie = styled.div`
+border:1px solid;
+  box-shadow: 0 3px 6px #00000029;
+  border-radius: 100%;
+  width: ${(props: PieChartProps) => `${props.width}px`};
+  
+  aspect-ratio: 1;
+  position: relative;
+  display: inline-grid;
+  margin: 5px;
+  place-content: center;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: sans-serif;
+  
+  &:before {
+    ${PiePseudo};   
+    ${window.screen.width<767?small:big}
   }
-
-  // &:before {
-  //   ${PiePseudo};
-  //   inset: 0;
-  //   background: conic-gradient(${(props: PieChartProps) => `${props.color}`} calc(${(props: PieChartProps) => `${props.percentage}`} * 1%),#0000 0);     
-  //   -webkit-mask: radial-gradient(farthest-side,
-  //   #0000 calc(99% - ${(props: PieChartProps) => `${props.border}px`}),
-  //   #000 calc(100% - ${(props: PieChartProps) => `${props.border}px`}));
-  //   mask: radial-gradient(farthest-side,
-  //   #0000 calc(99% - ${(props: PieChartProps) => `${props.border}px`}),
-  //   #000 calc(100% - ${(props: PieChartProps) => `${props.border}px`}));
-  // }
-
   &:after {
     ${PiePseudo};
     background: ${(props: PieChartProps) => `${props.color}`};
