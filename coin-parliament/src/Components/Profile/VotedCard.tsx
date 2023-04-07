@@ -153,11 +153,12 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
           <div>
             {vote.valueExpirationTime &&
               
-              formatCurrency(
-                index === undefined
-                    ? (vote?.valueVotingTime as unknown as number)
-                    : (vote.valueExpirationTime as number[])[index]  
-              )
+              // formatCurrency(
+              //   index === undefined
+              //       ? (vote?.valueVotingTime as unknown as number)
+              //       : (vote.valueExpirationTime as number[])[index]
+              // )
+              index !== undefined && index==0?(vote.valueExpirationTime as number[])[0]:(vote.valueExpirationTime as number[])[1]
             }
           </div>
           <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
@@ -190,11 +191,12 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       <CoinCurrency >
                         {vote.direction==0 ? "BULL" : "BEAR"} - {timeframeInitials(vote.timeframe.name)}&nbsp;
                         <span>
-                          {/* {formatCurrency( */}
-                            {index === undefined
+                          {/* {formatCurrency(
+                            index === undefined
                               ? (vote?.valueVotingTime as unknown as number)
-                              : (vote?.valueVotingTime as number[])[index]}
-                          {/* )} */}
+                              : (vote?.valueVotingTime as number[])[index]
+                            )}  */}
+                            {vote?.valueVotingTime as unknown as number}
                         </span>
                       </CoinCurrency>
                     </p>
