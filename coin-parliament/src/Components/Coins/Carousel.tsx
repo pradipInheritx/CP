@@ -134,7 +134,7 @@ const Carousel = ({
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const [active, setActive] = useState(0);
   const { width } = useWindowSize();
-  const {ws} = useContext(CoinsContext);
+  const {ws,socket} = useContext(CoinsContext);
   const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
   
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
@@ -206,9 +206,27 @@ const symbol =message?.s?.slice(0, -4)
       }));
     }
     };
-  
+   
    
   }, [ws])
+  useEffect(() => {
+    if (!socket) return
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+     
+if (data?.result?.data[0].a){
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        ['CRO']: {
+          ...prevCoins['CRO'],
+          price: data?.result?.data[0]?.a,
+        },
+      }));
+    }
+    };
+  
+  }, [socket])
+  
   // console.log('allcoin1',coinUpdated)
   return expanded === false ? (
     <form

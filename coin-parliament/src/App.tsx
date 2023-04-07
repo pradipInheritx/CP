@@ -135,6 +135,7 @@ import createFastContext from "./hooks/createFastContext";
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 let ws:any;
+let socket:any;
 function App() {
   
   
@@ -792,30 +793,24 @@ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@t
     }));
   };
  
-  // const socket = new WebSocket('wss://stream.crypto.com/v2/market');
+   socket = new WebSocket('wss://stream.crypto.com/v2/market');
 
-  // socket.onopen = () => {
-  //   const req = {
-  //     id: 1,
-  //     method: 'subscribe',
-  //     params: {
-  //       channels: ['ticker.CRO_USDT'],
-  //     },
-  //   };
-  //   socket.send(JSON.stringify(req));
-  // };
+  socket.onopen = () => {
+    const req = {
+      id: 1,
+      method: 'subscribe',
+      params: {
+        channels: ['ticker.CRO_USDT'],
+      },
+    };
+    socket.send(JSON.stringify(req));
+  };
 
-  // socket.onmessage = (event) => {
-  //   const data = JSON.parse(event.data);
-  //   console.log('cryptoCoin', data?.result?.data[0])
-  //   if (data && data.data && data.data[0] && data.data[0].a) {
-  //     // setPrice(data.data[0].a);
-  //     console.log('cryptoCoin', data.data[0].a)
-     
-  //   }
-  // };
+  
   return () => {
+
     ws.close();
+    socket.close();
   };
 }, [Object.keys(coins).length]);
   return loader ? (
@@ -973,6 +968,7 @@ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@t
                       changePrice,
                     setChangePrice,
                     ws,
+                    socket,
                     rest,
                     coins,
                     setCoins,

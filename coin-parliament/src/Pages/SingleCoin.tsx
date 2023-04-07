@@ -65,7 +65,7 @@ const SingleCoin = () => {
   let params = useParams();
   const translate = useTranslation();
   const {user, userInfo,votesLast24Hours} = useContext(UserContext);
-  const {coins, totals,ws} = useContext(CoinContext);
+  const {coins, totals,ws,socket} = useContext(CoinContext);
   const {showModal} = useContext(NotificationContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
@@ -115,6 +115,23 @@ const SingleCoin = () => {
   
    
   }, [ws])
+  useEffect(() => {
+    if (!socket) return
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+if (data?.result?.data[0].a){
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        ['CRO']: {
+          ...prevCoins['CRO'],
+          price: data?.result?.data[0]?.a,
+        },
+      }));
+    }
+    };
+  
+  }, [socket])
   const getCpviData = useCallback(async () => {
 
     if (voteId) {

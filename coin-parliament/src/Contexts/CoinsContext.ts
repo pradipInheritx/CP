@@ -104,6 +104,7 @@ export type CoinContextProps = {
   setLeaders: (leaders: Leader[]) => void;
   rest: ICryptoClient;
   ws: WebSocket;
+  socket:WebSocket;
   allCoins: string[];
   allPairs: Array<string[]>;
 };

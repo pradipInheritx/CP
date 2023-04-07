@@ -95,7 +95,7 @@ const Mine = () => {
 	const goBack = () => {
 		navigate(-1);
 	}
-
+console.log('userInfo',userInfo)
 
   return (
     <div>

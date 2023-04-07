@@ -30,7 +30,7 @@ const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
   const translate = useTranslation();
-  const {coins, totals,ws} = useContext(CoinContext);
+  const {coins, totals,ws,socket} = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [coin1, coin2] = [coins[symbol1], coins[symbol2]];
   const {user, userInfo,votesLast24Hours} = useContext(UserContext);
@@ -91,6 +91,23 @@ const SinglePair = () => {
   
    
   }, [ws])
+  useEffect(() => {
+    if (!socket) return
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+     
+if (data?.result?.data[0].a){
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        ['CRO']: {
+          ...prevCoins['CRO'],
+          price: data?.result?.data[0]?.a,
+        },
+      }));
+    }
+    };
+  
+  }, [socket])
   // useEffect(() => {
     
   //   if(vote.timeframe) {
