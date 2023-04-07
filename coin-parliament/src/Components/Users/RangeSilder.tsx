@@ -9,6 +9,13 @@ const InputRange = styled.input`
     & ::-webkit-slider-runnable-track{
       border-radius: 1px;
     }
+    input[type=range]::-webkit-slider-thumb {
+    background-color: #000;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease-in-out;
+  }
 `;
 
 
@@ -39,7 +46,7 @@ const getBorderColor = () => {
         // @ts-ignore
        let bothCurrentPrice = [...vote?.valueVotingTime];
        const diffPer = [bothLivePrice[0] - bothCurrentPrice[0] ,bothLivePrice[1] - bothCurrentPrice[1] ]
-       const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0],(diffPer[1] *1000)/bothCurrentPrice[1]]
+       const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0] + Math.random()*4,(diffPer[1] *1000)/bothCurrentPrice[1]+Math.random()*4]
     //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
      let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
@@ -50,7 +57,7 @@ const getBorderColor = () => {
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
       // if(!vote?.valueVotingTime || vote?.valueVotingTime == NaN){
       
-      if ((averageValue == averageValue)) {        
+      if ((averageValue <=10)) {        
         setPersentValue(vote?.direction == 1 ? 50 +getPer[1] : 50 +getPer[0]) 
       } else {
         if (vote?.direction == 1) {
@@ -63,9 +70,9 @@ const getBorderColor = () => {
         } else if (vote?.direction == 0) {
           winner != vote?.direction
             ?            
-            setPersentValue(25 + getPer[0] > 0 ? 25 + getPer[0]:0) 
+            setPersentValue(25  + getPer[0] > 0 ? 25 + getPer[0]:0) 
             :
-            setPersentValue(75 + getPer[0] >100 ?100 :75 + getPer[0]) 
+            setPersentValue(75  + getPer[0] >100 ?100 :75 + getPer[0]) 
 
         }
       }       
@@ -92,7 +99,7 @@ const getBorderColor = () => {
         // if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
         
        const diffPer = livePrice - votePrice 
-       const getPer= (diffPer *1000)/votePrice
+       const getPer= ((diffPer *1000)/votePrice)+ Math.random()*4
        
         console.log(getPer,"getPer")
        if(livePrice < votePrice + votePrice /10 &&
@@ -120,7 +127,7 @@ const getBorderColor = () => {
     <div className=''>
           {/* <p style={{color:"black"}} className="py-2">YOUR VOTE IMPACT</p> */}
           <div className="d-flex justify-content-around w-100 ">                                                    
-              <input type="range"  id="myinput"  min={0} max={100} value={persentValue} className="rengeInput w-100"></input>
+              <input type="range"  id="myinput"  min={0} max={100} value={persentValue} className="rengeInput w-100" ></input>
             </div>
             <div className="d-flex justify-content-between mt-2"
             style={{color:"black"}}

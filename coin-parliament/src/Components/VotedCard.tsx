@@ -131,8 +131,8 @@ const VotedCard = ({
        
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      if ((averageValue == averageValue)) {        
-        setBorderColor("#6352e8") 
+      if ((averageValue <=10)) {        
+        setBorderColor("#6352e8")  
       } else {
         if (vote?.direction == 1) {
             winner == vote?.direction
@@ -325,7 +325,7 @@ const VotedCard = ({
 };
 
 export default VotedCard;
-
+let getresultFlag:any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
 export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup}:
@@ -334,6 +334,14 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
   coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any
   }) => {
 
+
+  useEffect(() => {
+    getresultFlag=true
+  
+    return () => {
+      getresultFlag=true
+    }
+  }, [])
   
   // const [coin1, coin2] = [
   //   coins[symbol1]?.symbol.toLowerCase() || "",
@@ -348,6 +356,8 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
   const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
   
   const checkprice = async() => {
+    if (!getresultFlag) return
+    getresultFlag=false
     console.log('price called')
    const data = await getPriceCalculation({            
         coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,

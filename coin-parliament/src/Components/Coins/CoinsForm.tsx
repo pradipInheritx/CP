@@ -74,7 +74,7 @@ const CoinsForm = ({
         collection(db, "votes").withConverter(voteConverter),
         {
           coin: coin.symbol,
-          CPMRangePercentage: coin?.CPMRangePercentage || 1,
+          CPMRangePercentage: coin?.CPMRangePercentage || 10,
           direction: selectedOption,
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
