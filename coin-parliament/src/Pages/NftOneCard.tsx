@@ -207,7 +207,9 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
         if (Disable == "" || Disable == undefined) { 
           // @ts-ignore
           BackSideCard(id);
-          cardFlip()
+          if (window.screen.width < 767) {            
+            cardFlip()
+          }
         }
         
       }}

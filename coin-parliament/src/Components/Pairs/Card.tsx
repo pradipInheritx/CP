@@ -328,7 +328,7 @@ const secColor= ()=>{
         <OverlapGroup>
           <VS {...{single}}>VS</VS>
         </OverlapGroup>
-        <CoinCard color={colorFirst} coin={coin2} onClick={onClick} single={single} coins={coins}/>
+        <CoinCard color={colorSec} coin={coin2} onClick={onClick} single={single} coins={coins}/>
       </CardsContainer>
       {!single && (
         <Component127371>

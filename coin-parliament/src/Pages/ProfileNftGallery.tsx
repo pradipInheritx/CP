@@ -523,7 +523,7 @@ const CheckCardDisable = (cardId: any) => {
             })}            
           </select>
           </div>
-          <div className={`${window.screen.width < 767 ? "" : ""}`}>
+          <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
           
               <select
                 name='type'

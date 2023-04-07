@@ -107,22 +107,23 @@ const FwProfileNftGalleryType = () => {
 
 
   const BackSideCard = (value: string | number) => {
-    let allBackCard = backCards;
     // @ts-ignore
-    // setBackCards(backCards == value ? "" : value);
-    backCards.length > 0  ? backCards?.map((items:any, index:number) => {
-      if (items == value) {
-        // @ts-ignore
-        allBackCard.splice(index, 1);
-        setBackCards(allBackCard);
-      }
-      else {
-        // @ts-ignore
-        
-        setBackCards([...backCards,value])
-      }
-      // @ts-ignore
-    }) : setBackCards([...backCards,value]);
+     let allBackCard = [...backCards];
+     // @ts-ignore
+     // setBackCards(backCards == value ? "" : value);
+     backCards.length > 0
+       ? backCards?.map((items: any, index: number) => {
+           if (items == value) {
+             // @ts-ignore
+             allBackCard.splice(index, 1);
+             setBackCards(allBackCard);
+           } else {
+             // @ts-ignore
+             setBackCards([...backCards, value]);
+           }
+           // @ts-ignore
+         })
+       : setBackCards([...backCards, value]);
   };
 
       let params = useParams();
@@ -390,7 +391,7 @@ useEffect(() => {
               className='py-2 mx-2 rounded border'
               // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "py-2" : ""}`}>      
+            <div className={`${window.screen.width < 767 ? "" : ""}`}>      
              <select
                 name='cars'
                 id='cars'

@@ -75,7 +75,7 @@ const Mine = () => {
              console.log(showBack, "viewshow")
              handleShow()
           setShowBack(false)
-        }, 2000);
+        }, 10000);
         }       
     }, []);
 
@@ -136,9 +136,15 @@ console.log('userInfo',userInfo)
               </div>
               <div style={{ marginTop: "7px" }}>
                 {" "}
-                <PAXCard
+                {/* <PAXCard
                   walletId={userInfo?.wallet || ""}
                   PAX={userInfo?.voteStatistics?.pax || 0}
+                /> */}
+
+                <PAXCard
+                  walletId={userInfo?.wallet || ""}
+                  // @ts-ignore
+                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
                 />
               </div>
             </div>

@@ -375,7 +375,8 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
       date={expirationTime}
       renderer={({ hours, minutes, seconds, completed }) => {
 
-        if (expirationTime && seconds> 0 && seconds < 11) {
+        if (expirationTime && hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
+          console.log( hours, minutes, seconds, "i am done")
           lastTensecWait()
         }
         

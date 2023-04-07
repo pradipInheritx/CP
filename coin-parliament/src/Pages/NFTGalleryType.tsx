@@ -98,9 +98,9 @@ const NFTGalleryType = () => {
   const [setsCardId, setSetsCardId] = useState<any>('none')
      const [setsValue, setSetsValue] = useState<any>([])
   
-  const BackSideCard = (value: string | number) => {
+   const BackSideCard = (value: string | number) => {
     // @ts-ignore
-     let allBackCard = backCards;
+     let allBackCard = [...backCards];
      // @ts-ignore
      // setBackCards(backCards == value ? "" : value);
      backCards.length > 0
@@ -111,13 +111,13 @@ const NFTGalleryType = () => {
              setBackCards(allBackCard);
            } else {
              // @ts-ignore
-
              setBackCards([...backCards, value]);
            }
            // @ts-ignore
          })
        : setBackCards([...backCards, value]);
-  };
+   };
+  
   let params = useParams();
   const { type } = params;
 
@@ -332,7 +332,7 @@ useEffect(() => {
               className='py-2 mx-2 rounded border'
               // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}> 
+            <div className={`${window.screen.width < 767 ? "" : ""}`}> 
                  <select
                 name='cars'
                 id='cars'
