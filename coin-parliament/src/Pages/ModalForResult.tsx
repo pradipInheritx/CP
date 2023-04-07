@@ -109,7 +109,7 @@ function ModalForResult({ popUpOpen,vote,type}: {
 
  const votelength =Object.keys(vote).length
   
-  console.log(vote?.valueExpirationTimem,"valueExpirationTime")
+  console.log(vote,"valueExpirationTime")
   
   return (
          <div>
@@ -131,7 +131,7 @@ function ModalForResult({ popUpOpen,vote,type}: {
               }}
             >
               <div className={`${window.screen.width < 767 ? "flex-column" : ""} d-flex justify-content-center align-items-center`}>
-                <div className="w-25">
+                <div className="w-25 d-flex justify-content-center">
                   <Logo {...{ symbol: vote?.coin || "", width: 30 }} />
                 </div>
                 <div className={`${window.screen.width < 767 ? "flex-column" : ""} w-75 d-flex justify-content-between`}>
@@ -139,14 +139,17 @@ function ModalForResult({ popUpOpen,vote,type}: {
                     <span>
                       {coin.name} - {coin.symbol}
                     </span>
-                    <div>
+                    <div style={{color:"#6352E8"}}>
                       {vote?.direction ? "BULL" : "BEAR"} - {timeframeInitials(vote?.timeframe?.name)} &nbsp;
                       <span>
-                        {/* {formatCurrency( */}
-                          {type === "coin"
-                            ? (vote?.valueVotingTime as unknown as number)
-                            : (vote?.valueVotingTime as number[])[1]}
-                         {/* )} */}
+                        {
+                          // formatCurrency(
+                          // type === "coin"
+                          //   ? (vote?.valueVotingTime as unknown as number)
+                          //   : (vote?.valueVotingTime as number[])[1]
+                          // )
+                          vote?.valueVotingTime as unknown as number
+                          }
                       </span>
                     </div>
                     <div>
@@ -167,12 +170,13 @@ function ModalForResult({ popUpOpen,vote,type}: {
                       <div>
                         {vote.valueExpirationTime &&
                           // formatCurrency(
-                            type === "coin"
-                              ? (vote?.valueVotingTime as unknown as number)
-                              : (
-                                vote?.valueExpirationTime as number[]
-                              )[1]
+                          //   type === "coin"
+                          //     ? (vote?.valueVotingTime as unknown as number)
+                          //     : (
+                          //       vote?.valueExpirationTime as number[]
+                          //     )[1]
                           // )
+                          vote?.valueVotingTime as unknown as number
                           }
                       </div>
                       <div>
@@ -182,7 +186,7 @@ function ModalForResult({ popUpOpen,vote,type}: {
                       </div>
                     </div>
                  
-                    <div>
+                    <div style={{color:"#6352E8"}}>
                       {vote.score && (
                         <Row className="flex-column text-center">
                       
@@ -228,8 +232,9 @@ function ModalForResult({ popUpOpen,vote,type}: {
                     <div>
                       {vote?.valueExpirationTime &&
                         // formatCurrency(                                              
-                          (vote?.valueExpirationTime as number[])[0]
+                        //   (vote?.valueExpirationTime as number[])[0]
                         // )
+                              vote?.valueExpirationTime[0]
                         }
                     </div>
                     <div>{vote?.valueExpirationTime && <Trend num={trend} />}</div>
@@ -290,9 +295,10 @@ function ModalForResult({ popUpOpen,vote,type}: {
                     <div>
                       {vote.valueExpirationTime &&
                         // formatCurrency(
-                        
-                           (vote.valueExpirationTime as number[])[1]
+                        // (vote.valueExpirationTime as number[])[1]
+                           
                         // )
+                              vote.valueExpirationTime[1]
                         }
                     </div>
                     <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
