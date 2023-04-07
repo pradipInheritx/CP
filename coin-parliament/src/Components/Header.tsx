@@ -476,6 +476,7 @@ console.log('votenumber',voteNumber, Number(voted))
                             
                                   {/* {voteNumber > 0 ? voteNumber : 0} */}
                                   <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                 {" "}
                                   votes left
                                   </span>
                                 </>}
@@ -623,6 +624,7 @@ console.log('votenumber',voteNumber, Number(voted))
                               0} */}
                                 {/* {voteNumber > 0 ? voteNumber : 0} */}
                                 <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                               {" "}
                                 votes left
                           </span></>}
                         </p>

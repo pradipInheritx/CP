@@ -380,7 +380,7 @@ useEffect(() => {
   
 
   
-   const BackSideCard = (value: string | number) => {
+    const BackSideCard = (value: string | number) => {
     // @ts-ignore
      let allBackCard = [...backCards];
      // @ts-ignore

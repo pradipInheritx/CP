@@ -135,7 +135,8 @@ console.log(error,"error");
                 {" "}
                 <PAXCard
                   walletId={userInfo?.wallet || ""}
-                  PAX={userInfo?.voteStatistics?.pax || 0}
+                  // @ts-ignore
+                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
                 />
               </div>
             </div>
