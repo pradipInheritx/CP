@@ -116,6 +116,8 @@ import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
+import Partners from "./Pages/Partners";
+import Foundations from "./Pages/Foundations";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
 import FwMine from "./Components/FollowerProfile/FwMine";
@@ -1317,6 +1319,14 @@ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@t
                                         <Route
                                           path='gamerule'
                                           element={<GameRule />}
+                                        />
+                                        <Route
+                                          path='partners'
+                                          element={<Partners />}
+                                        />
+                                        <Route
+                                          path='foundations'
+                                          element={<Foundations />}
                                         />
                                         <Route
                                           path='contact'

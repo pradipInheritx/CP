@@ -121,6 +121,8 @@ export const privacy = `<p>1. CoinParliament.com and its affiliates (collectivel
 
 <p>18. By agreeing to the Terms &amp; Conditions during the registration process on our website, mobile site, and/or mobile application, or by continued use of the services, you agree to be bound by this privacy policy and to any changes, we may make to this privacy policy from time to time. We will notify you of any such changes to the Privacy Policy by posting an updated version of the privacy policy on our website, mobile site, and/or mobile application. Your continued use of the services will amount to and be construed as your consent to such changes.&nbsp;</p>`;
 const GameRule = ``;
+const Foundations = ``;
+const Partners = ``;
 
 export const myPages: ContentPage[] = [
   {
@@ -132,6 +134,16 @@ export const myPages: ContentPage[] = [
     title: "Game Rules",
     content: GameRule,
     slug: "gamerule",
+  },    
+  {
+    title: "Partners",
+    content: Partners,
+    slug: "partners",
+  },    
+  {
+    title: "Foundations",
+    content: Foundations,
+    slug: "foundations",
   },    
   {
     title: "FAQ",

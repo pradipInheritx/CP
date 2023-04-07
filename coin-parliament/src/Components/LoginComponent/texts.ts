@@ -95,7 +95,9 @@ export const texts = {
   Votes: "Votes".toUpperCase(),
   GamePts: "Game Pts".toUpperCase(),
   Card: "Card".toUpperCase(),
-  ForgetPassword:"Forget password"
+  ForgetPassword:"Forget password",
+  Foundations:"Foundations",
+  Partners:"Partners",
 
   
 };
