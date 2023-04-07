@@ -394,7 +394,7 @@ const calcVote = useCallback(async () => {
 
   const [popUpOpen, setpopUpOpen] = useState(false);
 
-  console.log(popUpOpen,"popUpOpen")
+  console.log(popUpOpen,"i am working popUpOpen")
 
   return (
     <>
@@ -504,6 +504,7 @@ const calcVote = useCallback(async () => {
                   </div>      */}
                 <ModalForResult
                   popUpOpen={popUpOpen}
+                  setpopUpOpen={setpopUpOpen}
                   vote={vote}
                   type={"coin"}
                 />
