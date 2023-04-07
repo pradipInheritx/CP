@@ -307,6 +307,7 @@ useEffect(() => {
                   )}
                   {vote && vote?.valueVotingTime && vote?.valueExpirationTime &&  <ModalForResult
                     popUpOpen={popUpOpen}
+                    setpopUpOpen={setpopUpOpen}
                     vote={vote && vote}
                     type={"pair"}
                   />}

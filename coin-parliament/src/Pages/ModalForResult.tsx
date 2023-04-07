@@ -77,16 +77,18 @@ const calculateWinner = (vote:any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
 
-function ModalForResult({ popUpOpen,vote,type}: {
+function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
     popUpOpen?: any,
     vote: any,
     type?: any,
-    
+    setpopUpOpen?:any,
 }) {
   useEffect(() => {
     if (popUpOpen) {        
+      console.log("i am working")
       handleShow()  
       voteEndFinish()
+      setpopUpOpen(false)
     }    
   }, [popUpOpen])
   

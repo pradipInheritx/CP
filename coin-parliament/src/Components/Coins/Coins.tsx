@@ -95,6 +95,7 @@ const Coins = ({
         >
           {width > 979 ? (
             <div
+              
               style={{
                 fontSize: "20px",
                 fontWeight: "400",
