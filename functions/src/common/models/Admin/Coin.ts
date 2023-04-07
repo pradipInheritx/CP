@@ -10,13 +10,36 @@ type Coin = {
   symbol: any;
   coinLogo: any;
   status: string;
+  cpm: number;
+  rank: number;
+  weightOrderBook: number;
+  rangeResultInCmp: number;
 };
 
 export const addCoin = async (req: any, res: any) => {
-  const { coinName, symbol, coinLogo, status } = req.body;
+  const {
+    coinName,
+    symbol,
+    coinLogo,
+    status,
+    cpm,
+    rank,
+    weightOrderBook,
+    rangeResultInCmp,
+  } = req.body;
   try {
     const id = uuidv4();
-    const coin: Coin = { coinId: id, coinName, symbol, coinLogo, status };
+    const coin: Coin = {
+      coinId: id,
+      coinName,
+      symbol,
+      coinLogo,
+      status,
+      cpm,
+      rank,
+      weightOrderBook,
+      rangeResultInCmp,
+    };
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
     let checkCoin = coinData.coins.find((coin: any) => {
