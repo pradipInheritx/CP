@@ -82,7 +82,7 @@ const SinglePair = () => {
         ...prevCoins,
         [symbol]: {
           ...prevCoins[symbol],
-          price: message.c,
+          price: message?.c,
         },
       }));
     }
@@ -297,7 +297,8 @@ useEffect(() => {
                         {...{vote, coins:coinUpdated, totals, symbol1, symbol2, voteId,selectedTimeFrame,
                           setSelectedTimeFrame,selectedTimeFrameArray , setpopUpOpen}}
                       />
-                     {graphLoading? <CalculatingVotes/>:<Progress
+                     {graphLoading? <CalculatingVotes/>:
+                     <Progress
                         totals={totals}
                         symbol1={symbol1}
                         symbol2={symbol2}

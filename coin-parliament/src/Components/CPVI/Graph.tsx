@@ -87,6 +87,7 @@ const Icon = styled.div`
 `;
 
 const GraphContainer = styled.div`
+
   background: transparent
     linear-gradient(
       180deg,
@@ -179,7 +180,7 @@ const Graph = ({ data, totals, symbol, width = 274 }: GraphProps) => {
   }, []);
 
   const height = useMemo(() => 130, []);
-  const padding = useMemo(() => 21, []);
+  const padding = useMemo(() => 30, []);
   
 
   useEffect(() => {
@@ -240,8 +241,8 @@ const Graph = ({ data, totals, symbol, width = 274 }: GraphProps) => {
   return (
     <GraphContainer
       style={{
-       
-        width: width + padding * 2,
+       maxWidth: `${window.screen.width<767? "345px":"400px"}`,
+        // width: width + padding * 2,
         padding: `12px ${padding}px 22px`,
         margin: "0 auto",
       }}
@@ -264,7 +265,12 @@ const Graph = ({ data, totals, symbol, width = 274 }: GraphProps) => {
           >
             <div
               className="position-absolute top-0 h-100"
-              style={{ zIndex: 1, width: padding, right: -5 }}
+              style={{
+                zIndex: 1,
+                // width: padding,
+                 maxWidth: `${window.screen.width<767? "345px":"400px"}`,
+                right: -5
+              }}
             >
               <div className="position-relative h-100">
                 <TickRight {...{ padding }} className="bottom-0">

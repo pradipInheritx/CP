@@ -12,7 +12,11 @@ background: linear-gradient(90deg, rgba(212,208,243,1) 0%, rgba(99,82,232,1) 41%
 
 .rengeInput::-webkit-slider-thumb {
    -webkit-appearance: none;
-  border: 1px solid black;
+  border: 1px solid red;
+   /* border-top: 2px dashed #ffcc00;
+        border-right: 2px dashed #ffcc00;
+        border-left: 2px dashed #000000;
+        border-bottom: 2px dashed #000000; */
   border-radius: 50px;
   width: 20px;
   height: 20px;
@@ -21,7 +25,18 @@ background: linear-gradient(90deg, rgba(212,208,243,1) 0%, rgba(99,82,232,1) 41%
   background-size: 15px 15px;
   background-position: center;
   padding: 10px;  
+  
+  transition: all 1s;
+   /* /* -webkit-animation:ripple 1.8s infinite; */
+    /* animation: spin 10s infinite; */
 }
+
+  /* @keyframes spin {
+        100% {
+            transform: rotate(1turn);
+        }
+    } */
+
 .rengeInput::-moz-range-thumb {
    /* -webkit-appearance: none; */
   border: 1px solid black;

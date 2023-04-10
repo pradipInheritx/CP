@@ -23,7 +23,7 @@ import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
-  max-width: 345px;
+  max-width: ${window.screen.width<767? "345px":"400px"};
   // height: 75px;
   padding:20px 0px;
   background-color: var(--white);  
@@ -387,10 +387,10 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
       date={expirationTime}
       renderer={({ hours, minutes, seconds, completed }) => {
 
-        if (expirationTime && hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
-          console.log( hours, minutes, seconds, "i am done")
-          lastTensecWait()
-        }
+        // if (expirationTime && hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
+        //   console.log( hours, minutes, seconds, "i am done")
+        //   lastTensecWait()
+        // }
         
         if (completed) {
           if (vote && !vote?.sucess) {            
@@ -400,8 +400,8 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
           return <span style={{color:"#7767f7"}}>{texts.LoadingText}</span>;
         } else {
           return (
-            <span className="" style={{color:'#6352e8',fontSize:'17px',fontWeight:400,marginLeft:"10px"}}>
-              {hours < 10 ? `0${hours}` :hours}:
+            <span className="" style={{color:'#6352e8',fontSize:'20px',fontWeight:400,marginLeft:"10px"}}>
+              {hours < 1 ? null : `${hours} :` }
               {minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}
             </span>

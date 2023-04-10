@@ -106,7 +106,7 @@ const SingleCoin = () => {
         ...prevCoins,
         [symbol]: {
           ...prevCoins[symbol],
-          price: message.c,
+          price: message?.c,
         },
       }));
     }

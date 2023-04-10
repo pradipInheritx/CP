@@ -13,7 +13,7 @@ export type ProgressProps = {
 };
 
 const Container = styled.div`
-max-width:345px;
+max-width: ${window.screen.width<767? "345px":"400px"};
 margin:auto;
   background: transparent
     linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0%
