@@ -12,7 +12,7 @@ background: linear-gradient(90deg, rgba(212,208,243,1) 0%, rgba(99,82,232,1) 41%
 
 .rengeInput::-webkit-slider-thumb {
    -webkit-appearance: none;
-  border: 1px solid red;
+  border: 1px solid black;
    /* border-top: 2px dashed #ffcc00;
         border-right: 2px dashed #ffcc00;
         border-left: 2px dashed #000000;
