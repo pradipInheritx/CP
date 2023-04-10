@@ -305,7 +305,7 @@ console.log('userInfo',userInfo)
         </div>
       <Modal.Body>
             {/* continue voting */}
-      <div className='py-2  d-flex  justify-content-center'><p>If you want continue voting press yes</p></div>
+      <div className='py-2  d-flex  justify-content-center'><p>Return to Vote and Continue voting ?</p></div>
 
       </Modal.Body>
           {/* <Modal.Footer> */}

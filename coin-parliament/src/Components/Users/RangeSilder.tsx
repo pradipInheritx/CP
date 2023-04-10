@@ -127,7 +127,7 @@ const getBorderColor = () => {
     <div className=''>
           {/* <p style={{color:"black"}} className="py-2">YOUR VOTE IMPACT</p> */}
           <div className="d-flex justify-content-around w-100 ">                                                    
-              <input type="range"  id="myinput"  min={0} max={100} value={persentValue} className="rengeInput w-100" ></input>
+              <input type="range"  id="slider"  min={0} max={100} value={persentValue} className="rengeInput w-100" ></input>
             </div>
             <div className="d-flex justify-content-between mt-2"
             style={{color:"black"}}
