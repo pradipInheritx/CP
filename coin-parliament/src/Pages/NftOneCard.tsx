@@ -13,6 +13,7 @@ import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
+import { cardFlip } from "../common/utils/SoundClick";
 
 
 const Card = styled.div`
@@ -152,15 +153,17 @@ export type BoxItems = {
   GeneralSerialNo?: string | number;
   fulldata?:any;
   userId?:any;
+  CollectionType?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo,fulldata,userId}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo,fulldata,userId,CollectionType}: BoxItems) => {
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
-  const { singalCardData,setSingalCardData} = useContext(AppContext);
-  console.log(cardNo, "Disable")
+  const { singalCardData, setSingalCardData } = useContext(AppContext);
+  
+  
   
       let params = useParams();
   const { type} = params;
@@ -172,22 +175,26 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       onMouseEnter={() => {
         if (Disable == "" || Disable == undefined) {          
           setFlip(!flip);
-        }
+          cardFlip()
+        }        
       }}
       onMouseLeave={() => {
         if (Disable == "" || Disable == undefined) {                 
           setFlip(!flip);
+          cardFlip()
         }        
       }}
       onFocus={() => {
         if (Disable == "" || Disable == undefined) {          
           setFlip(!flip);
+          cardFlip()
         }
         // setFlip(!flip);
       }}
       onFocusCapture={() => {
         if (Disable == "" || Disable == undefined) {          
           setFlip(!flip);
+          cardFlip()
         }
         // setFlip(!flip);
       }}
@@ -199,18 +206,23 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       onClick={() => {
         if (Disable == "" || Disable == undefined) { 
           // @ts-ignore
-        BackSideCard(id);
+          BackSideCard(id);
+          if (window.screen.width < 767) {            
+            cardFlip()
+          }
         }
         
       }}
       style={{
         minHeight: "330px",
+        minWidth:"250px",
       }}
     >
       <div className='front'>
         {/* First Div  */}
         <Card className={`shadow tex-center ${DivClass} ${Disable} `} style={{
-        minHeight: "318px",
+          minHeight: "318px",
+          minWidth:"250px"
       }}>
           <div>
             {" "}
@@ -245,28 +257,30 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       </div>
       <div className='back'>
         <CardBack className='shadow tex-center' style={{
-        minHeight: "318px",
+          minHeight: "318px",
+          minWidth:"250px",
       }}>
           <div className='d-flex justify-content-center mt-2'>
             <img src={logo} alt='' width='60px' height='60px' />
           </div>
           <div className='mt-2 mb-3'>
             <span>
-              {pathnameName[1] == "profile"
+              {pathnameName[1] == "profile" || "followerProfile"
                 ? `Private Card Serial No. : ${PrivateSerialNo || ""}`
                 : `General Card Serial No. : ${GeneralSerialNo || ""}` }
             </span>
-            <span>Collection : {type}</span>
+            <span>Collection : {CollectionType || type}</span>
             <span>Set (Serie) : {Serie}</span>
             <span>Name : {BackCardName}</span>
             <span>Rarity : {Rarity}</span>
             <span>
-              {pathnameName[1] == "profile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
+              {pathnameName[1] == "profile" || "followerProfile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {pathnameName[1] == "profile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
+            {pathnameName[1] == "profile" || "followerProfile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
             onClick={() => {
-                navigate(`/singalCard/${type}/${id}`)            
-                setSingalCardData({...fulldata, myID:userId})
+                navigate(`/singalCard/${CollectionType || type}/${id}`)            
+                setSingalCardData({ ...fulldata, myID: userId })
+                localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
             }}> View All</u></span> : 0} </span>}
           </div>
         </CardBack>

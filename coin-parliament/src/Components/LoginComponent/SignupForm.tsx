@@ -15,10 +15,14 @@ import { Link } from "react-router-dom";
 const SignupForm = ({
   emailValue,
   callback,
-  signup
+  signup,
+  signupLoading,
+  setSignupLoading,
 }: {
   emailValue:string;
   callback: Callback<User>;
+  signupLoading?:any;
+  setSignupLoading?:(k: boolean) => void;
   signup: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
@@ -36,16 +40,19 @@ useEffect(() => {
 }, [])
   const strings = {
     email: capitalize(translate(texts.email)),
-    confirmPassword: capitalize(translate(texts.confirmPassword)),
-    password: capitalize(translate(texts.password)),
-    continue: capitalize(translate(texts.continue)),
-    agree: capitalize(translate(texts.agree)),
+    confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
+    password: capitalize(translate(texts.password.toUpperCase())),
+    continue: capitalize(translate(texts.continue.toUpperCase())),
+    agree: capitalize(translate(texts.agree.toUpperCase())),
   };
 
   return (
     <Form
       onSubmit={async (e) => {
+        if(signupLoading)return
         e.preventDefault();
+        // @ts-ignore
+        setSignupLoading(true)
         await signup(
           {
             email,
@@ -93,7 +100,7 @@ useEffect(() => {
 
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" >
-          {strings.continue}
+          {signupLoading?'Wait...':strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
 
@@ -103,10 +110,10 @@ useEffect(() => {
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
-                {t}{" "}
+                {t.toUpperCase()}{" "}
                 {!i && (
                   <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
+                    {translate(texts.termsConditions.toUpperCase())}
                   </Link>
                 )}
               </React.Fragment>

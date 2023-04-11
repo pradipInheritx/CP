@@ -102,7 +102,7 @@ const GraphContainer = styled.div`
   opacity: 1;
 `;
 var lineSeries:any;
-const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
+const Graph = ({ data, totals, symbol, width = 274 }: GraphProps) => {
   const chartElement = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<IChartApi | null>(null);
   const [series, setSeries] = useState<ISeriesApi<"Line"> | null>(null);
@@ -201,7 +201,7 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
   
   
   }, [width, chartElement, height, options]);
-// console.log('chart',lineOptions)
+
   useEffect(() => {
     if (!chart) return;
 
@@ -214,10 +214,12 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
 
   useEffect(() => {
     let updateData = data[data?.length-1]
-   
-    if (lineSeries) {
-      
-      lineSeries.update(updateData);}
+    
+    
+    
+    if (lineSeries && updateData?.value!=0) {            
+      // lineSeries.update(updateData);
+    }
     if (!series) return;
     series.setData(data);
     

@@ -139,6 +139,44 @@ html[dir="rtl"] .offcanvas-start.show {
     -moz-animation: glow 5s ease-in-out  alternate;
     animation: glow 5s ease-in-out ;
   }
+  strong {
+    font-weight: bold;
+}
+.pwaPopup{
+    z-index: 99999;
+    position: fixed;
+    bottom: 0px;
+    background: white;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    color:#7767f7;
+    text-align: center;
+}
+.pwaPopup button{
+    width: 100px;
+    border-radius: 50px;
+    padding: 10px;
+    border: none;
+    background: #7767f7;
+    color: white;
+    margin:5px;
+    margin-top: 15px;
+}
+#slider::-webkit-slider-thumb {
+    animation: bounce 0.5s ease;
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
 @keyframes glow {
     0% {
         border-width: 1px;
@@ -488,10 +526,12 @@ body .tooltip-inner {
     box-shadow: 0 3px 6px #00000029;
     border-radius: 0 20px 20px 20px;
     opacity: 1;
-    font: var(--font-style-normal) normal var(--font-weight-normal) var(--font-size-11)/var(--line-spacing-13) var(--font-family-poppins);
+    font: var(--font-style-normal) normal var(--font-weight-normal) var(--font-size-12)/var(--line-spacing-13) var(--font-family-poppins);
     letter-spacing: var(--character-spacing-0);
     color: var(--color-ffffff);
-    text-align: left;
+    text-align: center;
+    /* width: 300px; */
+    padding: 15px !important;
 }
 
 body .tooltip-inner::before {
@@ -830,7 +870,7 @@ p.firebase-emulator-warning + iframe {
 
 .profile_coin_vote {
     width:350px;
-    height: 90px;
+    /* height: 90px; */
     border-radius: 6px;
     background: white;
 }

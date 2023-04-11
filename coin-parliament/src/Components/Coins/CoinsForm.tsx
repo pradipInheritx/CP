@@ -55,10 +55,10 @@ const CoinsForm = ({
   const id = "BullVsBearForm";
   useEffect(() => {
     window.scrollTo(0, 0);
-    // console.log("hello I am ");
+    
     return window.scrollTo(0, 0);
   }, []);
-  // console.log("timeframe", selectedTimeFrame);
+  
   const vote = useCallback(async () => {
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
@@ -74,7 +74,7 @@ const CoinsForm = ({
         collection(db, "votes").withConverter(voteConverter),
         {
           coin: coin.symbol,
-          CPMRangePercentage: coin?.CPMRangePercentage || 1,
+          CPMRangePercentage: coin?.CPMRangePercentage || 10,
           direction: selectedOption,
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
@@ -154,19 +154,23 @@ const CoinsForm = ({
             }
           },
           option1: {
+            buttonText:["vote","BULL"],
             image: <Bull />,
             alt: "bull",
             ...coin,
           },
           option2: {
+            buttonText:["vote","BEAR"],
             image: <Bear />,
             alt: "bear",
             ...coin,
           },
           texts: {
             // yourVote: translate("BULL or BEAR, what’s your VOTE? Vote wisely!"),
-            yourVote: translate("Place your vote"),
-            selectTimeFrame: translate("Select voting time frame"),
+            // yourVote: translate("Place your vote"),
+            yourVote: translate("Vote for your winner").toUpperCase(),
+            // selectTimeFrame: translate("Select voting time frame"),
+            selectTimeFrame: translate("Select a time frame for your vote").toUpperCase(),
             tooltip: translate(tooltipText),
           },
         }}

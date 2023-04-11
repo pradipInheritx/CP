@@ -295,10 +295,10 @@ function Table({columns, data}: { columns: Columns, data: Data[] }): JSX.Element
         <>
             <table {...getTableProps()}>
                 <thead>
-                {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>
+                {headerGroups.map((headerGroup,index) => (
+                    <tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                        {headerGroup.headers.map((column,i) => (
+                            <th {...column.getHeaderProps()} key={i}>
                                 {column.render('Header')}
                                 {/* Render the columns filter UI */}
                                 <div>{column.canFilter ? column.render('Filter') : null}</div>
@@ -325,9 +325,9 @@ function Table({columns, data}: { columns: Columns, data: Data[] }): JSX.Element
                 {page.map((row: Row<Person & { subRows: Data[] }>, i: number) => {
                     prepareRow(row)
                     return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        <tr {...row.getRowProps()} key={i}>
+                            {row.cells.map((cell,index) => {
+                                return <td {...cell.getCellProps()} key={index}>{cell.render('Cell')}</td>
                             })}
                         </tr>
                     )

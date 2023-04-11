@@ -24,14 +24,15 @@ const InfluencersComponent = ({
   userInfo,
   setChecked,
 }: InfluencersComponentProps) => {
-  console.log("userType", userTypes);
+  
   return (
     <React.Fragment>
       <div className='mb-4'>
         <StatusNav
+        
           userTypes={userTypes
             .sort((a, b) => a.index - b.index)
-            .map((u) => u.name)}
+            .map((u) => u.name.toUpperCase())}
           setChosen={setChosen}
           chosen={chosen}
         />

@@ -36,16 +36,17 @@ export type Leader = {
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
 
 export const follow = async (leader: Leader, you: User, add: boolean) => {
+  
   if (add) {
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
-      { leader: firebase.firestore.FieldValue.arrayUnion(leader.userId) },
+      { leader: firebase.firestore.FieldValue.arrayUnion(leader?.userId) },
       { merge: true }
     );
   } else {
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
-      { leader: firebase.firestore.FieldValue.arrayRemove(leader.userId) },
+      { leader: firebase.firestore.FieldValue.arrayRemove(leader?.userId) },
       { merge: true }
     );
   }
@@ -103,6 +104,7 @@ export type CoinContextProps = {
   setLeaders: (leaders: Leader[]) => void;
   rest: ICryptoClient;
   ws: WebSocket;
+  socket:WebSocket;
   allCoins: string[];
   allPairs: Array<string[]>;
 };

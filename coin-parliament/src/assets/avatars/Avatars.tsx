@@ -8,7 +8,7 @@ export enum AvatarType {
   Founder = "Founder",
   Hodler = "Hodler",
   Investor = "Investor",
-  Trader = "Trader",
+  Trader = "Trader",  
 }
 
 type AvatarsProps = {
@@ -16,7 +16,11 @@ type AvatarsProps = {
   width?: number;
   style?: object;
 };
-
+const avatarArray=[  "Angel",
+"Founder",
+ "Hodler",
+ "Investor",
+ "Trader",  ]
 export const importFile = (name: string, ext: string = "png") => {
   let src = { default: "" };
   try {
@@ -39,7 +43,7 @@ const Avatars = ({
   width = 160,
   style,
 }: AvatarsProps) => {
-  const src = importFile(`./The${type}`).default || "";
+  const src = importFile(`./The${type && avatarArray?.includes(type)? type:"Founder"}`).default ;
 
   return <Image width={width} roundedCircle={true} src={src} style={style} />;
 };

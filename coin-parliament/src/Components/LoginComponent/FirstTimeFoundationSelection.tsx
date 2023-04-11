@@ -1,3 +1,4 @@
+
 import React, {  useContext } from "react";
 import "./Login.css";
 import { Stack } from "react-bootstrap";
@@ -39,18 +40,12 @@ export type FirstTimeFoundationSelectionProps = {
 const FirstTimeFoundationSelection = ({ user ,setFirstTimeFoundationSelection}: FirstTimeFoundationSelectionProps) => {
   const translate = useTranslation();
   const {showToast} = useContext(NotificationContext);
-  const onSubmitAvatar = async (type: AvatarType) => {
-    if (user?.uid) {
-      const userRef = doc(db, "users", user?.uid);
-      try {
-        await setDoc(userRef, {avatar: type}, {merge: true});
-        showToast(translate("user info was updated"));
-        toast.dismiss();
-      } catch (e) {
-        showToast(translate("user failed to be updated"), ToastType.ERROR);
-      }
-    }
+   const saveFoundation = async (uid: string, foundationName: string) => {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, { foundationName }, { merge: true });
+    setFirstTimeFoundationSelection(false)
   };
+  
   return (
     <Stack
       gap={2}
@@ -59,11 +54,11 @@ const FirstTimeFoundationSelection = ({ user ,setFirstTimeFoundationSelection}: 
     >
             <Title>{translate(texts.FoundationSelect)}</Title>  
             <div style={{width:window.screen.width>979?'25%':'75%', alignSelf:'center'}}>
-              {FoundationArray?.map(item=> <Buttons.Primary style={{fontSize:'17px',fontWeight:300, padding:'10px', width:'10%',margin:'10px 0px'}} fullWidth={true} onClick={()=>setFirstTimeFoundationSelection(false)}>
+              {FoundationArray?.map(item=> <Buttons.Primary style={{fontSize:'17px',fontWeight:300, padding:'10px', width:'10%',margin:'10px 0px'}} fullWidth={true} onClick={()=>saveFoundation(user?.uid,item)}>
          {item}
       </Buttons.Primary> )}
       </div>
-      <Skip onClick={()=>setFirstTimeFoundationSelection(false)}>Skip</Skip>
+      <Skip onClick={()=>saveFoundation(user?.uid,'Foundation One')}>Skip</Skip>
     </Stack>
   );
 };

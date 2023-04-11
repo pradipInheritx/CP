@@ -1,6 +1,24 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Coin } from "../../common/models/Coin";
-import {VoteResultProps} from "../../common/models/Vote";
+import { VoteResultProps } from "../../common/models/Vote";
+import "./styles.css";
+import styled from "styled-components";
+
+const InputRange = styled.input`
+    width:100%;
+    & ::-webkit-slider-runnable-track{
+      border-radius: 1px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+    background-color: #000;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease-in-out;
+  }
+`;
+
+
 function RangeSilder(
     {
     vote,
@@ -12,66 +30,111 @@ function RangeSilder(
     coins: { [symbol: string]: Coin };
     symbol1: string;
     symbol2: string;
-        })
+    })
 
-{
+{ 
+  const [persentValue, setPersentValue] = useState<any>(0)
 
-    console.log(vote?.valueVotingTime,"chekcvote")
 const getBorderColor = () => {
-    // let PricePer = livePrice / 100;
-   
+    // let PricePer = livePrice / 100;   
      if (symbol2 !== undefined) {
-         let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+       if(!vote?.valueVotingTime){
+        setPersentValue(50) 
+        return false
+      }
         // @ts-ignore
-      let bothCurrentPrice = [...vote?.valueVotingTime];
+       let bothCurrentPrice = [...vote?.valueVotingTime];
+       const diffPer = [bothLivePrice[0] - bothCurrentPrice[0] ,bothLivePrice[1] - bothCurrentPrice[1] ]
+       const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0] + Math.random()*4,(diffPer[1] *1000)/bothCurrentPrice[1]+Math.random()*4]
     //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
-    let diff = [
+     let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
     ];
-     console.log(diff,"bothCurrentPrice")
-     
+         
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      if ((averageValue == averageValue)) {
-        // setborderColor("#218b17");
-          console.log("i am winner quail")
+      // if(!vote?.valueVotingTime || vote?.valueVotingTime == NaN){
+      
+      if ((averageValue <=10)) {        
+        setPersentValue(vote?.direction == 1 ? 50 +getPer[1] : 50 +getPer[0]) 
       } else {
         if (vote?.direction == 1) {
             winner == vote?.direction
                 ?
-                //   setborderColor("#74ff5d") 
-                console.log("i am winner 1")
-                :
-                //   setborderColor("#015117");
-                console.log("i am not winner 1");
+                  setPersentValue(25 + getPer[1] > 0 ? 25 + getPer[1]:0)              
+                :             
+                  setPersentValue(75 + getPer[1] >100 ?100 :75 + getPer[1]) 
+             
         } else if (vote?.direction == 0) {
           winner != vote?.direction
-              ?console.log("i am winner 0")
-            //   setborderColor("#74ff5d")
-              :
-              console.log("i am not winner 0")
-            //   setborderColor("#015117");
+            ?            
+            setPersentValue(25  + getPer[0] > 0 ? 25 + getPer[0]:0) 
+            :
+            setPersentValue(75  + getPer[0] >100 ?100 :75 + getPer[0]) 
+
         }
       }       
+     } else if (symbol2 == undefined) {   
+      if(!vote?.valueVotingTime ){
+          setPersentValue(50) 
+          return false
+      }
+       
+       let livePrice =Number(coins[symbol1]?.price)
+       let votePrice = Number(vote?.valueVotingTime)
+        
+      
+       let PricePer = livePrice;
+       console.log('price',livePrice < votePrice + 1 &&
+        livePrice > votePrice - 1,{
+          livePrice,
+          votePrice,
+          vote
+        }
+        
+        
+        )
+        // if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
+        
+       const diffPer = livePrice - votePrice 
+       const getPer= ((diffPer *1000)/votePrice)+ Math.random()*4
+       
+        console.log(getPer,"getPer")
+       if(livePrice < votePrice + votePrice /10 &&
+         livePrice > votePrice - votePrice /10) {          
+          setPersentValue(50 + getPer);
+        }
+        else{
+          if(vote?.direction == 0){
+            livePrice > votePrice ?setPersentValue(75 + getPer >100 ?100 :75 + getPer):setPersentValue(25 + getPer > 0 ? 25 + getPer:0);
+          }else if(vote?.direction == 1){
+            livePrice > votePrice ? setPersentValue(25 + getPer > 0 ?25 + getPer:0):setPersentValue(75 + getPer >100 ?100 :75 + getPer);
+          }
+        }     
     }
   };
-
-    useEffect(() => { 
-    getBorderColor()
-     }, [])
+  
+  
+  useEffect(() => { 
     
+      getBorderColor()
+    
+  }, [coins[symbol1]?.price ,coins[symbol2]?.price,vote?.valueVotingTime])
+  
   return (
-      <div>
-          <div className="d-flex justify-content-around">                                                    
-              <input type="range" className="form-range" id="myinput"  value={-3}></input>
+    <div className=''>
+          {/* <p style={{color:"black"}} className="py-2">YOUR VOTE IMPACT</p> */}
+          <div className="d-flex justify-content-around w-100 ">                                                    
+              <input type="range"  id="slider"  min={0} max={100} value={persentValue} className="rengeInput w-100" ></input>
             </div>
-            <div className="d-flex justify-content-between"
+            <div className="d-flex justify-content-between mt-2"
             style={{color:"black"}}
             >                                                    
-              <p>LOW</p>
-              <p>MID</p>
-              <p>HIGH</p>
+              <span>LOW</span>
+              <span>MID</span>
+              <span>HIGH</span>
             </div>
     </div>
   )

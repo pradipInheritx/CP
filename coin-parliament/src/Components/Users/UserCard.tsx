@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import {
   HelveticaneueRegularNormalBlack13px,
@@ -13,8 +13,11 @@ import { Leader } from "../../Contexts/CoinsContext";
 import Icon from "../Atoms/Checkbox/Icon";
 import AddFollower from "../icons/AddFollower";
 import Following from "../icons/Following";
-import { Link, useLocation } from "react-router-dom";
+import { Link,  useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "../../common/models/Dictionary";
+import AppContext from "../../Contexts/AppContext";
+import UserContext from "../../Contexts/User";
+import { texts } from "../LoginComponent/texts";
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -117,6 +120,18 @@ const Component5031 = styled.div`
   border: 1px solid #6352e8;
   border-radius: 14px;
 `;
+const Componentdiv = styled.div`
+  height: 28px;
+  margin-top: 3px;
+  display: flex;
+  padding: 6.2px 3.3px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  min-width: 28px;
+  // background-color: var(--moon-raker);
+  // border: 1px solid #6352e8;
+  // border-radius: 14px;
+`;
 
 const ViewAll = styled(Link)`
   font: var(--font-style-normal) normal medium 9px / var(--line-spacing-13)
@@ -147,6 +162,28 @@ const UserCard = ({
   const translate = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
+  const navigate = useNavigate()
+  const { setFollowerUserId } = useContext(AppContext)
+  const {userInfo } = useContext(UserContext);
+  
+  
+
+  const redirectTab = () => {
+    if (leader != undefined && setFollowerUserId != undefined) {setFollowerUserId(leader?.userId)
+    window.localStorage.setItem('followerId',leader?.userId)
+    }
+    
+      // @ts-ignore
+      if (userInfo?.uid == leader?.userId) {
+        
+        navigate('/Profile/mine')
+      } else {
+        navigate('/followerProfile/mine')
+        
+      }
+    
+}
+
   return (
     <Component515
       style={{ boxShadow: !pathname?.includes("/followers") ? "none" : "" }}
@@ -159,7 +196,12 @@ const UserCard = ({
           padding: pathname?.includes("/influencers") ? "10px 0" : "",
         }}
       >
-        <ElementsAvatarAImage1>
+        <ElementsAvatarAImage1 onClick={e => {
+          
+          redirectTab()
+          
+      
+      }}>
           <Avatar url={getAvatar(leader)} />
         </ElementsAvatarAImage1>
         <FlexCol>
@@ -183,7 +225,7 @@ const UserCard = ({
             {!expanded && <span className='mx-1'></span>}
           </Address>
         </FlexCol>
-        <Component5031 style={{ background: checked ? "" : "white" }}>
+        {userInfo?.uid !==leader?.userId ? <Component5031 style={{ background: checked ? "" : "white" }}>
           <Icon
             setChecked={setChecked}
             checked={checked}
@@ -191,10 +233,13 @@ const UserCard = ({
             iconOn={<Following />}
             name={`leader-${leader.userId}`}
           />
-        </Component5031>
+        </Component5031>:<Componentdiv></Componentdiv>}
         {viewAllLink && (
           <div>
-            <ViewAll to={viewAllLink}>{translate("view all")}</ViewAll>
+            <ViewAll to={viewAllLink}>
+              {/* {translate("view all")} */}
+            {texts.ViewAll}
+            </ViewAll>
           </div>
         )}
       </OverlapGroup1>

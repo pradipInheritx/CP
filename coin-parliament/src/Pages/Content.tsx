@@ -18,8 +18,8 @@ const Content = () => {
   if (mounted) {
     return page ? (
       <GeneralPage>
-        {page.content.split("\n\n").map((c) => (
-          <p className="mb-2">{c}</p>
+        {page.content.split("\n\n").map((c ,i) => (
+          <p className="mb-2" key={i}>{c}</p>
         ))}
       </GeneralPage>
     ) : (

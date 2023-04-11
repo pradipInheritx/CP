@@ -6,6 +6,7 @@ import {Buttons} from "../Atoms/Button/Button";
 import {Title} from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import AppContext from "../../Contexts/AppContext";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 
 export type SelectTimeframesProps = {
@@ -13,6 +14,7 @@ export type SelectTimeframesProps = {
   selectTimeframe: (c: TimeFrame) => void;
   selected?: number;
   title?: string;
+  votedTitle?: string;
   voted?: boolean;
   selectedTimeFrameArray?: any;
   cssDegree?: any;
@@ -25,6 +27,7 @@ const SelectTimeframes = ({
   timeframes,
   selectTimeframe,
   title,
+  votedTitle,
   voted,
   selectedTimeFrameArray,
   cssDegree,
@@ -48,7 +51,7 @@ const SelectTimeframes = ({
   
   
   
-
+console.log(voted,"checkvoted")
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
     <div>
@@ -63,7 +66,7 @@ const SelectTimeframes = ({
         )}
         {num > 1 && title && (
           <div className='mb-3'>
-            <Title>{title}</Title>
+            <Title>{voted ? votedTitle:title}</Title>
           </div>
         )}
       </Row>
@@ -85,8 +88,10 @@ const SelectTimeframes = ({
                 <Icon
                   inline='d-flex justify-content-center'
                   checked={timeframe.index === selected}
+                  
                   setChecked={() => {
                     selectTimeframe(timeframe);
+                    handleSoundClick()
                   }}
                   name='timeframe'
                   type='radio'

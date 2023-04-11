@@ -12,6 +12,7 @@ import {useSwipeable} from "react-swipeable";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import CoinsContext from "../../Contexts/CoinsContext";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 export type CarouselProps = {
   children?: React.ReactNode | string;
@@ -118,6 +119,11 @@ const Carousel = ({
       total: pairs.length,
     }),
   );
+  
+
+// const zoomDiv = (e:any) =>{
+//     e.target.style.transform = 'scale(1.2)';
+//   }
 
   return !expanded ? (
     <form id={id} className="carousel slide " data-bs-ride="carousel" onSubmit={e => e.preventDefault()}>
@@ -132,10 +138,10 @@ const Carousel = ({
             coin2.symbol,
           ]);
           return (
-            <div className='mx-1'>
+            <div className='mx-1' key={i}>
             <Card
             
-              key={i}
+              // key={i}
               coins={coins}
               favorite={favorites.includes(combination)}
               setFavorite={() => {
@@ -144,7 +150,8 @@ const Carousel = ({
               }}
               coin1={coin1}
               coin2={coin2}
-              onClick={() => {
+                onClick={() => {
+                handleSoundClick()
                 const url = "/pairs/" + combination;
                 if (navigate) {
                   navigate(url);
@@ -177,12 +184,13 @@ const Carousel = ({
             <div
               className={`carousel-item ${i === active ? "active" : ""}`}
               key={i}
+              
             >
               <CardsContainer
                 cols={cols}
                 gap={gap}
                 offset={offset}
-                {...handlers}
+                {...handlers}                
               >
                 {arr.map((pair, j) => {
                   const [coin1, coin2] = pair || [];
@@ -193,7 +201,7 @@ const Carousel = ({
 
                   return (
                     <div className="d-flex px-1" key={j}>
-                      <PairCard className="w-100">
+                      <PairCard className="w-100" >
                         <Card
                           favorite={favorites.includes(combination)}
                           setFavorite={() => {
@@ -204,6 +212,7 @@ const Carousel = ({
                           coin1={coin1}
                           coin2={coin2}
                           onClick={() => {
+                            handleSoundClick()
                             const url = "/pairs/" + combination;
                             if (navigate) {
                               navigate(url);

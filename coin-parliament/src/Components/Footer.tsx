@@ -2,6 +2,7 @@ import React, {useContext} from "react";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
+import { texts } from "./LoginComponent/texts";
 
 const FooterContainer = styled.footer`
   bottom: 0;
@@ -111,11 +112,11 @@ const Footer = () => {
       <p style={{marginTop:'10px',marginBottom:'5px'}}>
        
        <span><Link
-         to="/privacy">Privacy {' '} </Link>
+         to="/privacy">{texts.Privacy} {' '} </Link>
     </span>
     <span>
     <Link
-         to="/privacy">Terms & Conditions</Link>
+         to="/privacy">{texts.termsConditions}</Link>
          </span>
      </p>
  

@@ -8,7 +8,7 @@ import { httpsCallable } from "firebase/functions";
 
 export type UserContextProps = {
   userInfo?: UserProps;
-  user?: AuthUser;
+  user?: AuthUser | undefined;
   setUser: (user?: AuthUser) => void;
   setUserInfo: (user?: UserProps) => void;
   votesLast24Hours: VoteResultProps[];

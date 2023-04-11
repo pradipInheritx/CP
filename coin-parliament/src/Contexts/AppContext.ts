@@ -26,6 +26,10 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  showBack?:any;
+  setShowBack?:any;
+  followerUserId?:string;
+  setFollowerUserId?:(lang: string) => void;
   remainingTimer?:any;
   nftAlbumData?: any;
   singalCardData?:any,

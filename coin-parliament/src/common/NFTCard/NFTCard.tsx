@@ -8,7 +8,7 @@ type MintingProps = {
 };
 function NFTCard({ cardType = "legendary" }: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
-  console.log("classname", classname);
+  
   return (
     <div className={classname}>
       <div>

@@ -1,7 +1,7 @@
 /** @format */
 
-import { Container, Navbar } from "react-bootstrap";
-import React, { useContext, useEffect, useState } from "react";
+import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import UserContext from "../Contexts/User";
@@ -21,6 +21,19 @@ import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
+import { getFollowerInfo } from "../Contexts/FollowersInfo";
+
+import { doc, getDoc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
+import { db, functions } from "../firebase";
+import firebase from "firebase/compat";
+import AddFollower from "./icons/AddFollower";
+import Following from "./icons/Following";
+import CoinsContext, { follow } from "../Contexts/CoinsContext";
+import { toFollow } from "../common/models/User";
+import "./styles.css";
+import { handleSoundClick } from "../common/utils/SoundClick";
+import CountUp from "react-countup";
 
 enum EventKeys {
   LOGIN = "login",
@@ -55,7 +68,7 @@ export const Title = styled.div`
 export const HeaderCenter = styled.div`
   background: white;
   color: #3712B3;
-  width: 55%;
+  width: 58%;
   height: 35px;
   margin: auto;
   margin-top: 10px;
@@ -99,15 +112,15 @@ export const PlusButton = styled.div`
   cursor: pointer;
 `;
 export const PlusButtonMob = styled.div`
-  width: 20px;
-  height: 20px;
+  width: 27px;
+  height: 27px;
   background: #6352e8;
   color: white;
-  text-align: center;
-  cursor: pointer;
   border-radius: 50px;
-  font-size: 13px;
-  margin-top:5px
+  padding: 3px 8px;
+  margin-top:1px;
+  font-size: 15px;
+  cursor: pointer;
 `;
 
 export const OuterContainer = styled.div`
@@ -151,12 +164,53 @@ const Header = ({
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules } = useContext(AppContext);
+  const { voteRules,followerUserId,login } = useContext(AppContext);
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
-const [votingTimer,setVotingTimer]=useState(0)
+  const [votingTimer, setVotingTimer] = useState(0)
+  const[followerInfo,setFollowerInfo]=useState<any>()
+  const [followUnfollow, setFollowUnfollow] = useState<any>(false)
+  const [show, setShow] = useState(false);
+  const { leaders } = useContext(CoinsContext);
+  var urlName = window.location.pathname.split('/');
+  const followerPage = urlName.includes("followerProfile")
+  const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
+  // const urlname = location.pathname;
 
-useEffect(() => {
+  const prevCountRef = useRef(voteNumber)
+  
+  const getFollowerData =()=>{
+  
+      const getCollectionType = firebase
+          .firestore()
+          .collection("users")
+          .where("uid", "==", followerUserId)
+        getCollectionType.get()
+        .then((snapshot) => {          
+        snapshot.docs?.map(doc=>setFollowerInfo(doc.data()))
+        }).catch((error) => {
+        console.log(error,"error");
+        });    
+  }
+  
+  useEffect(() => {
+    getFollowerData()  
+  }, [followerUserId])
+  
+  useEffect(() => {
+    if (voteNumber == 0 && votingTimer  && pageTrue && urlName.length>2) {
+      
+      setShow(true) 
+    } else {
+      setShow(false) 
+    }
+    
+  },[voteNumber , votingTimer])
+
+
+
+  useEffect(() => {
+  
   setVotingTimer(remainingTimer,)
  
 }, [remainingTimer])
@@ -169,13 +223,18 @@ useEffect(() => {
   useEffect(() => {
     const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
-    // @ts-ignore
-    console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
-    // @ts-ignore
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
+    
+    prevCountRef.current = voteNumber; 
+
+console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
+
+
+
   const onSelect = (eventKey: string | null) => {
+    // handleSoundClick()
     const auth = getAuth();
 
     switch (eventKey) {
@@ -189,8 +248,7 @@ useEffect(() => {
         break;
       case EventKeys.LOGOUT:
         signOut(auth)
-          .then((res) => {
-            console.log("logout", res);
+          .then((res) => {          
             Logout(setUser);
           })
           .catch((error) => {
@@ -246,14 +304,13 @@ useEffect(() => {
 
     setMenuOpen(false);
   };
-  // @ts-ignore
-  // console.log(
-  //   Number(voteRules?.maxVotes) +
-  //     // @ts-ignore
-  //     Number(userInfo?.rewardStatistics?.extraVote) -
-  //     Number(votesLast24Hours.length),
-  //   "userInfo"
-  // );
+  
+  
+  const handleClose = () => {
+    setShow(false)
+  
+  };
+  
 
   return (
     <div>
@@ -342,22 +399,16 @@ useEffect(() => {
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Signup",
+              label: "Become A Member",
             },
           ].map((i) => (i ? i : undefined))}
-        >
-          {/* {!desktop && (
-        <Title style={{ width: pathname === "/" ? "50%" : "50%" }}>
-          {mounted ? title : ""}
-        </Title>
-      )} */}
-
+        >        
           {/* {for center modile size} */}
 
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
               <div className='d-flex w-100 '>
-                {user?.uid  ? (
+                {user?.uid && !login  ? (
                   <div
                     className='d-flex w-100'
                     style={{ position: "relative" }}
@@ -373,9 +424,9 @@ useEffect(() => {
                         cursor:"pointer"
                       }}
                     >
-                      {userInfo?.avatar && (
+                      {/* {userInfo?.avatar && ( */}
                         <Avatars
-                          type={userInfo?.avatar as AvatarType}
+                          type={followerPage && followerInfo != "" ?  followerInfo?.avatar || "Founder" as AvatarType  : userInfo?.avatar as AvatarType}
                           style={{
                             width: "45px",
                             boxShadow: "1px 0px 5px #6352E8",
@@ -383,7 +434,7 @@ useEffect(() => {
                             backgroundColor: "#6352E8",
                           }}
                         />
-                      )}
+                      {/* )} */}
                     </div>
                     <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
                       <HeaderCenterMob className=''>
@@ -392,43 +443,79 @@ useEffect(() => {
                          
                           {/* @ts-ignore */}
                           
-                       {!voteNumber && votingTimer  ?
-                          // @ts-ignore
-                            
-                            <span className="" style={{ marginLeft: '20px', marginTop: "0px" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer} 
-                         renderer={({ hours, minutes, seconds, completed }) => {                        
-                            return (
-                              <span style={{color:'#6352e8',fontSize:'14px',fontWeight:400}}>
-                                {/* {hours < 10 ? `0${hours}` : hours}: */}
-                                {Number(voteRules?.maxVotes)} votes in {' '}
-                              {hours < 1 ? null : `${hours} :` }
-                              {minutes < 10 ? `0${minutes}` : minutes}:
-                              {seconds < 10 ? `0${seconds}` : seconds}
-                               
-                              </span>
-                            );
+                          {/* // @ts-ignore */}
+                          {/* {hours < 10 ? `0${hours}` : hours}: */}
+
+
+                          {
+                            followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
+                            // @ts-ignore */
+                                <div className="" style={{ marginLeft: '20px', marginTop: "0px",lineHeight: "90%" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
+                                  renderer={({ hours, minutes, seconds, completed }) => {
+                                    return (
+                                      <span className="text-uppercase" style={{color:'#6352e8',fontSize:'8px',fontWeight:100 ,lineHeight: "10%"}}>                            
+                                        Wait {" "}
+                                        {hours < 1 ? null : `${hours} :` }
+                                        {minutes < 10 ? `0${minutes}` : minutes}:
+                                        {seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes 
+                                        <br />
+                                         or buy extra votes now.
+                                      </span>
+                                    );
                           
-                        }}
+                                  }}
                          
-                         /></span>
-                        :
-                        <> 
-                          <span
-                            style={{
-                              color: "#6352E8",
-                            }}
-                          >
+                                /></div>
+                                :
+                                <>
+                                  <span
+                                    style={{
+                                      color: "#6352E8",
+                                    }}
+                                  >
                             
-                            {voteNumber>0? voteNumber:0} votes left
-                              </span>
-                            </>}
+                                  {/* {voteNumber > 0 ? voteNumber : 0} */}
+                                  <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                 {" "}
+                                  votes left
+                                  </span>
+                                </>}
                         </div>
                         
-                        <PlusButtonMob
-                          onClick={() => navigate("/votingbooster")}
-                        >
+                        {followerPage && followerInfo != "" ?
+                        <Form.Check.Label
+                              style={{ cursor: "pointer" }}
+                              // htmlFor={id || name}
+                              className="mt-1"
+                            bsPrefix="label"
+                            onClick={ async () =>
+                            {
+                              setFollowUnfollow(!followUnfollow) 
+                              console.log('folower',followerInfo)
+                              const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+                              if (user && ll) {
+                               
+                                await follow(ll, user, !followUnfollow);
+                              }
+                              // @ts-ignore
+                            //  await follow(followerInfo , user, checkFollow )
+                            }
+                            
+                            }
+                            >
+                              {/* {checked && iconOn}
+                              {!checked && iconOff} */}
+                            {followUnfollow == true ?  <Following/> :  <AddFollower/>}
+                        </Form.Check.Label>
+                          :
+                          <PlusButtonMob onClick={() => {
+                            handleSoundClick()
+                            navigate("/votingbooster")
+                          }}>
                           <span>+</span>
-                        </PlusButtonMob>
+                        </PlusButtonMob> 
+
+                        }
                       </HeaderCenterMob>
                       <div
                         className='w-25'
@@ -436,12 +523,13 @@ useEffect(() => {
                       >
                         {/* <p>{"unique_Username"}</p> */}
 
-                        <span className='mb-1' style={{ fontSize: "13px" }}>{`${
-                          userInfo?.displayName && userInfo?.displayName
-                        }`}</span>
-                        <br />
+                        {followerPage && followerInfo != ""?  <></> :<span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${
+                         userInfo?.displayName && userInfo?.displayName
+                        }`}</span>}
+                        {/* <br /> */}
                         <MemberText>
-                          {translate(userInfo?.status?.name || "")}
+                          {/* {translate(followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || "")} */}
+                          {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
                         </MemberText>
                       </div>
                     </div>
@@ -450,7 +538,9 @@ useEffect(() => {
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "" : "" }}>
+                  <Title style={{ width: pathname === "/" ? "" : "" }}
+                    // onClick={handleSoundClick}
+                  >
                     {mounted ? title : ""}
                   </Title>
                 </div>
@@ -470,7 +560,7 @@ useEffect(() => {
               }}
             >
               <div className='d-flex '>
-                {user?.uid ? (
+                {user?.uid && !login? (
                   <div
                     className='d-flex   w-25 mx-auto '
                     style={{ position: "relative", height: "50px" }}
@@ -485,33 +575,35 @@ useEffect(() => {
                         cursor:"pointer"
                       }}
                     >
-                      {userInfo?.avatar && (
+                      {/* {userInfo?.avatar && ( */}
                         <Avatars
-                          type={userInfo?.avatar as AvatarType}
+                          // type={userInfo?.avatar as AvatarType}
+                          type={ followerPage && followerInfo != ""?  followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
                           style={{
                             width: "60px",
                             boxShadow: "1px 0px 5px #6352E8",
                             backgroundColor: "#6352E8",
                           }}
                         />
-                      )}
+                      {/* )} */}
                     </div>
                     <div className='w-100 '>
                       <HeaderCenter className=''>
                         <div></div>
                         <p className='ml-5'>
-                        {!voteNumber && votingTimer ?
+                       { followerPage && followerInfo != "" ? followerInfo?.displayName :!voteNumber && votingTimer ?
                           // @ts-ignore
                          <span style={{marginLeft:'20px'}}> <Countdown date={votingTimer} 
                          renderer={({ hours, minutes, seconds, completed }) => {
                         
                           return (
-                            <span style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
+                            <span className="text-uppercase" style={{color:'#6352e8',fontSize:'10px',fontWeight:400}}>
                               {/* {hours < 10 ? `0${hours}` : hours}: */}
-                              {Number(voteRules?.maxVotes)} votes in {' '}
+                              Wait {" "}
                               {hours < 1 ? null : `${hours} :` }
                               {minutes < 10 ? `0${minutes}` : minutes}:
-                              {seconds < 10 ? `0${seconds}` : seconds}
+                              {seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes 
+                              <p style={{marginLeft:'30px'}}> or buy extra votes now.</p>
                             </span>
                           );
                         
@@ -530,12 +622,47 @@ useEffect(() => {
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
-                            {voteNumber>0? voteNumber:0} votes left
+                                {/* {voteNumber > 0 ? voteNumber : 0} */}
+                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                               {" "}
+                                votes left
                           </span></>}
                         </p>
-                        <PlusButton onClick={() => navigate("/votingbooster")}>
+                        {followerPage && followerInfo != "" ?
+                        <Form.Check.Label
+                        className=""
+                              style={{ cursor: "pointer" }}
+                              // htmlFor={id || name}
+                              // className={className}
+                            bsPrefix="label"
+                            onClick={ async () =>
+                              {
+                                setFollowUnfollow(!followUnfollow) 
+                                console.log('folower',followerInfo)
+                                const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+                                if (user && ll) {
+                                 
+                                  await follow(ll, user, !followUnfollow);
+                                }
+                                // @ts-ignore
+                              //  await follow(followerInfo , user, checkFollow )
+                              }
+                              
+                              }
+                            >
+                              {/* {checked && iconOn}
+                              {!checked && iconOff} */}
+                            {followUnfollow == true ?  <Following/> :  <AddFollower/>}
+                        </Form.Check.Label>
+                          :
+                          <PlusButton onClick={() => {
+                            handleSoundClick()
+                            navigate("/votingbooster")
+                          }}>
                           <span>+</span>
-                        </PlusButton>
+                        </PlusButton> 
+
+                        }
                       </HeaderCenter>
                       <div
                         className=''
@@ -547,12 +674,12 @@ useEffect(() => {
                           fontWeight: "100px",
                         }}
                       >
-                        <span className='mb-1' style={{ fontSize: "16px" }}>{`${
-                          userInfo?.displayName && userInfo?.displayName
-                        }`}</span>
-                        <br />
+                        {followerPage && followerInfo != ""?  <></> :<span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${
+                         userInfo?.displayName && userInfo?.displayName
+                        }`}</span>}
+
                         <MemberText>
-                          {translate(userInfo?.status?.name || "")}
+                          {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
                         </MemberText>
                       </div>
                     </div>
@@ -560,7 +687,9 @@ useEffect(() => {
                 ) : (
                   <div className='w-100'></div>
                 )}
-                <Navbar.Brand as={Link} to='/'>
+                <Navbar.Brand as={Link} to='/'
+                  // onClick={handleSoundClick}
+                >
                   <img src={BigLogo} alt='' />
                 </Navbar.Brand>
               </div>
@@ -569,10 +698,59 @@ useEffect(() => {
             <div style={{ width: "25%" }}>&nbsp;</div>
           )}
           {/* {desktop && <Title style={{flexBasis: "50%", textAlign: "center"}}>{mounted ? title : ""}</Title>} */}
+          <div>
+            {/* <Button variant="primary" onClick={handleShow}>
+        Launch static backdrop modal
+      </Button> */}                            
+            <Modal
+        dialogClassName="modal-35w"
+        show={show}
+                onHide={handleClose}
+        aria-labelledby="contained-modal-title-vcenter"
+              centered
+              style={{ opacity: 1 }}
+              className="borderColor"
+              // animation={false}
+            >             
+              {/* <Modal.Header>
+
+              </Modal.Header> */}
+              <div className="d-flex justify-content-end">
+                <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
+                  setShow(false)
+                  }}></button>
+                </div>
+              <Modal.Body>
+                              
+                {/* <hr /> */}
+                <p className="text-uppercase"> Out of votes? </p> <Link className="text-uppercase" to="/votingbooster" onClick={() => {
+                  handleSoundClick()
+                  navigate("/votingbooster")
+                  setShow(false)
+                }} >Buy</Link> {"extra votes now or wait,".toUpperCase()} <span className="text-uppercase">
+                   {/* @ts-ignore */}
+                  <Countdown date={votingTimer} 
+                         renderer={({ hours, minutes, seconds, completed }) => {                        
+                          return (
+                            <span >
+                              {/* {hours < 10 ? `0${hours}` : hours}: */}
+                              {Number(voteRules?.maxVotes)} votes in {' '}
+                              {hours < 1 ? null : `${hours} :` }
+                              {minutes < 10 ? `0${minutes}` : minutes}:
+                              {seconds < 10 ? `0${seconds}` : seconds}
+                            </span>
+                          );
+                        
+                      }}
+                      /></span>
+              </Modal.Body>                    
+      </Modal>
+          </div>
         </MenuContainer>
       </div>
     </div>
   );
 };
+
 
 export default Header;

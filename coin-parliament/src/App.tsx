@@ -3,6 +3,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
+import {texts} from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
@@ -15,6 +17,7 @@ import {
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
 import Profile, { ProfileTabs } from "./Pages/Profile";
+import FollowerProfile, { FollowerProfileTabs } from "./Pages/FollowerProfile";
 import Header from "./Components/Header";
 import NotificationContext, { ToastType } from "./Contexts/Notification";
 import CoinsContext, { Leader, Totals } from "./Contexts/CoinsContext";
@@ -64,7 +67,7 @@ import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
 import { getToken } from "firebase/messaging";
 import { Form } from "react-bootstrap";
-import { rest, ws } from "./common/models/Socket";
+import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
 import ContentContext, { ContentPage } from "./Contexts/ContentContext";
 import Content from "./Pages/Content";
@@ -72,6 +75,7 @@ import LoginAndSignup from "./Components/LoginComponent/LoginAndSignup";
 import {
   LoginAuthProvider,
   LoginRegular,
+  Logout,
   SignupRegular,
 } from "./common/models/Login";
 import FirstTimeLogin from "./Components/LoginComponent/FirstTimeLogin";
@@ -103,7 +107,7 @@ import Background from "./Components/Background";
 import Spinner from "./Components/Spinner";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
-import useScrollPosition from "./hooks/useScrollPosition";
+// import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
 import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
@@ -112,65 +116,80 @@ import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
+import Partners from "./Pages/Partners";
+import Foundations from "./Pages/Foundations";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
+import FwMine from "./Components/FollowerProfile/FwMine";
+import FwFollow from "./Components/FollowerProfile/FwFollow";
+import FwVotes from "./Components/FollowerProfile/FwVotes";
+import FwPool from "./Components/FollowerProfile/FwPool";
+import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
+import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
+import Wallet from "./Components/Profile/Wallet";
+import { pwaInstallHandler } from 'pwa-install-handler'
+import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
+import Login2fa from "./Components/LoginComponent/Login2fa";
+import { handleSoundClick } from "./common/utils/SoundClick";
+import createFastContext from "./hooks/createFastContext";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
-
+let ws:any;
+let socket:any;
 function App() {
+  
+  
   const location = useLocation();
   const search = location.search;
   const pathname = location.pathname;
   const langDetector = useRef(null);
   let navigate = useNavigate();
   const { width } = useWindowSize();
-  const scrollPosition = useScrollPosition();
+  // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
-  const [displayFullscreen,setDisplayFullscreen]=useState('none')
-// fullscreen mode
-useEffect(() => {
-  const modal = document.getElementById("fullscreen-modal");
-window.addEventListener('load', () => {
-  setDisplayFullscreen('block')
-});
-}, [])
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-// @ts-ignore
-const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
+//   const [displayFullscreen,setDisplayFullscreen]=useState('none')
+// // fullscreen mode
+// useEffect(() => {
+// window.addEventListener('load', () => {
+//   setDisplayFullscreen('block')
+// });
+// }, [])
+// const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+// // @ts-ignore
+// const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
 
-const handleClick=()=>{
-  
-  setDisplayFullscreen('none')
-  if (isMobile && fullscreenEnabled) {
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } 
-    // @ts-ignore
-    else if (elem?.webkitRequestFullscreen) {
-       // @ts-ignore
-      elem?.webkitRequestFullscreen();
-    }
-     // @ts-ignore 
-    else if (elem?.mozRequestFullScreen) {
-       // @ts-ignore
-      elem?.mozRequestFullScreen();
-    }
-     // @ts-ignore
-     else if (elem?.msRequestFullscreen) {
-        // @ts-ignore
-      elem?.msRequestFullscreen();
-    }
-  }
-}
+// const handleClick=()=>{
+//   setDisplayFullscreen('none')
+//   if (isMobile && fullscreenEnabled) {
+//     const elem = document.documentElement;
+//     if (elem.requestFullscreen) {
+//       elem.requestFullscreen();
+//     } 
+//     // @ts-ignore
+//     else if (elem?.webkitRequestFullscreen) {
+//        // @ts-ignore
+//       elem?.webkitRequestFullscreen();
+//     }
+//      // @ts-ignore 
+//     else if (elem?.mozRequestFullScreen) {
+//        // @ts-ignore
+//       elem?.mozRequestFullScreen();
+//     }
+//      // @ts-ignore
+//      else if (elem?.msRequestFullscreen) {
+//         // @ts-ignore
+//       elem?.msRequestFullscreen();
+//     }
+//   }
+// }
   useEffect(() => {
       window.scrollTo({
         top: 0,
         behavior: 'smooth',
     });
-      // console.log("scrollTo");
+      
 }, [pathname])
 
   const showToast = useCallback(
@@ -224,21 +243,23 @@ const handleClick=()=>{
     []
   );
 
-  useEffect(() => {
-    navigator.serviceWorker.addEventListener("message", (message) => {
-      const {
-        notification: { body, title },
-      } = message.data["firebase-messaging-msg-data"] as {
-        notification: { body: string; title: string };
-      };
-      showToast(
-        <div>
-          <h5>{title}</h5>
-          <p>{body}</p>
-        </div>
-      );
-    });
-  });
+  // useEffect(() => {
+  //   if('serviceWorker' in navigator) {
+  //   navigator?.serviceWorker?.addEventListener("message", (message) => {
+  //     const {
+  //       notification: { body, title },
+  //     } = message.data["firebase-messaging-msg-data"] as {
+  //       notification: { body: string; title: string };
+  //     };
+  //     // showToast(
+  //     //   <div>
+  //     //     <h5>{title}</h5>
+  //     //     <p>{body}</p>
+  //     //   </div>
+  //     // );
+  //   });
+  // }
+  // });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -300,6 +321,8 @@ const handleClick=()=>{
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [remainingTimer,setRemainingTimer]=useState(0)
+  const [followerUserId,setFollowerUserId]=useState<string>('')
+  const [showBack,setShowBack]=useState<any>(false)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -309,15 +332,76 @@ const handleClick=()=>{
   const [userTypes, setUserTypes] = useState<UserTypeProps[]>([
     defaultUserType,
   ] as UserTypeProps[]);
+  const [supportsPWA, setSupportsPWA] = useState(false);
+  const [promptInstall, setPromptInstall] = useState(null);
+const [pwaPopUp,setPwaPopUp]=useState('block')
+const[mfaLogin,setMfaLogin]=useState(false)
+  useEffect(() => {
+    const handler = (e:any) => {
+      e.preventDefault();
+      console.log("we are being triggered :D");
+      setSupportsPWA(true);
+      setPromptInstall(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
 
-  const updateUser = useCallback(async (user?: User) => {
+    return () => window.removeEventListener("transitionend", handler);
+  }, []);
+  // @ts-ignore
+  useEffect(() => {
+    const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+    if (isMFAPassed=='true' && !login ) {
+    
+      console.log('2faCalled')
+      // @ts-ignore
+      Logout(setUser)}
+  }, [])
+  
+  
+  const onClick = (evt:any) => {
+    // evt.preventDefault();
+    console.log('not supported',promptInstall)
+    if (!promptInstall) {
+      return;
+    }
+    // @ts-ignore
+    else promptInstall.prompt();
+  };
+  if (!supportsPWA) {
+    console.log('not supported')
+  }
+  useEffect(() => {
+    if ( user?.email && userInfo?.displayName === undefined && !login) {
+      setLoader(true);
+//   .get("444-44-4444").onsuccess = (event) => {
+//   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
+// };
+
+      // setLoader(true);
+    } else {
+      // setTimeout(() => {
+        setLoader(false);
+      // }, 2000);
+    }
+  }, [user, userInfo]);
+  const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
+    
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
+
+  
+  // const FollowerData = async(id:any) => {     
+  //   const Followerinfo =  await getFollowerInfo(id);
+  //   return Followerinfo
+  // }
+
+  
+  
   useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined) {
+    if (user?.email && userInfo?.displayName === undefined && !login) {
       setLoader(true);
     } else {
       setTimeout(() => {
@@ -326,15 +410,31 @@ const handleClick=()=>{
     }
   }, [user, userInfo]);
   useEffect(() => {
+    // const buttons = document.getElementsByTagName('button');
+    // console.log('buttondata',buttons);
+    // for (let i = 0; i < buttons.length; i++) {
+    //   buttons[i].addEventListener('click', handleSoundClick);
+    // }
+    
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
-      setLogin(true);
-      setSignup(true);
-    } else {
       setLogin(false);
       setSignup(false);
+    } else {
+      const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+      if(!user && isMFAPassed!=='true' ){
+        console.log('2faCalled3')
+        setLogin(false);
+        setSignup(false);
+      }
+     
     }
-  }, [location, search, user]);
+    // return () => {
+    //   for (let i = 0; i < buttons.length; i++) {
+    //     buttons[i].removeEventListener('click', handleSoundClick);
+    //   }
+    // }
+  }, [location, search]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -343,10 +443,21 @@ const handleClick=()=>{
   // }, [user]);
 
   useEffect(() => {
-    if (user && userInfo && userInfo?.displayName === "" && userUid) {
+   
+    // @ts-ignore
+    if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
     }
+   
   }, [userInfo]);
+
+useEffect(() => {
+  pwaInstallHandler.addListener((canInstall) => {
+     canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
+    })
+}, [])
+
+
 
   useEffect(() => {
     setMounted(true);
@@ -358,8 +469,11 @@ const handleClick=()=>{
   const TimeframesMng = new TimeframesManager(timeframes, setTimeframes);
   const UserTypeMng = new UserTypeManager(userTypes, setUserTypes);
 
+
+
+
   if (langDetector.current) {
-    (langDetector.current as unknown as HTMLInputElement).addEventListener(
+    (langDetector?.current as unknown as HTMLInputElement)?.addEventListener(
       "change",
       (event) => {
         const target = event.target as HTMLInputElement;
@@ -393,16 +507,16 @@ const handleClick=()=>{
     }
   }, [lang, user?.uid]);
 
-  const isAdmin = useCallback(async (uid?: string) => {
-    if (uid) {
-      const func = httpsCallable(functions, "isAdmin");
-      return !!(await func({ user: uid })).data;
-    }
-  }, []);
+  // const isAdmin = useCallback(async (uid?: string) => {
+  //   if (uid) {
+  //     const func = httpsCallable(functions, "isAdmin");
+  //     return !!(await func({ user: uid })).data;
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
-  }, [user?.uid, isAdmin]);
+  // useEffect(() => {
+  //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
+  // }, [user?.uid, isAdmin]);
 
   useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
@@ -479,12 +593,21 @@ const handleClick=()=>{
       });
     });
 
-    onSnapshot(doc(db, "stats", "coins"), (doc) => {
+    // onSnapshot(doc(db, "stats", "coins"), (doc) => {
      
-      const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-      setCoins(newAllCoins);
-      // saveCoins(newAllCoins);
-    });
+    //   const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
+    //   setCoins(newAllCoins);
+    //   // console.log('allcoins',coins)
+    //   // saveCoins(newAllCoins);
+    // });
+    const coinData = firebase
+    .firestore()
+    .collection("stats").doc('coins')
+    coinData.get()
+  .then((snapshot:any) => {        
+//  console.log('allcoin',snapshot.data())
+ setCoins(snapshot.data());
+  });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);
@@ -518,16 +641,16 @@ const handleClick=()=>{
   
   useEffect(() => {
     const auth = getAuth();
-
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
+        console.log('provider',user?.providerData[0]?.providerId)
         if (
           user?.emailVerified ||
           user?.providerData[0]?.providerId === "facebook.com"
         ) {
-          setLogin(false);
-          setSignup(false);
+          // setLogin(false);
+          // setSignup(false);
           setLoginRedirectMessage("");
           await updateUser(user);
           setUserUid(user?.uid);
@@ -558,7 +681,7 @@ const handleClick=()=>{
                   { token: fcmToken },
                   { merge: true }
                 );
-                console.log("push enabled");
+                // console.log("push enabled");
               } catch (e) {
                 console.log(e);
               }
@@ -587,11 +710,9 @@ const votesLast24HoursRef = firebase
             .where("userId", "==", user?.uid)
             .where("voteTime", ">=", last24Hour)
             .where("voteTime", "<=", Date.now());
-// console.log('extravote11',votesLast24HoursRef)
 votesLast24HoursRef.get()
     .then((snapshot) => {
         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-      
         const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
       let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
   
@@ -629,6 +750,7 @@ votesLast24HoursRef.get()
   
  
 }, [userInfo?.voteStatistics?.total])
+// console.log('usermfa',user,userInfo)
 
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
@@ -643,6 +765,112 @@ votesLast24HoursRef.get()
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
+  
+// useEffect(() => {
+//   async function removeData() {
+//     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
+//     const batch = firebase.firestore().batch();
+//     voteData.forEach(doc => {
+//       batch.delete(doc.ref);
+//     });
+//     await batch.commit();
+  
+//     console.log("User vote data deleted");
+//   }
+//   removeData()
+// }, [])
+
+
+
+function connect(){
+  if(Object.keys(coins).length === 0) return
+  ws = new WebSocket('wss://stream.binance.com:9443/ws');
+   console.log('websocket connected first time')
+ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
+   ws.onopen = () => {
+     ws.send(JSON.stringify({
+       method: 'SUBSCRIBE',
+       params: coinTikerList,
+       id: 1
+     }));
+   };
+  
+    socket = new WebSocket('wss://stream.crypto.com/v2/market');
+ 
+   socket.onopen = () => {
+     const req = {
+       id: 1,
+       method: 'subscribe',
+       params: {
+         channels: ['ticker.CRO_USDT'],
+       },
+     };
+     socket.send(JSON.stringify(req));
+   };
+   ws.onclose = (event:any) => {
+     console.log('WebSocket connection closed');
+     if (event.code !== 1000) {
+       console.log('Attempting to reconnect in 5 seconds...');
+       setTimeout(() => {
+         connect();
+       }, 5000);
+     }
+   };
+   
+   ws.onerror = () => {
+     console.log('WebSocket connection occurred');
+   };
+   const timeout = 30000; // 30 seconds
+   let timeoutId:any;
+   const checkConnection = () => {
+     if (ws.readyState !== WebSocket.OPEN) {
+       console.log('WebSocket connection timed out');
+       clearInterval(timeoutId);
+       connect();
+     }
+   };
+   timeoutId = setInterval(checkConnection, timeout);
+}
+
+useEffect(() => {
+  
+  connect();
+  
+  return () => {
+if (ws) ws.close();
+    if(socket) socket.close();
+  };
+}, [Object.keys(coins).length]);
+// useEffect(() => {
+//   window.addEventListener("focus", () => socket.connect());
+
+//   return () => {
+    
+//   }
+// }, [])
+// useEffect(() => {
+//   document.addEventListener("visibilitychange", handleVisibilityChange);
+//   return () => {
+//     document.removeEventListener("visibilitychange", handleVisibilityChange);
+//   }
+// }, []);
+
+// const handleVisibilityChange = () => {
+//   const isIPhone = /iPhone/i.test(navigator.userAgent);
+
+//   if (isIPhone) {
+//     console.log('This is an iPhone');
+//   } else {
+//     console.log('This is not an iPhone');
+//   }
+//   if (document.hidden) {
+//     console.log("Browser window is minimized");
+//     // ws.close();
+//     // socket.close();
+//   } else {
+//     console.log("Browser window is not minimized");
+//   }
+// }
 
   return loader ? (
     <div
@@ -664,7 +892,11 @@ votesLast24HoursRef.get()
             type='hidden'
             id='lang-detector'
             ref={langDetector}
-            onChange={(e) => console.log(e.target.value)}
+              onChange={(e) => {
+                
+                // console.log(e.target.value)
+              }
+              }
           />
           <ManagersContext.Provider
             value={{
@@ -676,6 +908,10 @@ votesLast24HoursRef.get()
           >
             <AppContext.Provider
                 value={{
+                  showBack,
+                  setShowBack,
+                  followerUserId,
+                  setFollowerUserId,
                   singalCardData,
                   setSingalCardData,
                   remainingTimer,
@@ -736,7 +972,7 @@ votesLast24HoursRef.get()
                     );
                   } else {
                     if (u.every((uu) => uu.share)) {
-                      showToast("total share must be 100%", ToastType.ERROR);
+                      showToast(texts.Total100, ToastType.ERROR);
                     }
                   }
                 },
@@ -791,6 +1027,7 @@ votesLast24HoursRef.get()
                       changePrice,
                     setChangePrice,
                     ws,
+                    socket,
                     rest,
                     coins,
                     setCoins,
@@ -818,6 +1055,7 @@ votesLast24HoursRef.get()
                       setVotesLast24Hours,
                     }}
                   >
+                    
                     {getSubdomain() === "admin" && user && <Admin />}
                     {(getSubdomain() !== "admin" ||
                       (getSubdomain() === "admin" && !user)) && (
@@ -895,12 +1133,7 @@ votesLast24HoursRef.get()
                               </HomeContainer>
                             }
                           />
-                        { isMobile &&  <div id="fullscreen-modal" className="modal" style={{display:displayFullscreen}}>
-  <div className="modal-content" >
-    <p className='fullscreentext'>Click the button below to enter fullscreen mode.</p>
-    <div className='d-flex justify-content-between'><button className="btn btn-outline-primary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>handleClick()}>YES</button> <button className="btn btn-outline-secondary" style ={{zIndex:9999, minWidth:'100px'}}onClick={()=>setDisplayFullscreen('none')}>No</button></div>
-  </div>
-</div>}
+                       
                           {user && firstTimeLogin && (
                             <FirstTimeLogin
                               setFirstTimeAvatarSelection={
@@ -911,7 +1144,7 @@ votesLast24HoursRef.get()
                                 if (user?.uid) {
                                   await saveUsername(user?.uid, username, "");
                                   setFirstTimeAvatarSelection(true);
-                                  setFirstTimeFoundationSelection(true);
+                                  // setFirstTimeFoundationSelection(true);
                                   setFirstTimeLogin(false);
                                 }
                               }}
@@ -926,7 +1159,7 @@ votesLast24HoursRef.get()
                               }
                             />
                           )}
-                          {!firstTimeAvatarSlection &&
+                          {/* {!firstTimeAvatarSlection &&
                             firstTimeFoundationSelection && (
                               <FirstTimeFoundationSelection
                                 user={user}
@@ -934,16 +1167,22 @@ votesLast24HoursRef.get()
                                   setFirstTimeFoundationSelection
                                 }
                               />
-                            )}
+                            )} */}
                           {!firstTimeLogin && (
                             <>
-                              {!user && login && (
+                              {!user && login && !mfaLogin && (
                                 <LoginAndSignup
                                   {...{
                                     authProvider: LoginAuthProvider,
                                     loginAction: LoginRegular,
                                     signupAction: SignupRegular,
                                   }}
+                                />
+                              )}
+                              {(user || userInfo?.uid) && login && (
+                                <Login2fa
+                                  setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
                                 />
                               )}
                               {!login &&
@@ -967,6 +1206,29 @@ votesLast24HoursRef.get()
                                         }px 0 0`,
                                       }}
                                     >
+                                    <div className='pwaPopup'  style={{display:pwaPopUp}}>
+                                        <span>{texts.InstallCoinParliament}</span>
+                                    <button
+                                        className="link-button"
+                                        id="setup_button"
+                                        aria-label="Install app"
+                                        title="Install app"
+                                        onClick={onClick}
+                                        style={{zIndex:99999}}
+                                      >
+                                        {texts.Install}
+                                      </button>
+                                        <span
+                                          className="link-button"
+                                          id="setup_button"
+                                          aria-label="Install app"
+                                          title="Install app"
+                                          onClick={e=>setPwaPopUp('none')}
+                                          style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}
+                                        >
+                                          x
+                                        </span>
+                                      </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />
                                         <Route
@@ -1009,6 +1271,14 @@ votesLast24HoursRef.get()
                                             path={ProfileTabs.password}
                                             element={<Security />}
                                           />
+                                          <Route
+                                            path={
+                                              ProfileTabs.wallet
+                                            }
+                                            element={<Wallet />}
+                                          /> 
+                                          
+
                                           {!isV1() && (
                                             <Route
                                               path={ProfileTabs.mine}
@@ -1023,6 +1293,10 @@ votesLast24HoursRef.get()
                                             path={ProfileTabs.votes}
                                             element={<Votes />}
                                           />
+                                          <Route
+                                              path={ProfileTabs.share}
+                                              element={<Pool />}
+                                          />                                    
                                           <Route
                                             path={ProfileTabs.notifications}
                                             element={<Notifications />}
@@ -1039,11 +1313,47 @@ votesLast24HoursRef.get()
                                             }
                                             element={<ProfileNftGalleryType />}
                                           />
-                                          <Route
-                                            path={ProfileTabs.share}
-                                            element={<Pool />}
-                                          />
+                                         
                                         </Route>
+                                        {/* Fowller component  start*/}
+                                        <Route
+                                          path={FollowerProfileTabs.FollowerProfile}
+                                          element={<FollowerProfile />}
+                                        >
+                                          {!isV1() && (
+                                            <Route
+                                              path={FollowerProfileTabs.mine}
+                                              element={<FwMine />}
+                                            />
+                                          )}
+                                          
+                                           <Route
+                                            path={FollowerProfileTabs.followers}
+                                            element={<FwFollow />}
+                                          />
+                                          <Route
+                                            path={FollowerProfileTabs.votes}
+                                            element={<FwVotes />}
+                                          />
+                                          <Route
+                                              path={FollowerProfileTabs.share}
+                                              element={<FwPool />}
+                                          />
+                                          <Route
+                                            path={
+                                              FollowerProfileTabs.ProfileNftGallery
+                                            }
+                                            element={<FwProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              FollowerProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<FwProfileNftGalleryType />}
+                                          />
+                                          </Route>
+                                          
+                                        {/* Fowller component  end*/}
                                         <Route
                                           path='/upgrade'
                                           element={<UpgradePage />}
@@ -1066,6 +1376,14 @@ votesLast24HoursRef.get()
                                         <Route
                                           path='gamerule'
                                           element={<GameRule />}
+                                        />
+                                        <Route
+                                          path='partners'
+                                          element={<Partners />}
+                                        />
+                                        <Route
+                                          path='foundations'
+                                          element={<Foundations />}
                                         />
                                         <Route
                                           path='contact'
@@ -1117,7 +1435,7 @@ votesLast24HoursRef.get()
             onSubmit={async (e) => {
               e.preventDefault();
               const resp = await sendPassword({ password });
-              console.log(resp.data);
+              // console.log(resp.data);
               if (resp.data === true) {
                 enable(true);
               }

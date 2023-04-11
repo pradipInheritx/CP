@@ -23,6 +23,9 @@ import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import { saveUsername } from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { userConverter, UserProps } from "./User";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -42,10 +45,12 @@ export const providers = {
 };
 
 export const Logout = (setUser: () => void) => {
+ 
   const auth = getAuth();
   signOut(auth)
     .then(() => {
       setUser();
+      window.localStorage.setItem('mfa_passed','false')
     })
     .catch((error) => {
       const errorMessage = error.message;
@@ -71,20 +76,39 @@ export const LoginAuthProvider = async (
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const isFirstLogin = getAdditionalUserInfo(result)
-    
+    const userRef = doc(db, "users", user.uid);
+      const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
+      const info = userinfo.data();
     // await sendEmail().then(()=>console.log('welcome mail')).catch(err=>console.log('welcome error',err))
     if(callback){
       
-      console.log('callback called for refeer',user)
-      callback({parent: refer, child: user.uid})}
-
+      // console.log('callback called for refeer',user)
+      callback({parent: refer, child: user.uid})
+    }
+      
     if (isFirstLogin?.isNewUser) {
       saveUsername(user.uid,'','')
+
+      const firstTimeLogin:Boolean=true
+     
+      await setDoc(userRef, { firstTimeLogin }, { merge: true });
+      console.log('firsttimelogin success')
+      
     setTimeout(() => {
+      
       setUser(user);
     }, 100);
     }else{
-    setUser(user);
+   
+      console.log('user',info)
+      // @ts-ignore
+      if(info?.mfa) {
+        
+        console.log('datacalled')
+        // @ts-ignore
+        setSmsVerification(true)}
+    // setUser(user);
+
     }
   } catch (e) {
     // @ts-ignore
@@ -97,7 +121,7 @@ export const LoginAuthProvider = async (
         multiFactorHint: resolver?.hints[0],
         session: resolver?.session
     };
-    console.log('phonebook',phoneInfoOptions)
+    // console.log('phonebook',phoneInfoOptions)
     const phoneAuthProvider = new PhoneAuthProvider(auth);
     const recaptchaVerifier = new RecaptchaVerifier(
       "loginId",
@@ -112,7 +136,7 @@ export const LoginAuthProvider = async (
       },
       auth
     );
-    console.log('captcha',recaptchaVerifier)
+    // console.log('captcha',recaptchaVerifier)
 phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
     .then(function (verificationId) {
        // @ts-ignore
@@ -151,10 +175,15 @@ export const LoginRegular = async (
       password
     );
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-
+console.log('firsttimelogin',isFirstLogin)
     if(auth?.currentUser?.emailVerified){
       if (isFirstLogin?.isNewUser) {
         saveUsername(userCredential?.user?.uid,'','')
+
+        const firstTimeLogin:Boolean=true
+        const userRef = doc(db, "users", userCredential?.user?.uid);
+        await setDoc(userRef, { firstTimeLogin }, { merge: true });
+        console.log('firsttimelogin success')
         // await sendEmail();
       setTimeout(() => {
         callback.successFunc(userCredential.user) 
@@ -208,6 +237,12 @@ export const SignupRegular = async (
     
 // @ts-ignore
     await sendEmailVerification(auth?.currentUser);
+    const firstTimeLogin:Boolean=true
+    // @ts-ignore
+
+    const userRef = doc(db, "users", auth?.currentUser?.uid);
+    await setDoc(userRef, { firstTimeLogin }, { merge: true })
+    console.log('firsttimelogin success')
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid,'','')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))

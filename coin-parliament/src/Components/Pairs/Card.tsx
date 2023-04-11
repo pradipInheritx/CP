@@ -10,10 +10,12 @@ import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
 import { useLocation } from "react-router-dom";
 import arrow from '../../assets/svg/arrow-right.svg'
+import { texts } from "../LoginComponent/texts";
 const LighCart1 = styled.div`
   //width: 100%;
-  max-width: ${(props: { pathname: string,single: boolean }) =>
+  max-width: ${(props: { pathname: string, single: boolean }) =>
   props.pathname?.includes('/pairs') ? "236px" : ''};
+  cursor: pointer;
   width:  ${(props: { pathname: string,single: boolean }) =>
   props.pathname?.includes('/pairs') ? "236px" : ''};
   position: relative;
@@ -46,7 +48,7 @@ export type LogoProps = {
   width?: number;
 };
 
-export const Logo = ({ symbol, width = 35 }: LogoProps) => {
+export const Logo = ({ symbol, width = 40 }: LogoProps) => {
   return (
     <Image
       src={process.env.PUBLIC_URL + `/images/logos/${symbol.toUpperCase()}.svg`}
@@ -64,8 +66,7 @@ const CoinNameXYZ = styled.div`
   flex: 1;
   font-family: var(--font-family-poppins);
   color: var(--ebony);
-  font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-12)"};
+  font-size: ${(props: { single: boolean }) => props.single ? "var(--font-size-18)" : "var(--font-size-14)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 1.1;
@@ -187,7 +188,7 @@ const Price = styled.div`
   color: ${(props: { single: boolean }) =>
           props.single ? "var(--white)" : "#23036a"};
   font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
+          props.single ? "var(--font-size-18)" : "var(--font-size-15)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 16px;
@@ -207,7 +208,7 @@ const CoinCard = ({
   <LogoContainer>
     <Buttons.ClickableText onClick={onClick} style={{cursor: single ? "default" : undefined}}>
       <LogoImgContainer {...{single}}>
-        <Logo {...{symbol: coin.symbol, width: single ? 40 : 35}} />
+        <Logo {...{symbol: coin.symbol, width: single ? 45 : 40}} />
       </LogoImgContainer>
     </Buttons.ClickableText>
     <div className="my-2">
@@ -251,7 +252,7 @@ const Card = ({
   const [colorSec, setColorSec] = useState<string>("black");
   const [priceFist, setPriceFist] = useState<any>(0)
   const [priceSec, setPriceSec] = useState<any>(0)
-
+const [zoom, setZoom] = useState(false)
   const prevFirstRef = useRef(priceFist)
   const prevSecRef = useRef(priceSec)
 
@@ -300,11 +301,16 @@ const secColor= ()=>{
 
   
   return (
-    <LighCart1 {...{ single,pathname }} className="">
+    <LighCart1 {...{ single, pathname }} className=""
+      style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.05)" : "scale(1)"}` }}
+    onMouseEnter={()=>setZoom(true)}
+      onMouseLeave={() => setZoom(false)}  
+      onClick={onClick}
+    >
       <HeartContainer {...{ single }} onClick={
         ()=>{
           if(!user?.uid){
-            setLoginRedirectMessage('add pairs to favorites.')
+            setLoginRedirectMessage('add pairs to favorites')
             setLogin(true)
           }
         }}>
@@ -322,12 +328,12 @@ const secColor= ()=>{
         <OverlapGroup>
           <VS {...{single}}>VS</VS>
         </OverlapGroup>
-        <CoinCard color={colorFirst} coin={coin2} onClick={onClick} single={single} coins={coins}/>
+        <CoinCard color={colorSec} coin={coin2} onClick={onClick} single={single} coins={coins}/>
       </CardsContainer>
       {!single && (
         <Component127371>
           <Buttons.ClickableText onClick={onClick} className=" p-2" style={{margin: "-0.5rem"}}>
-            <VOTE>VOTE</VOTE>
+            <VOTE>{texts.ToVote}</VOTE>
             <img
               width="6"
               height="10"

@@ -14,6 +14,7 @@ import InputField from "../Atoms/Input/InputField";
 import { Buttons } from "../Atoms/Button/Button";
 
 
+
 const SignUp = styled.div`
 margin-left:5px;
 margin-right:7px;
@@ -58,7 +59,7 @@ const ForgetPassword = ({ setForgetPassword,setUser, setSignup, authProvider, lo
 sendPasswordResetEmail(auth, email)
   .then(() => {
    
-    showToast('Password reset link has been sent to your email.', ToastType.SUCCESS)
+    showToast(texts.PasswordResetLinkSent, ToastType.SUCCESS)
     setForgetPassword(false)
     // Password reset email sent!
     // ..
@@ -94,13 +95,13 @@ sendPasswordResetEmail(auth, email)
       </Form.Group>
 
       <Buttons.Primary  fullWidth={true} type="submit">
-      continue
+      {"continue".toUpperCase()}
       </Buttons.Primary>
     </Form>
       </div>
       <div className='d-flex'>
-      <DontHaveAccountText className="mr-5"> {`${capitalize(translate('Go back to login page?'))} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setForgetPassword(false)}>{`${capitalize(translate('Click here.'))}`}</SignUp>
+      <DontHaveAccountText className="mr-5"> {`${translate('Go back to login page?'.toUpperCase())} `}</DontHaveAccountText> 
+      <SignUp  onClick={() => setForgetPassword(false)}>{`${translate('Click here.'.toUpperCase())}`}</SignUp>
       </div>
     </>
   );

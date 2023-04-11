@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box } from '@material-ui/core';
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import IntlMessages from '../../../utils/IntlMessages';
 import Button from '@material-ui/core/Button';
@@ -11,7 +11,10 @@ import CmtImage from '../../../../@coremat/CmtImage';
 import Typography from '@material-ui/core/Typography';
 import { CurrentAuthMethod } from '../../../constants/AppConstants';
 import AuthWrapper from './AuthWrapper';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
+import NumberFormat from "react-number-format";
+import { isValidEmail } from '@jumbo/utils/commonHelper';
+import { emailNotValid, requiredMessage } from '@jumbo/constants/ErrorMessages';
 
 const useStyles = makeStyles(theme => ({
   authThumb: {
@@ -61,17 +64,91 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+function NumberFormatCustom({onChange, ...other}){
+  return (
+    <NumberFormat
+      {...other}
+      onValueChange={values => {
+        onChange(values.formattedValue);
+      }}
+      format="(###) ###-####"
+    />
+  );
+}
+
+
 //variant = 'default', 'standard', 'bgColor'
 const SignUp = ({ method = CurrentAuthMethod, variant = 'default', wrapperVariant = 'default' }) => {
-  const [name, setName] = useState('Demo User');
-  const [email, setEmail] = useState('demo@example.com');
-  const [password, setPassword] = useState('demo#123');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');  
+  const [phone, setPhone] = useState('');  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [appAccess, setAppAccess] = useState([]);
+  const [appAccessError, setAppAccessError] = useState([]);
+  const [ firstNameError, setFirstNameError ] = useState("");
+  const [ lastNameError, setLastNameError ] = useState("");
+  const [ emailError, setEmailError ] = useState("");
+  const [ phoneError, setPhoneError ] = useState("");
   const dispatch = useDispatch();
   const classes = useStyles({ variant });
 
-  const onSubmit = () => {
-    dispatch(AuhMethods[method].onRegister({ name, email, password }));
+  const labels = [
+  {title: "Zerodha", slug: "Zerodha"},
+  {title: "WazirX", slug: "WazirX"},
+  // {title: "Other", slug: "other"}
+];
+const history = useHistory();
+  
+  const  onSubmit = () => {
+    // const phoneNumbers = phone.filter(item => item.phone.trim());
+    if (!firstName) {
+      setFirstNameError(requiredMessage);
+    }else if (!lastName) {
+      setLastNameError(requiredMessage);
+    }else if (!email) {
+      setEmailError(requiredMessage);
+    } else if (!isValidEmail(email)) {
+      setEmailError(emailNotValid);
+    }
+    else if (phone.length === 0) {
+      setPhoneError(requiredMessage);
+    }
+    else if (appAccess.length === 0) {
+      setAppAccessError(requiredMessage);
+    }
+    else {
+      onCreateAdmin();
+    }
   };
+  
+
+  const onCreateAdmin = () => {
+    const userDetail = {
+      // profile_pic,
+      // name: `${firstName} ${lastName}`,
+      lastName,
+      firstName,
+      email,
+      phone,
+       status:"Active",
+      // company,       
+      webAppAccess: [...appAccess],
+      isAdmin: true,
+      adminUserId: null
+    };
+
+    dispatch(AuhMethods[method].onRegister(userDetail, () => {
+         history.push("/signin")
+        }));
+  };
+
+  
+  
+  
+  // const onSubmit = () => {
+  //   dispatch(AuhMethods[method].onRegister({ firstName,lastName, email, password,phone }));
+  // };
 
   return (
     <AuthWrapper variant={wrapperVariant}>
@@ -88,43 +165,105 @@ const SignUp = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
           Create an account
         </Typography>
         <form>
-          <Box mb={2}>
+          <Box
+            mb={2}            
+          >
             <TextField
-              label={<IntlMessages id="appModule.name" />}
+              label={<IntlMessages id="appModule.firstname" />}
               fullWidth
-              onChange={event => setName(event.target.value)}
-              defaultValue={name}
+              onChange={e => {
+                setFirstName(e.target.value);
+                  setFirstNameError("");
+              }}
+              defaultValue={firstName}
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
+              helperText={firstNameError}
+              error={false || firstNameError != ""}
+            />             
+          </Box>
+          <Box mb={2}>
+            <TextField
+              label={<IntlMessages id="appModule.lastname" />}
+              fullWidth
+              onChange={e => {
+                setLastName(e.target.value)
+                setLastNameError("");
+              }}
+              defaultValue={lastName}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+              helperText={lastNameError}
+              error={false || lastNameError != ""}
             />
           </Box>
           <Box mb={2}>
             <TextField
               label={<IntlMessages id="appModule.email" />}
               fullWidth
-              onChange={event => setEmail(event.target.value)}
+              onChange={e => {
+                setEmail(e.target.value)
+                setEmailError("")
+              }}
               defaultValue={email}
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
+              helperText={emailError}
+              error={false || emailError != ""}
             />
           </Box>
           <Box mb={2}>
             <TextField
-              type="password"
-              label={<IntlMessages id="appModule.password" />}
+              label={<IntlMessages id="appModule.phone" />}
               fullWidth
-              onChange={event => setPassword(event.target.value)}
-              defaultValue={password}
+              onChange={e => {
+                setPhone(e.target.value)
+                setPhoneError("")
+              }}
+              defaultValue={phone}
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
+              helperText={phoneError}
+              error={false || phoneError != ""}
+              // InputProps={{
+              //       inputComponent: NumberFormatCustom
+              //     }}
+              // type="phone"
             />
-          </Box>
+          </Box>          
+          
+          <FormControl
+            fullWidth
+            variant="outlined"                  
+          >
+              <InputLabel id="demo-simple-select-helper-label"><IntlMessages id="appModule.appaccess" /></InputLabel>
+                <Select              
+                    multiple
+                    labelId="demo-simple-select-helper-label"
+                    id="demo-simple-select-helper"
+                    value={appAccess}
+                    
+                    onChange={e => {
+                        setAppAccess(e.target.value)
+                      setAppAccessError("")
+                    }}                  
+                    error={false || appAccessError != ""}>              
+                    {
+                      labels.map((item,index) => {
+                        return <MenuItem value={item.title} key={index}>{item.title}</MenuItem>
+                      })
+                    }
+                  </Select>
+                  {appAccessError && <FormHelperText error={false || appAccessError != ""}>{appAccessError}</FormHelperText>}
+            </FormControl>
 
           <Box
             display="flex"
+            className='mt-3'
             flexDirection={{ xs: 'column', sm: 'row' }}
             alignItems={{ sm: 'center' }}
             justifyContent={{ sm: 'space-between' }}

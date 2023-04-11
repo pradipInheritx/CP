@@ -9,17 +9,17 @@ const Influencers = () => {
   const { user, userInfo } = useContext(UserContext);
   const { leaders } = useContext(CoinsContext);
   const { userTypes } = useContext(AppContext);
-  const [chosen, setChosen] = useState<string | undefined>();
+  const [chosen, setChosen] = useState<string | undefined>("SPEAKER");
   const {chosenUserType,setChosenUserType}=useContext(AppContext)
   useEffect(() => {
-    setChosen(chosenUserType)
+    setChosen(chosenUserType || "SPEAKER")
     return () => {
       setChosen('')
       setChosenUserType('')
     }
   }, [chosenUserType])
-
-  console.log(user, "userInfo");
+// @ts-ignore
+  
   return (
     <div>
       <InfluencersComponent

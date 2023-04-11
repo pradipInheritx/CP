@@ -13,7 +13,11 @@ import { functions } from "../../firebase";
 import { httpsCallable } from "firebase/functions";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import AppContext from "../../Contexts/AppContext";
-
+import { userConverter } from "../../common/models/User";
+import firebase from "firebase/compat";
+import UserContext from "../../Contexts/User";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 const Generate = styled(Button)`
   width: auto;
   min-width: auto;
@@ -46,11 +50,27 @@ export type FirstTimeLoginProps = {
   setFirstTimeAvatarSelection:any;
 };
 
-const checkValidUsername = httpsCallable(functions, "checkValidUsername");
+// const checkValidUsername = httpsCallable(functions, "checkValidUsername");
+const checkValidUsername = async (username: string) => {
+  console.log("firebasefun");
+  const users = await firebase
+    .firestore()
+    .collection("users")
+    // .withConverter(userConverter)
+    .get();
 
+  const usernames = users.docs.map((u) => u.data().displayName);
+  console.log("firebase", usernames);
+  return (
+    !usernames.includes(username) &&
+    username.length >= 8 &&
+    username.length <= "unique_username".length
+  );
+};
 const FirstTimeLogin = ({ generate, saveUsername ,setFirstTimeAvatarSelection}: FirstTimeLoginProps) => {
   const translate = useTranslation();
   const {setFirstTimeLogin} = useContext(AppContext );
+  const{user}=useContext(UserContext)
   const { showToast } = useContext(NotificationContext);
   const title = texts.chooseUserName;
   const text = texts.chooseUserNameText;
@@ -64,7 +84,10 @@ const[userNameErr,setUserNameErr]=useState(false);
   const triggerSaveUsername = async () => {
     try {
       // setFirstTimeAvatarSelection(true)
-      
+      const firstTimeLogin:Boolean=false
+      // @ts-ignore
+      const userRef = doc(db, "users", user?.uid);
+      await setDoc(userRef, { firstTimeLogin }, { merge: true });
       await saveUsername(username);
       setFirstTimeLogin(false);
       
@@ -94,8 +117,8 @@ useEffect(() => {
               onSubmit={async (e) => {
                 e.preventDefault();
                 if(username?.length<16 && username?.length>7){
-                  // checkValidUsername({ username }).then(res=>res?.data?handleShow():setUserNameErr(true))
-                  handleShow()
+                  checkValidUsername( username ).then(res=>res?handleShow():setUserNameErr(true))
+                  // handleShow()
                 }
                 else{
          
@@ -111,6 +134,7 @@ useEffect(() => {
                   name="username"
                   required
                   value={username}
+                  // @ts-ignore
                   maxlength={10}
                   onChange={(e) => {
                     setUsername(e.target.value.replace(" ", "_").toLowerCase());

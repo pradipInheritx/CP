@@ -22,13 +22,27 @@ const ProfilePairVote = styled.div`
   max-width: 350px;
   min-width:350px;
   width: 100%;
-  height: 152px;
+  // height: 152px;
   vertical-align: middle;
   border-radius: 6px;
   background: var(--white) 0 0% no-repeat padding-box;
   box-shadow: 0 3px 6px #00000029;
   opacity: 1;
 `;
+
+interface Rdiv {
+  // submit: boolean,
+  backcolor: string
+}
+const RoundDiv = styled.div<Rdiv>`
+width:16px ;
+height:16px;
+border-radius:50px;
+// border:1px solid red;
+background:${Props => Props.backcolor};
+`;
+
+
 
 const SmText = styled.div`
   font-size: 10px;
@@ -37,13 +51,13 @@ const SmText = styled.div`
 `;
 
 const PairsVoteVs = styled.span`
-  font-size: 14px;
+  font-size: ${window.screen.width>676? "14px":"10px"};
   color: #6352e8;
 `;
 
 const CoinVoteTimer = styled.span`
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 14px;
+  line-height: 14px;
   color: #6352e8;
 `;
 
@@ -107,6 +121,7 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
 
 const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
   const voteCoins = vote?.coin.split("-");
+  console.log(vote ," checkvoteid")
   const { coins } = useContext(CoinsContext);
   const pair = voteCoins.length > 1;
 
@@ -114,11 +129,12 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
   const trend = calculate(vote, index);
   const coin =
     (index === undefined ? coins[vote?.coin] : coins[voteCoins[index]]) || {};
+  
 
     
   return pair ? (
     <CoinContainer winner={vote?.direction === index}>
-      <div className="d-flex w-100 justify-content-center align-items-center flex-column mt-2">
+      <div className="d-flex w-100 justify-content-center align-items-center flex-column mt-2 ">
         <div >
           <Logo {...{ symbol: coin.symbol || "", width: 30 }} />
         </div>
@@ -126,7 +142,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
           <div>
             <strong>{coin.name}</strong>
           </div>
-          <div>{coin.symbol}</div>
+          <div>{coin.symbol}</div> 
           <div>
             {/* {formatCurrency(
               index === undefined
@@ -136,22 +152,26 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
           </div>
           <div>
             {vote.valueExpirationTime &&
-              formatCurrency(
-                index === undefined
-                  ? (vote?.valueVotingTime as unknown as number)
-                  : (vote.valueExpirationTime as number[])[index]
-              )}
+              
+              // formatCurrency(
+              //   index === undefined
+              //       ? (vote?.valueVotingTime as unknown as number)
+              //       : (vote.valueExpirationTime as number[])[index]
+              // )
+              // @ts-ignore
+              index !== undefined && index==0?vote?.valueVotingTime[0]:vote.valueVotingTime[1]
+            }
           </div>
           <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
         </CoinName>
       </div>
     </CoinContainer>
   ) : (
-    <div className="profile_coin_vote shadow-sm" style={{minWidth:window.screen.width<979?'':'480px'}}>
-      <Container className="p-0">
+    <div className="profile_coin_vote shadow-sm" style={{minWidth:window.screen.width<979?'':'480px' }}>
+      <Container className="p-0 ">
         <Row>
           <Col>
-            <div className="hstack justify-content-center">
+            <div className=" d-flex justify-content-center  align-items-center">
               <div className="col-2" style={{paddingBottom:'20px'}}>
                 <div className="h-100 d-flex w-100 justify-content-center align-items-center">
                   <Logo {...{ symbol: vote.coin || "", width: 30 }} />
@@ -170,13 +190,14 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                         {/* {coinSocketData && coinSocketData[0]?.pair?.includes(coin?.symbol) && coinSocketData[0]?.pair && <CoinTitle>test - {coinSocketData[0]?.pair } - { coinSocketData[0]?.p }</CoinTitle>}  */}
                       </CoinTitle>
                       <CoinCurrency >
-                        {vote.direction ? "BULL" : "BEAR"} - 1H &nbsp;
+                        {vote.direction==0 ? "BULL" : "BEAR"} - {timeframeInitials(vote.timeframe.name)}&nbsp;
                         <span>
-                          {formatCurrency(
+                          {/* {formatCurrency(
                             index === undefined
                               ? (vote?.valueVotingTime as unknown as number)
                               : (vote?.valueVotingTime as number[])[index]
-                          )}
+                            )}  */}
+                            {vote?.valueVotingTime as unknown as number}
                         </span>
                       </CoinCurrency>
                     </p>
@@ -184,29 +205,33 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   <Col>
                     {!vote.valueExpirationTime && (
                       <Row className="text-body profile_coin_vote_txt">
-                        <Col >
-                          <MyCountdown expirationTime={vote.expiration || 0} />
+                          <Col >
+                            
+                            <MyCountdown expirationTime={vote.expiration || 0}
+                              // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                            />
                         </Col>
                       </Row>
                     )}
                     {vote.valueExpirationTime && (
-                      <Row className="text-body profile_coin_vote_txt">
+                      <Row className="text-body profile_coin_vote_txt ">
                         <Col xs={6}>
                           <Row>
                             <Col>
-                              <Row className="flex-column text-center">
-                                <Col style={{fontSize:'8px'}}>
+                              <Row className="flex-column text-center ">
+                                <Col style={{fontSize:'8px'}} className="">
                                   {vote.valueExpirationTime &&
-                                    formatCurrency(
+                                    formatCurrency(                                                                          
                                       index === undefined
                                         ? (vote?.valueVotingTime as unknown as number)
                                         : (
                                             vote?.valueExpirationTime as number[]
-                                          )[index]
-                                    )}
+                                      )[index]
+                                      )
+                                    }
                                 </Col>
                                 
-                                <Col>
+                                <Col className="">
                                   {vote.valueExpirationTime && (
                                     <Trend num={trend} />
                                   )}
@@ -218,7 +243,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                           </Row>
                         </Col>
                         
-                        <Col xs={5}>
+                        <Col xs={6}>
                           
                           <Row className="text_prpl">
                             <Col>
@@ -238,27 +263,28 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       </Row>
                     )}
                   </Col>
-                  <Col xs={2}>
+                  {!vote.valueExpirationTime && <Col xs={2} className="">
                  {vote.direction?
-                <>  { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                <>{vote?.valueVotingTime <coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {vote?.valueVotingTime>  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                <>  { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
+                <>{vote?.valueVotingTime <coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
+                {vote?.valueVotingTime>  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 }  </> :<>
-                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                <>{vote?.valueVotingTime >coin.price &&!vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                {vote?.valueVotingTime<  coin.price && !vote.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
+                { vote?.valueVotingTime <Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime >Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv>:
+                <>{vote?.valueVotingTime >coin.price &&!vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
+                {vote?.valueVotingTime<  coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                 } 
                 </>
                 }
                  
                   
-                  { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+                  {/* { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
                   { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-                   { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
-                  </Col>
+                   { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
+                      
+                  </Col>}
                 </Row>
                 <Row>
-                  <Col>
+                  <Col className="">
                     <span className="sm_txt">{`${id} - ${moment(
                       new Date(vote.voteTime)
                     ).format("HH:mm DD/MM/YYYY")}`}</span>
@@ -276,10 +302,12 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
 const calculateWinner = (vote: VoteResultProps) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-const VotedCard = ({ vote, id,coinSocketData,callbackFun }: VotedCardProps) => {
+const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) => {
+
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
-   console.log('votecardata',coins,vote.coin)
+  
+  const voteCoins = vote?.coin.split("-");
  useEffect(() => {
    
    if(!vote.valueExpirationTime){
@@ -288,8 +316,7 @@ var b = moment();
 let votetime= a.diff(b)
 
    setTimeout(() => {
-     console.count('votetime')
-     console.log('votetime', vote)
+     
     if(callbackFun)callbackFun()
 
    }, votetime+4000);
@@ -298,9 +325,9 @@ let votetime= a.diff(b)
  
   const winner = calculateWinner(vote);
   const pair = vote.coin.split("-").length > 1;
- 
+
   return pair ? (
-    <ProfilePairVote style={{minWidth:window.screen.width<979?'':'480px',maxWidth:window.screen.width<979?'':'480px'}}>
+    <ProfilePairVote  style={{minWidth:window.screen.width<979?'':'480px',maxWidth:window.screen.width<979?'':'480px' , }} >
       <Container>
         <Row className="mx-auto" style={{ marginBottom: 14 }}>
           <Col className="col-4">
@@ -311,7 +338,7 @@ let votetime= a.diff(b)
               id={id}
             />
           </Col>
-          <Col className="col-4 flex-column justify-content-end align-items-center h-100">
+          <Col className="col-4 flex-column justify-content-end align-items-center h-100 ">
             <div className="d-flex align-items-center justify-content-center">
               <LineImg>
                 <Line />
@@ -319,7 +346,7 @@ let votetime= a.diff(b)
             </div>
             <div className="align-self-end justify-content-end d-flex flex-column align-items-center">
               <div>
-              <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>
+              {/* <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/> */}
               {/* {vote.direction?
               
                 <>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
@@ -335,9 +362,16 @@ let votetime= a.diff(b)
                 {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
                 }  </>
                 } */}
-              { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
+
+                {/* // #D4D0F3
+// #6352E8
+// #3712B3 */}
+                <RoundDiv backcolor={vote.score ===1 ?"#3712B3": vote.score ===0.5 ? "#6352E8":vote.score ===0.25?"#D4D0F3":"#6352E8"}>
+
+                </RoundDiv>
+              {/* { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
               { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-              { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
+              { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
               </div>
               <div style={{ minHeight: "100%" }}>
                 <PairsVoteVs>
@@ -345,13 +379,15 @@ let votetime= a.diff(b)
                   {timeframeInitials(vote.timeframe.name)}
                 </PairsVoteVs>
               </div>
-              <div style={{ minHeight: "100%" }}>
+              <div style={{ minHeight: "100%" }} className="">
                 <CoinVoteTimer>
                   {vote.valueExpirationTime && vote.score && (
                     <strong>{vote.score} CMP</strong>
                   )}
                   {!vote.valueExpirationTime && (
-                    <MyCountdown expirationTime={vote.expiration || 0} />
+                    <MyCountdown expirationTime={vote.expiration || 0}
+                      // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                    />
                   )}
                 </CoinVoteTimer>
               </div>
@@ -366,8 +402,9 @@ let votetime= a.diff(b)
             />
           </Col>
         </Row>
-        <Row>
-          <Col className="justify-content-center w-100">
+        
+        <Row className="">
+          <Col className="justify-content-center w-100 mb-2">
             <SmText className="text-center">{`${id} - ${moment(
               new Date(vote?.voteTime)
             ).format("HH:mm DD/MM/YYYY")}`}</SmText>

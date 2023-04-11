@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useTranslation } from "../../common/models/Dictionary";
+import { texts } from "../LoginComponent/texts";
+import CountUp from "react-countup";
 
 type PAXCardProps = {
   walletId: string;
@@ -7,10 +9,18 @@ type PAXCardProps = {
 };
 
 const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
+  const prevCountRef = useRef(PAX)
+  useEffect(() => {
+    prevCountRef.current = PAX ; 
+  }, [])
+  
   const translate = useTranslation();
   return (
     <div className="cp_balance dark_prpl_bkgnd mx-auto mb-3">
-      <h6 className="box_title card-header " style={{fontSize:'12px',paddingTop:'15px', paddingBottom:'10px'}}>{translate("Coin Parliament Balance")}</h6>
+      <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
+        {/* {translate("Coin Parliament Balance")} */}
+        {texts.CoinParliamentBalance}
+      </h6>
       <div className="d-flex justify-content-center align-items-center flex-column">
         <div className="circle">
           <div
@@ -18,7 +28,9 @@ const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
             style={{ height: 75,color:'#6352E8' }}
           >
             <div>
-              <span className="cp_Value vstack" style={{paddingBottom:'2px', fontSize:'20px'}}>{PAX}</span>
+              <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize: '20px' }}>                                
+                  <CountUp start={prevCountRef.current} end={PAX && PAX} duration={5} />
+              </span>
               <span className="cp_PAX" >PTS</span>
             </div>
           </div>

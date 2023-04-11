@@ -81,7 +81,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
   const activeTab = (tabs: any, chosenByDefault: any) => {
     tabs.map((tab: any, index: number) => {
       if (chosenByDefault?.includes(tab.eventKey)) {
-        console.log(tabs[index].eventKey, "eventKey");
+        // console.log(tabs[index].eventKey, "eventKey");
         setActiveValue(tabs[index].eventKey);
       } 
     });
@@ -97,7 +97,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
       // }
       activeKey={activeValue}
     >
-      <div className='d-flex'>
+      <div className='d-flex '>
         <Nav
           variant='pills'
           className='flex-row m-auto align-items-center justify-content-center'
@@ -110,13 +110,15 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
                   eventKey={tab.eventKey}
                   style={{ padding: "10px 2px" }}
                   iconName={tab.label}
+                  className="d-flex flex-column align-items-center"
                 >
                   <Circle
+                    className="border"
                     disabled={isV1() && tab.eventKey === ProfileTabs.mine}
                   >
                     {tab.icon}
                   </Circle>
-                  {tab.label && <Label>{tab.label}</Label>}
+                  {tab.label && <Label>{tab.label.toUpperCase()}</Label>}
                 </NavLink>
               </Nav.Item>
             );
