@@ -458,8 +458,10 @@ const sendNotificationForCpm = async (userId: any) => {
   const userRef = await firestore().collection("users").doc(userId).get();
   const user: any = userRef.data();
   console.log("user >>>>>>", user);
-  const token = user.token || "";
-  if (!token) return;
+  const token = user.token;
+  if (!token) {
+    console.log("Token not found");
+  }
 
   const message: messaging.Message = {
     token,
@@ -476,13 +478,13 @@ const sendNotificationForCpm = async (userId: any) => {
       },
     },
   };
-
+  console.log("message >>>", message);
   await sendNotification({
     token,
     message,
     body: "Claim your rewards now!",
     title: "Wow",
-    id: user.uid,
+    id: userId,
   });
 };
 

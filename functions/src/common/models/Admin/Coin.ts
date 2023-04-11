@@ -174,16 +174,14 @@ const getAllUsersAndSendNotification = async (
   const getAllUsers: any = [];
   const getAllUsersRef = await firestore().collection("users").get();
   getAllUsersRef.forEach((data) => {
-    getAllUsers.push(data.data());
+    getAllUsers.push({ id: data.id, ...data.data() });
   });
-  console.log("getAllUsers >>>>", getAllUsers);
   const title = `🚨 ${coinName} coin  price ALERT! ⚠️`;
   for (var i = 0; i <= getAllUsers.length; i++) {
-      // console.log("getAllUser >>>>>>", getAllUsers[i]);
-    const token = getAllUsers.token || "";
+    const token = getAllUsers[i].token;
     if (!token) {
-      console.log("token not found !!!!!!!!!!!!");
-      return;
+      console.log("token not found.");
+      continue;
     }
 
     const message: messaging.Message = {
@@ -201,13 +199,12 @@ const getAllUsersAndSendNotification = async (
         },
       },
     };
-    console.log("message >>>>>>", message);
     await sendNotification({
       token,
       message,
       body,
       title,
-      id: getAllUsers[i].uid,
+      id: getAllUsers[i].id,
     });
   }
 };
@@ -239,7 +236,6 @@ export const getCoinCurrentAndPastDataDiffernce = async () => {
     }
 
     currentCoinAndPrise.forEach(async (coin: any) => {
-    
       if (coin.differnceInPercentag < -5) {
         // Write Notification
         await getAllUsersAndSendNotification(
@@ -260,18 +256,6 @@ export const getCoinCurrentAndPastDataDiffernce = async () => {
   } catch (err) {
     console.log("Error (getCoinCurrentAndPastDataDiffernce): ", err);
   }
-};
-
-export const blockCompleted = async (req: any, res: any) => {
-  const { userId } = req.params;
-  console.log("userId >>>>>>>>", userId);
-  const getUserRef = await firestore().collection("users").doc(userId).get();
-  const getUserData: any = getUserRef.data();
-
-  const getUserScore = getUserData.voteStatistics.score;
-  const getUserTotal = getUserData.voteStatistics.total;
-  console.log("getUserScore,getUserTotal >>>>", getUserScore, getUserTotal);
-  res.send(getUserScore, getUserTotal);
 };
 
 export const errorLogging = async (
