@@ -25,9 +25,10 @@ export const cardFlip = () => {
   onFlipcard.play();
 };
   
-export const claimyourreward = () => {
+export const claimyourreward =  {
     // console.log('play sound')
-  rewardaudio.play();
+  play:()=>rewardaudio.play(),
+  pause:()=>rewardaudio.pause()
 };
   
 export const voteEndFinish = () => {

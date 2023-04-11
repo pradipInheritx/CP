@@ -108,6 +108,7 @@ console.log('userInfo',userInfo)
           />
           
         )}
+        {/* @ts-ignore */}
 
         {/* <Player
   autoplay

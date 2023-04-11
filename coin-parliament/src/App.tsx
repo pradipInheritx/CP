@@ -781,40 +781,97 @@ votesLast24HoursRef.get()
 // }, [])
 
 
+
+function connect(){
+  if(Object.keys(coins).length === 0) return
+  ws = new WebSocket('wss://stream.binance.com:9443/ws');
+   console.log('websocket connected first time')
+ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
+   ws.onopen = () => {
+     ws.send(JSON.stringify({
+       method: 'SUBSCRIBE',
+       params: coinTikerList,
+       id: 1
+     }));
+   };
+  
+    socket = new WebSocket('wss://stream.crypto.com/v2/market');
+ 
+   socket.onopen = () => {
+     const req = {
+       id: 1,
+       method: 'subscribe',
+       params: {
+         channels: ['ticker.CRO_USDT'],
+       },
+     };
+     socket.send(JSON.stringify(req));
+   };
+   ws.onclose = (event:any) => {
+     console.log('WebSocket connection closed');
+     if (event.code !== 1000) {
+       console.log('Attempting to reconnect in 5 seconds...');
+       setTimeout(() => {
+         connect();
+       }, 5000);
+     }
+   };
+   
+   ws.onerror = () => {
+     console.log('WebSocket connection occurred');
+   };
+   const timeout = 30000; // 30 seconds
+   let timeoutId:any;
+   const checkConnection = () => {
+     if (ws.readyState !== WebSocket.OPEN) {
+       console.log('WebSocket connection timed out');
+       clearInterval(timeoutId);
+       connect();
+     }
+   };
+   timeoutId = setInterval(checkConnection, timeout);
+}
+
 useEffect(() => {
   
-if(Object.keys(coins).length === 0) return
- ws = new WebSocket('wss://stream.binance.com:9443/ws');
-  
-const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
-  ws.onopen = () => {
-    ws.send(JSON.stringify({
-      method: 'SUBSCRIBE',
-      params: coinTikerList,
-      id: 1
-    }));
-  };
- 
-   socket = new WebSocket('wss://stream.crypto.com/v2/market');
-
-  socket.onopen = () => {
-    const req = {
-      id: 1,
-      method: 'subscribe',
-      params: {
-        channels: ['ticker.CRO_USDT'],
-      },
-    };
-    socket.send(JSON.stringify(req));
-  };
-
+  connect();
   
   return () => {
-
-    ws.close();
-    socket.close();
+if (ws) ws.close();
+    if(socket) socket.close();
   };
 }, [Object.keys(coins).length]);
+// useEffect(() => {
+//   window.addEventListener("focus", () => socket.connect());
+
+//   return () => {
+    
+//   }
+// }, [])
+// useEffect(() => {
+//   document.addEventListener("visibilitychange", handleVisibilityChange);
+//   return () => {
+//     document.removeEventListener("visibilitychange", handleVisibilityChange);
+//   }
+// }, []);
+
+// const handleVisibilityChange = () => {
+//   const isIPhone = /iPhone/i.test(navigator.userAgent);
+
+//   if (isIPhone) {
+//     console.log('This is an iPhone');
+//   } else {
+//     console.log('This is not an iPhone');
+//   }
+//   if (document.hidden) {
+//     console.log("Browser window is minimized");
+//     // ws.close();
+//     // socket.close();
+//   } else {
+//     console.log("Browser window is not minimized");
+//   }
+// }
+
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -1087,7 +1144,7 @@ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@t
                                 if (user?.uid) {
                                   await saveUsername(user?.uid, username, "");
                                   setFirstTimeAvatarSelection(true);
-                                  setFirstTimeFoundationSelection(true);
+                                  // setFirstTimeFoundationSelection(true);
                                   setFirstTimeLogin(false);
                                 }
                               }}
@@ -1102,7 +1159,7 @@ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@t
                               }
                             />
                           )}
-                          {!firstTimeAvatarSlection &&
+                          {/* {!firstTimeAvatarSlection &&
                             firstTimeFoundationSelection && (
                               <FirstTimeFoundationSelection
                                 user={user}
@@ -1110,7 +1167,7 @@ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@t
                                   setFirstTimeFoundationSelection
                                 }
                               />
-                            )}
+                            )} */}
                           {!firstTimeLogin && (
                             <>
                               {!user && login && !mfaLogin && (

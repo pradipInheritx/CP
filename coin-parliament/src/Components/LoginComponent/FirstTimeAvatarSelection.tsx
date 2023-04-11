@@ -19,11 +19,15 @@ export type FirstTimeAvatarSelectionProps = {
 const FirstTimeAvatarSelection = ({ user,setFirstTimeAvatarSelection }: FirstTimeAvatarSelectionProps) => {
   const translate = useTranslation();
   const {showToast} = useContext(NotificationContext);
+  const FoundationArray=['Foundation One','Foundation Two','Foundation Three','Foundation Four','Foundation Five'
+]
   const onSubmitAvatar = async (type: AvatarType) => {
     if (user?.uid) {
       const userRef = doc(db, "users", user?.uid);
       try {
-        await setDoc(userRef, {avatar: type}, {merge: true});
+        const foundationName = FoundationArray[Math.trunc(Math.random()*4)]
+        await setDoc(userRef, {avatar: type,foundationName}, {merge: true});
+        // await setDoc(userRef, { foundationName }, { merge: true });
         showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
         setFirstTimeAvatarSelection(false)
