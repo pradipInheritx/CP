@@ -21,34 +21,52 @@ var audios = document.getElementById('audio');
 
 var animation = gsap.timeline();
 
-animation
+animation.pause()
 //.fromTo(".cap , .box",{x:-7 , ease: "slow(0.7, 0.7, false)" ,  duration:0.1,}, {x:7 , repeat:6 , yoyo:true,  duration:0.1, delay:0.6, ease: "slow(0.7, 0.7, false)" })
 
 .to(".cap", {y:-40 , delay:0.5,   ease: "circ.out"})
 .to(".cap", {x:70 ,  ease: "circ.out" })
 .to(".cap", {y:95 ,top: -70,left:29,rotate: 73, ease: "circ.out" },"-=0.5")
 .to(".blast", {y:-220 , opacity:1},"-=0.4" )
-.to(".trader", { y:-220, scale:1, "z-index":4,} , "-=0.5")
-.to(".trader", { y:-73,  })
-.to(".blast", {opacity:0,} )
+.to(".blueCard2", { y:-191, scale:1, "z-index":4,} , "-=0.5")
+.to(".blueCard2", { y:-19, x:132 })
+.to(".blast", {opacity:0,
+  onComplete: () => {
+    animation.pause();
+    setTimeout(() => {
+      claimyourreward.pause()
+    }, 3000);
+   
+  }} )
 .to(".b2", {y:-220 , opacity:1} )
  .to(".blueCard1", { y:-191, scale:1, "z-index":4,},"-=0.6")
  .to(".b2", {opacity:0,} )
-.to(".blueCard1", { y:-19, x:-130 },"-=0.5")
- .to(".b3", {y:-202 , opacity:1} )
- .to(".blueCard2", { y:-191, scale:1, "z-index":4, }, "-=0.5")
-.to(".blueCard2", { y:-19, x:132 })
+.to(".blueCard1", { y:-19, x:-130 , onComplete: () => {
+  animation.pause();
+  setTimeout(() => {
+    claimyourreward.pause()
+  }, 3000);
+}},"-=0.5")
+ .to(".b3", {y:-202 , opacity:1,
+ } )
+ .to(".trader", { y:-220, scale:1, "z-index":4, }, "-=0.5")
+.to(".trader", { y:-73 })
 .to(".b3", {opacity:0,
   // @ts-ignore
-  // onComplete: () => foo("test"),
+  onComplete: () => {
+    setTimeout(() => {
+      // @ts-ignore
+      foo("test")   
+    }, 2000);
+   },
 } )
 
 gsap.to('div', {
   // x: 120,
-  duration: 15,
+  // duration: 15,
   // rotation: 270,
   // @ts-ignore
-  onComplete:  () => foo("test"),
+  // onComplete:  () => foo("test"),
   // stagger: .2
 })
 
@@ -57,14 +75,18 @@ function foo() {
 }
 
 useEffect(() => {
-  claimyourreward()
+  claimyourreward.play()
+  setTimeout(() => {
+    claimyourreward.pause()
+  }, 5000);
 }, [])
 
 
 
 
     return (
-       <> <div className="boxHolder" style={{
+       <> <div className="boxHolder" onClick={e=>  {animation.play()
+        claimyourreward.play()}}style={{
         right: window?.screen?.width<767?'':'0px',
         width: window?.screen?.width<767?'':'55%',
         marginLeft:window?.screen?.width<365?'74px':''
@@ -74,7 +96,8 @@ useEffect(() => {
   
 
   
-    <div className="cardBg blueCard1 ">
+    <div className="cardBg blueCard1 " onClick={e=>  {animation.play()
+    claimyourreward.play()}}>
           <div className="whiteRound card_1">
             {/* @ts-ignore */}
         <h1>+{rewardTimer?.data?.thirdRewardDiamonds}</h1>
@@ -82,7 +105,8 @@ useEffect(() => {
             </div>      
     </div>
     
-     <div className="cardBg blueCard2 votes">
+     <div className="cardBg blueCard2 votes" onClick={e=>  {animation.play()
+    claimyourreward.play()}}>
           <div className="whiteRound card_1">
             {/* @ts-ignore */}
         <h1>+{rewardTimer?.data?.secondRewardExtraVotes}</h1>
