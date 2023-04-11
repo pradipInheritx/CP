@@ -122,6 +122,7 @@ import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import { pwaInstallHandler } from 'pwa-install-handler'
+import TermsAndConditions from "./Pages/TermsAndConditions";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -261,12 +262,12 @@ const handleClick=()=>{
         notification: { body: string; title: string };
       };
       
-      showToast(
-        <div>
-          <h5>{title}</h5>
-          <p>{body}</p>
-        </div>
-      );
+      // showToast(
+      //   <div>
+      //     <h5>{title}</h5>
+      //     <p>{body}</p>
+      //   </div>
+      // );
     });
   }
   });
@@ -423,10 +424,14 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
     }
-    pwaInstallHandler.addListener((canInstall) => {
-     canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
-    })
+    
   }, [userInfo]);
+useEffect(() => {
+  pwaInstallHandler.addListener((canInstall) => {
+    canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
+   })
+
+}, [])
 
   useEffect(() => {
     setMounted(true);
@@ -1238,6 +1243,10 @@ votesLast24HoursRef.get()
                                          <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
+                                        /> 
+                                         <Route
+                                          path='/terms-and-condition'
+                                          element={<TermsAndConditions />}
                                         />
                                         {localhost && user && (
                                           <Route

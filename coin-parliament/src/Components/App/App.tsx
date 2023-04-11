@@ -72,7 +72,8 @@ const getHeight = (props: Pathname) => {
     props.pathname.replace("/","").toLowerCase()=="about"  ||
     props.pathname.replace("/", "").toLowerCase() == "privacy" ||
     props.pathname.replace("/","").toLowerCase()=="contact" ||
-    props.pathname.replace("/","").toLowerCase()=="faq" 
+    props.pathname.replace("/","").toLowerCase()=="faq" ||
+    props.pathname.replace("/", "").toLowerCase() == "terms-and-condition" 
   ) {
     return "auto";
   }
