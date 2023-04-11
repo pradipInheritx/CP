@@ -103,5 +103,5 @@ export const texts = {
 };
 
 export const urls = {
-  termsConditions: "/termsandcondition",
+  termsConditions: "/terms-and-condition",
 };

@@ -1395,7 +1395,7 @@ if (ws) ws.close();
                                           element={<PrivacyPolicy />}
                                         />
                                         <Route
-                                          path='/termsandcondition'
+                                          path='/terms-and-condition'
                                           element={<TermsAndConditions />}
                                         />
                                         {localhost && user && (

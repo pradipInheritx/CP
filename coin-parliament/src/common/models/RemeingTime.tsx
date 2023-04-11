@@ -6,6 +6,7 @@ function RemeingTime() {
     const {remainingTimer } = useContext(AppContext);
   return (
       <div>
+        {/* @ts-ignore */}
           <Countdown date={remainingTimer} 
                 renderer={({ hours, minutes, seconds, completed }) => {                        
                 return (
