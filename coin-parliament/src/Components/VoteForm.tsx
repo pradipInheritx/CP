@@ -4,8 +4,10 @@ import AppContext from "../Contexts/AppContext";
 import SelectTimeframes from "./Coins/SelectTimeframes";
 import {default as CPVote} from "./Coins/Vote";
 import {Title} from "../Pages/SingleCoin";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import UserContext from "../Contexts/User";
+import RangeSilder from "./Users/RangeSilder";
+import Countdown from "react-countdown";
 
 export const colors = ["#6352e8", "white"];
 
@@ -57,7 +59,7 @@ const VoteForm = function <
   votePrice,
   votedDetails,
 }: VoteFormProps<T>) {
-  const { timeframes, login } = useContext(AppContext);
+  const { timeframes, login,remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -101,7 +103,26 @@ const VoteForm = function <
           overlay={(props) =>
             disabled ? (
               <Tooltip id='button-tooltip' {...props} >
-                {texts.tooltip}
+
+                <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}><Countdown daysInHours zeroPadTime={2} date={remainingTimer}
+                    renderer={({ hours, minutes, seconds, completed }) => {
+                      return (
+                        <span className="text-uppercase" style={{color:'#fff',fontSize:'11px',fontWeight:400 }}>                            
+                          Wait {" "}
+                          {hours < 1 ? null : `${hours} :` }
+                          {minutes < 10 ? `0${minutes}` : minutes}:
+                          {seconds < 10 ? `0${seconds}` : seconds} for 5 votes 
+                          <br />
+                          or buy extra votes now.
+                          {/* <Link to="/votingbooster"> buy extra votes now.</Link> */}
+                        </span>
+                      );
+            
+                    }}
+                  /></div>
+                
+                {/* <RangeSilder/> */}
+                {/* {texts.tooltip} */}
               </Tooltip>
             ) : selectedTimeFrame == undefined ? (
               <Tooltip id='button-tooltip' {...props}>

@@ -1013,10 +1013,10 @@ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@t
                             
                           <Header
                           remainingTimer={remainingTimer}
-                            logo={
-                              (login && window.screen.width > 979) ||
-                              window.screen.width > 979
-                            }
+                          logo={
+                            (login && window.screen.width > 979) ||
+                            window.screen.width > 979
+                          }
                             pathname={pathname}
                             title={
                               // pathname !== "/" && !login ? (

@@ -5,6 +5,7 @@ const reward = require("../../assets/sounds/Reward-box-opening.mp3").default;
 const voteResult = require("../../assets/sounds/vote-result-finish.mp3").default;
 const TenSec = require("../../assets/sounds/last-10-sec-for-vote.mp3").default;
 const Notification = require("../../assets/sounds/notification.mp3").default;
+const voteshound = require("../../assets/sounds/voteshound.wav").default;
 
 
 const audio = new Audio(buttonClick);
@@ -13,6 +14,7 @@ const rewardaudio = new Audio(reward);
 const voteEnd = new Audio(voteResult);
 const lastTensec = new Audio(TenSec);
 const NotiSound = new Audio(Notification);
+const voteClick = new Audio(voteshound);
 
 
 export const handleSoundClick = () => {
@@ -43,4 +45,9 @@ export const lastTensecWait = () => {
 export const NotificationWait = () => {
     // console.log('play sound')
   NotiSound.play();
+};
+  
+export const VoteButton = () => {
+    // console.log('play sound')
+  voteClick.play();
   };

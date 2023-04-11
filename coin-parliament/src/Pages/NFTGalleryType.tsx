@@ -118,6 +118,8 @@ const NFTGalleryType = () => {
        : setBackCards([...backCards, value]);
    };
   
+  console.log(backCards,"backCards")
+  
   let params = useParams();
   const { type } = params;
 

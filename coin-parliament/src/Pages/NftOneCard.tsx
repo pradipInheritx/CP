@@ -200,7 +200,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       }}
       // @ts-ignore
       
-      className={`card-container ${
+      className={`card-container border ${
         flipCard == true || flip != true ? " flipped" : ""
       }`}
       onClick={() => {

@@ -2,21 +2,78 @@ import React, { useEffect, useState } from 'react'
 import { Coin } from "../../common/models/Coin";
 import { VoteResultProps } from "../../common/models/Vote";
 import "./styles.css";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const InputRange = styled.input`
-    width:100%;
-    & ::-webkit-slider-runnable-track{
-      border-radius: 1px;
-    }
-    input[type=range]::-webkit-slider-thumb {
-    background-color: #000;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    transition: transform 0.2s ease-in-out;
-  }
-`;
+
+// const Grow = css`
+// border:1px solid red;    
+// background-color: black !important;
+//     background-image: linear-gradient(90deg, #3d3e40, #050505);
+//     width:40px;
+//     height:40px;
+//     border-radius:25px;
+//     // animation: ripple 1s infinite;
+//     // 			animation:  ripple .75s ease-in infinite alternate
+//     // @keyframes ripple{
+//     // 0%{
+//     //     opacity:1;
+//     //     -webkit-transform:scale(0);
+//     //     transform:scale(0)
+//     // }
+//     // 100%{
+//     //     opacity:0;
+//     //     -webkit-transform:scale(1);
+//     //     transform:scale(1)
+//     // }
+// `;
+
+// const InputRange = styled.input`
+//    &::-webkit-slider-thumb{            
+//     // box-shadow: 0px 0px 20px 8px black;    
+//     position: relative;
+//      transition:0.5s ease;
+// 	animation:  ripple .75s ease-in infinite alternate
+//     @keyframes ripple{
+//     0%{
+//         opacity:1;
+//         -webkit-transform:scale(0);
+//         transform:scale(0)
+//     }
+//     100%{
+//         opacity:0;
+//         -webkit-transform:scale(1);
+//         transform:scale(1)
+//     }
+//    }
+//    &:focus::-webkit-slider-thumb {
+//    ${Grow}
+// `;
+
+// const OutputDiv = styled.output`
+//      position: absolute;
+//     // border:1px solid red;
+//     border-radius:25px;
+//     width:40px;
+//     height:40px;
+//     background-color: black !important;
+//     background-image: linear-gradient(90deg, #3d3e40, #050505);
+//     animation: ripple 1s infinite;
+//     // right:0px;
+//     // top:-15px;
+//       z-index:-4;
+//    @keyframes ripple{
+//     0%{
+//         opacity:1;
+//         -webkit-transform:scale(0);
+//         transform:scale(0)
+//     }
+//     100%{
+//         opacity:0;
+//         -webkit-transform:scale(1);
+//         transform:scale(1)
+//     }
+// }
+// `;
 
 
 function RangeSilder(
@@ -126,9 +183,16 @@ const getBorderColor = () => {
   return (
     <div className=''>
           {/* <p style={{color:"black"}} className="py-2">YOUR VOTE IMPACT</p> */}
-          <div className="d-flex justify-content-around w-100 ">                                                    
-              <input type="range" min={0} max={100} value={persentValue} className="rengeInput w-100" ></input>
-            </div>
+      <div className="d-flex justify-content-around w-100 range">                                                    
+        {/* <Golw className='border'></Golw> */}
+        
+        {/* <OutputDiv name="" htmlFor="silder" className='' aria-hidden='true' ></OutputDiv> */}
+        <div className='grow' aria-hidden='true' ></div>
+        
+        <input id="silder" type="range" min={0} max={100} value={persentValue} className="rengeInput w-100" >
+
+        </input>        
+      </div>
             <div className="d-flex justify-content-between mt-2"
             style={{color:"black"}}
             >                                                    

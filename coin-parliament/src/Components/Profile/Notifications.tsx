@@ -16,13 +16,13 @@ const P = styled.p`
 `
 const Notifications = () => {
   const { notifications } = useContext(UserContext)
-  useEffect(() => {
+  // useEffect(() => {
     
-    if (notifications.length) {
-    NotificationWait()
-  }
+  //   if (notifications.length) {
+  //   NotificationWait()
+  // }
  
-  }, [notifications])
+  // }, [notifications])
   
   const translate = useTranslation()
   return (
