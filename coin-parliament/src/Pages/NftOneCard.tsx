@@ -168,7 +168,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       let params = useParams();
   const { type} = params;
   
-
+console.log(Disable,"backCards Disable")
   return (
     
     <div
