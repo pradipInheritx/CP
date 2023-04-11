@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import {Link} from "react-router-dom";
-import { privacy } from "../common/consts/contents";
+import { TermsAndCondition } from "../common/consts/contents";
 import GeneralPage from "../GeneralPage";
 
 const TermsAndConditions = () => {
@@ -11,9 +11,9 @@ const TermsAndConditions = () => {
 // }, [])
   return (
     <GeneralPage>
-      <h1>Privacy Policy</h1>
+      <h1>Terms & Conditions</h1>
       <div
-      dangerouslySetInnerHTML={{__html: privacy}}
+      dangerouslySetInnerHTML={{__html: TermsAndCondition}}
     />
     </GeneralPage>
   );

@@ -132,6 +132,7 @@ import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
 import { handleSoundClick } from "./common/utils/SoundClick";
 import createFastContext from "./hooks/createFastContext";
+import TermsAndConditions from "./Pages/TermsAndConditions";
 
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -1392,6 +1393,10 @@ if (ws) ws.close();
                                         <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
+                                        />
+                                        <Route
+                                          path='/termsandcondition'
+                                          element={<TermsAndConditions />}
                                         />
                                         {localhost && user && (
                                           <Route

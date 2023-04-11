@@ -116,7 +116,7 @@ const Footer = () => {
     </span>
     <span>
     <Link
-         to="/privacy">{texts.termsConditions}</Link>
+         to="/termsandcondition">{texts.termsConditions}</Link>
          </span>
      </p>
  
