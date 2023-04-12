@@ -81,7 +81,7 @@ const GoogleAuthenticator = () => {
       // @ts-ignore
       setSecretKey(userInfo?.googleAuthenticatorData?.otp_base32);
       // @ts-ignore
-      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url).then(
+      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url,{color:{dark:"#7565f7",light: "#ffffff"}}).then(
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
         }
