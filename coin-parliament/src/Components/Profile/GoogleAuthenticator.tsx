@@ -96,9 +96,11 @@ const GoogleAuthenticator = () => {
       const response = await axios.post(url, data);
       console.log(response.data);
       setSecretKey(response.data.result.base32);
-      QRCode.toDataURL(response.data.result.otpauth_url).then(
+      QRCode.toDataURL(response.data.result.otpauth_url, {color:{dark:"#7565f7",light: "#ffffff"}}
+        ).then(
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
+          console.log('qrcode',dataUrl)
         }
       );
     } catch (error) {
