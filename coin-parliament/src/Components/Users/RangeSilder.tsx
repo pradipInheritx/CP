@@ -113,7 +113,10 @@ const getBorderColor = () => {
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
       // if(!vote?.valueVotingTime || vote?.valueVotingTime == NaN){
-      
+        // 60 sec - each line will be 0.01 % = 1 point
+        // 5 min - each line will be 0.01 % 
+        // 1 H - each line will be 0.05 % 
+        // 24 H - each line will be 0.1 %
       if ((averageValue <=10)) {        
         setPersentValue(vote?.direction == 1 ? 50 +getPer[1] : 50 +getPer[0]) 
       } else {
@@ -156,7 +159,8 @@ const getBorderColor = () => {
         // if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
         
        const diffPer = livePrice - votePrice 
-       const getPer= ((diffPer *1000)/votePrice)+ Math.random()*4
+       const getPer= ((diffPer *100)/votePrice) / 0.01
+
        
         console.log(getPer,"getPer")
        if(livePrice < votePrice + votePrice /10 &&
