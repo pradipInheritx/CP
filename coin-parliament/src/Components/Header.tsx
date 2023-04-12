@@ -355,10 +355,10 @@ const Header = ({
             //   eventKey: EventKeys.FOLLOWERS,
             //   label: "Followers",
             // },
-            // user && {
-            //   eventKey: EventKeys.EDIT,
-            //   label: "My Profile",
-            // },
+            user && {
+              eventKey: EventKeys.EDIT,
+              label: "My Profile",
+            },
             // user && {
             //   eventKey: EventKeys.Gallery,
             //   label: "My Album",

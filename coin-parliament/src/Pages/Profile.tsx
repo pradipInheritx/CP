@@ -222,12 +222,12 @@ const Profile = () => {
                                 icon: <SecurityIcon />,
                                 eventKey: ProfileTabs.password,
                               },
-                              {
-                                component: <></>,
-                                label: ProfileTabs.wallet,
-                                icon: <Wallet/>,
-                                eventKey: ProfileTabs.wallet,
-                              },
+                              // {
+                              //   component: <></>,
+                              //   label: ProfileTabs.wallet,
+                              //   icon: <Wallet/>,
+                              //   eventKey: ProfileTabs.wallet,
+                              // },
                             ],
                           }}
                         />

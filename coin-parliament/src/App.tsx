@@ -75,6 +75,7 @@ import LoginAndSignup from "./Components/LoginComponent/LoginAndSignup";
 import {
   LoginAuthProvider,
   LoginRegular,
+  Logout,
   SignupRegular,
 } from "./common/models/Login";
 import FirstTimeLogin from "./Components/LoginComponent/FirstTimeLogin";
@@ -106,7 +107,7 @@ import Background from "./Components/Background";
 import Spinner from "./Components/Spinner";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
-import useScrollPosition from "./hooks/useScrollPosition";
+// import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
 import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
@@ -122,6 +123,10 @@ import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import { pwaInstallHandler } from 'pwa-install-handler'
+// import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
+import Login2fa from "./Components/LoginComponent/Login2fa";
+// import { handleSoundClick } from "./common/utils/SoundClick";
+// import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -154,7 +159,7 @@ function App() {
   const langDetector = useRef(null);
   let navigate = useNavigate();
   const { width } = useWindowSize();
-  const scrollPosition = useScrollPosition();
+  // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
   const [displayFullscreen,setDisplayFullscreen]=useState('none')
   
@@ -345,6 +350,7 @@ const handleClick=()=>{
   const [supportsPWA, setSupportsPWA] = useState(false);
   const [promptInstall, setPromptInstall] = useState(null);
 const [pwaPopUp,setPwaPopUp]=useState('block')
+const[mfaLogin,setMfaLogin]=useState(false)
   useEffect(() => {
     const handler = (e:any) => {
       e.preventDefault();
@@ -356,6 +362,16 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
 
     return () => window.removeEventListener("transitionend", handler);
   }, []);
+  // @ts-ignore
+  useEffect(() => {
+    const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+    if (isMFAPassed=='true' && !login ) {
+    
+      console.log('2faCalled')
+      // @ts-ignore
+      Logout(setUser)}
+  }, [])
+  
 
   const onClick = (evt:any) => {
     // evt.preventDefault();
@@ -370,7 +386,7 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
     console.log('not supported')
   }
   useEffect(() => {
-    if ( user?.email && userInfo?.displayName === undefined) {
+    if ( user?.email && userInfo?.displayName === undefined && !login) {
       setLoader(true);
 //   .get("444-44-4444").onsuccess = (event) => {
 //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
@@ -385,7 +401,7 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   }, [user, userInfo]);
   const updateUser = useCallback(async (user?: User) => {    
     setUser(user);
-    // console.log(user,"userInfoId");
+    
     const info = await getUserInfo(user);
     setUserInfo(info);
     setDisplayName(info.displayName + "");
@@ -401,15 +417,39 @@ const [pwaPopUp,setPwaPopUp]=useState('block')
   
 
   useEffect(() => {
+    if (user?.email && userInfo?.displayName === undefined && !login) {
+      setLoader(true);
+    } else {
+      setTimeout(() => {
+        setLoader(false);
+      }, 2000);
+    }
+  }, [user, userInfo]);
+  useEffect(() => {
+    // const buttons = document.getElementsByTagName('button');
+    // console.log('buttondata',buttons);
+    // for (let i = 0; i < buttons.length; i++) {
+    //   buttons[i].addEventListener('click', handleSoundClick);
+    // }
+    
     const refer = new URLSearchParams(search).get("refer");
-    // if (refer && !user) {
-    //   setLogin(true);
-    //   setSignup(true);
-    // } else
-    if(!user){
+    if (refer && !user) {
       setLogin(false);
       setSignup(false);
+    } else {
+      const isMFAPassed =  window.localStorage.getItem('mfa_passed')
+      if(!user && isMFAPassed!=='true' ){
+        console.log('2faCalled3')
+        setLogin(false);
+        setSignup(false);
     }
+     
+    }
+    // return () => {
+    //   for (let i = 0; i < buttons.length; i++) {
+    //     buttons[i].removeEventListener('click', handleSoundClick);
+    //   }
+    // }
   }, [location, search]);
 
   // useEffect(() => {
@@ -614,8 +654,8 @@ console.log('fmctoken',fcmToken)
           user?.emailVerified ||
           user?.providerData[0]?.providerId === "facebook.com"
         ) {
-          setLogin(false);
-          setSignup(false);
+          // setLogin(false);
+          // setSignup(false);
           setLoginRedirectMessage("");
           await updateUser(user);
           setUserUid(user?.uid);
@@ -1013,7 +1053,7 @@ votesLast24HoursRef.get()
                                 if (user?.uid) {
                                   await saveUsername(user?.uid, username, "");
                                   setFirstTimeAvatarSelection(true);
-                                  setFirstTimeFoundationSelection(true);
+                                  // setFirstTimeFoundationSelection(true);
                                   setFirstTimeLogin(false);
                                 }
                               }}
@@ -1028,7 +1068,7 @@ votesLast24HoursRef.get()
                               }
                             />
                           )}
-                          {!firstTimeAvatarSlection &&
+                          {/* {!firstTimeAvatarSlection &&
                             firstTimeFoundationSelection && (
                               <FirstTimeFoundationSelection
                                 user={user}
@@ -1036,16 +1076,22 @@ votesLast24HoursRef.get()
                                   setFirstTimeFoundationSelection
                                 }
                               />
-                            )}
+                            )} */}
                           {!firstTimeLogin && (
                             <>
-                              {!user && login && (
+                              {!user && login && !mfaLogin && (
                                 <LoginAndSignup
                                   {...{
                                     authProvider: LoginAuthProvider,
                                     loginAction: LoginRegular,
                                     signupAction: SignupRegular,
                                   }}
+                                />
+                              )}
+                              {(user || userInfo?.uid) && login && (
+                                <Login2fa
+                                  setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
                                 />
                               )}
                               {!login &&
@@ -1070,7 +1116,7 @@ votesLast24HoursRef.get()
                                       }}
                                     >
                                     <div className='pwaPopup'  style={{display:pwaPopUp}}>
-                                      <span>Install CoinParliament app for best experience</span>
+                                        <span>{texts.InstallCoinParliament}</span>
                                     <button
       className="link-button"
       id="setup_button"
@@ -1087,7 +1133,7 @@ votesLast24HoursRef.get()
       aria-label="Install app"
       title="Install app"
       onClick={e=>setPwaPopUp('none')}
-      style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px'}}
+                                          style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}
     >
       x
     </span>
@@ -1126,14 +1172,14 @@ votesLast24HoursRef.get()
                                           path={ProfileTabs.profile}
                                           element={<Profile />}
                                         >
-                                          <Route
-                                            path={ProfileTabs.edit}
-                                            element={<PersonalInfo />}
-                                          />
-                                          <Route
-                                            path={ProfileTabs.password}
-                                            element={<Security />}
-                                          />
+                                          // <Route
+                                          //   path={ProfileTabs.edit}
+                                          //   element={<PersonalInfo />}
+                                          // />
+                                          // <Route
+                                          //   path={ProfileTabs.password}
+                                          //   element={<Security />}
+                                          // />
                                           {!isV1() && (
                                             <Route
                                               path={ProfileTabs.mine}
@@ -1172,6 +1218,7 @@ votesLast24HoursRef.get()
                                           />
                                         </Route> 
                                         */}
+                                        
                                           <Route
                                           path={ProfileTabs.profile}
                                           element={<Profile />}
@@ -1180,6 +1227,14 @@ votesLast24HoursRef.get()
                                           <Route
                                               path={ProfileTabs.share}
                                               element={<Pool />}
+                                          />
+                                           <Route
+                                            path={ProfileTabs.edit}
+                                            element={<PersonalInfo />}
+                                          />
+                                          <Route
+                                            path={ProfileTabs.password}
+                                            element={<Security />}
                                           />
                                         </Route>
                                         {/* Fowller component  start*/}

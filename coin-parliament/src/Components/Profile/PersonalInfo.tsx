@@ -15,6 +15,8 @@ import {CountryCode} from "./utils";
 import styled from "styled-components";
 import { Input } from "../Atoms/styles";
 import { texts } from "../LoginComponent/texts";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
@@ -31,20 +33,20 @@ const PersonalInfo = () => {
   const [firstName,setFirstName]=useState('')
   const [lastName,setLastName]=useState('')
   const [email,setEmail]=useState('')
-  const [phone,setPhone]=useState('')
+  const [phone,setPhone]=useState<any>({phone:""})
   const [countryCode,setCountryCode]=useState('')
   
 const [show,setShow]=useState(false)
 let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
   useEffect(() => {
-    console.log(user, "user");
+    
     
   setUserName(user?.displayName || '')
   setFirstName(user?.firstName || '')
   setLastName(user?.lastName || '')
   setEmail(user?.email || '')
-  setPhone(user?.phone || '')
+    setPhone({ phone: user?.phone })
   setCountryCode('')
  
 }, [])
@@ -62,9 +64,14 @@ const handleClose=()=>{
       }
     }
   };
+ const handleOnChange = (value:any, data:any, event:any, formattedValue:any) => {
+    setPhone({ phone: value})
+    setCountryCode(data.countryCode)
+ }
 
   return (
     <>
+      
     <Form className="mt-1 d-flex flex-column"  onSubmit={async (e) => {
       e.preventDefault();
       if(edit){
@@ -73,7 +80,7 @@ const handleClose=()=>{
           firstName: firstName as string,
           lastName: lastName as string,
           email: email as string,
-          phone: countryCode + phone as string,
+          phone: countryCode + phone.phone as string,
         };
         if(email===user?.email){
         setUserInfo(newUserInfo);
@@ -87,6 +94,7 @@ const handleClose=()=>{
       }
       // await login(e, callback);
     }}>
+        
       <Buttons.Primary style={{maxWidth:'100px', placeSelf:'end', margin:'20px', marginBottom:'0px'}} >{edit?'SAVE':'EDIT'}</Buttons.Primary>
       <Container>
       
@@ -96,7 +104,7 @@ const handleClose=()=>{
            
             <TextField
               {...{
-                label: "User Name",
+                label: `${texts.USERNAME}`,
                 name: "UserName",
                 placeholder: "User Name",
                 value: userName ,
@@ -110,7 +118,7 @@ const handleClose=()=>{
             />
             <TextField
               {...{
-                label: "First Name",
+                label: `${texts.FIRSTNAME}`,
                 name: "firstName",
                 placeholder: "First Name",
                 value: firstName || "",
@@ -123,7 +131,7 @@ const handleClose=()=>{
             />
             <TextField
               {...{
-                label: "Last Name",
+                label: `${texts.LASTNAME}`,
                 name: "lastName",
                 placeholder: "Last Name",
                 value: lastName,
@@ -135,7 +143,7 @@ const handleClose=()=>{
             />
             <TextField
               {...{
-                label: "Email",
+                label: `${texts.EMAIL}`,
                 name: "email",
                 type: "email",
                 placeholder: "Email",
@@ -163,29 +171,44 @@ const handleClose=()=>{
               }}
               /> */}
               <SelectTextfield 
-              label="Phone"
+              label={`${texts.PHONE}`}
               name="Phone"
               ><>
-                <select                  
+                {/* <select                  
                   name="Phone" id="Phone" value={countryCode}                
                 onChange={(e) => {                  
                   setCountryCode(e.target.value); 
                 
                 }}
-                    style={{ borderRadius: "6px 0px 0px 6px"}}
+                    style={{ borderRadius: "6px 0px 0px 6px" , borderRight:"none"}}
                   disabled={!edit}
                 >
                       <option value="">+ </option>
                   {CountryCode?.map((code ,index) => {
-                   return  <option  value={code.dial_code}>{code.dial_code} {code.code}</option>
+                   return  <option key={index}  value={code.dial_code}>{code.dial_code} {code.code} </option>
                         
                       })}
                 </select>
                 <Input type="text" onChange={(e:any) => {                  
                   setPhone(e.target.value);   
                   }}
-                    style={{ borderRadius: "0px 6px 6px 0px"}}
+                    style={{ borderRadius: "0px 6px 6px 0px" ,borderLeft:"none"}}
                 disabled={!edit}
+                /> */}
+                <PhoneInput                    
+                    inputStyle={{width:"100%",padding:"20px 0px 20px 50px"}}
+                    inputProps={{
+                    name: 'phone',
+                    required: true,
+                    // autoFocus: true
+                    disabled: !edit                                        
+                    }}
+                    disableDropdown={!edit}
+                    // disableCountryCode={!edit}
+                  country={countryCode || "in"}
+                  value={phone.phone || ""}
+                  // onChange={phone => setPhone({ phone })}
+                  onChange={handleOnChange}
                 />
                 </>
               </SelectTextfield>
@@ -194,7 +217,7 @@ const handleClose=()=>{
         </Row>
       </Container>
     </Form>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} centered>
       <Modal.Header >
         <Modal.Title>Change email</Modal.Title>
       </Modal.Header>

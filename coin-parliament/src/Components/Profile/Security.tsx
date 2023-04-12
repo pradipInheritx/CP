@@ -26,6 +26,9 @@ import {
   RecaptchaVerifier,
 } from "firebase/auth";
 import { texts } from "../LoginComponent/texts";
+import Tabs from "./Tabs";
+import GoogleAuthenticator from "./GoogleAuthenticator";
+import ChangePassword from "./ChangePassword";
 
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
@@ -61,8 +64,40 @@ const Security = () => {
   const [verificationCodeSent, setVerifiactionCodeSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationIdData, setVerificationIdData] = useState("");
+  const [tabsArray,setTabsArray]=useState<any>([])
+  const auth = getAuth();
+  console.log('auth',u?.providerData[0]?.providerId=='password' )
+  const authProvider=u?.providerData[0]?.providerId=='password'? true :false
   useEffect(() => {
+    setTabsArray(authProvider?[
+      {
+        eventKey: "password",
+        title: "Password",
+        pane: (
+         <ChangePassword/>
+        ),
+      },
+      {
+        eventKey: "2fa",
+        title: "2FA",
+        pane: (
+          <>
+          <GoogleAuthenticator/>
+          </>
+        // 
+        ),
+      },
+    ]:[
+      {
+        eventKey: "2fa",
+        title: "2FA",
+        pane: (
+          <GoogleAuthenticator/>
+        ),
+      },
+    ])
     setPhone(user?.phone || '')
+    
   }, [])
   const handleClose = () => {
     setShow(false);
@@ -80,7 +115,7 @@ const Security = () => {
     }
   };
   
-  const auth = getAuth();
+  
   const authMFA = () => {
     const recaptchaVerifier = new RecaptchaVerifier(
       "recaptcha-container-id",
@@ -114,7 +149,7 @@ const Security = () => {
         );
       })
       .then(function (verificationId) {
-        console.log("verificationcode", verificationId);
+        
         // Ask user for the verification code. Then:
         setVerificationIdData(verificationId);
         setVerifiactionCodeSent(true);
@@ -134,226 +169,15 @@ const Security = () => {
   };
   return (
     <>
-      <Form className="mt-1" onSubmit={(e) => e.preventDefault()} >
-        <div id="recaptcha-container-id"></div>
-        <Container
-          style={{ minHeight: window.screen.width < 979 ? "59vh" : "67vh" }}
-        >
-          <Row style={{ justifyContent: "center" }}>
-            <Col sm={6} className="mt-5">
-              <Form.Group controlId="MFA">
-                <Form.Check>
-                  <Row>
-                    <Col>
-                      <Label>Old Password</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>                                            
-                      <>
-                        <FormControl
-                          type="password"
-                          value={oldPassword || ""}
-                          onChange={(e) => setOldPassword(e.target.value)}
-                          disabled={!changePassword}
-                        />                           
-                      </>                                            
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Label>New Password</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>                                            
-                      <>
-                        <FormControl
-                          type="password"
-                          value={newPassword || ""}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          disabled={!changePassword}
-                        />                           
-                      </>                                            
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Label>Confirm Password</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>                                           
-                      <>
-                        <FormControl
-                          type="password"
-                          value={confirmPassword || ""}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          disabled={!changePassword}
-                        />                           
-                      </>                                             
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="d-flex justify-content-between mt-3">
-                      <>                            
-                    {changePassword && (
                       
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setChangePassword(false);
-                          }}
-                        >
-                          <span aria-hidden="true">Cancel</span>
-                        </Button>
-                        )}
-                        </>
-                        <Button
-                          onClick={async (e) => {
-                            e.preventDefault();
-                            if (!changePassword) {
-                              setChangePassword(true);
-                            } else {
-                              if (
-                                u &&
-                                userInfo?.displayName &&
-                                validatePassword(
-                                  confirmPassword,
-                                  newPassword,                                  
-                                  userInfo?.displayName
-                                )
-                              ) {
-                                await updatePassword(u, newPassword);
-                                showToast(texts.PasswordUpdatSuccess);
-                                setChangePassword(false);
-                              } else {
-                                showToast(
-                                  texts.PasswordMustContain,ToastType.ERROR
-                                );
-                              }
-                            }
-                          }}
-                        >
-                          {changePassword ? "submit" : "change"}
-                        </Button>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col sm={3} className="mt-2">
-                      <Label>2FA</Label>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Container className="p-0">
-                        <Row className="m-0">
-                          <Col className="p-0">
-                            <Form.Check.Input
-                              style={{ display: "none" }}
-                              type="radio"
-                              name="mfa"
-                              id="mfa-enable"
-                              checked={user?.mfa || true}
-                              onChange={async (e) => {
-                               
-                                const newUserInfo = {
-                                  ...(userInfo as UserProps),
-                                  mfa: true,
-                                };
-                                setUserInfo(newUserInfo);
-                                await onSubmit(newUserInfo);
-                              }}
+      <Tabs
+      defaultActiveKey={authProvider?"password":'2fa'}
+      id="profile-follow"
+      onSelect={() => {}}
+      tabs={tabsArray}
                             />
-                            {user?.mfa && (
-                              <BtnLabelPrimary
-                                htmlFor="mfa-enable"
-                                className="w-100"
-                                style={{ boxShadow: "0px 3px 6px #00000029" }}
-                              >
-                                Enable
-                              </BtnLabelPrimary>
-                            )}
-                            {!user?.mfa && (
-                              <BtnLabel
-                                onClick={async (e) => {
-                                  // authMFA();
-                                  setShow(true);
-                                  // const newUserInfo = {
-                                  //   ...(userInfo as UserProps),
-                                  //   mfa: true,
-                                  // };
-                                  // setUserInfo(newUserInfo);
-                                  // await onSubmit(newUserInfo);
-                                }}
-                                htmlFor="mfa-enable"
-                                className="w-100"
-                                style={{ boxShadow: "0px 3px 6px #00000029" }}
-                              >
-                                Enable
-                              </BtnLabel>
-                            )}
-                          </Col>
-                          <Col className="p-0">
-                            <Form.Check.Input
-                              style={{ display: "none" }}
-                              type="radio"
-                              name="mfa"
-                              id="mfa-disable"
-                              checked={!user?.mfa || false}
-                              
-                            />
-                            {!user?.mfa && (
-                              <BtnLabelPrimary
-                                htmlFor="mfa-disable"
-                                className="w-100"
-                                style={{ boxShadow: "0px 3px 6px #00000029" }}
-                              >
-                                Disable
-                              </BtnLabelPrimary>
-                            )}
-                            {user?.mfa && (
-                              <BtnLabel
-                                onClick={async (e) => {
-                                  // @ts-ignore
-                                  var options = multiFactor(auth?.currentUser).enrolledFactors;
-// Present user the option to unenroll.
-console.log('option',options)
-// @ts-ignore
-return multiFactor(auth?.currentUser).unenroll(options[0])
-  .then(function(res) {
-    // User successfully unenrolled selected factor.
     
-    const newUserInfo = {
-      ...(userInfo as UserProps),
-      mfa: false,
-    };
-    setUserInfo(newUserInfo);
-     onSubmit(newUserInfo);
-  }).catch(function(error) {
-    // Handler error.
-  });
-                                
-                                }}
-                                htmlFor="mfa-disable"
-                                className="w-100"
-                                style={{ boxShadow: "0px 3px 6px #00000029" }}
-                              >
-                                Disable
-                              </BtnLabel>
-                            )}
-                          </Col>
-                        </Row>
-                      </Container>
-                    </Col>
-                  </Row>
-                </Form.Check>
-              </Form.Group>
-            </Col>
-          </Row>
-        </Container>
-      </Form>
-      <Modal show={show} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
+      {/* <Modal show={show} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
         <Modal.Header >
           <Modal.Title>2FA</Modal.Title>
         </Modal.Header>
@@ -413,7 +237,7 @@ return multiFactor(auth?.currentUser).unenroll(options[0])
             CONTINUE
           </Buttons.Primary>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </>
   );
 };
