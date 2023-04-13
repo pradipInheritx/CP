@@ -122,6 +122,7 @@ import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
+import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
@@ -1236,6 +1237,12 @@ votesLast24HoursRef.get()
                                             path={ProfileTabs.password}
                                             element={<Security />}
                                           />
+                                          <Route
+                                            path={
+                                              ProfileTabs.wallet
+                                            }
+                                            element={<Wallet />}
+                                          /> 
                                         </Route>
                                         {/* Fowller component  start*/}
                                         {/* <Route

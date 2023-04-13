@@ -133,6 +133,7 @@ const Profile = () => {
                     {![
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
+                      ProfileTabs.wallet as string,
                     ].includes(pathname) && (
                       <ImageTabs
                         {...{
@@ -194,6 +195,7 @@ const Profile = () => {
                     {[
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
+                      ProfileTabs.wallet as string,
                     ].includes(pathname) &&
                       window.screen.width < 979 && (
                         <ImageTabs
@@ -222,12 +224,12 @@ const Profile = () => {
                                 icon: <SecurityIcon />,
                                 eventKey: ProfileTabs.password,
                               },
-                              // {
-                              //   component: <></>,
-                              //   label: ProfileTabs.wallet,
-                              //   icon: <Wallet/>,
-                              //   eventKey: ProfileTabs.wallet,
-                              // },
+                              {
+                                component: <></>,
+                                label: ProfileTabs.wallet,
+                                icon: <Wallet/>,
+                                eventKey: ProfileTabs.wallet,
+                              },
                             ],
                           }}
                         />
