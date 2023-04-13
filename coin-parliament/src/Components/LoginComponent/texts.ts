@@ -58,6 +58,7 @@ export const texts = {
   Minister: "minister",
   SelectCollection: "Select Collection".toUpperCase(),
   SelectSets: "Select Sets".toUpperCase(),
+  SelectName: "Select Name".toUpperCase(),
   SelectType: "Select Type".toUpperCase(),
   Legendary: "Legendary",
   Rare: "Rare",

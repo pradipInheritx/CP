@@ -3,50 +3,18 @@ import { Coin } from "../../common/models/Coin";
 import { VoteResultProps } from "../../common/models/Vote";
 import "./styles.css";
 import styled, { css } from "styled-components";
-
-
-// const Grow = css`
-// border:1px solid red;    
-// background-color: black !important;
-//     background-image: linear-gradient(90deg, #3d3e40, #050505);
-//     width:40px;
-//     height:40px;
-//     border-radius:25px;
-//     // animation: ripple 1s infinite;
-//     // 			animation:  ripple .75s ease-in infinite alternate
-//     // @keyframes ripple{
-//     // 0%{
-//     //     opacity:1;
-//     //     -webkit-transform:scale(0);
-//     //     transform:scale(0)
-//     // }
-//     // 100%{
-//     //     opacity:0;
-//     //     -webkit-transform:scale(1);
-//     //     transform:scale(1)
-//     // }
-// `;
+// import ReangDot2 from "../../assets/images/ReangDot2.gif";
+// import ReangDot5 from "../../assets/images/ReangDot5.gif";
 
 // const InputRange = styled.input`
-//    &::-webkit-slider-thumb{            
-//     // box-shadow: 0px 0px 20px 8px black;    
-//     position: relative;
-//      transition:0.5s ease;
-// 	animation:  ripple .75s ease-in infinite alternate
-//     @keyframes ripple{
-//     0%{
-//         opacity:1;
-//         -webkit-transform:scale(0);
-//         transform:scale(0)
-//     }
-//     100%{
-//         opacity:0;
-//         -webkit-transform:scale(1);
-//         transform:scale(1)
-//     }
-//    }
-//    &:focus::-webkit-slider-thumb {
-//    ${Grow}
+//    &::-webkit-slider-thumb{  
+//     // -webkit-appearance: none;      
+//     // width: 35px;
+//     // border: 1px solid black;  
+//     // height: 35px;            
+//     // background-image: url(${ReangDot2}),
+//     // background-color:red;
+//    }  
 // `;
 
 // const OutputDiv = styled.output`
@@ -77,12 +45,14 @@ import styled, { css } from "styled-components";
 
 
 function RangeSilder(
-    {
+  {
+      lastTenSec,
     vote,
     coins,
     symbol1,
     symbol2
-    }: {
+  }: {
+      lastTenSec?:any
     vote: VoteResultProps;
     coins: { [symbol: string]: Coin };
     symbol1: string;
@@ -180,6 +150,8 @@ const getBorderColor = () => {
     
   }, [coins[symbol1]?.price ,coins[symbol2]?.price,vote?.valueVotingTime])
   
+  // console.log(lastTenSec,"lastTenSec")
+
   return (
     <div className=''>
           {/* <p style={{color:"black"}} className="py-2">YOUR VOTE IMPACT</p> */}
@@ -189,7 +161,7 @@ const getBorderColor = () => {
         {/* <OutputDiv name="" htmlFor="silder" className='' aria-hidden='true' ></OutputDiv> */}
         <div className='grow' aria-hidden='true' ></div>
         
-        <input id="silder" type="range" min={0} max={100} value={persentValue} className="rengeInput w-100" >
+        <input  id="silder" type="range" min={0} max={100} value={persentValue} className={`${lastTenSec==true ?"rengeInput123 ":"rengeInput "} w-100`} >
 
         </input>        
       </div>
@@ -199,7 +171,7 @@ const getBorderColor = () => {
               <span>LOW</span>
               <span>MID</span>
               <span>HIGH</span>
-            </div>
+      </div>      
     </div>
   )
 }
