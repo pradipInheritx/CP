@@ -9,6 +9,7 @@ import { Direction, voteConverter, VoteResultProps } from "./Vote";
 import { firestore, messaging } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
 import { sendNotification } from "./Notification";
+import {voteExpireAndGetCpmNotification} from "./SendCustomNotification"
 
 
 export type Totals = {
@@ -54,6 +55,7 @@ export const returnValue: (
     CPMReturn =
       (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
   }
+  console.log("GIVEN CMP >>>>>>>>>",(Number(voteRules.givenCPM) || 1) * CPMReturn)
   return (Number(voteRules.givenCPM) || 1) * CPMReturn;
 };
 class Calculation {
@@ -124,8 +126,16 @@ class Calculation {
       if (user.parent) {
         const refer = new Refer(user.parent, "");
 
+        const getVotesquery = await firestore()
+        .collection("votes")
+        .doc(this.id)
+        .get();
+
+        const getVote :any = getVotesquery.data();
         // Send Notification For CMP Change
         await refer.payParent(score);
+        console.log("send Notification for CPM")
+        voteExpireAndGetCpmNotification(voteResult.userId,score,getVote.coin)
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);
@@ -196,8 +206,8 @@ class Calculation {
 
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
-      const endValue = voteResult?.valueExpirationTime;
-      const upRange =
+      const endValue :any = voteResult?.valueExpirationTime;
+      const upRange :any =
         Number(startValue) +
         (Number(startValue) * CPMReturnRangePercentage) / 100;
       const downRange =
