@@ -21,6 +21,8 @@ import { texts } from "./LoginComponent/texts";
 import { Button, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 
+
+
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
   max-width: ${window.screen.width<767? "345px":"400px"};
@@ -116,7 +118,7 @@ const VotedCard = ({
   setpopUpOpen?:any
   }) => {
   
-  
+  const [lastTenSec, setLastTenSec] = useState<any>(false);
   const [borderColor, setBorderColor] = useState<any>("#6352e8");const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
      if (symbol2 !== undefined) {
@@ -244,7 +246,7 @@ const VotedCard = ({
             },
             // title: translate("Select voting time frame"),
             title: translate("Select a time frame for your vote").toUpperCase(),
-          votedTitle: translate("Select another time frame").toUpperCase(),
+            votedTitle: translate("Select another time frame").toUpperCase(),
             // select a time frame for your vote
             voted:true,
             selectedTimeFrameArray: selectedTimeFrameArray,
@@ -276,6 +278,7 @@ const VotedCard = ({
             </BitcoinBTCBULL24H3864490>
             <div className="my-2">
               <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
+                setLastTenSec={setLastTenSec}
               />
             </div>
             <div className="my-2">
@@ -283,7 +286,8 @@ const VotedCard = ({
              
             </div>
             <div>
-               <RangeSilder
+              <RangeSilder
+              lastTenSec={lastTenSec}
               vote={vote}
               coins={coins}
               symbol1={symbol1}
@@ -328,10 +332,10 @@ export default VotedCard;
 let getresultFlag:any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup}:
+export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec}:
   {
     expirationTime: number, vote?: any, voteId?: any
-  coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any
+  coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any,setLastTenSec?:any
   }) => {
 
 
@@ -391,7 +395,9 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
         //   console.log( hours, minutes, seconds, "i am done")
         //   lastTensecWait()
         // }
-        
+        if ( hours == 0 && minutes == 0 && seconds > 0 && seconds < 11 ) {
+          setLastTenSec(true)
+        }
         if (completed) {
           if (vote && !vote?.sucess) {            
             checkprice()

@@ -102,28 +102,37 @@ const FwProfileNftGalleryType = () => {
   const [cardShow, setCardShow] = useState<any>(false);
   const [setsCardId, setSetsCardId] = useState<any>('none')
   const [setsValue, setSetsValue] = useState<any>([])
-  
+  const [setsCardName, setSetsCardName] = useState<any>('none')
+  const [cardName, setCardName] = useState<any>([])
 
 
 
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
-     let allBackCard = [...backCards];
+    // let allBackCard = [...backCards];
+    if (backCards.includes(value)) {       
+        let allBackCard = [...backCards];
+        allBackCard.splice(backCards.indexOf(value), 1);
+        setBackCards(allBackCard)
+    }
+    else {
+      setBackCards([...backCards, value])
+    };
      // @ts-ignore
      // setBackCards(backCards == value ? "" : value);
-     backCards.length > 0
-       ? backCards?.map((items: any, index: number) => {
-           if (items == value) {
-             // @ts-ignore
-             allBackCard.splice(index, 1);
-             setBackCards(allBackCard);
-           } else {
-             // @ts-ignore
-             setBackCards([...backCards, value]);
-           }
-           // @ts-ignore
-         })
-       : setBackCards([...backCards, value]);
+    //  backCards.length > 0
+    //    ? backCards?.map((items: any, index: number) => {
+    //        if (items == value) {
+    //          // @ts-ignore
+    //          allBackCard.splice(index, 1);
+    //          setBackCards(allBackCard);
+    //        } else {
+    //          // @ts-ignore
+    //          setBackCards([...backCards, value]);
+    //        }
+    //        // @ts-ignore
+    //      })
+    //    : setBackCards([...backCards, value]);
   };
 
       let params = useParams();
@@ -204,6 +213,7 @@ data.push({id: doc.id, ...doc.data()});
 setAllCardArray(data)
   const cards: any = [];
   const idSets: any = [];
+  const getCardName: any = [];
   data.forEach((element: any) => {
 
     const collectionId = element.collectionId;
@@ -215,12 +225,14 @@ setAllCardArray(data)
       const setName = setDetail?.name;
       idSets.push({setId,setName})
       setDetail.cards.forEach((cardDetail: any) => {
+        getCardName.push({name:cardDetail.name})
         cards.push({collectionId, collectionName, collectionDocId, setId,setName, ...cardDetail});
       });
     });
   });
   setAllCard(cards)
-setSetsValue(idSets)
+  setSetsValue(idSets)
+  setCardName(getCardName)
 
 }).catch((error) => {
 console.log(error,"error");
@@ -239,39 +251,77 @@ console.log(error,"error");
   else setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type==cardType.toUpperCase()))
 }
   
-    const onSelectType=(cardType:any)=>{
+const onSelectType=(cardType:any)=>{
   setCardType(cardType)
-    if (searchedCard?.length) {
-    setCardShow(true)
-  }
-  else {
-    setCardShow(false)
-  }
-    if (cardType === 'all') {
-       const typeCard = allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-    setSearchedCard(typeCard.filter((card:any)=>setsCardId != "none" ?card?.setId ==setsCardId:card.setId !==setsCardId))
-      
-    }
-  else {
-    setCardShow(true)
-    const typeCard = allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-    setSearchedCard(typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId))
-    }
-    }
   
-   const onSelectSets=(cardId:any)=>{
-  setSetsCardId(cardId)
-  if (cardId === 'none') {
-    const cardWithId=allCard.filter((card: any) => card.setId !== cardId )
-    setSearchedCard(cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );    
+  if (cardType === 'all') { 
+    const typeCard = allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    const forcardName=typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    setSearchedCard(typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId))
+    setCardName(forcardName?.map((card: any) => {      
+      return  {name:card?.name}
+    }))
+    setSetsCardName("none")
   }
   else {    
-    setCardShow(true);
-    // setSearchedCard((prev: any) => allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-     const cardWithId=allCard.filter((card: any) => card.setId == cardId )
-    setSearchedCard(cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type== cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );        
+    setCardShow(true)
+    const typeCard = allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
+    const forcardName=typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    setSearchedCard(typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId))    
+    setCardName(forcardName?.map((card: any) => {
+      
+      return  {name:card?.name}
+    }))
+    setSetsCardName("none")
   }
 }
+  
+  const onSelectSets=(cardId:any)=>{
+  setSetsCardId(cardId)
+  if (cardId === 'none') {    
+    const cardWithId = allCard.filter((card: any) => card.setId !== cardId)
+    const forcardName=cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
+    setSearchedCard(cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );
+    setCardName(forcardName?.map((card: any) => {
+      
+      return  {name:card?.name}
+    }))
+    setSetsCardName("none")
+  }
+  else {    
+    setCardShow(true);        
+    const cardWithId = allCard.filter((card: any) => card.setId == cardId)
+    const forcardName=cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    setSearchedCard(cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())));        
+    setCardName(forcardName?.map((card: any) => {      
+      return  {name:card?.name}
+    }))
+      setSetsCardName("none")
+  }
+  }
+  
+     const onSelectName=(mycardName:any)=>{
+  setSetsCardName(mycardName)
+  if (mycardName === 'none')
+   {          
+    const cardWithName = allCard.filter((card: any) => card.name !== mycardName)
+    const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())    
+    const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    //  console.log(serchresult,"serchresult")
+    
+     setSearchedCard((pev:any)=>finalValue)
+      }
+   else {
+     const cardWithName = allCard.filter((card: any) => card.name == mycardName)
+    const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())    
+    const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    //  console.log(serchresult,"serchresult")
+     setSearchedCard((pev:any)=>finalValue)
+   }     
+}
+
 
 useEffect(() => {
   getNftCard()
@@ -288,7 +338,8 @@ useEffect(() => {
   // getNftCard()
   // onCollectionChange(type)
   onSearch(searchTerm)
-  onSelectType(cardType)
+    onSelectType(cardType)
+    onSelectName(setsCardName)
 }, [allCard])
   
 
@@ -389,9 +440,11 @@ useEffect(() => {
               // onChange={(e)=>{HandelonchangeFilter(e)}}
               placeholder='Search...'
               className='py-2 mx-2 rounded border'
+              
               // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "" : ""}`}>      
+
+            <div className={`${window.screen.width < 767 ? "py-2" : ""}`}>      
              <select
                 name='cars'
                 id='cars'
@@ -417,6 +470,17 @@ useEffect(() => {
                 <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
                 <option value={`${texts.Common}`}>{texts.Common}</option>
               </select>
+
+               <select                
+                className='bg-white border rounded py-2 mx-1'
+                // onChange={e=>onCollectionChange(e.target.value)}
+                onChange={e=>onSelectName(e.target.value)}
+              >
+            <option value='none'>{texts.SelectName}</option>       
+            {cardName?.map((data:any ,index:number ) => {
+              return  <option value={ data?.name} key={index}>{`${data?.name}`}</option>        
+            })}            
+          </select>
               {/* <select
                 name='cars'
                 id='cars'

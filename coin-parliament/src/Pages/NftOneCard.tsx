@@ -168,40 +168,45 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       let params = useParams();
   const { type} = params;
   
-
+console.log(Disable,"backCards Disable")
   return (
     
     <div
       onMouseEnter={() => {
-        if (Disable == "" || Disable == undefined) {          
+        if (Disable == "" || Disable == undefined && window.screen.width > 767) {          
           setFlip(!flip);
-          cardFlip()
+          if (flipCard != true) {            
+            cardFlip()
+          }
         }        
       }}
       onMouseLeave={() => {
-        if (Disable == "" || Disable == undefined) {                 
+        if (Disable == "" || Disable == undefined && window.screen.width > 767) {                 
           setFlip(!flip);
-          cardFlip()
+          // cardFlip()
+          // if (flipCard != true) {            
+          //   cardFlip()
+          // }
         }        
       }}
-      onFocus={() => {
-        if (Disable == "" || Disable == undefined) {          
-          setFlip(!flip);
-          cardFlip()
-        }
-        // setFlip(!flip);
-      }}
-      onFocusCapture={() => {
-        if (Disable == "" || Disable == undefined) {          
-          setFlip(!flip);
-          cardFlip()
-        }
-        // setFlip(!flip);
-      }}
+      // onFocus={() => {
+      //   if (Disable == "" || Disable == undefined) {          
+      //     setFlip(!flip);
+      //     cardFlip()
+      //   }
+      //   // setFlip(!flip);
+      // }}
+      // onFocusCapture={() => {
+      //   if (Disable == "" || Disable == undefined) {          
+      //     setFlip(!flip);
+      //     cardFlip()
+      //   }
+      //   // setFlip(!flip);
+      // }}
       // @ts-ignore
       
       className={`card-container ${
-        flipCard == true || flip != true ? " flipped" : ""
+        flipCard == true || flip != true ? "flipped" : ""
       }`}
       onClick={() => {
         if (Disable == "" || Disable == undefined) { 
