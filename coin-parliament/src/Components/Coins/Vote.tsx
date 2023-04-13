@@ -39,7 +39,9 @@ const Option = css`
   flex-grow: 1;
   flex-basis: 0;
   min-width: 0;
-  box-shadow: 0 3px 6px #00000029;
+  // box-shadow: 0 3px 6px #00000029;
+  box-shadow: rgb(67 47 229) 0px 4px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  transition: all .2s ease;
 
   & svg g path {
     stroke: ${(props: { borderColor: string; selected: boolean }) =>
@@ -51,6 +53,11 @@ const Option0 = styled(Buttons.RadiusTopRight)`
   ${size};
   ${Option};
   flex-direction: column;
+  &:active{
+    position: relative;
+top: 2px;
+  box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  }
   &:disabled {
     pointer-events: none;  
     cursor:pointer;
@@ -61,6 +68,7 @@ const Option0 = styled(Buttons.RadiusTopRight)`
   &:hover {
   background:#6352E8;
   color:white;
+ box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
   }`;
 
 const Option1 = styled(Buttons.RadiusBottomLeft)`
@@ -71,12 +79,18 @@ const Option1 = styled(Buttons.RadiusBottomLeft)`
     pointer-events: none;  
     cursor:pointer;
 }
+ &:active{
+    position: relative;
+    top: 2px;
+      box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  }
   &:not([disabled]) {
     animation: bull_shake_right 2s ease 2s 3 alternate forwards;
   }
   &:hover {
     background:#6352E8;
     color:white;
+       box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
     }
     &:hover .svg-path {
       stroke: white !important;
@@ -123,7 +137,7 @@ const Vote = ({
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
-                  VoteButton()
+                  // VoteButton()
                   if (disabled && disabledText) {
                     if (!user) {
                      
@@ -139,6 +153,9 @@ const Vote = ({
                   setClickedOption0(true);
                   setTimeout(() => setClickedOption0(false), 1000);
                 },
+                // onKeyUp: () => {
+                //   VoteButton()
+                // },
                 className: ["p-3 confetti-button svg-button", clickedOption0 ? "animate" : ""].join(" "),
                 borderColor,
                 selected: selectedOption === 0,
@@ -156,7 +173,7 @@ const Vote = ({
           >
             <Option1
               {...{
-                ...option1.buttonProps,
+                ...option1.buttonProps,                
                 onClick: () => {
                   VoteButton()
                   if (disabled && disabledText) {
@@ -171,6 +188,9 @@ const Vote = ({
                   setClickedOption1(true);
                   setTimeout(() => setClickedOption1(false), 1000);
                 },
+                // onKeyUp: () => {
+                //   VoteButton()
+                // },
                 className: ["p-3 confetti-button", clickedOption1 ? "animate" : ""].join(" "),
                 borderColor,
                 selected: selectedOption === 1,
