@@ -356,8 +356,8 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
   // if (expirationTime == TenSec) {
   //   console.log("i am working")
   // }
-  const coin1 = `${coins && symbol1? coins[symbol1]?.symbol.toLowerCase() || "":""}`
-  const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
+  const coin1 = `${coins && symbol1? coins[symbol1]?.symbol?.toLowerCase() || "":""}`
+  const coin2 = `${coins && symbol2? coins[symbol2]?.symbol?.toLowerCase() || "":""}`
   
   const checkprice = async() => {
     if (!getresultFlag) return
