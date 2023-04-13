@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
@@ -15,7 +15,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
-import Home from "./Pages/Home";
+// import Home from "./Pages/Home";
 import Profile, { ProfileTabs } from "./Pages/Profile";
 import FollowerProfile, { FollowerProfileTabs } from "./Pages/FollowerProfile";
 import Header from "./Components/Header";
@@ -134,7 +134,7 @@ import { handleSoundClick } from "./common/utils/SoundClick";
 import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 
-
+const Home = React.lazy(()=>import("./Pages/Home"))
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 let ws:any;
@@ -1231,7 +1231,9 @@ if (ws) ws.close();
                                         </span>
                                       </div>
                                       <Routes>
-                                        <Route path='/' element={<Home />} />
+                                        <Route path='/' element={
+                                        <Suspense fallback={<div>loading</div>}>
+                                        <Home /></Suspense>} />
                                         <Route
                                           path='coins'
                                           element={<CoinMain />}
