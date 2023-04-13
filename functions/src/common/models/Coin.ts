@@ -387,7 +387,7 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
         .collection("latestUpdatedCoins")
         .add({
           ...getCoinSymbolData,
-          price: latestCoinRate.p,
+          price: latestCoinRate.c,
           timestamp: latestCoinRate.E,
         });
     }
