@@ -347,7 +347,8 @@ export const getUpdatedDataFromWebsocket = () => {
     if (typeof e.data === "string") {
       const parseCoinsRateData: any = JSON.parse(e.data);
       console.info("parseCoinsRateData", parseCoinsRateData)
-      if (parseCoinsRateData) {
+      const isResultFound = 'result' in parseCoinsRateData;
+      if (parseCoinsRateData && !isResultFound) {
         await updateLatestCoinRate(parseCoinsRateData);
       }
     } else {
