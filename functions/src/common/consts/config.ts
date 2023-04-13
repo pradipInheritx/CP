@@ -13,7 +13,7 @@ export const errorMessage =
 
 //export const webSocketBaseURL = "wss://stream.wazirx.com/stream";
 
-export const webSocketBaseURL = "wss://stream.binance.com:9443/ws";
+export const webSocketBaseURL = "wss://stream.binance.us:9443/ws";
 
 export const allTradeCoinsRateForWzirX = [
   "btcusdt@trades",
