@@ -75,6 +75,60 @@ export const sendCustomNotificationOnSpecificUsers = async (
   }
 };
 
+export const sendNotificationForFollwersFollowings = async (
+  userId:any,coin:any
+) => {
+  console.log("-------Begin Push Notification-----------")
+  const follwersFollwing: any = [];
+  console.log("userID >>>",userId,coin)
+  const userFindQuery = await firestore().collection("users").doc(userId).get();
+  const userData: any = userFindQuery.data();
+  console.log(userData);
+
+  userData.subscribers.forEach((user: any) => {
+    follwersFollwing.push(user);
+  });
+  userData.children.forEach((user: any) => {
+    follwersFollwing.push(user);
+  });
+
+  follwersFollwing.forEach(async (id: any) => {
+    console.log("id >>>>",id)
+    let userQuery = await firestore().collection("users").doc(id).get();
+    var userData: any = userQuery.data();
+    var token = userData.token;
+
+    console.log("userData >>>>>",userData)
+    console.log("toekn >>>>>",token)
+    console.log(`${userData.displayName} just voted for ${coin} take action now!`)
+    const message: messaging.Message = {
+      token,
+      notification: {
+        title: `${userData.displayName} just voted for ${coin} take action now!`,
+        body: "",
+      },
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: "#", // TODO: put link for deep linking
+        },
+      },
+    };
+console.log("message >.....",message);
+    await sendNotification({
+      token,
+      id,
+      body: "",
+      title: `${userData.displayName} just voted for ${coin} take action now!`,
+      message,
+    });
+  });
+  console.log("-------Begin Push Notification-----------")
+};
+
+
 export const errorLogging = async (
     funcName: string,
     type: string,
