@@ -212,13 +212,13 @@ const Profile = () => {
                             tabs: [
                               {
                                 component: <></>,
-                                label: ProfileTabs.edit,
+                                label: 'Info',
                                 icon: <UserIcon />,
                                 eventKey: ProfileTabs.edit,
                               },
                               {
                                 component: <></>,
-                                label: ProfileTabs.password,
+                                label:'Security',
                                 icon: <SecurityIcon />,
                                 eventKey: ProfileTabs.password,
                               },
