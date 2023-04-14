@@ -350,6 +350,7 @@ export const getUpdatedDataFromWebsocket = () => {
       const isResultFound = 'result' in parseCoinsRateData;
       if (parseCoinsRateData && !isResultFound) {
         await updateLatestCoinRate(parseCoinsRateData);
+        await fetchCoins();
       }
     } else {
       errorLogging(
