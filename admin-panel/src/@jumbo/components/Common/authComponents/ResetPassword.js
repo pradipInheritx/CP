@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -18,7 +18,7 @@ import { AuhMethods } from '../../../../services/auth';
 import ContentLoader from '../../ContentLoader';
 import { CurrentAuthMethod } from '../../../constants/AppConstants';
 import AuthWrapper from './AuthWrapper';
-import { setForgetPassMailSent } from '../../../../redux/actions/Auth';
+import { bothNotPasswordMatch, requiredMessage } from '@jumbo/constants/ErrorMessages';
 
 const useStyles = makeStyles(theme => ({
   authThumb: {
@@ -57,34 +57,53 @@ const useStyles = makeStyles(theme => ({
 }));
 
 //variant = 'default', 'standard', 'bgColor'
-const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapperVariant = 'default' }) => {
-  const { send_forget_password_email } = useSelector(({ auth }) => auth);
+const ResetPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapperVariant = 'default' }) => {
+  // const { send_forget_password_email } = useSelector(({ auth }) => auth);
   const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordError, setNewPasswordError] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [bothNotMatch, setBothNotMatch] = useState('');
   const dispatch = useDispatch();
   const classes = useStyles({ variant });
   const history = useHistory();
+  const location = useLocation();
+  const  ResetToken =location?.search.replace("?token=","")
+  
 
-  useEffect(() => {
-    let timeOutStopper = null;
-    if (send_forget_password_email) {
-      setOpen(true);
 
-      timeOutStopper = setTimeout(() => {
-        dispatch(setForgetPassMailSent(false));
-        history.push('/');
-      }, 1500);
+const  onSubmit = () => {
+    if (!newPassword) {
+      setNewPasswordError(requiredMessage);
+    }else if (!confirmPassword) {
+      setConfirmPasswordError(requiredMessage);
+    }else if (newPassword !== confirmPassword) {
+      setBothNotMatch(bothNotPasswordMatch);
     }
-
-    return () => {
-      if (timeOutStopper) clearTimeout(timeOutStopper);
-    };
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [send_forget_password_email]);
-
-  const onSubmit = () => {
-    dispatch(AuhMethods[method].onForgotPassword(email));
+    else {
+      onRestPassword();
+    }
   };
+  
+
+  const onRestPassword = () => {
+  const data = {
+      newPassword:newPassword,
+      reset_password_token:ResetToken
+    }
+    dispatch(AuhMethods[method].onResetPassword(data, () => {
+        history.push("/signin")
+    }));
+
+    // dispatch(AuhMethods[method].onRegister(userDetail, () => {
+    //      history.push("/signin")
+    //     }));
+  };
+
+
+
+
 
   return (
     <AuthWrapper variant={wrapperVariant}>
@@ -94,11 +113,11 @@ const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapp
         </div>
       ) : null}
       <div className={classes.authContent}>
-        <div className={'mb-7'}>
+        {/* <div className={'mb-7'}>
           <CmtImage src={'/images/logo.png'} />
-        </div>
+        </div> */}
         <Typography component="div" variant="h1" className={classes.titleRoot}>
-          ForgotPassword
+          Reset Password
         </Typography>
         <Collapse in={open}>
           <Alert
@@ -120,20 +139,45 @@ const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapp
           </Alert>
         </Collapse>
         <form>
-          <div className={'mb-5'}>
+          <div className={''}>
             <TextField
-              label={<IntlMessages id="appModule.email" />}
+              label={<IntlMessages id="appModule.newpassword" />}
+              type="password"
               fullWidth
-              onChange={event => setEmail(event.target.value)}
-              defaultValue={email}
+              onChange={(event) => {
+                setNewPassword(event.target.value)
+                setNewPasswordError("")
+                setBothNotMatch("")
+              }}
+              defaultValue={newPassword}
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
+              helperText={newPasswordError}
+              error={false || newPasswordError || bothNotMatch != ""}
+            />
+          </div>
+          <div className={'mb-5'}>
+            <TextField
+              type="password"
+              label={<IntlMessages id="appModule.confirmpassword" />}
+              fullWidth
+              onChange={event => {
+                setConfirmPassword(event.target.value)
+                setConfirmPasswordError("")
+                setBothNotMatch("")
+              }}
+              defaultValue={confirmPassword}
+              margin="normal"
+              variant="outlined"
+              className={classes.textFieldRoot}
+              helperText={confirmPasswordError || bothNotMatch}
+              error={false || confirmPasswordError || bothNotMatch != ""}
             />
           </div>
           <div className={'mb-5'}>
             <Button onClick={onSubmit} variant="contained" color="primary">
-              <IntlMessages id="appModule.resetPassword" />
+              <IntlMessages id="appModule.submit" />
             </Button>
           </div>
 
@@ -154,4 +198,4 @@ const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapp
   );
 };
 
-export default ForgotPassword;
+export default ResetPassword;

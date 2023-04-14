@@ -19,6 +19,7 @@ import CustomTimelines from "./views/CustomTimelines";
 import MaterialTimelines from "./views/MaterialTimelines";
 import Calendar from "./modules/Calendar";
 import UsersModule from "./modules/Users";
+import ResetPassword from "./Auth/ResetPassword";
 // import LayoutBuilder from './LayoutBuilder';
 
 const RestrictedRoute = ({component: Component, ...rest}) => {
@@ -50,7 +51,7 @@ const Routes = () => {
     return <Redirect to={"/dashboard"} />;
   } else if (authUser && location.pathname === "/signin") {
     return <Redirect to={"/dashboard"} />;
-  }else if (!authUser && location.pathname !== "/signin" && location.pathname !== "/signup" && location.pathname !== "/forgot-password") {
+  } else if (!authUser && location.pathname !== "/signin" && location.pathname !== "/signup" && location.pathname !== "/forgot-password" && location.pathname !== "/reset-password") {
     return <Redirect to={"/signin"} />;
   }
 
@@ -77,12 +78,14 @@ const Routes = () => {
         <Route  path="/signin" component={Login} />
         <Route  path="/signup" component={Signup} />
         <Route  path="/forgot-password" component={ForgotPassword} />
+        <Route  path="/reset-password" component={ResetPassword} />
         {/*<Route path="/layout-builder" component={LayoutBuilder} />*/}
       </Switch>
 
       {location.pathname !== "/signin" &&
       location.pathname !== "/signup" &&
-      location.pathname !== "/forgot-password" && <TourGuide />}
+        location.pathname !== "/forgot-password" &&
+        location.pathname !== "/reset-password" && <TourGuide />}
     </React.Fragment>
   );
 };

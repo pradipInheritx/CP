@@ -89,7 +89,7 @@ const JWTAuth = {
       dispatch(fetchStart());
       dispatch(updateLoadUser(loaded));
       const authToken = JSON.parse(localStorage.getItem('userData'));
-      console.log(authToken,"authToken")
+      // console.log(authToken,"authToken")
       axios
         .post('auth/getAuthToken', {
           refreshToken:authToken?.refreshToken
@@ -108,14 +108,52 @@ const JWTAuth = {
     };
   },
 
-  onForgotPassword: () => {
+  onForgotPassword: (email) => {
     return dispatch => {
       dispatch(fetchStart());
+    axios.post('auth/forgot-password',{email:email})
+        .then(({ data }) => {
+          if (data) {
+            dispatch(setForgetPassMailSent(true));
+            dispatch(fetchSuccess(data.message));
 
-      setTimeout(() => {
-        dispatch(setForgetPassMailSent(true));
-        dispatch(fetchSuccess());
-      }, 300);
+          } else {
+            dispatch(fetchError(data.error));
+          }
+        })
+        .catch(function(error) {
+          dispatch(fetchError(error.message));
+        });
+
+      // setTimeout(() => {
+      //   dispatch(setForgetPassMailSent(true));
+      //   dispatch(fetchSuccess());
+      // }, 300);
+    };
+  },
+
+  onResetPassword: (data,callbackFun) => {
+    return dispatch => {
+      dispatch(fetchStart());
+    axios.post('auth/reset-password',{...data})
+        .then(({ data }) => {
+          if (data) {
+            dispatch(setForgetPassMailSent(true));
+            dispatch(fetchSuccess(data.message));
+            if (callbackFun) callbackFun();
+
+          } else {
+            dispatch(fetchError(data.error));
+          }
+        })
+        .catch(function(error) {
+          dispatch(fetchError(error.message));
+        });
+
+      // setTimeout(() => {
+      //   dispatch(setForgetPassMailSent(true));
+      //   dispatch(fetchSuccess());
+      // }, 300);
     };
   },
   getSocialMediaIcons: () => {
