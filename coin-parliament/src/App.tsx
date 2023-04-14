@@ -1,9 +1,9 @@
 /** @format */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {  useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
-import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
+// import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import {texts} from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
@@ -29,7 +29,7 @@ import {
   getAllCoins,
   getCoins,
   saveAllCoins,
-  saveCoins,
+  // saveCoins,
 } from "./common/models/Coin";
 import {
   collection,
@@ -110,7 +110,7 @@ import Contact from "./Pages/Contact";
 // import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
-import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
+// import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
@@ -128,10 +128,10 @@ import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
 import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
-import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
+// import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
-import { handleSoundClick } from "./common/utils/SoundClick";
-import createFastContext from "./hooks/createFastContext";
+// import { handleSoundClick } from "./common/utils/SoundClick";
+// import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 
 
@@ -785,7 +785,7 @@ votesLast24HoursRef.get()
 
 function connect(){
   if(Object.keys(coins).length === 0) return
-  ws = new WebSocket('wss://stream.binance.com:9443/ws');
+  ws = new WebSocket('wss://stream.binance.us:9443/ws');
    console.log('websocket connected first time')
  const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
    ws.onopen = () => {
@@ -840,6 +840,7 @@ useEffect(() => {
   return () => {
 if (ws) ws.close();
     if(socket) socket.close();
+    window.localStorage.removeItem('firstTimeloading')
   };
 }, [Object.keys(coins).length]);
 // useEffect(() => {
@@ -1231,7 +1232,9 @@ if (ws) ws.close();
                                         </span>
                                       </div>
                                       <Routes>
-                                        <Route path='/' element={<Home />} />
+                                        <Route path='/' element={
+                                       
+                                        <Home />} />
                                         <Route
                                           path='coins'
                                           element={<CoinMain />}
@@ -1395,7 +1398,7 @@ if (ws) ws.close();
                                           element={<PrivacyPolicy />}
                                         />
                                         <Route
-                                          path='/termsandcondition'
+                                          path='/terms-and-condition'
                                           element={<TermsAndConditions />}
                                         />
                                         {localhost && user && (

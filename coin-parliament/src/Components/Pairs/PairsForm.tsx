@@ -150,7 +150,10 @@ const PairsForm = ({
         {...{
           submit: () => {
             if (selectedTimeFrame !== undefined && selectedOption !== undefined) {
-              throttled_vote();
+              setTimeout(() => {
+                throttled_vote();  
+              }, 700);
+              
             }
           },
           width: 306,

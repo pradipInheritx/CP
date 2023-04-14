@@ -112,11 +112,12 @@ const Footer = () => {
       <p style={{marginTop:'10px',marginBottom:'5px'}}>
        
        <span><Link
-         to="/privacy">{texts.Privacy} {' '} </Link>
+         to="/privacy">Privacy Policy</Link>
     </span>
+    {' '}| {' '}
     <span>
     <Link
-         to="/termsandcondition">{texts.termsConditions}</Link>
+         to="/terms-and-condition">Terms & Conditions</Link>
          </span>
      </p>
  

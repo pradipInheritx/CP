@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext } from "react";
+import React, {  useContext } from "react";
 import { Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
 import Pairs from "../Components/Pairs/Pairs";
@@ -19,7 +19,9 @@ import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
 import { texts } from "../Components/LoginComponent/texts";
 
-
+// const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
+// const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
+// const InfluencersCarousel = React.lazy(()=>import("../Components/Users/InfluencersCarousel"))
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
   text-align: center;
@@ -130,6 +132,7 @@ const Home = () => {
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           )}
+         
           <Coins
             onFavClick={async (...args) => {
               if (user) {
@@ -141,6 +144,9 @@ const Home = () => {
               }
             }}
           />
+
+        
+       
         </div>
         <div className='mb-4 mx-0'>
           <H2

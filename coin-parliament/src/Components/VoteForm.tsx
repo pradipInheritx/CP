@@ -103,8 +103,8 @@ const VoteForm = function <
           overlay={(props) =>
             disabled ? (
               <Tooltip id='button-tooltip' {...props} >
-
-                <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}><Countdown daysInHours zeroPadTime={2} date={remainingTimer}
+{/* @ts-ignore */}
+               {user? <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}><Countdown daysInHours zeroPadTime={2} date={remainingTimer}
                     renderer={({ hours, minutes, seconds, completed }) => {
                       return (
                         <span className="text-uppercase" style={{color:'#fff',fontSize:'11px',fontWeight:400 }}>                            
@@ -119,7 +119,7 @@ const VoteForm = function <
                       );
             
                     }}
-                  /></div>
+                  /></div>:`${texts.tooltip}`}
                 
                 {/* <RangeSilder/> */}
                 {/* {texts.tooltip} */}

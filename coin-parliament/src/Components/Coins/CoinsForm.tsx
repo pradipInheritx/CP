@@ -19,6 +19,7 @@ export const directions = {
   [Direction.BULL]: {direction: "fall", name: "BULL"},
 };
 
+
 const CoinsForm = ({
   coin,
   setVoteId,
@@ -146,11 +147,15 @@ const CoinsForm = ({
           votePrice,
           votedDetails,
           submit: () => {
+            // console.log('votebutton',selectedOption)
             if (
               selectedTimeFrame !== undefined &&
               selectedOption !== undefined
             ) {
-              throttled_vote();
+              setTimeout(() => {
+                throttled_vote();  
+              }, 700);
+              
             }
           },
           option1: {
