@@ -190,44 +190,42 @@ const Carousel = ({
  
   useEffect(() => {
     if (!ws) return
-    setTimeout(() => {
-      ws.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        // console.log('cro',message)
-  const symbol =message?.s?.slice(0, -4)
-      if (symbol) {
-        setCoinUpdated((prevCoins) => ({
-          ...prevCoins,
-          [symbol]: {
-            ...prevCoins[symbol],
-            price: message.c,
-          },
-        }));
-      }
-      };
-    }, 10000);
     
-   
+    
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      // console.log('cro',message)
+const symbol =message?.s?.slice(0, -4)
+    if (symbol) {
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        [symbol]: {
+          ...prevCoins[symbol],
+          price: message.c,
+        },
+      }));
+    }
+    };
    
    
   }, [ws])
-//   useEffect(() => {
-//     if (!socket) return
-//     socket.onmessage = (event) => {
-//       const data = JSON.parse(event.data);
+  useEffect(() => {
+    if (!socket) return
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
      
-// if (data?.result?.data[0].a){
-//       setCoinUpdated((prevCoins) => ({
-//         ...prevCoins,
-//         ['CRO']: {
-//           ...prevCoins['CRO'],
-//           price: data?.result?.data[0]?.a,
-//         },
-//       }));
-//     }
-//     };
+if (data?.result?.data[0].a){
+      setCoinUpdated((prevCoins) => ({
+        ...prevCoins,
+        ['CRO']: {
+          ...prevCoins['CRO'],
+          price: data?.result?.data[0]?.a,
+        },
+      }));
+    }
+    };
   
-//   }, [socket])
+  }, [socket])
   
   // console.log('allcoin1',coinUpdated)
   return expanded === false ? (
