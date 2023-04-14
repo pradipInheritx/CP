@@ -350,7 +350,6 @@ export const getUpdatedDataFromWebsocket = () => {
       const isResultFound = 'result' in parseCoinsRateData;
       if (parseCoinsRateData && !isResultFound) {
         await updateLatestCoinRate(parseCoinsRateData);
-        await fetchCoins();
       }
     } else {
       errorLogging(
@@ -378,11 +377,6 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
       const deleteAllPreviousDataOfCoin = await firestore()
         .collection("latestUpdatedCoins")
         .where("name", "==", latestCoinRate.s.toLowerCase());
-      await deleteAllPreviousDataOfCoin.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          doc.ref.delete();
-        });
-      });
       console.info("getCoinSymbolData", getCoinSymbolData)
       await firestore()
         .collection("latestUpdatedCoins")
@@ -391,6 +385,12 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
           price: latestCoinRate.c,
           timestamp: latestCoinRate.E,
         });
+      await fetchCoins();
+      await deleteAllPreviousDataOfCoin.get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          doc.ref.delete();
+        });
+      });
     }
   } else {
     errorLogging(
