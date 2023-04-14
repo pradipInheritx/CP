@@ -159,7 +159,7 @@ const onSearch = (searchTerm: any) => {
      console.log("i am if onSearch")
      const serchresult = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
     //  console.log(serchresult,"serchresult")
-    
+    setSearchedCard(serchresult)
       }
    else {
      const serchValue = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.collectionName === selectCollection)
@@ -381,9 +381,6 @@ useEffect(() => {
   
    const BackSideCard = (value: string | number) => {
     // @ts-ignore
-    //  let allBackCard = [...backCards];
-     // @ts-ignore
-     // setBackCards(backCards == value ? "" : value);
   if (backCards.includes(value)) {       
         let allBackCard = [...backCards];
         allBackCard.splice(backCards.indexOf(value), 1);
@@ -392,20 +389,6 @@ useEffect(() => {
     else {
       setBackCards([...backCards, value])
     };
-
-    //  backCards.length > 0
-    //    ? backCards?.map((items: any, index: number) => {
-    //        if (items == value) {
-    //          // @ts-ignore
-    //          allBackCard.splice(index, 1);
-    //          setBackCards(allBackCard);
-    //        } else {
-    //          // @ts-ignore
-    //          setBackCards([...backCards, value]);
-    //        }
-    //        // @ts-ignore
-    //      })
-    //    : setBackCards([...backCards, value]);
   };
   
   
