@@ -204,6 +204,7 @@ const symbol =message?.s?.slice(0, -4)
         price:Number(message?.c).toFixed(dot?.decimal || 2),
         [symbol]: {
           ...prevCoins[symbol],
+          
         },
       }));
     }

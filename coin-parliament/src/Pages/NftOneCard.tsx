@@ -161,9 +161,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
-  const { singalCardData, setSingalCardData } = useContext(AppContext);
-  
-  
+  const { singalCardData, setSingalCardData } = useContext(AppContext);    
   
       let params = useParams();
   const { type} = params;
@@ -270,23 +268,32 @@ console.log(Disable,"backCards Disable")
           </div>
           <div className='mt-2 mb-3'>
             <span>
-              {pathnameName[1] == "profile" || "followerProfile"
-                ? `Private Card Serial No. : ${PrivateSerialNo || ""}`
-                : `General Card Serial No. : ${GeneralSerialNo || ""}` }
+              {["followerProfile", "profile"].includes(pathnameName[1])
+                ? `Serial No. : ${PrivateSerialNo || ""}`
+                : `Serial No. : ${GeneralSerialNo || ""}` }
             </span>
             <span>Collection : {CollectionType || type}</span>
             <span>Set (Serie) : {Serie}</span>
             <span>Name : {BackCardName}</span>
             <span>Rarity : {Rarity}</span>
             <span>
-              {pathnameName[1] == "profile" || "followerProfile" ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
+              {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {pathnameName[1] == "profile" || "followerProfile" ? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
+            {["followerProfile", "profile"].includes(pathnameName[1])? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
             onClick={() => {
                 navigate(`/singalCard/${CollectionType || type}/${id}`)            
                 setSingalCardData({ ...fulldata, myID: userId })
                 localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
             }}> View All</u></span> : 0} </span>}
+            
+            {["followerProfile", "profile"].includes(pathnameName[1]) &&
+              <>
+              <span>
+                Royalty : 0%
+              </span>
+              </>
+              }
+            
           </div>
         </CardBack>
       </div>

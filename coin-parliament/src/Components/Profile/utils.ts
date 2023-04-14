@@ -95,6 +95,10 @@ export const decimal = {
   Symbol: 'SAND',
   decimal: 2
   },
+  "EOS":{
+    Symbol:'EOS',
+  decimal: 2
+  },
   "CAKE":{
   Symbol: 'CAKE',
   decimal: 3

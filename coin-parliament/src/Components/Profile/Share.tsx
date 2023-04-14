@@ -19,7 +19,7 @@ const PoolBox = styled.div`
 const Titles = styled.div`
   font-size: 20px;
   color: white;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   
 `;
 
@@ -46,20 +46,22 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
           </h6>
         </div>
         <div className="d-flex justify-content-center">
-          <img src={earn} alt="" />
+          <img src={earn} alt="" width={"400px"}/>
         </div>
         <div className="d-flex justify-content-center ">
-          <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>Invite your friends to become <strong>CoinParliament</strong> members and enjoy the benefits of being our partner.</h6>
-         
+          <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>EARN 50% LIFETIME REVENUE SHARE! </h6>         
         </div>
-        <div className="d-flex justify-content-center ">
-        <h6 className=" mx-4"style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>{translate("Your friends will be an integral part of your progress and income FOREVER!  ")}</h6>
+        <div className="d-flex justify-content-center my-3">
+          <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>Invite friends to become a lifetime partner and start earning immediately. </h6>         
+        </div>        
+        <div className="   m-auto">          
+        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100", textAlign:"center"}}>What you’ll get:
+        <br/>Accelerate your mining progress 
+          <br/>Lifetime passive income direct to your wallet .</p>
         </div>
-        <div className=" py-2 w-75   m-auto">          
-        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100",textAlign:'center'}}>What you’ll get:
-<br/>50% REVENUE SHARE LIFETIME!
-          <br/>Accelerate your mining progress.
-          Lifetime passive income direct to your wallet.</p>
+
+        <div className="d-flex justify-content-center my-3">
+          <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>START SHARING NOW AND EARN!</h6>         
         </div>
         <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
           <div className="mx-3">
