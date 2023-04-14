@@ -11,9 +11,11 @@ export const successMessage =
 export const errorMessage =
   "Error while fetched the coins from WazirX & Coin Cap.";
 
-export const webSocketBaseURL = "wss://stream.wazirx.com/stream";
+//export const webSocketBaseURL = "wss://stream.wazirx.com/stream";
 
-export const allTradeCoinsRate = [
+export const webSocketBaseURL = "wss://stream.binance.com:9443/ws";
+
+export const allTradeCoinsRateForWzirX = [
   "btcusdt@trades",
   "ethusdt@trades",
   "bnbusdt@trades",
@@ -34,6 +36,31 @@ export const allTradeCoinsRate = [
   "vetusdt@trades",
   "sandusdt@trades",
 ];
+
+export const allTradeCoinsRate = [
+  "xrpusdt@ticker",
+  "maticusdt@ticker",
+  "vetusdt@ticker",
+  "bnbusdt@ticker",
+  "cakeusdt@ticker",
+  "manausdt@ticker",
+  "eosusdt@ticker",
+  "xlmusdt@ticker",
+  "dogeusdt@ticker",
+  "btcusdt@ticker",
+  "uniusdt@ticker",
+  "ethusdt@ticker",
+  "sandusdt@ticker",
+  "dotusdt@ticker",
+  "linkusdt@ticker",
+  "shibusdt@ticker",
+  "trxusdt@ticker",
+  "ltcusdt@ticker",
+  "crousdt@ticker",
+  "solusdt@ticker",
+  "adausdt@ticker",
+  "hbarusdt@ticker"
+]
 
 export const getDataFromTimestampBaseURL = (symbol: string, timestamp: any) =>
   `https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;

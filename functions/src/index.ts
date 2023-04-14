@@ -13,7 +13,8 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/sa.json";
+// import {generateAuthTokens} from "./common/models/Admin/Admin";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -30,6 +31,7 @@ import {
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
+  // checkInActivityOfVotesAndSendNotification
 } from "./common/models/Vote";
 import {
   fetchCoins,
@@ -76,6 +78,7 @@ import {
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
 import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
+import { getCoinCurrentAndPastDataDiffernce } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
@@ -118,8 +121,7 @@ exports.api = functions.https.onRequest(main);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
 });
 
 exports.getAccessToken = () =>
@@ -184,6 +186,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     favorites: [],
     status,
     firstTimeLogin: true,
+    googleAuthenticatorData: {},
   };
 
   try {
@@ -329,8 +332,7 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
-    await getUpdatedDataFromWebsocket();
-    // await getCards();
+    await setLeaders();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
@@ -378,9 +380,17 @@ exports.onVote = functions.firestore
 
     await updateVotesTotal();
     const data = snapshot.data() as VoteResultProps;
+    console.log("data =>", data);
+
     const voteTime = admin.firestore.Timestamp.now().toMillis();
+    console.log("voteTime =>", voteTime);
+
     const timeframe = data.timeframe;
+    console.log("timeframe =>", timeframe);
+
     const expiration = voteTime + calculateOffset(timeframe);
+    console.log("expiration =>", expiration);
+
     const [coin1, coin2] = data.coin.split("-");
     let valueVotingTime;
 
@@ -391,6 +401,7 @@ exports.onVote = functions.firestore
     } else {
       valueVotingTime = await getPrice(coin1);
     }
+    console.log("coin1, coin2", coin1, coin2);
 
     await updateVotesTotalForSingleCoin(data.coin);
 
@@ -400,10 +411,11 @@ exports.onVote = functions.firestore
       voteTime,
       valueVotingTime,
     } as unknown as VoteResultProps;
+    console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
-
     await sendToTokens(vote);
+
     await admin
       .firestore()
       .collection("users")
@@ -411,6 +423,19 @@ exports.onVote = functions.firestore
       .update({
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
+  });
+
+exports.noActivityIn24Hours = functions.pubsub
+  .schedule("every 1 minutes")
+  .onRun((context) => {
+    const currentDate = new Date();
+    const last24HoursDate = new Date(
+      currentDate.getTime() - 24 * 60 * 60 * 1000
+    );
+    console.log("Current date => ", currentDate);
+    console.log("Last 24 hours date => ", last24HoursDate);
+    console.log("This function will run every minute.");
+    return null;
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
@@ -478,7 +503,7 @@ async function getRewardTransactions(id: string) {
     .map((e) => e.data())
     .sort((a, b) => b.winningTime - a.winningTime);
   const afterAddingTime = rewardTransactionData.map((x) => {
-    x.transactionTime = x.transactionTime.toDate();
+    x.transactionTime = x.transactionTime?.toDate();
     return x;
   });
   return afterAddingTime;
@@ -580,6 +605,12 @@ exports.prepareWeeklyCPVI = functions.pubsub
   .schedule("0 0 * * 0")
   .onRun(async () => {
     await prepareCPVI(24 * 7, "weekly");
+  });
+
+exports.getCoinCurrentAndPastDataDiffernce = functions.pubsub
+  .schedule("*/5 * * * *")
+  .onRun(async () => {
+    await getCoinCurrentAndPastDataDiffernce();
   });
 
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
