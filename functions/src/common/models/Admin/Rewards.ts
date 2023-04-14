@@ -216,7 +216,34 @@ export const addRewardCardNft = async (req: any, res: any) => {
   }
 };
 
-// get all cards from nft_gallary
+//get all alibum from nftGallery
+export const getAllAlbums = async (req:any,res:any)=>{
+  try {
+  const nftGalleryData = await getAllNftGallery();
+
+  if(!nftGalleryData.length){
+    return res.status(404).send({
+      status: false,
+      message: "Not Found",
+      result: null,
+    });
+  }
+  res.status(200).send({
+    status: true,
+    message: "new card added.",
+    result: nftGalleryData,
+  });
+  
+}catch(error){
+  errorLogging("addRewardNFT", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
+}
+}
+// get all cards from nftGallary
 export const getAllCardsOfNftGallery = async (req: any, res: any) => {
   try {
     const nftGalleryData = await getAllNftGallery();
