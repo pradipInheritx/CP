@@ -38,7 +38,7 @@ const
     return (    
     <GeneralPage>               
       <PoolBox >
-        <h2 className="d-flex justify-content-center"> {(`${texts.Partners}`).toUpperCase()}</h2>
+        {/* <h2 className="d-flex justify-content-center"> {(`${texts.Partners}`).toUpperCase()}</h2> */}
         <div className="d-flex justify-content-center mt-4">          
           <h6 className="text-uppercase">            
             {texts.WEBELIEVEINPARTNERSHIPS}

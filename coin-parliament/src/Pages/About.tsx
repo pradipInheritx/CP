@@ -12,7 +12,7 @@ const About = () => {
   return (
     <GeneralPage>
       <div >
-        <h1>{(`${texts.AboutCoinParliament}`).toUpperCase()}</h1>
+        {/* <h1>{(`${texts.AboutCoinParliament}`).toUpperCase()}</h1> */}
         <div>
           
         <h6 className="text-center my-3">Hey there and welcome to Coin Parliament!</h6>
