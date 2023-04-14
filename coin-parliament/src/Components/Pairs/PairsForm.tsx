@@ -66,7 +66,8 @@ const PairsForm = ({
   sound,
   setConfetti,
   selectedTimeFrame,
-  setSelectedTimeFrame
+  setSelectedTimeFrame,
+  coinUpdated
 }: {
   coin1: Coin;
   coin2: Coin;
@@ -76,6 +77,7 @@ const PairsForm = ({
   setConfetti: (bool: boolean) => void;
   selectedTimeFrame?:number;
   setSelectedTimeFrame?:(n:number)=>void;
+  coinUpdated:any;
 }) => {
   const { user, userInfo } = useContext(UserContext);
   const { timeframes } = useContext(AppContext);
@@ -91,6 +93,7 @@ const PairsForm = ({
 }, [])
   
   const vote = useCallback(async () => {
+ 
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -109,6 +112,8 @@ const PairsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
+          valueVotingTime:[coinUpdated[coin1?.symbol]?.price,coinUpdated[coin2?.symbol]?.price],
+          voteTime:Date.now()
           // expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
         } as VoteResultProps
       );

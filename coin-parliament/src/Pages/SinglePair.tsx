@@ -289,6 +289,7 @@ useEffect(() => {
                           setConfetti={setConfetti}
                           selectedTimeFrame={selectedTimeFrame}
                           setSelectedTimeFrame={setSelectedTimeFrame}
+                          coinUpdated={coinUpdated}
                         />
                       )}
                     </>

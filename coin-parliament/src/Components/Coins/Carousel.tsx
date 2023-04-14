@@ -194,16 +194,19 @@ const Carousel = ({
       const message = JSON.parse(event.data);
       
 const symbol =message?.s?.slice(0, -4)
+if(['ADA','DOGE','CAKE','DOT'].includes(symbol)) console.log('coindata',symbol,message?.c)
+// console.log('Browser window socket', message?.c)
       if (symbol) {
         // @ts-ignore
         const dot = decimal[symbol]    
-        console.log(dot,"alldot")
+        // console.log(dot,"alldot")
         // @ts-ignore
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
-        price:Number(message?.c).toFixed(dot?.decimal || 2),
+        
         [symbol]: {
           ...prevCoins[symbol],
+          price:Number(message?.c).toFixed(dot?.decimal || 2), 
         },
       }));
     }
