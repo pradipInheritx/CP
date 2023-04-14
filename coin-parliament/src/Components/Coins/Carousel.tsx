@@ -185,9 +185,6 @@ const Carousel = ({
     setPageSize(pageData ? pageData : 1);
   }, [setPageSize, numRows, data?.length]);
 
-
-  
- 
   useEffect(() => {
     if (!ws) return
     
