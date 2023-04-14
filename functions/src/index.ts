@@ -34,7 +34,7 @@ import {
   // checkInActivityOfVotesAndSendNotification
 } from "./common/models/Vote";
 import {
-  fetchCoins,
+  //fetchCoins,
   getAllCoins,
   getAllPairs,
   Leader,
@@ -558,11 +558,11 @@ exports.onCreatePaxTransaction = functions.firestore
     }
   });
 
-exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-  [0, 60].forEach((i) => {
-    setTimeout(async () => await fetchCoins(), i * 1000);
-  });
-});
+// exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
+//   [0, 60].forEach((i) => {
+//     setTimeout(async () => await fetchCoins(), i * 1000);
+//   });
+// });
 
 exports.getUpdatedDataFromWebsocket = functions.pubsub
   .schedule("every 2 minutes")
