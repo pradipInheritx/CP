@@ -298,13 +298,13 @@ console.log(Disable,"backCards Disable")
                 localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
             }}> View All</u></span> : 0} </span>}
             
-            {["followerProfile", "profile"].includes(pathnameName[1]) &&
+            {/* {["followerProfile", "profile"].includes(pathnameName[1]) &&
               <>
               <span>
                 Royalty : 0%
               </span>
               </>
-              }
+              } */}
             
           </div>
         </CardBack>
