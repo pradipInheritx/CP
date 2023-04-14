@@ -100,7 +100,7 @@ const Timeframe = styled(RadiusFull)`
   background: ${(props: { checked: boolean, borderDeg:any ,borderColor:string}) =>
  props.checked    
       ? "var(--color-6352e8) 0% 0% no-repeat padding-box;"
-    : `radial-gradient(white 67%, transparent 55%),conic-gradient(${props.borderColor} 0deg ,${props.borderColor} ${props.borderDeg}deg, white ${props.borderDeg}deg ,white 360deg, ${props.borderColor})`};
+    : `radial-gradient(white 67%, transparent 55%),conic-gradient(${props.borderColor} 0deg ,${props.borderColor} ${props.borderDeg}deg, white ${props.borderDeg}deg ,white 360deg)`};
         
   box-shadow: 0 3px 6px #00000029;
   border-radius: 45px;
@@ -277,7 +277,7 @@ const TimeframeButton = ({
           showTimer && checked ? 0.48 : 1,
         background:
           showTimer && checked
-            ? `radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor} ${borderDeg}deg, white ${borderDeg}deg ,white 360deg ,${borderColor})`
+            ? `radial-gradient(white 67%, transparent 55%),conic-gradient(${borderColor} 0deg ,${borderColor} ${borderDeg}deg, white ${borderDeg}deg ,white 360deg )`
             : "",
       }}
       {...{

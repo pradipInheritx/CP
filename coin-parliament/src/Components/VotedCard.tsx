@@ -119,7 +119,8 @@ const VotedCard = ({
   }) => {
   
   const [lastTenSec, setLastTenSec] = useState<any>(false);
-  const [borderColor, setBorderColor] = useState<any>("#6352e8");const getBorderColor = () => {
+  const [borderColor, setBorderColor] = useState<any>("#6352e8");
+  const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
      if (symbol2 !== undefined) {
          let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
