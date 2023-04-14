@@ -391,26 +391,27 @@ exports.onVote = functions.firestore
     const expiration = voteTime + calculateOffset(timeframe);
     console.log("expiration =>", expiration);
 
-    const [coin1, coin2] = data.coin.split("-");
-    let valueVotingTime;
+    // const [coin1, coin2] = data.coin.split("-");
+    // let valueVotingTime;
 
-    if (coin2) {
-      const coinFirst = await getPrice(coin1);
-      const coinSecond = await getPrice(coin2);
-      valueVotingTime = [coinFirst, coinSecond];
-    } else {
-      valueVotingTime = await getPrice(coin1);
-    }
-    console.log("coin1, coin2", coin1, coin2);
+    // if (coin2) {
+    //   const coinFirst = await getPrice(coin1);
+    //   const coinSecond = await getPrice(coin2);
+    //   valueVotingTime = [coinFirst, coinSecond];
+    // } else {
+    //   valueVotingTime = await getPrice(coin1);
+    // }
+    // console.log("coin1, coin2", coin1, coin2);
 
     await updateVotesTotalForSingleCoin(data.coin);
 
     const vote = {
       ...snapshot.data(),
       expiration,
-      voteTime,
-      valueVotingTime,
+      // voteTime,
+      // valueVotingTime,
     } as unknown as VoteResultProps;
+
     console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
