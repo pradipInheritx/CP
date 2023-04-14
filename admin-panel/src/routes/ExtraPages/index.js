@@ -13,6 +13,8 @@ const ExtraPages = ({ match }) => {
         <Route path={`${requestedUrl}/login-standard`} component={lazy(() => import('./sign-in/Standard'))} />
         <Route exact path={`${requestedUrl}/sign-up`} component={lazy(() => import('./sign-up/Default'))} />
         <Route path={`${requestedUrl}/sign-up-standard`} component={lazy(() => import('./sign-up/Standard'))} />
+        <Route exact path={`${requestedUrl}/reset-password`} component={lazy(() => import('./reset-password/Default'))} />
+        <Route path={`${requestedUrl}/reset-password-standard`} component={lazy(() => import('./reset-password/Standard'))} />
         <Route path={`${requestedUrl}/forgot-password`} component={lazy(() => import('./forgot-password/Default'))} />
         <Route
           path={`${requestedUrl}/forgot-password-standard`}
