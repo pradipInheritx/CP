@@ -113,8 +113,9 @@ const VoteForm = function <
                           {minutes < 10 ? `0${minutes}` : minutes}:
                           {seconds < 10 ? `0${seconds}` : seconds} for 5 votes 
                           <br />
-                          or buy extra votes now.
-                          {/* <Link to="/votingbooster"> buy extra votes now.</Link> */}
+                          or
+                          {/* buy extra votes now. */}
+                          <Link to="/votingbooster" style={{color:"#fff"}}> buy extra votes now.</Link>
                         </span>
                       );
             
