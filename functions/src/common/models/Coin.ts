@@ -385,11 +385,16 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
           price: latestCoinRate.c,
           timestamp: latestCoinRate.E,
         });
-      await fetchCoins({
-        ...getCoinSymbolData,
-        price: latestCoinRate.c,
-        timestamp: latestCoinRate.E
-      });
+
+      setTimeout(async () => {
+        console.info("EXECUTE IN SETIMEOUT")
+        await fetchCoins({
+          ...getCoinSymbolData,
+          price: latestCoinRate.c,
+          timestamp: latestCoinRate.E
+        });
+      }, 2000);
+
       await deleteAllPreviousDataOfCoin.get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
           doc.ref.delete();
