@@ -98,7 +98,7 @@ const UpgradePage = () => {
         className='p-0 m-0 w-100 d-flex justify-content-center'
         style={{
           background: "#160133",
-          height: `${screenHeight()}`,
+          // height: `${screenHeight()}`,
           // width: `${window.screen.width > 979 ? "730px" : "100%"}`,
         }}
       >
@@ -244,7 +244,7 @@ const UpgradePage = () => {
             </H2>
           )}
           <div
-            className='text-center'
+            className='text-center mb-4'
             style={{
               zIndex: 1,
               fontWeight: "400",

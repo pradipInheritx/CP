@@ -92,7 +92,7 @@ const VotingBooster = () => {
         className='p-0 m-0 w-100 d-flex justify-content-center'
         style={{
           background: "#160133",
-          height: `${screenHeight()}`,
+          // height: `${screenHeight()}`,
         }}
       >
         <div
@@ -134,7 +134,7 @@ const VotingBooster = () => {
               {translate("Boost your voting power").toUpperCase()}
             </H2>
           )}
-          <div className='d-flex justify-content-around mt-4 text-center px-3'>
+          <div className='d-flex justify-content-around mt-4 text-center px-3 mb-4'>
             <PriceCard>
               <div>
                 <p className='fw-bold'>100 VOTES </p>

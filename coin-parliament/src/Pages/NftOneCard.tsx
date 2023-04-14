@@ -172,7 +172,7 @@ console.log(Disable,"backCards Disable")
     <div
       onMouseEnter={() => {
         if (Disable == "" || Disable == undefined && window.screen.width > 767) {          
-          setFlip(!flip);
+          setFlip(false);
           if (flipCard != true) {            
             cardFlip()
           }
@@ -180,7 +180,7 @@ console.log(Disable,"backCards Disable")
       }}
       onMouseLeave={() => {
         if (Disable == "" || Disable == undefined && window.screen.width > 767) {                 
-          setFlip(!flip);
+          setFlip(true);
           // cardFlip()
           // if (flipCard != true) {            
           //   cardFlip()
@@ -202,12 +202,24 @@ console.log(Disable,"backCards Disable")
       //   // setFlip(!flip);
       // }}
       // @ts-ignore
-      
+      // flipcard===id =true
+      // flag = false = flipclass
       className={`card-container ${
         flipCard == true || flip != true ? "flipped" : ""
       }`}
-      onClick={() => {
+      onClick={(e:any) => {
         if (Disable == "" || Disable == undefined) { 
+          console.log('data',e.currentTarget.className?.includes('flipped'), flipCard)
+         if(window.screen.width>767) {
+          if(!flip && !flipCard){
+            setFlip(true)
+            cardFlip()
+            return
+          }
+          
+         
+          // setFlip(!flip);
+        }
           // @ts-ignore
           BackSideCard(id);
           if (window.screen.width < 767) {            
