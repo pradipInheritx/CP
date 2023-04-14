@@ -26,6 +26,7 @@ import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClick } from "../../common/utils/SoundClick";
+import { decimal } from "../Profile/utils";
 
 
 
@@ -194,14 +195,18 @@ const Carousel = ({
     
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      // console.log('cro',message)
+      
 const symbol =message?.s?.slice(0, -4)
-    if (symbol) {
+      if (symbol) {
+        // @ts-ignore
+        const dot = decimal[symbol]    
+        console.log(dot,"alldot")
+        // @ts-ignore
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
+        price:Number(message?.c).toFixed(dot?.decimal || 2),
         [symbol]: {
           ...prevCoins[symbol],
-          price: message.c,
         },
       }));
     }
@@ -213,13 +218,15 @@ const symbol =message?.s?.slice(0, -4)
     if (!socket) return
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-     
-if (data?.result?.data[0].a){
+      const dot = decimal["CRO"]
+      
+      if (data?.result?.data[0].a) {
+  // @ts-ignore
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
         ['CRO']: {
           ...prevCoins['CRO'],
-          price: data?.result?.data[0]?.a,
+          price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
         },
       }));
     }

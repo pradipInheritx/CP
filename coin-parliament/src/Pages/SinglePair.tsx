@@ -26,6 +26,7 @@ import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
 import { Coin } from "../common/models/Coin";
+import { decimal } from "../Components/Profile/utils";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
@@ -77,12 +78,15 @@ const SinglePair = () => {
       const message = JSON.parse(event.data);
       const symbol =message?.s?.slice(0, -4)
   
-    if (symbol && (symbol==symbol1 ||symbol==symbol2)) {
-      setCoinUpdated((prevCoins) => ({
+      if (symbol && (symbol == symbol1 || symbol == symbol2)) {      
+        // @ts-ignore
+      const dot=decimal[symbol]
+      // @ts-ignore
+      setCoinUpdated((prevCoins) => ({        
         ...prevCoins,
         [symbol]: {
-          ...prevCoins[symbol],
-          price: message?.c,
+          ...prevCoins[symbol],        
+          price:Number(message?.c).toFixed(dot?.decimal || 2),
         },
       }));
     }
