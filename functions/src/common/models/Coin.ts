@@ -431,14 +431,14 @@ export const fetchCoins = async () => {
             merge: true,
           });
 
-        await firestore()
-          .collection("latestUpdatedCoins")
-          .get()
-          .then((queryLatestUpdatedCoinsSnapshot) => {
-            queryLatestUpdatedCoinsSnapshot.docs.forEach((snapshot) => {
-              snapshot.ref.delete();
-            });
-          });
+        // await firestore()
+        //   .collection("latestUpdatedCoins")
+        //   .get()
+        //   .then((queryLatestUpdatedCoinsSnapshot) => {
+        //     queryLatestUpdatedCoinsSnapshot.docs.forEach((snapshot) => {
+        //       snapshot.ref.delete();
+        //     });
+        //   });
         await insertNewCoinsWthTimestamp(newCoins);
       }
     }
