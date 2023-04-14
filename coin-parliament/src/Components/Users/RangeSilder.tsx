@@ -64,6 +64,13 @@ function RangeSilder(
 
 const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
+    const priceRange=()=>{
+      if(vote?.timeframe?.seconds==60) return 0.01
+      if(vote?.timeframe?.seconds==300) return 0.01
+      if(vote?.timeframe?.seconds==3600) return 0.05
+      if(vote?.timeframe?.seconds==86400) return 0.1
+      return 0.01
+    }
      if (symbol2 !== undefined) {
        let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
        if(!vote?.valueVotingTime){
@@ -73,7 +80,7 @@ const getBorderColor = () => {
         // @ts-ignore
        let bothCurrentPrice = [...vote?.valueVotingTime];
        const diffPer = [bothLivePrice[0] - bothCurrentPrice[0] ,bothLivePrice[1] - bothCurrentPrice[1] ]
-       const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0] + Math.random()*4,(diffPer[1] *1000)/bothCurrentPrice[1]+Math.random()*4]
+       const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0] + priceRange(),(diffPer[1] *1000)/bothCurrentPrice[1]+priceRange()]
     //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
      let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
@@ -88,6 +95,7 @@ const getBorderColor = () => {
         // 1 H - each line will be 0.05 % 
         // 24 H - each line will be 0.1 %
       if ((averageValue <=10)) {        
+        console.log('pairrange',getPer[0])
         setPersentValue(vote?.direction == 1 ? 50 +getPer[1] : 50 +getPer[0]) 
       } else {
         if (vote?.direction == 1) {
@@ -127,11 +135,12 @@ const getBorderColor = () => {
         
         )
         // if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
+      
         
        const diffPer = livePrice - votePrice 
-       const getPer= ((diffPer *100)/votePrice) / 0.01
+       const getPer= ((diffPer *100)/votePrice) / priceRange()
 
-       
+       console.log('priceRange',priceRange())
         console.log(getPer,"getPer")
        if(livePrice < votePrice + votePrice /10 &&
          livePrice > votePrice - votePrice /10) {          
