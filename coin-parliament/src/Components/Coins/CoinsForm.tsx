@@ -13,6 +13,7 @@ import Bull from "../icons/Bull";
 import NotificationContext, {ToastType} from "../../Contexts/Notification";
 import {voteProcedure} from "../Pairs/utils";
 import { UserProps } from "../../common/models/User";
+import { timeStamp } from "console";
 
 export const directions = {
   [Direction.BEAR]: {direction: "rise", name: "BEAR"},
@@ -32,6 +33,7 @@ const CoinsForm = ({
   cssDegree,
   votePrice,
   votedDetails,
+  coinUpdated
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -44,6 +46,7 @@ const CoinsForm = ({
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
+  coinUpdated:any;
 }) => {
   const { votesLast24Hours,user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
@@ -61,6 +64,7 @@ const CoinsForm = ({
   }, []);
   
   const vote = useCallback(async () => {
+    console.log('coindata',coinUpdated[coin?.symbol]?.price)
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -80,6 +84,9 @@ const CoinsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
+          voteTime:Date.now(),
+          // @ts-ignore
+          valueVotingTime:coinUpdated[coin?.symbol]?.price,
           expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
         } as VoteResultProps
       );

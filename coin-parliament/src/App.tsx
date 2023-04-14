@@ -785,7 +785,8 @@ votesLast24HoursRef.get()
 
 function connect(){
   if(Object.keys(coins).length === 0) return
-  ws = new WebSocket('wss://stream.binance.us:9443/ws');
+  console.log('Browser window called')
+  ws = new WebSocket('wss://stream.binance.com:9443/ws');
    console.log('websocket connected first time')
  const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
    ws.onopen = () => {
@@ -809,9 +810,10 @@ function connect(){
      socket.send(JSON.stringify(req));
    };
    ws.onclose = (event:any) => {
+    if(!login)window.location.reload()
      console.log('WebSocket connection closed');
      if (event.code !== 1000) {
-       console.log('Attempting to reconnect in 5 seconds...');
+       console.log('WebSocket Attempting to reconnect in 5 seconds...');
        setTimeout(() => {
          connect();
        }, 5000);
@@ -819,6 +821,7 @@ function connect(){
    };
    
    ws.onerror = () => {
+    if(!login)window.location.reload()
      console.log('WebSocket connection occurred');
    };
    const timeout = 30000; // 30 seconds
@@ -867,9 +870,10 @@ if (ws) ws.close();
 //   }
 //   if (document.hidden) {
 //     console.log("Browser window is minimized");
-//     // ws.close();
-//     // socket.close();
+//     ws.close();
+//     socket.close();
 //   } else {
+//     connect();
 //     console.log("Browser window is not minimized");
 //   }
 // }

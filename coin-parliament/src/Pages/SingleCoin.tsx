@@ -451,6 +451,7 @@ const calcVote = useCallback(async () => {
                     <CoinsForm
                       sound={sound}
                       coin={coin}
+                      coinUpdated={coinUpdated}
                       setVoteId={setVoteId}
                       setLoading={setLoading}
                       setConfetti={setConfetti}

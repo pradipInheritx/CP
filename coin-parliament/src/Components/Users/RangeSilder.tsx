@@ -65,11 +65,11 @@ function RangeSilder(
 const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
     const priceRange=()=>{
-      if(vote?.timeframe?.seconds==60) return 0.01
+      if(vote?.timeframe?.seconds==60) return 0.0015
       if(vote?.timeframe?.seconds==300) return 0.01
       if(vote?.timeframe?.seconds==3600) return 0.05
       if(vote?.timeframe?.seconds==86400) return 0.1
-      return 0.01
+      return 0.0015
     }
      if (symbol2 !== undefined) {
        let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
@@ -138,13 +138,16 @@ const getBorderColor = () => {
       
         
        const diffPer = livePrice - votePrice 
-       const getPer= ((diffPer *100)/votePrice) / priceRange()
+       const getPer= ((diffPer *100)/votePrice) /priceRange()
 
-       console.log('priceRange',priceRange())
-        console.log(getPer,"getPer")
+      //  console.log('priceRange',priceRange())
+        console.log('getPer',getPer,((diffPer *100)/votePrice),priceRange())
        if(livePrice < votePrice + votePrice /10 &&
-         livePrice > votePrice - votePrice /10) {          
-          setPersentValue(50 + getPer);
+         livePrice > votePrice - votePrice /10) {  
+          if  (vote?.direction == 0)setPersentValue(50 + getPer);
+          else{
+            setPersentValue(50 - getPer);
+          }
         }
         else{
           if(vote?.direction == 0){

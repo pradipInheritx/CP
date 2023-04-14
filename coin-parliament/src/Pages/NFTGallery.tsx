@@ -512,7 +512,7 @@ console.log(cardName,"mycardName")
                 width: "600px"
           }}
           >            
-        <Video  autoPlay={true} loop={true}>
+        <Video  autoPlay={true} loop={true} playsInline>
           <source
             src={allVideo[`${data?.collectionName}`]}
             type="video/mp4"
