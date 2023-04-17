@@ -98,13 +98,13 @@ export const getPrice: (symbol: string) => any = async (symbol: string) => {
 };
 
 export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
-  console.info("In Function", "coin", coin, "timestamp", timestamp);
+  console.info("In Function", coin, "Timestamp", timestamp);
   try {
     const getCoinPrice: any = await axios.get(
-      getDataFromTimestampBaseURL(coin, timestamp),
+      getDataFromTimestampBaseURL(coin.toUpperCase(), timestamp),
       defaultHeaderForgetDataFromTimestamp
     );
-    // console.info("getCoinPrice", getCoinPrice.data);
+    console.info("getCoinPrice", getCoinPrice.data);
     return getCoinPrice && getCoinPrice.data && getCoinPrice.data[0].p ?
       Number(getCoinPrice.data[0].p) :
       0;
