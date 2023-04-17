@@ -77,7 +77,7 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
-import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
+import { sendCustomNotificationOnSpecificUsers,sendNotificationForFollwersFollowings } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDiffernce } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
@@ -188,14 +188,16 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     firstTimeLogin: true,
     googleAuthenticatorData: {},
   };
-
   try {
+    console.log("new user >>>",userData,user.uid)
     return await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
+      
   } catch (e) {
+    console.log("create user Error....",e)
     return false;
   }
 });
@@ -393,12 +395,14 @@ exports.onVote = functions.firestore
 
     const [coin1, coin2] = data.coin.split("-");
     let valueVotingTime;
-
+    const coinArray = [];
     if (coin2) {
+      coinArray.push(coin1,coin2)
       const coinFirst = await getPrice(coin1);
       const coinSecond = await getPrice(coin2);
       valueVotingTime = [coinFirst, coinSecond];
     } else {
+      coinArray.push(coin1)
       valueVotingTime = await getPrice(coin1);
     }
     console.log("coin1, coin2", coin1, coin2);
@@ -423,6 +427,7 @@ exports.onVote = functions.firestore
       .update({
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
+      await sendNotificationForFollwersFollowings(vote.userId,coinArray)
   });
 
 exports.noActivityIn24Hours = functions.pubsub
