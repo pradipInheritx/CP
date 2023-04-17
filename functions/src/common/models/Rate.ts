@@ -1,6 +1,6 @@
-import {ajax_, snapshotAllTickers} from "./Ajax";
-import {ICryptoSnapshotTickers} from "@polygon.io/client-js";
-import {firestore} from "firebase-admin";
+import { ajax_, snapshotAllTickers } from "./Ajax";
+import { ICryptoSnapshotTickers } from "@polygon.io/client-js";
+import { firestore } from "firebase-admin";
 import axios from "axios";
 
 import {
@@ -100,16 +100,13 @@ export const getPrice: (symbol: string) => any = async (symbol: string) => {
 export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
   console.info("In Function", "coin", coin, "timestamp", timestamp);
   try {
-    const getCoinPrice = await axios.get(
-        getDataFromTimestampBaseURL(coin, timestamp),
-        defaultHeaderForgetDataFromTimestamp
+    const getCoinPrice: any = await axios.get(
+      getDataFromTimestampBaseURL(coin, timestamp),
+      defaultHeaderForgetDataFromTimestamp
     );
-
     // console.info("getCoinPrice", getCoinPrice.data);
-    return getCoinPrice.data &&
-      getCoinPrice.data[0] &&
-      getCoinPrice.data[0].price ?
-      getCoinPrice.data[0].price :
+    return getCoinPrice && getCoinPrice.data && getCoinPrice.data[0].p ?
+      Number(getCoinPrice.data[0].p) :
       0;
   } catch (error: any) {
     console.info("Error In Axios", error);

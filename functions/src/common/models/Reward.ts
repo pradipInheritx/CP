@@ -275,12 +275,12 @@ function getRandomSelectedTier(cardsByTier: any, percentageArr: any): number {
 
 const groupBy =
   <T>(keys: (keyof T)[]) =>
-  (array: T[]): Record<string, T[]> =>
-    array.reduce((objectsByKeyValue, obj) => {
-      const value = keys.map((key) => obj[key]).join("-");
-      objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-      return objectsByKeyValue;
-    }, {} as Record<string, T[]>);
+    (array: T[]): Record<string, T[]> =>
+      array.reduce((objectsByKeyValue, obj) => {
+        const value = keys.map((key) => obj[key]).join("-");
+        objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
+        return objectsByKeyValue;
+      }, {} as Record<string, T[]>);
 
 const pickRandomValueFromArray = (arr: string[]): string => {
   // generate a random index
@@ -305,17 +305,17 @@ export const addRewardTransaction: (
   winData: winRewardData,
   winningTime: number
 ) => {
-  console.log("Beginning execution addRewardTransaction function");
-  const obj: RewardTransaction = {
-    user,
-    winningTime,
-    winData,
-    transactionTime: firestore.FieldValue.serverTimestamp(),
+    console.log("Beginning execution addRewardTransaction function");
+    const obj: RewardTransaction = {
+      user,
+      winningTime,
+      winData,
+      transactionTime: firestore.FieldValue.serverTimestamp(),
+    };
+    console.log("addRewardTransaction.......", obj);
+    await firestore().collection("reward_transactions").doc().set(obj);
+    console.log("Finished execution addRewardTransaction function");
   };
-  console.log("addRewardTransaction.......", obj);
-  await firestore().collection("reward_transactions").doc().set(obj);
-  console.log("Finished execution addRewardTransaction function");
-};
 
 export const claimReward: (uid: string) => { [key: string]: any } = async (
   uid: string
