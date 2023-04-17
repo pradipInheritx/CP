@@ -63,7 +63,7 @@ export const allTradeCoinsRate = [
 ]
 
 export const getDataFromTimestampBaseURL = (symbol: string, timestamp: any) =>
-  `https://api.binance.com/api/v3/aggTrades?symbol=${symbol.toUpperCase()}&startTime=${timestamp}&limit=1`
+  `https://api.binance.us/api/v3/aggTrades?symbol=${symbol.toUpperCase()}&startTime=${timestamp}&limit=1`
 //`https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
 
 export const defaultHeaderForgetDataFromTimestamp = {
