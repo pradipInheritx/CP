@@ -337,6 +337,7 @@ function App() {
   const [promptInstall, setPromptInstall] = useState(null);
 const [pwaPopUp,setPwaPopUp]=useState('block')
 const[mfaLogin,setMfaLogin]=useState(false)
+const[allCoinsSetting,setAllCoinsSetting]=useState([])
   useEffect(() => {
     const handler = (e:any) => {
       e.preventDefault();
@@ -624,9 +625,15 @@ useEffect(() => {
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
-      
+        const newAllCoinsData = (
+          ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
+        )
+          .sort((a, b) => Number(a.id) - Number(b.id))
+          .map((c) => c);
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
+      // @ts-ignore
+      setAllCoinsSetting(newAllCoinsData)
     });
 
     onSnapshot(doc(db, "settings", "pairs"), (doc) => {
@@ -1030,6 +1037,7 @@ if (ws) ws.close();
               >
                 <CoinsContext.Provider
                     value={{
+                      allCoinsSetting,
                       changePrice,
                     setChangePrice,
                     ws,

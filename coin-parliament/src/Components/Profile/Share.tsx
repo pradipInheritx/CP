@@ -46,7 +46,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
           </h6>
         </div>
         <div className="d-flex justify-content-center">
-          <img src={earn} alt="" width={"400px"}/>
+          <img src={earn} alt="" width={window.screen.width>767? "400px":"300px" }/>
         </div>
         <div className="d-flex justify-content-center ">
           <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>EARN 50% LIFETIME REVENUE SHARE! </h6>         

@@ -190,7 +190,7 @@ export const swipeOptions = ({
 export const precision: { [key: string]: number } = {
   BTC: 2,
   ETH: 2,
-  BNB: 2,
+  BNB: 4,
   ADA: 6,
   SOL: 2,
   XRP: 4,

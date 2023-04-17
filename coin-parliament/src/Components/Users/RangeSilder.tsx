@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Coin } from "../../common/models/Coin";
 import { VoteResultProps } from "../../common/models/Vote";
 import "./styles.css";
 import styled, { css } from "styled-components";
+import CoinsContext from '../../Contexts/CoinsContext';
 // import ReangDot2 from "../../assets/images/ReangDot2.gif";
 // import ReangDot5 from "../../assets/images/ReangDot5.gif";
 
@@ -61,16 +62,20 @@ function RangeSilder(
 
 { 
   const [persentValue, setPersentValue] = useState<any>(0)
-
+const {allCoinsSetting}=useContext(CoinsContext)
+const [priceRange,setPriceRange]=useState(0.0015)
 const getBorderColor = () => {
+  // console.log('allcoin',allCoinsSetting)
+  
+
     // let PricePer = livePrice / 100;   
-    const priceRange=()=>{
-      if(vote?.timeframe?.seconds==60) return 0.0015
-      if(vote?.timeframe?.seconds==300) return 0.01
-      if(vote?.timeframe?.seconds==3600) return 0.05
-      if(vote?.timeframe?.seconds==86400) return 0.1
-      return 0.0015
-    }
+    // const priceRange=()=>{
+    //   if(vote?.timeframe?.seconds==60) return 0.0015
+    //   if(vote?.timeframe?.seconds==300) return 0.01
+    //   if(vote?.timeframe?.seconds==3600) return 0.05
+    //   if(vote?.timeframe?.seconds==86400) return 0.1
+    //   return 0.0015
+    // }
      if (symbol2 !== undefined) {
        let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
        if(!vote?.valueVotingTime){
@@ -80,7 +85,7 @@ const getBorderColor = () => {
         // @ts-ignore
        let bothCurrentPrice = [...vote?.valueVotingTime];
        const diffPer = [bothLivePrice[0] - bothCurrentPrice[0] ,bothLivePrice[1] - bothCurrentPrice[1] ]
-       const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0] + priceRange(),(diffPer[1] *1000)/bothCurrentPrice[1]+priceRange()]
+       const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0] + priceRange,(diffPer[1] *1000)/bothCurrentPrice[1]+priceRange]
     //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
      let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
@@ -138,10 +143,10 @@ const getBorderColor = () => {
       
         
        const diffPer = livePrice - votePrice 
-       const getPer= ((diffPer *100)/votePrice) /priceRange()
+       const getPer= ((diffPer *100)/votePrice) /priceRange
 
       //  console.log('priceRange',priceRange())
-        console.log('getPer',getPer,((diffPer *100)/votePrice),priceRange())
+        console.log('getPer',getPer,((diffPer *100)/votePrice),priceRange)
        if(livePrice < votePrice + votePrice /10 &&
          livePrice > votePrice - votePrice /10) {  
           if  (vote?.direction == 0)setPersentValue(50 + getPer);
@@ -165,6 +170,16 @@ const getBorderColor = () => {
       getBorderColor()
     
   }, [coins[symbol1]?.price ,coins[symbol2]?.price,vote?.valueVotingTime])
+  useEffect(() => {
+    if(!symbol1 ) return
+    const data= allCoinsSetting?.find((item:any)=>item?.symbol==symbol1)
+    const range=vote?.timeframe?.index
+    const rangeData= data?.voteBarRange[`${range}`]
+    // @ts-ignore
+    console.log('allcoin',rangeData,symbol1,vote)
+  
+    setPriceRange(rangeData)
+  }, [symbol1,allCoinsSetting,vote?.voteTime])
   
   // console.log(lastTenSec,"lastTenSec")
 

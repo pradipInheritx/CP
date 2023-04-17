@@ -29,7 +29,7 @@ const About = () => {
         {/* Card Rhino */}
 
         <div>
-          <div>
+          <div className="text-center">
             <img src={rhino} alt="" width={window.screen.width>767? "250px":"170px" }/>
           </div>  
           <h6 className="mb-4">The Founder </h6>
@@ -44,7 +44,7 @@ const About = () => {
 
         <div>
           
-          <div>
+          <div className="text-center">
             <img src={eagle} alt="" width={window.screen.width>767? "300px":"250px" }/>
           </div>  
           <h6 className="mb-4">The Investor </h6>
@@ -59,7 +59,7 @@ const About = () => {
         
         <div>
           
-          <div>
+          <div className="text-center">
             <img src={tiger} alt="" width={window.screen.width>767? "220px":"150px" }/>
           </div>  
           <h6 className="mb-4">The Angel</h6>
@@ -74,7 +74,7 @@ const About = () => {
         {/* card gorilla  */}
         
         <div>          
-          <div>
+          <div className="text-center">
             <img src={gorilla} alt="" width={window.screen.width>767? "250px":"200px" }/>
           </div>          
           <h6 className="mb-4">The HODLER </h6>
@@ -87,7 +87,7 @@ const About = () => {
         {/* card shark */}
         
         <div>
-          <div>
+          <div className="text-center">
             <img src={shark} alt="" width={window.screen.width>767? "300px":"250px" }/>
           </div>          
           <h6 className="mb-4">The Trader </h6>

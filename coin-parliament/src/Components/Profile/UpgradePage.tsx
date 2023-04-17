@@ -23,7 +23,7 @@ import upgrade2 from "../../assets/svg/upgrade2.svg";
 import upgrade3 from "../../assets/svg/upgrade3.svg";
 import UpgradeCopy from "./UpgradeCopy";
 import { handleSoundClick } from "../../common/utils/SoundClick";
-import  upgrade from "../../assets/images/upgrade.png";
+import  upgrade from "../../assets/images/upgrade_small.png";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -92,7 +92,7 @@ const UpgradePage = () => {
   return (
     <>
               <div className="d-flex justify-content-center">
-          <img src={upgrade} alt="" width={"400px"}/>
+          <img src={upgrade} alt="" width={window.screen.width>767? "400px":"300px"}/>
         </div>
       <div
         className='p-0 m-0 w-100 d-flex justify-content-center'

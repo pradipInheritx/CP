@@ -18,7 +18,7 @@ import ContentContext from "../../Contexts/ContentContext";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import InfluencersCarousel from "../Users/InfluencersCarousel";
 import { BorderRadius4px } from "../../styledMixins";
-import  votingbooster  from "../../assets/images/votingbooster.png";
+import  votingbooster  from "../../assets/images/votingbooster_small.png";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -86,7 +86,7 @@ const VotingBooster = () => {
   return (
     <>
         <div className="d-flex justify-content-center">
-          <img src={votingbooster} alt="" width={"400px"}/>
+          <img src={votingbooster} alt="" width={window.screen.width>767? "400px":"300px"}/>
         </div>
       <div
         className='p-0 m-0 w-100 d-flex justify-content-center'

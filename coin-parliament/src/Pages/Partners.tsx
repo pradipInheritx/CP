@@ -36,8 +36,8 @@ const
     const { user} = useContext(UserContext);
     const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
     return (    
-    <GeneralPage>               
-      <PoolBox >
+    <GeneralPage >               
+      <PoolBox style={{marginRight:'-27px', marginLeft:'-27px' }}>
         {/* <h2 className="d-flex justify-content-center"> {(`${texts.Partners}`).toUpperCase()}</h2> */}
         <div className="d-flex justify-content-center mt-4">          
           <h6 className="text-uppercase">            
