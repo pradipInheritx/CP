@@ -25,7 +25,7 @@ import {
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
 import {
-  calculateOffset,
+  //calculateOffset,
   updateVotesTotal,
   updateVotesTotalForSingleCoin,
   voteConverter,
