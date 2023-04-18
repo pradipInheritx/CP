@@ -87,6 +87,14 @@ export const getTimeframeById = async (req: any, res: any, next: any) => {
         .get();
 
     const data = databaseQuery.data();
+
+    if(!data){
+      return  res.status(404).send({
+        status: true,
+        message: "Timeframe data not found",
+        result: null
+      });
+    }
     res.status(200).send({
       status: true,
       message: "TimeFrame fetched successfully",
@@ -114,6 +122,13 @@ export const deleteTimeframeById = async (req: any, res: any, next: any) => {
         .collection("timeframes")
         .doc(timeFrameId);
 
+        if(!timeframeRefRef){
+          return  res.status(404).send({
+            status: true,
+            message: "Timeframe data not found",
+            result: null
+          });
+        }
     await timeframeRefRef.delete();
     res.status(200).send({
       status: true,
@@ -140,7 +155,13 @@ export const updateTimeframe = async (req: any, res: any, next: any) => {
         .get();
 
     const getTimeframeData: any = databaseQuery.data();
-    console.log("getTimeframeData =>", getTimeframeData);
+    if(!getTimeframeData){
+      return  res.status(404).send({
+        status: true,
+        message: "Timeframe data not found",
+        result: null
+      });
+    }
 
     const updatedTimeframeData = {
       chosen,
