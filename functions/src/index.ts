@@ -15,7 +15,7 @@ import {
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/sa.json";
-import { getPrice } from "./common/models/Rate";
+// import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
   getLeaderUsers,
@@ -77,7 +77,8 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
-import { sendCustomNotificationOnSpecificUsers, sendNotificationForFollwersFollowings } from "./common/models/SendCustomNotification";
+// sendNotificationForFollwersFollowings
+import { sendCustomNotificationOnSpecificUsers, } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDiffernce } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
