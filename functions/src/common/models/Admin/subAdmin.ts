@@ -24,7 +24,6 @@ export const subAdminList = async (req: any, res: any, next: any) => {
       .limit(limit)
       .get();
 
-      console.log("databaseQuery ...........",databaseQuery)
       const subAdminList = databaseQuery.docs.map((doc) => {
         const data = doc.data();
         return {
@@ -68,7 +67,7 @@ export const updateStatus = async (req: any, res: any, next: any) => {
     if(!getSubAdminData){
       return  res.status(404).send({
         status: true,
-        message: "subadmin not found",
+        message: "Subadmin not found",
         result: null
       });
     }
@@ -107,7 +106,7 @@ export const deleteSubAdmin = async (req: any, res: any, next: any) => {
     if(!subAdminRef){
       return  res.status(404).send({
         status: true,
-        message: "subadmin not found",
+        message: "Subadmin not found",
         result: null
       });
     }

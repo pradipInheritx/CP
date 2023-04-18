@@ -95,7 +95,7 @@ export const getPerUserVoteById = async (req: any, res: any, next: any) => {
     }
     res.status(200).send({
       status: true,
-      message: "per user vote fetched successfully",
+      message: "Per user vote fetched successfully",
       result: {
         ...data,
         perUserVoteId: perUserVoteId,
@@ -127,11 +127,10 @@ export const updatePerUserVoteById = async (req: any, res: any, next: any) => {
     if(!getPerUserVoteData){
       return  res.status(404).send({
         status: true,
-        message: "vote data not found.",
+        message: "Vote data not found.",
         result: null
       });
     }
-    console.log("getTimeframeData =>", getPerUserVoteData);
 
     const updatedPerUserVote = {
       quantity,
@@ -170,7 +169,7 @@ export const deletePerUserVoteById = async (req: any, res: any, next: any) => {
         if(!perUserVoteRef){
           return  res.status(404).send({
             status: true,
-            message: "vote data not found.",
+            message: "Vote data not found.",
             result: null
           });
         }

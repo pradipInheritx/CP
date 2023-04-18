@@ -91,7 +91,7 @@ export const getTimeframeById = async (req: any, res: any, next: any) => {
     if(!data){
       return  res.status(404).send({
         status: true,
-        message: "timeframe data not found",
+        message: "Timeframe data not found",
         result: null
       });
     }
@@ -125,7 +125,7 @@ export const deleteTimeframeById = async (req: any, res: any, next: any) => {
         if(!timeframeRefRef){
           return  res.status(404).send({
             status: true,
-            message: "timeframe data not found",
+            message: "Timeframe data not found",
             result: null
           });
         }
@@ -158,11 +158,10 @@ export const updateTimeframe = async (req: any, res: any, next: any) => {
     if(!getTimeframeData){
       return  res.status(404).send({
         status: true,
-        message: "timeframe data not found",
+        message: "Timeframe data not found",
         result: null
       });
     }
-    console.log("getTimeframeData =>", getTimeframeData);
 
     const updatedTimeframeData = {
       chosen,

@@ -73,7 +73,6 @@ export const addAlbumNft = async (req: any, res: any) => {
       .collection("nftGallery")
       .where("albumId", "==", albumId)
       .get();
-    console.log("new Album newAlbumRef >>>", newAlbumRef);
 
     const newAlbumDoc = newAlbumRef.docs[0];
     const newAlbumData = newAlbumDoc.data();
@@ -185,7 +184,6 @@ export const addRewardCardNft = async (req: any, res: any) => {
         result: null,
       });
     }
-    console.log("collectionDetails >>>>>", collectionDetails);
     const id = uuidv4();
     const newCardNft: NewCardNft = {
       cardId,
