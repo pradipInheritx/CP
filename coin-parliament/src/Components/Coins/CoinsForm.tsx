@@ -75,6 +75,9 @@ const CoinsForm = ({
       if (!user?.uid) {
         throw new Error("Attention! You must be signed-in to cast your vote!");
       }
+      // 1681801742363
+      // 1681801734542
+      console.log('expirevotetime',Date.now() + chosenTimeframe.seconds * 1000 + 1597)
       const ref = await addDoc<VoteResultProps>(
         collection(db, "votes").withConverter(voteConverter),
         {
@@ -87,7 +90,7 @@ const CoinsForm = ({
           voteTime:Date.now(),
           // @ts-ignore
           valueVotingTime:coinUpdated[coin?.symbol]?.price,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
+          expiration:Date.now() + chosenTimeframe.seconds * 1000
         } as VoteResultProps
       );
       const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;

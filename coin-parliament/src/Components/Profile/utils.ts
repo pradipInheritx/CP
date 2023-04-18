@@ -25,7 +25,7 @@ export const decimal = {
   
   "BNB": {
   Symbol: 'BNB',
-  decimal: 4
+  decimal: 2
   },
   "ADA":{
   Symbol: 'ADA',

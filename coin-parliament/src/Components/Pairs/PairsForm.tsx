@@ -113,8 +113,8 @@ const PairsForm = ({
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
           valueVotingTime:[coinUpdated[coin1?.symbol]?.price,coinUpdated[coin2?.symbol]?.price],
-          voteTime:Date.now()
-          // expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
+          voteTime:Date.now(),
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));

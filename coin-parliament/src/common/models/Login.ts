@@ -148,7 +148,8 @@ phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
   }
   else{
     const errorMessage = (e as Error).message;
-    showToast(errorMessage, ToastType.ERROR);
+    console.log('error message',errorMessage)
+    showToast(errorMessage=='Firebase: Error (auth/popup-closed-by-user).' || errorMessage=='Error (auth/cancelled-popup-request).'?'Authentication popup was closed by the user':errorMessage, ToastType.ERROR);
   }
   }
 };

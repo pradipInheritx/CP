@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Coin, swipeOptions } from "../../common/models/Coin";
 import CoinsContext, { Totals } from "../../Contexts/CoinsContext";
 import { UserProps } from "../../common/models/User";
@@ -137,7 +137,7 @@ const Carousel = ({
   const { width } = useWindowSize();
   const {ws,socket} = useContext(CoinsContext);
   const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
-  
+  const livePrice=useRef(coins)
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
     () => [
       {
@@ -147,6 +147,15 @@ const Carousel = ({
     ],
     []
   );
+useEffect(() => {
+  const interval = setInterval(function () {
+    setCoinUpdated(livePrice.current)
+  }, 1500);
+
+  return () => {
+   clearInterval(interval) 
+  }
+}, [])
 
   const instance: Modify<TableInstance<BearVsBullRow>, {}> =
     useTable<BearVsBullRow>(
@@ -189,31 +198,32 @@ const Carousel = ({
   useEffect(() => {
     if (!ws) return
     
-    
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      
 const symbol =message?.s?.slice(0, -4)
-if(['ADA','DOGE','CAKE','DOT'].includes(symbol)) console.log('coindata',symbol,message?.c)
-// console.log('Browser window socket', message?.c)
       if (symbol) {
         // @ts-ignore
-        const dot = decimal[symbol]    
-        // console.log(dot,"alldot")
+        const dot = decimal[symbol]
         // @ts-ignore
-      setCoinUpdated((prevCoins) => ({
-        ...prevCoins,
-        
-        [symbol]: {
-          ...prevCoins[symbol],
-          price:Number(message?.c).toFixed(dot?.decimal || 2), 
-        },
-      }));
+        livePrice.current= {
+          ...livePrice.current,
+          [symbol]: {
+            ...livePrice.current[symbol],
+            price:Number(message?.c).toFixed(dot?.decimal || 2), 
+          },
+        }
+      // setCoinUpdated((prevCoins) => ({
+      //   ...prevCoins,
+      //   [symbol]: {
+      //     ...prevCoins[symbol],
+      //     price:Number(message?.c).toFixed(dot?.decimal || 2), 
+      //   },
+      // }));
     }
     };
-   
-   
   }, [ws])
+  console.log('liveprice',livePrice)
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
@@ -222,13 +232,21 @@ if(['ADA','DOGE','CAKE','DOT'].includes(symbol)) console.log('coindata',symbol,m
       
       if (data?.result?.data[0].a) {
   // @ts-ignore
-      setCoinUpdated((prevCoins) => ({
-        ...prevCoins,
-        ['CRO']: {
-          ...prevCoins['CRO'],
-          price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
-        },
-      }));
+  livePrice.current= {
+    ...livePrice.current,
+    ['CRO']: {
+      ...livePrice.current['CRO'],
+      // @ts-ignore
+      price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2), 
+    },
+  }
+      // setCoinUpdated((prevCoins) => ({
+      //   ...prevCoins,
+      //   ['CRO']: {
+      //     ...prevCoins['CRO'],
+      //     price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
+      //   },
+      // }));
     }
     };
   
@@ -257,11 +275,11 @@ if(['ADA','DOGE','CAKE','DOT'].includes(symbol)) console.log('coindata',symbol,m
                   // key={i}
                   favorite={favorites.includes(symbol)}
                   setFavorite={() => {
-                    onFavClick(favorites, user);
+                    onFavClick(favorites, user); 
                     setIndex(index);
                   }}
                   symbol={symbol}
-                  coins={coinUpdated}
+                  coins={livePrice.current}
                   totals={totals}
                   onClick={() => {
                     const url = "/coins/" + symbol;
@@ -301,7 +319,7 @@ if(['ADA','DOGE','CAKE','DOT'].includes(symbol)) console.log('coindata',symbol,m
                                 setIndex(index);
                               }}
                               symbol={symbol}
-                              coins={coinUpdated}
+                              coins={livePrice.current}
                               totals={totals}
                               onClick={() => {
                                 const url = "/coins/" + symbol;
