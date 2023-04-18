@@ -290,7 +290,7 @@ export async function adminForgotPassword(req: any, res: any) {
       status: true,
       message:
         "Please check your email to reset password, your link will be expired in an hour ",
-      result: null,
+      result: userData,
     });
   } catch (error) {
     errorLogging("adminForgotPassword", "ERROR", error);

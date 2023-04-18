@@ -117,6 +117,14 @@ export const updatePerUserVoteById = async (req: any, res: any, next: any) => {
         .get();
 
     const getPerUserVoteData: any = databaseQuery.data();
+
+    if(!getPerUserVoteData){
+      return res.status(404).send({
+        status: true,
+        message: "Per user vote not found",
+        result: null,
+      });
+    }
     console.log("getTimeframeData =>", getPerUserVoteData);
 
     const updatedPerUserVote = {

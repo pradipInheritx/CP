@@ -84,6 +84,7 @@ import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
 import coinRouter from "./routes/Coin.routes";
 import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
+import cmpSettingRouter from "./routes/VoteSettings/CMPSettings.routes"
 import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
 import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
 
@@ -107,6 +108,7 @@ app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
 app.use("/admin/rewards", rewardNftAdminRouter);
 app.use("/admin/coins", coinRouter);
+app.use("/admin/cmpSettings",cmpSettingRouter)
 app.use("/admin/voteSetting", timeframeRouter);
 app.use("/admin/voteSetting", perUserVoteRouter);
 
