@@ -388,8 +388,8 @@ exports.onVote = functions.firestore
     const timeframe = data.timeframe;
     console.log("timeframe =>", timeframe);
 
-    const expiration = voteTime + calculateOffset(timeframe);
-    console.log("expiration =>", expiration);
+    // const expiration = voteTime + calculateOffset(timeframe);
+    // console.log("expiration =>", expiration);
 
     // const [coin1, coin2] = data.coin.split("-");
     // let valueVotingTime;
@@ -407,7 +407,7 @@ exports.onVote = functions.firestore
 
     const vote = {
       ...snapshot.data(),
-      expiration,
+      // expiration,
       // voteTime,
       // valueVotingTime,
     } as unknown as VoteResultProps;
