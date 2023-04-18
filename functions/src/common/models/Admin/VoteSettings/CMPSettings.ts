@@ -1,5 +1,4 @@
 import * as admin from "firebase-admin";
-
 type CMPtype = {
     name : string;
     weight : number;
@@ -46,7 +45,7 @@ export const createCMP = async (req:any,res:any)=>{
         if(!newCmpData){
             return res.status(404).send({
                 status: false,
-                message: "userType is not found.",
+                message: "UserType is not found.",
                 result: null,
               });
         };
@@ -88,7 +87,40 @@ export const getAllUserTypes =async (req:any,res:any)=>{
 
 export const updateUserTypes = async (req:any,res:any) =>{
 try {
-   
+    
+    const { name,
+        weight,
+        givenCMP,
+        share,
+        index,
+        color} = req.body
+
+        const updateValue = {
+            name,
+            weight,
+            givenCMP,
+            share,
+            index,
+            color: color ? color : ' '
+        }
+        const queryRef = await admin.firestore().collection("settings").doc("userTypes").get();
+        const queryRefData :any= queryRef.data();
+        const newCmpData = queryRefData.userTypes.find((data:any)=>{
+            return data.name == name
+        });
+
+        console.log("UPDATE VALUE ==>", updateValue)
+    
+        await admin.firestore().collection("settings").doc("userTypes").update('userTypes', admin.firestore.FieldValue.arrayRemove(newCmpData))
+        await admin.firestore().collection("settings").doc("userTypes").update('userTypes', admin.firestore.FieldValue.arrayUnion(updateValue))
+        // const query = await admin.firestore().collection("settings").doc("userTypes").get();
+        // const queryData :any= query.data();
+
+        // const data = queryData.userTypes.find((user:any)=>{
+        //     return user.name == name
+        // })
+
+res.send("DONE")
 
 
 } catch (error) {
