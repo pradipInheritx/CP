@@ -287,6 +287,7 @@ const getLeaders = async () => {
         country,
         phone,
         leader,
+        refereeScrore
       } = u.data();
       const { score = 0 } = voteStatistics || {};
       return {
@@ -299,6 +300,7 @@ const getLeaders = async () => {
         lastName,
         country,
         phone,
+        refereeScrore,
         subscribers: subscribers?.length || 0,
         leaders: leader?.length || 0,
         pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
