@@ -86,6 +86,13 @@ export const getPerUserVoteById = async (req: any, res: any, next: any) => {
         .get();
 
     const data = databaseQuery.data();
+    if(!data){
+      return  res.status(404).send({
+        status: true,
+        message: "user vote not found.",
+        result: null
+      });
+    }
     res.status(200).send({
       status: true,
       message: "per user vote fetched successfully",
@@ -117,6 +124,13 @@ export const updatePerUserVoteById = async (req: any, res: any, next: any) => {
         .get();
 
     const getPerUserVoteData: any = databaseQuery.data();
+    if(!getPerUserVoteData){
+      return  res.status(404).send({
+        status: true,
+        message: "vote data not found.",
+        result: null
+      });
+    }
     console.log("getTimeframeData =>", getPerUserVoteData);
 
     const updatedPerUserVote = {
@@ -152,6 +166,14 @@ export const deletePerUserVoteById = async (req: any, res: any, next: any) => {
         .doc("voteSettings")
         .collection("perUserVote")
         .doc(perUserVoteId);
+
+        if(!perUserVoteRef){
+          return  res.status(404).send({
+            status: true,
+            message: "vote data not found.",
+            result: null
+          });
+        }
 
     await perUserVoteRef.delete();
     res.status(200).send({

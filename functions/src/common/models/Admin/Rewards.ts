@@ -29,15 +29,15 @@ type NewCardNft = {
 
 // generate serial number
 export const generateSerialNumber = async (
-  collectionId: number,
+  albumId: number,
   setId: number,
   cardType: any,
   quantity: number
 ) => {
+  console.log("albumId>>>>>>", albumId);
   const serialNumber: string[] = [];
   for (let i = 0; i < quantity; i++) {
-    const card =
-      String(collectionId) + String(setId) + String(cardType) + String(i);
+    const card = String(albumId) + String(setId) + String(cardType) + String(i);
     serialNumber.push(card);
   }
   return serialNumber;
@@ -111,6 +111,15 @@ export const addSetNft = async (req: any, res: any) => {
       .get();
 
     const albumData: any = getCollectionRef.data();
+
+    if(!albumData){
+      return res.status(404).send({
+        status: false,
+        message: "Album not found.",
+        result: null,
+      })
+    }
+
     const checkValue = albumData.setDetails.find((data: any) => {
       return data.setId == setId;
     });
@@ -148,6 +157,7 @@ export const addSetNft = async (req: any, res: any) => {
   }
 };
 
+
 // add new NFT card
 export const addRewardCardNft = async (req: any, res: any) => {
   const { albumId } = req.params;
@@ -162,6 +172,20 @@ export const addRewardCardNft = async (req: any, res: any) => {
     cardImage,
   } = req.body;
   try {
+    const getCollectionRef = await firestore()
+      .collection("nftGallery")
+      .doc(albumId)
+      .get();
+    let collectionDetails: any = getCollectionRef.data();
+
+    if(!collectionDetails){
+      return res.status(404).send({
+        status: true,
+        message: "Album not found",
+        result: null,
+      });
+    }
+    console.log("collectionDetails >>>>>", collectionDetails);
     const id = uuidv4();
     const newCardNft: NewCardNft = {
       cardId,
@@ -171,21 +195,28 @@ export const addRewardCardNft = async (req: any, res: any) => {
       totalQuantity: quantity,
       noOfCardHolder,
       cardStatus,
-      sno: await generateSerialNumber(albumId, setId, cardType, quantity),
+      sno: await generateSerialNumber(
+        collectionDetails.albumId,
+        setId,
+        cardType,
+        quantity
+      ),
       cardImage: cardImage
         ? await uploadImage(cardImage, albumId, setId, id)
         : "",
     };
 
-    const getCollectionRef = await firestore()
-      .collection("nftGallery")
-      .doc(albumId)
-      .get();
-
-    let collectionDetails: any = getCollectionRef.data();
     let setDetails = collectionDetails?.setDetails.find((data: any) => {
       return data.setId == setId;
     });
+
+    if(!setDetails){
+      return res.status(404).send({
+        status: true,
+        message: "Set not found",
+        result: null,
+      });
+    }
     setDetails.cardsDetails.push(newCardNft);
     console.log("set Detials after push >>>", setDetails, albumId);
 
@@ -224,7 +255,7 @@ export const getAllAlbums = async (req:any,res:any)=>{
   if(!nftGalleryData.length){
     return res.status(404).send({
       status: false,
-      message: "Not Found",
+      message: "Data not found.",
       result: null,
     });
   }
@@ -261,6 +292,13 @@ export const getAllCardsOfNftGallery = async (req: any, res: any) => {
         });
       });
     });
+    if(!nftGalleryData.length){
+      return res.status(404).send({
+        status: false,
+        message: "Data not found.",
+        result: null,
+      });
+    } 
     res.status(200).send({
       status: true,
       message: "get all cards from gallery.",
