@@ -62,8 +62,13 @@ export const allTradeCoinsRate = [
   "hbarusdt@ticker"
 ]
 
-export const getDataFromTimestampBaseURL = (symbol: string, timestamp: any) =>
-  `https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
+export const getDataFromTimestampBaseURL = (symbol: string, timestamp: any) => {
+  console.info("symbol", symbol)
+  //return `https://api.binance.us/api/v3/aggTrades?symbol=${symbol}&startTime=${timestamp}&limit=1`;
+  return `https://api.binance.us/api/v3/aggTrades?symbol=${symbol}&limit=1`;
+  //`https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
+}
+
 
 export const defaultHeaderForgetDataFromTimestamp = {
   headers: {

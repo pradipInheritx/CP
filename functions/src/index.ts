@@ -25,7 +25,7 @@ import {
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
 import {
-  calculateOffset,
+  //calculateOffset,
   updateVotesTotal,
   updateVotesTotalForSingleCoin,
   voteConverter,
@@ -34,7 +34,7 @@ import {
   // checkInActivityOfVotesAndSendNotification
 } from "./common/models/Vote";
 import {
-  fetchCoins,
+  //fetchCoins,
   getAllCoins,
   getAllPairs,
   Leader,
@@ -66,7 +66,7 @@ import {
 } from "./common/models/PAX";
 import {
   claimReward,
-  addReward,
+  //addReward,
   cardHolderListing,
 } from "./common/models/Reward";
 import {
@@ -77,7 +77,7 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
-import { sendCustomNotificationOnSpecificUsers,sendNotificationForFollwersFollowings } from "./common/models/SendCustomNotification";
+import { sendCustomNotificationOnSpecificUsers, sendNotificationForFollwersFollowings } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDiffernce } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
@@ -189,15 +189,15 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     googleAuthenticatorData: {},
   };
   try {
-    console.log("new user >>>",userData,user.uid)
+    console.log("new user >>>", userData, user.uid)
     return await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
-      
+
   } catch (e) {
-    console.log("create user Error....",e)
+    console.log("create user Error....", e)
     return false;
   }
 });
@@ -333,8 +333,8 @@ exports.onUpdateUser = functions.firestore
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
-    await addReward(snapshot.after.id, before, after);
-    await setLeaders();
+    // await addReward(snapshot.after.id, before, after);
+    // await setLeaders();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
@@ -387,34 +387,33 @@ exports.onVote = functions.firestore
     const voteTime = admin.firestore.Timestamp.now().toMillis();
     console.log("voteTime =>", voteTime);
 
-    const timeframe = data.timeframe;
-    console.log("timeframe =>", timeframe);
+    // const timeframe = data.timeframe;
+    // console.log("timeframe =>", timeframe);
 
-    const expiration = voteTime + calculateOffset(timeframe);
-    console.log("expiration =>", expiration);
+    // const expiration = voteTime + calculateOffset(timeframe);
+    // console.log("expiration =>", expiration);
 
-    const [coin1, coin2] = data.coin.split("-");
-    let valueVotingTime;
-    const coinArray = [];
-    if (coin2) {
-      coinArray.push(coin1,coin2)
-      const coinFirst = await getPrice(coin1);
-      const coinSecond = await getPrice(coin2);
-      valueVotingTime = [coinFirst, coinSecond];
-    } else {
-      coinArray.push(coin1)
-      valueVotingTime = await getPrice(coin1);
-    }
-    console.log("coin1, coin2", coin1, coin2);
+    // const [coin1, coin2] = data.coin.split("-");
+    // let valueVotingTime;
+
+    // if (coin2) {
+    //   const coinFirst = await getPrice(coin1);
+    //   const coinSecond = await getPrice(coin2);
+    //   valueVotingTime = [coinFirst, coinSecond];
+    // } else {
+    //   valueVotingTime = await getPrice(coin1);
+    // }
+    // console.log("coin1, coin2", coin1, coin2);
 
     await updateVotesTotalForSingleCoin(data.coin);
 
     const vote = {
       ...snapshot.data(),
-      expiration,
-      voteTime,
-      valueVotingTime,
+      // expiration,
+      // voteTime,
+      // valueVotingTime,
     } as unknown as VoteResultProps;
+
     console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
@@ -427,7 +426,7 @@ exports.onVote = functions.firestore
       .update({
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
-      await sendNotificationForFollwersFollowings(vote.userId,coinArray)
+    //await sendNotificationForFollwersFollowings(vote.userId, coinArray)
   });
 
 exports.noActivityIn24Hours = functions.pubsub
@@ -563,11 +562,11 @@ exports.onCreatePaxTransaction = functions.firestore
     }
   });
 
-exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-  [0, 60].forEach((i) => {
-    setTimeout(async () => await fetchCoins(), i * 1000);
-  });
-});
+// exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
+//   [0, 60].forEach((i) => {
+//     setTimeout(async () => await fetchCoins(), i * 1000);
+//   });
+// });
 
 exports.getUpdatedDataFromWebsocket = functions.pubsub
   .schedule("every 2 minutes")

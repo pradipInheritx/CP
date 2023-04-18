@@ -377,12 +377,7 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
       const deleteAllPreviousDataOfCoin = await firestore()
         .collection("latestUpdatedCoins")
         .where("name", "==", latestCoinRate.s.toLowerCase());
-      await deleteAllPreviousDataOfCoin.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          doc.ref.delete();
-        });
-      });
-      console.info("getCoinSymbolData", getCoinSymbolData)
+      console.info("getCoinSymbolData", getCoinSymbolData);
       await firestore()
         .collection("latestUpdatedCoins")
         .add({
@@ -390,6 +385,21 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
           price: latestCoinRate.c,
           timestamp: latestCoinRate.E,
         });
+
+      setTimeout(async () => {
+        console.info("EXECUTE IN SETIMEOUT")
+        await fetchCoins({
+          ...getCoinSymbolData,
+          price: latestCoinRate.c,
+          timestamp: latestCoinRate.E
+        });
+      }, 2000);
+
+      await deleteAllPreviousDataOfCoin.get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          doc.ref.delete();
+        });
+      });
     }
   } else {
     errorLogging(
@@ -400,49 +410,72 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
   }
 };
 
-export const fetchCoins = async () => {
-  const allUpdatedCoinsRates: any = [];
-  const getAllLatestCoinsRateRef: any = await firestore().collection(
-    "latestUpdatedCoins"
-  );
-  const coinRateSnapshot = await getAllLatestCoinsRateRef
-    .orderBy("timestamp", "desc")
-    .get();
-  if (coinRateSnapshot.empty) {
-    errorLogging("fetchCoins", "INFO ON FETCH COINS", "No matching documents.");
-  } else {
-    coinRateSnapshot.forEach((doc: any) => {
-      allUpdatedCoinsRates.push(doc.data());
-    });
-    const res: any = await fetchCoinsFromCoinCapAndWazirX(allUpdatedCoinsRates);
-    if (res && res.count) {
-      const newCoins = calculateCoinsByWazirXAndCoinCap(res);
-      if (newCoins) {
-        const allCoins = await getAllCoins();
-        const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
-          filterCoins(newCoins, allCoins)
-        );
+export const fetchCoins = async (currentCoinValue: any) => {
+  const res: any = await fetchCoinsFromCoinCapAndWazirX([currentCoinValue]);
+  if (res && res.count) {
+    const newCoins = calculateCoinsByWazirXAndCoinCap(res);
+    console.info("New Coins", newCoins)
+    if (newCoins) {
+      const allCoins = await getAllCoins();
+      const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
+        filterCoins(newCoins, allCoins)
+      );
+      console.info("getUpdateFixedValueInAllCoins", getUpdateFixedValueInAllCoins)
+      await firestore()
+        .collection("stats")
+        .doc("coins")
+        .set(getUpdateFixedValueInAllCoins, {
+          merge: true,
+        });
 
-        await firestore()
-          .collection("stats")
-          .doc("coins")
-          .set(getUpdateFixedValueInAllCoins, {
-            merge: true,
-          });
-
-        await firestore()
-          .collection("latestUpdatedCoins")
-          .get()
-          .then((queryLatestUpdatedCoinsSnapshot) => {
-            queryLatestUpdatedCoinsSnapshot.docs.forEach((snapshot) => {
-              snapshot.ref.delete();
-            });
-          });
-        await insertNewCoinsWthTimestamp(newCoins);
-      }
+      await insertNewCoinsWthTimestamp(newCoins);
     }
   }
 };
+
+// export const fetchCoins = async () => {
+//   const allUpdatedCoinsRates: any = [];
+//   const getAllLatestCoinsRateRef: any = await firestore().collection(
+//     "latestUpdatedCoins"
+//   );
+//   const coinRateSnapshot = await getAllLatestCoinsRateRef
+//     .orderBy("timestamp", "desc")
+//     .get();
+//   if (coinRateSnapshot.empty) {
+//     errorLogging("fetchCoins", "INFO ON FETCH COINS", "No matching documents.");
+//   } else {
+//     coinRateSnapshot.forEach((doc: any) => {
+//       allUpdatedCoinsRates.push(doc.data());
+//     });
+//     const res: any = await fetchCoinsFromCoinCapAndWazirX(allUpdatedCoinsRates);
+//     if (res && res.count) {
+//       const newCoins = calculateCoinsByWazirXAndCoinCap(res);
+//       if (newCoins) {
+//         const allCoins = await getAllCoins();
+//         const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
+//           filterCoins(newCoins, allCoins)
+//         );
+
+//         await firestore()
+//           .collection("stats")
+//           .doc("coins")
+//           .set(getUpdateFixedValueInAllCoins, {
+//             merge: true,
+//           });
+
+//         // await firestore()
+//         //   .collection("latestUpdatedCoins")
+//         //   .get()
+//         //   .then((queryLatestUpdatedCoinsSnapshot) => {
+//         //     queryLatestUpdatedCoinsSnapshot.docs.forEach((snapshot) => {
+//         //       snapshot.ref.delete();
+//         //     });
+//         //   });
+//         await insertNewCoinsWthTimestamp(newCoins);
+//       }
+//     }
+//   }
+// };
 
 export const updatePriceArray = async (before: any, after: any) => {
   const timeFrameToAPICallInSecond = 30;
