@@ -41,6 +41,7 @@ export type UserProps = {
   wallet?: string;
   rewardStatistics?: RewardStatistics;
   firstTimeLogin?: boolean;
+  refereeScrore?: number;
   googleAuthenticatorData?: any
 };
 

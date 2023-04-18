@@ -187,6 +187,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     favorites: [],
     status,
     firstTimeLogin: true,
+    refereeScrore: 0,
     googleAuthenticatorData: {},
   };
   try {
@@ -388,31 +389,10 @@ exports.onVote = functions.firestore
     const voteTime = admin.firestore.Timestamp.now().toMillis();
     console.log("voteTime =>", voteTime);
 
-    // const timeframe = data.timeframe;
-    // console.log("timeframe =>", timeframe);
-
-    // const expiration = voteTime + calculateOffset(timeframe);
-    // console.log("expiration =>", expiration);
-
-    // const [coin1, coin2] = data.coin.split("-");
-    // let valueVotingTime;
-
-    // if (coin2) {
-    //   const coinFirst = await getPrice(coin1);
-    //   const coinSecond = await getPrice(coin2);
-    //   valueVotingTime = [coinFirst, coinSecond];
-    // } else {
-    //   valueVotingTime = await getPrice(coin1);
-    // }
-    // console.log("coin1, coin2", coin1, coin2);
-
     await updateVotesTotalForSingleCoin(data.coin);
 
     const vote = {
       ...snapshot.data(),
-      // expiration,
-      // voteTime,
-      // valueVotingTime,
     } as unknown as VoteResultProps;
 
     console.log("vote =>", vote);

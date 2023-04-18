@@ -9,7 +9,7 @@ import { Direction, voteConverter, VoteResultProps } from "./Vote";
 import { firestore, messaging } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
 import { sendNotification } from "./Notification";
-import {voteExpireAndGetCpmNotification} from "./SendCustomNotification"
+//import { voteExpireAndGetCpmNotification } from "./SendCustomNotification"
 
 
 export type Totals = {
@@ -55,7 +55,7 @@ export const returnValue: (
     CPMReturn =
       (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
   }
-  console.log("GIVEN CMP >>>>>>>>>",(Number(voteRules.givenCPM) || 1) * CPMReturn)
+  console.log("GIVEN CMP >>>>>>>>>", (Number(voteRules.givenCPM) || 1) * CPMReturn)
   return (Number(voteRules.givenCPM) || 1) * CPMReturn;
 };
 class Calculation {
@@ -121,21 +121,26 @@ class Calculation {
         .set({ score }, { merge: true });
 
       voteStatistics.score += score;
-      await ref.set({ voteStatistics }, { merge: true });
+
+      // For Add Only Commission In Current User
+      const { CPMSettings } = await Refer.getSettings();
+      const { pctReferralActivity } = CPMSettings;
+      const commission = Number(score * pctReferralActivity) / 100;
+      user.refereeScrore = (user.refereeScrore ? user.refereeScrore : 0) + commission;
+
+      await ref.set({ voteStatistics, refereeScrore: user.refereeScrore }, { merge: true });
 
       if (user.parent) {
         const refer = new Refer(user.parent, "");
-
-        const getVotesquery = await firestore()
-        .collection("votes")
-        .doc(this.id)
-        .get();
-
-        const getVote :any = getVotesquery.data();
-        // Send Notification For CMP Change
         await refer.payParent(score);
-        console.log("send Notification for CPM")
-        voteExpireAndGetCpmNotification(voteResult.userId,score,getVote.coin)
+        // Send Notification For CMP Change
+        // console.log("send Notification for CPM")
+        // const getVotesquery = await firestore()
+        //   .collection("votes")
+        //   .doc(this.id)
+        //   .get();
+        // const getVote: any = getVotesquery.data();
+        // voteExpireAndGetCpmNotification(voteResult.userId,score,getVote.coin)
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);
@@ -206,8 +211,8 @@ class Calculation {
 
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
-      const endValue :any = voteResult?.valueExpirationTime;
-      const upRange :any =
+      const endValue: any = voteResult?.valueExpirationTime;
+      const upRange: any =
         Number(startValue) +
         (Number(startValue) * CPMReturnRangePercentage) / 100;
       const downRange =
