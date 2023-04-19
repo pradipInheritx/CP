@@ -336,7 +336,7 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
     // await addReward(snapshot.after.id, before, after);
-    // await setLeaders();
+    await setLeaders();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;

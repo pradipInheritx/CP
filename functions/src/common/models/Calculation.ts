@@ -287,7 +287,6 @@ const getLeaders = async () => {
         country,
         phone,
         leader,
-        refereeScrore
       } = u.data();
       const { score = 0 } = voteStatistics || {};
       return {
@@ -300,7 +299,6 @@ const getLeaders = async () => {
         lastName,
         country,
         phone,
-        refereeScrore,
         subscribers: subscribers?.length || 0,
         leaders: leader?.length || 0,
         pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
@@ -378,14 +376,18 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       for (let i = 0; i < updatableUser.length; i++) {
         const eachUser = updatableUser[i];
         if ((eachUser.totalVote || 0) >= (eachType.minVote || 20)) {
+          console.info("minimumUserRequirement", minimumUserRequirement)
+          console.info("userLengthForThisUserType", userLengthForThisUserType)
+          console.info("eachSplit", eachSplit)
           if (
             minimumUserRequirement > userLengthForThisUserType ||
             eachSplit.length < userLengthForThisUserType
           ) {
             eachSplit.push(eachUser);
-
+            console.info("eachType.name", eachType.name);
             eachUser.status = eachType.name;
             leaderStatus.push(eachUser);
+            console.info("leaderStatus", leaderStatus)
             await firestore()
               .collection("users")
               .doc(eachUser.userId)
