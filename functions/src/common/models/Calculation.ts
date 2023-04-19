@@ -432,7 +432,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     //     });
     //   }
     // }
-    await sendNotificationForTitleUpgrade(leaderStatus)
+    //await sendNotificationForTitleUpgrade(leaderStatus)
 
     return await firestore()
       .collection("stats")

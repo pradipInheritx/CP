@@ -173,6 +173,10 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
     expiration,
     timestamp,
   } = requestBody;
+
+  console.info("Coin1", coin1);
+  console.info("Coin2", coin2);
+
   // Snapshot Get From ID
   const getVoteRef = firestore().collection("votes").doc(voteId);
   const getVoteInstance = await getVoteRef.get();

@@ -69,6 +69,12 @@ export const getDataFromTimestampBaseURL = (symbol: string, timestamp: any) => {
   //`https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
 }
 
+export const getDataFromTimestampBaseURLFromCrypto = (symbol: string, timestamp: any) => {
+  console.info("symbol", symbol)
+  //return `https://api.binance.us/api/v3/aggTrades?symbol=${symbol}&startTime=${timestamp}&limit=1`;
+  return `https://api.crypto.com/v2/public/get-ticker?instrument_name=${symbol}`;
+  //`https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
+}
 
 export const defaultHeaderForgetDataFromTimestamp = {
   headers: {
