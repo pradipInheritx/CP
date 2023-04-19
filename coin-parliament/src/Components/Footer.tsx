@@ -41,7 +41,8 @@ const Footer = () => {
   const {appStats, paxData} = useContext(AppContext);
   return (
     <FooterContainer>
-        <p style={{marginBottom:'5px'}}><I
+        <p style={{marginBottom:'5px'}}>
+          {/* <I
               className="bi-twitter"
               
               onClick={() =>
@@ -71,7 +72,7 @@ const Footer = () => {
               )
             }
             /> */}
-            <I
+            {/* <I
               className="bi bi-instagram"
               
               onClick={() =>
@@ -89,8 +90,9 @@ const Footer = () => {
                   `https://www.tiktok.com/@coinparliament`,
                   "_blank"
                 )
-              }
-            /></p>
+              } */}
+            {/* /> */} 
+            </p>
       {/* <p>Coin Parliament © 2022 | Block {paxData?.blocksGiven || 0}, 1PAX = 10USD</p>
       <p>Total votes = {appStats?.totalVotes || 0} </p>
       <p>
@@ -115,14 +117,14 @@ const Footer = () => {
 
       <p style={{marginTop:'10px',marginBottom:'5px'}}>
        
-       <span><Link
+       {/* <span><Link
          to="/privacy">Privacy Policy</Link>
     </span>
     {' '}| {' '}
     <span>
     <Link
          to="/terms-and-condition">Terms & Conditions</Link>
-         </span>
+         </span> */}
      </p>
  
 
@@ -131,7 +133,7 @@ const Footer = () => {
 
        {/* <p>Copyright © 2022 CoinParliament. All rights reserved.</p> */}
      
-            <p>Copyright © 2023 CoinParliament. All rights reserved.</p>
+            <p>Copyright © 2023 SportsParliament. All rights reserved.</p>
        {/* <p>Coin Parliament © 2022</p> */}
     </FooterContainer>
   );

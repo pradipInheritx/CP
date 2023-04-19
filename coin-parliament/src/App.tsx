@@ -533,231 +533,231 @@ console.log('fmctoken',fcmToken)
   //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
   // }, [user?.uid, isAdmin]);
 
-  useEffect(() => {
-    onSnapshot(doc(db, "stats", "leaders"), (doc) => {
-      setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
+  // useEffect(() => {
+  //   onSnapshot(doc(db, "stats", "leaders"), (doc) => {
+  //     setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
       
-    });
+  //   });
 
-    onSnapshot(
-      query(
-        collection(db, "notifications"),
-        where("user", "==", user?.uid || "")
-      ),
-      (querySnapshot) => {
-        setNotifications(
-          querySnapshot.docs.map((doc) => {
-            return doc.data() as NotificationProps;
-          })
-        );
-      }
-    );
+  //   onSnapshot(
+  //     query(
+  //       collection(db, "notifications"),
+  //       where("user", "==", user?.uid || "")
+  //     ),
+  //     (querySnapshot) => {
+  //       setNotifications(
+  //         querySnapshot.docs.map((doc) => {
+  //           return doc.data() as NotificationProps;
+  //         })
+  //       );
+  //     }
+  //   );
 
-    onSnapshot(doc(db, "stats", "totals"), (doc) => {
-      setTotals((doc.data() || {}) as { [key: string]: Totals });
-    });
+  //   onSnapshot(doc(db, "stats", "totals"), (doc) => {
+  //     setTotals((doc.data() || {}) as { [key: string]: Totals });
+  //   });
 
-    onSnapshot(doc(db, "settings", "timeframes"), (doc) => {
-      setTimeframes(
-        ((doc.data() as { timeframes: TimeFrame[] }) || {}).timeframes || []
-      );
-    });
+  //   onSnapshot(doc(db, "settings", "timeframes"), (doc) => {
+  //     setTimeframes(
+  //       ((doc.data() as { timeframes: TimeFrame[] }) || {}).timeframes || []
+  //     );
+  //   });
 
-    onSnapshot(doc(db, "settings", "userTypes"), (doc) => {
-      const u = (
-        (doc.data() || {
-          userTypes: [defaultUserType],
-        }) as { userTypes: UserTypeProps[] }
-      ).userTypes;
+  //   onSnapshot(doc(db, "settings", "userTypes"), (doc) => {
+  //     const u = (
+  //       (doc.data() || {
+  //         userTypes: [defaultUserType],
+  //       }) as { userTypes: UserTypeProps[] }
+  //     ).userTypes;
 
-      setUserTypes(u);
-    });
+  //     setUserTypes(u);
+  //   });
 
-    onSnapshot(doc(db, "settings", "settings"), (doc) => {
-      setVoteRules(
-        ((doc.data() || {}) as { voteRules: VoteRules }).voteRules || {}
-      );
-      setCPMSettings(
-        ((doc.data() || {}) as { CPMSettings: CPMSettings }).CPMSettings || {}
-      );
-    });
+  //   onSnapshot(doc(db, "settings", "settings"), (doc) => {
+  //     setVoteRules(
+  //       ((doc.data() || {}) as { voteRules: VoteRules }).voteRules || {}
+  //     );
+  //     setCPMSettings(
+  //       ((doc.data() || {}) as { CPMSettings: CPMSettings }).CPMSettings || {}
+  //     );
+  //   });
 
-    onSnapshot(doc(db, "settings", "languages"), (doc) => {
-      const u = (
-        (doc.data() || {
-          languages: [ENGLISH],
-        }) as { languages: string[] }
-      ).languages;
+  //   onSnapshot(doc(db, "settings", "languages"), (doc) => {
+  //     const u = (
+  //       (doc.data() || {
+  //         languages: [ENGLISH],
+  //       }) as { languages: string[] }
+  //     ).languages;
 
-      setLanguages(u);
-    });
+  //     setLanguages(u);
+  //   });
 
-    onSnapshot(doc(db, "settings", "rtl"), (doc) => {
-      const r = (
-        (doc.data() || {
-          rtl: [],
-        }) as { rtl: string[] }
-      ).rtl;
+  //   onSnapshot(doc(db, "settings", "rtl"), (doc) => {
+  //     const r = (
+  //       (doc.data() || {
+  //         rtl: [],
+  //       }) as { rtl: string[] }
+  //     ).rtl;
 
-      setRtl(r);
-    });
+  //     setRtl(r);
+  //   });
 
-    onSnapshot(collection(db, "translations"), (querySnapshot) => {
-      querySnapshot.docs.forEach((doc) => {
-        translations.set(doc.id, doc.data());
-      });
-    });
+  //   onSnapshot(collection(db, "translations"), (querySnapshot) => {
+  //     querySnapshot.docs.forEach((doc) => {
+  //       translations.set(doc.id, doc.data());
+  //     });
+  //   });
 
-    onSnapshot(doc(db, "stats", "coins"), (doc) => {
+  //   onSnapshot(doc(db, "stats", "coins"), (doc) => {
      
-      const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-      setCoins(newAllCoins);
-      // saveCoins(newAllCoins);
-    });
+  //     const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
+  //     setCoins(newAllCoins);
+  //     // saveCoins(newAllCoins);
+  //   });
 
-    onSnapshot(doc(db, "stats", "app"), (doc) => {
-      setAppStats(doc.data() as AppStats);
-    });
+  //   onSnapshot(doc(db, "stats", "app"), (doc) => {
+  //     setAppStats(doc.data() as AppStats);
+  //   });
 
-    onSnapshot(doc(db, "settings", "paxData"), (doc) => {
-      setPaxData(doc.data() as PaxData);
-    });
+  //   onSnapshot(doc(db, "settings", "paxData"), (doc) => {
+  //     setPaxData(doc.data() as PaxData);
+  //   });
 
-    onSnapshot(doc(db, "settings", "coins"), (doc) => {
-      const newAllCoins = (
-        ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
-      )
-        .sort((a, b) => Number(a.id) - Number(b.id))
-        .map((c) => c.symbol);
+  //   onSnapshot(doc(db, "settings", "coins"), (doc) => {
+  //     const newAllCoins = (
+  //       ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
+  //     )
+  //       .sort((a, b) => Number(a.id) - Number(b.id))
+  //       .map((c) => c.symbol);
       
-      saveAllCoins(newAllCoins);
-      setAllCoins(newAllCoins);
-    });
+  //     saveAllCoins(newAllCoins);
+  //     setAllCoins(newAllCoins);
+  //   });
 
-    onSnapshot(doc(db, "settings", "pairs"), (doc) => {
-      setAllPairs(
-        (((doc.data() as { pairs: DBPair[] }) || {}).pairs || [])
-          .sort((a, b) => Number(a.id) - Number(b.id))
-          .map((p) => {
-            return [p.symbol1, p.symbol2];
-          })
-      );
-    });
-  }, [user?.uid]);
+  //   onSnapshot(doc(db, "settings", "pairs"), (doc) => {
+  //     setAllPairs(
+  //       (((doc.data() as { pairs: DBPair[] }) || {}).pairs || [])
+  //         .sort((a, b) => Number(a.id) - Number(b.id))
+  //         .map((p) => {
+  //           return [p.symbol1, p.symbol2];
+  //         })
+  //     );
+  //   });
+  // }, [user?.uid]);
   
-  useEffect(() => {
-    const auth = getAuth();
+  // useEffect(() => {
+  //   const auth = getAuth();
 
-    if (!firstTimeLogin) {
-      onAuthStateChanged(auth, async (user: User | null) => {
-        setAuthStateChanged(true);
-        if (
-          user?.emailVerified ||
-          user?.providerData[0]?.providerId === "facebook.com"
-        ) {
-          // setLogin(false);
-          // setSignup(false);
-          setLoginRedirectMessage("");
-          await updateUser(user);
-          setUserUid(user?.uid);
-          onSnapshot(doc(db, "users", user.uid), async (doc) => {
-            await setUserInfo(doc.data() as UserProps);
-            setDisplayName((doc.data() as UserProps).displayName + "");
-          });
-          // const votesLast24HoursRef = firebase
-          //   .firestore()
-          //   .collection("votes")
-          //   .where("userId", "==", user.uid)
-          //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
-          //   .where("voteTime", "<=", Date.now());
-          //   console.log('extravote11',votesLast24HoursRef)
-          //   await votesLast24HoursRef.onSnapshot((snapshot) => {
-          //     console.log('extravote1')
-          //     setVotesLast24Hours(
-          //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
-          //     );
-          //   });
+  //   if (!firstTimeLogin) {
+  //     onAuthStateChanged(auth, async (user: User | null) => {
+  //       setAuthStateChanged(true);
+  //       if (
+  //         user?.emailVerified ||
+  //         user?.providerData[0]?.providerId === "facebook.com"
+  //       ) {
+  //         // setLogin(false);
+  //         // setSignup(false);
+  //         setLoginRedirectMessage("");
+  //         await updateUser(user);
+  //         setUserUid(user?.uid);
+  //         onSnapshot(doc(db, "users", user.uid), async (doc) => {
+  //           await setUserInfo(doc.data() as UserProps);
+  //           setDisplayName((doc.data() as UserProps).displayName + "");
+  //         });
+  //         // const votesLast24HoursRef = firebase
+  //         //   .firestore()
+  //         //   .collection("votes")
+  //         //   .where("userId", "==", user.uid)
+  //         //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
+  //         //   .where("voteTime", "<=", Date.now());
+  //         //   console.log('extravote11',votesLast24HoursRef)
+  //         //   await votesLast24HoursRef.onSnapshot((snapshot) => {
+  //         //     console.log('extravote1')
+  //         //     setVotesLast24Hours(
+  //         //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
+  //         //     );
+  //         //   });
          
 
-          try {
-            if (fcmToken) {
-              try {
-                await setDoc(
-                  doc(db, "users", user.uid),
-                  { token: fcmToken },
-                  { merge: true }
-                );
-                console.log("push enabled");
-              } catch (e) {
-                console.log(e);
-              }
-            }
-          } catch (e) {
-            console.log("An error occurred while retrieving token. ", e);
-          }
-        } else {
-          await updateUser();
-        }
-      });
-    }
-  }, [user, fcmToken, coins]);
+  //         try {
+  //           if (fcmToken) {
+  //             try {
+  //               await setDoc(
+  //                 doc(db, "users", user.uid),
+  //                 { token: fcmToken },
+  //                 { merge: true }
+  //               );
+  //               console.log("push enabled");
+  //             } catch (e) {
+  //               console.log(e);
+  //             }
+  //           }
+  //         } catch (e) {
+  //           console.log("An error occurred while retrieving token. ", e);
+  //         }
+  //       } else {
+  //         await updateUser();
+  //       }
+  //     });
+  //   }
+  // }, [user, fcmToken, coins]);
   
-useEffect(() => {
+// useEffect(() => {
   
-  if(user?.uid){
+//   if(user?.uid){
    
-  const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-// const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+//   const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+// // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+// const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
 
-const votesLast24HoursRef = firebase
-            .firestore()
-            .collection("votes")
-            .where("userId", "==", user?.uid)
-            .where("voteTime", ">=", last24Hour)
-            .where("voteTime", "<=", Date.now());
-// console.log('extravote11',votesLast24HoursRef)
-votesLast24HoursRef.get()
-    .then((snapshot) => {
-        setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+// const votesLast24HoursRef = firebase
+//             .firestore()
+//             .collection("votes")
+//             .where("userId", "==", user?.uid)
+//             .where("voteTime", ">=", last24Hour)
+//             .where("voteTime", "<=", Date.now());
+// // console.log('extravote11',votesLast24HoursRef)
+// votesLast24HoursRef.get()
+//     .then((snapshot) => {
+//         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
       
-        const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-      let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
+//         const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+//       let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
   
-  setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+//   setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
   
-  setTimeout(() => {
-    if(user?.uid){
+//   setTimeout(() => {
+//     if(user?.uid){
     
-      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-    // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-    const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+//       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+//     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+//     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
    
-    const votesLast24HoursRef = firebase
-                .firestore()
-                .collection("votes")
-                .where("userId", "==", user?.uid)
-                .where("voteTime", ">=", last24Hour)
-                .where("voteTime", "<=", Date.now());
-    // console.log('extravote11',votesLast24HoursRef)
-    votesLast24HoursRef.get()
-        .then((snapshot) => {
-            setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+//     const votesLast24HoursRef = firebase
+//                 .firestore()
+//                 .collection("votes")
+//                 .where("userId", "==", user?.uid)
+//                 .where("voteTime", ">=", last24Hour)
+//                 .where("voteTime", "<=", Date.now());
+//     // console.log('extravote11',votesLast24HoursRef)
+//     votesLast24HoursRef.get()
+//         .then((snapshot) => {
+//             setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
            
-        })
-        .catch((error) => {
-            // console.log('extravoteError',error);
-        });
-      }
-  }, remaining);
-    })
-    .catch((error) => {
-        // console.log('extravoteError',error);
-    });
-  }
+//         })
+//         .catch((error) => {
+//             // console.log('extravoteError',error);
+//         });
+//       }
+//   }, remaining);
+//     })
+//     .catch((error) => {
+//         // console.log('extravoteError',error);
+//     });
+//   }
   
  
-}, [userInfo?.voteStatistics?.total])
+// }, [userInfo?.voteStatistics?.total])
 
 
   useEffect(() => {
@@ -1116,7 +1116,7 @@ votesLast24HoursRef.get()
                                         }px 0 0`,
                                       }}
                                     >
-                                    <div className='pwaPopup'  style={{display:pwaPopUp}}>
+                                    {/* <div className='pwaPopup'  style={{display:pwaPopUp}}>
                                         <span>{texts.InstallCoinParliament}</span>
                                     <button
       className="link-button"
@@ -1138,7 +1138,7 @@ votesLast24HoursRef.get()
     >
       x
     </span>
-                                      </div>
+                                      </div> */}
                                       <Routes>
                                         <Route path='/' element={<Home />} />
                                         {/* <Route
@@ -1220,7 +1220,7 @@ votesLast24HoursRef.get()
                                         </Route> 
                                         */}
                                         
-                                          <Route
+                                          {/* <Route
                                           path={ProfileTabs.profile}
                                           element={<Profile />}
                                         >
@@ -1243,7 +1243,7 @@ votesLast24HoursRef.get()
                                             }
                                             element={<Wallet />}
                                           /> 
-                                        </Route>
+                                        </Route> */}
                                         {/* Fowller component  start*/}
                                         {/* <Route
                                           path={FollowerProfileTabs.FollowerProfile}
@@ -1302,7 +1302,7 @@ votesLast24HoursRef.get()
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> */}
-                                         <Route
+                                         {/* <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> 
@@ -1325,7 +1325,7 @@ votesLast24HoursRef.get()
                                               element={<Content />}
                                             />
                                           ))}
-                                        <Route path='*' element={<Content />} />
+                                        <Route path='*' element={<Content />} /> */}
                                       </Routes>
                                     </Container>
                                     <Footer />

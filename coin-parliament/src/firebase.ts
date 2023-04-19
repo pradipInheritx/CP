@@ -7,14 +7,20 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: 'coinparliament.com',
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
-  projectId: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}`,
-  storageBucket: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}.appspot.com`,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: `G-${process.env.REACT_APP_FIREBASE_MEASUREMENT_ID}`,
+  apiKey: "AIzaSyCuso_D_GR132hnrBPzxbIi66qDA4vuTRM",
+  authDomain: "sportparliament-1f167.firebaseapp.com",
+  projectId: "sportparliament-1f167",
+  storageBucket: "sportparliament-1f167.appspot.com",
+  messagingSenderId: "784392547136",
+  appId: "1:784392547136:web:f626643a0bf3f18c7568a5"
+  // apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  // authDomain: 'coinparliament.com',
+  // databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  // projectId: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}`,
+  // storageBucket: `${process.env.REACT_APP_FIREBASE_PROJECT_ID}.appspot.com`,
+  // messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  // appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  // measurementId: `G-${process.env.REACT_APP_FIREBASE_MEASUREMENT_ID}`,
 };
 
 firebase.initializeApp(firebaseConfig);

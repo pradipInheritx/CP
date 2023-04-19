@@ -41,7 +41,7 @@ const Home = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-  const src = `/hpbanner${width && width > 979 ? "" : "_m"}.png`;
+  const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
   
   return (
@@ -59,7 +59,7 @@ const Home = () => {
                     height:
                       width && width > 969
                         ? "auto"
-                        : ((width || 0) * 392) / 408,
+                        : 'auto',
                     // marginTop: width && width > 969 ? -50 : -130,
                     // marginTop:'120px',
                     position: "absolute",
@@ -140,18 +140,11 @@ const Home = () => {
               }
             }}
           /> */}
-        {!user?.uid?  <div className='d-sx-none'> {window.screen.width > 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'4rem', fontSize:'2rem', padding:'2rem'}} onClick={e=>{  setLogin(true)
-        setSignup(true)}}>BECOME A MEMBER</Buttons.Primary>
-        <H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1.5rem'}}>Subscribe now and start earning rewards before anyone else</H2>
-        
-        </>}</div>: window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>ComingSoon</H2>}
+        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>ComingSoon</H2>}
 
 
 
-          {!user?.uid?<div className='d-xl-none'> {window.screen.width < 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'2rem', fontSize:'1rem', padding:'1rem'}} onClick={e=>{
-              setLogin(true)
-              setSignup(true)
-          }}>BECOME A MEMBER</Buttons.Primary><H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1rem'}}>Subscribe now and start earning rewards before anyone else</H2></>}</div>:window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>Coming Soon</H2>}
+          {window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>Coming Soon</H2>}
         </div>
         {/* <div className='mb-4 mx-0'>
           <H2
