@@ -6,6 +6,7 @@ import axios from "axios";
 import {
   getDataFromTimestampBaseURL,
   defaultHeaderForgetDataFromTimestamp,
+  getDataFromTimestampBaseURLFromCrypto
 } from "../consts/config";
 
 export const getRateRemote_: () => Promise<
@@ -100,14 +101,31 @@ export const getPrice: (symbol: string) => any = async (symbol: string) => {
 export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
   console.info("In Function", coin, "Timestamp", timestamp);
   try {
-    const getCoinPrice: any = await axios.get(
-      getDataFromTimestampBaseURL(coin.toUpperCase(), timestamp),
-      defaultHeaderForgetDataFromTimestamp
-    );
-    console.info("getCoinPrice", getCoinPrice.data);
-    return getCoinPrice && getCoinPrice.data && getCoinPrice.data[0].p ?
-      Number(getCoinPrice.data[0].p) :
-      0;
+    if (coin && coin.includes("cro")) {
+
+      let getOnlyCoin = coin.substring(0, 3);
+
+      const getCoinPrice: any = await axios.get(
+        getDataFromTimestampBaseURLFromCrypto(`${getOnlyCoin.toUpperCase()}_USDT`, timestamp),
+        defaultHeaderForgetDataFromTimestamp
+      );
+
+      console.info("getCoinPrice", getCoinPrice.data.result.data[0]);
+
+      return getCoinPrice && getCoinPrice.data && getCoinPrice.data.result.data[0].a ?
+        Number(getCoinPrice.data.result.data[0].a) :
+        0;
+    } else {
+      const getCoinPrice: any = await axios.get(
+        getDataFromTimestampBaseURL(coin.toUpperCase(), timestamp),
+        defaultHeaderForgetDataFromTimestamp
+      );
+      console.info("getCoinPrice", getCoinPrice.data);
+      return getCoinPrice && getCoinPrice.data && getCoinPrice.data[0].p ?
+        Number(getCoinPrice.data[0].p) :
+        0;
+    }
+
   } catch (error: any) {
     console.info("Error In Axios", error);
     return 0;
