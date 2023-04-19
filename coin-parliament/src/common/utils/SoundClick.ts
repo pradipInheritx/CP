@@ -6,7 +6,7 @@ const voteResult = require("../../assets/sounds/vote-result-finish.mp3").default
 const TenSec = require("../../assets/sounds/last-10-sec-for-vote.mp3").default;
 const Notification = require("../../assets/sounds/notification.mp3").default;
 const voteshound = require("../../assets/sounds/voteshound.wav").default;
-
+const silent = require("../../assets/sounds/silence.mp3").default;
 
 const audio = new Audio(buttonClick);
 const onFlipcard = new Audio(Flipcard);
@@ -15,7 +15,7 @@ const voteEnd = new Audio(voteResult);
 const lastTensec = new Audio(TenSec);
 const NotiSound = new Audio(Notification);
 const voteClick = new Audio(voteshound);
-
+const silentSound = new Audio(silent);
 
 export const handleSoundClick = () => {
     // console.log('play sound')
@@ -35,6 +35,7 @@ export const claimyourreward =  {
   
 export const voteEndFinish = () => {
     // console.log('play sound')
+    silentSound.play();
   voteEnd.play();
 };
   

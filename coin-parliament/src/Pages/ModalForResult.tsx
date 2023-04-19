@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
 import { voteEndFinish } from '../common/utils/SoundClick';
-
+// const silent = require("../assets/sounds/silent.mp3").default;
 
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -115,6 +115,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
   
   return (
          <div>
+          {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
       <Modal show={show} onHide={handleClose}       
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
@@ -178,13 +179,13 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                           //       vote?.valueExpirationTime as number[]
                           //     )[1]
                           // )
-                          vote?.valueVotingTime as unknown as number
+                          vote?.valueExpirationTime as unknown as number
                           }
                       </div>
                       <div>
-                        {vote.valueExpirationTime && (
+                        {/* {vote.valueExpirationTime && (
                           <Trend num={trend} />
-                        )}
+                        )} */}
                       </div>
                     </div>
                  
@@ -193,7 +194,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                         <Row className="flex-column text-center">
                       
                           <Col>
-                            <strong>{vote.score}</strong>
+                            <strong>You progressed - {vote.score}</strong>
                           </Col>
                           <Col>CMP</Col>
                         </Row>
@@ -236,10 +237,12 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                         // formatCurrency(                                              
                         //   (vote?.valueExpirationTime as number[])[0]
                         // )
-                              vote?.valueVotingTime[0]
+                              vote?.valueExpirationTime[0]
                         }
                     </div>
-                    <div>{vote?.valueExpirationTime && <Trend num={trend} />}</div>
+                    <div>
+                      {/* {vote?.valueExpirationTime && <Trend num={trend} />} */}
+                      </div>
                   </div>
                 </div>
               </CoinContainer>  
@@ -271,7 +274,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
               <div style={{ minHeight: "100%" }} className="">
                 <CoinVoteTimer>
                   {vote?.valueExpirationTime && vote?.score && (
-                    <strong>{vote?.score} CMP</strong>
+                    <strong>You progressed - {vote?.score} CMP</strong>
                   )}                 
                 </CoinVoteTimer>
               </div>
@@ -300,10 +303,12 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                         // (vote.valueExpirationTime as number[])[1]
                            
                         // )
-                              vote.valueVotingTime[1]
+                              vote.valueExpirationTime[1]
                         }
                     </div>
-                    <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
+                    <div>
+                      {/* {vote.valueExpirationTime && <Trend num={trend} />} */}
+                      </div>
                   </div>
                 </div>
               </CoinContainer>  
