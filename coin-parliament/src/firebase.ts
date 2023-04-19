@@ -7,12 +7,12 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCuso_D_GR132hnrBPzxbIi66qDA4vuTRM",
-  authDomain: "sportparliament-1f167.firebaseapp.com",
-  projectId: "sportparliament-1f167",
-  storageBucket: "sportparliament-1f167.appspot.com",
-  messagingSenderId: "784392547136",
-  appId: "1:784392547136:web:f626643a0bf3f18c7568a5"
+  apiKey: "AIzaSyDLKqQ1J-m6YPVLhLYTd_OZFLHUoWu6qSU",
+  authDomain: "stockparliament.firebaseapp.com",
+  projectId: "stockparliament",
+  storageBucket: "stockparliament.appspot.com",
+  messagingSenderId: "1057846249810",
+  appId: "1:1057846249810:web:86084888813a2ef3c9128b"
   // apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   // authDomain: 'coinparliament.com',
   // databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,

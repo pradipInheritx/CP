@@ -52,7 +52,7 @@ const Home = () => {
           <HomeContainer width={width} className='mb-4 p-0'>
             {!(login || firstTimeLogin) && (
               <>
-                <Image
+                {/* <Image
                   src={src}
                   style={{
                     width: width && width > 969 ? "auto" : "100%",
@@ -64,11 +64,11 @@ const Home = () => {
                     // marginTop:'120px',
                     position: "absolute",
                   }}
-                />
+                /> */}
                 <div
                   className='w-100 '
                   style={{
-                    marginTop: window.screen.width > 979 ? "150px" : "-48px",
+                    marginTop: window.screen.width > 979 ? "150px" : "150px",
                   }}
                 >
                   <h2
@@ -109,7 +109,7 @@ const Home = () => {
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "200px",
+                // marginTop: "200px",
               }}
             >
               {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
@@ -121,7 +121,7 @@ const Home = () => {
                 // zIndex: 1,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "200px",
+                // marginTop: "200px",
                 fontSize: "30px",
               }}
             >
