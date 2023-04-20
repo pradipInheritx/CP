@@ -87,6 +87,7 @@ import coinRouter from "./routes/Coin.routes";
 import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
 import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
 import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
+import userTypeSettingsRouter from "./routes/UserTypeSettings";
 
 // initialize express server
 const app = express();
@@ -110,6 +111,7 @@ app.use("/admin/rewards", rewardNftAdminRouter);
 app.use("/admin/coins", coinRouter);
 app.use("/admin/voteSetting", timeframeRouter);
 app.use("/admin/voteSetting", perUserVoteRouter);
+app.use("/admin/userTypeSettings", userTypeSettingsRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));

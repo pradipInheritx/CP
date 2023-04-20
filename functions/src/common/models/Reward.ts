@@ -100,7 +100,6 @@ export async function getAllNftGallery() {
   snapshot.forEach((doc) => {
     array.push({ id: doc.id, ...doc.data() });
   });
-  console.log("Array", array);
   return array;
 }
 

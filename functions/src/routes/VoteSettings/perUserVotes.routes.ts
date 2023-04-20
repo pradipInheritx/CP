@@ -1,12 +1,12 @@
-import {Router} from "express";
+import { Router } from "express";
 import {
-  createPerUserVote,
-  getPerUserVote,
-  getPerUserVoteById,
-  updatePerUserVoteById,
-  deletePerUserVoteById,
+    createPerUserVote,
+    getPerUserVote,
+    getPerUserVoteById,
+    updatePerUserVoteById,
+    deletePerUserVoteById,
 } from "../../common/models/Admin/VoteSettings/perUserVote";
-import {auth} from "../../common/middleware/authentication";
+import { auth } from "../../common/middleware/authentication";
 
 const perUserVoteRouter = Router();
 
