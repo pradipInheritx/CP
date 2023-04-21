@@ -207,17 +207,20 @@ class Calculation {
 
   calcSuccess(): void {
     const { voteResult } = this;
-    const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
-
+    //const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
+    let CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
       const endValue: any = voteResult?.valueExpirationTime;
-      const upRange: any =
-        Number(startValue) +
-        (Number(startValue) * CPMReturnRangePercentage) / 100;
-      const downRange =
-        Number(startValue) -
-        (Number(startValue) * CPMReturnRangePercentage) / 100;
+      // const upRange: any =
+      //   Number(startValue) +
+      //   (Number(startValue) * CPMReturnRangePercentage) / 100;
+      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue)
+      // const downRange =
+      //   Number(startValue) -
+      //   (Number(startValue) * CPMReturnRangePercentage) / 100;
+
+      const downRange = Number(startValue) - Number(CPMRangeCurrentValue)
 
       if (typeof startValue === "number" && typeof endValue === "number") {
         const trendChange = Number(
@@ -245,20 +248,39 @@ class Calculation {
         Array.isArray(voteResult.valueVotingTime) &&
         Array.isArray(voteResult.valueExpirationTime)
       ) {
+        // const diff = [
+        //   voteResult.valueExpirationTime[0] / voteResult.valueVotingTime[0],
+        //   voteResult.valueExpirationTime[1] / voteResult.valueVotingTime[1],
+        // ];
+
+        // const winner = diff[0] < diff[1] ? 1 : 0;
+        // const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+        // console.info(
+        //   "averageValue",
+        //   averageValue,
+        //   "CPMReturnRangePercentage",
+        //   CPMReturnRangePercentage
+        // );
+        // if (averageValue <= CPMReturnRangePercentage) {
+        //   this.voteResult.success = 2;
+        // } else {
+        //   this.voteResult.success = voteResult.direction === winner ? 1 : 0;
+        // }
+
         const diff = [
-          voteResult.valueExpirationTime[0] / voteResult.valueVotingTime[0],
-          voteResult.valueExpirationTime[1] / voteResult.valueVotingTime[1],
+          voteResult.valueExpirationTime[0] - voteResult.valueVotingTime[0],
+          voteResult.valueExpirationTime[1] - voteResult.valueVotingTime[1],
         ];
 
         const winner = diff[0] < diff[1] ? 1 : 0;
-        const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+        const averageValue = Math.abs(diff[0] - diff[1]);
         console.info(
           "averageValue",
           averageValue,
-          "CPMReturnRangePercentage",
-          CPMReturnRangePercentage
+          "CPMRangeCurrentValue",
+          CPMRangeCurrentValue
         );
-        if (averageValue <= CPMReturnRangePercentage) {
+        if (averageValue <= CPMRangeCurrentValue) {
           this.voteResult.success = 2;
         } else {
           this.voteResult.success = voteResult.direction === winner ? 1 : 0;

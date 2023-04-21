@@ -35,7 +35,8 @@ export type VoteResultProps = VoteProps & {
   valueExpirationTime?: number | number[];
   success?: number;
   score?: number;
-  CPMRangePercentage: number;
+  CPMRangePercentage?: number;
+  CPMRangeCurrentValue?: number;
 };
 
 export type TimeFrame = {
