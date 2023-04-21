@@ -40,26 +40,35 @@ const
       <PoolBox style={{marginRight:'-27px', marginLeft:'-27px' }}>
         {/* <h2 className="d-flex justify-content-center"> {(`${texts.Partners}`).toUpperCase()}</h2> */}
         <div className="d-flex justify-content-center mt-4">          
-          <h6 className="text-uppercase">            
-            {texts.WEBELIEVEINPARTNERSHIPS}
+          <h6 className="">            
+              {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+              We believe in Partnerships!
           </h6>
         </div>
         <div className="d-flex justify-content-center">
           <img src={earn} alt="" width={window.screen.width>767? "400px":"300px" }/>
         </div>        
-        <p className="my-4 text-center"> EARN 50% LIFETIME REVENUE SHARE! </p>                 
-        <div className="text-center">
-              <p> How does it work? </p>
-              
-                <p className="my-3 lh-base ">1. Sign up to become a member of Coin Parliament.</p>
-                <p className="my-3 lh-base ">2. Invite your Friends from any social media platform using your unique referral link.</p>
-                <p className="my-3 lh-base ">They will be an integral part of your progress and income FOREVER! Every referred vote will contribute to your CMP progress. Upon completion of 100 CMP’s (closing block) you will be eligible for rewards. </p>
-                <p className="my-3 lh-base ">3. Receive 50% of all referred purchases directly to your connected wallet.</p>              
-              
-        </div>            
+        <p className="my-4 text-center">How does the Coin Parliament partners' program work?</p>                 
+          <p className="text-center"><strong> Signup • Invite your friends • Enjoy the benefits</strong></p>   
+        <div className="d-flex justify-content-center">
+        <div className="" style={{width:`${window.screen.width>767?"75%":"95%"}`}}>                            
+                <p className="lh-base ">1. Sign up to become a member of Coin Parliament .</p>
+                <p className="lh-base ">2. Invite your friends from any social media platform using your unique referral link.</p>
+                <p className="lh-base ">3. Enjoy the benefits of the Coin Parliament partner program .</p>              
+              <p className="lh-base ">
+                <ul >
+                  <li className="mb-3">Accelerating your mining progress</li>
+                  <p>Every referred vote will contribute to your CMP progress. Upon completion of 100 CMP (closing block), you will be eligible for rewards.</p>
+                  <li>Receive 50% of all your friends' total purchases directly to your wallet.</li>
+                </ul>
+              </p>
+            <p className="">Your friends will be an integral part of your progress and income <strong>FOREVER!</strong></p>  
+            </div>                        
+          </div>  
+          <p className="text-center"> That’s it, </p>
         <div className="d-flex justify-content-center">
         <Button 
-          
+          className="fw-bold"
          onClick={() => {
           copy(referralUrl);
           showToast(
@@ -67,7 +76,9 @@ const
             ToastType.SUCCESS
           );
               }}
-          >That’s it, INVITE NOW!</Button>  
+            >
+              INVITE YOUR FRIENDS NOW!
+            </Button>  
           </div>  
           </PoolBox>
     </GeneralPage>

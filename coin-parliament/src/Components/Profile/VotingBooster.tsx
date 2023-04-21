@@ -78,31 +78,20 @@ const VotingBooster = () => {
   
   & 
   div {
-    color:#6352E8;
-    font-size:14px;
+    color:#6352E8;    
     padding:14px 18px;
+    & p{
+      font-size:13px;
+      font-weight:600;      
+    }
+    & span{
+      font-size:12px;
+    }
   }
 `;
   return (
     <>
-        <div className="d-flex justify-content-center">
-          <img src={votingbooster} alt="" width={window.screen.width>767? "400px":"300px"}/>
-        </div>
-      <div
-        className='p-0 m-0 w-100 d-flex justify-content-center'
-        style={{
-          background: "#160133",
-          // height: `${screenHeight()}`,
-        }}
-      >
-        <div
-          className=''
-          style={{
-            background: "#160133",
-            width: `${window.screen.width > 979 ? "730px" : "100%"}`,
-          }}
-        >
-          <TextContainer
+      <TextContainer
             className=' d-xl-none'
             style={{
               textTransform: "none",
@@ -119,7 +108,7 @@ const VotingBooster = () => {
                 fontSize: "20px",
               }}
             >
-              {translate("Boost your voting power").toUpperCase()}
+              {translate("BOOST YOUR VOTING POWER").toUpperCase()}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
@@ -131,26 +120,43 @@ const VotingBooster = () => {
                 // paddingTop: "30px",
               }}
             >
-              {translate("Boost your voting power").toUpperCase()}
+              {translate("BOOST YOUR VOTING POWER").toUpperCase()}
             </H2>
           )}
+        <div className="d-flex justify-content-center">
+          <img src={votingbooster} alt="" width={window.screen.width>767? "400px":"300px"}/>
+        </div>
+      <div
+        className='p-0 m-0 w-100 d-flex justify-content-center'
+        style={{
+          background: "#160133",
+          // height: `${screenHeight()}`,
+        }}
+      >
+        <div
+          className=''
+          style={{
+            background: "#160133",
+            width: `${window.screen.width > 979 ? "730px" : "100%"}`,
+          }}
+        >          
           <div className='d-flex justify-content-around mt-4 text-center px-3 mb-4'>
             <PriceCard>
               <div>
-                <p className='fw-bold'>100 VOTES </p>
-                <span>$9.99</span>
+                <p className='my-1'>Buy extra 100 votes</p>
+                <span>For only <strong>$9.99</strong> </span>
               </div>
             </PriceCard>
             <PriceCard>
               <div>
-                <p className='fw-bold'>250 VOTES </p>
-                <span>$19.99</span>
+                <p className='my-1'>Buy extra 200 votes</p>
+                <span>For only <strong>$19.99</strong></span>
               </div>
             </PriceCard>
             <PriceCard>
               <div>
-                <p className='fw-bold'>500 VOTES </p>
-                <span>$34.99</span>
+                <p className='my-1'>Buy extra 300 votes</p>
+                <span>For only <strong>$29.99</strong></span>
               </div>
             </PriceCard>
           </div>

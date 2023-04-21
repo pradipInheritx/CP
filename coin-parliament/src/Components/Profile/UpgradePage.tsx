@@ -48,7 +48,7 @@ const UpgradePage = () => {
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
 
-  const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
+  const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
 
@@ -57,6 +57,7 @@ const UpgradePage = () => {
   paddinng-top:20px;
   background-color:#fff;
   border:3px solid #6352E8;
+  margin : 10px 0px 10px 0px;
   display:"flex"
   justify-content: ${flexType()};
    flex-wrap: wrap;
@@ -90,10 +91,7 @@ const UpgradePage = () => {
   }
 `;
   return (
-    <>
-              <div className="d-flex justify-content-center">
-          <img src={upgrade} alt="" width={window.screen.width>767? "400px":"300px"}/>
-        </div>
+    <>        
       <div
         className='p-0 m-0 w-100 d-flex justify-content-center'
         style={{
@@ -109,10 +107,10 @@ const UpgradePage = () => {
           className=''
           style={{
             background: "#160133",
-            width: `${window.screen.width > 979 ? "730px" : "100%"}`,
+            width: `${window.screen.width > 979 ? "850px" : "100%"}`,
           }}
         >
-          <TextContainer
+          {/* <TextContainer
             className='d-xl-none d-md-none'
             style={
               {
@@ -144,8 +142,8 @@ const UpgradePage = () => {
                 "By upgrading your voting pass you will be able to mint PAX token, earn NFTs and power up the voting"
               )}
             </p>
-          </TextContainer>
-          {window.screen.width > 979 && (
+          </TextContainer> */}
+          
             <H2
               style={{
                 fontSize: "20px",
@@ -154,26 +152,34 @@ const UpgradePage = () => {
                 fontWeight: "bold",
               }}
             >
-              {translate("UPGRADE YOUR VOTING PASS!")}
+              {translate("Become a miner")}
             </H2>
-          )}
-          {window.screen.width > 979 && (
+            <div className="d-flex justify-content-center">
+                <img src={upgrade} alt="" width={window.screen.width>767? "400px":"300px"}/>
+            </div>
+          
             <P
-              style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
-            >
-              {translate(
-                "By upgrading your voting pass you will be able to mint PAX token, earn NFTs and power up the voting"
-              )}
-            </P>
-          )}
-
+            style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
+            className="px-2"
+            >              
+                Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.              
+            </P>                       
           <div
-            className='d-flex justify-content-around px-3 text-center'
+            className='d-flex justify-content-around px-3 text-center flex-wrap'
             style={{ marginTop: "47px" }}
           >
             <BoxCard>
               <p className='text-end' style={{ color: "#160133" }}>
-                Get an exclusive Avatar NFT!
+                Get an exclusive Avatar NFT
+              </p>
+              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
+                <img className='' src={upgrade1} alt='' />
+              </div>
+            </BoxCard>
+            
+            <BoxCard>
+              <p className='text-end' style={{ color: "#160133" }}>
+                Get extra votes
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
                 <img className='' src={upgrade1} alt='' />
@@ -181,7 +187,7 @@ const UpgradePage = () => {
             </BoxCard>
             <BoxCard>
               <p className='text-end' style={{ color: "#160133" }}>
-                Power up your voting
+                Convert your cards collection to NFT
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
                 <button
@@ -190,10 +196,8 @@ const UpgradePage = () => {
                   style={{
                     background:
                       " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" /* fallback for old browsers */,
-                    color: "#fff",
-                    // width: "340px",
-                    marginTop: "25px",
-                    // padding: "14px 44px",
+                    color: "#fff",                    
+                    marginTop: "25px",                    
                     boxShadow: "0px 3px 6px #00000029",
                     fontSize: "10px",
                   }}
@@ -204,34 +208,14 @@ const UpgradePage = () => {
             </BoxCard>
             <BoxCard>
               <p className='text-end' style={{ color: "#160133" }}>
-                Cash Out Your Minted PAX tokens
+                Mine PAX BEP20 tokens
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
                 <img className='' src={upgrade2} alt='' />
               </div>
             </BoxCard>
-          </div>
-          <TextContainer
-            className='d-xl-none '
-            style={{
-              textTransform: "none",
-              fontWeight: "400",
-              // maxWidth: "280px",
-            }}
-          >
-            <H2
-              style={{
-                zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                marginTop: "15px",
-                fontSize: "26px",
-              }}
-            >
-              {translate("ONETIME PAYMENT OF $199")}
-            </H2>
-          </TextContainer>
-          {window.screen.width > 979 && (
+          </div>        
+          
             <H2
               style={{
                 zIndex: 1,
@@ -241,8 +225,7 @@ const UpgradePage = () => {
               }}
             >
               {translate("ONETIME PAYMENT OF $199")}
-            </H2>
-          )}
+            </H2>          
           <div
             className='text-center mb-4'
             style={{
@@ -272,60 +255,7 @@ const UpgradePage = () => {
             >
               BUY NOW
             </button>
-          </div>
-
-          {/* <TextContainer
-            className=' d-xl-none'
-            style={{
-              textTransform: "none",
-              fontWeight: "400",
-              // maxWidth: "250px",
-            }}
-          >
-            <H2
-              style={{
-                zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                marginTop: "44px",
-                fontSize: "20px",
-              }}
-            >
-              {translate("Power up your voting")}
-            </H2>
-          </TextContainer>
-          {window.screen.width > 979 && (
-            <H2
-              style={{
-                zIndex: 1,
-                fontSize: "20px",
-                marginTop: "35px",
-                // paddingTop: "30px",
-              }}
-            >
-              {translate("Power up your voting")}
-            </H2>
-          )}
-          <div className='d-flex justify-content-around mt-4 text-center px-3'>
-            <PriceCard>
-              <div>
-                <p className='fw-bold'>100 VOTES </p>
-                <span>$9.99</span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='fw-bold'>250 VOTES </p>
-                <span>$19.99</span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='fw-bold'>500 VOTES </p>
-                <span>$34.99</span>
-              </div>
-            </PriceCard>
-          </div> */}
+          </div>        
         </div>
       </div>
     </>
