@@ -105,10 +105,21 @@ export const getPerUserVote = async (req: any, res: any, next: any) => {
       })
     );
 
+    let totalCount: number = 0;
+
+    const userCollectionRef = await firebaseAdmin.firestore().collection('users');
+
+    userCollectionRef.get().then(querySnapshot => {
+      totalCount = querySnapshot.size;
+      console.log(`Get Total User Count: ${totalCount}`);
+    }).catch(error => {
+      console.error(`Error while getting users documents: ${error}`);
+    });
+
     res.status(200).send({
       status: true,
       message: "Per user votes fetched successfully",
-      result: getAllPerUserVotesResponse,
+      result: { data: getAllPerUserVotesResponse, totalCount },
     });
   } catch (error) {
     res.status(500).send({
