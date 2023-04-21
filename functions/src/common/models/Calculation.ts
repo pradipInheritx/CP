@@ -380,7 +380,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           console.info("userLengthForThisUserType", userLengthForThisUserType)
           console.info("eachSplit", eachSplit)
           if (
-            minimumUserRequirement > userLengthForThisUserType ||
+            // minimumUserRequirement > userLengthForThisUserType ||
             eachSplit.length < userLengthForThisUserType
           ) {
             eachSplit.push(eachUser);
