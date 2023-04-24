@@ -13,7 +13,7 @@ import UserIcon from "../icons/userIcon";
 import SecurityIcon from "../icons/securityIcon";
 import { useLocation, useNavigate } from "react-router-dom";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
-import Votes from "../icons/votes";
+import Votes from "../icons/votes2";
 import Mine from "../icons/mine";
 import Share from "../icons/share";
 import Following from "../icons/Following";
