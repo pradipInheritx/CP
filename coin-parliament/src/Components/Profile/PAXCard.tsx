@@ -31,7 +31,7 @@ const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
               <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize: '20px' }}>                                
                   <CountUp start={prevCountRef.current} end={PAX && PAX} duration={5} />
               </span>
-              <span className="cp_PAX" >PTS</span>
+              {/* <span className="cp_PAX" >PTS</span> */}
             </div>
           </div>
         </div>

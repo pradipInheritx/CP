@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { Gradient2 } from "../styledMixins";
 import { isV1, PageContainer } from "../Components/App/App";
 import ImageTabs from "../Components/Profile/ImageTabs";
-import Votes from "../Components/icons/votes";
+import Votes from "../Components/icons/votes2";
 import Mine from "../Components/icons/mine";
 import Share from "../Components/icons/share";
 import Following from "../Components/icons/Following1";

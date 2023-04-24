@@ -164,7 +164,8 @@ const Header = ({
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules,followerUserId,login } = useContext(AppContext);
+  const { voteRules, followerUserId, login } = useContext(AppContext);
+  
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
@@ -247,13 +248,17 @@ console.log('votenumber',voteNumber, Number(voted))
         setSignup(true);
         break;
       case EventKeys.LOGOUT:
+        console.log("i am working")
         signOut(auth)
           .then((res) => {          
-            Logout(setUser);
+            Logout(setUser);   
+            setLogin(true);
           })
           .catch((error) => {
+            // console.log("i am working error")
+            setLogin(true);
             const errorMessage = error.message;
-            console.log(errorMessage);
+            console.log(errorMessage,"i am working error");
           });
         break;
       case EventKeys.EDIT:
@@ -396,6 +401,7 @@ console.log('votenumber',voteNumber, Number(voted))
             user && {
               eventKey: EventKeys.LOGOUT,
               label: "Logout",
+              
             },
             !user && {
               eventKey: EventKeys.SIGNUP,

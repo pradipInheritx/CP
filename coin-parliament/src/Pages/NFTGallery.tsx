@@ -435,6 +435,7 @@ console.log(cardName,"mycardName")
                 name='cars'
                 id='cars'
                 className='bg-white border rounded py-2 mx-2'
+                value ={selectCollection}
                 // onChange={e=>onCollectionChange(e.target.value)}          
                 onChange={e=>setSelectCollection(e.target.value)}
               >
@@ -442,7 +443,7 @@ console.log(cardName,"mycardName")
             
 
             {collectionType?.map((data:any ,index:number) => {
-              return  <option value={data?.collectionName} key={index}>{data?.collectionName}</option>        
+              return  <option selected value={data?.collectionName} key={index}>{data?.collectionName}</option>        
             })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
@@ -468,12 +469,13 @@ console.log(cardName,"mycardName")
                 className='bg-white border rounded mx-1 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
-                <option value='all'>{texts.SelectType}</option>
+                {selectCollection !="none"?<><option value='all'>{texts.SelectType}</option>
                 <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
                 <option value={`${texts.Rare}`}>{texts.Rare}</option>
                 <option value={`${texts.Epic}`}>{texts.Epic}</option>
                 <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
-                <option value={`${texts.Common}`}>{texts.Common}</option>
+              <option value={`${texts.Common}`}>{texts.Common}</option></> :
+              <option value='all'>{texts.SelectType}</option>}
               </select>
               {/* <select
                 name='cars'
@@ -507,7 +509,7 @@ console.log(cardName,"mycardName")
           <p>SUMMER COLLECTION</p>
         </div> */}
         {!cardShow && collectionType?.map((data:any ,index:number) => {
-          return <div onClick={() => { navigate(`/nftAlbum/${data?.collectionName}`) }} key={index}
+          return <div onClick={() => {setSelectCollection(data?.collectionName)}} key={index}
            style={{
                 width: "600px"
           }}
