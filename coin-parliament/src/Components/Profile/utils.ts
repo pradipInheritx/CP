@@ -10,98 +10,131 @@ export const validatePassword = (newPassword: string, username: string, confirmP
   console.log('password1',check1 , check2,check3, check4)
   return  check1 && check4;
 };
-
+export const cmpRangeCoin:Object={
+  0:5,
+  1:5,
+  2:10,
+  3:10
+}
+export const cmpRangePair={
+  0:5,
+  1:5,
+  2:10,
+  3:10
+}
 export const decimal = {
   "BTC":
   {
   Symbol: 'BTC',
-  decimal: 2
+  decimal: 2,
+  multiply:100
 },
   "ETH":
   {
   Symbol: 'ETH',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   
   "BNB": {
   Symbol: 'BNB',
-  decimal: 1
+  decimal: 1,
+  multiply:10
   },
   "ADA":{
   Symbol: 'ADA',
-  decimal: 6
+  decimal: 6,
+  multiply:1000000
   },
   "SOL":{
   Symbol: 'SOL',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   "XRP":{
   Symbol: 'XRP',
-  decimal: 4
+  decimal: 4,
+  multiply:10000
   },
   "DOGE":{
   Symbol: 'DOGE',
-  decimal: 5
+  decimal: 5,
+  multiply:100000
   },
   "DOT":{
   Symbol: 'DOT',
-  decimal: 3
+  decimal: 3,
+  multiply:1000
   },
   "SHIB":{
   Symbol: 'SHIB',
-  decimal: 7
+  decimal: 7,
+  multiply:10000000
   },
   "MATIC":{
   Symbol: 'MATIC',
-  decimal: 4
+  decimal: 4,
+  multiply:10000
   },
   "CRO":{
   Symbol: 'CRO',
-  decimal: 4
+  decimal: 4,
+  multiply:10000
   },
   "LTC ":{
   Symbol: 'LTC',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   "LINK":{
   Symbol: 'LINK',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   "UNI":{
   Symbol: 'UNI',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   "TRX":{
   Symbol: 'TRX',
-  decimal: 5
+  decimal: 5,
+  multiply:100000
   },
   "XLM":{
   Symbol: 'XLM',
-  decimal: 4
+  decimal: 4,
+  multiply:10000
   },
   "MANA":{
   Symbol: 'MANA',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   "HBAR":{
   Symbol: 'HBAR',
-  decimal: 4
+  decimal: 4,
+  multiply:10000
   },
   "VET":{
   Symbol: 'VET',
-  decimal: 5
+  decimal: 5,
+  multiply:100000
   },
   "SAND":{
   Symbol: 'SAND',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   "EOS":{
     Symbol:'EOS',
-  decimal: 2
+  decimal: 2,
+  multiply:100
   },
   "CAKE":{
   Symbol: 'CAKE',
-  decimal: 3
+  decimal: 3,
+  multiply:1000
   },
 
 }

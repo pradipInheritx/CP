@@ -4,6 +4,7 @@ import { VoteResultProps } from "../../common/models/Vote";
 import "./styles.css";
 import styled, { css } from "styled-components";
 import CoinsContext from '../../Contexts/CoinsContext';
+import { decimal } from '../Profile/utils';
 // import ReangDot2 from "../../assets/images/ReangDot2.gif";
 // import ReangDot5 from "../../assets/images/ReangDot5.gif";
 
@@ -84,6 +85,8 @@ const getBorderColor = () => {
       }
         // @ts-ignore
        let bothCurrentPrice = [...vote?.valueVotingTime];
+      //  @ts-ignore
+       const newPairPrice =[(bothLivePrice[0] * decimal[symbol1].multiply - bothCurrentPrice[0] *decimal[symbol1].multiply)/priceRange ,(bothLivePrice[1] *decimal[symbol2].multiply - bothCurrentPrice[1] * decimal[symbol2].multiply)/priceRange ]
        const diffPer = [bothLivePrice[0] - bothCurrentPrice[0] ,bothLivePrice[1] - bothCurrentPrice[1] ]
        const getPer= [(diffPer[0] *1000)/bothCurrentPrice[0] + priceRange,(diffPer[1] *1000)/bothCurrentPrice[1]+priceRange]
     //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
@@ -93,15 +96,18 @@ const getBorderColor = () => {
     ];
          
       let winner = diff[0] < diff[1] ? 1 : 0;
-      const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      // if(!vote?.valueVotingTime || vote?.valueVotingTime == NaN){
+      const averageValue = Math.abs(diff[0]- diff[1]) * 100;
+      // if(!vote?.valueVotingTime || vote?.v alueVotingTime == NaN){
         // 60 sec - each line will be 0.01 % = 1 point
         // 5 min - each line will be 0.01 % 
         // 1 H - each line will be 0.05 % 
         // 24 H - each line will be 0.1 %
-      if ((averageValue <=10)) {        
+        // coin1 price diff - coin 2 price diff
+        //  if coin1 = 50 +10 =60
+        // if coin2= 50 - 10 
+      if ((averageValue ==averageValue)) {        
         console.log('pairrange',getPer[0])
-        setPersentValue(vote?.direction == 1 ? 50 +getPer[1] : 50 +getPer[0]) 
+        setPersentValue(vote?.direction == 1 ? 50 -(newPairPrice[0]-newPairPrice[1]) : 50 +(newPairPrice[0]-newPairPrice[1])) 
       } else {
         if (vote?.direction == 1) {
             winner == vote?.direction
@@ -141,17 +147,24 @@ const getBorderColor = () => {
         )
         // if(!vote?.valueVotingTime || vote?.valueVotingTime==NaN){
       
-        
+        // 1 =1 point
+        // add 100 to remove decimal 
+        //  get difference 
+        // make calculation of bar move
+       
+//         let multiplyValue=10
+     // @ts-ignore
+        const multiplyValue = decimal[symbol1].multiply
+const newPrice = ((livePrice*multiplyValue) - (votePrice * multiplyValue))/priceRange
        const diffPer = livePrice - votePrice 
        const getPer= ((diffPer *100)/votePrice) /priceRange
-
       //  console.log('priceRange',priceRange())
-        console.log('getPer',getPer,((diffPer *100)/votePrice),priceRange)
+        console.log('getPer',newPrice,livePrice,votePrice)
        if(livePrice < votePrice + votePrice /10 &&
          livePrice > votePrice - votePrice /10) {  
-          if  (vote?.direction == 0)setPersentValue(50 + getPer);
+          if  (vote?.direction == 0)setPersentValue(50 + newPrice);
           else{
-            setPersentValue(50 - getPer);
+            setPersentValue(50 - newPrice);
           }
         }
         else{
@@ -179,9 +192,12 @@ const getBorderColor = () => {
     console.log('allcoin',rangeData,symbol1,vote)
   
     setPriceRange(rangeData)
+   
+    // const decimalPrice = decimal[symbol1].decimal
+   
   }, [symbol1,allCoinsSetting,vote?.voteTime])
   
-  // console.log(lastTenSec,"lastTenSec")
+ 
 
   return (
     <div className=''>
