@@ -3,16 +3,16 @@ import { auth } from "../common/middleware/authentication";
 
 import {
   addCoinPair,
-  getAllCardsPairs,
-  pairsListingFunction,
+  getAllPairs,
+  pairListingFunction,
   updateStatusOfCoinPair
 } from "../common/models/Admin/CoinPair";
 
 const coinPairRouter = Router();
 
 coinPairRouter.post("/createPairCoin", auth, addCoinPair);
-coinPairRouter.patch("/updateCoinPairStatus/:pairId", auth, updateStatusOfCoinPair);
-coinPairRouter.get("/getAllCoinsPairs", auth, getAllCardsPairs);
-coinPairRouter.get("/getCoinPair", auth, pairsListingFunction);
+coinPairRouter.patch("/updateCoinPairStatus/:id", auth, updateStatusOfCoinPair);
+coinPairRouter.get("/getAllCoinsPairs", auth, getAllPairs);
+coinPairRouter.get("/getCoinPair", auth, pairListingFunction);
 
 export default coinPairRouter;
