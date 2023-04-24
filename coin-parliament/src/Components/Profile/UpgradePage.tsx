@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext } from "react";
+import React, { useContext ,useState,useEffect} from "react";
 import { Image } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Pairs from "../../Components/Pairs/Pairs";
@@ -47,10 +47,17 @@ const UpgradePage = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-
+const [clicked,setClicked]=useState(false)
   const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
+useEffect(() => {
+  
+
+  return () => {
+    setClicked(false)
+  }
+}, [])
 
   const BoxCard = styled.div`
   width:${screenWidth()};
@@ -146,10 +153,11 @@ const UpgradePage = () => {
           
             <H2
               style={{
-                fontSize: "20px",
+                fontSize: "1.25rem",
                 marginTop: "0px",
                 paddingTop: "30px",
                 fontWeight: "bold",
+                textTransform:'uppercase'
               }}
             >
               {translate("Become a miner")}
@@ -169,7 +177,7 @@ const UpgradePage = () => {
             style={{ marginTop: "47px" }}
           >
             <BoxCard>
-              <p className='text-end' style={{ color: "#160133" }}>
+              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
                 Get an exclusive Avatar NFT
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
@@ -178,19 +186,12 @@ const UpgradePage = () => {
             </BoxCard>
             
             <BoxCard>
-              <p className='text-end' style={{ color: "#160133" }}>
+              <p className='text-center' style={{ color: "#160133",height:'53px' }}>
                 Get extra votes
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
-                <img className='' src={upgrade1} alt='' />
-              </div>
-            </BoxCard>
-            <BoxCard>
-              <p className='text-end' style={{ color: "#160133" }}>
-                Convert your cards collection to NFT
-              </p>
-              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
-                <button
+              
+              <button
                   type='button'
                   className='btn fw-bold'
                   style={{
@@ -207,7 +208,15 @@ const UpgradePage = () => {
               </div>
             </BoxCard>
             <BoxCard>
-              <p className='text-end' style={{ color: "#160133" }}>
+              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
+                Convert your cards collection to NFT
+              </p>
+              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
+              <img className='' src={upgrade1} alt='' />
+              </div>
+            </BoxCard>
+            <BoxCard>
+              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
                 Mine PAX BEP20 tokens
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
@@ -239,6 +248,9 @@ const UpgradePage = () => {
               type='button'
               className='btn '
               onClick={() => {
+                if(clicked) return
+                setClicked(true)
+                
                 handleSoundClick()
                 showModal(<UpgradeCopy />)
               }}

@@ -102,10 +102,10 @@ const VotingBooster = () => {
             <H2
               style={{
                 // zIndex: 1,
-                fontWeight: "400",
+                fontWeight: "bold",
                 position: "relative",
                 marginTop: "44px",
-                fontSize: "20px",
+                fontSize: "1.25rem",
               }}
             >
               {translate("BOOST YOUR VOTING POWER").toUpperCase()}
