@@ -134,32 +134,31 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
               }}
             >
               <div className={`${window.screen.width < 767 ? "flex-column" : ""} d-flex justify-content-center align-items-center`}>
-                <div className="w-25 d-flex justify-content-center pb-2">
+                <div className=" pb-2">
                   <Logo {...{ symbol: vote?.coin || "", width: 30 }} />
                 </div>
                 <div className={`${window.screen.width < 767 ? "flex-column" : ""} w-100 d-flex justify-content-between`}>
-                  <div className={`${window.screen.width < 767 ? "w-100" : "w-50"}`}>
-                    <span>
-                      {coin.name} - {coin.symbol}
+                  <div className={`${window.screen.width < 767 ? "w-100" : "w-50"} text-center`}>
+                    <div className=''>
+                      <span style={{ fontSize: "14px" }} className='px-3'>
+                      {timeframeInitials(vote?.timeframe?.name)} VOTE
                     </span>
-                    <div style={{color:"#6352E8"}}>
-                      {vote?.direction==0 ? "BULL" : "BEAR"} - {timeframeInitials(vote?.timeframe?.name)} &nbsp;
+                    </div>
+                   
+                    {/* <span>
+                      {coin.name} - {coin.symbol}
+                    </span> */}
+                    <div >
+                      {vote?.direction==0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
                       <span>
-                        {
-                          // formatCurrency(
-                          // type === "coin"
-                          //   ? (vote?.valueVotingTime as unknown as number)
-                          //   : (vote?.valueVotingTime as number[])[1]
-                          // )
-                          vote?.valueVotingTime as unknown as number
-                          }
+                       $  {vote?.valueVotingTime as unknown as number}
                       </span>
                     </div>
                     <div>
                       <Col className="">
-                        {/* // ${vote?.id} -  */}
+                        {/* ${vote?.id} -  */}                        
                         <span className="sm_txt">{`
-                        ${moment(
+                        CYAtP8IlvtBQ6v7BEbAa - ${moment(
                           new Date(vote.voteTime)
                         ).format("HH:mm DD/MM/YYYY")}`}</span>
                       </Col>
@@ -168,42 +167,39 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                   {/* <div
                     className='d-flex justify-content-around w-50'
                   > */}
-                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-between" : "w-50 justify-content-around"}  d-flex `}>
-                    <div>
-                      <div>
-                        {vote.valueExpirationTime &&
-                          // formatCurrency(
-                          //   type === "coin"
-                          //     ? (vote?.valueVotingTime as unknown as number)
-                          //     : (
-                          //       vote?.valueExpirationTime as number[]
-                          //     )[1]
-                          // )
+                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `}>
+                    <div className='text-center'>
+                      <span style={{fontSize:"13px"}}>
+                        VOTE RESULT
+                      </span>
+                      <div style={{ fontSize: "14px" }}>
+                        $ {vote.valueExpirationTime &&
                           vote?.valueExpirationTime as unknown as number
                           }
+                      </div>
+                      <div>
+                        <span>MID VOTE IMPACT</span>
                       </div>
                       <div>
                         {/* {vote.valueExpirationTime && (
                           <Trend num={trend} />
                         )} */}
                       </div>
-                    </div>
-                 
-                    <div style={{color:"#6352E8"}}>
+                    </div>                                    
+                  </div>                 
+                </div>                 
+              </div>
+              <div style={{color:"#6352E8"}}>
                       {vote.score && (
                         <Row className="flex-column text-center">
                       
                           <Col>
-                            <strong>You progressed - {vote.score}</strong>
+                            <strong>You progressed - {vote.score}</strong> <span>CMP</span>
                           </Col>
-                          <Col>CMP</Col>
+                        
                         </Row>
                       )}
                     </div>
-                  </div>
-                </div>
-              </div>
-              
             </div>
             :""
 }
@@ -271,13 +267,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                  <p> {timeframeInitials(vote?.timeframe?.name)}</p>
                 </PairsVoteVs>
               </div>
-              <div style={{ minHeight: "100%" }} className="">
-                <CoinVoteTimer>
-                  {vote?.valueExpirationTime && vote?.score && (
-                    <strong>You progressed - {vote?.score} CMP</strong>
-                  )}                 
-                </CoinVoteTimer>
-              </div>
+              
             </div>
           </Col>                
         </div>
@@ -314,15 +304,26 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
               </CoinContainer>  
               </div>
                 </div>
-
+<div style={{ minHeight: "100%" }} className=" text-center">
+                <CoinVoteTimer>
+                    {vote?.valueExpirationTime && vote?.score && (
+                      <>
+                        <strong>You progressed - {vote?.score}</strong> <span>CMP</span>
+                      </>
+                      
+                  )}                 
+                </CoinVoteTimer>
+              </div>
                  <Col className="text-center">
                    {/* ${vote?.id} - */}
                   <span className="sm_txt">{`
-                     ${moment(
+                   CYAtP8IlvtBQ6v7BEbAa - ${moment(
                       new Date(vote?.voteTime)
                     ).format("HH:mm DD/MM/YYYY")}`}</span>
                   </Col>
-                </div>
+              </div>
+              
+              
             :""
             }
             

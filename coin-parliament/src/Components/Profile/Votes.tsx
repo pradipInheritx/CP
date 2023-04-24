@@ -227,20 +227,7 @@ const callbackFun=()=>{
       id="profile-votes"
       onSelect={() => setIndex(0)}
       tabs={[
-        {
-          eventKey: "pairs",
-          title: capitalize(translate(`${texts.Pair}`)),
-          pane: (
-            <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.pairs.votes.map((v, i) => (
-                <div className="mb-2" key={i}>
-                  <MyVotedCard v={v} callbackFun={callbackFun} />
-                </div>
-              ))}
-              {getButtons(votes.pairs)}
-            </div>
-          ),
-        },
+        
         {
           eventKey: "coins",
           title: capitalize(translate(`${texts.Coin}`)),
@@ -252,6 +239,20 @@ const callbackFun=()=>{
                 </div>
               ))}
               {getButtons(votes.coins)}
+            </div>
+          ),
+        },
+        {
+          eventKey: "pairs",
+          title: capitalize(translate(`${texts.Pair}`)),
+          pane: (
+            <div className="d-flex justify-content-center align-items-center flex-column">
+              {votes.pairs.votes.map((v, i) => (
+                <div className="mb-2" key={i}>
+                  <MyVotedCard v={v} callbackFun={callbackFun} />
+                </div>
+              ))}
+              {getButtons(votes.pairs)}
             </div>
           ),
         },

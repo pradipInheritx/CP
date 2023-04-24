@@ -23,7 +23,7 @@ const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
           >
             <div>
               <span className="cp_Value vstack" style={{paddingBottom:'2px', fontSize:'20px'}}>{PAX}</span>
-              <span className="cp_PAX" >PTS</span>
+              {/* <span className="cp_PAX" >PTS</span> */}
             </div>
           </div>
         </div>

@@ -560,13 +560,14 @@ const CheckCardDisable = (cardId: any) => {
                 id='cars'
                 className='bg-white border rounded py-2'
                 // onChange={e=>onCollectionChange(e.target.value)}
+            value ={selectCollection}
                 onChange={e=>setSelectCollection(e.target.value)}
               >
             <option value='none'>{texts.SelectCollection}</option>
             
 
             {collectionType?.map((data:any ,index:number) => {
-              return  <option value={data?.collectionName} key={index}>{data?.collectionName}</option>        
+              return  <option value={data?.collectionName} selected key={index}>{data?.collectionName}</option>        
             })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
@@ -593,12 +594,13 @@ const CheckCardDisable = (cardId: any) => {
                 className='bg-white border rounded mx-2 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
-                <option value='all'>{texts.SelectType}</option>
+                {selectCollection !="none"?<><option value='all'>{texts.SelectType}</option>
                 <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
                 <option value={`${texts.Rare}`}>{texts.Rare}</option>
                 <option value={`${texts.Epic}`}>{texts.Epic}</option>
                 <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
-                <option value={`${texts.Common}`}>{texts.Common}</option>
+              <option value={`${texts.Common}`}>{texts.Common}</option></> :
+              <option value='all'>{texts.SelectType}</option>}
           </select>
           
           <select                
@@ -618,7 +620,7 @@ const CheckCardDisable = (cardId: any) => {
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
         {!cardShow && collectionType?.map((data:any ,index:number) => {
-          return <div onClick={() => { navigate(`/followerProfile/Album/${data?.collectionName}`) }} key={index}
+          return <div onClick={() => { setSelectCollection(data?.collectionName)}} key={index}
            style={{
                 width: "600px"
           }}

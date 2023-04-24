@@ -26,7 +26,9 @@ import { functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
+import { useNavigate } from "react-router-dom";
 const sendEmail = httpsCallable(functions, "sendEmail");
+
 export enum LoginModes {
   LOGIN,
   SIGNUP,
@@ -45,12 +47,14 @@ export const providers = {
 };
 
 export const Logout = (setUser: () => void) => {
- 
+  const navigate = useNavigate();
   const auth = getAuth();
   signOut(auth)
     .then(() => {
       setUser();
-      window.localStorage.setItem('mfa_passed','false')
+      window.localStorage.setItem('mfa_passed', 'false')
+      navigate("/")
+      console.log("i am logout working")
     })
     .catch((error) => {
       const errorMessage = error.message;
