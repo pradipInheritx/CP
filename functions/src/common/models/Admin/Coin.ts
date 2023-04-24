@@ -10,13 +10,14 @@ type Coin = {
   symbol: any;
   coinLogo: any;
   status: string;
+  voteBarRange: any
 };
 
 export const addCoin = async (req: any, res: any) => {
-  const { coinName, symbol, coinLogo, status } = req.body;
+  const { coinName, symbol, coinLogo, voteBarRange, status } = req.body;
   try {
     const id = uuidv4();
-    const coin: Coin = { coinId: id, coinName, symbol, coinLogo, status };
+    const coin: Coin = { coinId: id, coinName, symbol, coinLogo, voteBarRange, status };
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
     let checkCoin = coinData.coins.find((coin: any) => {
@@ -62,7 +63,7 @@ export const updateStatusOfCoin = async (req: any, res: any) => {
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
     let getCoin = coinData.coins.find((coin: any) => {
-      return coin.coinId == coinId;
+      return coin.symbol == coinId;
     });
     if (!getCoin) {
       return res.status(404).send({
@@ -87,7 +88,45 @@ export const updateStatusOfCoin = async (req: any, res: any) => {
     errorLogging("updateStatusOfCoin", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in server",
+      message: "Something went wrong in updateStatusOfCoin",
+      result: error,
+    });
+  }
+};
+
+export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
+  const { coinId } = req.params;
+  const { voteBarRange } = req.body;
+  try {
+    const coinRef = await firestore().collection("settings").doc("coins").get();
+    let coinData: any = coinRef.data();
+    let getCoin = coinData.coins.find((coin: any) => {
+      return coin.symbol == coinId;
+    });
+    if (!getCoin) {
+      return res.status(404).send({
+        status: false,
+        message: "Coin not found",
+        result: null,
+      });
+    }
+    getCoin.voteBarRange = voteBarRange;
+
+    await firestore()
+      .collection("settings")
+      .doc("coins")
+      .set(coinData, { merge: true });
+
+    res.status(200).send({
+      status: true,
+      message: "Status update.",
+      result: getCoin,
+    });
+  } catch (error) {
+    errorLogging("updateVoteBarRangeOfCoin", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in updateVoteBarRangeOfCoin",
       result: error,
     });
   }
@@ -103,7 +142,7 @@ export const getAllCoins = async (req: any, res: any) => {
       result: coinData,
     });
   } catch (error) {
-    errorLogging("updateStatusOfCoin", "ERROR", error);
+    errorLogging("getAllCoins", "ERROR", error);
     res.status(500).send({
       status: false,
       message: "Something went wrong in server",
@@ -114,7 +153,6 @@ export const getAllCoins = async (req: any, res: any) => {
 
 export const getCoinById = async (req: any, res: any) => {
   const { coinId } = req.params;
-  console.log("coinId ,,,,,,,,", coinId);
   try {
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
@@ -134,7 +172,7 @@ export const getCoinById = async (req: any, res: any) => {
       result: getCoin,
     });
   } catch (error) {
-    errorLogging("updateStatusOfCoin", "ERROR", error);
+    errorLogging("getCoinById", "ERROR", error);
     res.status(500).send({
       status: false,
       message: "Something went wrong in server",
