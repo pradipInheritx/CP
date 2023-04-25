@@ -152,12 +152,12 @@ export const getAllCoins = async (req: any, res: any) => {
 };
 
 export const getCoinById = async (req: any, res: any) => {
-  const { coinId } = req.params;
+  const { id } = req.params;
   try {
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
     let getCoin = coinData.coins.find((coin: any) => {
-      return coin.coinId == coinId;
+      return coin.id == id;
     });
     if (!getCoin) {
       return res.status(404).send({
