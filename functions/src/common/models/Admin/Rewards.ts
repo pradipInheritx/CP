@@ -52,10 +52,10 @@ export const addAlbumNft = async (req: any, res: any) => {
       .where("albumId", "==", albumId)
       .get();
 
-    if (checkAlbums.docs.length) {
+    if (checkAlbums && checkAlbums.docs && checkAlbums.docs.length) {
       return res.status(409).send({
         status: false,
-        message: "Already exist.",
+        message: `This album id already exists: ${albumId}`,
         result: null,
       });
     }
@@ -66,9 +66,8 @@ export const addAlbumNft = async (req: any, res: any) => {
       setDetails: [],
     };
 
-    await firestore().collection("nftGallery").doc().set(albumData);
+    await firestore().collection("nftGallery").doc().set(albumData, { merge: true });
 
-    console.log("Albums id >>>>>", albumData, albumId);
     const newAlbumRef = await firestore()
       .collection("nftGallery")
       .where("albumId", "==", albumId)
@@ -111,7 +110,7 @@ export const addSetNft = async (req: any, res: any) => {
 
     const albumData: any = getCollectionRef.data();
 
-    if(!albumData){
+    if (!albumData) {
       return res.status(404).send({
         status: false,
         message: "Album not found.",
@@ -177,7 +176,7 @@ export const addRewardCardNft = async (req: any, res: any) => {
       .get();
     let collectionDetails: any = getCollectionRef.data();
 
-    if(!collectionDetails){
+    if (!collectionDetails) {
       return res.status(404).send({
         status: true,
         message: "Album not found",
@@ -208,7 +207,7 @@ export const addRewardCardNft = async (req: any, res: any) => {
       return data.setId == setId;
     });
 
-    if(!setDetails){
+    if (!setDetails) {
       return res.status(404).send({
         status: true,
         message: "Set not found",
@@ -246,31 +245,31 @@ export const addRewardCardNft = async (req: any, res: any) => {
 };
 
 //get all alibum from nftGallery
-export const getAllAlbums = async (req:any,res:any)=>{
+export const getAllAlbums = async (req: any, res: any) => {
   try {
-  const nftGalleryData = await getAllNftGallery();
+    const nftGalleryData = await getAllNftGallery();
 
-  if(!nftGalleryData.length){
-    return res.status(404).send({
-      status: false,
-      message: "Data not found.",
-      result: null,
+    if (!nftGalleryData.length) {
+      return res.status(404).send({
+        status: false,
+        message: "Data not found.",
+        result: null,
+      });
+    }
+    res.status(200).send({
+      status: true,
+      message: "new card added.",
+      result: nftGalleryData,
     });
-  }
-  res.status(200).send({
-    status: true,
-    message: "new card added.",
-    result: nftGalleryData,
-  });
-  
-}catch(error){
-  errorLogging("addRewardNFT", "ERROR", error);
+
+  } catch (error) {
+    errorLogging("addRewardNFT", "ERROR", error);
     res.status(500).send({
       status: false,
       message: "Something went wrong in server",
       result: error,
     });
-}
+  }
 }
 // get all cards from nftGallary
 export const getAllCardsOfNftGallery = async (req: any, res: any) => {
@@ -290,13 +289,13 @@ export const getAllCardsOfNftGallery = async (req: any, res: any) => {
         });
       });
     });
-    if(!nftGalleryData.length){
+    if (!nftGalleryData.length) {
       return res.status(404).send({
         status: false,
         message: "Data not found.",
         result: null,
       });
-    } 
+    }
     res.status(200).send({
       status: true,
       message: "get all cards from gallery.",
