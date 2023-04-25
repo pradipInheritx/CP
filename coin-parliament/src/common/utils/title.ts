@@ -49,5 +49,5 @@ export const isCoinsPairs = (pathname: string = "") => {
 };
 
 export const isCommanPage = (pathname: string = "") => {
-  return (pathname || "").includes("about") || (pathname || "").includes("Contact") || (pathname || "").includes("privacy") || (pathname || "").includes("FAQ") || (pathname || "").includes("gamerule") || (pathname || "").includes("nftGallery") ||(pathname || "").includes("terms-and-condition") ;
+  return (pathname || "").includes("about") || (pathname || "").includes("Contact") || (pathname || "").includes("privacy") || (pathname || "").includes("FAQ") || (pathname || "").includes("gamerule") || (pathname || "").includes("nftGallery") ||(pathname || "").includes("terms-and-condition") ||(pathname || "").includes("partners") ;
 };

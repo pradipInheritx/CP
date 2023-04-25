@@ -381,7 +381,7 @@ const Header = ({
             // {
             //   label: "",
             // },
-            // ...(pages || []).map(convertPageToMenuItem),
+            ...(pages || []).map(convertPageToMenuItem),
             {
               label: "-",
             },
