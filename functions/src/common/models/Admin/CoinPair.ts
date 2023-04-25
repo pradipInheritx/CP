@@ -2,19 +2,13 @@ import { firestore } from "firebase-admin";
 import _ from "lodash";
 
 type CoinPair = {
-  pairId: number;
-  pairName: string;
-  firstCoin: string;
-  SecondCoin: string;
-  firstSymbol: string;
-  secondSymbol: string;
-  logos: any;
-  cmp: number;
-  rank: number;
-  weightOrderBook: number;
-  rangeResultInCmp: number;
-  status: string;
+  id: number,
+  symbol1: string,
+  symbol2: string,
+  status: string,
+  logo: string
 };
+
 export type queryParams = {
   pageNumber: number;
   limit: number;
@@ -24,108 +18,90 @@ export type queryParams = {
 
 export const addCoinPair = async (req: any, res: any) => {
   const {
-    pairId,
-    firstCoin,
-    SecondCoin,
-    firstSymbol,
-    secondSymbol,
-    logos,
-    cmp,
-    rank,
-    weightOrderBook,
-    rangeResultInCmp,
+    id,
+    symbol1,
+    symbol2,
     status,
+    logo
   } = req.body;
   try {
-    const pairName = firstSymbol + "-" + secondSymbol;
     const coinPair: CoinPair = {
-      pairId,
-      pairName,
-      firstCoin,
-      SecondCoin,
-      firstSymbol,
-      secondSymbol,
-      logos,
-      cmp,
-      rank,
-      weightOrderBook,
-      rangeResultInCmp,
+      id,
+      symbol1,
+      symbol2,
       status,
+      logo
     };
-    console.log("CoinPairs >>>>>", coinPair);
     if (!coinPair) {
       return res.status(400).send({
         status: false,
-        message: "Missing value",
+        message: "Please enter all valid data for new pair",
         result: null,
       });
     }
+
     const coinPairRef = await firestore()
       .collection("settings")
       .doc("pairs")
       .get();
+
     let coinPairData: any = coinPairRef.data();
-    let checkCoinPair = coinPairData.pairs.find((coin: any) => {
-      return coin.pairId == pairId;
+    let checkCoinPairIsExists = coinPairData.pairs.find((coin: any) => {
+      return coin.id == id;
     });
 
-    if (checkCoinPair) {
+    if (checkCoinPairIsExists) {
       return res.status(409).send({
         status: false,
-        message: "Already exist.",
+        message: `This pair is already exists: ${symbol1}-${symbol2}`,
         result: null,
       });
     }
 
     coinPairData.pairs.push(coinPair);
-    console.log("coinPairsData >>>>>>>>>>>>>", coinPairData);
+
     await firestore()
       .collection("settings")
       .doc("pairs")
       .set(coinPairData, { merge: true });
 
     let getCoinPair = coinPairData.pairs.find((coin: any) => {
-      return coin.pairId == pairId;
+      return coin.id == id;
     });
+
     res.status(200).send({
       status: true,
-      message: "New Coin Pair Added.",
+      message: "New coin pair added successfully",
       result: getCoinPair,
     });
   } catch (error) {
     errorLogging("addCoinPair", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in server",
+      message: "Something went wrong in addCoinPair",
       result: error,
     });
   }
 };
 
-//listing
-export const getAllCardsPairs = async (req: any, res: any) => {
+export const getAllPairs = async (req: any, res: any) => {
   try {
-    const getCoinPairArray: any = [];
     const getCoinPairRef = await firestore()
       .collection("settings")
       .doc("pairs")
       .get();
     const getCoinPairData: any = getCoinPairRef.data();
 
-    getCoinPairData.pairs.forEach((pairs: any) => {
-      getCoinPairArray.push(pairs);
-    });
-    console.log("get all coinsPairs >>>>>", getCoinPairArray);
     res.status(200).send({
       status: true,
-      message: "get all coin pairs.",
-      result: getCoinPairArray,
+      message: "Get all pair coin successfully",
+      result: getCoinPairData,
     });
   } catch (error) {
     errorLogging("getAllCardsPairs", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in server",
+      message: "Something went wrong in getAllCardsPairs",
       result: error,
     });
   }
@@ -135,83 +111,45 @@ export function paginate(array: any, page_size: number, page_number: number) {
   return array.slice((page_number - 1) * page_size, page_number * page_size);
 }
 
-export const pairsListingFunction = async (req: any, res: any) => {
-  const { pageNumber, limit, sortBy, search } = req.query;
+export const pairListingFunction = async (req: any, res: any) => {
   try {
     let array: any = [];
     const getCoinPairRef = await firestore()
       .collection("settings")
       .doc("pairs")
       .get();
-    const getCoinPairData: any = getCoinPairRef.data();
-    console.log("req.params", req.params);
-    console.log("req.paramas>>>>>", pageNumber, limit, sortBy, search);
-    getCoinPairData.pairs.forEach((pairs: any) => {
-      array.push(pairs);
-    });
 
-    // Sort by any field of admin collection
-    if (sortBy) {
-      let parts = sortBy.split(":");
-      let sortByField: any = parts[0];
-      let sortOrder: any = parts[1];
-      array = _.orderBy(array, sortByField, sortOrder);
-      console.log("sortBy >>>", array);
-    }
-
-    // Pagination implemented
-    if (pageNumber && limit) {
-      array = paginate(array, limit, pageNumber);
-      console.log("Pagination >>>", array);
-    }
-
-    // Search on firstName or email
-    if (search) {
-      array = array.find((item: any) => {
-        let parts = search .split(":");
-        let value : any = parts[1];
-        console.log("value >>>>>",value)
-        return (
-          item.pairName == value ||
-          item.rank == value ||
-          item.firstCoin == value ||
-          item.SecondCoin == value ||
-          item.firstSymbol == value ||
-          item.secondSymbol == value
-        );
-      });
-      console.log("search >>>", array);
-    }
+    const getAllPairCoin: any = getCoinPairRef.data();
 
     res.status(200).send({
       status: true,
-      message: "get all coin pairs.",
-      result: array,
+      message: "Get all pair coins successfully.",
+      result: getAllPairCoin,
     });
     return array;
   } catch (error) {
-    errorLogging("pairsListingFunction", "ERROR", error);
+    errorLogging("pairListingFunction", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in server",
+      message: "Something went wrong in pairListingFunction",
       result: error,
     });
   }
 };
 
 export const updateStatusOfCoinPair = async (req: any, res: any) => {
-  const { pairId } = req.params;
+  const { id } = req.params;
   const { status } = req.body;
   try {
     const coinRef = await firestore().collection("settings").doc("pairs").get();
     let coinData: any = coinRef.data();
     let getCoin = coinData.pairs.find((coinPair: any) => {
-      return coinPair.pairId == pairId;
+      return coinPair.id == id;
     });
     if (!getCoin) {
       return res.status(404).send({
         status: false,
-        message: "Coin not found",
+        message: "Pair coin not found",
         result: null,
       });
     }
@@ -224,7 +162,7 @@ export const updateStatusOfCoinPair = async (req: any, res: any) => {
 
     res.status(200).send({
       status: true,
-      message: "Status update.",
+      message: "Status update for pair coin",
       result: getCoin,
     });
   } catch (error) {
@@ -236,6 +174,7 @@ export const updateStatusOfCoinPair = async (req: any, res: any) => {
     });
   }
 };
+
 export const errorLogging = async (
   funcName: string,
   type: string,

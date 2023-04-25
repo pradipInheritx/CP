@@ -66,7 +66,7 @@ import {
 } from "./common/models/PAX";
 import {
   claimReward,
-  //addReward,
+  addReward,
   cardHolderListing,
 } from "./common/models/Reward";
 import {
@@ -339,7 +339,7 @@ exports.onUpdateUser = functions.firestore
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
-    // await addReward(snapshot.after.id, before, after);
+    await addReward(snapshot.after.id, before, after);
     await setLeaders();
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
