@@ -16,7 +16,7 @@ import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import Votes from "../icons/votes2";
 import Mine from "../icons/mine";
 import Share from "../icons/share";
-import Following from "../icons/Following";
+import ProfileFollowing from "../icons/ProfileFollowing";
 import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
 import Wallet from "../icons/Wallet";
@@ -186,7 +186,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: ProfileTabs.followers,
-                        icon: <Following />,
+                        icon: <ProfileFollowing />,
                         eventKey: ProfileTabs.followers,
                       },
                       {
