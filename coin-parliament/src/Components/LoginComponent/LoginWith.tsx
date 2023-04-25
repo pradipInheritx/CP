@@ -39,7 +39,7 @@ const ContinueWith = styled.div`
 
 const logos = {
   [LoginProviders.GOOGLE]:  process.env.PUBLIC_URL + '/images/icons/google.png',
-  [LoginProviders.FACEBOOK]: process.env.PUBLIC_URL + '/images/icons/facebook.png',
+  // [LoginProviders.FACEBOOK]: process.env.PUBLIC_URL + '/images/icons/facebook.png',
   // [LoginProviders.TWITTER]: "https://coin-parliament.com/images/twitter.png",
 };
 const LoginWith = ({
@@ -54,7 +54,7 @@ const LoginWith = ({
   return (
     <LoginButton {...{ onClick }}  style={{boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}>
       <Image {...{ src: logos[provider] }} />
-      <ContinueWith>{continueWith(provider)}</ContinueWith>
+      <ContinueWith style={{textTransform:'uppercase'}}>{continueWith(provider)}</ContinueWith>
     </LoginButton>
   );
 };
