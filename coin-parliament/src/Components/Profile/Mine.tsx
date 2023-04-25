@@ -95,7 +95,7 @@ const Mine = () => {
 	const goBack = () => {
 		navigate(-1);
 	}
-console.log('userInfo',userInfo)
+console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
     <div>

@@ -244,23 +244,23 @@ function App() {
     []
   );
 
-  // useEffect(() => {
-  //   if('serviceWorker' in navigator) {
-  //   navigator?.serviceWorker?.addEventListener("message", (message) => {
-  //     const {
-  //       notification: { body, title },
-  //     } = message.data["firebase-messaging-msg-data"] as {
-  //       notification: { body: string; title: string };
-  //     };
-  //     // showToast(
-  //     //   <div>
-  //     //     <h5>{title}</h5>
-  //     //     <p>{body}</p>
-  //     //   </div>
-  //     // );
-  //   });
-  // }
-  // });
+  useEffect(() => {
+    if('serviceWorker' in navigator) {
+    navigator?.serviceWorker?.addEventListener("message", (message) => {
+      const {
+        notification: { body, title },
+      } = message.data["firebase-messaging-msg-data"] as {
+        notification: { body: string; title: string };
+      };
+      showToast(
+        <div>
+          <h5>{title}</h5>
+          <p>{body}</p>
+        </div>
+      );
+    });
+  }
+  });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname

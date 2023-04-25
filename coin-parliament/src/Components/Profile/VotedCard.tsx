@@ -169,7 +169,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
   ) : (
     <div className="profile_coin_vote shadow-sm" style={{minWidth:window.screen.width<979?'':'480px' }}>
       <Container className="p-0 ">
-        <Row>
+        <div style={{display:'flex'}}>
           <Col>
             <div className=" d-flex justify-content-center  align-items-center">
               <div className="col-2" style={{paddingBottom:'20px'}}>
@@ -223,7 +223,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                   {vote.valueExpirationTime &&
                                     formatCurrency(                                                                          
                                       index === undefined
-                                        ? (vote?.valueVotingTime as unknown as number)
+                                        ? (vote?.valueExpirationTime as unknown as number)
                                         : (
                                             vote?.valueExpirationTime as number[]
                                       )[index]
@@ -285,7 +285,8 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                 </Row>
                 <Row>
                   <Col className="">
-                    <span className="sm_txt">{`${id} - ${moment(
+                    {/* @ts-ignore */}
+                    <span className="sm_txt">{`${vote?.voteId? vote?.voteId:id} - ${moment(
                       new Date(vote.voteTime)
                     ).format("HH:mm DD/MM/YYYY")}`}</span>
                   </Col>
@@ -293,7 +294,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
               </Col>
             </div>
           </Col>
-        </Row>
+        </div>
       </Container>
     </div>
   );

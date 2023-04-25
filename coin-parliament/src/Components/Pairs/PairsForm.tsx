@@ -117,7 +117,8 @@ const PairsForm = ({
           userId: user?.uid,
           valueVotingTime:[coinUpdated[coin1?.symbol]?.price,coinUpdated[coin2?.symbol]?.price],
           voteTime:Date.now(),
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 ,
+          voteId:`${symbolCombination([coin1.symbol, coin2.symbol])}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));

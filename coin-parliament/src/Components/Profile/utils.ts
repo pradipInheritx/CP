@@ -81,7 +81,7 @@ export const decimal = {
   decimal: 4,
   multiply:10000
   },
-  "LTC ":{
+  "LTC":{
   Symbol: 'LTC',
   decimal: 2,
   multiply:100

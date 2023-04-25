@@ -92,7 +92,8 @@ const CoinsForm = ({
           voteTime:Date.now(),
           // @ts-ignore
           valueVotingTime:coinUpdated[coin?.symbol]?.price,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000
+          expiration:Date.now() + chosenTimeframe.seconds * 1000,
+          voteId:`${coin.symbol}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps
       );
       const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;
