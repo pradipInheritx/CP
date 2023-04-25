@@ -129,6 +129,7 @@ import Login2fa from "./Components/LoginComponent/Login2fa";
 // import { handleSoundClick } from "./common/utils/SoundClick";
 // import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
+import Partners from "./Pages/Partners";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -1294,6 +1295,7 @@ votesLast24HoursRef.get()
                                           path='gamerule'
                                           element={<GameRule />}
                                         />
+                                        
                                         <Route
                                           path='contact'
                                           element={<Contact />}
@@ -1306,6 +1308,10 @@ votesLast24HoursRef.get()
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> 
+                                          <Route
+                                          path='partners'
+                                          element={<Partners />}
+                                        />
                                          <Route
                                           path='/terms-and-condition'
                                           element={<TermsAndConditions />}

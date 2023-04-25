@@ -70,7 +70,13 @@ export const myPages: ContentPage[] = [
     title: "Game Rules",
     content: GameRule,
     slug: "gamerule",
-  },    
+  },  
+  {
+    title: "Partners",
+    content: Partners,
+    slug: "partners",
+  },  
+  
   {
     title: "FAQ",
     content: privacy,
