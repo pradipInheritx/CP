@@ -121,11 +121,18 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
       aria-labelledby="contained-modal-title-vcenter"
       centered
       >           
+        <div className='d-flex justify-content-between'>
+          <div></div>
+        <div className='text-center mb-2' style={{
+                  color: "#6352e8",
+                  fontWeight:"300"
+          }}>{type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""}</div>
          <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
               setShow(false)
               }}></button>
           </div>
+        </div>
                 <Modal.Body>
           {type == "coin" && vote?
             <div className=' p-2 w-100 m-auto'
@@ -207,7 +214,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
             type == "pair" && votelength ?
               <div className=' w-100 '
                 // style={{boxShadow:" rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}
-              >
+              >                
                 <div
                   // className={`${window.screen.width < 767 ? "" : ""}`}
                   className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}
@@ -264,7 +271,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
               <div style={{ minHeight: "100%" }}>
                 <PairsVoteVs>
                   {vote?.coin?.split("-")[vote?.direction]} {" "}
-                 <p> {timeframeInitials(vote?.timeframe?.name)}</p>
+                 
                 </PairsVoteVs>
               </div>
               
@@ -304,7 +311,17 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
               </CoinContainer>  
               </div>
                 </div>
-<div style={{ minHeight: "100%" }} className=" text-center">
+                <div style={{ minHeight: "100%" }} className=" text-center">
+                  <div className=''
+                  style={{fontSize:"12px"}}
+                  >
+                  <p>VOTE RESULT</p>
+                  <p>
+                    {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
+                    {vote?.coin?.split("-")[vote?.direction]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
+                  </p>
+                    <p>MID VOTE IMPACT</p>
+                    </div>
                 <CoinVoteTimer>
                     {vote?.valueExpirationTime && vote?.score && (
                       <>
