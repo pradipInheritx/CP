@@ -649,11 +649,11 @@ const CheckCardDisable = (cardId: any) => {
                 width: "600px"
           }}
             onClick={() => { setSelectCollection(data?.collectionName) }} key={index}>
-             <Video  autoPlay={true} loop={true}>
+             <Video  autoPlay={true} loop={true} playsInline>
           <source
             src={allVideo[`${data?.collectionName}`]}
             type="video/mp4"
-          />
+          /> 
         </Video>
           {/* <p>{data?.collectionName} COLLECTION</p> */}
         </div>

@@ -11,6 +11,7 @@ import {symbolCombination, voteProcedure} from "./utils";
 import {useTranslation} from "../../common/models/Dictionary";
 import styled from "styled-components";
 import NotificationContext, {ToastType} from "../../Contexts/Notification";
+import { cmpRangeCoin } from "../Profile/utils";
 
 // export const VS = styled(Col)`
 //   flex-grow: 0;
@@ -108,13 +109,16 @@ const PairsForm = ({
         collection(db, "votes").withConverter(voteConverter),
         {
           coin: symbolCombination([coin1.symbol, coin2.symbol]),
+// @ts-ignore
+          CPMRangePercentage: cmpRangeCoin[chosenTimeframe?.index] || 10,
           direction: selectedOption,
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
           valueVotingTime:[coinUpdated[coin1?.symbol]?.price,coinUpdated[coin2?.symbol]?.price],
           voteTime:Date.now(),
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 ,
+          voteId:`${symbolCombination([coin1.symbol, coin2.symbol])}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));

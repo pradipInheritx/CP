@@ -100,7 +100,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
   const { coins } = useContext(CoinsContext);
   const { showBack,setShowBack} = useContext(AppContext);
   const winner = calculateWinner(vote);
-  // console.log(vote,"allVote")
+  console.log(vote,"allVote")
   const voteCoins = vote?.coin?.split("-");
   const pair = voteCoins?.length > 1;
   
@@ -164,8 +164,10 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                     <div>
                       <Col className="">
                         {/* ${vote?.id} -  */}                        
-                        <span className="sm_txt">{`
-                        CYAtP8IlvtBQ6v7BEbAa - ${moment(
+                        <span className="sm_txt">
+                          
+                        {vote?.voteId} {`
+                        - ${moment(
                           new Date(vote.voteTime)
                         ).format("HH:mm DD/MM/YYYY")}`}</span>
                       </Col>
@@ -185,7 +187,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                           }
                       </div>
                       <div>
-                        <span>MID VOTE IMPACT</span>
+                        <span>{vote.success==2?'MID':vote.success==1?'HIGH':'LOW'} VOTE IMPACT</span>
                       </div>
                       <div>
                         {/* {vote.valueExpirationTime && (

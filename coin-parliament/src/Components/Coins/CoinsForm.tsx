@@ -14,6 +14,7 @@ import NotificationContext, {ToastType} from "../../Contexts/Notification";
 import {voteProcedure} from "../Pairs/utils";
 import { UserProps } from "../../common/models/User";
 import { timeStamp } from "console";
+import { cmpRangeCoin } from "../Profile/utils";
 
 export const directions = {
   [Direction.BEAR]: {direction: "rise", name: "BEAR"},
@@ -82,7 +83,8 @@ const CoinsForm = ({
         collection(db, "votes").withConverter(voteConverter),
         {
           coin: coin.symbol,
-          CPMRangePercentage: coin?.CPMRangePercentage || 10,
+          // @ts-ignore
+          CPMRangePercentage: cmpRangeCoin[chosenTimeframe?.index] || 10,
           direction: selectedOption,
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
@@ -90,7 +92,8 @@ const CoinsForm = ({
           voteTime:Date.now(),
           // @ts-ignore
           valueVotingTime:coinUpdated[coin?.symbol]?.price,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000
+          expiration:Date.now() + chosenTimeframe.seconds * 1000,
+          voteId:`${coin.symbol}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps
       );
       const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;
