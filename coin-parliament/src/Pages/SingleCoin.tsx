@@ -106,6 +106,7 @@ const SingleCoin = () => {
         // @ts-ignore
         const dot = decimal[symbol]
         
+        console.log('symbol',message?.s)
         // @ts-ignore
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,

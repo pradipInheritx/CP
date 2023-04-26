@@ -251,7 +251,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                     style={{ fontSize: '8px' }}
                                     className=""
                                   >
-                                    
+                                    {/* @ts-ignore */}
                                     {vote?.success == 2 ? 'MID' : vote?.success==1?'HIGH':'LOW'} VOTE IMPACT
                                   </Col>
                               </Row>
@@ -408,9 +408,12 @@ let votetime= a.diff(b)
                   >
                   <p>VOTE RESULT</p>
                   <p>
+                    {/* @ts-ignore */}
                     {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
+                    {/* @ts-ignore */}
                     {vote?.coin?.split("-")[vote?.direction]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
                   </p>
+                  {/* @ts-ignore */}
                     <p>{vote.success==2?'MID':vote.success==1?'HIGH':'LOW'} VOTE IMPACT</p>
                     </div>
 

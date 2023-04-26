@@ -187,7 +187,9 @@ const newPrice = ((livePrice*multiplyValue) - (votePrice * multiplyValue))/price
     if(!symbol1 ) return
     const data= allCoinsSetting?.find((item:any)=>item?.symbol==symbol1)
     console.log('data data',data,symbol1,allCoinsSetting)
+    
     const range=vote?.timeframe?.index
+    console.log('allcoin',data?.voteBarRange,range,data,allCoinsSetting)
     const rangeData= data?.voteBarRange[`${range}`]
     // @ts-ignore
     console.log('allcoin',rangeData,symbol1,vote)
