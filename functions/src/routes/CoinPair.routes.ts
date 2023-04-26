@@ -5,13 +5,15 @@ import {
   addCoinPair,
   getAllPairs,
   pairListingFunction,
-  updateStatusOfCoinPair
+  updateStatusOfCoinPair,
+  updateRankWeightCMPAndPerCMPOfCoinPair
 } from "../common/models/Admin/CoinPair";
 
 const coinPairRouter = Router();
 
 coinPairRouter.post("/createPairCoin", auth, addCoinPair);
 coinPairRouter.patch("/updateCoinPairStatus/:id", auth, updateStatusOfCoinPair);
+coinPairRouter.patch("/updateCoinPair/voteRank/rankWeightCMPAndPerCMPInPair/:id", updateRankWeightCMPAndPerCMPOfCoinPair);
 coinPairRouter.get("/getAllCoinsPairs", auth, getAllPairs);
 coinPairRouter.get("/getCoinPair", auth, pairListingFunction);
 

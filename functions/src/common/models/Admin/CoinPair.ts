@@ -175,6 +175,46 @@ export const updateStatusOfCoinPair = async (req: any, res: any) => {
   }
 };
 
+export const updateRankWeightCMPAndPerCMPOfCoinPair = async (req: any, res: any) => {
+  const { id } = req.params;
+  const { rank, CMP, weightOfOrderBook, percentageRangeInCMP } = req.body;
+  try {
+    const coinRef = await firestore().collection("settings").doc("pairs").get();
+    let coinPairData: any = coinRef.data();
+    let getCoinPair = coinPairData.coins.find((coin: any) => {
+      return coin.id == id;
+    });
+    if (!getCoinPair) {
+      return res.status(404).send({
+        status: false,
+        message: `Coin pair not found: ${id}`,
+        result: null,
+      });
+    }
+    getCoinPair = { ...getCoinPair, rank, CMP, weightOfOrderBook, percentageRangeInCMP };
+    console.info("getCoinPair", getCoinPair)
+
+    await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .set(getCoinPair, { merge: true });
+
+    res.status(200).send({
+      status: true,
+      message: "Coin pair update successfully",
+      result: getCoinPair,
+    });
+  } catch (error) {
+    errorLogging("updateRankWeightCMPAndPerCMPOfCoinPair", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in updateRankWeightCMPAndPerCMPOfCoinPair",
+      result: error,
+    });
+  }
+};
+
+
 export const errorLogging = async (
   funcName: string,
   type: string,
@@ -182,3 +222,4 @@ export const errorLogging = async (
 ) => {
   console.info(funcName, type, error);
 };
+

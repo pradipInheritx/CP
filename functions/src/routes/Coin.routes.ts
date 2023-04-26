@@ -6,7 +6,8 @@ import {
   updateStatusOfCoin,
   getAllCoins,
   getCoinById,
-  updateVoteBarRangeOfCoin
+  updateVoteBarRangeOfCoin,
+  updateRankWeightCMPAndPerCMPOfCoin
 } from "../common/models/Admin/Coin";
 
 const coinRouter = Router();
@@ -14,6 +15,7 @@ const coinRouter = Router();
 coinRouter.post("/createCoin", auth, addCoin);
 coinRouter.patch("/updateCoinStatus/:coinId", auth, updateStatusOfCoin);
 coinRouter.patch("/updateCoin/voteBarRange/:coinId", auth, updateVoteBarRangeOfCoin);
+coinRouter.patch("/updateCoin/voteRank/rankWeightCMPAndPerCMP/:coinId", updateRankWeightCMPAndPerCMPOfCoin);
 coinRouter.get("/getAllCoins", auth, getAllCoins);
 coinRouter.get("/getCoin/:coinId", auth, getCoinById);
 

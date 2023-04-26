@@ -115,7 +115,46 @@ export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
     await firestore()
       .collection("settings")
       .doc("coins")
-      .set(coinData, { merge: true });
+      .set(getCoin, { merge: true });
+
+    res.status(200).send({
+      status: true,
+      message: "Status update.",
+      result: coinData,
+    });
+  } catch (error) {
+    errorLogging("updateVoteBarRangeOfCoin", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in updateVoteBarRangeOfCoin",
+      result: error,
+    });
+  }
+};
+
+export const updateRankWeightCMPAndPerCMPOfCoin = async (req: any, res: any) => {
+  const { coinId } = req.params;
+  const { rank, CMP, weightOfOrderBook, percentageRangeInCMP } = req.body;
+  try {
+    const coinRef = await firestore().collection("settings").doc("coins").get();
+    let coinData: any = coinRef.data();
+    let getCoin = coinData.coins.find((coin: any) => {
+      return coin.symbol == coinId;
+    });
+    if (!getCoin) {
+      return res.status(404).send({
+        status: false,
+        message: `Coin not found: ${coinId}`,
+        result: null,
+      });
+    }
+    getCoin = { ...getCoin, rank, CMP, weightOfOrderBook, percentageRangeInCMP };
+    console.info("getCoin", getCoin)
+
+    await firestore()
+      .collection("settings")
+      .doc("coins")
+      .set(getCoin, { merge: true });
 
     res.status(200).send({
       status: true,
@@ -131,6 +170,8 @@ export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
     });
   }
 };
+
+
 
 export const getAllCoins = async (req: any, res: any) => {
   try {

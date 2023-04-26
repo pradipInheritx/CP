@@ -6,7 +6,8 @@ import axios from "axios";
 import {
   getDataFromTimestampBaseURL,
   defaultHeaderForgetDataFromTimestamp,
-  getDataFromTimestampBaseURLFromCrypto
+  getDataFromTimestampBaseURLFromCrypto,
+  getDataFromTimestampBaseURLFromKuCoin
 } from "../consts/config";
 
 export const getRateRemote_: () => Promise<
@@ -114,6 +115,20 @@ export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
 
       return getCoinPrice && getCoinPrice.data && getCoinPrice.data.result.data[0].a ?
         Number(getCoinPrice.data.result.data[0].a) :
+        0;
+    } else if (coin && coin.includes("cake")) {
+
+      let getOnlyCoin = coin.substring(0, 4);
+
+      const getCoinPrice: any = await axios.get(
+        getDataFromTimestampBaseURLFromKuCoin(`${getOnlyCoin.toUpperCase()}-USDT`, timestamp),
+        defaultHeaderForgetDataFromTimestamp
+      );
+
+      console.info("getCoinPrice", getCoinPrice.data.data.price);
+
+      return getCoinPrice && getCoinPrice.data && getCoinPrice.data.data && getCoinPrice.data.data.price ?
+        Number(getCoinPrice.data.data.price) :
         0;
     } else {
       const getCoinPrice: any = await axios.get(

@@ -196,6 +196,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
     await calc.calc(getVoteRef);
   } else {
     price = await getPriceOnParticularTime(coin1, timestamp);
+    console.info("Get Price", price)
     const calc = new Calculation(vote, Number(price), voteId);
     await calc.calc(getVoteRef);
   }

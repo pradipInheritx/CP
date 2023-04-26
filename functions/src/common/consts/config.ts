@@ -76,6 +76,13 @@ export const getDataFromTimestampBaseURLFromCrypto = (symbol: string, timestamp:
   //`https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
 }
 
+export const getDataFromTimestampBaseURLFromKuCoin = (symbol: string, timestamp: any) => {
+  console.info("symbol", symbol)
+  //return `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=CAKE-USDT`;
+  return `https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=CAKE-USDT`;
+  //`https://api.wazirx.com/api/v2/trades?market=${symbol}&signature=''&timestamp=${timestamp}&limit=5`;
+}
+
 export const defaultHeaderForgetDataFromTimestamp = {
   headers: {
     "Content-Type": "application/json",
