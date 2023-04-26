@@ -322,7 +322,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                     {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
                     {vote?.coin?.split("-")[vote?.direction]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
                   </p>
-                    <p>MID VOTE IMPACT</p>
+                    <p>{vote.success==2?'MID':vote.success==1?'HIGH':'LOW'} VOTE IMPACT</p>
                     </div>
                 <CoinVoteTimer>
                     {vote?.valueExpirationTime && vote?.score && (
