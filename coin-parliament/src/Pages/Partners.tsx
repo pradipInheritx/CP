@@ -45,7 +45,7 @@ const
     const shareText=`Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
     return (    
     <GeneralPage >               
-      <PoolBox style={{marginRight:'-27px', marginLeft:'-27px' }}>
+      <PoolBox style={{marginRight:window.screen.width<760?'-30px':'-27px', marginLeft:window.screen.width<760?'-30px':'-27px',  }}>
         {/* <h2 className="d-flex justify-content-center"> {(`${texts.Partners}`).toUpperCase()}</h2> */}
         <div className="d-flex justify-content-center mt-4">          
           <h5 className="text-center">            
