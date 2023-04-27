@@ -81,6 +81,10 @@ const Dashboards = ({match}) => {
           component={lazy(() => import("./PaymentTr"))}
         />
         <Route
+          path={`${requestedUrl}/rewardnft`}
+          component={lazy(() => import("./RewardNFT"))}
+        />
+        <Route
           path={`${requestedUrl}/listing`}
           component={lazy(() => import("./Listing"))}
         />

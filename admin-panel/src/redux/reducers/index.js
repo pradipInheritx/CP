@@ -24,6 +24,7 @@ import PaymentTr from './PaymentTr';
 import VotePass from './VotePass';
 import CMPTr from './CMPTr';
 import TrTypes from './TrTypes';
+import RewardNFT from './RewardNFT';
 
 export default history =>
 
@@ -52,4 +53,5 @@ export default history =>
     VotePass: VotePass,
     CMPTr: CMPTr,
     TrTypes: TrTypes,
+    RewardNFT: RewardNFT,
   });
