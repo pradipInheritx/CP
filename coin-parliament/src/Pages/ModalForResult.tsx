@@ -242,7 +242,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                         // formatCurrency(                                              
                         //   (vote?.valueExpirationTime as number[])[0]
                         // )
-                              vote?.valueExpirationTime[0]
+                              vote?.valueVotingTime[0]
                         }
                     </div>
                     <div>
@@ -302,7 +302,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                         // (vote.valueExpirationTime as number[])[1]
                            
                         // )
-                              vote.valueExpirationTime[1]
+                              vote.valueVotingTime[1]
                         }
                     </div>
                     <div>
