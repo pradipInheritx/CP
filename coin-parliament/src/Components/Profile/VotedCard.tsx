@@ -172,8 +172,8 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
         <div style={{display:'flex'}}>
           <Col>
             <div className=" d-flex justify-content-center  align-items-center">
-              <div className="col-2" style={{paddingBottom:'20px'}}>
-                <div className="h-100 d-flex w-100 justify-content-center align-items-center">
+              <div className="col-2 d-flex justify-content-center align-items-center " >
+                <div className="h-100">
                   <Logo {...{ symbol: vote.coin || "", width: 30 }} />
                 </div>
               </div>
@@ -204,9 +204,10 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                 
                   <Col className="">
                     {/* @ts-ignore */}
-                    <span className="sm_txt">{`${vote?.voteId? vote?.voteId:id} - ${moment(
-                      new Date(vote.voteTime)
-                    ).format("HH:mm DD/MM/YYYY")}`}</span>
+                        <span className="sm_txt">{`${vote?.voteId ? vote?.voteId : id} - 
+                          ${moment( new Date(vote.voteTime)
+                                ).format(" DD/MM/YYYY  HH:mm")}`}
+                        </span>
                   </Col>
                 
                   </Col>
