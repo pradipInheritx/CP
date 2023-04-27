@@ -8,21 +8,25 @@ import {
 } from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
-import UserListRow from "./UserListRow";
-import UserTableHead from "./UserTableHead";
+import CoinListRow from "./CoinListRow";
+import CoinTableHead from "./CoinTableHead";
 import UserTableToolbar from "./UserTableToolbar";
 import {getComparator, stableSort} from "../../../@jumbo/utils/tableHelper";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  deleteUser,
+  deleteCoin,
+  getCoins,
+  setCurrentCoin
+} from "../../../redux/actions/Coins";
+import {  
   getUsers,
-  setCurrentUser
+  // setCurrentUser
 } from "../../../redux/actions/Users";
-import AddEditUser from "./AddEditUser";
+import AddEditCoin from "./AddEditCoin";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
 import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
-import UserDetailView from "./UserDetailView";
+import CoinDetailView from "./CoinDetailView";
 import NoRecordFound from "./NoRecordFound";
 
 const CoinsModule = () => {
@@ -45,6 +49,17 @@ const CoinsModule = () => {
 
   const dispatch = useDispatch();
 
+  // useEffect(
+  //   () => {
+  //     dispatch(
+  //       getCoins(filterOptions, debouncedSearchTerm, () => {
+  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+  //         setUsersFetched(true);
+  //       })
+  //     );
+  //   },
+  //   [ dispatch, filterOptions, debouncedSearchTerm ]
+  // );
   useEffect(
     () => {
       dispatch(
@@ -59,7 +74,7 @@ const CoinsModule = () => {
 
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
-    dispatch(setCurrentUser(null));
+    dispatch(setCurrentCoin(null));
   };
 
   const handleRequestSort = (event, property) => {
@@ -107,17 +122,17 @@ const CoinsModule = () => {
   };
 
   const handleUserView = user => {
-    dispatch(setCurrentUser(user));
+    dispatch(setCurrentCoin(user));
     setOpenViewDialog(true);
   };
 
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
-    dispatch(setCurrentUser(null));
+    dispatch(setCurrentCoin(null));
   };
 
   const handleUserEdit = user => {
-    dispatch(setCurrentUser(user));
+    dispatch(setCurrentCoin(user));
     setOpenUserDialog(true);
   };
 
@@ -128,7 +143,7 @@ const CoinsModule = () => {
 
   const handleConfirmDelete = () => {
     setOpenConfirmDialog(false);
-    dispatch(deleteUser(selectedUser.id));
+    dispatch(deleteCoin(selectedUser.id));
   };
 
   const handleCancelDelete = () => {
@@ -156,7 +171,7 @@ const CoinsModule = () => {
             aria-labelledby="tableTitle"
             aria-label="sticky enhanced table"
           >
-            <UserTableHead
+            <CoinTableHead
               classes={classes}
               numSelected={selected.length}
               order={order}
@@ -170,7 +185,7 @@ const CoinsModule = () => {
                 stableSort(users, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <UserListRow
+                    <CoinListRow
                       key={index}
                       row={row}
                       onRowClick={handleRowClick}
@@ -214,13 +229,13 @@ const CoinsModule = () => {
       </Paper>
 
       {openUserDialog && (
-        <AddEditUser
+        <AddEditCoin
           open={openUserDialog}
           onCloseDialog={handleCloseUserDialog}
         />
       )}
       {openViewDialog && (
-        <UserDetailView
+        <CoinDetailView
           open={openViewDialog}
           onCloseDialog={handleCloseViewDialog}
         />

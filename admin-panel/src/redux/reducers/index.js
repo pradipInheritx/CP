@@ -12,8 +12,21 @@ import WallApp from './WallApp';
 import Auth from './Auth';
 import Users from './Users';
 import SubAdmin from './SubAdmin';
+import Coin from './Coin';
+import Pair from './Pair';
+import UsersDetelis from './UsersDetelis';
+import TimeFrame from './TimeFrame';
+import VotePerUser from './VotePerUser';
+import ThreeTable from './ThreeTable';
+import VoteBoost from './VoteBoost';
+import RewardTr from './RewardTr';
+import PaymentTr from './PaymentTr';
+import VotePass from './VotePass';
+import CMPTr from './CMPTr';
+import TrTypes from './TrTypes';
 
 export default history =>
+
   combineReducers({
     router: connectRouter(history),
     common: Common,
@@ -27,4 +40,16 @@ export default history =>
     wallApp: WallApp,
     usersReducer: Users,
     subAdmin: SubAdmin,
+    coinReducer: Coin,
+    pairReducer: Pair,
+    UsersDetelis: UsersDetelis,
+    TimeFrame: TimeFrame,
+    VotePerUser: VotePerUser,
+    ThreeTable: ThreeTable,
+    VoteBoost: VoteBoost,
+    RewardTr: RewardTr,
+    PaymentTr: PaymentTr,
+    VotePass: VotePass,
+    CMPTr: CMPTr,
+    TrTypes: TrTypes,
   });
