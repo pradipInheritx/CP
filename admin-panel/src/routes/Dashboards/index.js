@@ -37,6 +37,14 @@ const Dashboards = ({match}) => {
           component={lazy(() => import("./UserTypeSetting"))}
         />
         <Route
+          path={`${requestedUrl}/cmpsettings`}
+          component={lazy(() => import("./CMPSettings"))}
+        />
+        <Route
+          path={`${requestedUrl}/paxgeneral`}
+          component={lazy(() => import("./PAXGeneral"))}
+        />
+        <Route
           path={`${requestedUrl}/timeframesetting`}
           component={lazy(() => import("./TimeFrame"))}
         />
@@ -71,6 +79,10 @@ const Dashboards = ({match}) => {
         <Route
           path={`${requestedUrl}/transactiontypes`}
           component={lazy(() => import("./TrTypes"))}
+        />
+        <Route
+          path={`${requestedUrl}/statustype`}
+          component={lazy(() => import("./StatusType"))}
         />
         <Route
           path={`${requestedUrl}/rewardtransactions`}

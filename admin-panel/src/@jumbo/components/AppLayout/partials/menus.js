@@ -135,10 +135,22 @@ const dashboardsMenus = [
     link: "/dashboard/transactiontypes"
   },
   {    
-    name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
+    name: <IntlMessages id={"sidebar.dashboard.statustype"} />,
     icon: <People />,
     type: "item",
-    link: "/dashboard/rewardnft"
+    link: "/dashboard/statustype"
+  },
+  {    
+    name: <IntlMessages id={"sidebar.dashboard.paxgeneraldata"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/paxgeneral"
+  },
+  {    
+    name: <IntlMessages id={"sidebar.dashboard.cmpsettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/cmpsettings"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.crypto"} />,

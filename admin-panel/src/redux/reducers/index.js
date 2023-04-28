@@ -25,6 +25,9 @@ import VotePass from './VotePass';
 import CMPTr from './CMPTr';
 import TrTypes from './TrTypes';
 import RewardNFT from './RewardNFT';
+import StatusType from './StatusType';
+import CMPSetting from './CMPSetting';
+import PAXGenera from './PAXGenera';
 
 export default history =>
 
@@ -54,4 +57,7 @@ export default history =>
     CMPTr: CMPTr,
     TrTypes: TrTypes,
     RewardNFT: RewardNFT,
+    StatusType: StatusType,
+    CMPSetting: CMPSetting,
+    PAXGenera: PAXGenera,
   });
