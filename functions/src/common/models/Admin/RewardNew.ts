@@ -153,8 +153,6 @@ const fetchAllSet = async (getAlbumDoc: any) => {
         let test: any = [];
         getAlbumDoc.map(async (data: any) => {
             const setAry: any = []
-            const cardAry: any = []
-
 
             const getSetQuery = await firestore()
                 .collection("nft_gallery")
@@ -162,21 +160,11 @@ const fetchAllSet = async (getAlbumDoc: any) => {
                 .collection("setDetails")
                 .get()
 
-
             getSetQuery.docs.forEach(async (snapshot) => {
-                
-                const getCardsQuery = await firestore()
-                .collection("cardsDetails")
-                .where("setId", "==", snapshot.id)
-                .get();
-                getCardsQuery.forEach((card) => {
-                    // console.log("snapshot>>>>>>>>>>", card.data())
-                    cardAry.push(card.data())
-                })
-                setAry.push({...snapshot.data(),cardDetails:cardAry})
+                setAry.push({ ...snapshot.data(), setId: snapshot.id })
             })
-            test.push({ ...data.data(), setDetails: setAry})
-            // console.log("getCardsData ........", getCardsData)
+            console.log("sets >>>>>>>", setAry)
+            test.push({ ...data.data(), setDetails: setAry })
             resolve(test);
         })
 
@@ -184,44 +172,6 @@ const fetchAllSet = async (getAlbumDoc: any) => {
 }
 
 
-// const fetchAllData = async (getAlbumDoc: any) => {
-//     return new Promise((resolve, reject) => {
-//         let test: any = [];
-//         getAlbumDoc.map(async (data: any) => {
-//             const setAry: any = []
-//             const cardAry: any = []
-
-
-//             const getSetQuery = await firestore()
-//                 .collection("nft_gallery")
-//                 .doc(data.id)
-//                 .collection("setDetails")
-//                 .get()
-//             getSetQuery.docs.forEach((snapshot) => {
-//                 setAry.push(snapshot.data())
-//             })
-
-
-
-//             const getCardsQuery = await firestore()
-//                 .collection("cardsDetails")
-//                 .where("albumId", "==", data.id)
-//                 .get();
-//             // const getCardsDoc: any = getCardsQuery.docs;
-
-//             getCardsQuery.forEach((card) => {
-//                 // console.log("snapshot>>>>>>>>>>", card.data())
-//                 cardAry.push(card.data())
-
-//             })
-//             test.push({ ...data.data(), setDetails: setAry, cardDetails: cardAry })
-//             // console.log("getCardsData ........", getCardsData)
-//             resolve(test);
-//         })
-//     }
-//     )
-//     // return test
-// }
 
 export const getAllAlbums = async (req: any, res: any) => {
     try {
@@ -230,12 +180,23 @@ export const getAllAlbums = async (req: any, res: any) => {
         const getAlbumQuery = await firestore().collection("nft_gallery").get();
         const getAlbumDoc = getAlbumQuery.docs;
 
-
-
         test = await fetchAllSet(getAlbumDoc)
-        console.log("TEST >>>>>>>>>", test)
 
+        const cards: any = [];
+        const getAllCards = await firestore().collection("cardsDetails").get();
+        getAllCards.docs.forEach((snapshot) => {
+            cards.push(snapshot.data())
+        })
 
+        test.forEach((data: any) => {
+            data.setDetails.forEach((sets: any) => {
+                let matchedCards = cards.filter((data: any) => {
+                    return sets.setId == data.setId
+                })
+                sets.cardsDeatils = matchedCards;
+            });
+
+        });
         res.status(200).send({
             status: true,
             message: "get all Albums from gallery.",
@@ -273,6 +234,88 @@ export const getAllCards = async (req: any, res: any) => {
         });
     }
 }
+
+
+export const getAlbumListing = async (req: any, res: any) => {
+
+    try {
+        let { page = 1, limit = 5, orderBy = "totalVote", sort = "desc", search = "" } = req.query;
+        limit = parseInt(limit);
+
+        let orderByConsolidate = "";// await getOrderByForUserStatistics(orderBy);
+        switch (orderBy) {
+            case "albumName":
+                orderByConsolidate = "albumName";
+                break;
+
+            case "cardType":
+                orderByConsolidate = "cardType";
+                break;
+
+            case "cardName":
+                orderByConsolidate = "cardName";
+                break;
+
+            case "cardStatus":
+                orderByConsolidate = "cardStatus";
+                break;
+
+            default:
+                orderByConsolidate = "albumName";
+                break;
+        }
+
+        let getAllPerUserVotes: any;
+        let collectionName: string = "cardDetails";
+        if (orderByConsolidate == "albumName") collectionName = "nft_gallery"
+        if (search) {
+            getAllPerUserVotes = await firestore()
+                .collection(collectionName)
+                .where("albumName", ">=", search)
+                .where("albumName", "<=", search + "\uf8ff")
+                .offset((page - 1) * limit)
+                .limit(limit)
+                .get();
+        } else {
+            getAllPerUserVotes = await firestore()
+                .collection(collectionName)
+                .orderBy(orderByConsolidate, sort)
+                .offset((page - 1) * limit)
+                .limit(limit)
+                .get();
+        }
+        let getAllPerUserVotesResponse: any = "";
+
+        if (collectionName == "albumName") {
+            getAllPerUserVotesResponse = getAllPerUserVotes.docs.map(
+                (doc: any) => ({
+                    albumId: doc.id,
+                    albumName: doc.data()?.albumName ? doc.data()?.albumName : "",
+                    
+                })
+            );
+        }
+
+        const CollectionRef = await firestore().collection(collectionName).get();
+        let totalCount = CollectionRef.size;
+
+        res.status(200).send({
+            status: true,
+            message: "Per user votes fetched successfully",
+            result: { data: getAllPerUserVotesResponse, totalCount },
+        });
+    } catch (error) {
+        errorLogging("getAllCards", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
+
+
+
 export const errorLogging = async (
     funcName: string,
     type: string,
