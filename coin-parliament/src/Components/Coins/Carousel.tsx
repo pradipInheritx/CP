@@ -1,8 +1,8 @@
 /** @format */
 
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Coin, swipeOptions } from "../../common/models/Coin";
-import { Totals } from "../../Contexts/CoinsContext";
+import CoinsContext, { Totals } from "../../Contexts/CoinsContext";
 import { UserProps } from "../../common/models/User";
 import { User as AuthUser } from "@firebase/auth";
 import {
@@ -25,7 +25,10 @@ import { useSwipeable } from "react-swipeable";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import AppContext from "../../Contexts/AppContext";
-
+// import { handleSoundClick } from "../../common/utils/SoundClick";
+import { decimal } from "../Profile/utils";
+import NotificationContext from "../../Contexts/Notification";
+import UpgradeCopy from "../Profile/UpgradeCopy";
 
 
 export type CarouselProps = {
@@ -133,7 +136,9 @@ const Carousel = ({
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const [active, setActive] = useState(0);
   const { width } = useWindowSize();
-
+  const {ws,socket} = useContext(CoinsContext);
+  const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
+  const livePrice=useRef(coins)
   const columns: readonly Column<BearVsBullRow>[] = React.useMemo(
     () => [
       {
@@ -143,6 +148,15 @@ const Carousel = ({
     ],
     []
   );
+useEffect(() => {
+  const interval = setInterval(function () {
+    setCoinUpdated(livePrice.current)
+  }, 1500);
+
+  return () => {
+   clearInterval(interval) 
+  }
+}, [])
 
   const instance: Modify<TableInstance<BearVsBullRow>, {}> =
     useTable<BearVsBullRow>(
@@ -170,8 +184,9 @@ const Carousel = ({
       total: pageOptions?.length,
     })
   );
-  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } =
+  const {  loginRedirectMessage, setLogin } =
     useContext(AppContext);
+    const { showModal } = useContext(NotificationContext);
   useEffect(() => {
     gotoPage(index);
   }, [index, data, gotoPage]);
@@ -181,7 +196,65 @@ const Carousel = ({
       numRows > 0 ? Math.min(numRows, data?.length) : data?.length;
     setPageSize(pageData ? pageData : 1);
   }, [setPageSize, numRows, data?.length]);
-  // console.log("data", Object.keys(coins).sort());
+
+  useEffect(() => {
+    if (!ws) return
+    
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+const symbol =message?.s?.slice(0, -4)
+      if (symbol) {
+        // @ts-ignore
+        const dot = decimal[symbol]
+        // @ts-ignore
+        livePrice.current= {
+          ...livePrice.current,
+          [symbol]: {
+            ...livePrice.current[symbol],
+            price:Number(message?.c).toFixed(dot?.decimal || 2), 
+          },
+        }
+      // setCoinUpdated((prevCoins) => ({
+      //   ...prevCoins,
+      //   [symbol]: {
+      //     ...prevCoins[symbol],
+      //     price:Number(message?.c).toFixed(dot?.decimal || 2), 
+      //   },
+      // }));
+    }
+    };
+  }, [ws])
+  console.log('liveprice',livePrice)
+  useEffect(() => {
+    if (!socket) return
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const dot = decimal["CRO"]
+      console.log('cro price',data?.result?.data[0])
+      if (data?.result?.data[0].a) {
+  // @ts-ignore
+  livePrice.current= {
+    ...livePrice.current,
+    ['CRO']: {
+      ...livePrice.current['CRO'],
+      // @ts-ignore
+      price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2), 
+    },
+  }
+      // setCoinUpdated((prevCoins) => ({
+      //   ...prevCoins,
+      //   ['CRO']: {
+      //     ...prevCoins['CRO'],
+      //     price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2),
+      //   },
+      // }));
+    }
+    };
+  
+  }, [socket])
+  
+  // console.log('allcoin1',coinUpdated)
   return expanded === false ? (
     <form
       id={id}
@@ -199,22 +272,32 @@ const Carousel = ({
           ?.map((key, i) => {
             const { symbol } = coins[key];
             return (
-              <div className='m-1'>
+              <div className='m-1' key={i}>
                 <Card
-                  key={i}
+                  // key={i}
                   favorite={favorites.includes(symbol)}
                   setFavorite={() => {
-                    onFavClick(favorites, user);
-                    setIndex(index);
+                    // onFavClick(favorites, user);
+                    // setIndex(index);
                   }}
                   symbol={symbol}
-                  coins={coins}
+                  coins={livePrice.current}
                   totals={totals}
-                  onClick={() => {
-                    const url = "/coins/" + symbol;
-                    if (navigate) {
-                      navigate(url);
-                    }
+                   // @ts-ignore
+                  onClick={(e:any) => {
+                    // @ts-ignore
+                    e.stopPropagation();
+                    if (!user?.uid) setLogin(true) 
+                    else {
+                      
+                      showModal(<UpgradeCopy />)
+                    
+                    } 
+                    // const url = "/coins/" + symbol;
+                    // if (navigate) {
+                    //   navigate(url);
+                    //   // handleSoundClick()
+                    // }
                   }}
                 />
               </div>
@@ -229,10 +312,10 @@ const Carousel = ({
         <div className='carousel-item active'>
           <CardsContainer cols={cols} gap={gap} {...handlers}>
             {page.length > 0 &&
-              page.slice(0, page.length).map((row: Row<BearVsBullRow>) => {
+              page.slice(0, page.length).map((row: Row<BearVsBullRow>,i:number) => {
                 prepareRow(row);
                 return (
-                  <div {...row.getRowProps()} className='d-flex'>
+                  <div {...row.getRowProps()} className='d-flex' key={i}>
                     {row.cells.map((cell, j) => {
                       const symbol = cell.value;
 
@@ -240,19 +323,29 @@ const Carousel = ({
                         <div {...cell.getCellProps()} className='w-100' key={j}>
                           {cell.column.id === "symbol" ? (
                             <Card
+                              // key={i}
                               favorite={favorites.includes(symbol)}
                               setFavorite={() => {
                                 onFavClick(favorites, user);
                                 setIndex(index);
                               }}
                               symbol={symbol}
-                              coins={coins}
+                              coins={livePrice.current}
                               totals={totals}
-                              onClick={() => {
-                                const url = "/coins/" + symbol;
-                                if (navigate) {
-                                  navigate(url);
-                                }
+                              // @ts-ignore
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (!user?.uid) setLogin(true) 
+                                else {
+                                  
+                                  showModal(<UpgradeCopy />)
+                                
+                                }  
+                                // const url = "/coins/" + symbol;
+                                // if (navigate) {
+                                //   navigate(url);
+                                //   // handleSoundClick()
+                                // }
                               }}
                             />
                           ) : (

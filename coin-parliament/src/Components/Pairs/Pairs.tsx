@@ -149,7 +149,7 @@ const Pairs = ({
             navigate: (url) => navigate(url, { replace: true }),
           }}
         >
-          {!expanded && (
+          {/* {!expanded && (
             <Buttons.ClickableText
               onClick={() => {
                 navigate("/pairs");
@@ -158,7 +158,7 @@ const Pairs = ({
             >
               {upperCase(translate("view all"))}
             </Buttons.ClickableText>
-          )}
+          )} */}
         </Carousel>
       </div>
     </div>

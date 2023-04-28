@@ -10,7 +10,7 @@ export const texts = {
   firstTimeLoginModalTitle: "Do you want to continue?",
   firstTimeLoginModalText:
     "Choose wisely—because once you get a name, you can’t change it.",
-  signUp: "Become a member".toUpperCase(),
+  signUp: "JOIN THE PARLIAMENT".toUpperCase(),
   agree: "I agree to {terms & conditions} of the site".toUpperCase(),
   termsConditions: "terms & conditions".toUpperCase(),
   email: "email",

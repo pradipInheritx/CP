@@ -67,7 +67,7 @@ import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
 import { getToken } from "firebase/messaging";
 import { Form } from "react-bootstrap";
-import { rest, ws } from "./common/models/Socket";
+import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
 import ContentContext, { ContentPage } from "./Contexts/ContentContext";
 import Content from "./Pages/Content";
@@ -134,6 +134,8 @@ import Partners from "./Pages/Partners";
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 // let userData=false
+let ws:any;
+let socket:any;
 // const request = indexedDB.open("firebaseLocalStorageDb");
 // request.onerror = (event) => {
 //   console.error("Why didn't you allow my web app to use IndexedDB?!");
@@ -242,6 +244,7 @@ const handleClick=()=>{
     (
       content: ToastContent,
       options: ToastOptions | undefined = {
+        style:{borderRadius: '100px 0px 100px 100px'},
         position: "top-center",
         autoClose: false,
         hideProgressBar: true,
@@ -259,6 +262,7 @@ const handleClick=()=>{
     },
     []
   );
+// google-site-verification=mvDFdubyOkOY_x6yNeDlDs2ctH4uSxNgg56jKmmGRpg
 
   useEffect(() => {
     if('serviceWorker' in navigator) {
@@ -353,6 +357,7 @@ const handleClick=()=>{
   const [promptInstall, setPromptInstall] = useState(null);
 const [pwaPopUp,setPwaPopUp]=useState('block')
 const[mfaLogin,setMfaLogin]=useState(false)
+const[allCoinsSetting,setAllCoinsSetting]=useState([])
   useEffect(() => {
     const handler = (e:any) => {
       e.preventDefault();
@@ -609,11 +614,20 @@ console.log('fmctoken',fcmToken)
       });
     });
 
-    onSnapshot(doc(db, "stats", "coins"), (doc) => {
+    // onSnapshot(doc(db, "stats", "coins"), (doc) => {
      
-      const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-      setCoins(newAllCoins);
-      // saveCoins(newAllCoins);
+    //   const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
+    //   setCoins(newAllCoins);
+    //   // console.log('allcoins',coins)
+    //   // saveCoins(newAllCoins);
+    // });
+    const coinData = firebase
+    .firestore()
+    .collection("stats").doc('coins')
+    coinData.get()
+  .then((snapshot:any) => {        
+//  console.log('allcoin',snapshot.data())
+ setCoins(snapshot.data());
     });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
@@ -630,9 +644,15 @@ console.log('fmctoken',fcmToken)
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
-      
+        const newAllCoinsData = (
+          ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
+        )
+          .sort((a, b) => Number(a.id) - Number(b.id))
+          .map((c) => c);
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
+      // @ts-ignore
+      setAllCoinsSetting(newAllCoinsData)
     });
 
     onSnapshot(doc(db, "settings", "pairs"), (doc) => {
@@ -790,6 +810,102 @@ votesLast24HoursRef.get()
 // }, [])
 
 
+
+function connect(){
+  if(Object.keys(coins).length === 0) return
+  console.log('Browser window called')
+  ws = new WebSocket('wss://stream.binance.com:9443/ws');
+   console.log('websocket connected first time')
+ const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
+   ws.onopen = () => {
+     ws.send(JSON.stringify({
+       method: 'SUBSCRIBE',
+       params: coinTikerList,
+       id: 1
+     }));
+   };
+  
+    socket = new WebSocket('wss://stream.crypto.com/v2/market');
+ 
+   socket.onopen = () => {
+     const req = {
+       id: 1,
+       method: 'subscribe',
+       params: {
+         channels: ['ticker.CRO_USDT'],
+       },
+     };
+     socket.send(JSON.stringify(req));
+   };
+   ws.onclose = (event:any) => {
+    if(!login)window.location.reload()
+     console.log('WebSocket connection closed');
+     if (event.code !== 1000) {
+       console.log('WebSocket Attempting to reconnect in 5 seconds...');
+       setTimeout(() => {
+         connect();
+       }, 5000);
+     }
+   };
+   
+   ws.onerror = () => {
+    if(!login)window.location.reload()
+     console.log('WebSocket connection occurred');
+   };
+   const timeout = 30000; // 30 seconds
+   let timeoutId:any;
+   const checkConnection = () => {
+     if (ws.readyState !== WebSocket.OPEN) {
+       console.log('WebSocket connection timed out');
+       clearInterval(timeoutId);
+       connect();
+     }
+   };
+   timeoutId = setInterval(checkConnection, timeout);
+}
+
+useEffect(() => {
+  
+  connect();
+  
+  return () => {
+if (ws) ws.close();
+    if(socket) socket.close();
+    window.localStorage.removeItem('firstTimeloading')
+  };
+}, [Object.keys(coins).length]);
+// useEffect(() => {
+//   window.addEventListener("focus", () => socket.connect());
+
+//   return () => {
+    
+//   }
+// }, [])
+// useEffect(() => {
+//   document.addEventListener("visibilitychange", handleVisibilityChange);
+//   return () => {
+//     document.removeEventListener("visibilitychange", handleVisibilityChange);
+//   }
+// }, []);
+
+// const handleVisibilityChange = () => {
+//   const isIPhone = /iPhone/i.test(navigator.userAgent);
+
+//   if (isIPhone) {
+//     console.log('This is an iPhone');
+//   } else {
+//     console.log('This is not an iPhone');
+//   }
+//   if (document.hidden) {
+//     console.log("Browser window is minimized");
+//     ws.close();
+//     socket.close();
+//   } else {
+//     connect();
+//     console.log("Browser window is not minimized");
+//   }
+// }
+
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -936,9 +1052,11 @@ votesLast24HoursRef.get()
               >
                 <CoinsContext.Provider
                     value={{
+                      allCoinsSetting,
                       changePrice,
                     setChangePrice,
                     ws,
+                    socket,
                     rest,
                     coins,
                     setCoins,
@@ -1304,6 +1422,10 @@ votesLast24HoursRef.get()
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> */}
+                                          <Route
+                                          path='about'
+                                          element={<About />}
+                                        />
                                          <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}

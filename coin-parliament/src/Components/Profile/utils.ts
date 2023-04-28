@@ -6,8 +6,105 @@ export const validatePassword = (newPassword: string, username: string, confirmP
   const check2 = !new RegExp(/\b^.*([a-zA-Z0-9])\1\1+.*\b/gm).test(newPassword);
   const check4 = newPassword === confirmPassword;
   const check3 = !newPassword.includes(username);
-  return check1 && check2 && check3 && check4;
+  console.log('password1',check1 , check2,check3, check4)
+  return  check1 && check4;
 };
+
+export const decimal = {
+  "BTC":
+  {
+  Symbol: 'BTC',
+  decimal: 2
+},
+  "ETH":
+  {
+  Symbol: 'ETH',
+  decimal: 2
+  },
+  
+  "BNB": {
+  Symbol: 'BNB',
+  decimal: 2
+  },
+  "ADA":{
+  Symbol: 'ADA',
+  decimal: 6
+  },
+  "SOL":{
+  Symbol: 'SOL',
+  decimal: 2
+  },
+  "XRP":{
+  Symbol: 'XRP',
+  decimal: 4
+  },
+  "DOGE":{
+  Symbol: 'DOGE',
+  decimal: 5
+  },
+  "DOT":{
+  Symbol: 'DOT',
+  decimal: 3
+  },
+  "SHIB":{
+  Symbol: 'SHIB',
+  decimal: 7
+  },
+  "MATIC":{
+  Symbol: 'MATIC',
+  decimal: 4
+  },
+  "CRO":{
+  Symbol: 'CRO',
+  decimal: 4
+  },
+  "LTC ":{
+  Symbol: 'LTC',
+  decimal: 2
+  },
+  "LINK":{
+  Symbol: 'LINK',
+  decimal: 2
+  },
+  "UNI":{
+  Symbol: 'UNI',
+  decimal: 2
+  },
+  "TRX":{
+  Symbol: 'TRX',
+  decimal: 5
+  },
+  "XLM":{
+  Symbol: 'XLM',
+  decimal: 4
+  },
+  "MANA":{
+  Symbol: 'MANA',
+  decimal: 2
+  },
+  "HBAR":{
+  Symbol: 'HBAR',
+  decimal: 4
+  },
+  "VET":{
+  Symbol: 'VET',
+  decimal: 5
+  },
+  "SAND":{
+  Symbol: 'SAND',
+  decimal: 2
+  },
+  "EOS":{
+    Symbol:'EOS',
+  decimal: 2
+  },
+  "CAKE":{
+  Symbol: 'CAKE',
+  decimal: 3
+  },
+
+}
+
 
 export const CountryCode = [
   {

@@ -106,6 +106,8 @@ export type CoinContextProps = {
   ws: WebSocket;
   allCoins: string[];
   allPairs: Array<string[]>;
+  allCoinsSetting:any;
+  socket:WebSocket;
 };
 
 const CoinsContext = React.createContext({ coins: {} } as CoinContextProps);

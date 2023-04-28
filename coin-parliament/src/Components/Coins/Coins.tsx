@@ -168,7 +168,7 @@ const Coins = ({
             navigate: (url) => navigate(url, { replace: true }),
           }}
         >
-          {!expanded && (
+          {/* {!expanded &&  (
             <Buttons.ClickableText
               onClick={() => {
                 navigate("/coins");
@@ -177,7 +177,7 @@ const Coins = ({
             >
               {upperCase(translate("view all"))}
             </Buttons.ClickableText>
-          )}
+          )} */}
         </Carousel>
       </div>
     </div>

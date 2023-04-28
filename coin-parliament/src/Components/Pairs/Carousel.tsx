@@ -12,7 +12,9 @@ import {useSwipeable} from "react-swipeable";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import CoinsContext from "../../Contexts/CoinsContext";
-
+import AppContext from "../../Contexts/AppContext";
+import UpgradeCopy from "../Profile/UpgradeCopy";
+import NotificationContext from "../../Contexts/Notification";
 export type CarouselProps = {
   children?: React.ReactNode | string;
   pairs: Coin[][];
@@ -107,8 +109,11 @@ const Carousel = ({
 }: CarouselProps) => {
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const {coins} = useContext(CoinsContext);
+  const { showModal } = useContext(NotificationContext);
   const [active, setActive] = useState(0);
   const {width} = useWindowSize();
+  const {   setLogin } =
+  useContext(AppContext);
   const handlers = useSwipeable(
     swipeOptions({
       index,
@@ -144,11 +149,19 @@ const Carousel = ({
               }}
               coin1={coin1}
               coin2={coin2}
-              onClick={() => {
-                const url = "/pairs/" + combination;
-                if (navigate) {
-                  navigate(url);
-                }
+              // @ts-ignore
+              onClick={(e:any) => {
+                e.stopPropagation();
+                if (!user?.uid) setLogin(true) 
+                else {
+                  
+                  showModal(<UpgradeCopy />)
+                
+                } 
+                // const url = "/pairs/" + combination;
+                // if (navigate) {
+                //   navigate(url);
+                // }
               }}
             />
             </div>
@@ -203,11 +216,19 @@ const Carousel = ({
                           coins={coins}
                           coin1={coin1}
                           coin2={coin2}
-                          onClick={() => {
-                            const url = "/pairs/" + combination;
-                            if (navigate) {
-                              navigate(url);
-                            }
+                          // @ts-ignore
+                          onClick={(e) => {
+                            e.stopPropagation();
+                    if (!user?.uid) setLogin(true) 
+                    else {
+                      
+                      showModal(<UpgradeCopy />)
+                    
+                    } 
+                            // const url = "/pairs/" + combination;
+                            // if (navigate) {
+                            //   navigate(url);
+                            // }
                           }}
                         />
                       </PairCard>

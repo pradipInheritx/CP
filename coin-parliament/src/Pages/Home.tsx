@@ -1,7 +1,7 @@
 /** @format */
 
-import React, { useContext } from "react";
-import {  Image } from "react-bootstrap";
+import React, {  useContext } from "react";
+import { Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
 import Pairs from "../Components/Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -17,6 +17,7 @@ import Quotes from "../Components/Quotes";
 import ContentContext from "../Contexts/ContentContext";
 import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
+import { texts } from "../Components/LoginComponent/texts";
 import { Buttons } from "../Components/Atoms/Button/Button";
 
 const H2 = styled.h2`
@@ -35,8 +36,7 @@ const TextContainer = styled.div`
 const Home = () => {
   const translate = useTranslation();
   const { user } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,  
-    setSignup } =
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,setSignup } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
@@ -112,7 +112,8 @@ const Home = () => {
                 marginTop: "200px",
               }}
             >
-              {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
+              {texts.HereYourChance}
+              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
@@ -125,35 +126,27 @@ const Home = () => {
                 fontSize: "30px",
               }}
             >
-              {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
+              {texts.HereYourChance}
+              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           )}
          
-          {/* <Coins
+          <Coins
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
               } else {
-                setLoginRedirectMessage("add coin to favorites.");
+                setLoginRedirectMessage("add coin to favorites");
                 setLogin(true);
                 // showModal(<NotLoggedInPopup/>);
               }
             }}
-          /> */}
-        {!user?.uid?  <div className='d-sx-none'> {window.screen.width > 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'4rem', fontSize:'2rem', padding:'2rem'}} onClick={e=>{  setLogin(true)
-        setSignup(true)}}>BECOME A MEMBER</Buttons.Primary>
-        <H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1.5rem'}}>Subscribe now and start earning rewards before anyone else</H2>
+          />
         
-        </>}</div>: window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>ComingSoon</H2>}
 
 
-
-          {!user?.uid?<div className='d-xl-none'> {window.screen.width < 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'2rem', fontSize:'1rem', padding:'1rem'}} onClick={e=>{
-              setLogin(true)
-              setSignup(true)
-          }}>BECOME A MEMBER</Buttons.Primary><H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1rem'}}>Subscribe now and start earning rewards before anyone else</H2></>}</div>:window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>Coming Soon</H2>}
         </div>
-        {/* <div className='mb-4 mx-0'>
+        <div className='mb-4 mx-0'>
           <H2
             style={{
               zIndex: 1,
@@ -176,13 +169,27 @@ const Home = () => {
         </div>
         <div className='mb-5 mx-0'>
           <div className='mb-4'>
-            <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
-              {translate("Influencers")}
-            </H2>
+            {/* <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
+              {texts.Influencers}
+            </H2> */}
+            {!user?.uid?  <div className='d-sx-none'> {window.screen.width > 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'4rem', fontSize:'2rem', padding:'2rem'}} onClick={e=>{  setLogin(true)
+        setSignup(true)}}>{texts.signUp}</Buttons.Primary>
+        <H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1.5rem'}}>Join now and start earning rewards before anyone else</H2>
+        
+        </>}</div>:<></>}
+
+
+
+          {!user?.uid?<div className='d-xl-none'> {window.screen.width < 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'2rem', fontSize:'1rem', padding:'1rem'}} onClick={e=>{
+              setLogin(true)
+              setSignup(true)
+          }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1rem'}}>Join now and start earning rewards before anyone else</H2></>}</div>:<></>}
+
           </div>
-          <InfluencersCarousel />
+          <Quotes quotes={quotes} />
+          {/* <InfluencersCarousel /> */}
         </div>
-        <div className='mb-5 mx-0'>
+        {/* <div className='mb-5 mx-0'>
           <div className='mb-4'>
             <H2 style={{ zIndex: 1, fontWeight: "400", position: "relative" }}>
               {translate("")}
