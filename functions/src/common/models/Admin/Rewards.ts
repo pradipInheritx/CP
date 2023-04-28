@@ -1,321 +1,344 @@
 import { firestore } from "firebase-admin";
-import { v4 as uuidv4 } from "uuid";
-import { getAllNftGallery, uploadImage } from "../Reward";
 
-type AlbumNft = {
-  albumId: number;
-  albumName: string;
-  setQuantity: number;
-  setDetails: any[];
+import { uploadImage } from "../Reward";
+
+
+type Album = {
+    albumName: String;
+    setQunatity: number;
+}
+type Sets = {
+    setName: string;
+    sequence: number
+}
+type Card = {
+    albumId: string;
+    setId: String;
+    cardName: string;
+    cardType: string;
+    quantity: number;
+    totalQuantity: number;
+    sno: string[];
+    cardImage: any;
+    noOfCardHolder: number;
+    cardStatus: boolean;
+}
+export const createAlbum = async (req: any, res: any) => {
+    try {
+        const { albumName, setQunatity }: Album = req.body
+
+        const newAlbum: Album = {
+            albumName,
+            setQunatity
+        }
+        const checkAlbums = await firestore()
+            .collection("nftGallery")
+            .where("albumName", "==", albumName)
+            .get();
+
+        if (checkAlbums && checkAlbums.docs && checkAlbums.docs.length) {
+            return res.status(409).send({
+                status: false,
+                message: `This album id already exists: ${albumName}`,
+                result: null,
+            });
+        }
+
+        const addQuery = await firestore().collection("nftGallery").add(newAlbum)
+
+        res.status(200).send({
+            status: true,
+            message: "New album created.",
+            result: { uid: addQuery.id, ...newAlbum },
+        });
+
+    } catch (error) {
+        errorLogging("addAlbum", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
 };
 
-type SetNft = {
-  setId: number;
-  setName: string;
-  cardsDetails: any[];
-};
+export const createSet = async (req: any, res: any) => {
+    try {
+        const { albumId, setName, sequence } = req.body
 
-type NewCardNft = {
-  cardId: number;
-  cardName: string;
-  cardType: string;
-  quantity: number;
-  totalQuantity: number;
-  sno: string[];
-  cardImage: any;
-  noOfCardHolder: number;
-  cardStatus: boolean;
-};
+        const newSet: Sets = {
+            setName,
+            sequence
+        };
 
+        const addSetDetails = await firestore()
+            .collection("nftGallery")
+            .doc(albumId)
+            .collection("setDetails")
+            .add(newSet);
+
+        res.status(200).send({
+            status: true,
+            message: "New album created.",
+            result: { uid: addSetDetails.id, ...newSet },
+        });
+    } catch (error) {
+        errorLogging("createSet", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
 // generate serial number
 export const generateSerialNumber = async (
-  albumId: number,
-  setId: number,
-  cardType: any,
-  quantity: number
+    albumId: number,
+    setId: number,
+    cardType: any,
+    quantity: number
 ) => {
-  console.log("albumId>>>>>>", albumId);
-  const serialNumber: string[] = [];
-  for (let i = 0; i < quantity; i++) {
-    const card = String(albumId) + String(setId) + String(cardType) + String(i);
-    serialNumber.push(card);
-  }
-  return serialNumber;
+    console.log("albumId>>>>>>", albumId);
+    const serialNumber: string[] = [];
+    for (let i = 0; i < quantity; i++) {
+        const card = String(albumId) + String(setId) + String(cardType) + String(i);
+        serialNumber.push(card);
+    }
+    return serialNumber;
 };
+export const createCard = async (req: any, res: any) => {
+    try {
+        const { albumId, setId, cardName, cardStatus, cardType, noOfCardHolder, totalQuantity, cardImage } = req.body;
 
-// Add Album in nft_gallery
-export const addAlbumNft = async (req: any, res: any) => {
-  const { albumId, albumName, setQuantity } = req.body;
-  try {
-    const checkAlbums = await firestore()
-      .collection("nftGallery")
-      .where("albumId", "==", albumId)
-      .get();
-
-    if (checkAlbums && checkAlbums.docs && checkAlbums.docs.length) {
-      return res.status(409).send({
-        status: false,
-        message: `This album id already exists: ${albumId}`,
-        result: null,
-      });
-    }
-    let albumData: AlbumNft = {
-      albumId,
-      albumName: albumName,
-      setQuantity: setQuantity,
-      setDetails: [],
-    };
-
-    await firestore().collection("nftGallery").doc().set(albumData, { merge: true });
-
-    const newAlbumRef = await firestore()
-      .collection("nftGallery")
-      .where("albumId", "==", albumId)
-      .get();
-
-    const newAlbumDoc = newAlbumRef.docs[0];
-    const newAlbumData = newAlbumDoc.data();
-    console.log("new Album >>>", newAlbumDoc);
-
-    res.status(200).send({
-      status: true,
-      message: "New album created.",
-      result: newAlbumData,
-    });
-  } catch (error) {
-    errorLogging("addAlbumNft", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in server.",
-      result: error,
-    });
-  }
-};
-
-// add set NFT
-export const addSetNft = async (req: any, res: any) => {
-  const { albumId } = req.params;
-  const { setId, setName } = req.body;
-  try {
-    const setData: SetNft = {
-      setId: setId,
-      setName: setName,
-      cardsDetails: [],
-    };
-
-    const getCollectionRef = await firestore()
-      .collection("nftGallery")
-      .doc(albumId)
-      .get();
-
-    const albumData: any = getCollectionRef.data();
-
-    if (!albumData) {
-      return res.status(404).send({
-        status: false,
-        message: "Album not found.",
-        result: null,
-      })
-    }
-
-    const checkValue = albumData.setDetails.find((data: any) => {
-      return data.setId == setId;
-    });
-    if (checkValue) {
-      return res.status(409).send({
-        status: false,
-        message: "Already exist.",
-        result: null,
-      });
-    }
-    albumData.setDetails.push(setData);
-
-    await firestore().collection("nftGallery").doc(albumId).update(albumData);
-
-    const getSetRef = await firestore()
-      .collection("nftGallery")
-      .doc(albumId)
-      .get();
-    const getSetData: any = getSetRef.data();
-    const getSet = getSetData.setDetails.find((data: any) => {
-      return data.setId == setId;
-    });
-    res.status(200).send({
-      status: true,
-      message: "New Set added.",
-      result: getSet,
-    });
-  } catch (error) {
-    errorLogging("addSetNft", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in server",
-      result: error,
-    });
-  }
-};
+        const newCard: Card = {
+            albumId,
+            setId,
+            cardName,
+            cardType,
+            quantity: totalQuantity,
+            totalQuantity,
+            noOfCardHolder,
+            cardStatus,
+            sno: await generateSerialNumber(
+                albumId,
+                setId,
+                cardType,
+                totalQuantity
+            ),
+            cardImage: cardImage
+                ? await uploadImage(cardImage, albumId, setId, "cardId")
+                : "",
+        }
 
 
-// add new NFT card
-export const addRewardCardNft = async (req: any, res: any) => {
-  const { albumId } = req.params;
-  const {
-    cardId,
-    cardName,
-    cardType,
-    quantity,
-    noOfCardHolder,
-    cardStatus,
-    setId,
-    cardImage,
-  } = req.body;
-  try {
-    const getCollectionRef = await firestore()
-      .collection("nftGallery")
-      .doc(albumId)
-      .get();
-    let collectionDetails: any = getCollectionRef.data();
+        const addQuery = await firestore().collection("cardsDetails").add(newCard);
 
-    if (!collectionDetails) {
-      return res.status(404).send({
-        status: true,
-        message: "Album not found",
-        result: null,
-      });
-    }
-    const id = uuidv4();
-    const newCardNft: NewCardNft = {
-      cardId,
-      cardName,
-      cardType,
-      quantity,
-      totalQuantity: quantity,
-      noOfCardHolder,
-      cardStatus,
-      sno: await generateSerialNumber(
-        collectionDetails.albumId,
-        setId,
-        cardType,
-        quantity
-      ),
-      cardImage: cardImage
-        ? await uploadImage(cardImage, albumId, setId, id)
-        : "",
-    };
-
-    let setDetails = collectionDetails?.setDetails.find((data: any) => {
-      return data.setId == setId;
-    });
-
-    if (!setDetails) {
-      return res.status(404).send({
-        status: true,
-        message: "Set not found",
-        result: null,
-      });
-    }
-    setDetails.cardsDetails.push(newCardNft);
-    console.log("set Detials after push >>>", setDetails, albumId);
-
-    console.log("COLLECTION ->", collectionDetails);
-
-    await firestore()
-      .collection("nftGallery")
-      .doc(albumId)
-      .set(collectionDetails);
-
-    const getCard = await firestore()
-      .collection("nftGallery")
-      .doc(albumId)
-      .get();
-
-    res.status(200).send({
-      status: true,
-      message: "new card added.",
-      result: getCard.data(),
-    });
-  } catch (error) {
-    errorLogging("addRewardNFT", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in server",
-      result: error,
-    });
-  }
-};
-
-//get all alibum from nftGallery
-export const getAllAlbums = async (req: any, res: any) => {
-  try {
-    const nftGalleryData = await getAllNftGallery();
-
-    if (!nftGalleryData.length) {
-      return res.status(404).send({
-        status: false,
-        message: "Data not found.",
-        result: null,
-      });
-    }
-    res.status(200).send({
-      status: true,
-      message: "new card added.",
-      result: nftGalleryData,
-    });
-
-  } catch (error) {
-    errorLogging("addRewardNFT", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in server",
-      result: error,
-    });
-  }
-}
-// get all cards from nftGallary
-export const getAllCardsOfNftGallery = async (req: any, res: any) => {
-  try {
-    const nftGalleryData = await getAllNftGallery();
-    const cards: any = [];
-    nftGalleryData.forEach((albumDetails: any) => {
-      albumDetails.setDetails.forEach((setDetail: any) => {
-        setDetail.cardsDetails.forEach((cardDetail: any) => {
-          cards.push({
-            collectionId: albumDetails.collectionId,
-            collectionName: albumDetails.collectionName,
-            collectionDocId: albumDetails.id,
-            setId: setDetail.id,
-            ...cardDetail,
-          });
+        res.status(200).send({
+            status: true,
+            message: "New album created.",
+            result: { uid: addQuery.id, ...newCard },
         });
-      });
-    });
-    if (!nftGalleryData.length) {
-      return res.status(404).send({
-        status: false,
-        message: "Data not found.",
-        result: null,
-      });
+    } catch (error) {
+        errorLogging("createCard", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
     }
-    res.status(200).send({
-      status: true,
-      message: "get all cards from gallery.",
-      result: cards,
-    });
-  } catch (error) {
-    errorLogging("getAllCardsOfNftGallery", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in server",
-      result: error,
-    });
-  }
-};
+}
+
+const fetchAllSet = async (getAlbumDoc: any) => {
+    return new Promise((resolve, reject) => {
+        let test: any = [];
+        getAlbumDoc.map(async (data: any) => {
+            const setAry: any = []
+
+            const getSetQuery = await firestore()
+                .collection("nftGallery")
+                .doc(data.id)
+                .collection("setDetails")
+                .get()
+
+            getSetQuery.docs.forEach(async (snapshot) => {
+                setAry.push({ ...snapshot.data(), setId: snapshot.id })
+            })
+            console.log("sets >>>>>>>", setAry)
+            test.push({ ...data.data(), setDetails: setAry })
+            resolve(test);
+        })
+
+    })
+}
+
+
+
+export const getAllAlbums = async (req: any, res: any) => {
+    try {
+
+        let test: any = [];
+        const getAlbumQuery = await firestore().collection("nftGallery").get();
+        const getAlbumDoc = getAlbumQuery.docs;
+
+        test = await fetchAllSet(getAlbumDoc)
+
+        const cards: any = [];
+        const getAllCards = await firestore().collection("cardsDetails").get();
+        getAllCards.docs.forEach((snapshot) => {
+            cards.push(snapshot.data())
+        })
+
+        test.forEach((data: any) => {
+            data.setDetails.forEach((sets: any) => {
+                let matchedCards = cards.filter((data: any) => {
+                    return sets.setId == data.setId
+                })
+                sets.cardsDeatils = matchedCards;
+            });
+
+        });
+        res.status(200).send({
+            status: true,
+            message: "get all Albums from gallery.",
+            result: test,
+        });
+    } catch (error) {
+        errorLogging("getAllAlbums", "ERROR", error);
+        res.status(500).send({
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
+
+export const getAllCards = async (req: any, res: any) => {
+    try {
+
+        const getCardsData: any = [];
+        const getQuery = await firestore().collection("cardsDetails").get();
+        getQuery.docs.forEach((cards: any) => {
+            getCardsData.push(cards.data())
+        });
+
+        res.status(200).send({
+            status: true,
+            message: "get all cards from gallery.",
+            result: getCardsData,
+        });
+    } catch (error) {
+        errorLogging("getAllCards", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
+
+
+export const getAlbumListing = async (req: any, res: any) => {
+
+    try {
+        let { page = 1, limit = 5, orderBy = "albumName", sort = "desc", search = "" } = req.query;
+        limit = parseInt(limit);
+
+        let orderByConsolidate = "";// await getOrderByForUserStatistics(orderBy);
+        switch (orderBy) {
+            case "albumName":
+                orderByConsolidate = "albumName";
+                break;
+
+            case "cardType":
+                orderByConsolidate = "cardType";
+                break;
+
+            case "cardName":
+                orderByConsolidate = "cardName";
+                break;
+
+            case "cardStatus":
+                orderByConsolidate = "cardStatus";
+                break;
+
+            default:
+                orderByConsolidate = "albumName";
+                break;
+        }
+
+        let getAllData: any;
+        let collectionName: string = "cardsDetails";
+        if (orderByConsolidate == "albumName") collectionName = "nftGallery"
+        if (search) {
+            getAllData = await firestore()
+                .collection(collectionName)
+                .where(orderByConsolidate, ">=", search)
+                .where(orderByConsolidate, "<=", search + "\uf8ff")
+                .offset((page - 1) * limit)
+                .limit(limit)
+                .get();
+        } else {
+            getAllData = await firestore()
+                .collection(collectionName)
+                .orderBy(orderByConsolidate, sort)
+                .offset((page - 1) * limit)
+                .limit(limit)
+                .get();
+        }
+        let getNFTResponse: any = "";
+
+        if (collectionName == "nftGallery") {
+            getNFTResponse = getAllData.docs.map(
+                (doc: any) => ({
+                    albumId: doc.id,
+                    albumName: doc.data()?.albumName ? doc.data()?.albumName : "",
+                    setQuantity: doc.data()?.setQuantity ? doc.data()?.setQuantity : "",
+                })
+            );
+        }
+        else {
+            getNFTResponse = getAllData.docs.map(
+                (doc: any) =>  {
+                    return {
+                    albumId : doc.data()?.albumId ? doc.data()?.albumId : "",
+                    setId : doc.data()?.setId ? doc.data()?.setId : "",
+                    cardId: doc.id,
+                    cardName: doc.data()?.cardName ? doc.data()?.cardName : "",
+                    cardType :doc.data()?.cardType ? doc.data()?.cardType : "",
+                    quantity: doc.data()?.quantity ? doc.data()?.quantity : "",
+                    totalQuantity : doc.data()?.totalQuantity ? doc.data()?.totalQuantity : "",
+                    noOfCardHolder : doc.data()?.noOfCardHolder ? doc.data()?.noOfCardHolder : "",
+                    cardStatus : doc.data()?.cardStatus ? doc.data()?.cardStatus : "",
+                    sno:doc.data()?.sno ? doc.data()?.sno : "",
+                    cardImage : doc.data()?.cardImage ? doc.data()?.cardImage : "",
+                }}
+            );
+
+        }
+
+        const CollectionRef = await firestore().collection(collectionName).get();
+        let totalCount = CollectionRef.size;
+
+        res.status(200).send({
+            status: true,
+            message: "Data fetched successfully",
+            result: { data: getNFTResponse, totalCount },
+        });
+    } catch (error) {
+        errorLogging("getAlbumListing", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
+
 
 
 export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
+    funcName: string,
+    type: string,
+    error: any
 ) => {
-  console.info(funcName, type, error);
+    console.info(funcName, type, error);
 };
