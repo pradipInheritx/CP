@@ -18,6 +18,7 @@ import ContentContext from "../Contexts/ContentContext";
 import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
 import { texts } from "../Components/LoginComponent/texts";
+import { Buttons } from "../Components/Atoms/Button/Button";
 
 // const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
 // const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
@@ -38,7 +39,7 @@ const TextContainer = styled.div`
 const Home = () => {
   const translate = useTranslation();
   const { user } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,setSignup } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
@@ -171,10 +172,22 @@ const Home = () => {
         </div>
         <div className='mb-5 mx-0'>
           <div className='mb-4'>
-            <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
-              {/* {translate("Influencers").toUpperCase()} */}
+            {/* <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
               {texts.Influencers}
-            </H2>
+            </H2> */}
+            {!user?.uid?  <div className='d-sx-none'> {window.screen.width > 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'4rem', fontSize:'2rem', padding:'2rem'}} onClick={e=>{  setLogin(true)
+        setSignup(true)}}>{texts.signUp}</Buttons.Primary>
+        <H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1.5rem'}}>Subscribe now and start earning rewards before anyone else</H2>
+        
+        </>}</div>:<></>}
+
+
+
+          {!user?.uid?<div className='d-xl-none'> {window.screen.width < 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'2rem', fontSize:'1rem', padding:'1rem'}} onClick={e=>{
+              setLogin(true)
+              setSignup(true)
+          }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1rem'}}>Subscribe now and start earning rewards before anyone else</H2></>}</div>:<></>}
+
           </div>
           <InfluencersCarousel />
         </div>

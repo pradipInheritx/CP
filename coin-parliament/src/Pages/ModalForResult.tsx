@@ -166,10 +166,17 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                         {/* ${vote?.id} -  */}                        
                         <span className="sm_txt">
                           
-                        {vote?.voteId} {`
-                        - ${moment(
+                        {vote?.voteId} </span>
+                        {window?.screen?.width<768 && <br/>}
+                        <span className="sm_txt">
+                        
+                        {`
+                         ${moment(
                           new Date(vote.voteTime)
-                        ).format("HH:mm DD/MM/YYYY")}`}</span>
+                        ).format("DD/MM/YYYY")}`} {`
+                        ${moment(
+                          new Date(vote.voteTime)
+                        ).format("HH:mm")}`}</span>
                       </Col>
                     </div>
                   </div>
@@ -182,7 +189,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                         VOTE RESULT
                       </span>
                       <div style={{ fontSize: "14px" }}>
-                        $ {vote.valueExpirationTime &&
+                       {vote?.valueExpirationTime > vote?.valueVotingTime?'BULL':'BEAR'} {' '} $ {vote.valueExpirationTime &&
                           vote?.valueExpirationTime as unknown as number
                           }
                       </div>
@@ -335,10 +342,14 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
               </div>
                  <Col className="text-center">
                    {/* ${vote?.id} - */}
-                  <span className="sm_txt">{`
-                   CYAtP8IlvtBQ6v7BEbAa - ${moment(
+                  <span className="sm_txt">
+                    {vote?.voteId} {' '} {`
+                    - ${moment(
                       new Date(vote?.voteTime)
-                    ).format("HH:mm DD/MM/YYYY")}`}</span>
+                    ).format("DD/MM/YYYY")}`}{' '} {`
+                     ${moment(
+                      new Date(vote?.voteTime)
+                    ).format("HH:mm")}`}</span>
                   </Col>
               </div>
               
