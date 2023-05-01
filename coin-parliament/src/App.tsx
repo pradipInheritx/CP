@@ -1116,7 +1116,7 @@ console.log('fmctoken',fcmToken)
                                         }px 0 0`,
                                       }}
                                     >
-                                    {/* <div className='pwaPopup'  style={{display:pwaPopUp}}>
+                                    <div className='pwaPopup'  style={{display:pwaPopUp}}>
                                         <span>{texts.InstallCoinParliament}</span>
                                     <button
       className="link-button"
@@ -1138,7 +1138,7 @@ console.log('fmctoken',fcmToken)
     >
       x
     </span>
-                                      </div> */}
+                                      </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />
                                         {/* <Route
