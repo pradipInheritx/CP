@@ -1,9 +1,9 @@
 /** @format */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {  useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
-import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
+// import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import {texts} from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
@@ -29,7 +29,7 @@ import {
   getAllCoins,
   getCoins,
   saveAllCoins,
-  saveCoins,
+  // saveCoins,
 } from "./common/models/Coin";
 import {
   collection,
@@ -110,7 +110,7 @@ import Contact from "./Pages/Contact";
 // import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
-import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
+// import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
@@ -128,10 +128,10 @@ import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
 import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
-import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
+// import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
-import { handleSoundClick } from "./common/utils/SoundClick";
-import createFastContext from "./hooks/createFastContext";
+// import { handleSoundClick } from "./common/utils/SoundClick";
+// import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 
 
@@ -244,23 +244,23 @@ function App() {
     []
   );
 
-  // useEffect(() => {
-  //   if('serviceWorker' in navigator) {
-  //   navigator?.serviceWorker?.addEventListener("message", (message) => {
-  //     const {
-  //       notification: { body, title },
-  //     } = message.data["firebase-messaging-msg-data"] as {
-  //       notification: { body: string; title: string };
-  //     };
-  //     // showToast(
-  //     //   <div>
-  //     //     <h5>{title}</h5>
-  //     //     <p>{body}</p>
-  //     //   </div>
-  //     // );
-  //   });
-  // }
-  // });
+  useEffect(() => {
+    if('serviceWorker' in navigator) {
+    navigator?.serviceWorker?.addEventListener("message", (message) => {
+      const {
+        notification: { body, title },
+      } = message.data["firebase-messaging-msg-data"] as {
+        notification: { body: string; title: string };
+      };
+      showToast(
+        <div>
+          <h5>{title}</h5>
+          <p>{body}</p>
+        </div>
+      );
+    });
+  }
+  });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -337,6 +337,7 @@ function App() {
   const [promptInstall, setPromptInstall] = useState(null);
 const [pwaPopUp,setPwaPopUp]=useState('block')
 const[mfaLogin,setMfaLogin]=useState(false)
+const[allCoinsSetting,setAllCoinsSetting]=useState([])
   useEffect(() => {
     const handler = (e:any) => {
       e.preventDefault();
@@ -624,9 +625,15 @@ useEffect(() => {
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
-      
+        const newAllCoinsData = (
+          ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
+        )
+          .sort((a, b) => Number(a.id) - Number(b.id))
+          .map((c) => c);
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
+      // @ts-ignore
+      setAllCoinsSetting(newAllCoinsData)
     });
 
     onSnapshot(doc(db, "settings", "pairs"), (doc) => {
@@ -785,6 +792,7 @@ votesLast24HoursRef.get()
 
 function connect(){
   if(Object.keys(coins).length === 0) return
+  console.log('Browser window called')
   ws = new WebSocket('wss://stream.binance.com:9443/ws');
    console.log('websocket connected first time')
  const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
@@ -809,9 +817,10 @@ function connect(){
      socket.send(JSON.stringify(req));
    };
    ws.onclose = (event:any) => {
+    // if(!login)window.location.reload()
      console.log('WebSocket connection closed');
      if (event.code !== 1000) {
-       console.log('Attempting to reconnect in 5 seconds...');
+       console.log('WebSocket Attempting to reconnect in 5 seconds...');
        setTimeout(() => {
          connect();
        }, 5000);
@@ -819,6 +828,7 @@ function connect(){
    };
    
    ws.onerror = () => {
+    // if(!login)window.location.reload()
      console.log('WebSocket connection occurred');
    };
    const timeout = 30000; // 30 seconds
@@ -840,6 +850,7 @@ useEffect(() => {
   return () => {
 if (ws) ws.close();
     if(socket) socket.close();
+    window.localStorage.removeItem('firstTimeloading')
   };
 }, [Object.keys(coins).length]);
 // useEffect(() => {
@@ -866,9 +877,10 @@ if (ws) ws.close();
 //   }
 //   if (document.hidden) {
 //     console.log("Browser window is minimized");
-//     // ws.close();
-//     // socket.close();
+//     ws.close();
+//     socket.close();
 //   } else {
+//     connect();
 //     console.log("Browser window is not minimized");
 //   }
 // }
@@ -1025,6 +1037,7 @@ if (ws) ws.close();
               >
                 <CoinsContext.Provider
                     value={{
+                      allCoinsSetting,
                       changePrice,
                     setChangePrice,
                     ws,
@@ -1231,7 +1244,9 @@ if (ws) ws.close();
                                         </span>
                                       </div>
                                       <Routes>
-                                        <Route path='/' element={<Home />} />
+                                        <Route path='/' element={
+                                       
+                                        <Home />} />
                                         <Route
                                           path='coins'
                                           element={<CoinMain />}
@@ -1395,7 +1410,7 @@ if (ws) ws.close();
                                           element={<PrivacyPolicy />}
                                         />
                                         <Route
-                                          path='/termsandcondition'
+                                          path='/terms-and-condition'
                                           element={<TermsAndConditions />}
                                         />
                                         {localhost && user && (

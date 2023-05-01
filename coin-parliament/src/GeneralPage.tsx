@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {Container} from "react-bootstrap";
+// import {Container} from "react-bootstrap";
 
 const Page = styled.div`
   font-size: 13px;

@@ -142,7 +142,7 @@ const NFT = ({ setSelectedAvatar,id }: NFTProps) => {
         
       <Body>
         <Title>{title(id)}</Title>
-        <Video width="300" height="300" autoPlay={true} loop={true}>
+        <Video width="300" height="300" autoPlay={true} loop={true}  playsInline>
           <source
             src={`${
               importFile(`./videos/${images[id as AvatarType]}`, "mp4")

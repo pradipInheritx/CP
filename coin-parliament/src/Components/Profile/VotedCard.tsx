@@ -162,17 +162,17 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
               index !== undefined && index==0?vote?.valueVotingTime[0]:vote.valueVotingTime[1]
             }
           </div>
-          <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
+          {/* <div>{vote.valueExpirationTime && <Trend num={trend} />}</div> */}
         </CoinName>
       </div>
     </CoinContainer>
   ) : (
     <div className="profile_coin_vote shadow-sm" style={{minWidth:window.screen.width<979?'':'480px' }}>
       <Container className="p-0 ">
-        <Row>
+        <div style={{display:'flex'}}>
           <Col>
             <div className=" d-flex justify-content-center  align-items-center">
-              <div className="col-2" style={{paddingBottom:'20px'}}>
+              <div className="col-2" >
                 <div className="h-100 d-flex w-100 justify-content-center align-items-center">
                   <Logo {...{ symbol: vote.coin || "", width: 30 }} />
                 </div>
@@ -182,7 +182,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                 style={{ paddingTop: 23, paddingBottom: 14 }}
               >
                 <Row>
-                  <Col>
+                  <Col >
                     <p className="profile_coin_vote_txt d-flex flex-column">
                       <CoinTitle className="dark_prpl">
                         {coin.name} - {coin.symbol}
@@ -201,6 +201,16 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                         </span>
                       </CoinCurrency>
                     </p>
+                
+                  <Col className="">
+                    {/* @ts-ignore */}
+                    <span className="sm_txt">{`${vote?.voteId? vote?.voteId:id} - ${moment(
+                      new Date(vote.voteTime)
+                    ).format("DD/MM/YYYY")} ${moment(
+                      new Date(vote?.voteTime)
+                    ).format("HH:mm")}`}</span>
+                  </Col>
+                
                   </Col>
                   <Col>
                     {!vote.valueExpirationTime && (
@@ -214,44 +224,55 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       </Row>
                     )}
                     {vote.valueExpirationTime && (
-                      <Row className="text-body profile_coin_vote_txt ">
-                        <Col xs={6}>
+                      <Row className="text-body profile_coin_vote_txt">
+                        <Col >
                           <Row>
                             <Col>
                               <Row className="flex-column text-center ">
                                 <Col style={{fontSize:'8px'}} className="">
+                                  VOTE RESULT
+                                </Col>
+                                
+                                  <Col className=""
+                                  style={{fontSize:'10px'}}
+                                  >
+                                  {/* {vote.valueExpirationTime && (
+                                    <Trend num={trend} />
+                                  )} */}
+                                  {vote?.valueExpirationTime > vote?.valueVotingTime?'BULL':'BEAR'} {' '}
                                   {vote.valueExpirationTime &&
                                     formatCurrency(                                                                          
                                       index === undefined
-                                        ? (vote?.valueVotingTime as unknown as number)
+                                        ? (vote?.valueExpirationTime as unknown as number)
                                         : (
                                             vote?.valueExpirationTime as number[]
                                       )[index]
                                       )
                                     }
                                 </Col>
-                                
-                                <Col className="">
-                                  {vote.valueExpirationTime && (
-                                    <Trend num={trend} />
-                                  )}
-                                  
-                                </Col>
-                                
+                                  <Col
+                                    style={{ fontSize: '8px' }}
+                                    className=""
+                                  >
+                                    {/* @ts-ignore */}
+                                    Vote impact : {vote.success==2?'MID':vote.success==1?'HIGH':'LOW'}
+                                  </Col>
                               </Row>
                             </Col>
                           </Row>
                         </Col>
                         
-                        <Col xs={6}>
+                        <Col style={{display:'flex',alignItems:'center'}}>
                           
                           <Row className="text_prpl">
-                            <Col>
+                            <Col >
                             
                               {vote.score && (
-                                <Row className="flex-column text-center">
+                                <Row className="flex-column text-center" >
+                                   <span style={{fontSize:'8px'}}>You progressed </span>
+                                  <Col >
                                   
-                                  <Col>
+                                 
                                     <strong>{vote.score}</strong>
                                   </Col>
                                   <Col>CMP</Col>
@@ -283,17 +304,11 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                       
                   </Col>}
                 </Row>
-                <Row>
-                  <Col className="">
-                    <span className="sm_txt">{`${id} - ${moment(
-                      new Date(vote.voteTime)
-                    ).format("HH:mm DD/MM/YYYY")}`}</span>
-                  </Col>
-                </Row>
+                
               </Col>
             </div>
           </Col>
-        </Row>
+        </div>
       </Container>
     </div>
   );
@@ -379,18 +394,7 @@ let votetime= a.diff(b)
                   {timeframeInitials(vote.timeframe.name)}
                 </PairsVoteVs>
               </div>
-              <div style={{ minHeight: "100%" }} className="">
-                <CoinVoteTimer>
-                  {vote.valueExpirationTime && vote.score && (
-                    <strong>{vote.score} CMP</strong>
-                  )}
-                  {!vote.valueExpirationTime && (
-                    <MyCountdown expirationTime={vote.expiration || 0}
-                      // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
-                    />
-                  )}
-                </CoinVoteTimer>
-              </div>
+              
             </div>
           </Col>
           <Col className="col-4">
@@ -402,12 +406,43 @@ let votetime= a.diff(b)
             />
           </Col>
         </Row>
-        
+        <Row>
+          <div style={{ minHeight: "100%" }} className="text-center">
+             <div className=''
+                  style={{fontSize:"12px"}}
+                  >
+                  <p>VOTE RESULT</p>
+                  <p>
+                    {/* @ts-ignore */}
+                    {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
+                    {/* @ts-ignore */}
+                    {vote?.coin?.split("-")[vote?.valueExpirationTime[0]-vote.valueVotingTime[0]<vote?.valueExpirationTime[1]-vote.valueVotingTime[1]?1:0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
+                  </p>
+                  {/* @ts-ignore */}
+                    <p>Vote impact : {vote.success==2?'MID':vote.success==1?'HIGH':'LOW'}</p>
+                    </div>
+
+                <CoinVoteTimer>
+              {vote.valueExpirationTime && vote.score && (
+                <>
+                  <strong>You progressed -  {vote.score}</strong><span>CMP</span>
+                  </>
+                  )}
+                  {!vote.valueExpirationTime && (
+                    <MyCountdown expirationTime={vote.expiration || 0}
+                      // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                    />
+                  )}
+                </CoinVoteTimer>
+              </div>
+        </Row>
         <Row className="">
           <Col className="justify-content-center w-100 mb-2">
             <SmText className="text-center">{`${id} - ${moment(
               new Date(vote?.voteTime)
-            ).format("HH:mm DD/MM/YYYY")}`}</SmText>
+            ).format("DD/MM/YYYY")} ${moment(
+              new Date(vote?.voteTime)
+            ).format("HH:mm")}`}  </SmText>
           </Col>
         </Row>
       </Container>

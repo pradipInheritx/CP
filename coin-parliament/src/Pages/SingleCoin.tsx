@@ -29,6 +29,7 @@ import { setInterval } from "timers";
 import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
+import { decimal } from "../Components/Profile/utils";
 
 export const Title = styled.h2`
   font: var(--font-style-normal) normal var(--font-weight-normal)
@@ -101,12 +102,18 @@ const SingleCoin = () => {
       const message = JSON.parse(event.data);
       const symbol =message?.s?.slice(0, -4)
   
-    if (symbol && symbol == params?.id) {
+      if (symbol && symbol == params?.id) {
+        // @ts-ignore
+        const dot = decimal[symbol]
+        
+        console.log('symbol',message?.s)
+        // @ts-ignore
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
         [symbol]: {
           ...prevCoins[symbol],
-          price: message?.c,
+          price:Number(message?.c).toFixed(dot?.decimal || 2),
+          
         },
       }));
     }
@@ -445,6 +452,7 @@ const calcVote = useCallback(async () => {
                     <CoinsForm
                       sound={sound}
                       coin={coin}
+                      coinUpdated={coinUpdated}
                       setVoteId={setVoteId}
                       setLoading={setLoading}
                       setConfetti={setConfetti}

@@ -95,7 +95,7 @@ const Mine = () => {
 	const goBack = () => {
 		navigate(-1);
 	}
-console.log('userInfo',userInfo)
+console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
     <div>
@@ -305,14 +305,14 @@ console.log('userInfo',userInfo)
           }}></button>
         </div>
       <Modal.Body>
-            {/* continue voting */}
-      <div className='py-2  d-flex  justify-content-center'><p>Return to Vote and Continue voting ?</p></div>
+            {/* continue voting */}          
+      <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>Stay in the game!</p></div>
 
       </Modal.Body>
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
-            <Buttons.Primary className="mx-2" onClick={goBack}>Yes</Buttons.Primary>
-            <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default>
+            <Buttons.Primary className="mx-2" onClick={goBack}>CONTINUE VOTING</Buttons.Primary>
+            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
       {/* </Modal.Footer>       */}
     </Modal>

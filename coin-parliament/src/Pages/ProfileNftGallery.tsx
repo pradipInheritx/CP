@@ -567,7 +567,8 @@ const CheckCardDisable = (cardId: any) => {
               <select
                 name='cars'
                 id='cars'
-                className='bg-white border rounded py-2'
+            className='bg-white border rounded py-2'
+            value ={selectCollection}
                 // onChange={e=>onCollectionChange(e.target.value)}
                 onChange={e=>setSelectCollection(e.target.value)}
               >
@@ -575,7 +576,7 @@ const CheckCardDisable = (cardId: any) => {
             
 
             {collectionType?.map((data:any ,index:number ) => {
-              return  <option value={data?.collectionName} key={index}>{data?.collectionName}</option>        
+              return  <option value={data?.collectionName} selected key={index}>{data?.collectionName}</option>        
             })}
             
           </select>
@@ -600,12 +601,13 @@ const CheckCardDisable = (cardId: any) => {
                 className='bg-white border rounded mx-1 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
-                <option value='all'>{texts.SelectType}</option>
+                  {selectCollection !="none"?<><option value='all'>{texts.SelectType}</option>
                 <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
                 <option value={`${texts.Rare}`}>{texts.Rare}</option>
                 <option value={`${texts.Epic}`}>{texts.Epic}</option>
                 <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
-                <option value={`${texts.Common}`}>{texts.Common}</option>
+              <option value={`${texts.Common}`}>{texts.Common}</option></> :
+              <option value='all'>{texts.SelectType}</option>}
           </select>
           
           <select                
@@ -646,12 +648,12 @@ const CheckCardDisable = (cardId: any) => {
             style={{
                 width: "600px"
           }}
-            onClick={() => { navigate(`/profile/Album/${data?.collectionName}`) }} key={index}>
-             <Video  autoPlay={true} loop={true}>
+            onClick={() => { setSelectCollection(data?.collectionName) }} key={index}>
+             <Video  autoPlay={true} loop={true} playsInline>
           <source
             src={allVideo[`${data?.collectionName}`]}
             type="video/mp4"
-          />
+          /> 
         </Video>
           {/* <p>{data?.collectionName} COLLECTION</p> */}
         </div>
