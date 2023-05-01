@@ -156,7 +156,7 @@ const Home = () => {
               }
             }}
           /> */}
-        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>ComingSoon</H2>}
+        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>Coming Soon</H2>}
 
 
 
