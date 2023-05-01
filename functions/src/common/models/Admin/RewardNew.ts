@@ -32,7 +32,7 @@ export const createAlbum = async (req: any, res: any) => {
             setQunatity
         }
         const checkAlbums = await firestore()
-            .collection("nftGallery")
+            .collection("nft_gallery")
             .where("albumName", "==", albumName)
             .get();
 
@@ -44,7 +44,7 @@ export const createAlbum = async (req: any, res: any) => {
             });
         }
 
-        const addQuery = await firestore().collection("nftGallery").add(newAlbum)
+        const addQuery = await firestore().collection("nft_gallery").add(newAlbum)
 
         res.status(200).send({
             status: true,
@@ -72,7 +72,7 @@ export const createSet = async (req: any, res: any) => {
         };
 
         const addSetDetails = await firestore()
-            .collection("nftGallery")
+            .collection("nft_gallery")
             .doc(albumId)
             .collection("setDetails")
             .add(newSet);
@@ -155,7 +155,7 @@ const fetchAllSet = async (getAlbumDoc: any) => {
             const setAry: any = []
 
             const getSetQuery = await firestore()
-                .collection("nftGallery")
+                .collection("nft_gallery")
                 .doc(data.id)
                 .collection("setDetails")
                 .get()
@@ -177,7 +177,7 @@ export const getAllAlbums = async (req: any, res: any) => {
     try {
 
         let test: any = [];
-        const getAlbumQuery = await firestore().collection("nftGallery").get();
+        const getAlbumQuery = await firestore().collection("nft_gallery").get();
         const getAlbumDoc = getAlbumQuery.docs;
 
         test = await fetchAllSet(getAlbumDoc)
@@ -239,7 +239,7 @@ export const getAllCards = async (req: any, res: any) => {
 export const getAlbumListing = async (req: any, res: any) => {
 
     try {
-        let { page = 1, limit = 5, orderBy = "albumName", sort = "desc", search = "" } = req.query;
+        let { page = 1, limit = 5, orderBy = "totalVote", sort = "desc", search = "" } = req.query;
         limit = parseInt(limit);
 
         let orderByConsolidate = "";// await getOrderByForUserStatistics(orderBy);
@@ -265,54 +265,35 @@ export const getAlbumListing = async (req: any, res: any) => {
                 break;
         }
 
-        let getAllData: any;
-        let collectionName: string = "cardsDetails";
-        if (orderByConsolidate == "albumName") collectionName = "nftGallery"
+        let getAllPerUserVotes: any;
+        let collectionName: string = "cardDetails";
+        if (orderByConsolidate == "albumName") collectionName = "nft_gallery"
         if (search) {
-            getAllData = await firestore()
+            getAllPerUserVotes = await firestore()
                 .collection(collectionName)
-                .where(orderByConsolidate, ">=", search)
-                .where(orderByConsolidate, "<=", search + "\uf8ff")
+                .where("albumName", ">=", search)
+                .where("albumName", "<=", search + "\uf8ff")
                 .offset((page - 1) * limit)
                 .limit(limit)
                 .get();
         } else {
-            getAllData = await firestore()
+            getAllPerUserVotes = await firestore()
                 .collection(collectionName)
                 .orderBy(orderByConsolidate, sort)
                 .offset((page - 1) * limit)
                 .limit(limit)
                 .get();
         }
-        let getNFTResponse: any = "";
+        let getAllPerUserVotesResponse: any = "";
 
-        if (collectionName == "nftGallery") {
-            getNFTResponse = getAllData.docs.map(
+        if (collectionName == "albumName") {
+            getAllPerUserVotesResponse = getAllPerUserVotes.docs.map(
                 (doc: any) => ({
                     albumId: doc.id,
                     albumName: doc.data()?.albumName ? doc.data()?.albumName : "",
-                    setQuantity: doc.data()?.setQuantity ? doc.data()?.setQuantity : "",
+                    
                 })
             );
-        }
-        else {
-            getNFTResponse = getAllData.docs.map(
-                (doc: any) =>  {
-                    return {
-                    albumId : doc.data()?.albumId ? doc.data()?.albumId : "",
-                    setId : doc.data()?.setId ? doc.data()?.setId : "",
-                    cardId: doc.id,
-                    cardName: doc.data()?.cardName ? doc.data()?.cardName : "",
-                    cardType :doc.data()?.cardType ? doc.data()?.cardType : "",
-                    quantity: doc.data()?.quantity ? doc.data()?.quantity : "",
-                    totalQuantity : doc.data()?.totalQuantity ? doc.data()?.totalQuantity : "",
-                    noOfCardHolder : doc.data()?.noOfCardHolder ? doc.data()?.noOfCardHolder : "",
-                    cardStatus : doc.data()?.cardStatus ? doc.data()?.cardStatus : "",
-                    sno:doc.data()?.sno ? doc.data()?.sno : "",
-                    cardImage : doc.data()?.cardImage ? doc.data()?.cardImage : "",
-                }}
-            );
-
         }
 
         const CollectionRef = await firestore().collection(collectionName).get();
@@ -320,11 +301,11 @@ export const getAlbumListing = async (req: any, res: any) => {
 
         res.status(200).send({
             status: true,
-            message: "Data fetched successfully",
-            result: { data: getNFTResponse, totalCount },
+            message: "Per user votes fetched successfully",
+            result: { data: getAllPerUserVotesResponse, totalCount },
         });
     } catch (error) {
-        errorLogging("getAlbumListing", "ERROR", error);
+        errorLogging("getAllCards", "ERROR", error);
         res.status(500).send({
             status: false,
             message: "Something went wrong in server",
