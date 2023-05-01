@@ -125,7 +125,8 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
           <div></div>
         <div className='text-center mb-2' style={{
                   color: "#6352e8",
-                  fontWeight:"300"
+                  fontWeight: "300",
+                    marginLeft: `${window.screen.width < 767 ?"10%":""}`
           }}>{type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""}</div>
          <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
@@ -281,7 +282,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
           </Col>                
         </div>
 
-              <div className=' text-center ' style={{width:`${window.screen.width < 767 ?"100%" :"30%"}`}}>                  
+              <div className='text-center' style={{width:`${window.screen.width < 767 ?"100%" :"30%"}`}}>                  
               <CoinContainer winner={vote?.direction === 1}>
                 <div className="">
                     <div className='p-2'>
