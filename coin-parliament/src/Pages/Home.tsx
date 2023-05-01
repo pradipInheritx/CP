@@ -52,6 +52,7 @@ const Home = () => {
           <HomeContainer width={width} className='mb-4 p-0'>
             {!(login || firstTimeLogin) && (
               <>
+              
                 <Image
                   src={src}
                   style={{
@@ -60,18 +61,33 @@ const Home = () => {
                       width && width > 969
                         ? "auto"
                         : 'auto',
-                    // marginTop: width && width > 969 ? -50 : -130,
+                    marginTop: width && width > 969 ? -50 : 130,
                     // marginTop:'120px',
                     position: "absolute",
                   }}
                 />
+                {window.screen.width>768 && <h2
+                    style={{ zIndex: 0, position: "absolute",top:'130px' }}
+                    className=' d-block'
+                  >
+                    <strong
+                      className='text-uppercase'
+                      style={{ fontSize: "45px", fontWeight: "700" }}
+                    >
+                      {translate("Vote to Earn")}
+                    </strong>
+                    
+                  </h2>}
                 <div
                   className='w-100 '
                   style={{
                     marginTop: window.screen.width > 979 ? "150px" : "-48px",
                   }}
                 >
-                  <h2
+                  
+                  
+
+                 {window.screen.width <768 && <h2
                     style={{ zIndex: 0, position: "relative" }}
                     className='d-xl-none d-block'
                   >
@@ -85,7 +101,7 @@ const Home = () => {
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
                     {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-                  </h2>
+                  </h2>}
 
                   {/* <TextContainer className="mt-2" >
                   <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>

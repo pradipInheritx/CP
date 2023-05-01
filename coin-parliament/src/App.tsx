@@ -500,9 +500,9 @@ useEffect(() => {
   }
 
   useEffect(() => {
-    getToken(messaging, {
-      vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    }).then((token) => setFcmToken(token));
+    // getToken(messaging, {
+    //   vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
+    // }).then((token) => setFcmToken(token));
   }, []);
 console.log('fmctoken',fcmToken)
   useEffect(() => {
