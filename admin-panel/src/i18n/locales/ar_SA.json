@@ -708,6 +708,10 @@
   "sidebar.dashboard.statustype":"Status Type",
   "sidebar.dashboard.paxgeneraldata":"PAX General Data",
   "sidebar.dashboard.cmpsettings":"CMP Settings",
+  "sidebar.dashboard.votesettings":"Vote Settings",
+  "sidebar.dashboard.rewardsettings":"Reward Settings",
+  "sidebar.dashboard.returnsettings":"Return Settings",
+  
   "sidebar.dashboard.rewardnft":"Reward NFT",
   "sidebar.dashboard.coins": "التشفير",
   "sidebar.dashboard.pairs": "Pairs",

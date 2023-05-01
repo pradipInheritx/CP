@@ -152,6 +152,24 @@ const dashboardsMenus = [
     type: "item",
     link: "/dashboard/cmpsettings"
   },
+  {    
+    name: <IntlMessages id={"sidebar.dashboard.votesettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/votesettings"
+  },
+  {    
+    name: <IntlMessages id={"sidebar.dashboard.rewardsettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/rewardsettings"
+  },
+  {    
+    name: <IntlMessages id={"sidebar.dashboard.returnsettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/returnsettings"
+  },
   {
     name: <IntlMessages id={"sidebar.dashboard.crypto"} />,
     icon: <MonetizationOn />,

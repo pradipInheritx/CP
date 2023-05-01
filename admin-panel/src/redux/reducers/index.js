@@ -28,6 +28,9 @@ import RewardNFT from './RewardNFT';
 import StatusType from './StatusType';
 import CMPSetting from './CMPSetting';
 import PAXGenera from './PAXGenera';
+import VoteSetting from './VoteSetting';
+import ReturnSetting from './ReturnSetting';
+import RewardSetting from './RewardSetting';
 
 export default history =>
 
@@ -60,4 +63,7 @@ export default history =>
     StatusType: StatusType,
     CMPSetting: CMPSetting,
     PAXGenera: PAXGenera,
+    VoteSetting: VoteSetting,
+    ReturnSetting: ReturnSetting,
+    RewardSetting: RewardSetting,
   });

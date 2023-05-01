@@ -97,6 +97,18 @@ const Dashboards = ({match}) => {
           component={lazy(() => import("./RewardNFT"))}
         />
         <Route
+          path={`${requestedUrl}/votesettings`}
+          component={lazy(() => import("./VoteSettings"))}
+        />
+        <Route
+          path={`${requestedUrl}/returnsettings`}
+          component={lazy(() => import("./ReturnSetting"))}
+        />
+        <Route
+          path={`${requestedUrl}/rewardsettings`}
+          component={lazy(() => import("./RewardSetting"))}
+        />
+        <Route
           path={`${requestedUrl}/listing`}
           component={lazy(() => import("./Listing"))}
         />

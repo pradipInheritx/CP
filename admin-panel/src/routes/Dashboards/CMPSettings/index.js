@@ -89,7 +89,7 @@ const CMPSettingsModule = () => {
     <div className={classes.root}>
           <Paper className={classes.paper}>   
               {/* <Box className={classes.authContent}> */}
-         <form className='' style={{ display: "flex"}}>
+         <form className='' style={{ display: "flex",justifyContent: "center",}}>
         <div className=''>                
             <Box style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }} >
               
@@ -97,48 +97,66 @@ const CMPSettingsModule = () => {
               style={{width:"55%"}}                                  
               type="text"
               label={<IntlMessages id="appModule.userTypeCpm" />}            
-              onChange={event => setUserTypeCpm(event.target.value)}
+                onChange={event => {
+                  setUserTypeCpm(event.target.value)
+                  setUserTypeCpmError("")
+                }}
               defaultValue={cmpSettingDetelis?.userTypeCpm}
               margin="normal"
               variant="outlined"
                 className={classes.textFieldRoot}
                 helperText={userTypeCpmError}
+              error={userTypeCpmError !== ''}
+                
             />
 
             <TextField
             style={{width:"55%"}}
               type="text"
               label={<IntlMessages id="appModule.weight" />}              
-              onChange={event => setWeight(event.target.value)}
+                onChange={event => {
+                  setWeight(event.target.value)
+                  setWeightError("")
+                }}
               defaultValue={cmpSettingDetelis?.weight}
               margin="normal"
               variant="outlined"
                 className={classes.textFieldRoot}
                 helperText={weightError}
+              error={weightError !== ''}               
             />
                           
             <TextField
             style={{width:"55%"}}
               type="text"
               label={<IntlMessages id="appModule.returnCMP" />}              
-              onChange={event => setReturnCMP(event.target.value)}
+                onChange={event => {
+                  setReturnCMP(event.target.value)
+                  setReturnCMPError("")
+                }}
               defaultValue={cmpSettingDetelis?.returnCMP}
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
-              helperText={returnCMPError}
+                helperText={returnCMPError}
+              error={returnCMPError !== ''}                               
               />
               
             <TextField
             style={{width:"55%"}}
               type="text"
               label={<IntlMessages id="appModule.sharePercent" />}          
-              onChange={event => setSharePer(event.target.value)}
+                onChange={event => {
+                  setSharePer(event.target.value)
+                  setSharePerError("")
+                }}
               defaultValue={cmpSettingDetelis?.sharePer}
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
-              helperText={sharePerError}
+                helperText={sharePerError}
+              error={sharePerError !== ''}                               
+                
             />                                      
             
           </Box>
@@ -150,7 +168,7 @@ const CMPSettingsModule = () => {
               <IntlMessages id="appModule.reset" />
             </Button>            
             <Button
-              // onClick={onSubmit}
+              onClick={onSubmitClick}
               variant="contained" color="primary">
               <IntlMessages id="appModule.submit" />
             </Button>            
