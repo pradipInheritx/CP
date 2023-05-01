@@ -342,7 +342,7 @@ console.log('votenumber',voteNumber, Number(voted))
             },
             {
               href: "/nftAlbum",
-              label: "Album",
+              label: "Wall Of Fame",
             },
             {
               label: "",
@@ -405,7 +405,7 @@ console.log('votenumber',voteNumber, Number(voted))
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Become A Member",
+              label: "Join the parliament",
             },
           ].map((i) => (i ? i : undefined))}
         >        

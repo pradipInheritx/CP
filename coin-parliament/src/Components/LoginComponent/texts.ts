@@ -3,7 +3,7 @@ export const texts = {
   facebook: "facebook",
   google: "google",
   twitter: "twitter",
-  noAccount: "don't have an account?".toUpperCase(),
+  noAccount: "Don't have an account?",
   haveAccount: "Already a member?",
   login: "login".toUpperCase(),
   continue: "continue".toUpperCase(),

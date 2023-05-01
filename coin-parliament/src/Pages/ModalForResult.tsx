@@ -125,7 +125,8 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
           <div></div>
         <div className='text-center mb-2' style={{
                   color: "#6352e8",
-                  fontWeight:"300"
+                  fontWeight:"300",
+                  marginLeft: `${window.screen.width < 767 ?"10%":""}`
           }}>{type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""}</div>
          <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
@@ -194,7 +195,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                           }
                       </div>
                       <div>
-                        <span>{vote.success==2?'MID':vote.success==1?'HIGH':'LOW'} VOTE IMPACT</span>
+                        <span>Vote impact : {vote.success==2?'MID':vote.success==1?'HIGH':'LOW'}</span>
                       </div>
                       <div>
                         {/* {vote.valueExpirationTime && (
@@ -327,9 +328,9 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                   <p>VOTE RESULT</p>
                   <p>
                     {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
-                    {vote?.coin?.split("-")[vote?.direction]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
+                    {vote?.coin?.split("-")[vote?.valueExpirationTime[0]-vote.valueVotingTime[0]<vote?.valueExpirationTime[1]-vote.valueVotingTime[1]?1:0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
                   </p>
-                    <p>{vote.success==2?'MID':vote.success==1?'HIGH':'LOW'} VOTE IMPACT</p>
+                    <p>Vote impact : {vote.success==2?'MID':vote.success==1?'HIGH':'LOW'}</p>
                     </div>
                 <CoinVoteTimer>
                     {vote?.valueExpirationTime && vote?.score && (
@@ -343,7 +344,9 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
                  <Col className="text-center">
                    {/* ${vote?.id} - */}
                   <span className="sm_txt">
-                    {vote?.voteId} {' '} {`
+                    {vote?.voteId} {' '}
+                    {window.screen.width<768 && <br/>}
+                     {`
                     - ${moment(
                       new Date(vote?.voteTime)
                     ).format("DD/MM/YYYY")}`}{' '} {`

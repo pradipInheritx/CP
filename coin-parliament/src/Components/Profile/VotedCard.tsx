@@ -172,7 +172,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
         <div style={{display:'flex'}}>
           <Col>
             <div className=" d-flex justify-content-center  align-items-center">
-              <div className="col-2" style={{paddingBottom:'20px'}}>
+              <div className="col-2" >
                 <div className="h-100 d-flex w-100 justify-content-center align-items-center">
                   <Logo {...{ symbol: vote.coin || "", width: 30 }} />
                 </div>
@@ -206,7 +206,9 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                     {/* @ts-ignore */}
                     <span className="sm_txt">{`${vote?.voteId? vote?.voteId:id} - ${moment(
                       new Date(vote.voteTime)
-                    ).format("HH:mm DD/MM/YYYY")}`}</span>
+                    ).format("DD/MM/YYYY")} ${moment(
+                      new Date(vote?.voteTime)
+                    ).format("HH:mm")}`}</span>
                   </Col>
                 
                   </Col>
@@ -237,6 +239,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                   {/* {vote.valueExpirationTime && (
                                     <Trend num={trend} />
                                   )} */}
+                                  {vote?.valueExpirationTime > vote?.valueVotingTime?'BULL':'BEAR'} {' '}
                                   {vote.valueExpirationTime &&
                                     formatCurrency(                                                                          
                                       index === undefined
@@ -252,22 +255,24 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                     className=""
                                   >
                                     {/* @ts-ignore */}
-                                    {vote?.success == 2 ? 'MID' : vote?.success==1?'HIGH':'LOW'} VOTE IMPACT
+                                    Vote impact : {vote.success==2?'MID':vote.success==1?'HIGH':'LOW'}
                                   </Col>
                               </Row>
                             </Col>
                           </Row>
                         </Col>
                         
-                        <Col >
+                        <Col style={{display:'flex',alignItems:'center'}}>
                           
                           <Row className="text_prpl">
-                            <Col>
+                            <Col >
                             
                               {vote.score && (
-                                <Row className="flex-column text-center">
+                                <Row className="flex-column text-center" >
+                                   <span style={{fontSize:'8px'}}>You progressed </span>
+                                  <Col >
                                   
-                                  <Col>
+                                 
                                     <strong>{vote.score}</strong>
                                   </Col>
                                   <Col>CMP</Col>
@@ -411,10 +416,10 @@ let votetime= a.diff(b)
                     {/* @ts-ignore */}
                     {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
                     {/* @ts-ignore */}
-                    {vote?.coin?.split("-")[vote?.direction]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
+                    {vote?.coin?.split("-")[vote?.valueExpirationTime[0]-vote.valueVotingTime[0]<vote?.valueExpirationTime[1]-vote.valueVotingTime[1]?1:0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
                   </p>
                   {/* @ts-ignore */}
-                    <p>{vote.success==2?'MID':vote.success==1?'HIGH':'LOW'} VOTE IMPACT</p>
+                    <p>Vote impact : {vote.success==2?'MID':vote.success==1?'HIGH':'LOW'}</p>
                     </div>
 
                 <CoinVoteTimer>
@@ -435,7 +440,9 @@ let votetime= a.diff(b)
           <Col className="justify-content-center w-100 mb-2">
             <SmText className="text-center">{`${id} - ${moment(
               new Date(vote?.voteTime)
-            ).format("HH:mm DD/MM/YYYY")}`}</SmText>
+            ).format("DD/MM/YYYY")} ${moment(
+              new Date(vote?.voteTime)
+            ).format("HH:mm")}`}  </SmText>
           </Col>
         </Row>
       </Container>

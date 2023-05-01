@@ -177,7 +177,7 @@ const Home = () => {
             </H2> */}
             {!user?.uid?  <div className='d-sx-none'> {window.screen.width > 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'4rem', fontSize:'2rem', padding:'2rem'}} onClick={e=>{  setLogin(true)
         setSignup(true)}}>{texts.signUp}</Buttons.Primary>
-        <H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1.5rem'}}>Subscribe now and start earning rewards before anyone else</H2>
+        <H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1.5rem'}}>Join now and start earning rewards before anyone else</H2>
         
         </>}</div>:<></>}
 
@@ -186,7 +186,7 @@ const Home = () => {
           {!user?.uid?<div className='d-xl-none'> {window.screen.width < 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'2rem', fontSize:'1rem', padding:'1rem'}} onClick={e=>{
               setLogin(true)
               setSignup(true)
-          }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1rem'}}>Subscribe now and start earning rewards before anyone else</H2></>}</div>:<></>}
+          }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1rem'}}>Join now and start earning rewards before anyone else</H2></>}</div>:<></>}
 
           </div>
           <InfluencersCarousel />

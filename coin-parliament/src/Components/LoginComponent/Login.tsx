@@ -128,7 +128,7 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
        <ForgetPasswordText  onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
       </div>
       <div className='d-flex  mt-2'>
-      <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount.toUpperCase())} `}</DontHaveAccountText> 
+      <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText> 
       <SignUp  onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
       </div>
       <div id="loginId"></div>
