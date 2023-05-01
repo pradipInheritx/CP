@@ -2,7 +2,7 @@ import { Router } from "express";
 import { auth } from "../common/middleware/authentication";
 
 import {
-   createAlbum,
+  createAlbum,
   createSet,
   createCard,
   getAllAlbums,
@@ -10,15 +10,14 @@ import {
   getAlbumListing
 } from "../common/models/Admin/Rewards";
 
-
 const rewardNftAdminRouter = Router();
 
-rewardNftAdminRouter.post("/createAlbum",auth, createAlbum);
-rewardNftAdminRouter.post("/createSet",auth, createSet);
-rewardNftAdminRouter.post("/createCard",auth, createCard);
-rewardNftAdminRouter.get("/getAllAlbums",auth, getAllAlbums);
-rewardNftAdminRouter.get("/getAllCards",auth, getAllCards);
-rewardNftAdminRouter.get("/getAlbumListing",auth, getAlbumListing);
+rewardNftAdminRouter.post("/createAlbum", auth, createAlbum);
+rewardNftAdminRouter.post("/createSet", auth, createSet);
+rewardNftAdminRouter.post("/createCard", auth, createCard);
+rewardNftAdminRouter.get("/getAllAlbums", auth, getAllAlbums);
+rewardNftAdminRouter.get("/getAllCards", auth, getAllCards);
+rewardNftAdminRouter.get("/getAlbumListing", auth, getAlbumListing);
 
 
 export default rewardNftAdminRouter;
