@@ -20,7 +20,7 @@ margin-left:5px;
 margin-right:7px;
 cursor:pointer;
 font-weight:600 !important;
-text-decoration:underline;
+// text-decoration:underline;
 ${PoppinsBoldBlueViolet14px};
 `;
 const DontHaveAccountText = styled.div`
@@ -95,13 +95,13 @@ sendPasswordResetEmail(auth, email)
       </Form.Group>
 
       <Buttons.Primary  fullWidth={true} type="submit">
-      continue
+      {"continue".toUpperCase()}
       </Buttons.Primary>
     </Form>
       </div>
       <div className='d-flex'>
-      <DontHaveAccountText className="mr-5"> {`${capitalize(translate('Go back to login page?'))} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setForgetPassword(false)}>{`${capitalize(translate('Click here.'))}`}</SignUp>
+      <DontHaveAccountText className="mr-5"> {`${translate('Go back to login page?')} `}</DontHaveAccountText> 
+      <SignUp  onClick={() => setForgetPassword(false)}>{`${translate('Click here.'.toUpperCase())}`}</SignUp>
       </div>
     </>
   );

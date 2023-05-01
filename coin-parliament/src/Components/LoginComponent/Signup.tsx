@@ -129,23 +129,30 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
       </Form.Group>
       <div className="my-1">
         <Buttons.Primary fullWidth={true} type="submit"  >
-          {strings.continue}
+          {strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
-      <Form.Group className="mb-2 mt-3" controlId="agree">
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
-          {translate(strings.agree)
+      <Form.Group className="mb-2 mt-3 text-center" controlId="agree" >
+        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} >
+       <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
+                    {translate('terms & conditions')}
+                  </Link>  and 
+                  </p>
+                  <p><Link to={'/privacy'} style={{color: 'var(--blue-violet)'}}>
+                    privacy policy
+                  </Link> of the site</p>
+          {/* {translate(strings.agree)
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
-                {t}{" "}
+                {t.toUpperCase()}{" "}
                 {!i && (
                   <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
+                    {translate(texts.termsConditions.toUpperCase())}
                   </Link>
                 )}
               </React.Fragment>
-            ))}
+            ))} */}
         </Checkbox>
       </Form.Group>
       </Form> 

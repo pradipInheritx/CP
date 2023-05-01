@@ -100,24 +100,31 @@ useEffect(() => {
 
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" >
-          {signupLoading?'Wait...':strings.continue}
+          {signupLoading?'Wait...':strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
 
-      <Form.Group className="mb-2" controlId="agree">
+      <Form.Group className="mb-2  text-center" controlId="agree">
         <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
-          {translate(strings.agree)
+        <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
+                    {translate('terms & conditions')}
+                  </Link>  and 
+                  </p>
+                  <p><Link to={'/privacy'} style={{color: 'var(--blue-violet)'}}>
+                    privacy policy
+                  </Link> of the site</p>
+          {/* {translate(strings.agree)
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
-                {t}{" "}
+                {t.toUpperCase()}{" "}
                 {!i && (
                   <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
+                    {translate(texts.termsConditions.toUpperCase())}
                   </Link>
                 )}
               </React.Fragment>
-            ))}
+            ))} */}
         </Checkbox>
       </Form.Group>
     </Form>
