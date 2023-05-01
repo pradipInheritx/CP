@@ -223,31 +223,31 @@ export const getCoinById = async (req: any, res: any) => {
 };
 
 export const getCoinCurrentAndPastDataDiffernce = async () => {
-  const getCoins = await getAllCoin();
-  var currentCoinAndPrise: any = [];
+  const getAllCoinsFromFunc = await getAllCoin();
+  var currentCoinAndPrice: any = [];
   const currentTime = Date.now();
-  const beforeFourHoursTime = currentTime - 4 * 3600000;
+  const beforeFourHoursTime = currentTime - 4 * 3600000; // Take before 4 hrs
 
-  getCoins.forEach(async (data) => {
+  getAllCoinsFromFunc.forEach(async (data) => {
     const coin = data.toLowerCase() + "usdt";
-    const priseCurrent = await getPriceOnParticularTime(coin, currentTime);
-    const priseFourBefore = await getPriceOnParticularTime(
+    const priceCurrent = await getPriceOnParticularTime(coin, currentTime);
+    const priceFourBefore = await getPriceOnParticularTime(
       coin,
       beforeFourHoursTime
     );
-    console.log("priseCurrent >>>>", coin, priseCurrent, priseFourBefore);
-    const differncePrise = priseFourBefore - priseCurrent;
-    const differnceInPercentag = (differncePrise / beforeFourHoursTime) * 100;
+    console.log("priceCurrent >>>>", coin, priceCurrent, priceFourBefore);
+    const differncePrice = priceCurrent - priceFourBefore;
+    const differnceInPercentage = (differncePrice / priceFourBefore) * 100;
 
-    currentCoinAndPrise.push({ coinName: data, differnceInPercentag });
-    console.log("Array >>>>", currentCoinAndPrise);
+    currentCoinAndPrice.push({ coinName: data, differnceInPercentage });
+    console.log("Array >>>>", currentCoinAndPrice);
   });
   const arr: any = [];
-  currentCoinAndPrise.forEach((coin: any) => {
-    if (coin.differnceInPercentag < -5) {
+  currentCoinAndPrice.forEach((coin: any) => {
+    if (coin.differnceInPercentage < -5) {
       arr.push(`${coin.coinName} Gone Down`);
     }
-    if (coin.differnceInPercentag > 5) {
+    if (coin.differnceInPercentage > 5) {
       arr.push(`${coin.coinName} Gone Up`);
     }
   });
