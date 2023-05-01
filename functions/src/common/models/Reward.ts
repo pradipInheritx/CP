@@ -493,7 +493,7 @@ export const addReward: (
         },
         { merge: true }
       );
-      sendNotificationForCpm(userId);
+    await sendNotificationForCpm(userId); // For Send Notification
     console.log("Finished execution addReward function");
     return;
   }
@@ -502,7 +502,6 @@ export const addReward: (
 const sendNotificationForCpm = async (userId: any) => {
   const userRef = await firestore().collection("users").doc(userId).get();
   const user: any = userRef.data();
-  console.log("user >>>>>>", user);
   const token = user.token;
   if (!token) {
     console.log("Token not found");
@@ -523,7 +522,7 @@ const sendNotificationForCpm = async (userId: any) => {
       },
     },
   };
-  console.log("message >>>", message);
+  console.log("Message:", message);
   await sendNotification({
     token,
     message,

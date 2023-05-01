@@ -293,40 +293,38 @@ const getAllUsersAndSendNotification = async (
   }
 };
 
-export const getCoinCurrentAndPastDataDiffernce = async () => {
+export const getCoinCurrentAndPastDataDifference = async () => {
   try {
     const getCoins = await getAllCoin();
     const currentTime = Date.now();
     const beforeFourHoursTime = currentTime - 4 * 3600000;
 
-    const currentCoinAndPrise: any = [];
+    const currentCoinAndPrice: any = [];
 
     for (const data of getCoins) {
       const coin = data.toLowerCase() + "usdt";
-      const priseCurrent = await getPriceOnpaticularTime(coin, currentTime);
-      const priseFourBefore = await getPriceOnpaticularTime(
+      const priceCurrent = await getPriceOnpaticularTime(coin, currentTime);
+      const priceFourBefore = await getPriceOnpaticularTime(
         coin,
         beforeFourHoursTime
       );
-      console.log("priseCurrent >>>", priseCurrent);
-      if (priseCurrent !== 0 && priseFourBefore !== 0) {
-        console.log("priseCurrent >>>>", coin, priseCurrent, priseFourBefore);
-        const differncePrise = priseFourBefore - priseCurrent;
+      if (priceCurrent !== 0 && priceFourBefore !== 0) {
+        const differencePrice = priceFourBefore - priceCurrent;
         const differnceInPercentag =
-          (differncePrise / beforeFourHoursTime) * 100;
+          (differencePrice / beforeFourHoursTime) * 100;
 
-        currentCoinAndPrise.push({ coinName: data, differnceInPercentag });
+        currentCoinAndPrice.push({ coinName: data, differnceInPercentag });
       }
     }
 
-    currentCoinAndPrise.forEach(async (coin: any) => {
+    currentCoinAndPrice.forEach(async (coin: any) => {
       if (coin.differnceInPercentag < -5) {
         // Write Notification
         await getAllUsersAndSendNotification(
           coin.coinName,
           `Coin ${coin.coinName}  is on fire! Make your vote now! ⏫`
         );
-        console.log("sent notification.....");
+        console.log("sent notification on down");
       }
       if (coin.differnceInPercentag > 5) {
         // Write Notification
@@ -334,9 +332,9 @@ export const getCoinCurrentAndPastDataDiffernce = async () => {
           coin.coinName,
           `Coin ${coin.coinName}  value drop! Make your vote now! ⏬`
         );
+        console.log("sent notification on up");
       }
     });
-    console.log("currentCoinAndPrise >>>", currentCoinAndPrise);
   } catch (err) {
     console.log("Error (getCoinCurrentAndPastDataDiffernce): ", err);
   }

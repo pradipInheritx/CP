@@ -79,7 +79,7 @@ import {
 import sgMail from "@sendgrid/mail";
 import { sendNotificationForFollwersFollowings } from "./common/models/SendCustomNotification"
 import { sendCustomNotificationOnSpecificUsers, } from "./common/models/SendCustomNotification";
-import { getCoinCurrentAndPastDataDiffernce } from "./common/models/Admin/Coin";
+import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
@@ -419,6 +419,7 @@ exports.noActivityIn24Hours = functions.pubsub
   .schedule("every 10 minutes")
   .onRun(async (context) => {
     await checkInActivityOfVotesAndSendNotification();
+    await getCoinCurrentAndPastDataDifference();
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
@@ -588,12 +589,6 @@ exports.prepareWeeklyCPVI = functions.pubsub
   .schedule("0 0 * * 0")
   .onRun(async () => {
     await prepareCPVI(24 * 7, "weekly");
-  });
-
-exports.getCoinCurrentAndPastDataDiffernce = functions.pubsub
-  .schedule("*/5 * * * *")
-  .onRun(async () => {
-    await getCoinCurrentAndPastDataDiffernce();
   });
 
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
