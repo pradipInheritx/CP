@@ -123,7 +123,8 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   });
 
   for (let user = 0; user < getAllUsers.length; user++) {
-    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).orderBy('voteTime', 'desc').limit(1).get();
+    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).where("voteTime", "<", last24HoursDate).orderBy('voteTime', 'desc').limit(1).get();
+    console.info("getLastUserVoteSnapshot", getLastUserVoteSnapshot)
     let lastVotedData: any = [];
     getLastUserVoteSnapshot.forEach(doc => {
       lastVotedData.push({ id: doc.id, ...doc.data() })

@@ -9,7 +9,7 @@ import { Direction, voteConverter, VoteResultProps } from "./Vote";
 import { firestore, messaging } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
 import { sendNotification } from "./Notification";
-//import { voteExpireAndGetCpmNotification } from "./SendCustomNotification"
+import { voteExpireAndGetCpmNotification } from "./SendCustomNotification"
 
 
 export type Totals = {
@@ -133,14 +133,14 @@ class Calculation {
       if (user.parent) {
         const refer = new Refer(user.parent, "");
         await refer.payParent(score);
-        // Send Notification For CMP Change
-        // console.log("send Notification for CPM")
-        // const getVotesquery = await firestore()
-        //   .collection("votes")
-        //   .doc(this.id)
-        //   .get();
-        // const getVote: any = getVotesquery.data();
-        // voteExpireAndGetCpmNotification(voteResult.userId,score,getVote.coin)
+        //Send Notification For CMP Change
+        console.log("send Notification for CPM")
+        const getVotesQuery = await firestore()
+          .collection("votes")
+          .doc(this.id)
+          .get();
+        const getVote: any = getVotesQuery.data();
+        await voteExpireAndGetCpmNotification(voteResult.userId, score, getVote.coin)
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);

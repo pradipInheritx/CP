@@ -78,9 +78,9 @@ export const sendCustomNotificationOnSpecificUsers = async (
 export const sendNotificationForFollwersFollowings = async (
   userId: any, coin: any
 ) => {
-  console.log("-------Begin Push Notification-----------")
+  console.log("Notification for following & followers");
   const follwersFollwing: any = [];
-  console.log("userID >>>", userId, coin)
+  console.log("userID & Coin", userId, coin)
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
   console.log(userData);
@@ -93,13 +93,13 @@ export const sendNotificationForFollwersFollowings = async (
   });
 
   follwersFollwing.forEach(async (id: any) => {
-    console.log("id >>>>", id)
+    console.log("id:", id)
     let userQuery = await firestore().collection("users").doc(id).get();
     var userData: any = userQuery.data();
     var token = userData.token;
 
-    console.log("userData >>>>>", userData)
-    console.log("toekn >>>>>", token)
+    console.log("userData:", userData)
+    console.log("toekn:", token)
     console.log(`${userData.displayName} just voted for ${coin} take action now!`)
     const message: messaging.Message = {
       token,
@@ -116,25 +116,24 @@ export const sendNotificationForFollwersFollowings = async (
         },
       },
     };
-    console.log("message >.....", message);
+    console.log("Message:", message);
     await sendNotification({
       token,
       id,
-      body: "",
+      body: `${userData.displayName} just voted for ${coin} take action now!`,
       title: `${userData.displayName} just voted for ${coin} take action now!`,
       message,
     });
   });
-  console.log("-------End Push Notification-----------")
 };
 
 export const voteExpireAndGetCpmNotification = async (userId: string, cpm: number, coin: string) => {
-  console.log("-------Begin Push Notification of voteExpireAndGetCpmNotification-----------")
+  console.log("Push Notification of voteExpireAndGetCpmNotification")
 
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
-  console.log(userData);
-  var token = userData.token;
+  console.log("UserData:", userData);
+  let token = userData.token;
 
   const message: messaging.Message = {
     token,
@@ -151,17 +150,16 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cpm: numbe
       },
     },
   };
-  console.log("message >.....", message);
+  console.log("message:", message);
 
   await sendNotification({
     token,
-    id : userId,
+    id: userId,
     body: `${coin} more CPM to complete the mission and claim your rewards!`,
     title: `You just earnd ${cpm} cpm`,
     message,
   });
-  console.log("-------End Push Notification of voteExpireAndGetCpmNotification-----------")
-
+  console.log("End Push Notification of voteExpireAndGetCpmNotification")
 }
 
 export const errorLogging = async (

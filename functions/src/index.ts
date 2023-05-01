@@ -31,7 +31,7 @@ import {
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
-  // checkInActivityOfVotesAndSendNotification
+  checkInActivityOfVotesAndSendNotification
 } from "./common/models/Vote";
 import {
   //fetchCoins,
@@ -77,7 +77,7 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
-// sendNotificationForFollwersFollowings
+import { sendNotificationForFollwersFollowings } from "./common/models/SendCustomNotification"
 import { sendCustomNotificationOnSpecificUsers, } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDiffernce } from "./common/models/Admin/Coin";
 
@@ -411,20 +411,14 @@ exports.onVote = functions.firestore
       .update({
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
-    //await sendNotificationForFollwersFollowings(vote.userId, coinArray)
+
+    await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
   });
 
 exports.noActivityIn24Hours = functions.pubsub
-  .schedule("every 1 minutes")
-  .onRun((context) => {
-    const currentDate = new Date();
-    const last24HoursDate = new Date(
-      currentDate.getTime() - 24 * 60 * 60 * 1000
-    );
-    console.log("Current date => ", currentDate);
-    console.log("Last 24 hours date => ", last24HoursDate);
-    console.log("This function will run every minute.");
-    return null;
+  .schedule("every 10 minutes")
+  .onRun(async (context) => {
+    await checkInActivityOfVotesAndSendNotification();
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
