@@ -11,7 +11,7 @@ export type timeframeProps = {
 
 export const createTimeframe = async (req: any, res: any, next: any) => {
   try {
-    const {chosen, index, name, seconds} = req.body;
+    const { chosen, index, name, seconds } = req.body;
 
     const voteTimeData: timeframeProps = {
       chosen,
@@ -23,11 +23,11 @@ export const createTimeframe = async (req: any, res: any, next: any) => {
     };
 
     const voteTimeDataResponse = await firebaseAdmin
-        .firestore()
-        .collection("settings")
-        .doc("voteSettings")
-        .collection("timeframes")
-        .add(voteTimeData);
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .add(voteTimeData);
 
     const getvoteTimeDataResponse = await voteTimeDataResponse.get();
 
@@ -49,11 +49,11 @@ export const createTimeframe = async (req: any, res: any, next: any) => {
 export const getTimeframe = async (req: any, res: any, next: any) => {
   try {
     const getAllTimeframes = await firebaseAdmin
-        .firestore()
-        .collection("settings")
-        .doc("voteSettings")
-        .collection("timeframes")
-        .get();
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .get();
 
     const timeframes = getAllTimeframes.docs.map((doc: any) => ({
       timeframeId: doc.id,
@@ -66,6 +66,7 @@ export const getTimeframe = async (req: any, res: any, next: any) => {
       result: timeframes,
     });
   } catch (error) {
+    errorLogging("getTimeframe", "ERROR", error);
     res.status(500).send({
       status: false,
       message: "Error while fetching Timeframes:",
@@ -76,20 +77,20 @@ export const getTimeframe = async (req: any, res: any, next: any) => {
 
 export const getTimeframeById = async (req: any, res: any, next: any) => {
   try {
-    const {timeFrameId} = req.params;
+    const { timeFrameId } = req.params;
 
     const databaseQuery = await firebaseAdmin
-        .firestore()
-        .collection("settings")
-        .doc("voteSettings")
-        .collection("timeframes")
-        .doc(timeFrameId)
-        .get();
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .doc(timeFrameId)
+      .get();
 
     const data = databaseQuery.data();
 
-    if(!data){
-      return  res.status(404).send({
+    if (!data) {
+      return res.status(404).send({
         status: true,
         message: "Timeframe data not found",
         result: null
@@ -114,21 +115,21 @@ export const getTimeframeById = async (req: any, res: any, next: any) => {
 
 export const deleteTimeframeById = async (req: any, res: any, next: any) => {
   try {
-    const {timeFrameId} = req.params;
+    const { timeFrameId } = req.params;
     const timeframeRefRef = firebaseAdmin
-        .firestore()
-        .collection("settings")
-        .doc("voteSettings")
-        .collection("timeframes")
-        .doc(timeFrameId);
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .doc(timeFrameId);
 
-        if(!timeframeRefRef){
-          return  res.status(404).send({
-            status: true,
-            message: "Timeframe data not found",
-            result: null
-          });
-        }
+    if (!timeframeRefRef) {
+      return res.status(404).send({
+        status: true,
+        message: "Timeframe data not found",
+        result: null
+      });
+    }
     await timeframeRefRef.delete();
     res.status(200).send({
       status: true,
@@ -143,20 +144,20 @@ export const deleteTimeframeById = async (req: any, res: any, next: any) => {
 
 export const updateTimeframe = async (req: any, res: any, next: any) => {
   try {
-    const {chosen, index, name, seconds} = req.body;
-    const {timeFrameId} = req.params;
+    const { chosen, index, name, seconds } = req.body;
+    const { timeFrameId } = req.params;
 
     const databaseQuery = await firebaseAdmin
-        .firestore()
-        .collection("settings")
-        .doc("voteSettings")
-        .collection("timeframes")
-        .doc(timeFrameId)
-        .get();
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .doc(timeFrameId)
+      .get();
 
     const getTimeframeData: any = databaseQuery.data();
-    if(!getTimeframeData){
-      return  res.status(404).send({
+    if (!getTimeframeData) {
+      return res.status(404).send({
         status: true,
         message: "Timeframe data not found",
         result: null
@@ -170,12 +171,12 @@ export const updateTimeframe = async (req: any, res: any, next: any) => {
       seconds,
     };
     await firebaseAdmin
-        .firestore()
-        .collection("settings")
-        .doc("voteSettings")
-        .collection("timeframes")
-        .doc(timeFrameId)
-        .update(updatedTimeframeData);
+      .firestore()
+      .collection("settings")
+      .doc("voteSettings")
+      .collection("timeframes")
+      .doc(timeFrameId)
+      .update(updatedTimeframeData);
 
     res.status(200).send({
       status: true,
@@ -189,9 +190,9 @@ export const updateTimeframe = async (req: any, res: any, next: any) => {
 };
 
 export const errorLogging = async (
-    funcName: string,
-    type: string,
-    error: any
+  funcName: string,
+  type: string,
+  error: any
 ) => {
   console.info(funcName, type, error);
 };
