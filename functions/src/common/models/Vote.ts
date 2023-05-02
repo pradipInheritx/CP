@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import { UserTypeProps } from "./User";
-import { firestore, messaging } from "firebase-admin";
+import { messaging } from "firebase-admin";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import Timestamp = admin.firestore.Timestamp;
