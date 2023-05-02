@@ -33,6 +33,7 @@ export type VoteResultProps = VoteProps & {
   voteTime: Timestamp;
   expiration: Timestamp;
   valueExpirationTime?: number | number[];
+  direction?: any;
   success?: number;
   score?: number;
   CPMRangePercentage?: number;
