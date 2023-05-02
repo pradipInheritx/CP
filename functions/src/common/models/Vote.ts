@@ -178,9 +178,10 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
   } = requestBody;
 
   // Snapshot Get From ID
-  const getVoteRef = firestore().collection("votes").doc(voteId);
+  const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
   const getVoteInstance = await getVoteRef.get();
   const getVoteData = getVoteInstance.data();
+  console.info("getVoteData", getVoteData)
 
   const vote = {
     ...getVoteData,
@@ -188,6 +189,8 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
     voteTime,
     valueVotingTime,
   } as unknown as VoteResultProps;
+
+  console.info("vote", getVoteData)
 
   if (coin2) {
     const priceOne = await getPriceOnParticularTime(coin1, timestamp);
