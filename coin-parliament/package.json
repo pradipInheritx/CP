@@ -65,6 +65,7 @@
     "jest-watch-typeahead": "1.0.0",
     "lightweight-charts": "^3.7.0",
     "lodash": "^4.17.21",
+    "lottie-web": "^5.11.0",
     "match-sorter": "^6.3.1",
     "mini-css-extract-plugin": "0.11.3",
     "moment": "^2.29.1",

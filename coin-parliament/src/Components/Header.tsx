@@ -491,8 +491,9 @@ console.log('votenumber',voteNumber, Number(voted))
                                   >
                             
                                   
-                                  {MyPath=="/profile/mine" ?<CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
-                                style={{zoom: `${showReward == 2 ? "150%" : ""}`}}
+                                  {MyPath == "/profile/mine" ?
+                                    <CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}                                
+                                      style={{ fontSize: `${showReward == 2 && window.screen.width < 767 ? "20px" : "12px"}` }}
                                   onEnd={() =>
                                   {
                                     setHeaderExtraVote((prev:number) => {
