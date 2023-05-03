@@ -1,23 +1,21 @@
 import { Router } from "express";
-import { auth } from "../common/middleware/authentication";
+// import { auth } from "../common/middleware/authentication";
 
 import {
   addCoin,
-  updateStatusOfCoin,
   getAllCoins,
   getCoinById,
+  updateStatusOfCoin,
   updateVoteBarRangeOfCoin,
-  updateRankWeightCMPAndPerCMPOfCoin
 } from "../common/models/Admin/Coin";
 
 const coinRouter = Router();
 
-coinRouter.post("/createCoin", auth, addCoin);
-coinRouter.patch("/updateCoinStatus/:coinId", auth, updateStatusOfCoin);
-coinRouter.patch("/updateCoin/voteBarRange/:coinId", auth, updateVoteBarRangeOfCoin);
-coinRouter.patch("/updateCoin/voteRank/rankWeightCMPAndPerCMP/:coinId", updateRankWeightCMPAndPerCMPOfCoin);
-coinRouter.get("/getAllCoins", auth, getAllCoins);
-coinRouter.get("/getCoin/:coinId", auth, getCoinById);
+coinRouter.post("/createCoin", addCoin);
+coinRouter.get("/getAllCoins", getAllCoins);
+coinRouter.get("/getCoin/:id", getCoinById);
+coinRouter.patch("/updateCoinStatus/:id", updateStatusOfCoin);
+coinRouter.patch("/updateCoin/voteBarRange/:id", updateVoteBarRangeOfCoin);
 
 
 export default coinRouter;
