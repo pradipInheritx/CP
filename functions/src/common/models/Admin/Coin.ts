@@ -1,17 +1,15 @@
 import { firestore } from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
-
 import { getAllCoins as getAllCoin } from "../Coin";
+import axios from "axios";
 // import { getPriceOnParticularTime } from "../Rate";
 
 import {
   getDataFromTimestampBaseURL,
   defaultHeaderForgetDataFromTimestamp,
 } from "../../consts/config";
-import axios from "axios";
 import { sendNotification } from "../Notification";
 import { messaging } from "firebase-admin";
-
 
 type Coin = {
   coinId: any;
@@ -35,7 +33,7 @@ export const addCoin = async (req: any, res: any) => {
     if (checkCoin) {
       return res.status(409).send({
         status: false,
-        message: "Already exist.",
+        message: `${coinName} coin is already exist`,
         result: null,
       });
     }
@@ -52,7 +50,7 @@ export const addCoin = async (req: any, res: any) => {
     });
     res.status(200).send({
       status: true,
-      message: "New Coin Added.",
+      message: "New coin successfully added",
       result: getCoin,
     });
   } catch (error) {
@@ -66,18 +64,18 @@ export const addCoin = async (req: any, res: any) => {
 };
 
 export const updateStatusOfCoin = async (req: any, res: any) => {
-  const { coinId } = req.params;
+  const { id } = req.params;
   const { status } = req.body;
   try {
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
     let getCoin = coinData.coins.find((coin: any) => {
-      return coin.symbol == coinId;
+      return coin.id == id;
     });
     if (!getCoin) {
       return res.status(404).send({
         status: false,
-        message: "Coin not found",
+        message: `Coin not found: ${id}`,
         result: null,
       });
     }
@@ -90,7 +88,7 @@ export const updateStatusOfCoin = async (req: any, res: any) => {
 
     res.status(200).send({
       status: true,
-      message: "Status update.",
+      message: "Coin status is successfully update",
       result: getCoin,
     });
   } catch (error) {
@@ -104,18 +102,18 @@ export const updateStatusOfCoin = async (req: any, res: any) => {
 };
 
 export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
-  const { coinId } = req.params;
+  const { id } = req.params;
   const { voteBarRange } = req.body;
   try {
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
     let getCoin = coinData.coins.find((coin: any) => {
-      return coin.symbol == coinId;
+      return coin.id == id;
     });
     if (!getCoin) {
       return res.status(404).send({
         status: false,
-        message: "Coin not found",
+        message: `${id} is not found`,
         result: null,
       });
     }
@@ -128,46 +126,7 @@ export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
 
     res.status(200).send({
       status: true,
-      message: "Status update.",
-      result: coinData,
-    });
-  } catch (error) {
-    errorLogging("updateVoteBarRangeOfCoin", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in updateVoteBarRangeOfCoin",
-      result: error,
-    });
-  }
-};
-
-export const updateRankWeightCMPAndPerCMPOfCoin = async (req: any, res: any) => {
-  const { coinId } = req.params;
-  const { rank, CMP, weightOfOrderBook, percentageRangeInCMP } = req.body;
-  try {
-    const coinRef = await firestore().collection("settings").doc("coins").get();
-    let coinData: any = coinRef.data();
-    let getCoin = coinData.coins.find((coin: any) => {
-      return coin.symbol == coinId;
-    });
-    if (!getCoin) {
-      return res.status(404).send({
-        status: false,
-        message: `Coin not found: ${coinId}`,
-        result: null,
-      });
-    }
-    getCoin = { ...getCoin, rank, CMP, weightOfOrderBook, percentageRangeInCMP };
-    console.info("getCoin", getCoin)
-
-    await firestore()
-      .collection("settings")
-      .doc("coins")
-      .set(getCoin, { merge: true });
-
-    res.status(200).send({
-      status: true,
-      message: "Status update.",
+      message: "Coin voteBarRange is successfully update",
       result: getCoin,
     });
   } catch (error) {
@@ -179,8 +138,6 @@ export const updateRankWeightCMPAndPerCMPOfCoin = async (req: any, res: any) => 
     });
   }
 };
-
-
 
 export const getAllCoins = async (req: any, res: any) => {
   try {
@@ -202,23 +159,24 @@ export const getAllCoins = async (req: any, res: any) => {
 };
 
 export const getCoinById = async (req: any, res: any) => {
-  const { id } = req.params;
   try {
-    const coinRef = await firestore().collection("settings").doc("coins").get();
-    let coinData: any = coinRef.data();
-    let getCoin = coinData.coins.find((coin: any) => {
+    const { id } = req.params;
+    console.log("id -------", id)
+    const getCoinsQuery = await firestore().collection("settings").doc("coins").get();
+    let getCoinsData: any = getCoinsQuery.data();
+    let getCoin = getCoinsData.coins.find((coin: any) => {
       return coin.id == id;
     });
     if (!getCoin) {
       return res.status(404).send({
         status: false,
-        message: "Coin not found",
+        message: `Coin not found: ${id}`,
         result: null,
       });
     }
     res.status(200).send({
       status: true,
-      message: "Status update.",
+      message: "Get coin successfully.",
       result: getCoin,
     });
   } catch (error) {
@@ -231,6 +189,8 @@ export const getCoinById = async (req: any, res: any) => {
   }
 };
 
+
+//Notification
 const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
   try {
     const getCoinPrice = await axios.get(
@@ -339,9 +299,6 @@ export const getCoinCurrentAndPastDataDifference = async () => {
     console.log("Error (getCoinCurrentAndPastDataDiffernce): ", err);
   }
 };
-
-
-
 
 export const errorLogging = async (
   funcName: string,
