@@ -370,6 +370,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
       }
     }
+    await sendNotificationForTitleUpgrade(leaderStatus)
     return await firestore()
       .collection("stats")
       .doc("leaders")

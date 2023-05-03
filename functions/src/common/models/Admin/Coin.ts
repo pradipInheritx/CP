@@ -302,7 +302,7 @@ export const getCoinCurrentAndPastDataDifference = async () => {
     const currentCoinAndPrice: any = [];
 
     for (const data of getCoins) {
-      const coin = data.toLowerCase() + "usdt";
+      const coin = data.toUpperCase() + "USDT";
       const priceCurrent = await getPriceOnpaticularTime(coin, currentTime);
       const priceFourBefore = await getPriceOnpaticularTime(
         coin,
