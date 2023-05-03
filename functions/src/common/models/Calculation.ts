@@ -207,6 +207,7 @@ class Calculation {
 
   calcSuccess(): void {
     const { voteResult } = this;
+    console.info("voteResult", voteResult)
     //const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
     let CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
     if (typeof this.price === "number") {

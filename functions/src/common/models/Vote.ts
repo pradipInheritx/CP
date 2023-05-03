@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import { UserTypeProps } from "./User";
-import { firestore, messaging } from "firebase-admin";
+import { messaging } from "firebase-admin";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import Timestamp = admin.firestore.Timestamp;
@@ -33,6 +33,7 @@ export type VoteResultProps = VoteProps & {
   voteTime: Timestamp;
   expiration: Timestamp;
   valueExpirationTime?: number | number[];
+  direction?: any;
   success?: number;
   score?: number;
   CPMRangePercentage?: number;
@@ -165,40 +166,51 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
 export const getOldAndCurrentPriceAndMakeCalculation = async (
   requestBody: any
 ) => {
-  let price: any;
-  const {
-    coin1,
-    coin2,
-    voteId,
-    voteTime,
-    valueVotingTime,
-    expiration,
-    timestamp,
-  } = requestBody;
+  try {
+    let price: any;
+    const {
+      coin1,
+      coin2,
+      voteId,
+      voteTime,
+      valueVotingTime,
+      expiration,
+      timestamp,
+    } = requestBody;
 
-  // Snapshot Get From ID
-  const getVoteRef = firestore().collection("votes").doc(voteId);
-  const getVoteInstance = await getVoteRef.get();
-  const getVoteData = getVoteInstance.data();
+    // Snapshot Get From ID
+    console.info("Vote ID", voteId, typeof voteId)
+    const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
+    console.info("getVoteRef", getVoteRef)
+    const getVoteInstance = await getVoteRef.get();
+    console.info("getVoteInstance", getVoteInstance)
+    const getVoteData = getVoteInstance.data();
+    console.info("getVoteData", getVoteData)
 
-  const vote = {
-    ...getVoteData,
-    expiration,
-    voteTime,
-    valueVotingTime,
-  } as unknown as VoteResultProps;
+    const vote = {
+      ...getVoteData,
+      expiration,
+      voteTime,
+      valueVotingTime,
+    } as unknown as VoteResultProps;
 
-  if (coin2) {
-    const priceOne = await getPriceOnParticularTime(coin1, timestamp);
-    const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
-    price = [Number(priceOne), Number(priceTwo)];
-    console.info("Get Price", price)
-    const calc = new Calculation(vote, price, voteId);
-    await calc.calc(getVoteRef);
-  } else {
-    price = await getPriceOnParticularTime(coin1, timestamp);
-    console.info("Get Price", price)
-    const calc = new Calculation(vote, Number(price), voteId);
-    await calc.calc(getVoteRef);
+    console.info("vote", getVoteData)
+
+    if (coin2) {
+      const priceOne = await getPriceOnParticularTime(coin1, timestamp);
+      const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
+      price = [Number(priceOne), Number(priceTwo)];
+      console.info("Get Price", price)
+      const calc = new Calculation(vote, price, voteId);
+      await calc.calc(getVoteRef);
+    } else {
+      price = await getPriceOnParticularTime(coin1, timestamp);
+      console.info("Get Price", price)
+      const calc = new Calculation(vote, Number(price), voteId);
+      await calc.calc(getVoteRef);
+    }
+  } catch (error) {
+    console.info("ERR:", error)
   }
+
 };
