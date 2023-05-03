@@ -412,12 +412,13 @@ let votetime= a.diff(b)
                   style={{fontSize:"12px"}}
                   >
                   <p>VOTE RESULT</p>
-                  <p>
+                   {/* @ts-ignore */}
+                 {vote?.valueExpirationTime?.length && <p>
                     {/* @ts-ignore */}
                     {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
                     {/* @ts-ignore */}
                     {vote?.coin?.split("-")[vote?.valueExpirationTime[0]-vote.valueVotingTime[0]<vote?.valueExpirationTime[1]-vote.valueVotingTime[1]?1:0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] :vote?.valueExpirationTime[0]}
-                  </p>
+                  </p>}
                   {/* @ts-ignore */}
                     <p>Vote impact : {vote.success==2?'MID':vote.success==1?'HIGH':'LOW'}</p>
                     </div>
