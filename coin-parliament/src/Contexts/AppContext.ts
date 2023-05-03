@@ -26,6 +26,12 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  rewardExtraVote?:any,
+  setRewardExtraVote?:any,
+  showReward?: any,
+  setShowReward?: any,
+  headerExtraVote?:any,
+  setHeaderExtraVote?:any,
   showBack?:any;
   setShowBack?:any;
   followerUserId?:string;

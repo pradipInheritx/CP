@@ -164,8 +164,10 @@ const Header = ({
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules, followerUserId, login } = useContext(AppContext);
+  const { voteRules, followerUserId, login ,showReward,setShowReward ,headerExtraVote,setHeaderExtraVote} = useContext(AppContext);
   
+console.log(showReward,"showReward")
+
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
@@ -173,11 +175,17 @@ const Header = ({
   const [followUnfollow, setFollowUnfollow] = useState<any>(false)
   const [show, setShow] = useState(false);
   const { leaders } = useContext(CoinsContext);
+  
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
   const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
-  // const urlname = location.pathname;
+  
+  const MyPath = window.location.pathname;
 
+  
+
+
+  console.log(urlName,"checkurlName")
   const prevCountRef = useRef(voteNumber)
   
   const getFollowerData =()=>{
@@ -226,7 +234,8 @@ const Header = ({
     // @ts-ignore
     setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
     
-    prevCountRef.current = voteNumber; 
+      prevCountRef.current = voteNumber; 
+    
 
 console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
@@ -314,8 +323,7 @@ console.log('votenumber',voteNumber, Number(voted))
   const handleClose = () => {
     setShow(false)
   
-  };
-  
+  };    
 
   return (
     <div>
@@ -476,12 +484,32 @@ console.log('votenumber',voteNumber, Number(voted))
                                 <>
                                   <span
                                     style={{
-                                      color: "#6352E8",
+                                    color: "#6352E8",
+                                    // zoom: `${showReward == 2 ? "150%" : ""}`
+                                    
                                     }}
                                   >
                             
-                                  {/* {voteNumber > 0 ? voteNumber : 0} */}
-                                  <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                  
+                                  {MyPath=="/profile/mine" ?<CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
+                                style={{zoom: `${showReward == 2 ? "150%" : ""}`}}
+                                  onEnd={() =>
+                                  {
+                                    setHeaderExtraVote((prev:number) => {
+                                      if (prev!=0) {
+                                        setShowReward(3)
+                                      }
+                                      return prev
+                                    })
+                                    // setShowReward((prev: number) => {                                            
+                                    //   if (prev==2) {                                        
+                                    //     return  3                    
+                                    //   }                                      
+                                    // })
+                                  }
+                                  }                                
+                                />:
+                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3}/>}
                                  {" "}
                                   votes left
                                   </span>
@@ -619,7 +647,8 @@ console.log('votenumber',voteNumber, Number(voted))
                         <> 
                           <span
                             style={{
-                              color: "#6352E8",
+                                  color: "#6352E8",
+                              // zoom: `${showReward == 2 ? "150%" : ""}`
                             }}
                           >
                             {/* {Number(voteRules?.maxVotes) ||
@@ -629,7 +658,25 @@ console.log('votenumber',voteNumber, Number(voted))
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
                                 {/* {voteNumber > 0 ? voteNumber : 0} */}
-                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                               {MyPath=="/profile/mine" ?<CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
+                                style={{zoom: `${showReward == 2 ? "150%" : ""}`}}
+                                  onEnd={() =>
+                                  {
+                                    setHeaderExtraVote((prev:number) => {
+                                      if (prev!=0) {
+                                        setShowReward(3)
+                                      }
+                                      return prev
+                                    })
+                                    // setShowReward((prev: number) => {                                            
+                                    //   if (prev==2) {                                        
+                                    //     return  3                    
+                                    //   }                                      
+                                    // })
+                                  }
+                                  }                                
+                                />:
+                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3}/>}
                                {" "}
                                 votes left
                           </span></>}

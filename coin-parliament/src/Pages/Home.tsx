@@ -19,6 +19,7 @@ import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
 import { texts } from "../Components/LoginComponent/texts";
 import { Buttons } from "../Components/Atoms/Button/Button";
+import AnimationCard from "../Components/Profile/Animation/AnimationCard";
 
 // const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
 // const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
@@ -50,8 +51,7 @@ const Home = () => {
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
-        <div style={{ background: "#160133" }}>
-          
+        <div style={{ background: "#160133" }}>          
           <HomeContainer width={width} className='mb-4 p-0'>
             {!(login || firstTimeLogin) && (
               <>
@@ -198,6 +198,7 @@ const Home = () => {
             </H2>
           </div>
           <div>
+            <AnimationCard/>
             <Quotes quotes={quotes} />
           </div>
         </div>

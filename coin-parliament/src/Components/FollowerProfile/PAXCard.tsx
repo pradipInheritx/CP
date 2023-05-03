@@ -10,7 +10,7 @@ type PAXCardProps = {
 const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
   const translate = useTranslation();
   return (
-    <div className="cp_balance dark_prpl_bkgnd mx-auto mb-3">
+    <div  className="cp_balance dark_prpl_bkgnd mx-auto mb-3">
       <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
         {/* {translate("Coin Parliament Balance")} */}
         {texts.CoinParliamentBalance}

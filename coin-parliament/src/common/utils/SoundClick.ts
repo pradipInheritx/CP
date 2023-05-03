@@ -29,8 +29,12 @@ export const cardFlip = () => {
   
 export const claimyourreward =  {
     // console.log('play sound')
-  play:()=>rewardaudio.play(),
-  pause:()=>rewardaudio.pause()
+  play: () => {
+    // rewardaudio.play()
+  },
+  pause: () => {
+    // rewardaudio.pause()
+  }
 };
   
 export const voteEndFinish = () => {

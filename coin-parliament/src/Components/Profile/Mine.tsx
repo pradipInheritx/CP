@@ -25,6 +25,7 @@ import { functions } from "../../firebase";
 import { texts } from "../LoginComponent/texts";
 import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
+import AnimationCard from "./Animation/AnimationCard";
 
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
@@ -44,7 +45,7 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes ,showBack,setShowBack} = useContext(AppContext);
+  const { userTypes ,showBack,setShowBack ,showReward,setShowReward,} = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
@@ -94,19 +95,30 @@ const Mine = () => {
 
 	const goBack = () => {
 		navigate(-1);
-	}
+  }
+  
+  const MyDiv = () => {
+    
+  }
+    setTimeout(() => {
+      MyDiv()
+    }, 1000);
+
 console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
     <div>
-      <Container >
+      <Container >        
         {/* @ts-ignore */}
-        {!!rewardTimer && (        
-          <AnimationReward
-            setRewardTimer={setRewardTimer}
-            rewardTimer={rewardTimer}
-          />
-          
+        {!!rewardTimer && showReward==3 && (        
+          // <AnimationReward
+          //   setRewardTimer={setRewardTimer}
+          //   rewardTimer={rewardTimer}
+          // />
+          <div className=''>
+          {/* @ts-ignore */}
+          <NFTCard cardType={rewardTimer?.data?.firstRewardCardType} />          
+        </div>
         )}
         {/* @ts-ignore */}
 
@@ -144,6 +156,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
 
                 <PAXCard
                   walletId={userInfo?.wallet || ""}
+                  rewardTimer={rewardTimer}
                   // @ts-ignore
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}
                 />
@@ -195,8 +208,8 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
               md={6}
               className='d-flex flex-column flex-md-column-reverse'
             >
-              <div>
-                <PAXCard
+                <div>                  
+                  <PAXCard                  
                   walletId={userInfo?.wallet || ""}
                   // @ts-ignore
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}

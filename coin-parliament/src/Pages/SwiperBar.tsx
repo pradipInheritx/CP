@@ -8,8 +8,7 @@ export type SliderItems = {
   
 };
 function SwiperBar( {children}: { children: React.ReactNode | string }) {
-    var settings = {
-      
+    var settings = {      
       dots: true,
     infinite: false,
       centerMode: true,
@@ -50,7 +49,9 @@ function SwiperBar( {children}: { children: React.ReactNode | string }) {
       ]
     };
   return (
-    <div className=''>
+    <div className=''
+    style={{overflow:"hidden"}}
+    >
       {/* @ts-ignore */}
       <Slider {...settings}>
         {/* @ts-ignore */}
