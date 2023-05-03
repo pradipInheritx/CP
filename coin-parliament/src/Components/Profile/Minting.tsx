@@ -186,9 +186,12 @@ const Minting = ({
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
+                setShowReward(1);     
+                // @ts-ignore
+                setRewardExtraVote(result?.data?.secondRewardExtraVotes);
                 setRewardTimer(result);
                 setLoading(false);
-                console.log("reward", result);
+                console.log("rewardresult", result);
               }
             }}
             disabled={!claim || loading}

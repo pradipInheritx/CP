@@ -33,7 +33,7 @@ const PAXCard = ({ walletId, PAX ,rewardTimer}: PAXCardProps) => {
             style={{ height: 75,color:'#6352E8' }}
           >
             <div>
-              <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize: '20px', zoom:`${showReward==1?"150%":""}`}}>
+              <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize:`${showReward==1?"30px":"20px"}`}}>
                 <CountUp start={prevCountRef.current} end={PAX && PAX} duration={5}
                   onEnd={() => {
                     setShowReward((prev:number) => {                      

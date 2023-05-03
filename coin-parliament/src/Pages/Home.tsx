@@ -198,7 +198,6 @@ const Home = () => {
             </H2>
           </div>
           <div>
-            <AnimationCard/>
             <Quotes quotes={quotes} />
           </div>
         </div>

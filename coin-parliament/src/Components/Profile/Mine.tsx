@@ -117,7 +117,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
           // />
           <div className=''>
           {/* @ts-ignore */}
-          <NFTCard cardType={rewardTimer?.data?.firstRewardCardType} />          
+          <NFTCard   setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
         </div>
         )}
         {/* @ts-ignore */}
@@ -210,7 +210,8 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
             >
                 <div>                  
                   <PAXCard                  
-                  walletId={userInfo?.wallet || ""}
+                    walletId={userInfo?.wallet || ""}
+                    rewardTimer={rewardTimer}
                   // @ts-ignore
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}
                 />
