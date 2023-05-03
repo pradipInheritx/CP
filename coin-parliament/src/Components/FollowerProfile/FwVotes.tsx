@@ -86,35 +86,35 @@ let allCoinsPair= [...AllCoins,...AllPairs]
   // const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
   // console.log(allCoinsPrais, "AllCoinsPrais")
   
-   useEffect(() => {
-    // Promise.all([checkprice(allCoinsPrais[0]),checkprice(allCoinsPrais[1]), checkprice(allCoinsPrais[2]),checkprice(allCoinsPrais[3])])
-    // .then(responses => {
-    //   return Promise.all(responses.map((res,index) => {
-    //     if (res) {
-    //       // getLeftTime(res.data(), index);
-    //       // AllvoteValueObject[index] = res.data();
-    //       // setAllButtonTime(AllvoteValueObject);
-    //       // setVotedDetails(AllvoteValueObject);
-    //       // newTimeframe.push(index)
+  //  useEffect(() => {
+  //   // Promise.all([checkprice(allCoinsPrais[0]),checkprice(allCoinsPrais[1]), checkprice(allCoinsPrais[2]),checkprice(allCoinsPrais[3])])
+  //   // .then(responses => {
+  //   //   return Promise.all(responses.map((res,index) => {
+  //   //     if (res) {
+  //   //       // getLeftTime(res.data(), index);
+  //   //       // AllvoteValueObject[index] = res.data();
+  //   //       // setAllButtonTime(AllvoteValueObject);
+  //   //       // setVotedDetails(AllvoteValueObject);
+  //   //       // newTimeframe.push(index)
           
-    //       // setSelectedTimeFrameArray(newTimeframe)
-    //     }
-    //     else{
-    //       // setAllButtonTime();
+  //   //       // setSelectedTimeFrameArray(newTimeframe)
+  //   //     }
+  //   //     else{
+  //   //       // setAllButtonTime();
           
-    //     }
-    //   }))
-    // })
-    // .catch(error => {
-    //   console.error('promiseAll',error);
-    // });
-     if (allCoinsPrais.length>0) {
-       allCoinsPrais?.map((voteItem:any) => {
-         checkprice(voteItem);
-       })    
-     }
+  //   //     }
+  //   //   }))
+  //   // })
+  //   // .catch(error => {
+  //   //   console.error('promiseAll',error);
+  //   // });
+  //    if (allCoinsPrais.length>0) {
+  //      allCoinsPrais?.map((voteItem:any) => {
+  //        checkprice(voteItem);
+  //      })    
+  //    }
      
-  }, [allCoinsPrais])
+  // }, [allCoinsPrais])
 
 
 

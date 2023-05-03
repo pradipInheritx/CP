@@ -148,7 +148,7 @@ const pathname = location.pathname;
           </Toolbar> 
     </>:""
      }
-    <div className='d-flex flex-column justify-content-center align-items-center py-3 px-2 '>          
+    <div className={pathname=='/coins'?'d-flex flex-column justify-content-center align-items-center py-3 px-2':'d-flex flex-column justify-content-center align-items-center py-3'}>          
       <div className='px-0 m-auto w-100' style={{ maxWidth }}>
         <Carousel
           {...{

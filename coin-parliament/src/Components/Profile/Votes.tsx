@@ -9,7 +9,6 @@ import {httpsCallable} from "firebase/functions";
 import Button from "../Atoms/Button/Button";
 import Tabs from "./Tabs";
 import VotedCard from "./VotedCard";
-import { fetchCoins, subscribe, unsubscribe, ws } from "../../common/models/Socket";
 import { texts } from "../LoginComponent/texts";
 
 const getVotesFunc = httpsCallable<{ start: number; end: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -25,8 +24,6 @@ const Votes = () => {
     coins: {votes: [], total: 0},
     pairs: {votes: [], total: 0},    
   } as GetVotesResponse);
-
-  const [ coinSubscription,setCoinSubscription]=useState([])
   const [coinSocketData,setCoinSocketData]=useState([])
   const getVotes = useCallback(
     async (start: number) => {
@@ -40,15 +37,6 @@ const Votes = () => {
         let result = JSON.parse(newVotes?.data)      
         if (newVotes?.data) {
           setVotes(result);                    
-          const coinStat = newVotes?.data?.coins?.votes?.map(item => item?.coin);
-          // const coinsArray = result?.map((item:any) => {
-          //   item?.map((value:any) => {
-              
-          //   })
-          // })
-          // const pairStat=[]
-           // @ts-ignore
-          // setCoinSubscription(coinStat)
         }
       }
     },
@@ -83,32 +71,23 @@ let allCoinsPair= [...AllCoins,...AllPairs]
   // console.log(allCoinsPrais, "AllCoinsPrais")
   
    useEffect(() => {
-    // Promise.all([checkprice(allCoinsPrais[0]),checkprice(allCoinsPrais[1]), checkprice(allCoinsPrais[2]),checkprice(allCoinsPrais[3])])
-    // .then(responses => {
-    //   return Promise.all(responses.map((res,index) => {
-    //     if (res) {
-    //       // getLeftTime(res.data(), index);
-    //       // AllvoteValueObject[index] = res.data();
-    //       // setAllButtonTime(AllvoteValueObject);
-    //       // setVotedDetails(AllvoteValueObject);
-    //       // newTimeframe.push(index)
-          
-    //       // setSelectedTimeFrameArray(newTimeframe)
-    //     }
-    //     else{
-    //       // setAllButtonTime();
-          
-    //     }
-    //   }))
-    // })
-    // .catch(error => {
-    //   console.error('promiseAll',error);
-    // });
+    // 
+    let promiseArray:any =[]
      if (allCoinsPrais.length > 0) {
-       allCoinsPrais?.map((voteItem:any) => {
-         checkprice(voteItem);
+       allCoinsPrais?.forEach((voteItem:any) => {
+        promiseArray.push(checkprice(voteItem))
+        // checkprice(voteItem);
        })    
      }
+     Promise.all(promiseArray)
+    .then(responses => {
+      return Promise.all(responses.map((res,index) => {
+        console.error('promiseAllsuccess');
+      }))
+    })
+    .catch(error => {
+      console.error('promiseAll',error);
+    });
      
   }, [allCoinsPrais.length])
   

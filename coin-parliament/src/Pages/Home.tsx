@@ -62,7 +62,7 @@ const Home = () => {
                     height:
                       width && width > 969
                         ? "auto"
-                        : ((width || 0) * 392) / 408,
+                        : "auto",
                     // marginTop: width && width > 969 ? -50 : -130,
                     // marginTop:'120px',
                     position: "absolute",
@@ -74,21 +74,7 @@ const Home = () => {
                     marginTop: window.screen.width > 979 ? "150px" : "-48px",
                   }}
                 >
-                  <h2
-                    style={{ zIndex: 0, position: "relative" }}
-                    className='d-xl-none d-block'
-                  >
-                    <strong
-                      className='text-uppercase'
-                      style={{ fontSize: "24px", fontWeight: "700" }}
-                    >
-                      {translate("Vote to Earn")}
-                    </strong>
-                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
-                  <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
-                </TextContainer> */}
-                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-                  </h2>
+                 
 
                   {/* <TextContainer className="mt-2" >
                   <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
@@ -107,12 +93,27 @@ const Home = () => {
               maxWidth: "250px",
             }}
           >
+             <h2
+                    style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
+                    className=' d-block text-center mb-2'
+                  >
+                    <strong
+                      className='text-uppercase text-center'
+                      style={{ fontSize: "24px", fontWeight: "700" }}
+                    >
+                      {translate("Vote to Earn")}
+                    </strong>
+                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+                  <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
+                </TextContainer> */}
+                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+                  </h2>
             <H2
               style={{
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "200px",
+                // marginTop: "200px",
               }}
             >
               {texts.HereYourChance}
@@ -120,18 +121,34 @@ const Home = () => {
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
+             <><h2
+             style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
+             className=' d-block text-center mb-2'
+           >
+             <strong
+               className='text-uppercase text-center'
+               style={{ fontSize: "44px", fontWeight: "700" }}
+             >
+               {translate("Vote to Earn")}
+             </strong>
+             {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+           <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
+         </TextContainer> */}
+             {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+           </h2>
             <H2
               style={{
                 // zIndex: 1,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "200px",
+                // marginTop: "200px",
                 fontSize: "30px",
               }}
             >
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
+            </>
           )}
          
           <Coins
@@ -198,6 +215,7 @@ const Home = () => {
             </H2>
           </div>
           <div>
+            {/* <AnimationCard/> */}
             <Quotes quotes={quotes} />
           </div>
         </div>
