@@ -2,7 +2,7 @@ import { firestore } from "firebase-admin";
 import _ from "lodash";
 
 type CoinPair = {
-  id: number,
+  id: string,
   symbol1: string,
   symbol2: string,
   status: string,
@@ -94,11 +94,11 @@ export const getAllPairs = async (req: any, res: any) => {
 
     res.status(200).send({
       status: true,
-      message: "Get all pair coin successfully",
+      message: "Get all coin pair successfully",
       result: getCoinPairData,
     });
   } catch (error) {
-    errorLogging("getAllCardsPairs", "ERROR", error);
+    errorLogging("getAllPairs", "ERROR", error);
     res.status(500).send({
       status: false,
       message: "Something went wrong in getAllCardsPairs",
@@ -107,35 +107,36 @@ export const getAllPairs = async (req: any, res: any) => {
   }
 };
 
-export function paginate(array: any, page_size: number, page_number: number) {
-  return array.slice((page_number - 1) * page_size, page_number * page_size);
-}
-
-export const pairListingFunction = async (req: any, res: any) => {
+export const getPairById = async (req: any, res: any) => {
   try {
-    let array: any = [];
-    const getCoinPairRef = await firestore()
-      .collection("settings")
-      .doc("pairs")
-      .get();
-
-    const getAllPairCoin: any = getCoinPairRef.data();
-
+    const { id } = req.params;
+    const getPairsQuery = await firestore().collection("settings").doc("pairs").get();
+    let getPairsData: any = getPairsQuery.data();
+    let getPairs = getPairsData.pairs.find((coin: any) => {
+      return coin.id == id;
+    });
+    if (!getPairs) {
+      return res.status(404).send({
+        status: false,
+        message: `Coin not found: ${id}`,
+        result: null,
+      });
+    }
     res.status(200).send({
       status: true,
-      message: "Get all pair coins successfully.",
-      result: getAllPairCoin,
+      message: "Get coin pair successfully",
+      result: getPairs,
     });
-    return array;
+
   } catch (error) {
-    errorLogging("pairListingFunction", "ERROR", error);
+    errorLogging("getPairById", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in pairListingFunction",
+      message: "Something went wrong in updateStatusOfCoin",
       result: error,
     });
   }
-};
+}
 
 export const updateStatusOfCoinPair = async (req: any, res: any) => {
   const { id } = req.params;
@@ -174,46 +175,6 @@ export const updateStatusOfCoinPair = async (req: any, res: any) => {
     });
   }
 };
-
-export const updateRankWeightCMPAndPerCMPOfCoinPair = async (req: any, res: any) => {
-  const { id } = req.params;
-  const { rank, CMP, weightOfOrderBook, percentageRangeInCMP } = req.body;
-  try {
-    const coinRef = await firestore().collection("settings").doc("pairs").get();
-    let coinPairData: any = coinRef.data();
-    let getCoinPair = coinPairData.coins.find((coin: any) => {
-      return coin.id == id;
-    });
-    if (!getCoinPair) {
-      return res.status(404).send({
-        status: false,
-        message: `Coin pair not found: ${id}`,
-        result: null,
-      });
-    }
-    getCoinPair = { ...getCoinPair, rank, CMP, weightOfOrderBook, percentageRangeInCMP };
-    console.info("getCoinPair", getCoinPair)
-
-    await firestore()
-      .collection("settings")
-      .doc("pairs")
-      .set(getCoinPair, { merge: true });
-
-    res.status(200).send({
-      status: true,
-      message: "Coin pair update successfully",
-      result: getCoinPair,
-    });
-  } catch (error) {
-    errorLogging("updateRankWeightCMPAndPerCMPOfCoinPair", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong in updateRankWeightCMPAndPerCMPOfCoinPair",
-      result: error,
-    });
-  }
-};
-
 
 export const errorLogging = async (
   funcName: string,
