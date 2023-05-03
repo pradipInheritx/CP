@@ -163,11 +163,59 @@ export const updateStatusOfCoinPair = async (req: any, res: any) => {
 
     res.status(200).send({
       status: true,
-      message: "Status update for pair coin",
+      message: "Pair status update successfully",
       result: getCoin,
     });
   } catch (error) {
     errorLogging("updateStatusOfCoinPair", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in updateStatusOfCoin",
+      result: error,
+    });
+  }
+};
+
+export const updateCoinPair = async (req: any, res: any) => {
+  const { id } = req.params;
+  const { symbol1, symbol2, status } = req.body;
+  try {
+    const updatePairData = {
+      id,
+      symbol1,
+      symbol2,
+      status
+    }
+    const getAllDataQuery = await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .get();
+
+    const getAllPairData: any = getAllDataQuery.data();
+    const checkPair = getAllPairData.pairs.find((pair: any) => {
+      return pair.id == id
+    })
+    if (!checkPair) return res.status(404).send({
+      status: true,
+      message: "Pair not found : " + id,
+      result: null,
+    });
+    await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .update("pairs", firestore.FieldValue.arrayRemove(updatePairData));
+    await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .update("pairs", firestore.FieldValue.arrayUnion(updatePairData));
+
+    res.status(200).send({
+      status: true,
+      message: "Pair update successfully",
+      result: checkPair,
+    });
+  } catch (error) {
+    errorLogging("updateCoinPair", "ERROR", error);
     res.status(500).send({
       status: false,
       message: "Something went wrong in updateStatusOfCoin",
