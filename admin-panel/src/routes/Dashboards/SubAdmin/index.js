@@ -8,9 +8,9 @@ import {
 } from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
-import UserListRow from "./UserListRow";
-import UserTableHead from "./UserTableHead";
-import UserTableToolbar from "./UserTableToolbar";
+import SubadminListRow from "./SubadminListRow";
+import SubamdinTableHead from "./SubamdinTableHead";
+import SubadminTableToolbar from "./SubadminTableToolbar";
 import {getComparator, stableSort} from "../../../@jumbo/utils/tableHelper";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -19,11 +19,11 @@ import {
   setCurrentSubAdmin,
   updateSubAdminStatus
 } from "../../../redux/actions/SubAdmin";
-import AddEditUser from "./AddEditUser";
+import AddEditUser from "./AddEditSubadmin";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
 import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
-import UserDetailView from "./UserDetailView";
+import SubadminDetailView from "./SubadminDetailView";
 import NoRecordFound from "./NoRecordFound";
 
 const UsersModule = () => {
@@ -157,7 +157,7 @@ const handleConfirmUpdate = () => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <UserTableToolbar
+        <SubadminTableToolbar
           selected={selected}
           setSelected={setSelected}
           onUserAdd={setOpenUserDialog}
@@ -173,7 +173,7 @@ const handleConfirmUpdate = () => {
             aria-labelledby="tableTitle"
             aria-label="sticky enhanced table"
           >
-            <UserTableHead
+            <SubamdinTableHead
               classes={classes}
               numSelected={selected?.length}
               order={order}
@@ -187,7 +187,7 @@ const handleConfirmUpdate = () => {
                 stableSort(subAdminList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <UserListRow
+                    <SubadminListRow
                       key={index}
                       row={row}
                       onRowClick={handleRowClick}
@@ -238,7 +238,7 @@ const handleConfirmUpdate = () => {
         />
       )}
       {openViewDialog && (
-        <UserDetailView
+        <SubadminDetailView
           open={openViewDialog}
           onCloseDialog={handleCloseViewDialog}
         />

@@ -14,6 +14,7 @@ import { httpsCallable } from "@firebase/functions";
 import { stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
 import { handleSoundClick } from "../../common/utils/SoundClick";
+import AppContext from "../../Contexts/AppContext";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -125,6 +126,7 @@ const Minting = ({
   const translate = useTranslation();
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
+  const {showReward,setShowReward,setRewardExtraVote } = useContext(AppContext);
 
   return (
     <React.Fragment>
@@ -157,10 +159,12 @@ const Minting = ({
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
-                
+                setShowReward(1);     
+                // @ts-ignore
+                setRewardExtraVote(result?.data?.secondRewardExtraVotes);
                 setRewardTimer(result);
                 setLoading(false);
-                console.log("reward", result);
+                console.log("rewardresult", result);
               }
             }}
             disabled={!claim || loading}

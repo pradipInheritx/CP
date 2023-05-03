@@ -1,4 +1,5 @@
 export const requiredMessage = 'This field is required!';
+export const canNotbothEmpty = 'Can Not both Empty One is required!';
 export const bothNotPasswordMatch = 'Both password should be same';
 export const emailNotValid = 'Email is not valid!';
 export const passwordMisMatch = 'Password did not match!';

@@ -3,6 +3,8 @@ import { setAuthUser, setForgetPassMailSent, updateLoadUser } from '../../../red
 import React from 'react';
 import axios from './config';
 
+const localToken = localStorage.getItem('token');
+
 const JWTAuth = {
   onRegister: (userDetail,callbackFun) => {
     return dispatch => {
@@ -41,9 +43,9 @@ const JWTAuth = {
           .then(({ data }) => {
             console.log(data,"allData")
             if (data.result) {
-              localStorage.setItem('token', data.result.authTokens[0].token);
+              localStorage.setItem('token', data.result.authTokens[data.result.authTokens.length-1].token);
               localStorage.setItem('userData', JSON.stringify(data.result));                 
-              axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.result.authTokens[0].token;
+              axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.result.authTokens[data.result.authTokens.length-1].token;
               dispatch(fetchSuccess());
               dispatch(JWTAuth.getAuthUser(true, data.result.refreshToken));
             } else {
@@ -60,6 +62,7 @@ const JWTAuth = {
   },
   onLogout: () => {
     return dispatch => {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
       dispatch(fetchStart());
       axios
         .post('auth/logout')
@@ -83,8 +86,8 @@ const JWTAuth = {
     return dispatch => {
       
       if (!token) {
-        const token = localStorage.getItem('token');
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        // const token = localStorage.getItem('token');
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
       }
       dispatch(fetchStart());
       dispatch(updateLoadUser(loaded));

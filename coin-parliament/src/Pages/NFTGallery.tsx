@@ -45,7 +45,7 @@ const SummerCard = styled.div`
   justify-content: center;
   // border:1px solid red;
   flex-wrap: wrap;
-  background-color: #f8f9fa;
+  // background-color: #f8f9fa;
 
   
 `; 
@@ -418,8 +418,14 @@ useEffect(() => {
 console.log(cardName,"mycardName")
 
   return (
-    <div className='' style={{ background: "white", minHeight: "80vh",  }}>
-    <div className='d-flex justify-content-center pt-5 flex-wrap w-100' >
+    <div className='' style={{ minHeight: "auto" }}>
+      <h5 className="mt-4 text-center ">            
+              {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+             <strong style={{textTransform:'uppercase', fontSize: "1.26rem"}}>Wall of fame</strong>
+          </h5>
+      <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
+      style={{background:"#6352e8"}}
+      >
             <input
               type='text'
               name="hello"

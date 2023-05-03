@@ -17,18 +17,20 @@ export const getSubAdmin = (filterOptions = [], searchTerm = '', callbackFun) =>
     // .get(`/sub-admin/subAdminList/${userId.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })
     
     axios
-      .get(`/sub-admin/subAdminList/${userId?.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })
+      // .get(`/sub-admin/subAdminList/${userId?.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })
+      .get(`/sub-admin/subAdminList/${userId?.id}?limit=10&page=1`)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_SUBADMINS, payload: data.data.result });
           if (callbackFun) callbackFun(data.data);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(fetchError(data.message));
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        // dispatch(fetchError('There was something issue in responding server'));        
+        dispatch(fetchError(error.message));
       });
   };
 };

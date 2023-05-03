@@ -8,21 +8,25 @@ import {
 } from "@material-ui/core";
 import TableBody from "@material-ui/core/TableBody";
 import TablePagination from "@material-ui/core/TablePagination";
-import UserListRow from "./UserListRow";
-import UserTableHead from "./UserTableHead";
-import UserTableToolbar from "./UserTableToolbar";
+import PairListRow from "./PairListRow";
+import PairTableHead from "./PairTableHead";
+import PairTableToolbar from "./PairTableToolbar";
 import {getComparator, stableSort} from "../../../@jumbo/utils/tableHelper";
 import {useDispatch, useSelector} from "react-redux";
 import {
-  deleteUser,
+  deletePair,
+  getPairs,
+  setCurrentPair
+} from "../../../redux/actions/Pairs";
+import {  
   getUsers,
   setCurrentUser
 } from "../../../redux/actions/Users";
-import AddEditUser from "./AddEditUser";
+import AddEditPair from "./AddEditPair";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
 import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
-import UserDetailView from "./UserDetailView";
+import PairDetailView from "./PairDetailView";
 import NoRecordFound from "./NoRecordFound";
 
 const PairsModule = () => {
@@ -45,6 +49,17 @@ const PairsModule = () => {
 
   const dispatch = useDispatch();
 
+  // useEffect(
+  //   () => {
+  //     dispatch(
+  //       getPairs(filterOptions, debouncedSearchTerm, () => {
+  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+  //         setUsersFetched(true);
+  //       })
+  //     );
+  //   },
+  //   [ dispatch, filterOptions, debouncedSearchTerm ]
+  // );
   useEffect(
     () => {
       dispatch(
@@ -59,7 +74,7 @@ const PairsModule = () => {
 
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
-    dispatch(setCurrentUser(null));
+    dispatch(setCurrentPair(null));
   };
 
   const handleRequestSort = (event, property) => {
@@ -107,17 +122,17 @@ const PairsModule = () => {
   };
 
   const handleUserView = user => {
-    dispatch(setCurrentUser(user));
+    dispatch(setCurrentPair(user));
     setOpenViewDialog(true);
   };
 
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
-    dispatch(setCurrentUser(null));
+    dispatch(setCurrentPair(null));
   };
 
   const handleUserEdit = user => {
-    dispatch(setCurrentUser(user));
+    dispatch(setCurrentPair(user));
     setOpenUserDialog(true);
   };
 
@@ -128,7 +143,7 @@ const PairsModule = () => {
 
   const handleConfirmDelete = () => {
     setOpenConfirmDialog(false);
-    dispatch(deleteUser(selectedUser.id));
+    dispatch(deletePair(selectedUser.id));
   };
 
   const handleCancelDelete = () => {
@@ -140,7 +155,7 @@ const PairsModule = () => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <UserTableToolbar
+        <PairTableToolbar
           selected={selected}
           setSelected={setSelected}
           onUserAdd={setOpenUserDialog}
@@ -156,7 +171,7 @@ const PairsModule = () => {
             aria-labelledby="tableTitle"
             aria-label="sticky enhanced table"
           >
-            <UserTableHead
+            <PairTableHead
               classes={classes}
               numSelected={selected.length}
               order={order}
@@ -170,7 +185,7 @@ const PairsModule = () => {
                 stableSort(users, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <UserListRow
+                    <PairListRow
                       key={index}
                       row={row}
                       onRowClick={handleRowClick}
@@ -214,13 +229,13 @@ const PairsModule = () => {
       </Paper>
 
       {openUserDialog && (
-        <AddEditUser
+        <AddEditPair
           open={openUserDialog}
           onCloseDialog={handleCloseUserDialog}
         />
       )}
       {openViewDialog && (
-        <UserDetailView
+        <PairDetailView
           open={openViewDialog}
           onCloseDialog={handleCloseViewDialog}
         />

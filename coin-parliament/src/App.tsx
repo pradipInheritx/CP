@@ -325,6 +325,9 @@ function App() {
   const [remainingTimer,setRemainingTimer]=useState(0)
   const [followerUserId,setFollowerUserId]=useState<string>('')
   const [showBack,setShowBack]=useState<any>(false)
+  const [showReward,setShowReward]=useState<any>(0)
+  const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
+  const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -1001,6 +1004,12 @@ if (ws) ws.close();
           >
             <AppContext.Provider
                 value={{
+                  rewardExtraVote,
+                  setRewardExtraVote,
+                  headerExtraVote,
+                  setHeaderExtraVote,
+                  showReward,
+                  setShowReward,
                   showBack,
                   setShowBack,
                   followerUserId,

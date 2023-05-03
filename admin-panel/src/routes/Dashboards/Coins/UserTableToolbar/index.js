@@ -97,9 +97,9 @@ const UserTableToolbar = ({
             id="tableTitle"
             component="div"
           >
-            Users{" "}
+            Coins{" "}
             <Button color="primary" onClick={() => onUserAdd(true)}>
-              Add New User
+              Add New Coin
             </Button>
           </Typography>
         )}
