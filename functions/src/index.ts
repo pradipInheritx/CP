@@ -84,7 +84,8 @@ import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin"
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
 import coinRouter from "./routes/Coin.routes";
-import coinPairRouter from "./routes/CoinPair.routes"
+import coinPairRouter from "./routes/CoinPair.routes";
+import rewardsDistributionRouter from "./routes/RewardsDistribution.routes";
 import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
 import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
 import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
@@ -116,6 +117,7 @@ app.use("/admin/voteSetting", timeframeRouter);
 app.use("/admin/voteSetting", perUserVoteRouter);
 app.use("/admin/userTypeSettings", userTypeSettingsRouter);
 app.use("/admin/settings", voteAndSettingsRouter);
+app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {
