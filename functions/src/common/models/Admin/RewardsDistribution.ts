@@ -3,20 +3,12 @@ import { firestore } from "firebase-admin";
 
 
 export const createRewardsDistribution = async (req: any, res: any) => {
-
   try {
     await firestore()
       .collection("rewardsDistribution")
       .doc("distribution")
       .get();
-
-    let rewardsDistributionData = {
-      0: {
-        cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
-        extraVotePickFromRange: [1, 5],
-        diamondsPickFromRange: [1, 3],
-      }
-    }
+    let rewardsDistributionData = req.body;
 
     const getUpdatedRewardsDistribution = await firestore()
       .collection("rewardsDistribution")
@@ -25,12 +17,15 @@ export const createRewardsDistribution = async (req: any, res: any) => {
 
     console.info("getUpdatedRewardsDistribution", getUpdatedRewardsDistribution);
 
-
-
+    const getUpdatedRef = await firestore()
+      .collection("rewardsDistribution")
+      .doc("distribution")
+      .get();
+    const getUpdatedData = getUpdatedRef.data();
     res.status(200).send({
       status: true,
       message: "New reward distribution added successfully",
-      result: getUpdatedRewardsDistribution,
+      result: getUpdatedData,
     });
   } catch (error) {
     errorLogging("createRewardsDistribution", "ERROR", error);
