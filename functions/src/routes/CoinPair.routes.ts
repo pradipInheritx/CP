@@ -6,13 +6,15 @@ import {
   getAllPairs,
   getPairById,
   updateStatusOfCoinPair,
+  updateCoinPair
 } from "../common/models/Admin/CoinPair";
 
 const coinPairRouter = Router();
 
-coinPairRouter.post("/createPairCoin", auth, addCoinPair);
-coinPairRouter.get("/getAllCoinsPairs", auth, getAllPairs);
-coinPairRouter.get("/getCoinPair/:id", auth, getPairById);
-coinPairRouter.patch("/updateCoinPairStatus/:id", auth, updateStatusOfCoinPair);
+coinPairRouter.post("/createPairCoin", addCoinPair);
+coinPairRouter.get("/getAllCoinsPairs", getAllPairs);
+coinPairRouter.get("/getCoinPair/:id", getPairById);
+coinPairRouter.patch("/updateCoinPairStatus/:id", updateStatusOfCoinPair);
+coinPairRouter.patch("/updateCoinPair/:id", updateCoinPair)
 
 export default coinPairRouter;

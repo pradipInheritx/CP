@@ -12,7 +12,7 @@ import { sendNotification } from "../Notification";
 import { messaging } from "firebase-admin";
 
 type Coin = {
-  coinId: any;
+  id: any;
   coinName: string;
   symbol: any;
   coinLogo: any;
@@ -24,7 +24,7 @@ export const addCoin = async (req: any, res: any) => {
   const { coinName, symbol, coinLogo, voteBarRange, status } = req.body;
   try {
     const id = uuidv4();
-    const coin: Coin = { coinId: id, coinName, symbol, coinLogo, voteBarRange, status };
+    const coin: Coin = { id, coinName, symbol, coinLogo, voteBarRange, status };
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
     let checkCoin = coinData.coins.find((coin: any) => {
@@ -184,6 +184,59 @@ export const getCoinById = async (req: any, res: any) => {
     res.status(500).send({
       status: false,
       message: "Something went wrong in server",
+      result: error,
+    });
+  }
+};
+
+
+export const updateCoin = async (req: any, res: any) => {
+  const { id } = req.params;
+  const { coinName, symbol, coinLogo, voteBarRange, status } = req.body;
+  try {
+    const updateCoinData = {
+      id,
+      coinName,
+      symbol,
+      coinLogo,
+      voteBarRange,
+      status
+    }
+    const getAllDataQuery = await firestore()
+      .collection("settings")
+      .doc("coins")
+      .get();
+
+    const getAllCoinsData: any = getAllDataQuery.data();
+    const getCoin: any = getAllCoinsData.coins.find((coin: any) => {
+      return coin.id == id
+    })
+    if (!getCoin) return res.status(404).send({
+      status: true,
+      message: "Coin not found : " + id,
+      result: null,
+    });
+    getCoin.coins = updateCoinData
+
+    await firestore()
+      .collection("settings")
+      .doc("coins")
+      .set(getCoin, { merge: true });
+    // await firestore()
+    //   .collection("settings")
+    //   .doc("coins")
+    //   .update("coins", firestore.FieldValue.arrayUnion(updateCoinData));
+
+    res.status(200).send({
+      status: true,
+      message: "Coin update successfully",
+      result: getCoin,
+    });
+  } catch (error) {
+    errorLogging("updateCoin", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in updateStatusOfCoin",
       result: error,
     });
   }
