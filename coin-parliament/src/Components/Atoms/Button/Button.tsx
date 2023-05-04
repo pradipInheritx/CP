@@ -231,9 +231,9 @@ const TimeframeButton = ({
         }
         else{
           if(buttonDetails?.direction == 1){
-            livePrice < votePrice ?setborderColor("#218b17"):setborderColor("#218b17");
+            livePrice < votePrice ?setborderColor("#d4d0f3"):setborderColor("#3b17b7");
           }else if(buttonDetails?.direction == 0){
-            livePrice > votePrice ? setborderColor("#218b17"):setborderColor("#218b17");
+            livePrice > votePrice ? setborderColor("#d4d0f3"):setborderColor("#3b17b7");
           }
 
         }  
