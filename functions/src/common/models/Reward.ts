@@ -321,111 +321,121 @@ export const addRewardTransaction: (
 export const claimReward: (uid: string) => { [key: string]: any } = async (
   uid: string
 ) => {
-  console.log("Beginning execution claimReward function");
-  const userRef = firestore()
-    .collection("users")
-    .doc(uid)
-    .withConverter(userConverter);
-
-  const userProps = await userRef.get();
-  const userData = userProps.data();
-
-  const { total, claimed } = userData?.rewardStatistics || {
-    total: 0,
-    claimed: 0,
-  };
-
-  if (total - claimed > 0) {
-    const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
-    const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
-    const { pickedTierArray, tierName } = await pickCardTierByPercentageArray(
-      tierPickupArray
-    );
-    const firstRewardCardObj: any = pickRandomValueFromArray(pickedTierArray);
-    console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
-    const firstRewardCard = firstRewardCardObj["cardName"];
-    const firstRewardCardSerialNo = pickRandomValueFromArray(
-      firstRewardCardObj["sno"]
-    );
-
-    const secondRewardExtraVotes = getRandomNumber(
-      distribution[cmp].extraVotePickFromRange
-    );
-    const thirdRewardDiamonds = getRandomNumber(
-      distribution[cmp].diamondsPickFromRange
-    );
-    const rewardObj = userData?.rewardStatistics || {
-      total: 0,
-      claimed: 0,
-      cards: [],
-      extraVote: 0,
-      diamonds: 0,
-    };
-
-    console.log("rewardObj1......", rewardObj);
-    rewardObj.claimed += 1;
-    rewardObj?.cards?.length
-      ? rewardObj.cards.push(firstRewardCard)
-      : (rewardObj.cards = [firstRewardCard]);
-    rewardObj?.extraVote
-      ? (rewardObj.extraVote += secondRewardExtraVotes)
-      : (rewardObj.extraVote = secondRewardExtraVotes);
-    rewardObj?.diamonds
-      ? (rewardObj.diamonds += thirdRewardDiamonds)
-      : (rewardObj.diamonds = thirdRewardDiamonds);
-    console.log("rewardObj2......", rewardObj);
-    await firestore()
+  try {
+    console.log("Beginning execution claimReward function");
+    const userRef = firestore()
       .collection("users")
       .doc(uid)
-      .set({ rewardStatistics: rewardObj }, { merge: true });
+      .withConverter(userConverter);
 
-    const collectionData: any = await getNftCollectionDataById(
-      firstRewardCardObj.docId
-    );
+    const userProps = await userRef.get();
+    const userData = userProps.data();
 
-    console.log("collectionData", collectionData);
-    const setDetails = collectionData.setDetails.find(
-      (data: any) => data.setId == firstRewardCardObj.setId
-    );
-
-    console.log("SET DETAILS", setDetails);
-    const cardData = setDetails.cardsDetails.find(
-      (item: any) => item.cardId == firstRewardCardObj.cardId
-    );
-    cardData.sno = cardData.sno.filter(
-      (item: any) => item != firstRewardCardSerialNo
-    );
-    cardData.quantity = cardData.sno.length;
-
-    const winData: winRewardData = {
-      firstRewardCardType: tierName,
-      firstRewardCardId: firstRewardCardObj["cardId"],
-      firstRewardCard,
-      firstRewardCardCollection: firstRewardCardObj["albumName"],
-      firstRewardCardSerialNo,
-      secondRewardExtraVotes,
-      thirdRewardDiamonds,
+    const { total, claimed } = userData?.rewardStatistics || {
+      total: 0,
+      claimed: 0,
     };
-    await addRewardTransaction(uid, winData, claimed + 1);
-    const transData: any = await getRewardTransactionsByCardId(cardData.cardId);
 
-    console.log("TRANSDATSA", transData);
-    const userIds = transData.map((item: any) => item.user);
-    cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1;
+    if (total - claimed > 0) {
+      const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
+      const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
+      const { pickedTierArray, tierName } = await pickCardTierByPercentageArray(
+        tierPickupArray
+      );
+      const firstRewardCardObj: any = pickRandomValueFromArray(pickedTierArray);
+      console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
+      const firstRewardCard = firstRewardCardObj["cardName"];
+      const firstRewardCardSerialNo = pickRandomValueFromArray(
+        firstRewardCardObj["sno"]
+      );
 
-    await firestore()
-      .collection("nftGallery")
-      .doc(firstRewardCardObj.docId)
-      .set(collectionData);
-    console.log("Finished execution claimReward function");
-    return winData;
+      const secondRewardExtraVotes = getRandomNumber(
+        distribution[cmp].extraVotePickFromRange
+      );
+      const thirdRewardDiamonds = getRandomNumber(
+        distribution[cmp].diamondsPickFromRange
+      );
+      const rewardObj = userData?.rewardStatistics || {
+        total: 0,
+        claimed: 0,
+        cards: [],
+        extraVote: 0,
+        diamonds: 0,
+      };
+
+      console.log("rewardObj1......", rewardObj);
+      rewardObj.claimed += 1;
+      rewardObj?.cards?.length
+        ? rewardObj.cards.push(firstRewardCard)
+        : (rewardObj.cards = [firstRewardCard]);
+      rewardObj?.extraVote
+        ? (rewardObj.extraVote += secondRewardExtraVotes)
+        : (rewardObj.extraVote = secondRewardExtraVotes);
+      rewardObj?.diamonds
+        ? (rewardObj.diamonds += thirdRewardDiamonds)
+        : (rewardObj.diamonds = thirdRewardDiamonds);
+      console.log("rewardObj2......", rewardObj);
+      await firestore()
+        .collection("users")
+        .doc(uid)
+        .set({ rewardStatistics: rewardObj }, { merge: true });
+
+      const collectionData: any = await getNftCollectionDataById(
+        firstRewardCardObj.docId
+      );
+
+      console.log("collectionData", collectionData);
+      const setDetails = collectionData.setDetails.find(
+        (data: any) => data.setId == firstRewardCardObj.setId
+      );
+
+      console.log("SET DETAILS", setDetails);
+      const cardData = setDetails.cardsDetails.find(
+        (item: any) => item.cardId == firstRewardCardObj.cardId
+      );
+      cardData.sno = cardData.sno.filter(
+        (item: any) => item != firstRewardCardSerialNo
+      );
+      cardData.quantity = cardData.sno.length;
+
+      const winData: winRewardData = {
+        firstRewardCardType: tierName,
+        firstRewardCardId: firstRewardCardObj["cardId"],
+        firstRewardCard,
+        firstRewardCardCollection: firstRewardCardObj["albumName"],
+        firstRewardCardSerialNo,
+        secondRewardExtraVotes,
+        thirdRewardDiamonds,
+      };
+      await addRewardTransaction(uid, winData, claimed + 1);
+      const transData: any = await getRewardTransactionsByCardId(cardData.cardId);
+
+      console.log("TRANSDATSA", transData);
+      const userIds = transData.map((item: any) => item.user);
+      cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1;
+
+      await firestore()
+        .collection("nftGallery")
+        .doc(firstRewardCardObj.docId)
+        .set(collectionData);
+      console.log("Finished execution claimReward function");
+      return winData;
+    } else {
+      console.log("Finished execution claimReward function");
+      return {
+        firstRewardCard: "",
+        secondRewardExtraVotes: 0,
+        thirdRewardDiamonds: 0,
+      };
+    }
+  } catch (error) {
+    console.info("ERROR:", "claimReward", error)
+    return {
+      firstRewardCard: "",
+      secondRewardExtraVotes: 0,
+      thirdRewardDiamonds: 0,
+    };
   }
-  console.log("Finished execution claimReward function");
-  return {
-    firstRewardCard: "",
-    secondRewardExtraVotes: 0,
-    thirdRewardDiamonds: 0,
-  };
 };
 
 export enum CpmTransactionType {
