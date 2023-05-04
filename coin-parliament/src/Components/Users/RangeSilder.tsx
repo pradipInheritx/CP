@@ -72,7 +72,7 @@ function RangeSilder(
         setPersentValue(50)
         return false
       }
-      console.log('decimal1',randomDecimal)
+     
       
 
       const newPrice = ((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply) + randomDecimal) / priceRange
@@ -94,7 +94,7 @@ function RangeSilder(
       clearInterval(randomDecimalInterval)
     }
   }, [])
- console.log('decimal',randomDecimal)
+ 
   useEffect(() => {
     if (!symbol1) return
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])

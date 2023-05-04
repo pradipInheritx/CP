@@ -22,8 +22,8 @@ import Graph from "../Components/CPVI/Graph";
 import CoinsForm from "../Components/Coins/CoinsForm";
 import NotificationContext from "../Contexts/Notification";
 import NotLoggedInPopup from "../Components/App/NotLoggedInPopup";
-import {useWindowSize} from "../hooks/useWindowSize";
-import Confetti from "react-confetti";
+// import {useWindowSize} from "../hooks/useWindowSize";
+// import Confetti from "react-confetti";
 import CalculatingVotes from "../Components/CalculatingVotes";
 import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
@@ -75,12 +75,12 @@ const SingleCoin = () => {
 
   const [cpviData, setCpviData] = useState<LineData[]>();
   const mountedRef = useRef(true);
-  const {width, height} = useWindowSize();
+  // const {width, height} = useWindowSize();
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
   const [graphLoading,setGraphLoading]=useState(false)
-  const [cssDegree, setcssDegree] = useState<any>([]);
-  const [votePrice, setvotePrice] = useState<any>([]);
+  // const [cssDegree, setcssDegree] = useState<any>([]);
+  // const [votePrice, setvotePrice] = useState<any>([]);
   const [votedDetails, setVotedDetails] = useState<any>([]);
   const [voteNumber, setVoteNumber] = useState<any>([]);
   const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
@@ -90,8 +90,8 @@ const SingleCoin = () => {
     voteRules} = useContext(AppContext);
   
   const newTimeframe: any = []
-  const AllcssDegree: any = [];
-  const AllvotePrice: any = [];
+  // const AllcssDegree: any = [];
+  // const AllvotePrice: any = [];
   const AllvoteValueObject: any = [];
 
   useEffect(() => {
@@ -314,14 +314,7 @@ const calcVote = useCallback(async () => {
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
 
-  useEffect(() => {
-    console.log('component mounter')
   
-    return () => {
-      console.log('component unmounted')
-  
-    }
-  }, [])
 
   const [popUpOpen, setpopUpOpen] = useState(false);
 

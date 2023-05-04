@@ -253,12 +253,12 @@ function App() {
       } = message.data["firebase-messaging-msg-data"] as {
         notification: { body: string; title: string };
       };
-      showToast(
-        <div>
-          <h5>{title}</h5>
-          <p>{body}</p>
-        </div>
-      );
+      // showToast(
+      //   <div>
+      //     <h5>{title}</h5>
+      //     <p>{body}</p>
+      //   </div>
+      // );
     });
   }
   });
@@ -821,7 +821,7 @@ function connect(){
      socket.send(JSON.stringify(req));
    };
    ws.onclose = (event:any) => {
-    // if(!login)window.location.reload()
+    if(!login)window.location.reload()
      console.log('WebSocket connection closed');
      if (event.code !== 1000) {
        console.log('WebSocket Attempting to reconnect in 5 seconds...');
@@ -832,7 +832,7 @@ function connect(){
    };
    
    ws.onerror = () => {
-    // if(!login)window.location.reload()
+    if(!login)window.location.reload()
      console.log('WebSocket connection occurred');
    };
    const timeout = 30000; // 30 seconds
@@ -946,11 +946,13 @@ const getVotes = useCallback(
        // checkprice(voteItem);
       })    
     }
+    
+    console.log('promisearray',promiseArray,allCoinsPair)
     if (!promiseArray?.length) return
     Promise.all(promiseArray)
    .then(responses => {
     getVotes().then(void 0); 
-     return Promise.all(responses)
+    //  return Promise.all(responses)
    })
    .catch(error => {
      console.error('promiseAll',error);
