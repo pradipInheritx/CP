@@ -17,7 +17,7 @@ coinPairRouter.get("/getAllCoinsPairs", auth, getAllPairs);
 coinPairRouter.get("/getCoinPair/:id", auth, getPairById);
 coinPairRouter.patch("/updateCoinPairStatus/:id", auth, updateStatusOfCoinPair);
 coinPairRouter.patch("/updateCoinPair/:id", auth, updateCoinPair)
-coinPairRouter.patch("/updateCoinPair/voteBarRange/:id", auth, updateVoteBarRangeOfCoinPair)
+coinPairRouter.patch("/updateCoinPair/voteBarRange/:id", updateVoteBarRangeOfCoinPair)
 
 
 export default coinPairRouter;
