@@ -1,5 +1,5 @@
 import { Router } from "express";
-// import { auth } from "../common/middleware/authentication";
+import { auth } from "../common/middleware/authentication";
 
 import {
   addCoin,
@@ -11,11 +11,11 @@ import {
 
 const coinRouter = Router();
 
-coinRouter.post("/createCoin", addCoin);
-coinRouter.get("/getAllCoins", getAllCoins);
-coinRouter.get("/getCoin/:id", getCoinById);
-coinRouter.patch("/updateCoinStatus/:id", updateStatusOfCoin);
-coinRouter.patch("/updateCoin/voteBarRange/:id", updateVoteBarRangeOfCoin);
+coinRouter.post("/createCoin", auth, addCoin);
+coinRouter.get("/getAllCoins", auth, getAllCoins);
+coinRouter.get("/getCoin/:id", auth, getCoinById);
+coinRouter.patch("/updateCoinStatus/:id", auth, updateStatusOfCoin);
+coinRouter.patch("/updateCoin/voteBarRange/:id", auth, updateVoteBarRangeOfCoin);
 
 
 export default coinRouter;
