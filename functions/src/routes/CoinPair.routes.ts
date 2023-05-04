@@ -11,10 +11,10 @@ import {
 
 const coinPairRouter = Router();
 
-coinPairRouter.post("/createPairCoin", addCoinPair);
-coinPairRouter.get("/getAllCoinsPairs", getAllPairs);
-coinPairRouter.get("/getCoinPair/:id", getPairById);
-coinPairRouter.patch("/updateCoinPairStatus/:id", updateStatusOfCoinPair);
-coinPairRouter.patch("/updateCoinPair/:id", updateCoinPair)
+coinPairRouter.post("/createPairCoin", auth, addCoinPair);
+coinPairRouter.get("/getAllCoinsPairs", auth, getAllPairs);
+coinPairRouter.get("/getCoinPair/:id", auth, getPairById);
+coinPairRouter.patch("/updateCoinPairStatus/:id", auth, updateStatusOfCoinPair);
+coinPairRouter.patch("/updateCoinPair/:id", auth, updateCoinPair)
 
 export default coinPairRouter;
