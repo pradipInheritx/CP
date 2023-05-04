@@ -103,7 +103,6 @@ const VotedCard = ({
   cssDegree,
   votePrice,
   setpopUpOpen,
-  setShowButton,
   
 }: {
   vote: VoteResultProps;
@@ -117,7 +116,7 @@ const VotedCard = ({
   cssDegree?:any;
   votePrice?:any;
   setpopUpOpen?:any
-  setShowButton?:any
+  
   }) => {
   
   const [lastTenSec, setLastTenSec] = useState<any>(false);
@@ -182,7 +181,7 @@ const VotedCard = ({
 
   useEffect(() => {
     console.log('component mounter vote')
-  setShowButton(true)
+  
     return () => {
       console.log('component unmounted vote')
   
@@ -335,11 +334,11 @@ export default VotedCard;
 let getresultFlag:any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec ,showButton}:
+export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec ,}:
   {
     expirationTime: number, vote?: any, voteId?: any
     coins?: any, symbol1?: any, symbol2?: any, openPopup?: any, setLastTenSec?: any
-  showButton?:any
+  
   }) => {
 
 
