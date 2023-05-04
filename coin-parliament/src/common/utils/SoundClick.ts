@@ -7,6 +7,7 @@ const TenSec = require("../../assets/sounds/last-10-sec-for-vote.mp3").default;
 const Notification = require("../../assets/sounds/notification.mp3").default;
 const voteshound = require("../../assets/sounds/voteshound.wav").default;
 const silent = require("../../assets/sounds/silence.mp3").default;
+const scratch = require("../../assets/sounds/scratch.mp3").default;
 
 const audio = new Audio(buttonClick);
 const onFlipcard = new Audio(Flipcard);
@@ -16,10 +17,21 @@ const lastTensec = new Audio(TenSec);
 const NotiSound = new Audio(Notification);
 const voteClick = new Audio(voteshound);
 const silentSound = new Audio(silent);
+const scratchSound = new Audio(scratch);
 
 export const handleSoundClick = () => {
     // console.log('play sound')
     audio.play();
+};
+export const handleSoundClickCard = {
+    
+  play: () => {    
+    scratchSound.play();
+  },
+  pause: () => {
+    scratchSound.pause()
+  }
+    
 };
   
 export const cardFlip = () => {

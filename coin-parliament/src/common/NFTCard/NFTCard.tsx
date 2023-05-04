@@ -7,6 +7,7 @@ import "./style.css";
 import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
+import { handleSoundClickCard } from "../utils/SoundClick";
 type MintingProps = {
   cardType?: any;
   setRewardTimer?: any;
@@ -15,17 +16,17 @@ type MintingProps = {
 const MainDiv = styled.div`
   // display: none;
   opacity: 1;
-  width: 50vh;
+  width:  ${window.screen.width>767? "55vh":"100%"};
    height: 50vh;
-  // min-width: 300px;
-  // min-height: 300px;
+  min-width: 300px;
+  min-height: 300px;
   position: fixed;
   left: 50%;
   transform: translate(-50%, -20%);  
   // top: 25vh; left: 40%;
   z-index: 101;
   transition: opacity .3s;
-
+// border:1px solid red;
   // background-color: white;
   // padding: 60px 20px 40px;
   // border-radius: 6px;
@@ -40,8 +41,10 @@ const ScratchCard = styled.canvas`
 `;
 const Cross = styled.div`
   position: absolute;
-  top: ${window.screen.width>767? "0":"50px"};
-  right: ${window.screen.width>767? "0":"50px"};
+  // top:${window.screen.width>767? "0":"2.5%"};
+  // right:${window.screen.width>767? "0":"2.5%"};  
+  top:-10%;
+  right:-17%;  
   zIndex:99999;
   width:30px;
   height:30px;
@@ -136,6 +139,9 @@ useEffect(() => {
   const scratchMobile = (e: any) => {
     console.log('eventmobile',e)
     const { clientX, clientY } = e.touches[0];
+    if (cressShow == false) {      
+      handleSoundClickCard.play()
+    }
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
     const offsetX = clientX - rect.left;
@@ -164,7 +170,9 @@ useEffect(() => {
     const { offsetX ,layerX, offsetY,layerY } = e.nativeEvent;    
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
-
+    if (cressShow == false) {      
+      handleSoundClickCard.play()
+    }
     if (!isDrawing) {
       return;
     }
@@ -182,6 +190,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
 
   const scratchEnd = (e: any) => {
     console.log(scratchEnd, "scratchEndWork")
+    handleSoundClickCard.pause();
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
     const pixels = context.getImageData(0, 0, WIDTH, HEIGHT);
@@ -212,6 +221,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
   };
   
   const scratchEndMobile = () => {
+    handleSoundClickCard.pause()
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
     const pixels = context.getImageData(0, 0, WIDTH, HEIGHT);
@@ -244,8 +254,12 @@ console.log(offsetX,offsetY, e,"contextCheck")
 
 
   return (
-    <MainDiv>
-      <Cross
+    <MainDiv>      
+    <div style={{
+      position: "relative",
+
+      }}>
+        <Cross
         className={`${!cressShow ? "d-none" : ""} `}
         style={{ cursor: "pointer" }}
         onClick={() => {
@@ -257,11 +271,6 @@ console.log(offsetX,offsetY, e,"contextCheck")
             X
           </span> 
         </Cross>
-    <div style={{
-      position: "relative",
-
-      }}>
-        
       {/* @ts-ignore */}         
       <div className={classname} id="card-animation">        
         <div>
