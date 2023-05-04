@@ -101,7 +101,7 @@ export const getAllPairs = async (req: any, res: any) => {
     errorLogging("getAllPairs", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in getAllCardsPairs",
+      message: "Something went wrong in getAllPairs",
       result: error,
     });
   }
@@ -132,11 +132,48 @@ export const getPairById = async (req: any, res: any) => {
     errorLogging("getPairById", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in updateStatusOfCoin",
+      message: "Something went wrong in getPairById",
       result: error,
     });
   }
 }
+export const updateVoteBarRangeOfCoinPair = async (req: any, res: any) => {
+  const { id } = req.params;
+  const { voteBarRange } = req.body;
+  try {
+    const coinpairRef = await firestore().collection("settings").doc("pairs").get();
+    let coinPairData: any = coinpairRef.data();
+    let getPair = coinPairData.pairs.find((pair: any) => {
+      return pair.id == id;
+    });
+    if (!getPair) {
+      return res.status(404).send({
+        status: false,
+        message: `${id} is not found`,
+        result: null,
+      });
+    }
+    getPair.voteBarRange = voteBarRange;
+
+    await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .set(getPair, { merge: true });
+
+    res.status(200).send({
+      status: true,
+      message: "Pair voteBarRange is successfully update",
+      result: getPair,
+    });
+  } catch (error) {
+    errorLogging("updateVoteBarRangeOfCoinPair", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in updateVoteBarRangeOfCoinPair",
+      result: error,
+    });
+  }
+};
 
 export const updateStatusOfCoinPair = async (req: any, res: any) => {
   const { id } = req.params;
@@ -170,7 +207,7 @@ export const updateStatusOfCoinPair = async (req: any, res: any) => {
     errorLogging("updateStatusOfCoinPair", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in updateStatusOfCoin",
+      message: "Something went wrong in updateStatusOfCoinPair",
       result: error,
     });
   }
@@ -218,7 +255,7 @@ export const updateCoinPair = async (req: any, res: any) => {
     errorLogging("updateCoinPair", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in updateStatusOfCoin",
+      message: "Something went wrong in updateCoinPair",
       result: error,
     });
   }

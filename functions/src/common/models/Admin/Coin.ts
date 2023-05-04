@@ -57,7 +57,7 @@ export const addCoin = async (req: any, res: any) => {
     errorLogging("addCoin", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in server",
+      message: "Something went wrong in addCoin",
       result: error,
     });
   }
@@ -152,7 +152,7 @@ export const getAllCoins = async (req: any, res: any) => {
     errorLogging("getAllCoins", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in server",
+      message: "Something went wrong in getAllCoins",
       result: error,
     });
   }
@@ -183,7 +183,7 @@ export const getCoinById = async (req: any, res: any) => {
     errorLogging("getCoinById", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in server",
+      message: "Something went wrong in getCoinById",
       result: error,
     });
   }
@@ -236,7 +236,7 @@ export const updateCoin = async (req: any, res: any) => {
     errorLogging("updateCoin", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Something went wrong in updateStatusOfCoin",
+      message: "Something went wrong in updateCoin",
       result: error,
     });
   }
