@@ -118,29 +118,29 @@ let allCoinsPair= [...AllCoins,...AllPairs]
 
 
 
-  const checkprice = async (vote: any) => {
-    console.log(vote, "checkAllvote")
-    const voteCoins = vote?.coin.split("-");
-const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
-  const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
-   const data = await getPriceCalculation({            
-        coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
-        coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
-        voteId:vote?.id,
-        voteTime:vote?.voteTime,
-        valueVotingTime: vote?.valueVotingTime,
-        expiration: vote?.expiration,
-        timestamp: Date.now()
-    }).then((data:any)=>{
-      if(data.data==null){
-             getVotes(index).then(void 0);     
-      }
-    }).catch((err:any )=> {
-        if (err && err.message) {
-            console.log(err.message);
-        }        
-    })
-  }
+//   const checkprice = async (vote: any) => {
+//     console.log(vote, "checkAllvote")
+//     const voteCoins = vote?.coin.split("-");
+// const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
+//   const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
+//    const data = await getPriceCalculation({            
+//         coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
+//         coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
+//         voteId:vote?.id,
+//         voteTime:vote?.voteTime,
+//         valueVotingTime: vote?.valueVotingTime,
+//         expiration: vote?.expiration,
+//         timestamp: Date.now()
+//     }).then((data:any)=>{
+//       if(data.data==null){
+//              getVotes(index).then(void 0);     
+//       }
+//     }).catch((err:any )=> {
+//         if (err && err.message) {
+//             console.log(err.message);
+//         }        
+//     })
+//   }
       
 
 
@@ -230,22 +230,7 @@ const callbackFun=()=>{
       defaultActiveKey="coins"
       id="profile-votes"
       onSelect={() => setIndex(0)}
-      tabs={[
-        {
-          eventKey: "pairs",
-          // title: capitalize(translate("pair")),
-          title: capitalize(`${texts.Pair}`),
-          pane: (
-            <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.pairs.votes.map((v, i) => (
-                <div className="mb-2" key={i}>
-                  <MyVotedCard v={v} callbackFun={callbackFun} />
-                </div>
-              ))}
-              {getButtons(votes.pairs)}
-            </div>
-          ),
-        },
+      tabs={[        
         {
           eventKey: "coins",
           title: capitalize(`${texts.Coin}`),
@@ -260,6 +245,21 @@ const callbackFun=()=>{
             </div>
           ),
         },
+        {
+          eventKey: "pairs",
+          // title: capitalize(translate("pair")),
+          title: capitalize(`${texts.Pair}`),
+          pane: (
+            <div className="d-flex justify-content-center align-items-center flex-column">
+              {votes.pairs.votes.map((v, i) => (
+                <div className="mb-2" key={i}>
+                  <MyVotedCard v={v} callbackFun={callbackFun} />
+                </div>
+              ))}
+              {getButtons(votes.pairs)}
+            </div>
+          ),
+        }
       ]}
     />
   );
