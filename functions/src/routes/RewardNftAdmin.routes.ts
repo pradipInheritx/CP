@@ -17,7 +17,7 @@ rewardNftAdminRouter.post("/createSet", auth, createSet);
 rewardNftAdminRouter.post("/createCard", auth, createCard);
 rewardNftAdminRouter.get("/getAllAlbums", auth, getAllAlbums);
 rewardNftAdminRouter.get("/getAllCards", auth, getAllCards);
-rewardNftAdminRouter.get("/getAlbumListing", auth, getAlbumListing);
+rewardNftAdminRouter.get("/getAlbumListing", getAlbumListing);
 
 
 export default rewardNftAdminRouter;

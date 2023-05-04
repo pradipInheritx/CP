@@ -265,11 +265,11 @@ export const getAlbumListing = async (req: any, res: any) => {
                 break;
         }
 
-        let getAllData: any;
+        let getAllAlbumsData: any;
         let collectionName: string = "cardsDetails";
         if (orderByConsolidate == "albumName") collectionName = "nftGallery"
         if (search) {
-            getAllData = await firestore()
+            getAllAlbumsData = await firestore()
                 .collection(collectionName)
                 .where(orderByConsolidate, ">=", search)
                 .where(orderByConsolidate, "<=", search + "\uf8ff")
@@ -277,7 +277,7 @@ export const getAlbumListing = async (req: any, res: any) => {
                 .limit(limit)
                 .get();
         } else {
-            getAllData = await firestore()
+            getAllAlbumsData = await firestore()
                 .collection(collectionName)
                 .orderBy(orderByConsolidate, sort)
                 .offset((page - 1) * limit)
@@ -287,7 +287,7 @@ export const getAlbumListing = async (req: any, res: any) => {
         let getNFTResponse: any = "";
 
         if (collectionName == "nftGallery") {
-            getNFTResponse = getAllData.docs.map(
+            getNFTResponse = getAllAlbumsData.docs.map(
                 (doc: any) => ({
                     albumId: doc.id,
                     albumName: doc.data()?.albumName ? doc.data()?.albumName : "",
@@ -296,7 +296,7 @@ export const getAlbumListing = async (req: any, res: any) => {
             );
         }
         else {
-            getNFTResponse = getAllData.docs.map(
+            getNFTResponse = getAllAlbumsData.docs.map(
                 (doc: any) => {
                     return {
                         albumId: doc.data()?.albumId ? doc.data()?.albumId : "",
