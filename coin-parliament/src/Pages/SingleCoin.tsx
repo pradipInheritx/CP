@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
 import {Link, useParams} from "react-router-dom";
-import {Button, Container, Modal} from "react-bootstrap";
+import { Container} from "react-bootstrap";
 import CoinContext from "../Contexts/CoinsContext";
 
 import {Coin} from "../common/models/Coin";
@@ -25,7 +25,6 @@ import NotLoggedInPopup from "../Components/App/NotLoggedInPopup";
 import {useWindowSize} from "../hooks/useWindowSize";
 import Confetti from "react-confetti";
 import CalculatingVotes from "../Components/CalculatingVotes";
-import { setInterval } from "timers";
 import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
@@ -59,8 +58,8 @@ export const Other = styled(Buttons.ClickableText)`
 
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 // const getDatas = httpsCallable(functions, "getDatas");
-const cpviRealTimeData = httpsCallable(functions, "cpviRealTimeData");
-const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+// const cpviRealTimeData = httpsCallable(functions, "cpviRealTimeData");
+// const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
 const SingleCoin = () => {
   let params = useParams();
@@ -97,17 +96,17 @@ const SingleCoin = () => {
 
   useEffect(() => {
     if (!ws) return
-    console.log('websocket connected')
+    
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       const symbol =message?.s?.slice(0, -4)
   
       if (symbol && symbol == params?.id) {
-        // @ts-ignore
+        
         const dot = decimal[symbol]
         
-        console.log('symbol',message?.s)
-        // @ts-ignore
+        
+      
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
         [symbol]: {
@@ -143,89 +142,29 @@ if (data?.result?.data[0].a){
 
     if (voteId) {
       // if (!mountedRef.current) return null;
-      
+        
       const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: 86400 });
      
       return data.data as unknown as LineData[];
     }
-  }, [params?.id, voteId, vote]);
+  }, [params?.id, voteId, vote?.voteTime]);
   
-// const getResultForPendingVote=async()=>{
-//   const data = await getResultPrice({
-//     coin1: "ETH",
-//     coin2: "",
-//     voteId: 'kJEjAQa6IwmwZGS3DRMI',
-//     voteTime: '1677839924282',
-//     valueVotingTime: '1563.00',
-//     expiration: '1677839984282',
-//     timestamp: '1677839984282'
-// });
-     
-//       return data.data as unknown as LineData[];
-// }
-// useEffect(() => {
-//   ws.onmessage = (event) => {
-//     const message = JSON.parse(event.data);
-//    console.log(message.c)
-//   // const updatedCoin= { ...coins};
-//   // updatedCoin.BTC={
-//   //   ...coins?.BTC,
-//   //   price:message.c
-//   // }
-//   // console.log('allcoin1',updatedCoin,coins)
-//     // 
-//     // const newPrice = parseFloat(message.k.c);
-//     // setCoins(updatedCoin);
-//   };
 
- 
-// }, [])
 
-  useEffect(() => {
-    // 
-    
-    if(vote.timeframe) {
-      setTimeout(() => {
-        getCpviData().then((data) => data && setCpviData(data));  
-      }, 2000);
-      // getDatas()
-      
-      
+  // useEffect(() => {
+  //   if(vote.timeframe) {
+  //     setTimeout(() => {
+  //       getCpviData().then((data) => data && setCpviData(data));  
+  //     }, 2000);
+  //     }
+  // }, [voteId, getCpviData, vote]);
 
-      }
-   
-  }, [voteId, getCpviData, vote]);
-// useEffect(() => {
-
-//   if(vote.timeframe && cpviData?.length) {
-//   var timer = setInterval( async() => {
-//     //  @ts-ignore
-
-    
-//       //  @ts-ignore
-//         cpviRealTimeData({id: params?.id, lastTimeFrame: cpviData[50].time}).then((data) => console.log('live data',data));  
-    
-//     }, 10000);
-//   }
-//   return () => {
-//     clearInterval(timer);
-//   }
-// }, [voteId,cpviData])
-useEffect(() => {
-  
-   
-    // const timer = setInterval( async() => {
-    
+useEffect(() => { 
       if(vote.timeframe) {
-      
+         
         getCpviData().then((data) => data && setCpviData(data));  
     }
-    // }, 5000);
-  
-  // return () => {
-  //   clearInterval(timer);
-  // }
-}, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
+}, [voteId, getCpviData, vote?.voteTime, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
   
   useEffect(() => {
     const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
@@ -268,7 +207,7 @@ const calcVote = useCallback(async () => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
-        console.log('vote',res,index)
+       
         if (res) {                  
                  
           // getLeftTime(res.data(), index);          
@@ -344,25 +283,10 @@ const calcVote = useCallback(async () => {
 
 
 
-  const getLeftTime = (value: any,index:number) => {
-    
-    let t = value.voteTime / 1000; //mili
-    let d = value.timeframe.seconds; //second already
-    let liveTime = Date.now() / 1000;
-    let ori = t + d;
-    let val = (ori - liveTime) / d;
-    let deg = val * 360;
-    AllcssDegree[index] = Math.round(deg);
-    AllvotePrice[index] =  value.valueVotingTime;
-    
-    if (deg >0) {
-      setcssDegree(AllcssDegree);
-      setvotePrice(AllvotePrice);
-    }
-  }
+  
   
   const sound = useRef<HTMLAudioElement>(null);
-  const src = require("../assets/sounds/applause.mp3").default;
+  // const src = require("../assets/sounds/applause.mp3").default;
 
   const canVote = useMemo(() => {
     return (
@@ -405,13 +329,13 @@ const calcVote = useCallback(async () => {
 
   return (
     <>
-      <audio className="d-none" ref={sound}>
+      {/* <audio className="d-none" ref={sound}>
         <source src={src} type="audio/mpeg"/>
-      </audio>
-      {confetti && <Confetti
+      </audio> */}
+      {/* {confetti && <Confetti
         width={width}
         height={height}
-      />}
+      />} */}
       <PageContainer fluid radius={87}>
         <>
           {coin ? (
