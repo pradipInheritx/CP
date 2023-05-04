@@ -76,13 +76,27 @@ useEffect(() => {
   console.log(context,"context")
   context.fillStyle = "#5d49df";
   context.fillRect(0, 0, WIDTH, HEIGHT);
-    context.lineWidth = 50;
+    context.lineWidth = window.screen.width<768? 10 :50;
     context.lineJoin = "brush";
     return () => {
       // second
     }
   }, [])
-  
+  useEffect(() => {
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isDrawing) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+    });
+
+    return () => {
+      document.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, [isDrawing]);
   const scratchStart = (e: any) => {
     console.log('eventmobile',e)
     // console.log(scratchStart,"scratchStartWork")
@@ -118,11 +132,10 @@ useEffect(() => {
     if (!isDrawing) {
       return;
     }
-  
+   
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
-    context.moveTo(startX, startY);
-    context.lineTo(clientX, clientY);
+    context.arc(offsetX, offsetY, 35, 0, Math.PI * 2); // Adjust the arc radius as needed
     context.closePath();
     context.stroke();
   
@@ -196,9 +209,18 @@ console.log(offsetX,offsetY, e,"contextCheck")
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
   
-      setTimeout(function () {
-        lottie.pause();
-      }, 5000); // 5000 milliseconds = 5 seconds
+      const Animation=lottie.loadAnimation({
+        // @ts-ignore
+        container: document.querySelector("#card-animation"),
+        animationData: confetti,
+        renderer: "html", // "canvas", "html"
+        loop: true, // boolean
+        autoplay: true, // boolean              
+        });      
+  
+        setTimeout(function () {        
+          Animation.pause();
+        }, 9000); // 5000 milliseconds = 5 seconds
     }
     setisDrawing(false);
   };
