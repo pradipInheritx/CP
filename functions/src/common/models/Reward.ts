@@ -345,9 +345,9 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       const firstRewardCardObj: any = pickRandomValueFromArray(pickedTierArray);
       console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
       const firstRewardCard = firstRewardCardObj["cardName"];
-      const firstRewardCardSerialNo = pickRandomValueFromArray(
+      const firstRewardCardSerialNo = firstRewardCardObj.sno.length ? pickRandomValueFromArray(
         firstRewardCardObj["sno"]
-      );
+      ) : ""; // Added this condition because somnetimes sno is blank
 
       const secondRewardExtraVotes = getRandomNumber(
         distribution[cmp].extraVotePickFromRange
@@ -400,7 +400,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
 
       const winData: winRewardData = {
         firstRewardCardType: tierName,
-        firstRewardCardId: firstRewardCardObj["cardId"],
+        firstRewardCardId: firstRewardCardObj.cardId,
         firstRewardCard,
         firstRewardCardCollection: firstRewardCardObj["albumName"],
         firstRewardCardSerialNo,
