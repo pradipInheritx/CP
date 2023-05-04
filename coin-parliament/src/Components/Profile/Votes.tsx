@@ -79,6 +79,7 @@ let allCoinsPair= [...AllCoins,...AllPairs]
         // checkprice(voteItem);
        })    
      }
+     console.log(promiseArray,"promiseArray")
      Promise.all(promiseArray)
     .then(responses => {
       return Promise.all(responses.map((res,index) => {
