@@ -65,6 +65,7 @@ function NFTCard({ cardType = "legendary" ,setRewardTimer }: MintingProps) {
   const [startX, setStartX] = useState<any>(0)
   const [startY, setStartY] = useState<any>(0)
   const [cressShow, setCressShow] = useState<any>(false)
+  const [scratchShound, setScratchShound] = useState<any>(false)
   const {showReward,setShowReward} = useContext(AppContext);
 
 
@@ -121,7 +122,8 @@ useEffect(() => {
     const { layerX,offsetX, layerY ,offsetY} = e.nativeEvent;    
     setisDrawing(true);
     setStartX(offsetX || layerX);
-    setStartY(offsetY ||layerY);
+    setStartY(offsetY || layerY);
+    setScratchShound(true)
   };
 
   const scratchStartMobile = (e: any) => {
@@ -134,12 +136,13 @@ useEffect(() => {
     setisDrawing(true);
     setStartX(offsetX);
     setStartY(offsetY);
+    setScratchShound(true)
   };
   
   const scratchMobile = (e: any) => {
     console.log('eventmobile',e)
     const { clientX, clientY } = e.touches[0];
-    if (cressShow == false) {      
+    if (scratchShound == true) {      
       handleSoundClickCard.play()
     }
     // @ts-ignore
@@ -170,7 +173,7 @@ useEffect(() => {
     const { offsetX ,layerX, offsetY,layerY } = e.nativeEvent;    
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
-    if (cressShow == false) {      
+    if (scratchShound == true) {      
       handleSoundClickCard.play()
     }
     if (!isDrawing) {
@@ -203,6 +206,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
     if (percentage >30) {      
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true)
+      setScratchShound(false)
       const Animation=lottie.loadAnimation({
       // @ts-ignore
       container: document.querySelector("#card-animation"),
@@ -217,7 +221,8 @@ console.log(offsetX,offsetY, e,"contextCheck")
       }, 9000); // 5000 milliseconds = 5 seconds
 
     }
-      setisDrawing(false)    
+    setScratchShound(false)
+    setisDrawing(false)    
   };
   
   const scratchEndMobile = () => {
@@ -234,7 +239,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
     if (percentage > 30) {
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
-  
+      
       const Animation=lottie.loadAnimation({
         // @ts-ignore
         container: document.querySelector("#card-animation"),
@@ -249,6 +254,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
         }, 9000); // 5000 milliseconds = 5 seconds
     }
     setisDrawing(false);
+    setScratchShound(false)
   };
   
 
