@@ -207,7 +207,7 @@ console.log(showReward,"showReward")
   }, [followerUserId])
   
   useEffect(() => {
-    if (voteNumber == 0 && votingTimer  && pageTrue && urlName.length>2) {
+    if (voteNumber == 0 && votingTimer  && pageTrue && urlName.length>2  && user?.uid && !login ) {
       
       setShow(true) 
     } else {
@@ -491,9 +491,9 @@ console.log('votenumber',voteNumber, Number(voted))
                                   >
                             
                                   
-                                  {MyPath == "/profile/mine" ?
+                                {MyPath == "/profile/mine" ?
                                     <CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}                                
-                                      style={{ fontSize: `${showReward == 2 && window.screen.width < 767 ? "20px" : "12px"}` }}
+                                      style={{ fontSize: `${showReward == 2 ? "16px" : "12px"}` }}
                                   onEnd={() =>
                                   {
                                     setHeaderExtraVote((prev:number) => {
@@ -660,7 +660,11 @@ console.log('votenumber',voteNumber, Number(voted))
                               0} */}
                                 {/* {voteNumber > 0 ? voteNumber : 0} */}
                                {MyPath=="/profile/mine" ?<CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
-                                style={{zoom: `${showReward == 2 ? "150%" : ""}`}}
+                                  style={{
+                                    // fontSize: `${showReward == 2 ? "15px" : "12px"}`
+                                    zoom: `${showReward == 2 ? "140%" : ""}`
+                                  }}
+                                  
                                   onEnd={() =>
                                   {
                                     setHeaderExtraVote((prev:number) => {

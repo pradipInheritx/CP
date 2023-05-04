@@ -167,7 +167,7 @@ const Minting = ({
                 console.log("rewardresult", result);
               }
             }}
-            disabled={!claim || loading}
+            disabled={!claim || loading ||rewardTimer}
           >
             {!!claim && <Dot>{claim}</Dot>}
             {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
@@ -194,7 +194,7 @@ const Minting = ({
                 console.log("rewardresult", result);
               }
             }}
-            disabled={!claim || loading}
+            disabled={!claim || loading ||rewardTimer}
           >
             {!!claim && <Dot>{claim}</Dot>}
             {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}

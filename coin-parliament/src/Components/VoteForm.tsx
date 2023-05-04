@@ -33,6 +33,7 @@ type VoteFormProps<T> = {
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
+  showButton?: any;
 };
 const VoteForm = function <
   T extends {
@@ -58,6 +59,7 @@ const VoteForm = function <
   cssDegree,
   votePrice,
   votedDetails,
+  showButton,
 }: VoteFormProps<T>) {
   const { timeframes, login,remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
@@ -65,7 +67,7 @@ const VoteForm = function <
   const [symbol1, symbol2] = (params?.id || "").split("-");
   
   
-  
+  console.log(showButton,"showButtoncheck")
   
   return (
     <Form
@@ -135,7 +137,7 @@ const VoteForm = function <
           }
         >
           <div>
-            <CPVote
+            {!showButton && <CPVote
               {...{
                 selectedOption,
                 setSelectedOption,
@@ -186,7 +188,7 @@ const VoteForm = function <
               ]}
             >
               {children}
-            </CPVote>
+            </CPVote>}
           </div>
         </OverlayTrigger>
       </div>

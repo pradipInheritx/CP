@@ -102,7 +102,8 @@ const VotedCard = ({
   selectedTimeFrameArray,
   cssDegree,
   votePrice,
-  setpopUpOpen
+  setpopUpOpen,
+  setShowButton,
   
 }: {
   vote: VoteResultProps;
@@ -116,6 +117,7 @@ const VotedCard = ({
   cssDegree?:any;
   votePrice?:any;
   setpopUpOpen?:any
+  setShowButton?:any
   }) => {
   
   const [lastTenSec, setLastTenSec] = useState<any>(false);
@@ -180,7 +182,7 @@ const VotedCard = ({
 
   useEffect(() => {
     console.log('component mounter vote')
-  
+  setShowButton(true)
     return () => {
       console.log('component unmounted vote')
   
@@ -278,7 +280,7 @@ const VotedCard = ({
               <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1>              
             </BitcoinBTCBULL24H3864490>
             <div className="my-2">
-              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
+              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen} 
                 setLastTenSec={setLastTenSec}
               />
             </div>
@@ -333,10 +335,11 @@ export default VotedCard;
 let getresultFlag:any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec}:
+export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec ,showButton}:
   {
     expirationTime: number, vote?: any, voteId?: any
-  coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any,setLastTenSec?:any
+    coins?: any, symbol1?: any, symbol2?: any, openPopup?: any, setLastTenSec?: any
+  showButton?:any
   }) => {
 
 
@@ -376,7 +379,8 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
      if (data.data == null) {
         // console.log(data.data,"i am working data.data")
         // getVotes(index).then(void 0);
-        openPopup(true)
+       openPopup(true)
+       
       }
     }).catch(err => {
         if (err && err.message) {
