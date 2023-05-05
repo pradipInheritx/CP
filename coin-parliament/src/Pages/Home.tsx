@@ -19,11 +19,8 @@ import { useWindowSize } from "../hooks/useWindowSize";
 import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
 import { texts } from "../Components/LoginComponent/texts";
 import { Buttons } from "../Components/Atoms/Button/Button";
-import AnimationCard from "../Components/Profile/Animation/AnimationCard";
 
-// const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
-// const Coins = React.lazy(()=>import("../Components/Coins/Coins"))
-// const InfluencersCarousel = React.lazy(()=>import("../Components/Users/InfluencersCarousel"))
+
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
   text-align: center;
@@ -45,7 +42,7 @@ const Home = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-  const src = `/hpbanner${width && width > 979 ? "" : "_m"}.png`;
+  const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
   
   return (

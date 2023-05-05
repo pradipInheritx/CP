@@ -253,12 +253,12 @@ function App() {
       } = message.data["firebase-messaging-msg-data"] as {
         notification: { body: string; title: string };
       };
-      showToast(
-        <div>
-          <h5>{title}</h5>
-          <p>{body}</p>
-        </div>
-      );
+      // showToast(
+      //   <div>
+      //     <h5>{title}</h5>
+      //     <p>{body}</p>
+      //   </div>
+      // );
     });
   }
   });
@@ -821,7 +821,7 @@ function connect(){
      socket.send(JSON.stringify(req));
    };
    ws.onclose = (event:any) => {
-    // if(!login)window.location.reload()
+    if(!login)window.location.reload()
      console.log('WebSocket connection closed');
      if (event.code !== 1000) {
        console.log('WebSocket Attempting to reconnect in 5 seconds...');
@@ -832,7 +832,7 @@ function connect(){
    };
    
    ws.onerror = () => {
-    // if(!login)window.location.reload()
+    if(!login)window.location.reload()
      console.log('WebSocket connection occurred');
    };
    const timeout = 30000; // 30 seconds
@@ -888,85 +888,85 @@ if (ws) ws.close();
 //     console.log("Browser window is not minimized");
 //   }
 // }
-// const checkprice = async (vote: any) => {
-//   console.log(vote, "checkAllvote")
-//   const voteCoins = vote?.coin.split("-");
-// const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
-// const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
-//  const data = await getPriceCalculation({            
-//       coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
-//       coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
-//       voteId:vote?.id,
-//       voteTime:vote?.voteTime,
-//       valueVotingTime: vote?.valueVotingTime,
-//       expiration: vote?.expiration,
-//       timestamp: Date.now()
-//   }).then((data:any)=>{
-//     console.log('success')
-//     // if(data.data==null){
-//     //     getVotes(index).then(void 0);     
-//     // }
-//   }).catch((err:any )=> {
-//       if (err && err.message) {
-//           console.log(err.message);
-//       }        
-//   })
-// }
-// const getVotes = useCallback(
-//   async () => {
-//     if (user?.uid) {
-//       const newVotes = await getVotesFunc({
-//         userId: user?.uid,
-//       });
-//       // @ts-ignore
-//       let result = JSON.parse(newVotes?.data)      
-//       if (newVotes?.data) {
+const checkprice = async (vote: any) => {
+  console.log(vote, "checkAllvote")
+  const voteCoins = vote?.coin.split("-");
+const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
+const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
+ const data = await getPriceCalculation({            
+      coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
+      coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
+      voteId:vote?.id,
+      voteTime:vote?.voteTime,
+      valueVotingTime: vote?.valueVotingTime,
+      expiration: vote?.expiration,
+      timestamp: Date.now()
+  }).then((data:any)=>{
+    console.log('success')
+    // if(data.data==null){
+    //     getVotes(index).then(void 0);     
+    // }
+  }).catch((err:any )=> {
+      if (err && err.message) {
+          console.log(err.message);
+      }        
+  })
+}
+const getVotes = useCallback(
+  async () => {
+    if (user?.uid) {
+      const newVotes = await getVotesFunc({
+        userId: user?.uid,
+      });
+      // @ts-ignore
+      let result = JSON.parse(newVotes?.data)      
+      if (newVotes?.data) {
         
-//         const { coins, pairs } = result
+        const { coins, pairs } = result
     
-//         let AllCoins = coins?.votes.filter((item: any) => {
-//           if (item.expiration < Date.now() && item.success == undefined) {
+        let AllCoins = coins?.votes.filter((item: any) => {
+          if (item.expiration < Date.now() && item.success == undefined) {
             
-//             return item
-//           }    
-//         })
+            return item
+          }    
+        })
     
-//         let AllPairs = pairs?.votes.filter((item: any) => {
-//           if (item.expiration< Date.now() && item.success == undefined) {
+        let AllPairs = pairs?.votes.filter((item: any) => {
+          if (item.expiration< Date.now() && item.success == undefined) {
             
-//             return item
-//           }
-//         })  
+            return item
+          }
+        })  
     
-//     let allCoinsPair= [...AllCoins,...AllPairs]  
-//     let promiseArray:any =[]
-//     if (allCoinsPair.length > 0) {
-//       allCoinsPair?.forEach((voteItem:any) => {
-//        promiseArray.push(checkprice(voteItem))
-//        // checkprice(voteItem);
-//       })    
-//     }
-//     if (!promiseArray?.length) return
-//     Promise.all(promiseArray)
-//    .then(responses => {
-//      return Promise.all(responses.map((res,index) => {
-//        console.error('promiseAllsuccess');
-//        getVotes().then(void 0); 
-//      }))
-//    })
-//    .catch(error => {
-//      console.error('promiseAll',error);
-//    });                
-//       }
-//     }
-//   },
-//   [user?.uid]
-// );  
-// useEffect(() => {
-//   if (user?.uid) {
-//     getVotes().then(void 0);
-//   }
-// }, [ user?.uid]);
+    let allCoinsPair= [...AllCoins,...AllPairs]  
+    let promiseArray:any =[]
+    if (allCoinsPair.length > 0) {
+      allCoinsPair?.forEach((voteItem:any) => {
+       promiseArray.push(checkprice(voteItem))
+       // checkprice(voteItem);
+      })    
+    }
+    
+    console.log('promisearray',promiseArray,allCoinsPair)
+    if (!promiseArray?.length) return
+    Promise.all(promiseArray)
+   .then(responses => {
+    getVotes().then(void 0); 
+    //  return Promise.all(responses)
+   })
+   .catch(error => {
+     console.error('promiseAll',error);
+   });                
+      }
+    }
+  },
+  [user?.uid]
+);  
+useEffect(() => {
+  if (user?.uid) {
+    getVotes().then(void 0);
+  }
+}, [ user?.uid]);
 
   return loader ? (
     <div

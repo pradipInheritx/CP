@@ -118,29 +118,29 @@ let allCoinsPair= [...AllCoins,...AllPairs]
 
 
 
-  const checkprice = async (vote: any) => {
-    console.log(vote, "checkAllvote")
-    const voteCoins = vote?.coin.split("-");
-const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
-  const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
-   const data = await getPriceCalculation({            
-        coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
-        coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
-        voteId:vote?.id,
-        voteTime:vote?.voteTime,
-        valueVotingTime: vote?.valueVotingTime,
-        expiration: vote?.expiration,
-        timestamp: Date.now()
-    }).then((data:any)=>{
-      if(data.data==null){
-             getVotes(index).then(void 0);     
-      }
-    }).catch((err:any )=> {
-        if (err && err.message) {
-            console.log(err.message);
-        }        
-    })
-  }
+//   const checkprice = async (vote: any) => {
+//     console.log(vote, "checkAllvote")
+//     const voteCoins = vote?.coin.split("-");
+// const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
+//   const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
+//    const data = await getPriceCalculation({            
+//         coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
+//         coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
+//         voteId:vote?.id,
+//         voteTime:vote?.voteTime,
+//         valueVotingTime: vote?.valueVotingTime,
+//         expiration: vote?.expiration,
+//         timestamp: Date.now()
+//     }).then((data:any)=>{
+//       if(data.data==null){
+//              getVotes(index).then(void 0);     
+//       }
+//     }).catch((err:any )=> {
+//         if (err && err.message) {
+//             console.log(err.message);
+//         }        
+//     })
+//   }
       
 
 

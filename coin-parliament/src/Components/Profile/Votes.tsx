@@ -79,12 +79,12 @@ let allCoinsPair= [...AllCoins,...AllPairs]
         // checkprice(voteItem);
        })    
      }
-     console.log(promiseArray,"promiseArray")
+     if (!promiseArray?.length) return
      Promise.all(promiseArray)
     .then(responses => {
-      return Promise.all(responses.map((res,index) => {
-        console.error('promiseAllsuccess');
-      }))
+      // return Promise.all(responses.map((res,index) => {
+      //   console.error('promiseAllsuccess');
+      // }))
     })
     .catch(error => {
       console.error('promiseAll',error);
