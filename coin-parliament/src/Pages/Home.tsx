@@ -141,7 +141,7 @@ const Home = () => {
                 fontSize: "30px",
               }}
             >
-              {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
+              {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
             </H2>
           )}
          
@@ -156,11 +156,11 @@ const Home = () => {
               }
             }}
           /> */}
-        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>Coming Soon</H2>}
+        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>COMING SOON</H2>}
 
 
 
-          {window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>Coming Soon</H2>}
+          {window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>COMING SOON</H2>}
         </div>
         {/* <div className='mb-4 mx-0'>
           <H2
