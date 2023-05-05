@@ -99,6 +99,7 @@ useEffect(() => {
   console.log(context,"context")
   context.fillStyle = "#5d49df";
   context.fillRect(0, 0, WIDTH, HEIGHT);
+  context.font = "Scratch";
     context.lineWidth = window.screen.width<768? 10 :50;
     context.lineJoin = "brush";
     return () => {
