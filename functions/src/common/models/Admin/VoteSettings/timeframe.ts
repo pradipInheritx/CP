@@ -181,7 +181,7 @@ export const updateTimeframe = async (req: any, res: any, next: any) => {
     res.status(200).send({
       status: true,
       message: "Time frame updated successfully.",
-      result: updatedTimeframeData,
+      result: { id: timeFrameId, ...updatedTimeframeData },
     });
   } catch (error) {
     errorLogging("updateTimeframe", "ERROR", error);
