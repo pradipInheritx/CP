@@ -173,83 +173,59 @@ async function getMultipleUsersByUserIds(userIds: Array<string>) {
 };*/
 
 const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
-  console.log("PERCENTAGE ARR", percentageArr);
-  // const cardsByTier: { [key: string]: string[] } = {
-  //   Common: ["ABC", "DEF", "GHI", "JKL", "MNO"],
-  //   Uncommon: ["AYF", "AKO", "BSR", "WTE", "SHT"],
-  //   Rare: ["WTJ", "SAM", "QYD", "SLL", "DYJ"],
-  //   Epic: ["OPD", "WNN", "CHD", "AUL", "SYI"],
-  //   Legendary: ["XFL", "MHG", "FKU", "CSJ", "ZCW"],
-  // };
-  // const cardData = await getAllCards();
-  // console.log("cardData Response--->", cardData);
+  try {
+    console.log("PERCENTAGE ARR", percentageArr);
 
-  const nftGalleryData = await getAllNftGallery();
-  // console.log("ALBUMS IIIIIIIII>>>>>", nftGalleryData);
+    const nftGalleryData = await getAllNftGallery();
 
-  const cards: any = [];
-  nftGalleryData.forEach((element: any) => {
-    const albumId = element.albumId;
-    const albumName = element.albumName;
-    const docId = element.id;
-    // console.log("ALBUMS IIIIIIIII>>>>>", element);
-    element.setDetails.forEach((setDetail: any) => {
-      // console.log("SETDEAQILS >>>>>", setDetail);
-      const setId = setDetail.setId;
-      setDetail.cardsDetails.forEach((cardDetail: any) => {
-        // console.log("CARDDEAQILS >>>>>", cardDetail);
+    const cards: any = [];
 
-        cards.push({
-          albumId,
-          albumName,
-          docId,
-          setId,
-          ...cardDetail,
+    console.info("nftGalleryData", nftGalleryData);
+
+    nftGalleryData.forEach((element: any) => {
+      const albumId = element.albumId;
+      const albumName = element.albumName;
+      const docId = element.id;
+      // console.log("ALBUMS IIIIIIIII>>>>>", element);
+      element.setDetails.forEach((setDetail: any) => {
+        console.log("SETDEAQILS >>>>>", setDetail);
+        const setId = setDetail.setId;
+        setDetail.cardsDetails.forEach((cardDetail: any) => {
+          console.log("CARDDEAQILS >>>>>", cardDetail);
+
+          cards.push({
+            albumId,
+            albumName,
+            docId,
+            setId,
+            ...cardDetail,
+          });
         });
       });
     });
-  });
 
-  const groupByType: any = groupBy(["cardType"]);
-  const cardsByTier: any = groupByType(cards);
-  console.log("CARDS TIER ==>", cardsByTier);
+    const groupByType: any = groupBy(["cardType"]);
+    const cardsByTier: any = groupByType(cards);
+    console.log("CARDS TIER ==>", cardsByTier);
+    let selectedTier = getRandomSelectedTier(cardsByTier, percentageArr);
+    console.log("RETURN SELECTED TIER VALUE -> ", selectedTier);
+    /*const randomIndex = Math.floor(Math.random() * percentageArr.length);
+    console.log("RANDOM INDEX", randomIndex);
+  
+    const selectedTier = percentageArr[randomIndex];
+    console.log("SELECTED TIER", selectedTier);*/
 
-  // console.log("cardsByTier --->", cardsByTier);
-  // const cardsByTier: { [key: number]: string[] } = {
-  //   1: ["ABC", "DEF", "GHI", "JKL", "MNO"],
-  //   2: ["AYF", "AKO", "BSR", "WTE", "SHT"],
-  //   3: ["WTJ", "SAM", "QYD", "SLL", "DYJ"],
-  //   4: ["OPD", "WNN", "CHD", "AUL", "SYI"],
-  //   5: ["XFL", "MHG", "FKU", "CSJ", "ZCW"],
-  // };
+    const selectedCardTier = Object.keys(cardsByTier)[selectedTier];
+    console.log("SELECTED CARD TIER", selectedCardTier);
 
-  // const oldcardsByTier: { [key: string]: string[] } = {};
-  // interface cardType {
-  //   cardList: string[],
-  //   tierName: string
-  // }
+    const pickedTierArray = cardsByTier[selectedCardTier];
+    console.log("PICKED TIER ARRAY", pickedTierArray);
 
-  // cardData.map((e: cardType) => {
-  //   oldcardsByTier[e.tierName] = e.cardList;
-  // });
-
-  // console.log("CARDS TIER", oldcardsByTier);
-
-  let selectedTier = getRandomSelectedTier(cardsByTier, percentageArr);
-  console.log("RETURN SELECTED TIER VALUE -> ", selectedTier);
-  /*const randomIndex = Math.floor(Math.random() * percentageArr.length);
-  console.log("RANDOM INDEX", randomIndex);
-
-  const selectedTier = percentageArr[randomIndex];
-  console.log("SELECTED TIER", selectedTier);*/
-
-  const selectedCardTier = Object.keys(cardsByTier)[selectedTier];
-  console.log("SELECTED CARD TIER", selectedCardTier);
-
-  const pickedTierArray = cardsByTier[selectedCardTier];
-  console.log("PICKED TIER ARRAY", pickedTierArray);
-
-  return { tierName: selectedCardTier, pickedTierArray };
+    return { tierName: selectedCardTier, pickedTierArray };
+  } catch (error) {
+    console.info("ERROR:", "pickCardTierByPercentageArray", error)
+    return { tierName: "", pickedTierArray: [] };
+  }
 };
 
 function getRandomSelectedTier(cardsByTier: any, percentageArr: any): number {
