@@ -46,7 +46,7 @@ export const texts = {
   YouMustLoggedInVote: "you must be logged in to vote",
   Bear:"bear",
   Bull: "bull",
-  InstallCoinParliament: "Install CoinParliament app for best experience".toUpperCase(),
+  InstallCoinParliament: "Install StockParliament app for best experience".toUpperCase(),
   Install: "Install".toUpperCase(),
   ViewAll: "view all".toUpperCase(),
   WhatYourCoinVote: "What's Your Coin Vote ?".toUpperCase(),
