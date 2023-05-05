@@ -13,31 +13,35 @@ type MintingProps = {
   setRewardTimer?: any;
 };
 
+
 const MainDiv = styled.div`
   // display: none;
   opacity: 1;
-  width:  ${window.screen.width>767? "55vh":"100%"};
-   height: 50vh;
+   width: 100%;
+   height: 150vh;
   min-width: 300px;
   min-height: 300px;
   position: fixed;
+  top:0;
   left: 50%;
   transform: translate(-50%, -20%);  
   // top: 25vh; left: 40%;
   z-index: 101;
   transition: opacity .3s;
-// border:1px solid red;
-  // background-color: white;
+border:1px solid red;
+  background-color: rgba(0,0,0,0.5);
   // padding: 60px 20px 40px;
   // border-radius: 6px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; 
 `;
 const ScratchCard = styled.canvas`
   position: absolute;
   top: 0;
   zIndex:10;
+  width:100%;
+   height: 100%;
 `;
 const Cross = styled.div`
   position: absolute;
@@ -260,6 +264,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
 
 
   return (
+   
     <MainDiv>      
     <div style={{
       position: "relative",
@@ -326,7 +331,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
       
       </ScratchCard>
       </div>
-      </MainDiv>
+      </MainDiv>      
   );
 }
 
