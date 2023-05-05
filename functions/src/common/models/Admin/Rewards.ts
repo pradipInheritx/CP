@@ -25,12 +25,17 @@ type Card = {
 }
 export const createAlbum = async (req: any, res: any) => {
     try {
-        const { albumName, setQunatity }: Album = req.body
+        const { albumName, setQunatity, setName, sequence } = req.body
 
         const newAlbum: Album = {
             albumName,
             setQunatity
         }
+        const newSet: Sets = {
+            setName,
+            sequence
+        };
+
         const checkAlbums = await firestore()
             .collection("nftGallery")
             .where("albumName", "==", albumName)
@@ -44,12 +49,17 @@ export const createAlbum = async (req: any, res: any) => {
             });
         }
 
-        const addQuery = await firestore().collection("nftGallery").add(newAlbum)
+        (await firestore().collection("nftGallery").add(newAlbum)).collection("setDetails").add(newSet) // create Album only
+        // await firestore()
+        //     .collection("nftGallery")
+        //     .doc(addAlbumQuery.id)
+        //     .collection("setDetails")
+        //     .add(newSet);   // create sets only
 
         res.status(200).send({
             status: true,
-            message: "New album created.",
-            result: { uid: addQuery.id, ...newAlbum },
+            message: "New album created",
+            result: { ...newAlbum, setDetails: newSet },
         });
 
     } catch (error) {
@@ -62,35 +72,6 @@ export const createAlbum = async (req: any, res: any) => {
     }
 };
 
-export const createSet = async (req: any, res: any) => {
-    try {
-        const { albumId, setName, sequence } = req.body
-
-        const newSet: Sets = {
-            setName,
-            sequence
-        };
-
-        const addSetDetails = await firestore()
-            .collection("nftGallery")
-            .doc(albumId)
-            .collection("setDetails")
-            .add(newSet);
-
-        res.status(200).send({
-            status: true,
-            message: "New album created.",
-            result: { uid: addSetDetails.id, ...newSet },
-        });
-    } catch (error) {
-        errorLogging("createSet", "ERROR", error);
-        res.status(500).send({
-            status: false,
-            message: "Something went wrong in server",
-            result: error,
-        });
-    }
-}
 // generate serial number
 export const generateSerialNumber = async (
     albumId: number,
