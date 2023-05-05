@@ -2,15 +2,17 @@ import { firestore } from "firebase-admin";
 
 import { uploadImage } from "../Reward";
 
-
-type Album = {
-    albumName: String;
+interface Sets {
+    setName: string;
+    sequence: string
+}
+interface Album {
+    albumName: string;
+    imageUrl: string;
+    videoUrl: string;
     setQunatity: number;
 }
-type Sets = {
-    setName: string;
-    sequence: number
-}
+
 type Card = {
     albumId: string;
     setId: String;
@@ -25,16 +27,17 @@ type Card = {
 }
 export const createAlbum = async (req: any, res: any) => {
     try {
-        const { albumName, setQunatity, setName, sequence } = req.body
+        const { albumName, setQunatity, setDetails, imageUrl,
+            videoUrl } = req.body
 
         const newAlbum: Album = {
             albumName,
-            setQunatity
+            setQunatity,
+            // setDetails,
+            imageUrl,
+            videoUrl
         }
-        const newSet: Sets = {
-            setName,
-            sequence
-        };
+        const newSets: Sets[] = setDetails
 
         const checkAlbums = await firestore()
             .collection("nftGallery")
@@ -49,17 +52,22 @@ export const createAlbum = async (req: any, res: any) => {
             });
         }
 
-        (await firestore().collection("nftGallery").add(newAlbum)).collection("setDetails").add(newSet) // create Album only
-        // await firestore()
-        //     .collection("nftGallery")
-        //     .doc(addAlbumQuery.id)
-        //     .collection("setDetails")
-        //     .add(newSet);   // create sets only
+        if (setDetails.length != setQunatity) {
+            return res.status(400).send({
+                status: true,
+                message: "Please,match set's quantity according to album's sets quantity",
+                result: null,
+            });
+        }
+        const addAlbumQuery = await firestore().collection("nftGallery").add(newAlbum)
 
+        newSets.forEach(async (set: Sets) => {
+            await firestore().collection("nftGallery").doc(addAlbumQuery.id).collection("setDetails").add(set)
+        })
         res.status(200).send({
             status: true,
             message: "New album created",
-            result: { ...newAlbum, setDetails: newSet },
+            result: { ...newAlbum, setDetails: newSets },
         });
 
     } catch (error) {
