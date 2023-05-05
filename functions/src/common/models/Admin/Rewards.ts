@@ -25,12 +25,17 @@ type Card = {
 }
 export const createAlbum = async (req: any, res: any) => {
     try {
-        const { albumName, setQunatity }: Album = req.body
+        const { albumName, setQunatity, setName, sequence } = req.body
 
         const newAlbum: Album = {
             albumName,
             setQunatity
         }
+        const newSet: Sets = {
+            setName,
+            sequence
+        };
+
         const checkAlbums = await firestore()
             .collection("nftGallery")
             .where("albumName", "==", albumName)
@@ -44,12 +49,17 @@ export const createAlbum = async (req: any, res: any) => {
             });
         }
 
-        const addQuery = await firestore().collection("nftGallery").add(newAlbum)
+        (await firestore().collection("nftGallery").add(newAlbum)).collection("setDetails").add(newSet) // create Album only
+        // await firestore()
+        //     .collection("nftGallery")
+        //     .doc(addAlbumQuery.id)
+        //     .collection("setDetails")
+        //     .add(newSet);   // create sets only
 
         res.status(200).send({
             status: true,
-            message: "New album created.",
-            result: { uid: addQuery.id, ...newAlbum },
+            message: "New album created",
+            result: { ...newAlbum, setDetails: newSet },
         });
 
     } catch (error) {
@@ -62,35 +72,6 @@ export const createAlbum = async (req: any, res: any) => {
     }
 };
 
-export const createSet = async (req: any, res: any) => {
-    try {
-        const { albumId, setName, sequence } = req.body
-
-        const newSet: Sets = {
-            setName,
-            sequence
-        };
-
-        const addSetDetails = await firestore()
-            .collection("nftGallery")
-            .doc(albumId)
-            .collection("setDetails")
-            .add(newSet);
-
-        res.status(200).send({
-            status: true,
-            message: "New album created.",
-            result: { uid: addSetDetails.id, ...newSet },
-        });
-    } catch (error) {
-        errorLogging("createSet", "ERROR", error);
-        res.status(500).send({
-            status: false,
-            message: "Something went wrong in server",
-            result: error,
-        });
-    }
-}
 // generate serial number
 export const generateSerialNumber = async (
     albumId: number,
@@ -106,10 +87,68 @@ export const generateSerialNumber = async (
     }
     return serialNumber;
 };
+
+
+// Get all sets
+const fetchAllSet = async (getAlbumDoc: any) => {
+    return new Promise((resolve, reject) => {
+        let test: any = [];
+        getAlbumDoc.map(async (data: any) => {
+            const setAry: any = []
+
+            const getSetQuery = await firestore()
+                .collection("nftGallery")
+                .doc(data.id)
+                .collection("setDetails")
+                .get()
+
+            getSetQuery.docs.forEach(async (snapshot) => {
+                setAry.push({ ...snapshot.data(), setId: snapshot.id })
+            })
+            test.push({ ...data.data(), setDetails: setAry })
+            resolve(test);
+        })
+
+    })
+}
 export const createCard = async (req: any, res: any) => {
     try {
         const { albumId, setId, cardName, cardStatus, cardType, noOfCardHolder, totalQuantity, cardImage } = req.body;
 
+        //Check Album is exist or not
+        const getAllAlbums: any = []
+        let getAllSets: any = [];
+        const getAlbumQuery = await firestore().collection("nftGallery").get();
+        const getAlbumDoc = getAlbumQuery.docs;
+        getAlbumDoc.map((album) => {
+            getAllAlbums.push({ albumId: album.id, ...album.data() })
+        })
+        const checkAlbums: any = getAllAlbums.find((album: any) => {
+            return album.albumId == albumId
+        })
+        if (!checkAlbums) {
+            return res.status(404).send({
+                status: true,
+                message: `This album does not exist: ${albumId}`,
+                result: null,
+            });
+        }
+
+        //Check set is exist or not
+        const getAllSetsQuery = await firestore().collection("nftGallery").doc(albumId).collection("setDetails").get();
+        getAllSetsQuery.docs.map((set: any) => {
+            getAllSets.push({ setId: set.id, ...set.data() })
+        })
+        const checkSets: any = getAllSets.find((set: any) => {
+            return set.setId == setId
+        })
+        if (!checkSets) {
+            return res.status(404).send({
+                status: true,
+                message: `This album does not exist: ${setId}`,
+                result: null,
+            });
+        }
         const newCard: Card = {
             albumId,
             setId,
@@ -148,39 +187,14 @@ export const createCard = async (req: any, res: any) => {
     }
 }
 
-const fetchAllSet = async (getAlbumDoc: any) => {
-    return new Promise((resolve, reject) => {
-        let test: any = [];
-        getAlbumDoc.map(async (data: any) => {
-            const setAry: any = []
-
-            const getSetQuery = await firestore()
-                .collection("nftGallery")
-                .doc(data.id)
-                .collection("setDetails")
-                .get()
-
-            getSetQuery.docs.forEach(async (snapshot) => {
-                setAry.push({ ...snapshot.data(), setId: snapshot.id })
-            })
-            console.log("sets >>>>>>>", setAry)
-            test.push({ ...data.data(), setDetails: setAry })
-            resolve(test);
-        })
-
-    })
-}
-
-
-
 export const getAllAlbums = async (req: any, res: any) => {
     try {
 
-        let test: any = [];
+        let getAllSets: any = [];
         const getAlbumQuery = await firestore().collection("nftGallery").get();
         const getAlbumDoc = getAlbumQuery.docs;
 
-        test = await fetchAllSet(getAlbumDoc)
+        getAllSets = await fetchAllSet(getAlbumDoc)
 
         const cards: any = [];
         const getAllCards = await firestore().collection("cardsDetails").get();
@@ -188,7 +202,7 @@ export const getAllAlbums = async (req: any, res: any) => {
             cards.push(snapshot.data())
         })
 
-        test.forEach((data: any) => {
+        getAllSets.forEach((data: any) => {
             data.setDetails.forEach((sets: any) => {
                 let matchedCards = cards.filter((data: any) => {
                     return sets.setId == data.setId

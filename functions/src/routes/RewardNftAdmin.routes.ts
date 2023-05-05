@@ -3,7 +3,6 @@ import { auth } from "../common/middleware/authentication";
 
 import {
   createAlbum,
-  createSet,
   createCard,
   getAllAlbums,
   getAllCards,
@@ -13,7 +12,6 @@ import {
 const rewardNftAdminRouter = Router();
 
 rewardNftAdminRouter.post("/createAlbum", auth, createAlbum);
-rewardNftAdminRouter.post("/createSet", auth, createSet);
 rewardNftAdminRouter.post("/createCard", auth, createCard);
 rewardNftAdminRouter.get("/getAllAlbums", auth, getAllAlbums);
 rewardNftAdminRouter.get("/getAllCards", auth, getAllCards);

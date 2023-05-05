@@ -10,8 +10,6 @@ import { auth } from "../common/middleware/authentication";
 const subAdminRouter = Router();
 
 subAdminRouter.get("/getUserTypeSettings", auth, getUserTypeSettings);
-
-
 subAdminRouter.put("/update/userTypeSettings", auth, updateUserTypeSettings);
 
 export default subAdminRouter;

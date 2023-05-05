@@ -24,7 +24,6 @@ export const getVotesAndReturnSettings = async (req: any, res: any) => {
 export const updateVotesAndReturnSettings = async (req: any, res: any) => {
     try {
         const {
-            settings,
             orderBookWeight,
             pctReferralActivity,
             signupReferral,
@@ -46,28 +45,16 @@ export const updateVotesAndReturnSettings = async (req: any, res: any) => {
             CPMReturnSuccess,
             givenCPM,
             maxVotes
-
         }
 
-        let getVoteAndReturnQuery: any;
-        if (settings == "CPMSettings") {
-            getVoteAndReturnQuery = await firestore()
-                .collection("settings")
-                .doc("settings")
-                .update(settings, firestore.FieldValue.arrayUnion(CPMSettings));
-        }
-        else {
-            getVoteAndReturnQuery = await firestore()
-                .collection("settings")
-                .doc("settings")
-                .update(settings, firestore.FieldValue.arrayUnion(VoteRules));
-        }
+        await firestore().collection("settings").doc("settings").update({ CPMSettings, VoteRules })
 
-
+        const getSettingsQuery = await firestore().collection("settings").doc("settings").get();
+        const getSettingsData = getSettingsQuery.data();
         res.status(200).send({
             status: true,
             message: "Vote and return settings data are successfully.",
-            result: getVoteAndReturnQuery,
+            result: getSettingsData,
         });
     } catch (error) {
         errorLogging("updateVotesAndReturnSettings", "ERROR", error);
