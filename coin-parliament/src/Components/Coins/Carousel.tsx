@@ -205,14 +205,21 @@ const symbol =message?.s?.slice(0, -4)
       if (symbol) {
         // @ts-ignore
         const dot = decimal[symbol]
+        for (let obj in  livePrice.current) {
+          // Update the property value of prop1 in each object
+          livePrice.current[obj].randomDecimal = livePrice.current[obj]?.randomDecimal ||5 + Math.random()<5?1:-1;
+        }
+        
         // @ts-ignore
         livePrice.current= {
           ...livePrice.current,
           [symbol]: {
             ...livePrice.current[symbol],
             price:Number(message?.c).toFixed(dot?.decimal || 2), 
+            randomDecimal:5
           },
         }
+
       // setCoinUpdated((prevCoins) => ({
       //   ...prevCoins,
       //   [symbol]: {
@@ -238,6 +245,7 @@ const symbol =message?.s?.slice(0, -4)
       ...livePrice.current['CRO'],
       // @ts-ignore
       price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2), 
+      randomDecimal:5
     },
   }
       // setCoinUpdated((prevCoins) => ({
