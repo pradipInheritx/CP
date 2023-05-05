@@ -190,9 +190,8 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
       element.setDetails.forEach((setDetail: any) => {
         console.log("SETDEAQILS >>>>>", setDetail);
         const setId = setDetail.setId;
+        console.log("CARDDEAQILS >>>>>", setDetail.cardsDetails);
         setDetail.cardsDetails.forEach((cardDetail: any) => {
-          console.log("CARDDEAQILS >>>>>", cardDetail);
-
           cards.push({
             albumId,
             albumName,
