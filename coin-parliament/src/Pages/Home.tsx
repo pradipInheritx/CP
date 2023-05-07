@@ -128,7 +128,7 @@ const Home = () => {
                 marginTop: "200px",
               }}
             >
-              {translate("Here's your chance to VOTE, IMPACT & EARN! ")}
+              {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
