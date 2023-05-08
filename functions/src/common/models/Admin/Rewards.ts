@@ -111,7 +111,7 @@ const fetchAllSet = async (getAlbumDoc: any) => {
                 setAry.push({ ...snapshot.data(), setId: snapshot.id })
             })
             Sets.push({ ...data.data(), setDetails: setAry })
-            resolve(test);
+            resolve(Sets);
         })
 
     })
@@ -367,10 +367,6 @@ export const updateAlbums = async (req: any, res: any) => {
             videoUrl
         }
         const updatedSets: Sets[] = setDetails
-
-
-        console.log("UpdateAlbums -------------", updatedAlbum)
-        console.log("UpdateAlbums -------------", setDetails)
 
         const checkAlbums = await firestore()
             .collection("nftGallery")
