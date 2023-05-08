@@ -10,10 +10,10 @@ import AppContext from "../../Contexts/AppContext";
 import Minting from "./Minting";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { useTranslation } from "../../common/models/Dictionary";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NotificationContext from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
-import { isV1 } from "../App/App";
+import { isV1 ,ZoomCss} from "../App/App";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import animation from "./Comp.json";
@@ -26,6 +26,7 @@ import { texts } from "../LoginComponent/texts";
 import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
 import AnimationCard from "./Animation/AnimationCard";
+
 
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
@@ -41,11 +42,18 @@ const RewardList = styled.p`
   color: #707070;
   cursor: pointer;
 `;
+type ZoomProps = {
+  inOutReward?:number
+};
+const ForZoom = styled.div`
+z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ?"2200":"" }`};  
+ ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss :""}`} 
+`;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes ,showBack,setShowBack ,showReward,setShowReward,} = useContext(AppContext);
+  const { userTypes ,showBack,setShowBack ,showReward,setShowReward,inOutReward,setInOutReward} = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
@@ -147,7 +155,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
                 {" "}
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
-              <div style={{ marginTop: "7px" }}>
+              <ForZoom {...{inOutReward}} style={{ marginTop: "7px" }}>
                 {" "}
                 {/* <PAXCard
                   walletId={userInfo?.wallet || ""}
@@ -158,9 +166,10 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
                   walletId={userInfo?.wallet || ""}
                   rewardTimer={rewardTimer}
                   // @ts-ignore
-                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                  PAX={userInfo?.rewardStatistics?.diamonds|| 0  }
+                  // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
                 />
-              </div>
+              </ForZoom>
             </div>
             {/* @ts-ignore */}
             <div style={{ marginLeft: "10px" }}>
@@ -208,15 +217,18 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
               md={6}
               className='d-flex flex-column flex-md-column-reverse'
             >
-                <div>                  
+                <ForZoom 
+                  {...{inOutReward}}
+                >                  
                   <PAXCard                  
                     walletId={userInfo?.wallet || ""}
                     rewardTimer={rewardTimer}
                   // @ts-ignore
-                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                    PAX={userInfo?.rewardStatistics?.diamonds || 0 }
+                    // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
                 {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
-              </div>
+              </ForZoom>
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>

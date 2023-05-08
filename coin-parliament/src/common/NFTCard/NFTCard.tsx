@@ -17,24 +17,26 @@ type MintingProps = {
 const MainDiv = styled.div`
   // display: none;
   opacity: 1;
-   width: 100%;
-   height: 150vh;
   min-width: 300px;
   min-height: 300px;
   position: fixed;
   top:0;
+  width: 100%;
+  height: 150vh;
   left: 50%;
   transform: translate(-50%, -20%);  
   // top: 25vh; left: 40%;
-  z-index: 101;
+  z-index: 2200;
   transition: opacity .3s;
-border:1px solid red;
-  background-color: rgba(0,0,0,0.5);
+// border:1px solid red;
+  background-color: rgba(0,0,0,0.8);
   // padding: 60px 20px 40px;
   // border-radius: 6px;
   display: flex;
   justify-content: center;
   align-items: center; 
+transition:  all 1s ease;
+
 `;
 const ScratchCard = styled.canvas`
   position: absolute;
@@ -60,6 +62,8 @@ const Cross = styled.div`
   background-color:#5d49df;
   color:white;
   font-size:15px;
+
+
 `;
 
 
@@ -99,7 +103,11 @@ useEffect(() => {
   console.log(context,"context")
   context.fillStyle = "#5d49df";
   context.fillRect(0, 0, WIDTH, HEIGHT);
-  context.font = "Scratch";
+
+  context.fillStyle = "#fff";
+  context.font = "30px Helvetica";
+  context.fillText("Scratch", WIDTH/3 , 160);
+  
     context.lineWidth = window.screen.width<768? 10 :50;
     context.lineJoin = "brush";
     return () => {
@@ -121,11 +129,12 @@ useEffect(() => {
       document.removeEventListener("touchmove", handleTouchMove);
     };
   }, [isDrawing]);
+
   const scratchStart = (e: any) => {
     console.log('eventmobile',e)
     // console.log(scratchStart,"scratchStartWork")
     const { layerX,offsetX, layerY ,offsetY} = e.nativeEvent;    
-    setisDrawing(true);
+    setisDrawing(true);    
     setStartX(offsetX || layerX);
     setStartY(offsetY || layerY);
     setScratchShound(true)
@@ -187,8 +196,9 @@ useEffect(() => {
 console.log(offsetX,offsetY, e,"contextCheck")
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
-    context.moveTo(startX,startY);
-    context.lineTo(offsetX || layerX , offsetY || layerY);
+    // context.moveTo(startX,startY);
+    // context.lineTo(offsetX || layerX , offsetY || layerY);
+    context.arc(offsetX, offsetY, 10, 0, Math.PI * 2);
     context.closePath();
     context.stroke();
     

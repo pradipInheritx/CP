@@ -116,7 +116,7 @@ const Profile = () => {
   };
 
   
-  return user ? (
+  return user ? (    
     <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
         // <Container className="py-3" fluid>
@@ -278,7 +278,8 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </PageContainer>
+      </PageContainer>
+      
   ) : (
     <div
       className='d-flex justify-content-center align-items-center'
