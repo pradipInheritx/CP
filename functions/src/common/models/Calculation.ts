@@ -363,55 +363,55 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         if (eachUser.total >= eachUserType.minVote && leader <= userLengthForThisUserType) {
           eachUser.status = eachUserType.name;
           leaderStatus.push(eachUser);
+          const userDoc = await firestore()
+            .collection("users")
+            .doc(eachUser.userId)
+            .get(); // Get Previous Status Of User
+          await sendNotificationForTitleUpgrade(eachUser, userDoc); // Send Notification To User
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
             .set({ status: eachUserType }, { merge: true });
+
           leaders.splice(leader, 1)
         }
       }
     }
-    await sendNotificationForTitleUpgrade(leaderStatus)
+
     return await firestore()
       .collection("stats")
       .doc("leaders")
       .set({ leaders: leaderStatus }, { merge: true });
   };
 
-export const sendNotificationForTitleUpgrade = async (leaderStatus: any) => {
-  for (let leader = 0; leader < leaderStatus.length; leader++) {
-    const eachUser = leaderStatus[leader];
-    const userDoc = await firestore()
-      .collection("users")
-      .doc(eachUser.userId)
-      .get();
-    const { token } = userDoc.data() || {};
-    if (token) {
-      const body = "You just earned a Parliament skill badge! Who's next?";
+export const sendNotificationForTitleUpgrade = async (eachUser: any, userDoc: any) => {
+  const { token, status } = userDoc.data() || {};
+  if (token && (status.name !== eachUser.status)) {
+    const body = "You just earned a Parliament skill badge! Who's next?";
 
-      const message: messaging.Message = {
-        token,
-        notification: {
-          title: "You just earned a Parliament skill badge! Who's next?",
-          body,
-        },
-        webpush: {
-          headers: {
-            Urgency: "high",
-          },
-          fcmOptions: {
-            link: "#", // TODO: put link
-          },
-        },
-      };
-      await sendNotification({
-        token,
-        message,
-        body,
+    const message: messaging.Message = {
+      token,
+      notification: {
         title: "You just earned a Parliament skill badge! Who's next?",
-        id: eachUser.userId,
-      });
-    }
+        body,
+      },
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: "#", // TODO: put link
+        },
+      },
+    };
+    console.info("Send Notification To User", "Status", status.name, "eachUser.status", eachUser.status)
+    await sendNotification({
+      token,
+      message,
+      body,
+      title: "You just earned a Parliament skill badge! Who's next?",
+      id: eachUser.userId,
+    });
   }
 }
 
