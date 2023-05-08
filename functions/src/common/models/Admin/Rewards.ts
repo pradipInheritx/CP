@@ -111,7 +111,7 @@ const fetchAllSet = async (getAlbumDoc: any) => {
                 setAry.push({ ...snapshot.data(), setId: snapshot.id })
             })
             Sets.push({ ...data.data(), setDetails: setAry })
-            resolve(test);
+            resolve(Sets);
         })
 
     })
@@ -368,10 +368,6 @@ export const updateAlbums = async (req: any, res: any) => {
         }
         const updatedSets: Sets[] = setDetails
 
-
-        console.log("UpdateAlbums -------------", updatedAlbum)
-        console.log("UpdateAlbums -------------", setDetails)
-
         const checkAlbums = await firestore()
             .collection("nftGallery")
             .doc(albumId)
@@ -522,7 +518,7 @@ export const deleteCard = async (req: any, res: any) => {
     try {
         const { cardId } = req.params
 
-        await firestore().collection("nftGallery").doc(cardId).delete();
+        await firestore().collection("cardsDetails").doc(cardId).delete();
 
         res.status(200).send({
             status: true,
