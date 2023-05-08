@@ -522,7 +522,7 @@ export const deleteCard = async (req: any, res: any) => {
     try {
         const { cardId } = req.params
 
-        await firestore().collection("nftGallery").doc(cardId).delete();
+        await firestore().collection("cardsDetails").doc(cardId).delete();
 
         res.status(200).send({
             status: true,
