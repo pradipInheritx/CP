@@ -42,7 +42,7 @@ const PAXCard = ({ walletId, PAX ,rewardTimer}: PAXCardProps) => {
   const {showReward,setShowReward,setHeaderExtraVote,rewardExtraVote,setRewardExtraVote, inOutReward,setInOutReward} = useContext(AppContext);
   console.log(showReward,"CheckshowReward")
   useEffect(() => {
-    prevCountRef.current = PAX ; 
+    prevCountRef.current = PAX ;
   }, [])
   
   console.log(rewardExtraVote,"secondRewardExtraVotes")
@@ -63,15 +63,15 @@ const PAXCard = ({ walletId, PAX ,rewardTimer}: PAXCardProps) => {
           >
             <div>
               <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
-                <CountUp start={prevCountRef.current} end={PAX && PAX +1 -1} duration={3}
+                {inOutReward == 1 && showReward ==1 ? <CountUp start={prevCountRef.current} end={PAX &&PAX} duration={5}
                   onEnd={() => {      
-                    setTimeout(() => {  
-                      setInOutReward((prev: number) => { 
+                    // setTimeout(() => {  
+                                          
+                    // }, 1000);
+                    setInOutReward((prev: number) => { 
                         console.log(prev,"showRewardCheck")
                       return prev==1?2:prev
-                    });                    
-                    }, 1000);
-                    
+                    });
 
                     setTimeout(() => {  
                       
@@ -79,7 +79,7 @@ const PAXCard = ({ walletId, PAX ,rewardTimer}: PAXCardProps) => {
                       
                       return prev==1?2:prev
                     })                                   
-                    }, 4000);
+                    }, 1000);
                             
                     setTimeout(() => {
                       setRewardExtraVote((prev: number) => {                  
@@ -91,7 +91,7 @@ const PAXCard = ({ walletId, PAX ,rewardTimer}: PAXCardProps) => {
                       })                      
                       return prev
                     })     
-                    },8000);
+                    },3000);
                     
                     // setHeaderExtraVote((prev: number) => {                      
                     //   console.log(rewardExtraVote,"secondRewardExtraVotes2")                    
@@ -99,7 +99,8 @@ const PAXCard = ({ walletId, PAX ,rewardTimer}: PAXCardProps) => {
                     // })                    
                   }
                   }
-                />
+                /> :
+                PAX && PAX}
               </span>
               {/* <span className="cp_PAX" >PTS</span> */}
             </div>

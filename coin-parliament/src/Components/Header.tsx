@@ -150,7 +150,6 @@ transition:  all 1s ease;
 
 const ForZoom = styled.div`
  ${(props: ZoomProps) => `${props.showReward == 2  &&  props.inOutReward == 2 ? ZoomCss :""}`} 
-
 `;
 
 export const OuterContainer = styled.div`
@@ -462,11 +461,12 @@ console.log('votenumber',voteNumber, Number(voted))
                 >
                 {user?.uid && !login  ? (
                   <div
-                    className={`${showReward == 2 && inOutReward == 2? '' :"w-100"} d-flex`}
+                    // className={`${showReward == 2 && inOutReward == 2? '' :"w-100"} d-flex`}
+                    className="d-flex"
                     style={{
                       position: "relative",
-                      width: `${showReward == 2 && inOutReward == 2 && "60%" }`,
-
+                      width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
+                      transition:`width 1s ease;`
                     //   transform: `${showReward == 2 && "scale(1.1)"}`,
                     // marginTop: `${showReward == 2 && "50px"}`
                     
@@ -542,14 +542,19 @@ console.log('votenumber',voteNumber, Number(voted))
                                       
                                   onEnd={() =>
                                   {
-                                    setTimeout(() => {                                      
+                                  setInOutReward((prev: number) => { 
+                                        console.log(prev,"showRewardCheck")
+                                              return prev==2?3:prev
+                                      });
+
+                                    // setTimeout(() => {                                      
                                       setHeaderExtraVote((prev:number) => {
                                         if (prev!=0) {
                                           setShowReward(3)
                                         }
                                         return prev
                                       })
-                                    }, 2000);
+                                    // }, 100);
                                     // setShowReward((prev: number) => {                                            
                                     //   if (prev==2) {                                        
                                     //     return  3                    
@@ -558,8 +563,8 @@ console.log('votenumber',voteNumber, Number(voted))
                                   }
                                   }                                
                                 />:
-                                      <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
-                                    
+                                      // <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                    voteNumber && voteNumber + headerExtraVote
                                     }
                                     
                                  {" "}
@@ -739,8 +744,12 @@ console.log('votenumber',voteNumber, Number(voted))
                                   }}
                                   
                                   onEnd={() =>
-                                  {                                                                        
-                                    setTimeout(() => {
+                                  {  
+                                    setInOutReward((prev: number) => { 
+                                        console.log(prev,"showRewardCheck")
+                                              return prev==2?3:prev
+                                      });
+                                    // setTimeout(() => {
                                     setHeaderExtraVote((prev:number) => {
                                       if (prev!=0) {
                                         setShowReward((prev: number) =>{
@@ -749,7 +758,7 @@ console.log('votenumber',voteNumber, Number(voted))
                                       }
                                       return prev
                                     })  
-                                    }, 2000);
+                                    // }, 500);
                                     // setTimeout(() => {
                                     //   setInOutReward((prev: number) =>{
                                     //       return prev == 2 ? 3 : prev
@@ -764,7 +773,9 @@ console.log('votenumber',voteNumber, Number(voted))
                                   }
                                   }                                
                                 />:
-                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3}/>}
+                                    // <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                    voteNumber && voteNumber + headerExtraVote
+                                  }
                                {" "}
                                 votes left
                           </span></>}

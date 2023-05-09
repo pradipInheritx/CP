@@ -21,13 +21,16 @@ const MainDiv = styled.div`
   min-height: 300px;
   position: fixed;
   top:0;
+  left:0;
+  right:0;
+  bottom:0;
   width: 100%;
-  height: 150vh;
-  left: 50%;
-  transform: translate(-50%, -20%);  
+  height: 100vh;
+  // left: 50%;
+  // transform: translate(-50%, -20%);  
   // top: 25vh; left: 40%;
   z-index: 2200;
-  transition: opacity .3s;
+  // transition: opacity .3s;
 // border:1px solid red;
   background-color: rgba(0,0,0,0.8);
   // padding: 60px 20px 40px;
@@ -35,7 +38,7 @@ const MainDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center; 
-transition:  all 1s ease;
+transition:  opacity 1s ease;
 
 `;
 const ScratchCard = styled.canvas`

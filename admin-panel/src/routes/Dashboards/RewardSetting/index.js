@@ -20,8 +20,17 @@ const RewardSettingModule = () => {
  
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
+
+  const [rewardCmpInfo, setRewardCmpInfo] = useState([{
+  0: {
+    cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+    extraVotePickFromRange: [1,5] ,
+    diamondsPickFromRange: [1, 3],
+  },
+  }]);
+
   const [filterOptions, setFilterOptions] = React.useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');  
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   
   const { RewardSettingDetelis } = useSelector(({ RewardSetting }) => RewardSetting);  
@@ -75,7 +84,7 @@ const RewardSettingModule = () => {
               {/* <Box className={classes.authContent}> */}
          <form className='' style={{ display: "flex" ,justifyContent: "center",}}>
           <div className='' style={{ marginTop:"10px"}}>   
-        <label htmlFor="">Game Points</label>    
+        {/* <label htmlFor="">Game Points</label>    
             <Box style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }} >              
               <TextField
                 style={{ width: "40%" }} 
@@ -158,8 +167,16 @@ const RewardSettingModule = () => {
               helperText={votingBoosterError}
               error={votingBoosterError !== ''}
               />                                                                                                                                                                                                         
-            </Box>
-           
+            </Box> */}
+            {
+              rewardCmpInfo?.map((item) => {
+                return (<>
+                  <label htmlFor="">{}</label>
+                </>)
+              })
+           }
+            
+
           <Box marginY={"10px"}  display="flex" alignItems="center" justifyContent="space-around" mb={5}>
               <Button
                 type="reset" 

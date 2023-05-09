@@ -170,6 +170,12 @@ const dashboardsMenus = [
     type: "item",
     link: "/dashboard/returnsettings"
   },
+  {    
+    name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/rewardnft"
+  },
   {
     name: <IntlMessages id={"sidebar.dashboard.crypto"} />,
     icon: <MonetizationOn />,

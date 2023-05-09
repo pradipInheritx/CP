@@ -118,7 +118,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
     <div>
       <Container >        
         {/* @ts-ignore */}
-        {!!rewardTimer && showReward==3 && (        
+        {!!rewardTimer && showReward==3 && inOutReward==3 && (        
           // <AnimationReward
           //   setRewardTimer={setRewardTimer}
           //   rewardTimer={rewardTimer}
