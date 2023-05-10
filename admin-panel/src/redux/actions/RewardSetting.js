@@ -1,5 +1,5 @@
 import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from 'axios';
+import axios from '../../services/auth/jwt/config';
 import {
   
 GET_REWARDSETTING,
@@ -8,16 +8,17 @@ EDIT_REWARDSETTING
 
 
 
-export const getRewardSetting = (filterOptions = [], searchTerm = '', callbackFun) => {
+export const getRewardSetting = () => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/users', { params: { filterOptions, searchTerm } })
+      .get('RewardsDistribution/GetAllRewardsDistribution')
       .then(data => {
         if (data.status === 200) {
+          console.log(data.data.result,"data.result")
           dispatch(fetchSuccess());
-          dispatch({ type: GET_REWARDSETTING, payload: data.data });
-          if (callbackFun) callbackFun(data.data);
+          dispatch({ type: GET_REWARDSETTING, payload: data.data.result});
+          // if (callbackFun) callbackFun(data.data);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
@@ -28,16 +29,16 @@ export const getRewardSetting = (filterOptions = [], searchTerm = '', callbackFu
   };
 };
 
-export const updateRewardSetting = (user, callbackFun) => {
+export const updateRewardSetting = (finalRewardInfo,) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/users', user)
+      .post('RewardsDistribution/createRewardsDistribution', {...finalRewardInfo})
       .then(data => {
         if (data.status === 200) {
-          dispatch(fetchSuccess('Selected user was updated successfully.'));
-          dispatch({ type: EDIT_REWARDSETTING, payload: data.data });
-          if (callbackFun) callbackFun(data.data);
+          dispatch(fetchSuccess(data.data.message));
+
+          // dispatch({ type: EDIT_REWARDSETTING, payload: data.data.result });          
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
