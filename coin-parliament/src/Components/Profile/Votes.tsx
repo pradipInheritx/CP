@@ -192,25 +192,10 @@ const callbackFun=()=>{
 
   return (
     <Tabs
-      defaultActiveKey="coins"
+      defaultActiveKey="pairs"
       id="profile-votes"
       onSelect={() => setIndex(0)}
       tabs={[
-        
-        {
-          eventKey: "coins",
-          title: capitalize(translate(`${texts.Coin}`)),
-          pane: (
-            <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.coins.votes.map((v, i) => (
-                <div className="mb-2" key={i}>
-                  <MyVotedCard v={v} coinSocketData={coinSocketData} callbackFun={callbackFun}/>
-                </div>
-              ))}
-              {getButtons(votes.coins)}
-            </div>
-          ),
-        },
         {
           eventKey: "pairs",
           title: capitalize(translate(`${texts.Pair}`)),
@@ -225,6 +210,20 @@ const callbackFun=()=>{
             </div>
           ),
         },
+        {
+          eventKey: "coins",
+          title: capitalize(translate(`${texts.Coin}`)),
+          pane: (
+            <div className="d-flex justify-content-center align-items-center flex-column">
+              {votes.coins.votes.map((v, i) => (
+                <div className="mb-2" key={i}>
+                  <MyVotedCard v={v} coinSocketData={coinSocketData} callbackFun={callbackFun}/>
+                </div>
+              ))}
+              {getButtons(votes.coins)}
+            </div>
+          ),
+        }
       ]}
     />
   );

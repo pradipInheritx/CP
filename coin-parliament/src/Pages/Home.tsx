@@ -112,6 +112,7 @@ const Home = () => {
                 position: "relative",
                 // marginTop: "200px",
               }}
+              className="mb-4"
             >
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
@@ -141,14 +142,23 @@ const Home = () => {
                 // marginTop: "200px",
                 fontSize: "30px",
               }}
+              className="mb-4"
             >
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
             </>
           )}
-         
-          <Coins
+          <Pairs
+            onFavClick={async (...args) => {
+              if (user) {
+                await calcFavorites(...args);
+              } else {
+                showModal(<NotLoggedInPopup />);
+              }
+            }}
+          />
+          {/* <Coins
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
@@ -158,7 +168,7 @@ const Home = () => {
                 // showModal(<NotLoggedInPopup/>);
               }
             }}
-          />
+          /> */}
 
         
        
@@ -174,12 +184,23 @@ const Home = () => {
           >
             {translate("")}
           </H2>
-          <Pairs
+          {/* <Pairs
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
               } else {
                 showModal(<NotLoggedInPopup />);
+              }
+            }}
+          /> */}
+           <Coins
+            onFavClick={async (...args) => {
+              if (user) {
+                await calcFavorites(...args);
+              } else {
+                setLoginRedirectMessage("add coin to favorites");
+                setLogin(true);
+                // showModal(<NotLoggedInPopup/>);
               }
             }}
           />
