@@ -191,7 +191,7 @@ function Speed(props: SpeedProps) {
               }}
               r={10}
             />
-              <motion.polyline className="fill-gray-700" points={needle.points} />
+              <motion.polyline className="fill-gray-700" points={needle.points}  />
            
           </g>
         </svg>
