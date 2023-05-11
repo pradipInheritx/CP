@@ -63,11 +63,13 @@ class Calculation {
   private db: firestore.Firestore;
   private readonly price: number | number[];
   private readonly id: string;
+  private readonly userId: string;
 
   constructor(
     voteResult: VoteResultProps,
     price: number | number[],
-    id: string
+    id: string,
+    userId: string
   ) {
     console.log("voteResult =>", voteResult);
 
@@ -75,6 +77,7 @@ class Calculation {
     this.price = price;
     this.id = id;
     this.db = firestore();
+    this.userId = userId;
   }
 
   async calc(
@@ -100,12 +103,12 @@ class Calculation {
 
   async giveAway(): Promise<void> {
     try {
-      const { voteResult } = this;
+      const { voteResult, userId } = this;
       const settings = await firestore()
         .collection("settings")
         .doc("settings")
         .get();
-      const ref = this.db.collection("users").doc(voteResult.userId);
+      const ref = this.db.collection("users").doc(userId);
       const user = (await ref.get()).data() as UserProps;
       const voteStatistics: VoteStatistics =
         user.voteStatistics || ({} as VoteStatistics);
@@ -134,13 +137,15 @@ class Calculation {
         const refer = new Refer(user.parent, "");
         await refer.payParent(score);
         //Send Notification For CMP Change
-        console.log("send Notification for CPM")
         const getVotesQuery = await firestore()
           .collection("votes")
           .doc(this.id)
           .get();
         const getVote: any = getVotesQuery.data();
-        await voteExpireAndGetCpmNotification(voteResult.userId, score, getVote.coin)
+        console.log("send Notification for CPM")
+        await voteExpireAndGetCpmNotification(userId, score, getVote.coin)
+
+
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);

@@ -95,12 +95,11 @@ function createArrayByPercentageForPickingTier(cmp: number) {
 //   return docs.data()?.cards || [];
 // }
 
-// get all collection data
-export async function getAllNftGallery() {
-  const snapshot = await firestore().collection("nftGallery").get();
+export async function getAllNftGalleryForCards() {
+  const snapshot = await firestore().collection("cardsDetails").get();
   const array: any = [];
   snapshot.forEach((doc) => {
-    array.push({ id: doc.id, ...doc.data() });
+    array.push(doc.data());
   });
   return array;
 }
@@ -176,35 +175,10 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
   try {
     console.log("PERCENTAGE ARR", percentageArr);
 
-    const nftGalleryData = await getAllNftGallery();
-
-    const cards: any = [];
-
-    console.info("nftGalleryData", nftGalleryData);
-
-    nftGalleryData.forEach((element: any) => {
-      const albumId = element.albumId;
-      const albumName = element.albumName;
-      const docId = element.id;
-      // console.log("ALBUMS IIIIIIIII>>>>>", element);
-      element.setDetails.forEach((setDetail: any) => {
-        console.log("SETDEAQILS >>>>>", setDetail);
-        const setId = setDetail.setId;
-        console.info("setId", setId)
-        console.log("CARDDEAQILS >>>>>", setDetail.cardsDetails);
-        setDetail.cardsDetails.forEach((cardDetail: any) => {
-          cards.push({
-            albumId,
-            albumName,
-            docId,
-            setId,
-            ...cardDetail,
-          });
-        });
-      });
-    });
+    const cards = await getAllNftGalleryForCards();
 
     const groupByType: any = groupBy(["cardType"]);
+    console.log("groupByType --------", groupByType);
     const cardsByTier: any = groupByType(cards);
     console.log("CARDS TIER ==>", cardsByTier);
     let selectedTier = getRandomSelectedTier(cardsByTier, percentageArr);
@@ -221,6 +195,7 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
     const pickedTierArray = cardsByTier[selectedCardTier];
     console.log("PICKED TIER ARRAY", pickedTierArray);
 
+    console.log("pickCardTierByPercentageArray Return Values -----------", { tierName: selectedCardTier, pickedTierArray })
     return { tierName: selectedCardTier, pickedTierArray };
   } catch (error) {
     console.info("ERROR:", "pickCardTierByPercentageArray", error)

@@ -176,6 +176,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
       valueVotingTime,
       expiration,
       timestamp,
+      userId
     } = requestBody;
 
     // Snapshot Get From ID
@@ -201,12 +202,13 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
       const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
       price = [Number(priceOne), Number(priceTwo)];
       console.info("Get Price", price)
-      const calc = new Calculation(vote, price, voteId);
+      const calc = new Calculation(vote, price, voteId, userId);
       await calc.calc(getVoteRef);
     } else {
+
       price = await getPriceOnParticularTime(coin1, timestamp);
       console.info("Get Price", price)
-      const calc = new Calculation(vote, Number(price), voteId);
+      const calc = new Calculation(vote, Number(price), voteId, userId);
       await calc.calc(getVoteRef);
     }
   } catch (error) {
