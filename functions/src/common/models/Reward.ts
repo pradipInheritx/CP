@@ -95,17 +95,6 @@ function createArrayByPercentageForPickingTier(cmp: number) {
 //   return docs.data()?.cards || [];
 // }
 
-// get all collection data
-export async function getAllNftGallery() {
-  const snapshot = await firestore().collection("nftGallery").get();
-  const array: any = [];
-  snapshot.forEach((doc) => {
-    array.push({ id: doc.id, ...doc.data() });
-  });
-  return array;
-}
-
-
 export async function getAllNftGalleryForCards() {
   const snapshot = await firestore().collection("cardsDetails").get();
   const array: any = [];
