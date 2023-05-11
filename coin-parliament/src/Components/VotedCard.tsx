@@ -289,11 +289,11 @@ const VotedCard = ({
             </div>
             <div>
               <RangeSilder
-              lastTenSec={lastTenSec}
-              vote={vote}
-              coins={coins}
-              symbol1={symbol1}
-              symbol2={symbol2}
+              //  lastTenSec={lastTenSec}
+              //  vote={vote}
+              //  coins={coins}
+              //  symbol1={symbol1}
+              //  symbol2={symbol2}
               />
             </div>
             

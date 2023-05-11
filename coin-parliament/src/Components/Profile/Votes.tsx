@@ -11,14 +11,14 @@ import Tabs from "./Tabs";
 import VotedCard from "./VotedCard";
 import { texts } from "../LoginComponent/texts";
 
-const getVotesFunc = httpsCallable<{ start: number; end: number; userId: string }, GetVotesResponse>(functions, "getVotes");
+const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const Votes = () => {
   const pageSize = useMemo(() => 3, []);
   const {user} = useContext(UserContext);
   const translate = useTranslation();
   const [index, setIndex] = useState(0);  
-  const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
+  // const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
   
   const [votes, setVotes] = useState<GetVotesResponse>({
     coins: {votes: [], total: 0},
@@ -62,19 +62,9 @@ const Votes = () => {
     })  
 
 let allCoinsPair= [...AllCoins,...AllPairs]
-    setAllCoinsPrais(allCoinsPair)
-  }, [votes])
-  
-  console.log(allCoinsPrais, "AllCoinsPrais")  
-  // const coin1 = `${coins && symbol1? coins[symbol1]?.symbol.toLowerCase() || "":""}`
-  // const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
-  // console.log(allCoinsPrais, "AllCoinsPrais")
-  
-   useEffect(() => {
-    // 
-    let promiseArray:any =[]
-     if (allCoinsPrais.length > 0) {
-       allCoinsPrais?.forEach((voteItem:any) => {
+let promiseArray:any =[]
+     if (allCoinsPair.length > 0) {
+      allCoinsPair?.forEach((voteItem:any) => {
         promiseArray.push(checkprice(voteItem))
         // checkprice(voteItem);
        })    
@@ -82,20 +72,19 @@ let allCoinsPair= [...AllCoins,...AllPairs]
      if (!promiseArray?.length) return
      Promise.all(promiseArray)
     .then(responses => {
-      // return Promise.all(responses.map((res,index) => {
-      //   console.error('promiseAllsuccess');
-      // }))
+      getVotes(index).then(void 0); 
     })
     .catch(error => {
       console.error('promiseAll',error);
     });
-     
-  }, [allCoinsPrais.length])
+  }, [votes?.coins?.total,votes?.pairs?.total,pageSize])
+  
+  
+  
   
 
 
   const checkprice = async (vote: any) => {
-    console.log(vote, "checkAllvote")
     const voteCoins = vote?.coin.split("-");
 const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
   const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
@@ -109,7 +98,7 @@ const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
         timestamp: Date.now()
     }).then((data:any)=>{
       if(data.data==null){
-          getVotes(index).then(void 0);     
+          // getVotes(index).then(void 0);     
       }
     }).catch((err:any )=> {
         if (err && err.message) {
@@ -203,25 +192,10 @@ const callbackFun=()=>{
 
   return (
     <Tabs
-      defaultActiveKey="coins"
+      defaultActiveKey="pairs"
       id="profile-votes"
       onSelect={() => setIndex(0)}
       tabs={[
-        
-        {
-          eventKey: "coins",
-          title: capitalize(translate(`${texts.Coin}`)),
-          pane: (
-            <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.coins.votes.map((v, i) => (
-                <div className="mb-2" key={i}>
-                  <MyVotedCard v={v} coinSocketData={coinSocketData} callbackFun={callbackFun}/>
-                </div>
-              ))}
-              {getButtons(votes.coins)}
-            </div>
-          ),
-        },
         {
           eventKey: "pairs",
           title: capitalize(translate(`${texts.Pair}`)),
@@ -236,6 +210,20 @@ const callbackFun=()=>{
             </div>
           ),
         },
+        {
+          eventKey: "coins",
+          title: capitalize(translate(`${texts.Coin}`)),
+          pane: (
+            <div className="d-flex justify-content-center align-items-center flex-column">
+              {votes.coins.votes.map((v, i) => (
+                <div className="mb-2" key={i}>
+                  <MyVotedCard v={v} coinSocketData={coinSocketData} callbackFun={callbackFun}/>
+                </div>
+              ))}
+              {getButtons(votes.coins)}
+            </div>
+          ),
+        }
       ]}
     />
   );

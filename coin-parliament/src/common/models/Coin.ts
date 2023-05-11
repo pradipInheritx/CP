@@ -8,7 +8,8 @@ export type Coin = {
   id: number;
   price: number;
   trend?: number;
-  CPMRangePercentage?: number
+  CPMRangePercentage?: number;
+  randomDecimal?:number;
 };
 
 export type CoinSnap = {

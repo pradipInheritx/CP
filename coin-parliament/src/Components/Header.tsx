@@ -364,13 +364,17 @@ console.log('votenumber',voteNumber, Number(voted))
               label: "Home",
             },
             {
-              href: "/coins",
-              label: "Coin Vote",
-            },
-            {
               href: "/pairs",
               label: "Pairs Vote",
             },
+            {
+              href: "/coins",
+              label: "Coin Vote",
+            },
+            // {
+            //   href: "/pairs",
+            //   label: "Pairs Vote",
+            // },
             {
               href: "/influencers",
               label: "Top Influencers",

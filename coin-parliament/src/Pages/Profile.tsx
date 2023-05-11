@@ -116,7 +116,7 @@ const Profile = () => {
   };
 
   
-  return user ? (    
+  return  (
     <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
         // <Container className="py-3" fluid>
@@ -278,16 +278,16 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      </PageContainer>
-      
-  ) : (
-    <div
-      className='d-flex justify-content-center align-items-center'
-      style={{ height: "100vh", width: "100vw" }}
-    >
-      <Spinner />
-    </div>
-  );
+    </PageContainer>
+  ) 
+  // : (
+  //   <div
+  //     className='d-flex justify-content-center align-items-center'
+  //     style={{ height: "100vh", width: "100vw" }}
+  //   >
+  //     <Spinner />
+  //   </div>
+  // );
 };
 
 export default Profile;

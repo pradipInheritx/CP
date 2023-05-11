@@ -192,6 +192,7 @@ const Card = ({
   const [zoom, setZoom] = useState(false)  
   const prevCountRef = useRef(currentPrice)
 
+console.log('reference',coins[symbol]?.randomDecimal)
   const OnlyCheckColor = () => {          
     // setInterval(() => {            
     if (coins[symbol]?.price == prevCountRef.current) {   
@@ -272,6 +273,7 @@ const Card = ({
       <Group3991>
         <Price {...{ single }}
         style={{color:`${changeColor}`}}
+        
         >{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
         {/* <Trend1 {...{single}}>
           <Trend num={coins[symbol]?.trend || 0}/>
