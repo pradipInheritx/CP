@@ -29,6 +29,7 @@ import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
 import { decimal } from "../Components/Profile/utils";
+// import Speedometer from "./Speedometer";
 
 export const Title = styled.h2`
   font: var(--font-style-normal) normal var(--font-weight-normal)
@@ -432,6 +433,8 @@ const calcVote = useCallback(async () => {
                           setpopUpOpen
                         }}
                       />
+
+                      {/* <Speedometer/> */}
 
                       { cpviData?.length && params?.id && (
                         graphLoading?  <CalculatingVotes/>: 

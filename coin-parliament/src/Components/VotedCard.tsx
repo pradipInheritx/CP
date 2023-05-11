@@ -268,7 +268,25 @@ const VotedCard = ({
           <div className="w-100 px-3">
             <div className="d-flex justify-content-center mb-1">
               <p style={{color:"#2D2C3C"}} className="poppins-normal-blackcurrant-14px mx-2 "> {row3} VOTE </p>
-              </div>
+            </div>
+            <div className="my-2">
+            <YourVote>YOUR CURRENT VOTE IMPACT</YourVote> 
+             
+            </div>            
+            <div>
+              <RangeSilder
+               lastTenSec={lastTenSec}
+               vote={vote}
+               coins={coins}
+               symbol1={symbol1}
+               symbol2={symbol2}
+              />
+            </div>
+            <div className="my-2">
+              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen} 
+                setLastTenSec={setLastTenSec}
+              />
+            </div>
             <BitcoinBTCBULL24H3864490
               className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
             >
@@ -278,24 +296,8 @@ const VotedCard = ({
               <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2?"You voted for ":"" }{ row1}</Row1>
               <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1>              
             </BitcoinBTCBULL24H3864490>
-            <div className="my-2">
-              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen} 
-                setLastTenSec={setLastTenSec}
-              />
-            </div>
-            <div className="my-2">
-            <YourVote>YOUR CURRENT VOTE IMPACT</YourVote> 
-             
-            </div>
-            <div>
-              <RangeSilder
-              //  lastTenSec={lastTenSec}
-              //  vote={vote}
-              //  coins={coins}
-              //  symbol1={symbol1}
-              //  symbol2={symbol2}
-              />
-            </div>
+            
+            
             
             {/* <div className="d-flex align-items-center justify-content-center w-100">
                

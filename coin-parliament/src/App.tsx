@@ -101,6 +101,7 @@ import { useWindowSize } from "./hooks/useWindowSize";
 import Votes from "./Components/Profile/Votes";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import FAQ from "./Pages/FAQ";
+import styled from "styled-components";
 import { myPages, quotes } from "./common/consts/contents";
 import Notifications from "./Components/Profile/Notifications";
 import Background from "./Components/Background";
@@ -139,10 +140,21 @@ const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMa
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 let ws:any;
-let socket:any;
+let socket: any;
+
+export const BackDiv = styled.div`
+// position:fixed;
+// border:1px solid red;
+// width:100%;
+// height:150vh;
+// background:"red";
+`;
+
+
 function App() {
+  document.body.classList.add('bg-Change');
   
-  
+  // document.body.style.zIndex = "400";
   const location = useLocation();
   const search = location.search;
   const pathname = location.pathname;
@@ -326,6 +338,7 @@ function App() {
   const [followerUserId,setFollowerUserId]=useState<string>('')
   const [showBack,setShowBack]=useState<any>(false)
   const [showReward,setShowReward]=useState<any>(0)
+  const [inOutReward,setInOutReward]=useState<any>(0)
   const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
   const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
@@ -976,7 +989,13 @@ useEffect(() => {
       <Spinner />
     </div>
   ) : (
-    <div>
+      <BackDiv
+        style={{
+        // border: "1px solid red",
+        // backgroundColor: "rgba(0,0,0,0.5)",
+      }}
+      >
+        <div>
       {enabled && (
         <NotificationContext.Provider
           value={{
@@ -1007,7 +1026,9 @@ useEffect(() => {
                   rewardExtraVote,
                   setRewardExtraVote,
                   headerExtraVote,
-                  setHeaderExtraVote,
+                    setHeaderExtraVote,
+                    inOutReward,
+                    setInOutReward,
                   showReward,
                   setShowReward,
                   showBack,
@@ -1561,8 +1582,9 @@ useEffect(() => {
             <Button type='submit'>Submit</Button>
           </Form>
         </Container>
-      )}
-    </div>
+          )}
+          </div>
+    </BackDiv>
   );
 }
 

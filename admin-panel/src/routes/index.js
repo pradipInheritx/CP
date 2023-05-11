@@ -18,7 +18,8 @@ import TourGuide from "./TourGuide";
 import CustomTimelines from "./views/CustomTimelines";
 import MaterialTimelines from "./views/MaterialTimelines";
 import Calendar from "./modules/Calendar";
-import UsersModule from "./modules/Users";
+// import UsersModule from "./modules/Users";
+
 import ResetPassword from "./Auth/ResetPassword";
 // import LayoutBuilder from './LayoutBuilder';
 
