@@ -101,6 +101,7 @@ class Calculation {
     await ref.update(this.voteResult);
   }
 
+
   async giveAway(): Promise<void> {
     try {
       const { voteResult, userId } = this;

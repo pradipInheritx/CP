@@ -95,14 +95,6 @@ function createArrayByPercentageForPickingTier(cmp: number) {
 //   return docs.data()?.cards || [];
 // }
 
-export async function getAllNftGalleryForCards() {
-  const snapshot = await firestore().collection("cardsDetails").get();
-  const array: any = [];
-  snapshot.forEach((doc) => {
-    array.push(doc.data());
-  });
-  return array;
-}
 
 // get collection data by document id
 async function getNftCollectionDataById(docId: any) {
@@ -144,6 +136,15 @@ async function getMultipleUsersByUserIds(userIds: Array<string>) {
   });
   console.log("USER >>>>>>>>", users);
   return users;
+}
+
+export async function getAllNftGalleryForCards() {
+  const snapshot = await firestore().collection("cardsDetails").get();
+  const array: any = [];
+  snapshot.forEach((doc) => {
+    array.push(doc.data());
+  });
+  return array;
 }
 
 /* const getAllNftGallery = (): any => async () => {
@@ -195,7 +196,6 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
     const pickedTierArray = cardsByTier[selectedCardTier];
     console.log("PICKED TIER ARRAY", pickedTierArray);
 
-    console.log("pickCardTierByPercentageArray Return Values -----------", { tierName: selectedCardTier, pickedTierArray })
     return { tierName: selectedCardTier, pickedTierArray };
   } catch (error) {
     console.info("ERROR:", "pickCardTierByPercentageArray", error)
