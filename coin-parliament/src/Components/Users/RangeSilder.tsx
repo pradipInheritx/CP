@@ -110,7 +110,7 @@ function Speed(props: SpeedProps) {
       <div className="BigDiv">
       <div className="textbox">
         <span className={value<40?"span low select":"span low"}>low</span>
-        <span className={value>40 && value<60?"span mid select":"span mid"}>mid</span>
+        <span className={value>=40 && value<=60?"span mid select":"span mid"}>mid</span>
         <span className={value>60?"span high select":"span high"}>high</span>
       </div>
       <div className="gauge">
@@ -245,7 +245,7 @@ const getBorderColor = () => {
         return false
       }
       let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
-      const newPairPrice = [(bothLivePrice[0] * decimal[symbol1].multiply - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange, (bothLivePrice[1] * decimal[symbol2].multiply - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange]
+      const newPairPrice = [(((bothLivePrice[0] * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange, (((bothLivePrice[1] * decimal[symbol2].multiply)+Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange]
       const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
       const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
 
@@ -284,9 +284,9 @@ const getBorderColor = () => {
         return false
       }
      
-      
+      // console.log('newprice',((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)))
 
-      const newPrice = ((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply) + randomDecimal) / priceRange
+      const newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply) ) / priceRange
 
         if (vote?.direction == 0) setPersentValue(50 + newPrice);
         else setPersentValue(50 - newPrice);

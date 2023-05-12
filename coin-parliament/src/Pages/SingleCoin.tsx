@@ -168,6 +168,7 @@ if (data?.result?.data[0].a){
         ['CRO']: {
           ...prevCoins['CRO'],
           price: data?.result?.data[0]?.a,
+          randomDecimal:5
         },
       }));
     }
@@ -398,7 +399,7 @@ const calcVote = useCallback(async () => {
                 />
               </CardContainer>
               <Container>
-                {canVote && (
+                {canVote  && (
                   <>{loading  ? (
                     <CalculatingVotes/>
                   ) : (

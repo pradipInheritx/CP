@@ -91,7 +91,7 @@ const CoinsForm = ({
           userId: user?.uid,
           voteTime:Date.now(),
           // @ts-ignore
-          valueVotingTime:coinUpdated[coin?.symbol]?.price,
+          valueVotingTime:coinUpdated[coin?.symbol]?.price + coinUpdated[coin?.symbol]?.randomDecimal,
           expiration:Date.now() + chosenTimeframe.seconds * 1000,
           voteId:`${coin.symbol}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps

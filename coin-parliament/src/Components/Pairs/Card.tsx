@@ -227,7 +227,7 @@ const CoinCard = ({
       <Group3991>
         <Price
           style={{color:`${color}`}}
-          {...{ single }}>{formatCurrency(coins[coin.symbol]?.price, precision[coin.symbol])}</Price>
+          {...{ single }}>{formatCurrency(coins[coin.symbol]?.price, precision[coin.symbol])}{ (coin.symbol!='BTC' && coin.symbol!='ETH') && coins[coin.symbol]?.randomDecimal}</Price>
       </Group3991>
     </div>}
   </LogoContainer>

@@ -71,6 +71,31 @@ const SinglePair = () => {
       return data;
     }
   }, [params?.id, voteId, vote,selectedTimeFrame]);
+  const updateRandomDecimal=()=>{
+    setCoinUpdated((prevCoins) => ({
+      ...prevCoins,
+      [symbol1]: {
+        ...prevCoins[symbol1],
+      
+        randomDecimal:(prevCoins[symbol1]?.randomDecimal ||5) + (Math.random()<5?-1:1)
+      },
+      [symbol2]: {
+        ...prevCoins[symbol2],
+      
+        randomDecimal:(prevCoins[symbol2]?.randomDecimal ||5) + (Math.random()<5?-1:1)
+      },
+    }));
+  }
+  useEffect(() => {
+    if(symbol1=='BTC'||symbol1=='ETH') return
+    const interval = setInterval(function () {
+      updateRandomDecimal()
+    }, 1500);
+  
+    return () => {
+     clearInterval(interval) 
+    }
+  }, [])
   useEffect(() => {
     if (!ws) return
     console.log('websocket connected')
@@ -87,6 +112,7 @@ const SinglePair = () => {
         [symbol]: {
           ...prevCoins[symbol],        
           price:Number(message?.c).toFixed(dot?.decimal || 2),
+          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol].price)?prevCoins[symbol].randomDecimal:5
         },
       }));
     }
@@ -106,6 +132,7 @@ if (data?.result?.data[0].a){
         ['CRO']: {
           ...prevCoins['CRO'],
           price: data?.result?.data[0]?.a,
+          randomDecimal:5
         },
       }));
     }
