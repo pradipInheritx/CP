@@ -81,18 +81,18 @@ function Speed(props: SpeedProps) {
           transition: all .3s;
         }
         .low {
-          top:50%;          
-          left: 14.5%;          
+          // top:50%;          
+          // left: 14.5%;          
           transform: rotate(275deg);          
         }
         .mid {
-          left: 51%;
+          // left: 51%;
           top: 0%;
           transform: translateX(-50%);
         }
         .high {
-          top:51%;          
-          right: 13.5%;          
+          // top:51%;          
+          // right: 13.5%;          
           transform: rotate(84deg);
         }
         .select {
@@ -109,9 +109,26 @@ function Speed(props: SpeedProps) {
       </style>
       <div className="BigDiv">
       <div className="textbox">
-        <span className={value<40?"span low select":"span low"}>low</span>
-        <span className={value>40 && value<60?"span mid select":"span mid"}>mid</span>
-        <span className={value>60?"span high select":"span high"}>high</span>
+          <span className={value < 40 ? "span low select" : "span low"}
+            style={{
+              top: window.screen.width > 767 ? "50%" : "43%",
+              left:window.screen.width > 767 ? "14.5%" : "14.5%"
+          }}
+          >low</span>
+          <span className={value > 40 && value < 60 ? "span mid select" : "span mid"}
+            style={{
+              top: window.screen.width > 767 ? "0.5%" : "1.5%",
+              left:window.screen.width > 767 ? "51%" : "51%"
+          }}
+          >mid</span>
+          <span className={value > 60 ? "span high select" : "span high"}
+            style={{
+              top: window.screen.width > 767 ? "51%" : "43%",
+              right: window.screen.width > 767 ? "13.5%" : "14.5%",
+              
+              
+          }}
+          >high</span>
       </div>
       <div className="gauge">
         <svg className="w-full overflow-visible p-4 SvgCss" {...gauge.getSVGProps()}
@@ -181,7 +198,7 @@ function Speed(props: SpeedProps) {
                 cx: needle.base.cx,
                 cy: needle.base.cy
               }}
-              r={12}
+              r={2}
             />
             <motion.circle
               className="fill-orange-400"
@@ -189,9 +206,22 @@ function Speed(props: SpeedProps) {
                 cx: needle.base.cx,
                 cy: needle.base.cy
               }}
-              r={10}
+              r={15}
             />
-              <motion.polyline className="fill-gray-700" points={needle.points}  />
+              <motion.polyline className="fill-gray-700" points={needle.points}  animate={{ points: needle.points }} />
+              {/* <motion.line
+              height={10}
+              className="stroke-orange-400"
+              strokeLinecap="round"
+              strokeWidth={10}
+              stroke={'#2d2966'}
+              animate={{
+                x1: needle.base.cx,
+                x2: needle.tip.cx,
+                y1: needle.base.cy,
+                y2: needle.tip.cy
+              }}
+            /> */}
            
           </g>
         </svg>
@@ -203,13 +233,13 @@ function Speed(props: SpeedProps) {
 
 export default function SpeedTest(
   {
-    lastTenSec,
+    // lastTenSec,
     vote,
     coins,
     symbol1,
     symbol2
   }: {
-    lastTenSec?: any
+    // lastTenSec?: any
     vote: VoteResultProps;
     coins: { [symbol: string]: Coin };
     symbol1: string;
@@ -217,6 +247,7 @@ export default function SpeedTest(
   }
 ) {
   // const { value } = useSpeedTest();
+  
 const [persentValue, setPersentValue] = useState<any>(0)
   const { allCoinsSetting } = useContext(CoinsContext)
   const [priceRange, setPriceRange] = useState(0.0015)
@@ -297,19 +328,9 @@ const getBorderColor = () => {
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
 
-
-  // const [value,setValue]=useState(50)
-  // useEffect(() => {
-  //   setInterval(function () {
-
-  //     setValue((prev:any)=>{
-  //       return Math.random()<0.5?prev+1:prev-1
-  //     })
-  //   }, 100);
-  // }, [])
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }}>
-      <Speed value={persentValue} />
+      <Speed value={persentValue>0 && persentValue<100?persentValue:persentValue>100?100:0} />
     </MotionConfig>
   );
 }
