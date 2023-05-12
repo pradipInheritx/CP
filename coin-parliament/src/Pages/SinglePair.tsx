@@ -59,6 +59,7 @@ const SinglePair = () => {
     voteRules
   } = useContext(AppContext);
   const [popUpOpen, setpopUpOpen] = useState(false);
+  const [hideButton, setHideButton] = useState([]);
   
   const mountedRef = useRef(true);
   const newTimeframe:any= []
@@ -208,7 +209,7 @@ useEffect(() => {
       mountedRef.current = false;
     };
   }, []);
-  console.log('selectedTimeframe',selectedTimeFrameArray)
+
   useEffect(() => {
     if (user?.uid && params?.id) {
       Vote.getVote({userId: user?.uid, coin: params?.id, timeFrame:timeframes[selectedTimeFrame || 0]?.seconds }).then((v) => {
@@ -256,7 +257,7 @@ useEffect(() => {
   
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-
+console.log(vote , vote?.valueVotingTime, vote?.valueExpirationTime,"vote?.valueExpirationTime" )
   return (
     <>
       <audio className="d-none" ref={sound}>
@@ -307,7 +308,8 @@ useEffect(() => {
                       {loading ? (
                         <CalculatingVotes/>
                       ) : (
-                        <PairsForm
+                          <PairsForm
+                          hideButton={hideButton}
                           sound={sound}
                           coin1={coin1}
                           coin2={coin2}
@@ -323,11 +325,12 @@ useEffect(() => {
                   )}
                 </div>
                 <div className="text-center">
-                  {!graphLoading&& !canVote && user && voteId && (
+                  {!graphLoading&& (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
                     <>
                       <VotedCard
                         {...{vote, coins:coinUpdated, totals, symbol1, symbol2, voteId,selectedTimeFrame,
-                          setSelectedTimeFrame,selectedTimeFrameArray , setpopUpOpen}}
+                          setSelectedTimeFrame, selectedTimeFrameArray, setpopUpOpen, hideButton, setHideButton
+                        }}
                       />
                      {graphLoading? <CalculatingVotes/>:
                      <Progress
@@ -341,7 +344,10 @@ useEffect(() => {
                   {vote && vote?.valueVotingTime && vote?.valueExpirationTime &&  <ModalForResult
                     popUpOpen={popUpOpen}
                     setpopUpOpen={setpopUpOpen}
+                    setHideButton={setHideButton}
                     vote={vote && vote}
+                    selectedTimeFrame={selectedTimeFrame}                                    
+                  hideButton={hideButton}
                     type={"pair"}
                   />}
                   <div className="d-flex justify-content-center align-items-center mt-5 ">

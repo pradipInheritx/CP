@@ -34,7 +34,8 @@ const CoinsForm = ({
   cssDegree,
   votePrice,
   votedDetails,
-  coinUpdated
+  coinUpdated,
+  hideButton,
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -47,17 +48,22 @@ const CoinsForm = ({
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
-  coinUpdated:any;
+  coinUpdated:any;   
+  hideButton?:any;
 }) => {
   const { votesLast24Hours,user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
   const { timeframes , voteRules: { maxVotes,timeLimit }} = useContext(AppContext);
- 
+
+  console.log(timeframes,"timeframes")
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
   const id = "BullVsBearForm";
+
+  console.log()
+
   useEffect(() => {
     window.scrollTo(0, 0);
     
@@ -148,6 +154,7 @@ const CoinsForm = ({
       {/* @ts-ignore */}
       <VoteForm
         {...{
+          hideButton,
           disabled,
           selectedTimeFrame,
           setSelectedTimeFrame,

@@ -103,6 +103,8 @@ const VotedCard = ({
   cssDegree,
   votePrice,
   setpopUpOpen,
+  setHideButton,
+  hideButton
   
 }: {
   vote: VoteResultProps;
@@ -115,10 +117,11 @@ const VotedCard = ({
   selectedTimeFrameArray?: any;
   cssDegree?:any;
   votePrice?:any;
-  setpopUpOpen?:any
+    setpopUpOpen?: any;
+    setHideButton?: any;
+    hideButton?: any;
   
-  }) => {
-  
+  }) => {  
   const [lastTenSec, setLastTenSec] = useState<any>(false);
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
   const getBorderColor = () => {
@@ -181,10 +184,9 @@ const VotedCard = ({
 
   useEffect(() => {
     console.log('component mounter vote')
-  
+   setHideButton([...hideButton,selectedTimeFrame])
     return () => {
       console.log('component unmounted vote')
-  
     }
   }, [])
 

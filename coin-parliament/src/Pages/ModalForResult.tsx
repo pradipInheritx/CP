@@ -77,17 +77,26 @@ const calculateWinner = (vote:any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
 
-function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
+function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selectedTimeFrame,hideButton}: {
     popUpOpen?: any,
     vote: any,
     type?: any,
     setpopUpOpen?:any,
+    setHideButton?:any,
+    selectedTimeFrame?:any,
+    hideButton?:any,
 }) {
   useEffect(() => {
     if (popUpOpen) {        
       console.log("i am working")
       handleShow()  
+
       voteEndFinish()
+      // setHideButton(() => {
+      //   hideButton.filter((item:any, index:number) => {
+      //     return selectedTimeFrame != item
+      //   })
+      // })
       setpopUpOpen(false)
     }    
   }, [popUpOpen])
@@ -132,6 +141,11 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
          <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
               setShow(false)
+              setHideButton(() => {
+                return hideButton.filter((item: any) => {
+                  return  item != selectedTimeFrame
+                })
+              })
               }}></button>
           </div>
         </div>
