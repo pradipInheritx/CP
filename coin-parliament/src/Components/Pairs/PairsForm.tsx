@@ -68,7 +68,8 @@ const PairsForm = ({
   setConfetti,
   selectedTimeFrame,
   setSelectedTimeFrame,
-  coinUpdated
+  coinUpdated,
+hideButton
 }: {
   coin1: Coin;
   coin2: Coin;
@@ -79,6 +80,7 @@ const PairsForm = ({
   selectedTimeFrame?:number;
   setSelectedTimeFrame?:(n:number)=>void;
   coinUpdated:any;
+  hideButton?:any;
 }) => {
   const { user, userInfo } = useContext(UserContext);
   const { timeframes } = useContext(AppContext);
@@ -165,6 +167,7 @@ const PairsForm = ({
               
             }
           },
+          hideButton,
           width: 306,
           disabled,
           selectedTimeFrame,

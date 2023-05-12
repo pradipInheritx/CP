@@ -353,8 +353,9 @@ const calcVote = useCallback(async () => {
   
 
   const [popUpOpen, setpopUpOpen] = useState(false);
+  const [hideButton, setHideButton] = useState([]);
 
-  console.log(popUpOpen,"i am working popUpOpen")
+  console.log(hideButton,"i am working popUpOpen")
 
   return (
     <>
@@ -402,7 +403,8 @@ const calcVote = useCallback(async () => {
                   <>{loading  ? (
                     <CalculatingVotes/>
                   ) : (
-                    <CoinsForm
+                      <CoinsForm
+                      hideButton={hideButton}
                       sound={sound}
                       coin={coin}
                       coinUpdated={coinUpdated}
@@ -417,7 +419,7 @@ const calcVote = useCallback(async () => {
                 )}
                 
                 <div className="text-center">
-                  {!graphLoading && !canVote && user && voteId && (
+                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId &&  (
                     <>
                       <VotedCard
                         {...{
@@ -430,7 +432,9 @@ const calcVote = useCallback(async () => {
                           selectedTimeFrame,
                           setSelectedTimeFrame,
                           selectedTimeFrameArray,
-                          setpopUpOpen
+                          setpopUpOpen,
+                          setHideButton,
+                          hideButton
                         }}
                       />
 
@@ -467,7 +471,10 @@ const calcVote = useCallback(async () => {
                   </div>      */}
                 <ModalForResult
                   popUpOpen={popUpOpen}
+                  selectedTimeFrame={selectedTimeFrame}
                   setpopUpOpen={setpopUpOpen}
+                  setHideButton={setHideButton}
+                  hideButton={hideButton}
                   vote={vote}
                   type={"coin"}                  
                 />

@@ -49,9 +49,6 @@ const SelectTimeframes = ({
     setPariButtonDetails(allPariButtonTime);
   }, [allPariButtonTime]);
   
-  
-  
-console.log(voted,"checkvoted")
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
     <div>
