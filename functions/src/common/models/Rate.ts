@@ -114,7 +114,7 @@ export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
       console.info("getCoinPrice", getCoinPrice.data.result.data[0]);
 
       return getCoinPrice && getCoinPrice.data && getCoinPrice.data.result.data[0].a ?
-        Number(getCoinPrice.data.result.data[0].a) :
+        Number((getCoinPrice.data.result.data[0].a).toString() + (Math.floor(Math.random() * 10)).toString()) :
         0;
     } else if (coin && coin.includes("cake")) {
 
@@ -128,7 +128,7 @@ export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
       console.info("getCoinPrice", getCoinPrice.data.data.price);
 
       return getCoinPrice && getCoinPrice.data && getCoinPrice.data.data && getCoinPrice.data.data.price ?
-        Number(getCoinPrice.data.data.price) :
+        Number((getCoinPrice.data.data.price).toString() + (Math.floor(Math.random() * 10)).toString()) :
         0;
     } else {
       const getCoinPrice: any = await axios.get(
@@ -137,10 +137,9 @@ export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
       );
       console.info("getCoinPrice", getCoinPrice.data);
       return getCoinPrice && getCoinPrice.data && getCoinPrice.data[0].p ?
-        Number(getCoinPrice.data[0].p) :
+        Number((getCoinPrice.data[0].p).toString() + (Math.floor(Math.random() * 10)).toString()) :
         0;
     }
-
   } catch (error: any) {
     console.info("Error In Axios", error);
     return 0;
