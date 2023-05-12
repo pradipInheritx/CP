@@ -181,7 +181,7 @@ function Speed(props: SpeedProps) {
                 cx: needle.base.cx,
                 cy: needle.base.cy
               }}
-              r={12}
+              r={2}
             />
             <motion.circle
               className="fill-orange-400"
@@ -189,9 +189,22 @@ function Speed(props: SpeedProps) {
                 cx: needle.base.cx,
                 cy: needle.base.cy
               }}
-              r={10}
+              r={15}
             />
-              <motion.polyline className="fill-gray-700" points={needle.points}  />
+              <motion.polyline className="fill-gray-700" points={needle.points}  animate={{ points: needle.points }} />
+              {/* <motion.line
+              height={10}
+              className="stroke-orange-400"
+              strokeLinecap="round"
+              strokeWidth={10}
+              stroke={'#2d2966'}
+              animate={{
+                x1: needle.base.cx,
+                x2: needle.tip.cx,
+                y1: needle.base.cy,
+                y2: needle.tip.cy
+              }}
+            /> */}
            
           </g>
         </svg>
@@ -203,13 +216,13 @@ function Speed(props: SpeedProps) {
 
 export default function SpeedTest(
   {
-    lastTenSec,
+    // lastTenSec,
     vote,
     coins,
     symbol1,
     symbol2
   }: {
-    lastTenSec?: any
+    // lastTenSec?: any
     vote: VoteResultProps;
     coins: { [symbol: string]: Coin };
     symbol1: string;
@@ -217,6 +230,7 @@ export default function SpeedTest(
   }
 ) {
   // const { value } = useSpeedTest();
+  
 const [persentValue, setPersentValue] = useState<any>(0)
   const { allCoinsSetting } = useContext(CoinsContext)
   const [priceRange, setPriceRange] = useState(0.0015)
@@ -297,19 +311,9 @@ const getBorderColor = () => {
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
 
-
-  // const [value,setValue]=useState(50)
-  // useEffect(() => {
-  //   setInterval(function () {
-
-  //     setValue((prev:any)=>{
-  //       return Math.random()<0.5?prev+1:prev-1
-  //     })
-  //   }, 100);
-  // }, [])
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }}>
-      <Speed value={persentValue} />
+      <Speed value={persentValue>0 && persentValue<100?persentValue:persentValue>100?100:0} />
     </MotionConfig>
   );
 }
