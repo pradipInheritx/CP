@@ -434,7 +434,7 @@ const calcVote = useCallback(async () => {
                   popUpOpen={popUpOpen}
                   setpopUpOpen={setpopUpOpen}
                   vote={vote}
-                  type={"coin"}
+                  type={"coin"}                  
                 />
               </Container>
               <div className="d-flex justify-content-center align-items-center mt-5 ">
