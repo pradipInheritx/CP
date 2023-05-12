@@ -16,11 +16,11 @@ import {
 
 const rewardNftAdminRouter = Router();
 
-rewardNftAdminRouter.post("/createAlbum", createAlbum);
-rewardNftAdminRouter.post("/createCard", createCard);
+rewardNftAdminRouter.post("/createAlbum", auth, createAlbum);
+rewardNftAdminRouter.post("/createCard", auth, createCard);
 rewardNftAdminRouter.get("/getAllAlbums", auth, getAllAlbums);
 rewardNftAdminRouter.get("/getAllCards", auth, getAllCards);
-rewardNftAdminRouter.get("/getCardListing", getCardListing);
+rewardNftAdminRouter.get("/getCardListing", auth, getCardListing);
 rewardNftAdminRouter.put("/updateAlbum/:albumId", auth, updateAlbums);
 rewardNftAdminRouter.put("/updateCard/:cardId", auth, updateCard);
 rewardNftAdminRouter.delete("/deleteAlbum/:albumId", auth, deleteAlbum);
