@@ -1,5 +1,6 @@
 import { firestore } from "firebase-admin";
 import { uploadImage } from "../Reward";
+import { toUpper } from "lodash";
 
 interface Sets {
     setName: string;
@@ -24,6 +25,62 @@ type Card = {
     cardStatus: boolean;
     cardImageUrl: any;
     cardVideoUrl: any;
+}
+
+
+// get albums details
+async function getAlbumDetails(albumId: string) {
+    const albumDetails = await firestore().collection("nftGallery").doc(albumId).get()
+    return albumDetails.data()
+}
+
+
+// get sets details
+async function getSetsDetails(albumId: string, setId: string) {
+    const setsDetails = await firestore().collection("nftGallery").doc(albumId).collection("setDetails").doc(setId).get();
+    console.log("Sets Details =============", setsDetails.data())
+    return setsDetails.data()
+}
+
+// generate serial number string for cards
+const generateSerialNumber = async (
+    albumName: string,
+    setName: string,
+    cardType: string,
+    quantity: number
+) => {
+
+    const serialNumber: string[] = [];
+    for (let i = 0; i < quantity; i++) {
+        let num = i < 10 ? "0" + i : i;
+
+        const card = toUpper(albumName.slice(0, 2)) + toUpper(setName.slice(0, 2)) + toUpper(cardType.slice(0, 2)) + String(num);
+        serialNumber.push(card);
+    }
+    return serialNumber;
+};
+
+// Get all sets
+const fetchAllSet = async (getAlbumDoc: any) => {
+    return new Promise((resolve, reject) => {
+        let Sets: any = [];
+        getAlbumDoc.map(async (data: any) => {
+            const setAry: any = []
+
+            const getSetQuery = await firestore()
+                .collection("nftGallery")
+                .doc(data.id)
+                .collection("setDetails")
+                .get()
+
+            getSetQuery.docs.forEach(async (snapshot) => {
+                setAry.push({ ...snapshot.data(), setId: snapshot.id })
+            })
+            Sets.push({ ...data.data(), setDetails: setAry })
+            resolve(Sets);
+        })
+
+    })
 }
 
 export const createAlbum = async (req: any, res: any) => {
@@ -84,61 +141,15 @@ export const createAlbum = async (req: any, res: any) => {
     }
 };
 
-export const generateSerialNumber = async (
-    albumId: number,
-    setId: number,
-    cardType: any,
-    quantity: number
-) => {
-    console.log("albumId>>>>>>", albumId);
-    const serialNumber: string[] = [];
-    for (let i = 0; i < quantity; i++) {
-        const card = String(albumId) + String(setId) + String(cardType) + String(i);
-        serialNumber.push(card);
-    }
-    return serialNumber;
-};
-
-// Get all sets
-const fetchAllSet = async (getAlbumDoc: any) => {
-    return new Promise((resolve, reject) => {
-        let Sets: any = [];
-        getAlbumDoc.map(async (data: any) => {
-            const setAry: any = []
-
-            const getSetQuery = await firestore()
-                .collection("nftGallery")
-                .doc(data.id)
-                .collection("setDetails")
-                .get()
-
-            getSetQuery.docs.forEach(async (snapshot) => {
-                setAry.push({ ...snapshot.data(), setId: snapshot.id })
-            })
-            Sets.push({ ...data.data(), setDetails: setAry })
-            resolve(Sets);
-        })
-
-    })
-}
-// generate serial number
 
 export const createCard = async (req: any, res: any) => {
     try {
         const { albumId, setId, cardName, cardStatus, cardType, totalQuantity, cardImage, cardVideoUrl } = req.body;
 
         //Check Album is exist or not
-        const getAllAlbums: any = []
-        let getAllSets: any = [];
-        const getAlbumQuery = await firestore().collection("nftGallery").get();
-        const getAlbumDoc = getAlbumQuery.docs;
-        getAlbumDoc.map((album) => {
-            getAllAlbums.push({ albumId: album.id, ...album.data() })
-        })
-        const checkAlbums: any = getAllAlbums.find((album: any) => {
-            return album.albumId == albumId
-        })
-        if (!checkAlbums) {
+
+        const getAlbum = await getAlbumDetails(albumId);
+        if (!getAlbum) {
             return res.status(404).send({
                 status: true,
                 message: `This album does not exist: ${albumId}`,
@@ -147,20 +158,17 @@ export const createCard = async (req: any, res: any) => {
         }
 
         //Check set is exist or not
-        const getAllSetsQuery = await firestore().collection("nftGallery").doc(albumId).collection("setDetails").get();
-        getAllSetsQuery.docs.map((set: any) => {
-            getAllSets.push({ setId: set.id, ...set.data() })
-        })
-        const checkSets: any = getAllSets.find((set: any) => {
-            return set.setId == setId
-        })
-        if (!checkSets) {
+        const getSet: any = await getSetsDetails(albumId, setId);
+        if (!getSet) {
             return res.status(404).send({
                 status: true,
                 message: `This album does not exist: ${setId}`,
                 result: null,
             });
         }
+
+        console.log("checkAlbums.albumName -----", getAlbum)
+        console.log("checkSets.setName -----", getSet)
         const newCard: Card = {
             albumId,
             setId,
@@ -171,8 +179,8 @@ export const createCard = async (req: any, res: any) => {
             totalQuantity,
             cardStatus,
             sno: await generateSerialNumber(
-                albumId,
-                setId,
+                getAlbum.albumName,
+                getSet.setName,
                 cardType,
                 totalQuantity
             ),
@@ -418,6 +426,8 @@ export const updateCard = async (req: any, res: any) => {
                 result: null,
             });
         }
+        const getAlbum: any = await getAlbumDetails(albumId);
+        const getSet = getAlbum.setDetails.find((set: any) => set.id == setId)
 
         const updatedCard: Card = {
             albumId,
@@ -429,8 +439,8 @@ export const updateCard = async (req: any, res: any) => {
             noOfCardHolder,
             cardStatus,
             sno: await generateSerialNumber(
-                albumId,
-                setId,
+                getAlbum.albumName,
+                getSet.setName,
                 cardType,
                 totalQuantity
             ),
