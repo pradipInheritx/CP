@@ -149,7 +149,13 @@ const Carousel = ({
   );
 useEffect(() => {
   const interval = setInterval(function () {
+    for (let obj in  livePrice.current) {
+      // Update the property value of prop1 in each object
+      livePrice.current[obj].randomDecimal = (livePrice.current[obj].randomDecimal ||5) + (Math.random()<5?-1:1)
+    }
     setCoinUpdated(livePrice.current)
+   
+        
   }, 1500);
 
   return () => {
@@ -205,18 +211,23 @@ const symbol =message?.s?.slice(0, -4)
       if (symbol) {
         // @ts-ignore
         const dot = decimal[symbol]
-        for (let obj in  livePrice.current) {
-          // Update the property value of prop1 in each object
-          livePrice.current[obj].randomDecimal = livePrice.current[obj]?.randomDecimal ||5 + Math.random()<5?1:-1;
-        }
+        // for (let obj in  livePrice.current) {
+        //   // Update the property value of prop1 in each object
+        //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
+        // }
         
         // @ts-ignore
+         
+    // for (let obj in  livePrice.current) {
+    //   // Update the property value of prop1 in each object
+    //   livePrice.current[obj].randomDecimal = (livePrice.current[obj].randomDecimal ||5) + (Math.random()<5?1:1)
+    // }
         livePrice.current= {
           ...livePrice.current,
           [symbol]: {
             ...livePrice.current[symbol],
             price:Number(message?.c).toFixed(dot?.decimal || 2), 
-            randomDecimal:5
+            // randomDecimal:5
           },
         }
 
@@ -230,7 +241,7 @@ const symbol =message?.s?.slice(0, -4)
     }
     };
   }, [ws])
-  console.log('liveprice',livePrice)
+  console.log('liveprice',livePrice?.current?.BTC?.randomDecimal)
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {

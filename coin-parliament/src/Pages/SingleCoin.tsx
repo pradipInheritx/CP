@@ -89,12 +89,42 @@ const SingleCoin = () => {
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun,
     remainingTimer,
     voteRules} = useContext(AppContext);
-  
+   
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+      
+  //     setCount(prevCount => prevCount +( Math.random()<0.5?-1:1));
+  //   }, 2000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
+
   const newTimeframe: any = []
   // const AllcssDegree: any = [];
   // const AllvotePrice: any = [];
   const AllvoteValueObject: any = [];
-
+  const updateRandomDecimal=()=>{
+    setCoinUpdated((prevCoins) => ({
+      ...prevCoins,
+      [symbol1]: {
+        ...prevCoins[symbol1],
+      
+        randomDecimal:(prevCoins[symbol1]?.randomDecimal ||5) + (Math.random()<5?-1:1)
+      },
+    }));
+  }
+  useEffect(() => {
+    if(symbol1=='BTC'||symbol1=='ETH') return
+    const interval = setInterval(function () {
+      updateRandomDecimal()
+    }, 1500);
+  
+    return () => {
+     clearInterval(interval) 
+    }
+  }, [])
+  console.log('coinprice',coinUpdated[symbol1]?.randomDecimal)
   useEffect(() => {
     if (!ws) return
     
@@ -103,17 +133,22 @@ const SingleCoin = () => {
       const symbol =message?.s?.slice(0, -4)
   
       if (symbol && symbol == params?.id) {
-        
+        // console.log('coinprice',message?.c)
         const dot = decimal[symbol]
         
-        
+        // setCount(prevCount => 5);
+        // for (let obj in  livePrice.current) {
+        //   // Update the property value of prop1 in each object
+        //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
+        // }
       
+      console.log('coinprice',Number(message?.c).toFixed(dot?.decimal || 2),coinUpdated[symbol].price,Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(coinUpdated[symbol].price))
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
         [symbol]: {
           ...prevCoins[symbol],
           price:Number(message?.c).toFixed(dot?.decimal || 2),
-          
+          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol].price)?prevCoins[symbol].randomDecimal:5
         },
       }));
     }
