@@ -116,7 +116,8 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen}: {
   return (
          <div>
           {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
-      <Modal show={show} onHide={handleClose}       
+      <Modal show={show} onHide={handleClose}  
+      backdrop="static"   
       size="lg"
       aria-labelledby="contained-modal-title-vcenter"
       centered

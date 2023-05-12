@@ -150,9 +150,9 @@ const Carousel = ({
   function updateCoin(){
     for (let obj in  livePrice.current) {
       // Update the property value of prop1 in each object
-      livePrice.current[obj].randomDecimal = (livePrice.current[obj].randomDecimal ||5) + (Math.random()<0.5?-1:1)
+      livePrice.current[obj].randomDecimal = (livePrice.current[obj]?.randomDecimal ||5) + (Math.random()<0.5?-1:1)
     }
-    console.log('livepricedata',livePrice.current['BTC']?.randomDecimal,livePrice.current['BTC']?.price)
+    // console.log('livepricedata',livePrice.current['BTC']?.randomDecimal,livePrice.current['BTC']?.price)
     setCoinUpdated(livePrice.current)
   }
 useEffect(() => {
@@ -231,7 +231,7 @@ const symbol =message?.s?.slice(0, -4)
           [symbol]: {
             ...livePrice.current[symbol],
             price:Number(message?.c).toFixed(dot?.decimal || 2), 
-            randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(livePrice.current[symbol].price)?livePrice.current[symbol].randomDecimal:5
+            randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(livePrice.current[symbol]?.price)?livePrice.current[symbol]?.randomDecimal:5
           },
         }
 

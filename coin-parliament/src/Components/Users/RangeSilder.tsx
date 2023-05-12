@@ -1,6 +1,7 @@
 
 
 import React, { useEffect, useState ,useContext} from "react";
+import color from 'color';
 // import cc from "classcat";
 import { useGauge } from "use-gauge";
 import { motion, MotionConfig } from "framer-motion";
@@ -23,6 +24,9 @@ import { decimal } from "../Profile/utils";
 //   };
 // };
 
+
+
+
 interface SpeedProps {
   value: number;
 }
@@ -42,16 +46,19 @@ function Speed(props: SpeedProps) {
     baseRadius: 12,
     tipRadius: 2
   });
-
+  const points = needle.points.split(' ');
+  const firstColor = color.rgb(points[0].split(','));
+  const secondColor = color.rgb(points[1].split(','));
+  
   return (
     <>
       <style>
         {`
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
-          background-color: #fff;
-          // margin:50px 0;
-        }
+        // body {
+        //   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
+        //   background-color: #fff;
+        //   // margin:50px 0;
+        // }
         .BigDiv{          
           position:relative;
         }
@@ -81,18 +88,18 @@ function Speed(props: SpeedProps) {
           transition: all .3s;
         }
         .low {
-          top:50%;          
-          left: 14.5%;          
+          // top:50%;          
+          // left: 14.5%;          
           transform: rotate(275deg);          
         }
         .mid {
-          left: 51%;
+          // left: 51%;
           top: 0%;
           transform: translateX(-50%);
         }
         .high {
-          top:51%;          
-          right: 13.5%;          
+          // top:51%;          
+          // right: 13.5%;          
           transform: rotate(84deg);
         }
         .select {
@@ -109,9 +116,26 @@ function Speed(props: SpeedProps) {
       </style>
       <div className="BigDiv">
       <div className="textbox">
-        <span className={value<40?"span low select":"span low"}>low</span>
-        <span className={value>=40 && value<=60?"span mid select":"span mid"}>mid</span>
-        <span className={value>60?"span high select":"span high"}>high</span>
+          <span className={value < 40 ? "span low select" : "span low"}
+            style={{
+              top: window.screen.width > 767 ? "50%" : "43%",
+              left:window.screen.width > 767 ? "14.5%" : "14.5%"
+          }}
+          >low</span>
+          <span className={value >= 40 && value <= 60 ? "span mid select" : "span mid"}
+            style={{
+              top: window.screen.width > 767 ? "0.5%" : "1.5%",
+              left:window.screen.width > 767 ? "51%" : "51%"
+          }}
+          >mid</span>
+          <span className={value > 60 ? "span high select" : "span high"}
+            style={{
+              top: window.screen.width > 767 ? "51%" : "43%",
+              right: window.screen.width > 767 ? "13.5%" : "14.5%",
+              
+              
+          }}
+          >high</span>
       </div>
       <div className="gauge">
         <svg className="w-full overflow-visible p-4 SvgCss" {...gauge.getSVGProps()}
@@ -159,9 +183,9 @@ function Speed(props: SpeedProps) {
                   {showText && (
                     <>
                       <line
-                        className="stroke-gray-100"
+                        // className="stroke-gray-100"
                         strokeWidth={2}
-                        stroke={"white"}
+                        stroke={"#fff"}
                         //  style={{height:'100px'}}
                         {...gauge.getTickProps({
                           angle,
@@ -176,7 +200,7 @@ function Speed(props: SpeedProps) {
           </g>
           <g id="needle" fill={"#2d2966"}>
             <motion.circle
-              className="fill-gray-200"
+              
               animate={{
                 cx: needle.base.cx,
                 cy: needle.base.cy
@@ -184,7 +208,7 @@ function Speed(props: SpeedProps) {
               r={2}
             />
             <motion.circle
-              className="fill-orange-400"
+              
               animate={{
                 cx: needle.base.cx,
                 cy: needle.base.cy
@@ -231,10 +255,10 @@ export default function SpeedTest(
 ) {
   // const { value } = useSpeedTest();
   
-const [persentValue, setPersentValue] = useState<any>(0)
+const [persentValue, setPersentValue] = useState<any>(50)
   const { allCoinsSetting } = useContext(CoinsContext)
   const [priceRange, setPriceRange] = useState(0.0015)
-  const [randomDecimal, setRandomDecimal] = useState(0)
+  // const [randomDecimal, setRandomDecimal] = useState(0)
 
 const getBorderColor = () => {
     if (symbol2 !== undefined) {
@@ -258,8 +282,15 @@ const getBorderColor = () => {
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
 
       if ((averageValue == averageValue)) {
-
-        setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
+if(50 - (newPairPrice[0] - newPairPrice[1])<0) {
+  setPersentValue(0)
+  return
+}
+if(50 + (newPairPrice[0] - newPairPrice[1])>100) {
+  setPersentValue(100)
+  return
+}
+        setPersentValue(vote?.direction == 1 ?  50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
       } else {
         if (vote?.direction == 1) {
           winner == vote?.direction
@@ -287,7 +318,14 @@ const getBorderColor = () => {
       // console.log('newprice',((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)))
 
       const newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply) ) / priceRange
-
+if(50 + newPrice>100){
+  setPersentValue(100);
+  return
+}
+if(50 - newPrice<0){
+  setPersentValue(0);
+  return
+}
         if (vote?.direction == 0) setPersentValue(50 + newPrice);
         else setPersentValue(50 - newPrice);
 
@@ -297,14 +335,14 @@ const getBorderColor = () => {
 
   useEffect(() => {
     getBorderColor()
-  }, [coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime,randomDecimal])
-  useEffect(() => {
-    if(symbol1?.includes('BTC') || symbol1?.includes('ETH')) return
-    const randomDecimalInterval = setInterval(function () { setRandomDecimal(prev => Math.random() > 0.5 ? prev + 1 : prev - 1) }, 1000);
-    return () => {
-      clearInterval(randomDecimalInterval)
-    }
-  }, [])
+  }, [coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime,coins[symbol1]?.randomDecimal,coins[symbol1]?.randomDecimal])
+  // useEffect(() => {
+  //   if(symbol1?.includes('BTC') || symbol1?.includes('ETH')) return
+  //   const randomDecimalInterval = setInterval(function () { setRandomDecimal(prev => Math.random() > 0.5 ? prev + 1 : prev - 1) }, 1000);
+  //   return () => {
+  //     clearInterval(randomDecimalInterval)
+  //   }
+  // }, [])
  
   useEffect(() => {
     if (!symbol1) return
@@ -313,7 +351,7 @@ const getBorderColor = () => {
 
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }}>
-      <Speed value={persentValue>0 && persentValue<100?persentValue:persentValue>100?100:0} />
+      <Speed value={persentValue || 50} />
     </MotionConfig>
   );
 }

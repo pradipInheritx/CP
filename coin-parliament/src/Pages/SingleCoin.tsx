@@ -142,13 +142,13 @@ const SingleCoin = () => {
         //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
         // }
       
-      console.log('coinprice',Number(message?.c).toFixed(dot?.decimal || 2),coinUpdated[symbol].price,Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(coinUpdated[symbol].price))
+      // console.log('coinprice',Number(message?.c).toFixed(dot?.decimal || 2),coinUpdated[symbol].price,Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(coinUpdated[symbol].price))
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
         [symbol]: {
           ...prevCoins[symbol],
           price:Number(message?.c).toFixed(dot?.decimal || 2),
-          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol].price)?prevCoins[symbol].randomDecimal:5
+          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol]?.price)?prevCoins[symbol]?.randomDecimal:5
         },
       }));
     }
@@ -470,7 +470,7 @@ const calcVote = useCallback(async () => {
                   popUpOpen={popUpOpen}
                   setpopUpOpen={setpopUpOpen}
                   vote={vote}
-                  type={"coin"}
+                  type={"coin"}                  
                 />
               </Container>
               <div className="d-flex justify-content-center align-items-center mt-5 ">

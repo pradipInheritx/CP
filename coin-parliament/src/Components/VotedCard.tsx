@@ -204,7 +204,7 @@ const VotedCard = ({
   const votedCoin = coin2 ? coins[voted] : coins[symbol1];
 
 
-  
+  // console.log(coins,"votedCoin")
   
   let row1 = "",
     row2 = "",
@@ -409,7 +409,10 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
             checkprice()
           }
       // return data;
-          return <span style={{color:"#7767f7"}}>{texts.LoadingText}</span>;
+          return <span style={{ color: "#7767f7" }}>
+            {texts.Calculatingvoteresult}
+          
+          </span>;
         } else {
           return (
             <span className="" style={{color:'#6352e8',fontSize:'20px',fontWeight:400,marginLeft:"10px"}}>
