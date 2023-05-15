@@ -98,7 +98,9 @@ class Calculation {
   async updateVote(
     ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
-    await ref.update(this.voteResult);
+    console.log("ref ====", ref);
+    console.log("this.voteResult ========", this.voteResult);
+    await ref.set(this.voteResult, { merge: true });
   }
 
 
