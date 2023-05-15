@@ -194,7 +194,7 @@ const Header = ({
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
   const { voteRules, followerUserId, login ,showReward,setShowReward ,headerExtraVote,setHeaderExtraVote ,inOutReward,setInOutReward} = useContext(AppContext);
-console.log(showReward,inOutReward,"inOutReward")
+// console.log(showReward,inOutReward,"inOutReward")
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
@@ -212,7 +212,7 @@ console.log(showReward,inOutReward,"inOutReward")
   
 
 
-  console.log(urlName,"checkurlName")
+  // console.log(urlName,"checkurlName")
   const prevCountRef = useRef(voteNumber)
   
   const getFollowerData =()=>{
@@ -264,7 +264,7 @@ console.log(showReward,inOutReward,"inOutReward")
       prevCountRef.current = voteNumber; 
     
 
-console.log('votenumber',voteNumber, Number(voted))
+// console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
 
@@ -284,7 +284,7 @@ console.log('votenumber',voteNumber, Number(voted))
         setSignup(true);
         break;
       case EventKeys.LOGOUT:
-        console.log("i am working")
+        // console.log("i am working")
         signOut(auth)
           .then((res) => {          
             Logout(setUser);   
@@ -294,7 +294,7 @@ console.log('votenumber',voteNumber, Number(voted))
             // console.log("i am working error")
             setLogin(true);
             const errorMessage = error.message;
-            console.log(errorMessage,"i am working error");
+            // console.log(errorMessage,"i am working error");
           });
         break;
       case EventKeys.EDIT:
@@ -547,7 +547,7 @@ console.log('votenumber',voteNumber, Number(voted))
                                   onEnd={() =>
                                   {
                                   setInOutReward((prev: number) => { 
-                                        console.log(prev,"showRewardCheck")
+                                        // console.log(prev,"showRewardCheck")
                                               return prev==2?3:prev
                                       });
 
@@ -586,7 +586,7 @@ console.log('votenumber',voteNumber, Number(voted))
                             onClick={ async () =>
                             {
                               setFollowUnfollow(!followUnfollow) 
-                              console.log('folower',followerInfo)
+                              // console.log('folower',followerInfo)
                               const ll = leaders.find((l) => l.userId === followerInfo?.uid);
                               if (user && ll) {
                                
@@ -750,7 +750,7 @@ console.log('votenumber',voteNumber, Number(voted))
                                   onEnd={() =>
                                   {  
                                     setInOutReward((prev: number) => { 
-                                        console.log(prev,"showRewardCheck")
+                                        // console.log(prev,"showRewardCheck")
                                               return prev==2?3:prev
                                       });
                                     // setTimeout(() => {
@@ -794,7 +794,7 @@ console.log('votenumber',voteNumber, Number(voted))
                             onClick={ async () =>
                               {
                                 setFollowUnfollow(!followUnfollow) 
-                                console.log('folower',followerInfo)
+                                // console.log('folower',followerInfo)
                                 const ll = leaders.find((l) => l.userId === followerInfo?.uid);
                                 if (user && ll) {
                                  

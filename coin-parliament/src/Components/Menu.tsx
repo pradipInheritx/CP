@@ -98,7 +98,7 @@ const navigate = useNavigate();
   const handleClose = () =>{ setMenuOpen(false);
     // handleSoundClick()
   }
-  console.log("hello")
+  // console.log("hello")
   const handleShow = () => {
     if (followerPage) {      
       navigate(-1)

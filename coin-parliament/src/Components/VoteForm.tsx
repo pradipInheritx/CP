@@ -67,7 +67,7 @@ const VoteForm = function <
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   
-  console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
+  // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
   
   
   return (

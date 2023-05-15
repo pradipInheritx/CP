@@ -88,7 +88,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selecte
 }) {
   useEffect(() => {
     if (popUpOpen) {        
-      console.log("i am working")
+      // console.log("i am working")
       handleShow()  
 
       voteEndFinish()
@@ -109,7 +109,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selecte
   const { coins } = useContext(CoinsContext);
   const { showBack,setShowBack} = useContext(AppContext);
   const winner = calculateWinner(vote);
-  console.log(vote,"allVote1")
+  // console.log(vote,"allVote1")
   const voteCoins = vote?.coin?.split("-");
   const pair = voteCoins?.length > 1;
   
@@ -120,7 +120,7 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selecte
 
  const votelength =Object.keys(vote).length
   
-  console.log(vote,"valueExpirationTime")
+  // console.log(vote,"valueExpirationTime")s
   
   return (
          <div>

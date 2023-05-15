@@ -245,13 +245,13 @@ const symbol =message?.s?.slice(0, -4)
     }
     };
   }, [ws])
-  console.log('liveprice',livePrice?.current?.BTC?.randomDecimal)
+  // console.log('liveprice',livePrice?.current?.BTC?.randomDecimal)
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const dot = decimal["CRO"]
-      console.log('cro price',data?.result?.data[0])
+      // console.log('cro price',data?.result?.data[0])
       if (data?.result?.data[0].a) {
   // @ts-ignore
   livePrice.current= {

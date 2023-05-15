@@ -46,6 +46,10 @@ function Speed(props: SpeedProps) {
     baseRadius: 12,
     tipRadius: 2
   });
+  useEffect(() => {
+    console.log('needle points',needle.points)
+  }, [value])
+  
   const points = needle.points.split(' ');
   const firstColor = color.rgb(points[0].split(','));
   const secondColor = color.rgb(points[1].split(','));

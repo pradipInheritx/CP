@@ -124,7 +124,7 @@ const SingleCoin = () => {
      clearInterval(interval) 
     }
   }, [])
-  console.log('coinprice',coinUpdated[symbol1]?.randomDecimal)
+  // console.log('coinprice',coinUpdated[symbol1]?.randomDecimal)
   useEffect(() => {
     if (!ws) return
     
@@ -356,7 +356,7 @@ const calcVote = useCallback(async () => {
   const [popUpOpen, setpopUpOpen] = useState(false);
   const [hideButton, setHideButton] = useState([]);
 
-  console.log(hideButton,"i am working popUpOpen")
+  // console.log(hideButton,"i am working popUpOpen")
 
   return (
     <>
@@ -420,6 +420,7 @@ const calcVote = useCallback(async () => {
                 )}
                 
                 <div className="text-center">
+                  {/* @ts-ignore */}
                   {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId &&  (
                     <>
                       <VotedCard

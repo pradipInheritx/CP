@@ -325,6 +325,7 @@ console.log(vote , vote?.valueVotingTime, vote?.valueExpirationTime,"vote?.value
                   )}
                 </div>
                 <div className="text-center">
+                  {/* @ts-ignore */}
                   {!graphLoading&& (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
                     <>
                       <VotedCard
