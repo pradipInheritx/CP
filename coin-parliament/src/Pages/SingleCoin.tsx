@@ -142,13 +142,13 @@ const SingleCoin = () => {
         //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
         // }
       
-      console.log('coinprice',Number(message?.c).toFixed(dot?.decimal || 2),coinUpdated[symbol].price,Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(coinUpdated[symbol].price))
+      console.log('coinprice',Number(message?.c).toFixed(dot?.decimal || 2),coinUpdated[symbol]?.price,Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(coinUpdated[symbol]?.price))
       setCoinUpdated((prevCoins) => ({
         ...prevCoins,
         [symbol]: {
           ...prevCoins[symbol],
           price:Number(message?.c).toFixed(dot?.decimal || 2),
-          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol].price)?prevCoins[symbol].randomDecimal:5
+          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol]?.price)?prevCoins[symbol].randomDecimal:5
         },
       }));
     }
@@ -357,6 +357,8 @@ const calcVote = useCallback(async () => {
 
   console.log(hideButton,"i am working popUpOpen")
 
+
+
   return (
     <>
       {/* <audio className="d-none" ref={sound}>
@@ -419,7 +421,8 @@ const calcVote = useCallback(async () => {
                 )}
                 
                 <div className="text-center">
-                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId &&  (
+                  {/* @ts-ignore */}
+                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame )) && user && voteId &&  (
                     <>
                       <VotedCard
                         {...{
@@ -469,6 +472,9 @@ const calcVote = useCallback(async () => {
                       </Modal.Footer>
                     </Modal>
                   </div>      */}
+                {
+                  // @ts-ignore
+                   hideButton.includes(selectedTimeFrame && selectedTimeFrame) &&
                 <ModalForResult
                   popUpOpen={popUpOpen}
                   selectedTimeFrame={selectedTimeFrame}
@@ -478,6 +484,7 @@ const calcVote = useCallback(async () => {
                   vote={vote}
                   type={"coin"}                  
                 />
+                }
               </Container>
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{textDecoration:'none'}}>
