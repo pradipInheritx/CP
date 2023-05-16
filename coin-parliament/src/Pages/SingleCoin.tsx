@@ -469,7 +469,7 @@ const SingleCoin = () => {
                           setpopUpOpen
                         }}
                       />
-                      {console.log(cpviData, cpviData?.length ? cpviData[cpviData?.length - 1]?.value : 0, 'pkk')}
+                      {/* {console.log(cpviData, cpviData?.length ? cpviData[cpviData?.length - 1]?.value : 0, 'pkk')} */}
                       {cpviData?.length && params?.id && (
                         graphLoading ? <CalculatingVotes /> :
 
