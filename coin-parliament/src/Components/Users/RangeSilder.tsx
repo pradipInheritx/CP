@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState ,useContext} from "react";
+import React, { useEffect, useState ,useContext, useRef} from "react";
 import color from 'color';
 // import cc from "classcat";
 import { useGauge } from "use-gauge";
@@ -33,6 +33,7 @@ interface SpeedProps {
 
 function Speed(props: SpeedProps) {
   const { value } = props;
+  
   const gauge = useGauge({
     domain: [0, 100],
     startAngle: 60,
@@ -46,13 +47,17 @@ function Speed(props: SpeedProps) {
     baseRadius: 12,
     tipRadius: 2
   });
+  const needleAnimatePoint =useRef(needle.points)
   useEffect(() => {
-    console.log('needle points',needle.points)
+   
+    if(!needle.points.toString().includes('e')) needleAnimatePoint.current=needle.points
+    console.log('needle points',value,needle.points.toString().includes('e'),needle.points)
   }, [value])
-  
-  const points = needle.points.split(' ');
-  const firstColor = color.rgb(points[0].split(','));
-  const secondColor = color.rgb(points[1].split(','));
+  // 1.4695761589768238e-15
+  // 6.000000000000002,-10.392304845413264 174.2050807568878,98.26794919243098 172.2050807568878,101.73205080756874 -5.999999999999997,10.392304845413264
+  //-12,1.4695761589768238e-15 -2.000000000000037,-200 1.9999999999999634,-200 12,0
+  // -11.992689924229149,-0.4187939604300108 4.981117686462064,-199.94796439722415 8.978680994538447,-199.80836641041412 11.992689924229149,0.4187939604300116
+ 
   
   return (
     <>
@@ -219,20 +224,8 @@ function Speed(props: SpeedProps) {
               }}
               r={15}
             />
-              <motion.polyline className="fill-gray-700" points={needle.points}  animate={{ points: needle.points }} />
-              {/* <motion.line
-              height={10}
-              className="stroke-orange-400"
-              strokeLinecap="round"
-              strokeWidth={10}
-              stroke={'#2d2966'}
-              animate={{
-                x1: needle.base.cx,
-                x2: needle.tip.cx,
-                y1: needle.base.cy,
-                y2: needle.tip.cy
-              }}
-            /> */}
+              <motion.polyline className="fill-gray-700" points={needle.points}  animate={{ points: needleAnimatePoint.current }} />
+           
            
           </g>
         </svg>
@@ -355,7 +348,7 @@ if(50 - newPrice<0){
 
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }}>
-      <Speed value={persentValue || 50} />
+      <Speed value={ Math.trunc(persentValue) || 50} />
     </MotionConfig>
   );
 }
