@@ -188,8 +188,7 @@
     ]
   },
   "resolutions": {
-    "styled-components": "^5",
-    "react-error-overlay": "6.0.9"
+    "styled-components": "^5"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.0",
@@ -201,7 +200,6 @@
     "@storybook/testing-library": "^0.0.9",
     "@types/color": "^3.0.3",
     "@types/lodash": "^4.14.178",
-    "react-error-overlay": "^6.0.9",
     "storybook-addon-state": "^1.0.3"
   }
 }
