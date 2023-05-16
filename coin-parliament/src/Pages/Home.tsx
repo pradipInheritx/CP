@@ -61,12 +61,12 @@ const Home = () => {
                       width && width > 969
                         ? "auto"
                         : 'auto',
-                    marginTop: width && width > 969 ? -50 : 130,
+                    marginTop: width && width > 969 ? -50 :65,
                     // marginTop:'120px',
                     position: "absolute",
                   }}
                 />
-                {window.screen.width>768 && <h2
+                {/* {window.screen.width>768 && <h2
                     style={{ zIndex: 0, position: "absolute",top:'130px' }}
                     className=' d-block'
                   >
@@ -97,16 +97,16 @@ const Home = () => {
                     >
                       {translate("Vote to Earn")}
                     </strong>
+                  </h2>}
+                </div> */}
                     {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
                     {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-                  </h2>}
 
                   {/* <TextContainer className="mt-2" >
                   <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
                 </TextContainer> */}
-                </div>
               </>
             )}
           </HomeContainer>
@@ -125,7 +125,7 @@ const Home = () => {
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "200px",
+                marginTop: window.screen.width > 767 ?"260px":"120px",
               }}
             >
               {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
@@ -138,6 +138,7 @@ const Home = () => {
                 fontWeight: "400",
                 position: "relative",
                 // marginTop: "200px",
+                marginTop: window.screen.width > 767 ?"260px":"120px",
                 fontSize: "30px",
               }}
             >
