@@ -345,7 +345,6 @@ export default function SpeedTest(
     if (!symbol1) return
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
-  console.log(persentValue, 'pk');
 
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }} >
