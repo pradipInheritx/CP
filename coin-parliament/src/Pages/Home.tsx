@@ -49,7 +49,7 @@ const Home = () => {
       <div className='p-0 w-100' style={{ background: "#160133" }}>
         <div style={{ background: "#160133" }}>
           
-          <HomeContainer width={width} className='mb-4 p-0'>
+          <HomeContainer width={width} className='mb-4 p-0 '>
             {!(login || firstTimeLogin) && (
               <>
               
