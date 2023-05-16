@@ -61,7 +61,7 @@ const Home = () => {
                       width && width > 969
                         ? "auto"
                         : 'auto',
-                    marginTop: width && width > 969 ? -50 : 130,
+                    marginTop: width && width > 969 ? -0 : 65,
                     // marginTop:'120px',
                     position: "absolute",
                   }}
@@ -117,7 +117,7 @@ const Home = () => {
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                marginTop:window.screen.width > 767? "260px":"160px",
+                marginTop:window.screen.width > 767? "280px":"120px",
               }}
             >
               {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
@@ -129,7 +129,7 @@ const Home = () => {
                 // zIndex: 1,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: "200px",
+                marginTop:window.screen.width > 767? "280px":"120px",
                 fontSize: "30px",
               }}
             >
