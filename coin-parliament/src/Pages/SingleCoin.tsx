@@ -1,28 +1,28 @@
-import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from "react";
-import {Link, useParams} from "react-router-dom";
-import {Button, Container, Modal} from "react-bootstrap";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { Button, Container, Modal } from "react-bootstrap";
 import CoinContext from "../Contexts/CoinsContext";
 
-import {Coin} from "../common/models/Coin";
+import { Coin } from "../common/models/Coin";
 import VotedCard from "../Components/VotedCard";
-import Vote, {VoteResultProps} from "../common/models/Vote";
+import Vote, { VoteResultProps } from "../common/models/Vote";
 import UserContext from "../Contexts/User";
-import {doc, onSnapshot, setDoc} from "firebase/firestore";
-import {db, functions} from "../firebase";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import { db, functions } from "../firebase";
 import Leaders from "../Components/Pairs/Leaders";
-import {default as CPCard} from "../Components/Coins/Card";
-import {useTranslation} from "../common/models/Dictionary";
-import {remove, union} from "lodash";
+import { default as CPCard } from "../Components/Coins/Card";
+import { useTranslation } from "../common/models/Dictionary";
+import { remove, union } from "lodash";
 import styled from "styled-components";
-import {Buttons} from "../Components/Atoms/Button/Button";
-import {CardContainer, PageContainer} from "../Components/App/App";
-import {LineData} from "lightweight-charts";
-import {httpsCallable} from "firebase/functions";
+import { Buttons } from "../Components/Atoms/Button/Button";
+import { CardContainer, PageContainer } from "../Components/App/App";
+import { LineData } from "lightweight-charts";
+import { httpsCallable } from "firebase/functions";
 import Graph from "../Components/CPVI/Graph";
 import CoinsForm from "../Components/Coins/CoinsForm";
 import NotificationContext from "../Contexts/Notification";
 import NotLoggedInPopup from "../Components/App/NotLoggedInPopup";
-import {useWindowSize} from "../hooks/useWindowSize";
+import { useWindowSize } from "../hooks/useWindowSize";
 import Confetti from "react-confetti";
 import CalculatingVotes from "../Components/CalculatingVotes";
 import { setInterval } from "timers";
@@ -30,6 +30,7 @@ import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
 import { decimal } from "../Components/Profile/utils";
+import Progress from "../Components/CPVI/Progress";
 
 export const Title = styled.h2`
   font: var(--font-style-normal) normal var(--font-weight-normal)
@@ -65,9 +66,9 @@ const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCal
 const SingleCoin = () => {
   let params = useParams();
   const translate = useTranslation();
-  const {user, userInfo,votesLast24Hours} = useContext(UserContext);
-  const {coins, totals,ws,socket} = useContext(CoinContext);
-  const {showModal} = useContext(NotificationContext);
+  const { user, userInfo, votesLast24Hours } = useContext(UserContext);
+  const { coins, totals, ws, socket } = useContext(CoinContext);
+  const { showModal } = useContext(NotificationContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
   const [voteId, setVoteId] = useState<string>();
@@ -76,20 +77,20 @@ const SingleCoin = () => {
 
   const [cpviData, setCpviData] = useState<LineData[]>();
   const mountedRef = useRef(true);
-  const {width, height} = useWindowSize();
+  const { width, height } = useWindowSize();
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
-  const [selectedTimeFrameArray,setSelectedTimeFrameArray]=useState<any>([])
-  const [graphLoading,setGraphLoading]=useState(false)
+  const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
+  const [graphLoading, setGraphLoading] = useState(false)
   const [cssDegree, setcssDegree] = useState<any>([]);
   const [votePrice, setvotePrice] = useState<any>([]);
   const [votedDetails, setVotedDetails] = useState<any>([]);
   const [voteNumber, setVoteNumber] = useState<any>([]);
-  const [coinUpdated,setCoinUpdated]=useState<{ [symbol: string]: Coin }>(coins)
+  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun,
     remainingTimer,
-    voteRules} = useContext(AppContext);
-  
+    voteRules } = useContext(AppContext);
+
   const newTimeframe: any = []
   const AllcssDegree: any = [];
   const AllvotePrice: any = [];
@@ -97,205 +98,205 @@ const SingleCoin = () => {
 
   useEffect(() => {
     if (!ws) return
-    console.log('websocket connected')
+    // console.log('websocket connected')
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      const symbol =message?.s?.slice(0, -4)
-  
+      const symbol = message?.s?.slice(0, -4)
+
       if (symbol && symbol == params?.id) {
         // @ts-ignore
         const dot = decimal[symbol]
-        
-        console.log('symbol',message?.s)
+
+        // console.log('symbol', message?.s)
         // @ts-ignore
-      setCoinUpdated((prevCoins) => ({
-        ...prevCoins,
-        [symbol]: {
-          ...prevCoins[symbol],
-          price:Number(message?.c).toFixed(dot?.decimal || 2),
-          
-        },
-      }));
-    }
-  
+        setCoinUpdated((prevCoins) => ({
+          ...prevCoins,
+          [symbol]: {
+            ...prevCoins[symbol],
+            price: Number(message?.c).toFixed(dot?.decimal || 2),
+
+          },
+        }));
+      }
+
     };
-  
-   
+
+
   }, [ws])
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      
-if (data?.result?.data[0].a){
-      setCoinUpdated((prevCoins) => ({
-        ...prevCoins,
-        ['CRO']: {
-          ...prevCoins['CRO'],
-          price: data?.result?.data[0]?.a,
-        },
-      }));
-    }
+
+      if (data?.result?.data[0].a) {
+        setCoinUpdated((prevCoins) => ({
+          ...prevCoins,
+          ['CRO']: {
+            ...prevCoins['CRO'],
+            price: data?.result?.data[0]?.a,
+          },
+        }));
+      }
     };
-  
+
   }, [socket])
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
       // if (!mountedRef.current) return null;
-      
+
       const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: 86400 });
-     
+
       return data.data as unknown as LineData[];
     }
   }, [params?.id, voteId, vote]);
-  
-// const getResultForPendingVote=async()=>{
-//   const data = await getResultPrice({
-//     coin1: "ETH",
-//     coin2: "",
-//     voteId: 'kJEjAQa6IwmwZGS3DRMI',
-//     voteTime: '1677839924282',
-//     valueVotingTime: '1563.00',
-//     expiration: '1677839984282',
-//     timestamp: '1677839984282'
-// });
-     
-//       return data.data as unknown as LineData[];
-// }
-// useEffect(() => {
-//   ws.onmessage = (event) => {
-//     const message = JSON.parse(event.data);
-//    console.log(message.c)
-//   // const updatedCoin= { ...coins};
-//   // updatedCoin.BTC={
-//   //   ...coins?.BTC,
-//   //   price:message.c
-//   // }
-//   // console.log('allcoin1',updatedCoin,coins)
-//     // 
-//     // const newPrice = parseFloat(message.k.c);
-//     // setCoins(updatedCoin);
-//   };
 
- 
-// }, [])
+  // const getResultForPendingVote=async()=>{
+  //   const data = await getResultPrice({
+  //     coin1: "ETH",
+  //     coin2: "",
+  //     voteId: 'kJEjAQa6IwmwZGS3DRMI',
+  //     voteTime: '1677839924282',
+  //     valueVotingTime: '1563.00',
+  //     expiration: '1677839984282',
+  //     timestamp: '1677839984282'
+  // });
+
+  //       return data.data as unknown as LineData[];
+  // }
+  // useEffect(() => {
+  //   ws.onmessage = (event) => {
+  //     const message = JSON.parse(event.data);
+  //    console.log(message.c)
+  //   // const updatedCoin= { ...coins};
+  //   // updatedCoin.BTC={
+  //   //   ...coins?.BTC,
+  //   //   price:message.c
+  //   // }
+  //   // console.log('allcoin1',updatedCoin,coins)
+  //     // 
+  //     // const newPrice = parseFloat(message.k.c);
+  //     // setCoins(updatedCoin);
+  //   };
+
+
+  // }, [])
 
   useEffect(() => {
     // 
-    
-    if(vote.timeframe) {
+
+    if (vote.timeframe) {
       setTimeout(() => {
-        getCpviData().then((data) => data && setCpviData(data));  
+        getCpviData().then((data) => data && setCpviData(data));
       }, 2000);
       // getDatas()
-      
-      
 
-      }
-   
+
+
+    }
+
   }, [voteId, getCpviData, vote]);
-// useEffect(() => {
+  // useEffect(() => {
 
-//   if(vote.timeframe && cpviData?.length) {
-//   var timer = setInterval( async() => {
-//     //  @ts-ignore
+  //   if(vote.timeframe && cpviData?.length) {
+  //   var timer = setInterval( async() => {
+  //     //  @ts-ignore
 
-    
-//       //  @ts-ignore
-//         cpviRealTimeData({id: params?.id, lastTimeFrame: cpviData[50].time}).then((data) => console.log('live data',data));  
-    
-//     }, 10000);
-//   }
-//   return () => {
-//     clearInterval(timer);
-//   }
-// }, [voteId,cpviData])
-useEffect(() => {
-  
-   
+
+  //       //  @ts-ignore
+  //         cpviRealTimeData({id: params?.id, lastTimeFrame: cpviData[50].time}).then((data) => console.log('live data',data));  
+
+  //     }, 10000);
+  //   }
+  //   return () => {
+  //     clearInterval(timer);
+  //   }
+  // }, [voteId,cpviData])
+  useEffect(() => {
+
+
     // const timer = setInterval( async() => {
-    
-      if(vote.timeframe) {
-      
-        getCpviData().then((data) => data && setCpviData(data));  
+
+    if (vote.timeframe) {
+
+      getCpviData().then((data) => data && setCpviData(data));
     }
     // }, 5000);
-  
-  // return () => {
-  //   clearInterval(timer);
-  // }
-}, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
-  
-  useEffect(() => {
-    const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
-  setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
-    
-  }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length])
-  
 
- 
-const calcVote = useCallback(async () => {
-    
+    // return () => {
+    //   clearInterval(timer);
+    // }
+  }, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
+
+  useEffect(() => {
+    const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
+
+  }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length])
+
+
+
+  const calcVote = useCallback(async () => {
+
     // if (!mountedRef.current) return null;
-    
+
     if (user?.uid && params?.id) {
-      const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframes[selectedTimeFrame || 0]?.seconds});
+      const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframes[selectedTimeFrame || 0]?.seconds });
       if (v) {
         // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
-        if (v.data().timeframe?.seconds===3600) setSelectedTimeFrameArray([...newTimeframe,0])
+        if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
         setVote(v.data());
         setVoteId(v.id);
-      }else  setVote({} as VoteResultProps);
+      } else setVote({} as VoteResultProps);
     }
-  }, [user?.uid, params?.id,selectedTimeFrame]);
+  }, [user?.uid, params?.id, selectedTimeFrame]);
 
 
-  const choseTimeFrame = async (timeframe:any) => {
+  const choseTimeFrame = async (timeframe: any) => {
 
     if (user?.uid && params?.id) {
-      const v = await Vote.getVote({ userId: user?.uid, coin: params?.id ,timeFrame:timeframe});
+      const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframe });
       if (v) {
-        
-       return v
+
+        return v
       }
     }
   }
 
   useEffect(() => {
 
-    
-    Promise.all([choseTimeFrame(timeframes[0]?.seconds),choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds),choseTimeFrame(timeframes[3]?.seconds)])
-    .then(responses => {
-      return Promise.all(responses.map((res,index) => {
-        console.log('vote',res,index)
-        if (res) {                  
-                 
-          // getLeftTime(res.data(), index);          
-          AllvoteValueObject[index] = res.data();
-          setAllButtonTime(AllvoteValueObject);
-          setVotedDetails(AllvoteValueObject);
-          newTimeframe.push(index)
-          
-          setSelectedTimeFrameArray(newTimeframe)
-        }
-        else{     
-          // AllvoteValueObject.splice(index, 1);               
-          // setAllButtonTime(AllvoteValueObject);
-          //  setVotedDetails(AllvoteValueObject);
-          //  newTimeframe.splice(index, 1);  
-          
-          //  setSelectedTimeFrameArray(newTimeframe)
-          
-        }
-      }))
-    })
-    .catch(error => {
-      console.error('promiseAll',error);
-    });
-   
-  }, [user?.uid, params?.id, selectedTimeFrame,forRun,voteId,vote])
-  
+
+    Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
+      .then(responses => {
+        return Promise.all(responses.map((res, index) => {
+          // console.log('vote', res, index)
+          if (res) {
+
+            // getLeftTime(res.data(), index);          
+            AllvoteValueObject[index] = res.data();
+            setAllButtonTime(AllvoteValueObject);
+            setVotedDetails(AllvoteValueObject);
+            newTimeframe.push(index)
+
+            setSelectedTimeFrameArray(newTimeframe)
+          }
+          else {
+            // AllvoteValueObject.splice(index, 1);               
+            // setAllButtonTime(AllvoteValueObject);
+            //  setVotedDetails(AllvoteValueObject);
+            //  newTimeframe.splice(index, 1);  
+
+            //  setSelectedTimeFrameArray(newTimeframe)
+
+          }
+        }))
+      })
+      .catch(error => {
+        console.error('promiseAll', error);
+      });
+
+  }, [user?.uid, params?.id, selectedTimeFrame, forRun, voteId, vote])
+
 
   useEffect(() => {
     return () => {
@@ -309,13 +310,13 @@ const calcVote = useCallback(async () => {
   //   setVoteId('');
   // }, [selectedTimeFrame]);
   useEffect(() => {
-    
+
     calcVote().then(void 0);
-    
+
     return () => {
       mountedRef.current = false;
-    };    
-  }, [calcVote,selectedTimeFrame]);
+    };
+  }, [calcVote, selectedTimeFrame]);
 
 
 
@@ -325,27 +326,27 @@ const calcVote = useCallback(async () => {
       onSnapshot(doc(db, "votes", voteId), (doc) => {
 
         // if () {
-          
-          setVote(doc.data() as VoteResultProps);
+
+        setVote(doc.data() as VoteResultProps);
         // }
 
-        
-        
-          // AllvoteValueObject = [];  
-          // setAllButtonTime([...allButtonTime,viewData]);
-        
-        
+
+
+        // AllvoteValueObject = [];  
+        // setAllButtonTime([...allButtonTime,viewData]);
+
+
 
       });
-        // setForRun(forRun + 1)
+      // setForRun(forRun + 1)
     }
 
   }, [voteId]);
 
 
 
-  const getLeftTime = (value: any,index:number) => {
-    
+  const getLeftTime = (value: any, index: number) => {
+
     let t = value.voteTime / 1000; //mili
     let d = value.timeframe.seconds; //second already
     let liveTime = Date.now() / 1000;
@@ -353,14 +354,14 @@ const calcVote = useCallback(async () => {
     let val = (ori - liveTime) / d;
     let deg = val * 360;
     AllcssDegree[index] = Math.round(deg);
-    AllvotePrice[index] =  value.valueVotingTime;
-    
-    if (deg >0) {
+    AllvotePrice[index] = value.valueVotingTime;
+
+    if (deg > 0) {
       setcssDegree(AllcssDegree);
       setvotePrice(AllvotePrice);
     }
   }
-  
+
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
 
@@ -370,43 +371,31 @@ const calcVote = useCallback(async () => {
       (vote.expiration && vote.success !== undefined) ||
       Date.now() >= vote?.expiration
     );
-  }, [vote.expiration, vote.success,selectedTimeFrame ]);
+  }, [vote.expiration, vote.success, selectedTimeFrame]);
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);
     }
   }, [canVote, loading]);
   useEffect(() => {
-    
+
     setGraphLoading(true);
-      setTimeout(() => {
-      
-        setGraphLoading(false);
-        
-      }, 2400);
-    
+    setTimeout(() => {
+
+      setGraphLoading(false);
+
+    }, 2400);
+
   }, [selectedTimeFrame]);
 
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
 
-  useEffect(() => {
-    console.log('component mounter')
-  
-    return () => {
-      console.log('component unmounted')
-  
-    }
-  }, [])
-
   const [popUpOpen, setpopUpOpen] = useState(false);
-
-  console.log(popUpOpen,"i am working popUpOpen")
-
   return (
     <>
       <audio className="d-none" ref={sound}>
-        <source src={src} type="audio/mpeg"/>
+        <source src={src} type="audio/mpeg" />
       </audio>
       {confetti && <Confetti
         width={width}
@@ -436,7 +425,7 @@ const calcVote = useCallback(async () => {
                           { merge: true }
                         ));
                     } else {
-                      showModal(<NotLoggedInPopup/>);
+                      showModal(<NotLoggedInPopup />);
                     }
                   }}
                   symbol={coin.symbol}
@@ -446,8 +435,8 @@ const calcVote = useCallback(async () => {
               </CardContainer>
               <Container>
                 {canVote && (
-                  <>{loading  ? (
-                    <CalculatingVotes/>
+                  <>{loading ? (
+                    <CalculatingVotes />
                   ) : (
                     <CoinsForm
                       sound={sound}
@@ -462,14 +451,14 @@ const calcVote = useCallback(async () => {
                     />
                   )}</>
                 )}
-                
+
                 <div className="text-center">
                   {!graphLoading && !canVote && user && voteId && (
                     <>
                       <VotedCard
                         {...{
                           vote,
-                          coins:coinUpdated,
+                          coins: coinUpdated,
                           totals,
                           symbol1,
                           symbol2,
@@ -480,17 +469,26 @@ const calcVote = useCallback(async () => {
                           setpopUpOpen
                         }}
                       />
+                      {console.log(cpviData, cpviData?.length ? cpviData[cpviData?.length - 1]?.value : 0, 'pkk')}
+                      {cpviData?.length && params?.id && (
+                        graphLoading ? <CalculatingVotes /> :
 
-                      { cpviData?.length && params?.id && (
-                        graphLoading?  <CalculatingVotes/>: 
-                        
-                        <Graph
-                          data={cpviData}
-                          totals={totals}
-                          symbol={params?.id}
-                        />
+                          <>
+                            <Progress
+                              totals={totals}
+                              progressData={totals[`${symbol1}`]}
+                              symbol1={'BULL'}
+                              symbol2={'BEAR'}
+                              pct={cpviData[cpviData?.length - 1]?.value || 0}
+                            />
+                            {/* <Graph
+                              data={cpviData}
+                              totals={totals}
+                              symbol={params?.id}
+                            /> */}
+                          </>
                       )}
-                      
+
                     </>
                   )}
                 </div>
@@ -518,33 +516,33 @@ const calcVote = useCallback(async () => {
                 />
               </Container>
               <div className="d-flex justify-content-center align-items-center mt-5 ">
-                    <Link to="" style={{textDecoration:'none'}}>
-                      <Other>
-                      {!voteNumber && remainingTimer ?                          
-                          <span style={{ marginLeft: '20px' }}>
-                            {/* @ts-ignore */}
-                            <Countdown date={remainingTimer} 
-                         renderer={({ hours, minutes, seconds, completed }) => {
-                        
-                          return (
-                            <span style={{color:'#6352e8',fontSize:'12px',fontWeight:400}}>
-                              {/* {hours < 10 ? `0${hours}` : hours}: */}
-                              {Number(voteRules?.maxVotes)} votes in {' '}
-                              {hours < 1 ? null : `${hours} :` }
-                              {minutes < 10 ? `0${minutes}` : minutes}:
-                              {seconds < 10 ? `0${seconds}` : seconds}
-                            </span>
-                          );
-                        
-                      }}
-                          /></span>
-                         :""}
+                <Link to="" style={{ textDecoration: 'none' }}>
+                  <Other>
+                    {!voteNumber && remainingTimer ?
+                      <span style={{ marginLeft: '20px' }}>
+                        {/* @ts-ignore */}
+                        <Countdown date={remainingTimer}
+                          renderer={({ hours, minutes, seconds, completed }) => {
 
-                      </Other>
-                    </Link>
-                </div>
+                            return (
+                              <span style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400 }}>
+                                {/* {hours < 10 ? `0${hours}` : hours}: */}
+                                {Number(voteRules?.maxVotes)} votes in {' '}
+                                {hours < 1 ? null : `${hours} :`}
+                                {minutes < 10 ? `0${minutes}` : minutes}:
+                                {seconds < 10 ? `0${seconds}` : seconds}
+                              </span>
+                            );
+
+                          }}
+                        /></span>
+                      : ""}
+
+                  </Other>
+                </Link>
+              </div>
               <div className="d-flex justify-content-center align-items-center mt-5 pb-5 mb-5">
-                <Link to="/coins" style={{textDecoration:'none'}}>
+                <Link to="/coins" style={{ textDecoration: 'none' }}>
                   <Other>{translate("vote for other coins")}</Other>
                 </Link>
               </div>
@@ -554,7 +552,7 @@ const calcVote = useCallback(async () => {
           )}
         </>
       </PageContainer>
-      <Container style={{marginTop:'-15px'}}>
+      <Container style={{ marginTop: '-15px' }}>
         <div className="text-center">
           <div>
             <Leaders

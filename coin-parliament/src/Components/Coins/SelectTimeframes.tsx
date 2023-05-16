@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Col, Container, Row} from "react-bootstrap";
-import {getNumTimeframes, TimeFrame} from "../../common/models/Vote";
+import { Col, Container, Row } from "react-bootstrap";
+import { getNumTimeframes, TimeFrame } from "../../common/models/Vote";
 import Icon from "../Atoms/Checkbox/Icon";
-import {Buttons} from "../Atoms/Button/Button";
-import {Title} from "../../Pages/SingleCoin";
+import { Buttons } from "../Atoms/Button/Button";
+import { Title } from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClick } from "../../common/utils/SoundClick";
@@ -37,10 +37,10 @@ const SelectTimeframes = ({
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const num = getNumTimeframes(timeframes);
-   const [buttonDetails, setButtonDetails] = useState<any>();
-   const [pariButtonDetails, setPariButtonDetails] = useState<any>();
+  const [buttonDetails, setButtonDetails] = useState<any>();
+  const [pariButtonDetails, setPariButtonDetails] = useState<any>();
   const { allButtonTime, allPariButtonTime } = useContext(AppContext);
-  
+
   useEffect(() => {
     setButtonDetails(allButtonTime)
   }, [allButtonTime])
@@ -48,10 +48,10 @@ const SelectTimeframes = ({
   useEffect(() => {
     setPariButtonDetails(allPariButtonTime);
   }, [allPariButtonTime]);
-  
-  
-  
-console.log(voted,"checkvoted")
+
+
+
+  // console.log(voted,"checkvoted")
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
     <div>
@@ -66,7 +66,7 @@ console.log(voted,"checkvoted")
         )}
         {num > 1 && title && (
           <div className='mb-3'>
-            <Title>{voted ? votedTitle:title}</Title>
+            <Title>{voted ? votedTitle : title}</Title>
           </div>
         )}
       </Row>
@@ -75,8 +75,8 @@ console.log(voted,"checkvoted")
           voted
             ? "row gx-5"
             : selected === undefined
-            ? "row gx-5 glow"
-            : "row gx-5"
+              ? "row gx-5 glow"
+              : "row gx-5"
         }
         id='test'
         style={{ minWidth: "310px" }}
@@ -88,7 +88,7 @@ console.log(voted,"checkvoted")
                 <Icon
                   inline='d-flex justify-content-center'
                   checked={timeframe.index === selected}
-                  
+
                   setChecked={() => {
                     selectTimeframe(timeframe);
                     handleSoundClick()
@@ -118,9 +118,9 @@ console.log(voted,"checkvoted")
                         ),
                         cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
                         // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
-                        votedDetails:votedDetails?.length > 0 ?votedDetails[k] : 0,
+                        votedDetails: votedDetails?.length > 0 ? votedDetails[k] : 0,
                         buttonDetails: buttonDetails && buttonDetails[k],
-                        PariButtonDetails:pariButtonDetails && pariButtonDetails[k]
+                        PariButtonDetails: pariButtonDetails && pariButtonDetails[k]
                       }}
                       showTimer={true}
                     >
@@ -132,8 +132,8 @@ console.log(voted,"checkvoted")
             );
           })}
       </Row>
-      
-    {/* </Container> */}
+
+      {/* </Container> */}
     </div>
   );
 };
