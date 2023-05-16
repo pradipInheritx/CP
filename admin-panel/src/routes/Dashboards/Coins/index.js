@@ -18,8 +18,8 @@ import {
   getCoins,
   setCurrentCoin
 } from "../../../redux/actions/Coins";
-import {  
-  getUsers,
+import {
+  getUsers
   // setCurrentUser
 } from "../../../redux/actions/Users";
 import AddEditCoin from "./AddEditCoin";
@@ -28,6 +28,7 @@ import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
 import CoinDetailView from "./CoinDetailView";
 import NoRecordFound from "./NoRecordFound";
+import UpdateCoinBar from "./UpdateCoinBar";
 
 const CoinsModule = () => {
   const classes = useStyles();
@@ -39,6 +40,7 @@ const CoinsModule = () => {
   const [ selected, setSelected ] = React.useState([]);
   const [ openViewDialog, setOpenViewDialog ] = useState(false);
   const [ openUserDialog, setOpenUserDialog ] = useState(false);
+  const [ openUpdatelog, setOpenUpdatelog ] = useState(false);
   const [ openConfirmDialog, setOpenConfirmDialog ] = useState(false);
   const [ selectedUser, setSelectedUser ] = useState({name: ""});
   const [ usersFetched, setUsersFetched ] = useState(false);
@@ -136,6 +138,15 @@ const CoinsModule = () => {
     setOpenUserDialog(true);
   };
 
+  const handleUpdateBar = user => {
+    dispatch(setCurrentCoin(user));
+    setOpenUpdatelog(true);
+  };
+  const handleCloseUpdateDialog = () => {
+    setOpenUpdatelog(false);
+    dispatch(setCurrentCoin(null));
+  };
+
   const handleUserDelete = user => {
     setSelectedUser(user);
     setOpenConfirmDialog(true);
@@ -190,6 +201,7 @@ const CoinsModule = () => {
                       row={row}
                       onRowClick={handleRowClick}
                       onUserEdit={handleUserEdit}
+                      onUpdateBar={handleUpdateBar}
                       onUserDelete={handleUserDelete}
                       onUserView={handleUserView}
                       isSelected={isSelected}
@@ -232,6 +244,12 @@ const CoinsModule = () => {
         <AddEditCoin
           open={openUserDialog}
           onCloseDialog={handleCloseUserDialog}
+        />
+      )}
+      {openUpdatelog && (
+        <UpdateCoinBar
+          open={openUpdatelog}
+          onCloseDialog={handleCloseUpdateDialog}
         />
       )}
       {openViewDialog && (

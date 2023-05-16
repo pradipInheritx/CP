@@ -34,7 +34,8 @@ const useStyles = makeStyles(theme => ({
 const getUserActions = user => {
   const actions = [
     {action: "view", label: "View", icon: <Visibility />},
-    {action: "edit", label: "Edit", icon: <Edit />},
+    // {action: "edit", label: "Edit", icon: <Edit />},
+    {action: "UpdateBar", label: "Update Bar", icon: <Edit />}
     // {action: "email", label: "Email", icon: <Mail />}
   ];
 
@@ -57,6 +58,7 @@ const PairListRow = ({
   isSelected,
   onRowClick,
   onUserEdit,
+  onUpdateBar,
   onUserDelete,
   onUserView
 }) => {
@@ -68,11 +70,12 @@ const PairListRow = ({
       onUserView(row);
     } else if (menu.action === "edit") {
       onUserEdit(row);
-    }
-    // else if (menu.action === "email") {
-    //   dispatch(sentMailToUser());
-    // }
-    else if (menu.action === "suspend") {
+    } else if (menu.action === "UpdateBar") {
+      onUpdateBar(row);
+    } else if (menu.action === "suspend") {
+      // else if (menu.action === "email") {
+      //   dispatch(sentMailToUser());
+      // }
       dispatch(updatePairStatus({id: row.id, status: "suspended"}));
     } else if (menu.action === "activate") {
       dispatch(updatePairStatus({id: row.id, status: "active"}));
@@ -119,18 +122,14 @@ const PairListRow = ({
       </TableCell>
       <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
       <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-     <TableCell>
-        {row.status === "suspended" ? (
-          `Suspended`
-        ) : (
-          row.status
-        )}
+      <TableCell>
+        {row.status === "suspended" ? `Suspended` : row.status}
       </TableCell>
       <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>     
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>      
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>      
-      
+      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
+      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
+      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
+
       {/* <TableCell component="th" id={labelId} scope="row" padding="none">
         <Box display="flex" alignItems="center">
           <Box mr={{xs: 4, md: 5}}>
@@ -159,8 +158,8 @@ const PairListRow = ({
       <TableCell>{timeFromNow(row.CMP)}</TableCell>
       <TableCell>{timeFromNow(row.Weight_Order_Book)}</TableCell>     
       <TableCell>{timeFromNow(row.Range_Result_CMP)}</TableCell>       */}
-      {/* <TableCell>{row.email}</TableCell> */}      
-      
+      {/* <TableCell>{row.email}</TableCell> */}
+
       {/* <TableCell align="right">{row.emailUsage} GB</TableCell> */}
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu

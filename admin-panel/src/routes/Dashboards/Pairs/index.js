@@ -18,16 +18,14 @@ import {
   getPairs,
   setCurrentPair
 } from "../../../redux/actions/Pairs";
-import {  
-  getUsers,
-  setCurrentUser
-} from "../../../redux/actions/Users";
+import {getUsers, setCurrentUser} from "../../../redux/actions/Users";
 import AddEditPair from "./AddEditPair";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
 import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
 import PairDetailView from "./PairDetailView";
 import NoRecordFound from "./NoRecordFound";
+import UpdatePairBar from "./UpdatePairBar";
 
 const PairsModule = () => {
   const classes = useStyles();
@@ -39,6 +37,7 @@ const PairsModule = () => {
   const [ selected, setSelected ] = React.useState([]);
   const [ openViewDialog, setOpenViewDialog ] = useState(false);
   const [ openUserDialog, setOpenUserDialog ] = useState(false);
+  const [ openUpdatelog, setOpenUpdatelog ] = useState(false);
   const [ openConfirmDialog, setOpenConfirmDialog ] = useState(false);
   const [ selectedUser, setSelectedUser ] = useState({name: ""});
   const [ usersFetched, setUsersFetched ] = useState(false);
@@ -136,6 +135,15 @@ const PairsModule = () => {
     setOpenUserDialog(true);
   };
 
+  const handleUpdateBar = user => {
+    dispatch(setCurrentPair(user));
+    setOpenUpdatelog(true);
+  };
+  const handleCloseUpdateDialog = () => {
+    setOpenUpdatelog(false);
+    dispatch(setCurrentPair(null));
+  };
+
   const handleUserDelete = user => {
     setSelectedUser(user);
     setOpenConfirmDialog(true);
@@ -190,6 +198,7 @@ const PairsModule = () => {
                       row={row}
                       onRowClick={handleRowClick}
                       onUserEdit={handleUserEdit}
+                      onUpdateBar={handleUpdateBar}
                       onUserDelete={handleUserDelete}
                       onUserView={handleUserView}
                       isSelected={isSelected}
@@ -232,6 +241,12 @@ const PairsModule = () => {
         <AddEditPair
           open={openUserDialog}
           onCloseDialog={handleCloseUserDialog}
+        />
+      )}
+      {openUpdatelog && (
+        <UpdatePairBar
+          open={openUpdatelog}
+          onCloseDialog={handleCloseUpdateDialog}
         />
       )}
       {openViewDialog && (
