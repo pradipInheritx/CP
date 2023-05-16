@@ -13,7 +13,7 @@ import Bull from "../icons/Bull";
 import NotificationContext, {ToastType} from "../../Contexts/Notification";
 import {voteProcedure} from "../Pairs/utils";
 import { UserProps } from "../../common/models/User";
-import { timeStamp } from "console";
+// import { timeStamp } from "console";
 import { cmpRangeCoin } from "../Profile/utils";
 
 export const directions = {
@@ -34,7 +34,8 @@ const CoinsForm = ({
   cssDegree,
   votePrice,
   votedDetails,
-  coinUpdated
+  coinUpdated,
+  hideButton,
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -47,17 +48,22 @@ const CoinsForm = ({
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
-  coinUpdated:any;
+  coinUpdated:any;   
+  hideButton?:any;
 }) => {
   const { votesLast24Hours,user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
   const { timeframes , voteRules: { maxVotes,timeLimit }} = useContext(AppContext);
- 
+
+  // console.log(timeframes,"timeframes")
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
   const id = "BullVsBearForm";
+
+  // console.log()
+
   useEffect(() => {
     window.scrollTo(0, 0);
     
@@ -65,7 +71,7 @@ const CoinsForm = ({
   }, []);
   
   const vote = useCallback(async () => {
-    console.log('coindata',coinUpdated[coin?.symbol]?.price)
+    // console.log('coindata',coinUpdated[coin?.symbol]?.price)
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -78,7 +84,7 @@ const CoinsForm = ({
       }
       // 1681801742363
       // 1681801734542
-      console.log('expirevotetime',Date.now() + chosenTimeframe.seconds * 1000 + 1597)
+      // console.log('expirevotetime',Date.now() + chosenTimeframe.seconds * 1000 + 1597)
       const ref = await addDoc<VoteResultProps>(
         collection(db, "votes").withConverter(voteConverter),
         {
@@ -91,7 +97,7 @@ const CoinsForm = ({
           userId: user?.uid,
           voteTime:Date.now(),
           // @ts-ignore
-          valueVotingTime:coinUpdated[coin?.symbol]?.price,
+          valueVotingTime:coinUpdated[coin?.symbol]?.symbol=='BTC' || coinUpdated[coin?.symbol]?.symbol=='ETH'? coinUpdated[coin?.symbol]?.price :coinUpdated[coin?.symbol]?.price + coinUpdated[coin?.symbol]?.randomDecimal,
           expiration:Date.now() + chosenTimeframe.seconds * 1000,
           voteId:`${coin.symbol}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps
@@ -148,6 +154,7 @@ const CoinsForm = ({
       {/* @ts-ignore */}
       <VoteForm
         {...{
+          hideButton,
           disabled,
           selectedTimeFrame,
           setSelectedTimeFrame,

@@ -126,7 +126,7 @@ const Minting = ({
   const translate = useTranslation();
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const {showReward,setShowReward,setRewardExtraVote } = useContext(AppContext);
+  const {showReward,setShowReward,setRewardExtraVote , inOutReward,setInOutReward ,setHeaderExtraVote} = useContext(AppContext);
 
   return (
     <React.Fragment>
@@ -159,15 +159,26 @@ const Minting = ({
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
-                setShowReward(1);     
+                setShowReward(1);  
+                setInOutReward(1);
                 // @ts-ignore
                 setRewardExtraVote(result?.data?.secondRewardExtraVotes);
                 setRewardTimer(result);
+                // setRewardExtraVote(10);
+                // setRewardTimer({
+                //       firstRewardCardType: "LEGENDARY",
+                //       firstRewardCardId: 42,
+                //       firstRewardCard: "SKY",
+                //       firstRewardCardCollection: "THINGS",
+                //       firstRewardCardSerialNo: "",
+                //       secondRewardExtraVotes: 8,
+                //       thirdRewardDiamonds: 25                  
+                // });
                 setLoading(false);
-                console.log("rewardresult", result);
+                // console.log("rewardresult", result);
               }
             }}
-            disabled={!claim || loading}
+            disabled={!claim || loading ||rewardTimer}
           >
             {!!claim && <Dot>{claim}</Dot>}
             {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
@@ -186,15 +197,22 @@ const Minting = ({
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
-                setShowReward(1);     
+                setShowReward(1);  
+                setInOutReward(1);
                 // @ts-ignore
                 setRewardExtraVote(result?.data?.secondRewardExtraVotes);
                 setRewardTimer(result);
+                // setRewardExtraVote(10);
+                // setRewardTimer({
+                //   firstRewardCard: "legendary",
+                //   secondRewardExtraVotes: 10,
+                //   thirdRewardDiamonds: 10
+                // });
                 setLoading(false);
                 console.log("rewardresult", result);
               }
             }}
-            disabled={!claim || loading}
+            disabled={!claim || loading ||rewardTimer}
           >
             {!!claim && <Dot>{claim}</Dot>}
             {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}

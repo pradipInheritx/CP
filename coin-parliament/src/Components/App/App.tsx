@@ -176,6 +176,27 @@ export const PageContainer = styled(Container)`
     `0 0 ${props.radius || 0}px 0`};
   opacity: 1;
   padding: 0;
+  z-index:20000;
+`;
+
+export const ZoomCss = css`
+  opacity: 1;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width: 100%;
+  height: 150vh;
+  left: 50%;
+  transform: translate(-50%, -20%);    
+  transition: opacity .2s;
+  background-color: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;   
+  transition:  opacity 1s;   
+  
 `;
 
 export const CardContainer = styled.div`

@@ -77,17 +77,26 @@ const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
 
-function ModalForResult({ popUpOpen, vote, type, setpopUpOpen }: {
-  popUpOpen?: any,
-  vote: any,
-  type?: any,
-  setpopUpOpen?: any,
+function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selectedTimeFrame,hideButton}: {
+    popUpOpen?: any,
+    vote: any,
+    type?: any,
+    setpopUpOpen?:any,
+    setHideButton?:any,
+    selectedTimeFrame?:any,
+    hideButton?:any,
 }) {
   useEffect(() => {
-    if (popUpOpen) {
-      console.log("i am working")
-      handleShow()
+    if (popUpOpen) {        
+      // console.log("i am working")
+      handleShow()  
+
       voteEndFinish()
+      // setHideButton(() => {
+      //   hideButton.filter((item:any, index:number) => {
+      //     return selectedTimeFrame != item
+      //   })
+      // })
       setpopUpOpen(false)
     }
   }, [popUpOpen])
@@ -100,7 +109,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen }: {
   const { coins } = useContext(CoinsContext);
   const { showBack, setShowBack } = useContext(AppContext);
   const winner = calculateWinner(vote);
-  // console.log(vote,"allVote")
+  // console.log(vote,"allVote1")
   const voteCoins = vote?.coin?.split("-");
   const pair = voteCoins?.length > 1;
 
@@ -109,18 +118,19 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen }: {
   const coin = coins[vote?.coin] || {};
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
-  const votelength = Object.keys(vote).length
-
-  // console.log(vote, "valueExpirationTime")
-
+ const votelength =Object.keys(vote).length
+  
+  // console.log(vote,"valueExpirationTime")s
+  
   return (
-    <div>
-      {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
-      <Modal show={show} onHide={handleClose}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+         <div>
+          {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
+      <Modal show={show} onHide={handleClose}  
+      backdrop="static"   
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      >           
         <div className='d-flex justify-content-between'>
           <div></div>
           <div className='text-center mb-2' style={{
@@ -131,7 +141,12 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen }: {
           <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={() => {
               setShow(false)
-            }}></button>
+              setHideButton(() => {
+                return hideButton.filter((item: any) => {
+                  return  item != selectedTimeFrame
+                })
+              })
+              }}></button>
           </div>
         </div>
         <Modal.Body>

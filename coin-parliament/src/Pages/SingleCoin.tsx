@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Button, Container, Modal } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import CoinContext from "../Contexts/CoinsContext";
 
 import { Coin } from "../common/models/Coin";
@@ -22,15 +22,15 @@ import Graph from "../Components/CPVI/Graph";
 import CoinsForm from "../Components/Coins/CoinsForm";
 import NotificationContext from "../Contexts/Notification";
 import NotLoggedInPopup from "../Components/App/NotLoggedInPopup";
-import { useWindowSize } from "../hooks/useWindowSize";
-import Confetti from "react-confetti";
+// import {useWindowSize} from "../hooks/useWindowSize";
+// import Confetti from "react-confetti";
 import CalculatingVotes from "../Components/CalculatingVotes";
-import { setInterval } from "timers";
 import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
 import { decimal } from "../Components/Profile/utils";
 import Progress from "../Components/CPVI/Progress";
+// import Speedometer from "./Speedometer";
 
 export const Title = styled.h2`
   font: var(--font-style-normal) normal var(--font-weight-normal)
@@ -60,8 +60,8 @@ export const Other = styled(Buttons.ClickableText)`
 
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 // const getDatas = httpsCallable(functions, "getDatas");
-const cpviRealTimeData = httpsCallable(functions, "cpviRealTimeData");
-const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+// const cpviRealTimeData = httpsCallable(functions, "cpviRealTimeData");
+// const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
 const SingleCoin = () => {
   let params = useParams();
@@ -77,12 +77,12 @@ const SingleCoin = () => {
 
   const [cpviData, setCpviData] = useState<LineData[]>();
   const mountedRef = useRef(true);
-  const { width, height } = useWindowSize();
+  // const {width, height} = useWindowSize();
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
-  const [cssDegree, setcssDegree] = useState<any>([]);
-  const [votePrice, setvotePrice] = useState<any>([]);
+  // const [cssDegree, setcssDegree] = useState<any>([]);
+  // const [votePrice, setvotePrice] = useState<any>([]);
   const [votedDetails, setVotedDetails] = useState<any>([]);
   const [voteNumber, setVoteNumber] = useState<any>([]);
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
@@ -91,30 +91,65 @@ const SingleCoin = () => {
     remainingTimer,
     voteRules } = useContext(AppContext);
 
-  const newTimeframe: any = []
-  const AllcssDegree: any = [];
-  const AllvotePrice: any = [];
-  const AllvoteValueObject: any = [];
 
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+
+  //     setCount(prevCount => prevCount +( Math.random()<0.5?-1:1));
+  //   }, 2000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
+
+  const newTimeframe: any = []
+  // const AllcssDegree: any = [];
+  // const AllvotePrice: any = [];
+  const AllvoteValueObject: any = [];
+  const updateRandomDecimal = () => {
+    setCoinUpdated((prevCoins) => ({
+      ...prevCoins,
+      [symbol1]: {
+        ...prevCoins[symbol1],
+
+        randomDecimal: (prevCoins[symbol1]?.randomDecimal || 5) + (Math.random() < 5 ? -1 : 1)
+      },
+    }));
+  }
+  useEffect(() => {
+    if (symbol1 == 'BTC' || symbol1 == 'ETH') return
+    const interval = setInterval(function () {
+      updateRandomDecimal()
+    }, 1500);
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+  // console.log('coinprice',coinUpdated[symbol1]?.randomDecimal)
   useEffect(() => {
     if (!ws) return
-    // console.log('websocket connected')
+
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       const symbol = message?.s?.slice(0, -4)
 
       if (symbol && symbol == params?.id) {
-        // @ts-ignore
+        // console.log('coinprice',message?.c)
         const dot = decimal[symbol]
 
-        // console.log('symbol', message?.s)
-        // @ts-ignore
+        // setCount(prevCount => 5);
+        // for (let obj in  livePrice.current) {
+        //   // Update the property value of prop1 in each object
+        //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
+        // }
+
+        // console.log('coinprice',Number(message?.c).toFixed(dot?.decimal || 2),coinUpdated[symbol].price,Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(coinUpdated[symbol].price))
         setCoinUpdated((prevCoins) => ({
           ...prevCoins,
           [symbol]: {
             ...prevCoins[symbol],
             price: Number(message?.c).toFixed(dot?.decimal || 2),
-
+            randomDecimal: Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(prevCoins[symbol]?.price) ? prevCoins[symbol]?.randomDecimal : 5
           },
         }));
       }
@@ -134,6 +169,7 @@ const SingleCoin = () => {
           ['CRO']: {
             ...prevCoins['CRO'],
             price: data?.result?.data[0]?.a,
+            randomDecimal: 5
           },
         }));
       }
@@ -149,84 +185,24 @@ const SingleCoin = () => {
 
       return data.data as unknown as LineData[];
     }
-  }, [params?.id, voteId, vote]);
+  }, [params?.id, voteId, vote?.voteTime]);
 
-  // const getResultForPendingVote=async()=>{
-  //   const data = await getResultPrice({
-  //     coin1: "ETH",
-  //     coin2: "",
-  //     voteId: 'kJEjAQa6IwmwZGS3DRMI',
-  //     voteTime: '1677839924282',
-  //     valueVotingTime: '1563.00',
-  //     expiration: '1677839984282',
-  //     timestamp: '1677839984282'
-  // });
 
-  //       return data.data as unknown as LineData[];
-  // }
+
   // useEffect(() => {
-  //   ws.onmessage = (event) => {
-  //     const message = JSON.parse(event.data);
-  //    console.log(message.c)
-  //   // const updatedCoin= { ...coins};
-  //   // updatedCoin.BTC={
-  //   //   ...coins?.BTC,
-  //   //   price:message.c
-  //   // }
-  //   // console.log('allcoin1',updatedCoin,coins)
-  //     // 
-  //     // const newPrice = parseFloat(message.k.c);
-  //     // setCoins(updatedCoin);
-  //   };
-
-
-  // }, [])
+  //   if(vote.timeframe) {
+  //     setTimeout(() => {
+  //       getCpviData().then((data) => data && setCpviData(data));  
+  //     }, 2000);
+  //     }
+  // }, [voteId, getCpviData, vote]);
 
   useEffect(() => {
-    // 
-
-    if (vote.timeframe) {
-      setTimeout(() => {
-        getCpviData().then((data) => data && setCpviData(data));
-      }, 2000);
-      // getDatas()
-
-
-
-    }
-
-  }, [voteId, getCpviData, vote]);
-  // useEffect(() => {
-
-  //   if(vote.timeframe && cpviData?.length) {
-  //   var timer = setInterval( async() => {
-  //     //  @ts-ignore
-
-
-  //       //  @ts-ignore
-  //         cpviRealTimeData({id: params?.id, lastTimeFrame: cpviData[50].time}).then((data) => console.log('live data',data));  
-
-  //     }, 10000);
-  //   }
-  //   return () => {
-  //     clearInterval(timer);
-  //   }
-  // }, [voteId,cpviData])
-  useEffect(() => {
-
-
-    // const timer = setInterval( async() => {
-
     if (vote.timeframe) {
 
       getCpviData().then((data) => data && setCpviData(data));
     }
-    // }, 5000);
-
-    // return () => {
-    //   clearInterval(timer);
-    // }
-  }, [voteId, getCpviData, vote, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
+  }, [voteId, getCpviData, vote?.voteTime, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
 
   useEffect(() => {
     const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
@@ -269,7 +245,7 @@ const SingleCoin = () => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
       .then(responses => {
         return Promise.all(responses.map((res, index) => {
-          // console.log('vote', res, index)
+
           if (res) {
 
             // getLeftTime(res.data(), index);          
@@ -345,25 +321,10 @@ const SingleCoin = () => {
 
 
 
-  const getLeftTime = (value: any, index: number) => {
 
-    let t = value.voteTime / 1000; //mili
-    let d = value.timeframe.seconds; //second already
-    let liveTime = Date.now() / 1000;
-    let ori = t + d;
-    let val = (ori - liveTime) / d;
-    let deg = val * 360;
-    AllcssDegree[index] = Math.round(deg);
-    AllvotePrice[index] = value.valueVotingTime;
-
-    if (deg > 0) {
-      setcssDegree(AllcssDegree);
-      setvotePrice(AllvotePrice);
-    }
-  }
 
   const sound = useRef<HTMLAudioElement>(null);
-  const src = require("../assets/sounds/applause.mp3").default;
+  // const src = require("../assets/sounds/applause.mp3").default;
 
   const canVote = useMemo(() => {
     return (
@@ -391,16 +352,22 @@ const SingleCoin = () => {
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
   const coin = coins[params?.id || ""] || ({} as Coin);
 
+
+
   const [popUpOpen, setpopUpOpen] = useState(false);
+  const [hideButton, setHideButton] = useState([]);
+
+  // console.log(hideButton,"i am working popUpOpen")
+
   return (
     <>
-      <audio className="d-none" ref={sound}>
-        <source src={src} type="audio/mpeg" />
-      </audio>
-      {confetti && <Confetti
+      {/* <audio className="d-none" ref={sound}>
+        <source src={src} type="audio/mpeg"/>
+      </audio> */}
+      {/* {confetti && <Confetti
         width={width}
         height={height}
-      />}
+      />} */}
       <PageContainer fluid radius={87}>
         <>
           {coin ? (
@@ -439,6 +406,7 @@ const SingleCoin = () => {
                     <CalculatingVotes />
                   ) : (
                     <CoinsForm
+                      hideButton={hideButton}
                       sound={sound}
                       coin={coin}
                       coinUpdated={coinUpdated}
@@ -453,7 +421,8 @@ const SingleCoin = () => {
                 )}
 
                 <div className="text-center">
-                  {!graphLoading && !canVote && user && voteId && (
+                  {/* @ts-ignore */}
+                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
                     <>
                       <VotedCard
                         {...{
@@ -466,13 +435,16 @@ const SingleCoin = () => {
                           selectedTimeFrame,
                           setSelectedTimeFrame,
                           selectedTimeFrameArray,
-                          setpopUpOpen
+                          setpopUpOpen,
+                          setHideButton,
+                          hideButton
                         }}
                       />
-                      {/* {console.log(cpviData, cpviData?.length ? cpviData[cpviData?.length - 1]?.value : 0, 'pkk')} */}
+
+                      {/* <Speedometer/> */}
+
                       {cpviData?.length && params?.id && (
                         graphLoading ? <CalculatingVotes /> :
-
                           <>
                             <Progress
                               totals={totals}
@@ -481,6 +453,7 @@ const SingleCoin = () => {
                               symbol2={'BEAR'}
                               pct={cpviData[cpviData?.length - 1]?.value || 0}
                             />
+
                             {/* <Graph
                               data={cpviData}
                               totals={totals}
@@ -510,7 +483,10 @@ const SingleCoin = () => {
                   </div>      */}
                 <ModalForResult
                   popUpOpen={popUpOpen}
+                  selectedTimeFrame={selectedTimeFrame}
                   setpopUpOpen={setpopUpOpen}
+                  setHideButton={setHideButton}
+                  hideButton={hideButton}
                   vote={vote}
                   type={"coin"}
                 />

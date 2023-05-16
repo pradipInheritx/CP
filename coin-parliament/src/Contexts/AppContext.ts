@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  inOutReward?: any,
+  setInOutReward?: any,
   rewardExtraVote?:any,
   setRewardExtraVote?:any,
   showReward?: any,

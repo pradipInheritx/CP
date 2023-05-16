@@ -1,4 +1,4 @@
-// import randomWords from "random-words";
+import randomWords from "random-words";
 
 export const generateUsername = () => {
   const alphabet = "abcdefghijklmnopqrstuvwxyz";

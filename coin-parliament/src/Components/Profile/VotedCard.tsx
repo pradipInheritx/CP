@@ -241,13 +241,14 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                   )} */}
                                   {vote?.valueExpirationTime > vote?.valueVotingTime?'BULL':'BEAR'} {' '}
                                   {vote.valueExpirationTime &&
-                                    formatCurrency(                                                                          
-                                      index === undefined
-                                        ? (vote?.valueExpirationTime as unknown as number)
-                                        : (
-                                            vote?.valueExpirationTime as number[]
-                                      )[index]
-                                      )
+                                   vote?.valueExpirationTime
+                                    // formatCurrency(                                                                          
+                                    //   index === undefined
+                                    //     ? (vote?.valueExpirationTime as unknown as number)
+                                    //     : (
+                                    //         vote?.valueExpirationTime as number[]
+                                    //   )[index]
+                                    //   )
                                     }
                                 </Col>
                                   <Col

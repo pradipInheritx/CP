@@ -102,7 +102,9 @@ const VotedCard = ({
   selectedTimeFrameArray,
   cssDegree,
   votePrice,
-  setpopUpOpen
+  setpopUpOpen,
+  setHideButton,
+  hideButton
   
 }: {
   vote: VoteResultProps;
@@ -115,9 +117,11 @@ const VotedCard = ({
   selectedTimeFrameArray?: any;
   cssDegree?:any;
   votePrice?:any;
-  setpopUpOpen?:any
-  }) => {
+    setpopUpOpen?: any;
+    setHideButton?: any;
+    hideButton?: any;
   
+  }) => {  
   const [lastTenSec, setLastTenSec] = useState<any>(false);
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
   const getBorderColor = () => {
@@ -180,10 +184,9 @@ const VotedCard = ({
 
   useEffect(() => {
     console.log('component mounter vote')
-  
+   setHideButton([...hideButton,selectedTimeFrame])
     return () => {
       console.log('component unmounted vote')
-  
     }
   }, [])
 
@@ -203,7 +206,7 @@ const VotedCard = ({
   const votedCoin = coin2 ? coins[voted] : coins[symbol1];
 
 
-  
+  // console.log(coins,"votedCoin")
   
   let row1 = "",
     row2 = "",
@@ -267,7 +270,25 @@ const VotedCard = ({
           <div className="w-100 px-3">
             <div className="d-flex justify-content-center mb-1">
               <p style={{color:"#2D2C3C"}} className="poppins-normal-blackcurrant-14px mx-2 "> {row3} VOTE </p>
-              </div>
+            </div>
+            <div className="my-2">
+            <YourVote>YOUR CURRENT VOTE IMPACT</YourVote> 
+             
+            </div>            
+            <div>
+              <RangeSilder
+              //  lastTenSec={lastTenSec}
+               vote={vote}
+               coins={coins}
+               symbol1={symbol1}
+               symbol2={symbol2}
+              />
+            </div>
+            <div className="my-2">
+              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen} 
+                setLastTenSec={setLastTenSec}
+              />
+            </div>
             <BitcoinBTCBULL24H3864490
               className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
             >
@@ -277,24 +298,8 @@ const VotedCard = ({
               <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2?"You voted for ":"" }{ row1}</Row1>
               <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1>              
             </BitcoinBTCBULL24H3864490>
-            <div className="my-2">
-              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
-                setLastTenSec={setLastTenSec}
-              />
-            </div>
-            <div className="my-2">
-            <YourVote>YOUR CURRENT VOTE IMPACT</YourVote> 
-             
-            </div>
-            <div>
-              <RangeSilder
-              lastTenSec={lastTenSec}
-              vote={vote}
-              coins={coins}
-              symbol1={symbol1}
-              symbol2={symbol2}
-              />
-            </div>
+            
+            
             
             {/* <div className="d-flex align-items-center justify-content-center w-100">
                
@@ -333,10 +338,11 @@ export default VotedCard;
 let getresultFlag:any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec}:
+export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec ,}:
   {
     expirationTime: number, vote?: any, voteId?: any
-  coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any,setLastTenSec?:any
+    coins?: any, symbol1?: any, symbol2?: any, openPopup?: any, setLastTenSec?: any
+  
   }) => {
 
 
@@ -376,7 +382,8 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
      if (data.data == null) {
         // console.log(data.data,"i am working data.data")
         // getVotes(index).then(void 0);
-        openPopup(true)
+       openPopup(true)
+       
       }
     }).catch(err => {
         if (err && err.message) {
@@ -404,7 +411,10 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
             checkprice()
           }
       // return data;
-          return <span style={{color:"#7767f7"}}>{texts.LoadingText}</span>;
+          return <span style={{ color: "#7767f7" }}>
+            {texts.Calculatingvoteresult}
+          
+          </span>;
         } else {
           return (
             <span className="" style={{color:'#6352e8',fontSize:'20px',fontWeight:400,marginLeft:"10px"}}>

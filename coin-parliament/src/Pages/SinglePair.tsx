@@ -59,6 +59,7 @@ const SinglePair = () => {
     voteRules
   } = useContext(AppContext);
   const [popUpOpen, setpopUpOpen] = useState(false);
+  const [hideButton, setHideButton] = useState([]);
   
   const mountedRef = useRef(true);
   const newTimeframe:any= []
@@ -71,6 +72,31 @@ const SinglePair = () => {
       return data;
     }
   }, [params?.id, voteId, vote,selectedTimeFrame]);
+  const updateRandomDecimal=()=>{
+    setCoinUpdated((prevCoins) => ({
+      ...prevCoins,
+      [symbol1]: {
+        ...prevCoins[symbol1],
+      
+        randomDecimal:(prevCoins[symbol1]?.randomDecimal ||5) + (Math.random()<5?-1:1)
+      },
+      [symbol2]: {
+        ...prevCoins[symbol2],
+      
+        randomDecimal:(prevCoins[symbol2]?.randomDecimal ||5) + (Math.random()<5?-1:1)
+      },
+    }));
+  }
+  useEffect(() => {
+    if(symbol1=='BTC'||symbol1=='ETH') return
+    const interval = setInterval(function () {
+      updateRandomDecimal()
+    }, 1500);
+  
+    return () => {
+     clearInterval(interval) 
+    }
+  }, [])
   useEffect(() => {
     if (!ws) return
     console.log('websocket connected')
@@ -87,6 +113,7 @@ const SinglePair = () => {
         [symbol]: {
           ...prevCoins[symbol],        
           price:Number(message?.c).toFixed(dot?.decimal || 2),
+          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol].price)?prevCoins[symbol].randomDecimal:5
         },
       }));
     }
@@ -106,6 +133,7 @@ if (data?.result?.data[0].a){
         ['CRO']: {
           ...prevCoins['CRO'],
           price: data?.result?.data[0]?.a,
+          randomDecimal:5
         },
       }));
     }
@@ -181,7 +209,7 @@ useEffect(() => {
       mountedRef.current = false;
     };
   }, []);
-  console.log('selectedTimeframe',selectedTimeFrameArray)
+
   useEffect(() => {
     if (user?.uid && params?.id) {
       Vote.getVote({userId: user?.uid, coin: params?.id, timeFrame:timeframes[selectedTimeFrame || 0]?.seconds }).then((v) => {
@@ -229,7 +257,7 @@ useEffect(() => {
   
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-
+console.log(vote , vote?.valueVotingTime, vote?.valueExpirationTime,"vote?.valueExpirationTime" )
   return (
     <>
       <audio className="d-none" ref={sound}>
@@ -280,7 +308,8 @@ useEffect(() => {
                       {loading ? (
                         <CalculatingVotes/>
                       ) : (
-                        <PairsForm
+                          <PairsForm
+                          hideButton={hideButton}
                           sound={sound}
                           coin1={coin1}
                           coin2={coin2}
@@ -296,11 +325,13 @@ useEffect(() => {
                   )}
                 </div>
                 <div className="text-center">
-                  {!graphLoading&& !canVote && user && voteId && (
+                  {/* @ts-ignore */}
+                  {!graphLoading&& (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
                     <>
                       <VotedCard
                         {...{vote, coins:coinUpdated, totals, symbol1, symbol2, voteId,selectedTimeFrame,
-                          setSelectedTimeFrame,selectedTimeFrameArray , setpopUpOpen}}
+                          setSelectedTimeFrame, selectedTimeFrameArray, setpopUpOpen, hideButton, setHideButton
+                        }}
                       />
                      {graphLoading? <CalculatingVotes/>:
                      <Progress
@@ -314,7 +345,10 @@ useEffect(() => {
                   {vote && vote?.valueVotingTime && vote?.valueExpirationTime &&  <ModalForResult
                     popUpOpen={popUpOpen}
                     setpopUpOpen={setpopUpOpen}
+                    setHideButton={setHideButton}
                     vote={vote && vote}
+                    selectedTimeFrame={selectedTimeFrame}                                    
+                  hideButton={hideButton}
                     type={"pair"}
                   />}
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
