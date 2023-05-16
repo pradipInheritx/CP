@@ -55,12 +55,12 @@ const Home = () => {
                 <Image
                   src={src}
                   style={{
-                    width: width && width > 969 ? "auto" : "100%",
+                    width: width && width > 969 ? "100%" : "100%",
                     height:
                       width && width > 969
                         ? "auto"
                         : "auto",
-                    // marginTop: width && width > 969 ? -50 : -130,
+                    marginTop: width && width > 969 ? "0" : "80px",
                     // marginTop:'120px',
                     position: "absolute",
                   }}
@@ -90,7 +90,7 @@ const Home = () => {
               maxWidth: "250px",
             }}
           >
-             <h2
+             {/* <h2
                     style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
                     className=' d-block text-center mb-2'
                   >
@@ -100,26 +100,29 @@ const Home = () => {
                     >
                       {translate("Vote to Earn")}
                     </strong>
+                  </h2> */}
                     {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
                     {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-                  </h2>
             <H2
               style={{
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                // marginTop: "200px",
+                marginTop: "130px",
+
               }}
-              className="mb-4"
+              // className="mb-4"
+                className=' d-block text-center mb-4'
             >
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
-             <><h2
+            <>
+              {/* <h2
              style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
              className=' d-block text-center mb-2'
            >
@@ -129,20 +132,22 @@ const Home = () => {
              >
                {translate("Vote to Earn")}
              </strong>
+           </h2> */}
              {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
            <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
          </TextContainer> */}
              {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-           </h2>
             <H2
               style={{
                 // zIndex: 1,
                 fontWeight: "400",
                 position: "relative",
                 // marginTop: "200px",
-                fontSize: "30px",
+                  fontSize: "30px",
+                marginTop:window?.screen?.width<768?'100px': "222px",
               }}
-              className="mb-4"
+                // className="mb-4"
+                className=' d-block text-center mb-2 mb-4'
             >
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
