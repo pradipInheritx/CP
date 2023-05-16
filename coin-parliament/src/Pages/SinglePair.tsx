@@ -326,7 +326,7 @@ console.log(vote , vote?.valueVotingTime, vote?.valueExpirationTime,"vote?.value
                 </div>
                 <div className="text-center">
                   {/* @ts-ignore */}
-                  {!graphLoading&& (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
+                  {!graphLoading&& (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
                     <>
                       <VotedCard
                         {...{vote, coins:coinUpdated, totals, symbol1, symbol2, voteId,selectedTimeFrame,
@@ -342,7 +342,8 @@ console.log(vote , vote?.valueVotingTime, vote?.valueExpirationTime,"vote?.value
                       />} 
                     </>
                   )}
-                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime &&  <ModalForResult
+                  {/* @ts-ignore */}
+                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime && hideButton.includes(selectedTimeFrame && selectedTimeFrame) && <ModalForResult
                     popUpOpen={popUpOpen}
                     setpopUpOpen={setpopUpOpen}
                     setHideButton={setHideButton}

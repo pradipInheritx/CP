@@ -359,6 +359,8 @@ const SingleCoin = () => {
 
   // console.log(hideButton,"i am working popUpOpen")
 
+
+
   return (
     <>
       {/* <audio className="d-none" ref={sound}>
@@ -422,7 +424,7 @@ const SingleCoin = () => {
 
                 <div className="text-center">
                   {/* @ts-ignore */}
-                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
+                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame )) && user && voteId &&  (
                     <>
                       <VotedCard
                         {...{
@@ -481,6 +483,9 @@ const SingleCoin = () => {
                       </Modal.Footer>
                     </Modal>
                   </div>      */}
+                {
+                  // @ts-ignore
+                   hideButton.includes(selectedTimeFrame && selectedTimeFrame) &&
                 <ModalForResult
                   popUpOpen={popUpOpen}
                   selectedTimeFrame={selectedTimeFrame}
@@ -490,6 +495,7 @@ const SingleCoin = () => {
                   vote={vote}
                   type={"coin"}
                 />
+                }
               </Container>
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                 <Link to="" style={{ textDecoration: 'none' }}>
