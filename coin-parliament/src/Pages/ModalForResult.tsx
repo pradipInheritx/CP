@@ -77,7 +77,6 @@ const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
 
-<<<<<<< HEAD
 function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selectedTimeFrame,hideButton}: {
     popUpOpen?: any,
     vote: any,
@@ -92,18 +91,6 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selecte
       // console.log("i am working")
       handleShow()  
 
-=======
-function ModalForResult({ popUpOpen, vote, type, setpopUpOpen }: {
-  popUpOpen?: any,
-  vote: any,
-  type?: any,
-  setpopUpOpen?: any,
-}) {
-  useEffect(() => {
-    if (popUpOpen) {
-      console.log("i am working")
-      handleShow()
->>>>>>> 74cdb28440d7449a91a52ba9959879fbd1d3f975
       voteEndFinish()
       // setHideButton(() => {
       //   hideButton.filter((item:any, index:number) => {
