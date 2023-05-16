@@ -41,7 +41,7 @@ const Home = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-  const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
+  const src = `/hpbanner${width && width > 979 ? "" : ""}.jpg`;
 
   
   return (
@@ -56,7 +56,7 @@ const Home = () => {
                 <Image
                   src={src}
                   style={{
-                    width: width && width > 969 ? "auto" : "100%",
+                    width: width && width > 969 ? "100%" : "100%",
                     height:
                       width && width > 969
                         ? "auto"
