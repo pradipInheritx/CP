@@ -41,7 +41,7 @@ const Home = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-  const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
+  const src = `/hpbanner${width && width > 979 ? "" : ""}.jpg`;
 
   
   return (
@@ -53,10 +53,10 @@ const Home = () => {
             {!(login || firstTimeLogin) && (
               <>
               
-                {/* <Image
+                <Image
                   src={src}
                   style={{
-                    width: width && width > 969 ? "auto" : "100%",
+                    width: width && width > 969 ? "100%" : "100%",
                     height:
                       width && width > 969
                         ? "auto"
@@ -65,7 +65,7 @@ const Home = () => {
                     // marginTop:'120px',
                     position: "absolute",
                   }}
-                /> */}
+                />
                 {window.screen.width>768 && <h2
                     style={{ zIndex: 0, position: "absolute",top:'130px' }}
                     className=' d-block'
