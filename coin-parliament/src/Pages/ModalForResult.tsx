@@ -77,19 +77,21 @@ const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
 
-function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selectedTimeFrame,hideButton}: {
-    popUpOpen?: any,
-    vote: any,
-    type?: any,
-    setpopUpOpen?:any,
-    setHideButton?:any,
-    selectedTimeFrame?:any,
-    hideButton?:any,
+function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton }: {
+  popUpOpen?: any,
+  vote: any,
+  type?: any,
+  setpopUpOpen?: any,
+  setHideButton?: any,
+  selectedTimeFrame?: any,
+  hideButton?: any,
 }) {
+
+
   useEffect(() => {
-    if (popUpOpen) {        
+    if (popUpOpen) {
       // console.log("i am working")
-      handleShow()  
+      handleShow()
 
       voteEndFinish()
       // setHideButton(() => {
@@ -118,19 +120,19 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selecte
   const coin = coins[vote?.coin] || {};
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
- const votelength =Object.keys(vote).length
-  
+  const votelength = Object.keys(vote).length
+
   // console.log(vote,"valueExpirationTime")s
-  
+
   return (
-         <div>
-          {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
-      <Modal show={show} onHide={handleClose}  
-      backdrop="static"   
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-      >           
+    <div>
+      {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
+      <Modal show={show} onHide={handleClose}
+        backdrop="static"
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
         <div className='d-flex justify-content-between'>
           <div></div>
           <div className='text-center mb-2' style={{
@@ -143,10 +145,10 @@ function ModalForResult({ popUpOpen,vote,type,setpopUpOpen,setHideButton,selecte
               setShow(false)
               setHideButton(() => {
                 return hideButton.filter((item: any) => {
-                  return  item != selectedTimeFrame
+                  return item != selectedTimeFrame
                 })
               })
-              }}></button>
+            }}></button>
           </div>
         </div>
         <Modal.Body>

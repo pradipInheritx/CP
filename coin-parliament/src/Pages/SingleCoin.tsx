@@ -419,7 +419,7 @@ const SingleCoin = () => {
                     />
                   )}</>
                 )}
-
+                {console.log(selectedTimeFrame, hideButton, 'pkk')}
                 <div className="text-center">
                   {/* @ts-ignore */}
                   {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
