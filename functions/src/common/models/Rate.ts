@@ -114,7 +114,7 @@ export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
 
       console.info("getCoinPrice 1:", getCoinPrice.data.result.data[0], "After Fixes", Number(getCoinPrice.data.result.data[0].a).toFixed(Decimal[coin.replace("usdt", "").toUpperCase()].decimal));
 
-      let getPriceAndFixValue = Number(getCoinPrice.data.result.data[0].a).toFixed(Decimal[coin.replace("usdt", "").toUpperCase()].decimal);
+      let getPriceAndFixValue = Number(getCoinPrice.data.result.data[0].a).toFixed(Decimal[getOnlyCoin.toUpperCase()].decimal);
       return getCoinPrice && getCoinPrice.data && getCoinPrice.data.result.data[0].a ?
         Number((getPriceAndFixValue).toString() + (Math.floor(Math.random() * 10)).toString()) :
         0;
@@ -128,7 +128,7 @@ export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
       );
       console.info("getCoinPrice 2", getCoinPrice.data.data.price);
       console.info("getCoinPrice.data.data.price:", Number((getCoinPrice.data.data.price).toString() + (Math.floor(Math.random() * 10)).toString()));
-      let getPriceAndFixValue = Number(getCoinPrice.data.data.price).toFixed(Decimal[coin.replace("-USDT", "").toUpperCase()].decimal);
+      let getPriceAndFixValue = Number(getCoinPrice.data.data.price).toFixed(Decimal[getOnlyCoin.toUpperCase()].decimal);
       return getCoinPrice && getCoinPrice.data && getCoinPrice.data.data && getCoinPrice.data.data.price ?
         Number((getPriceAndFixValue).toString() + (Math.floor(Math.random() * 10)).toString()) :
         0;
