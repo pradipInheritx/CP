@@ -67,7 +67,7 @@ const SelectTimeframes = ({
         )}
         {num > 1 && title && (
           <div className='mb-3'>
-            <Title>{voted ? votedTitle : title}</Title>
+            {/* <Title>{voted ? votedTitle : title}</Title> */}
           </div>
         )}
       </Row>

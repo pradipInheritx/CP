@@ -279,16 +279,14 @@ const VotedCard = ({
               <YourVote>YOUR CURRENT VOTE IMPACT</YourVote>
 
             </div>
-            <div>
-              <RangeSilder
-                //  lastTenSec={lastTenSec}
-                vote={vote}
-                coins={coins}
-                symbol1={symbol1}
-                symbol2={symbol2}
-              />
-            </div>
-            <div className="my-2">
+            <RangeSilder
+              //  lastTenSec={lastTenSec}
+              vote={vote}
+              coins={coins}
+              symbol1={symbol1}
+              symbol2={symbol2}
+            />
+            <div className="mb-1" style={{ marginTop: '-4.5em' }}>
               <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
                 setLastTenSec={setLastTenSec}
               />

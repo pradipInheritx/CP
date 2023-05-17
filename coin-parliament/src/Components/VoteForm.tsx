@@ -107,7 +107,7 @@ const VoteForm = function <
       {!hideButton.includes(selectedTimeFrame) && <div className='mt-4 pt-2'>
         {/* @ts-ignore */}
         <div className='mb-3'>
-          <Title>{texts.yourVote}</Title>
+          {/* <Title>{texts.yourVote}</Title> */}
         </div>
         <OverlayTrigger
           overlay={(props) =>
