@@ -157,7 +157,8 @@ const TimeframeButton = ({
   votedDetails,
   buttonDetails,
   PariButtonDetails,
-  buttonIndex
+  buttonIndex,
+  setHideButton,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -169,7 +170,8 @@ const TimeframeButton = ({
   votedDetails?: any;
   buttonDetails?: any;
   PariButtonDetails?: any;
-  buttonIndex?: number
+  buttonIndex?: number;
+  setHideButton?: (value: number[]) => void;
 }) => {
   console.log(cssDegree, 'okkkk');
 

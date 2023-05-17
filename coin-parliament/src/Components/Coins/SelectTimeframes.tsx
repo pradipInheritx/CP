@@ -20,7 +20,7 @@ export type SelectTimeframesProps = {
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
-  hideButton?: number[];
+  setHideButton?: (value: number[]) => void;
 };
 
 const SelectTimeframes = ({
@@ -34,7 +34,7 @@ const SelectTimeframes = ({
   cssDegree,
   votePrice,
   votedDetails,
-  hideButton
+  setHideButton
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
