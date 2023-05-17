@@ -116,7 +116,7 @@ const Home = () => {
               style={{
                 zIndex: 0,
                 fontWeight: "400",
-                position: "relative",
+                // position: "relative",
                 marginTop:window.screen.width > 767? "280px":"120px",
               }}
             >
@@ -128,7 +128,7 @@ const Home = () => {
               style={{
                 // zIndex: 1,
                 fontWeight: "400",
-                position: "relative",
+                // position: "relative",
                 marginTop:window.screen.width > 767? "280px":"120px",
                 fontSize: "30px",
               }}
