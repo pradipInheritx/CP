@@ -35,7 +35,7 @@ type VoteFormProps<T> = {
   votedDetails?: any;
   hideButton?: any;
   setHideButton: React.Dispatch<React.SetStateAction<number[]>>;
-
+  setpopUpOpen: React.Dispatch<React.SetStateAction<boolean>>
 };
 const VoteForm = function <
   T extends {
@@ -62,7 +62,8 @@ const VoteForm = function <
   votePrice,
   votedDetails,
   hideButton,
-  setHideButton
+  setHideButton,
+  setpopUpOpen,
 }: VoteFormProps<T>) {
   const { timeframes, login, remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
@@ -98,7 +99,8 @@ const VoteForm = function <
             votePrice,
             votedDetails,
             hideButton,
-            setHideButton
+            setHideButton,
+            setpopUpOpen
           }}
         />
       </div>}

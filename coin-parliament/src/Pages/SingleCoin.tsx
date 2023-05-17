@@ -417,6 +417,7 @@ const SingleCoin = () => {
                       selectedTimeFrame={selectedTimeFrame}
                       setSelectedTimeFrame={setSelectedTimeFrame}
                       selectedTimeFrameArray={selectedTimeFrameArray}
+                      setpopUpOpen={setpopUpOpen}
                     />
                   )}</>
                 )}

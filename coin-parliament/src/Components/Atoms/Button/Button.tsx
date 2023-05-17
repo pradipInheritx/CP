@@ -159,6 +159,7 @@ const TimeframeButton = ({
   PariButtonDetails,
   buttonIndex,
   setHideButton,
+  setpopUpOpen
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -172,6 +173,7 @@ const TimeframeButton = ({
   PariButtonDetails?: any;
   buttonIndex?: number;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
   const [borderColor, setborderColor] = useState<string>("white");
   const [borderDeg, setBorderDeg] = useState<number>(0);
@@ -217,6 +219,9 @@ const TimeframeButton = ({
             return item !== buttonIndex;
           })
         });
+      }
+      if (deg < 0 && setpopUpOpen) {
+        setpopUpOpen(true);
       }
       setBorderDeg(Math.round(deg));
     }

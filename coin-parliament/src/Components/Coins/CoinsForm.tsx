@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import React, { RefObject, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import React, { RefObject, SetStateAction, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Direction, useCanVote, voteConverter, VoteResultProps } from "../../common/models/Vote";
 import UserContext from "../../Contexts/User";
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
@@ -36,7 +36,8 @@ const CoinsForm = ({
   votedDetails,
   coinUpdated,
   hideButton,
-  setHideButton
+  setHideButton,
+  setpopUpOpen
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -52,6 +53,7 @@ const CoinsForm = ({
   coinUpdated: any;
   hideButton?: any;
   setHideButton: (value: number[]) => void;
+  setpopUpOpen: React.Dispatch<SetStateAction<boolean>>
 }) => {
   const { votesLast24Hours, user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
@@ -201,6 +203,7 @@ const CoinsForm = ({
             selectTimeFrame: translate("Select a time frame for your vote").toUpperCase(),
             tooltip: translate(tooltipText),
           },
+          setpopUpOpen
         }}
       />
     </Container>

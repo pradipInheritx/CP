@@ -117,7 +117,7 @@ const VotedCard = ({
   selectedTimeFrameArray?: any;
   cssDegree?: any;
   votePrice?: any;
-  setpopUpOpen?: any;
+  setpopUpOpen: React.Dispatch<React.SetStateAction<boolean>>
   setHideButton: React.Dispatch<React.SetStateAction<number[]>>;
   hideButton?: any;
 
@@ -258,7 +258,8 @@ const VotedCard = ({
             selectedTimeFrameArray: selectedTimeFrameArray,
             cssDegree: cssDegree,
             votePrice: votePrice,
-            setHideButton
+            setHideButton,
+            setpopUpOpen
           }}
         />
       </div>
@@ -385,7 +386,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
       if (data.data == null) {
         // console.log(data.data,"i am working data.data")
         // getVotes(index).then(void 0);
-        openPopup(true)
+        // openPopup(true)
 
       }
     }).catch(err => {

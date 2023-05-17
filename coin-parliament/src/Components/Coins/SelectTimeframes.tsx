@@ -21,6 +21,7 @@ export type SelectTimeframesProps = {
   votePrice?: any;
   votedDetails?: any;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
+  setpopUpOpen: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const SelectTimeframes = ({
@@ -34,7 +35,8 @@ const SelectTimeframes = ({
   cssDegree,
   votePrice,
   votedDetails,
-  setHideButton
+  setHideButton,
+  setpopUpOpen,
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -107,6 +109,7 @@ const SelectTimeframes = ({
                       PariButtonDetails={pariButtonDetails && pariButtonDetails[k]}
                       buttonIndex={k}
                       setHideButton={setHideButton}
+                      setpopUpOpen={setpopUpOpen}
                     >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
