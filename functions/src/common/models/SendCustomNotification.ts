@@ -127,13 +127,57 @@ export const sendNotificationForFollwersFollowings = async (
   });
 };
 
+
+
+
+async function subscribersNotification(subscribers: string[], userName: string) {
+  console.log("Beging subscribers notification")
+  subscribers.forEach(async (user: string) => {
+    const userDetailsQuery = await firestore().collection("users").doc(user).get();
+    const userData: any = userDetailsQuery.data();
+    const token = userData.token;
+    const message: messaging.Message = {
+      token,
+      notification: {
+        title: `You just earnd ${"1.12"} CMP from ${userName}`,
+        body: "",
+      },
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: "#", // TODO: put link for deep linking
+        },
+      },
+    };
+    console.log("message:", message);
+
+    await sendNotification({
+      token,
+      id: user,
+      body: "",
+      title: `You just earnd ${"1.12"} CMP from ${userName}`,
+      message,
+    });
+
+  })
+  console.log("Finished subscribers notification")
+}
+
+
+
 export const voteExpireAndGetCpmNotification = async (userId: string, cpm: number, coin: string) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
+
 
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
   console.log("UserData:", userData);
   let token = userData.token;
+
+  if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName)
+
 
   const message: messaging.Message = {
     token,

@@ -11,6 +11,7 @@ import {
 import { sendNotification } from "../Notification";
 import { messaging } from "firebase-admin";
 
+
 type Coin = {
   id: any;
   coinName: string;
@@ -251,11 +252,11 @@ const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
       defaultHeaderForgetDataFromTimestamp
     );
 
-    // console.info("getCoinPrice", getCoinPrice.data);
+    // console.info("getCoinPrice----", getCoinPrice.data[0].p);
     return getCoinPrice.data &&
       getCoinPrice.data[0] &&
-      getCoinPrice.data[0].price
-      ? getCoinPrice?.data[0]?.price
+      getCoinPrice.data[0].p
+      ? getCoinPrice?.data[0]?.p
       : 0;
   } catch (err) {
     console.log("Error(getPriceOnpaticularTime): ", err);
@@ -263,7 +264,7 @@ const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
   }
 };
 
-
+// get all users and send notification  
 const getAllUsersAndSendNotification = async (
   coinName: string,
   body: string
@@ -306,46 +307,68 @@ const getAllUsersAndSendNotification = async (
   }
 };
 
+// call Past data from api
+const getPriceOnpaticularTimeFromPast = async (coinName: string, timestamp: number) => {
+  const getCoinPrice: any = await axios.get(
+    `https://api.binance.us/api/v3/aggTrades?symbol=${coinName}&limit=1&endTime=${timestamp}`,
+    defaultHeaderForgetDataFromTimestamp,
+  );
+  return getCoinPrice?.data[0].p
+}
+
 export const getCoinCurrentAndPastDataDifference = async () => {
   try {
+
+    console.log("----------getCoinCurrentAndPastDataDifference started-----------");
     const getCoins = await getAllCoin();
     const currentTime = Date.now();
     const beforeFourHoursTime = currentTime - 4 * 3600000;
-
     const currentCoinAndPrice: any = [];
-
+    const missingCoinInBinanceApi = [
+      "LUNA", "FTT", "LTC", "KLAY", "CARL", "BABY", "STX", "WBTC", "DAI", "CRO", "HBAR", "LEO", "XMR", "XTZ", "MIOTA", "CAKE", "BTT", "BABYDOGE", "BSV", "EGLD"]
     for (const data of getCoins) {
+      //check the coins
+      if (missingCoinInBinanceApi.includes(data)) { continue }
+
       const coin = data.toUpperCase() + "USDT";
-      const priceCurrent = await getPriceOnpaticularTime(coin, currentTime);
-      const priceFourBefore = await getPriceOnpaticularTime(
+      const priceCurrent: number = Number(await getPriceOnpaticularTime(coin, currentTime));
+      const priceFourBefore: number = Number(await getPriceOnpaticularTimeFromPast(
         coin,
         beforeFourHoursTime
-      );
-      if (priceCurrent !== 0 && priceFourBefore !== 0) {
-        const differencePrice = priceFourBefore - priceCurrent;
-        const differnceInPercentag =
-          (differencePrice / beforeFourHoursTime) * 100;
+      ));
+      console.log("Price Current: " + priceCurrent, typeof priceCurrent)
+      console.log("priceFourBefore: " + priceFourBefore, typeof priceFourBefore)
+      if (priceCurrent != undefined && priceFourBefore != undefined) {
 
-        currentCoinAndPrice.push({ coinName: data, differnceInPercentag });
+        priceCurrent.toFixed(3)
+        priceFourBefore.toFixed(3)
+        const differencePrice: number = priceFourBefore - priceCurrent;
+        differencePrice.toFixed(3)
+        const differnceInPercentag: number =
+          ((differencePrice / priceFourBefore) * 100);
+
+        currentCoinAndPrice.push({ coinName: data, differnceInPercentag: differnceInPercentag.toFixed(3) });
+
       }
+
     }
 
     currentCoinAndPrice.forEach(async (coin: any) => {
       if (coin.differnceInPercentag < -5) {
         // Write Notification
+        console.log("sent notification on down");
         await getAllUsersAndSendNotification(
           coin.coinName,
           `Coin ${coin.coinName}  value drop! Make your vote now! ⏬`
         );
-        console.log("sent notification on down");
       }
       if (coin.differnceInPercentag > 5) {
         // Write Notification
+        console.log("sent notification on up");
         await getAllUsersAndSendNotification(
           coin.coinName,
           `Coin ${coin.coinName}  is on fire! Make your vote now! ⏫`
         );
-        console.log("sent notification on up");
       }
     });
   } catch (err) {
