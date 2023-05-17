@@ -157,6 +157,7 @@ const TimeframeButton = ({
   votedDetails,
   buttonDetails,
   PariButtonDetails,
+  buttonIndex
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -168,6 +169,7 @@ const TimeframeButton = ({
   votedDetails?: any;
   buttonDetails?: any;
   PariButtonDetails?: any;
+  buttonIndex?: number
 }) => {
   console.log(cssDegree, 'okkkk');
 
@@ -184,7 +186,7 @@ const TimeframeButton = ({
   const [votePrice, setvotePrice] = useState<any>(coins[params?.id]?.price);
   useEffect(() => {
     if (buttonDetails != undefined) {
-      getDeg(buttonDetails);
+      // getDeg(buttonDetails);
       getBorderColor();
     }
     // @ts-ignore
@@ -195,7 +197,9 @@ const TimeframeButton = ({
     }
   }, [params, buttonDetails]);
 
-
+  useEffect(() => {
+    runTimer();
+  }, [buttonDetails])
 
   // @ts-ignore
 
@@ -207,22 +211,34 @@ const TimeframeButton = ({
       let ori = t + d;
       let val = (ori - liveTime) / d;
       let deg = val * 360;
+      console.log(deg, 'pkkk');
+      if (deg > 0) {
+        runTimer();
+      } else {
+        // setHideButton(() => {
+        //   return hideButton.filter((item: any) => {
+        //     return item != selectedTimeFrame
+        //   })
+        // })
+      }
       setBorderDeg(Math.round(deg));
     }
   };
 
-  const timer = setTimeout(() => {
-    getDeg(buttonDetails)
-
-  }, 1000);
-
-  useEffect(() => {
 
 
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [])
+  const runTimer = () => {
+    const timer = setTimeout(() => {
+      getDeg(buttonDetails);
+    }, 1000);
+  }
+  // useEffect(() => {
+
+
+  //   return () => {
+  //     clearTimeout(timer)
+  //   }
+  // }, [])
 
   const getBorderColor = () => {
     let PricePer = livePrice / 100;

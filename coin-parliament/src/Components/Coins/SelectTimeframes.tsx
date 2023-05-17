@@ -20,6 +20,7 @@ export type SelectTimeframesProps = {
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
+  hideButton?: number[];
 };
 
 const SelectTimeframes = ({
@@ -33,6 +34,7 @@ const SelectTimeframes = ({
   cssDegree,
   votePrice,
   votedDetails,
+  hideButton
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -103,6 +105,7 @@ const SelectTimeframes = ({
                       votedDetails={votedDetails?.length > 0 ? votedDetails[k] : 0}
                       buttonDetails={buttonDetails && buttonDetails[k]}
                       PariButtonDetails={pariButtonDetails && pariButtonDetails[k]}
+                      buttonIndex={k}
                     >
                       {timeframe.name}
                     </Buttons.TimeframeButton>

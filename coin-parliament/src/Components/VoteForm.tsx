@@ -34,6 +34,7 @@ type VoteFormProps<T> = {
   votePrice?: any;
   votedDetails?: any;
   hideButton?: any;
+  setHideButton: (value: number[]) => void;
 
 };
 const VoteForm = function <
@@ -61,6 +62,7 @@ const VoteForm = function <
   votePrice,
   votedDetails,
   hideButton,
+  setHideButton
 }: VoteFormProps<T>) {
   const { timeframes, login, remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
@@ -94,7 +96,9 @@ const VoteForm = function <
             selectedTimeFrameArray: selectedTimeFrameArray,
             cssDegree,
             votePrice,
-            votedDetails
+            votedDetails,
+            hideButton,
+            setHideButton
           }}
         />
       </div>}

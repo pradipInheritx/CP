@@ -1,24 +1,24 @@
-import {Container} from "react-bootstrap";
-import React, {RefObject, useCallback, useContext, useEffect, useMemo, useState} from "react";
-import {Direction, useCanVote, voteConverter, VoteResultProps} from "../../common/models/Vote";
+import { Container } from "react-bootstrap";
+import React, { RefObject, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Direction, useCanVote, voteConverter, VoteResultProps } from "../../common/models/Vote";
 import UserContext from "../../Contexts/User";
-import {addDoc, collection, doc, updateDoc} from "firebase/firestore";
-import {db} from "../../firebase";
-import {Coin} from "../../common/models/Coin";
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { Coin } from "../../common/models/Coin";
 import AppContext from "../../Contexts/AppContext";
 import VoteForm from "../VoteForm";
-import {useTranslation} from "../../common/models/Dictionary";
+import { useTranslation } from "../../common/models/Dictionary";
 import Bear from "../icons/Bear";
 import Bull from "../icons/Bull";
-import NotificationContext, {ToastType} from "../../Contexts/Notification";
-import {voteProcedure} from "../Pairs/utils";
+import NotificationContext, { ToastType } from "../../Contexts/Notification";
+import { voteProcedure } from "../Pairs/utils";
 import { UserProps } from "../../common/models/User";
 // import { timeStamp } from "console";
 import { cmpRangeCoin } from "../Profile/utils";
 
 export const directions = {
-  [Direction.BEAR]: {direction: "rise", name: "BEAR"},
-  [Direction.BULL]: {direction: "fall", name: "BULL"},
+  [Direction.BEAR]: { direction: "rise", name: "BEAR" },
+  [Direction.BULL]: { direction: "fall", name: "BULL" },
 };
 
 
@@ -36,6 +36,7 @@ const CoinsForm = ({
   votedDetails,
   coinUpdated,
   hideButton,
+  setHideButton
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -48,14 +49,15 @@ const CoinsForm = ({
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
-  coinUpdated:any;   
-  hideButton?:any;
+  coinUpdated: any;
+  hideButton?: any;
+  setHideButton: (value: number[]) => void;
 }) => {
-  const { votesLast24Hours,user, userInfo } = useContext(UserContext);
+  const { votesLast24Hours, user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
-  const { timeframes , voteRules: { maxVotes,timeLimit }} = useContext(AppContext);
+  const { timeframes, voteRules: { maxVotes, timeLimit } } = useContext(AppContext);
 
   // console.log(timeframes,"timeframes")
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
@@ -66,10 +68,10 @@ const CoinsForm = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    
+
     return window.scrollTo(0, 0);
   }, []);
-  
+
   const vote = useCallback(async () => {
     // console.log('coindata',coinUpdated[coin?.symbol]?.price)
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
@@ -95,25 +97,25 @@ const CoinsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          voteTime:Date.now(),
+          voteTime: Date.now(),
           // @ts-ignore
-          valueVotingTime:coinUpdated[coin?.symbol]?.symbol=='BTC' || coinUpdated[coin?.symbol]?.symbol=='ETH'? coinUpdated[coin?.symbol]?.price :coinUpdated[coin?.symbol]?.price + coinUpdated[coin?.symbol]?.randomDecimal,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000,
-          voteId:`${coin.symbol}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
+          valueVotingTime: coinUpdated[coin?.symbol]?.symbol == 'BTC' || coinUpdated[coin?.symbol]?.symbol == 'ETH' ? coinUpdated[coin?.symbol]?.price : coinUpdated[coin?.symbol]?.price + coinUpdated[coin?.symbol]?.randomDecimal,
+          expiration: Date.now() + chosenTimeframe.seconds * 1000,
+          voteId: `${coin.symbol}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`
         } as VoteResultProps
       );
-      const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;
-      if(!updateExtravote){
+      const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
+      if (!updateExtravote) {
         const userRef = doc(db, "users", user?.uid);
         const newUserInfo = {
           ...(userInfo as UserProps),
-          rewardStatistics:{
+          rewardStatistics: {
             ...userInfo?.rewardStatistics,
 
-          // @ts-ignore
-            extraVote: userInfo?.rewardStatistics?.extraVote-1,
-           
-        }
+            // @ts-ignore
+            extraVote: userInfo?.rewardStatistics?.extraVote - 1,
+
+          }
         };
         await updateDoc(userRef, newUserInfo);
       }
@@ -148,13 +150,14 @@ const CoinsForm = ({
     () => voteProcedure({ vote, sound, setConfetti }),
     [vote, sound, setConfetti]
   );
-  
+
   return (
     <Container className='p-0 '>
       {/* @ts-ignore */}
       <VoteForm
         {...{
           hideButton,
+          setHideButton,
           disabled,
           selectedTimeFrame,
           setSelectedTimeFrame,
@@ -173,19 +176,19 @@ const CoinsForm = ({
               selectedOption !== undefined
             ) {
               setTimeout(() => {
-                throttled_vote();  
+                throttled_vote();
               }, 700);
-              
+
             }
           },
           option1: {
-            buttonText:["vote","BULL"],
+            buttonText: ["vote", "BULL"],
             image: <Bull />,
             alt: "bull",
             ...coin,
           },
           option2: {
-            buttonText:["vote","BEAR"],
+            buttonText: ["vote", "BEAR"],
             image: <Bear />,
             alt: "bear",
             ...coin,

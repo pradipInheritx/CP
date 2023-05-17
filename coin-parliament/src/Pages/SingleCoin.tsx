@@ -355,7 +355,7 @@ const SingleCoin = () => {
 
 
   const [popUpOpen, setpopUpOpen] = useState(false);
-  const [hideButton, setHideButton] = useState([]);
+  const [hideButton, setHideButton] = useState<number[]>([]);
 
   // console.log(hideButton,"i am working popUpOpen")
 
@@ -407,6 +407,7 @@ const SingleCoin = () => {
                   ) : (
                     <CoinsForm
                       hideButton={hideButton}
+                      setHideButton={setHideButton}
                       sound={sound}
                       coin={coin}
                       coinUpdated={coinUpdated}
