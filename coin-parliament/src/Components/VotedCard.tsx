@@ -118,11 +118,11 @@ const VotedCard = ({
   cssDegree?: any;
   votePrice?: any;
   setpopUpOpen?: any;
-  setHideButton?: any;
+  setHideButton: React.Dispatch<React.SetStateAction<number[]>>;
   hideButton?: any;
 
+
 }) => {
-  console.log(vote, 'pkk');
 
   const [lastTenSec, setLastTenSec] = useState<any>(false);
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
@@ -258,6 +258,7 @@ const VotedCard = ({
             selectedTimeFrameArray: selectedTimeFrameArray,
             cssDegree: cssDegree,
             votePrice: votePrice,
+            setHideButton
           }}
         />
       </div>

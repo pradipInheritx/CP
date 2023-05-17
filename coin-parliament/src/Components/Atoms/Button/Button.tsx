@@ -171,10 +171,8 @@ const TimeframeButton = ({
   buttonDetails?: any;
   PariButtonDetails?: any;
   buttonIndex?: number;
-  setHideButton?: (value: number[]) => void;
+  setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
-  console.log(cssDegree, 'okkkk');
-
   const [borderColor, setborderColor] = useState<string>("white");
   const [borderDeg, setBorderDeg] = useState<number>(0);
 
@@ -202,9 +200,7 @@ const TimeframeButton = ({
   useEffect(() => {
     runTimer();
   }, [buttonDetails])
-
   // @ts-ignore
-
   const getDeg = (value) => {
     if (value != undefined) {
       let t = value?.voteTime / 1000; //mili
@@ -213,15 +209,14 @@ const TimeframeButton = ({
       let ori = t + d;
       let val = (ori - liveTime) / d;
       let deg = val * 360;
-      console.log(deg, 'pkkk');
       if (deg > 0) {
         runTimer();
-      } else {
-        // setHideButton(() => {
-        //   return hideButton.filter((item: any) => {
-        //     return item != selectedTimeFrame
-        //   })
-        // })
+      } else if (setHideButton) {
+        setHideButton((prev: number[]): number[] => {
+          return prev.filter((item) => {
+            return item !== buttonIndex;
+          })
+        });
       }
       setBorderDeg(Math.round(deg));
     }

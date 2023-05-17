@@ -420,7 +420,7 @@ const SingleCoin = () => {
                     />
                   )}</>
                 )}
-                {console.log(selectedTimeFrame, hideButton, 'pkk')}
+                {console.log(selectedTimeFrame, hideButton, 'hideButton')}
                 <div className="text-center">
                   {/* @ts-ignore */}
                   {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
@@ -482,6 +482,8 @@ const SingleCoin = () => {
                       </Modal.Footer>
                     </Modal>
                   </div>      */}
+                {console.log(vote, 'pkkk')}
+
                 <ModalForResult
                   popUpOpen={popUpOpen}
                   selectedTimeFrame={selectedTimeFrame}

@@ -20,7 +20,7 @@ export type SelectTimeframesProps = {
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
-  setHideButton?: (value: number[]) => void;
+  setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
 };
 
 const SelectTimeframes = ({
@@ -106,6 +106,7 @@ const SelectTimeframes = ({
                       buttonDetails={buttonDetails && buttonDetails[k]}
                       PariButtonDetails={pariButtonDetails && pariButtonDetails[k]}
                       buttonIndex={k}
+                      setHideButton={setHideButton}
                     >
                       {timeframe.name}
                     </Buttons.TimeframeButton>

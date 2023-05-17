@@ -34,7 +34,7 @@ type VoteFormProps<T> = {
   votePrice?: any;
   votedDetails?: any;
   hideButton?: any;
-  setHideButton: (value: number[]) => void;
+  setHideButton: React.Dispatch<React.SetStateAction<number[]>>;
 
 };
 const VoteForm = function <

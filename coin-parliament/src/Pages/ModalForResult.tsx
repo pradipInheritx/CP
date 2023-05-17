@@ -76,7 +76,6 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-
 function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton }: {
   popUpOpen?: any,
   vote: any,
@@ -401,4 +400,4 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   )
 }
 
-export default ModalForResult
+export default React.memo(ModalForResult);
