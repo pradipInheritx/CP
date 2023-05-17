@@ -49,7 +49,7 @@ const Home = () => {
       <div className='p-0 w-100' style={{ background: "#160133" }}>
         <div style={{ background: "#160133" }}>
           
-          <HomeContainer width={width} className='mb-4 p-0 '>
+          <HomeContainer width={width} className='mb-4 p-0'>
             {!(login || firstTimeLogin) && (
               <>
               
@@ -61,7 +61,7 @@ const Home = () => {
                       width && width > 969
                         ? "auto"
                         : 'auto',
-                    marginTop: width && width > 969 ? -50 :65,
+                    marginTop: width && width > 969 ? -0 : 65,
                     // marginTop:'120px',
                     position: "absolute",
                   }}
@@ -99,19 +99,11 @@ const Home = () => {
                     </strong>
                   </h2>}
                 </div> */}
-                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
-                  <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
-                </TextContainer> */}
-                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-
-                  {/* <TextContainer className="mt-2" >
-                  <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
-                </TextContainer> */}
               </>
             )}
           </HomeContainer>
         </div>
-        <div className='pb-4 mx-0'>
+        <div className='mb-4 mx-0'>
           <TextContainer
             className='mt-2 d-xl-none'
             style={{
@@ -124,8 +116,8 @@ const Home = () => {
               style={{
                 zIndex: 0,
                 fontWeight: "400",
-                position: "relative",
-                marginTop: window.screen.width > 767 ?"260px":"120px",
+                // position: "relative",
+                marginTop:window.screen.width > 767? "280px":"120px",
               }}
             >
               {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
@@ -136,9 +128,8 @@ const Home = () => {
               style={{
                 // zIndex: 1,
                 fontWeight: "400",
-                position: "relative",
-                // marginTop: "200px",
-                marginTop: window.screen.width > 767 ?"260px":"120px",
+                // position: "relative",
+                marginTop:window.screen.width > 767? "280px":"120px",
                 fontSize: "30px",
               }}
             >
