@@ -7,7 +7,7 @@ import PieChart from "./PieChart";
 import Collapse from "./Collapse";
 import { useTranslation } from "../../common/models/Dictionary";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../styledMixins";
-import { Form } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
@@ -16,6 +16,7 @@ import { texts } from "../LoginComponent/texts";
 import { handleSoundClick } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
 import CircularProgress from "../circleProgressbar";
+import { Buttons } from "../Atoms/Button/Button";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -128,6 +129,12 @@ const Minting = ({
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const { showReward, setShowReward, setRewardExtraVote, inOutReward, setInOutReward, setHeaderExtraVote } = useContext(AppContext);
+  const [resultData, setResultData] = React.useState({});
+  const [modalShow, setModalShow] = React.useState(false);
+  const handleClose = () => setModalShow(false);
+  const handleShow = () => setModalShow(true);
+
+  console.log(resultData, "resultData")
 
   return (
     <React.Fragment>
@@ -162,11 +169,15 @@ const Minting = ({
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
-                setShowReward(1);
-                setInOutReward(1);
+
                 // @ts-ignore
-                setRewardExtraVote(result?.data?.secondRewardExtraVotes);
-                setRewardTimer(result);
+                setResultData(result)
+                handleShow()
+                // setShowReward(1);  
+                // setInOutReward(1);
+                // @ts-ignore
+                // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
+                // setRewardTimer(result);
                 // setRewardExtraVote(10);
                 // setRewardTimer({
                 //       firstRewardCardType: "LEGENDARY",
@@ -200,11 +211,14 @@ const Minting = ({
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
-                setShowReward(1);
-                setInOutReward(1);
                 // @ts-ignore
-                setRewardExtraVote(result?.data?.secondRewardExtraVotes);
-                setRewardTimer(result);
+                setResultData(result)
+                handleShow()
+                // setShowReward(1);
+                // setInOutReward(1);
+                // @ts-ignore
+                // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
+                // setRewardTimer(result);
                 // setRewardExtraVote(10);
                 // setRewardTimer({
                 //   firstRewardCard: "legendary",
@@ -223,6 +237,41 @@ const Minting = ({
           </BtnLabelPrimary>
         </div>
       )}
+      <div>
+        <Modal
+          show={
+            modalShow
+          } onHide={handleClose}
+          // size="sm"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              handleClose()
+            }}></button>
+          </div>
+          <Modal.Body>
+            {/* continue voting */}
+            {/* @ts-ignore */}
+            <div className='py-2  d-flex  justify-content-center'><p style={{ fontSize: "20px" }}>You win {resultData?.data?.thirdRewardDiamonds} Coin </p></div>
+
+          </Modal.Body>
+          {/* <Modal.Footer> */}
+          <div className="d-flex justify-content-center ">
+            <Buttons.Primary className="mx-2" onClick={() => {
+              setShowReward(1);
+              setInOutReward(1);
+              // @ts-ignore
+              setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
+              setRewardTimer(resultData);
+              handleClose()
+            }}>Collect your coin</Buttons.Primary>
+            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
+          </div>
+          {/* </Modal.Footer>       */}
+        </Modal>
+      </div>
     </React.Fragment>
   );
 };
