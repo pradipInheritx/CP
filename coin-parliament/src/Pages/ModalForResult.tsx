@@ -131,6 +131,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        style={{ zIndex: 100 }}
       >
         <div className='d-flex justify-content-between'>
           <div></div>

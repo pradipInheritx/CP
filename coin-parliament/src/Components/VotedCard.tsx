@@ -117,8 +117,8 @@ const VotedCard = ({
   selectedTimeFrameArray?: any;
   cssDegree?: any;
   votePrice?: any;
-  setpopUpOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setHideButton: React.Dispatch<React.SetStateAction<number[]>>;
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
   hideButton?: any;
 
 
@@ -186,7 +186,9 @@ const VotedCard = ({
 
   useEffect(() => {
     console.log('component mounter vote')
-    setHideButton([...hideButton, selectedTimeFrame])
+    if (setHideButton) {
+      setHideButton([...hideButton, selectedTimeFrame])
+    }
     return () => {
       console.log('component unmounted vote')
     }

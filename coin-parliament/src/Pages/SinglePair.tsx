@@ -44,7 +44,7 @@ const SinglePair = () => {
   const [confetti, setConfetti] = useState(false);
   const { width, height } = useWindowSize();
   const [pct, setPct] = useState(0)
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(1);
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
   const [voteNumber, setVoteNumber] = useState(0)

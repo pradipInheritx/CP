@@ -21,7 +21,7 @@ export type SelectTimeframesProps = {
   votePrice?: any;
   votedDetails?: any;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
-  setpopUpOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const SelectTimeframes = ({

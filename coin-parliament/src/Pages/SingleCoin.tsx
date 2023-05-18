@@ -78,7 +78,7 @@ const SingleCoin = () => {
   const [cpviData, setCpviData] = useState<LineData[]>();
   const mountedRef = useRef(true);
   // const {width, height} = useWindowSize();
-  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(1);
+  const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
   // const [cssDegree, setcssDegree] = useState<any>([]);

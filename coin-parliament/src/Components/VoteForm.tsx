@@ -34,8 +34,8 @@ type VoteFormProps<T> = {
   votePrice?: any;
   votedDetails?: any;
   hideButton?: any;
-  setHideButton: React.Dispatch<React.SetStateAction<number[]>>;
-  setpopUpOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
 };
 const VoteForm = function <
   T extends {
