@@ -134,7 +134,7 @@ const Minting = ({
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
-  console.log(resultData, "resultData")
+  console.log(score, "resultData")
 
   return (
     <React.Fragment>

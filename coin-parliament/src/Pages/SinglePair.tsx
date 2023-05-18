@@ -344,7 +344,7 @@ const SinglePair = () => {
                     </>
                   )}
                   {/* @ts-ignore */}
-                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime && hideButton.includes(selectedTimeFrame && selectedTimeFrame) && <ModalForResult
+                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime/*  && hideButton.includes(selectedTimeFrame && selectedTimeFrame) */ && <ModalForResult
                     popUpOpen={popUpOpen}
                     setpopUpOpen={setpopUpOpen}
                     setHideButton={setHideButton}
