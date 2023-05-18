@@ -223,8 +223,9 @@ const TimeframeButton = ({
           })
         });
       }
+      console.log(vote, 'pkkkkk');
 
-      if (deg < 0 && setpopUpOpen && vote) {
+      if (deg < 0 && setpopUpOpen && vote && Object.keys(vote).length > 0) {
         setpopUpOpen(true);
       }
       setBorderDeg(Math.round(deg));
