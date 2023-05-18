@@ -22,7 +22,14 @@ export const cmpRangePair={
   2:10,
   3:10
 }
-export const decimal = {
+interface Decimal {
+  Symbol: string;
+  decimal: number;
+  multiply: number;
+  [key: string]: any; // index signature to allow any string key
+}
+
+export const decimal: {[key: string]: Decimal} = {
   "BTC":
   {
   Symbol: 'BTC',

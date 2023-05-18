@@ -11,7 +11,7 @@ import ContentContext from "../Contexts/ContentContext";
 import Menu, { convertPageToMenuItem } from "./Menu";
 import { ProfileTabs } from "../Pages/Profile";
 import Logo, { Size } from "./Atoms/Logo";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { isV1 } from "./App/App";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserCard from "./Profile/UserCard";
@@ -123,6 +123,35 @@ export const PlusButtonMob = styled.div`
   cursor: pointer;
 `;
 
+type ZoomProps = {
+  showReward?: number,
+   inOutReward?:number,
+};
+const ZoomCss = css`
+  opacity: 1;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width: 100%;
+  height: 150vh;
+  z-index:2200;
+  // left: 50%;
+  // transform: translate(-50%, -20%);    
+  transition: opacity .3s;
+  background-color: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+transition:  all 1s ease;
+
+`;
+
+
+const ForZoom = styled.div`
+ ${(props: ZoomProps) => `${props.showReward == 2  &&  props.inOutReward == 2 ? ZoomCss :""}`} 
+`;
+
 export const OuterContainer = styled.div`
   background: ${window.screen.width < 979 ? "var(--color-d4d0f3)" : ""};
   position: relative;
@@ -164,10 +193,8 @@ const Header = ({
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules, followerUserId, login ,showReward,setShowReward ,headerExtraVote,setHeaderExtraVote} = useContext(AppContext);
-  
-console.log(showReward,"showReward")
-
+  const { voteRules, followerUserId, login ,showReward,setShowReward ,headerExtraVote,setHeaderExtraVote ,inOutReward,setInOutReward} = useContext(AppContext);
+// console.log(showReward,inOutReward,"inOutReward")
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
@@ -185,7 +212,7 @@ console.log(showReward,"showReward")
   
 
 
-  console.log(urlName,"checkurlName")
+  // console.log(urlName,"checkurlName")
   const prevCountRef = useRef(voteNumber)
   
   const getFollowerData =()=>{
@@ -207,7 +234,7 @@ console.log(showReward,"showReward")
   }, [followerUserId])
   
   useEffect(() => {
-    if (voteNumber == 0 && votingTimer  && pageTrue && urlName.length>2) {
+    if (voteNumber == 0 && votingTimer  && pageTrue && urlName.length>2  && user?.uid && !login ) {
       
       setShow(true) 
     } else {
@@ -237,7 +264,7 @@ console.log(showReward,"showReward")
       prevCountRef.current = voteNumber; 
     
 
-console.log('votenumber',voteNumber, Number(voted))
+// console.log('votenumber',voteNumber, Number(voted))
   }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
 
 
@@ -257,7 +284,7 @@ console.log('votenumber',voteNumber, Number(voted))
         setSignup(true);
         break;
       case EventKeys.LOGOUT:
-        console.log("i am working")
+        // console.log("i am working")
         signOut(auth)
           .then((res) => {          
             Logout(setUser);   
@@ -267,7 +294,7 @@ console.log('votenumber',voteNumber, Number(voted))
             // console.log("i am working error")
             setLogin(true);
             const errorMessage = error.message;
-            console.log(errorMessage,"i am working error");
+            // console.log(errorMessage,"i am working error");
           });
         break;
       case EventKeys.EDIT:
@@ -337,13 +364,17 @@ console.log('votenumber',voteNumber, Number(voted))
               label: "Home",
             },
             {
-              href: "/coins",
-              label: "Coin Vote",
-            },
-            {
               href: "/pairs",
               label: "Pairs Vote",
             },
+            {
+              href: "/coins",
+              label: "Coin Vote",
+            },
+            // {
+            //   href: "/pairs",
+            //   label: "Pairs Vote",
+            // },
             {
               href: "/influencers",
               label: "Top Influencers",
@@ -421,11 +452,29 @@ console.log('votenumber',voteNumber, Number(voted))
 
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
-              <div className='d-flex w-100 '>
+              <div                                
+              className='d-flex w-100  '
+              // style={{zoom:"110%",}}
+              >              
+                <ForZoom
+                  {...{ showReward,inOutReward }}
+                  className="w-100"
+                  style={{
+                    
+                  }}
+                >
                 {user?.uid && !login  ? (
                   <div
-                    className='d-flex w-100'
-                    style={{ position: "relative" }}
+                    // className={`${showReward == 2 && inOutReward == 2? '' :"w-100"} d-flex`}
+                    className="d-flex"
+                    style={{
+                      position: "relative",
+                      width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
+                      transition:`width 1s ease;`
+                    //   transform: `${showReward == 2 && "scale(1.1)"}`,
+                    // marginTop: `${showReward == 2 && "50px"}`
+                    
+                    }}
                   >
                     <div
                       className=''
@@ -486,22 +535,30 @@ console.log('votenumber',voteNumber, Number(voted))
                                     style={{
                                     color: "#6352E8",
                                     // zoom: `${showReward == 2 ? "150%" : ""}`
-                                    
+                                    // fontSize:"11px",
+                                    marginLeft:"10px",
                                     }}
                                   >
                             
                                   
-                                  {MyPath == "/profile/mine" ?
+                                {MyPath == "/profile/mine" ?
                                     <CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}                                
-                                      style={{ fontSize: `${showReward == 2 && window.screen.width < 767 ? "20px" : "12px"}` }}
+                                      
                                   onEnd={() =>
                                   {
-                                    setHeaderExtraVote((prev:number) => {
-                                      if (prev!=0) {
-                                        setShowReward(3)
-                                      }
-                                      return prev
-                                    })
+                                  setInOutReward((prev: number) => { 
+                                        // console.log(prev,"showRewardCheck")
+                                              return prev==2?3:prev
+                                      });
+
+                                    // setTimeout(() => {                                      
+                                      setHeaderExtraVote((prev:number) => {
+                                        if (prev!=0) {
+                                          setShowReward(3)
+                                        }
+                                        return prev
+                                      })
+                                    // }, 100);
                                     // setShowReward((prev: number) => {                                            
                                     //   if (prev==2) {                                        
                                     //     return  3                    
@@ -510,7 +567,10 @@ console.log('votenumber',voteNumber, Number(voted))
                                   }
                                   }                                
                                 />:
-                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3}/>}
+                                      // <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                    voteNumber && voteNumber + headerExtraVote
+                                    }
+                                    
                                  {" "}
                                   votes left
                                   </span>
@@ -526,7 +586,7 @@ console.log('votenumber',voteNumber, Number(voted))
                             onClick={ async () =>
                             {
                               setFollowUnfollow(!followUnfollow) 
-                              console.log('folower',followerInfo)
+                              // console.log('folower',followerInfo)
                               const ll = leaders.find((l) => l.userId === followerInfo?.uid);
                               if (user && ll) {
                                
@@ -571,8 +631,10 @@ console.log('votenumber',voteNumber, Number(voted))
                   </div>
                 ) : (
                   <div className='w-100'></div>
-                )}
-                <div className='mt-2'>
+                  )}     
+                </ForZoom>
+                {showReward==2 && window.screen.width < 767 && <div className="w-100"></div>}
+                <div className='mt-2 '>
                   <Title style={{ width: pathname === "/" ? "" : "" }}
                     // onClick={handleSoundClick}
                   >
@@ -587,18 +649,35 @@ console.log('votenumber',voteNumber, Number(voted))
 
           {logo ? (
             <div
+              
               style={{
                 flexBasis: "100%",
-                textAlign: "center",
+                textAlign: "center",                
+                //  transform: `${showReward == 2 && "scale(1)"}`,
+                //     marginTop: `${showReward == 2 && "50px"}`
                 // width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
                 // textAlign: desktop ? undefined : "center",
               }}
             >
-              <div className='d-flex '>
+                              
+              <div className='d-flex w-100'
+              
+              
+              >
+                <ForZoom  {...{ showReward , inOutReward }}
+                className="w-100"
+                >
+
+                
                 {user?.uid && !login? (
                   <div
-                    className='d-flex   w-25 mx-auto '
-                    style={{ position: "relative", height: "50px" }}
+                    className='d-flex  mx-auto w-25'
+                    style={{
+                      position: "relative", height: "50px",  
+                        // width: `${showReward == 2 && inOutReward ? "2%" : "25%"}`,                      
+                        // marginTop: `${showReward == 2 && "20px"}`,
+                        // transition:  `${showReward == 2 && "transform 1s"}`
+                    }}
                   >
                     <div
                       className=''
@@ -622,7 +701,7 @@ console.log('votenumber',voteNumber, Number(voted))
                         />
                       {/* )} */}
                     </div>
-                    <div className='w-100 '>
+                    <div className='w-100'>
                       <HeaderCenter className=''>
                         <div></div>
                         <p className='ml-5'>
@@ -648,7 +727,9 @@ console.log('votenumber',voteNumber, Number(voted))
                         <> 
                           <span
                             style={{
-                                  color: "#6352E8",
+                                    color: "#6352E8",
+                              fontSize:"11px",
+                                    marginLeft:"10px",
                               // zoom: `${showReward == 2 ? "150%" : ""}`
                             }}
                           >
@@ -660,15 +741,34 @@ console.log('votenumber',voteNumber, Number(voted))
                               0} */}
                                 {/* {voteNumber > 0 ? voteNumber : 0} */}
                                {MyPath=="/profile/mine" ?<CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
-                                style={{zoom: `${showReward == 2 ? "150%" : ""}`}}
+                                  style={{
+                                    fontSize: `${showReward == 2 && inOutReward == 2 ?"15px" : "11px"}`
+                                    
+                                    // zoom: `${showReward == 2 ? "140%" : ""}`
+                                  }}
+                                  
                                   onEnd={() =>
-                                  {
+                                  {  
+                                    setInOutReward((prev: number) => { 
+                                        // console.log(prev,"showRewardCheck")
+                                              return prev==2?3:prev
+                                      });
+                                    // setTimeout(() => {
                                     setHeaderExtraVote((prev:number) => {
                                       if (prev!=0) {
-                                        setShowReward(3)
+                                        setShowReward((prev: number) =>{
+                                          return prev == 2 ? 3 : prev
+                                        })
                                       }
                                       return prev
-                                    })
+                                    })  
+                                    // }, 500);
+                                    // setTimeout(() => {
+                                    //   setInOutReward((prev: number) =>{
+                                    //       return prev == 2 ? 3 : prev
+                                    //     })                                      
+                                    // }, 2000);
+                                    
                                     // setShowReward((prev: number) => {                                            
                                     //   if (prev==2) {                                        
                                     //     return  3                    
@@ -677,7 +777,9 @@ console.log('votenumber',voteNumber, Number(voted))
                                   }
                                   }                                
                                 />:
-                                <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3}/>}
+                                    // <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+                                    voteNumber && voteNumber + headerExtraVote
+                                  }
                                {" "}
                                 votes left
                           </span></>}
@@ -692,7 +794,7 @@ console.log('votenumber',voteNumber, Number(voted))
                             onClick={ async () =>
                               {
                                 setFollowUnfollow(!followUnfollow) 
-                                console.log('folower',followerInfo)
+                                // console.log('folower',followerInfo)
                                 const ll = leaders.find((l) => l.userId === followerInfo?.uid);
                                 if (user && ll) {
                                  
@@ -740,7 +842,9 @@ console.log('votenumber',voteNumber, Number(voted))
                   </div>
                 ) : (
                   <div className='w-100'></div>
-                )}
+                  )}
+                </ForZoom>
+                {showReward==2 &&  inOutReward==2 && window.screen.width> 767&& <div className='w-100'></div>}
                 <Navbar.Brand as={Link} to='/'
                   // onClick={handleSoundClick}
                 >

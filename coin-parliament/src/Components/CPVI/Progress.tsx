@@ -7,13 +7,18 @@ import VS from "../icons/VS";
 
 export type ProgressProps = {
   totals: { [key: string]: Totals };
+  progressData?: {
+    success: number
+    total: number
+  }
   symbol1: string;
-  symbol2: string;
-  pct?:number;
+  symbol2?: string;
+  pct?: number;
+  compare?: boolean;
 };
 
 const Container = styled.div`
-max-width: ${window.screen.width<767? "345px":"400px"};
+max-width: ${window.screen.width < 767 ? "345px" : "400px"};
 margin:auto;
   background: transparent
     linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0%
@@ -95,13 +100,14 @@ const VSContainer = styled.div`
   margin-bottom: -13px;
 `;
 
-const Progress = ({ totals, symbol1, symbol2,pct }: ProgressProps) => {
-  const { success, total } =
-    totals[`${symbol1}-${symbol2}`] ||
+const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true }: ProgressProps) => {
+
+  const { success, total } = progressData || totals[`${symbol1}-${symbol2}`] ||
     totals[`${symbol2}-${symbol1}`] ||
+    totals[`${symbol1}`] ||
     ({} as Totals);
   // const pct = (100 * (success || 0)) / (total || 1);
-  
+
   return (
     <Container>
       <div className="justify-content-between align-content-between d-flex mb-3">
@@ -111,38 +117,38 @@ const Progress = ({ totals, symbol1, symbol2,pct }: ProgressProps) => {
       <div>
         <div className="px-3">
           <Bar>
-         
+
             <ProgressBar
-              style={{ background: "var(--ebb)", color:'#6352E8' }}
+              style={{ background: "var(--ebb)", color: '#6352E8' }}
               now={pct}
               key={1}
-              label={`${Math.floor(pct ||0)}%`}
+              label={`${Math.floor(pct || 0)}%`}
             />
-           
+
             <ProgressBar
-              style={{ background: "#6352E8",color:'#6352E8' }}
+              style={{ background: "#6352E8", color: '#6352E8' }}
               now={1}
               key={2}
-               label={`${pct}%`}
+              label={`${pct}%`}
             />
-             <ProgressBar
-              style={{ background: "var(--ebb)",color:'#6352E8' }}
-              now={100-(pct||0)}
+            {symbol2 && <ProgressBar
+              style={{ background: "var(--ebb)", color: '#6352E8' }}
+              now={100 - (pct || 0)}
               key={3}
-               label={`${Math.ceil(100-(pct||0))}%`}
-            />
+              label={`${Math.ceil(100 - (pct || 0))}%`}
+            />}
           </Bar>
-          
+
         </div>
         <VSContainer className="w-100 d-flex justify-content-center" >
-        <VS color="var(--color-d4d0f3)" pct={pct}/>
-       {(pct || 0)<80 && (pct||0)>20 && <div style={{color:'#6352E8', position:'absolute', marginTop:'21px'}}>VS</div>}
-        {/* <div style={{color:'#6352E8', marginTop:'21px'}}>{pct}</div>
+          {<VS color="var(--color-d4d0f3)" pct={pct} compare={compare} />}
+          {((pct || 0) < 80 && (pct || 0) > 20 && symbol2) && <div style={{ color: '#6352E8', position: 'absolute', marginTop: '21px' }}>VS</div>}
+          {/* <div style={{color:'#6352E8', marginTop:'21px'}}>{pct}</div>
         <div style={{color:'#6352E8', marginTop:'21px'}}>{100-(pct||0)}</div> */}
         </VSContainer>
         <div className="w-100 d-flex justify-content-between mb-3">
           <Symbol1>{symbol1}</Symbol1>
-          <Symbol2>{symbol2}</Symbol2>
+          {symbol2 && <Symbol2>{symbol2}</Symbol2>}
         </div>
       </div>
     </Container>

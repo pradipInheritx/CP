@@ -6,9 +6,9 @@ import { Container } from "react-bootstrap";
 const PairsMain = () => {
   return (
     // <Container>
-      <>
-       <Pairs expanded onFavClick={calcFavorites} />
-      </>
+    <>
+      <Pairs expanded onFavClick={calcFavorites} />
+    </>
     // </Container>
   );
 };

@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../Contexts/User";
 import CoinsContext from "../Contexts/CoinsContext";
-import {setChecked} from "../common/models/User";
+import { setChecked } from "../common/models/User";
 import AppContext from "../Contexts/AppContext";
 import InfluencersComponent from "../Components/Users/InfluencersComponent";
 
@@ -10,16 +10,17 @@ const Influencers = () => {
   const { leaders } = useContext(CoinsContext);
   const { userTypes } = useContext(AppContext);
   const [chosen, setChosen] = useState<string | undefined>("SPEAKER");
-  const {chosenUserType,setChosenUserType}=useContext(AppContext)
+  const { chosenUserType, setChosenUserType } = useContext(AppContext);
   useEffect(() => {
-    setChosen(chosenUserType || "SPEAKER")
+    // setChosen(chosenUserType || "SPEAKER")
+    setChosen(userTypes[0]?.name.toUpperCase() || "SPEAKER")
     return () => {
       setChosen('')
       setChosenUserType('')
     }
-  }, [chosenUserType])
-// @ts-ignore
-  
+  }, [/* chosenUserType */userTypes])
+  // @ts-ignore
+
   return (
     <div>
       <InfluencersComponent

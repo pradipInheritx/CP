@@ -101,6 +101,7 @@ import { useWindowSize } from "./hooks/useWindowSize";
 import Votes from "./Components/Profile/Votes";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import FAQ from "./Pages/FAQ";
+import styled from "styled-components";
 import { myPages, quotes } from "./common/consts/contents";
 import Notifications from "./Components/Profile/Notifications";
 import Background from "./Components/Background";
@@ -139,10 +140,21 @@ const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMa
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 let ws:any;
-let socket:any;
+let socket: any;
+
+export const BackDiv = styled.div`
+// position:fixed;
+// border:1px solid red;
+// width:100%;
+// height:150vh;
+// background:"red";
+`;
+
+
 function App() {
+  document.body.classList.add('bg-Change');
   
-  
+  // document.body.style.zIndex = "400";
   const location = useLocation();
   const search = location.search;
   const pathname = location.pathname;
@@ -253,12 +265,12 @@ function App() {
       } = message.data["firebase-messaging-msg-data"] as {
         notification: { body: string; title: string };
       };
-      showToast(
-        <div>
-          <h5>{title}</h5>
-          <p>{body}</p>
-        </div>
-      );
+      // showToast(
+      //   <div>
+      //     <h5>{title}</h5>
+      //     <p>{body}</p>
+      //   </div>
+      // );
     });
   }
   });
@@ -326,6 +338,7 @@ function App() {
   const [followerUserId,setFollowerUserId]=useState<string>('')
   const [showBack,setShowBack]=useState<any>(false)
   const [showReward,setShowReward]=useState<any>(0)
+  const [inOutReward,setInOutReward]=useState<any>(0)
   const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
   const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
@@ -821,7 +834,7 @@ function connect(){
      socket.send(JSON.stringify(req));
    };
    ws.onclose = (event:any) => {
-    // if(!login)window.location.reload()
+    if(!login)window.location.reload()
      console.log('WebSocket connection closed');
      if (event.code !== 1000) {
        console.log('WebSocket Attempting to reconnect in 5 seconds...');
@@ -832,7 +845,7 @@ function connect(){
    };
    
    ws.onerror = () => {
-    // if(!login)window.location.reload()
+    if(!login)window.location.reload()
      console.log('WebSocket connection occurred');
    };
    const timeout = 30000; // 30 seconds
@@ -888,85 +901,85 @@ if (ws) ws.close();
 //     console.log("Browser window is not minimized");
 //   }
 // }
-// const checkprice = async (vote: any) => {
-//   console.log(vote, "checkAllvote")
-//   const voteCoins = vote?.coin.split("-");
-// const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
-// const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
-//  const data = await getPriceCalculation({            
-//       coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
-//       coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
-//       voteId:vote?.id,
-//       voteTime:vote?.voteTime,
-//       valueVotingTime: vote?.valueVotingTime,
-//       expiration: vote?.expiration,
-//       timestamp: Date.now()
-//   }).then((data:any)=>{
-//     console.log('success')
-//     // if(data.data==null){
-//     //     getVotes(index).then(void 0);     
-//     // }
-//   }).catch((err:any )=> {
-//       if (err && err.message) {
-//           console.log(err.message);
-//       }        
-//   })
-// }
-// const getVotes = useCallback(
-//   async () => {
-//     if (user?.uid) {
-//       const newVotes = await getVotesFunc({
-//         userId: user?.uid,
-//       });
-//       // @ts-ignore
-//       let result = JSON.parse(newVotes?.data)      
-//       if (newVotes?.data) {
+const checkprice = async (vote: any) => {
+  console.log(vote, "checkAllvote")
+  const voteCoins = vote?.coin.split("-");
+const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
+const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
+ const data = await getPriceCalculation({            
+      coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
+      coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
+      voteId:vote?.id,
+      voteTime:vote?.voteTime,
+      valueVotingTime: vote?.valueVotingTime,
+      expiration: vote?.expiration,
+      timestamp: Date.now()
+  }).then((data:any)=>{
+    console.log('success')
+    // if(data.data==null){
+    //     getVotes(index).then(void 0);     
+    // }
+  }).catch((err:any )=> {
+      if (err && err.message) {
+          console.log(err.message);
+      }        
+  })
+}
+const getVotes = useCallback(
+  async () => {
+    if (user?.uid) {
+      const newVotes = await getVotesFunc({
+        userId: user?.uid,
+      });
+      // @ts-ignore
+      let result = JSON.parse(newVotes?.data)      
+      if (newVotes?.data) {
         
-//         const { coins, pairs } = result
+        const { coins, pairs } = result
     
-//         let AllCoins = coins?.votes.filter((item: any) => {
-//           if (item.expiration < Date.now() && item.success == undefined) {
+        let AllCoins = coins?.votes.filter((item: any) => {
+          if (item.expiration < Date.now() && item.success == undefined) {
             
-//             return item
-//           }    
-//         })
+            return item
+          }    
+        })
     
-//         let AllPairs = pairs?.votes.filter((item: any) => {
-//           if (item.expiration< Date.now() && item.success == undefined) {
+        let AllPairs = pairs?.votes.filter((item: any) => {
+          if (item.expiration< Date.now() && item.success == undefined) {
             
-//             return item
-//           }
-//         })  
+            return item
+          }
+        })  
     
-//     let allCoinsPair= [...AllCoins,...AllPairs]  
-//     let promiseArray:any =[]
-//     if (allCoinsPair.length > 0) {
-//       allCoinsPair?.forEach((voteItem:any) => {
-//        promiseArray.push(checkprice(voteItem))
-//        // checkprice(voteItem);
-//       })    
-//     }
-//     if (!promiseArray?.length) return
-//     Promise.all(promiseArray)
-//    .then(responses => {
-//      return Promise.all(responses.map((res,index) => {
-//        console.error('promiseAllsuccess');
-//        getVotes().then(void 0); 
-//      }))
-//    })
-//    .catch(error => {
-//      console.error('promiseAll',error);
-//    });                
-//       }
-//     }
-//   },
-//   [user?.uid]
-// );  
-// useEffect(() => {
-//   if (user?.uid) {
-//     getVotes().then(void 0);
-//   }
-// }, [ user?.uid]);
+    let allCoinsPair= [...AllCoins,...AllPairs]  
+    let promiseArray:any =[]
+    if (allCoinsPair.length > 0) {
+      allCoinsPair?.forEach((voteItem:any) => {
+       promiseArray.push(checkprice(voteItem))
+       // checkprice(voteItem);
+      })    
+    }
+    
+    console.log('promisearray',promiseArray,allCoinsPair)
+    if (!promiseArray?.length) return
+    Promise.all(promiseArray)
+   .then(responses => {
+    getVotes().then(void 0); 
+    //  return Promise.all(responses)
+   })
+   .catch(error => {
+     console.error('promiseAll',error);
+   });                
+      }
+    }
+  },
+  [user?.uid]
+);  
+useEffect(() => {
+  if (user?.uid) {
+    getVotes().then(void 0);
+  }
+}, [ user?.uid]);
 
   return loader ? (
     <div
@@ -976,7 +989,13 @@ if (ws) ws.close();
       <Spinner />
     </div>
   ) : (
-    <div>
+      <BackDiv
+        style={{
+        // border: "1px solid red",
+        // backgroundColor: "rgba(0,0,0,0.5)",
+      }}
+      >
+        <div>
       {enabled && (
         <NotificationContext.Provider
           value={{
@@ -1007,7 +1026,9 @@ if (ws) ws.close();
                   rewardExtraVote,
                   setRewardExtraVote,
                   headerExtraVote,
-                  setHeaderExtraVote,
+                    setHeaderExtraVote,
+                    inOutReward,
+                    setInOutReward,
                   showReward,
                   setShowReward,
                   showBack,
@@ -1561,8 +1582,9 @@ if (ws) ws.close();
             <Button type='submit'>Submit</Button>
           </Form>
         </Container>
-      )}
-    </div>
+          )}
+          </div>
+    </BackDiv>
   );
 }
 

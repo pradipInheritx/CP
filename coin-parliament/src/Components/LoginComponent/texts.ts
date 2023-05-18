@@ -74,6 +74,7 @@ export const texts = {
   WEBELIEVEINPARTNERSHIPS: "WE BELIEVE IN PARTNERSHIPS!",
   friends: "friends".toUpperCase(),
   LoadingText: "loading...".toUpperCase(),
+  Calculatingvoteresult: "Calculating vote result...".toUpperCase(),
   Prev: "Prev".toUpperCase(),
   Next: "Next".toUpperCase(),
   Pair: "pair".toUpperCase(),

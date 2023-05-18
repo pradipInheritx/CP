@@ -68,7 +68,8 @@ const PairsForm = ({
   setConfetti,
   selectedTimeFrame,
   setSelectedTimeFrame,
-  coinUpdated
+  coinUpdated,
+hideButton
 }: {
   coin1: Coin;
   coin2: Coin;
@@ -79,6 +80,7 @@ const PairsForm = ({
   selectedTimeFrame?:number;
   setSelectedTimeFrame?:(n:number)=>void;
   coinUpdated:any;
+  hideButton?:any;
 }) => {
   const { user, userInfo } = useContext(UserContext);
   const { timeframes } = useContext(AppContext);
@@ -115,7 +117,7 @@ const PairsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          valueVotingTime:[coinUpdated[coin1?.symbol]?.price,coinUpdated[coin2?.symbol]?.price],
+          valueVotingTime:[coinUpdated[coin1?.symbol]?.price+coinUpdated[coin1?.symbol]?.randomDecimal,coinUpdated[coin2?.symbol]?.price+coinUpdated[coin2?.symbol]?.randomDecimal],
           voteTime:Date.now(),
           expiration:Date.now() + chosenTimeframe.seconds * 1000 ,
           voteId:`${symbolCombination([coin1.symbol, coin2.symbol])}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
@@ -165,6 +167,7 @@ const PairsForm = ({
               
             }
           },
+          hideButton,
           width: 306,
           disabled,
           selectedTimeFrame,

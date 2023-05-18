@@ -147,9 +147,19 @@ const Carousel = ({
     ],
     []
   );
+  function updateCoin(){
+    for (let obj in  livePrice.current) {
+      // Update the property value of prop1 in each object
+      livePrice.current[obj].randomDecimal = (livePrice.current[obj]?.randomDecimal ||5) + (Math.random()<0.5?-1:1)
+    }
+    // console.log('livepricedata',livePrice.current['BTC']?.randomDecimal,livePrice.current['BTC']?.price)
+    setCoinUpdated(livePrice.current)
+  }
 useEffect(() => {
   const interval = setInterval(function () {
-    setCoinUpdated(livePrice.current)
+  
+   updateCoin()
+        
   }, 1500);
 
   return () => {
@@ -205,14 +215,26 @@ const symbol =message?.s?.slice(0, -4)
       if (symbol) {
         // @ts-ignore
         const dot = decimal[symbol]
+        // for (let obj in  livePrice.current) {
+        //   // Update the property value of prop1 in each object
+        //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
+        // }
+        
         // @ts-ignore
+         
+    // for (let obj in  livePrice.current) {
+    //   // Update the property value of prop1 in each object
+    //   livePrice.current[obj].randomDecimal = (livePrice.current[obj].randomDecimal ||5) + (Math.random()<5?1:1)
+    // }
         livePrice.current= {
           ...livePrice.current,
           [symbol]: {
             ...livePrice.current[symbol],
             price:Number(message?.c).toFixed(dot?.decimal || 2), 
+            randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(livePrice.current[symbol]?.price)?livePrice.current[symbol]?.randomDecimal:5
           },
         }
+
       // setCoinUpdated((prevCoins) => ({
       //   ...prevCoins,
       //   [symbol]: {
@@ -223,13 +245,13 @@ const symbol =message?.s?.slice(0, -4)
     }
     };
   }, [ws])
-  console.log('liveprice',livePrice)
+  // console.log('liveprice',livePrice?.current?.BTC?.randomDecimal)
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       const dot = decimal["CRO"]
-      console.log('cro price',data?.result?.data[0])
+      // console.log('cro price',data?.result?.data[0])
       if (data?.result?.data[0].a) {
   // @ts-ignore
   livePrice.current= {
@@ -238,6 +260,7 @@ const symbol =message?.s?.slice(0, -4)
       ...livePrice.current['CRO'],
       // @ts-ignore
       price: Number(data?.result?.data[0]?.a).toFixed(dot?.decimal || 2), 
+      randomDecimal:5
     },
   }
       // setCoinUpdated((prevCoins) => ({
