@@ -167,7 +167,6 @@ const VoteForm = function <
                       <img src={option1.image} alt={option1.alt} />
                     ) : (
                       <>
-                        {" "}
                         {/* <p>vote {option1.image} BEAR</p> */}
                         {/* @ts-ignore */}
                         {option1?.buttonText ? <p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p> : <> Vote<p>{option1.image}</p> </>}

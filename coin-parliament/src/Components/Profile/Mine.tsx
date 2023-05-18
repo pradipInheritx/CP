@@ -13,7 +13,7 @@ import { useTranslation } from "../../common/models/Dictionary";
 import styled, { css } from "styled-components";
 import NotificationContext from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
-import { isV1 ,ZoomCss} from "../App/App";
+import { isV1, ZoomCss } from "../App/App";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import animation from "./Comp.json";
@@ -43,24 +43,24 @@ const RewardList = styled.p`
   cursor: pointer;
 `;
 type ZoomProps = {
-  inOutReward?:number
+  inOutReward?: number
 };
 const ForZoom = styled.div`
-z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ?"2200":"" }`};  
- ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss :""}`} 
+z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
+ ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
 `;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes ,showBack,setShowBack ,showReward,setShowReward,inOutReward,setInOutReward} = useContext(AppContext);
+  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
-   const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = React.useState(false);
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -78,18 +78,18 @@ const Mine = () => {
   }, [rewardTimer]);
 
   useEffect(() => {
-  
+
     if (showBack) {
-           setTimeout(() => {
-             console.log(showBack, "viewshow")
-             handleShow()
-          setShowBack(false)
-        }, 10000);
-        }       
-    }, []);
+      setTimeout(() => {
+        console.log(showBack, "viewshow")
+        handleShow()
+        setShowBack(false)
+      }, 10000);
+    }
+  }, []);
 
   console.log(showBack, "viewshow back")
-  
+
   if (isV1()) {
     return (
       <Navigate
@@ -101,32 +101,30 @@ const Mine = () => {
     );
   }
 
-	const goBack = () => {
-		navigate(-1);
+  const goBack = () => {
+    navigate(-1);
   }
-  
-  const MyDiv = () => {
-    
-  }
-    setTimeout(() => {
-      MyDiv()
-    }, 1000);
 
-console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
+  const MyDiv = () => {
+
+  }
+  setTimeout(() => {
+    MyDiv()
+  }, 1000);
 
   return (
     <div>
-      <Container >        
+      <Container >
         {/* @ts-ignore */}
-        {!!rewardTimer && showReward==3 && inOutReward==3 && (        
+        {!!rewardTimer && showReward == 3 && inOutReward == 3 && (
           // <AnimationReward
           //   setRewardTimer={setRewardTimer}
           //   rewardTimer={rewardTimer}
           // />
           <div className=''>
-          {/* @ts-ignore */}
-          <NFTCard   setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
-        </div>
+            {/* @ts-ignore */}
+            <NFTCard setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />
+          </div>
         )}
         {/* @ts-ignore */}
 
@@ -155,7 +153,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
                 {" "}
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
-              <ForZoom {...{inOutReward}} style={{ marginTop: "7px" }}>
+              <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}>
                 {" "}
                 {/* <PAXCard
                   walletId={userInfo?.wallet || ""}
@@ -166,8 +164,8 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
                   walletId={userInfo?.wallet || ""}
                   rewardTimer={rewardTimer}
                   // @ts-ignore
-                  PAX={userInfo?.rewardStatistics?.diamonds|| 0  }
-                  // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
+                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
                 />
               </ForZoom>
             </div>
@@ -185,7 +183,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
                 setRewardTimer={setRewardTimer}
                 rewardTimer={rewardTimer}
                 // @ts-ignore
-                claim={ userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+                claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                 }
               />
             </div>
@@ -198,15 +196,15 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
                 <Minting
                   {...{
                     width,
-                      score:
+                    score:
                       // @ts-ignore
                       (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
                     setRewardTimer,
                     rewardTimer,
                   }}
                   setRewardTimer={setRewardTimer}
-                    rewardTimer={rewardTimer}
-                    // @ts-ignore
+                  rewardTimer={rewardTimer}
+                  // @ts-ignore
                   claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                   }
                 />
@@ -217,15 +215,15 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
               md={6}
               className='d-flex flex-column flex-md-column-reverse'
             >
-                <ForZoom 
-                  {...{inOutReward}}
-                >                  
-                  <PAXCard                  
-                    walletId={userInfo?.wallet || ""}
-                    rewardTimer={rewardTimer}
+              <ForZoom
+                {...{ inOutReward }}
+              >
+                <PAXCard
+                  walletId={userInfo?.wallet || ""}
+                  rewardTimer={rewardTimer}
                   // @ts-ignore
-                    PAX={userInfo?.rewardStatistics?.diamonds || 0 }
-                    // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
+                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
                 {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
               </ForZoom>
@@ -243,7 +241,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
               color: "#6352E8",
               fontSize: "12px",
               marginTop: "30px",
-              width:`${window.screen.width>767?"730px":"100%"}`
+              width: `${window.screen.width > 767 ? "730px" : "100%"}`
             }}
           >
             <div
@@ -275,9 +273,9 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
                     </span>{" "}
                     {texts.GamePts}
                   </RewardList>
-                  <RewardList onClick={()=>navigate('/profile/Album')}>
+                  <RewardList onClick={() => navigate('/profile/Album')}>
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" , }} onClick={()=>navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
+                    <span style={{ color: "#6352E8", }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}
@@ -320,29 +318,29 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
       </Container>
       <div>
         <Modal
-      show={modalShow} onHide={handleClose}
-      // size="sm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <div className="d-flex justify-content-end">
-        <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
-          handleClose()
-          }}></button>
-        </div>
-      <Modal.Body>
-            {/* continue voting */}          
-      <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>Stay in the game!</p></div>
+          show={modalShow} onHide={handleClose}
+          // size="sm"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              handleClose()
+            }}></button>
+          </div>
+          <Modal.Body>
+            {/* continue voting */}
+            <div className='py-2  d-flex  justify-content-center'><p style={{ fontSize: "20px" }}>Stay in the game!</p></div>
 
-      </Modal.Body>
+          </Modal.Body>
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2" onClick={goBack}>CONTINUE VOTING</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
-      {/* </Modal.Footer>       */}
-    </Modal>
-  </div>
+          {/* </Modal.Footer>       */}
+        </Modal>
+      </div>
 
     </div>
   );

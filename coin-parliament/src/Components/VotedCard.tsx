@@ -270,7 +270,7 @@ const VotedCard = ({
       </div>
       {/* @ts-ignore */}
       {/* <Rectangle2620 className="" style={{border:coin2===undefined? (vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime <coin1.price?'1px solid #07501a':'1px solid ##7afd67')):(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime >coin1.price?'1px solid #07501a':'1px solid ##7afd67'))):(vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')):(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')))}}>     */}
-      <YourVote className="mb-2">Your vote</YourVote>
+      {/* <YourVote className="mb-2">Your vote</YourVote> */}
       <Rectangle2620 className="" style={{ border: `1px solid ${borderColor}` }}>
         <div className="d-flex justify-content-center w-100">
           <div className="w-100 px-3">
@@ -294,7 +294,7 @@ const VotedCard = ({
               />
             </div>
             <BitcoinBTCBULL24H3864490
-              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
+              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center mt-4`}
             >
               {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
 
@@ -418,7 +418,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
           </span>;
         } else {
           return (
-            <span className="" style={{ color: '#6352e8', fontSize: '20px', fontWeight: 400, marginLeft: "10px" }}>
+            <span className="" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, marginLeft: "10px" }}>
               {hours < 1 ? null : `${hours} :`}
               {minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}

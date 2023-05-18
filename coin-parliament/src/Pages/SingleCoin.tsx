@@ -483,7 +483,6 @@ const SingleCoin = () => {
                       </Modal.Footer>
                     </Modal>
                   </div>      */}
-                {console.log(vote, 'pkkk')}
 
                 <ModalForResult
                   popUpOpen={popUpOpen}
