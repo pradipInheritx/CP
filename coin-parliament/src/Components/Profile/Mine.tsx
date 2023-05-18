@@ -42,6 +42,9 @@ const RewardList = styled.p`
   color: #707070;
   cursor: pointer;
 `;
+const CardDiv = styled.div`
+
+`;
 type ZoomProps = {
   inOutReward?:number
 };
@@ -61,6 +64,7 @@ const Mine = () => {
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
    const [modalShow, setModalShow] = React.useState(false);
+   const [cardModalShow, setCardModalShow] = React.useState(false);
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -73,21 +77,45 @@ const Mine = () => {
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
+  const handleCardClose = () => setCardModalShow(false);
+  const handleCardShow = () => setCardModalShow(true);
+
+  // @ts-ignore
+  const ClaimNumber = userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+
   useEffect(() => {
     rewardList();
   }, [rewardTimer]);
 
   useEffect(() => {
+    if (!!rewardTimer && showReward==3 && inOutReward==3) {      
+      handleCardShow();
+    }
+  }, [inOutReward,showReward,rewardTimer]);
+
+  useEffect(() => {
   
-    if (showBack) {
+    if (showBack && ClaimNumber < 1) {
            setTimeout(() => {
              console.log(showBack, "viewshow")
              handleShow()
-          setShowBack(false)
+             setShowBack(false)
+             console.log("Openpopup not")
         }, 10000);
         }       
     }, []);
 
+  
+  const openpopup = () => {
+    if (showBack) {
+           setTimeout(() => {
+             console.log(showBack, "viewshow")
+             handleShow()
+             setShowBack(false)
+             console.log("Openpopup")
+        }, 10000);
+    }
+  }
   console.log(showBack, "viewshow back")
   
   if (isV1()) {
@@ -113,19 +141,18 @@ const Mine = () => {
     }, 1000);
 
 console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
-
+  
   return (
     <div>
       <Container >        
-        {/* @ts-ignore */}
+        {/* <AnimationReward
+           setRewardTimer={setRewardTimer}
+           rewardTimer={rewardTimer}
+         /> */}
         {!!rewardTimer && showReward==3 && inOutReward==3 && (        
-          // <AnimationReward
-          //   setRewardTimer={setRewardTimer}
-          //   rewardTimer={rewardTimer}
-          // />
           <div className=''>
-          {/* @ts-ignore */}
-          <NFTCard   setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
+            {/* @ts-ignore */}          
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
         </div>
         )}
         {/* @ts-ignore */}
@@ -320,7 +347,9 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
       </Container>
       <div>
         <Modal
-      show={modalShow} onHide={handleClose}
+          show={
+            modalShow            
+          } onHide={handleClose}
       // size="sm"
       aria-labelledby="contained-modal-title-vcenter"
       centered
@@ -332,7 +361,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
         </div>
       <Modal.Body>
             {/* continue voting */}          
-      <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>Stay in the game!</p></div>
+      <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>You need 'remaining cmp number' to achieve the goal!</p></div>
 
       </Modal.Body>
           {/* <Modal.Footer> */}
@@ -342,7 +371,13 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
           </div>
       {/* </Modal.Footer>       */}
     </Modal>
-  </div>
+      </div>
+      
+{/* Card Modal */}
+
+      <CardDiv>
+        
+  </CardDiv>
 
     </div>
   );

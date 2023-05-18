@@ -8,9 +8,11 @@ import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClickCard } from "../utils/SoundClick";
+import scratchCArd from '../../assets/images/scratchCArd.jpg'
 type MintingProps = {
   cardType?: any;
   setRewardTimer?: any;
+  openpopup?: any;
 };
 
 
@@ -70,7 +72,7 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary" ,setRewardTimer }: MintingProps) {
+function NFTCard({ cardType = "legendary" ,setRewardTimer ,openpopup}: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -108,9 +110,22 @@ useEffect(() => {
   context.fillRect(0, 0, WIDTH, HEIGHT);
 
   context.fillStyle = "#fff";
-  context.font = "30px Helvetica";
-  context.fillText("Scratch", WIDTH/3 , 160);
+  context.font = "20px Helvetica";
+    context.fillText("Scratch", WIDTH/2.5, 160 );
   
+  // for (let i = 1; i < 8;  i++){    
+  //   context.fillText("Scratch", 20, 40 * i);
+  //   context.fillText("Scratch", 100, 40 * i);
+  //   context.fillText("Scratch", 180, 40 * i);    
+  // }
+
+  //   const foregroundImage = new Image();
+	// 	foregroundImage.onload = function () {
+	// 		context.drawImage(this, 0, 0);
+	// 		context.globalCompositeOperation = "destination-out";
+	// 		context.lineWidth = 20;			
+	// 	};
+  // foregroundImage.src = scratchCArd;
     context.lineWidth = window.screen.width<768? 10 :50;
     context.lineJoin = "brush";
     return () => {
@@ -177,7 +192,7 @@ useEffect(() => {
    
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
-    context.arc(offsetX, offsetY, 35, 0, Math.PI * 2); // Adjust the arc radius as needed
+    context.arc(offsetX, offsetY, 5, 0, Math.PI * 2); // Adjust the arc radius as needed
     context.closePath();
     context.stroke();
   
@@ -201,7 +216,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
     context.beginPath();
     // context.moveTo(startX,startY);
     // context.lineTo(offsetX || layerX , offsetY || layerY);
-    context.arc(offsetX, offsetY, 10, 0, Math.PI * 2);
+    context.arc(offsetX, offsetY, 5, 0, Math.PI * 2);
     context.closePath();
     context.stroke();
     
@@ -225,6 +240,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true)
       setScratchShound(false)
+      openpopup()
       const Animation=lottie.loadAnimation({
       // @ts-ignore
       container: document.querySelector("#card-animation"),
@@ -257,7 +273,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
     if (percentage > 30) {
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
-      
+      openpopup()
       const Animation=lottie.loadAnimation({
         // @ts-ignore
         container: document.querySelector("#card-animation"),
