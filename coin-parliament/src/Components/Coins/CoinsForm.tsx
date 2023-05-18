@@ -37,7 +37,8 @@ const CoinsForm = ({
   coinUpdated,
   hideButton,
   setHideButton,
-  setpopUpOpen
+  setpopUpOpen,
+  propVote
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -53,7 +54,8 @@ const CoinsForm = ({
   coinUpdated: any;
   hideButton?: any;
   setHideButton: (value: number[]) => void;
-  setpopUpOpen: React.Dispatch<SetStateAction<boolean>>
+  setpopUpOpen: React.Dispatch<SetStateAction<boolean>>;
+  propVote: VoteResultProps
 }) => {
   const { votesLast24Hours, user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
@@ -203,7 +205,8 @@ const CoinsForm = ({
             selectTimeFrame: translate("Select a time frame for your vote").toUpperCase(),
             tooltip: translate(tooltipText),
           },
-          setpopUpOpen
+          setpopUpOpen,
+          vote: propVote
         }}
       />
     </Container>

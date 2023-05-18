@@ -8,6 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import UserContext from "../Contexts/User";
 import RangeSilder from "./Users/RangeSilder";
 import Countdown from "react-countdown";
+import { VoteResultProps } from "../common/models/Vote";
 
 export const colors = ["#6352e8", "white"];
 
@@ -35,7 +36,8 @@ type VoteFormProps<T> = {
   votedDetails?: any;
   hideButton?: any;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
-  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  vote: VoteResultProps
 };
 const VoteForm = function <
   T extends {
@@ -64,6 +66,7 @@ const VoteForm = function <
   hideButton,
   setHideButton,
   setpopUpOpen,
+  vote
 }: VoteFormProps<T>) {
   const { timeframes, login, remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
@@ -100,7 +103,8 @@ const VoteForm = function <
             votedDetails,
             hideButton,
             setHideButton,
-            setpopUpOpen
+            setpopUpOpen,
+            vote
           }}
         />
       </div>}
