@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import { getNumTimeframes, TimeFrame } from "../../common/models/Vote";
+import { getNumTimeframes, TimeFrame, VoteResultProps } from "../../common/models/Vote";
 import Icon from "../Atoms/Checkbox/Icon";
 import { Buttons } from "../Atoms/Button/Button";
 import { Title } from "../../Pages/SingleCoin";
@@ -21,7 +21,8 @@ export type SelectTimeframesProps = {
   votePrice?: any;
   votedDetails?: any;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
-  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  vote: VoteResultProps
 };
 
 const SelectTimeframes = ({
@@ -37,6 +38,7 @@ const SelectTimeframes = ({
   votedDetails,
   setHideButton,
   setpopUpOpen,
+  vote
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -110,6 +112,7 @@ const SelectTimeframes = ({
                       buttonIndex={k}
                       setHideButton={setHideButton}
                       setpopUpOpen={setpopUpOpen}
+                      vote={vote}
                     >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
@@ -124,7 +127,8 @@ const SelectTimeframes = ({
                         // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
                         votedDetails: votedDetails?.length > 0 ? votedDetails[k] : 0,
                         buttonDetails: buttonDetails && buttonDetails[k],
-                        PariButtonDetails: pariButtonDetails && pariButtonDetails[k]
+                        PariButtonDetails: pariButtonDetails && pariButtonDetails[k],
+                        vote
                       }}
                       showTimer={true}
                     >

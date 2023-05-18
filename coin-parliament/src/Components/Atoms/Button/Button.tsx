@@ -6,6 +6,7 @@ import CoinContext from "../../../Contexts/CoinsContext";
 import { formatCurrency, precision } from "../../../common/models/Coin";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../../styledMixins";
 import AppContext from "../../../Contexts/AppContext";
+import { VoteResultProps } from "../../../common/models/Vote";
 
 export type Props = Partial<ButtonProps> & {
   children: ReactNode | undefined;
@@ -159,7 +160,8 @@ const TimeframeButton = ({
   PariButtonDetails,
   buttonIndex,
   setHideButton,
-  setpopUpOpen
+  setpopUpOpen,
+  vote
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -173,7 +175,8 @@ const TimeframeButton = ({
   PariButtonDetails?: any;
   buttonIndex?: number;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
-  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  vote: VoteResultProps
 }) => {
   const [borderColor, setborderColor] = useState<string>("white");
   const [borderDeg, setBorderDeg] = useState<number>(0);
@@ -220,7 +223,8 @@ const TimeframeButton = ({
           })
         });
       }
-      if (deg < 0 && setpopUpOpen) {
+
+      if (deg < 0 && setpopUpOpen && vote) {
         setpopUpOpen(true);
       }
       setBorderDeg(Math.round(deg));

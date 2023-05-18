@@ -261,7 +261,8 @@ const VotedCard = ({
             cssDegree: cssDegree,
             votePrice: votePrice,
             setHideButton,
-            setpopUpOpen
+            setpopUpOpen,
+            vote
           }}
         />
       </div>
