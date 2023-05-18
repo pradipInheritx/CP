@@ -30,18 +30,17 @@ export default (state = INIT_STATE, action) => {
       console.log(action.payload, "action.payload");
       return {
         ...state,
-        timeFrameList: [ action.payload, ...state.timeFrameList ]
+        timeFrameList: [action.payload, ...state.timeFrameList]
       };
     }
     case EDIT_TIMEFRAME: {
       console.log(action.payload, "action.payload");
       return {
         ...state,
-        timeFrameList: state.timeFrameList.map(
-          timeFrame =>
-            timeFrame.timeframeId === action.payload.timeframeId
-              ? action.payload
-              : timeFrame
+        timeFrameList: state.timeFrameList.map(timeFrame =>
+          timeFrame.timeframeId === action.payload.timeframeId
+            ? action.payload
+            : timeFrame
         )
       };
     }

@@ -1,13 +1,14 @@
-import {Form, OverlayTrigger, Tooltip} from "react-bootstrap";
-import React, {useContext, useEffect} from "react";
+import { Form, OverlayTrigger, Tooltip } from "react-bootstrap";
+import React, { useContext, useEffect } from "react";
 import AppContext from "../Contexts/AppContext";
 import SelectTimeframes from "./Coins/SelectTimeframes";
-import {default as CPVote} from "./Coins/Vote";
-import {Title} from "../Pages/SingleCoin";
+import { default as CPVote } from "./Coins/Vote";
+import { Title } from "../Pages/SingleCoin";
 import { Link, useParams } from "react-router-dom";
 import UserContext from "../Contexts/User";
 import RangeSilder from "./Users/RangeSilder";
 import Countdown from "react-countdown";
+import { VoteResultProps } from "../common/models/Vote";
 
 export const colors = ["#6352e8", "white"];
 
@@ -34,7 +35,9 @@ type VoteFormProps<T> = {
   votePrice?: any;
   votedDetails?: any;
   hideButton?: any;
-  
+  setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  vote?: VoteResultProps
 };
 const VoteForm = function <
   T extends {
@@ -61,15 +64,19 @@ const VoteForm = function <
   votePrice,
   votedDetails,
   hideButton,
+  setHideButton,
+  setpopUpOpen,
+  vote
 }: VoteFormProps<T>) {
-  const { timeframes, login,remainingTimer } = useContext(AppContext);
+  const { timeframes, login, remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  
-  console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
-  
-  
+
+  // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
+
+  // console.log(hideButton, selectedTimeFrame, 'pk');
+
   return (
     <Form
       className='mt-3'
@@ -79,7 +86,7 @@ const VoteForm = function <
         e.preventDefault();
         submit();
       }}
-      style={{maxWidth:'450px', margin:'0 auto'}}
+      style={{ maxWidth: '450px', margin: '0 auto' }}
     >
       {!hideButton.includes(selectedTimeFrame) && <div className="mt-4" style={{ marginLeft: symbol2 ? '' : '24px', marginRight: symbol2 ? '' : '24px' }}>
         <SelectTimeframes
@@ -93,14 +100,18 @@ const VoteForm = function <
             selectedTimeFrameArray: selectedTimeFrameArray,
             cssDegree,
             votePrice,
-            votedDetails
+            votedDetails,
+            hideButton,
+            setHideButton,
+            setpopUpOpen,
+            vote
           }}
         />
       </div>}
       {!hideButton.includes(selectedTimeFrame) && <div className='mt-4 pt-2'>
         {/* @ts-ignore */}
         <div className='mb-3'>
-          <Title>{texts.yourVote}</Title>
+          {/* <Title>{texts.yourVote}</Title> */}
         </div>
         <OverlayTrigger
           overlay={(props) =>
@@ -121,10 +132,10 @@ const VoteForm = function <
                         <Link to="/votingbooster" style={{ color: "#fff" }}> buy extra votes now.</Link>
                       </span>
                     );
-            
+
                   }}
                 /></div> : `${texts.tooltip}`}
-                
+
                 {/* <RangeSilder/> */}
                 {/* {texts.tooltip} */}
               </Tooltip>
@@ -160,7 +171,6 @@ const VoteForm = function <
                       <img src={option1.image} alt={option1.alt} />
                     ) : (
                       <>
-                        {" "}
                         {/* <p>vote {option1.image} BEAR</p> */}
                         {/* @ts-ignore */}
                         {option1?.buttonText ? <p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p> : <> Vote<p>{option1.image}</p> </>}

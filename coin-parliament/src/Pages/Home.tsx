@@ -1,6 +1,6 @@
 /** @format */
 
-import React, {  useContext } from "react";
+import React, { useContext } from "react";
 import { Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
 import Pairs from "../Components/Pairs/Pairs";
@@ -37,18 +37,18 @@ const TextContainer = styled.div`
 const Home = () => {
   const translate = useTranslation();
   const { user } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,setSignup } =
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, setSignup } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
   const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
-  
+
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
-        <div style={{ background: "#160133" }}>          
+        <div style={{ background: "#160133" }}>
           <HomeContainer width={width} className='mb-4 p-0 '>
             {!(login || firstTimeLogin) && (
               <>
@@ -71,7 +71,7 @@ const Home = () => {
                     marginTop: window.screen.width > 979 ? "150px" : "-48px",
                   }}
                 >
-                 
+
 
                   {/* <TextContainer className="mt-2" >
                   <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
@@ -90,7 +90,7 @@ const Home = () => {
               maxWidth: "250px",
             }}
           >
-             {/* <h2
+            {/* <h2
                     style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
                     className=' d-block text-center mb-2'
                   >
@@ -101,10 +101,10 @@ const Home = () => {
                       {translate("Vote to Earn")}
                     </strong>
                   </h2> */}
-                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+            {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
-                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+            {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
             <H2
               style={{
                 zIndex: 0,
@@ -114,7 +114,7 @@ const Home = () => {
 
               }}
               // className="mb-4"
-                className=' d-block text-center mb-4'
+              className=' d-block text-center mb-4'
             >
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
@@ -133,25 +133,25 @@ const Home = () => {
                {translate("Vote to Earn")}
              </strong>
            </h2> */}
-             {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+              {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
            <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
          </TextContainer> */}
-             {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-            <H2
-              style={{
-                // zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                // marginTop: "200px",
+              {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+              <H2
+                style={{
+                  // zIndex: 1,
+                  fontWeight: "400",
+                  position: "relative",
+                  // marginTop: "200px",
                   fontSize: "30px",
-                marginTop:window?.screen?.width<768?'100px': "222px",
-              }}
+                  marginTop: window?.screen?.width < 768 ? '100px' : "222px",
+                }}
                 // className="mb-4"
                 className=' d-block text-center mb-2 mb-4'
-            >
-              {texts.HereYourChance}
-              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
-            </H2>
+              >
+                {texts.HereYourChance}
+                {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
+              </H2>
             </>
           )}
           <Pairs
@@ -175,8 +175,8 @@ const Home = () => {
             }}
           /> */}
 
-        
-       
+
+
         </div>
         <div className='mb-4 mx-0'>
           <H2
@@ -198,7 +198,7 @@ const Home = () => {
               }
             }}
           /> */}
-           <Coins
+          <Coins
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
@@ -215,18 +215,20 @@ const Home = () => {
             {/* <H2 style={{ zIndex: 0, fontWeight: "400", position: "relative" }}>
               {texts.Influencers}
             </H2> */}
-            {!user?.uid?  <div className='d-sx-none'> {window.screen.width > 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'4rem', fontSize:'2rem', padding:'2rem'}} onClick={e=>{  setLogin(true)
-        setSignup(true)}}>{texts.signUp}</Buttons.Primary>
-        <H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1.5rem'}}>Join now and start earning rewards before anyone else</H2>
-        
-        </>}</div>:<></>}
-
-
-
-          {!user?.uid?<div className='d-xl-none'> {window.screen.width < 979 &&<><Buttons.Primary style={{margin:'auto', marginTop:'2rem', fontSize:'1rem', padding:'1rem'}} onClick={e=>{
+            {!user?.uid ? <div className='d-sx-none'> {window.screen.width > 979 && <><Buttons.Primary style={{ margin: 'auto', marginTop: '4rem', fontSize: '2rem', padding: '2rem' }} onClick={e => {
               setLogin(true)
               setSignup(true)
-          }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'1rem'}}>Join now and start earning rewards before anyone else</H2></>}</div>:<></>}
+            }}>{texts.signUp}</Buttons.Primary>
+              <H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1.5rem' }}>Join now and start earning rewards before anyone else</H2>
+
+            </>}</div> : <></>}
+
+
+
+            {!user?.uid ? <div className='d-xl-none'> {window.screen.width < 979 && <><Buttons.Primary style={{ margin: 'auto', marginTop: '2rem', fontSize: '1rem', padding: '1rem' }} onClick={e => {
+              setLogin(true)
+              setSignup(true)
+            }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1rem' }}>Join now and start earning rewards before anyone else</H2></>}</div> : <></>}
 
           </div>
           <InfluencersCarousel />

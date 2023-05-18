@@ -20,27 +20,27 @@ const silentSound = new Audio(silent);
 const scratchSound = new Audio(scratch);
 
 export const handleSoundClick = () => {
-    // console.log('play sound')
-    audio.play();
+  // console.log('play sound')
+  audio.play();
 };
 export const handleSoundClickCard = {
-    
-  play: () => {    
+
+  play: () => {
     scratchSound.play();
   },
   pause: () => {
     scratchSound.pause()
   }
-    
+
 };
-  
+
 export const cardFlip = () => {
-    // console.log('play sound')
+  // console.log('play sound')
   onFlipcard.play();
 };
-  
-export const claimyourreward =  {
-    // console.log('play sound')
+
+export const claimyourreward = {
+  // console.log('play sound')
   play: () => {
     // rewardaudio.play()
   },
@@ -48,24 +48,25 @@ export const claimyourreward =  {
     // rewardaudio.pause()
   }
 };
-  
+
 export const voteEndFinish = () => {
-    // console.log('play sound')
-    silentSound.play();
+  // console.log('play sound')
+  silentSound.play();
   voteEnd.play();
 };
-  
+
 export const lastTensecWait = () => {
-    // console.log('play sound')
+  // console.log('play sound')
   lastTensec.play();
 };
-  
+
 export const NotificationWait = () => {
-    // console.log('play sound')
+  // console.log('play sound')
   NotiSound.play();
 };
-  
+
 export const VoteButton = () => {
-    // console.log('play sound')
-  voteClick.play();
-  };
+  // console.log('play sound')
+  // voteClick.play();
+  voteEnd.play();
+};

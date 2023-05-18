@@ -1,4 +1,4 @@
-import {fetchError, fetchStart, fetchSuccess} from "./Common";
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
 import axios from "../../services/auth/jwt/config";
 import {
   GET_TIMEFRAME,
@@ -24,7 +24,7 @@ export const getTimeFrame = (
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          dispatch({type: GET_TIMEFRAME, payload: data.data.result});
+          dispatch({ type: GET_TIMEFRAME, payload: data.data.result });
           if (callbackFun) callbackFun(data.data);
         } else {
           dispatch(
@@ -40,7 +40,7 @@ export const getTimeFrame = (
 
 export const setCurrentTimeFrame = user => {
   return dispatch => {
-    dispatch({type: SET_TIMEFRAME_DETAILS, payload: user});
+    dispatch({ type: SET_TIMEFRAME_DETAILS, payload: user });
   };
 };
 
@@ -49,11 +49,11 @@ export const addNewTimeFrame = (timeFrameDetail, callbackFun) => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .post("/voteSetting/createTimeframe", {...timeFrameDetail})
+      .post("/voteSetting/createTimeframe", { ...timeFrameDetail })
       .then(data => {
         if (data.status === 200 || data.status === 201) {
           dispatch(fetchSuccess(data.data.massges));
-          dispatch({type: ADD_TIMEFRAME, payload: data.data.result});
+          dispatch({ type: ADD_TIMEFRAME, payload: data.data.result });
           if (callbackFun) callbackFun(data.data.result);
         } else {
           dispatch(
@@ -86,7 +86,7 @@ export const updateTimeFrame = (timeFrame, callbackFun) => {
           response.status === 201
         ) {
           dispatch(fetchSuccess(response.data.message));
-          dispatch({type: EDIT_TIMEFRAME, payload: response.data.result});
+          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result });
           if (callbackFun) callbackFun(response.data.result);
         } else {
           dispatch(
@@ -115,7 +115,7 @@ export const updateTimeFrameStatus = (id, data, callbackFun) => {
         ) {
           console.log(response.data.message, "successfully");
           dispatch(fetchSuccess(response.data.message));
-          dispatch({type: EDIT_TIMEFRAME, payload: response.data.result});
+          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result });
           if (callbackFun) callbackFun(response.data.result);
         } else {
           dispatch(
@@ -133,11 +133,11 @@ export const deleteBulkTimeFrame = (userIds, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put("users/bulk-delete", {userIds})
+      .put("users/bulk-delete", { userIds })
       .then(response => {
         if (response.status === 200) {
           dispatch(fetchSuccess("Selected users were deleted successfully."));
-          dispatch({type: DELETE_BULK_TIMEFRAME, payload: userIds});
+          dispatch({ type: DELETE_BULK_TIMEFRAME, payload: userIds });
           if (callbackFun) callbackFun();
         } else {
           dispatch(
@@ -159,7 +159,7 @@ export const deleteTimeFrame = (userId, callbackFun) => {
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess(data.data.message));
-          dispatch({type: DELETE_TIMEFRAME, payload: userId});
+          dispatch({ type: DELETE_TIMEFRAME, payload: userId });
           if (callbackFun) callbackFun();
         } else {
           dispatch(

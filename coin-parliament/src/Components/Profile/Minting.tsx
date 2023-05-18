@@ -15,6 +15,7 @@ import { stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
 import { handleSoundClick } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
+import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
@@ -127,13 +128,13 @@ const Minting = ({
   const translate = useTranslation();
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const {showReward,setShowReward,setRewardExtraVote , inOutReward,setInOutReward ,setHeaderExtraVote} = useContext(AppContext);
+  const { showReward, setShowReward, setRewardExtraVote, inOutReward, setInOutReward, setHeaderExtraVote } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
-console.log(resultData,"resultData")
+  console.log(score, "resultData")
 
   return (
     <React.Fragment>
@@ -150,11 +151,13 @@ console.log(resultData,"resultData")
             {texts.CPMinting}
           </Title>
           <I className='bi bi-info-circle'></I>
-          <PieChart
+          <CircularProgress percentage={score || 0} />
+
+          {/* <PieChart
             percentage={score || 0}
             pax={0} // TODO: ask
             width={width > 767 ? 194 : 154}
-          />
+          /> */}
         </div>
         {width > 767 && (
           <BtnLabelPrimary
@@ -166,7 +169,7 @@ console.log(resultData,"resultData")
                 setLoading(true);
                 console.log("reward");
                 const result = await claimReward({ uid: user?.uid });
-                 
+
                 // @ts-ignore
                 setResultData(result)
                 handleShow()
@@ -189,7 +192,7 @@ console.log(resultData,"resultData")
                 // console.log("rewardresult", result);
               }
             }}
-            disabled={!claim || loading ||rewardTimer}
+            disabled={!claim || loading || rewardTimer}
           >
             {!!claim && <Dot>{claim}</Dot>}
             {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
@@ -211,7 +214,7 @@ console.log(resultData,"resultData")
                 // @ts-ignore
                 setResultData(result)
                 handleShow()
-                // setShowReward(1);  
+                // setShowReward(1);
                 // setInOutReward(1);
                 // @ts-ignore
                 // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
@@ -226,7 +229,7 @@ console.log(resultData,"resultData")
                 console.log("rewardresult", result);
               }
             }}
-            disabled={!claim || loading ||rewardTimer}
+            disabled={!claim || loading || rewardTimer}
           >
             {!!claim && <Dot>{claim}</Dot>}
             {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}
@@ -237,7 +240,7 @@ console.log(resultData,"resultData")
       <div>
         <Modal
           show={
-            modalShow            
+            modalShow
           } onHide={handleClose}
       // size="sm"
       backdrop="static"          
@@ -255,7 +258,7 @@ console.log(resultData,"resultData")
             {/* @ts-ignore */}
             <div className='py-2 '><p style={{ fontSize: "30px" }}>You win {resultData?.data?.thirdRewardDiamonds} Coin </p></div>
 
-      </Modal.Body>
+          </Modal.Body>
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2" onClick={() => { 
@@ -271,9 +274,9 @@ console.log(resultData,"resultData")
             }}>Collect your coin</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
-      {/* </Modal.Footer>       */}
-    </Modal>
-  </div>
+          {/* </Modal.Footer>       */}
+        </Modal>
+      </div>
     </React.Fragment>
   );
 };

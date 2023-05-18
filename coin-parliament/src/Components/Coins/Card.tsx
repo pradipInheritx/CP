@@ -192,7 +192,7 @@ const Card = ({
   const [zoom, setZoom] = useState(false)  
   const prevCountRef = useRef(currentPrice)
 
-console.log('reference',coins[symbol]?.randomDecimal)
+// console.log('reference',coins[symbol]?.randomDecimal)
   const OnlyCheckColor = () => {          
     // setInterval(() => {            
     if (coins[symbol]?.price == prevCountRef.current) {   

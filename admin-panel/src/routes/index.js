@@ -1,5 +1,5 @@
 import React from "react";
-import {Redirect, Route, Switch} from "react-router";
+import { Redirect, Route, Switch } from "react-router";
 import Dashboards from "./Dashboards";
 import Components from "./Components";
 import Apps from "./Apps";
@@ -11,8 +11,8 @@ import Metrics from "./Metrics";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Register";
 import ForgotPassword from "./Auth/ForgotPassword";
-import {useSelector} from "react-redux";
-import {useLocation} from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import ExtraPages from "./ExtraPages";
 import TourGuide from "./TourGuide";
 import CustomTimelines from "./views/CustomTimelines";
@@ -23,8 +23,8 @@ import Calendar from "./modules/Calendar";
 import ResetPassword from "./Auth/ResetPassword";
 // import LayoutBuilder from './LayoutBuilder';
 
-const RestrictedRoute = ({component: Component, ...rest}) => {
-  const {authUser} = useSelector(({auth}) => auth);
+const RestrictedRoute = ({ component: Component, ...rest }) => {
+  const { authUser } = useSelector(({ auth }) => auth);
   return (
     <Route
       {...rest}
@@ -35,27 +35,33 @@ const RestrictedRoute = ({component: Component, ...rest}) => {
           <Redirect
             to={{
               pathname: "/signin",
-              state: {from: props.location}
+              state: { from: props.location }
             }}
           />
-        )}
+        )
+      }
     />
   );
 };
 
 const Routes = () => {
-  const {authUser} = useSelector(({auth}) => auth);
+  const { authUser } = useSelector(({ auth }) => auth);
   const location = useLocation();
-  console.log(authUser,"authUser")
+  console.log(authUser, "authUser");
 
-  if (location.pathname === "" || location.pathname === "/" ) {
+  if (location.pathname === "" || location.pathname === "/") {
     return <Redirect to={"/dashboard"} />;
   } else if (authUser && location.pathname === "/signin") {
     return <Redirect to={"/dashboard"} />;
-  } else if (!authUser && location.pathname !== "/signin" && location.pathname !== "/signup" && location.pathname !== "/forgot-password" && location.pathname !== "/reset-password") {
+  } else if (
+    !authUser &&
+    location.pathname !== "/signin" &&
+    location.pathname !== "/signup" &&
+    location.pathname !== "/forgot-password" &&
+    location.pathname !== "/reset-password"
+  ) {
     return <Redirect to={"/signin"} />;
   }
-
 
   return (
     <React.Fragment>
@@ -75,16 +81,16 @@ const Routes = () => {
           component={MaterialTimelines}
         />
         <RestrictedRoute path="/calendar" component={Calendar} />
-        <RestrictedRoute path="/users" component={UsersModule} />
-        <Route  path="/signin" component={Login} />
-        <Route  path="/signup" component={Signup} />
-        <Route  path="/forgot-password" component={ForgotPassword} />
-        <Route  path="/reset-password" component={ResetPassword} />
+        {/* <RestrictedRoute path="/users" component={UsersModule} /> */}
+        <Route path="/signin" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
         {/*<Route path="/layout-builder" component={LayoutBuilder} />*/}
       </Switch>
 
       {location.pathname !== "/signin" &&
-      location.pathname !== "/signup" &&
+        location.pathname !== "/signup" &&
         location.pathname !== "/forgot-password" &&
         location.pathname !== "/reset-password" && <TourGuide />}
     </React.Fragment>

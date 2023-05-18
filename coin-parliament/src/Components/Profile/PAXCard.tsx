@@ -14,7 +14,7 @@ type PAXCardProps = {
 };
 
 type ZoomProps = {
-  inOutReward?:number
+  inOutReward?: number
 };
 
 const ZoomCss = css`
@@ -34,28 +34,28 @@ const ZoomCss = css`
 `;
 
 const ForZoom = styled.div`
- ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss :""}`} 
+ ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
 
 `;
 
 
 const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
-  console.log(rewardTimer,"CheckrewardTimer")
+  console.log(rewardTimer, "CheckrewardTimer")
   const prevCountRef = useRef(PAX)
-  const {showReward,setShowReward,setHeaderExtraVote,rewardExtraVote,setRewardExtraVote, inOutReward,setInOutReward} = useContext(AppContext);
+  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
   console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
   useEffect(() => {
-    prevCountRef.current = PAX ;
+    prevCountRef.current = PAX;
   }, [])
-  
-  console.log(rewardExtraVote,"secondRewardExtraVotes")
+
+  console.log(rewardExtraVote, "secondRewardExtraVotes")
   const translate = useTranslation();
   return (
-    <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3"    
-    {...{inOutReward}}
+    <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3"
+      {...{ inOutReward }}
     >
       <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
         {/* {translate("Coin Parliament Balance")} */}
@@ -65,7 +65,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
         <div className="circle">
           <div
             className="d-flex justify-content-center align-items-center flex-column"
-            style={{ height: 75,color:'#6352E8' }}
+            style={{ height: 75, color: '#6352E8' }}
           >
             <div>
               <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
@@ -89,26 +89,26 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
                     //   return prev==1?2:prev
                     // });
 
-                    // setTimeout(() => {  
-                      
-                    //   setShowReward((prev: number) => {                        
-                      
-                    //   return prev==1?2:prev
-                    // })                                   
-                    // }, 1000);
-                            
                     // setTimeout(() => {
-                    //   setRewardExtraVote((prev: number) => {                  
+
+                    //   setShowReward((prev: number) => {
+
+                    //   return prev==1?2:prev
+                    // })
+                    // }, 1000);
+
+                    // setTimeout(() => {
+                    //   setRewardExtraVote((prev: number) => {
                     //     setShowReward((Showprev:number) => {
-                    //     if (prev != 0 && Showprev ==2) {                                                                                          
+                    //     if (prev != 0 && Showprev ==2) {
                     //     setHeaderExtraVote(prev)
                     //     }
                     //       return Showprev
-                    //   })                      
+                    //   })
                     //   return prev
-                    // })     
+                    // })
                     // },3000);
-                    
+
                     // setHeaderExtraVote((prev: number) => {                      
                     //   console.log(rewardExtraVote,"secondRewardExtraVotes2")                    
                     //   return rewardExtraVote ? rewardExtraVote :0
@@ -116,7 +116,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
                   }
                   }
                 /> :
-                PAX && PAX}
+                  PAX && PAX}
               </span>
               {/* <span className="cp_PAX" >PTS</span> */}
             </div>
@@ -128,7 +128,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
       <div>
         <Modal
           show={
-            modalShow            
+            modalShow
           } onHide={handleClose}
       // size="sm"
       backdrop="static"          
@@ -148,40 +148,40 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
               <p style={{ fontSize: "30px" }}>You win {rewardExtraVote} Vote </p>
             </div>
 
-      </Modal.Body>
+          </Modal.Body>
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
-            <Buttons.Primary className="mx-2" onClick={() => {                                 
-                    setTimeout(() => {  
-                      
-                      setShowReward((prev: number) => {                        
-                      
-                      return prev==1?2:prev
-                    })                                   
-                    }, 1000);
-                            
-                    setTimeout(() => {
-                      setRewardExtraVote((prev: number) => {                  
-                        setShowReward((Showprev:number) => {
-                        if (prev != 0 && Showprev ==2) {                                                                                          
-                        setHeaderExtraVote(prev)
-                        }
-                          return Showprev
-                      })                      
-                      return prev
-                    })     
-                    },3000);                         
+            <Buttons.Primary className="mx-2" onClick={() => {
+              setTimeout(() => {
+
+                setShowReward((prev: number) => {
+
+                  return prev == 1 ? 2 : prev
+                })
+              }, 1000);
+
+              setTimeout(() => {
+                setRewardExtraVote((prev: number) => {
+                  setShowReward((Showprev: number) => {
+                    if (prev != 0 && Showprev == 2) {
+                      setHeaderExtraVote(prev)
+                    }
+                    return Showprev
+                  })
+                  return prev
+                })
+              }, 3000);
               handleClose()
             }}>Collect your Vote</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
-      {/* </Modal.Footer>       */}
-    </Modal>
-  </div>
-      
+          {/* </Modal.Footer>       */}
+        </Modal>
+      </div>
 
 
-    </ForZoom>
+
+    </ForZoom >
   );
 };
 

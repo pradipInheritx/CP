@@ -110,9 +110,11 @@ const MyTimeframeButton = (args: {
   text: string;
   disabled: boolean;
   checked: boolean;
+  vote?: any;
   setChecked: (c: boolean) => void;
 }) => {
   const { text, ...rest } = args;
+  // @ts-ignore
   return <Buttons.TimeframeButton {...rest}>{text}</Buttons.TimeframeButton>;
 };
 

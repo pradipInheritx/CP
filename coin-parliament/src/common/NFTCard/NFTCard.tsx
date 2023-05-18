@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useRef, useState } from "react";
 import lottie from "lottie-web";
-import confetti from"../../assets/animation/confetti.json";
+import confetti from "../../assets/animation/confetti.json";
 import "./style.css";
 import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
@@ -54,8 +54,8 @@ const ScratchCard = styled.canvas`
 `;
 const Cross = styled.div`
   position: absolute;
-  // top:${window.screen.width>767? "0":"2.5%"};
-  // right:${window.screen.width>767? "0":"2.5%"};  
+  // top:${window.screen.width > 767 ? "0" : "2.5%"};
+  // right:${window.screen.width > 767 ? "0" : "2.5%"};  
   top:-10%;
   right:-17%;  
   zIndex:99999;
@@ -74,7 +74,7 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary" ,setRewardTimer ,openpopup}: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -85,9 +85,9 @@ function NFTCard({ cardType = "legendary" ,setRewardTimer ,openpopup}: MintingPr
 const navigate = useNavigate();
 
   const HEIGHT = 320;
-const WIDTH = 252;
+  const WIDTH = 252;
   const cardDiv = useRef()
- 
+
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {
@@ -103,8 +103,8 @@ const WIDTH = 252;
   }, [isDrawing]);
 
 
-useEffect(() => {
-  const canvas = cardDiv.current;
+  useEffect(() => {
+    const canvas = cardDiv.current;
     // @ts-ignore
   const context = canvas.getContext("2d");
   console.log(context,"context")
@@ -151,17 +151,17 @@ useEffect(() => {
   }, [isDrawing]);
 
   const scratchStart = (e: any) => {
-    console.log('eventmobile',e)
+    console.log('eventmobile', e)
     // console.log(scratchStart,"scratchStartWork")
-    const { layerX,offsetX, layerY ,offsetY} = e.nativeEvent;    
-    setisDrawing(true);    
+    const { layerX, offsetX, layerY, offsetY } = e.nativeEvent;
+    setisDrawing(true);
     setStartX(offsetX || layerX);
     setStartY(offsetY || layerY);
     setScratchShound(true)
   };
 
   const scratchStartMobile = (e: any) => {
-    console.log('eventmobile',e)
+    console.log('eventmobile', e)
     const { clientX, clientY } = e.touches[0];
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
@@ -172,11 +172,11 @@ useEffect(() => {
     setStartY(offsetY);
     setScratchShound(true)
   };
-  
+
   const scratchMobile = (e: any) => {
-    console.log('eventmobile',e)
+    console.log('eventmobile', e)
     const { clientX, clientY } = e.touches[0];
-    if (scratchShound == true) {      
+    if (scratchShound == true) {
       handleSoundClickCard.play()
     }
     // @ts-ignore
@@ -187,33 +187,33 @@ useEffect(() => {
     // const { clientX, clientY } = e.targetTouches[0];
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
-  
+
     if (!isDrawing) {
       return;
     }
-   
+
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
     context.arc(offsetX, offsetY, 5, 0, Math.PI * 2); // Adjust the arc radius as needed
     context.closePath();
     context.stroke();
-  
+
     setStartX(offsetX);
     setStartY(offsetY);
   };
-  
-  
+
+
   const scratch = (e: any) => {
-    const { offsetX ,layerX, offsetY,layerY } = e.nativeEvent;    
+    const { offsetX, layerX, offsetY, layerY } = e.nativeEvent;
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
-    if (scratchShound == true) {      
+    if (scratchShound == true) {
       handleSoundClickCard.play()
     }
     if (!isDrawing) {
       return;
     }
-console.log(offsetX,offsetY, e,"contextCheck")
+    console.log(offsetX, offsetY, e, "contextCheck")
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
     // context.moveTo(startX,startY);
@@ -221,9 +221,9 @@ console.log(offsetX,offsetY, e,"contextCheck")
     context.arc(offsetX, offsetY, 5, 0, Math.PI * 2);
     context.closePath();
     context.stroke();
-    
-    setStartX(offsetX || layerX );
-    setStartY(offsetY || layerY );
+
+    setStartX(offsetX || layerX);
+    setStartY(offsetY || layerY);
   };
 
   const scratchEnd = (e: any) => {
@@ -234,33 +234,33 @@ console.log(offsetX,offsetY, e,"contextCheck")
     const pixels = context.getImageData(0, 0, WIDTH, HEIGHT);
     const total = pixels.data.length / 30;
     let count = 0;
-			for (let i = 0; i < pixels.data.length; i += 30) {
-				if (parseInt(pixels.data[i], 10) === 0) count++;
-			}
-    const percentage =  Math.round((count / total) * 100);
-    if (percentage >30) {      
+    for (let i = 0; i < pixels.data.length; i += 30) {
+      if (parseInt(pixels.data[i], 10) === 0) count++;
+    }
+    const percentage = Math.round((count / total) * 100);
+    if (percentage > 30) {
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true)
       setScratchShound(false)
       openpopup()
-      const Animation=lottie.loadAnimation({
-      // @ts-ignore
-      container: document.querySelector("#card-animation"),
-      animationData: confetti,
-      renderer: "html", // "canvas", "html"
-      loop: true, // boolean
-      autoplay: true, // boolean              
-      });      
+      const Animation = lottie.loadAnimation({
+        // @ts-ignore
+        container: document.querySelector("#card-animation"),
+        animationData: confetti,
+        renderer: "html", // "canvas", "html"
+        loop: true, // boolean
+        autoplay: true, // boolean              
+      });
 
-      setTimeout(function () {        
+      setTimeout(function () {
         Animation.pause();
       }, 9000); // 5000 milliseconds = 5 seconds
 
     }
     setScratchShound(false)
-    setisDrawing(false)    
+    setisDrawing(false)
   };
-  
+
   const scratchEndMobile = () => {
     handleSoundClickCard.pause()
     // @ts-ignore
@@ -276,23 +276,23 @@ console.log(offsetX,offsetY, e,"contextCheck")
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
       openpopup()
-      const Animation=lottie.loadAnimation({
+      const Animation = lottie.loadAnimation({
         // @ts-ignore
         container: document.querySelector("#card-animation"),
         animationData: confetti,
         renderer: "html", // "canvas", "html"
         loop: true, // boolean
         autoplay: true, // boolean              
-        });      
-  
-        setTimeout(function () {        
-          Animation.pause();
-        }, 9000); // 5000 milliseconds = 5 seconds
+      });
+
+      setTimeout(function () {
+        Animation.pause();
+      }, 9000); // 5000 milliseconds = 5 seconds
     }
     setisDrawing(false);
     setScratchShound(false)
   };
-  
+
 
 
   return (
@@ -323,23 +323,35 @@ console.log(offsetX,offsetY, e,"contextCheck")
           <span className='cardname'>
             THE <strong>HODLER</strong>
           </span>
-          <div className='card-body'>
-            {" "}
-            <img src={TheEagle} alt='the hgodler' className='img-fluid' />
+        </div>
+        {/* @ts-ignore */}
+        <div className={classname} id="card-animation">
+          <div>
+            <span className={`${cardType.toLowerCase()}_text`}>
+              &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
+            </span>
+            <span className='cardname'>
+              THE <strong>HODLER</strong>
+            </span>
+            <div className='card-body'>
+              {" "}
+              <img src={TheEagle} alt='the hgodler' className='img-fluid' />
+            </div>
           </div>
         </div>
-      </div>
-      {/* @ts-ignore */}  
-    <ScratchCard className="" ref={cardDiv}
-          onMouseDown={(e) => { 
+        {/* @ts-ignore */}
+        <ScratchCard className="" ref={cardDiv}
+          onMouseDown={(e) => {
             e.stopPropagation()
-            if(window.screen.width<768) return
-            scratchStart(e) }}
-          onMouseUp={(e) => { 
+            if (window.screen.width < 768) return
+            scratchStart(e)
+          }}
+          onMouseUp={(e) => {
             e.stopPropagation()
-            if(window.screen.width<768) return
-            scratchEnd(e) }}
-          onMouseMove={(e) => { 
+            if (window.screen.width < 768) return
+            scratchEnd(e)
+          }}
+          onMouseMove={(e) => {
             e.stopPropagation()
             if(window.screen.width<768) return
             scratch(e) }}          
@@ -362,7 +374,8 @@ console.log(offsetX,offsetY, e,"contextCheck")
         
       
         </ScratchCard>        
-      </div>      
+          </div>  
+      </div>    
       </MainDiv>  
       <div
         // className="w-100 d-flex justify-content-center mt-3"
@@ -373,27 +386,11 @@ console.log(offsetX,offsetY, e,"contextCheck")
           setShowReward(0);
           navigate("/profile/Album")
         }}>Check Win Card</Buttons.Primary>                
-      </div>  
+      </div>        
     </>
   );
 }
 
 export default NFTCard;
-// position: absolute;
-//     left: 0;
-//     bottom: 0;
-//     top: 0;
-//     scale: 0.1;
-//     z-index: 2;
-//     width: 161px;
-//     /* max-width: 134px; */
-//     /* display: flex; */
-//     /* height: 100px; */
 
-//     card
-//     width: 100%;
-//     height: auto;
-//     text-align: center;
 
-//     card body
-//     width: 100%;

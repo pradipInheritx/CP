@@ -13,7 +13,7 @@ import { useTranslation } from "../../common/models/Dictionary";
 import styled, { css } from "styled-components";
 import NotificationContext from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
-import { isV1 ,ZoomCss} from "../App/App";
+import { isV1, ZoomCss } from "../App/App";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import animation from "./Comp.json";
@@ -49,25 +49,25 @@ const CardDiv = styled.div`
 }
 `;
 type ZoomProps = {
-  inOutReward?:number
+  inOutReward?: number
 };
 const ForZoom = styled.div`
-z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ?"2200":"" }`};  
- ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss :""}`} 
+z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
+ ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
 `;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes ,showBack,setShowBack ,showReward,setShowReward,inOutReward,setInOutReward} = useContext(AppContext);
+  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
-   const [modalShow, setModalShow] = React.useState(false);
-   const [cardModalShow, setCardModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = React.useState(false);
+  const [cardModalShow, setCardModalShow] = React.useState(false);
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -91,13 +91,13 @@ const Mine = () => {
   }, [rewardTimer]);
 
   useEffect(() => {
-    if (!!rewardTimer && showReward==3 && inOutReward==3) {      
+    if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
       handleCardShow();
     }
-  }, [inOutReward,showReward,rewardTimer]);
+  }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-  
+
     if (showBack && ClaimNumber < 1) {
            setTimeout(() => {
              console.log(showBack, "viewshow")
@@ -108,7 +108,6 @@ const Mine = () => {
         }       
     }, []);
 
-  
   const openpopup = () => {
     if (showBack) {
            setTimeout(() => {
@@ -123,7 +122,7 @@ const Mine = () => {
     }
   }
   console.log(showBack, "viewshow back")
-  
+
   if (isV1()) {
     return (
       <Navigate
@@ -135,16 +134,9 @@ const Mine = () => {
     );
   }
 
-	const goBack = () => {
-		navigate(-1);
+  const goBack = () => {
+    navigate(-1);
   }
-  
-  const MyDiv = () => {
-    
-  }
-    setTimeout(() => {
-      MyDiv()
-    }, 1000);
 
   // @ts-ignore
   const RemeingCmp=(userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0
@@ -193,7 +185,7 @@ const Mine = () => {
                 {" "}
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
-              <ForZoom {...{inOutReward}} style={{ marginTop: "7px" }}>
+              <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}>
                 {" "}
                 {/* <PAXCard
                   walletId={userInfo?.wallet || ""}
@@ -204,8 +196,8 @@ const Mine = () => {
                   walletId={userInfo?.wallet || ""}
                   rewardTimer={rewardTimer}
                   // @ts-ignore
-                  PAX={userInfo?.rewardStatistics?.diamonds|| 0  }
-                  // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
+                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
                 />
               </ForZoom>
             </div>
@@ -223,7 +215,7 @@ const Mine = () => {
                 setRewardTimer={setRewardTimer}
                 rewardTimer={rewardTimer}
                 // @ts-ignore
-                claim={ userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+                claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                 }
               />
             </div>
@@ -236,15 +228,15 @@ const Mine = () => {
                 <Minting
                   {...{
                     width,
-                      score:
+                    score:
                       // @ts-ignore
                       (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
                     setRewardTimer,
                     rewardTimer,
                   }}
                   setRewardTimer={setRewardTimer}
-                    rewardTimer={rewardTimer}
-                    // @ts-ignore
+                  rewardTimer={rewardTimer}
+                  // @ts-ignore
                   claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                   }
                 />
@@ -255,15 +247,15 @@ const Mine = () => {
               md={6}
               className='d-flex flex-column flex-md-column-reverse'
             >
-                <ForZoom 
-                  {...{inOutReward}}
-                >                  
-                  <PAXCard                  
-                    walletId={userInfo?.wallet || ""}
-                    rewardTimer={rewardTimer}
+              <ForZoom
+                {...{ inOutReward }}
+              >
+                <PAXCard
+                  walletId={userInfo?.wallet || ""}
+                  rewardTimer={rewardTimer}
                   // @ts-ignore
-                    PAX={userInfo?.rewardStatistics?.diamonds || 0 }
-                    // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
+                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
                 {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
               </ForZoom>
@@ -281,7 +273,7 @@ const Mine = () => {
               color: "#6352E8",
               fontSize: "12px",
               marginTop: "30px",
-              width:`${window.screen.width>767?"730px":"100%"}`
+              width: `${window.screen.width > 767 ? "730px" : "100%"}`
             }}
           >
             <div
@@ -313,9 +305,9 @@ const Mine = () => {
                     </span>{" "}
                     {texts.GamePts}
                   </RewardList>
-                  <RewardList onClick={()=>navigate('/profile/Album')}>
+                  <RewardList onClick={() => navigate('/profile/Album')}>
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" , }} onClick={()=>navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
+                    <span style={{ color: "#6352E8", }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}
@@ -359,7 +351,7 @@ const Mine = () => {
       <div>
         <Modal
           show={
-            modalShow            
+            modalShow
           } onHide={handleClose}
       // size="sm"
       aria-labelledby="contained-modal-title-vcenter"
@@ -374,17 +366,17 @@ const Mine = () => {
             {/* continue voting */}          
       <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>You need {100 - RemeingCmp} cmp number to achieve the goal!</p></div>
 
-      </Modal.Body>
+          </Modal.Body >
           {/* <Modal.Footer> */}
-          <div className="d-flex justify-content-center ">
+          < div className="d-flex justify-content-center " >
             <Buttons.Primary className="mx-2" onClick={goBack}>CONTINUE VOTING</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
-          </div>
-      {/* </Modal.Footer>       */}
-    </Modal>
-      </div>
-      
-{/* Card Modal */}
+          </div >
+          {/* </Modal.Footer>       */}
+        </Modal >
+      </div >
+
+      {/* Card Modal */}
 
       <CardDiv>
         <Modal
@@ -414,8 +406,7 @@ const Mine = () => {
       </Modal.Body>      
     </Modal>
   </CardDiv>
-
-    </div>
+  </div >
   );
 };
 
