@@ -14,7 +14,6 @@ import "react-circular-progressbar/dist/styles.css";
 import { easeQuadInOut } from "d3-ease";
 import AnimatedProgressProvider from "./AnimatedProgressProvider";
 const CircularProgress = ({ percentage }) => {
-    console.log(percentage, 'pkkkk');
 
     return (
         <div style={{ width: "70%" }}>
