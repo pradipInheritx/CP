@@ -1,8 +1,8 @@
 import React from "react";
-import {Buttons} from "../Atoms/Button/Button";
-import styled, {css} from "styled-components";
-import {useTranslation} from "../../common/models/Dictionary";
-import {ButtonGroup, ButtonToolbar} from "react-bootstrap";
+import { Buttons } from "../Atoms/Button/Button";
+import styled, { css } from "styled-components";
+import { useTranslation } from "../../common/models/Dictionary";
+import { ButtonGroup, ButtonToolbar } from "react-bootstrap";
 import { texts } from "../LoginComponent/texts";
 
 export type StatusNavProps = {
@@ -51,13 +51,12 @@ const Toolbar = styled(ButtonToolbar)`
 const ButtonGroupMr1 = styled(ButtonGroup)`
   margin-right: 4px;
 `;
-const StatusNav = ({userTypes, setChosen, chosen}: StatusNavProps) => {
+const StatusNav = ({ userTypes, setChosen, chosen }: StatusNavProps) => {
   const translate = useTranslation();
-  console.log(userTypes,chosen,"chosen")
   return (
     <Toolbar
-      className={`${window.screen.width<767? "": "d-flex justify-content-center" }`}
-      
+      className={`${window.screen.width < 767 ? "" : "d-flex justify-content-center"}`}
+
     >
       {/* {userTypes.includes(chosen || "") && (
         <ButtonGroupMr1>
@@ -75,8 +74,8 @@ const StatusNav = ({userTypes, setChosen, chosen}: StatusNavProps) => {
         </ButtonGroupMr1>
       )} */}
       {userTypes.map((u, i) => {
-        
-        if (chosen === u ) {
+
+        if (chosen === u) {
           return (
             <ButtonGroupMr1 key={i}>
               <Chosen onClick={() => setChosen(u)}>{translate((u + "S"))}</Chosen>
