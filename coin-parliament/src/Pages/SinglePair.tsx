@@ -326,7 +326,7 @@ const SinglePair = () => {
                 </div>
                 <div className="text-center">
                   {/* @ts-ignore */}
-                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
+                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
                     <>
                       <VotedCard
                         {...{
@@ -343,7 +343,8 @@ const SinglePair = () => {
                         />}
                     </>
                   )}
-                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime && <ModalForResult
+                  {/* @ts-ignore */}
+                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime && hideButton.includes(selectedTimeFrame && selectedTimeFrame) && <ModalForResult
                     popUpOpen={popUpOpen}
                     setpopUpOpen={setpopUpOpen}
                     setHideButton={setHideButton}
