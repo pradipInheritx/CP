@@ -19,6 +19,7 @@ import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import animation from "./Comp.json";
 import AnimationReward from "./Animation/AnimationReward";
 import NFTCard from "../../common/NFTCard/NFTCard";
+import './Style.css'
 
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
@@ -43,7 +44,9 @@ const RewardList = styled.p`
   cursor: pointer;
 `;
 const CardDiv = styled.div`
-
+.card-content{
+  border:1px solid red;
+}
 `;
 type ZoomProps = {
   inOutReward?:number
@@ -99,7 +102,7 @@ const Mine = () => {
            setTimeout(() => {
              console.log(showBack, "viewshow")
              handleShow()
-             setShowBack(false)
+             setShowBack(false)            
              console.log("Openpopup not")
         }, 10000);
         }       
@@ -112,8 +115,11 @@ const Mine = () => {
              console.log(showBack, "viewshow")
              handleShow()
              setShowBack(false)
+            handleCardClose()
+            setRewardTimer(null);
+            setShowReward(0);
              console.log("Openpopup")
-        }, 10000);
+        }, 5000);
     }
   }
   console.log(showBack, "viewshow back")
@@ -140,21 +146,26 @@ const Mine = () => {
       MyDiv()
     }, 1000);
 
-console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
+  // @ts-ignore
+  const RemeingCmp=(userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0
+  
+// console.log('userInfo',(userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0)
+// console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
   
   return (
     <div>
       <Container >        
+        {/* @ts-ignore */}
         {/* <AnimationReward
            setRewardTimer={setRewardTimer}
            rewardTimer={rewardTimer}
          /> */}
-        {!!rewardTimer && showReward==3 && inOutReward==3 && (        
+        {/* {!!rewardTimer && showReward==3 && inOutReward==3 && (        
           <div className=''>
-            {/* @ts-ignore */}          
+          
             <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
         </div>
-        )}
+        )} */}
         {/* @ts-ignore */}
 
         {/* <Player
@@ -361,7 +372,7 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
         </div>
       <Modal.Body>
             {/* continue voting */}          
-      <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>You need 'remaining cmp number' to achieve the goal!</p></div>
+      <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>You need {100 - RemeingCmp} cmp number to achieve the goal!</p></div>
 
       </Modal.Body>
           {/* <Modal.Footer> */}
@@ -376,7 +387,32 @@ console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStati
 {/* Card Modal */}
 
       <CardDiv>
-        
+        <Modal
+          className=""          
+          show={
+            cardModalShow
+          } onHide={handleCardClose}
+          // fullscreen="sm-down"
+          backdrop="static"
+          aria-labelledby="contained-modal-title-vcenter"          
+          centered
+          contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+    >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+          setRewardTimer(null);
+          setShowReward(0);
+          handleCardClose()
+          }}></button>
+        </div>
+          <Modal.Body          
+          >
+            {/* continue voting */}          
+            {/* @ts-ignore */}
+      <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
+
+      </Modal.Body>      
+    </Modal>
   </CardDiv>
 
     </div>

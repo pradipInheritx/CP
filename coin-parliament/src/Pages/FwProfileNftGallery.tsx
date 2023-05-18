@@ -14,7 +14,7 @@ import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
 import AppContext from "../Contexts/AppContext";
 // @ts-ignore
-import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4';
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4';import Science from '../assets/avatars/videos/Science.mp4';
 import { texts } from "../Components/LoginComponent/texts";
 
 // import { Firestore } from "firebase/firestore";
@@ -83,7 +83,8 @@ const FwProfileNftGallery = () => {
   const [allVideo, setAllVideo] = useState<any>({
     Monsoon: Monsoon,
     Winter: Winter,
-    Summer: Summer
+    Summer: Summer,
+    Science:Science,
   });
 
   const getNftCard = () => {

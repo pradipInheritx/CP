@@ -240,28 +240,33 @@ console.log(resultData,"resultData")
             modalShow            
           } onHide={handleClose}
       // size="sm"
+      backdrop="static"          
+      contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
       <div className="d-flex justify-content-end">
-        <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
+        <button type="button" className="btn-close" aria-label="Close" onClick={()=>{
           handleClose()
           }}></button>
         </div>
-      <Modal.Body>
+      <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}          
             {/* @ts-ignore */}
-      <div className='py-2  d-flex  justify-content-center'><p style={{fontSize:"20px"}}>You win {resultData?.data?.thirdRewardDiamonds} Coin </p></div>
+            <div className='py-2 '><p style={{ fontSize: "30px" }}>You win {resultData?.data?.thirdRewardDiamonds} Coin </p></div>
 
       </Modal.Body>
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
-            <Buttons.Primary className="mx-2" onClick={() => {                
+            <Buttons.Primary className="mx-2" onClick={() => { 
+              setTimeout(() => {
                 setShowReward(1);  
                 setInOutReward(1);
                 // @ts-ignore
                 setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);                
               setRewardTimer(resultData);
+              }, 1000);
+                
               handleClose()
             }}>Collect your coin</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}

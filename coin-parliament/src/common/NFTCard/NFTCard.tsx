@@ -8,7 +8,9 @@ import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClickCard } from "../utils/SoundClick";
-import scratchCArd from '../../assets/images/scratchCArd.jpg'
+import scratchCArdImg from '../../assets/images/scratchCArd.jpg'
+import { Buttons } from "../../Components/Atoms/Button/Button";
+import { useNavigate } from "react-router-dom";
 type MintingProps = {
   cardType?: any;
   setRewardTimer?: any;
@@ -19,22 +21,22 @@ type MintingProps = {
 const MainDiv = styled.div`
   // display: none;
   opacity: 1;
-  min-width: 300px;
-  min-height: 300px;
-  position: fixed;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  width: 100%;
-  height: 100vh;
+  // min-width: 300px;
+  // min-height: 300px;
+  // position: fixed;
+  // top:0;
+  // left:0;
+  // right:0;
+  // bottom:0;
+  // width: 100%;
+  // height: 100vh;
   // left: 50%;
   // transform: translate(-50%, -20%);  
   // top: 25vh; left: 40%;
   z-index: 2200;
   // transition: opacity .3s;
 // border:1px solid red;
-  background-color: rgba(0,0,0,0.8);
+  // background-color: rgba(0,0,0,0.8);
   // padding: 60px 20px 40px;
   // border-radius: 6px;
   display: flex;
@@ -80,7 +82,7 @@ function NFTCard({ cardType = "legendary" ,setRewardTimer ,openpopup}: MintingPr
   const [cressShow, setCressShow] = useState<any>(false)
   const [scratchShound, setScratchShound] = useState<any>(false)
   const {showReward,setShowReward} = useContext(AppContext);
-
+const navigate = useNavigate();
 
   const HEIGHT = 320;
 const WIDTH = 252;
@@ -110,8 +112,8 @@ useEffect(() => {
   context.fillRect(0, 0, WIDTH, HEIGHT);
 
   context.fillStyle = "#fff";
-  context.font = "20px Helvetica";
-    context.fillText("Scratch", WIDTH/2.5, 160 );
+  context.font = "15px Helvetica";
+  
   
   // for (let i = 1; i < 8;  i++){    
   //   context.fillText("Scratch", 20, 40 * i);
@@ -119,13 +121,13 @@ useEffect(() => {
   //   context.fillText("Scratch", 180, 40 * i);    
   // }
 
-  //   const foregroundImage = new Image();
-	// 	foregroundImage.onload = function () {
-	// 		context.drawImage(this, 0, 0);
-	// 		context.globalCompositeOperation = "destination-out";
-	// 		context.lineWidth = 20;			
-	// 	};
-  // foregroundImage.src = scratchCArd;
+    const foregroundImage = new Image();
+		foregroundImage.onload = function () {
+			context.drawImage(this, 0, 0);
+			context.globalCompositeOperation = "destination-out";
+			context.lineWidth = 20;			
+		};
+  foregroundImage.src = scratchCArdImg;
     context.lineWidth = window.screen.width<768? 10 :50;
     context.lineJoin = "brush";
     return () => {
@@ -294,13 +296,13 @@ console.log(offsetX,offsetY, e,"contextCheck")
 
 
   return (
-   
+   <>
     <MainDiv>      
     <div style={{
       position: "relative",
 
       }}>
-        <Cross
+        {/* <Cross
         className={`${!cressShow ? "d-none" : ""} `}
         style={{ cursor: "pointer" }}
         onClick={() => {
@@ -311,7 +313,7 @@ console.log(offsetX,offsetY, e,"contextCheck")
           <span>
             X
           </span> 
-        </Cross>
+        </Cross> */}
       {/* @ts-ignore */}         
       <div className={classname} id="card-animation">        
         <div>
@@ -359,9 +361,20 @@ console.log(offsetX,offsetY, e,"contextCheck")
       >
         
       
-      </ScratchCard>
-      </div>
-      </MainDiv>      
+        </ScratchCard>        
+      </div>      
+      </MainDiv>  
+      <div
+        // className="w-100 d-flex justify-content-center mt-3"
+      className={`${!cressShow ? "d-none" : ""} w-100 d-flex justify-content-center mt-3`}
+      >
+        <Buttons.Primary className="mx-2" onClick={() => {
+          setRewardTimer(null);
+          setShowReward(0);
+          navigate("/profile/Album")
+        }}>Check Win Card</Buttons.Primary>                
+      </div>  
+    </>
   );
 }
 

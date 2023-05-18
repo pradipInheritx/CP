@@ -71,9 +71,8 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
               <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
                 {inOutReward == 1 && showReward ==1 ? <CountUp start={prevCountRef.current} end={PAX &&PAX} duration={5}
                   onEnd={() => {      
-                    // setTimeout(() => {  
-                                          
-                    // }, 1000);
+
+                    setTimeout(() => {                                                                
                     setInOutReward((prev: number) => { 
                           // console.log(prev,"showRewardCheck")
                       if (prev == 1) {
@@ -83,7 +82,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
                         return prev
                       }                      
                       });
-                      
+                    }, 1000);  
                     
                     // setInOutReward((prev: number) => { 
                     //     console.log(prev,"showRewardCheck")
@@ -132,6 +131,8 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
             modalShow            
           } onHide={handleClose}
       // size="sm"
+      backdrop="static"          
+      contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -140,11 +141,11 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
           handleClose()
           }}></button>
         </div>
-      <Modal.Body>
+      <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}          
             {/* @ts-ignore */}
-            <div className='py-2  d-flex  justify-content-center'>
-              <p style={{ fontSize: "20px" }}>You win {rewardExtraVote} Vote </p>
+            <div className=''>
+              <p style={{ fontSize: "30px" }}>You win {rewardExtraVote} Vote </p>
             </div>
 
       </Modal.Body>
@@ -171,7 +172,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
                     })     
                     },3000);                         
               handleClose()
-            }}>Collect your coin</Buttons.Primary>
+            }}>Collect your Vote</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
       {/* </Modal.Footer>       */}
