@@ -2,16 +2,13 @@
 
 import React, { useContext, useEffect, useRef, useState } from "react";
 import lottie from "lottie-web";
-import confetti from"../../assets/animation/confetti.json";
+import confetti from "../../assets/animation/confetti.json";
 import "./style.css";
 import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClickCard } from "../utils/SoundClick";
-<<<<<<< HEAD
-=======
 import scratchCArd from '../../assets/images/scratchCArd.jpg'
->>>>>>> ab6c4496f70dcf69a37f42f6ac1f9ddafb55927d
 type MintingProps = {
   cardType?: any;
   setRewardTimer?: any;
@@ -55,8 +52,8 @@ const ScratchCard = styled.canvas`
 `;
 const Cross = styled.div`
   position: absolute;
-  // top:${window.screen.width>767? "0":"2.5%"};
-  // right:${window.screen.width>767? "0":"2.5%"};  
+  // top:${window.screen.width > 767 ? "0" : "2.5%"};
+  // right:${window.screen.width > 767 ? "0" : "2.5%"};  
   top:-10%;
   right:-17%;  
   zIndex:99999;
@@ -75,20 +72,20 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary" ,setRewardTimer ,openpopup}: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
   const [startY, setStartY] = useState<any>(0)
   const [cressShow, setCressShow] = useState<any>(false)
   const [scratchShound, setScratchShound] = useState<any>(false)
-  const {showReward,setShowReward} = useContext(AppContext);
+  const { showReward, setShowReward } = useContext(AppContext);
 
 
   const HEIGHT = 320;
-const WIDTH = 252;
+  const WIDTH = 252;
   const cardDiv = useRef()
- 
+
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {
@@ -104,38 +101,32 @@ const WIDTH = 252;
   }, [isDrawing]);
 
 
-useEffect(() => {
-  const canvas = cardDiv.current;
+  useEffect(() => {
+    const canvas = cardDiv.current;
     // @ts-ignore
-  const context = canvas.getContext("2d");
-  console.log(context,"context")
-  context.fillStyle = "#5d49df";
-  context.fillRect(0, 0, WIDTH, HEIGHT);
+    const context = canvas.getContext("2d");
+    console.log(context, "context")
+    context.fillStyle = "#5d49df";
+    context.fillRect(0, 0, WIDTH, HEIGHT);
 
-  context.fillStyle = "#fff";
-<<<<<<< HEAD
-  context.font = "30px Helvetica";
-  context.fillText("Scratch", WIDTH/3 , 160);
-  
-=======
-  context.font = "20px Helvetica";
-    context.fillText("Scratch", WIDTH/2.5, 160 );
-  
-  // for (let i = 1; i < 8;  i++){    
-  //   context.fillText("Scratch", 20, 40 * i);
-  //   context.fillText("Scratch", 100, 40 * i);
-  //   context.fillText("Scratch", 180, 40 * i);    
-  // }
+    context.fillStyle = "#fff";
+    context.font = "20px Helvetica";
+    context.fillText("Scratch", WIDTH / 2.5, 160);
 
-  //   const foregroundImage = new Image();
-	// 	foregroundImage.onload = function () {
-	// 		context.drawImage(this, 0, 0);
-	// 		context.globalCompositeOperation = "destination-out";
-	// 		context.lineWidth = 20;			
-	// 	};
-  // foregroundImage.src = scratchCArd;
->>>>>>> ab6c4496f70dcf69a37f42f6ac1f9ddafb55927d
-    context.lineWidth = window.screen.width<768? 10 :50;
+    // for (let i = 1; i < 8;  i++){    
+    //   context.fillText("Scratch", 20, 40 * i);
+    //   context.fillText("Scratch", 100, 40 * i);
+    //   context.fillText("Scratch", 180, 40 * i);    
+    // }
+
+    //   const foregroundImage = new Image();
+    // 	foregroundImage.onload = function () {
+    // 		context.drawImage(this, 0, 0);
+    // 		context.globalCompositeOperation = "destination-out";
+    // 		context.lineWidth = 20;			
+    // 	};
+    // foregroundImage.src = scratchCArd;
+    context.lineWidth = window.screen.width < 768 ? 10 : 50;
     context.lineJoin = "brush";
     return () => {
       // second
@@ -158,17 +149,17 @@ useEffect(() => {
   }, [isDrawing]);
 
   const scratchStart = (e: any) => {
-    console.log('eventmobile',e)
+    console.log('eventmobile', e)
     // console.log(scratchStart,"scratchStartWork")
-    const { layerX,offsetX, layerY ,offsetY} = e.nativeEvent;    
-    setisDrawing(true);    
+    const { layerX, offsetX, layerY, offsetY } = e.nativeEvent;
+    setisDrawing(true);
     setStartX(offsetX || layerX);
     setStartY(offsetY || layerY);
     setScratchShound(true)
   };
 
   const scratchStartMobile = (e: any) => {
-    console.log('eventmobile',e)
+    console.log('eventmobile', e)
     const { clientX, clientY } = e.touches[0];
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
@@ -179,11 +170,11 @@ useEffect(() => {
     setStartY(offsetY);
     setScratchShound(true)
   };
-  
+
   const scratchMobile = (e: any) => {
-    console.log('eventmobile',e)
+    console.log('eventmobile', e)
     const { clientX, clientY } = e.touches[0];
-    if (scratchShound == true) {      
+    if (scratchShound == true) {
       handleSoundClickCard.play()
     }
     // @ts-ignore
@@ -194,47 +185,43 @@ useEffect(() => {
     // const { clientX, clientY } = e.targetTouches[0];
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
-  
+
     if (!isDrawing) {
       return;
     }
-   
+
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
     context.arc(offsetX, offsetY, 5, 0, Math.PI * 2); // Adjust the arc radius as needed
     context.closePath();
     context.stroke();
-  
+
     setStartX(offsetX);
     setStartY(offsetY);
   };
-  
-  
+
+
   const scratch = (e: any) => {
-    const { offsetX ,layerX, offsetY,layerY } = e.nativeEvent;    
+    const { offsetX, layerX, offsetY, layerY } = e.nativeEvent;
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
-    if (scratchShound == true) {      
+    if (scratchShound == true) {
       handleSoundClickCard.play()
     }
     if (!isDrawing) {
       return;
     }
-console.log(offsetX,offsetY, e,"contextCheck")
+    console.log(offsetX, offsetY, e, "contextCheck")
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
     // context.moveTo(startX,startY);
     // context.lineTo(offsetX || layerX , offsetY || layerY);
-<<<<<<< HEAD
-    context.arc(offsetX, offsetY, 10, 0, Math.PI * 2);
-=======
     context.arc(offsetX, offsetY, 5, 0, Math.PI * 2);
->>>>>>> ab6c4496f70dcf69a37f42f6ac1f9ddafb55927d
     context.closePath();
     context.stroke();
-    
-    setStartX(offsetX || layerX );
-    setStartY(offsetY || layerY );
+
+    setStartX(offsetX || layerX);
+    setStartY(offsetY || layerY);
   };
 
   const scratchEnd = (e: any) => {
@@ -245,36 +232,33 @@ console.log(offsetX,offsetY, e,"contextCheck")
     const pixels = context.getImageData(0, 0, WIDTH, HEIGHT);
     const total = pixels.data.length / 30;
     let count = 0;
-			for (let i = 0; i < pixels.data.length; i += 30) {
-				if (parseInt(pixels.data[i], 10) === 0) count++;
-			}
-    const percentage =  Math.round((count / total) * 100);
-    if (percentage >30) {      
+    for (let i = 0; i < pixels.data.length; i += 30) {
+      if (parseInt(pixels.data[i], 10) === 0) count++;
+    }
+    const percentage = Math.round((count / total) * 100);
+    if (percentage > 30) {
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true)
       setScratchShound(false)
-<<<<<<< HEAD
-=======
       openpopup()
->>>>>>> ab6c4496f70dcf69a37f42f6ac1f9ddafb55927d
-      const Animation=lottie.loadAnimation({
-      // @ts-ignore
-      container: document.querySelector("#card-animation"),
-      animationData: confetti,
-      renderer: "html", // "canvas", "html"
-      loop: true, // boolean
-      autoplay: true, // boolean              
-      });      
+      const Animation = lottie.loadAnimation({
+        // @ts-ignore
+        container: document.querySelector("#card-animation"),
+        animationData: confetti,
+        renderer: "html", // "canvas", "html"
+        loop: true, // boolean
+        autoplay: true, // boolean              
+      });
 
-      setTimeout(function () {        
+      setTimeout(function () {
         Animation.pause();
       }, 9000); // 5000 milliseconds = 5 seconds
 
     }
     setScratchShound(false)
-    setisDrawing(false)    
+    setisDrawing(false)
   };
-  
+
   const scratchEndMobile = () => {
     handleSoundClickCard.pause()
     // @ts-ignore
@@ -289,99 +273,98 @@ console.log(offsetX,offsetY, e,"contextCheck")
     if (percentage > 30) {
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
-<<<<<<< HEAD
-      
-=======
       openpopup()
->>>>>>> ab6c4496f70dcf69a37f42f6ac1f9ddafb55927d
-      const Animation=lottie.loadAnimation({
+      const Animation = lottie.loadAnimation({
         // @ts-ignore
         container: document.querySelector("#card-animation"),
         animationData: confetti,
         renderer: "html", // "canvas", "html"
         loop: true, // boolean
         autoplay: true, // boolean              
-        });      
-  
-        setTimeout(function () {        
-          Animation.pause();
-        }, 9000); // 5000 milliseconds = 5 seconds
+      });
+
+      setTimeout(function () {
+        Animation.pause();
+      }, 9000); // 5000 milliseconds = 5 seconds
     }
     setisDrawing(false);
     setScratchShound(false)
   };
-  
+
 
 
   return (
-   
-    <MainDiv>      
-    <div style={{
-      position: "relative",
+
+    <MainDiv>
+      <div style={{
+        position: "relative",
 
       }}>
         <Cross
-        className={`${!cressShow ? "d-none" : ""} `}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setRewardTimer(null);
-          setShowReward(0);
-        }}
-      >
+          className={`${!cressShow ? "d-none" : ""} `}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setRewardTimer(null);
+            setShowReward(0);
+          }}
+        >
           <span>
             X
-          </span> 
+          </span>
         </Cross>
-      {/* @ts-ignore */}         
-      <div className={classname} id="card-animation">        
-        <div>
-          <span className={`${cardType.toLowerCase()}_text`}>
-            &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
-          </span>
-          <span className='cardname'>
-            THE <strong>HODLER</strong>
-          </span>
-          <div className='card-body'>
-            {" "}
-            <img src={TheEagle} alt='the hgodler' className='img-fluid' />
+        {/* @ts-ignore */}
+        <div className={classname} id="card-animation">
+          <div>
+            <span className={`${cardType.toLowerCase()}_text`}>
+              &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
+            </span>
+            <span className='cardname'>
+              THE <strong>HODLER</strong>
+            </span>
+            <div className='card-body'>
+              {" "}
+              <img src={TheEagle} alt='the hgodler' className='img-fluid' />
+            </div>
           </div>
         </div>
+        {/* @ts-ignore */}
+        <ScratchCard className="" ref={cardDiv}
+          onMouseDown={(e) => {
+            e.stopPropagation()
+            if (window.screen.width < 768) return
+            scratchStart(e)
+          }}
+          onMouseUp={(e) => {
+            e.stopPropagation()
+            if (window.screen.width < 768) return
+            scratchEnd(e)
+          }}
+          onMouseMove={(e) => {
+            e.stopPropagation()
+            if (window.screen.width < 768) return
+            scratch(e)
+          }}
+          onTouchStart={(e) => {
+            if (window.screen.width > 768) return
+            scratchStartMobile(e); // Use the first touch point
+          }}
+          onTouchEnd={(e) => {
+            if (window.screen.width > 768) return
+            scratchEndMobile(); // Use the first touch point
+          }}
+          onTouchMove={(e) => {
+            if (window.screen.width > 768) return
+            scratchMobile(e); // Use the first touch point
+          }}
+          width={`${WIDTH}px`}
+          height={`${HEIGHT}px`}
+          id="canvas"
+        >
+
+
+        </ScratchCard>
       </div>
-      {/* @ts-ignore */}  
-    <ScratchCard className="" ref={cardDiv}
-          onMouseDown={(e) => { 
-            e.stopPropagation()
-            if(window.screen.width<768) return
-            scratchStart(e) }}
-          onMouseUp={(e) => { 
-            e.stopPropagation()
-            if(window.screen.width<768) return
-            scratchEnd(e) }}
-          onMouseMove={(e) => { 
-            e.stopPropagation()
-            if(window.screen.width<768) return
-            scratch(e) }}          
-            onTouchStart={(e) => {
-              if(window.screen.width>768) return
-              scratchStartMobile(e); // Use the first touch point
-            }}
-            onTouchEnd={(e) => {
-              if(window.screen.width>768) return
-              scratchEndMobile(); // Use the first touch point
-            }}
-            onTouchMove={(e) => {
-              if(window.screen.width>768) return
-              scratchMobile(e); // Use the first touch point
-            }}
-         width={`${WIDTH}px`}
-        height={`${HEIGHT}px`}
-          id="canvas"       
-      >
-        
-      
-      </ScratchCard>
-      </div>
-      </MainDiv>      
+    </MainDiv>
   );
 }
 
