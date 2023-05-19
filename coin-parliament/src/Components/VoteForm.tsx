@@ -88,7 +88,7 @@ const VoteForm = function <
       }}
       style={{ maxWidth: '450px', margin: '0 auto' }}
     >
-      {!hideButton.includes(selectedTimeFrame) && <div className="mt-4" style={{ marginLeft: symbol2 ? '' : '24px', marginRight: symbol2 ? '' : '24px' }}>
+       <div className="mt-4" style={{ marginLeft: symbol2 ? '' : '24px', marginRight: symbol2 ? '' : '24px' }}>
         <SelectTimeframes
           {...{
             selected: selectedTimeFrame,
@@ -108,8 +108,8 @@ const VoteForm = function <
           }}
         />
 
-      </div>}
-      {!hideButton.includes(selectedTimeFrame) && <div className='mt-4 pt-2'>
+      </div>
+       <div className='mt-4 pt-2'>
         {/* @ts-ignore */}
         <div className='mb-3'>
           {/* <Title>{texts.yourVote}</Title> */}
@@ -203,7 +203,7 @@ const VoteForm = function <
             </CPVote>
           </div>
         </OverlayTrigger>
-      </div>}
+      </div>
     </Form>
   );
 };
