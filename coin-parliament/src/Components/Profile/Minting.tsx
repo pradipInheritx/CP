@@ -170,7 +170,7 @@ const Minting = ({
 
   return (
     <React.Fragment>
-      <Container {...{ width }} style={{ maxWidth: '322.9px', minHeight: width < 767 ? '256.9px' : '322.9px' }}>
+      <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '256.9px' : '322.9px' }}>
         <div
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
