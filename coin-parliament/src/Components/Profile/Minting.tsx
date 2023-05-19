@@ -1,8 +1,9 @@
 /** @format */
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import styled from "styled-components";
+import lottie from "lottie-web";
 import PieChart from "./PieChart";
 import Collapse from "./Collapse";
 import { useTranslation } from "../../common/models/Dictionary";
@@ -17,6 +18,7 @@ import { handleSoundClick } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
 import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
+import Confetti from "../../assets/animation/confetti.json";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -128,11 +130,41 @@ const Minting = ({
   const translate = useTranslation();
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, setRewardExtraVote, inOutReward, setInOutReward, setHeaderExtraVote } = useContext(AppContext);
+  const { showReward, setShowReward, setRewardExtraVote, inOutReward, setInOutReward, setHeaderExtraVote,showBack,setShowBack } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
+  const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
+
+  const handleCmpPopupClose = () => setCmpPopupShow(false);
+  const handleCmpPopupShow = () => {
+    setCmpPopupShow(true)
+    const Animation = lottie.loadAnimation({
+        // @ts-ignore
+        container: document.querySelector("#Cmp-animation"),
+        animationData: Confetti,
+        renderer: "html", // "canvas", "html"
+        loop: true, // boolean
+        autoplay: true, // boolean              
+      });
+
+      setTimeout(function () {
+        Animation.pause();
+      }, 9000); // 5000 milliseconds = 5 seconds
+  };
+
+
+  console.log(showBack,"showBackshow")
+
+
+  useEffect(() => {
+    if (score == 100) {  
+      handleCmpPopupShow()
+      // setShowBack(false)
+    }
+  }, [score])
+  
 
   console.log(score, "resultData")
 
@@ -141,7 +173,7 @@ const Minting = ({
       <Container {...{ width }}>
         <div
           className='d-flex justify-content-center align-items-center flex-column'
-          style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
+          style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}          
         >
           <Title
             className='box_title d-md-block text-white d-none mb-4'
@@ -247,6 +279,7 @@ const Minting = ({
       contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
       aria-labelledby="contained-modal-title-vcenter"
       centered
+      
     >
       <div className="d-flex justify-content-end">
         <button type="button" className="btn-close" aria-label="Close" onClick={()=>{
@@ -274,6 +307,63 @@ const Minting = ({
             }}>Collect your coin</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
+          {/* </Modal.Footer>       */}
+        </Modal>
+      </div>
+
+{/* PopUp for complate 100cmp  */}
+
+      <div
+      >
+        <Modal
+          show={
+            CmpPopupShow
+          } onHide={handleCmpPopupClose}
+      // size="sm"
+      backdrop="static"          
+      // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+      aria-labelledby="contained-modal-title-vcenter"
+          centered            
+          id="Cmp-animation"
+        >
+          
+          <div className="d-flex justify-content-end"
+          
+          >
+        <button type="button" className="btn-close" aria-label="Close" onClick={()=>{
+          handleCmpPopupClose()
+          }}></button>
+        </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center"
+          
+          >
+            {/* continue voting */}          
+            {/* @ts-ignore */}
+            <div className='py-2'><p style={{ fontSize: "20px" }}>You Get One Claim Reward</p></div>
+
+          </Modal.Body>
+          {/* <Modal.Footer> */}
+          <div className="d-flex justify-content-center ">
+            <Buttons.Primary className="mx-2"            
+            onClick={async () => {
+              if (claim) {
+                setLoading(true);
+                console.log("reward");
+                const result = await claimReward({ uid: user?.uid });
+                // @ts-ignore
+                setResultData(result)
+                handleShow()
+                handleCmpPopupClose()                
+                setLoading(false);
+                console.log("rewardresult", result);
+              }
+            }}
+            >Claim Reward</Buttons.Primary>
+            <Buttons.Primary className="mx-2" onClick={() => {
+              handleCmpPopupClose()
+            }}>Claim Reward Later</Buttons.Primary>
+            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
+            </div>            
           {/* </Modal.Footer>       */}
         </Modal>
       </div>

@@ -6,3 +6,11 @@
     Width:100% !important;
     height: 460px;
 }
+.PaxText{
+animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
