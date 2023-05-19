@@ -107,6 +107,7 @@ const VoteForm = function <
             vote
           }}
         />
+
       </div>}
       {!hideButton.includes(selectedTimeFrame) && <div className='mt-4 pt-2'>
         {/* @ts-ignore */}

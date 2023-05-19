@@ -112,7 +112,6 @@ const SelectTimeframes = ({
                       buttonIndex={k}
                       setHideButton={setHideButton}
                       setpopUpOpen={setpopUpOpen}
-                      selectTimeframe={selected || 0}
                       vote={vote}
                     >
                       {timeframe.name}
@@ -129,8 +128,7 @@ const SelectTimeframes = ({
                         votedDetails: votedDetails?.length > 0 ? votedDetails[k] : 0,
                         buttonDetails: buttonDetails && buttonDetails[k],
                         PariButtonDetails: pariButtonDetails && pariButtonDetails[k],
-                        vote,
-                        selectTimeframe: (selected || 0)
+                        vote
                       }}
                       showTimer={true}
                     >

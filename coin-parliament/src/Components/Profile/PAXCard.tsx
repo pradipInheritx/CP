@@ -68,24 +68,23 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
             style={{ height: 75, color: '#6352E8' }}
           >
             <div>
-              <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "30px" : "20px"}` }}>
-                {inOutReward == 1 && showReward == 1 ? <CountUp start={prevCountRef.current} end={PAX && PAX} duration={5}
-                  onEnd={() => {
-                    // setTimeout(() => {  
+              <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
+                {inOutReward == 1 && showReward ==1 ? <CountUp start={prevCountRef.current} end={PAX &&PAX} duration={5}
+                  onEnd={() => {      
 
-                    // }, 1000);
-                    setInOutReward((prev: number) => {
-                      // console.log(prev,"showRewardCheck")
+                    setTimeout(() => {                                                                
+                    setInOutReward((prev: number) => { 
+                          // console.log(prev,"showRewardCheck")
                       if (prev == 1) {
                         handleShow()
                         return 2
                       } else {
                         return prev
-                      }
-                    });
-
-
-                    // setInOutReward((prev: number) => {
+                      }                      
+                      });
+                    }, 1000);  
+                    
+                    // setInOutReward((prev: number) => { 
                     //     console.log(prev,"showRewardCheck")
                     //   return prev==1?2:prev
                     // });
@@ -131,20 +130,22 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
           show={
             modalShow
           } onHide={handleClose}
-          // size="sm"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
-              handleClose()
-            }}></button>
-          </div>
-          <Modal.Body>
-            {/* continue voting */}
+      // size="sm"
+      backdrop="static"          
+      contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <div className="d-flex justify-content-end">
+        <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
+          handleClose()
+          }}></button>
+        </div>
+      <Modal.Body className="d-flex  justify-content-center align-items-center">
+            {/* continue voting */}          
             {/* @ts-ignore */}
-            <div className='py-2  d-flex  justify-content-center'>
-              <p style={{ fontSize: "20px" }}>You win {rewardExtraVote} Vote </p>
+            <div className=''>
+              <p style={{ fontSize: "30px" }}>You win {rewardExtraVote} Vote </p>
             </div>
 
           </Modal.Body>
@@ -171,7 +172,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
                 })
               }, 3000);
               handleClose()
-            }}>Collect your coin</Buttons.Primary>
+            }}>Collect your Vote</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
           {/* </Modal.Footer>       */}

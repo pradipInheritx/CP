@@ -382,12 +382,13 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
       voteTime: vote?.voteTime,
       valueVotingTime: vote?.valueVotingTime,
       expiration: vote?.expiration,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      userId: vote?.userId
     }).then((data) => {
       if (data.data == null) {
         // console.log(data.data,"i am working data.data")
         // getVotes(index).then(void 0);
-        openPopup(true)
+        // openPopup(true)
 
       }
     }).catch(err => {

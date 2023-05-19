@@ -162,7 +162,6 @@ const TimeframeButton = ({
   setHideButton,
   setpopUpOpen,
   vote,
-  selectTimeframe
 }: {
   children: React.ReactNode;
   disabled?: boolean;
@@ -177,8 +176,7 @@ const TimeframeButton = ({
   buttonIndex?: number;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
   setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  vote: VoteResultProps,
-  selectTimeframe: number
+  vote: VoteResultProps
 }) => {
   const [borderColor, setborderColor] = useState<string>("white");
   const [borderDeg, setBorderDeg] = useState<number>(0);
@@ -216,20 +214,19 @@ const TimeframeButton = ({
       let ori = t + d;
       let val = (ori - liveTime) / d;
       let deg = val * 360;
-
-      console.log(selectTimeframe, buttonIndex, 'pkkk');
       if (deg > 0) {
         runTimer();
-      } else if (setHideButton && selectTimeframe !== buttonIndex) {
+      } else if (setHideButton) {
         setHideButton((prev: number[]): number[] => {
           return prev.filter((item) => {
-            return (item !== buttonIndex);
+            return item !== buttonIndex;
           })
         });
       }
-      // if (deg < 0 && setpopUpOpen && vote && Object.keys(vote).length > 0) {
-      //   // setpopUpOpen(true);
-      // }
+      console.log(deg, setpopUpOpen, vote, 'hiii');
+      if (deg < 0 && setpopUpOpen && vote && Object.keys(vote).length > 0) {
+        setpopUpOpen(true);
+      }
       setBorderDeg(Math.round(deg));
     }
   };

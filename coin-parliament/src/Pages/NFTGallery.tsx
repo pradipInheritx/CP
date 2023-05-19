@@ -8,7 +8,7 @@ import MyCarousel from "../Components/Carousel/Carousel";
 
 import NftOneCard from "./NftOneCard";
 // @ts-ignore
-import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4';
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
 
 
 import "./styles.css";
@@ -77,7 +77,8 @@ const NFTGallery = () => {
   const [allVideo, setAllVideo] = useState<any>({
     Monsoon:Monsoon,
     Winter :Winter,
-    Summer :Summer
+    Summer :Summer,
+    Science :Science,
   })
   
     const getNftCard = () => {
@@ -104,7 +105,7 @@ const NFTGallery = () => {
     const collectionId = element.collectionId;
     const collectionName = element.collectionName;
     const collectionDocId = element.id;
-
+console.log(collectionName,"collectionNameAll")
     element.setDetails.forEach((setDetail: any) => {
       const setId = setDetail.id;
       const setName = setDetail?.name;
@@ -128,7 +129,9 @@ const NFTGallery = () => {
       }).catch((error) => {
         console.log(error,"error");
       });    
-}
+    }
+  
+  console.log(allCard,"allCardCheck")
   // const onSearch = (searchTerm: any) => {
   
   // setSearchTerm(searchTerm)
@@ -415,7 +418,7 @@ useEffect(() => {
   },[searchedCard])
 
 
-console.log(cardName,"mycardName")
+
 
   return (
     <div className='' style={{ minHeight: "auto" }}>

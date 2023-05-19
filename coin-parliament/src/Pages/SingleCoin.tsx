@@ -220,6 +220,7 @@ const SingleCoin = () => {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframes[selectedTimeFrame || 0]?.seconds });
       if (v) {
         // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
+        console.log(v.data(), "checkallv.data")
         if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
         setVote(v.data());
         setVoteId(v.id);
@@ -424,7 +425,6 @@ const SingleCoin = () => {
                     />
                   )}</>
                 )}
-                {console.log(selectedTimeFrame, hideButton, 'hideButton')}
                 <div className="text-center">
                   {/* @ts-ignore */}
                   {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
@@ -488,7 +488,7 @@ const SingleCoin = () => {
                   </div>      */}
                 {
                   // @ts-ignore
-                  hideButton.includes(selectedTimeFrame && selectedTimeFrame) &&
+                  // hideButton.includes(selectedTimeFrame && selectedTimeFrame) &&
                   <ModalForResult
                     popUpOpen={popUpOpen}
                     selectedTimeFrame={selectedTimeFrame}
