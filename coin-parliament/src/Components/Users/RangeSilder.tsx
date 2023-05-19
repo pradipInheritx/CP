@@ -88,7 +88,7 @@ function Speed(props: SpeedProps) {
           // left: 0;
           // right: 0;
           margin: 0 auto;
-          z-index: 9;
+          z-index: 2;
         }
         .span {
           position: absolute;

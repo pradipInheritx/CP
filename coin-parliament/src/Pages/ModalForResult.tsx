@@ -143,11 +143,11 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
           <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={() => {
               setShow(false)
-              setHideButton(() => {
-                return hideButton.filter((item: any) => {
-                  return item != selectedTimeFrame
-                })
-              })
+              // setHideButton(() => {
+              //   return hideButton.filter((item: any) => {
+              //     return item != selectedTimeFrame
+              //   })
+              // })
             }}></button>
           </div>
         </div>
