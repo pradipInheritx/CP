@@ -326,12 +326,12 @@ const SingleCoin = () => {
 
   const sound = useRef<HTMLAudioElement>(null);
   // const src = require("../assets/sounds/applause.mp3").default;
-
+  const [hideButton, setHideButton] = useState<number[]>([]);
   const canVote = useMemo(() => {
     return (
-      (!vote.expiration && vote.success === undefined) ||
-      (vote.expiration && vote.success !== undefined) ||
-      Date.now() >= vote?.expiration
+      ((!vote.expiration && vote.success === undefined) ||
+        (vote.expiration && vote.success !== undefined) ||
+        Date.now() >= vote?.expiration) && !hideButton.includes(selectedTimeFrame)
     );
   }, [vote.expiration, vote.success, selectedTimeFrame]);
   useEffect(() => {
@@ -356,7 +356,7 @@ const SingleCoin = () => {
 
 
   const [popUpOpen, setpopUpOpen] = useState(false);
-  const [hideButton, setHideButton] = useState<number[]>([]);
+
 
   // console.log(hideButton,"i am working popUpOpen")
 
@@ -486,9 +486,10 @@ const SingleCoin = () => {
                       </Modal.Footer>
                     </Modal>
                   </div>      */}
+
                 {
                   // @ts-ignore
-                  // hideButton.includes(selectedTimeFrame && selectedTimeFrame) &&
+                  // hideButton.includes(selectedTimeFrame) &&
                   <ModalForResult
                     popUpOpen={popUpOpen}
                     selectedTimeFrame={selectedTimeFrame}

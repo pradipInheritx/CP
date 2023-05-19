@@ -289,7 +289,7 @@ const VotedCard = ({
               symbol1={symbol1}
               symbol2={symbol2}
             />
-            <div className="mb-1" style={{ marginTop: '-4.5em' }}>
+            <div className="mb-1" style={{ marginTop: '-4em' }}>
               <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
                 setLastTenSec={setLastTenSec}
               />
@@ -414,10 +414,9 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
             checkprice()
           }
           // return data;
-          return <span style={{ color: "#7767f7" }}>
+          return <div style={{ color: "#7767f7", wordBreak: 'break-all' }}>
             {texts.Calculatingvoteresult}
-
-          </span>;
+          </div>;
         } else {
           return (
             <span className="" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, marginLeft: "10px" }}>
