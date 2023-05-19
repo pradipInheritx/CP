@@ -8,7 +8,12 @@ import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClickCard } from "../utils/SoundClick";
-import scratchCArdImg from '../../assets/images/scratchCArd.jpg'
+import scratchCArdImg from '../../assets/images/scratchCArd.jpg';
+import common from '../../assets/images/commonText.png';
+import epic from '../../assets/images/epicText.png';
+import legendary from '../../assets/images/legendaryText.png';
+import rare from '../../assets/images/rareText.png';
+import uncommon from '../../assets/images/uncommonText.png';
 import { Buttons } from "../../Components/Atoms/Button/Button";
 import { useNavigate } from "react-router-dom";
 type MintingProps = {
@@ -81,11 +86,20 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
   const [startY, setStartY] = useState<any>(0)
   const [cressShow, setCressShow] = useState<any>(false)
   const [scratchShound, setScratchShound] = useState<any>(false)
-  const {showReward,setShowReward} = useContext(AppContext);
+  const { showReward, setShowReward } = useContext(AppContext);
+  const [allFrontImg, setAllFrontImg] = useState<any>({
+      COMMON:common,
+      EPIC:epic,
+      LEGENDARY:legendary,
+      RARE:rare,
+      UNCOMMON:uncommon,
+  })
+
+  console.log(allFrontImg[`${cardType}`],cardType,"checktype")
 const navigate = useNavigate();
 
-  const HEIGHT = 320;
   const WIDTH = 252;
+  const HEIGHT = 320;
   const cardDiv = useRef()
 
   useEffect(() => {
@@ -107,12 +121,10 @@ const navigate = useNavigate();
     const canvas = cardDiv.current;
     // @ts-ignore
   const context = canvas.getContext("2d");
-  console.log(context,"context")
-  context.fillStyle = "#5d49df";
-  context.fillRect(0, 0, WIDTH, HEIGHT);
+  // console.log(context,"context")
+  // context.fillStyle = "#5d49df";
+  // context.fillRect(0, 0, WIDTH, HEIGHT);
 
-  context.fillStyle = "#fff";
-  context.font = "15px Helvetica";
   
   
   // for (let i = 1; i < 8;  i++){    
@@ -127,7 +139,11 @@ const navigate = useNavigate();
 			context.globalCompositeOperation = "destination-out";
 			context.lineWidth = 20;			
 		};
-  foregroundImage.src = scratchCArdImg;
+    foregroundImage.src = allFrontImg[`${cardType}`];
+  //   context.fillStyle = "#000";
+  // context.font = "15px Helvetica";
+  // context.fillText("Scratch", WIDTH /3 , 160);
+
     context.lineWidth = window.screen.width<768? 10 :50;
     context.lineJoin = "brush";
     return () => {
@@ -318,20 +334,20 @@ const navigate = useNavigate();
       
         
         {/* @ts-ignore */}
-        <div className={classname} id="card-animation">
-          <div>
-            <span className={`${cardType.toLowerCase()}_text`}>
-              &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
-            </span>
-            <span className='cardname'>
-              THE <strong>HODLER</strong>
-            </span>
-            <div className='card-body'>
-              {" "}
-              <img src={TheEagle} alt='the hgodler' className='img-fluid' />
-            </div>
+      <div className={classname} id="card-animation">        
+        <div>
+          <span className={`${cardType.toLowerCase()}_text`}>
+            &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
+          </span>
+          <span className='cardname'>
+            THE <strong>HODLER</strong>
+          </span>
+          <div className='card-body'>
+            {" "}
+            <img src={TheEagle} alt='the hgodler' className='img-fluid' />
+          </div>
         </div>
-        
+        </div>
         {/* @ts-ignore */}
         <ScratchCard className="" ref={cardDiv}
           onMouseDown={(e) => {
@@ -366,8 +382,7 @@ const navigate = useNavigate();
       >
         
       
-        </ScratchCard>        
-          </div>  
+        </ScratchCard>              
       </div>    
       </MainDiv>  
       <div

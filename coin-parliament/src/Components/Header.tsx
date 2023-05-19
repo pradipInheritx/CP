@@ -542,7 +542,7 @@ const Header = ({
                             
                                   
                                 {MyPath == "/profile/mine" ?
-                                    <CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}                                
+                                    <CountUp className={inOutReward == 2 && showReward ==2 ?"HeaderText":""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}                                
                                       
                                   onEnd={() =>
                                   {
@@ -740,7 +740,7 @@ const Header = ({
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
                                 {/* {voteNumber > 0 ? voteNumber : 0} */}
-                               {MyPath=="/profile/mine" ?<CountUp start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
+                               {MyPath=="/profile/mine" ?<CountUp className={inOutReward == 2 && showReward ==2 ?"HeaderText":""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
                                   style={{
                                     fontSize: `${showReward == 2 && inOutReward == 2 ?"15px" : "11px"}`
                                     

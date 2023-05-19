@@ -16,3 +16,12 @@
     display: none;
     /* opacity: 1; */
 }
+
+.HeaderText{
+animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

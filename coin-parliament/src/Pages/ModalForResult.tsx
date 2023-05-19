@@ -203,7 +203,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
                   > */}
                   <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `}>
                     <div className='text-center'>
-                      <span style={{ fontSize: "13px" }}>
+                      <span style={{ fontSize: "13px", color: '#6352e8' }}>
                         VOTE RESULT
                       </span>
                       <div style={{ fontSize: "14px" }}>
