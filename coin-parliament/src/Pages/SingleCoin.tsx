@@ -488,7 +488,7 @@ const SingleCoin = () => {
                   </div>      */}
                 {
                   // @ts-ignore
-                  // hideButton.includes(selectedTimeFrame && selectedTimeFrame) &&
+                  hideButton.includes(selectedTimeFrame && selectedTimeFrame) &&
                   <ModalForResult
                     popUpOpen={popUpOpen}
                     selectedTimeFrame={selectedTimeFrame}

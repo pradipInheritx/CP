@@ -138,7 +138,7 @@ const Minting = ({
 
   return (
     <React.Fragment>
-      <Container {...{ width }} style={{ maxWidth: '21.4em', minHeight: '26.9em' }}>
+      <Container {...{ width }} style={{ maxWidth: '322.9px', minHeight: width < 767 ? '256.9px' : '322.9px' }}>
         <div
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
@@ -150,57 +150,41 @@ const Minting = ({
             {/* {translate("CP Minting")} */}
             {texts.CPMinting}
           </Title>
-          <I className='bi bi-info-circle'></I>
-          {/* <CircularProgress percentage={score || 50} /> */}
+          <I className='bi bi-info-circle' style={{ paddingRight: width < 767 ? '8em' : '' }}></I>
+          <CircularProgress percentage={score || 50} />
 
-          <PieChart
+          {/* <PieChart
             percentage={score || 50}
             pax={0} // TODO: ask
             width={width > 767 ? 194 : 154}
-          />
+          /> */}
         </div>
-        {width > 767 && (
-          <BtnLabelPrimary
-            className='w-100'
-            style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "8px" }}
-            onClick={async () => {
-              handleSoundClick()
-              if (claim) {
-                setLoading(true);
-                console.log("reward");
-                const result = await claimReward({ uid: user?.uid });
-
-                // @ts-ignore
-                setResultData(result)
-                handleShow()
-                // setShowReward(1);  
-                // setInOutReward(1);
-                // @ts-ignore
-                // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
-                // setRewardTimer(result);
-                // setRewardExtraVote(10);
-                // setRewardTimer({
-                //       firstRewardCardType: "LEGENDARY",
-                //       firstRewardCardId: 42,
-                //       firstRewardCard: "SKY",
-                //       firstRewardCardCollection: "THINGS",
-                //       firstRewardCardSerialNo: "",
-                //       secondRewardExtraVotes: 8,
-                //       thirdRewardDiamonds: 25                  
-                // });
-                setLoading(false);
-                // console.log("rewardresult", result);
-              }
-            }}
-            disabled={!claim || loading || rewardTimer}
-          >
-            {!!claim && <Dot>{claim}</Dot>}
-            {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
-          </BtnLabelPrimary>
+        {/* width > 767 &&  */(
+          <div className="w-100" style={{ display: 'flex', justifyContent: 'center' }}>
+            <BtnLabelPrimary
+              style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "10px" }}
+              onClick={async () => {
+                handleSoundClick()
+                if (claim) {
+                  setLoading(true);
+                  console.log("reward");
+                  const result = await claimReward({ uid: user?.uid });
+                  // @ts-ignore
+                  setResultData(result)
+                  handleShow()
+                  setLoading(false);
+                }
+              }}
+              disabled={!claim || loading || rewardTimer}
+            >
+              {!!claim && <Dot>{claim}</Dot>}
+              {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
+            </BtnLabelPrimary>
+          </div>
         )}
       </Container>
       {
-        width < 767 && (
+        (width < 767 && false) && (
           <div
             style={{ marginTop: width > 767 ? 17 : 8.5, marginBottom: "16.31px" }}
           >
