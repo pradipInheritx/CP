@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {colors, default as CPVoteForm} from "./VoteForm";
-import {ComponentMeta, ComponentStory} from "@storybook/react";
-import {Coin} from "../common/models/Coin";
-import {useTranslation} from "../common/models/Dictionary";
-import {coins, timeframes} from "./Coins/testData";
-import {action} from "@storybook/addon-actions";
-import AppContext, {AppContextProps} from "../Contexts/AppContext";
+import React, { useEffect, useState } from "react";
+import { colors, default as CPVoteForm } from "./VoteForm";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import { Coin } from "../common/models/Coin";
+import { useTranslation } from "../common/models/Dictionary";
+import { coins, timeframes } from "./Coins/testData";
+import { action } from "@storybook/addon-actions";
+import AppContext, { AppContextProps } from "../Contexts/AppContext";
 import Bear from "./icons/Bear";
 import Bull from "./icons/Bull";
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { texts } from "./LoginComponent/texts";
 
 export default {
@@ -44,7 +44,7 @@ const Template: ComponentStory<typeof CPVoteForm> = () => {
           onChange={() => setDisabled(!disabled)}
         />
       </Form>
-      <CPVoteForm
+      {/* <CPVoteForm
         {...{
           selectedTimeFrame,
           setSelectedTimeFrame,
@@ -74,7 +74,7 @@ const Template: ComponentStory<typeof CPVoteForm> = () => {
           // tooltip: translate("you must be logged in to vote"),
           tooltip:`${texts.YouMustLoggedInVote}`,
         }}
-      />
+      /> */}
     </AppContext.Provider>
   );
 };

@@ -138,7 +138,7 @@ const Minting = ({
 
   return (
     <React.Fragment>
-      <Container {...{ width }}>
+      <Container {...{ width }} style={{ maxWidth: '21.4em', minHeight: '26.9em' }}>
         <div
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
@@ -151,13 +151,13 @@ const Minting = ({
             {texts.CPMinting}
           </Title>
           <I className='bi bi-info-circle'></I>
-          <CircularProgress percentage={score || 0} />
+          {/* <CircularProgress percentage={score || 50} /> */}
 
-          {/* <PieChart
-            percentage={score || 0}
+          <PieChart
+            percentage={score || 50}
             pax={0} // TODO: ask
             width={width > 767 ? 194 : 154}
-          /> */}
+          />
         </div>
         {width > 767 && (
           <BtnLabelPrimary
@@ -199,44 +199,46 @@ const Minting = ({
           </BtnLabelPrimary>
         )}
       </Container>
-      {width < 767 && (
-        <div
-          style={{ marginTop: width > 767 ? 17 : 8.5, marginBottom: "16.31px" }}
-        >
-          <BtnLabelPrimary
-            className='w-100 mt-2'
-            style={{ boxShadow: "0px 3px 6px #00000029" }}
-            onClick={async () => {
-              if (claim) {
-                setLoading(true);
-                console.log("reward");
-                const result = await claimReward({ uid: user?.uid });
-                // @ts-ignore
-                setResultData(result)
-                handleShow()
-                // setShowReward(1);
-                // setInOutReward(1);
-                // @ts-ignore
-                // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
-                // setRewardTimer(result);
-                // setRewardExtraVote(10);
-                // setRewardTimer({
-                //   firstRewardCard: "legendary",
-                //   secondRewardExtraVotes: 10,
-                //   thirdRewardDiamonds: 10
-                // });
-                setLoading(false);
-                console.log("rewardresult", result);
-              }
-            }}
-            disabled={!claim || loading || rewardTimer}
+      {
+        width < 767 && (
+          <div
+            style={{ marginTop: width > 767 ? 17 : 8.5, marginBottom: "16.31px" }}
           >
-            {!!claim && <Dot>{claim}</Dot>}
-            {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}
-            {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
-          </BtnLabelPrimary>
-        </div>
-      )}
+            <BtnLabelPrimary
+              className='w-100 mt-2'
+              style={{ boxShadow: "0px 3px 6px #00000029" }}
+              onClick={async () => {
+                if (claim) {
+                  setLoading(true);
+                  console.log("reward");
+                  const result = await claimReward({ uid: user?.uid });
+                  // @ts-ignore
+                  setResultData(result)
+                  handleShow()
+                  // setShowReward(1);
+                  // setInOutReward(1);
+                  // @ts-ignore
+                  // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
+                  // setRewardTimer(result);
+                  // setRewardExtraVote(10);
+                  // setRewardTimer({
+                  //   firstRewardCard: "legendary",
+                  //   secondRewardExtraVotes: 10,
+                  //   thirdRewardDiamonds: 10
+                  // });
+                  setLoading(false);
+                  console.log("rewardresult", result);
+                }
+              }}
+              disabled={!claim || loading || rewardTimer}
+            >
+              {!!claim && <Dot>{claim}</Dot>}
+              {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}
+              {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
+            </BtnLabelPrimary>
+          </div>
+        )
+      }
       <div>
         <Modal
           show={
@@ -272,7 +274,7 @@ const Minting = ({
           {/* </Modal.Footer>       */}
         </Modal>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 

@@ -16,7 +16,7 @@ import AnimatedProgressProvider from "./AnimatedProgressProvider";
 const CircularProgress = ({ percentage }) => {
 
     return (
-        <div style={{ width: "70%" }}>
+        <div style={{ width: "100%" }}>
             <AnimatedProgressProvider
                 valueStart={0}
                 valueEnd={percentage}
@@ -26,20 +26,34 @@ const CircularProgress = ({ percentage }) => {
                 {(value) => {
                     const roundedValue = Math.round(value);
                     return (
-                        <CircularProgressbarWithChildren
-                            value={value}
-                            strokeWidth={10}
-                            /* This is important to include, because if you're fully managing the
-                    animation yourself, you'll want to disable the CSS animation. */
-                            styles={buildStyles({
-                                pathColor: "#6352e8",
-                                pathTransition: "none",
-                                strokeLinecap: "butt"
-                            })}
-                        >
-                            <span style={{ color: "var(--white)", fontSize: '20px' }}>{roundedValue}/100</span>
-                            <span style={{ color: "var(--blue-violet)", fontSize: '20px' }}>CMP</span>
-                        </CircularProgressbarWithChildren>
+                        <>
+                            <CircularProgressbarWithChildren
+                                value={100}
+                                strokeWidth={1}
+                                styles={buildStyles({
+                                    pathColor: "#fff",
+                                    pathTransition: "none",
+                                    strokeLinecap: "butt",
+                                    trailColor: "transparent"
+                                })}
+                            >
+                                <div style={{ width: "98%" }}>
+                                    <CircularProgressbarWithChildren
+                                        value={70}
+                                        styles={buildStyles({
+                                            pathColor: "#6352e8",
+                                            pathTransition: "none",
+                                            strokeLinecap: "butt",
+                                            trailColor: "transparent"
+                                        })}
+                                    >
+                                        <span style={{ color: "var(--white)", fontSize: '20px' }}>{roundedValue}/100</span>
+                                        <span style={{ color: "var(--blue-violet)", fontSize: '20px' }}>CMP</span>
+
+                                    </CircularProgressbarWithChildren>
+                                </div>
+                            </CircularProgressbarWithChildren>
+                        </>
                     );
                 }}
             </AnimatedProgressProvider>
