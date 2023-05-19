@@ -913,7 +913,8 @@ const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
       voteTime:vote?.voteTime,
       valueVotingTime: vote?.valueVotingTime,
       expiration: vote?.expiration,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      userId: vote?.userId
   }).then((data:any)=>{
     console.log('success')
     // if(data.data==null){

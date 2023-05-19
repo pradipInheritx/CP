@@ -375,6 +375,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     if (!getresultFlag) return
     getresultFlag = false
     console.log('price called')
+<<<<<<< HEAD
     const data = await getPriceCalculation({
       coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
       coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
@@ -385,6 +386,19 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
       timestamp: Date.now()
     }).then((data) => {
       if (data.data == null) {
+=======
+   const data = await getPriceCalculation({            
+        coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
+        coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
+        voteId:voteId,
+        voteTime:vote?.voteTime,
+        valueVotingTime: vote?.valueVotingTime,
+        expiration: vote?.expiration,
+        timestamp: Date.now(),
+        userId: vote?.userId
+   }).then((data) => {
+     if (data.data == null) {
+>>>>>>> dabfbd827488e0310b366f9596f488bca5eecbf3
         // console.log(data.data,"i am working data.data")
         // getVotes(index).then(void 0);
         // openPopup(true)

@@ -315,15 +315,8 @@ const navigate = useNavigate();
           </span> 
         </Cross> */}
       {/* @ts-ignore */}         
-      <div className={classname} id="card-animation">        
-        <div>
-          <span className={`${cardType.toLowerCase()}_text`}>
-            &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
-          </span>
-          <span className='cardname'>
-            THE <strong>HODLER</strong>
-          </span>
-        </div>
+      
+        
         {/* @ts-ignore */}
         <div className={classname} id="card-animation">
           <div>
@@ -337,8 +330,8 @@ const navigate = useNavigate();
               {" "}
               <img src={TheEagle} alt='the hgodler' className='img-fluid' />
             </div>
-          </div>
         </div>
+        
         {/* @ts-ignore */}
         <ScratchCard className="" ref={cardDiv}
           onMouseDown={(e) => {

@@ -401,8 +401,7 @@ const Mine = () => {
           >
             {/* continue voting */}          
             {/* @ts-ignore */}
-      <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
-
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />
       </Modal.Body>      
     </Modal>
   </CardDiv>

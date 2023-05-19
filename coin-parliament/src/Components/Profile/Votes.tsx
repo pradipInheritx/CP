@@ -95,7 +95,8 @@ const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
         voteTime:vote?.voteTime,
         valueVotingTime: vote?.valueVotingTime,
         expiration: vote?.expiration,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        userId: vote?.userId
     }).then((data:any)=>{
       if(data.data==null){
           // getVotes(index).then(void 0);     

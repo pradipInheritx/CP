@@ -326,7 +326,11 @@ const SinglePair = () => {
                 </div>
                 <div className="text-center">
                   {/* @ts-ignore */}
+<<<<<<< HEAD
                   {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame)) && user && voteId && (
+=======
+                  {!graphLoading&& (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
+>>>>>>> dabfbd827488e0310b366f9596f488bca5eecbf3
                     <>
                       <VotedCard
                         {...{
