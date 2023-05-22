@@ -239,7 +239,7 @@ const VotedCard = ({
 
     row3 = `${vote.timeframe.name}`
   }
-  console.log('votetime',vote)
+  console.log('votetime', vote)
 
   return (
     <>
@@ -283,7 +283,7 @@ const VotedCard = ({
 
             </div>
 
-            {selectedTimeFrame == vote?.timeframe?.index  &&  <RangeSilder
+            {selectedTimeFrame == vote?.timeframe?.index && <RangeSilder
               //  lastTenSec={lastTenSec}
               vote={vote}
               coins={coins}
@@ -375,7 +375,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
 
   const checkprice = async () => {
     if (!getresultFlag) return
-    getresultFlag = false
+    getresultFlag = false;
     console.log('price called')
     const data = await getPriceCalculation({
       coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,

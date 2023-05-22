@@ -35,7 +35,7 @@ const CircularProgress = ({ percentage }) => {
                     easingFunction={easeQuadInOut}
                 >
                     {(value) => {
-                        const roundedValue = Math.round(value);
+                        const roundedValue = parseFloat(value.toFixed(2));
                         return (
                             <>
                                 <div>

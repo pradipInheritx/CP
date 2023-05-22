@@ -88,15 +88,15 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
   const [scratchShound, setScratchShound] = useState<any>(false)
   const { showReward, setShowReward } = useContext(AppContext);
   const [allFrontImg, setAllFrontImg] = useState<any>({
-      COMMON:common,
-      EPIC:epic,
-      LEGENDARY:legendary,
-      RARE:rare,
-      UNCOMMON:uncommon,
+    COMMON: common,
+    EPIC: epic,
+    LEGENDARY: legendary,
+    RARE: rare,
+    UNCOMMON: uncommon,
   })
 
-  console.log(allFrontImg[`${cardType}`],cardType,"checktype")
-const navigate = useNavigate();
+  console.log(allFrontImg[`${cardType}`], cardType, "checktype")
+  const navigate = useNavigate();
 
   const WIDTH = 252;
   const HEIGHT = 320;
@@ -120,31 +120,31 @@ const navigate = useNavigate();
   useEffect(() => {
     const canvas = cardDiv.current;
     // @ts-ignore
-  const context = canvas.getContext("2d");
-  // console.log(context,"context")
-  // context.fillStyle = "#5d49df";
-  // context.fillRect(0, 0, WIDTH, HEIGHT);
+    const context = canvas.getContext("2d");
+    // console.log(context,"context")
+    // context.fillStyle = "#5d49df";
+    // context.fillRect(0, 0, WIDTH, HEIGHT);
 
-  
-  
-  // for (let i = 1; i < 8;  i++){    
-  //   context.fillText("Scratch", 20, 40 * i);
-  //   context.fillText("Scratch", 100, 40 * i);
-  //   context.fillText("Scratch", 180, 40 * i);    
-  // }
+
+
+    // for (let i = 1; i < 8;  i++){    
+    //   context.fillText("Scratch", 20, 40 * i);
+    //   context.fillText("Scratch", 100, 40 * i);
+    //   context.fillText("Scratch", 180, 40 * i);    
+    // }
 
     const foregroundImage = new Image();
-		foregroundImage.onload = function () {
-			context.drawImage(this, 0, 0);
-			context.globalCompositeOperation = "destination-out";
-			context.lineWidth = 20;			
-		};
+    foregroundImage.onload = function () {
+      context.drawImage(this, 0, 0);
+      context.globalCompositeOperation = "destination-out";
+      context.lineWidth = 20;
+    };
     foregroundImage.src = allFrontImg[`${cardType}`];
-  //   context.fillStyle = "#000";
-  // context.font = "15px Helvetica";
-  // context.fillText("Scratch", WIDTH /3 , 160);
+    //   context.fillStyle = "#000";
+    // context.font = "15px Helvetica";
+    // context.fillText("Scratch", WIDTH /3 , 160);
 
-    context.lineWidth = window.screen.width<768? 10 :50;
+    context.lineWidth = window.screen.width < 768 ? 10 : 50;
     context.lineJoin = "brush";
     return () => {
       // second
@@ -312,13 +312,13 @@ const navigate = useNavigate();
 
 
   return (
-   <>
-    <MainDiv>      
-    <div style={{
-      position: "relative",
+    <>
+      <MainDiv>
+        <div style={{
+          position: "relative",
 
-      }}>
-        {/* <Cross
+        }}>
+          {/* <Cross
         className={`${!cressShow ? "d-none" : ""} `}
         style={{ cursor: "pointer" }}
         onClick={() => {
@@ -330,71 +330,72 @@ const navigate = useNavigate();
             X
           </span> 
         </Cross> */}
-      {/* @ts-ignore */}         
-      
-        
-        {/* @ts-ignore */}
-      <div className={classname} id="card-animation">        
-        <div>
-          <span className={`${cardType.toLowerCase()}_text`}>
-            &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
-          </span>
-          <span className='cardname'>
-            THE <strong>HODLER</strong>
-          </span>
-          <div className='card-body'>
-            {" "}
-            <img src={TheEagle} alt='the hgodler' className='img-fluid' />
+          {/* @ts-ignore */}
+
+
+          {/* @ts-ignore */}
+          <div className={classname} id=" n">
+            <div>
+              <span className={`${cardType.toLowerCase()}_text`}>
+                &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
+              </span>
+              <span className='cardname'>
+                THE <strong>HODLER</strong>
+              </span>
+              <div className='card-body'>
+                {" "}
+                <img src={TheEagle} alt='the hgodler' className='img-fluid' style={{ animation: 'rotation 2s infinite linear' }} />
+              </div>
+            </div>
           </div>
-        </div>
-        </div>
-        {/* @ts-ignore */}
-        <ScratchCard className="" ref={cardDiv}
-          onMouseDown={(e) => {
-            e.stopPropagation()
-            if (window.screen.width < 768) return
-            scratchStart(e)
-          }}
-          onMouseUp={(e) => {
-            e.stopPropagation()
-            if (window.screen.width < 768) return
-            scratchEnd(e)
-          }}
-          onMouseMove={(e) => {
-            e.stopPropagation()
-            if(window.screen.width<768) return
-            scratch(e) }}          
+          {/* @ts-ignore */}
+          <ScratchCard className="" ref={cardDiv}
+            onMouseDown={(e) => {
+              e.stopPropagation()
+              if (window.screen.width < 768) return
+              scratchStart(e)
+            }}
+            onMouseUp={(e) => {
+              e.stopPropagation()
+              if (window.screen.width < 768) return
+              scratchEnd(e)
+            }}
+            onMouseMove={(e) => {
+              e.stopPropagation()
+              if (window.screen.width < 768) return
+              scratch(e)
+            }}
             onTouchStart={(e) => {
-              if(window.screen.width>768) return
+              if (window.screen.width > 768) return
               scratchStartMobile(e); // Use the first touch point
             }}
             onTouchEnd={(e) => {
-              if(window.screen.width>768) return
+              if (window.screen.width > 768) return
               scratchEndMobile(); // Use the first touch point
             }}
             onTouchMove={(e) => {
-              if(window.screen.width>768) return
+              if (window.screen.width > 768) return
               scratchMobile(e); // Use the first touch point
             }}
-         width={`${WIDTH}px`}
-        height={`${HEIGHT}px`}
-          id="canvas"       
-      >
-        
-      
-        </ScratchCard>              
-      </div>    
-      </MainDiv>  
+            width={`${WIDTH}px`}
+            height={`${HEIGHT}px`}
+            id="canvas"
+          >
+
+
+          </ScratchCard>
+        </div>
+      </MainDiv>
       <div
         // className="w-100 d-flex justify-content-center mt-3"
-      className={`${!cressShow ? "d-none" : ""} w-100 d-flex justify-content-center mt-3`}
+        className={`${!cressShow ? "d-none" : ""} w-100 d-flex justify-content-center mt-3`}
       >
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
           navigate("/profile/Album")
-        }}>Check Win Card</Buttons.Primary>                
-      </div>        
+        }}>Check Win Card</Buttons.Primary>
+      </div>
     </>
   );
 }
