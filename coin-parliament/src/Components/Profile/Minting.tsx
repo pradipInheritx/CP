@@ -320,9 +320,7 @@ const Minting = ({
               handleCmpPopupClose()
             }}></button>
           </div>
-          <Modal.Body className="d-flex  justify-content-center align-items-center"
-
-          >
+          <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}
             {/* @ts-ignore */}
             <div className='py-2'><p style={{ fontSize: "20px" }}>You Get One Claim Reward</p></div>
