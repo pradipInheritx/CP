@@ -1,9 +1,9 @@
-import React, {useContext, useState} from "react";
-import {Buttons, Props} from "../Atoms/Button/Button";
-import styled, {css} from "styled-components";
-import {colors} from "../VoteForm";
-import {Col, Row} from "react-bootstrap";
-import NotificationContext, {ToastType} from "../../Contexts/Notification";
+import React, { useContext, useState } from "react";
+import { Buttons, Props } from "../Atoms/Button/Button";
+import styled, { css } from "styled-components";
+import { colors } from "../VoteForm";
+import { Col, Row } from "react-bootstrap";
+import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import NotLoggedInPopup from "../App/NotLoggedInPopup";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
@@ -45,7 +45,7 @@ const Option = css`
 
   & svg g path {
     stroke: ${(props: { borderColor: string; selected: boolean }) =>
-      props.selected ? colors[1] : colors[0]};
+    props.selected ? colors[1] : colors[0]};
   }
 `;
 
@@ -108,40 +108,40 @@ const Vote = ({
   children,
 }: VoteProps) => {
   const [option0, option1] = options;
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  const {showModal, showToast} = useContext(NotificationContext);
+  const { showModal, showToast } = useContext(NotificationContext);
   const [clickedOption1, setClickedOption1] = useState(false);
   const [clickedOption0, setClickedOption0] = useState(false);
-  
-  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext);
-  
+
+  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
+
   return (
     <div
-      // className="container"
-      // style={{width: typeof width === "number" ? `${width}px` : `${width}px`}}
-      // style={{width:window.screen.width<979?'306px':'400px'}}      
-      
+    // className="container"
+    // style={{width: typeof width === "number" ? `${width}px` : `${width}px`}}
+    // style={{width:window.screen.width<979?'306px':'400px'}}      
+
     >
       <Row className="">
-        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast your vote'); setLogin(true)}}} style={{width:"50%"}}>
-          <div className="d-flex justify-content-around align-items-center 1" 
-          
+        <Col onClick={() => { if (!user?.uid) { setLoginRedirectMessage('cast your vote'); setLogin(true) } }} style={{ width: "50%" }}>
+          <div className="d-flex justify-content-around align-items-center 1"
+
             // style={{width:`${window.screen.width<676?"50%":"100%"}`}}
             // style={{ width: "50%" }}
-            style={{width:"100%"}}
+            style={{ width: "100%" }}
           >
             <Option0
-        
+
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
                   VoteButton()
                   if (disabled && disabledText) {
                     if (!user) {
-                     
-                    
+
+
                       setLoginRedirectMessage('test');
                       setLogin(true);
                     } else {
@@ -167,18 +167,18 @@ const Vote = ({
           </div>
         </Col>
         {children}
-        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast your vote'); setLogin(true)}}} style={{width:"50%"}}>
+        <Col onClick={() => { if (!user?.uid) { setLoginRedirectMessage('cast your vote'); setLogin(true) } }} style={{ width: "50%" }}>
           <div className="d-flex justify-content-center align-items-center"
-          style={{width:"100%"}}
+            style={{ width: "100%" }}
           >
             <Option1
               {...{
-                ...option1.buttonProps,                
+                ...option1.buttonProps,
                 onClick: () => {
                   VoteButton()
                   if (disabled && disabledText) {
                     if (!user) {
-                      showModal(<NotLoggedInPopup/>);
+                      showModal(<NotLoggedInPopup />);
                     } else {
                       showToast(disabledText, ToastType.ERROR);
                     }
@@ -196,7 +196,7 @@ const Vote = ({
                 selected: selectedOption === 1,
                 disabled,
               }}
-              style={{borderBottomLeftRadius:symbol2?'38px':'',borderTopLeftRadius:symbol2?'0':''}}
+              style={{ borderBottomLeftRadius: symbol2 ? '38px' : '', borderTopLeftRadius: symbol2 ? '0' : '' }}
             >
               {option1.icon}
             </Option1>

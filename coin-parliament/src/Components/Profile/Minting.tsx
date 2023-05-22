@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { useWindowSize } from "../../hooks/useWindowSize";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import lottie from "lottie-web";
 import PieChart from "./PieChart";
 import Collapse from "./Collapse";
@@ -19,6 +19,7 @@ import AppContext from "../../Contexts/AppContext";
 import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
 import Confetti from "../../assets/animation/confetti.json";
+import { colors } from "../VoteForm";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -71,7 +72,7 @@ const BtnLabelPrimary = styled.button`
   color: var(--blue-violet);
   cursor: pointer;
   &:disabled {
-    
+
     background: var(--unnamed-color-ffffff) 0% 0% no-repeat padding-box;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
@@ -79,6 +80,37 @@ const BtnLabelPrimary = styled.button`
     opacity: 0.3;
 }
 `;
+
+const Option = css`
+  border: ${(props: { borderColor: string; selected: boolean }) =>
+    `1px solid ${props.borderColor}`};
+  flex-grow: 1;
+  flex-basis: 0;
+  min-width: 0;
+  box-shadow: rgb(67 47 229) 0px 4px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  transition: all .2s ease;
+`;
+
+const Option0 = styled(Buttons.RadiusTopRight)`
+  ${Option};
+  flex-direction: column;
+  &:active{
+    position: relative;
+top: 2px;
+  box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  }
+  &:disabled {
+    pointer-events: none;  
+    cursor:pointer;
+  }
+  &:not([disabled]) {
+    animation: bull_shake_left 2s ease 2s 3 alternate forwards;
+  }
+  &:hover {
+  background:#6352E8;
+  color:white;
+ box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
+  }`;
 const Dot = styled.div`
   border-radius: 50%;
   position: absolute;
@@ -193,25 +225,46 @@ const Minting = ({
         </div>
         {/* width > 767 &&  */(
           <div className="w-100" style={{ display: 'flex', justifyContent: 'center' }}>
-            <BtnLabelPrimary
-              style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "10px" }}
-              onClick={async () => {
-                handleSoundClick()
-                if (claim) {
-                  setLoading(true);
-                  console.log("reward");
-                  const result = await claimReward({ uid: user?.uid });
-                  // @ts-ignore
-                  setResultData(result)
-                  handleShow()
-                  setLoading(false);
-                }
+            <Option0
+              {...{
+                onClick: async () => {
+                  handleSoundClick()
+                  if (claim) {
+                    setLoading(true);
+                    console.log("reward");
+                    const result = await claimReward({ uid: user?.uid });
+                    // @ts-ignore
+                    setResultData(result)
+                    handleShow()
+                    setLoading(false);
+                  }
+                },
+                borderColor: "var(--blue-violet)",
+                selected: true,
+                className: ["p-3 confetti-button svg-button animate"].join(" "),
+                disabled: false
               }}
-              disabled={!claim || loading || rewardTimer}
+            // style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "10px" }}
+            // className={`animate confetti-button svg-button`}
+            // onClick={async () => {
+            //   handleSoundClick()
+            //   if (claim) {
+            //     setLoading(true);
+            //     console.log("reward");
+            //     const result = await claimReward({ uid: user?.uid });
+            //     // @ts-ignore
+            //     setResultData(result)
+            //     handleShow()
+            //     setLoading(false);
+            //   }
+            // }}
+
+            // disabled={!claim || loading || rewardTimer}
             >
-              {!!claim && <Dot>{claim}</Dot>}
+              {!!claim && <Dot>{claim}</Dot>
+              }
               {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
-            </BtnLabelPrimary>
+            </Option0>
           </div>
         )}
       </Container>
@@ -351,7 +404,7 @@ const Minting = ({
           {/* </Modal.Footer>       */}
         </Modal>
       </div>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 

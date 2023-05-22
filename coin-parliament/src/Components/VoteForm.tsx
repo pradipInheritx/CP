@@ -88,7 +88,7 @@ const VoteForm = function <
       }}
       style={{ maxWidth: '450px', margin: '0 auto' }}
     >
-       <div className="mt-4" style={{ marginLeft: symbol2 ? '' : '24px', marginRight: symbol2 ? '' : '24px' }}>
+      <div className="mt-4" style={{ marginLeft: symbol2 ? '' : '24px', marginRight: symbol2 ? '' : '24px' }}>
         <SelectTimeframes
           {...{
             selected: selectedTimeFrame,
@@ -109,7 +109,7 @@ const VoteForm = function <
         />
 
       </div>
-       <div className='mt-4 pt-2'>
+      <div className='mt-4 pt-2'>
         {/* @ts-ignore */}
         <div className='mb-3'>
           {/* <Title>{texts.yourVote}</Title> */}
