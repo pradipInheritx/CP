@@ -188,7 +188,7 @@ const SingleCoin = () => {
   }, [params?.id, voteId, vote?.voteTime]);
 
 
-
+console.log(votedDetails,"checkallvotes")
   // useEffect(() => {
   //   if(vote.timeframe) {
   //     setTimeout(() => {
@@ -214,8 +214,7 @@ const SingleCoin = () => {
 
   const calcVote = useCallback(async () => {
 
-    // if (!mountedRef.current) return null;
-
+    // if (!mountedRef.current) return null;    
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframes[selectedTimeFrame || 0]?.seconds });
       if (v) {
@@ -239,7 +238,7 @@ const SingleCoin = () => {
       }
     }
   }
-
+  
   useEffect(() => {
 
 
@@ -293,31 +292,25 @@ const SingleCoin = () => {
     return () => {
       mountedRef.current = false;
     };
-  }, [calcVote, selectedTimeFrame]);
+  }, [selectedTimeFrame]);
 
 
+console.log(selectedTimeFrame,"selectedTimeFrameChange")
 
   useEffect(() => {
+
+    console.log("i am working now")
     if (voteId) {
       // getResultForPendingVote()
       onSnapshot(doc(db, "votes", voteId), (doc) => {
-
         // if () {
-
         setVote(doc.data() as VoteResultProps);
         // }
-
-
-
         // AllvoteValueObject = [];  
         // setAllButtonTime([...allButtonTime,viewData]);
-
-
-
       });
       // setForRun(forRun + 1)
     }
-
   }, [voteId]);
 
 
@@ -331,9 +324,19 @@ const SingleCoin = () => {
     return (
       ((!vote.expiration && vote.success === undefined) ||
         (vote.expiration && vote.success !== undefined) ||
-        Date.now() >= vote?.expiration) && !hideButton.includes(selectedTimeFrame)
+        Date.now() >= vote?.expiration) 
     );
   }, [vote.expiration, vote.success, selectedTimeFrame]);
+
+  const showVoteButton = useMemo(() => {
+    return (
+        vote?.timeframe?.index==selectedTimeFrame 
+  )
+  }, [vote]);
+
+
+console.log(showVoteButton,"checkshowVoteButton")
+
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);
@@ -427,7 +430,7 @@ const SingleCoin = () => {
                 )}
                 <div className="text-center">
                   {/* @ts-ignore */}
-                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
+                  {!graphLoading && !canVote  && user && voteId && (
                     <>
                       <VotedCard
                         {...{
@@ -444,8 +447,7 @@ const SingleCoin = () => {
                           setHideButton,
                           hideButton
                         }}
-                      />
-
+                      />                      
                       {/* <Speedometer/> */}
 
                       {cpviData?.length && params?.id && (
@@ -469,6 +471,20 @@ const SingleCoin = () => {
 
                     </>
                   )}
+
+                    {
+                      // @ts-ignore
+                      // hideButton.includes(selectedTimeFrame) &&
+                        <ModalForResult
+                          popUpOpen={popUpOpen}
+                          selectedTimeFrame={selectedTimeFrame}
+                          setpopUpOpen={setpopUpOpen}
+                          setHideButton={setHideButton}
+                          hideButton={hideButton}
+                          vote={vote}
+                          type={"coin"}
+                        />
+                      }
                 </div>
                 {/* <div>
                     <Modal show={show} onHide={handleClose}>
@@ -485,21 +501,7 @@ const SingleCoin = () => {
                         </Button>
                       </Modal.Footer>
                     </Modal>
-                  </div>      */}
-
-                {
-                  // @ts-ignore
-                  // hideButton.includes(selectedTimeFrame) &&
-                  <ModalForResult
-                    popUpOpen={popUpOpen}
-                    selectedTimeFrame={selectedTimeFrame}
-                    setpopUpOpen={setpopUpOpen}
-                    setHideButton={setHideButton}
-                    hideButton={hideButton}
-                    vote={vote}
-                    type={"coin"}
-                  />
-                }
+                  </div>      */}                
               </Container >
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                 <Link to="" style={{ textDecoration: 'none' }}>

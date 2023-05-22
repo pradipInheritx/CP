@@ -186,9 +186,9 @@ const VotedCard = ({
 
   useEffect(() => {
     console.log('component mounter vote')
-    if (setHideButton) {
-      setHideButton([...hideButton, selectedTimeFrame])
-    }
+    // if (setHideButton) {
+    //   setHideButton([...hideButton, selectedTimeFrame])
+    // }
     return () => {
       console.log('component unmounted vote')
     }
@@ -239,7 +239,7 @@ const VotedCard = ({
 
     row3 = `${vote.timeframe.name}`
   }
-  // console.log('votetime',vote)
+  console.log('votetime',vote)
 
   return (
     <>
@@ -282,13 +282,14 @@ const VotedCard = ({
               <YourVote>YOUR CURRENT VOTE IMPACT</YourVote>
 
             </div>
-            <RangeSilder
+
+            {selectedTimeFrame == vote?.timeframe?.index  &&  <RangeSilder
               //  lastTenSec={lastTenSec}
               vote={vote}
               coins={coins}
               symbol1={symbol1}
               symbol2={symbol2}
-            />
+            />}
             <div className="mb-1" style={{ marginTop: '-4em' }}>
               <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
                 setLastTenSec={setLastTenSec}
@@ -340,6 +341,7 @@ const VotedCard = ({
 };
 
 export default VotedCard;
+
 let getresultFlag: any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
@@ -388,7 +390,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
       if (data.data == null) {
         // console.log(data.data,"i am working data.data")
         // getVotes(index).then(void 0);
-        // openPopup(true)
+        openPopup(true)
 
       }
     }).catch(err => {
