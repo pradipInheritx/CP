@@ -254,7 +254,7 @@ const navigate = useNavigate();
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
-    if (percentage > 30) {
+    if (percentage > 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true)
       setScratchShound(false)
@@ -288,7 +288,7 @@ const navigate = useNavigate();
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
-    if (percentage > 30) {
+    if (percentage > 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
       openpopup()
