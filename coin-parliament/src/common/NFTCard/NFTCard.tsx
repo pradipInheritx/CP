@@ -327,7 +327,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
         onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
-        }}
+        }}    
       >
           <span>
             X

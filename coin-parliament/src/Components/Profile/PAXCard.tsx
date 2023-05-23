@@ -132,7 +132,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
           } onHide={handleClose}
       // size="sm"
       backdrop="static"          
-      contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+      // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -145,8 +145,9 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
             {/* continue voting */}          
             {/* @ts-ignore */}
             <div className=''>
-              <p style={{ fontSize: "30px" }}>You win {rewardExtraVote} Vote </p>
+              <p style={{ fontSize: "20px" }}>Congrats! You've won {rewardExtraVote} votes</p>
             </div>
+             
 
           </Modal.Body>
           {/* <Modal.Footer> */}

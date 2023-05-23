@@ -44,9 +44,7 @@ const RewardList = styled.p`
   cursor: pointer;
 `;
 const CardDiv = styled.div`
-.card-content{
-  border:1px solid red;
-}
+
 `;
 type ZoomProps = {
   inOutReward?: number
@@ -68,6 +66,7 @@ const Mine = () => {
   const [data, setData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
+  const [modelText, setModelText] = React.useState(0);
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -100,6 +99,7 @@ const Mine = () => {
 
     if (showBack && ClaimNumber < 1) {
       setTimeout(() => {
+        setModelText(1)
         console.log(showBack, "viewshow")
         handleShow()
         setShowBack(false)
@@ -111,6 +111,7 @@ const Mine = () => {
   const openpopup = () => {
     if (showBack) {
       setTimeout(() => {
+        setModelText(2)
         console.log(showBack, "viewshow")
         handleShow()
         setShowBack(false)
@@ -364,7 +365,16 @@ const Mine = () => {
           </div>
           <Modal.Body>
             {/* continue voting */}
-            <div className='py-2  d-flex  justify-content-center'><p style={{ fontSize: "20px" }}>You need {100 - RemeingCmp} cmp number to achieve the goal!</p></div>
+            {modelText == 1 && <div className='py-2  d-flex flex-column  justify-content-center'>
+              <strong style={{ fontSize: "20px" }}>Stay in the game</strong>
+              <p style={{ fontSize: "20px" }}>Only {100 - RemeingCmp} CMP to reach your goal</p>
+            </div>}
+            {modelText == 2 && <div className='py-2  d-flex  flex-column justify-content-center'>
+              <strong style={{ fontSize: "20px" }}>Great job!!</strong>
+              <p style={{ fontSize: "20px" }}>
+                You're one step closer to claiming your reward!
+              </p>
+            </div>}
 
           </Modal.Body >
           {/* <Modal.Footer> */}
