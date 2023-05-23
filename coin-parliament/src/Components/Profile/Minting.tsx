@@ -14,7 +14,7 @@ import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
 import { stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
-import { handleSoundClick } from "../../common/utils/SoundClick";
+import { handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
 import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
@@ -181,30 +181,32 @@ const Minting = ({
   const handleCmpPopupClose = () => setCmpPopupShow(false);
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
-
-    const Animation = lottie.loadAnimation({
-      // @ts-ignore
-      container: document.querySelector(".Cmp-animation"),
-      animationData: Confetti,
-      renderer: "html", // "canvas", "html"
-      loop: true, // boolean
-      autoplay: true, // boolean              
-    });
-
-    setTimeout(function () {
-      Animation.pause();
-    }, 9000); // 5000 milliseconds = 5 seconds
+    // handleSoundWinCmp.play()    
   };
 
 
   console.log(showBack, "showBackshow")
 
-  console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
+  // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
-    if (score == 100) {
+    if (score == 100 ) {      
       handleCmpPopupShow()
+     const Animation = lottie.loadAnimation({
+      // @ts-ignore
+      container: document.getelementsbyclassname(".Cmp-animation"),
+      animationData: Confetti,
+      renderer: "html", // "canvas", "html"
+      loop: true, // boolean
+      autoplay: true, // boolean              
+      });
+      handleSoundWinCmp.play()
+    setTimeout(function () {
+      Animation.pause();
+      handleSoundWinCmp.pause()
+    }, 4000);  // 5000 milliseconds = 5 seconds
       // setShowBack(false)
     }
+    
   }, [score])
 
   const [animateButton, setAnimateButton] = useState<boolean>(false);

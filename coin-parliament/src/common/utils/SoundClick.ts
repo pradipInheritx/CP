@@ -8,6 +8,7 @@ const Notification = require("../../assets/sounds/notification.mp3").default;
 const voteshound = require("../../assets/sounds/voteshound.wav").default;
 const silent = require("../../assets/sounds/silence.mp3").default;
 const scratch = require("../../assets/sounds/scratch.mp3").default;
+const WinCmp = require("../../assets/sounds/WinCmp.mp3").default;
 
 const audio = new Audio(buttonClick);
 const onFlipcard = new Audio(Flipcard);
@@ -18,6 +19,7 @@ const NotiSound = new Audio(Notification);
 const voteClick = new Audio(voteshound);
 const silentSound = new Audio(silent);
 const scratchSound = new Audio(scratch);
+const WinCmpSound = new Audio(WinCmp);
 
 export const handleSoundClick = () => {
   // console.log('play sound')
@@ -30,6 +32,17 @@ export const handleSoundClickCard = {
   },
   pause: () => {
     scratchSound.pause()
+  }
+
+};
+
+export const handleSoundWinCmp = {
+
+  play: () => {
+    WinCmpSound.play();
+  },
+  pause: () => {
+    WinCmpSound.pause()
   }
 
 };

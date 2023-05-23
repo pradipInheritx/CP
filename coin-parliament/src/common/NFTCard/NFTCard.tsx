@@ -16,7 +16,7 @@ import rare from '../../assets/images/rareText.png';
 import uncommon from '../../assets/images/uncommonText.png';
 import { Buttons } from "../../Components/Atoms/Button/Button";
 import { useNavigate } from "react-router-dom";
-import giftImage from "assets/images/giftCard.gif"
+import giftImage from "../../assets/images/giftCard.gif"
 type MintingProps = {
   cardType?: any;
   setRewardTimer?: any;
