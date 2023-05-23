@@ -108,22 +108,31 @@ export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
   try {
     const coinRef = await firestore().collection("settings").doc("coins").get();
     let coinData: any = coinRef.data();
-    let getCoin = coinData.coins.find((coin: any) => {
-      return coin.id == id;
+    const getAllCoinList: any = [];
+
+    coinData.coins.forEach((coin: any) => {
+      getAllCoinList.push(coin)
     });
-    if (!getCoin) {
+
+    const checkCoin = getAllCoinList.find((coin: any) => coin.id == id)
+    if (!checkCoin) {
       return res.status(404).send({
         status: false,
         message: `${id} is not found`,
         result: null,
       });
-    }
-    getCoin.voteBarRange = voteBarRange;
+    };
+
+    let getCoins = getAllCoinList.map((coin: any) => {
+      return coin.id == id ? { ...coin, voteBarRange } : coin;
+    });
 
     await firestore()
       .collection("settings")
       .doc("coins")
-      .set(getCoin, { merge: true });
+      .set({ coins: getCoins }, { merge: true });
+
+    const getCoin = getCoins.find((coin: any) => coin.id === id)
 
     res.status(200).send({
       status: true,
