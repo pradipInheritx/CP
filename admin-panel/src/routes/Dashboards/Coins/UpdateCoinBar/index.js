@@ -51,82 +51,69 @@ function NumberFormatCustom({onChange, ...other}){
 
 const UpdateCoinBar = ({open, onCloseDialog}) => {
   const classes = useStyles();
-  const {currentUser} = useSelector(({usersReducer}) => usersReducer);
+  const {currentCoin} = useSelector(({coinReducer}) => coinReducer);
 
-  const [ name, setName ] = useState("");
-  const [ symbol, setSymbol ] = useState("");
   const [ coinID, setCoinID ] = useState("");
   const [ rank, setRank ] = useState("");
   const [ wob, setWOB ] = useState("");
   const [ rrc, setRRC ] = useState("");
   const [ cmp, setCMP ] = useState("");
-  const [ coinLogo, setCoinLogo ] = useState("");
-
-  const [ nameError, setNameError ] = useState("");
-
-  const [ symbolError, setSymbolError ] = useState("");
-  const [ coinIDError, setCoinIDError ] = useState("");
+  
   const [ rankError, setRankError ] = useState("");
   const [ wobError, setWOBError ] = useState("");
   const [ rrcError, setRRCError ] = useState("");
-  const [ cmpError, setCMPError ] = useState("");
-  const [ coinLogoError, setCoinLogoError ] = useState("");
+  const [ cmpError, setCMPError ] = useState("");  
 
-  const {getRootProps, getInputProps} = useDropzone({
-    accept: "image/*",
-    onDrop: acceptedFiles => {
-      setCoinLogo(URL.createObjectURL(acceptedFiles[0]));
-    }
-  });
+  // const {getRootProps, getInputProps} = useDropzone({
+  //   accept: "image/*",
+  //   onDrop: acceptedFiles => {
+  //     setCoinLogo(URL.createObjectURL(acceptedFiles[0]));
+  //   }
+  // });
 
   const dispatch = useDispatch();
 
   useEffect(
     () => {
-      if (currentUser) {
-        // const [ fName, lName ] = splitName(currentUser);
-        setName(currentUser.name);
-        setSymbol(currentUser.symbol);
-        setCoinID(currentUser.coinID);
-        setRank(currentUser.rank);
-        setCMP(currentUser.CMP);
-        setWOB(currentUser.Weight_Order_Book);
-        setRRC(currentUser.Range_Result_CMP);
-        setCoinLogo(currentUser.coinLogo);
+      if (currentCoin) {
+        // const [ fName, lName ] = splitName(currentUser);        
+        setRank(currentCoin?.voteBarRange[0] || 0);
+        setCMP(currentCoin?.voteBarRange[1] || 0);
+        setWOB(currentCoin?.voteBarRange[2] || 0);
+        setRRC(currentCoin?.voteBarRange[3] || 0);        
       }
     },
-    [ currentUser ]
+    [ currentCoin ]
   );
 
   const onSubmitClick = () => {
-    // const phoneNumbers = phones.filter(item => item.phone.trim());
-    // if (!firstName) {
-    //   setFirstNameError(requiredMessage);
-    // } else if (!email) {
-    //   setEmailError(requiredMessage);
-    // } else if (!isValidEmail(email)) {
-    //   setEmailError(emailNotValid);
-    // } else if (phoneNumbers.length === 0) {
-    //   setPhoneError(requiredMessage);
-    // } else {
-    //   onUserSave(phoneNumbers);
-    // }
+    if (!rank) {
+      setRankError(requiredMessage);
+    } else if (!wob) {
+      setWOBError(requiredMessage);
+    } else if (!rrc) {
+      setRRCError(requiredMessage);
+    } else if (cmp) {
+      setCMPError(requiredMessage);
+    } else {
+      onUserSave();
+    }
   };
 
-  const onUserSave = phoneNumbers => {
+  const onUserSave = () => {
     const userDetail = {
-      coinLogo,
-      name,
-      symbol,
+      // coinLogo,
+      // name,
+      // symbol,
       cmp,
       wob,
       rrc,
       rank,
-      coinID
+      // coinID
     };
-    if (currentUser) {
+    if (currentCoin) {
       dispatch(
-        updatePair({...currentUser, ...userDetail}, () => {
+        updatePair({...currentCoin, ...userDetail}, () => {
           onCloseDialog();
         })
       );
@@ -138,6 +125,8 @@ const UpdateCoinBar = ({open, onCloseDialog}) => {
       );
     }
   };
+
+console.log(cmp,"checkcmp")
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
@@ -151,61 +140,10 @@ const UpdateCoinBar = ({open, onCloseDialog}) => {
           flexDirection={{xs: "column", md: "row"}}
           alignItems="center"
           mb={{xs: 6, md: 5}}
-        >
-          {/* <Box
-            {...getRootProps()}
-            mr={{xs: 0, md: 5}}
-            mb={{xs: 3, md: 0}}
-            className="pointer"
-          >
-            <input {...getInputProps()} />
-            <CmtAvatar size={70} src={coinLogo} />
-          </Box> */}
-          {/* <GridContainer>
-            <Grid item xs={12} sm={6}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Name"
-                value={name}
-                onChange={e => {
-                  setName(e.target.value);
-                  setNameError("");
-                }}
-                helperText={nameError}
-              />
-            </Grid>
-             
-            <Grid item xs={12} sm={6}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Symbol"
-                value={symbol}
-                onChange={e => {
-                  setSymbol(e.target.value);
-                  setSymbolError("");
-                }}
-                helperText={symbolError}
-              />
-            </Grid>  
-          </GridContainer> */}
+        >         
         </Box>
         <Box mb={{xs: 6, md: 5}}>
-          <GridContainer>
-            {/* <Grid item xs={12} sm={12}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Coin ID"
-                value={coinID}
-                onChange={e => {
-                  setCoinID(e.target.value);
-                  setCoinIDError("");
-                }}
-                helperText={coinIDError}
-              />
-            </Grid> */}
+          <GridContainer>            
             <Grid item xs={12} sm={6}>
               <AppTextInput
                 fullWidth
@@ -226,7 +164,8 @@ const UpdateCoinBar = ({open, onCloseDialog}) => {
                 label="CMP"
                 value={cmp}
                 onChange={e => {
-                  setCMP(e.target.value);
+                  // setCMP(e.target.value.replace(/[^0-9]/g, ""));
+                  setCMP(e.target.value.replace(/^\d*\.?\d*$/g, ""));
                   setCMPError("");
                 }}
                 helperText={cmpError}

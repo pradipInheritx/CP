@@ -17,11 +17,12 @@ export const getCoins = (filterOptions = [], searchTerm = '', callbackFun) => {
     // .get(`/sub-admin/subAdminList/${userId.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })
     
     axios
-      .get(`/sub-admin/subAdminList/${userId?.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })
+      .get(`coins/getAllCoins`)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          dispatch({ type: GET_COIN, payload: data.data.result });
+          console.log(data.data.result.coins,"allCoin")
+          dispatch({ type: GET_COIN, payload: data.data.result.coins});
           if (callbackFun) callbackFun(data.data);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));

@@ -106,61 +106,29 @@ const CoinListRow = ({
       </TableCell> */}
       <TableCell component="th" id={labelId} scope="row" padding="normal">
         <Box display="flex" alignItems="center">
-          <Box mr={{xs: 4, md: 5}}>
+          {/* <Box mr={{xs: 4, md: 5}}>
             <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
-          </Box>
+          </Box> */}
           <div>
             <Typography
               className={classes.titleRoot}
               component="div"
               variant="h4"
             >
-              {row.name}
+              {row?.name}
             </Typography>
           </div>
         </Box>
       </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
+      <TableCell>{row?.symbol}</TableCell>
+      <TableCell>{row?.id}</TableCell>
       <TableCell>
-        {row.status === "suspended" ? `Suspended` : row.status}
+        {row.status === "InActive" ? `InActive` : row.status}
       </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-
-      {/* <TableCell component="th" id={labelId} scope="row" padding="none">
-        <Box display="flex" alignItems="center">
-          <Box mr={{xs: 4, md: 5}}>
-            <CmtAvatar size={40} src={row.coinLogo} alt={row.name} />
-          </Box>
-          <div>
-            <Typography
-              className={classes.titleRoot}
-              component="div"
-              variant="h4"
-            >
-              {row.name}
-            </Typography>
-          </div>
-        </Box>
-      </TableCell>
-      <TableCell>{timeFromNow(row.symbol)}</TableCell>
-     <TableCell>
-        {row.status === "suspended" ? (
-          `Suspended`
-        ) : (
-          row.status
-        )}
-      </TableCell>
-      <TableCell>{timeFromNow(row.rank)}</TableCell>
-      <TableCell>{timeFromNow(row.CMP)}</TableCell>
-      <TableCell>{timeFromNow(row.Weight_Order_Book)}</TableCell>     
-      <TableCell>{timeFromNow(row.Range_Result_CMP)}</TableCell>       */}
-      {/* <TableCell>{row.email}</TableCell> */}
-
-      {/* <TableCell align="right">{row.emailUsage} GB</TableCell> */}
+      {/* <TableCell>{row?.voteBarRange[0] || 0}</TableCell>
+      <TableCell>{row?.voteBarRange[1] || 0}</TableCell>
+      <TableCell>{row?.voteBarRange[2] || 0}</TableCell>
+      <TableCell>{row?.voteBarRange[3] || 0}</TableCell>       */}
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu
           items={userActions}

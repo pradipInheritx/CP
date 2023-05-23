@@ -18,10 +18,6 @@ import {
   getCoins,
   setCurrentCoin
 } from "../../../redux/actions/Coins";
-import {
-  getUsers
-  // setCurrentUser
-} from "../../../redux/actions/Users";
 import AddEditCoin from "./AddEditCoin";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
 import {useDebounce} from "../../../@jumbo/utils/commonHelper";
@@ -32,7 +28,7 @@ import UpdateCoinBar from "./UpdateCoinBar";
 
 const CoinsModule = () => {
   const classes = useStyles();
-  const {users} = useSelector(({usersReducer}) => usersReducer);
+  const {coinList} = useSelector(({coinReducer}) => coinReducer);
   const [ orderBy, setOrderBy ] = React.useState("name");
   const [ order, setOrder ] = React.useState("asc");
   const [ page, setPage ] = React.useState(0);
@@ -51,21 +47,10 @@ const CoinsModule = () => {
 
   const dispatch = useDispatch();
 
-  // useEffect(
-  //   () => {
-  //     dispatch(
-  //       getCoins(filterOptions, debouncedSearchTerm, () => {
-  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
-  //         setUsersFetched(true);
-  //       })
-  //     );
-  //   },
-  //   [ dispatch, filterOptions, debouncedSearchTerm ]
-  // );
   useEffect(
     () => {
       dispatch(
-        getUsers(filterOptions, debouncedSearchTerm, () => {
+        getCoins(filterOptions, debouncedSearchTerm, () => {
           setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
           setUsersFetched(true);
         })
@@ -73,6 +58,17 @@ const CoinsModule = () => {
     },
     [ dispatch, filterOptions, debouncedSearchTerm ]
   );
+  // useEffect(
+  //   () => {
+  //     dispatch(
+  //       getUsers(filterOptions, debouncedSearchTerm, () => {
+  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+  //         setUsersFetched(true);
+  //       })
+  //     );
+  //   },
+  //   [ dispatch, filterOptions, debouncedSearchTerm ]
+  // );
 
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
@@ -87,7 +83,7 @@ const CoinsModule = () => {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelected = users.map(n => n.id);
+      const newSelected = coinList.map(n => n.id);
       setSelected(newSelected);
       return;
     }
@@ -189,11 +185,11 @@ const CoinsModule = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={users.length}
+              rowCount={coinList.length}
             />
             <TableBody>
-              {!!users.length ? (
-                stableSort(users, getComparator(order, orderBy))
+              {!!coinList.length ? (
+                stableSort(coinList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <CoinListRow
@@ -219,7 +215,7 @@ const CoinsModule = () => {
                         {usersFetched ? (
                           "There are no records found."
                         ) : (
-                          "Loading users..."
+                          "Loading List..."
                         )}
                       </NoRecordFound>
                     )}
@@ -232,7 +228,7 @@ const CoinsModule = () => {
         <TablePagination
           rowsPerPageOptions={[ 10, 20, 50 ]}
           component="div"
-          count={users.length}
+          count={coinList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handlePageChange}
