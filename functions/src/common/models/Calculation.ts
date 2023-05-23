@@ -6,9 +6,8 @@ import {
   VoteStatistics,
 } from "./User";
 import { Direction, voteConverter, VoteResultProps } from "./Vote";
-import { firestore, messaging } from "firebase-admin";
+import { firestore } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
-import { sendNotification } from "./Notification";
 import { voteExpireAndGetCpmNotification } from "./SendCustomNotification"
 
 
@@ -371,11 +370,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         if (eachUser.total >= eachUserType.minVote && leader <= userLengthForThisUserType) {
           eachUser.status = eachUserType.name;
           leaderStatus.push(eachUser);
-          const userDoc = await firestore()
-            .collection("users")
-            .doc(eachUser.userId)
-            .get(); // Get Previous Status Of User
-          await sendNotificationForTitleUpgrade(eachUser, userDoc); // Send Notification To User
+
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
@@ -391,37 +386,6 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       .doc("leaders")
       .set({ leaders: leaderStatus }, { merge: true });
   };
-
-export const sendNotificationForTitleUpgrade = async (eachUser: any, userDoc: any) => {
-  const { token, status } = userDoc.data() || {};
-  if (token && (status.name !== eachUser.status)) {
-    const body = "You just earned a Parliament skill badge! Who's next?";
-
-    const message: messaging.Message = {
-      token,
-      notification: {
-        title: "You just earned a Parliament skill badge! Who's next?",
-        body,
-      },
-      webpush: {
-        headers: {
-          Urgency: "high",
-        },
-        fcmOptions: {
-          link: "#", // TODO: put link
-        },
-      },
-    };
-    console.info("Send Notification To User", "Status", status.name, "eachUser.status", eachUser.status)
-    await sendNotification({
-      token,
-      message,
-      body,
-      title: "You just earned a Parliament skill badge! Who's next?",
-      id: eachUser.userId,
-    });
-  }
-}
 
 
 export const calculateStatus: (
