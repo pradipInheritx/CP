@@ -324,7 +324,7 @@ const navigate = useNavigate();
         onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
-        }}
+        }}    
       >
           <span>
             X

@@ -140,9 +140,10 @@ const Minting = ({
   const handleCmpPopupClose = () => setCmpPopupShow(false);
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
+    
     const Animation = lottie.loadAnimation({
-      // @ts-ignore
-      container: document.querySelector("#Cmp-animation"),
+      // @ts-ignor
+      container: document.querySelector(".Cmp-animation"),
       animationData: Confetti,
       renderer: "html", // "canvas", "html"
       loop: true, // boolean
@@ -157,7 +158,7 @@ const Minting = ({
 
   console.log(showBack, "showBackshow")
 
-
+console.log(document.querySelector(".Cmp-animation"),"Cmp-animation")
   useEffect(() => {
     if (score == 100) {
       handleCmpPopupShow()
@@ -262,7 +263,7 @@ const Minting = ({
           } onHide={handleClose}
           // size="sm"
           backdrop="static"
-          contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
+          // contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
           aria-labelledby="contained-modal-title-vcenter"
           centered
 
@@ -275,8 +276,7 @@ const Minting = ({
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}
             {/* @ts-ignore */}
-            <div className='py-2 '><p style={{ fontSize: "30px" }}>You win {resultData?.data?.thirdRewardDiamonds} Coin </p></div>
-
+            <div className='py-2 '><p style={{ fontSize: "20px" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
           </Modal.Body>
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
@@ -290,7 +290,7 @@ const Minting = ({
               }, 1000);
 
               handleClose()
-            }}>Collect your coin</Buttons.Primary>
+            }}>COLLECT NOW</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
           {/* </Modal.Footer>       */}
@@ -308,9 +308,10 @@ const Minting = ({
           // size="sm"
           backdrop="static"
           // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+          contentClassName="Cmp-animation"
           aria-labelledby="contained-modal-title-vcenter"
           centered
-          id="Cmp-animation"
+          // id="Cmp-animation"
         >
 
           <div className="d-flex justify-content-end"
@@ -325,7 +326,11 @@ const Minting = ({
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <div className='py-2'><p style={{ fontSize: "20px" }}>You Get One Claim Reward</p></div>
+            <div className='py-2 d-flex flex-column  justify-content-center align-items-center'>
+              <strong className="py-2" style={{ fontSize: "20px" }}>Well done, Champ!</strong>
+              <p className="py-2" style={{ fontSize: "20px" }}>You've reached your goal.</p>
+              <p className="py-2" style={{ fontSize: "14px" }}>Go ahead and claim your reward - you deserve it!</p>
+            </div>
 
           </Modal.Body>
           {/* <Modal.Footer> */}
@@ -344,10 +349,10 @@ const Minting = ({
                   console.log("rewardresult", result);
                 }
               }}
-            >Claim Reward</Buttons.Primary>
+            >CLAIM YOUR REWARDS</Buttons.Primary>
             <Buttons.Primary className="mx-2" onClick={() => {
               handleCmpPopupClose()
-            }}>Claim Reward Later</Buttons.Primary>
+            }}>Claim letter</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
           {/* </Modal.Footer>       */}
