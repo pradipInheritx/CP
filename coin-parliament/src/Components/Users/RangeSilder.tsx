@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState, useContext, useRef, useReducer } from "react";
 import color from 'color';
 // import cc from "classcat";

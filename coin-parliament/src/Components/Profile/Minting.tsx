@@ -237,7 +237,7 @@ const Minting = ({
               {...{
                 onClick: async () => {
                   handleSoundClick()
-                  if (claim && false) {
+                  if (claim) {
                     setLoading(true);
                     const result = await claimReward({ uid: user?.uid });
                     // @ts-ignore
