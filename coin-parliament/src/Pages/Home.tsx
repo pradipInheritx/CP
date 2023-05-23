@@ -52,8 +52,19 @@ const Home = () => {
           <HomeContainer width={width} className='mb-4 p-0'>
             {!(login || firstTimeLogin) && (
               <>
-              
-                <Image
+                <div
+                  style={{
+                    width: width && width > 969 ? "100%" : "100%",
+                    height:
+                      width && width > 969
+                        ? "550px"
+                        : '450px',
+                     marginTop: width && width > 969 ? -50 :65,
+                    // marginTop:'120px',
+                    position: "absolute",
+                }}
+                >
+                {/* <Image
                   src={src}
                   style={{
                     width: width && width > 969 ? "100%" : "100%",
@@ -65,7 +76,8 @@ const Home = () => {
                     // marginTop:'120px',
                     position: "absolute",
                   }}
-                />
+                  /> */}
+                  </div>
                 {/* {window.screen.width>768 && <h2
                     style={{ zIndex: 0, position: "absolute",top:'130px' }}
                     className=' d-block'
