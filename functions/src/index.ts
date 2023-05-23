@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/sa.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -607,11 +607,7 @@ exports.checkTitleUpgrade24Hour = functions.pubsub
     async () => {
       const date = new Date();
       const nowTime = date.getTime();
-      const yesterdayTime = date.setDate(nowTime - 1)
-
-      console.log("nowTime----------", nowTime)
-      console.log("yesterdayTime----------", yesterdayTime)
-
+      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
       await checkUserStatusIn24hrs(nowTime, yesterdayTime)
     }
   )
