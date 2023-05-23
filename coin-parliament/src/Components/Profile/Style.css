@@ -14,3 +14,6 @@ animation: blinker 1s linear infinite;
     opacity: 0;
   }
 }
+.popupStyle {
+  border-radius:60px 0px 60px 60px
+}

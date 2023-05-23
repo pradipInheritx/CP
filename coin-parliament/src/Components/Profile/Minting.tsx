@@ -20,6 +20,7 @@ import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
 import Confetti from "../../assets/animation/confetti.json";
 import { colors } from "../VoteForm";
+import Swal from 'sweetalert2';
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -236,13 +237,23 @@ const Minting = ({
               {...{
                 onClick: async () => {
                   handleSoundClick()
-                  if (claim) {
+                  if (claim && false) {
                     setLoading(true);
                     const result = await claimReward({ uid: user?.uid });
                     // @ts-ignore
                     setResultData(result)
                     handleShow()
                     setLoading(false);
+                  } else {
+                    Swal.fire({
+                      title: `You still need ${100 - score} CMP to claim your reward.`,
+
+                      confirmButtonText: 'Ok',
+                      confirmButtonColor: '#6352e8',
+                      customClass: {
+                        popup: 'popupStyle',
+                      }
+                    });
                   }
                   setAnimateButton(true);
                   setTimeout(() => setAnimateButton(false), 1000);

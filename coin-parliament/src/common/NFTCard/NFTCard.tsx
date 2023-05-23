@@ -55,7 +55,7 @@ const ScratchCard = styled.canvas`
   top: 0;
   zIndex:10;
   width:100%;
-   height: 100%;
+  height: 100%;
 `;
 const Cross = styled.div`
   position: absolute;
@@ -94,8 +94,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
     RARE: rare,
     UNCOMMON: uncommon,
   })
+  const [rotateCard, setRotateCard] = useState<boolean>(false);
 
-  console.log(allFrontImg[`${cardType}`], cardType, "checktype")
   const navigate = useNavigate();
 
   const WIDTH = 252;
@@ -254,9 +254,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
-    if (percentage > 30) {
+    if (percentage >= 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT)
-      setCressShow(true)
+      setCressShow(true);
+      setRotateCard(true);
       setScratchShound(false)
       openpopup()
       const Animation = lottie.loadAnimation({
@@ -276,7 +277,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
     setScratchShound(false)
     setisDrawing(false)
   };
-
   const scratchEndMobile = () => {
     handleSoundClickCard.pause()
     // @ts-ignore
@@ -288,9 +288,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
-    if (percentage > 30) {
+    if (percentage >= 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
+      setRotateCard(true);
       openpopup()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
@@ -304,6 +305,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
       setTimeout(function () {
         Animation.pause();
       }, 9000); // 5000 milliseconds = 5 seconds
+
     }
     setisDrawing(false);
     setScratchShound(false)
@@ -314,7 +316,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
   return (
     <>
       <MainDiv>
-        <div style={{
+        <div className={rotateCard ? "rotateY360" : ''} style={{
           position: "relative",
 
         }}>
@@ -349,7 +351,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
             </div>
           </div>
           {/* @ts-ignore */}
-          <ScratchCard className="" ref={cardDiv}
+          <ScratchCard ref={cardDiv}
             onMouseDown={(e) => {
               e.stopPropagation()
               if (window.screen.width < 768) return
