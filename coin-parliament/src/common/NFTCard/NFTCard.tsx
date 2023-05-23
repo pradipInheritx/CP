@@ -254,7 +254,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
-    if (percentage >= 80) {
+    if (percentage > 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT)
       setCressShow(true);
       setRotateCard(true);
@@ -288,7 +288,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
       if (parseInt(pixels.data[i], 10) === 0) count++;
     }
     const percentage = Math.round((count / total) * 100);
-    if (percentage >= 80) {
+    if (percentage > 80) {
       context.clearRect(0, 0, WIDTH, HEIGHT);
       setCressShow(true);
       setRotateCard(true);

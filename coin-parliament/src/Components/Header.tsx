@@ -36,19 +36,19 @@ import { handleSoundClick } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 
 enum EventKeys {
-  LOGIN = "login",
-  LOGOUT = "logout",
-  SIGNUP = "signup",
-  ABOUT = "about",
-  PROFILE = "profile",
-  VOTES = "votes",
-  NOTIFICATIONS = "notifications",
-  PASSWORD = "password",
-  EDIT = "edit",
-  POOL_MINING = "pool",
-  SHARE = "share",
-  FOLLOWERS = "followers",
-  Gallery = 'Album'
+	LOGIN = "login",
+	LOGOUT = "logout",
+	SIGNUP = "signup",
+	ABOUT = "about",
+	PROFILE = "profile",
+	VOTES = "votes",
+	NOTIFICATIONS = "notifications",
+	PASSWORD = "password",
+	EDIT = "edit",
+	POOL_MINING = "pool",
+	SHARE = "share",
+	FOLLOWERS = "followers",
+	Gallery = 'Album'
 }
 
 export const Title = styled.div`
@@ -124,8 +124,8 @@ export const PlusButtonMob = styled.div`
 `;
 
 type ZoomProps = {
-  showReward?: number,
-  inOutReward?: number,
+	showReward?: number,
+	inOutReward?: number,
 };
 const ZoomCss = css`
   opacity: 1;
@@ -170,731 +170,715 @@ export const OuterContainer = styled.div`
 const MenuContainer = styled(Menu)``;
 
 const Header = ({
-  title,
-  logo = true,
-  pathname,
-  remainingTimer
+	title,
+	logo = true,
+	pathname,
+	remainingTimer
 }: {
-  title?: React.ReactNode;
-  logo?: boolean;
-  pathname: string;
-  remainingTimer: number;
+	title?: React.ReactNode;
+	logo?: boolean;
+	pathname: string;
+	remainingTimer: number;
 }) => {
-  const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext);
-  const [mounted, setMounted] = useState(false);
-  const { width } = useWindowSize();
-  const desktop = width && width > 979;
+	const navigate = useNavigate();
+	const { user, setUser } = useContext(UserContext);
+	const [mounted, setMounted] = useState(false);
+	const { width } = useWindowSize();
+	const desktop = width && width > 979;
 
 
 
-  const { languages, setLang, setLogin, setSignup, setMenuOpen } =
-    useContext(AppContext);
-  const { pages } = useContext(ContentContext);
-  const { votesLast24Hours, userInfo } = useContext(UserContext);
-  const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
-  // console.log(showReward,inOutReward,"inOutReward")
-  const translate = useTranslation();
-  const [voteNumber, setVoteNumber] = useState(0)
-  const [votingTimer, setVotingTimer] = useState(0)
-  const [followerInfo, setFollowerInfo] = useState<any>()
-  const [followUnfollow, setFollowUnfollow] = useState<any>(false)
-  const [show, setShow] = useState(false);
-  const { leaders } = useContext(CoinsContext);
+	const { languages, setLang, setLogin, setSignup, setMenuOpen } =
+		useContext(AppContext);
+	const { pages } = useContext(ContentContext);
+	const { votesLast24Hours, userInfo } = useContext(UserContext);
+	const { VoteRulesMng } = useContext(ManagersContext);
+	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
+	// console.log(showReward,inOutReward,"inOutReward")
+	const translate = useTranslation();
+	const [voteNumber, setVoteNumber] = useState(0)
+	const [votingTimer, setVotingTimer] = useState(0)
+	const [followerInfo, setFollowerInfo] = useState<any>()
+	const [followUnfollow, setFollowUnfollow] = useState<any>(false)
+	const [show, setShow] = useState(false);
+	const { leaders } = useContext(CoinsContext);
 
-  var urlName = window.location.pathname.split('/');
-  const followerPage = urlName.includes("followerProfile")
-  const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
+	var urlName = window.location.pathname.split('/');
+	const followerPage = urlName.includes("followerProfile")
+	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
 
-  const MyPath = window.location.pathname;
-
-
-
-
-  // console.log(urlName,"checkurlName")
-  const prevCountRef = useRef(voteNumber)
-
-  const getFollowerData = () => {
-
-    const getCollectionType = firebase
-      .firestore()
-      .collection("users")
-      .where("uid", "==", followerUserId)
-    getCollectionType.get()
-      .then((snapshot) => {
-        snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
-      }).catch((error) => {
-        console.log(error, "error");
-      });
-  }
-
-  useEffect(() => {
-    getFollowerData()
-  }, [followerUserId])
-
-  useEffect(() => {
-    if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
-
-      setShow(true)
-    } else {
-      setShow(false)
-    }
-
-  }, [voteNumber, votingTimer])
-
-
-
-  useEffect(() => {
-
-    setVotingTimer(remainingTimer,)
-
-  }, [remainingTimer])
-  useEffect(() => {
-    if (pages) {
-      setMounted(true);
-    }
-  }, [pages]);
-
-  useEffect(() => {
-    const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-    // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
-
-    prevCountRef.current = voteNumber;
-
-
-    // console.log('votenumber',voteNumber, Number(voted))
-  }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+	const MyPath = window.location.pathname;
 
 
 
 
-  const onSelect = (eventKey: string | null) => {
-    // handleSoundClick()
-    const auth = getAuth();
+	// console.log(urlName,"checkurlName")
+	const prevCountRef = useRef(voteNumber)
 
-    switch (eventKey) {
-      case EventKeys.LOGIN:
-        setLogin(true);
-        setSignup(false);
-        break;
-      case EventKeys.SIGNUP:
-        setLogin(true);
-        setSignup(true);
-        break;
-      case EventKeys.LOGOUT:
-        // console.log("i am working")
-        signOut(auth)
-          .then((res) => {
-            Logout(setUser);
-            setLogin(true);
-          })
-          .catch((error) => {
-            // console.log("i am working error")
-            setLogin(true);
-            const errorMessage = error.message;
-            // console.log(errorMessage,"i am working error");
-          });
-        break;
-      case EventKeys.EDIT:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.edit, {
-          replace: true,
-        });
-        break;
-      case EventKeys.POOL_MINING:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.mine, {
-          replace: true,
-        });
-        break;
-      case EventKeys.SHARE:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.share, {
-          replace: true,
-        });
-        break;
-      case EventKeys.FOLLOWERS:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.followers, {
-          replace: true,
-        });
-        break;
-      case EventKeys.PASSWORD:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.password, {
-          replace: true,
-        });
-        break;
-      case EventKeys.Gallery:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.ProfileNftGallery, {
-          replace: true,
-        });
-        break;
-      case EventKeys.NOTIFICATIONS:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.notifications, {
-          replace: true,
-        });
-        break;
-      case EventKeys.VOTES:
-        navigate(ProfileTabs.profile + "/" + ProfileTabs.votes, {
-          replace: true,
-        });
-        break;
-      default:
-        if (eventKey && languages.includes(eventKey)) {
-          setLang(eventKey);
-        }
-    }
+	const getFollowerData = () => {
 
-    setMenuOpen(false);
-  };
+		const getCollectionType = firebase
+			.firestore()
+			.collection("users")
+			.where("uid", "==", followerUserId)
+		getCollectionType.get()
+			.then((snapshot) => {
+				snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
+			}).catch((error) => {
+				console.log(error, "error");
+			});
+	}
+
+	useEffect(() => {
+		getFollowerData()
+	}, [followerUserId])
+
+	useEffect(() => {
+		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
+
+			setShow(true)
+		} else {
+			setShow(false)
+		}
+
+	}, [voteNumber, votingTimer])
 
 
-  const handleClose = () => {
-    setShow(false)
 
-  };
+	useEffect(() => {
 
-  return (
-    <div>
-      <div className='' style={{ background: "none !important" }}>
-        <MenuContainer
-          pathname={pathname}
-          onSelect={onSelect}
-          items={[
-            {
-              href: "/",
-              label: "Home",
-            },
-            {
-              href: "/pairs",
-              label: "Pairs Vote",
-            },
-            {
-              href: "/coins",
-              label: "Coin Vote",
-            },
-            // {
-            //   href: "/pairs",
-            //   label: "Pairs Vote",
-            // },
-            {
-              href: "/influencers",
-              label: "Top Influencers",
-            },
-            {
-              href: "/nftAlbum",
-              label: "Wall Of Fame",
-            },
-            {
-              label: "",
-            },
-            // user && {
-            //   eventKey: EventKeys.VOTES,
-            //   label: "Votes",
-            // },
-            // !isV1() &&
-            //   user && {
-            //     eventKey: EventKeys.POOL_MINING,
-            //     label: "Pool Mining",
-            //   },
-            user && {
-              eventKey: EventKeys.POOL_MINING,
-              label: "My Account",
-            },
-            // user && {
-            //   eventKey: EventKeys.FOLLOWERS,
-            //   label: "Followers",
-            // },
-            user && {
-              eventKey: EventKeys.EDIT,
-              label: "My Profile",
-            },
-            user && {
-              eventKey: EventKeys.Gallery,
-              label: "My Album",
-            },
-            user && {
-              eventKey: EventKeys.NOTIFICATIONS,
-              label: "Notifications",
-            },
-            // user && {
-            //   eventKey: EventKeys.PASSWORD,
-            //   label: "Password",
-            // },
-            // user && {
-            //   eventKey: EventKeys.EDIT,
-            //   label: "My Profile",
-            // },
-            {
-              label: "",
-            },
-            {
-              label: "",
-            },
-            ...(pages || []).map(convertPageToMenuItem),
-            {
-              label: "-",
-            },
-            !user && {
-              eventKey: EventKeys.LOGIN,
-              label: "Login",
-            },
-            user && {
-              eventKey: EventKeys.LOGOUT,
-              label: "Logout",
+		setVotingTimer(remainingTimer,)
 
-            },
-            !user && {
-              eventKey: EventKeys.SIGNUP,
-              label: "Join the parliament",
-            },
-          ].map((i) => (i ? i : undefined))}
-        >
-          {/* {for center modile size} */}
+	}, [remainingTimer])
+	useEffect(() => {
+		if (pages) {
+			setMounted(true);
+		}
+	}, [pages]);
 
-          {!desktop && (
-            <div className='' style={{ width: "75%" }}>
-              <div
-                className='d-flex w-100  '
-              // style={{zoom:"110%",}}
-              >
-                <ForZoom
-                  {...{ showReward, inOutReward }}
-                  className="w-100"
-                  style={{
+	useEffect(() => {
+		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+		// @ts-ignore
+		setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
 
-                  }}
-                >
-                  {user?.uid && !login ? (
-                    <div
-                      // className={`${showReward == 2 && inOutReward == 2? '' :"w-100"} d-flex`}
-                      className="d-flex"
-                      style={{
-                        position: "relative",
-                        width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
-                        transition: `width 1s ease;`
-                        //   transform: `${showReward == 2 && "scale(1.1)"}`,
-                        // marginTop: `${showReward == 2 && "50px"}`
-
-                      }}
-                    >
-                      <div
-                        className=''
-                        onClick={() => navigate("/profile/mine")}
-                        style={{
-                          position: "absolute",
-                          // marginLeft: "15px",
-                          marginTop: "7px",
-
-                          cursor: "pointer"
-                        }}
-                      >
-                        {/* {userInfo?.avatar && ( */}
-                        <Avatars
-                          type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
-                          style={{
-                            width: "45px",
-                            boxShadow: "1px 0px 5px #6352E8",
-                            // border: "1px solid #6352E8",
-                            backgroundColor: "#6352E8",
-                          }}
-                        />
-                        {/* )} */}
-                      </div>
-                      <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
-                        <HeaderCenterMob className=''>
-                          <div></div>
-                          <div className='mt-1'>
-
-                            {/* @ts-ignore */}
-
-                            {/* // @ts-ignore */}
-                            {/* {hours < 10 ? `0${hours}` : hours}: */}
+		prevCountRef.current = voteNumber;
 
 
-                            {
-                              followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
-                                // @ts-ignore */
-                                <div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
-                                  renderer={({ hours, minutes, seconds, completed }) => {
-                                    return (
-                                      <span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
-                                        Wait {" "}
-                                        {hours < 1 ? null : `${hours} :`}
-                                        {minutes < 10 ? `0${minutes}` : minutes}:
-                                        {seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-                                        <br />
-                                        or buy extra votes now.
-                                      </span>
-                                    );
-
-                                  }}
-
-                                /></div>
-                                :
-                                <>
-                                  <span
-                                    style={{
-                                      color: "#6352E8",
-                                      // zoom: `${showReward == 2 ? "150%" : ""}`
-                                      // fontSize:"11px",
-                                      marginLeft: "10px",
-                                    }}
-                                  >
+		// console.log('votenumber',voteNumber, Number(voted))
+	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
 
-                                    {MyPath == "/profile/mine" ?
-                                      <CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
 
-                                        onEnd={() => {
-                                          setInOutReward((prev: number) => {
-                                            // console.log(prev,"showRewardCheck")
-                                            return prev == 2 ? 3 : prev
-                                          });
 
-                                          // setTimeout(() => {                                      
-                                          setHeaderExtraVote((prev: number) => {
-                                            if (prev != 0) {
-                                              setShowReward(3)
-                                            }
-                                            return prev
-                                          })
-                                          // }, 100);
-                                          // setShowReward((prev: number) => {                                            
-                                          //   if (prev==2) {                                        
-                                          //     return  3                    
-                                          //   }                                      
-                                          // })
-                                        }
-                                        }
-                                      /> :
-                                      // <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
-                                      voteNumber && voteNumber + headerExtraVote
-                                    }
+	const onSelect = (eventKey: string | null) => {
+		// handleSoundClick()
+		const auth = getAuth();
 
-                                    {" "}
-                                    votes left
-                                  </span>
-                                </>}
-                          </div>
+		switch (eventKey) {
+			case EventKeys.LOGIN:
+				setLogin(true);
+				setSignup(false);
+				break;
+			case EventKeys.SIGNUP:
+				setLogin(true);
+				setSignup(true);
+				break;
+			case EventKeys.LOGOUT:
+				// console.log("i am working")
+				signOut(auth)
+					.then((res) => {
+						Logout(setUser);
+						setLogin(true);
+					})
+					.catch((error) => {
+						// console.log("i am working error")
+						setLogin(true);
+						const errorMessage = error.message;
+						// console.log(errorMessage,"i am working error");
+					});
+				break;
+			case EventKeys.EDIT:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.edit, {
+					replace: true,
+				});
+				break;
+			case EventKeys.POOL_MINING:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.mine, {
+					replace: true,
+				});
+				break;
+			case EventKeys.SHARE:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.share, {
+					replace: true,
+				});
+				break;
+			case EventKeys.FOLLOWERS:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.followers, {
+					replace: true,
+				});
+				break;
+			case EventKeys.PASSWORD:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.password, {
+					replace: true,
+				});
+				break;
+			case EventKeys.Gallery:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.ProfileNftGallery, {
+					replace: true,
+				});
+				break;
+			case EventKeys.NOTIFICATIONS:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.notifications, {
+					replace: true,
+				});
+				break;
+			case EventKeys.VOTES:
+				navigate(ProfileTabs.profile + "/" + ProfileTabs.votes, {
+					replace: true,
+				});
+				break;
+			default:
+				if (eventKey && languages.includes(eventKey)) {
+					setLang(eventKey);
+				}
+		}
 
-                          {followerPage && followerInfo != "" ?
-                            <Form.Check.Label
-                              style={{ cursor: "pointer" }}
-                              // htmlFor={id || name}
-                              className="mt-1"
-                              bsPrefix="label"
-                              onClick={async () => {
-                                setFollowUnfollow(!followUnfollow)
-                                // console.log('folower',followerInfo)
-                                const ll = leaders.find((l) => l.userId === followerInfo?.uid);
-                                if (user && ll) {
+		setMenuOpen(false);
+	};
 
-                                  await follow(ll, user, !followUnfollow);
-                                }
-                                // @ts-ignore
-                                //  await follow(followerInfo , user, checkFollow )
-                              }
 
-                              }
-                            >
-                              {/* {checked && iconOn}
+	const handleClose = () => {
+		setShow(false)
+
+	};
+
+	return (
+		<div>
+			<div className='' style={{ background: "none !important" }}>
+				<MenuContainer
+					pathname={pathname}
+					onSelect={onSelect}
+					items={[
+						{
+							href: "/",
+							label: "Home",
+						},
+						{
+							href: "/pairs",
+							label: "Pairs Vote",
+						},
+						{
+							href: "/coins",
+							label: "Coin Vote",
+						},
+						// {
+						//   href: "/pairs",
+						//   label: "Pairs Vote",
+						// },
+						{
+							href: "/influencers",
+							label: "Top Influencers",
+						},
+						{
+							href: "/nftAlbum",
+							label: "Wall Of Fame",
+						},
+						{
+							label: "",
+						},
+						// user && {
+						//   eventKey: EventKeys.VOTES,
+						//   label: "Votes",
+						// },
+						// !isV1() &&
+						//   user && {
+						//     eventKey: EventKeys.POOL_MINING,
+						//     label: "Pool Mining",
+						//   },
+						user && {
+							eventKey: EventKeys.POOL_MINING,
+							label: "My Account",
+						},
+						// user && {
+						//   eventKey: EventKeys.FOLLOWERS,
+						//   label: "Followers",
+						// },
+						user && {
+							eventKey: EventKeys.EDIT,
+							label: "My Profile",
+						},
+						user && {
+							eventKey: EventKeys.Gallery,
+							label: "My Album",
+						},
+						user && {
+							eventKey: EventKeys.NOTIFICATIONS,
+							label: "Notifications",
+						},
+						// user && {
+						//   eventKey: EventKeys.PASSWORD,
+						//   label: "Password",
+						// },
+						// user && {
+						//   eventKey: EventKeys.EDIT,
+						//   label: "My Profile",
+						// },
+						{
+							label: "",
+						},
+						{
+							label: "",
+						},
+						...(pages || []).map(convertPageToMenuItem),
+						{
+							label: "-",
+						},
+						!user && {
+							eventKey: EventKeys.LOGIN,
+							label: "Login",
+						},
+						user && {
+							eventKey: EventKeys.LOGOUT,
+							label: "Logout",
+
+						},
+						!user && {
+							eventKey: EventKeys.SIGNUP,
+							label: "Join the parliament",
+						},
+					].map((i) => (i ? i : undefined))}
+				>
+					{/* {for center modile size} */}
+
+					{!desktop && (
+						<div className='' style={{ width: "75%" }}>
+							<div className='d-flex w-100  '>
+								<ForZoom {...{ showReward, inOutReward }} className="w-100">
+									{user?.uid && !login ? (
+										<div
+											className="d-flex"
+											style={{
+												position: "relative",
+												width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
+												transition: `width 1s ease;`
+											}}
+										>
+											<div className='' onClick={() => navigate("/profile/mine")}
+												style={{
+													position: "absolute",
+													marginTop: "7px",
+													cursor: "pointer"
+												}}
+											>
+												<Avatars
+													type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+													style={{
+														width: "45px",
+														boxShadow: "1px 0px 5px #6352E8",
+														// border: "1px solid #6352E8",
+														backgroundColor: "#6352E8",
+													}}
+												/>
+											</div>
+											<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
+												<HeaderCenterMob className=''>
+													<div></div>
+													<div className='mt-1'>
+
+														{/* @ts-ignore */}
+
+														{/* // @ts-ignore */}
+														{/* {hours < 10 ? `0${hours}` : hours}: */}
+
+
+														{
+															followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
+																// @ts-ignore */
+																<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
+																	renderer={({ hours, minutes, seconds, completed }) => {
+																		return (
+																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
+																				Wait {" "}
+																				{hours < 1 ? null : `${hours} :`}
+																				{minutes < 10 ? `0${minutes}` : minutes}:
+																				{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
+																				<br />
+																				or buy extra votes now.
+																			</span>
+																		);
+
+																	}}
+
+																/></div>
+																:
+																<>
+																	<span
+																		style={{
+																			color: "#6352E8",
+																			// zoom: `${showReward == 2 ? "150%" : ""}`
+																			// fontSize:"11px",
+																			marginLeft: "10px",
+																		}}
+																	>
+
+
+																		{MyPath == "/profile/mine" ?
+																			<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
+
+																				onEnd={() => {
+																					setInOutReward((prev: number) => {
+																						// console.log(prev,"showRewardCheck")
+																						return prev == 2 ? 3 : prev
+																					});
+
+																					// setTimeout(() => {                                      
+																					setHeaderExtraVote((prev: number) => {
+																						if (prev != 0) {
+																							setShowReward(3)
+																						}
+																						return prev
+																					})
+																					// }, 100);
+																					// setShowReward((prev: number) => {                                            
+																					//   if (prev==2) {                                        
+																					//     return  3                    
+																					//   }                                      
+																					// })
+																				}
+																				}
+																			/> :
+																			// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+																			voteNumber && voteNumber + headerExtraVote
+																		}
+
+																		{" "}
+																		votes left
+																	</span>
+																</>}
+													</div>
+
+													{followerPage && followerInfo != "" ?
+														<Form.Check.Label
+															style={{ cursor: "pointer" }}
+															// htmlFor={id || name}
+															className="mt-1"
+															bsPrefix="label"
+															onClick={async () => {
+																setFollowUnfollow(!followUnfollow)
+																// console.log('folower',followerInfo)
+																const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+																if (user && ll) {
+
+																	await follow(ll, user, !followUnfollow);
+																}
+																// @ts-ignore
+																//  await follow(followerInfo , user, checkFollow )
+															}
+
+															}
+														>
+															{/* {checked && iconOn}
                               {!checked && iconOff} */}
-                              {followUnfollow == true ? <Following /> : <AddFollower />}
-                            </Form.Check.Label>
-                            :
-                            <PlusButtonMob onClick={() => {
-                              handleSoundClick()
-                              navigate("/votingbooster")
-                            }}>
-                              <span>+</span>
-                            </PlusButtonMob>
+															{followUnfollow == true ? <Following /> : <AddFollower />}
+														</Form.Check.Label>
+														:
+														<PlusButtonMob onClick={() => {
+															handleSoundClick()
+															navigate("/votingbooster")
+														}}>
+															<span>+</span>
+														</PlusButtonMob>
 
-                          }
-                        </HeaderCenterMob>
-                        <div
-                          className=''
-                          style={{ marginLeft: "45px", marginTop: "5px" }}
-                        >
-                          {/* <p>{"unique_Username"}</p> */}
+													}
+												</HeaderCenterMob>
+												<div
+													className=''
+													style={{ marginLeft: "45px", marginTop: "5px" }}
+												>
+													{/* <p>{"unique_Username"}</p> */}
 
-                          {
-                            (followerPage && followerInfo != "") ?
-                              <></> :
-                              <span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-                                {`${userInfo?.displayName ? userInfo?.displayName : ''}`}
-                              </span>
-                          }
-                          <MemberText>
-                            {followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-                          </MemberText>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className='w-100'></div>
-                  )}
-                </ForZoom>
-                {showReward == 2 && window.screen.width < 767 && <div className="w-100"></div>}
-                <div className='mt-2 '>
-                  <Title style={{ width: pathname === "/" ? "" : "" }}
-                  // onClick={handleSoundClick}
-                  >
-                    {mounted ? title : ""}
-                  </Title>
-                </div>
-              </div>
-            </div>
-          )}
+													{
+														(followerPage && followerInfo != "") ?
+															<></> :
+															<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+																{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+															</span>
+													}
+													<MemberText>
+														{followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
+													</MemberText>
+												</div>
+											</div>
+										</div>
+									) : (
+										<div className='w-100'></div>
+									)}
+								</ForZoom>
+								{showReward == 2 && window.screen.width < 767 && <div className="w-100"></div>}
+								<div className='mt-2 '>
+									<Title style={{ width: pathname === "/" ? "" : "" }}
+									// onClick={handleSoundClick}
+									>
+										{mounted ? title : ""}
+									</Title>
+								</div>
+							</div>
+						</div>
+					)}
 
-          {/* {for center web size} */}
+					{/* {for center web size} */}
 
-          {logo ? (
-            <div
+					{logo ? (
+						<div
 
-              style={{
-                flexBasis: "100%",
-                textAlign: "center",
-                //  transform: `${showReward == 2 && "scale(1)"}`,
-                //     marginTop: `${showReward == 2 && "50px"}`
-                // width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
-                // textAlign: desktop ? undefined : "center",
-              }}
-            >
+							style={{
+								flexBasis: "100%",
+								textAlign: "center",
+								//  transform: `${showReward == 2 && "scale(1)"}`,
+								//     marginTop: `${showReward == 2 && "50px"}`
+								// width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
+								// textAlign: desktop ? undefined : "center",
+							}}
+						>
 
-              <div className='d-flex w-100'
-
-
-              >
-                <ForZoom  {...{ showReward, inOutReward }}
-                  className="w-100"
-                >
+							<div className='d-flex w-100'
 
 
-                  {user?.uid && !login ? (
-                    <div
-                      className='d-flex  mx-auto w-25'
-                      style={{
-                        position: "relative", height: "50px",
-                        // width: `${showReward == 2 && inOutReward ? "2%" : "25%"}`,                      
-                        // marginTop: `${showReward == 2 && "20px"}`,
-                        // transition:  `${showReward == 2 && "transform 1s"}`
-                      }}
-                    >
-                      <div
-                        className=''
-                        onClick={() => navigate("/profile/mine")}
-                        style={{
-                          position: "absolute",
-                          marginLeft: "90px",
-                          // marginTop: "px",
-                          cursor: "pointer"
-                        }}
-                      >
+							>
+								<ForZoom  {...{ showReward, inOutReward }}
+									className="w-100"
+								>
 
-                      </div>
-                      <div className='w-100'>
-                        <HeaderCenter className=''>
-                          <div></div>
-                          <p className='ml-5'>
-                            {followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
-                              // @ts-ignore
-                              <span style={{ marginLeft: '20px' }}> <Countdown date={votingTimer}
-                                renderer={({ hours, minutes, seconds, completed }) => {
 
-                                  return (
-                                    <span className="text-uppercase" style={{ color: '#6352e8', fontSize: '10px', fontWeight: 400 }}>
-                                      {/* {hours < 10 ? `0${hours}` : hours}: */}
-                                      Wait {" "}
-                                      {hours < 1 ? null : `${hours} :`}
-                                      {minutes < 10 ? `0${minutes}` : minutes}:
-                                      {seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-                                      <p style={{ marginLeft: '30px' }}> or buy extra votes now.</p>
-                                    </span>
-                                  );
+									{user?.uid && !login ? (
+										<div
+											className='d-flex  mx-auto w-25'
+											style={{
+												position: "relative", height: "50px",
+												// width: `${showReward == 2 && inOutReward ? "2%" : "25%"}`,                      
+												// marginTop: `${showReward == 2 && "20px"}`,
+												// transition:  `${showReward == 2 && "transform 1s"}`
+											}}
+										>
+											<div
+												className=''
+												onClick={() => navigate("/profile/mine")}
+												style={{
+													position: "absolute",
+													marginLeft: "90px",
+													// marginTop: "px",
+													cursor: "pointer"
+												}}
+											>
+												<Avatars
+													// type={userInfo?.avatar as AvatarType}
+													type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+													style={{
+														width: "60px",
+														boxShadow: "1px 0px 5px #6352E8",
+														backgroundColor: "#6352E8",
+													}}
+												/>
+											</div>
+											<div className='w-100'>
+												<HeaderCenter className=''>
+													<div></div>
+													<p className='ml-5'>
+														{followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
+															// @ts-ignore
+															<span style={{ marginLeft: '20px' }}> <Countdown date={votingTimer}
+																renderer={({ hours, minutes, seconds, completed }) => {
 
-                                }}
-                              /></span>
-                              :
-                              <>
-                                <span
-                                  style={{
-                                    color: "#6352E8",
-                                    fontSize: "11px",
-                                    marginLeft: "10px",
-                                    // zoom: `${showReward == 2 ? "150%" : ""}`
-                                  }}
-                                >
-                                  {/* {Number(voteRules?.maxVotes) ||
+																	return (
+																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '10px', fontWeight: 400 }}>
+																			{/* {hours < 10 ? `0${hours}` : hours}: */}
+																			Wait {" "}
+																			{hours < 1 ? null : `${hours} :`}
+																			{minutes < 10 ? `0${minutes}` : minutes}:
+																			{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
+																			<p style={{ marginLeft: '30px' }}> or buy extra votes now.</p>
+																		</span>
+																	);
+
+																}}
+															/></span>
+															:
+															<>
+																<span
+																	style={{
+																		color: "#6352E8",
+																		fontSize: "11px",
+																		marginLeft: "10px",
+																		// zoom: `${showReward == 2 ? "150%" : ""}`
+																	}}
+																>
+																	{/* {Number(voteRules?.maxVotes) ||
                               0 +
                                 // @ts-ignore
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
-                                  {/* {voteNumber > 0 ? voteNumber : 0} */}
-                                  {MyPath == "/profile/mine" ? <CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
-                                    style={{
-                                      fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
+																	{/* {voteNumber > 0 ? voteNumber : 0} */}
+																	{MyPath == "/profile/mine" ? <CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
+																		style={{
+																			fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
 
-                                      // zoom: `${showReward == 2 ? "140%" : ""}`
-                                    }}
+																			// zoom: `${showReward == 2 ? "140%" : ""}`
+																		}}
 
-                                    onEnd={() => {
-                                      setInOutReward((prev: number) => {
-                                        // console.log(prev,"showRewardCheck")
-                                        return prev == 2 ? 3 : prev
-                                      });
-                                      // setTimeout(() => {
-                                      setHeaderExtraVote((prev: number) => {
-                                        if (prev != 0) {
-                                          setShowReward((prev: number) => {
-                                            return prev == 2 ? 3 : prev
-                                          })
-                                        }
-                                        return prev
-                                      })
-                                      // }, 500);
-                                      // setTimeout(() => {
-                                      //   setInOutReward((prev: number) =>{
-                                      //       return prev == 2 ? 3 : prev
-                                      //     })                                      
-                                      // }, 2000);
+																		onEnd={() => {
+																			setInOutReward((prev: number) => {
+																				// console.log(prev,"showRewardCheck")
+																				return prev == 2 ? 3 : prev
+																			});
+																			// setTimeout(() => {
+																			setHeaderExtraVote((prev: number) => {
+																				if (prev != 0) {
+																					setShowReward((prev: number) => {
+																						return prev == 2 ? 3 : prev
+																					})
+																				}
+																				return prev
+																			})
+																			// }, 500);
+																			// setTimeout(() => {
+																			//   setInOutReward((prev: number) =>{
+																			//       return prev == 2 ? 3 : prev
+																			//     })                                      
+																			// }, 2000);
 
-                                      // setShowReward((prev: number) => {                                            
-                                      //   if (prev==2) {                                        
-                                      //     return  3                    
-                                      //   }                                      
-                                      // })
-                                    }
-                                    }
-                                  /> :
-                                    // <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
-                                    voteNumber && voteNumber + headerExtraVote
-                                  }
-                                  {" "}
-                                  votes left
-                                </span></>}
-                          </p>
-                          {followerPage && followerInfo != "" ?
-                            <Form.Check.Label
-                              className=""
-                              style={{ cursor: "pointer" }}
-                              // htmlFor={id || name}
-                              // className={className}
-                              bsPrefix="label"
-                              onClick={async () => {
-                                setFollowUnfollow(!followUnfollow)
-                                // console.log('folower',followerInfo)
-                                const ll = leaders.find((l) => l.userId === followerInfo?.uid);
-                                if (user && ll) {
+																			// setShowReward((prev: number) => {                                            
+																			//   if (prev==2) {                                        
+																			//     return  3                    
+																			//   }                                      
+																			// })
+																		}
+																		}
+																	/> :
+																		// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
+																		voteNumber && voteNumber + headerExtraVote
+																	}
+																	{" "}
+																	votes left
+																</span></>}
+													</p>
+													{followerPage && followerInfo != "" ?
+														<Form.Check.Label
+															className=""
+															style={{ cursor: "pointer" }}
+															// htmlFor={id || name}
+															// className={className}
+															bsPrefix="label"
+															onClick={async () => {
+																setFollowUnfollow(!followUnfollow)
+																// console.log('folower',followerInfo)
+																const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+																if (user && ll) {
 
-                                  await follow(ll, user, !followUnfollow);
-                                }
-                                // @ts-ignore
-                                //  await follow(followerInfo , user, checkFollow )
-                              }
+																	await follow(ll, user, !followUnfollow);
+																}
+																// @ts-ignore
+																//  await follow(followerInfo , user, checkFollow )
+															}
 
-                              }
-                            >
-                              {/* {checked && iconOn}
+															}
+														>
+															{/* {checked && iconOn}
                               {!checked && iconOff} */}
-                              {followUnfollow == true ? <Following /> : <AddFollower />}
-                            </Form.Check.Label>
-                            :
-                            <PlusButton onClick={() => {
-                              handleSoundClick()
-                              navigate("/votingbooster")
-                            }}>
-                              <span>+</span>
-                            </PlusButton>
+															{followUnfollow == true ? <Following /> : <AddFollower />}
+														</Form.Check.Label>
+														:
+														<PlusButton onClick={() => {
+															handleSoundClick()
+															navigate("/votingbooster")
+														}}>
+															<span>+</span>
+														</PlusButton>
 
-                          }
-                        </HeaderCenter>
-                        <div
-                          className=''
-                          style={{
-                            width: "50%",
-                            marginLeft: "150px",
-                            marginTop: "5px",
-                            textAlign: "left",
-                            fontWeight: "100px",
-                          }}
-                        >
-                          {followerPage && followerInfo != "" ? <></> : <span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${userInfo?.displayName && userInfo?.displayName
-                            }`}</span>}
+													}
+												</HeaderCenter>
+												<div
+													className=''
+													style={{
+														width: "50%",
+														marginLeft: "150px",
+														marginTop: "5px",
+														textAlign: "left",
+														fontWeight: "100px",
+													}}
+												>
+													{followerPage && followerInfo != "" ? <></> : <span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${userInfo?.displayName && userInfo?.displayName
+														}`}</span>}
 
-                          <MemberText>
-                            {followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-                          </MemberText>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className='w-100'></div>
-                  )}
-                </ForZoom>
-                {showReward == 2 && inOutReward == 2 && window.screen.width > 767 && <div className='w-100'></div>}
-                <Navbar.Brand as={Link} to='/'
-                // onClick={handleSoundClick}
-                >
-                  <img src={BigLogo} alt='' />
-                </Navbar.Brand>
-              </div>
-            </div>
-          ) : (
-            <div style={{ width: "25%" }}>&nbsp;</div>
-          )}
-          {/* {desktop && <Title style={{flexBasis: "50%", textAlign: "center"}}>{mounted ? title : ""}</Title>} */}
-          <div>
-            {/* <Button variant="primary" onClick={handleShow}>
-        Launch static backdrop modal
-      </Button> */}
-            <Modal
-              dialogClassName="modal-35w"
-              show={show}
-              onHide={handleClose}
-              aria-labelledby="contained-modal-title-vcenter"
-              centered
-              style={{ opacity: 1 }}
-              className="borderColor"
-            // animation={false}
-            >
-              {/* <Modal.Header>
+													<MemberText>
+														{followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
+													</MemberText>
+												</div>
+											</div>
+										</div>
+									) : (
+										<div className='w-100'></div>
+									)}
+								</ForZoom>
+								{showReward == 2 && inOutReward == 2 && window.screen.width > 767 && <div className='w-100'></div>}
+								<Navbar.Brand as={Link} to='/'
+								>
+									<img src={BigLogo} alt='' />
+								</Navbar.Brand>
+							</div>
+						</div>
+					) : (
+						<div style={{ width: "25%" }}>&nbsp;</div>
+					)}
+					<div>
+						<Modal
+							dialogClassName="modal-35w"
+							show={show}
+							onHide={handleClose}
+							aria-labelledby="contained-modal-title-vcenter"
+							centered
+							style={{ opacity: 1 }}
+							className="borderColor"
+						// animation={false}
+						>
+							{/* <Modal.Header>
 
               </Modal.Header> */}
-              <div className="d-flex justify-content-end">
-                <button type="button" className="btn-close " aria-label="Close" onClick={() => {
-                  setShow(false)
-                }}></button>
-              </div>
-              <Modal.Body>
+							<div className="d-flex justify-content-end">
+								<button type="button" className="btn-close " aria-label="Close" onClick={() => {
+									setShow(false)
+								}}></button>
+							</div>
+							<Modal.Body>
 
-                {/* <hr /> */}
-                <p className="text-uppercase"> Out of votes? </p> <Link className="text-uppercase" to="/votingbooster" onClick={() => {
-                  handleSoundClick()
-                  navigate("/votingbooster")
-                  setShow(false)
-                }} >Buy</Link> {"extra votes now or wait,".toUpperCase()} <span className="text-uppercase">
-                  {/* @ts-ignore */}
-                  <Countdown date={votingTimer}
-                    renderer={({ hours, minutes, seconds, completed }) => {
-                      return (
-                        <span >
-                          {/* {hours < 10 ? `0${hours}` : hours}: */}
-                          {Number(voteRules?.maxVotes)} votes in {' '}
-                          {hours < 1 ? null : `${hours} :`}
-                          {minutes < 10 ? `0${minutes}` : minutes}:
-                          {seconds < 10 ? `0${seconds}` : seconds}
-                        </span>
-                      );
+								{/* <hr /> */}
+								<p className="text-uppercase"> Out of votes? </p> <Link className="text-uppercase" to="/votingbooster" onClick={() => {
+									handleSoundClick()
+									navigate("/votingbooster")
+									setShow(false)
+								}} >Buy</Link> {"extra votes now or wait,".toUpperCase()} <span className="text-uppercase">
+									{/* @ts-ignore */}
+									<Countdown date={votingTimer}
+										renderer={({ hours, minutes, seconds, completed }) => {
+											return (
+												<span >
+													{/* {hours < 10 ? `0${hours}` : hours}: */}
+													{Number(voteRules?.maxVotes)} votes in {' '}
+													{hours < 1 ? null : `${hours} :`}
+													{minutes < 10 ? `0${minutes}` : minutes}:
+													{seconds < 10 ? `0${seconds}` : seconds}
+												</span>
+											);
 
-                    }}
-                  /></span>
-              </Modal.Body>
-            </Modal>
-          </div>
-        </MenuContainer>
-      </div>
-    </div>
-  );
+										}}
+									/></span>
+							</Modal.Body>
+						</Modal>
+					</div>
+				</MenuContainer>
+			</div>
+		</div>
+	);
 };
 
 
