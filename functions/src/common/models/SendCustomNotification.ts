@@ -221,7 +221,7 @@ function getUserListById(userList: any) {
 }
 
 export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTimeFrame: number) => {
-  const getAllVotesIn24Hours: object[] = [];
+  const getAllVotesIn24Hours: any[] = [];
   const getAllVotesIn24HoursQuery: any = await firestore()
     .collection('votes')
     .where("voteTime", ">", todayTimeFrame)
