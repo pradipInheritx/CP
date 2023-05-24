@@ -263,11 +263,11 @@ export default function SpeedTest(
   const getBorderColor = () => {
 
 
+    console.log(vote?.valueVotingTime, coins[symbol1]?.price, symbol2, symbol1, vote, coins, (coins[symbol1]?.randomDecimal || 20), 'pkkkk');
     // if (symbol2 !== undefined) {
 
     // } else if (symbol2 == undefined && !Array.isArray(vote?.valueVotingTime)) {
-    //   let difference = vote?.direction ? coins[symbol1]?.price - vote?.valueVotingTime : vote?.valueVotingTime - coins[symbol1]?.price;
-    //   console.log(vote?.valueVotingTime, coins[symbol1]?.price, difference, symbol2, symbol1, vote, 'pkkkk');
+    //   let difference = Number(vote?.direction ? coins[symbol1]?.price - vote?.valueVotingTime : vote?.valueVotingTime - coins[symbol1]?.price);
     //   if (difference < 0) {
     //     // high
     //     setPersentValue(Math.abs(difference) + 60);
@@ -335,8 +335,12 @@ export default function SpeedTest(
       }
 
       // console.log('newprice',((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)))
-
-      const newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      let newPrice = 0;
+      if (['BTS', 'ETH'].includes(symbol1)) {
+        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      } else {
+        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      }
       if (50 + newPrice > 100) {
         setPersentValue(100);
         return
