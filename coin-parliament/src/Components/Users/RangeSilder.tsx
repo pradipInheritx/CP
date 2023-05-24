@@ -263,23 +263,7 @@ export default function SpeedTest(
   const getBorderColor = () => {
 
 
-    console.log(vote?.valueVotingTime, coins[symbol1]?.price, symbol2, symbol1, vote, coins, (coins[symbol1]?.randomDecimal || 20), 'pkkkk');
-    // if (symbol2 !== undefined) {
-
-    // } else if (symbol2 == undefined && !Array.isArray(vote?.valueVotingTime)) {
-    //   let difference = Number(vote?.direction ? coins[symbol1]?.price - vote?.valueVotingTime : vote?.valueVotingTime - coins[symbol1]?.price);
-    //   if (difference < 0) {
-    //     // high
-    //     setPersentValue(Math.abs(difference) + 60);
-    //   }
-    //   else if (difference > 0) {
-    //     // low
-    //     setPersentValue(40 - Math.abs(difference));
-    //   } else {
-    //     setPersentValue(50);
-    //   }
-    // }
-    // return;
+    // console.log(vote?.valueVotingTime, coins[symbol1]?.price, symbol2, symbol1, vote, coins, (coins[symbol1]?.randomDecimal || 20), 'pkkkk');
     if (symbol2 !== undefined) {
       // range bar for pair
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
