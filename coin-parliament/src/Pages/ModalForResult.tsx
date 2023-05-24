@@ -121,7 +121,8 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
 
   const votelength = Object.keys(vote).length
 
-  console.log(vote, "pk");
+  console.log(vote, 'pkk');
+
 
   return (
     <div>
