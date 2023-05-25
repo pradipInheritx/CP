@@ -66,16 +66,16 @@ export const addNewCoin = (user, callbackFun) => {
 //   };
 // };
 
-export const updateCoin = (user, callbackFun) => {
+export const updateCoin = (coin,VoteBarUpdate, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put(`sub-admin/updateStatus/${user.id}`, user)
+      .patch(`coins/updateCoin/voteBarRange/${coin.id}`, VoteBarUpdate)
       .then(response => {
         if (response.status === 200) {
-          dispatch(fetchSuccess('Selected user was updated successfully.'));
-          dispatch({ type: EDIT_COIN, payload: response.data.result.data});
-          if (callbackFun) callbackFun(response.data.result.data);
+          dispatch(fetchSuccess('Selected coin was updated successfully.'));
+          dispatch({ type: EDIT_COIN, payload: response.data.result});
+          if (callbackFun) callbackFun(response.data.result);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
@@ -91,13 +91,13 @@ export const updateCoinStatus = (id, data, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put(`sub-admin/updateStatus/${id}`, data)
+      .patch(`coins/updateCoinStatus/${id}`, data)
       .then(response => {
         if (response.status === 200 || response.status === 201) {
           console.log(response.data.result.data,"successfully")
           dispatch(fetchSuccess('User status was updated successfully.'));
-          dispatch({ type: EDIT_COIN, payload: response.data.result.data });
-          if (callbackFun) callbackFun(response.data.result.data);
+          dispatch({ type: EDIT_COIN, payload: response.data.result });
+          if (callbackFun) callbackFun(response.data.result);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }

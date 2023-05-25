@@ -34,22 +34,22 @@ const useStyles = makeStyles(theme => ({
 const getUserActions = user => {
   const actions = [
     {action: "view", label: "View", icon: <Visibility />},
-    {action: "edit", label: "Edit", icon: <Edit />},
+    // {action: "edit", label: "Edit", icon: <Edit />},
     {action: "UpdateBar", label: "Update Bar", icon: <Edit />}
     // {action: "email", label: "Email", icon: <Mail />}
   ];
 
-  if (user.status === "active") {
-    actions.push({action: "suspend", label: "Suspend", icon: <Block />});
+  if (user.status === "Active") {
+    actions.push({action: "InActive", label: "Reactive", icon: <Block />});
   } else {
     actions.push({
-      action: "activate",
-      label: "Reactivate",
+      action: "Active",
+      label: "Active",
       icon: <CheckCircleOutline />
     });
   }
 
-  actions.push({action: "delete", label: "Delete", icon: <Delete />});
+  // actions.push({action: "delete", label: "Delete", icon: <Delete />});
   return actions;
 };
 
@@ -59,11 +59,14 @@ const CoinListRow = ({
   onRowClick,
   onUpdateBar,
   onUserEdit,
+  onUserStatusUpdate,
   onUserDelete,
   onUserView
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+// console.log(row,"Fullrow")
 
   const onUserMenuClick = menu => {
     if (menu.action === "view") {
@@ -72,13 +75,15 @@ const CoinListRow = ({
       onUserEdit(row);
     } else if (menu.action === "UpdateBar") {
       onUpdateBar(row);
-    } else if (menu.action === "suspend") {
+    } else if (menu.action === "InActive") {
       // else if (menu.action === "email") {
       //   dispatch(sentMailToUser());
       // }
-      dispatch(updateCoinStatus({id: row.id, status: "suspended"}));
-    } else if (menu.action === "activate") {
-      dispatch(updateCoinStatus({id: row.id, status: "active"}));
+      // dispatch(updateCoinStatus( row.id ,{status: "InActive"}));
+      onUserStatusUpdate(row)
+    } else if (menu.action === "Active") {
+      // dispatch(updateCoinStatus( row.id ,{status: "Active"}));
+      onUserStatusUpdate(row)
     } else if (menu.action === "delete") {
       onUserDelete(row);
     }
@@ -125,10 +130,10 @@ const CoinListRow = ({
       <TableCell>
         {row.status === "InActive" ? `InActive` : row.status}
       </TableCell>
-      {/* <TableCell>{row?.voteBarRange[0] || 0}</TableCell>
-      <TableCell>{row?.voteBarRange[1] || 0}</TableCell>
-      <TableCell>{row?.voteBarRange[2] || 0}</TableCell>
-      <TableCell>{row?.voteBarRange[3] || 0}</TableCell>       */}
+      <TableCell>{row.voteBarRange && row?.voteBarRange[0] || 0}</TableCell>
+      <TableCell>{row.voteBarRange && row?.voteBarRange[1] || 0}</TableCell>
+      <TableCell>{row.voteBarRange && row?.voteBarRange[2] || 0}</TableCell>
+      <TableCell>{row.voteBarRange && row?.voteBarRange[3] || 0}</TableCell>      
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu
           items={userActions}

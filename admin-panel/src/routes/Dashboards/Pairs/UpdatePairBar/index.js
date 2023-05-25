@@ -23,7 +23,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CancelIcon from "@material-ui/icons/Cancel";
 import {isValidEmail} from "../../../../@jumbo/utils/commonHelper";
-import {addNewPair, updatePair} from "../../../../redux/actions/Pairs";
+import { updatePair } from "redux/actions/Pairs";
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -51,99 +51,88 @@ function NumberFormatCustom({onChange, ...other}){
 
 const UpdatePairBar = ({open, onCloseDialog}) => {
   const classes = useStyles();
-  const {currentUser} = useSelector(({usersReducer}) => usersReducer);
-
-  const [ name, setName ] = useState("");
-  const [ symbol, setSymbol ] = useState("");
-  const [ coinID, setCoinID ] = useState("");
+  const {currentPair} = useSelector(({pairReducer}) => pairReducer);
+  
   const [ rank, setRank ] = useState("");
   const [ wob, setWOB ] = useState("");
   const [ rrc, setRRC ] = useState("");
   const [ cmp, setCMP ] = useState("");
-  const [ coinLogo, setCoinLogo ] = useState("");
-
-  const [ nameError, setNameError ] = useState("");
-
-  const [ symbolError, setSymbolError ] = useState("");
-  const [ coinIDError, setCoinIDError ] = useState("");
+  
   const [ rankError, setRankError ] = useState("");
   const [ wobError, setWOBError ] = useState("");
   const [ rrcError, setRRCError ] = useState("");
-  const [ cmpError, setCMPError ] = useState("");
-  const [ coinLogoError, setCoinLogoError ] = useState("");
+  const [ cmpError, setCMPError ] = useState("");  
 
-  const {getRootProps, getInputProps} = useDropzone({
-    accept: "image/*",
-    onDrop: acceptedFiles => {
-      setCoinLogo(URL.createObjectURL(acceptedFiles[0]));
-    }
-  });
+  // const {getRootProps, getInputProps} = useDropzone({
+  //   accept: "image/*",
+  //   onDrop: acceptedFiles => {
+  //     setCoinLogo(URL.createObjectURL(acceptedFiles[0]));
+  //   }
+  // });
 
   const dispatch = useDispatch();
 
   useEffect(
     () => {
-      if (currentUser) {
-        // const [ fName, lName ] = splitName(currentUser);
-        setName(currentUser.name);
-        setSymbol(currentUser.symbol);
-        setCoinID(currentUser.coinID);
-        setRank(currentUser.rank);
-        setCMP(currentUser.CMP);
-        setWOB(currentUser.Weight_Order_Book);
-        setRRC(currentUser.Range_Result_CMP);
-        setCoinLogo(currentUser.coinLogo);
+      if (currentPair) {
+        // const [ fName, lName ] = splitName(currentUser);        
+        setRank(currentPair?.voteBarRange && currentPair?.voteBarRange[0] || 0);
+        setCMP(currentPair?.voteBarRange && currentPair?.voteBarRange[1] || 0);
+        setWOB(currentPair?.voteBarRange && currentPair?.voteBarRange[2] || 0);
+        setRRC(currentPair?.voteBarRange && currentPair?.voteBarRange[3] || 0);        
       }
     },
-    [ currentUser ]
+    [ currentPair ]
   );
 
   const onSubmitClick = () => {
-    // const phoneNumbers = phones.filter(item => item.phone.trim());
-    // if (!firstName) {
-    //   setFirstNameError(requiredMessage);
-    // } else if (!email) {
-    //   setEmailError(requiredMessage);
-    // } else if (!isValidEmail(email)) {
-    //   setEmailError(emailNotValid);
-    // } else if (phoneNumbers.length === 0) {
-    //   setPhoneError(requiredMessage);
-    // } else {
-    //   onUserSave(phoneNumbers);
-    // }
-  };
-
-  const onUserSave = phoneNumbers => {
-    const userDetail = {
-      coinLogo,
-      name,
-      symbol,
-      cmp,
-      wob,
-      rrc,
-      rank,
-      coinID
-    };
-    if (currentUser) {
-      dispatch(
-        updatePair({...currentUser, ...userDetail}, () => {
-          onCloseDialog();
-        })
-      );
+    if (!rank) {
+      setRankError(requiredMessage);
+    } else if (!wob) {
+      setWOBError(requiredMessage);
+    } else if (!rrc) {
+      setRRCError(requiredMessage);
+    } else if (!cmp) {
+      setCMPError(requiredMessage);
     } else {
-      dispatch(
-        addNewPair(userDetail, () => {
-          onCloseDialog();
-        })
-      );
+      onUserSave();
     }
   };
+
+  const onUserSave = () => {
+    const CoinVoteBarUpdate = {      
+      voteBarRange: {
+        0:cmp,
+        1:wob,
+        2:rrc,
+        3: rank,
+      }      
+    };
+    dispatch(
+      updatePair({...currentPair},{...CoinVoteBarUpdate}, () => {
+        onCloseDialog();
+      })
+    );    
+  };
+
+  const handaleChangeState = (e, type) => {
+    let  validNumber = new RegExp(/^\d*\.?\d*$/);
+    var value = e.target.value
+    var finalValue = validNumber.test(e.target.value);
+
+    if (type == "rank" && finalValue==true) setRank(value);
+    if (type == "cmp" && finalValue==true) setCMP(value);
+    if (type == "wob" && finalValue==true) setWOB(value);
+    if (type == "rrc" && finalValue==true) setRRC(value);
+  }
+
+console.log(cmp,"checkcmp")
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
       <DialogTitle className={classes.dialogTitleRoot}>
         {/* {currentUser ? "Edit Coin Details" : "Create New Coin"} */}
-        Update Pair Vote bar
+        Update Coin Vote bar
       </DialogTitle>
       <DialogContent dividers>
         <Box
@@ -151,69 +140,20 @@ const UpdatePairBar = ({open, onCloseDialog}) => {
           flexDirection={{xs: "column", md: "row"}}
           alignItems="center"
           mb={{xs: 6, md: 5}}
-        >
-          {/* <Box
-            {...getRootProps()}
-            mr={{xs: 0, md: 5}}
-            mb={{xs: 3, md: 0}}
-            className="pointer"
-          >
-            <input {...getInputProps()} />
-            <CmtAvatar size={70} src={coinLogo} />
-          </Box> */}
-          {/* <GridContainer>
-            <Grid item xs={12} sm={6}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Name"
-                value={name}
-                onChange={e => {
-                  setName(e.target.value);
-                  setNameError("");
-                }}
-                helperText={nameError}
-              />
-            </Grid>
-             
-            <Grid item xs={12} sm={6}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Symbol"
-                value={symbol}
-                onChange={e => {
-                  setSymbol(e.target.value);
-                  setSymbolError("");
-                }}
-                helperText={symbolError}
-              />
-            </Grid>  
-          </GridContainer> */}
+        >         
         </Box>
         <Box mb={{xs: 6, md: 5}}>
-          <GridContainer>
-            {/* <Grid item xs={12} sm={12}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Coin ID"
-                value={coinID}
-                onChange={e => {
-                  setCoinID(e.target.value);
-                  setCoinIDError("");
-                }}
-                helperText={coinIDError}
-              />
-            </Grid>                                           */}
+          <GridContainer>            
             <Grid item xs={12} sm={6}>
               <AppTextInput
                 fullWidth
                 variant="outlined"
+                name="rank"
                 label="Rank"
                 value={rank}
                 onChange={e => {
-                  setRank(e.target.value);
+                  // setRank(e.target.value);
+                  handaleChangeState(e,"rank")
                   setRankError("");
                 }}
                 helperText={rankError}
@@ -223,10 +163,12 @@ const UpdatePairBar = ({open, onCloseDialog}) => {
               <AppTextInput
                 fullWidth
                 variant="outlined"
+                name="cmp"
                 label="CMP"
                 value={cmp}
                 onChange={e => {
-                  setCMP(e.target.value);
+                  
+                  handaleChangeState(e,"cmp")
                   setCMPError("");
                 }}
                 helperText={cmpError}
@@ -242,9 +184,11 @@ const UpdatePairBar = ({open, onCloseDialog}) => {
                 fullWidth
                 variant="outlined"
                 label="Weight Order Book"
+                name="wob"
                 value={wob}
                 onChange={e => {
-                  setWOB(e.target.value);
+                  // setWOB(e.target.value);
+                  handaleChangeState(e,"wob")
                   setWOBError("");
                 }}
                 helperText={wobError}
@@ -255,9 +199,11 @@ const UpdatePairBar = ({open, onCloseDialog}) => {
                 fullWidth
                 variant="outlined"
                 label="Range Result CMP"
+                name="rrc"
                 value={rrc}
                 onChange={e => {
-                  setRRC(e.target.value);
+                  // setRRC(e.target.value);
+                  handaleChangeState(e,"rrc")
                   setRRCError("");
                 }}
                 helperText={rrcError}

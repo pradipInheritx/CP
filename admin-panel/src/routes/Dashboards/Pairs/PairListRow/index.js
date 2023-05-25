@@ -39,17 +39,17 @@ const getUserActions = user => {
     // {action: "email", label: "Email", icon: <Mail />}
   ];
 
-  if (user.status === "active") {
-    actions.push({action: "suspend", label: "Suspend", icon: <Block />});
+  if (user.status === "Active") {
+    actions.push({action: "Inactive", label: "Inactive", icon: <Block />});
   } else {
     actions.push({
-      action: "activate",
+      action: "Active",
       label: "Reactivate",
       icon: <CheckCircleOutline />
     });
   }
 
-  actions.push({action: "delete", label: "Delete", icon: <Delete />});
+  // actions.push({action: "delete", label: "Delete", icon: <Delete />});
   return actions;
 };
 
@@ -59,6 +59,7 @@ const PairListRow = ({
   onRowClick,
   onUserEdit,
   onUpdateBar,
+  onUserStatusUpdate,
   onUserDelete,
   onUserView
 }) => {
@@ -72,13 +73,12 @@ const PairListRow = ({
       onUserEdit(row);
     } else if (menu.action === "UpdateBar") {
       onUpdateBar(row);
-    } else if (menu.action === "suspend") {
-      // else if (menu.action === "email") {
-      //   dispatch(sentMailToUser());
-      // }
-      dispatch(updatePairStatus({id: row.id, status: "suspended"}));
-    } else if (menu.action === "activate") {
-      dispatch(updatePairStatus({id: row.id, status: "active"}));
+    } else if (menu.action === "Inactive") {
+      onUserStatusUpdate(row)
+      // dispatch(updatePairStatus({id: row.id, status: "suspended"}));
+    } else if (menu.action === "Active") {
+      onUserStatusUpdate(row)
+      // dispatch(updatePairStatus({id: row.id, status: "active"}));
     } else if (menu.action === "delete") {
       onUserDelete(row);
     }
@@ -104,7 +104,7 @@ const PairListRow = ({
           inputProps={{"aria-labelledby": labelId}}
         />
       </TableCell> */}
-      <TableCell component="th" id={labelId} scope="row" padding="normal">
+      {/* <TableCell component="th" id={labelId} scope="row" padding="normal">
         <Box display="flex" alignItems="center">
           <Box mr={{xs: 4, md: 5}}>
             <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
@@ -119,48 +119,16 @@ const PairListRow = ({
             </Typography>
           </div>
         </Box>
-      </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
+      </TableCell> */}
+      <TableCell padding="normal">{row?.symbol1}</TableCell>
+      <TableCell>{row?.symbol2}</TableCell>
       <TableCell>
-        {row.status === "suspended" ? `Suspended` : row.status}
+        {row?.status === "Inactive" ? `Inactive` : row.status}
       </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-
-      {/* <TableCell component="th" id={labelId} scope="row" padding="none">
-        <Box display="flex" alignItems="center">
-          <Box mr={{xs: 4, md: 5}}>
-            <CmtAvatar size={40} src={row.coinLogo} alt={row.name} />
-          </Box>
-          <div>
-            <Typography
-              className={classes.titleRoot}
-              component="div"
-              variant="h4"
-            >
-              {row.name}
-            </Typography>
-          </div>
-        </Box>
-      </TableCell>
-      <TableCell>{timeFromNow(row.symbol)}</TableCell>
-     <TableCell>
-        {row.status === "suspended" ? (
-          `Suspended`
-        ) : (
-          row.status
-        )}
-      </TableCell>
-      <TableCell>{timeFromNow(row.rank)}</TableCell>
-      <TableCell>{timeFromNow(row.CMP)}</TableCell>
-      <TableCell>{timeFromNow(row.Weight_Order_Book)}</TableCell>     
-      <TableCell>{timeFromNow(row.Range_Result_CMP)}</TableCell>       */}
-      {/* <TableCell>{row.email}</TableCell> */}
-
-      {/* <TableCell align="right">{row.emailUsage} GB</TableCell> */}
+      <TableCell>{row.voteBarRange && row.voteBarRange[0] || 0}</TableCell>
+      <TableCell>{row.voteBarRange && row.voteBarRange[1] || 0 }</TableCell>
+      <TableCell>{row.voteBarRange && row.voteBarRange[2] || 0 }</TableCell>
+      <TableCell>{row.voteBarRange && row.voteBarRange[3] || 0 }</TableCell>          
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu
           items={userActions}

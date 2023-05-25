@@ -16,12 +16,12 @@ const headCells = [
   {id: "seconds", numeric: false, disablePadding: false, label: "Seconds"},  
   { id: "chosen", numeric: false, disablePadding: false, label: "Status" },
   
-  {
-    id: "createdAt",
-    numeric: false,
-    disablePadding: false,
-    label: "Created Time"
-  }
+  // {
+  //   id: "createdAt",
+  //   numeric: false,
+  //   disablePadding: false,
+  //   label: "Created Time"
+  // }
   // { id: 'emailUsage', numeric: true, disablePadding: false, label: 'Email Usage' },
 ];
 

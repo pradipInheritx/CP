@@ -16,9 +16,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {
   deletePair,
   getPairs,
-  setCurrentPair
+  setCurrentPair,
+  updatePairStatus
 } from "../../../redux/actions/Pairs";
-import {getUsers, setCurrentUser} from "../../../redux/actions/Users";
+// import {getUsers, setCurrentUser} from "../../../redux/actions/pairList";
 import AddEditPair from "./AddEditPair";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
 import {useDebounce} from "../../../@jumbo/utils/commonHelper";
@@ -26,10 +27,13 @@ import useStyles from "./index.style";
 import PairDetailView from "./PairDetailView";
 import NoRecordFound from "./NoRecordFound";
 import UpdatePairBar from "./UpdatePairBar";
+import { getCoins } from "redux/actions/Coins";
 
 const PairsModule = () => {
   const classes = useStyles();
-  const {users} = useSelector(({usersReducer}) => usersReducer);
+  const {coinList} = useSelector(({coinReducer}) => coinReducer);
+  const {pairList} = useSelector(({pairReducer}) => pairReducer);
+  
   const [ orderBy, setOrderBy ] = React.useState("name");
   const [ order, setOrder ] = React.useState("asc");
   const [ page, setPage ] = React.useState(0);
@@ -38,8 +42,9 @@ const PairsModule = () => {
   const [ openViewDialog, setOpenViewDialog ] = useState(false);
   const [ openUserDialog, setOpenUserDialog ] = useState(false);
   const [ openUpdatelog, setOpenUpdatelog ] = useState(false);
-  const [ openConfirmDialog, setOpenConfirmDialog ] = useState(false);
-  const [ selectedUser, setSelectedUser ] = useState({name: ""});
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [ openStatusDialog, setOpenStatusDialog ] = useState(false);
+  const [ selectedUser, setSelectedUser ] = useState([]);
   const [ usersFetched, setUsersFetched ] = useState(false);
   const [ isFilterApplied, setFilterApplied ] = useState(false);
   const [ filterOptions, setFilterOptions ] = React.useState([]);
@@ -48,21 +53,10 @@ const PairsModule = () => {
 
   const dispatch = useDispatch();
 
-  // useEffect(
-  //   () => {
-  //     dispatch(
-  //       getPairs(filterOptions, debouncedSearchTerm, () => {
-  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
-  //         setUsersFetched(true);
-  //       })
-  //     );
-  //   },
-  //   [ dispatch, filterOptions, debouncedSearchTerm ]
-  // );
   useEffect(
     () => {
       dispatch(
-        getUsers(filterOptions, debouncedSearchTerm, () => {
+        getPairs(filterOptions, debouncedSearchTerm, () => {
           setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
           setUsersFetched(true);
         })
@@ -70,6 +64,28 @@ const PairsModule = () => {
     },
     [ dispatch, filterOptions, debouncedSearchTerm ]
   );
+  useEffect(
+    () => {
+      dispatch(
+        getCoins(filterOptions, debouncedSearchTerm, () => {
+          setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+          setUsersFetched(true);
+        })
+      );
+    },
+    [ dispatch, filterOptions, debouncedSearchTerm ]
+  );
+  // useEffect(
+  //   () => {
+  //     dispatch(
+  //       getUsers(filterOptions, debouncedSearchTerm, () => {
+  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+  //         setUsersFetched(true);
+  //       })
+  //     );
+  //   },
+  //   [ dispatch, filterOptions, debouncedSearchTerm ]
+  // );
 
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
@@ -84,7 +100,7 @@ const PairsModule = () => {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelected = users.map(n => n.id);
+      const newSelected = pairList.map(n => n.id);
       setSelected(newSelected);
       return;
     }
@@ -144,6 +160,20 @@ const PairsModule = () => {
     dispatch(setCurrentPair(null));
   };
 
+const handleStatusUpdate = user => {
+    setSelectedUser(user);
+    setOpenStatusDialog(true);
+  };
+const handleConfirmUpdate = () => {
+    setOpenStatusDialog(false);
+    dispatch(updatePairStatus(selectedUser?.id, {status: `${selectedUser?.status=="Active"?"Inactive":"Active"}`}));
+  };
+
+  const handleCancelUpdate = () => {
+    setOpenStatusDialog(false);
+  };
+
+
   const handleUserDelete = user => {
     setSelectedUser(user);
     setOpenConfirmDialog(true);
@@ -186,11 +216,11 @@ const PairsModule = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={users.length}
+              rowCount={pairList.length}
             />
             <TableBody>
-              {!!users.length ? (
-                stableSort(users, getComparator(order, orderBy))
+              {!!pairList.length ? (
+                stableSort(pairList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <PairListRow
@@ -200,6 +230,7 @@ const PairsModule = () => {
                       onUserEdit={handleUserEdit}
                       onUpdateBar={handleUpdateBar}
                       onUserDelete={handleUserDelete}
+                      onUserStatusUpdate={handleStatusUpdate}
                       onUserView={handleUserView}
                       isSelected={isSelected}
                     />
@@ -216,7 +247,7 @@ const PairsModule = () => {
                         {usersFetched ? (
                           "There are no records found."
                         ) : (
-                          "Loading users..."
+                          "Loading pairList..."
                         )}
                       </NoRecordFound>
                     )}
@@ -229,7 +260,7 @@ const PairsModule = () => {
         <TablePagination
           rowsPerPageOptions={[ 10, 20, 50 ]}
           component="div"
-          count={users.length}
+          count={pairList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handlePageChange}
@@ -240,6 +271,7 @@ const PairsModule = () => {
       {openUserDialog && (
         <AddEditPair
           open={openUserDialog}
+          coinList={coinList}
           onCloseDialog={handleCloseUserDialog}
         />
       )}
@@ -262,6 +294,13 @@ const PairsModule = () => {
         content={"Are you sure, you want to  delete this user?"}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+      />
+      <ConfirmDialog
+        open={openStatusDialog}
+        title={`Confirm Status Change ${selectedUser.id}`}
+        content={`Are you sure, you want to ${selectedUser?.status=="Active"?"Inactive":"Active"} this pair?`}
+        onClose={handleCancelUpdate}
+        onConfirm={handleConfirmUpdate}
       />
     </div>
   );

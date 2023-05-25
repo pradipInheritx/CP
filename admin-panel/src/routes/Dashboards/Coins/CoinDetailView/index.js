@@ -109,27 +109,27 @@ const CoinDetailView = ({open, onCloseDialog}) => {
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
           Rank 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCoin?.voteBarRange[0]}
+            {currentCoin?.voteBarRange &&  currentCoin?.voteBarRange[0] || 0 }
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
           CMP :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-                {currentCoin?.voteBarRange[1]}
+                {currentCoin?.voteBarRange && currentCoin?.voteBarRange[1] || 0}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
           Weight Order Book :
           <Box ml={5} color="primary.main" component="p" className="pointer">
             {/* {currentCoin?.Weight_Order_Book} */}
-                {currentCoin?.voteBarRange[2]}
+                {currentCoin?.voteBarRange && currentCoin?.voteBarRange[2] || 0}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
           Range Result CMP :
           <Box ml={5} color="primary.main" component="p" className="pointer">
             {/* {currentCoin?.Range_Result_CMP} */}
-                {currentCoin?.voteBarRange[3]}
+                {currentCoin?.voteBarRange && currentCoin?.voteBarRange[3] || 0}
           </Box>
         </Box>
         {/* <Box display="flex" alignItems="center" mb={{xs: 4, sm: 5}}>

@@ -35,7 +35,7 @@ const getUserActions = user => {
   
   const actions = [
     {action: "view", label: "View", icon: <Visibility />},
-    {action: "edit", label: "Edit", icon: <Edit />},
+    // {action: "edit", label: "Edit", icon: <Edit />},
     // {action: "email", label: "Email", icon: <Mail />}
   ];
 
@@ -49,7 +49,7 @@ const getUserActions = user => {
     });
   }
 
-  actions.push({action: "delete", label: "Delete", icon: <Delete />});
+  // actions.push({action: "delete", label: "Delete", icon: <Delete />});
   return actions;
 };
 
@@ -125,7 +125,7 @@ const TimeFrameListRow = ({
       <TableCell>{row?.seconds}</TableCell>
       {/* <TableCell>{row?.phone}</TableCell> */}
       <TableCell>
-        {row?.chosen === "false" ? (
+        {row?.chosen === false ? (
           // `Suspended by ${row?.suspendedBy} (${timeFromNow(row?.suspendedAt)})`
         `Inactive`
         ) : (
@@ -133,7 +133,7 @@ const TimeFrameListRow = ({
             `Active`
         )}
       </TableCell>
-      <TableCell>{timeFromNow(row?.createdAt)}</TableCell>
+      {/* <TableCell>{timeFromNow(row?.createdAt)}</TableCell> */}
       {/* <TableCell align="right">{row.emailUsage} GB</TableCell> */}
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu

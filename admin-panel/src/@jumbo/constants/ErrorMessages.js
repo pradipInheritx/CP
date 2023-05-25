@@ -1,4 +1,5 @@
 export const requiredMessage = 'This field is required!';
+export const bothNotSelectSame = 'Can not select both same symbol!';
 export const AllrequiredMessage = 'All field is required!';
 export const canNotbothEmpty = 'Can Not both Empty One is required!';
 export const bothNotPasswordMatch = 'Both password should be same';

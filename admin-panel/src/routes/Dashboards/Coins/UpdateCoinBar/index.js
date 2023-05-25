@@ -23,7 +23,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CancelIcon from "@material-ui/icons/Cancel";
 import {isValidEmail} from "../../../../@jumbo/utils/commonHelper";
-import {addNewPair, updatePair} from "../../../../redux/actions/Pairs";
+import {updateCoin} from "../../../../redux/actions/Coins";
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -77,10 +77,10 @@ const UpdateCoinBar = ({open, onCloseDialog}) => {
     () => {
       if (currentCoin) {
         // const [ fName, lName ] = splitName(currentUser);        
-        setRank(currentCoin?.voteBarRange[0] || 0);
-        setCMP(currentCoin?.voteBarRange[1] || 0);
-        setWOB(currentCoin?.voteBarRange[2] || 0);
-        setRRC(currentCoin?.voteBarRange[3] || 0);        
+        setRank(currentCoin?.voteBarRange && currentCoin?.voteBarRange[0] || 0);
+        setCMP(currentCoin?.voteBarRange && currentCoin?.voteBarRange[1] || 0);
+        setWOB(currentCoin?.voteBarRange && currentCoin?.voteBarRange[2] || 0);
+        setRRC(currentCoin?.voteBarRange && currentCoin?.voteBarRange[3] || 0);        
       }
     },
     [ currentCoin ]
@@ -93,7 +93,7 @@ const UpdateCoinBar = ({open, onCloseDialog}) => {
       setWOBError(requiredMessage);
     } else if (!rrc) {
       setRRCError(requiredMessage);
-    } else if (cmp) {
+    } else if (!cmp) {
       setCMPError(requiredMessage);
     } else {
       onUserSave();
@@ -101,30 +101,39 @@ const UpdateCoinBar = ({open, onCloseDialog}) => {
   };
 
   const onUserSave = () => {
-    const userDetail = {
-      // coinLogo,
-      // name,
-      // symbol,
-      cmp,
-      wob,
-      rrc,
-      rank,
-      // coinID
+    const CoinVoteBarUpdate = {      
+      voteBarRange: {
+        0:cmp,
+        1:wob,
+        2:rrc,
+        3: rank,
+      }      
     };
-    if (currentCoin) {
-      dispatch(
-        updatePair({...currentCoin, ...userDetail}, () => {
-          onCloseDialog();
-        })
-      );
-    } else {
-      dispatch(
-        addNewPair(userDetail, () => {
-          onCloseDialog();
-        })
-      );
-    }
+    dispatch(
+      updateCoin({...currentCoin},{...CoinVoteBarUpdate}, () => {
+        onCloseDialog();
+      })
+    );
+    // if (currentCoin) {
+    // } else {
+    //   dispatch(
+    //     addNewPair(userDetail, () => {
+    //       onCloseDialog();
+    //     })
+    //   );
+    // }
   };
+
+  const handaleChangeState = (e, type) => {
+    let  validNumber = new RegExp(/^\d*\.?\d*$/);
+    var value = e.target.value
+    var finalValue = validNumber.test(e.target.value);
+
+    if (type == "rank" && finalValue==true) setRank(value);
+    if (type == "cmp" && finalValue==true) setCMP(value);
+    if (type == "wob" && finalValue==true) setWOB(value);
+    if (type == "rrc" && finalValue==true) setRRC(value);
+  }
 
 console.log(cmp,"checkcmp")
 
@@ -148,10 +157,12 @@ console.log(cmp,"checkcmp")
               <AppTextInput
                 fullWidth
                 variant="outlined"
+                name="rank"
                 label="Rank"
                 value={rank}
                 onChange={e => {
-                  setRank(e.target.value);
+                  // setRank(e.target.value);
+                  handaleChangeState(e,"rank")
                   setRankError("");
                 }}
                 helperText={rankError}
@@ -161,11 +172,12 @@ console.log(cmp,"checkcmp")
               <AppTextInput
                 fullWidth
                 variant="outlined"
+                name="cmp"
                 label="CMP"
                 value={cmp}
                 onChange={e => {
-                  // setCMP(e.target.value.replace(/[^0-9]/g, ""));
-                  setCMP(e.target.value.replace(/^\d*\.?\d*$/g, ""));
+                  
+                  handaleChangeState(e,"cmp")
                   setCMPError("");
                 }}
                 helperText={cmpError}
@@ -181,9 +193,11 @@ console.log(cmp,"checkcmp")
                 fullWidth
                 variant="outlined"
                 label="Weight Order Book"
+                name="wob"
                 value={wob}
                 onChange={e => {
-                  setWOB(e.target.value);
+                  // setWOB(e.target.value);
+                  handaleChangeState(e,"wob")
                   setWOBError("");
                 }}
                 helperText={wobError}
@@ -194,9 +208,11 @@ console.log(cmp,"checkcmp")
                 fullWidth
                 variant="outlined"
                 label="Range Result CMP"
+                name="rrc"
                 value={rrc}
                 onChange={e => {
-                  setRRC(e.target.value);
+                  // setRRC(e.target.value);
+                  handaleChangeState(e,"rrc")
                   setRRCError("");
                 }}
                 helperText={rrcError}

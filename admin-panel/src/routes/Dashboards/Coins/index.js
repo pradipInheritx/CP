@@ -16,7 +16,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {
   deleteCoin,
   getCoins,
-  setCurrentCoin
+  setCurrentCoin,
+  updateCoinStatus
 } from "../../../redux/actions/Coins";
 import AddEditCoin from "./AddEditCoin";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
@@ -38,7 +39,8 @@ const CoinsModule = () => {
   const [ openUserDialog, setOpenUserDialog ] = useState(false);
   const [ openUpdatelog, setOpenUpdatelog ] = useState(false);
   const [ openConfirmDialog, setOpenConfirmDialog ] = useState(false);
-  const [ selectedUser, setSelectedUser ] = useState({name: ""});
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [ openStatusDialog, setOpenStatusDialog ] = useState(false);
   const [ usersFetched, setUsersFetched ] = useState(false);
   const [ isFilterApplied, setFilterApplied ] = useState(false);
   const [ filterOptions, setFilterOptions ] = React.useState([]);
@@ -143,6 +145,19 @@ const CoinsModule = () => {
     dispatch(setCurrentCoin(null));
   };
 
+  const handleStatusUpdate = user => {
+    setSelectedUser(user);
+    setOpenStatusDialog(true);
+  };
+const handleConfirmUpdate = () => {
+    setOpenStatusDialog(false);
+    dispatch(updateCoinStatus(selectedUser?.id, {status: `${selectedUser?.status=="Active"?"Inactive":"Active"}`}));
+  };
+
+  const handleCancelUpdate = () => {
+    setOpenStatusDialog(false);
+  };
+
   const handleUserDelete = user => {
     setSelectedUser(user);
     setOpenConfirmDialog(true);
@@ -199,6 +214,7 @@ const CoinsModule = () => {
                       onUserEdit={handleUserEdit}
                       onUpdateBar={handleUpdateBar}
                       onUserDelete={handleUserDelete}
+                      onUserStatusUpdate={handleStatusUpdate}
                       onUserView={handleUserView}
                       isSelected={isSelected}
                     />
@@ -258,9 +274,16 @@ const CoinsModule = () => {
       <ConfirmDialog
         open={openConfirmDialog}
         title={`Confirm delete ${selectedUser.name}`}
-        content={"Are you sure, you want to  delete this user?"}
+        content={"Are you sure, you want to  delete this Coin?"}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+      />
+      <ConfirmDialog
+        open={openStatusDialog}
+        title={`Confirm Status Change ${selectedUser.name}`}
+        content={`Are you sure, you want to ${selectedUser?.status=="Active"?"Inactive":"Active"} this Coin?`}
+        onClose={handleCancelUpdate}
+        onConfirm={handleConfirmUpdate}
       />
     </div>
   );
