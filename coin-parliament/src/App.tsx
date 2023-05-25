@@ -1,9 +1,9 @@
 /** @format */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {  useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
-import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
+// import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import {texts} from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
@@ -29,7 +29,7 @@ import {
   getAllCoins,
   getCoins,
   saveAllCoins,
-  saveCoins,
+  // saveCoins,
 } from "./common/models/Coin";
 import {
   collection,
@@ -41,7 +41,7 @@ import {
 } from "firebase/firestore";
 import { db, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
-import { TimeFrame, VoteResultProps } from "./common/models/Vote";
+import { GetVotesResponse, TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
   AppStats,
   CPMSettings,
@@ -101,6 +101,7 @@ import { useWindowSize } from "./hooks/useWindowSize";
 import Votes from "./Components/Profile/Votes";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import FAQ from "./Pages/FAQ";
+import styled from "styled-components";
 import { myPages, quotes } from "./common/consts/contents";
 import Notifications from "./Components/Profile/Notifications";
 import Background from "./Components/Background";
@@ -110,7 +111,7 @@ import Contact from "./Pages/Contact";
 // import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
-import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
+// import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
@@ -128,20 +129,32 @@ import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
 import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
-import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
+// import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
-import { handleSoundClick } from "./common/utils/SoundClick";
-import createFastContext from "./hooks/createFastContext";
+// import { handleSoundClick } from "./common/utils/SoundClick";
+// import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 
-
+const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
+const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
 let ws:any;
-let socket:any;
+let socket: any;
+
+export const BackDiv = styled.div`
+// position:fixed;
+// border:1px solid red;
+// width:100%;
+// height:150vh;
+// background:"red";
+`;
+
+
 function App() {
+  document.body.classList.add('bg-Change');
   
-  
+  // document.body.style.zIndex = "400";
   const location = useLocation();
   const search = location.search;
   const pathname = location.pathname;
@@ -244,23 +257,23 @@ function App() {
     []
   );
 
-  // useEffect(() => {
-  //   if('serviceWorker' in navigator) {
-  //   navigator?.serviceWorker?.addEventListener("message", (message) => {
-  //     const {
-  //       notification: { body, title },
-  //     } = message.data["firebase-messaging-msg-data"] as {
-  //       notification: { body: string; title: string };
-  //     };
-  //     // showToast(
-  //     //   <div>
-  //     //     <h5>{title}</h5>
-  //     //     <p>{body}</p>
-  //     //   </div>
-  //     // );
-  //   });
-  // }
-  // });
+  useEffect(() => {
+    if('serviceWorker' in navigator) {
+    navigator?.serviceWorker?.addEventListener("message", (message) => {
+      const {
+        notification: { body, title },
+      } = message.data["firebase-messaging-msg-data"] as {
+        notification: { body: string; title: string };
+      };
+      // showToast(
+      //   <div>
+      //     <h5>{title}</h5>
+      //     <p>{body}</p>
+      //   </div>
+      // );
+    });
+  }
+  });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -324,6 +337,10 @@ function App() {
   const [remainingTimer,setRemainingTimer]=useState(0)
   const [followerUserId,setFollowerUserId]=useState<string>('')
   const [showBack,setShowBack]=useState<any>(false)
+  const [showReward,setShowReward]=useState<any>(0)
+  const [inOutReward,setInOutReward]=useState<any>(0)
+  const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
+  const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -337,6 +354,7 @@ function App() {
   const [promptInstall, setPromptInstall] = useState(null);
 const [pwaPopUp,setPwaPopUp]=useState('block')
 const[mfaLogin,setMfaLogin]=useState(false)
+const[allCoinsSetting,setAllCoinsSetting]=useState([])
   useEffect(() => {
     const handler = (e:any) => {
       e.preventDefault();
@@ -624,9 +642,15 @@ useEffect(() => {
       )
         .sort((a, b) => Number(a.id) - Number(b.id))
         .map((c) => c.symbol);
-      
+        const newAllCoinsData = (
+          ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
+        )
+          .sort((a, b) => Number(a.id) - Number(b.id))
+          .map((c) => c);
       saveAllCoins(newAllCoins);
       setAllCoins(newAllCoins);
+      // @ts-ignore
+      setAllCoinsSetting(newAllCoinsData)
     });
 
     onSnapshot(doc(db, "settings", "pairs"), (doc) => {
@@ -785,6 +809,7 @@ votesLast24HoursRef.get()
 
 function connect(){
   if(Object.keys(coins).length === 0) return
+  console.log('Browser window called')
   ws = new WebSocket('wss://stream.binance.com:9443/ws');
    console.log('websocket connected first time')
  const coinTikerList = Object.keys(coins).map(item=> `${item.toLowerCase()}usdt@ticker`)
@@ -809,9 +834,10 @@ function connect(){
      socket.send(JSON.stringify(req));
    };
    ws.onclose = (event:any) => {
+    if(!login)window.location.reload()
      console.log('WebSocket connection closed');
      if (event.code !== 1000) {
-       console.log('Attempting to reconnect in 5 seconds...');
+       console.log('WebSocket Attempting to reconnect in 5 seconds...');
        setTimeout(() => {
          connect();
        }, 5000);
@@ -819,6 +845,7 @@ function connect(){
    };
    
    ws.onerror = () => {
+    if(!login)window.location.reload()
      console.log('WebSocket connection occurred');
    };
    const timeout = 30000; // 30 seconds
@@ -840,6 +867,7 @@ useEffect(() => {
   return () => {
 if (ws) ws.close();
     if(socket) socket.close();
+    window.localStorage.removeItem('firstTimeloading')
   };
 }, [Object.keys(coins).length]);
 // useEffect(() => {
@@ -866,12 +894,93 @@ if (ws) ws.close();
 //   }
 //   if (document.hidden) {
 //     console.log("Browser window is minimized");
-//     // ws.close();
-//     // socket.close();
+//     ws.close();
+//     socket.close();
 //   } else {
+//     connect();
 //     console.log("Browser window is not minimized");
 //   }
 // }
+const checkprice = async (vote: any) => {
+  console.log(vote, "checkAllvote")
+  const voteCoins = vote?.coin.split("-");
+const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
+const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
+ const data = await getPriceCalculation({            
+      coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
+      coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
+      voteId:vote?.id,
+      voteTime:vote?.voteTime,
+      valueVotingTime: vote?.valueVotingTime,
+      expiration: vote?.expiration,
+      timestamp: Date.now(),
+      userId: vote?.userId
+  }).then((data:any)=>{
+    console.log('success')
+    // if(data.data==null){
+    //     getVotes(index).then(void 0);     
+    // }
+  }).catch((err:any )=> {
+      if (err && err.message) {
+          console.log(err.message);
+      }        
+  })
+}
+const getVotes = useCallback(
+  async () => {
+    if (user?.uid) {
+      const newVotes = await getVotesFunc({
+        userId: user?.uid,
+      });
+      // @ts-ignore
+      let result = JSON.parse(newVotes?.data)      
+      if (newVotes?.data) {
+        
+        const { coins, pairs } = result
+    
+        let AllCoins = coins?.votes.filter((item: any) => {
+          if (item.expiration < Date.now() && item.success == undefined) {
+            
+            return item
+          }    
+        })
+    
+        let AllPairs = pairs?.votes.filter((item: any) => {
+          if (item.expiration< Date.now() && item.success == undefined) {
+            
+            return item
+          }
+        })  
+    
+    let allCoinsPair= [...AllCoins,...AllPairs]  
+    let promiseArray:any =[]
+    if (allCoinsPair.length > 0) {
+      allCoinsPair?.forEach((voteItem:any) => {
+       promiseArray.push(checkprice(voteItem))
+       // checkprice(voteItem);
+      })    
+    }
+    
+    console.log('promisearray',promiseArray,allCoinsPair)
+    if (!promiseArray?.length) return
+    Promise.all(promiseArray)
+   .then(responses => {
+    getVotes().then(void 0); 
+    //  return Promise.all(responses)
+   })
+   .catch(error => {
+     console.error('promiseAll',error);
+   });                
+      }
+    }
+  },
+  [user?.uid]
+);  
+useEffect(() => {
+  if (user?.uid) {
+    getVotes().then(void 0);
+  }
+}, [ user?.uid]);
 
   return loader ? (
     <div
@@ -881,7 +990,13 @@ if (ws) ws.close();
       <Spinner />
     </div>
   ) : (
-    <div>
+      <BackDiv
+        style={{
+        // border: "1px solid red",
+        // backgroundColor: "rgba(0,0,0,0.5)",
+      }}
+      >
+        <div>
       {enabled && (
         <NotificationContext.Provider
           value={{
@@ -909,6 +1024,14 @@ if (ws) ws.close();
           >
             <AppContext.Provider
                 value={{
+                  rewardExtraVote,
+                  setRewardExtraVote,
+                  headerExtraVote,
+                    setHeaderExtraVote,
+                    inOutReward,
+                    setInOutReward,
+                  showReward,
+                  setShowReward,
                   showBack,
                   setShowBack,
                   followerUserId,
@@ -1025,6 +1148,7 @@ if (ws) ws.close();
               >
                 <CoinsContext.Provider
                     value={{
+                      allCoinsSetting,
                       changePrice,
                     setChangePrice,
                     ws,
@@ -1231,7 +1355,9 @@ if (ws) ws.close();
                                         </span>
                                       </div>
                                       <Routes>
-                                        <Route path='/' element={<Home />} />
+                                        <Route path='/' element={
+                                       
+                                        <Home />} />
                                         <Route
                                           path='coins'
                                           element={<CoinMain />}
@@ -1395,7 +1521,7 @@ if (ws) ws.close();
                                           element={<PrivacyPolicy />}
                                         />
                                         <Route
-                                          path='/termsandcondition'
+                                          path='/terms-and-condition'
                                           element={<TermsAndConditions />}
                                         />
                                         {localhost && user && (
@@ -1457,8 +1583,9 @@ if (ws) ws.close();
             <Button type='submit'>Submit</Button>
           </Form>
         </Container>
-      )}
-    </div>
+          )}
+          </div>
+    </BackDiv>
   );
 }
 

@@ -94,6 +94,7 @@ export const coinDataConverter = {
 };
 
 export type CoinContextProps = {
+  allCoinsSetting:any;
   changePrice: any;
   setChangePrice: any;
   coins: { [symbol: string]: Coin };

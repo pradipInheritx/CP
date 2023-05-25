@@ -1,21 +1,24 @@
-import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from '../../services/auth/jwt/config';
+import { fetchError, fetchStart, fetchSuccess } from "./Common";
+import axios from "../../services/auth/jwt/config";
 import {
-GET_TIMEFRAME,
-ADD_TIMEFRAME,
-SET_TIMEFRAME_DETAILS,
-EDIT_TIMEFRAME,
-DELETE_TIMEFRAME,
-DELETE_BULK_TIMEFRAME
-} from '../../@jumbo/constants/ActionTypes';
+  GET_TIMEFRAME,
+  ADD_TIMEFRAME,
+  SET_TIMEFRAME_DETAILS,
+  EDIT_TIMEFRAME,
+  DELETE_TIMEFRAME,
+  DELETE_BULK_TIMEFRAME
+} from "../../@jumbo/constants/ActionTypes";
 
-export const localToken = localStorage.getItem('token');
+export const localToken = localStorage.getItem("token");
 
-export const getTimeFrame = (filterOptions = [], searchTerm = '', callbackFun) => {
-
+export const getTimeFrame = (
+  filterOptions = [],
+  searchTerm = "",
+  callbackFun
+) => {
   return dispatch => {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
-    dispatch(fetchStart());    
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
+    dispatch(fetchStart());
     axios
       .get(`voteSetting/getTimeframe`)
       .then(data => {
@@ -24,11 +27,13 @@ export const getTimeFrame = (filterOptions = [], searchTerm = '', callbackFun) =
           dispatch({ type: GET_TIMEFRAME, payload: data.data.result.timeframes });
           if (callbackFun) callbackFun(data.data);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -41,21 +46,23 @@ export const setCurrentTimeFrame = user => {
 
 export const addNewTimeFrame = (timeFrameDetail, callbackFun) => {
   return dispatch => {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .post('/voteSetting/createTimeframe',{...timeFrameDetail})
+      .post("/voteSetting/createTimeframe", { ...timeFrameDetail })
       .then(data => {
-        if (data.status === 200 || data.status === 201) {          
+        if (data.status === 200 || data.status === 201) {
           dispatch(fetchSuccess(data.data.massges));
           dispatch({ type: ADD_TIMEFRAME, payload: data.data.result });
           if (callbackFun) callbackFun(data.data.result);
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -68,22 +75,27 @@ export const sentMailToSubAdmin = () => {
 
 export const updateTimeFrame = (timeFrame, callbackFun) => {
   return dispatch => {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
       .put(`voteSetting/updateTimeframe/${timeFrame.timeframeId}`, timeFrame)
       .then(response => {
-        if (response.status === 200 || response.status === 204 || response.status === 201) {
+        if (
+          response.status === 200 ||
+          response.status === 204 ||
+          response.status === 201
+        ) {
           dispatch(fetchSuccess(response.data.message));
-          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result});
+          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result });
           if (callbackFun) callbackFun(response.data.result);
-        }
-        else {
-          dispatch(fetchError('There was something issue in responding server.'));
+        } else {
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -91,7 +103,7 @@ export const updateTimeFrame = (timeFrame, callbackFun) => {
 export const updateTimeFrameStatus = (timeframes ,id, data, callbackFun) => {
   console.log(timeframes,"check all data")
   return dispatch => {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
+    axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios      
       .put(`voteSetting/updateTimeframe/timeFrames`,{timeframes:[...timeframes]})
@@ -118,18 +130,20 @@ export const deleteBulkTimeFrame = (userIds, callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('users/bulk-delete', { userIds })
+      .put("users/bulk-delete", { userIds })
       .then(response => {
         if (response.status === 200) {
-          dispatch(fetchSuccess('Selected users were deleted successfully.'));
+          dispatch(fetchSuccess("Selected users were deleted successfully."));
           dispatch({ type: DELETE_BULK_TIMEFRAME, payload: userIds });
           if (callbackFun) callbackFun();
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };
@@ -145,11 +159,13 @@ export const deleteTimeFrame = (userId, callbackFun) => {
           dispatch({ type: DELETE_TIMEFRAME, payload: userId });
           if (callbackFun) callbackFun();
         } else {
-          dispatch(fetchError('There was something issue in responding server.'));
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };

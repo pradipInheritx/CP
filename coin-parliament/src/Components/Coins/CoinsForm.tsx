@@ -13,11 +13,14 @@ import Bull from "../icons/Bull";
 import NotificationContext, {ToastType} from "../../Contexts/Notification";
 import {voteProcedure} from "../Pairs/utils";
 import { UserProps } from "../../common/models/User";
+// import { timeStamp } from "console";
+import { cmpRangeCoin } from "../Profile/utils";
 
 export const directions = {
   [Direction.BEAR]: {direction: "rise", name: "BEAR"},
   [Direction.BULL]: {direction: "fall", name: "BULL"},
 };
+
 
 const CoinsForm = ({
   coin,
@@ -31,6 +34,8 @@ const CoinsForm = ({
   cssDegree,
   votePrice,
   votedDetails,
+  coinUpdated,
+  hideButton,
 }: {
   coin: Coin;
   setVoteId: (id: string) => void;
@@ -43,16 +48,22 @@ const CoinsForm = ({
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
+  coinUpdated:any;   
+  hideButton?:any;
 }) => {
   const { votesLast24Hours,user, userInfo } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
   const { timeframes , voteRules: { maxVotes,timeLimit }} = useContext(AppContext);
- 
+
+  // console.log(timeframes,"timeframes")
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
   const id = "BullVsBearForm";
+
+  // console.log()
+
   useEffect(() => {
     window.scrollTo(0, 0);
     
@@ -60,6 +71,7 @@ const CoinsForm = ({
   }, []);
   
   const vote = useCallback(async () => {
+    // console.log('coindata',coinUpdated[coin?.symbol]?.price)
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -70,16 +82,24 @@ const CoinsForm = ({
       if (!user?.uid) {
         throw new Error("Attention! You must be signed-in to cast your vote!");
       }
+      // 1681801742363
+      // 1681801734542
+      // console.log('expirevotetime',Date.now() + chosenTimeframe.seconds * 1000 + 1597)
       const ref = await addDoc<VoteResultProps>(
         collection(db, "votes").withConverter(voteConverter),
         {
           coin: coin.symbol,
-          CPMRangePercentage: coin?.CPMRangePercentage || 10,
+          // @ts-ignore
+          CPMRangePercentage: cmpRangeCoin[chosenTimeframe?.index] || 10,
           direction: selectedOption,
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
+          voteTime:Date.now(),
+          // @ts-ignore
+          valueVotingTime:coinUpdated[coin?.symbol]?.symbol=='BTC' || coinUpdated[coin?.symbol]?.symbol=='ETH'? coinUpdated[coin?.symbol]?.price :coinUpdated[coin?.symbol]?.price + coinUpdated[coin?.symbol]?.randomDecimal,
+          expiration:Date.now() + chosenTimeframe.seconds * 1000,
+          voteId:`${coin.symbol}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps
       );
       const updateExtravote= !!user && votesLast24Hours.length < Number(maxVotes) ;
@@ -134,6 +154,7 @@ const CoinsForm = ({
       {/* @ts-ignore */}
       <VoteForm
         {...{
+          hideButton,
           disabled,
           selectedTimeFrame,
           setSelectedTimeFrame,
@@ -146,11 +167,15 @@ const CoinsForm = ({
           votePrice,
           votedDetails,
           submit: () => {
+            // console.log('votebutton',selectedOption)
             if (
               selectedTimeFrame !== undefined &&
               selectedOption !== undefined
             ) {
-              throttled_vote();
+              setTimeout(() => {
+                throttled_vote();  
+              }, 700);
+              
             }
           },
           option1: {

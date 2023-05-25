@@ -11,6 +11,7 @@ import {symbolCombination, voteProcedure} from "./utils";
 import {useTranslation} from "../../common/models/Dictionary";
 import styled from "styled-components";
 import NotificationContext, {ToastType} from "../../Contexts/Notification";
+import { cmpRangeCoin } from "../Profile/utils";
 
 // export const VS = styled(Col)`
 //   flex-grow: 0;
@@ -66,7 +67,9 @@ const PairsForm = ({
   sound,
   setConfetti,
   selectedTimeFrame,
-  setSelectedTimeFrame
+  setSelectedTimeFrame,
+  coinUpdated,
+hideButton
 }: {
   coin1: Coin;
   coin2: Coin;
@@ -76,6 +79,8 @@ const PairsForm = ({
   setConfetti: (bool: boolean) => void;
   selectedTimeFrame?:number;
   setSelectedTimeFrame?:(n:number)=>void;
+  coinUpdated:any;
+  hideButton?:any;
 }) => {
   const { user, userInfo } = useContext(UserContext);
   const { timeframes } = useContext(AppContext);
@@ -91,6 +96,7 @@ const PairsForm = ({
 }, [])
   
   const vote = useCallback(async () => {
+ 
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -105,11 +111,16 @@ const PairsForm = ({
         collection(db, "votes").withConverter(voteConverter),
         {
           coin: symbolCombination([coin1.symbol, coin2.symbol]),
+// @ts-ignore
+          CPMRangePercentage: cmpRangeCoin[chosenTimeframe?.index] || 10,
           direction: selectedOption,
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          // expiration:Date.now() + chosenTimeframe.seconds * 1000 + 1597
+          valueVotingTime:[coinUpdated[coin1?.symbol]?.price+coinUpdated[coin1?.symbol]?.randomDecimal,coinUpdated[coin2?.symbol]?.price+coinUpdated[coin2?.symbol]?.randomDecimal],
+          voteTime:Date.now(),
+          expiration:Date.now() + chosenTimeframe.seconds * 1000 ,
+          voteId:`${symbolCombination([coin1.symbol, coin2.symbol])}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));
@@ -150,9 +161,13 @@ const PairsForm = ({
         {...{
           submit: () => {
             if (selectedTimeFrame !== undefined && selectedOption !== undefined) {
-              throttled_vote();
+              setTimeout(() => {
+                throttled_vote();  
+              }, 700);
+              
             }
           },
+          hideButton,
           width: 306,
           disabled,
           selectedTimeFrame,

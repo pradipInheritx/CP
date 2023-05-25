@@ -104,9 +104,16 @@ useEffect(() => {
         </Buttons.Primary>
       </div>
 
-      <Form.Group className="mb-2" controlId="agree">
+      <Form.Group className="mb-2  text-center" controlId="agree">
         <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
-          {translate(strings.agree)
+        <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
+                    {translate('terms & conditions')}
+                  </Link>  and 
+                  </p>
+                  <p><Link to={'/privacy'} style={{color: 'var(--blue-violet)'}}>
+                    privacy policy
+                  </Link> of the site</p>
+          {/* {translate(strings.agree)
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
@@ -117,7 +124,7 @@ useEffect(() => {
                   </Link>
                 )}
               </React.Fragment>
-            ))}
+            ))} */}
         </Checkbox>
       </Form.Group>
     </Form>

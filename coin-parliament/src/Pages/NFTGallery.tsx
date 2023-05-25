@@ -45,7 +45,7 @@ const SummerCard = styled.div`
   justify-content: center;
   // border:1px solid red;
   flex-wrap: wrap;
-  background-color: #f8f9fa;
+  // background-color: #f8f9fa;
 
   
 `; 
@@ -159,7 +159,7 @@ const onSearch = (searchTerm: any) => {
      console.log("i am if onSearch")
      const serchresult = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
     //  console.log(serchresult,"serchresult")
-    
+    setSearchedCard(serchresult)
       }
    else {
      const serchValue = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.collectionName === selectCollection)
@@ -381,9 +381,6 @@ useEffect(() => {
   
    const BackSideCard = (value: string | number) => {
     // @ts-ignore
-    //  let allBackCard = [...backCards];
-     // @ts-ignore
-     // setBackCards(backCards == value ? "" : value);
   if (backCards.includes(value)) {       
         let allBackCard = [...backCards];
         allBackCard.splice(backCards.indexOf(value), 1);
@@ -392,20 +389,6 @@ useEffect(() => {
     else {
       setBackCards([...backCards, value])
     };
-
-    //  backCards.length > 0
-    //    ? backCards?.map((items: any, index: number) => {
-    //        if (items == value) {
-    //          // @ts-ignore
-    //          allBackCard.splice(index, 1);
-    //          setBackCards(allBackCard);
-    //        } else {
-    //          // @ts-ignore
-    //          setBackCards([...backCards, value]);
-    //        }
-    //        // @ts-ignore
-    //      })
-    //    : setBackCards([...backCards, value]);
   };
   
   
@@ -435,8 +418,14 @@ useEffect(() => {
 console.log(cardName,"mycardName")
 
   return (
-    <div className='' style={{ background: "white", minHeight: "80vh",  }}>
-    <div className='d-flex justify-content-center pt-5 flex-wrap w-100' >
+    <div className='' style={{ minHeight: "auto" }}>
+      <h5 className="mt-4 text-center ">            
+              {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+             <strong style={{textTransform:'uppercase', fontSize: "1.26rem"}}>Wall of fame</strong>
+          </h5>
+      <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
+      style={{background:"#6352e8"}}
+      >
             <input
               type='text'
               name="hello"
@@ -452,6 +441,7 @@ console.log(cardName,"mycardName")
                 name='cars'
                 id='cars'
                 className='bg-white border rounded py-2 mx-2'
+                value ={selectCollection}
                 // onChange={e=>onCollectionChange(e.target.value)}          
                 onChange={e=>setSelectCollection(e.target.value)}
               >
@@ -459,7 +449,7 @@ console.log(cardName,"mycardName")
             
 
             {collectionType?.map((data:any ,index:number) => {
-              return  <option value={data?.collectionName} key={index}>{data?.collectionName}</option>        
+              return  <option selected value={data?.collectionName} key={index}>{data?.collectionName}</option>        
             })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
@@ -485,12 +475,13 @@ console.log(cardName,"mycardName")
                 className='bg-white border rounded mx-1 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
-                <option value='all'>{texts.SelectType}</option>
+                {selectCollection !="none"?<><option value='all'>{texts.SelectType}</option>
                 <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
                 <option value={`${texts.Rare}`}>{texts.Rare}</option>
                 <option value={`${texts.Epic}`}>{texts.Epic}</option>
                 <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
-                <option value={`${texts.Common}`}>{texts.Common}</option>
+              <option value={`${texts.Common}`}>{texts.Common}</option></> :
+              <option value='all'>{texts.SelectType}</option>}
               </select>
               {/* <select
                 name='cars'
@@ -524,12 +515,12 @@ console.log(cardName,"mycardName")
           <p>SUMMER COLLECTION</p>
         </div> */}
         {!cardShow && collectionType?.map((data:any ,index:number) => {
-          return <div onClick={() => { navigate(`/nftAlbum/${data?.collectionName}`) }} key={index}
+          return <div onClick={() => {setSelectCollection(data?.collectionName)}} key={index}
            style={{
                 width: "600px"
           }}
           >            
-        <Video  autoPlay={true} loop={true}>
+        <Video  autoPlay={true} loop={true} playsInline>
           <source
             src={allVideo[`${data?.collectionName}`]}
             type="video/mp4"

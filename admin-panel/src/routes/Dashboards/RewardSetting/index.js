@@ -1,5 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Checkbox, FormControlLabel, Paper, Table, TableCell, TableContainer, TableRow, TextField } from '@material-ui/core';
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Paper,
+  Table,
+  TableCell,
+  TableContainer,
+  TableRow,
+  TextField
+} from "@material-ui/core";
 
 import { useDispatch, useSelector } from 'react-redux';
 import {getRewardSetting,updateRewardSetting} from '../../../redux/actions/RewardSetting';
@@ -14,6 +25,15 @@ import IntlMessages from '@jumbo/utils/IntlMessages';
 import { NavLink } from 'react-router-dom';
 import { AllrequiredMessage } from '@jumbo/constants/ErrorMessages';
 
+import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
+import { useDebounce } from "../../../@jumbo/utils/commonHelper";
+import useStyles from "./index.style";
+import GridContainer from "@jumbo/components/GridContainer";
+import { Grid } from "react-virtualized";
+import AppTextInput from "@jumbo/components/Common/formElements/AppTextInput";
+import IntlMessages from "@jumbo/utils/IntlMessages";
+import { NavLink } from "react-router-dom";
+import { requiredMessage } from "@jumbo/constants/ErrorMessages";
 
 const RewardSettingModule = () => {
   const classes = useStyles();  
@@ -25,8 +45,19 @@ const RewardSettingModule = () => {
   const [voting, setVoting] = useState(["Boost min","Boost min"]);
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
+
+  const [rewardCmpInfo, setRewardCmpInfo] = useState([
+    {
+      0: {
+        cardTierPickingChanceInPercent: [90, 5, 3, 2, 0],
+        extraVotePickFromRange: [1, 5],
+        diamondsPickFromRange: [1, 3]
+      }
+    }
+  ]);
+
   const [filterOptions, setFilterOptions] = React.useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   
   const { RewardSettingDetelis } = useSelector(({ RewardSetting }) => RewardSetting);  
@@ -38,7 +69,7 @@ const RewardSettingModule = () => {
       getRewardSetting(filterOptions, debouncedSearchTerm, () => {
         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
         setUsersFetched(true);
-      }),
+      })
     );
   }, [dispatch, filterOptions, debouncedSearchTerm]);  
   

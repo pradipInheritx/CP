@@ -33,6 +33,8 @@ type VoteFormProps<T> = {
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
+  hideButton?: any;
+  
 };
 const VoteForm = function <
   T extends {
@@ -58,13 +60,14 @@ const VoteForm = function <
   cssDegree,
   votePrice,
   votedDetails,
+  hideButton,
 }: VoteFormProps<T>) {
   const { timeframes, login,remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   
-  
+  // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
   
   
   return (
@@ -78,7 +81,7 @@ const VoteForm = function <
       }}
       style={{maxWidth:'450px', margin:'0 auto'}}
     >
-      <div className="mt-4" style={{marginLeft:symbol2?'':'24px',marginRight:symbol2?'':'24px'}}>
+      {!hideButton.includes(selectedTimeFrame) && <div className="mt-4" style={{ marginLeft: symbol2 ? '' : '24px', marginRight: symbol2 ? '' : '24px' }}>
         <SelectTimeframes
           {...{
             selected: selectedTimeFrame,
@@ -93,8 +96,8 @@ const VoteForm = function <
             votedDetails
           }}
         />
-      </div>
-      <div className='mt-4 pt-2'>
+      </div>}
+      {!hideButton.includes(selectedTimeFrame) && <div className='mt-4 pt-2'>
         {/* @ts-ignore */}
         <div className='mb-3'>
           <Title>{texts.yourVote}</Title>
@@ -103,23 +106,24 @@ const VoteForm = function <
           overlay={(props) =>
             disabled ? (
               <Tooltip id='button-tooltip' {...props} >
-
-                <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}><Countdown daysInHours zeroPadTime={2} date={remainingTimer}
-                    renderer={({ hours, minutes, seconds, completed }) => {
-                      return (
-                        <span className="text-uppercase" style={{color:'#fff',fontSize:'11px',fontWeight:400 }}>                            
-                          Wait {" "}
-                          {hours < 1 ? null : `${hours} :` }
-                          {minutes < 10 ? `0${minutes}` : minutes}:
-                          {seconds < 10 ? `0${seconds}` : seconds} for 5 votes 
-                          <br />
-                          or buy extra votes now.
-                          {/* <Link to="/votingbooster"> buy extra votes now.</Link> */}
-                        </span>
-                      );
+                {/* @ts-ignore */}
+                {user ? <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}><Countdown daysInHours zeroPadTime={2} date={remainingTimer}
+                  renderer={({ hours, minutes, seconds, completed }) => {
+                    return (
+                      <span className="text-uppercase" style={{ color: '#fff', fontSize: '11px', fontWeight: 400 }}>
+                        Wait {" "}
+                        {hours < 1 ? null : `${hours} :`}
+                        {minutes < 10 ? `0${minutes}` : minutes}:
+                        {seconds < 10 ? `0${seconds}` : seconds} for 5 votes
+                        <br />
+                        or
+                        {/* buy extra votes now. */}
+                        <Link to="/votingbooster" style={{ color: "#fff" }}> buy extra votes now.</Link>
+                      </span>
+                    );
             
-                    }}
-                  /></div>
+                  }}
+                /></div> : `${texts.tooltip}`}
                 
                 {/* <RangeSilder/> */}
                 {/* {texts.tooltip} */}
@@ -145,8 +149,8 @@ const VoteForm = function <
                 !!!user && selectedTimeFrame !== undefined
                   ? false
                   : !canVote || disabled
-                  ? true
-                  : false
+                    ? true
+                    : false
               }
               disabledText={texts.tooltip}
               options={[
@@ -156,10 +160,10 @@ const VoteForm = function <
                       <img src={option1.image} alt={option1.alt} />
                     ) : (
                       <>
-                          {" "}
-                          {/* <p>vote {option1.image} BEAR</p> */}
-                          {/* @ts-ignore */}
-                          {option1?.buttonText ?<p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p>: <> Vote<p>{option1.image}</p> </>}
+                        {" "}
+                        {/* <p>vote {option1.image} BEAR</p> */}
+                        {/* @ts-ignore */}
+                        {option1?.buttonText ? <p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p> : <> Vote<p>{option1.image}</p> </>}
                       </>
                     ),
                   buttonProps: {
@@ -173,9 +177,9 @@ const VoteForm = function <
                     ) : (
                       <>
                         {" "}
-                          {/* <p>vote {option2.image} BEAR</p> */}
-                          {/* @ts-ignore */}
-                        {option2?.buttonText ?<p>{option2?.buttonText[0]} {option2.image} {option2?.buttonText[1]}</p>: <> Vote<p>{option2.image}</p> </>}
+                        {/* <p>vote {option2.image} BEAR</p> */}
+                        {/* @ts-ignore */}
+                        {option2?.buttonText ? <p>{option2?.buttonText[0]} {option2.image} {option2?.buttonText[1]}</p> : <> Vote<p>{option2.image}</p> </>}
                       </>
                     ),
                   buttonProps: {
@@ -188,7 +192,7 @@ const VoteForm = function <
             </CPVote>
           </div>
         </OverlayTrigger>
-      </div>
+      </div>}
     </Form>
   );
 };

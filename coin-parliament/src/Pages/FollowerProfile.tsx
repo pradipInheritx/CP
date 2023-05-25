@@ -9,10 +9,10 @@ import styled from "styled-components";
 import { Gradient2 } from "../styledMixins";
 import { isV1, PageContainer } from "../Components/App/App";
 import ImageTabs from "../Components/FollowerProfile/ImageTabs";
-import Votes from "../Components/icons/votes";
+import Votes from "../Components/icons/votes2";
 import Mine from "../Components/icons/mine";
 import Share from "../Components/icons/share";
-import Following from "../Components/icons/Following1";
+import ProfileFollowing from "../Components/icons/ProfileFollowing";
 import Gallery from "../Components/icons/Gallery";
 import Notifications from "../Components/icons/notifications";
 import NotificationContext, { ToastType } from "../Contexts/Notification";
@@ -179,7 +179,7 @@ const FollowerProfile = () => {
                             {
                               component: <></>,
                               label: FollowerProfileTabs.followers,
-                              icon: <Following />,
+                              icon: <ProfileFollowing />,
                               eventKey: FollowerProfileTabs.followers,
                             },
                             // {

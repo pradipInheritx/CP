@@ -9,24 +9,21 @@ import {httpsCallable} from "firebase/functions";
 import Button from "../Atoms/Button/Button";
 import Tabs from "./Tabs";
 import VotedCard from "./VotedCard";
-import { fetchCoins, subscribe, unsubscribe, ws } from "../../common/models/Socket";
 import { texts } from "../LoginComponent/texts";
 
-const getVotesFunc = httpsCallable<{ start: number; end: number; userId: string }, GetVotesResponse>(functions, "getVotes");
+const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const Votes = () => {
   const pageSize = useMemo(() => 3, []);
   const {user} = useContext(UserContext);
   const translate = useTranslation();
   const [index, setIndex] = useState(0);  
-  const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
+  // const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);
   
   const [votes, setVotes] = useState<GetVotesResponse>({
     coins: {votes: [], total: 0},
     pairs: {votes: [], total: 0},    
   } as GetVotesResponse);
-
-  const [ coinSubscription,setCoinSubscription]=useState([])
   const [coinSocketData,setCoinSocketData]=useState([])
   const getVotes = useCallback(
     async (start: number) => {
@@ -40,15 +37,6 @@ const Votes = () => {
         let result = JSON.parse(newVotes?.data)      
         if (newVotes?.data) {
           setVotes(result);                    
-          const coinStat = newVotes?.data?.coins?.votes?.map(item => item?.coin);
-          // const coinsArray = result?.map((item:any) => {
-          //   item?.map((value:any) => {
-              
-          //   })
-          // })
-          // const pairStat=[]
-           // @ts-ignore
-          // setCoinSubscription(coinStat)
         }
       }
     },
@@ -74,48 +62,29 @@ const Votes = () => {
     })  
 
 let allCoinsPair= [...AllCoins,...AllPairs]
-    setAllCoinsPrais(allCoinsPair)
-  }, [votes])
-  
-  console.log(allCoinsPrais, "AllCoinsPrais")  
-  // const coin1 = `${coins && symbol1? coins[symbol1]?.symbol.toLowerCase() || "":""}`
-  // const coin2 = `${coins && symbol2? coins[symbol2]?.symbol.toLowerCase() || "":""}`
-  // console.log(allCoinsPrais, "AllCoinsPrais")
-  
-   useEffect(() => {
-    // Promise.all([checkprice(allCoinsPrais[0]),checkprice(allCoinsPrais[1]), checkprice(allCoinsPrais[2]),checkprice(allCoinsPrais[3])])
-    // .then(responses => {
-    //   return Promise.all(responses.map((res,index) => {
-    //     if (res) {
-    //       // getLeftTime(res.data(), index);
-    //       // AllvoteValueObject[index] = res.data();
-    //       // setAllButtonTime(AllvoteValueObject);
-    //       // setVotedDetails(AllvoteValueObject);
-    //       // newTimeframe.push(index)
-          
-    //       // setSelectedTimeFrameArray(newTimeframe)
-    //     }
-    //     else{
-    //       // setAllButtonTime();
-          
-    //     }
-    //   }))
-    // })
-    // .catch(error => {
-    //   console.error('promiseAll',error);
-    // });
-     if (allCoinsPrais.length > 0) {
-       allCoinsPrais?.map((voteItem:any) => {
-         checkprice(voteItem);
+let promiseArray:any =[]
+     if (allCoinsPair.length > 0) {
+      allCoinsPair?.forEach((voteItem:any) => {
+        promiseArray.push(checkprice(voteItem))
+        // checkprice(voteItem);
        })    
      }
-     
-  }, [allCoinsPrais.length])
+     if (!promiseArray?.length) return
+     Promise.all(promiseArray)
+    .then(responses => {
+      getVotes(index).then(void 0); 
+    })
+    .catch(error => {
+      console.error('promiseAll',error);
+    });
+  }, [votes?.coins?.total,votes?.pairs?.total,pageSize])
+  
+  
+  
   
 
 
   const checkprice = async (vote: any) => {
-    console.log(vote, "checkAllvote")
     const voteCoins = vote?.coin.split("-");
 const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
   const coin2 = `${voteCoins[1]? voteCoins[1].toLowerCase() || "":""}`
@@ -126,10 +95,11 @@ const coin1 = `${voteCoins[0]? voteCoins[0].toLowerCase() || "":""}`
         voteTime:vote?.voteTime,
         valueVotingTime: vote?.valueVotingTime,
         expiration: vote?.expiration,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        userId: vote?.userId
     }).then((data:any)=>{
       if(data.data==null){
-          getVotes(index).then(void 0);     
+          // getVotes(index).then(void 0);     
       }
     }).catch((err:any )=> {
         if (err && err.message) {
@@ -223,7 +193,7 @@ const callbackFun=()=>{
 
   return (
     <Tabs
-      defaultActiveKey="coins"
+      defaultActiveKey="pairs"
       id="profile-votes"
       onSelect={() => setIndex(0)}
       tabs={[
@@ -254,7 +224,7 @@ const callbackFun=()=>{
               {getButtons(votes.coins)}
             </div>
           ),
-        },
+        }
       ]}
     />
   );

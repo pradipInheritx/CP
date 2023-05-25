@@ -12,7 +12,7 @@ const Pool = () => {
   const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
   const [children, setChildren] = useState<Leader[]>([]);
   const childrenActivity = Number(
-    Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
+    Number(userInfo?.voteStatistics?.commission || 0).toFixed(3) || 0
   );
 
   useEffect(() => {

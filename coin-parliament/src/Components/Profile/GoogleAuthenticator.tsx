@@ -24,6 +24,7 @@ import { texts } from "../LoginComponent/texts";
 import axios from "axios";
 import QRCode from "qrcode";
 import BigLogo from "../../assets/svg/logoiconx2.svg";
+import { generateGoogle2faUrl, otpurl } from "../../common/consts/contents";
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
@@ -72,8 +73,7 @@ const GoogleAuthenticator = () => {
   const [secretKey, setSecretKey] = useState<string>("");
   const auth = getAuth();
   const [copied, setCopied] = useState(false);
-  const url = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`;
-  const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`;
+  
 
   const createPost = async (id: string) => {
     // @ts-ignore
@@ -81,7 +81,7 @@ const GoogleAuthenticator = () => {
       // @ts-ignore
       setSecretKey(userInfo?.googleAuthenticatorData?.otp_base32);
       // @ts-ignore
-      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url).then(
+      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url,{color:{dark:"#7565f7",light: "#ffffff"}}).then(
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
         }
@@ -93,12 +93,14 @@ const GoogleAuthenticator = () => {
       userType: "USER",
     };
     try {
-      const response = await axios.post(url, data);
+      const response = await axios.post(generateGoogle2faUrl, data);
       console.log(response.data);
       setSecretKey(response.data.result.base32);
-      QRCode.toDataURL(response.data.result.otpauth_url).then(
+      QRCode.toDataURL(response.data.result.otpauth_url, {color:{dark:"#7565f7",light: "#ffffff"}}
+        ).then(
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
+          console.log('qrcode',dataUrl)
         }
       );
     } catch (error) {

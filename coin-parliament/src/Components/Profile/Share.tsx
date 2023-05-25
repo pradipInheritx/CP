@@ -19,7 +19,7 @@ const PoolBox = styled.div`
 const Titles = styled.div`
   font-size: 20px;
   color: white;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   
 `;
 
@@ -40,26 +40,30 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
     <PoolBox className="mx-auto d-flex justify-content-center" style={{width:window.screen.width<979?'100%':'40%'}}>
       <Titles style={{textAlign:window.screen.width<979?'center':'start'}}>
         <div className="d-flex justify-content-center mt-4">
-          <h6 className="text-uppercase">
+          <h5 className="">
             {/* {translate('We believe in Partnerships! ')} */}
-            {texts.WEBELIEVEINPARTNERSHIPS}
-          </h6>
+            {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+            <strong style={{textTransform:'uppercase', fontSize: "1.25rem"}}> We believe in Partnerships!</strong>
+          </h5>
         </div>
         <div className="d-flex justify-content-center">
-          <img src={earn} alt="" />
+          <img src={earn} alt="" width={window.screen.width>767? "400px":"300px" }/>
         </div>
         <div className="d-flex justify-content-center ">
-          <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>Invite your friends to become <strong>CoinParliament</strong> members and enjoy the benefits of being our partner.</h6>
-         
+          <h6 className="mx-4" style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>Invite your friends to become <strong>Coin Parliament</strong> members and enjoy the benefits of being our partner.</h6>         
         </div>
-        <div className="d-flex justify-content-center ">
-        <h6 className=" mx-4"style={{fontWeight:300,fontSize:'14px',textAlign:'center'}}>{translate("Your friends will be an integral part of your progress and income FOREVER!  ")}</h6>
+        <div className="d-flex justify-content-center my-3" style={{paddingLeft:"40px"}}>          
+          <ul style={{fontWeight:300,fontSize:'14px',textAlign:'start'}}>
+            <li>Accelerating your mining progress</li>
+            <li>Lifetime passive income rev-share program, receive <strong>50%</strong> of all your friends' total purchases directly to your wallet.</li>
+          </ul>
+        </div>        
+        <div className="px-3">          
+        <p   style={{width:"100%",fontSize:"14px",fontWeight:"100", textAlign:"center"}}>Your friends will be an integral part of your progress and income <strong>FOREVER!</strong></p>
         </div>
-        <div className=" py-2 w-75   m-auto">          
-        <p   style={{width:"100%",fontSize:"12px",fontWeight:"100",textAlign:'center'}}>What you’ll get:
-<br/>50% REVENUE SHARE LIFETIME!
-          <br/>Accelerate your mining progress.
-          Lifetime passive income direct to your wallet.</p>
+
+        <div className="d-flex justify-content-center my-3">
+          <strong className="mx-4" style={{fontSize:'14px',textAlign:'center'}}>SHARE NOW TO START EARNING!</strong>         
         </div>
         <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
           <div className="mx-3">
@@ -67,7 +71,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
               onClick={() => {
                 copy(url);
                 showToast(
-                  `${url} ${translate(texts.CopiedClipboard)}`,
+                  'Your referral link is copied to the clipboard.',
                   ToastType.SUCCESS
                 );
               }}

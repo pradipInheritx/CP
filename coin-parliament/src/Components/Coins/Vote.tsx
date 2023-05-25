@@ -137,7 +137,7 @@ const Vote = ({
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
-                  // VoteButton()
+                  VoteButton()
                   if (disabled && disabledText) {
                     if (!user) {
                      

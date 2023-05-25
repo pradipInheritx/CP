@@ -17,6 +17,8 @@ import { Input } from "../Atoms/styles";
 import { texts } from "../LoginComponent/texts";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import { generateGoogle2faUrl } from "../../common/consts/contents";
+import axios from "axios";
 
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
@@ -50,6 +52,27 @@ let navigate = useNavigate();
   setCountryCode('')
  
 }, [])
+const createPost = async (id: string) => {
+  if(!id) return
+  // @ts-ignore
+  if(userInfo?.googleAuthenticatorData?.otp_auth_url){
+
+    return
+  }
+  const data = {
+    userId: id,
+    userType: "USER",
+  };
+  try {
+    const response = await axios.post(generateGoogle2faUrl, data);
+  } catch (error) {
+    console.error(error);
+  }
+};
+useEffect(() => {
+  if(!userInfo?.mfa)createPost(userInfo?.uid as string);
+  // return () => setCopied(false);
+}, [userInfo?.mfa]);
 const handleClose=()=>{
   setShow(false)
 }

@@ -26,6 +26,7 @@ import AppContext from "../Contexts/AppContext";
 import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
 import { Coin } from "../common/models/Coin";
+import { decimal } from "../Components/Profile/utils";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
@@ -58,6 +59,7 @@ const SinglePair = () => {
     voteRules
   } = useContext(AppContext);
   const [popUpOpen, setpopUpOpen] = useState(false);
+  const [hideButton, setHideButton] = useState([]);
   
   const mountedRef = useRef(true);
   const newTimeframe:any= []
@@ -70,6 +72,31 @@ const SinglePair = () => {
       return data;
     }
   }, [params?.id, voteId, vote,selectedTimeFrame]);
+  const updateRandomDecimal=()=>{
+    setCoinUpdated((prevCoins) => ({
+      ...prevCoins,
+      [symbol1]: {
+        ...prevCoins[symbol1],
+      
+        randomDecimal:(prevCoins[symbol1]?.randomDecimal ||5) + (Math.random()<5?-1:1)
+      },
+      [symbol2]: {
+        ...prevCoins[symbol2],
+      
+        randomDecimal:(prevCoins[symbol2]?.randomDecimal ||5) + (Math.random()<5?-1:1)
+      },
+    }));
+  }
+  useEffect(() => {
+    if(symbol1=='BTC'||symbol1=='ETH') return
+    const interval = setInterval(function () {
+      updateRandomDecimal()
+    }, 1500);
+  
+    return () => {
+     clearInterval(interval) 
+    }
+  }, [])
   useEffect(() => {
     if (!ws) return
     console.log('websocket connected')
@@ -77,12 +104,16 @@ const SinglePair = () => {
       const message = JSON.parse(event.data);
       const symbol =message?.s?.slice(0, -4)
   
-    if (symbol && (symbol==symbol1 ||symbol==symbol2)) {
-      setCoinUpdated((prevCoins) => ({
+      if (symbol && (symbol == symbol1 || symbol == symbol2)) {      
+        // @ts-ignore
+      const dot=decimal[symbol]
+      // @ts-ignore
+      setCoinUpdated((prevCoins) => ({        
         ...prevCoins,
         [symbol]: {
-          ...prevCoins[symbol],
-          price: message?.c,
+          ...prevCoins[symbol],        
+          price:Number(message?.c).toFixed(dot?.decimal || 2),
+          randomDecimal:Number(Number(message?.c).toFixed(dot?.decimal || 2))==Number(prevCoins[symbol].price)?prevCoins[symbol].randomDecimal:5
         },
       }));
     }
@@ -102,6 +133,7 @@ if (data?.result?.data[0].a){
         ['CRO']: {
           ...prevCoins['CRO'],
           price: data?.result?.data[0]?.a,
+          randomDecimal:5
         },
       }));
     }
@@ -177,7 +209,7 @@ useEffect(() => {
       mountedRef.current = false;
     };
   }, []);
-  console.log('selectedTimeframe',selectedTimeFrameArray)
+
   useEffect(() => {
     if (user?.uid && params?.id) {
       Vote.getVote({userId: user?.uid, coin: params?.id, timeFrame:timeframes[selectedTimeFrame || 0]?.seconds }).then((v) => {
@@ -225,7 +257,7 @@ useEffect(() => {
   
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-
+console.log(vote , vote?.valueVotingTime, vote?.valueExpirationTime,"vote?.valueExpirationTime" )
   return (
     <>
       <audio className="d-none" ref={sound}>
@@ -276,7 +308,8 @@ useEffect(() => {
                       {loading ? (
                         <CalculatingVotes/>
                       ) : (
-                        <PairsForm
+                          <PairsForm
+                          hideButton={hideButton}
                           sound={sound}
                           coin1={coin1}
                           coin2={coin2}
@@ -285,17 +318,20 @@ useEffect(() => {
                           setConfetti={setConfetti}
                           selectedTimeFrame={selectedTimeFrame}
                           setSelectedTimeFrame={setSelectedTimeFrame}
+                          coinUpdated={coinUpdated}
                         />
                       )}
                     </>
                   )}
                 </div>
                 <div className="text-center">
-                  {!graphLoading&& !canVote && user && voteId && (
+                  {/* @ts-ignore */}
+                  {!graphLoading&& (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
                     <>
                       <VotedCard
                         {...{vote, coins:coinUpdated, totals, symbol1, symbol2, voteId,selectedTimeFrame,
-                          setSelectedTimeFrame,selectedTimeFrameArray , setpopUpOpen}}
+                          setSelectedTimeFrame, selectedTimeFrameArray, setpopUpOpen, hideButton, setHideButton
+                        }}
                       />
                      {graphLoading? <CalculatingVotes/>:
                      <Progress
@@ -306,10 +342,14 @@ useEffect(() => {
                       />} 
                     </>
                   )}
-                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime &&  <ModalForResult
+                  {/* @ts-ignore */}
+                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime && hideButton.includes(selectedTimeFrame && selectedTimeFrame) && <ModalForResult
                     popUpOpen={popUpOpen}
                     setpopUpOpen={setpopUpOpen}
+                    setHideButton={setHideButton}
                     vote={vote && vote}
+                    selectedTimeFrame={selectedTimeFrame}                                    
+                  hideButton={hideButton}
                     type={"pair"}
                   />}
                   <div className="d-flex justify-content-center align-items-center mt-5 ">

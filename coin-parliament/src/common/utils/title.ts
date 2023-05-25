@@ -45,9 +45,9 @@ export const isAdmin = (pathname: string = "") => {
 };
 
 export const isCoinsPairs = (pathname: string = "") => {
-  return (pathname || "").includes("coins") || (pathname || "").includes("pairs") || (pathname || "").includes("votingbooster") || (pathname || "").includes("upgrade");
+  return (pathname || "").includes("coins") || (pathname || "").includes("pairs")  || (pathname || "").includes("votingbooster") || (pathname || "").includes("upgrade");
 };
 
 export const isCommanPage = (pathname: string = "") => {
-  return (pathname || "").includes("about") || (pathname || "").includes("Contact") || (pathname || "").includes("privacy") || (pathname || "").includes("FAQ") || (pathname || "").includes("gamerule") || (pathname || "").includes("partners") || (pathname || "").includes("foundations") || (pathname || "").includes("nftGallery");
+  return (pathname || "").includes("about") || (pathname || "").includes("Contact") || (pathname || "").includes("privacy") || (pathname || "").includes("FAQ") || (pathname || "").includes("gamerule")  || (pathname || "").includes("terms-and-condition") || (pathname || "").includes("partners") || (pathname || "").includes("foundations") ;
 };
