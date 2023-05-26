@@ -6,7 +6,7 @@ export const getFollowersAndFollowingCount = async (req: any, res: any) => {
         const getUserSnapshot = await firestore().collection("users").get()
 
         getUserSnapshot.forEach((user) => {
-            allUsers.push({ userId: user.id, firstName: user.data().firstName, lastName: user.data().lastName, followingCount: user.data().children.length, followerCount: user.data().subscribers.length });
+            allUsers.push({ userId: user.id, firstName: user.data().firstName, lastName: user.data().lastName, followingCount: user.data().children && user.data().children.length ? user.data().children.length : 0, followerCount: user.data().subscribers && user.data().subscribers.length ? user.data().subscribers.length : 0 });
         });
 
         res.status(200).send({
