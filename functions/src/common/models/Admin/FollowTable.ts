@@ -30,7 +30,7 @@ export const getFollowingCount = async (req: any, res: any) => {
 
         await firestore()
             .collection("settings")
-            .doc("pushNotification")
+            .doc("FollowingCount")
             .set(FollowingCountData, { merge: true });
 
         const getUpdatedRef = await firestore()
@@ -55,6 +55,74 @@ export const getFollowingCount = async (req: any, res: any) => {
     }
 };
 
+export const getFollowersUsers = async (req: any, res: any) => {
+    try {
+        const { userId } = req.params;
+
+        const getAllFollowers = [];
+
+        const getUserSnapshot = await firestore().collection("users").doc(userId).get()
+
+        const getUserData = await getUserSnapshot.data();
+
+        if (getUserData && getUserData.subscribers && getUserData.subscribers.length) {
+            for (let getUser = 0; getUser < getUserData.subscribers.length; getUser++) {
+                let userId = getUserData.subscribers[getUser];
+                const getUserSubscriberSnapshot = await firestore().collection("users").doc(userId).get();
+                const getSubscriberUserData = getUserSubscriberSnapshot.data();
+                getAllFollowers.push(getSubscriberUserData);
+            }
+        }
+
+        res.status(200).send({
+            status: true,
+            message: "Fetch follower users successfully",
+            result: getAllFollowers
+        });
+    } catch (error) {
+        errorLogging("getFollowersUsers", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in getFollowersUsers",
+            result: error,
+        });
+    }
+};
+
+export const getFollowingUsers = async (req: any, res: any) => {
+    try {
+        const { userId } = req.params;
+
+        const getAllFollowing = [];
+
+        const getUserSnapshot = await firestore().collection("users").doc(userId).get()
+
+        const getUserData = await getUserSnapshot.data();
+
+        if (getUserData && getUserData.parent && getUserData.parent.length) {
+            for (let getUser = 0; getUser < getUserData.parent.length; getUser++) {
+                let userId = getUserData.parent[getUser];
+                const getUserFollowingSnapshot = await firestore().collection("users").doc(userId).get();
+                const getFollowingUserData = getUserFollowingSnapshot.data();
+                getAllFollowing.push(getFollowingUserData);
+            }
+        }
+
+        res.status(200).send({
+            status: true,
+            message: "Fetch following users successfully",
+            result: getAllFollowing
+        });
+    } catch (error) {
+        errorLogging("getFollowingUsers", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in getFollowingUsers",
+            result: error,
+        });
+    }
+};
+
 export const errorLogging = async (
     funcName: string,
     type: string,
@@ -62,17 +130,3 @@ export const errorLogging = async (
 ) => {
     console.info(funcName, type, error);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
