@@ -39,7 +39,7 @@ export const updateVotesAndReturnSettings = async (req: any, res: any) => {
             signupReferral
         }
 
-        const VoteRules = {
+        const voteRules = {
             CPMReturnFailure,
             CPMReturnInRange,
             CPMReturnSuccess,
@@ -47,7 +47,7 @@ export const updateVotesAndReturnSettings = async (req: any, res: any) => {
             maxVotes
         }
 
-        await firestore().collection("settings").doc("settings").update({ CPMSettings, VoteRules })
+        await firestore().collection("settings").doc("settings").set({ CPMSettings, voteRules }, { merge: true })
 
         const getSettingsQuery = await firestore().collection("settings").doc("settings").get();
         const getSettingsData = getSettingsQuery.data();
