@@ -351,30 +351,32 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
   const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`
 
   const checkprice = async () => {
+    console.log(voteId, 'pkkp');
+
     if (!getresultFlag) return
     getresultFlag = false;
     console.log('price called')
-    const data = await getPriceCalculation({
-      coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-      coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-      voteId: voteId,
-      voteTime: vote?.voteTime,
-      valueVotingTime: vote?.valueVotingTime,
-      expiration: vote?.expiration,
-      timestamp: Date.now(),
-      userId: vote?.userId
-    }).then((data) => {
-      if (data.data == null) {
-        // console.log(data.data,"i am working data.data")
-        // getVotes(index).then(void 0);
-        openPopup(true)
+    // const data = await getPriceCalculation({
+    //   coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+    //   coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+    //   voteId: voteId,
+    //   voteTime: vote?.voteTime,
+    //   valueVotingTime: vote?.valueVotingTime,
+    //   expiration: vote?.expiration,
+    //   timestamp: Date.now(),
+    //   userId: vote?.userId
+    // }).then((data) => {
+    //   if (data.data == null) {
+    //     // console.log(data.data,"i am working data.data")
+    //     // getVotes(index).then(void 0);
+    //     // openPopup(true)
 
-      }
-    }).catch(err => {
-      if (err && err.message) {
-        console.log(err.message);
-      }
-    });
+    //   }
+    // }).catch(err => {
+    //   if (err && err.message) {
+    //     console.log(err.message);
+    //   }
+    // });
 
   }
 
