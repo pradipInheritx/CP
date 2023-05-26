@@ -221,7 +221,7 @@ function getUserListById(userList: any) {
 }
 
 export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTimeFrame: number) => {
-  const getAllVotesIn24Hours: object[] = [];
+  const getAllVotesIn24Hours: any[] = [];
   const getAllVotesIn24HoursQuery: any = await firestore()
     .collection('votes')
     .where("voteTime", ">", todayTimeFrame)
@@ -235,14 +235,12 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
   });
   const uniqueUserListData = getUserListById(getAllVotesIn24Hours)
 
-
   await uniqueUserListData.forEach(async (data: any) => {
     const getUserDetailsQuery = await firestore().collection("users").doc(data.userId).get();
     const getuserDetails = getUserDetailsQuery.data()
     await sendNotificationForTitleUpgrade(getuserDetails)
   })
 }
-
 
 //For Title Update
 export const sendNotificationForTitleUpgrade = async (user: any) => {
