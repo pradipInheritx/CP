@@ -1,5 +1,4 @@
 import { firestore } from "firebase-admin";
-import _ from "lodash";
 
 type CoinPair = {
   id: string,
@@ -16,15 +15,34 @@ export type queryParams = {
   search: string;
 };
 
+function checkAndIncreseNumber(pairIdsList: number[]) {
+  const sortedList = pairIdsList.sort((a, b) => a - b);
+  let lastvalue = sortedList[pairIdsList.length - 1];
+  ++lastvalue;
+  return lastvalue.toString()
+
+}
+
 export const addCoinPair = async (req: any, res: any) => {
   const {
-    id,
     symbol1,
     symbol2,
     status,
     logo
   } = req.body;
+
   try {
+    const coinPairRef = await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .get();
+
+    let coinPairData: any = coinPairRef.data();
+    const getAllPairIds: number[] = []
+    coinPairData.pairs.forEach((coin: any) => {
+      getAllPairIds.push(Number(coin.id))
+    });
+    const id: string = checkAndIncreseNumber(getAllPairIds);
     const coinPair: CoinPair = {
       id,
       symbol1,
@@ -40,23 +58,6 @@ export const addCoinPair = async (req: any, res: any) => {
       });
     }
 
-    const coinPairRef = await firestore()
-      .collection("settings")
-      .doc("pairs")
-      .get();
-
-    let coinPairData: any = coinPairRef.data();
-    let checkCoinPairIsExists = coinPairData.pairs.find((coin: any) => {
-      return coin.id == id;
-    });
-
-    if (checkCoinPairIsExists) {
-      return res.status(409).send({
-        status: false,
-        message: `This pair is already exists: ${symbol1}-${symbol2}`,
-        result: null,
-      });
-    }
 
     coinPairData.pairs.push(coinPair);
 
