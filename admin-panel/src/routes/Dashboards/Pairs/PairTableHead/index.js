@@ -7,16 +7,16 @@ import PropTypes from "prop-types";
 import React from "react";
 
 const headCells = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: false,
-    label: "Name"
-  },
+  // {
+  //   id: "name",
+  //   numeric: false,
+  //   disablePadding: false,
+  //   label: "Name"
+  // },
   {
     id: "symbol",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Symbol"
   },
   {

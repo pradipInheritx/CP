@@ -131,12 +131,16 @@ const TimeFrameModule = () => {
     setOpenStatusDialog(true);
   };
 const handleConfirmUpdate = () => {
-  setOpenStatusDialog(false);
-  console.log(selectedUser,"selectedUser")
-  dispatch(updateTimeFrameStatus(selectedUser?.timeframeId, {
-    ...selectedUser,
-    chosen: `${!selectedUser?.chosen}`
-  }));
+  setOpenStatusDialog(false); 
+  let timeframes=[]
+  let timeFrameData = timeFrameList.map((item,index) => {
+    if (selectedUser.index == item.index) {
+      item.chosen=!selectedUser?.chosen
+    }
+    timeframes.push(item)
+  })  
+  // dispatch(updateTimeFrameStatus(selectedUser?.timeframeId, {...selectedUser,chosen: `${!selectedUser?.chosen}`
+  dispatch(updateTimeFrameStatus(timeframes));
   };
 
   const handleCancelUpdate = () => {

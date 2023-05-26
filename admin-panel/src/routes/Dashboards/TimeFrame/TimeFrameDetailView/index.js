@@ -65,7 +65,7 @@ const TimeFrameDetailView = ({open, onCloseDialog}) => {
             {currentTimeFrame?.seconds}
           </Box>
         </Box>
-        <Box display="flex" alignItems="center" mb={{xs: 4, sm: 5}}>
+        {/* <Box display="flex" alignItems="center" mb={{xs: 4, sm: 5}}>
           Created Time
           <Box ml={5}>
             
@@ -73,7 +73,7 @@ const TimeFrameDetailView = ({open, onCloseDialog}) => {
             {timeFromNow(currentTimeFrame?.createdAt)}
           </Box>
           </Box>
-        </Box>
+        </Box> */}
       </Box>
     </Dialog>
   );

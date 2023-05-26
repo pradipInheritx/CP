@@ -37,9 +37,9 @@ const CoinDetailView = ({open, onCloseDialog}) => {
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
       <Box className={classes.userInfoRoot}>
         <Box mr={3} display="flex" alignItems="center">
-          <Box className={classes.avatarView} mr={{xs: 4, md: 6}}>
+          {/* <Box className={classes.avatarView} mr={{xs: 4, md: 6}}>
             <CmtAvatar size={70} src={currentCoin?.coinLogo} alt={currentCoin?.name} />
-          </Box>
+          </Box> */}
 
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
@@ -72,8 +72,8 @@ const CoinDetailView = ({open, onCloseDialog}) => {
           <Box ml={1}>
             <Tooltip title={currentCoin?.status}>
               <IconButton aria-label="filter list">
-                {currentCoin?.status === "suspended" && <Block color="primary" />}
-                {currentCoin?.status === "active" && <CheckCircleOutline color="primary" />}
+                {currentCoin?.status === "InActive" && <Block color="primary" />}
+                {currentCoin?.status === "Active" && <CheckCircleOutline color="primary" />}
               </IconButton>
             </Tooltip>
           </Box>
@@ -86,42 +86,50 @@ const CoinDetailView = ({open, onCloseDialog}) => {
       </Box>
       <Box px={6} py={5}>
         <Box mb={5} component="p" color="common.dark">
-          Contact Detail
+          Coin Details
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Name : 
+          <Box ml={5} color="primary.main" component="p" className="pointer">
+            {currentCoin?.name}
+          </Box>
+        </Box>
+        <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
+          Symbol : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
             {currentCoin?.symbol}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Coin Id : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCoin?.coinID}
+            {currentCoin?.id}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Rank 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCoin?.rank}
+            {currentCoin?.voteBarRange &&  currentCoin?.voteBarRange[0] || 0 }
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          CMP :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCoin?.CMP}
+                {currentCoin?.voteBarRange && currentCoin?.voteBarRange[1] || 0}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Weight Order Book :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCoin?.Weight_Order_Book}
+            {/* {currentCoin?.Weight_Order_Book} */}
+                {currentCoin?.voteBarRange && currentCoin?.voteBarRange[2] || 0}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Range Result CMP :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCoin?.Range_Result_CMP}
+            {/* {currentCoin?.Range_Result_CMP} */}
+                {currentCoin?.voteBarRange && currentCoin?.voteBarRange[3] || 0}
           </Box>
         </Box>
         {/* <Box display="flex" alignItems="center" mb={{xs: 4, sm: 5}}>

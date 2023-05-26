@@ -12,7 +12,8 @@ import IconButton from "@material-ui/core/IconButton";
 import AppSelectBox from "../../../../@jumbo/components/Common/formElements/AppSelectBox";
 import {
   emailNotValid,
-  requiredMessage
+  requiredMessage,
+  bothNotSelectSame
 } from "../../../../@jumbo/constants/ErrorMessages";
 import {useDispatch, useSelector} from "react-redux";
 import NumberFormat from "react-number-format";
@@ -24,6 +25,7 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import CancelIcon from "@material-ui/icons/Cancel";
 import {isValidEmail} from "../../../../@jumbo/utils/commonHelper";
 import {addNewPair, updatePair} from "../../../../redux/actions/Pairs";
+import { MenuItem } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -49,27 +51,21 @@ function NumberFormatCustom({onChange, ...other}){
   );
 }
 
-const AddEditPair = ({open, onCloseDialog}) => {
+const AddEditPair = ({open,coinList, onCloseDialog}) => {
   const classes = useStyles();
   const {currentUser} = useSelector(({usersReducer}) => usersReducer);
 
-  const [ name, setName ] = useState("");
-  const [ symbol, setSymbol ] = useState("");
-  const [ coinID, setCoinID ] = useState("");
-  const [ rank, setRank ] = useState("");
-  const [ wob, setWOB ] = useState("");
-  const [ rrc, setRRC ] = useState("");
-  const [ cmp, setCMP ] = useState("");
+  
+  const [ id, setId ] = useState("");
+  const [ symbol1, setSymbol1 ] = useState("");
+  const [ symbol2, setSymbol2 ] = useState("");
   const [coinLogo, setCoinLogo] = useState("");  
   
-  const [nameError, setNameError] = useState("");
   
-  const [ symbolError, setSymbolError ] = useState("");
-  const [ coinIDError, setCoinIDError ] = useState("");
-  const [ rankError, setRankError ] = useState("");
-  const [ wobError, setWOBError ] = useState("");
-  const [ rrcError, setRRCError ] = useState("");
-  const [ cmpError, setCMPError ] = useState("");
+  
+  const [ idError, setIdError ] = useState("");
+  const [ symbol1Error, setSymbol1Error ] = useState("");
+  const [ symbol2Error, setSymbol2Error ] = useState("");
   const [coinLogoError, setCoinLogoError] = useState("");  
 
   const {getRootProps, getInputProps} = useDropzone({
@@ -84,16 +80,8 @@ const AddEditPair = ({open, onCloseDialog}) => {
   useEffect(
     () => {
       if (currentUser) {
-        // const [ fName, lName ] = splitName(currentUser);
-        setName(currentUser.name);
-        setSymbol(currentUser.symbol);
-        setCoinID(currentUser.coinID);
-        setRank(currentUser.rank);
-        setCMP(currentUser.CMP);
-        setWOB(currentUser.Weight_Order_Book);
-        setRRC(currentUser.Range_Result_CMP);
-        setCoinLogo(currentUser.coinLogo);
-        
+       setSymbol1(currentUser?.symbol1)
+       setSymbol2(currentUser?.symbol2)
       }
     },
     [ currentUser ]
@@ -102,50 +90,53 @@ const AddEditPair = ({open, onCloseDialog}) => {
 
   const onSubmitClick = () => {
     // const phoneNumbers = phones.filter(item => item.phone.trim());
-    // if (!firstName) {
-    //   setFirstNameError(requiredMessage);
-    // } else if (!email) {
-    //   setEmailError(requiredMessage);
-    // } else if (!isValidEmail(email)) {
-    //   setEmailError(emailNotValid);
-    // } else if (phoneNumbers.length === 0) {
-    //   setPhoneError(requiredMessage);
-    // } else {
-    //   onUserSave(phoneNumbers);
-    // }
+    if (!symbol1) {
+      setSymbol1Error(requiredMessage);
+    } else if (!symbol2) {
+      setSymbol2Error(requiredMessage);
+    }else if (symbol1 == symbol2) {
+      setSymbol1Error(bothNotSelectSame);
+      setSymbol2Error(bothNotSelectSame);
+    }
+    else {
+      onUserSave();
+    }
   };
 
-  const onUserSave = phoneNumbers => {
-    const userDetail = {
-      coinLogo,
-      name,
-      symbol,
-      cmp,
-      wob,
-      rrc,
-      rank,
-      coinID
+  const onUserSave = () => {
+    const pairDetail = {    
+      symbol1,    
+      symbol2,    
+      status: "Active",
+      logo:""
     };
-    if (currentUser) {
-      dispatch(
-        updatePair({...currentUser, ...userDetail}, () => {
+    dispatch(
+        addNewPair(pairDetail, () => {
           onCloseDialog();
         })
       );
-    } else {
-      dispatch(
-        addNewPair(userDetail, () => {
-          onCloseDialog();
-        })
-      );
-    }
+    // if (currentUser) {
+    //   dispatch(
+    //     updatePair({...currentUser, ...userDetail}, () => {
+    //       onCloseDialog();
+    //     })
+    //   );
+    // } else {
+      // dispatch(
+      //   addNewPair(userDetail, () => {
+      //     onCloseDialog();
+      //   })
+      // );
+    // }
   };
   
 
   return (
-    <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
+    <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}
+    fullWidth
+    >
       <DialogTitle className={classes.dialogTitleRoot}>
-        {currentUser ? "Edit Coin Details" : "Create New Coin"}
+        {currentUser ? "Edit Coin Details" : "Create New Pair"}
       </DialogTitle>
       <DialogContent dividers>
         <Box
@@ -154,7 +145,7 @@ const AddEditPair = ({open, onCloseDialog}) => {
           alignItems="center"
           mb={{xs: 6, md: 5}}
         >
-          <Box
+          {/* <Box
             {...getRootProps()}
             mr={{xs: 0, md: 5}}
             mb={{xs: 3, md: 0}}
@@ -162,70 +153,58 @@ const AddEditPair = ({open, onCloseDialog}) => {
           >
             <input {...getInputProps()} />
             <CmtAvatar size={70} src={coinLogo} />
-          </Box>
-          <GridContainer>
+          </Box> */}                    
+        </Box>
+        <Box mb={{xs: 6, md: 5}}>         
+           <GridContainer>
             <Grid item xs={12} sm={6}>
-              <AppTextInput
+              <AppSelectBox
                 fullWidth
+                data={coinList}
                 variant="outlined"
-                label="Name"
-                value={name}
+                label="Symbol 1"                
+                value={symbol1}
                 onChange={e => {
-                  setName(e.target.value);
-                  setNameError("");
+                  setSymbol1(e.target.value);
+                  setSymbol1Error("");
+                  setSymbol2Error("");
                 }}
-                helperText={nameError}
+                error={symbol1Error || ""}
+                renderRow={(item, index) => (
+                  <MenuItem key={index} value={item.symbol}>
+                    {item.symbol}
+                  </MenuItem>
+                )}
+                helperText={symbol1Error}
               />
             </Grid>
+            
              
             <Grid item xs={12} sm={6}>
-              <AppTextInput
+              <AppSelectBox
                 fullWidth
+                data={coinList}
                 variant="outlined"
-                label="Symbol"
-                value={symbol}
+                label="Symbol 2"                
+                value={symbol2}
                 onChange={e => {
-                  setSymbol(e.target.value);
-                  setSymbolError("");
+                  setSymbol2(e.target.value);
+                  setSymbol2Error("");
+                  setSymbol1Error("");
                 }}
-                helperText={symbolError}
+                renderRow={(item, index) => (
+                  <MenuItem key={index} value={item.symbol}>
+                    {item.symbol}
+                  </MenuItem>
+                )}        
+                error={symbol2Error || ""}
+                helperText={symbol2Error}
               />
             </Grid>  
           </GridContainer>
-        </Box>
-        <Box mb={{xs: 6, md: 5}}>
-         
-            <Grid item xs={12} sm={12}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Coin ID"
-                value={coinID}
-                onChange={e => {
-                  setCoinID(e.target.value);
-                  setCoinIDError("");
-                }}
-                helperText={coinIDError}
-              />
-            </Grid>                                          
-            {/* <Grid item xs={12} sm={4}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Rank"
-                value={rank}
-                onChange={e => {
-                  setRank(e.target.value);
-                  setRankError("");
-                }}
-                helperText={rankError}
-              />
-            </Grid>    */}
-            
-          {/* </GridContainer>        */}
         </Box>  
         
-        <Box mb={{xs: 6, md: 5}}>
+        {/* <Box mb={{xs: 6, md: 5}}>
           <GridContainer>
             <Grid item xs={12} sm={4}>
               <AppTextInput
@@ -267,7 +246,7 @@ const AddEditPair = ({open, onCloseDialog}) => {
               />
             </Grid>                                    
           </GridContainer>       
-        </Box>               
+        </Box>                */}
         <Box display="flex" justifyContent="flex-end" mb={4}>
           <Button onClick={onCloseDialog}>Cancel</Button>
           <Box ml={2}>

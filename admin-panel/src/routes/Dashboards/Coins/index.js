@@ -16,22 +16,20 @@ import {useDispatch, useSelector} from "react-redux";
 import {
   deleteCoin,
   getCoins,
-  setCurrentCoin
+  setCurrentCoin,
+  updateCoinStatus
 } from "../../../redux/actions/Coins";
-import {  
-  getUsers,
-  // setCurrentUser
-} from "../../../redux/actions/Users";
 import AddEditCoin from "./AddEditCoin";
 import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
 import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
 import CoinDetailView from "./CoinDetailView";
 import NoRecordFound from "./NoRecordFound";
+import UpdateCoinBar from "./UpdateCoinBar";
 
 const CoinsModule = () => {
   const classes = useStyles();
-  const {users} = useSelector(({usersReducer}) => usersReducer);
+  const {coinList} = useSelector(({coinReducer}) => coinReducer);
   const [ orderBy, setOrderBy ] = React.useState("name");
   const [ order, setOrder ] = React.useState("asc");
   const [ page, setPage ] = React.useState(0);
@@ -39,8 +37,10 @@ const CoinsModule = () => {
   const [ selected, setSelected ] = React.useState([]);
   const [ openViewDialog, setOpenViewDialog ] = useState(false);
   const [ openUserDialog, setOpenUserDialog ] = useState(false);
+  const [ openUpdatelog, setOpenUpdatelog ] = useState(false);
   const [ openConfirmDialog, setOpenConfirmDialog ] = useState(false);
-  const [ selectedUser, setSelectedUser ] = useState({name: ""});
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [ openStatusDialog, setOpenStatusDialog ] = useState(false);
   const [ usersFetched, setUsersFetched ] = useState(false);
   const [ isFilterApplied, setFilterApplied ] = useState(false);
   const [ filterOptions, setFilterOptions ] = React.useState([]);
@@ -49,21 +49,10 @@ const CoinsModule = () => {
 
   const dispatch = useDispatch();
 
-  // useEffect(
-  //   () => {
-  //     dispatch(
-  //       getCoins(filterOptions, debouncedSearchTerm, () => {
-  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
-  //         setUsersFetched(true);
-  //       })
-  //     );
-  //   },
-  //   [ dispatch, filterOptions, debouncedSearchTerm ]
-  // );
   useEffect(
     () => {
       dispatch(
-        getUsers(filterOptions, debouncedSearchTerm, () => {
+        getCoins(filterOptions, debouncedSearchTerm, () => {
           setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
           setUsersFetched(true);
         })
@@ -71,6 +60,17 @@ const CoinsModule = () => {
     },
     [ dispatch, filterOptions, debouncedSearchTerm ]
   );
+  // useEffect(
+  //   () => {
+  //     dispatch(
+  //       getUsers(filterOptions, debouncedSearchTerm, () => {
+  //         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+  //         setUsersFetched(true);
+  //       })
+  //     );
+  //   },
+  //   [ dispatch, filterOptions, debouncedSearchTerm ]
+  // );
 
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
@@ -85,7 +85,7 @@ const CoinsModule = () => {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelected = users.map(n => n.id);
+      const newSelected = coinList.map(n => n.id);
       setSelected(newSelected);
       return;
     }
@@ -136,6 +136,28 @@ const CoinsModule = () => {
     setOpenUserDialog(true);
   };
 
+  const handleUpdateBar = user => {
+    dispatch(setCurrentCoin(user));
+    setOpenUpdatelog(true);
+  };
+  const handleCloseUpdateDialog = () => {
+    setOpenUpdatelog(false);
+    dispatch(setCurrentCoin(null));
+  };
+
+  const handleStatusUpdate = user => {
+    setSelectedUser(user);
+    setOpenStatusDialog(true);
+  };
+const handleConfirmUpdate = () => {
+    setOpenStatusDialog(false);
+    dispatch(updateCoinStatus(selectedUser?.id, {status: `${selectedUser?.status=="Active"?"Inactive":"Active"}`}));
+  };
+
+  const handleCancelUpdate = () => {
+    setOpenStatusDialog(false);
+  };
+
   const handleUserDelete = user => {
     setSelectedUser(user);
     setOpenConfirmDialog(true);
@@ -178,11 +200,11 @@ const CoinsModule = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={users.length}
+              rowCount={coinList.length}
             />
             <TableBody>
-              {!!users.length ? (
-                stableSort(users, getComparator(order, orderBy))
+              {!!coinList.length ? (
+                stableSort(coinList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <CoinListRow
@@ -190,7 +212,9 @@ const CoinsModule = () => {
                       row={row}
                       onRowClick={handleRowClick}
                       onUserEdit={handleUserEdit}
+                      onUpdateBar={handleUpdateBar}
                       onUserDelete={handleUserDelete}
+                      onUserStatusUpdate={handleStatusUpdate}
                       onUserView={handleUserView}
                       isSelected={isSelected}
                     />
@@ -207,7 +231,7 @@ const CoinsModule = () => {
                         {usersFetched ? (
                           "There are no records found."
                         ) : (
-                          "Loading users..."
+                          "Loading List..."
                         )}
                       </NoRecordFound>
                     )}
@@ -220,7 +244,7 @@ const CoinsModule = () => {
         <TablePagination
           rowsPerPageOptions={[ 10, 20, 50 ]}
           component="div"
-          count={users.length}
+          count={coinList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handlePageChange}
@@ -234,6 +258,12 @@ const CoinsModule = () => {
           onCloseDialog={handleCloseUserDialog}
         />
       )}
+      {openUpdatelog && (
+        <UpdateCoinBar
+          open={openUpdatelog}
+          onCloseDialog={handleCloseUpdateDialog}
+        />
+      )}
       {openViewDialog && (
         <CoinDetailView
           open={openViewDialog}
@@ -244,9 +274,16 @@ const CoinsModule = () => {
       <ConfirmDialog
         open={openConfirmDialog}
         title={`Confirm delete ${selectedUser.name}`}
-        content={"Are you sure, you want to  delete this user?"}
+        content={"Are you sure, you want to  delete this Coin?"}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+      />
+      <ConfirmDialog
+        open={openStatusDialog}
+        title={`Confirm Status Change ${selectedUser.name}`}
+        content={`Are you sure, you want to ${selectedUser?.status=="Active"?"Inactive":"Active"} this Coin?`}
+        onClose={handleCancelUpdate}
+        onConfirm={handleConfirmUpdate}
       />
     </div>
   );
