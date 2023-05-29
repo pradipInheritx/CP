@@ -76,7 +76,7 @@ const fetchAllSet = async (getAlbumDoc: any) => {
             getSetQuery.docs.forEach(async (snapshot) => {
                 setAry.push({ ...snapshot.data(), albumId: data.id, setId: snapshot.id })
             })
-            Sets.push({ ...data.data(), setDetails: setAry })
+            Sets.push({ ...data.data(), albumId: data.id, setDetails: setAry })
             resolve(Sets);
         })
 
