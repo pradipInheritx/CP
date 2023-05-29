@@ -341,6 +341,7 @@ function App() {
   const [inOutReward,setInOutReward]=useState<any>(0)
   const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
   const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
+  const [afterVotePopup,setAfterVotePopup]=useState<any>(false)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -1023,7 +1024,9 @@ useEffect(() => {
             }}
           >
             <AppContext.Provider
-                value={{
+                  value={{
+                    afterVotePopup,
+                    setAfterVotePopup,
                   rewardExtraVote,
                   setRewardExtraVote,
                   headerExtraVote,
