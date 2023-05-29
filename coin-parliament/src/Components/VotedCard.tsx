@@ -284,7 +284,7 @@ const VotedCard = ({
 
             </div>
 
-            {selectedTimeFrame == vote?.timeframe?.index && <RangeSilder
+            {/* selectedTimeFrame == vote?.timeframe?.index &&  */<RangeSilder
               //  lastTenSec={lastTenSec}
               vote={vote}
               coins={coins}
@@ -351,8 +351,6 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
   const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`
 
   const checkprice = async () => {
-    console.log(voteId, 'pkkp');
-
     if (!getresultFlag) return
     getresultFlag = false;
     console.log('price called')
@@ -380,12 +378,12 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
 
   }
 
+
   return (
     // @ts-ignore
     <Countdown
-      date={expirationTime}
+      date={new Date(expirationTime)}
       renderer={({ hours, minutes, seconds, completed }) => {
-
 
         if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
           setLastTenSec(true)

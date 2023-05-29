@@ -243,9 +243,11 @@ const SingleCoin = () => {
   useEffect(() => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
       .then(responses => {
-        return Promise.all(responses.map((res, index) => {
+        let tempAllActiveVotes: VoteResultProps[] = [];
+        Promise.all(responses.map((res, index) => {
           if (res) {
-            // getLeftTime(res.data(), index);          
+            // getLeftTime(res.data(), index); 
+            tempAllActiveVotes = [...tempAllActiveVotes, { ...res.data(), id: res.id }];
             AllvoteValueObject[index] = res.data();
             setAllButtonTime(AllvoteValueObject);
             setVotedDetails(AllvoteValueObject);
@@ -262,15 +264,16 @@ const SingleCoin = () => {
             //  setSelectedTimeFrameArray(newTimeframe)
 
           }
-          setAllActiveVotes(AllvoteValueObject);
         }))
+        setAllActiveVotes(() => {
+          return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
+        });
       })
       .catch(error => {
         console.error('promiseAll', error);
       });
 
   }, [user?.uid, params?.id, selectedTimeFrame, forRun, voteId, vote])
-
 
   useEffect(() => {
     return () => {
@@ -333,13 +336,14 @@ const SingleCoin = () => {
 
 
   const canVote = useMemo(() => {
+
     return !!!voteDetails[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`];
     return (
       ((!vote.expiration && vote.success === undefined) ||
         (vote.expiration && vote.success !== undefined) ||
         Date.now() >= vote?.expiration)
     );
-  }, [vote.expiration, vote.success, selectedTimeFrame]);
+  }, [vote.expiration, vote.success, selectedTimeFrame, voteDetails]);
   useEffect(() => {
     if (!canVote && loading) {
       setLoading(false);
@@ -371,8 +375,8 @@ const SingleCoin = () => {
 
 
   // open modal
-
   const [modalData, setModalData] = useState<VoteResultProps | undefined>();
+  const [modalData2, setModalData2] = useState<any>();
   const coin1 = `${coins && symbol1 ? coins[symbol1]?.symbol?.toLowerCase() || "" : ""}`;
   const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`;
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -402,31 +406,46 @@ const SingleCoin = () => {
   }, [voteDetails]);
   useEffect(() => {
     if (modalData) {
-      setModalData(modalData);
-      let exSec = new Date(modalData.expiration - modalData?.voteTime).getSeconds();
-      setTimeout(async () => {
-        await getPriceCalculation({
-          coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-          coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-          voteId: voteId,
-          voteTime: vote?.voteTime,
-          valueVotingTime: vote?.valueVotingTime,
-          expiration: vote?.expiration,
-          timestamp: Date.now(),
-          userId: vote?.userId
-        }).then((data) => {
-          if (data.data == null) {
-            setpopUpOpen(true);
-          }
-        }).catch(err => {
-          if (err && err.message) {
-            console.log(err.message);
-          }
-        });
-      }, (exSec * 1000));
+      // let exSec = new Date(-).getSeconds();
+      // current date
+      let current = new Date();
+
+      // voteTime date
+      let voteTime = new Date(modalData?.expiration);
+
+      // finding the difference in total seconds between two dates
+      let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
+      // console.log(second_diff, 'hello');
+      if (second_diff > 0) {
+        const timer = setTimeout(async () => {
+          await getPriceCalculation({
+            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+            voteId: modalData?.id,
+            voteTime: modalData?.voteTime,
+            valueVotingTime: modalData?.valueVotingTime,
+            expiration: modalData?.expiration,
+            timestamp: Date.now(),
+            userId: modalData?.userId
+          }).then((response) => {
+            if (response?.data) {
+              setpopUpOpen(true);
+              setModalData2(response?.data);
+            }
+          }).catch(err => {
+            if (err && err.message) {
+              console.log(err.message);
+            }
+          });
+        }, (second_diff * 1000));
+        return () => clearTimeout(timer);
+      }
     }
     // console.log(modalData, 'pkkp');
   }, [modalData]);
+  useEffect(() => {
+    setModalData(modalData2);
+  }, [modalData2])
   //open modal
   return (
     <>
@@ -497,7 +516,7 @@ const SingleCoin = () => {
                     <>
                       <VotedCard
                         {...{
-                          vote,
+                          vote: voteDetails[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
                           coins: coinUpdated,
                           totals,
                           symbol1,

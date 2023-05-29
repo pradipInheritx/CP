@@ -189,24 +189,24 @@ const Minting = ({
 
   // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
-    if (score == 100 ) {      
+    if (score == 100) {
       handleCmpPopupShow()
-     const Animation = lottie.loadAnimation({
-      // @ts-ignore
-      container: document.getelementsbyclassname(".Cmp-animation"),
-      animationData: Confetti,
-      renderer: "html", // "canvas", "html"
-      loop: true, // boolean
-      autoplay: true, // boolean              
+      const Animation = lottie.loadAnimation({
+        // @ts-ignore
+        container: document.getelementsbyclassname(".Cmp-animation"),
+        animationData: Confetti,
+        renderer: "html", // "canvas", "html"
+        loop: true, // boolean
+        autoplay: true, // boolean              
       });
       handleSoundWinCmp.play()
-    setTimeout(function () {
-      Animation.pause();
-      handleSoundWinCmp.pause()
-    }, 4000);  // 5000 milliseconds = 5 seconds
+      setTimeout(function () {
+        Animation.pause();
+        handleSoundWinCmp.pause()
+      }, 4000);  // 5000 milliseconds = 5 seconds
       // setShowBack(false)
     }
-    
+
   }, [score])
 
   const [animateButton, setAnimateButton] = useState<boolean>(false);

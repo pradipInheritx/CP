@@ -25,6 +25,7 @@ export type VoteProps = {
 };
 
 export type VoteResultProps = VoteProps & {
+  id?: string;
   voteTime: number;
   expiration: number;
   valueExpirationTime?: number | number[];

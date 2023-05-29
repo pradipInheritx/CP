@@ -86,7 +86,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   setHideButton?: any,
   selectedTimeFrame?: any,
   hideButton?: any,
-  setModalData: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
+  setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
 }) {
 
 
@@ -119,7 +119,9 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
       });
       return temp;
     });
-    setModalData(undefined);
+    if (setModalData instanceof Function) {
+      setModalData(undefined);
+    }
     // setShow(false);
   };
 
