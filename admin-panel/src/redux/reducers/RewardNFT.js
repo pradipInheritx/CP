@@ -43,13 +43,13 @@ export default (state = INIT_STATE, action) => {
     case EDIT_REWARDALBUM: {
       return {
         ...state,
-        albumList: state.albumList.map(user => (user.id === action.payload.id ? action.payload : user)),
+        albumList: state.albumList.map(album => (album.albumId === action.payload.albumId ? action.payload : album)),
       };
     }
     case DELETE_REWARDALBUM: {
       return {
         ...state,
-        albumList: state.albumList.filter(user => user.id !== action.payload),
+        albumList: state.albumList.filter(album => album.albumId !== action.payload),
       };
     }   
     
@@ -76,13 +76,13 @@ export default (state = INIT_STATE, action) => {
     case EDIT_REWARDCARD: {
       return {
         ...state,
-        cardList: state.cardList.map(user => (user.id === action.payload.id ? action.payload : user)),
+        cardList: state.cardList.map(card => (card.cardId === action.payload.cardId ? action.payload : card)),
       };
     }
     case DELETE_REWARDCARD: {
       return {
         ...state,
-        cardList: state.cardList.filter(user => user.id !== action.payload),
+        cardList: state.cardList.filter(card => card.cardId !== action.payload),
       };
     }    
     default:

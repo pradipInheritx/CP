@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import CmtList from '../../../../@coremat/CmtList';
 import IconButton from '@material-ui/core/IconButton';
 import AppSelectBox from '../../../../@jumbo/components/Common/formElements/AppSelectBox';
-import { emailNotValid, requiredMessage } from '../../../../@jumbo/constants/ErrorMessages';
+import { emailNotValid,videoMessage, requiredMessage } from '../../../../@jumbo/constants/ErrorMessages';
 import { useDispatch, useSelector } from 'react-redux';
 import NumberFormat from 'react-number-format';
 import PropTypes from 'prop-types';
@@ -20,7 +20,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { isValidEmail } from '../../../../@jumbo/utils/commonHelper';
-import { addNewUser, updateUser } from '../../../../redux/actions/Users';
+import { addNewRewardAlbum, updateRewardAlbum } from '../../../../redux/actions/RewardNft';
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -68,13 +68,14 @@ const splitName = user => {
   return ['', ''];
 };
 
-const AddEditUser = ({ open, onCloseDialog,selectType }) => {
+const AddEditAlbum = ({ open, onCloseDialog,selectType }) => {
   const classes = useStyles();
-  const { currentUser } = useSelector(({ usersReducer }) => usersReducer);
+  // const { currentUser } = useSelector(({ usersReducer }) => usersReducer);
+  const { currentAlbum,currentCard } = useSelector(({ RewardNFT }) => RewardNFT);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [profile_pic, setProfile_pic] = useState('');
+  // const [profile_pic, setProfile_pic] = useState('');
   const [company, setCompany] = useState('');
   const [designation, setDesignation] = useState('');
   const [phones, setPhones] = useState([{ phone: '', label: 'home' }]);
@@ -82,67 +83,52 @@ const AddEditUser = ({ open, onCloseDialog,selectType }) => {
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
 
+// const [profile_pic, setProfile_pic] = useState('');
+//   const [profile_picError, setProfile_picError] = useState('');
+  
   const [albumName, setAlbumName] = useState('');
   const [albumNameError, setAlbumNameError] = useState('');
 
   const [totalSets, setTotalSets] = useState('');
   const [totalSetsError, setTotalSetsError] = useState('');
 
-  const [setsName, setSetsName] = useState([{sets:""}]);
-  const [setsNameError, setSetsNameError] = useState('');
+  const [setsName, setSetsName] = useState([]);
+  const [setsNameError, setSetsNameError] = useState([]);
 
   const [albumVideo, setAlbumVideo] = useState('');
   const [albumVideoError, setAlbumVideoError] = useState('');
 
-  const [distributionLimit, setDistributionLimit] = useState('');
-  const [distributionLimitError, setDistributionLimitError] = useState('');
-
-  const [cardName, setCardName] = useState('');
-  const [cardNameError, setCardNameError] = useState('');
-
-  const [cardImgae, setCardImgae] = useState('');
-  const [cardImgaeError, setCardImgaeError] = useState('');
-
-  const [nftTier, setNftTier] = useState('');
-  const [nftTierError, setNftTierError] = useState('');
-
-  const [quanlity, setQuanlity] = useState('');
-  const [quanlityError, setQuanlityError] = useState('');
-
-  const [collocation, setCollocation] = useState('');
-  const [collocationError, setCollocationError] = useState('');
-
-  const [selectSets, setSelectSets] = useState('');
-  const [selectSetsError, setSelectSetsError] = useState('');
+  const [albumVideoSend, setAlbumVideoSend] = useState('');
   
 
   const { getRootProps, getInputProps } = useDropzone({
+
     accept: `${selectType=="album"?'video/mp4,video/mkv,video/x-m4v,video/*':'image/*'}`,
-    onDrop: acceptedFiles => {
-      setProfile_pic(URL.createObjectURL(acceptedFiles[0]));
+    onDrop: acceptedFiles => {      
+      setAlbumVideo(URL.createObjectURL(acceptedFiles[0]));
+      setAlbumVideoSend(acceptedFiles[0]);
+      setAlbumVideoError("");
     },
   });
 
+const  validRegExp = new RegExp(/^\d*\.?\d*$/);
+  console.log(currentAlbum,"currentAlbum")
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (currentUser) {
-      const [fName, lName] = splitName(currentUser);
-      setFirstName(fName);
-      setLastName(lName);
-      setProfile_pic(currentUser.profile_pic);
-      setEmail(currentUser.email);
-      setCompany(currentUser.company);
-      setDesignation(currentUser.designation);
-      setPhones(currentUser.phones);
+    if (currentAlbum) {
+      setAlbumName(currentAlbum?.albumName)
+      setAlbumVideo(currentAlbum?.videoUrl)
+      setTotalSets(currentAlbum?.setQuantity || currentAlbum?.setQunatity)      
+      setSetsName(currentAlbum?.setDetails)      
     }    
-  }, [currentUser]);
+  }, [currentAlbum]);
 
  
 
   const onSetsNameAdd = (name, index) => {
     const updatedList = [...setsName];
-    updatedList[index].sets = name.target.value;
+    updatedList[index].setName = name.target.value;
     setSetsName(updatedList);
     setSetsNameError('');
   };
@@ -152,68 +138,70 @@ const AddEditUser = ({ open, onCloseDialog,selectType }) => {
     updatedList.splice(index, 1);
     setSetsName(updatedList);
   };
-const onSetsNameRowAdd = () => {
-    setSetsName(setsName.concat({ sets: ''}));
+  const onSetsNameRowAdd = () => {
+
+    const sequenceNumber=setsName.length
+    if (sequenceNumber < 5) {
+    setSetsName(setsName.concat({ setName: '',sequence:sequenceNumber + 1}));    
+    } else {
+      alert("can not add more then 5")
+    }  
+  };
+  const onSubmitClick = () => { 
+    const allsetsNameError = [...setsNameError]
+    const setsNameCheck = setsName?.every((item,index) => {
+      if (item.setName == "") {   
+        allsetsNameError[index] = requiredMessage
+        setSetsNameError(allsetsNameError)
+          // return false
+      }
+      else {
+        return true
+      }      
+    });
+    console.log(setsNameCheck,"setsNameCheck")
+    if (!albumName) {
+      setAlbumNameError(requiredMessage);
+    } else if (!albumVideo) {
+      setAlbumVideoError(videoMessage);
+    }  else if (!totalSets) {
+      setTotalSetsError(requiredMessage);
+    }
+     else if (!setsNameCheck) {
+      // setPhoneError(requiredMessage);
+      console.log("i am working")
+    }
+    else {
+      // onUserSave(phoneNumbers);
+      onAlbumSubmit()
+    }
   };
 
+console.log(albumNameError,albumVideoError,totalSetsError,setsNameError,"allError")
 
-  // const onPhoneNoAdd = (number, index) => {
-  //   const updatedList = [...phones];
-  //   updatedList[index].phone = number;
-  //   setPhones(updatedList);
-  //   setPhoneError('');
-  // };
-
-  // const onPhoneRowRemove = index => {
-  //   const updatedList = [...phones];
-  //   updatedList.splice(index, 1);
-  //   setPhones(updatedList);
-  // };
-
-  
-  // const onPhoneRowAdd = () => {
-  //   setPhones(phones.concat({ phone: '', label: 'home' }));
-  // };
-
-
-
- const onCardSubmit = () => {
-    const CardDetail = {
-      profile_pic,
-      cardName,
-      nftTier,
-      quanlity,
-      selectSets,
-      collocation,
-    };
-   console.log(CardDetail,"submitData")
- }
-  
  const onAlbumSubmit = () => {
     const AlbumDetail = {
-      profile_pic,
-      albumName,
-      totalSets,
-      setsName,
-      distributionLimit,      
+      videoUrl:albumVideo,
+      albumName:albumName,
+      setQunatity:totalSets,
+      setDetails:setsName,
+      // distributionLimit,      
     };
-   console.log(AlbumDetail,"submitData")
+   console.log(currentAlbum,"submitData")   
+     if (currentAlbum) {
+      dispatch(
+        updateRewardAlbum(currentAlbum?.albumId,AlbumDetail, () => {
+          onCloseDialog();
+        }),
+      );
+    } else {
+      dispatch(
+        addNewRewardAlbum(AlbumDetail, () => {
+          onCloseDialog();
+        }),
+      );
+    }
 }
-
-  // const onSubmitClick = () => {
-  //   const phoneNumbers = phones.filter(item => item.phone.trim());
-  //   if (!firstName) {
-  //     setFirstNameError(requiredMessage);
-  //   } else if (!email) {
-  //     setEmailError(requiredMessage);
-  //   } else if (!isValidEmail(email)) {
-  //     setEmailError(emailNotValid);
-  //   } else if (phoneNumbers.length === 0) {
-  //     setPhoneError(requiredMessage);
-  //   } else {
-  //     onUserSave(phoneNumbers);
-  //   }
-  // };
 
   // const onUserSave = phoneNumbers => {
   //   const userDetail = {
@@ -227,7 +215,7 @@ const onSetsNameRowAdd = () => {
 
   //   if (currentUser) {
   //     dispatch(
-  //       updateUser({ ...currentUser, ...userDetail }, () => {
+  //       updateRewardAlbum({ ...currentUser, ...userDetail }, () => {
   //         onCloseDialog();
   //       }),
   //     );
@@ -239,22 +227,24 @@ const onSetsNameRowAdd = () => {
   //     );
   //   }
   // };
-
-  const isPhonesMultiple = phones.length > 1;
+  
   const isSetsNameMultiple = setsName.length > 1;
 
   return (
-    <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
-      {selectType == "card"?<DialogTitle className={classes.dialogTitleRoot}>{currentUser ? 'Edit Card Details' : 'Create New Card'}</DialogTitle>
-      :<DialogTitle className={classes.dialogTitleRoot}>{currentUser ? 'Edit Album Details' : 'Create New Album'}</DialogTitle>}
-      <DialogContent dividers>
+    <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}
+    maxWidth="lg"
+    >      
+        <DialogTitle className={classes.dialogTitleRoot}>{currentAlbum ? 'Edit Album Details' : 'Create New Album'}</DialogTitle>      
+      <DialogContent dividers      
+      >
         <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} alignItems="center" mb={{ xs: 6, md: 5 }}>
           <Box {...getRootProps()} mr={{ xs: 0, md: 5 }} mb={{ xs: 3, md: 0 }} className="pointer">
             <input {...getInputProps()} />
-            <CmtAvatar size={70} src={profile_pic} />
+            <CmtAvatar size={70} src={albumVideo} />
+            {albumVideoError != "" ? <span style={{color:"red",margin:"10px"}}>{albumVideoError}</span>:""}
           </Box>
           <GridContainer>
-            {selectType == "album" && <Grid item xs={12} sm={12}>
+            <Grid item xs={12} sm={12}>
               <AppTextInput
                 fullWidth
                 variant="outlined"
@@ -265,46 +255,31 @@ const onSetsNameRowAdd = () => {
                   setAlbumNameError('');
                 }}
                 helperText={albumNameError}
+                error={albumNameError || ""}
               />
-            </Grid>}
-            {selectType == "card" &&
-              <>
-              <Grid item xs={12} sm={12}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Card Name"
-                value={cardName}
-                onChange={e => {
-                  setCardName(e.target.value);
-                  setCardNameError('');
-                }}
-                helperText={cardNameError}
-              />
-              </Grid>              
-              </>
-            }
+            </Grid>           
           </GridContainer>
         </Box>
 
         <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} alignItems="center" mb={{ xs: 6, md: 5 }}>
           <GridContainer>
-            {selectType == "album" &&
-              <>
-            <Grid item xs={12} sm={6}>
+            
+            <Grid item xs={12} sm={12}>
               <AppTextInput
                 fullWidth
                 variant="outlined"
                 label="Total Sets"
                 value={totalSets}
                 onChange={e => {
-                  setTotalSets(e.target.value);
+                  var finalValue = validRegExp.test(e.target.value);
+    if(finalValue)setTotalSets(e.target.value);
+                  
                   setTotalSetsError('');
                 }}
                 helperText={totalSetsError}
               />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+            </Grid>
+              {/* <Grid item xs={12} sm={6}>
                 <AppTextInput
                   fullWidth
                   variant="outlined"
@@ -316,75 +291,7 @@ const onSetsNameRowAdd = () => {
                   }}
                   helperText={distributionLimitError}
                 />
-                </Grid> 
-            </>
-            }
-            
-            {selectType == "card" &&
-              <>
-               <Grid item xs={12} sm={6}>
-              <AppSelectBox
-                  fullWidth
-                  data={NftTierlabels}
-                  label="Select Nft Tier"
-                  valueKey="slug"
-                  variant="outlined"
-                  labelKey="title"
-                  value={nftTier}
-                onChange={e => {
-                  setNftTier(e.target.value);
-                  setNftTierError('');
-                }}
-                helperText={nftTierError}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-              <AppSelectBox
-                  fullWidth
-                  data={NftTierlabels}
-                  label="Select Collocation"
-                  valueKey="slug"
-                  variant="outlined"
-                  labelKey="title"
-                  value={collocation}
-                onChange={e => {
-                  setCollocation(e.target.value);
-                  setCollocationError('');
-                }}
-                helperText={collocationError}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-              <AppSelectBox
-                  fullWidth
-                  data={NftTierlabels}
-                  label="Select Sets"
-                  valueKey="slug"
-                  variant="outlined"
-                  labelKey="title"
-                  value={selectSets}
-                onChange={e => {
-                  setSelectSets(e.target.value);
-                  setSelectSetsError('');
-                }}
-                helperText={selectSetsError}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-              <AppTextInput
-                fullWidth
-                variant="outlined"
-                label="Total Quanlity"
-                value={quanlity}
-                onChange={e => {
-                  setQuanlity(e.target.value);
-                  setQuanlityError('');
-                }}
-                helperText={quanlityError}
-              />
-              </Grid>
-              </>              
-            }            
+                </Grid>  */}                                            
           </GridContainer>
         </Box>
         {selectType == "album" && 
@@ -398,9 +305,10 @@ const onSetsNameRowAdd = () => {
                   fullWidth
                   variant="outlined"
                   label="Add Sets"
-                  value={item.sets}
+                  value={item.setName}
                   onChange={name => onSetsNameAdd(name, index)}
-                  helperText={setsNameError}
+                  helperText={setsNameError[index]}
+                  error={setsNameError[index] || ""}
                   // InputProps={{
                   //   inputComponent: NumberFormatCustom,
                   // }}
@@ -424,16 +332,14 @@ const onSetsNameRowAdd = () => {
           className="pointer"
           color="primary.main">
           <AddCircleOutlineIcon />
-          <Box ml={2}>Add More</Box>
+          <Box ml={2}>{setsName.length > 0 ? "Add More" :"Add Set"}</Box>
           </Box>
           </>
         }        
         <Box display="flex" justifyContent="flex-end" mb={4}>
           <Button onClick={onCloseDialog}>Cancel</Button>
           <Box ml={2}>
-            <Button variant="contained" color="primary" onClick={
-             selectType=="card"? onCardSubmit :onAlbumSubmit
-            }>
+            <Button variant="contained" color="primary" onClick={onSubmitClick}>
               Save
             </Button>
           </Box>
@@ -443,9 +349,9 @@ const onSetsNameRowAdd = () => {
   );
 };
 
-export default AddEditUser;
+export default AddEditAlbum;
 
-AddEditUser.prototype = {
+AddEditAlbum.prototype = {
   open: PropTypes.bool.isRequired,
   onCloseDialog: PropTypes.func,
 };

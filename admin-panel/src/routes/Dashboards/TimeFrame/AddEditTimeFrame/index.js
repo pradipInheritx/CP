@@ -57,7 +57,7 @@ const splitName = user => {
 
 const AddEditTimeFrame = ({open, onCloseDialog}) => {
   const classes = useStyles();
-  const { currentTimeFrame } = useSelector(({ TimeFrame }) => TimeFrame);
+  const { currentTimeFrame,timeFrameList} = useSelector(({ TimeFrame }) => TimeFrame);
   
 
   const [ name, setName ] = useState("");
@@ -66,6 +66,7 @@ const AddEditTimeFrame = ({open, onCloseDialog}) => {
   const [seconds, setSeconds] = useState("");
   const [secondsError, setSecondsError] = useState("");    
   
+  const [status, setStatus] = useState("");
   // const adminDetelis= JSON.parse(localStorage.getItem("userData"))
   // const {getRootProps, getInputProps} = useDropzone({
   //   accept: "image/*",
@@ -81,6 +82,7 @@ const AddEditTimeFrame = ({open, onCloseDialog}) => {
       if (currentTimeFrame) {        
         setName(currentTimeFrame.name);
         setSeconds(currentTimeFrame.seconds);      
+        setStatus(currentTimeFrame.chosen);      
       }
     },
     [ currentTimeFrame ]
@@ -98,26 +100,31 @@ const onSubmitClick = () => {
   };
 
   const onUserSave = () => {
-    const timeFrameDetail = {
-    name,
-    seconds,
-      chosen: true,  
-    index:1,
-    };
+    const allTimeFram = timeFrameList.map((item,ind) => {
+      if (item.index == currentTimeFrame.index) {
+        item.name = name;
+        item.seconds = seconds;
+      }
+return item
+    })    
 
     if (currentTimeFrame) {
+
+      // console.log(allTimeFram,"checkallUpdate")
+      // console.log({...timeFrameList, ...timeFrameDetail},"checkallUpdate")
       dispatch(
-        updateTimeFrame({...currentTimeFrame, ...timeFrameDetail}, () => {
-          onCloseDialog();
-        })
-      );
-    } else {
-      dispatch(
-        addNewTimeFrame(timeFrameDetail, () => {
+        updateTimeFrame(allTimeFram, () => {
           onCloseDialog();
         })
       );
     }
+    // else {
+    //   dispatch(
+    //     addNewTimeFrame(timeFrameDetail, () => {
+    //       onCloseDialog();
+    //     })
+    //   );
+    // }
   };
 
   return (

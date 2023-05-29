@@ -41,14 +41,14 @@ const getUserActions = user => {
   return actions;
 };
 
-const UserListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
+const AlbumListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const onUserMenuClick = menu => {
     if (menu.action === 'view') {
       onUserView(row);
-    } else if (menu.action === 'edit') {
+    } else if (menu.action === 'edit') {      
       onUserEdit(row);
     } else if (menu.action === 'email') {
       dispatch(sentMailToUser());
@@ -79,24 +79,24 @@ const UserListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, on
       </TableCell> */}
       <TableCell component="th" id={labelId} scope="row" padding="normal">
         <Box display="flex" alignItems="center">
-          <Box mr={{ xs: 4, md: 5 }}>
+          {/* <Box mr={{ xs: 4, md: 5 }}>
             <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
-          </Box>
+          </Box> */}
           <div>
             <Typography className={classes.titleRoot} component="div" variant="h4">
-              {row.name}
+              {row?.albumName}
             </Typography>
           </div>
         </Box>
       </TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>
+      <TableCell>{row?.setQunatity || row?.setQuantity || "-"}</TableCell>
+      <TableCell>{row?.cardQunatity && row?.cardQunatity || "-"}</TableCell>
+      <TableCell>{"-"}</TableCell>
+      {/* <TableCell>
         {row.status === 'suspended' ? `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})` : row.status}
-      </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell align="right">{row.emailUsage} GB</TableCell>
+      </TableCell> */}
+      <TableCell>{"-"}</TableCell>
+      <TableCell >{"-"}</TableCell>
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu items={userActions} onItemClick={onUserMenuClick} TriggerComponent={<MoreHoriz />} />
       </TableCell>
@@ -104,4 +104,4 @@ const UserListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, on
   );
 };
 
-export default React.memo(UserListRow);
+export default React.memo(AlbumListRow);

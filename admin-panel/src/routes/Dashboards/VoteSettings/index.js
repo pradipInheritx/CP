@@ -17,7 +17,7 @@ import { requiredMessage } from '@jumbo/constants/ErrorMessages';
 
 const VoteSettingsModule = () => {
   const classes = useStyles();
- 
+ const  validRegExp = new RegExp(/^\d*\.?\d*$/);
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
@@ -25,7 +25,7 @@ const VoteSettingsModule = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   
   const { VoteSettingDetelis } = useSelector(({ VoteSetting }) => VoteSetting);  
-   
+  const [allSettingData, setAllSettingData] = useState({});
   const [giveTime, setGiveTime] = useState('');
   const [giveTimeError, setGiveTimeError] = useState('');
   
@@ -36,6 +36,15 @@ const VoteSettingsModule = () => {
 
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // setAllSettingData(ReturnSettingDetelis)
+    if (VoteSettingDetelis) {      
+      setGiveTime(VoteSettingDetelis?.voteRules?.timeLimit)
+      setAfterTimeVote(VoteSettingDetelis?.voteRules?.maxVotes)      
+      setAllSettingData(VoteSettingDetelis)
+    }
+  }, [VoteSettingDetelis]);
 
   useEffect(() => {
     dispatch(
@@ -58,12 +67,17 @@ const VoteSettingsModule = () => {
   };
 
   const onCmpSave = () => {
-    const VoteSettingDetail = {
-      giveTime,
-      afterTimeVote
-    };    
+     var allDatainfo = {
+      ...allSettingData.CPMSettings,
+      ...allSettingData.voteRules,
+    }
+    allDatainfo["maxVotes"]=afterTimeVote
+    allDatainfo["timeLimit"] = giveTime
+    
+    console.log(allDatainfo,"allDatainfo")
+
       dispatch(
-        updateVoteSetting({...VoteSettingDetail}),
+        // updateVoteSetting(allDatainfo),
       );    
   };
 
@@ -75,7 +89,7 @@ const VoteSettingsModule = () => {
     <div className={classes.root}>
           <Paper className={classes.paper}>   
               {/* <Box className={classes.authContent}> */}
-         <form className='' style={{ display: "flex" ,justifyContent: "center",}}>
+         <form className='' style={{ display: "flex" ,justifyContent: "center",}} >
         <div className='' >                
             <Box style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }} >
               
@@ -83,15 +97,14 @@ const VoteSettingsModule = () => {
                 // style={{ width: "55%" }} 
                 fullWidth
               type="text"
-                label={
-                  // <IntlMessages id="appModule.userTypeCpm" />
-                  "Give Time After Vote End"
-                }            
-              onChange={event => {
-                setGiveTime(event.target.value)
+                label={"Time limit"} 
+                value={giveTime}
+                onChange={event => {
+                var finalValue = validRegExp.test(event.target.value);
+                  if(finalValue) setGiveTime(event.target.value)
                 setGiveTimeError("")
               }}
-              defaultValue={VoteSettingDetelis?.giveTime}
+              
               margin="normal"
               variant="outlined"
                 className={classes.textFieldRoot}
@@ -106,13 +119,14 @@ const VoteSettingsModule = () => {
               type="text"
                 label={
                   // <IntlMessages id="appModule.weight" />
-                  "After Time Vote"
+                  "Max Votes"
                 }              
-              onChange={event => {
-                setAfterTimeVote(event.target.value)
+                onChange={event => {
+                var finalValue = validRegExp.test(event.target.value);
+                  if(finalValue)setAfterTimeVote(event.target.value)
                 setAfterTimeVoteError("")
               }}
-              defaultValue={VoteSettingDetelis?.afterTimeVote}
+              value={afterTimeVote}
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
@@ -123,7 +137,7 @@ const VoteSettingsModule = () => {
           <Box marginY={"10px"}  display="flex" alignItems="center" justifyContent="space-around" mb={5}>
               <Button
                 type="reset" 
-              //   onClick={onSubmit}
+                // onClick={rest()}
               variant="contained" color="neutral">
               <IntlMessages id="appModule.reset" />
             </Button>            

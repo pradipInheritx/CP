@@ -165,6 +165,12 @@ const dashboardsMenus = [
     link: "/dashboard/rewardsettings"
   },
   {    
+    name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/rewardnft"
+  },
+  {    
     name: <IntlMessages id={"sidebar.dashboard.returnsettings"} />,
     icon: <People />,
     type: "item",

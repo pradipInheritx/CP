@@ -71,12 +71,12 @@ export const updateTimeFrame = (timeFrame, callbackFun) => {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
     dispatch(fetchStart());
     axios
-      .put(`voteSetting/updateTimeframe/${timeFrame.timeframeId}`, timeFrame)
+      .put(`voteSetting/updateTimeframe/timeFrames`, {timeframes:timeFrame})
       .then(response => {
         if (response.status === 200 || response.status === 204 || response.status === 201) {
           dispatch(fetchSuccess(response.data.message));
-          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result});
-          if (callbackFun) callbackFun(response.data.result);
+          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result.timeframes});
+          if (callbackFun) callbackFun(response.data.result.timeframes);
         }
         else {
           dispatch(fetchError('There was something issue in responding server.'));

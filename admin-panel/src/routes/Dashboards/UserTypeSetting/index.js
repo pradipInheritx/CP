@@ -26,7 +26,7 @@ const UsersModule = () => {
   const [filterOptions, setFilterOptions] = React.useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
+  const  validRegExp = new RegExp(/^\d*\.?\d*$/);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -76,8 +76,9 @@ const UsersModule = () => {
   };
 
   const handelOnChangeState = (e, type, index) => {       
-    const userSetting = [...allUserTypeSetting]    
-    userSetting[index][type] = e.target.value.replace(/[^0-9]/g, "")
+    const userSetting = [...allUserTypeSetting]   
+    var finalValue = validRegExp.test(e.target.value);
+    if(finalValue) userSetting[index][type] = e.target.value
     setAllUserTypeSetting(userSetting)  
     setUserTypeSettingError([])
 

@@ -35,7 +35,7 @@ const getUserActions = user => {
   
   const actions = [
     {action: "view", label: "View", icon: <Visibility />},
-    // {action: "edit", label: "Edit", icon: <Edit />},
+    {action: "edit", label: "Edit", icon: <Edit />},
     // {action: "email", label: "Email", icon: <Mail />}
   ];
 

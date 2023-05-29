@@ -18,10 +18,11 @@ const headCells = [
   { id: 'Total Card', numeric: false, disablePadding: false, label: 'Total Card' ,type:"album"},
   { id: 'Relative Quanlity', numeric: false, disablePadding: false, label: 'Relative Quanlity' ,type:"album"},
   { id: 'Random Card', numeric: false, disablePadding: false, label: 'Random Card' ,type:"album"},
-  { id: 'Distribution limit', numeric: false, disablePadding: false, label: 'Distribution limit' ,type:"album"},
-  { id: 'Random Card', numeric: false, disablePadding: false, label: 'Random Card', type: "album" },
+  { id: 'Distribution limit', numeric: false, disablePadding: false, label: 'Distribution limit' ,type:"album"},  
   
   { id: 'Card Name', numeric: false, disablePadding: false, label: 'Card Name' ,type:"card"},
+  { id: 'CardType', numeric: false, disablePadding: false, label: 'Card Type' ,type:"card"},
+  { id: 'Status', numeric: false, disablePadding: false, label: 'Status' ,type:"card"},
   { id: 'Rarity', numeric: false, disablePadding: false, label: 'Rarity' ,type:"card"},
   { id: 'Collection', numeric: false, disablePadding: false, label: 'Collection' ,type:"card"},
   { id: 'Minted Time', numeric: false, disablePadding: false, label: 'Minted Time' ,type:"card"},

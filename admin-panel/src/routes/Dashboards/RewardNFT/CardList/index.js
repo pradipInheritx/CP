@@ -2,26 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Tab, Table, TableCell, TableContainer, TableRow, Tabs } from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
-import UserListRow from '../UserListRow';
+import CardListRow from '../CardListRow';
 import UserTableHead from '../UserTableHead';
 import UserTableToolbar from '../UserTableToolbar';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import AddEditUser from '../AddEditUser';
+import AddEditCard from '../AddEditCard';
 
 
 import useStyles from '../index.style';
-import UserDetailView from '../UserDetailView';
+import CardDetailView from '../CardDetailView';
 import NoRecordFound from '../NoRecordFound';
 import ConfirmDialog from '@jumbo/components/Common/ConfirmDialog';
 import { useDebounce } from '@jumbo/utils/commonHelper';
 import { getComparator ,stableSort} from '@jumbo/utils/tableHelper';
-import { deleteRewardCard, getRewardCard, setCurrentCard } from 'redux/actions/RewardNft';
+import { deleteRewardCard, getRewardAlbum, getRewardCard, setCurrentCard, updateRewardCard } from 'redux/actions/RewardNft';
 
 const RewardCardList = () => {
   const classes = useStyles();  
-  const { cardList } = useSelector(({ RewardNFT }) => RewardNFT);
+  const { cardList , albumList} = useSelector(({ RewardNFT }) => RewardNFT);
   const [orderBy, setOrderBy] = React.useState('name');
   const [order, setOrder] = React.useState('asc');
   const [page, setPage] = React.useState(0);
@@ -30,6 +30,7 @@ const RewardCardList = () => {
   const [openViewDialog, setOpenViewDialog] = useState(false);
   const [openUserDialog, setOpenUserDialog] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [ openStatusDialog, setOpenStatusDialog ] = useState(false);
   const [selectedUser, setSelectedUser] = useState({ name: '' });
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
@@ -41,7 +42,16 @@ const RewardCardList = () => {
 
   useEffect(() => {
     dispatch(
-      getRewardCard(filterOptions, debouncedSearchTerm, () => {
+      getRewardCard(filterOptions, debouncedSearchTerm,page,rowsPerPage,orderBy,order, () => {
+        setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+        setUsersFetched(true);
+      }),
+    );
+  }, [dispatch, filterOptions, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
+  
+    useEffect(() => {
+    dispatch(
+      getRewardAlbum(filterOptions, debouncedSearchTerm, () => {
         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
         setUsersFetched(true);
       }),
@@ -109,6 +119,27 @@ const RewardCardList = () => {
     setOpenUserDialog(true);
   };
 
+  const handleStatusUpdate = user => {
+    setSelectedUser(user);
+    setOpenStatusDialog(true);
+  };
+const handleConfirmUpdate = () => {
+    setOpenStatusDialog(false);
+  dispatch(updateRewardCard(selectedUser?.cardId, {
+    ...selectedUser,
+    cardStatus: `${selectedUser?.cardStatus == "Active" ? "Inactive" : "Active"}`
+  }));
+
+  console.log({
+    ...selectedUser,
+    cardStatus: `${selectedUser?.cardStatus == "Active" ? "Inactive" : "Active"}`
+  },"checkstatusUpdate")
+  };
+
+  const handleCancelUpdate = () => {
+    setOpenStatusDialog(false);
+  };
+
   const handleUserDelete = user => {
     setSelectedUser(user);
     setOpenConfirmDialog(true);
@@ -116,7 +147,7 @@ const RewardCardList = () => {
 
   const handleConfirmDelete = () => {
     setOpenConfirmDialog(false);
-    dispatch(deleteRewardCard(selectedUser.id));
+    dispatch(deleteRewardCard(selectedUser.albumId));
   };
 
   const handleCancelDelete = () => {
@@ -158,7 +189,7 @@ const RewardCardList = () => {
                 stableSort(cardList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <UserListRow
+                    <CardListRow
                       key={index}
                       row={row}
                       onRowClick={handleRowClick}
@@ -166,6 +197,7 @@ const RewardCardList = () => {
                       onUserDelete={handleUserDelete}
                       onUserView={handleUserView}
                       isSelected={isSelected}
+                      onUserStatusUpdate={handleStatusUpdate}
                     />
                   ))
               ) : (
@@ -193,8 +225,8 @@ const RewardCardList = () => {
         />
       </Paper>
 
-      {openUserDialog && <AddEditUser selectType={"card"} open={openUserDialog} onCloseDialog={handleCloseUserDialog} />}
-      {openViewDialog && <UserDetailView selectType={"card"} open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
+      {openUserDialog && <AddEditCard selectType={"card"} open={openUserDialog} onCloseDialog={handleCloseUserDialog} />}
+      {openViewDialog && <CardDetailView selectType={"card"} open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
 
       <ConfirmDialog
         open={openConfirmDialog}
@@ -202,6 +234,13 @@ const RewardCardList = () => {
         content={'Are you sure, you want to  delete this user?'}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
+        />
+        <ConfirmDialog
+        open={openStatusDialog}
+        title={`Confirm Status Change ${selectedUser.cardName}`}
+        content={`Are you sure, you want to ${selectedUser?.cardStatus=="Active"?"Inactive":"Active"} this Card?`}
+        onClose={handleCancelUpdate}
+        onConfirm={handleConfirmUpdate}
       />
       </div>
       </>
