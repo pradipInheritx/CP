@@ -616,7 +616,16 @@ exports.checkTitleUpgrade24Hour = functions.pubsub
   )
 exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   async (data) => {
-    return await getOldAndCurrentPriceAndMakeCalculation(data);
+    await getOldAndCurrentPriceAndMakeCalculation(data);
+    // After Vote Updated For The User
+    const getAfterUpdatedVoteRef = await admin.firestore().collection("votes").doc(data?.voteId);
+    const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
+    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance)
+    const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
+    console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    return {
+      voteId: getAfterUpdatedVoteInstance.id, ...getAfterVoteUpdatedData
+    };
   }
 );
 
