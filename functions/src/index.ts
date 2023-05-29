@@ -90,6 +90,8 @@ import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
 import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
 import userTypeSettingsRouter from "./routes/UserTypeSettings";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
+import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
+import FollowTableRouter from "./routes/FollowTable.routes";
 
 // initialize express server
 const app = express();
@@ -117,7 +119,8 @@ app.use("/admin/voteSetting", perUserVoteRouter);
 app.use("/admin/userTypeSettings", userTypeSettingsRouter);
 app.use("/admin/settings", voteAndSettingsRouter);
 app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
-
+app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
+app.use("/admin/FollowTable", FollowTableRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
