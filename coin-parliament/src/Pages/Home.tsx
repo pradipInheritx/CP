@@ -42,8 +42,6 @@ const Home = () => {
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
   const src = `/hpbanner${width && width > 979 ? "" : "_m"}.png`;
-
-  
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
