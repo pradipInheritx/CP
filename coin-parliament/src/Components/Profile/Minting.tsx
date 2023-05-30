@@ -202,13 +202,13 @@ const Minting = ({
       autoplay: true, // boolean              
       });
       handleSoundWinCmp.play()
-    setTimeout(function () {
-      Animation.pause();
-      handleSoundWinCmp.pause()
-    }, 4000);  // 5000 milliseconds = 5 seconds
+      setTimeout(function () {
+        Animation.pause();
+        handleSoundWinCmp.pause()
+      }, 4000);  // 5000 milliseconds = 5 seconds
       // setShowBack(false)
     }
-    
+
   }, [score])
 
   const [animateButton, setAnimateButton] = useState<boolean>(false);

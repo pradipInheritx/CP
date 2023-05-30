@@ -345,10 +345,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
               <span className='cardname'>
                 THE <strong>HODLER</strong>
               </span>
-              <div className='card-body'>
+              <img src={giftImage} alt='the hgodler' className='img-fluid' style={{ height: '98%' }} />
+              {/* <div className='card-body h-100'>
                 {" "}
-                <img src={giftImage} alt='the hgodler' className='img-fluid' />
-              </div>
+              </div> */}
             </div>
           </div>
           {/* @ts-ignore */}

@@ -42,6 +42,8 @@ const SelectTimeframes = ({
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
+  console.log(timeframes, 'timeframes');
+
   const num = getNumTimeframes(timeframes);
   const [buttonDetails, setButtonDetails] = useState<any>();
   const [pariButtonDetails, setPariButtonDetails] = useState<any>();
@@ -66,11 +68,6 @@ const SelectTimeframes = ({
             id='timeframe'
             value={timeframes.filter((t) => t.chosen)[0].index}
           />
-        )}
-        {num > 1 && title && (
-          <div className='mb-3'>
-            {/* <Title>{voted ? votedTitle : title}</Title> */}
-          </div>
         )}
       </Row>
       <Row

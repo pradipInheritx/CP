@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { SetStateAction, useContext, useEffect, useState } from 'react'
 import { Button, Col, Container, Modal, Row } from 'react-bootstrap'
 import { Logo } from '../Components/Pairs/Card';
 import styled from "styled-components";
@@ -12,6 +12,8 @@ import { Link } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
 import { voteEndFinish } from '../common/utils/SoundClick';
+import { VoteDispatchContext } from 'Contexts/VoteProvider';
+import { VoteResultProps } from 'common/models/Vote';
 // const silent = require("../assets/sounds/silent.mp3").default;
 
 const CoinContainer = styled.div`
@@ -76,7 +78,7 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton }: {
+function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton, setModalData }: {
   popUpOpen?: any,
   vote: any,
   type?: any,
@@ -84,6 +86,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   setHideButton?: any,
   selectedTimeFrame?: any,
   hideButton?: any,
+  setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
 }) {
 
 
@@ -105,8 +108,23 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
 
 
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const setVoteDetails = useContext(VoteDispatchContext);
   const handleShow = () => setShow(true);
+  const handleClose = () => {
+    setVoteDetails((prev: { [key: string]: VoteResultProps }) => {
+      let temp = {};
+      Object.keys(prev).map((key: string) => {
+        if (vote?.voteId !== prev[key].voteId) {
+          temp = { ...temp, [`${prev[key].coin}_${prev[key]?.timeframe?.seconds}`]: prev[key] }
+        }
+      });
+      return temp;
+    });
+    if (setModalData instanceof Function) {
+      setModalData(undefined);
+    }
+    // setShow(false);
+  };
 
   const { coins } = useContext(CoinsContext);
   const { showBack, setShowBack } = useContext(AppContext);
@@ -141,14 +159,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
             marginLeft: `${window.screen.width < 767 ? "10%" : ""}`
           }}>{type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""}</div>
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
-              setShow(false)
-              // setHideButton(() => {
-              //   return hideButton.filter((item: any) => {
-              //     return item != selectedTimeFrame
-              //   })
-              // })
-            }}></button>
+            <button type="button" className="btn-close " aria-label="Close" onClick={handleClose}></button>
           </div>
         </div>
         <Modal.Body>
