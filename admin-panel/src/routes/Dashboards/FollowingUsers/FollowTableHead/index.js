@@ -8,28 +8,28 @@ import React from 'react';
 
 const headCells = [
   {
-    id: 'FirstName',
+    id: 'displayName',
     numeric: false,
     disablePadding: false,
-    label: 'First Name',
+    label: 'Display Name',
   },
   {
-    id: 'LastName',
+    id: 'phone',
     numeric: false,
     disablePadding: true,
-    label: 'Last Name',
+    label: 'Phone',
   },
   {
-    id: 'followingCount',
+    id: 'email',
     numeric: false,
     disablePadding: false,
-    label: 'Follow Count',
+    label: 'Email',
   },
   {
-    id: 'followerCount',
+    id: 'refereeScrore',
     numeric: false,
     disablePadding: true,
-    label: 'Follower Count',
+    label: 'Referee Scrore',
   },  
 ];
 

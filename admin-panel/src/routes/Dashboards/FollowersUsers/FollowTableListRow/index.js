@@ -6,7 +6,7 @@ import { timeFromNow } from '../../../../@jumbo/utils/dateHelper';
 import { Block, CheckCircleOutline, Delete, Edit, Mail, MoreHoriz, Visibility } from '@material-ui/icons';
 import CmtDropdownMenu from '../../../../@coremat/CmtDropdownMenu';
 import CmtAvatar from '../../../../@coremat/CmtAvatar';
-import { Box, Link, Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import { sentMailToUser, updateUserStatus } from '../../../../redux/actions/Users';
@@ -44,8 +44,6 @@ const getUserActions = user => {
 };
 
 const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
-
-  
   const classes = useStyles();
   const dispatch = useDispatch();
   const onUserMenuClick = menu => {
@@ -69,8 +67,8 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
     // }
   };
 
-  const labelId = `enhanced-table-checkbox-${row.id}`;
-  const isItemSelected = isSelected(row.id);
+  const labelId = `enhanced-table-checkbox-${row?.id}`;
+  const isItemSelected = isSelected(row?.id);
   const userActions = getUserActions(row);
 
   return (
@@ -85,38 +83,26 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
       {/* <TableCell padding="checkbox">
         <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
       </TableCell> */}
-      {/* <TableCell component="th" id={labelId} scope="row" padding="none">
+      <TableCell component="th" id={labelId} scope="row" padding="10">
         <Box display="flex" alignItems="center">
           <Box mr={{ xs: 4, md: 5 }}>
-            <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
+            <CmtAvatar size={40} src={row?.avatar} alt={row?.name} />
           </Box>
           <div>
             <Typography className={classes.titleRoot} component="div" variant="h4">
-              {row.name}
+              {row?.displayName}
             </Typography>
           </div>
         </Box>
-      </TableCell> */}
-      <TableCell >
-      
-          {row.firstName || "-"}
-        
       </TableCell>
-      <TableCell>{row.lastName|| "-"}</TableCell>
+      {/* <TableCell >{row.firstName || "-"}</TableCell> */}
+      <TableCell>{row?.phone|| "-"}</TableCell>
       {/* <TableCell>
         {row.status === 'suspended' ? `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})` : row.status}
       </TableCell> */}
-      <TableCell>
-        <Link to={`followinguser/${row.userId}`}>
-        {row.followingCount}
-        </Link>
-        </TableCell>      
-
-      <TableCell>
-        <Link to={`followeruser/${row.userId}`}>
-          {row.followerCount}
-          </Link>
-      </TableCell>      
+      <TableCell>{row?.email || "-" }</TableCell>      
+      {/* <TableCell>{row.followerCount  }</TableCell>       */}
+      <TableCell>{row?.refereeScrore || "-"}</TableCell>      
       
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu items={userActions} onItemClick={onUserMenuClick} TriggerComponent={<MoreHoriz />} />

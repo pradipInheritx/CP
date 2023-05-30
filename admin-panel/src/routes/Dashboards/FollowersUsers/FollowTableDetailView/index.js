@@ -22,9 +22,9 @@ import ThreeTable from 'redux/reducers/ThreeTable';
 
 const FollowTableDetailView = ({ open, onCloseDialog }) => {
   const classes = useStyles();
-  const { currentFollowTable } = useSelector(({ ThreeTable}) => ThreeTable);
+  const { currentFollowerUsers } = useSelector(({ ThreeTable}) => ThreeTable);
 
-  // const { name, email, status, phones, company, designation, profile_pic, starred } = currentFollowTable;
+  // const { name, email, status, phones, company, designation, profile_pic, starred } = currentFollowerUsers;
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
@@ -32,7 +32,7 @@ const FollowTableDetailView = ({ open, onCloseDialog }) => {
         <Box mr={3} display="flex" alignItems="center">
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>{currentFollowTable?.name}</Typography>
+              <Typography className={classes.titleRoot}>{currentFollowerUsers?.name}</Typography>
               {/* <Box ml={1}>
                 <Checkbox
                   icon={<StarBorderIcon />}
@@ -51,10 +51,10 @@ const FollowTableDetailView = ({ open, onCloseDialog }) => {
         </Box>
         <Box ml="auto" mt={-2} display="flex" alignItems="center">
           <Box ml={1}>
-            {/* <Tooltip title={currentFollowTable?.status}>
+            {/* <Tooltip title={currentFollowerUsers?.status}>
               <IconButton aria-label="filter list">
-                {currentFollowTable?.status === 'suspended' && <Block color="primary" />}
-                {currentFollowTable?.status === 'active' && <CheckCircleOutline color="primary" />}
+                {currentFollowerUsers?.status === 'suspended' && <Block color="primary" />}
+                {currentFollowerUsers?.status === 'active' && <CheckCircleOutline color="primary" />}
               </IconButton>
             </Tooltip> */}
           </Box>
@@ -73,33 +73,33 @@ const FollowTableDetailView = ({ open, onCloseDialog }) => {
         
             <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-             First Name :
+             Display Name :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentFollowTable?.firstName}
+                {currentFollowerUsers?.displayName}
               </Box>
                   
             </Box>
             <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-              Last Name :
+              Phone :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentFollowTable?.lastName}
+                {currentFollowerUsers?.phone}
               </Box>
                   
             </Box>       
           <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-              Follower Count :
+              Email :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentFollowTable?.followerCount}
+                {currentFollowerUsers?.email}
                   </Box>
                   
               </Box>  
           <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-              Following Count :
+              Referee Scrore :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentFollowTable?.followingCount}
+                {currentFollowerUsers?.refereeScrore}
                   </Box>
                   
               </Box>  

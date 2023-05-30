@@ -7,16 +7,17 @@ import UserTableHead from './FollowTableHead';
 import UserTableToolbar from './FollowTableToolbar';
 import { getComparator, stableSort } from '../../../@jumbo/utils/tableHelper';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteUser, getFollowTable, setCurrentFollowTable } from '../../../redux/actions/ThreeTable';
+import { deleteUser, getFollowTable, getFollowersUsers, getFollowingUsers, setCurrentFollowTable, setFollowingUsers } from '../../../redux/actions/ThreeTable';
 import ConfirmDialog from '../../../@jumbo/components/Common/ConfirmDialog';
 import { useDebounce } from '../../../@jumbo/utils/commonHelper';
 import useStyles from './index.style';
 import UserDetailView from './FollowTableDetailView';
 import NoRecordFound from './NoRecordFound';
+import { useParams } from 'react-router';
 
 const UsersModule = () => {
   const classes = useStyles();
-  const { followTableList  } = useSelector(({ ThreeTable }) => ThreeTable);
+  const { followerUsersList } = useSelector(({ ThreeTable }) => ThreeTable);
   const [orderBy, setOrderBy] = React.useState('name');
   const [order, setOrder] = React.useState('asc');
   const [page, setPage] = React.useState(0);
@@ -32,11 +33,15 @@ const UsersModule = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const dispatch = useDispatch();
 
+  console.log(followerUsersList,"followerUsersList")
+  const dispatch = useDispatch();
+  const params = useParams();
+  const userId=params.userId
+  console.log(params.userId,"paramsName")
   useEffect(() => {
     dispatch(
-      getFollowTable(filterOptions, debouncedSearchTerm, () => {
+      getFollowingUsers(userId,filterOptions, debouncedSearchTerm, () => {
         setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
         setUsersFetched(true);
       }),
@@ -56,7 +61,7 @@ const UsersModule = () => {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelected = followTableList.map(n => n.id);
+      const newSelected = followerUsersList.map(n => n.id);
       setSelected(newSelected);
       return;
     }
@@ -90,17 +95,17 @@ const UsersModule = () => {
   };
 
   const handleUserView = user => {
-    dispatch(setCurrentFollowTable(user));
+    dispatch(setFollowingUsers(user));
     setOpenViewDialog(true);
   };
 
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
-    dispatch(setCurrentFollowTable(null));
+    dispatch(setFollowingUsers(null));
   };
 
   const handleUserEdit = user => {
-    dispatch(setCurrentFollowTable(user));
+    dispatch(setFollowingUsers(user));
     setOpenUserDialog(true);
   };
 
@@ -135,11 +140,11 @@ const UsersModule = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={followTableList.length}
+              rowCount={followerUsersList.length}
             />
             <TableBody>
-              {!!followTableList.length ? (
-                stableSort(followTableList, getComparator(order, orderBy))
+              {!!followerUsersList.length ? (
+                stableSort(followerUsersList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
                     <FollowTableListRow
@@ -158,7 +163,7 @@ const UsersModule = () => {
                     {isFilterApplied ? (
                       <NoRecordFound>There are no records found with your filter.</NoRecordFound>
                     ) : (
-                      <NoRecordFound>{usersFetched ? 'There are no records found.' : 'Loading followTableList...'}</NoRecordFound>
+                      <NoRecordFound>{usersFetched ? 'There are no records found.' : 'Loading followerUsersList...'}</NoRecordFound>
                     )}
                   </TableCell>
                 </TableRow>
@@ -169,7 +174,7 @@ const UsersModule = () => {
         <TablePagination
           rowsPerPageOptions={[10, 20, 50]}
           component="div"
-          count={followTableList.length}
+          count={followerUsersList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handlePageChange}
