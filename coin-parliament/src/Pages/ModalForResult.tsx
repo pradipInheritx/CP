@@ -98,6 +98,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
       //     return selectedTimeFrame != item
       //   })
       // })
+      console.log("i can open")
       setpopUpOpen(false)
     }
   }, [popUpOpen])
@@ -120,8 +121,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
   const votelength = Object.keys(vote).length
-
-  console.log(vote, "pk");
+  
 
   return (
     <div>

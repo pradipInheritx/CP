@@ -337,7 +337,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
 
 
           {/* @ts-ignore */}
-          <div className={classname} id=" n">
+          <div className={classname} id="card-animation">
             <div>
               <span className={`${cardType.toLowerCase()}_text`}>
                 &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}

@@ -189,11 +189,13 @@ const Minting = ({
 
   // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
-    if (score == 100 ) {      
+    if (score == 100) {   
+      
+      console.log(document.querySelector(".Cmp-animation") ,"i am working")
       handleCmpPopupShow()
      const Animation = lottie.loadAnimation({
       // @ts-ignore
-      container: document.getelementsbyclassname(".Cmp-animation"),
+      container: document.querySelector(".Cmp-animation"),
       animationData: Confetti,
       renderer: "html", // "canvas", "html"
       loop: true, // boolean
