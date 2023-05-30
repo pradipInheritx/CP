@@ -192,7 +192,7 @@ const Minting = ({
     if (score == 100) {   
       
       console.log(document.querySelector(".Cmp-animation") ,"i am working")
-      handleCmpPopupShow()
+      // handleCmpPopupShow()
      const Animation = lottie.loadAnimation({
       // @ts-ignore
       container: document.querySelector(".Cmp-animation"),
