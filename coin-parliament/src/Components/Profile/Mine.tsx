@@ -97,8 +97,7 @@ const Mine = () => {
   const handleShareModleShow = () => setShareModleShow(true);
 
   // @ts-ignore 
-  const remainingCMP = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0)
-  
+  const remainingCMP = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   useEffect(() => {
@@ -158,7 +157,6 @@ const Mine = () => {
   const url = "https://coinparliament.com/"
   const shareText = "I won this unique card! Join the Parliament and win with me."
 
-  console.log('userInfo', userInfo, remainingCMP)
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
