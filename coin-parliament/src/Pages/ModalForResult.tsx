@@ -113,7 +113,8 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
     setVoteDetails((prev: { [key: string]: VoteResultProps }) => {
       let temp = {};
       Object.keys(prev).map((key: string) => {
-        if (vote?.voteId !== prev[key].voteId) {
+        // if (vote?.voteId !== prev[key].voteId) {
+        if (prev[key].expiration > new Date().getTime()) {
           temp = { ...temp, [`${prev[key].coin}_${prev[key]?.timeframe?.seconds}`]: prev[key] }
         }
       });

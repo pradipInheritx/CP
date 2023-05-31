@@ -263,7 +263,6 @@ export default function SpeedTest(
   const getBorderColor = () => {
 
 
-    // console.log(vote?.valueVotingTime, coins[symbol1]?.price, symbol2, symbol1, vote, coins, (coins[symbol1]?.randomDecimal || 20), 'pkkkk');
     if (symbol2 !== undefined) {
       // range bar for pair
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
@@ -348,7 +347,6 @@ export default function SpeedTest(
     if (!symbol1) return
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
-  console.log(persentValue, 'pkkk');
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }} >
       <Speed value={persentValue || 50} />{/* // low<mid 40-60>high */}

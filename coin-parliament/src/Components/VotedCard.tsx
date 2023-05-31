@@ -129,10 +129,11 @@ const VotedCard = ({
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
   const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
-    if (symbol2 !== undefined) {
+    if (vote && symbol2 !== undefined && Array.isArray(vote?.valueVotingTime)) {
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
       // @ts-ignore
-      let bothCurrentPrice = [...vote?.valueVotingTime];
+
+      let bothCurrentPrice = vote?.valueVotingTime;
       //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
       let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],

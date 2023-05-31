@@ -75,7 +75,6 @@ const VoteForm = function <
 
   // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
 
-  // console.log(hideButton, selectedTimeFrame, 'pk');
 
   return (
     <Form

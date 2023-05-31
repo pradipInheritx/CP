@@ -42,7 +42,6 @@ const SelectTimeframes = ({
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  console.log(timeframes, 'timeframes');
 
   const num = getNumTimeframes(timeframes);
   const [buttonDetails, setButtonDetails] = useState<any>();

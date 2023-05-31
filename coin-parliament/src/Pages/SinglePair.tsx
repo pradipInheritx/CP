@@ -142,29 +142,10 @@ const SinglePair = () => {
     };
 
   }, [socket])
-  // useEffect(() => {
-
-  //   if(vote.timeframe) {
-  //     setTimeout(() => {
-  //       getCpviData().then((data) => data && setPct(Number(data.data)));  
-  //     }, 2000);
-  //     }
-
-  // }, [voteId, getCpviData]);
   useEffect(() => {
-
-
-    // const timer = setInterval( async() => {
-
     if (vote.timeframe) {
-
       getCpviData().then((data) => data && setPct(Number(data.data)));
     }
-    // }, 5000);
-
-    // return () => {
-    //   clearInterval(timer);
-    // }
   }, [voteId, getCpviData, vote, totals, selectedTimeFrame])
   const choseTimeFrame = async (timeframe: any) => {
 
@@ -218,23 +199,26 @@ const SinglePair = () => {
     }
   }, [user?.uid, params?.id, selectedTimeFrame]);
 
-  const canVote =
-    vote &&
-    ((!vote.expiration && vote.success === undefined) ||
-      (vote.expiration && vote.success !== undefined));
+  // const canVote =
+  //   vote &&
+  //   ((!vote.expiration && vote.success === undefined) ||
+  //     (vote.expiration && vote.success !== undefined));
   const voteDetails = useContext(VoteContext);
+
   const setVoteDetails = useContext(VoteDispatchContext);
-  // const canVote = useMemo(() => {
-  //   return !!!voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`];
-  //   return (
-  //     ((!vote.expiration && vote.success === undefined) ||
-  //       (vote.expiration && vote.success !== undefined) ||
-  //       Date.now() >= vote?.expiration)
-  //   );
-  // }, [vote.expiration, vote.success, selectedTimeFrame, voteDetails]);
+  const canVote = useMemo(() => {
+    return !!!voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`];
+    return vote &&
+      ((!vote.expiration && vote.success === undefined) ||
+        (vote.expiration && vote.success !== undefined));
+    return (
+      ((!vote.expiration && vote.success === undefined) ||
+        (vote.expiration && vote.success !== undefined) ||
+        Date.now() >= vote?.expiration)
+    );
+  }, [/* vote.expiration, vote.success,  */selectedTimeFrame, voteDetails]);
 
   useEffect(() => {
-    // console.log(!!!voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`], 'pkkk');
 
     if (!canVote && loading) {
       setLoading(false);
@@ -408,11 +392,12 @@ const SinglePair = () => {
                 </div>
                 <div className="text-center">
                   {/* @ts-ignore */}
-                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
+                  {!graphLoading && (!canVote/*  || hideButton.includes(selectedTimeFrame) */) && user && voteId && (
                     <>
                       <VotedCard
                         {...{
-                          vote, coins: coinUpdated, totals, symbol1, symbol2, voteId, selectedTimeFrame,
+                          vote: voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
+                          coins: coinUpdated, totals, symbol1, symbol2, voteId, selectedTimeFrame,
                           setSelectedTimeFrame, selectedTimeFrameArray, setpopUpOpen, hideButton, setHideButton,
                         }}
                       />
@@ -427,13 +412,13 @@ const SinglePair = () => {
                   )}
                   {/* @ts-ignore */}
                   {
-                    vote && vote?.valueVotingTime && vote?.valueExpirationTime && /* hideButton.includes(selectedTimeFrame && selectedTimeFrame) && */
+                    modalData && modalData?.valueVotingTime && modalData?.valueExpirationTime && /* hideButton.includes(selectedTimeFrame && selectedTimeFrame) && */
                     // modalData &&
                     <ModalForResult
                       popUpOpen={popUpOpen}
                       setpopUpOpen={setpopUpOpen}
                       setHideButton={setHideButton}
-                      vote={vote}
+                      vote={modalData}
                       selectedTimeFrame={selectedTimeFrame}
                       hideButton={hideButton}
                       setModalData={setModalData}

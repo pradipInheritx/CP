@@ -1197,8 +1197,7 @@ function App() {
                               fluid
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
-                              // width={width}
-                              className="pkkk"
+                            // width={width}
                             >
 
                               <Header

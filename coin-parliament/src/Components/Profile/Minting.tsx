@@ -169,7 +169,7 @@ const Minting = ({
 }: MintingProps) => {
   const { width = 194 } = useWindowSize();
   const translate = useTranslation();
-  const { user } = useContext(UserContext);
+  const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const { showReward, setShowReward, setRewardExtraVote, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
@@ -225,7 +225,7 @@ const Minting = ({
             {texts.CPMinting}
           </Title>
           <I className='bi bi-info-circle' style={{ paddingRight: width < 767 ? '8em' : '' }}></I>
-          <CircularProgress percentage={score || 0} />
+          <CircularProgress percentage={score === 0 && (userInfo?.rewardStatistics?.total || 0) > 0 ? 100 : (score || 0)} />
 
           {/* <PieChart
             percentage={score || 50}
@@ -264,7 +264,7 @@ const Minting = ({
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
-                disabled: (!claim || loading || rewardTimer)
+                // disabled: (!claim || loading || rewardTimer)
               }}
             >
               {(!!claim) && <Dot>{claim}</Dot>

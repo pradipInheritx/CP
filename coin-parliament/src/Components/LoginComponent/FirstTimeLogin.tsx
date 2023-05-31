@@ -116,7 +116,6 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
             <Form
               onSubmit={async (e) => {
                 e.preventDefault();
-                console.log(/^[a-zA-Z_]+$/g.test(username), 'pkkk');
 
                 if (username?.length < 16 && username?.length > 7 && /^[a-zA-Z_]+$/g.test(username)) {
                   checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));

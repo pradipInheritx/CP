@@ -82,8 +82,9 @@ const Mine = () => {
   const handleCardClose = () => setCardModalShow(false);
   const handleCardShow = () => setCardModalShow(true);
 
-  // @ts-ignore
-  const ClaimNumber = userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+  // @ts-ignore 
+  const remainingCMP = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0)
+  const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   useEffect(() => {
     rewardList();
@@ -97,7 +98,7 @@ const Mine = () => {
 
   useEffect(() => {
 
-    if (showBack && ClaimNumber < 1) {
+    if (showBack && remainingReward < 1) {
       setTimeout(() => {
         setModelText(1)
         console.log(showBack, "viewshow")
@@ -139,46 +140,13 @@ const Mine = () => {
     navigate(-1);
   }
 
-  // @ts-ignore
-  const RemeingCmp = (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0
 
-  // console.log('userInfo',(userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0)
+  console.log('userInfo', userInfo, remainingCMP)
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
     <div>
       <Container >
-        {/* @ts-ignore */}
-        {/* <AnimationReward
-           setRewardTimer={setRewardTimer}
-           rewardTimer={rewardTimer}
-         /> */}
-        {/* {!!rewardTimer && showReward==3 && inOutReward==3 && (        
-          <div className=''>
-          
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
-        </div>
-        )} */}
-        {/* @ts-ignore */}
-
-        {/* <Player
-  autoplay
-  loop
-  src={animation}
-  style={{ height: '300px', width: '300px' }}
->
-  <Controls visible={true} buttons={['play', 'repeat', 'frame', 'debug']} />
-</Player> */}
-        {/* {!userInfo?.paid && (
-          <Row
-            className='flex-row-reverse'
-            role='button'
-          
-            onClick={() => navigate("/upgrade")}
-          >
-            <MyBadge bg='-'>{translate("upgrade your account")}</MyBadge>
-          </Row>
-        )} */}
         {width > 767 ? (
           <div className='d-flex justify-content-center mt-2'>
             <div>
@@ -188,17 +156,12 @@ const Mine = () => {
               </div>
               <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}>
                 {" "}
-                {/* <PAXCard
-                  walletId={userInfo?.wallet || ""}
-                  PAX={userInfo?.voteStatistics?.pax || 0}
-                /> */}
 
                 <PAXCard
                   walletId={userInfo?.wallet || ""}
                   rewardTimer={rewardTimer}
                   // @ts-ignore
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}
-                // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
                 />
               </ForZoom>
             </div>
@@ -209,15 +172,14 @@ const Mine = () => {
                   width,
                   score:
                     // @ts-ignore
-                    (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
+                    remainingCMP,
                   setRewardTimer,
                   rewardTimer,
                 }}
                 setRewardTimer={setRewardTimer}
                 rewardTimer={rewardTimer}
                 // @ts-ignore
-                claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
-                }
+                claim={remainingReward}
               />
             </div>
           </div>
@@ -231,15 +193,14 @@ const Mine = () => {
                     width,
                     score:
                       // @ts-ignore
-                      (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
+                      remainingCMP,
                     setRewardTimer,
                     rewardTimer,
                   }}
                   setRewardTimer={setRewardTimer}
                   rewardTimer={rewardTimer}
                   // @ts-ignore
-                  claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
-                  }
+                  claim={remainingReward}
                 />
               </div>
             </Col>
@@ -367,7 +328,7 @@ const Mine = () => {
             {/* continue voting */}
             {modelText == 1 && <div className='py-2  d-flex flex-column  justify-content-center'>
               <strong style={{ fontSize: "20px" }}>Stay in the game</strong>
-              <p style={{ fontSize: "20px" }}>Only {100 - RemeingCmp} CMP to reach your goal</p>
+              <p style={{ fontSize: "20px" }}>Only {100 - remainingCMP} CMP to reach your goal</p>
             </div>}
             {modelText == 2 && <div className='py-2  d-flex  flex-column justify-content-center'>
               <strong style={{ fontSize: "20px" }}>Great job!!</strong>
@@ -380,9 +341,7 @@ const Mine = () => {
           {/* <Modal.Footer> */}
           < div className="d-flex justify-content-center " >
             <Buttons.Primary className="mx-2" onClick={goBack}>CONTINUE VOTING</Buttons.Primary>
-            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div >
-          {/* </Modal.Footer>       */}
         </Modal >
       </div >
 

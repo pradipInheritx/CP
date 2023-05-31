@@ -431,6 +431,7 @@ const SingleCoin = () => {
             if (response?.data) {
               setpopUpOpen(true);
               setModalData2(response?.data);
+
             }
           }).catch(err => {
             if (err && err.message) {
@@ -441,7 +442,6 @@ const SingleCoin = () => {
         return () => clearTimeout(timer);
       }
     }
-    // console.log(modalData, 'pkkp');
   }, [modalData]);
   useEffect(() => {
     setModalData(modalData2);
