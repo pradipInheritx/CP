@@ -8,7 +8,8 @@ export type Coin = {
   id: number;
   price: number;
   trend?: number;
-  CPMRangePercentage?: number
+  CPMRangePercentage?: number;
+  randomDecimal?:number;
 };
 
 export type CoinSnap = {
@@ -190,13 +191,13 @@ export const swipeOptions = ({
 export const precision: { [key: string]: number } = {
   BTC: 2,
   ETH: 2,
-  BNB: 2,
-  ADA: 4,
+  BNB: 1,
+  ADA: 6,
   SOL: 2,
   XRP: 4,
   LUNA: 7,
-  DOGE: 4,
-  DOT: 2,
+  DOGE: 5,
+  DOT: 3,
   AVAX: 2,
   SHIB: 7,
   MATIC: 4,
@@ -230,7 +231,7 @@ export const precision: { [key: string]: number } = {
   ONE: 5,
   EOS: 2,
   AAVE: 2,
-  CAKE: 2,
+  CAKE: 3,
   GRT: 4,
   BSV: 2,
   STX: 4,

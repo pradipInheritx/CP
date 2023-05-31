@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './style.css'
 import { gsap } from "gsap";
 import container from './images/container.png'
@@ -14,11 +14,9 @@ type MintingProps = {
   rewardTimer?:number
 }
 function AnimationReward({setRewardTimer,rewardTimer}: MintingProps) {
-    
+  
 var audios = document.getElementById('audio');
-
 //var shake = gsap.from(".cap , .box", {x:10 , repeat:-10 ,  duration:0.1, delay:1, })
-
 var animation = gsap.timeline();
 
 animation.pause()
@@ -54,10 +52,11 @@ animation.pause()
 .to(".b3", {opacity:0,
   // @ts-ignore
   onComplete: () => {
-    setTimeout(() => {
-      // @ts-ignore
-      foo("test")   
-    }, 2000);
+    animation.pause();
+    // setTimeout(() => {
+    //   // @ts-ignore
+    //   foo("test")   
+    // }, 2000);
    },
 } )
 
@@ -80,7 +79,10 @@ useEffect(() => {
     claimyourreward.pause()
   }, 5000);
 }, [])
-
+ 
+  
+  
+  
 
 
 
@@ -106,13 +108,12 @@ useEffect(() => {
     </div>
     
      <div className="cardBg blueCard2 votes" onClick={e=>  {animation.play()
-    claimyourreward.play()}}>
+    claimyourreward.play()}}
+    >
           <div className="whiteRound card_1">
             {/* @ts-ignore */}
-        <h1>+{rewardTimer?.data?.secondRewardExtraVotes}</h1>
-
-            </div>      
-       
+            <h1>+{rewardTimer?.data?.secondRewardExtraVotes}</h1>
+          </div>      
     </div>
     
     
@@ -130,7 +131,13 @@ useEffect(() => {
     
  {/* <img className="trader trader_active" src={trader} alt="trader-Image"/>  */}
  {/* @ts-ignore */}
- <div className="trader"><NFTCard cardType={rewardTimer?.data?.firstRewardCardType}/></div>
+       
+          
+       
+        <div className='trader'>
+          {/* @ts-ignore */}
+          <NFTCard cardType={rewardTimer?.data?.firstRewardCardType} />          
+        </div>
     
   </div>
   <div className='backdrop'></div>

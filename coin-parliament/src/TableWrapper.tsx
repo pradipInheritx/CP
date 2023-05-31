@@ -1,16 +1,16 @@
 // @ts-nocheck
 import React from 'react'
 import styled from 'styled-components'
-import {Row, useAsyncDebounce, useFilters, useGlobalFilter, usePagination, useTable} from 'react-table'
+import { Row, useAsyncDebounce, useFilters, useGlobalFilter, usePagination, useTable } from 'react-table'
 
-import makeData, {Data, Person} from './makeData'
-import {matchSorter} from "match-sorter";
+import makeData, { Data, Person } from './makeData'
+import { matchSorter } from "match-sorter";
 
 function GlobalFilter({
-                          preGlobalFilteredRows,
-                          globalFilter,
-                          setGlobalFilter,
-                      }) {
+    preGlobalFilteredRows,
+    globalFilter,
+    setGlobalFilter,
+}) {
     const count = preGlobalFilteredRows.length
     const [value, setValue] = React.useState(globalFilter)
     const onChange = useAsyncDebounce(value => {
@@ -19,7 +19,7 @@ function GlobalFilter({
 
     return (
         <span>
-      Search:{' '}
+            Search:{' '}
             <input
                 value={value || ""}
                 onChange={e => {
@@ -32,14 +32,14 @@ function GlobalFilter({
                     border: '0',
                 }}
             />
-    </span>
+        </span>
     )
 }
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
-                                 column: {filterValue, preFilteredRows, setFilter},
-                             }) {
+    column: { filterValue, preFilteredRows, setFilter },
+}) {
     const count = preFilteredRows.length
 
     return (
@@ -56,8 +56,8 @@ function DefaultColumnFilter({
 // This is a custom filter UI for selecting
 // a unique option from a list
 function SelectColumnFilter({
-                                column: {filterValue, setFilter, preFilteredRows, id},
-                            }) {
+    column: { filterValue, setFilter, preFilteredRows, id },
+}) {
     // Calculate the options for filtering
     // using the preFilteredRows
     const options = React.useMemo(() => {
@@ -90,8 +90,8 @@ function SelectColumnFilter({
 // slider to set the filter value between a column's
 // min and max values
 function SliderColumnFilter({
-                                column: {filterValue, setFilter, preFilteredRows, id},
-                            }) {
+    column: { filterValue, setFilter, preFilteredRows, id },
+}) {
     // Calculate the min and max
     // using the preFilteredRows
 
@@ -139,8 +139,8 @@ filterGreaterThan.autoRemove = val => typeof val !== 'number'
 // filter. It uses two number boxes and filters rows to
 // ones that have values between the two
 function NumberRangeColumnFilter({
-                                     column: {filterValue = [], preFilteredRows, setFilter, id},
-                                 }) {
+    column: { filterValue = [], preFilteredRows, setFilter, id },
+}) {
     const [min, max] = React.useMemo(() => {
         let min = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
         let max = preFilteredRows.length ? preFilteredRows[0].values[id] : 0
@@ -189,7 +189,7 @@ function NumberRangeColumnFilter({
 }
 
 function fuzzyTextFilterFn(rows, id, filterValue) {
-    return matchSorter(rows, filterValue, {keys: [row => row.values[id]]})
+    return matchSorter(rows, filterValue, { keys: [row => row.values[id]] })
 }
 
 // Let the table remove the filter if the string is empty
@@ -225,7 +225,7 @@ const Styles = styled.div`
   }
 `
 
-function Table({columns, data}: { columns: Columns, data: Data[] }): JSX.Element {
+function Table({ columns, data }: { columns: Columns, data: Data[] }): JSX.Element {
     const filterTypes = React.useMemo(
         () => ({
             // Add a new fuzzyTextFilterFn filter type.
@@ -258,7 +258,7 @@ function Table({columns, data}: { columns: Columns, data: Data[] }): JSX.Element
         {
             columns,
             data,
-            initialState: {pageIndex: 0},
+            initialState: { pageIndex: 0 },
             defaultColumn, // Be sure to pass the defaultColumn option
             filterTypes,
         },
@@ -288,50 +288,50 @@ function Table({columns, data}: { columns: Columns, data: Data[] }): JSX.Element
         setGlobalFilter,
     } = instance
 
-    const {pageIndex, pageSize} = state;
+    const { pageIndex, pageSize } = state;
     // Render the UI for your table
 
     return (
         <>
             <table {...getTableProps()}>
                 <thead>
-                {headerGroups.map((headerGroup,index) => (
-                    <tr {...headerGroup.getHeaderGroupProps()} key={index}>
-                        {headerGroup.headers.map((column,i) => (
-                            <th {...column.getHeaderProps()} key={i}>
-                                {column.render('Header')}
-                                {/* Render the columns filter UI */}
-                                <div>{column.canFilter ? column.render('Filter') : null}</div>
-                            </th>
-                        ))}
+                    {headerGroups.map((headerGroup, index) => (
+                        <tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                            {headerGroup.headers.map((column, i) => (
+                                <th {...column.getHeaderProps()} key={i}>
+                                    {column.render('Header')}
+                                    {/* Render the columns filter UI */}
+                                    <div>{column.canFilter ? column.render('Filter') : null}</div>
+                                </th>
+                            ))}
+                        </tr>
+                    ))}
+                    <tr>
+                        <th
+                            colSpan={visibleColumns.length}
+                            style={{
+                                textAlign: 'left',
+                            }}
+                        >
+                            <GlobalFilter
+                                preGlobalFilteredRows={preGlobalFilteredRows}
+                                globalFilter={state.globalFilter}
+                                setGlobalFilter={setGlobalFilter}
+                            />
+                        </th>
                     </tr>
-                ))}
-                <tr>
-                    <th
-                        colSpan={visibleColumns.length}
-                        style={{
-                            textAlign: 'left',
-                        }}
-                    >
-                        <GlobalFilter
-                            preGlobalFilteredRows={preGlobalFilteredRows}
-                            globalFilter={state.globalFilter}
-                            setGlobalFilter={setGlobalFilter}
-                        />
-                    </th>
-                </tr>
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                {page.map((row: Row<Person & { subRows: Data[] }>, i: number) => {
-                    prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()} key={i}>
-                            {row.cells.map((cell,index) => {
-                                return <td {...cell.getCellProps()} key={index}>{cell.render('Cell')}</td>
-                            })}
-                        </tr>
-                    )
-                })}
+                    {page.map((row: Row<Person & { subRows: Data[] }>, i: number) => {
+                        prepareRow(row)
+                        return (
+                            <tr {...row.getRowProps()} key={i}>
+                                {row.cells.map((cell, index) => {
+                                    return <td {...cell.getCellProps()} key={index}>{cell.render('Cell')}</td>
+                                })}
+                            </tr>
+                        )
+                    })}
                 </tbody>
             </table>
             <div className="pagination">
@@ -352,13 +352,13 @@ function Table({columns, data}: { columns: Columns, data: Data[] }): JSX.Element
                 </button>
                 {' '}
                 <span>
-          Page{' '}
+                    Page{' '}
                     <strong>
-            {pageIndex + 1} of {pageOptions?.length}
-          </strong>{' '}
-        </span>
+                        {pageIndex + 1} of {pageOptions?.length}
+                    </strong>{' '}
+                </span>
                 <span>
-          | Go to page:{' '}
+                    | Go to page:{' '}
                     <input
                         type="number"
                         defaultValue={pageIndex + 1}
@@ -366,9 +366,9 @@ function Table({columns, data}: { columns: Columns, data: Data[] }): JSX.Element
                             const page = e.target.value ? Number(e.target.value) - 1 : 0
                             gotoPage(page)
                         }}
-                        style={{width: '100px'}}
+                        style={{ width: '100px' }}
                     />
-        </span>{' '}
+                </span>{' '}
                 <select
                     value={pageSize}
                     onChange={e => {
@@ -443,7 +443,7 @@ function TableWrapper() {
 
     return (
         <Styles>
-            <Table columns={columns} data={data}/>
+            <Table columns={columns} data={data} />
         </Styles>
     )
 }

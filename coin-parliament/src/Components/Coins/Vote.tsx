@@ -1,9 +1,9 @@
-import React, {useContext, useState} from "react";
-import {Buttons, Props} from "../Atoms/Button/Button";
-import styled, {css} from "styled-components";
-import {colors} from "../VoteForm";
-import {Col, Row} from "react-bootstrap";
-import NotificationContext, {ToastType} from "../../Contexts/Notification";
+import React, { useContext, useEffect, useState } from "react";
+import { Buttons, Props } from "../Atoms/Button/Button";
+import styled, { css } from "styled-components";
+import { colors } from "../VoteForm";
+import { Col, Row } from "react-bootstrap";
+import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import NotLoggedInPopup from "../App/NotLoggedInPopup";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
@@ -45,7 +45,7 @@ const Option = css`
 
   & svg g path {
     stroke: ${(props: { borderColor: string; selected: boolean }) =>
-      props.selected ? colors[1] : colors[0]};
+    props.selected ? colors[1] : colors[0]};
   }
 `;
 
@@ -108,50 +108,72 @@ const Vote = ({
   children,
 }: VoteProps) => {
   const [option0, option1] = options;
-  const {user} = useContext(UserContext);
+  const { user , votesLast24Hours, userInfo } = useContext(UserContext);
+  
+	// const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  const {showModal, showToast} = useContext(NotificationContext);
+  const { showModal, showToast } = useContext(NotificationContext);
   const [clickedOption1, setClickedOption1] = useState(false);
   const [clickedOption0, setClickedOption0] = useState(false);
+	const [voteNumber, setVoteNumber] = useState(0)
+var urlName = window.location.pathname.split('/');
+	const followerPage = urlName.includes("followerProfile")
+	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
+  const { setLoginRedirectMessage,remainingTimer, loginRedirectMessage, setLogin,afterVotePopup,setAfterVotePopup, voteRules ,login} = useContext(AppContext);
   
-  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext);
+  useEffect(() => {
+		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+		// @ts-ignore
+		setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)		
+		// console.log('votenumber',voteNumber, Number(voted))
+	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+
+  const openPopup = () => {
+    if (voteNumber == 0 && remainingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {    
+      setAfterVotePopup(true)
+  }  
+
+}
   
   return (
     <div
-      // className="container"
-      // style={{width: typeof width === "number" ? `${width}px` : `${width}px`}}
-      // style={{width:window.screen.width<979?'306px':'400px'}}      
-      
+    // className="container"
+    // style={{width: typeof width === "number" ? `${width}px` : `${width}px`}}
+    // style={{width:window.screen.width<979?'306px':'400px'}}      
+
     >
       <Row className="">
-        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast your vote'); setLogin(true)}}} style={{width:"50%"}}>
-          <div className="d-flex justify-content-around align-items-center 1" 
-          
+        <Col onClick={() => { if (!user?.uid) { setLoginRedirectMessage('cast your vote'); setLogin(true) } }} style={{ width: "50%" }}>
+          <div className="d-flex justify-content-around align-items-center 1"
+
             // style={{width:`${window.screen.width<676?"50%":"100%"}`}}
             // style={{ width: "50%" }}
-            style={{width:"100%"}}
+            style={{ width: "100%" }}
           >
             <Option0
-        
+
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
-                  // VoteButton()
-                  if (disabled && disabledText) {
-                    if (!user) {
-                     
-                    
-                      setLoginRedirectMessage('test');
-                      setLogin(true);
-                    } else {
-                      showToast(disabledText, ToastType.ERROR);
+                  openPopup()
+                  if (voteNumber > 0 ) {                    
+                    VoteButton()
+                    if (disabled && disabledText) {
+                      if (!user) {
+  
+  
+                        setLoginRedirectMessage('test');
+                        setLogin(true);
+                      } else {
+                        showToast(disabledText, ToastType.ERROR);
+                      }
+                      return;
                     }
-                    return;
+                    setSelectedOption(0);
+                    setClickedOption0(true);
+                    setTimeout(() => setClickedOption0(false), 1000);
                   }
-                  setSelectedOption(0);
-                  setClickedOption0(true);
-                  setTimeout(() => setClickedOption0(false), 1000);
                 },
                 // onKeyUp: () => {
                 //   VoteButton()
@@ -167,18 +189,20 @@ const Vote = ({
           </div>
         </Col>
         {children}
-        <Col onClick={()=>{ if(!user?.uid){setLoginRedirectMessage('cast your vote'); setLogin(true)}}} style={{width:"50%"}}>
+        <Col onClick={() => { if (!user?.uid) { setLoginRedirectMessage('cast your vote'); setLogin(true) } }} style={{ width: "50%" }}>
           <div className="d-flex justify-content-center align-items-center"
-          style={{width:"100%"}}
+            style={{ width: "100%" }}
           >
             <Option1
               {...{
-                ...option1.buttonProps,                
+                ...option1.buttonProps,
                 onClick: () => {
+                  openPopup()
+                  if(voteNumber > 0 ){
                   VoteButton()
                   if (disabled && disabledText) {
                     if (!user) {
-                      showModal(<NotLoggedInPopup/>);
+                      showModal(<NotLoggedInPopup />);
                     } else {
                       showToast(disabledText, ToastType.ERROR);
                     }
@@ -186,7 +210,7 @@ const Vote = ({
                   }
                   setSelectedOption(1);
                   setClickedOption1(true);
-                  setTimeout(() => setClickedOption1(false), 1000);
+                  setTimeout(() => setClickedOption1(false), 1000);}
                 },
                 // onKeyUp: () => {
                 //   VoteButton()
@@ -196,7 +220,7 @@ const Vote = ({
                 selected: selectedOption === 1,
                 disabled,
               }}
-              style={{borderBottomLeftRadius:symbol2?'38px':'',borderTopLeftRadius:symbol2?'0':''}}
+              style={{ borderBottomLeftRadius: symbol2 ? '38px' : '', borderTopLeftRadius: symbol2 ? '0' : '' }}
             >
               {option1.icon}
             </Option1>

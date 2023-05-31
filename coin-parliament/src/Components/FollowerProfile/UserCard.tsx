@@ -13,10 +13,10 @@ import UserIcon from "../icons/userIcon";
 import SecurityIcon from "../icons/securityIcon";
 import { useLocation, useNavigate } from "react-router-dom";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
-import Votes from "../icons/votes";
+import Votes from "../icons/votes2";
+import ProfileFollowing from "../icons/ProfileFollowing";
 import Mine from "../icons/mine";
 import Share from "../icons/share";
-import Following from "../icons/Following";
 import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
 import Wallet from "../icons/Wallet";
@@ -186,7 +186,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: FollowerProfileTabs.followers,
-                        icon: <Following />,
+                        icon: <ProfileFollowing />,
                         eventKey: FollowerProfileTabs.followers,
                       },
                       // {

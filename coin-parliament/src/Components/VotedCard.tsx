@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Direction, VoteResultProps} from "../common/models/Vote";
+import { Direction, VoteResultProps } from "../common/models/Vote";
 import Countdown from "react-countdown";
-import {Coin} from "../common/models/Coin";
-import {useTranslation} from "../common/models/Dictionary";
+import { Coin } from "../common/models/Coin";
+import { useTranslation } from "../common/models/Dictionary";
 import styled from "styled-components";
 import {
   Border1pxBlueViolet,
@@ -11,7 +11,7 @@ import {
   PoppinsNormalGunsmoke9px,
 } from "../styledMixins";
 import moment from "moment";
-import {isEmpty} from "lodash";
+import { isEmpty } from "lodash";
 import SelectTimeframes from "./Coins/SelectTimeframes";
 import AppContext from "../Contexts/AppContext";
 import RangeSilder from "./Users/RangeSilder";
@@ -20,12 +20,13 @@ import { functions } from "../firebase";
 import { texts } from "./LoginComponent/texts";
 import { Button, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
+import Swal from "sweetalert2";
 
 
 
 const Rectangle2620 = styled.div`
   ${Border1pxBlueViolet};    
-  max-width: ${window.screen.width<767? "345px":"400px"};
+  max-width: ${window.screen.width < 767 ? "345px" : "400px"};
   // height: 75px;
   padding:20px 0px;
   background-color: var(--white);  
@@ -102,87 +103,95 @@ const VotedCard = ({
   selectedTimeFrameArray,
   cssDegree,
   votePrice,
-  setpopUpOpen
-  
+  setpopUpOpen,
+  setHideButton,
+  hideButton
+
 }: {
   vote: VoteResultProps;
   coins: { [symbol: string]: Coin };
   symbol1: string;
   symbol2: string;
   voteId: string;
-  selectedTimeFrame?:number;
-  setSelectedTimeFrame?: (n: number) => void;  
+  selectedTimeFrame?: number;
+  setSelectedTimeFrame?: (n: number) => void;
   selectedTimeFrameArray?: any;
-  cssDegree?:any;
-  votePrice?:any;
-  setpopUpOpen?:any
-  }) => {
-  
+  cssDegree?: any;
+  votePrice?: any;
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
+  hideButton?: any;
+
+
+}) => {
+
   const [lastTenSec, setLastTenSec] = useState<any>(false);
-  const [borderColor, setBorderColor] = useState<any>("#6352e8");const getBorderColor = () => {
+  const [borderColor, setBorderColor] = useState<any>("#6352e8");
+  const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
-     if (symbol2 !== undefined) {
-         let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
-        // @ts-ignore
+    if (symbol2 !== undefined) {
+      let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+      // @ts-ignore
       let bothCurrentPrice = [...vote?.valueVotingTime];
-    //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
-    let diff = [
+      //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
+      let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
-    ];
-       
+      ];
+
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      if ((averageValue <=10)) {        
-        setBorderColor("#6352e8")  
+      if ((averageValue <= 10)) {
+        setBorderColor("#6352e8")
       } else {
         if (vote?.direction == 1) {
-            winner == vote?.direction
-                ?
-                  setBorderColor("#d4d0f3")              
-                :             
-                  setBorderColor("#3b17b7") 
-             
+          winner == vote?.direction
+            ?
+            setBorderColor("#d4d0f3")
+            :
+            setBorderColor("#3b17b7")
+
         } else if (vote?.direction == 0) {
           winner != vote?.direction
-            ?            
-            setBorderColor("#d4d0f3") 
+            ?
+            setBorderColor("#d4d0f3")
             :
-            setBorderColor("#3b17b7") 
+            setBorderColor("#3b17b7")
 
         }
-      }       
-     } else if (symbol2 == undefined) {    
-       let livePrice =coins[symbol1]?.price
-       let votePrice =Number(vote?.valueVotingTime)
-       let PricePer = livePrice;
-       if(livePrice < PricePer + 10 &&
-         livePrice > PricePer - 10) { 
-          setBorderColor(50);
+      }
+    } else if (symbol2 == undefined) {
+      let livePrice = coins[symbol1]?.price
+      let votePrice = Number(vote?.valueVotingTime)
+      let PricePer = livePrice;
+      if (livePrice < PricePer + 10 &&
+        livePrice > PricePer - 10) {
+        setBorderColor(50);
+      }
+      else {
+        if (vote?.direction == 1) {
+          livePrice < votePrice ? setBorderColor("#3b17b7") : setBorderColor("#d4d0f3");
+        } else if (vote?.direction == 0) {
+          livePrice > votePrice ? setBorderColor("#d4d0f3") : setBorderColor("#3b17b7");
         }
-        else{
-          if(vote?.direction == 1){
-            livePrice < votePrice ?setBorderColor("#3b17b7"):setBorderColor("#d4d0f3");
-          }else if(vote?.direction == 0){
-            livePrice > votePrice ? setBorderColor("#d4d0f3"):setBorderColor("#3b17b7");
-          }
-        }     
+      }
     }
-};
-  
+  };
 
-  
- useEffect(() => {    
-      getBorderColor()    
-  }, [coins[symbol1]?.price ,coins[symbol2]?.price])
+
+
+  useEffect(() => {
+    getBorderColor()
+  }, [coins[symbol1]?.price, coins[symbol2]?.price])
 
 
   useEffect(() => {
     console.log('component mounter vote')
-  
+    // if (setHideButton) {
+    //   setHideButton([...hideButton, selectedTimeFrame])
+    // }
     return () => {
       console.log('component unmounted vote')
-  
     }
   }, [])
 
@@ -191,7 +200,7 @@ const VotedCard = ({
     coins[symbol2] || undefined,
   ];
   const { timeframes } = useContext(AppContext);
-  const translate = useTranslation();  
+  const translate = useTranslation();
   if (!coin1) {
     return <></>;
   }
@@ -202,11 +211,11 @@ const VotedCard = ({
   const votedCoin = coin2 ? coins[voted] : coins[symbol1];
 
 
-  
-  
+  // console.log(coins,"votedCoin")
+
   let row1 = "",
     row2 = "",
-    row3="";
+    row3 = "";
   if (!isEmpty(vote)) {
     let valueVotingTime;
     if (Array.isArray(vote.valueVotingTime)) {
@@ -216,26 +225,26 @@ const VotedCard = ({
     }
 
     // valueVotingTime = Number(valueVotingTime);
-    console.log('votetime',valueVotingTime)
+    console.log('votetime', valueVotingTime)
     row1 = coin2
       ? `${votedCoin.symbol} - `
       : `${voted} ${votedCoin.symbol}`;
-      
+
     row2 = coin2
       ? ` $${valueVotingTime}`
       : `  $${valueVotingTime || 'loading'}`;
-       
+
     // row2 = coin2
     //   ? `${vote.timeframe.name} ${valueVotingTime}`
     //   : `${voted} - ${vote.timeframe.name} $${valueVotingTime || 'loading'}`;
 
-    row3=`${vote.timeframe.name}`
-  }    
-  // console.log('votetime',vote)
+    row3 = `${vote.timeframe.name}`
+  }
+  console.log('votetime', vote)
 
   return (
     <>
-     <div className="mt-4" style={{paddingLeft:symbol2?'':'24px',paddingRight:symbol2?'':'24px',maxWidth:'450px', margin:'0 auto'}}>
+      <div className="mt-4" style={{ paddingLeft: symbol2 ? '' : '24px', paddingRight: symbol2 ? '' : '24px', maxWidth: '450px', margin: '0 auto' }}>
         <SelectTimeframes
           {...{
             selected: selectedTimeFrame,
@@ -248,10 +257,13 @@ const VotedCard = ({
             title: translate("Select a time frame for your vote").toUpperCase(),
             votedTitle: translate("Select another time frame").toUpperCase(),
             // select a time frame for your vote
-            voted:true,
+            voted: true,
             selectedTimeFrameArray: selectedTimeFrameArray,
-            cssDegree:cssDegree,
-            votePrice:votePrice,
+            cssDegree: cssDegree,
+            votePrice: votePrice,
+            setHideButton,
+            setpopUpOpen,
+            vote
           }}
         />
       </div>
@@ -260,68 +272,45 @@ const VotedCard = ({
       </div>
       {/* @ts-ignore */}
       {/* <Rectangle2620 className="" style={{border:coin2===undefined? (vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime <coin1.price?'1px solid #07501a':'1px solid ##7afd67')):(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime >coin1.price?'1px solid #07501a':'1px solid ##7afd67'))):(vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')):(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')))}}>     */}
-      <YourVote className="mb-2">Your vote</YourVote> 
-      <Rectangle2620 className="" style={{border:`1px solid ${borderColor}`}}>    
+      {/* <YourVote className="mb-2">Your vote</YourVote> */}
+      <Rectangle2620 className="" style={{ border: `1px solid ${borderColor}` }}>
         <div className="d-flex justify-content-center w-100">
           <div className="w-100 px-3">
             <div className="d-flex justify-content-center mb-1">
-              <p style={{color:"#2D2C3C"}} className="poppins-normal-blackcurrant-14px mx-2 "> {row3} VOTE </p>
-              </div>
-            <BitcoinBTCBULL24H3864490
-              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
-            >
-              {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
+              <p style={{ color: "#2D2C3C" }} className="poppins-normal-blackcurrant-14px mx-2 "> {row3} VOTE </p>
+            </div>
+            <div className="my-2">
+              <YourVote>YOUR CURRENT VOTE IMPACT</YourVote>
 
-              
-              <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2?"You voted for ":"" }{ row1}</Row1>
-              <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1>              
-            </BitcoinBTCBULL24H3864490>
-            <div className="my-2">
-              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
-                setLastTenSec={setLastTenSec}
-              />
             </div>
-            <div className="my-2">
-            <YourVote>YOUR CURRENT VOTE IMPACT</YourVote> 
-             
-            </div>
-            <div>
-              <RangeSilder
-              lastTenSec={lastTenSec}
+
+            {/* selectedTimeFrame == vote?.timeframe?.index &&  */<RangeSilder
+              //  lastTenSec={lastTenSec}
               vote={vote}
               coins={coins}
               symbol1={symbol1}
               symbol2={symbol2}
+            />}
+            <div className="mb-1" style={{ marginTop: '-4em', height: '4em' }}>
+              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
+                setLastTenSec={setLastTenSec}
               />
             </div>
-            
-            {/* <div className="d-flex align-items-center justify-content-center w-100">
-               
-                <Text2 >
-              {coin2===undefined && <img  style={{marginLeft:'3px', border:vote.direction?(vote.valueVotingTime <coin1.price ?'2px solid blue':''):vote.valueVotingTime >coin1.price?'2px solid blue':'',borderRadius:vote.direction?(vote.valueVotingTime <coin1.price ?'50%':''):vote.valueVotingTime >coin1.price?'50%':''}} src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-              
-              {coin2 && <img style={{ marginLeft: '3px', border: vote.direction ? ((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '2px solid blue' : '') : (coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '2px solid blue' : '', borderRadius: vote.direction ? ((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '50%' : '') : (coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1]) && !vote?.score ? '50%' : '' }} src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`} />}
-  
-              </Text2>
-              <Text2>
-             
-              {coin2===undefined &&  <img style={{marginLeft:'3px', border:vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'2px solid blue':''): vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'2px solid blue':'',borderRadius:vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'50%':''): vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'50%':''}}  src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-              
-              {coin2 &&  <img style={{marginLeft:'3px', border:vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'2px solid blue':''): Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'2px solid blue':'',borderRadius:vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'50%':''): Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'50%':''}}  src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-              
-             
-              </Text2>
-              <Text2>
-              {coin2===undefined &&<img style={{marginLeft:'3px', border:vote.direction?(vote.valueVotingTime > coin1.price && !vote.score?'2px solid blue':''):vote.valueVotingTime<  coin1.price?'2px solid blue':'',borderRadius:vote.direction?(vote.valueVotingTime > coin1.price && !vote.score?'50%':''):vote.valueVotingTime<  coin1.price?'50%':''}} src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}
-              
-              {coin2 &&<img style={{marginLeft:'3px', border:vote.direction?((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1]) && !vote?.score?'2px solid blue':''):(coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1]) && !vote?.score?'2px solid blue':'',borderRadius:vote.direction?((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1]) && !vote?.score?'50%':''):(coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1]) && !vote?.score?'50%':''}} src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}                                         
-              </Text2>
-              </div> */}
+            <BitcoinBTCBULL24H3864490
+              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center mt-4`}
+            >
+              {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
+
+
+              <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2 ? "You voted for " : ""}{row1}</Row1>
+              <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1>
+            </BitcoinBTCBULL24H3864490>
+
             <ID13020221942>
               {voteId} - {moment(vote.voteTime).format("MM.DD.YYYY HH:mm")}
             </ID13020221942>
           </div>
-          
+
         </div>
       </Rectangle2620>
     </>
@@ -329,24 +318,26 @@ const VotedCard = ({
 };
 
 export default VotedCard;
-let getresultFlag:any;
+
+let getresultFlag: any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2,openPopup,setLastTenSec}:
+export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symbol2, openPopup, setLastTenSec, }:
   {
     expirationTime: number, vote?: any, voteId?: any
-  coins?:any,symbol1?:any,symbol2?:any ,openPopup?:any,setLastTenSec?:any
+    coins?: any, symbol1?: any, symbol2?: any, openPopup?: any, setLastTenSec?: any
+
   }) => {
 
 
   useEffect(() => {
-    getresultFlag=true
-  
+    getresultFlag = true
+
     return () => {
-      getresultFlag=true
+      getresultFlag = true
     }
   }, [])
-  
+
   // const [coin1, coin2] = [
   //   coins[symbol1]?.symbol.toLowerCase() || "",
   //   coins[symbol2]?.symbol.toLowerCase() || "",
@@ -356,61 +347,64 @@ export const MyCountdown = ({expirationTime, vote, voteId, coins,symbol1,symbol2
   // if (expirationTime == TenSec) {
   //   console.log("i am working")
   // }
-  const coin1 = `${coins && symbol1? coins[symbol1]?.symbol?.toLowerCase() || "":""}`
-  const coin2 = `${coins && symbol2? coins[symbol2]?.symbol?.toLowerCase() || "":""}`
-  
-  const checkprice = async() => {
+  const coin1 = `${coins && symbol1 ? coins[symbol1]?.symbol?.toLowerCase() || "" : ""}`
+  const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`
+
+  const checkprice = async () => {
     if (!getresultFlag) return
-    getresultFlag=false
+    getresultFlag = false;
     console.log('price called')
-   const data = await getPriceCalculation({            
-        coin1: `${coin1 !="" ? coin1 + "usdt" :"" }`,
-        coin2: `${coin2 !="" ? coin2 + "usdt" :"" }`,
-        voteId:voteId,
-        voteTime:vote?.voteTime,
-        valueVotingTime: vote?.valueVotingTime,
-        expiration: vote?.expiration,
-        timestamp: Date.now()
-   }).then((data) => {
-     if (data.data == null) {
-        // console.log(data.data,"i am working data.data")
-        // getVotes(index).then(void 0);
-        openPopup(true)
-      }
-    }).catch(err => {
-        if (err && err.message) {
-            console.log(err.message);
-        }        
-    });
-      
-}
+    // const data = await getPriceCalculation({
+    //   coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+    //   coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+    //   voteId: voteId,
+    //   voteTime: vote?.voteTime,
+    //   valueVotingTime: vote?.valueVotingTime,
+    //   expiration: vote?.expiration,
+    //   timestamp: Date.now(),
+    //   userId: vote?.userId
+    // }).then((data) => {
+    //   if (data.data == null) {
+    //     // console.log(data.data,"i am working data.data")
+    //     // getVotes(index).then(void 0);
+    //     // openPopup(true)
+
+    //   }
+    // }).catch(err => {
+    //   if (err && err.message) {
+    //     console.log(err.message);
+    //   }
+    // });
+
+  }
+
 
   return (
     // @ts-ignore
     <Countdown
-      date={expirationTime}
+      date={new Date(expirationTime)}
       renderer={({ hours, minutes, seconds, completed }) => {
 
-        // if (expirationTime && hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
-        //   console.log( hours, minutes, seconds, "i am done")
-        //   lastTensecWait()
-        // }
-        if ( hours == 0 && minutes == 0 && seconds > 0 && seconds < 11 ) {
+        if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
           setLastTenSec(true)
         }
         if (completed) {
-          if (vote && !vote?.sucess) {            
+          if (vote && !vote?.success) {
             checkprice()
           }
-      // return data;
-          return <span style={{color:"#7767f7"}}>{texts.LoadingText}</span>;
+          // return data;
+          return (
+            <span style={{ color: "#7767f7", wordBreak: 'break-all' }}>
+              {texts.Calculatingvoteresult}
+            </span>
+          );
         } else {
           return (
-            <span className="" style={{color:'#6352e8',fontSize:'20px',fontWeight:400,marginLeft:"10px"}}>
-              {hours < 1 ? null : `${hours} :` }
+            <div className="h-25" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, marginLeft: "10px" }}>
+              {hours < 1 ? null : `${hours} :`}
               {minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}
-            </span>
+            </div>
           );
         }
       }}

@@ -67,114 +67,114 @@ const dashboardsMenus = [
     type: "item",
     link: "/dashboard/usertypesetting"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.timeframesetting"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/timeframesetting"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/voteperuser"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.votebooster"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/votebooster"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.followtable"} />,
     icon: <People />,
     type: "item",
-    link: "/dashboard/followtable"
+    link: "/dashboard/followtable"  || "/dashboard/followeruser" || "/dashboard/followinguser"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.coinsvotestable"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/coinsvotestable"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.pairsvotestable"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/pairsvotestable"
   },
-  
-  {    
+
+  {
     name: <IntlMessages id={"sidebar.dashboard.votingpass"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/votingpass"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.rewardtransactions"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/rewardtransactions"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.paymenttransactions"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/paymenttransactions"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.cmptransactions"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/cmptransactions"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.transactiontypes"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/transactiontypes"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.statustype"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/statustype"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.paxgeneraldata"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/paxgeneral"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.cmpsettings"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/cmpsettings"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.votesettings"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/votesettings"
   },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.rewardsettings"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/rewardsettings"
   },
-  {    
-    name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/rewardnft"
-  },
-  {    
+  {
     name: <IntlMessages id={"sidebar.dashboard.returnsettings"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/returnsettings"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/rewardnft"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.crypto"} />,
@@ -1514,22 +1514,22 @@ export const sidebarNavs = [
   {
     name: <IntlMessages id={"sidebar.view"} />,
     type: "section",
-    children: [ customTimelineMenus, materialTimelineMenus ]
+    children: [customTimelineMenus, materialTimelineMenus]
   },
   {
     name: <IntlMessages id={"sidebar.extensions"} />,
     type: "section",
-    children: [ editorsMenus, pickersMenus, ...extensionsMenus ]
+    children: [editorsMenus, pickersMenus, ...extensionsMenus]
   },
   {
     name: <IntlMessages id={"sidebar.modules"} />,
     type: "section",
-    children: [  calendarMenus ]
+    children: [calendarMenus]
   },
   {
     name: <IntlMessages id={"sidebar.visualization"} />,
     type: "section",
-    children: [ chartMenus, mapsMenus ]
+    children: [chartMenus, mapsMenus]
   },
   {
     name: <IntlMessages id={"sidebar.extraPages"} />,
@@ -1572,7 +1572,7 @@ export const horizontalDefaultNavs = [
   {
     name: <IntlMessages id={"sidebar.visualization"} />,
     type: "collapse",
-    children: [ chartMenus, mapsMenus ]
+    children: [chartMenus, mapsMenus]
   },
   {
     name: <IntlMessages id={"sidebar.extras"} />,
@@ -1591,7 +1591,7 @@ export const horizontalDefaultNavs = [
       },
       customTimelineMenus,
       materialTimelineMenus,
-      calendarMenus,
+      calendarMenus
       // usersMenus
     ]
   },
@@ -1630,7 +1630,7 @@ export const minimalHorizontalMenus = [
   {
     name: <IntlMessages id={"sidebar.Apps"} />,
     type: "collapse",
-    children: [ ...appsMenus, ...socialAppsMenus ]
+    children: [...appsMenus, ...socialAppsMenus]
   },
   {
     name: <IntlMessages id={"sidebar.extras"} />,
@@ -1651,7 +1651,7 @@ export const minimalHorizontalMenus = [
       mapsMenus,
       customTimelineMenus,
       materialTimelineMenus,
-      calendarMenus,
+      calendarMenus
       // usersMenus
     ]
   },

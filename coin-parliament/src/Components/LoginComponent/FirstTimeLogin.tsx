@@ -47,7 +47,7 @@ const Container = styled.div`
 export type FirstTimeLoginProps = {
   generate: () => string;
   saveUsername: (username: string) => Promise<void>;
-  setFirstTimeAvatarSelection:any;
+  setFirstTimeAvatarSelection: any;
 };
 
 // const checkValidUsername = httpsCallable(functions, "checkValidUsername");
@@ -67,69 +67,69 @@ const checkValidUsername = async (username: string) => {
     username.length <= "unique_username".length
   );
 };
-const FirstTimeLogin = ({ generate, saveUsername ,setFirstTimeAvatarSelection}: FirstTimeLoginProps) => {
+const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }: FirstTimeLoginProps) => {
   const translate = useTranslation();
-  const {setFirstTimeLogin} = useContext(AppContext );
-  const{user}=useContext(UserContext)
+  const { setFirstTimeLogin } = useContext(AppContext);
+  const { user } = useContext(UserContext)
   const { showToast } = useContext(NotificationContext);
   const title = texts.chooseUserName;
   const text = texts.chooseUserNameText;
   const [username, setUsername] = useState<string>("");
   const [show, setShow] = useState(false);
   const [valid, setValid] = useState(false);
-const[userNameErr,setUserNameErr]=useState(false);
+  const [userNameErr, setUserNameErr] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
+
   const triggerSaveUsername = async () => {
     try {
       // setFirstTimeAvatarSelection(true)
-      const firstTimeLogin:Boolean=false
+      const firstTimeLogin: Boolean = false
       // @ts-ignore
       const userRef = doc(db, "users", user?.uid);
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
       await saveUsername(username);
       setFirstTimeLogin(false);
-      
+
     } catch (e) {
       showToast((e as Error).message, ToastType.ERROR);
     }
   };
-useEffect(() => {
-  setFirstTimeAvatarSelection(true)
-  return () => {
+  useEffect(() => {
     setFirstTimeAvatarSelection(true)
-  }
-}, [])
+    return () => {
+      setFirstTimeAvatarSelection(true)
+    }
+  }, [])
 
   return (
     <>
       <Stack
         gap={2}
         className=" justify-content-center"
-        style={{ height: "100vh", background:'var(--light-purple)' }}
+        style={{ height: "100vh", background: 'var(--light-purple)' }}
       >
         <div className="container-center-horizontal">
           <div className="first-time-login screen">
             <Styles.Title>{translate(title)}</Styles.Title>
-           
+
             <Form
               onSubmit={async (e) => {
                 e.preventDefault();
-                if(username?.length<16 && username?.length>7){
-                  checkValidUsername( username ).then(res=>res?handleShow():setUserNameErr(true))
-                  // handleShow()
+                console.log(/^[a-zA-Z_]+$/g.test(username), 'pkkk');
+
+                if (username?.length < 16 && username?.length > 7 && /^[a-zA-Z_]+$/g.test(username)) {
+                  checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));
                 }
-                else{
-         
-                  setUserNameErr(true)
+                else {
+                  setUserNameErr(true);
                 }
-              
+
               }}
             >
               <Container>
                 <Input
-                 style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+                  style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
                   placeholder={capitalize(translate(texts.username))}
                   name="username"
                   required
@@ -142,37 +142,39 @@ useEffect(() => {
                   }}
                 />
                 <Generate
-                  onClick={(e) =>
-                    {e.preventDefault();
-                    setUsername(generate().replace(" ", "_").toLowerCase())}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setUsername(generate().replace(" ", "_").toLowerCase())
+                  }
                   }
                 >
                   {capitalize(translate(texts.generate))}
                 </Generate>
-                
+
               </Container>
+              {userNameErr ? <Styles.p className="mb-2 text-danger">
+                {translate(texts.UserNameValidation)}
+              </Styles.p> : null}
               <div className="my-4">
-                
+
                 <Buttons.Primary
-                
+
                   fullWidth={true}
                   type="submit"
-                  // disabled={!valid}
+                // disabled={!valid}
                 >
                   {texts.continue}
                 </Buttons.Primary>
               </div>
-              {userNameErr?<Styles.p className="mb-2">
-              {translate(texts.UserNameValidation)}
-            </Styles.p>:null}
+
               <Styles.p className="mb-2">
-              {translate(text)}
-            </Styles.p>
+                {translate(text)}
+              </Styles.p>
             </Form>
           </div>
         </div>
       </Stack>
-      <Modal show={show} onHide={handleClose} style={{zIndex:9999}}>
+      <Modal show={show} onHide={handleClose} style={{ zIndex: 9999 }}>
         <Modal.Header >
           <Modal.Title>{translate(texts.firstTimeLoginModalTitle)}</Modal.Title>
         </Modal.Header>
@@ -189,7 +191,7 @@ useEffect(() => {
           <Buttons.Primary
             // disabled={!valid}
             onClick={async () => {
-           
+
               await triggerSaveUsername();
               handleClose();
             }}

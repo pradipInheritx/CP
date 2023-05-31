@@ -3,14 +3,14 @@ export const texts = {
   facebook: "facebook",
   google: "google",
   twitter: "twitter",
-  noAccount: "don't have an account?".toUpperCase(),
+  noAccount: "Don't have an account?",
   haveAccount: "Already a member?",
   login: "login".toUpperCase(),
   continue: "continue".toUpperCase(),
   firstTimeLoginModalTitle: "Do you want to continue?",
   firstTimeLoginModalText:
     "Choose wisely—because once you get a name, you can’t change it.",
-  signUp: "Become a member".toUpperCase(),
+  signUp: "JOIN THE PARLIAMENT".toUpperCase(),
   agree: "I agree to {terms & conditions} of the site".toUpperCase(),
   termsConditions: "terms & conditions".toUpperCase(),
   email: "email",
@@ -66,14 +66,15 @@ export const texts = {
   UNCommon: "UNCommon",
   Common: "Common",
   UpgradeYourAccount: "upgrade your account",
-  CPMinting: "CP Minting".toUpperCase(),
+  CPMinting: "YOUR MINING PROGRESS".toUpperCase(),
   YourLevel: "Your Level".toUpperCase(),
-  CoinParliamentBalance: "Coin Parliament Balance".toUpperCase(),
+  CoinParliamentBalance: "YOUR PARLIAMENT COINS".toUpperCase(),
   CLAIMINGREWARDS:"CLAIMING REWARDS...",
   CLAIMYOURREWARDS: "CLAIM YOUR REWARDS",
   WEBELIEVEINPARTNERSHIPS: "WE BELIEVE IN PARTNERSHIPS!",
   friends: "friends".toUpperCase(),
   LoadingText: "loading...".toUpperCase(),
+  Calculatingvoteresult: "Calculating vote result...".toUpperCase(),
   Prev: "Prev".toUpperCase(),
   Next: "Next".toUpperCase(),
   Pair: "pair".toUpperCase(),
@@ -104,5 +105,5 @@ export const texts = {
 };
 
 export const urls = {
-  termsConditions: "/termsandcondition",
+  termsConditions: "/terms-and-condition",
 };

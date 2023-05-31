@@ -10,21 +10,24 @@ import AppContext from "../../Contexts/AppContext";
 import Minting from "./Minting";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { useTranslation } from "../../common/models/Dictionary";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NotificationContext from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
-import { isV1 } from "../App/App";
+import { isV1, ZoomCss } from "../App/App";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import animation from "./Comp.json";
 import AnimationReward from "./Animation/AnimationReward";
 import NFTCard from "../../common/NFTCard/NFTCard";
+import './Style.css'
 
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import { texts } from "../LoginComponent/texts";
 import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
+import AnimationCard from "./Animation/AnimationCard";
+
 
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
@@ -40,18 +43,30 @@ const RewardList = styled.p`
   color: #707070;
   cursor: pointer;
 `;
+const CardDiv = styled.div`
+
+`;
+type ZoomProps = {
+  inOutReward?: number
+};
+const ForZoom = styled.div`
+z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
+ ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
+`;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes ,showBack,setShowBack} = useContext(AppContext);
+  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
-   const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = React.useState(false);
+  const [cardModalShow, setCardModalShow] = React.useState(false);
+  const [modelText, setModelText] = React.useState(0);
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -64,23 +79,51 @@ const Mine = () => {
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
+  const handleCardClose = () => setCardModalShow(false);
+  const handleCardShow = () => setCardModalShow(true);
+
+  // @ts-ignore
+  const ClaimNumber = userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+
   useEffect(() => {
     rewardList();
   }, [rewardTimer]);
 
   useEffect(() => {
-  
-    if (showBack) {
-           setTimeout(() => {
-             console.log(showBack, "viewshow")
-             handleShow()
-          setShowBack(false)
-        }, 10000);
-        }       
-    }, []);
+    if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
+      handleCardShow();
+    }
+  }, [inOutReward, showReward, rewardTimer]);
 
+  useEffect(() => {
+
+    if (showBack && ClaimNumber < 1) {
+      setTimeout(() => {
+        setModelText(1)
+        console.log(showBack, "viewshow")
+        handleShow()
+        setShowBack(false)
+        console.log("Openpopup not")
+      }, 10000);
+    }
+  }, []);
+
+  const openpopup = () => {
+    if (showBack) {
+      setTimeout(() => {
+        setModelText(2)
+        console.log(showBack, "viewshow")
+        handleShow()
+        setShowBack(false)
+        handleCardClose()
+        setRewardTimer(null);
+        setShowReward(0);
+        console.log("Openpopup")
+      }, 5000);
+    }
+  }
   console.log(showBack, "viewshow back")
-  
+
   if (isV1()) {
     return (
       <Navigate
@@ -92,22 +135,30 @@ const Mine = () => {
     );
   }
 
-	const goBack = () => {
-		navigate(-1);
-	}
-console.log('userInfo',userInfo)
+  const goBack = () => {
+    navigate(-1);
+  }
+
+  // @ts-ignore
+  const RemeingCmp = (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0
+
+  // console.log('userInfo',(userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0)
+  // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
     <div>
       <Container >
         {/* @ts-ignore */}
-        {!!rewardTimer && (        
-          <AnimationReward
-            setRewardTimer={setRewardTimer}
-            rewardTimer={rewardTimer}
-          />
+        {/* <AnimationReward
+           setRewardTimer={setRewardTimer}
+           rewardTimer={rewardTimer}
+         /> */}
+        {/* {!!rewardTimer && showReward==3 && inOutReward==3 && (        
+          <div className=''>
           
-        )}
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
+        </div>
+        )} */}
         {/* @ts-ignore */}
 
         {/* <Player
@@ -135,7 +186,7 @@ console.log('userInfo',userInfo)
                 {" "}
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
-              <div style={{ marginTop: "7px" }}>
+              <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}>
                 {" "}
                 {/* <PAXCard
                   walletId={userInfo?.wallet || ""}
@@ -144,10 +195,12 @@ console.log('userInfo',userInfo)
 
                 <PAXCard
                   walletId={userInfo?.wallet || ""}
+                  rewardTimer={rewardTimer}
                   // @ts-ignore
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
                 />
-              </div>
+              </ForZoom>
             </div>
             {/* @ts-ignore */}
             <div style={{ marginLeft: "10px" }}>
@@ -163,7 +216,7 @@ console.log('userInfo',userInfo)
                 setRewardTimer={setRewardTimer}
                 rewardTimer={rewardTimer}
                 // @ts-ignore
-                claim={ userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+                claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                 }
               />
             </div>
@@ -176,15 +229,15 @@ console.log('userInfo',userInfo)
                 <Minting
                   {...{
                     width,
-                      score:
+                    score:
                       // @ts-ignore
                       (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
                     setRewardTimer,
                     rewardTimer,
                   }}
                   setRewardTimer={setRewardTimer}
-                    rewardTimer={rewardTimer}
-                    // @ts-ignore
+                  rewardTimer={rewardTimer}
+                  // @ts-ignore
                   claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                   }
                 />
@@ -195,14 +248,18 @@ console.log('userInfo',userInfo)
               md={6}
               className='d-flex flex-column flex-md-column-reverse'
             >
-              <div>
+              <ForZoom
+                {...{ inOutReward }}
+              >
                 <PAXCard
                   walletId={userInfo?.wallet || ""}
+                  rewardTimer={rewardTimer}
                   // @ts-ignore
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
                 {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
-              </div>
+              </ForZoom>
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
@@ -217,7 +274,7 @@ console.log('userInfo',userInfo)
               color: "#6352E8",
               fontSize: "12px",
               marginTop: "30px",
-              width:`${window.screen.width>767?"730px":"100%"}`
+              width: `${window.screen.width > 767 ? "730px" : "100%"}`
             }}
           >
             <div
@@ -249,9 +306,9 @@ console.log('userInfo',userInfo)
                     </span>{" "}
                     {texts.GamePts}
                   </RewardList>
-                  <RewardList onClick={()=>navigate('/profile/Album')}>
+                  <RewardList onClick={() => navigate('/profile/Album')}>
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" , }} onClick={()=>navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
+                    <span style={{ color: "#6352E8", }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}
@@ -294,31 +351,71 @@ console.log('userInfo',userInfo)
       </Container>
       <div>
         <Modal
-      show={modalShow} onHide={handleClose}
-      // size="sm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <div className="d-flex justify-content-end">
-        <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
-          handleClose()
-          }}></button>
-        </div>
-      <Modal.Body>
-            {/* continue voting */}
-      <div className='py-2  d-flex  justify-content-center'><p>Return to Vote and Continue voting ?</p></div>
-
-      </Modal.Body>
-          {/* <Modal.Footer> */}
-          <div className="d-flex justify-content-center ">
-            <Buttons.Primary className="mx-2" onClick={goBack}>Yes</Buttons.Primary>
-            <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default>
+          show={
+            modalShow
+          } onHide={handleClose}
+          // size="sm"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              handleClose()
+            }}></button>
           </div>
-      {/* </Modal.Footer>       */}
-    </Modal>
-  </div>
+          <Modal.Body>
+            {/* continue voting */}
+            {modelText == 1 && <div className='py-2  d-flex flex-column  justify-content-center'>
+              <strong style={{ fontSize: "20px" }}>Stay in the game</strong>
+              <p style={{ fontSize: "20px" }}>Only {100 - RemeingCmp} CMP to reach your goal</p>
+            </div>}
+            {modelText == 2 && <div className='py-2  d-flex  flex-column justify-content-center'>
+              <strong style={{ fontSize: "20px" }}>Great job!!</strong>
+              <p style={{ fontSize: "20px" }}>
+                You're one step closer to claiming your reward!
+              </p>
+            </div>}
 
-    </div>
+          </Modal.Body >
+          {/* <Modal.Footer> */}
+          < div className="d-flex justify-content-center " >
+            <Buttons.Primary className="mx-2" onClick={goBack}>CONTINUE VOTING</Buttons.Primary>
+            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
+          </div >
+          {/* </Modal.Footer>       */}
+        </Modal >
+      </div >
+
+      {/* Card Modal */}
+
+      <CardDiv>
+        <Modal
+          className=""
+          show={
+            cardModalShow
+          } onHide={handleCardClose}
+          // fullscreen="sm-down"
+          backdrop="static"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              setRewardTimer(null);
+              setShowReward(0);
+              handleCardClose()
+            }}></button>
+          </div>
+          <Modal.Body
+          >
+            {/* continue voting */}
+            {/* @ts-ignore */}
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />
+          </Modal.Body>
+        </Modal>
+      </CardDiv>
+    </div >
   );
 };
 

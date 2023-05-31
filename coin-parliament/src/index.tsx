@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "./index.css";
+import { VoteProvider } from "Contexts/VoteProvider";
 
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
@@ -19,7 +20,9 @@ window.changeLanguage = (lang: string) => {
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <VoteProvider>
+        <App />
+      </VoteProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("app")

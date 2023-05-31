@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Table, TableCell, TableContainer, TableRow } from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
-import UserListRow from './FollowTableListRow';
+import FollowTableListRow from './FollowTableListRow';
 import UserTableHead from './FollowTableHead';
 import UserTableToolbar from './FollowTableToolbar';
 import { getComparator, stableSort } from '../../../@jumbo/utils/tableHelper';
@@ -142,7 +142,7 @@ const UsersModule = () => {
                 stableSort(followTableList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <UserListRow
+                    <FollowTableListRow
                       key={index}
                       row={row}
                       onRowClick={handleRowClick}

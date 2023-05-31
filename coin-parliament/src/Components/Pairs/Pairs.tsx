@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useMemo, useRef, useState} from "react";
 import CoinContext from "../../Contexts/CoinsContext";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import UserContext from "../../Contexts/User";
 import {
   getData,
@@ -23,12 +23,26 @@ import styled from "styled-components";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import {getMaxWidth} from "../Coins/Coins";
 import { texts } from "../LoginComponent/texts";
+import { ButtonToolbar } from "react-bootstrap";
 
 const Container = styled.div`
   display: grid;
   
   grid-template-columns: ${(props: { width: number }) => props.width > 979 ? "373px 1fr 25px" : "25px 1fr 25px;"};
   align-items: center;
+`;
+
+const Toolbar = styled(ButtonToolbar)`
+  flex-wrap: nowrap;
+  overflow: scroll;
+  background: #6352E8;
+  padding: 12px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const Pairs = ({
@@ -52,6 +66,8 @@ const Pairs = ({
     allPairs
   );
   const pairs = usePairs();
+    const location = useLocation();
+const pathname = location.pathname;
   const [data, setData] = useState<PairsRow[]>(
     getData({ pairs: pairs(), totals })
   );
@@ -88,24 +104,31 @@ const Pairs = ({
   const src = require("../../assets/sounds/slide.mp3").default;
 
   return (
-    <div id="PairsForm">
+    <div id="PairsForm">   
+      {pathname == "/pairs" ? <>
+      <h5 className="my-2 text-center">            
+              {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+        <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>{
+          // texts.WhatYourPairVote
+        "GET IN THE RING"
+        }</strong>
+          </h5>
       <audio className="d-none" ref={sound} autoPlay={false}>
         <source src={src} type="audio/mpeg"/>
       </audio>
+      <Toolbar>
       {expanded && (
-        <Container {...{width}} className="table-responsive m-auto" style={{maxWidth, padding:width > 979?'20px 0 50px 0':'"0 -15px'}}>
-          {width > 979?
-            <div style={{ fontSize: '20px', fontWeight: '400', marginLeft: '20px' }}>
-              {/* {("What's Your Pair Vote ?").toUpperCase()} */}
-              {texts.WhatYourPairVote}
-            </div>
-          : <div/> }
-          <div className="px-3" style={{position:'relative'}}>
-          <i className="bi bi-search" style={{position:'absolute',top:'9px',right:'30px',fontSize:'18px'}}></i>
+        <>          
+          <div  className="d-flex justify-content-center align-items-center m-auto">                      
+              <div className="px-3"
+                // style={{ position: 'relative' }}
+              >
+          {/* <i className="bi bi-search" style={{position:'absolute',top:'9px',right:'30px',fontSize:'18px'}}></i> */}
             <Input
              style={{
               background: "transparent",
-              color: "var(--white)",
+                    color: "var(--white)",
+              width:`${window.screen.width >767?"300px":"200px"}`
             }}
               value={filter}
               onChange={(e) => {
@@ -128,9 +151,13 @@ const Pairs = ({
               size={24}
             />
           </div>
-        </Container>
+          </div>
+        </>
       )}
-
+      </Toolbar>
+      </> :
+      ""  
+    }  
       <div className="table-responsive m-auto overflow-hidden px-0" style={{maxWidth }}>
         <Carousel
           {...{

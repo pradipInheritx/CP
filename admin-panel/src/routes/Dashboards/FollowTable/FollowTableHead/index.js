@@ -8,34 +8,29 @@ import React from 'react';
 
 const headCells = [
   {
-    id: 'username',
+    id: 'FirstName',
     numeric: false,
     disablePadding: false,
-    label: 'User Name',
+    label: 'First Name',
   },
   {
-    id: 'name',
+    id: 'LastName',
     numeric: false,
     disablePadding: true,
-    label: 'Name',
+    label: 'Last Name',
   },
-  // {
-  //   id: 'name',
-  //   numeric: false,
-  //   disablePadding: true,
-  //   label: 'Name',
-  // },  
-
-  // { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-  { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
-  // { id: 'phone', numeric: false, disablePadding: false, label: 'Phone' },
   {
-    id: 'createAt',
+    id: 'followingCount',
     numeric: false,
     disablePadding: false,
-    label: 'Create Time',
+    label: 'Follow Count',
   },
-  // { id: 'emailUsage', numeric: true, disablePadding: false, label: 'Email Usage' },
+  {
+    id: 'followerCount',
+    numeric: false,
+    disablePadding: true,
+    label: 'Follower Count',
+  },  
 ];
 
 function FollowTableHead({ classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort }) {

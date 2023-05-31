@@ -43,7 +43,8 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
           </div>
         </div>
         <div className="col-3">
-          <div className="text_prpl">{score} CMP</div>
+          {/* @ts-ignore */}
+          <div className="text_prpl">{user?.refereeScrore ? user?.refereeScrore : 0} CMP</div>
         </div>
       </div>
     </div>

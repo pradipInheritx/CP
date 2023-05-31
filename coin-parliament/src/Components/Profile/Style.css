@@ -1,0 +1,19 @@
+.card-content{    
+    /* Width:100%; */
+    height: 460px;
+}
+.card-contentMob{    
+    Width:100% !important;
+    height: 460px;
+}
+.PaxText{
+animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+.popupStyle {
+  border-radius:60px 0px 60px 60px
+}

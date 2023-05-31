@@ -17,7 +17,7 @@ const Template: ComponentStory<typeof CPSelectTimeframes> = () => {
 
   return (
     <>
-      <CPSelectTimeframes {...{ timeframes, selectTimeframe, selected }} />
+      {/* <CPSelectTimeframes {...{ timeframes, selectTimeframe, selected }} /> */}
       {timeframes.length <= 1 && (
         <span>
           It's ok, you see nothing because there are no timeframes or just one

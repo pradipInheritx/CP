@@ -157,7 +157,7 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                   : (vote.valueExpirationTime as number[])[index]
               )}
           </div>
-          <div>{vote.valueExpirationTime && <Trend num={trend} />}</div>
+          {/* <div>{vote.valueExpirationTime && <Trend num={trend} />}</div> */}
         </CoinName>
       </div>
     </CoinContainer>
@@ -225,9 +225,9 @@ const Coin = ({ vote, winner, index, id,coinSocketData }: CoinProps) => {
                                 </Col>
                                 
                                 <Col>
-                                  {vote.valueExpirationTime && (
+                                  {/* {vote.valueExpirationTime && (
                                     <Trend num={trend} />
-                                  )}
+                                  )} */}
                                   
                                 </Col>
                                 

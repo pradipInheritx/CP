@@ -110,10 +110,11 @@ const MyTimeframeButton = (args: {
   text: string;
   disabled: boolean;
   checked: boolean;
+  vote?: any;
   setChecked: (c: boolean) => void;
 }) => {
   const { text, ...rest } = args;
-  return <Buttons.TimeframeButton {...rest}>{text}</Buttons.TimeframeButton>;
+  return <><button>Button</button>{/* <Buttons.TimeframeButton {...rest}>{text}</Buttons.TimeframeButton> */}</>;
 };
 
 const TemplateTimeframeButton: ComponentStory<typeof MyTimeframeButton> = (
