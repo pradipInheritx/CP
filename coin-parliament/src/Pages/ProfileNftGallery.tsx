@@ -409,7 +409,6 @@ const ProfileNftGallery = () => {
       .then((doc: any) => {
 
         doc.forEach((cards: any, index: number) => {
-
           // winCards.push(cards.data().)
           winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
 
@@ -556,7 +555,7 @@ const ProfileNftGallery = () => {
   const availableCard = (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget.checked) {
       let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
-      console.log(winnerCardId);
+      console.log(winnerCardId, winerCard, 'pkkk');
 
       setFilterCard((prev: any) => {
 

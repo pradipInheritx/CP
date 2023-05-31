@@ -83,7 +83,7 @@ const Mine = () => {
   const handleCardShow = () => setCardModalShow(true);
 
   // @ts-ignore 
-  const remainingCMP = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0)
+  const remainingCMP = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   useEffect(() => {
@@ -141,7 +141,6 @@ const Mine = () => {
   }
 
 
-  console.log('userInfo', userInfo, remainingCMP)
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (

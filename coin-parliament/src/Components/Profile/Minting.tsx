@@ -184,22 +184,23 @@ const Minting = ({
     // handleSoundWinCmp.play()    
   };
 
-
-  console.log(showBack, "showBackshow")
-
   // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
-    if (score == 100) {   
-      
-      console.log(document.querySelector(".Cmp-animation") ,"i am working")
-      // handleCmpPopupShow()
-     const Animation = lottie.loadAnimation({
-      // @ts-ignore
-      container: document.querySelector(".Cmp-animation"),
-      animationData: Confetti,
-      renderer: "html", // "canvas", "html"
-      loop: true, // boolean
-      autoplay: true, // boolean              
+    if (score == 100) {
+
+      console.log(document.getElementsByClassName("Cmp-animation"), "i am working")
+      handleCmpPopupShow()
+    }
+  }, [score]);
+  useEffect(() => {
+    if (CmpPopupShow) {
+      const Animation = lottie.loadAnimation({
+        // @ts-ignore
+        container: document.querySelector(".Cmp-animation"),
+        animationData: Confetti,
+        renderer: "html", // "canvas", "html"
+        loop: true, // boolean
+        autoplay: true, // boolean              
       });
       handleSoundWinCmp.play()
       setTimeout(function () {
@@ -208,10 +209,10 @@ const Minting = ({
       }, 4000);  // 5000 milliseconds = 5 seconds
       // setShowBack(false)
     }
-
-  }, [score])
+  }, [CmpPopupShow]);
 
   const [animateButton, setAnimateButton] = useState<boolean>(false);
+  console.log(userInfo, 'pkkk');
   return (
     <React.Fragment>
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
@@ -379,8 +380,7 @@ const Minting = ({
 
       {/* PopUp for complate 100cmp  */}
 
-      <div
-      >
+      <div>
         <Modal
           show={
             CmpPopupShow
@@ -411,7 +411,6 @@ const Minting = ({
             </div>
 
           </Modal.Body>
-          {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2"
               onClick={async () => {
@@ -431,9 +430,7 @@ const Minting = ({
             <Buttons.Primary className="mx-2" onClick={() => {
               handleCmpPopupClose()
             }}>Claim letter</Buttons.Primary>
-            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
-          {/* </Modal.Footer>       */}
         </Modal>
       </div>
     </React.Fragment >
