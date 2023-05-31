@@ -337,13 +337,14 @@ function App() {
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
-  const [remainingTimer, setRemainingTimer] = useState(0)
-  const [followerUserId, setFollowerUserId] = useState<string>('')
-  const [showBack, setShowBack] = useState<any>(false)
-  const [showReward, setShowReward] = useState<any>(0)
-  const [inOutReward, setInOutReward] = useState<any>(0)
-  const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
-  const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
+  const [remainingTimer,setRemainingTimer]=useState(0)
+  const [followerUserId,setFollowerUserId]=useState<string>('')
+  const [showBack,setShowBack]=useState<any>(false)
+  const [showReward,setShowReward]=useState<any>(0)
+  const [inOutReward,setInOutReward]=useState<any>(0)
+  const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
+  const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
+  const [afterVotePopup,setAfterVotePopup]=useState<any>(false)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -1020,17 +1021,19 @@ function App() {
                 // console.log(e.target.value)
               }
               }
-            />
-            <ManagersContext.Provider
-              value={{
-                CPMSettingsMng,
-                VoteRulesMng,
-                TimeframesMng,
-                UserTypeMng,
-              }}
-            >
-              <AppContext.Provider
-                value={{
+          />
+          <ManagersContext.Provider
+            value={{
+              CPMSettingsMng,
+              VoteRulesMng,
+              TimeframesMng,
+              UserTypeMng,
+            }}
+          >
+            <AppContext.Provider
+                  value={{
+                    afterVotePopup,
+                    setAfterVotePopup,
                   rewardExtraVote,
                   setRewardExtraVote,
                   headerExtraVote,
