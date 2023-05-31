@@ -344,19 +344,23 @@ const Minting = ({
           // size="sm"
           backdrop="static"
           // contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
+          contentClassName={"modulebackground"}
           aria-labelledby="contained-modal-title-vcenter"
-          centered
-
+          centered  
+          style={{backgroundColor: "rgba(0,0,0,0.8)" ,zIndex:"2200"}}
+          // style={{
+          //   backgroundColor:"transparent"
+          // }}
         >
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
+            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
               handleClose()
             }}></button>
           </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}
             {/* @ts-ignore */}
-            <div className='py-2 '><p style={{ fontSize: "20px" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
+            <div className='py-2 '><p style={{ fontSize: "20px",color:"white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
           </Modal.Body>
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
