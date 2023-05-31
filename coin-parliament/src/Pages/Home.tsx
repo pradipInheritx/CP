@@ -42,13 +42,9 @@ const Home = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-<<<<<<< HEAD
-  const src = `/hpbanner${width && width > 979 ? "" : "_m"}.png`;
-=======
   const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
 
->>>>>>> 63c7f2a79ae0d3f464d2fdb0a10a1a0e4d59f293
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
