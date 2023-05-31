@@ -1,12 +1,6 @@
 import { firestore } from "firebase-admin";
-// import * as admin from "firebase-admin";
-// import { uploadImage } from "../Reward";
 import { toUpper } from "lodash";
-// import Busboy from "busboy";
-const Busboy = require('busboy');
-// import os from "os";
-// import path from "path";
-// import * as fs from 'fs';
+
 
 interface Sets {
     setName: string;
@@ -548,145 +542,15 @@ export const deleteCard = async (req: any, res: any) => {
     }
 }
 
-// export const uploadImageFunction = async (req: any, res: any) => {
-
-//     // const { cardId } = req.params;
-//     const busboy = Busboy({ headers: req.headers });
-//     const tmpdir = os.tmpdir();
-
-//     // This object will accumulate all the fields, keyed by their name
-//     const fields: any = {};
-
-//     // This object will accumulate all the uploaded files, keyed by their name.
-//     const uploads: any = {};
-
-//     // This code will process each non-file field in the form.
-//     busboy.on('field', (fieldname: any, val: any) => {
-//         /**
-//          *  TODO(developer): Process submitted field values here
-//          */
-//         console.log(`Processed field ${fieldname}: ${val}.`);
-//         fields[fieldname] = val;
-//     });
-
-//     const fileWrites: any = [];
-
-//     // This code will process each file uploaded.
-//     busboy.on('file', (fieldname: any, file: any, { filename }: any) => {
-//         // Note: os.tmpdir() points to an in-memory file system on GCF
-//         // Thus, any files in it must fit in the instance's memory.
-//         console.log(`Processed file ${filename}`);
-//         const filepath = path.join(tmpdir, filename);
-//         uploads[fieldname] = filepath;
-
-//         const writeStream = fs.createWriteStream(filepath);
-//         file.pipe(writeStream);
-
-//         // File was processed by Busboy; wait for it to be written.
-//         // Note: GCF may not persist saved files across invocations.
-//         // Persistent files must be kept in other locations
-//         // (such as Cloud Storage buckets).
-//         const promise = new Promise((resolve, reject) => {
-//             file.on('end', () => {
-//                 writeStream.end();
-//             });
-//             writeStream.on('close', resolve);
-//             writeStream.on('error', reject);
-//         });
-//         fileWrites.push(promise);
-//     });
-
-//     // Triggered once all uploaded files are processed by Busboy.
-//     // We still need to wait for the disk writes (saves) to complete.
-//     busboy.on('finish', async () => {
-//         await Promise.all(fileWrites);
-
-//         /**
-//          * TODO(developer): Process saved files here
-//          */
-//         for (const file in uploads) {
-//             fs.unlinkSync(uploads[file]);
-//         }
-//         res.send();
-//     });
-
-//     busboy.end(req.rawBody);
-// }
-
-
-
-
-
-
-
-
-// get Image url and add into firestore
-// const getImageUrl = async (
-//     cardId: string
-// ) => {
-//     const ref = await admin.storage().bucket("default-bucket");
-//     const [, , meta] = await ref.getFiles({
-//         maxResults: 1,
-//     });
-//     const url = meta.items
-//         .filter((f: any) => f.contentType !== "text/plain")
-//         .shift().mediaLink;
-//     console.log("Image Url ", url);
-
-//     const collectionData: any = await firestore()
-//         .collection("cardsDetails")
-//         .doc(cardId)
-//         .get();
-//     console.log("collectionData--- ", collectionData.data());
-//     const cardData = collectionData.data();
-//     cardData.imageUpload = url;
-
-//     await firestore()
-//         .collection("cardsDetails")
-//         .doc(cardId)
-//         .set(cardData);
-//     console.log("image url -------", url)
-//     // return url;
-//     // const ntfGallery = await firestore()
-//     //   .collection("nft_gallery")
-//     //   .doc('SWnA6wLlv9bPVRIlHKHY')
-
-//     // // Atomically add a new region to the "regions" array field.
-//     // ntfGallery.update({
-//     //   regions: firestore.FieldValue.arrayUnion("greater_virginia")
-//     // });
-// };
-
-
-export const uploadImageFunction = async (req: any, res: any) => {
-    const busboy = new Busboy({ headers: req.headers });
-    const formData: any = {};
-
-    busboy.on('field', (fieldname: any, value: any) => {
-        // Store the form field data in the formData object
-        formData[fieldname] = value;
+export const uploadFileFunc = async (req: any, res: any) => {
+    console.info("Body", req.body, "File", req.file, "Params", req.params);
+    res.status(200).send({
+        status: true,
+        message: req.body,
+        result: true,
     });
-
-    busboy.on('finish', () => {
-        // Parsing finished, formData now contains the form data as a JSON object
-        console.log('Form data:', formData);
-        res.status(200).json(formData);
-    });
-
-
-    // const ref = await admin.storage().bucket("default-bucket");
-    // console.log("File name --- ");
-
-    // const metaData = {
-    //     contentType: "Image/jpg",
-    // };
-    // ref
-    //     .upload(cardImage, metaData)
-    //     .then(() => getImageUrl(collectionId, setId, cardId))
-    //     .catch((error: any) => {
-    //         console.log("EROROR image", error);
-    //     });
 }
+
 export const errorLogging = async (
     funcName: string,
     type: string,
