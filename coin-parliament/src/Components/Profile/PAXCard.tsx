@@ -133,11 +133,13 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
       // size="sm"
       backdrop="static"          
       // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+      contentClassName={"modulebackground"}
       aria-labelledby="contained-modal-title-vcenter"
-      centered
+          centered    
+          style={{backgroundColor: "rgba(0,0,0,0.8)",zIndex:"2200"}}
     >
       <div className="d-flex justify-content-end">
-        <button type="button" className="btn-close " aria-label="Close" onClick={()=>{
+        <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={()=>{
           handleClose()
           }}></button>
         </div>
@@ -145,7 +147,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
             {/* continue voting */}          
             {/* @ts-ignore */}
             <div className=''>
-              <p style={{ fontSize: "20px" }}>Congrats! You've won {rewardExtraVote} votes</p>
+              <p style={{ fontSize: "20px" ,color:"white" }}>Congrats! You've won {rewardExtraVote} votes</p>
             </div>
              
 

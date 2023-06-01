@@ -6,7 +6,7 @@ import { timeFromNow } from '../../../../@jumbo/utils/dateHelper';
 import { Block, CheckCircleOutline, Delete, Edit, Mail, MoreHoriz, Visibility } from '@material-ui/icons';
 import CmtDropdownMenu from '../../../../@coremat/CmtDropdownMenu';
 import CmtAvatar from '../../../../@coremat/CmtAvatar';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import { sentMailToUser, updateUserStatus } from '../../../../redux/actions/Users';
@@ -44,9 +44,10 @@ const getUserActions = user => {
 };
 
 const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
+
+  
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const onUserMenuClick = menu => {
     if (menu.action === 'view') {
       onUserView(row);
@@ -75,7 +76,7 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
   return (
     <TableRow
       hover
-      onClick={event => onRowClick(event, row.id)}
+      // onClick={event => onRowClick(event, row.id)}
       role="checkbox"
       aria-checked={isItemSelected}
       tabIndex={-1}
@@ -96,12 +97,26 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
           </div>
         </Box>
       </TableCell> */}
-      <TableCell>{row.name}</TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>
-        {row.status === 'suspended' ? `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})` : row.status}
+      <TableCell >
+      
+          {row.firstName || "-"}
+        
       </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>      
+      <TableCell>{row.lastName|| "-"}</TableCell>
+      {/* <TableCell>
+        {row.status === 'suspended' ? `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})` : row.status}
+      </TableCell> */}
+      <TableCell>
+        <Link to={`followinguser/${row.userId}`}>
+        {row.followingCount}
+        </Link>
+        </TableCell>      
+
+      <TableCell>
+        <Link to={`followeruser/${row.userId}`}>
+          {row.followerCount}
+          </Link>
+      </TableCell>      
       
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu items={userActions} onItemClick={onUserMenuClick} TriggerComponent={<MoreHoriz />} />

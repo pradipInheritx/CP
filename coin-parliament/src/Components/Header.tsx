@@ -193,7 +193,7 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
+	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward ,afterVotePopup , setAfterVotePopup} = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
@@ -241,7 +241,17 @@ const Header = ({
 			setShow(false)
 		}
 
-	}, [voteNumber, votingTimer])
+	}, [voteNumber, votingTimer, afterVotePopup])
+	
+	useEffect(() => {
+		if (afterVotePopup) {			
+			setShow(true)
+			// setAfterVotePopup(false)
+		} else {
+			setShow(false)
+		}
+
+	}, [afterVotePopup])
 
 
 
@@ -690,7 +700,7 @@ const Header = ({
 																renderer={({ hours, minutes, seconds, completed }) => {
 
 																	return (
-																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '10px', fontWeight: 400 }}>
+																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400 }}>
 																			{/* {hours < 10 ? `0${hours}` : hours}: */}
 																			Wait {" "}
 																			{hours < 1 ? null : `${hours} :`}
@@ -708,7 +718,7 @@ const Header = ({
 																	style={{
 																		color: "#6352E8",
 																		fontSize: "11px",
-																		marginLeft: "10px",
+																		marginLeft: "11px",
 																		// zoom: `${showReward == 2 ? "150%" : ""}`
 																	}}
 																>
@@ -834,12 +844,14 @@ const Header = ({
 						<Modal
 							dialogClassName="modal-35w"
 							show={show}
+							size="lg"
 							onHide={handleClose}
 							aria-labelledby="contained-modal-title-vcenter"
 							centered
-							style={{ opacity: 1 }}
+							style={{ opacity: 1 ,zIndex:100}}
 							className="borderColor"
 						// animation={false}
+							backdrop="static"
 						>
 							{/* <Modal.Header>
 
@@ -847,16 +859,21 @@ const Header = ({
 							<div className="d-flex justify-content-end">
 								<button type="button" className="btn-close " aria-label="Close" onClick={() => {
 									setShow(false)
+									setAfterVotePopup(false)
 								}}></button>
 							</div>
 							<Modal.Body>
 
 								{/* <hr /> */}
-								<p className="text-uppercase"> Out of votes? </p> <Link className="text-uppercase" to="/votingbooster" onClick={() => {
+								<p className="text-uppercase text-center mb-3" > Out of votes? </p>
+								{/* <strong className="text-uppercase" style={{ fontSize: "20px" }}>Out of votes?</strong> */}
+								<div className="text-center">
+								<Link className="text-uppercase" to="/votingbooster" onClick={() => {
 									handleSoundClick()
 									navigate("/votingbooster")
 									setShow(false)
-								}} >Buy</Link> {"extra votes now or wait,".toUpperCase()} <span className="text-uppercase">
+									setAfterVotePopup(false)
+								}} >Buy Extra votes</Link> {" now or wait,".toUpperCase()} <span className="text-uppercase">
 									{/* @ts-ignore */}
 									<Countdown date={votingTimer}
 										renderer={({ hours, minutes, seconds, completed }) => {
@@ -871,7 +888,9 @@ const Header = ({
 											);
 
 										}}
-									/></span>
+										/></span>
+									
+									</div>
 							</Modal.Body>
 						</Modal>
 					</div>

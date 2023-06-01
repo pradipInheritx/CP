@@ -75,7 +75,6 @@ const VoteForm = function <
 
   // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
 
-  // console.log(hideButton, selectedTimeFrame, 'pk');
 
   return (
     <Form
@@ -149,20 +148,21 @@ const VoteForm = function <
             )
           }
         >
-          <div>
+          <div className="">
             <CPVote
               {...{
                 selectedOption,
                 setSelectedOption,
-              }}
+              }}          
               width={width || 266}
               // disabled={!canVote || disabled}
               disabled={
-                !!!user && selectedTimeFrame !== undefined
-                  ? false
-                  : !canVote || disabled
-                    ? true
-                    : false
+                // !!!user && selectedTimeFrame !== undefined
+                //   ? false
+                //   : !canVote || disabled
+                //     ? true
+                //     : false
+                !!!user
               }
               disabledText={texts.tooltip}
               options={[

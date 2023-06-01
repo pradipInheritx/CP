@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Buttons, Props } from "../Atoms/Button/Button";
 import styled, { css } from "styled-components";
 import { colors } from "../VoteForm";
@@ -108,15 +108,34 @@ const Vote = ({
   children,
 }: VoteProps) => {
   const [option0, option1] = options;
-  const { user } = useContext(UserContext);
+  const { user , votesLast24Hours, userInfo } = useContext(UserContext);
+  
+	// const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const { showModal, showToast } = useContext(NotificationContext);
   const [clickedOption1, setClickedOption1] = useState(false);
   const [clickedOption0, setClickedOption0] = useState(false);
+	const [voteNumber, setVoteNumber] = useState(0)
+var urlName = window.location.pathname.split('/');
+	const followerPage = urlName.includes("followerProfile")
+	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
+  const { setLoginRedirectMessage,remainingTimer, loginRedirectMessage, setLogin,afterVotePopup,setAfterVotePopup, voteRules ,login} = useContext(AppContext);
+  
+  useEffect(() => {
+		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+		// @ts-ignore
+		setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)		
+		// console.log('votenumber',voteNumber, Number(voted))
+	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
-  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
+  const openPopup = () => {
+    if (voteNumber == 0 && remainingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {    
+      setAfterVotePopup(true)
+  }  
 
+}
+  
   return (
     <div
     // className="container"
@@ -137,21 +156,24 @@ const Vote = ({
               {...{
                 ...option0.buttonProps,
                 onClick: () => {
-                  VoteButton()
-                  if (disabled && disabledText) {
-                    if (!user) {
-
-
-                      setLoginRedirectMessage('test');
-                      setLogin(true);
-                    } else {
-                      showToast(disabledText, ToastType.ERROR);
+                  openPopup()
+                  if (voteNumber > 0 ) {                    
+                    VoteButton()
+                    if (disabled && disabledText) {
+                      if (!user) {
+  
+  
+                        setLoginRedirectMessage('test');
+                        setLogin(true);
+                      } else {
+                        showToast(disabledText, ToastType.ERROR);
+                      }
+                      return;
                     }
-                    return;
+                    setSelectedOption(0);
+                    setClickedOption0(true);
+                    setTimeout(() => setClickedOption0(false), 1000);
                   }
-                  setSelectedOption(0);
-                  setClickedOption0(true);
-                  setTimeout(() => setClickedOption0(false), 1000);
                 },
                 // onKeyUp: () => {
                 //   VoteButton()
@@ -175,6 +197,8 @@ const Vote = ({
               {...{
                 ...option1.buttonProps,
                 onClick: () => {
+                  openPopup()
+                  if(voteNumber > 0 ){
                   VoteButton()
                   if (disabled && disabledText) {
                     if (!user) {
@@ -186,7 +210,7 @@ const Vote = ({
                   }
                   setSelectedOption(1);
                   setClickedOption1(true);
-                  setTimeout(() => setClickedOption1(false), 1000);
+                  setTimeout(() => setClickedOption1(false), 1000);}
                 },
                 // onKeyUp: () => {
                 //   VoteButton()

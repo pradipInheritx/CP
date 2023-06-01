@@ -191,7 +191,8 @@ export const ZoomCss = css`
   left: 50%;
   transform: translate(-50%, -20%);    
   transition: opacity .2s;
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgba(0,0,0,0.8);  
+  
   display: flex;
   justify-content: center;
   align-items: center;   

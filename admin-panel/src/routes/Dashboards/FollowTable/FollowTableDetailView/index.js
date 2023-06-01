@@ -51,12 +51,12 @@ const FollowTableDetailView = ({ open, onCloseDialog }) => {
         </Box>
         <Box ml="auto" mt={-2} display="flex" alignItems="center">
           <Box ml={1}>
-            <Tooltip title={currentFollowTable?.status}>
+            {/* <Tooltip title={currentFollowTable?.status}>
               <IconButton aria-label="filter list">
                 {currentFollowTable?.status === 'suspended' && <Block color="primary" />}
                 {currentFollowTable?.status === 'active' && <CheckCircleOutline color="primary" />}
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </Box>
           <Box ml={1}>
             <IconButton onClick={onCloseDialog}>
@@ -67,31 +67,39 @@ const FollowTableDetailView = ({ open, onCloseDialog }) => {
       </Box>
       <Box px={6} py={5}>
         <Box mb={5} component="p" color="common.dark">
-          Follow Detail
+          All Detail
         </Box>
         
         
             <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-             Name :
+             First Name :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentFollowTable?.name}
+                {currentFollowTable?.firstName}
               </Box>
                   
             </Box>
             <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-              Username :
+              Last Name :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentFollowTable?.Username}
+                {currentFollowTable?.lastName}
               </Box>
                   
             </Box>       
           <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-              Create Time :
+              Follower Count :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentFollowTable?.createAt}
+                {currentFollowTable?.followerCount}
+                  </Box>
+                  
+              </Box>  
+          <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+              {/* <EmailIcon /> */}
+              Following Count :
+              <Box ml={5} color="primary.main" component="p" className="pointer d-block">
+                {currentFollowTable?.followingCount}
                   </Box>
                   
               </Box>  

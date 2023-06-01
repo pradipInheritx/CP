@@ -61,6 +61,14 @@ const Dashboards = ({match}) => {
           component={lazy(() => import("./FollowTable"))}
         />
         <Route
+          path={`${requestedUrl}/followeruser/:userId`}
+          component={lazy(() => import("./FollowersUsers"))}
+        />
+        <Route
+          path={`${requestedUrl}/followinguser/:userId`}
+          component={lazy(() => import("./FollowingUsers"))}
+        />
+        <Route
           path={`${requestedUrl}/coinsvotestable`}
           component={lazy(() => import("./CoinVoteTable"))}
         />

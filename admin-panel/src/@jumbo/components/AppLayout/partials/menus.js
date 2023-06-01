@@ -89,7 +89,7 @@ const dashboardsMenus = [
     name: <IntlMessages id={"sidebar.dashboard.followtable"} />,
     icon: <People />,
     type: "item",
-    link: "/dashboard/followtable"
+    link: "/dashboard/followtable"  || "/dashboard/followeruser" || "/dashboard/followinguser"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.coinsvotestable"} />,

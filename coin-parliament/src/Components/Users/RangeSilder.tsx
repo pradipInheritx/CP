@@ -318,8 +318,12 @@ export default function SpeedTest(
       }
 
       // console.log('newprice',((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)))
-
-      const newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      let newPrice = 0;
+      if (['BTS', 'ETH'].includes(symbol1)) {
+        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      } else {
+        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      }
       if (50 + newPrice > 100) {
         setPersentValue(100);
         return
@@ -343,10 +347,9 @@ export default function SpeedTest(
     if (!symbol1) return
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
-
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }} >
-      <Speed value={Math.trunc(persentValue) || 50} />
+      <Speed value={persentValue || 50} />{/* // low<mid 40-60>high */}
     </MotionConfig>
   );
 }

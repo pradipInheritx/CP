@@ -216,13 +216,13 @@ const TimeframeButton = ({
       let deg = val * 360;
       if (deg > 0) {
         runTimer();
-      } else if (setHideButton) {
+      }/*  else if (setHideButton) {
         setHideButton((prev: number[]): number[] => {
           return prev.filter((item) => {
             return item !== buttonIndex;
           })
         });
-      }
+      } */
       // if (deg < 0 && setpopUpOpen && vote && Object.keys(vote).length > 0) {
       //   setpopUpOpen(true);
       // }

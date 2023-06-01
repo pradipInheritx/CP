@@ -27,6 +27,7 @@ import Countdown from "react-countdown";
 import ModalForResult from "./ModalForResult";
 import { Coin } from "../common/models/Coin";
 import { decimal } from "../Components/Profile/utils";
+import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
@@ -48,7 +49,8 @@ const SinglePair = () => {
   const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
   const [voteNumber, setVoteNumber] = useState(0)
-  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
+  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins);
+  const [allActiveVotes, setAllActiveVotes] = useState<VoteResultProps[]>([]);
   const {
     timeframes,
     setAllPariButtonTime,
@@ -140,36 +142,16 @@ const SinglePair = () => {
     };
 
   }, [socket])
-  // useEffect(() => {
-
-  //   if(vote.timeframe) {
-  //     setTimeout(() => {
-  //       getCpviData().then((data) => data && setPct(Number(data.data)));  
-  //     }, 2000);
-  //     }
-
-  // }, [voteId, getCpviData]);
   useEffect(() => {
-
-
-    // const timer = setInterval( async() => {
-
     if (vote.timeframe) {
-
       getCpviData().then((data) => data && setPct(Number(data.data)));
     }
-    // }, 5000);
-
-    // return () => {
-    //   clearInterval(timer);
-    // }
   }, [voteId, getCpviData, vote, totals, selectedTimeFrame])
   const choseTimeFrame = async (timeframe: any) => {
 
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframe });
       if (v) {
-
         return v
       }
     }
@@ -178,24 +160,19 @@ const SinglePair = () => {
   useEffect(() => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
       .then(responses => {
-        return Promise.all(responses.map((res, index) => {
-
+        let tempAllActiveVotes: VoteResultProps[] = [];
+        Promise.all(responses.map((res, index) => {
           if (res) {
-
-
+            tempAllActiveVotes = [...tempAllActiveVotes, { ...res.data(), id: res.id }];
             AllvoteValueObject[index] = res.data();
-            // setAllPariButtonTime(AllvoteValueObject);
             setAllButtonTime(AllvoteValueObject);
-
             newTimeframe.push(index)
-
             setSelectedTimeFrameArray(newTimeframe)
           }
-          // else{
-
-          //   setSelectedTimeFrameArray(selectedTimeFrameArray?.filter((item:any)=> item!=index))
-          // }
         }))
+        setAllActiveVotes(() => {
+          return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
+        });
       })
       .catch(error => {
         console.error('promiseAll', error);
@@ -222,12 +199,27 @@ const SinglePair = () => {
     }
   }, [user?.uid, params?.id, selectedTimeFrame]);
 
-  const canVote =
-    vote &&
-    ((!vote.expiration && vote.success === undefined) ||
-      (vote.expiration && vote.success !== undefined));
+  // const canVote =
+  //   vote &&
+  //   ((!vote.expiration && vote.success === undefined) ||
+  //     (vote.expiration && vote.success !== undefined));
+  const voteDetails = useContext(VoteContext);
+
+  const setVoteDetails = useContext(VoteDispatchContext);
+  const canVote = useMemo(() => {
+    return !!!voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`];
+    return vote &&
+      ((!vote.expiration && vote.success === undefined) ||
+        (vote.expiration && vote.success !== undefined));
+    return (
+      ((!vote.expiration && vote.success === undefined) ||
+        (vote.expiration && vote.success !== undefined) ||
+        Date.now() >= vote?.expiration)
+    );
+  }, [/* vote.expiration, vote.success,  */selectedTimeFrame, voteDetails]);
 
   useEffect(() => {
+
     if (!canVote && loading) {
       setLoading(false);
     }
@@ -257,7 +249,81 @@ const SinglePair = () => {
 
   const sound = useRef<HTMLAudioElement>(null);
   const src = require("../assets/sounds/applause.mp3").default;
-  console.log(vote, vote?.valueVotingTime, vote?.valueExpirationTime, "vote?.valueExpirationTime")
+
+  // open modal
+
+
+  const [modalData, setModalData] = useState<VoteResultProps | undefined>();
+  const [modalData2, setModalData2] = useState<any>();
+  const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+  useEffect(() => {
+    allActiveVotes.map((value: VoteResultProps | undefined) => {
+      if (value) {
+        setVoteDetails((prev) => {
+          return {
+            ...prev,
+            [`${value.coin}_${value?.timeframe?.seconds}`]: value
+          }
+        })
+      }
+    })
+  }, [allActiveVotes]);
+  useEffect(() => {
+    let lessTimeVote: VoteResultProps | undefined;
+    Object.keys(voteDetails).map((value) => {
+      if (!lessTimeVote || lessTimeVote.expiration > voteDetails[value]?.expiration) {
+        lessTimeVote = voteDetails[value];
+      }
+      return {};
+    });
+    if (lessTimeVote) {
+      setModalData(lessTimeVote);
+    }
+  }, [voteDetails]);
+  useEffect(() => {
+    if (modalData) {
+      // let exSec = new Date(-).getSeconds();
+      // current date
+      let current = new Date();
+
+      // voteTime date
+      let voteTime = new Date(modalData?.expiration);
+
+      // finding the difference in total seconds between two dates
+      let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
+      // console.log(second_diff, 'hello');
+      if (second_diff > 0) {
+        const timer = setTimeout(async () => {
+          await getPriceCalculation({
+            coin1: `${coin1?.symbol ? coin1.symbol + "usdt" : ""}`,
+            coin2: `${coin2?.symbol ? coin2.symbol + "usdt" : ""}`,
+            voteId: modalData?.id,
+            voteTime: modalData?.voteTime,
+            valueVotingTime: modalData?.valueVotingTime,
+            expiration: modalData?.expiration,
+            timestamp: Date.now(),
+            userId: modalData?.userId
+          }).then((response) => {
+            if (response?.data) {
+              setpopUpOpen(true);
+              setModalData2(response?.data);
+            }
+          }).catch(err => {
+            if (err && err.message) {
+              console.log(err.message);
+            }
+          });
+        }, (second_diff * 1000));
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [modalData]);
+  useEffect(() => {
+    setModalData(modalData2);
+  }, [modalData2])
+
+  //end modal
+
   return (
     <>
       <audio className="d-none" ref={sound}>
@@ -326,11 +392,12 @@ const SinglePair = () => {
                 </div>
                 <div className="text-center">
                   {/* @ts-ignore */}
-                  {!graphLoading && (!canVote || hideButton.includes(selectedTimeFrame && selectedTimeFrame)) && user && voteId && (
+                  {!graphLoading && (!canVote/*  || hideButton.includes(selectedTimeFrame) */) && user && voteId && (
                     <>
                       <VotedCard
                         {...{
-                          vote, coins: coinUpdated, totals, symbol1, symbol2, voteId, selectedTimeFrame,
+                          vote: voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
+                          coins: coinUpdated, totals, symbol1, symbol2, voteId, selectedTimeFrame,
                           setSelectedTimeFrame, selectedTimeFrameArray, setpopUpOpen, hideButton, setHideButton,
                         }}
                       />
@@ -344,15 +411,19 @@ const SinglePair = () => {
                     </>
                   )}
                   {/* @ts-ignore */}
-                  {vote && vote?.valueVotingTime && vote?.valueExpirationTime/*  && hideButton.includes(selectedTimeFrame && selectedTimeFrame) */ && <ModalForResult
-                    popUpOpen={popUpOpen}
-                    setpopUpOpen={setpopUpOpen}
-                    setHideButton={setHideButton}
-                    vote={vote && vote}
-                    selectedTimeFrame={selectedTimeFrame}
-                    hideButton={hideButton}
-                    type={"pair"}
-                  />}
+                  {
+                    modalData && modalData?.valueVotingTime && modalData?.valueExpirationTime && /* hideButton.includes(selectedTimeFrame && selectedTimeFrame) && */
+                    // modalData &&
+                    <ModalForResult
+                      popUpOpen={popUpOpen}
+                      setpopUpOpen={setpopUpOpen}
+                      setHideButton={setHideButton}
+                      vote={modalData}
+                      selectedTimeFrame={selectedTimeFrame}
+                      hideButton={hideButton}
+                      setModalData={setModalData}
+                      type={"pair"}
+                    />}
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>

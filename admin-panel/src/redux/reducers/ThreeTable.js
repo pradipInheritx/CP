@@ -1,6 +1,10 @@
 import {
 GET_FOLLOWTABLE,
   SET_FOLLOWTABLE_DETAILS,
+  GET_FOLLOWINGUSERS,
+SET_FOLLOWINGUSERS_DETAILS,
+GET_FOLLOWERUSERS,
+SET_FOLLOWERUSERS_DETAILS,
 
 GET_COINSVOTESTABLE,
   SET_COINSVOTESTABLE_DETAILS,
@@ -12,6 +16,12 @@ SET_PAIRVOTETABLE_DETAILS,
 const INIT_STATE = {
   followTableList: [],
   currentFollowTable: null,
+
+  followerUsersList: [],
+  currentFollowerUsers: null,
+
+  followingUsersList: [],
+  currentFollowingUsers: null,
 
   coinsVoteList: [],
   currentCoinsVote: null,
@@ -33,6 +43,32 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         currentFollowTable: action.payload,
+      };
+    }
+      
+    case GET_FOLLOWINGUSERS: {
+      return {
+        ...state,
+        followingUsersList: action.payload,
+      };
+    }
+    case SET_FOLLOWINGUSERS_DETAILS: {
+      return {
+        ...state,
+        currentFollowingUsers: action.payload,
+      };
+    }
+      
+    case GET_FOLLOWERUSERS: {
+      return {
+        ...state,
+        followerUsersList: action.payload,
+      };
+    }
+    case SET_FOLLOWERUSERS_DETAILS: {
+      return {
+        ...state,
+        currentFollowerUsers: action.payload,
       };
     }
       
