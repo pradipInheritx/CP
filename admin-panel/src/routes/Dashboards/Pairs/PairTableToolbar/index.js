@@ -97,7 +97,7 @@ const PairTableToolbar = ({
             id="tableTitle"
             component="div"
           >
-            Pairs{" "}
+            {/* Pairs{" "} */}
             <Button color="primary" onClick={() => onUserAdd(true)}>
               Add New Pair
             </Button>

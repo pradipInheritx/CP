@@ -98,9 +98,9 @@ const TimeFrameTableToolbar = ({
             component="div"
           >
             {/* Users{" "} */}
-            <Button color="primary" onClick={() => onUserAdd(true)}>
+            {/* <Button color="primary" onClick={() => onUserAdd(true)}>
               Add New Time Frame
-            </Button>
+            </Button> */}
           </Typography>
         )}
 

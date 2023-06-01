@@ -65,6 +65,7 @@ const Home = () => {
                     position: "absolute",
                   }}
                 />
+
                 <div
                   className='w-100 '
                   style={{
@@ -90,7 +91,7 @@ const Home = () => {
               maxWidth: "250px",
             }}
           >
-            {/* <h2
+             {/* <h2
                     style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
                     className=' d-block text-center mb-2'
                   >
@@ -101,20 +102,19 @@ const Home = () => {
                       {translate("Vote to Earn")}
                     </strong>
                   </h2> */}
-            {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
-            {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
             <H2
               style={{
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
                 marginTop: "130px",
-
               }}
-              // className="mb-4"
-              className=' d-block text-center mb-4'
+
+              className="mb-4"
             >
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
@@ -133,12 +133,12 @@ const Home = () => {
                {translate("Vote to Earn")}
              </strong>
            </h2> */}
-              {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+             {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
            <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
          </TextContainer> */}
-              {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-              <H2
-                style={{
+             {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+            <H2
+              style={{
                   // zIndex: 1,
                   fontWeight: "400",
                   position: "relative",
@@ -146,12 +146,12 @@ const Home = () => {
                   fontSize: "30px",
                   marginTop: window?.screen?.width < 768 ? '100px' : "222px",
                 }}
-                // className="mb-4"
-                className=' d-block text-center mb-2 mb-4'
-              >
-                {texts.HereYourChance}
-                {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
-              </H2>
+
+              className="mb-4"
+            >
+              {texts.HereYourChance}
+              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
+            </H2>
             </>
           )}
           <Pairs
@@ -219,7 +219,9 @@ const Home = () => {
               setLogin(true)
               setSignup(true)
             }}>{texts.signUp}</Buttons.Primary>
-              <H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1.5rem' }}>Join now and start earning rewards before anyone else</H2>
+              <H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1.5rem' }}>
+              {("Join now and start earning rewards before anyone else").toUpperCase()}
+              </H2>
 
             </>}</div> : <></>}
 
@@ -228,7 +230,7 @@ const Home = () => {
             {!user?.uid ? <div className='d-xl-none'> {window.screen.width < 979 && <><Buttons.Primary style={{ margin: 'auto', marginTop: '2rem', fontSize: '1rem', padding: '1rem' }} onClick={e => {
               setLogin(true)
               setSignup(true)
-            }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1rem' }}>Join now and start earning rewards before anyone else</H2></>}</div> : <></>}
+            }}>{texts.signUp}</Buttons.Primary><H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1rem' }}>{("Join now and start earning rewards before anyone else").toUpperCase()}</H2></>}</div> : <></>}
 
           </div>
           <InfluencersCarousel />

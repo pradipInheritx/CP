@@ -1,5 +1,5 @@
 import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from 'axios';
+import axios from '../../services/auth/jwt/config';
 import {
   
 GET_RETURNSETTING,
@@ -8,16 +8,15 @@ EDIT_RETURNSETTING
 
 
 
-export const getReturnSetting = (filterOptions = [], searchTerm = '', callbackFun) => {
+export const getReturnSetting = () => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/users', { params: { filterOptions, searchTerm } })
+      .get('settings/getVoteAndretrunSettings')
       .then(data => {
-        if (data.status === 200) {
+        if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          dispatch({ type: GET_RETURNSETTING, payload: data.data });
-          if (callbackFun) callbackFun(data.data);
+          dispatch({ type: GET_RETURNSETTING, payload: data.data.result });          
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
@@ -28,16 +27,15 @@ export const getReturnSetting = (filterOptions = [], searchTerm = '', callbackFu
   };
 };
 
-export const updateReturnSetting = (user, callbackFun) => {
+export const updateReturnSetting = (UpdateSetting) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .put('/users', user)
+      .put('settings/updateVoteAndReturnSettings', UpdateSetting)
       .then(data => {
-        if (data.status === 200) {
-          dispatch(fetchSuccess('Selected user was updated successfully.'));
-          dispatch({ type: EDIT_RETURNSETTING, payload: data.data });
-          if (callbackFun) callbackFun(data.data);
+        if (data.status === 200 || data.status === 201 || data.status === 204) {
+          dispatch(fetchSuccess(data.data.message));
+          dispatch({ type: EDIT_RETURNSETTING, payload: data.data.result });          
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }

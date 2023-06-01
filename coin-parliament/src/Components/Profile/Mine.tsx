@@ -11,7 +11,7 @@ import Minting from "./Minting";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { useTranslation } from "../../common/models/Dictionary";
 import styled, { css } from "styled-components";
-import NotificationContext from "../../Contexts/Notification";
+import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
 import { isV1, ZoomCss } from "../App/App";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -28,6 +28,8 @@ import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
 import AnimationCard from "./Animation/AnimationCard";
 import { CurrentCMPContext } from "Contexts/CurrentCMP";
+import copy from "copy-to-clipboard";
+import Copy from "Components/icons/copyShare";
 
 
 const MyBadge = styled(Badge)`
@@ -50,6 +52,13 @@ const CardDiv = styled.div`
 type ZoomProps = {
   inOutReward?: number
 };
+
+const I = styled.i`
+  cursor: pointer;
+  font-size:22px;
+  color:#6352e9;
+`;
+
 const ForZoom = styled.div`
 z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
  ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
@@ -59,7 +68,7 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
   const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward } = useContext(AppContext);
-  const { showModal } = useContext(NotificationContext);
+  const { showModal, showToast } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
@@ -67,6 +76,8 @@ const Mine = () => {
   const [data, setData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
+
+  const [shareModleShow, setShareModleShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
   let navigate = useNavigate();
   const rewardList = async () => {
@@ -84,9 +95,15 @@ const Mine = () => {
   const handleCardShow = () => setCardModalShow(true);
 
   const currentCMP = useContext(CurrentCMPContext);
+  const handleShareModleClose = () => setShareModleShow(false);
+  const handleShareModleShow = () => setShareModleShow(true);
+
   // @ts-ignore 
-  const score = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0);
-  const remainingCMP = ((currentCMP && ((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100) !== 0) ? 100 : score;
+  const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
+  const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
+
+  const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+  const remainingCMP = (currentCMP && currentCMPDiff > prevCMPDiff ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   useEffect(() => {
@@ -143,6 +160,8 @@ const Mine = () => {
     navigate(-1);
   }
 
+  const url = "https://coinparliament.com/"
+  const shareText = "I won this unique card! Join the Parliament and win with me."
 
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
@@ -172,9 +191,9 @@ const Mine = () => {
               <Minting
                 {...{
                   width,
-                  score:
-                    // @ts-ignore
-                    remainingCMP,
+                  score: remainingCMP,
+                  // @ts-ignore
+                  // remainingCMP,
                   setRewardTimer,
                   rewardTimer,
                 }}
@@ -193,9 +212,9 @@ const Mine = () => {
                 <Minting
                   {...{
                     width,
-                    score:
-                      // @ts-ignore
-                      remainingCMP,
+                    score: remainingCMP,
+                    // @ts-ignore
+                    // remainingCMP,
                     setRewardTimer,
                     rewardTimer,
                   }}
@@ -359,10 +378,11 @@ const Mine = () => {
           backdrop="static"
           aria-labelledby="contained-modal-title-vcenter"
           centered
-          contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
         >
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
               setRewardTimer(null);
               setShowReward(0);
               handleCardClose()
@@ -372,7 +392,117 @@ const Mine = () => {
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} />
+          </Modal.Body>
+        </Modal>
+      </CardDiv>
+
+
+
+      {/* Share Link */}
+
+
+      <CardDiv>
+        <Modal
+          className=""
+          show={
+            shareModleShow
+          } onHide={handleShareModleClose}
+          // fullscreen="sm-down"
+          backdrop="static"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
+              handleShareModleClose()
+            }}
+            // style={{color:"white" , border:"1px solid red"}}
+            >
+
+            </button>
+          </div>
+          <Modal.Body
+          >
+            {/* continue voting */}
+            {/* @ts-ignore */}
+            <div className="d-flex justify-content-center my-3">
+              <strong className="mx-4" style={{ fontSize: '14px', textAlign: 'center', color: "white" }}>SHARE YOUR CARD NOW</strong>
+            </div>
+            <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
+              <div className="mx-3">
+                <span
+                  onClick={() => {
+                    copy(url);
+                    showToast(
+                      'Your Card link is copied to the clipboard.',
+                      ToastType.SUCCESS
+                    );
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Copy />
+                </span>
+                {/* <I
+              className="bi bi-clipboard-check-fill"
+              
+              onClick={() =>
+              {
+                copy(url);
+                showToast(
+                  'Your Card link is copied to the clipboard.',
+                  ToastType.SUCCESS
+                );
+               }
+              }
+            />  */}
+
+              </div>
+
+              <div className="mx-3">
+                <I
+                  className="bi-whatsapp"
+
+                  onClick={() =>
+                    window.open(
+                      `https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url}`.replace(
+                        " ",
+                        "+"
+                      )}&app_absent=0`,
+                      "_blank"
+                    )
+                  }
+                />
+              </div>
+              <div className="mx-3">
+                <I
+                  className="bi-twitter"
+                  onClick={() =>
+                    window.open(
+                      `https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`,
+                      "_blank"
+                    )
+                  }
+                />
+              </div>
+              <div className="mx-3">
+                <I
+                  className="bi bi-facebook"
+                  onClick={() =>
+                    window.open(
+                      `https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`,
+                      "_blank"
+                    )
+                  }
+                />
+
+              </div>
+
+            </div>
+
+
           </Modal.Body>
         </Modal>
       </CardDiv>

@@ -17,3 +17,13 @@ animation: blinker 1s linear infinite;
 .popupStyle {
   border-radius:60px 0px 60px 60px
 }
+
+.modulebackground{
+  background-color:transparent !important;
+  border: none !important;
+}
+.btn-close{
+  color: white !important;
+}
+/* #d4d0f3 */
+/* #6352e8 */

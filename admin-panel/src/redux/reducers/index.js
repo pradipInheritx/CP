@@ -15,6 +15,7 @@ import SubAdmin from './SubAdmin';
 import Coin from './Coin';
 import Pair from './Pair';
 import UsersDetelis from './UsersDetelis';
+import UserTypeSetting from './UserTypeSetting';
 import TimeFrame from './TimeFrame';
 import VotePerUser from './VotePerUser';
 import ThreeTable from './ThreeTable';
@@ -46,6 +47,7 @@ export default history =>
     profileApp: ProfileApp,
     wallApp: WallApp,
     usersReducer: Users,
+    UserTypeSetting:UserTypeSetting,
     subAdmin: SubAdmin,
     coinReducer: Coin,
     pairReducer: Pair,

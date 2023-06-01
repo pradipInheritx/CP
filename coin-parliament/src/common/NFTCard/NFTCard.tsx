@@ -17,10 +17,13 @@ import uncommon from '../../assets/images/uncommonText.png';
 import { Buttons } from "../../Components/Atoms/Button/Button";
 import { useNavigate } from "react-router-dom";
 import giftImage from "../../assets/images/giftCard.gif"
+
 type MintingProps = {
   cardType?: any;
   setRewardTimer?: any;
   openpopup?: any;
+  handleShareModleShow?: any;
+  handleCardClose?: any;
 };
 
 
@@ -80,7 +83,7 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShareModleShow ,handleCardClose}: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -345,8 +348,11 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
               <span className='cardname'>
                 THE <strong>HODLER</strong>
               </span>
-              <img src={giftImage} alt='the hgodler' className='img-fluid' style={{ height: '98%' }} />
-              {/* <div className='card-body h-100'>
+              <img src={TheEagle} alt='the hgodler' className='img-fluid'
+                // style={{ height: '98%' }}
+                width={"90%"}
+              />
+              {/* <div className={classname}>
                 {" "}
               </div> */}
             </div>
@@ -393,6 +399,13 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
         // className="w-100 d-flex justify-content-center mt-3"
         className={`${!cressShow ? "d-none" : ""} w-100 d-flex justify-content-center mt-3`}
       >
+        <Buttons.Primary className="mx-2" onClick={() => {
+          setRewardTimer(null);
+          setShowReward(0);
+          handleShareModleShow()
+          handleCardClose()
+        }}>Share Card</Buttons.Primary>
+
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
