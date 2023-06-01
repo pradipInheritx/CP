@@ -137,6 +137,7 @@ import TermsAndConditions from "./Pages/TermsAndConditions";
 import { VoteContext, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
 import { vote } from "common/models/canVote.test";
 import { setTimeout } from "timers";
+import NFTGalleryCopy from "Pages/NFTGalleryCopy";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -1371,9 +1372,13 @@ function App() {
                                               path='coins'
                                               element={<CoinMain />}
                                             />
-                                            <Route
+                                            {/* <Route
                                               path='nftAlbum'
                                               element={<NFTGallery />}
+                                            /> */}
+                                            <Route
+                                              path='nftAlbum'
+                                              element={<NFTGalleryCopy />}
                                             />
                                             <Route
                                               path='nftAlbum/:type'
