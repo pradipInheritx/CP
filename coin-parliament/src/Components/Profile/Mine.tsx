@@ -27,6 +27,7 @@ import { texts } from "../LoginComponent/texts";
 import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
 import AnimationCard from "./Animation/AnimationCard";
+import { CurrentCMPContext } from "Contexts/CurrentCMP";
 
 
 const MyBadge = styled(Badge)`
@@ -82,8 +83,10 @@ const Mine = () => {
   const handleCardClose = () => setCardModalShow(false);
   const handleCardShow = () => setCardModalShow(true);
 
+  const currentCMP = useContext(CurrentCMPContext);
   // @ts-ignore 
-  const remainingCMP = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0);
+  const score = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0);
+  const remainingCMP = ((currentCMP && ((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100) !== 0) ? 100 : score;
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   useEffect(() => {

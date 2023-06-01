@@ -21,6 +21,7 @@ import { Buttons } from "../Atoms/Button/Button";
 import Confetti from "../../assets/animation/confetti.json";
 import { colors } from "../VoteForm";
 import Swal from 'sweetalert2';
+import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -177,8 +178,11 @@ const Minting = ({
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
-
-  const handleCmpPopupClose = () => setCmpPopupShow(false);
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  const handleCmpPopupClose = () => {
+    setCmpPopupShow(false);
+    setCurrentCMP(0);
+  };
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
     // handleSoundWinCmp.play()    
@@ -187,9 +191,9 @@ const Minting = ({
   // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
     if (score == 100) {
-
-      console.log(document.getElementsByClassName("Cmp-animation"), "i am working")
-      handleCmpPopupShow()
+      setTimeout(() => {
+        handleCmpPopupShow();
+      }, 3900);
     }
   }, [score]);
   useEffect(() => {
@@ -212,7 +216,6 @@ const Minting = ({
   }, [CmpPopupShow]);
 
   const [animateButton, setAnimateButton] = useState<boolean>(false);
-  console.log(userInfo, 'pkkk');
   return (
     <React.Fragment>
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
@@ -228,7 +231,7 @@ const Minting = ({
             {texts.CPMinting}
           </Title>
           <I className='bi bi-info-circle' style={{ paddingRight: width < 767 ? '8em' : '' }}></I>
-          <CircularProgress percentage={score === 0 && (userInfo?.rewardStatistics?.total || 0) > 0 ? 100 : (score || 0)} />
+          <CircularProgress percentage={(score || 0)} />
 
           {/* <PieChart
             percentage={score || 50}

@@ -14,8 +14,8 @@ import AppContext from '../Contexts/AppContext';
 import { voteEndFinish } from '../common/utils/SoundClick';
 import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
+import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 // const silent = require("../assets/sounds/silent.mp3").default;
-
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
     props.winner ? "#6352E8" : "transparent"};
@@ -140,7 +140,15 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
   const votelength = Object.keys(vote).length
-  
+
+  //set reward cmp
+  const currentCMP = useContext(CurrentCMPContext);
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  console.log(currentCMP, 'pkk');
+
+  useEffect(() => {
+    setCurrentCMP(vote?.score || 0)
+  }, [vote?.score])
 
   return (
     <div>
