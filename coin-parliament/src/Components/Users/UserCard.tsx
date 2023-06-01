@@ -163,8 +163,8 @@ const UserCard = ({
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate()
-  const { setFollowerUserId } = useContext(AppContext)
-  const {userInfo } = useContext(UserContext);
+  const { setFollowerUserId} = useContext(AppContext)
+  const {userInfo ,user } = useContext(UserContext);
   
   
 
@@ -197,8 +197,9 @@ const UserCard = ({
         }}
       >
         <ElementsAvatarAImage1 onClick={e => {
-          
-          redirectTab()
+          if (user) {            
+            redirectTab()
+          }
           
       
       }}>
