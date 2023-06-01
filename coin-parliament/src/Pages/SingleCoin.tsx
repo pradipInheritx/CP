@@ -295,9 +295,6 @@ const SingleCoin = () => {
     };
   }, [selectedTimeFrame]);
 
-
-  console.log(selectedTimeFrame, "selectedTimeFrameChange")
-
   useEffect(() => {
 
     // console.log("i am working now", voteId)
@@ -381,17 +378,24 @@ const SingleCoin = () => {
   const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`;
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   useEffect(() => {
+    let data: { [key: string]: VoteResultProps } = {};
     allActiveVotes.map((value: VoteResultProps | undefined) => {
       if (value) {
-        setVoteDetails((prev) => {
-          return {
-            ...prev,
-            [`${value.coin}_${value?.timeframe?.seconds}`]: value
-          }
-        })
+        data = {
+          ...data,
+          [`${value.coin}_${value?.timeframe?.seconds}`]: value
+        }
+      }
+    })
+    setVoteDetails((prev) => {
+      return {
+        ...prev,
+        ...data
       }
     })
   }, [allActiveVotes]);
+  console.log(voteDetails, allActiveVotes, 'pkkk');
+
   useEffect(() => {
     let lessTimeVote: VoteResultProps | undefined;
     Object.keys(voteDetails).map((value) => {
@@ -404,6 +408,7 @@ const SingleCoin = () => {
       setModalData(lessTimeVote);
     }
   }, [voteDetails]);
+
   useEffect(() => {
     if (modalData) {
       // let exSec = new Date(-).getSeconds();
