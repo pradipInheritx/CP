@@ -555,9 +555,9 @@ const ProfileNftGallery = () => {
   const availableCard = (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget.checked) {
       let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
-      console.log(winnerCardId, winerCard, 'pkkk');
 
       setFilterCard((prev: any) => {
+        console.log(winnerCardId, prev, 'pkkk');
 
         return prev;
       });
@@ -652,10 +652,6 @@ const ProfileNftGallery = () => {
           <label htmlFor="default-checkbox">{texts.AvailableCards}</label>
         </div>
       </div>
-
-
-
-
       <GalleryType
         className=''
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}

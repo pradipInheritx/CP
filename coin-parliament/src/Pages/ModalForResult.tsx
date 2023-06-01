@@ -8,14 +8,14 @@ import { formatCurrency } from '../common/models/Coin';
 import moment from "moment";
 import Line from '../Components/icons/line';
 import { timeframeInitials } from '../Components/Atoms/Button/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
 import { voteEndFinish } from '../common/utils/SoundClick';
 import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
+import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 // const silent = require("../assets/sounds/silent.mp3").default;
-
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
     props.winner ? "#6352E8" : "transparent"};
@@ -89,7 +89,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
 }) {
 
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (popUpOpen) {
       // console.log("i am working")
@@ -111,6 +111,11 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   const setVoteDetails = useContext(VoteDispatchContext);
   const handleShow = () => setShow(true);
   const handleClose = () => {
+    removeVote();
+    // setShow(false);
+  };
+
+  const removeVote = () => {
     setVoteDetails((prev: { [key: string]: VoteResultProps }) => {
       let temp = {};
       Object.keys(prev).map((key: string) => {
@@ -124,8 +129,8 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
     if (setModalData instanceof Function) {
       setModalData(undefined);
     }
-    // setShow(false);
-  };
+  }
+
 
   const { coins } = useContext(CoinsContext);
   const { showBack, setShowBack } = useContext(AppContext);
@@ -140,7 +145,14 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
   const votelength = Object.keys(vote).length
-  
+
+  //set reward cmp
+  const currentCMP = useContext(CurrentCMPContext);
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+
+  useEffect(() => {
+    setCurrentCMP(vote?.score || 0)
+  }, [vote?.score])
 
   return (
     <div>
@@ -391,13 +403,15 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
 
 
           <div className='py-2  d-flex  justify-content-center'>
-            <Link to="/profile/mine" style={{ textDecoration: 'none' }}
+            <span style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
+                removeVote();
                 setShowBack(true);
+                navigate('/profile/mine');
               }}
             >
               <Other>{("CHECK PROGRESS")}</Other>
-            </Link>
+            </span>
           </div>
         </Modal.Body>
         {/* <Modal.Footer>

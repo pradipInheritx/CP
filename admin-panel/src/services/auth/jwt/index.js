@@ -46,14 +46,16 @@ const JWTAuth = {
               localStorage.setItem('token', data.result.authTokens[data.result.authTokens.length-1].token);
               localStorage.setItem('userData', JSON.stringify(data.result));                 
               axios.defaults.headers.common['Authorization'] = 'Bearer ' + data.result.authTokens[data.result.authTokens.length-1].token;
-              dispatch(fetchSuccess());
+              dispatch(fetchSuccess());              
               dispatch(JWTAuth.getAuthUser(true, data.result.refreshToken));
             } else {
-              dispatch(fetchError(data.error));
+              
+              dispatch(fetchError(data.message));
             }
           })
-          .catch(function (error) {            
+          .catch(function ( error) {                  
             dispatch(fetchError(error.message));
+            // dispatch(fetchError(error.message));
           });
       } catch (error) {
         dispatch(fetchError(error.message));

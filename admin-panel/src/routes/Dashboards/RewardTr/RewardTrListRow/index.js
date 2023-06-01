@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const getUserActions = user => {
-  console.log(user,"userstatus")
+  
   const actions = [
     {action: "view", label: "View", icon: <Visibility />},
     // {action: "edit", label: "Edit", icon: <Edit />},

@@ -27,6 +27,7 @@ import { texts } from "../LoginComponent/texts";
 import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
 import AnimationCard from "./Animation/AnimationCard";
+import { CurrentCMPContext } from "Contexts/CurrentCMP";
 import copy from "copy-to-clipboard";
 import Copy from "Components/icons/copyShare";
 
@@ -67,7 +68,7 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
   const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward } = useContext(AppContext);
-  const { showModal,showToast} = useContext(NotificationContext);
+  const { showModal, showToast } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
@@ -93,11 +94,16 @@ const Mine = () => {
   const handleCardClose = () => setCardModalShow(false);
   const handleCardShow = () => setCardModalShow(true);
 
+  const currentCMP = useContext(CurrentCMPContext);
   const handleShareModleClose = () => setShareModleShow(false);
   const handleShareModleShow = () => setShareModleShow(true);
 
   // @ts-ignore 
-  const remainingCMP = (userInfo?.voteStatistics?.score || 0) - (userInfo?.rewardStatistics?.total * 100 || 0);
+  const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
+  const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
+
+  const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+  const remainingCMP = (currentCMP && currentCMPDiff > prevCMPDiff ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   useEffect(() => {
@@ -185,9 +191,9 @@ const Mine = () => {
               <Minting
                 {...{
                   width,
-                  score:remainingCMP,
-                    // @ts-ignore
-                    // remainingCMP,
+                  score: remainingCMP,
+                  // @ts-ignore
+                  // remainingCMP,
                   setRewardTimer,
                   rewardTimer,
                 }}
@@ -206,9 +212,9 @@ const Mine = () => {
                 <Minting
                   {...{
                     width,
-                    score:remainingCMP,
-                      // @ts-ignore
-                      // remainingCMP,
+                    score: remainingCMP,
+                    // @ts-ignore
+                    // remainingCMP,
                     setRewardTimer,
                     rewardTimer,
                   }}
@@ -332,7 +338,7 @@ const Mine = () => {
           } onHide={handleClose}
           // size="sm"
           aria-labelledby="contained-modal-title-vcenter"
-          centered          
+          centered
         >
           <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={() => {
@@ -372,7 +378,7 @@ const Mine = () => {
           backdrop="static"
           aria-labelledby="contained-modal-title-vcenter"
           centered
-          style={{backgroundColor: "rgba(0,0,0,0.8)",zIndex:"2200"}}
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
         >
           <div className="d-flex justify-content-end">
@@ -386,7 +392,7 @@ const Mine = () => {
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} handleShareModleShow={handleShareModleShow} handleCardClose ={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} />
           </Modal.Body>
         </Modal>
       </CardDiv>
@@ -405,41 +411,41 @@ const Mine = () => {
           // fullscreen="sm-down"
           backdrop="static"
           aria-labelledby="contained-modal-title-vcenter"
-          centered          
-          style={{backgroundColor: "rgba(0,0,0,0.8)" ,zIndex:"2200"}}
+          centered
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
         >
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close btn-close-white" aria-label="Close"  onClick={() => {              
+            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
               handleShareModleClose()
             }}
             // style={{color:"white" , border:"1px solid red"}}
             >
-              
+
             </button>
           </div>
           <Modal.Body
           >
             {/* continue voting */}
-            {/* @ts-ignore */}   
-          <div className="d-flex justify-content-center my-3">
-          <strong className="mx-4" style={{fontSize:'14px',textAlign:'center',color:"white" }}>SHARE YOUR CARD NOW</strong>         
-        </div>
-          <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
-          <div className="mx-3">
-            <span
-              onClick={() => {
-                copy(url);
-                showToast(
-                  'Your Card link is copied to the clipboard.',
-                  ToastType.SUCCESS
-                );
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              <Copy />
-            </span>
-               {/* <I
+            {/* @ts-ignore */}
+            <div className="d-flex justify-content-center my-3">
+              <strong className="mx-4" style={{ fontSize: '14px', textAlign: 'center', color: "white" }}>SHARE YOUR CARD NOW</strong>
+            </div>
+            <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
+              <div className="mx-3">
+                <span
+                  onClick={() => {
+                    copy(url);
+                    showToast(
+                      'Your Card link is copied to the clipboard.',
+                      ToastType.SUCCESS
+                    );
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Copy />
+                </span>
+                {/* <I
               className="bi bi-clipboard-check-fill"
               
               onClick={() =>
@@ -452,49 +458,49 @@ const Mine = () => {
                }
               }
             />  */}
-                
-          </div>
-          
-          <div className="mx-3">
-          <I
-              className="bi-whatsapp"
-              
-              onClick={() =>
-                window.open(
-                  `https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url}`.replace(
-                    " ",
-                    "+"
-                  )}&app_absent=0`,
-                  "_blank"
-                )
-              }
-            />
-          </div>
-          <div className="mx-3">
-            <I
-              className="bi-twitter"
-              onClick={() =>
-                window.open(
-                  `https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`,
-                  "_blank"
-                )
-              }
-            />
-          </div>
-          <div className="mx-3">            
-                <I
-              className="bi bi-facebook"
-              onClick={() =>
-              window.open(
-                `https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`,
-                "_blank"
-              )
-            }
-            />
 
-          </div>
-          
-        </div>
+              </div>
+
+              <div className="mx-3">
+                <I
+                  className="bi-whatsapp"
+
+                  onClick={() =>
+                    window.open(
+                      `https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url}`.replace(
+                        " ",
+                        "+"
+                      )}&app_absent=0`,
+                      "_blank"
+                    )
+                  }
+                />
+              </div>
+              <div className="mx-3">
+                <I
+                  className="bi-twitter"
+                  onClick={() =>
+                    window.open(
+                      `https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`,
+                      "_blank"
+                    )
+                  }
+                />
+              </div>
+              <div className="mx-3">
+                <I
+                  className="bi bi-facebook"
+                  onClick={() =>
+                    window.open(
+                      `https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`,
+                      "_blank"
+                    )
+                  }
+                />
+
+              </div>
+
+            </div>
 
 
           </Modal.Body>
