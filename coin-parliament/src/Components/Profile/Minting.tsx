@@ -186,14 +186,14 @@ const Minting = ({
 
   // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
-    if (score == 100) {
-
-      console.log(document.getElementsByClassName("Cmp-animation"), "i am working")
+    if (score == 100) {         
       handleCmpPopupShow()
     }
   }, [score]);
   useEffect(() => {
     if (CmpPopupShow) {
+
+      
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         container: document.querySelector(".Cmp-animation"),
@@ -415,7 +415,7 @@ const Minting = ({
             </div>
 
           </Modal.Body>
-          <div className="d-flex justify-content-center ">
+          <div className="d-flex justify-content-center pb-4">
             <Buttons.Primary className="mx-2"
               onClick={async () => {
                 if (claim) {
