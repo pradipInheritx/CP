@@ -91,18 +91,18 @@ export const defaultHeaderForgetDataFromTimestamp = {
 };
 
 export const upgradeMessage:  { [key: string]: any } =  {
-  Speaker: `Congratulations! You've Been Upgraded to Speaker!`,
-  Council: `Promotion Earned: You're Now Upgraded to Consul!`,
-  Ambassador: `Breaking News: You're Now an Ambassador!`,
-  Minister: `Promotion Alert: You're Now a Minister!`,
+  Speaker: `🎉 Congratulations! You've Been Upgraded to Speaker!`,
+  Council: `🎉Promotion Alert: You're Now a Minister!`,
+  Ambassador: `📰 Breaking News: You're Now an Ambassador!`,
+  Minister: `📈 Promotion Earned: You're Now Upgraded to Consul!`,
   Chairman: `You've Been Upgraded to Chairman!`
 }
 
 
 export const downGradeMessage:  { [key: string]: any } =   {
-  Speaker: `Title Change: You're Now a Speaker`,
-  Council: `Title Update: You've Transitioned to Consul`,
-  Ambassador: `Title Change: You're Now an Ambassador`,
-  Minister: `Title Update: You've Transitioned to Minister`,
+  Speaker: `🚨 Title Change: You're Now a Speaker`,
+  Council: `🛑 Title Update: You've Transitioned to Consul`,
+  Ambassador: `🛑 Title Change: You're Now an Ambassador`,
+  Minister: `🚨Title Update: You've Transitioned to Minister`,
   Chairman: `Title Change: You're Now a Chairman`
 }

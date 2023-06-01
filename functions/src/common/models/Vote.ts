@@ -132,14 +132,14 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
       console.info(doc.id, '=>', doc.data());
     });
     if (lastVotedData && lastVotedData.length) {
-      const body = "Don't forget to make your daily vote";
+      const body = "VOTE NOW!";
       let token = getAllUsers[user].token;
 
       console.info("Token,", token);
       const message: messaging.Message = {
         token,
         notification: {
-          title: "Don't forget to make your daily vote",
+          title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
           body,
         },
         webpush: {
@@ -156,7 +156,7 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
         token,
         message,
         body,
-        title: "Don't forget to make your daily vote",
+        title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
         id: getAllUsers[user].id,
       });
     }
