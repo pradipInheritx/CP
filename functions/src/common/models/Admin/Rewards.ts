@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
-import { uploadImage } from "../Reward";
 import { toUpper } from "lodash";
+import "../../../index"
 
 interface Sets {
     setName: string;
@@ -8,8 +8,8 @@ interface Sets {
 }
 interface Album {
     albumName: string;
-    imageUrl: string;
-    videoUrl: string;
+    albumImageUrl: string;
+    albumVideoUrl: string;
     setQunatity: number;
 }
 
@@ -29,17 +29,22 @@ type Card = {
 
 
 // get albums details
-async function getAlbumDetails(albumId: string) {
+export async function getAlbumDetails(albumId: string) {
     const albumDetails = await firestore().collection("nftGallery").doc(albumId).get()
     return albumDetails.data()
 }
 
 
 // get sets details
-async function getSetsDetails(albumId: string, setId: string) {
+export async function getSetsDetails(albumId: string, setId: string) {
     const setsDetails = await firestore().collection("nftGallery").doc(albumId).collection("setDetails").doc(setId).get();
-    console.log("Sets Details =============", setsDetails.data())
     return setsDetails.data()
+}
+
+
+export async function getCardDetails(cardId: string) {
+    const albumDetails = await firestore().collection("cardsDetails").doc(cardId).get()
+    return albumDetails.data()
 }
 
 // generate serial number string for cards
@@ -85,14 +90,14 @@ const fetchAllSet = async (getAlbumDoc: any) => {
 
 export const createAlbum = async (req: any, res: any) => {
     try {
-        const { albumName, setQunatity, setDetails, imageUrl, videoUrl } = req.body
+        const { albumName, setQunatity, setDetails, albumImageUrl, albumVideoUrl } = req.body
 
         const newAlbum: Album = {
             albumName,
             setQunatity,
             // setDetails,
-            imageUrl,
-            videoUrl
+            albumImageUrl,
+            albumVideoUrl
         }
         const newSets: Sets[] = setDetails
 
@@ -144,7 +149,7 @@ export const createAlbum = async (req: any, res: any) => {
 
 export const createCard = async (req: any, res: any) => {
     try {
-        const { albumId, setId, cardName, cardStatus, cardType, totalQuantity, cardImage, cardVideoUrl } = req.body;
+        const { albumId, setId, cardName, cardStatus, cardType, totalQuantity, cardImageUrl, cardVideoUrl } = req.body;
 
         //Check Album is exist or not
 
@@ -184,9 +189,7 @@ export const createCard = async (req: any, res: any) => {
                 cardType,
                 totalQuantity
             ),
-            cardImageUrl: cardImage
-                ? await uploadImage(cardImage, albumId, setId, "cardId")
-                : "",
+            cardImageUrl,
             cardVideoUrl,
         }
 
@@ -361,14 +364,14 @@ export const getCardListing = async (req: any, res: any) => {
 export const updateAlbums = async (req: any, res: any) => {
     try {
         const { albumId } = req.params
-        const { albumName, setQunatity, setDetails, imageUrl, videoUrl } = req.body
+        const { albumName, setQunatity, setDetails, albumImageUrl, albumVideoUrl } = req.body
 
         const updatedAlbum: Album = {
             albumName,
             setQunatity,
             // setDetails,
-            imageUrl,
-            videoUrl
+            albumImageUrl,
+            albumVideoUrl
         }
         const updatedSets: Sets[] = setDetails
 
@@ -415,7 +418,7 @@ export const updateCard = async (req: any, res: any) => {
     try {
 
         const { cardId } = req.params
-        const { albumId, setId, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImage, cardVideoUrl } = req.body
+        const { albumId, setId, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImageUrl, cardVideoUrl } = req.body
 
         const getCardQuery = await firestore().collection("cardsDetails").doc(cardId).get();
 
@@ -444,9 +447,10 @@ export const updateCard = async (req: any, res: any) => {
                 cardType,
                 totalQuantity
             ),
-            cardImageUrl: cardImage
-                ? await uploadImage(cardImage, albumId, setId, "cardId")
-                : "",
+            cardImageUrl,
+            // cardImageUrl: cardImage
+            //     ? await uploadImage(cardImage, albumId, setId, "cardId")
+            //     : "",
             cardVideoUrl
         }
 
@@ -542,6 +546,31 @@ export const deleteCard = async (req: any, res: any) => {
         });
     }
 }
+
+export const updateFileLink = async (forModule: string, fileType: string, id: string, url: string) => {
+    if (forModule == "card") {
+        let getCard: any = await getCardDetails(id);
+        const getCardDetailsQuery = firestore().collection("cardsDetails").doc(id)
+        if (fileType == 'video') {
+            getCard.cardVideoUrl = url
+            await getCardDetailsQuery.set(getCard)
+        } else {
+            getCard.cardImageUrl = url
+            await getCardDetailsQuery.set(getCard)
+        }
+    } else {
+        let getCard: any = await getAlbumDetails(id);
+        const getAlbumDetailsQuery = firestore().collection("nftGallery").doc(id)
+        if (fileType == 'video') {
+            getCard.albumVideoUrl = url
+            await getAlbumDetailsQuery.set(getCard)
+        } else {
+            getCard.albumImageUrl = url
+            await getAlbumDetailsQuery.set(getCard)
+        }
+    }
+}
+
 
 export const errorLogging = async (
     funcName: string,
