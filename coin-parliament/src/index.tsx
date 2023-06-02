@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "./index.css";
 import { VoteProvider } from "Contexts/VoteProvider";
+import { CurrentCMPProvider } from "Contexts/CurrentCMP";
 
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
@@ -21,7 +22,9 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <VoteProvider>
-        <App />
+        <CurrentCMPProvider>
+          <App />
+        </CurrentCMPProvider>
       </VoteProvider>
     </BrowserRouter>
   </React.StrictMode>,

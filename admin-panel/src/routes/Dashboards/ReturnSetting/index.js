@@ -24,8 +24,12 @@ const ReturnSettingModule = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   
-  const { ReturnSettingDetelis } = useSelector(({ ReturnSetting }) => ReturnSetting);  
+  const { ReturnSettingDetelis } = useSelector(({ ReturnSetting }) => ReturnSetting);
+  
+console.log(ReturnSettingDetelis,"ReturnSettingDetelis")
    
+  const [allSettingData, setAllSettingData] = useState({});
+
   const [considerableAffec, setConsiderableAffec] = useState('');
   const [considerableAffecError, setConsiderableAffecError] = useState('');
   
@@ -39,6 +43,16 @@ const ReturnSettingModule = () => {
 
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // setAllSettingData(ReturnSettingDetelis)
+    if (ReturnSettingDetelis) {      
+      setConsiderableAffec(ReturnSettingDetelis?.voteRules?.CPMReturnFailure)
+      setMediumAffect(ReturnSettingDetelis?.voteRules?.CPMReturnInRange)
+      setMinorAffect(ReturnSettingDetelis?.voteRules?.CPMReturnSuccess)
+      setAllSettingData(ReturnSettingDetelis)
+    }
+  }, [ReturnSettingDetelis]);
 
   useEffect(() => {
     dispatch(
@@ -65,13 +79,15 @@ const ReturnSettingModule = () => {
   };
 
   const onCmpSave = () => {
-    const ReturnSettingDetail = {
-      considerableAffec,
-      mediumAffect,
-      minorAffect
-    };    
+    var allDatainfo = {
+      ...allSettingData.CPMSettings,
+      ...allSettingData.voteRules,
+    }
+    allDatainfo["CPMReturnInRange"]=mediumAffect
+    allDatainfo["CPMReturnFailure"]=considerableAffec
+    allDatainfo["CPMReturnSuccess"] = minorAffect            
       dispatch(
-        updateReturnSetting({...ReturnSettingDetail}),
+        updateReturnSetting(allDatainfo),
       );    
   };
 
@@ -89,17 +105,16 @@ const ReturnSettingModule = () => {
               
               <TextField
                 style={{ width: "75%" }} 
-                // fullWidth
+              
               type="text"
-                label={
-                  // <IntlMessages id="appModule.userTypeCpm" />
-                  "Considerable Affec"
+                label={                  
+                  "Low Range"
                 }            
+                value={considerableAffec}
                 onChange={event => {
                   setConsiderableAffec(event.target.value)
                   setConsiderableAffecError("")
-                }}
-              defaultValue={ReturnSettingDetelis?.considerableAffec}
+                }}              
               margin="normal"
               variant="outlined"
               className={classes.textFieldRoot}
@@ -108,13 +123,13 @@ const ReturnSettingModule = () => {
             />
 
             <TextField
-            style={{width:"75%"}}
-                // fullWidth
+            style={{width:"75%"}}                
               type="text"
                 label={
-                  // <IntlMessages id="appModule.weight" />
-                  "Medium Affect"
-                }              
+                  
+                  "Medium Range"
+                }   
+                value={mediumAffect}
                 onChange={event => {
                   setMediumAffect(event.target.value)
                   setMediumAffectError("")
@@ -129,13 +144,12 @@ const ReturnSettingModule = () => {
               />                                     
               
             <TextField
-            style={{width:"75%"}}
-                // fullWidth
+            style={{width:"75%"}}                
               type="text"
-                label={
-                  // <IntlMessages id="appModule.weight" />
-                  "Minor Affect"
-                }              
+                label={                  
+                  "High Range"
+                }    
+                value={minorAffect}
                 onChange={event => {
                   setMinorAffect(event.target.value)
                   setMinorAffectError("")
@@ -156,7 +170,7 @@ const ReturnSettingModule = () => {
               <IntlMessages id="appModule.reset" />
             </Button>            
             <Button
-              // onClick={onSubmit}
+              onClick={onSubmitClick}
               variant="contained" color="primary">
               <IntlMessages id="appModule.submit" />
             </Button>            

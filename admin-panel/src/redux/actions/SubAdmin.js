@@ -12,9 +12,7 @@ import {
 export const getSubAdmin = (filterOptions = [], searchTerm = '', callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
-    const userId = JSON.parse(localStorage.getItem('userData'));
-    // .get('/sub-admin/subAdminList/2PGCYzgpyLILzWywdC2p?limit=10&page=1', { params: { filterOptions, searchTerm } })
-    // .get(`/sub-admin/subAdminList/${userId.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })
+    const userId = JSON.parse(localStorage.getItem('userData'));    
     
     axios
       // .get(`/sub-admin/subAdminList/${userId?.id}?limit=10&page=1`, { params: { filterOptions, searchTerm } })

@@ -37,13 +37,18 @@ const PairDetailView = ({open, onCloseDialog}) => {
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
       <Box className={classes.userInfoRoot}>
         <Box mr={3} display="flex" alignItems="center">
-          <Box className={classes.avatarView} mr={{xs: 4, md: 6}}>
+          {/* <Box className={classes.avatarView} mr={{xs: 4, md: 6}}>
             <CmtAvatar size={70} src={currentPair?.coinLogo} alt={currentPair?.name} />
-          </Box>
+          </Box> */}
 
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>{currentPair?.name}</Typography>
+              <Box mr={1}>
+              <Typography className={classes.titleRoot}>{currentPair?.symbol1}</Typography>
+              </Box>
+              <Box ml={1}>
+              <Typography className={classes.titleRoot}>{currentPair?.symbol2}</Typography>
+              </Box>
               {/* <Box ml={1}>
                 <Checkbox
                   icon={<StarBorderIcon />}
@@ -72,8 +77,8 @@ const PairDetailView = ({open, onCloseDialog}) => {
           <Box ml={1}>
             <Tooltip title={currentPair?.status}>
               <IconButton aria-label="filter list">
-                {currentPair?.status === "suspended" && <Block color="primary" />}
-                {currentPair?.status === "active" && <CheckCircleOutline color="primary" />}
+                {currentPair?.status === "Inactive" && <Block color="primary" />}
+                {currentPair?.status === "Active" && <CheckCircleOutline color="primary" />}
               </IconButton>
             </Tooltip>
           </Box>
@@ -86,42 +91,44 @@ const PairDetailView = ({open, onCloseDialog}) => {
       </Box>
       <Box px={6} py={5}>
         <Box mb={5} component="p" color="common.dark">
-          Contact Detail
+            Pair Detail
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Symbol 1 : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentPair?.symbol}
+            {currentPair?.symbol1}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Symbol 2 : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentPair?.coinID}
+            {currentPair?.symbol2}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Rank :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentPair?.rank}
+            {currentPair?.voteBarRange && currentPair?.voteBarRange[0] || 0}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          CMP :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentPair?.CMP}
+            {currentPair?.voteBarRange && currentPair?.voteBarRange[1] || 0}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Weight Order Book : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentPair?.Weight_Order_Book}
+            {/* {currentPair?.Weight_Order_Book} */}
+            {currentPair?.voteBarRange && currentPair?.voteBarRange[2] || 0}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
-          <EmailIcon />
+          Range Result CMP :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentPair?.Range_Result_CMP}
+            {/* {currentPair?.Range_Result_CMP} */}
+            {currentPair?.voteBarRange && currentPair?.voteBarRange[3] || 0}
           </Box>
         </Box>
         {/* <Box display="flex" alignItems="center" mb={{xs: 4, sm: 5}}>

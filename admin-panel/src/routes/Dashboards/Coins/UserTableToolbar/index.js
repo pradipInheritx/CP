@@ -97,10 +97,10 @@ const UserTableToolbar = ({
             id="tableTitle"
             component="div"
           >
-            Coins{" "}
+            {/* Coins{" "}
             <Button color="primary" onClick={() => onUserAdd(true)}>
               Add New Coin
-            </Button>
+            </Button> */}
           </Typography>
         )}
 
