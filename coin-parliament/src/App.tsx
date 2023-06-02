@@ -116,6 +116,7 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
+import ProfileNftGalleryCopy from "./Pages/ProfileNftGalleryCopy";
 import GameRule from "./Pages/GameRule";
 import Partners from "./Pages/Partners";
 import Foundations from "./Pages/Foundations";
@@ -138,6 +139,7 @@ import { VoteContext, VoteDispatchContext, VoteProvider } from "Contexts/VotePro
 import { vote } from "common/models/canVote.test";
 import { setTimeout } from "timers";
 import NFTGalleryCopy from "Pages/NFTGalleryCopy";
+import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -1446,7 +1448,7 @@ function App() {
                                                 path={
                                                   ProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<ProfileNftGallery />}
+                                                element={<ProfileNftGalleryCopy />}
                                               />
                                               <Route
                                                 path={
@@ -1484,7 +1486,7 @@ function App() {
                                                 path={
                                                   FollowerProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<FwProfileNftGallery />}
+                                                element={<FwProfileNftGalleryCopy />}
                                               />
                                               <Route
                                                 path={

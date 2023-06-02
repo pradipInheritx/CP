@@ -7,16 +7,17 @@ import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
 
 import NftOneCard from "./NftOneCard";
-// @ts-ignore
-import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
-
+import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
-import firebase from "firebase/compat";
-import { Ratio } from "react-bootstrap";
+import UserContext from "../Contexts/User";
+import AppContext from "../Contexts/AppContext";
+// @ts-ignore
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4';import Science from '../assets/avatars/videos/Science.mp4';
 import { texts } from "../Components/LoginComponent/texts";
 
+// import { Firestore } from "firebase/firestore";
 
 const GalleryType = styled.div`
   margin: auto;
@@ -30,7 +31,7 @@ const GalleryType = styled.div`
     height:${window.screen.width < 767?"91px":"100px" };
     // height:71px;
     margin: 50px 10px;
-     
+    
     cursor:pointer;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
     // padding: 20px 20px;
@@ -39,101 +40,54 @@ const GalleryType = styled.div`
     }
   }
 `;
+
+const Video = styled.video`
+  width: 100%;
+  // max-width: 300px;
+  height: auto;
+  margin: 0 auto;
+  // border-radius: 20px;
+`;
+
 const SummerCard = styled.div`
 
   display: flex;
   justify-content: center;
   // border:1px solid red;
   flex-wrap: wrap;
-  // background-color: #f8f9fa;
+  background-color: #f8f9fa;
 
   
-`; 
-const Video = styled.video`
-  width: 100%;
-  
-  height: auto;
-  margin: 0 auto;
-  // border-radius: 20px;
 `;
-const NFTGalleryCopy = () => {
+
+const FwProfileNftGalleryCopy = () => {
+  const { user } = useContext(UserContext);
+  const{followerUserId}=useContext(AppContext)
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
-  const [collectionTypeNew, setCollectionTypeNew] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
-  const [allTypeofCardNew, setAllTypeofCardNew] = useState<any>([])
   const [allCardArray,setAllCardArray]=useState<any>([])
-  const [allCardArrayNew,setAllCardArrayNew]=useState<any>([])
   const [searchedCard,setSearchedCard]= useState<any>([])
-  const [searchedCardNew,setSearchedCardNew]= useState<any>([])
-  const [allCard,setAllCard]=useState<any>([])
-  const [allCardNew,setAllCardNew]=useState<any>([])
+  const [allCard, setAllCard] = useState<any>([])
   const [cardType,setCardType]=useState<any>('all')
-  const [searchTerm,setSearchTerm]=useState<any>('')
+  const [searchTerm, setSearchTerm] = useState<any>('')
   const [selectCollection, setSelectCollection] = useState<any>('none')
   const [backCards, setBackCards] = useState<any>([]);
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
-  const [collection, setCollection] = useState<any>()
-  const [setsCardId, setSetsCardId] = useState<any>('none')
+  const [winerCard, setWinerCard] = useState<any>([]);
+    const [setsCardId, setSetsCardId] = useState<any>('none')
   const [setsValue, setSetsValue] = useState<any>([])
   const [setsCardName, setSetsCardName] = useState<any>('none')
   const [cardName, setCardName] = useState<any>([])
-  const [cardNameNew, setCardNameNew] = useState<any>([])
   const [allVideo, setAllVideo] = useState<any>({
-    Monsoon:Monsoon,
-    Winter :Winter,
-    Summer :Summer,
-    Science :Science,
-  })
-  
-//     const getNftCard = () => {
-//   const getCollectionType = firebase
-//             .firestore()
-//             .collection("nft_gallery")
-//     getCollectionType.get()
-//       .then((snapshot) => {          
-               
-//         let allcollection = snapshot.docs.map((doc) => doc.data())
-//         console.log(allcollection,"allcollection")
-//         setCollectionType(allcollection)
-        
-//         allcollection?.map((allcolloection: any) => {
-//           setAllTypeofCard([...allTypeofCard,allcolloection]) 
-//           const data:any=[]
-//           snapshot.forEach((doc) => {    
-//     data.push({id: doc.id, ...doc.data()});
-//   });
-//   setAllCardArray(data)
-  
-//   const cards: any = [];
-//   data.forEach((element: any) => {
-  
-//     const collectionId = element.collectionId;
-//     const collectionName = element.collectionName;
-//     const collectionDocId = element.id;
-// console.log(collectionName,"collectionNameAll")
-//     element.setDetails.forEach((setDetail: any) => {
-//       const setId = setDetail.setId;
-//       const setName = setDetail?.setName;
-  
-//       setDetail.cards.forEach((cardDetail: any) => {
-//         cards.push({collectionId, collectionName, collectionDocId, setId,setName, ...cardDetail});
-//       });
-//     });
-//   });
-//   setAllCard(cards)
-//         })        
-//       }).catch((error) => {
-//         console.log(error,"error");
-//       });    
-//     }
-  
-  
-  // New card data
-  
-  
-  const getNftCardNew = () => {
+    Monsoon: Monsoon,
+    Winter: Winter,
+    Summer: Summer,
+    Science:Science,
+  });
+
+   const getNftCard = () => {
   const getCollectionType = firebase
             .firestore()
             .collection("nftGallery")
@@ -165,17 +119,30 @@ console.log(collectionName,"collectionNameAll")
       });
     });
   });
-  setAllCardNew(cards)
+  setAllCard(cards)
         })        
       }).catch((error) => {
         console.log(error,"error");
       });    
     }
   
-  console.log(allCardNew,"allCardCheck")
- 
-
-
+  
+//     const onSearch = (searchTerm: any) => {
+  
+//   setSearchTerm(searchTerm)
+//   if (searchTerm?.length || selectCollection!="none") {
+//     setCardShow(true)
+//   }
+//   else {
+//     setCardShow(false)
+//   }
+    
+//   if(cardType==='all' &&  selectCollection ==="none") setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+//   else {    
+//     setSearchedCard(allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type != cardType.toUpperCase() && card?.collectionName === selectCollection))
+//   }
+// }
+  
 const onSearch = (searchTerm: any) => {  
   setSearchTerm(searchTerm)
   if (searchTerm?.length || selectCollection!="none") {
@@ -327,7 +294,22 @@ setAllCardArray(data)
   }
 }  
   
-  const onSelectSets=(cardId:any)=>{
+  
+//     const onSelectSets=(cardId:any)=>{
+//   setSetsCardId(cardId)
+//   if (cardId === 'none') {    
+//     const cardWithId=allCard.filter((card: any) => card.setId !== cardId )
+//     setSearchedCard(cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );
+    
+//   }
+//   else {    
+//     setCardShow(true);        
+//     const cardWithId=allCard.filter((card: any) => card.setId == cardId )
+//     setSearchedCard(cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type== cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );        
+//   }
+// }
+  
+    const onSelectSets=(cardId:any)=>{
   setSetsCardId(cardId)
   if (cardId === 'none') {    
     const cardWithId = allCard.filter((card: any) => card.setId !== cardId)
@@ -351,8 +333,6 @@ setAllCardArray(data)
   }
   }
   
-
-
   const onSelectName=(mycardName:any)=>{
   setSetsCardName(mycardName)
   if (mycardName === 'none')
@@ -375,17 +355,51 @@ setAllCardArray(data)
    }     
 }
   
- 
   
-useEffect(() => {
-  // getNftCard()
-  getNftCardNew()
-  }, [])
-useEffect(() => {
-  onCollectionChange(selectCollection)
-  // onCollectionChangeNew(selectCollection)
+   const getAllRewardsOfUser = async (uid: string) => {
+
+  var winCards: {
+    firstRewardCard: string,
+    firstRewardCardCollection: string,
+    firstRewardCardId: number,
+    firstRewardCardSerialNo : string,
+    firstRewardCardType : string,
+    secondRewardExtraVotes : number,
+    thirdRewardDiamonds : number
+    
+  }[] = []
+   await firebase
+  .firestore()
+    .collection("reward_transactions")
+    .where("user", "==", uid)
+    .get()
+    .then((doc:any) => {
+
+      doc.forEach((cards:any,index:number) => {
+
+        // winCards.push(cards.data().)
+        winCards.push({...cards.data().winData ,...cards.data().transactionTime})
+        
+      })
+    })
+    .catch((error:any) => {
+      console.log("getAllRewardsOfUser Error", error)
+    })
+  
+   setWinerCard(winCards)
+}
+  
+  
+  useEffect(() => {
+    getNftCard()
+    getAllRewardsOfUser(`${followerUserId}`)
+}, [])
+
+  
+  useEffect(() => {
+    onCollectionChange(selectCollection)
   }, [selectCollection])
-  
+
 useEffect(() => {
    onSearch(searchTerm)
 
@@ -394,30 +408,27 @@ useEffect(() => {
 useEffect(() => {
    onSearch(searchTerm)
    onSelectType(cardType)
-  //  onSelectTypeNew(cardType) 
-  onSelectName(setsCardName)  
+  onSelectSets(setsCardId)
+  onSelectName(setsCardName)
   }, [
     // allCard
      cardType   ,setsCardId ,setsCardName
   ])
-     
   
   
-// use searched card for showing searchdata
+
   
-  
-   const BackSideCard = (value: string | number) => {
-    // @ts-ignore
-  if (backCards.includes(value)) {       
+    const BackSideCard = (value: string | number) => {  
+      if (backCards.includes(value)) {       
         let allBackCard = [...backCards];
         allBackCard.splice(backCards.indexOf(value), 1);
         setBackCards(allBackCard)
     }
     else {
       setBackCards([...backCards, value])
-    };
+    };     
   };
-  
+
   
 function sliceDived(arr:any, partSize:any) {
     const res = [];
@@ -426,7 +437,7 @@ function sliceDived(arr:any, partSize:any) {
         res.push(DivideEqual);
     }
     // return res;
-  
+
   setEqualPart(res)
   
 }
@@ -441,18 +452,55 @@ useEffect(() => {
   }
   },[searchedCard])
 
+const CheckCardDisable = (cardId: any) => {   
+  var disableCard;
+  
+  let cardTrue = winerCard?.find((winCard: any, index: number) =>
+  {
 
+    if (winCard?.firstRewardCardId != cardId) {
+      
+      disableCard = "CardDisebal"       
+      return false
+    }
+    if (winCard?.firstRewardCardId == cardId) {
+      
+      disableCard = undefined
+      return true
+    }
+    
+  })          
+    return disableCard
+  }
+  
+
+  const getMintedTime = (cardId: any) => {
+    var getMIntedTime;
+      let  mintedTime= winerCard?.find((winCard:any,index:number) => {
+        if (winCard?.firstRewardCardId == cardId) {
+              const date = new Date(winCard?.seconds*1000);
+          getMIntedTime = date.toLocaleString()
+          return true
+              }            
+          })
+          return getMIntedTime 
+  }
+  
+  const getPriSerialNo = (cardId: any) => {
+    var seriaNo;
+      let  PriSerialNo= winerCard?.find((winCard:any,index:number) => {
+        if (winCard?.firstRewardCardId == cardId) {              
+               seriaNo= winCard?.firstRewardCardSerialNo
+                return "hello"
+            }            
+          })
+          return seriaNo    
+  }
 
 
   return (
-    <div className='' style={{ minHeight: "auto" }}>
-      <h5 className="mt-4 text-center ">            
-              {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
-             <strong style={{textTransform:'uppercase', fontSize: "1.26rem"}}>Wall of fame</strong>
-          </h5>
-      <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
-      style={{background:"#6352e8"}}
-      >
+    <div className='' style={{ background: "white", minHeight: "80vh" }}>
+      <div className='d-flex justify-content-center pt-5 flex-wrap '>
             <input
               type='text'
               name="hello"
@@ -463,29 +511,30 @@ useEffect(() => {
               // style={{ width: "200px" }}
               
             />
-            <div className={`${window.screen.width < 767 ? "py-3 d-flex" : ""} `}>
+            <div className={`${window.screen.width < 767 ? "pt-2" : ""}`}>
               <select
                 name='cars'
                 id='cars'
-                className='bg-white border rounded py-2 mx-2'
-                value ={selectCollection}
-                // onChange={e=>onCollectionChange(e.target.value)}          
+                className='bg-white border rounded py-2'
+                // onChange={e=>onCollectionChange(e.target.value)}
+            value ={selectCollection}
                 onChange={e=>setSelectCollection(e.target.value)}
               >
             <option value='none'>{texts.SelectCollection}</option>
             
 
             {collectionType?.map((data:any ,index:number) => {
-              return  <option selected value={data?.albumName} key={index}>{data?.albumName}</option>        
+              return  <option value={data?.albumName} selected key={index}>{data?.albumName}</option>        
             })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
                 <option value='Monsoon'>Monsoon</option> */}
           </select>
+          
           <select
                 name='cars'
                 id='cars'
-                className='bg-white border rounded py-2 mx-1'
+                className='bg-white border rounded py-2 mx-2'
                 // onChange={e=>onCollectionChange(e.target.value)}
                 onChange={e=>onSelectSets(e.target.value)}
               >
@@ -495,11 +544,11 @@ useEffect(() => {
             })}            
           </select>
           </div>
-          <div className={`${window.screen.width < 767 ? "" : ""} `}>
+          <div className={`${window.screen.width < 767 ? "pt-2" : ""}`}>
               <select
                 name='type'
                 id='type'
-                className='bg-white border rounded mx-1 py-2'
+                className='bg-white border rounded mx-2 py-2'
                 onChange={(e)=>{onSelectType(e.target.value)}}
               >
                 {selectCollection !="none"?<><option value='all'>{texts.SelectType}</option>
@@ -509,7 +558,8 @@ useEffect(() => {
                 <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
               <option value={`${texts.Common}`}>{texts.Common}</option></> :
               <option value='all'>{texts.SelectType}</option>}
-              </select>              
+          </select>
+          
           <select                
                 className='bg-white border rounded py-2 mx-1'
                 // onChange={e=>onCollectionChange(e.target.value)}
@@ -519,17 +569,13 @@ useEffect(() => {
             {cardName?.map((data:any ,index:number ) => {
               return  <option value={ data?.name} key={index}>{`${data?.name}`}</option>        
             })}            
-          </select>
+          </select>              
             </div>
-      </div>
-      {/* @ts-ignore */}
-      <GalleryType className='' style={{width:`${window.screen.width >787 ? "800px":"100%"}`}} >
-        {/* <div onClick={() => navigate("/nftAlbum/Winter")}>
-          <p>WINTER COLLECTION</p>
-        </div>
-        <div onClick={() => navigate("/nftAlbum/Summer")}>
-          <p>SUMMER COLLECTION</p>
-        </div> */}
+          </div>
+      <GalleryType
+        className=''
+        style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
+      >        
         {!cardShow && collectionType?.map((data:any ,index:number) => {
           return <div onClick={() => {setSelectCollection(data?.albumName)}} key={index}
            style={{
@@ -541,12 +587,12 @@ useEffect(() => {
             src={allVideo[`${data?.albumName}`]}
             type="video/mp4"
           />
-        </Video> : <p style={{color:"white"}}>{data?.albumName}</p>}
+        </Video> : <p style={{color:"black"}}>{data?.albumName}</p>}
           {/* <p>{data?.collectionName} COLLECTION</p> */}
         </div>
         })}
-       
       </GalleryType>
+
       {searchedCard?.length > 0 ?
         <SummerCard className="mt-4">
             {!!cardShow ? equalPart?.map((cardPart:any ,ind:number) => {                    
@@ -565,7 +611,10 @@ useEffect(() => {
                             Quantity={item?.totalQuantity}
                             holderNo={item?.noOfCardHolders}
                             cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                            GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                            // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                            MintedTime={getMintedTime(item?.cardId)}
+                            PrivateSerialNo={getPriSerialNo(item?.cardId)}                                                        
+                            Disable={winerCard.length?CheckCardDisable(item?.cardId):'CardDisebal'}
                             userId={item?.setId}
                             CollectionType={item?.collectionName}
                             // Disable={"CardDisebal"}                            
@@ -589,8 +638,9 @@ useEffect(() => {
           }}>Data Not Found</p>:""}
         </div>
       }
+
     </div>
   );
 };
 
-export default NFTGalleryCopy;
+export default FwProfileNftGalleryCopy;

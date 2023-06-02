@@ -123,16 +123,7 @@ const FwProfileNftGallery = () => {
     });
   });
   setAllCard(cards)
-          // allcolloection?.map((allcard:any) => {
-          //  setAllTypeofCard([...allTypeofCard,allcard]) 
-          // })
-          
-        })
-
-        // setAllTypeofCard
-
-  
-        
+    })        
       }).catch((error) => {
         console.log(error,"error");
       });    
@@ -386,7 +377,6 @@ const onSelectType=(cardType:any)=>{
     const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())    
     const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.collectionName === selectCollection)
     //  console.log(serchresult,"serchresult")
-    
      setSearchedCard((pev:any)=>finalValue)
       }
    else {
