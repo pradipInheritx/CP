@@ -1,6 +1,7 @@
 import { firestore, messaging } from "firebase-admin";
 import { userConverter } from "./User";
 import { sendNotification } from "./Notification";
+import { upgradeMessage, downGradeMessage } from "../consts/config";
 // import { object } from "firebase-functions/v1/storage";
 
 export type CustomNotification = {
@@ -96,17 +97,17 @@ export const sendNotificationForFollwersFollowings = async (
   follwersFollwing.forEach(async (id: any) => {
     console.log("id:", id)
     let userQuery = await firestore().collection("users").doc(id).get();
-    var userData: any = userQuery.data();
-    var token = userData.token;
+    var follwersFollwingUserData: any = userQuery.data();
+    var token = follwersFollwingUserData.token;
 
     console.log("userData:", userData)
-    console.log("toekn:", token)
+    console.log("token:", token)
     console.log(`${userData.displayName} just voted for ${coin} take action now!`)
     const message: messaging.Message = {
       token,
       notification: {
-        title: `${userData.displayName} just voted for ${coin} take action now!`,
-        body: "",
+        title: `👫 ${userData.displayName} just voted for ${coin}`,
+        body: 'Make Your Voice Heard Too! Vote Now!',
       },
       webpush: {
         headers: {
@@ -121,8 +122,8 @@ export const sendNotificationForFollwersFollowings = async (
     await sendNotification({
       token,
       id,
-      body: `${userData.displayName} just voted for ${coin} take action now!`,
-      title: `${userData.displayName} just voted for ${coin} take action now!`,
+      body: `Make Your Voice Heard Too! Vote Now!`,
+      title: `👫 ${userData.displayName} just voted for ${coin}`,
       message,
     });
   });
@@ -183,7 +184,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cpm: numbe
   const message: messaging.Message = {
     token,
     notification: {
-      title: `You just earnd ${cpm} cpm`,
+      title: `💰 You just earnd ${cpm} cpm 🤑`,
       body: `${coin} more CPM to complete the mission and claim your rewards!`,
     },
     webpush: {
@@ -201,7 +202,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cpm: numbe
     token,
     id: userId,
     body: `${coin} more CPM to complete the mission and claim your rewards!`,
-    title: `You just earnd ${cpm} cpm`,
+    title: `💰 You just earnd ${cpm} cpm 🤑`,
     message,
   });
   console.log("End Push Notification of voteExpireAndGetCpmNotification")
@@ -216,9 +217,9 @@ export const errorLogging = async (
 };
 
 
-function getUserListById(userList: any) {
-  return [...new Map(userList.map((item: any) => [item["userId"], item])).values()]
-}
+// function getUserListById(userList: any) {
+//   return [...new Map(userList.map((item: any) => [item["userId"], item])).values()]
+// }
 
 export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTimeFrame: number) => {
   const getAllVotesIn24Hours: any[] = [];
@@ -233,25 +234,76 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
     const { userId, status } = vote.data();
     getAllVotesIn24Hours.push({ userId, status });
   });
-  const uniqueUserListData = getUserListById(getAllVotesIn24Hours)
 
-  await uniqueUserListData.forEach(async (data: any) => {
-    const getUserDetailsQuery = await firestore().collection("users").doc(data.userId).get();
+  // Group the array of objects by the 'userId' property
+  let userVoteGroupObj = getAllVotesIn24Hours.reduce((result, item) => {
+    (result[item.userId] = result[item.userId] || []).push(item);
+    return result;
+  }, {});
+
+  console.log("userVoteGroupObj =>", userVoteGroupObj);
+
+  const userTypesQuery = await firestore().collection("settings").doc("userTypes").get();
+
+  let userTypesData: any = userTypesQuery.data();
+
+  userTypesData = userTypesData.userTypes;
+
+  for (let userId in userVoteGroupObj) {
+    const getUserDetailsQuery = await firestore().collection("users").doc(userId).get();
     const getuserDetails = getUserDetailsQuery.data()
-    await sendNotificationForTitleUpgrade(getuserDetails)
-  })
+
+    let userVoteList =  userVoteGroupObj[userId];
+
+
+    for(let vote = 0; vote < (userVoteList.length - 1) ; vote++) {
+      console.log("vote Index ->", vote);
+      console.log("userVoteList old =>", userVoteList[vote]);
+      console.log("userVoteList new =>", userVoteList[vote + 1]);
+      if(userVoteList[vote].status.name !== userVoteList[vote + 1].status.name) {
+        let oldStatusData = userTypesData.find((item: any)=> item.name === userVoteList[vote].status.name);
+        let newStatusData = userTypesData.find((item: any)=> item.name === userVoteList[vote + 1].status.name);
+
+        let status = newStatusData.index > oldStatusData.index ? 'Upgrade' : 'Downgrade';
+       
+        let message;
+        let title;
+        let statusName:any = userVoteList[vote + 1].status.name;
+        if(status === 'Upgrade') {
+          title = upgradeMessage[statusName];
+          message = `Vote to earn more!`;
+        } else if(status === 'Downgrade') {
+          title = downGradeMessage[statusName];
+          message = `Keep Voting to Rise Again!`;
+        }
+
+        await sendNotificationForTitleUpgrade(getuserDetails, message, title)
+      }
+    }
+  }
+  
+ 
+  // const uniqueUserListData = getUserListById(getAllVotesIn24Hours)
+
+  // console.log("uniqueUserListData ==>", uniqueUserListData)
+
+  // await uniqueUserListData.forEach(async (data: any) => {
+  //   const getUserDetailsQuery = await firestore().collection("users").doc(data.userId).get();
+  //   const getuserDetails = getUserDetailsQuery.data()
+  //   await sendNotificationForTitleUpgrade(getuserDetails)
+  // })
 }
 
 //For Title Update
-export const sendNotificationForTitleUpgrade = async (user: any) => {
-  const { token } = user.data() || {};
+export const sendNotificationForTitleUpgrade = async (user: any, body: any, title: any) => {
+  const { token } = user || {};
   if (token) {
-    const body = "You just earned a Parliament skill badge! Who's next?";
+    //const body = "You just earned a Parliament skill badge! Who's next?";
 
     const message: messaging.Message = {
       token,
       notification: {
-        title: "You just earned a Parliament skill badge! Who's next?",
+        title,
         body,
       },
       webpush: {
@@ -267,8 +319,8 @@ export const sendNotificationForTitleUpgrade = async (user: any) => {
       token,
       message,
       body,
-      title: "You just earned a Parliament skill badge! Who's next?",
-      id: user.userId,
+      title,
+      id: user.uid,
     });
   }
 }
