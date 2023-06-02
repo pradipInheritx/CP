@@ -992,7 +992,7 @@ function App() {
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
-  const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
+  // const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
     Object.keys(voteDetails?.activeVotes).map((value) => {
@@ -1002,10 +1002,15 @@ function App() {
       return {};
     });
     if (tempTessTimeVote) {
-      setLessTimeVote(tempTessTimeVote);
+      // setLessTimeVote(tempTessTimeVote);
+      timeEndCalculation(tempTessTimeVote);
     }
   }, [voteDetails?.activeVotes]);
-  useEffect(() => {
+  // useEffect(() => {
+
+  // }, [lessTimeVote]);
+
+  const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
       // let exSec = new Date(-).getSeconds();
       // current date
@@ -1035,6 +1040,7 @@ function App() {
             if (response?.data && Object.keys(response.data).length > 0) {
               // setpopUpOpen(true);
               // setModalData(response!.data);
+              // setLessTimeVote(undefined);
               const res: Object = response!.data;
               setVoteDetails((prev: VoteContextType) => {
                 return {
@@ -1054,8 +1060,7 @@ function App() {
         return () => clearTimeout(timer);
       }
     }
-  }, [lessTimeVote]);
-  console.log(voteDetails, 'pkkkkk');
+  }
   ///END vote result //
 
   return loader ? (

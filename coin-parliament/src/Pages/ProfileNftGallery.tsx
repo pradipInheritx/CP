@@ -557,7 +557,6 @@ const ProfileNftGallery = () => {
       let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
 
       setFilterCard((prev: any) => {
-        console.log(winnerCardId, prev, 'pkkk');
 
         return prev;
       });
