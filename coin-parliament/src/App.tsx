@@ -134,9 +134,10 @@ import Login2fa from "./Components/LoginComponent/Login2fa";
 // import { handleSoundClick } from "./common/utils/SoundClick";
 // import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
-import { VoteContext, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
+import { VoteContext, VoteContextType, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
 import { vote } from "common/models/canVote.test";
 import { setTimeout } from "timers";
+import ModalForResult from "Pages/ModalForResult";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -337,14 +338,14 @@ function App() {
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
-  const [remainingTimer,setRemainingTimer]=useState(0)
-  const [followerUserId,setFollowerUserId]=useState<string>('')
-  const [showBack,setShowBack]=useState<any>(false)
-  const [showReward,setShowReward]=useState<any>(0)
-  const [inOutReward,setInOutReward]=useState<any>(0)
-  const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
-  const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
-  const [afterVotePopup,setAfterVotePopup]=useState<any>(false)
+  const [remainingTimer, setRemainingTimer] = useState(0)
+  const [followerUserId, setFollowerUserId] = useState<string>('')
+  const [showBack, setShowBack] = useState<any>(false)
+  const [showReward, setShowReward] = useState<any>(0)
+  const [inOutReward, setInOutReward] = useState<any>(0)
+  const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
+  const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
+  const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -986,9 +987,81 @@ function App() {
       getVotes().then(void 0);
     }
   }, [user?.uid]);
-  // const voteDetails = useContext(VoteContext);
-  // const setVoteDetails = useContext(VoteDispatchContext);
 
+  ///start vote result //
+  const voteDetails = useContext(VoteContext);
+  const setVoteDetails = useContext(VoteDispatchContext);
+  const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+  // const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
+  useEffect(() => {
+    let tempTessTimeVote: VoteResultProps | undefined;
+    Object.keys(voteDetails?.activeVotes).map((value) => {
+      if (!tempTessTimeVote || tempTessTimeVote.expiration > voteDetails?.activeVotes[value]?.expiration) {
+        tempTessTimeVote = voteDetails?.activeVotes[value];
+      }
+      return {};
+    });
+    if (tempTessTimeVote) {
+      // setLessTimeVote(tempTessTimeVote);
+      timeEndCalculation(tempTessTimeVote);
+    }
+  }, [voteDetails?.activeVotes]);
+  // useEffect(() => {
+
+  // }, [lessTimeVote]);
+
+  const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
+    if (lessTimeVote) {
+      // let exSec = new Date(-).getSeconds();
+      // current date
+      let current = new Date();
+
+      // voteTime date
+      let voteTime = new Date(lessTimeVote?.expiration);
+
+      // finding the difference in total seconds between two dates
+      let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
+      // console.log(second_diff, 'hello');
+      if (second_diff > 0) {
+        const timer = setTimeout(async () => {
+          const coin = lessTimeVote?.coin.split('-') || [];
+          const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
+          const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+          await getPriceCalculation({
+            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+            voteId: lessTimeVote?.id,
+            voteTime: lessTimeVote?.voteTime,
+            valueVotingTime: lessTimeVote?.valueVotingTime,
+            expiration: lessTimeVote?.expiration,
+            timestamp: Date.now(),
+            userId: lessTimeVote?.userId
+          }).then((response) => {
+            if (response?.data && Object.keys(response.data).length > 0) {
+              // setpopUpOpen(true);
+              // setModalData(response!.data);
+              // setLessTimeVote(undefined);
+              const res: Object = response!.data;
+              setVoteDetails((prev: VoteContextType) => {
+                return {
+                  ...prev,
+                  lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
+                  openResultModal: true
+                }
+              })
+              // setModalData(response!.data);
+            }
+          }).catch(err => {
+            if (err && err.message) {
+              console.log(err.message);
+            }
+          });
+        }, (second_diff * 1000));
+        return () => clearTimeout(timer);
+      }
+    }
+  }
+  ///END vote result //
 
   return loader ? (
     <div
@@ -1021,19 +1094,19 @@ function App() {
                 // console.log(e.target.value)
               }
               }
-          />
-          <ManagersContext.Provider
-            value={{
-              CPMSettingsMng,
-              VoteRulesMng,
-              TimeframesMng,
-              UserTypeMng,
-            }}
-          >
-            <AppContext.Provider
-                  value={{
-                    afterVotePopup,
-                    setAfterVotePopup,
+            />
+            <ManagersContext.Provider
+              value={{
+                CPMSettingsMng,
+                VoteRulesMng,
+                TimeframesMng,
+                UserTypeMng,
+              }}
+            >
+              <AppContext.Provider
+                value={{
+                  afterVotePopup,
+                  setAfterVotePopup,
                   rewardExtraVote,
                   setRewardExtraVote,
                   headerExtraVote,
@@ -1562,7 +1635,12 @@ function App() {
                       <ToastContainer enableMultiContainer containerId='toast' />
                       <ToastContainer enableMultiContainer containerId='modal' />
                       {modalOpen && <div className='fade modal-backdrop show' />}
-                      {/* </VoteProvider> */}
+                      {/* //vote result modal */}
+                      {voteDetails?.lessTimeVote && <ModalForResult
+                        popUpOpen={voteDetails.openResultModal}
+                        vote={voteDetails?.lessTimeVote}
+                        type={voteDetails?.lessTimeVote?.voteType || 'coin'}
+                      />}
                     </UserContext.Provider>
                   </CoinsContext.Provider>
                 </ContentContext.Provider>
