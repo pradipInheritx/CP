@@ -15,7 +15,7 @@ export const uploadFiles = async (req: any, res: any) => {
     }
     try {
         const getFileData = req.body.file.split(',');
-        const bucket = admin.storage().bucket('default-bucket');
+        const bucket = admin.storage().bucket('coin-parliament-staging.appspot.com');
         console.info("bucket", bucket);
 
         const imageBuffer = Buffer.from(getFileData[1], 'base64');
