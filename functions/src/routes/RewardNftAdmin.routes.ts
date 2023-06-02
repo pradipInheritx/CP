@@ -12,7 +12,6 @@ import {
   deleteAlbum,
   deleteSet,
   deleteCard,
-  uploadImageFunction
 } from "../common/models/Admin/Rewards";
 
 const rewardNftAdminRouter = Router();
@@ -27,6 +26,4 @@ rewardNftAdminRouter.put("/updateCard/:cardId", auth, updateCard);
 rewardNftAdminRouter.delete("/deleteAlbum/:albumId", auth, deleteAlbum);
 rewardNftAdminRouter.delete("/deleteSet", auth, deleteSet);
 rewardNftAdminRouter.delete("/deleteCard/:cardId", auth, deleteCard);
-rewardNftAdminRouter.post("/uploadFile/:cardId", uploadImageFunction);
-
 export default rewardNftAdminRouter;

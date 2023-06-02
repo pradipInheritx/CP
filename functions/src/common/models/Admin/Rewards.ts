@@ -1,11 +1,6 @@
 import { firestore } from "firebase-admin";
-import * as admin from "firebase-admin";
-// import { uploadImage } from "../Reward";
 import { toUpper } from "lodash";
-const Busboy = require('busboy');
-// import os from "os";
-// import path from "path";
-import * as fs from 'fs';
+import "../../../index"
 
 interface Sets {
     setName: string;
@@ -13,8 +8,8 @@ interface Sets {
 }
 interface Album {
     albumName: string;
-    imageUrl: string;
-    videoUrl: string;
+    albumImageUrl: string;
+    albumVideoUrl: string;
     setQunatity: number;
 }
 
@@ -34,17 +29,22 @@ type Card = {
 
 
 // get albums details
-async function getAlbumDetails(albumId: string) {
+export async function getAlbumDetails(albumId: string) {
     const albumDetails = await firestore().collection("nftGallery").doc(albumId).get()
     return albumDetails.data()
 }
 
 
 // get sets details
-async function getSetsDetails(albumId: string, setId: string) {
+export async function getSetsDetails(albumId: string, setId: string) {
     const setsDetails = await firestore().collection("nftGallery").doc(albumId).collection("setDetails").doc(setId).get();
-    console.log("Sets Details =============", setsDetails.data())
     return setsDetails.data()
+}
+
+
+export async function getCardDetails(cardId: string) {
+    const albumDetails = await firestore().collection("cardsDetails").doc(cardId).get()
+    return albumDetails.data()
 }
 
 // generate serial number string for cards
@@ -90,14 +90,14 @@ const fetchAllSet = async (getAlbumDoc: any) => {
 
 export const createAlbum = async (req: any, res: any) => {
     try {
-        const { albumName, setQunatity, setDetails, imageUrl, videoUrl } = req.body
+        const { albumName, setQunatity, setDetails, albumImageUrl, albumVideoUrl } = req.body
 
         const newAlbum: Album = {
             albumName,
             setQunatity,
             // setDetails,
-            imageUrl,
-            videoUrl
+            albumImageUrl,
+            albumVideoUrl
         }
         const newSets: Sets[] = setDetails
 
@@ -364,14 +364,14 @@ export const getCardListing = async (req: any, res: any) => {
 export const updateAlbums = async (req: any, res: any) => {
     try {
         const { albumId } = req.params
-        const { albumName, setQunatity, setDetails, imageUrl, videoUrl } = req.body
+        const { albumName, setQunatity, setDetails, albumImageUrl, albumVideoUrl } = req.body
 
         const updatedAlbum: Album = {
             albumName,
             setQunatity,
             // setDetails,
-            imageUrl,
-            videoUrl
+            albumImageUrl,
+            albumVideoUrl
         }
         const updatedSets: Sets[] = setDetails
 
@@ -547,134 +547,30 @@ export const deleteCard = async (req: any, res: any) => {
     }
 }
 
-const createDirectory = (fileUploadPath: any) => {
-    try {
-        if (!fs.existsSync(fileUploadPath)) {
-            fs.mkdirSync(fileUploadPath, { recursive: true })
+export const updateFileLink = async (forModule: string, fileType: string, id: string, url: string) => {
+    if (forModule == "card") {
+        let getCard: any = await getCardDetails(id);
+        const getCardDetailsQuery = firestore().collection("cardsDetails").doc(id)
+        if (fileType == 'video') {
+            getCard.cardVideoUrl = url
+            await getCardDetailsQuery.set(getCard)
+        } else {
+            getCard.cardImageUrl = url
+            await getCardDetailsQuery.set(getCard)
         }
-        console.log('Folder created successfully');
-    } catch (err) {
-        console.error('Error creating folder:', err);
+    } else {
+        let getCard: any = await getAlbumDetails(id);
+        const getAlbumDetailsQuery = firestore().collection("nftGallery").doc(id)
+        if (fileType == 'video') {
+            getCard.albumVideoUrl = url
+            await getAlbumDetailsQuery.set(getCard)
+        } else {
+            getCard.albumImageUrl = url
+            await getAlbumDetailsQuery.set(getCard)
+        }
     }
 }
 
-const writeFileInLocal = (req: any, imagePath: any, imageData: any) => {
-    return new Promise((resolve, reject) => {
-        console.log("Writing is running in local")
-        const filePath = imagePath + "images.jpeg";
-
-        // if (fs.existsSync(filePath)) {
-        const fileStream = fs.createWriteStream(filePath, { encoding: "utf8" });
-        req.pipe(fileStream);
-        fileStream.on('finish', () => {
-            console.log('File write successfully');
-            resolve(true);
-        });
-
-        fileStream.on('error', (err) => {
-            console.error('Error write file:', err);
-            reject(false);
-        });
-        // } else {
-        //     console.error('File does not exist.');
-        // }
-
-    })
-}
-
-export const uploadImageFunction = async (req: any, res: any) => {
-
-    const { cardId } = req.params;
-    const fields: any = {};
-    const busboy = Busboy({ headers: req.headers });
-
-    console.log("cardId -------", cardId)
-
-    busboy.on('field', (fieldname: any, val: any) => {
-        console.log(`Processed field ${fieldname}: ${val}.`);
-        fields[fieldname] = val;
-    });
-
-    const imageData: any = {};
-
-    busboy.on('file', (fieldname: any, file: any, info: any) => {
-
-        const { filename, encoding, mimeType } = info;
-        console.log("fieldname ========", fieldname)
-        console.log("file ========", file)
-        console.log("info ========", info)
-        console.log(
-            `File [${fieldname}]: filename: %j, encoding: %j, mimeType: %j`,
-            filename,
-            encoding,
-            mimeType
-        );
-        file.on('data', async (data: any) => {
-            imageData['path'] = __dirname + '/Files/'
-            imageData['data'] = data;
-
-            createDirectory(imageData.path)
-            req.setEncoding("binary");
-            writeFileInLocal(file, imageData.path, data)
-        }).on('close', () => {
-            console.log(`------------File [${fieldname}] done`);
-        });
-    });
-
-    busboy.on('finish', async () => {
-
-        const getImagePath: any = {};
-        const filePath = imageData.path + "images.jpeg";
-
-        console.log("Image path : ======", imageData.path)
-        console.log("Imagee data : ======", imageData.data)
-
-        const ref = await admin.storage().bucket("default-bucket");
-        const metaData = {
-            contentType: "Image/jpg",
-        };
-        await ref
-            .upload(filePath, metaData)
-            .then(async () => getImagePath["path"] = await getImageUrl(cardId))
-            .catch((error: any) => {
-                console.log("EROROR image", error);
-            });
-        console.log("path ====", getImagePath.path)
-        res.send({
-            result: true,
-            output: getImagePath.path
-        });
-    });
-    busboy.end(req.rawBody);
-}
-
-// get Image url and add into firestore
-const getImageUrl = async (
-    cardId: string
-) => {
-    const ref = await admin.storage().bucket("default-bucket");
-    const [, , meta] = await ref.getFiles({
-        maxResults: 1,
-    });
-    const url = meta.items
-        .filter((f: any) => f.contentType !== "text/plain")
-        .shift().mediaLink;
-    console.log("Image Url ", url);
-
-    const collectionData: any = await firestore()
-        .collection("cardsDetails")
-        .doc(cardId)
-        .get();
-    console.log("collectionData--- ", collectionData.data());
-    const cardData = collectionData.data();
-    cardData.imageUpload = url;
-
-    await firestore()
-        .collection("cardsDetails")
-        .doc(cardId)
-        .set(cardData);
-    console.log("image url -------", url)
-};
 
 export const errorLogging = async (
     funcName: string,
