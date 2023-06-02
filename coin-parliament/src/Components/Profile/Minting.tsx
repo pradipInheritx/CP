@@ -172,7 +172,7 @@ const Minting = ({
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, setRewardExtraVote, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
+  const { showReward, setShowReward, setRewardExtraVote, albumOpen,setAlbumOpen,inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
@@ -317,6 +317,7 @@ const Minting = ({
                   console.log("reward");
                   const result = await claimReward({ uid: user?.uid });
                   // @ts-ignore
+                  
                   setResultData(result)
                   handleShow()
                   // setShowReward(1);
@@ -375,6 +376,8 @@ const Minting = ({
               setTimeout(() => {
                 setShowReward(1);
                 setInOutReward(1);
+                // @ts-ignore
+                setAlbumOpen(resultData?.data?.firstRewardCardCollection);
                 // @ts-ignore
                 setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
                 setRewardTimer(resultData);
