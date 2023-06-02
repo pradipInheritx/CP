@@ -17,7 +17,7 @@ import styled from "styled-components";
 import { Buttons } from "../Components/Atoms/Button/Button";
 import { CardContainer, PageContainer } from "../Components/App/App";
 import { LineData } from "lightweight-charts";
-import { httpsCallable } from "firebase/functions";
+import { HttpsCallableResult, httpsCallable } from "firebase/functions";
 import Graph from "../Components/CPVI/Graph";
 import CoinsForm from "../Components/Coins/CoinsForm";
 import NotificationContext from "../Contexts/Notification";
@@ -31,6 +31,7 @@ import ModalForResult from "./ModalForResult";
 import { decimal } from "../Components/Profile/utils";
 import Progress from "../Components/CPVI/Progress";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
+import { Http2ServerResponse } from "http2";
 // import Speedometer from "./Speedometer";
 
 export const Title = styled.h2`
@@ -189,7 +190,6 @@ const SingleCoin = () => {
   }, [params?.id, voteId, vote?.voteTime]);
 
 
-  console.log(votedDetails, "checkallvotes")
   // useEffect(() => {
   //   if(vote.timeframe) {
   //     setTimeout(() => {
@@ -334,7 +334,7 @@ const SingleCoin = () => {
 
   const canVote = useMemo(() => {
 
-    return !!!voteDetails[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`];
+    return !!!voteDetails?.activeVotes[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`];
     return (
       ((!vote.expiration && vote.success === undefined) ||
         (vote.expiration && vote.success !== undefined) ||
@@ -372,81 +372,71 @@ const SingleCoin = () => {
 
 
   // open modal
-  const [modalData, setModalData] = useState<any>();
-  const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
-  const coin1 = `${coins && symbol1 ? coins[symbol1]?.symbol?.toLowerCase() || "" : ""}`;
-  const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`;
-  const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   useEffect(() => {
     let data: { [key: string]: VoteResultProps } = {};
     allActiveVotes.map((value: VoteResultProps | undefined) => {
       if (value) {
         data = {
           ...data,
-          [`${value.coin}_${value?.timeframe?.seconds}`]: value
+          [`${value.coin}_${value?.timeframe?.seconds}`]: { ...value, voteType: 'coin' }
         }
       }
     })
     setVoteDetails((prev) => {
       return {
         ...prev,
-        ...data
+        activeVotes: { ...prev.activeVotes, ...data }
       }
     })
   }, [allActiveVotes]);
 
-  useEffect(() => {
-    let tempTessTimeVote: VoteResultProps | undefined;
-    Object.keys(voteDetails).map((value) => {
-      if (!tempTessTimeVote || tempTessTimeVote.expiration > voteDetails[value]?.expiration) {
-        tempTessTimeVote = voteDetails[value];
-      }
-      return {};
-    });
-    if (tempTessTimeVote) {
-      setLessTimeVote(tempTessTimeVote);
-    }
-  }, [voteDetails]);
+  // useEffect(() => {
+  //   if (lessTimeVote) {
+  //     // let exSec = new Date(-).getSeconds();
+  //     // current date
+  //     let current = new Date();
 
-  useEffect(() => {
-    if (lessTimeVote) {
-      // let exSec = new Date(-).getSeconds();
-      // current date
-      let current = new Date();
+  //     // voteTime date
+  //     let voteTime = new Date(lessTimeVote?.expiration);
 
-      // voteTime date
-      let voteTime = new Date(lessTimeVote?.expiration);
-
-      // finding the difference in total seconds between two dates
-      let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      // console.log(second_diff, 'hello');
-      if (second_diff > 0) {
-        const timer = setTimeout(async () => {
-          await getPriceCalculation({
-            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-            voteId: lessTimeVote?.id,
-            voteTime: lessTimeVote?.voteTime,
-            valueVotingTime: lessTimeVote?.valueVotingTime,
-            expiration: lessTimeVote?.expiration,
-            timestamp: Date.now(),
-            userId: lessTimeVote?.userId
-          }).then((response) => {
-            if (response?.data && Object.keys(response.data).length > 0) {
-              setpopUpOpen(true);
-              setModalData(response!.data);
-
-            }
-          }).catch(err => {
-            if (err && err.message) {
-              console.log(err.message);
-            }
-          });
-        }, (second_diff * 1000));
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [lessTimeVote]);
+  //     // finding the difference in total seconds between two dates
+  //     let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
+  //     // console.log(second_diff, 'hello');
+  //     if (second_diff > 0) {
+  //       const timer = setTimeout(async () => {
+  //         await getPriceCalculation({
+  //           coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+  //           coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+  //           voteId: lessTimeVote?.id,
+  //           voteTime: lessTimeVote?.voteTime,
+  //           valueVotingTime: lessTimeVote?.valueVotingTime,
+  //           expiration: lessTimeVote?.expiration,
+  //           timestamp: Date.now(),
+  //           userId: lessTimeVote?.userId
+  //         }).then((response) => {
+  //           if (response?.data && Object.keys(response.data).length > 0) {
+  //             // setpopUpOpen(true);
+  //             // setModalData(response!.data);
+  //             const res: Object = response!.data;
+  //             setVoteDetails((prev) => {
+  //               return {
+  //                 ...prev,
+  //                 lessTimeVote: { ...res, voteType: 'coin' },
+  //                 openResultModal: true
+  //               }
+  //             })
+  //             // setModalData(response!.data);
+  //           }
+  //         }).catch(err => {
+  //           if (err && err.message) {
+  //             console.log(err.message);
+  //           }
+  //         });
+  //       }, (second_diff * 1000));
+  //       return () => clearTimeout(timer);
+  //     }
+  //   }
+  // }, [lessTimeVote]);
   // useEffect(() => {
   //   setModalData(modalData2);
   // }, [modalData2]);
@@ -521,7 +511,7 @@ const SingleCoin = () => {
                     <>
                       <VotedCard
                         {...{
-                          vote: voteDetails[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
+                          vote: voteDetails?.activeVotes[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
                           coins: coinUpdated,
                           totals,
                           symbol1,
@@ -559,19 +549,19 @@ const SingleCoin = () => {
                     </>
                   )}
                   {
-                    // @ts-ignore
-                    // hideButton.includes(selectedTimeFrame) &&
-                    modalData && <ModalForResult
-                      popUpOpen={popUpOpen}
-                      selectedTimeFrame={selectedTimeFrame}
-                      setpopUpOpen={setpopUpOpen}
-                      setHideButton={setHideButton}
-                      hideButton={hideButton}
-                      vote={modalData}
-                      setModalData={setModalData}
-                      type={"coin"}
-                      setVoteDetails={setVoteDetails}
-                    />
+                    // // @ts-ignore
+                    // // hideButton.includes(selectedTimeFrame) &&
+                    // modalData && <ModalForResult
+                    //   popUpOpen={popUpOpen}
+                    //   // selectedTimeFrame={selectedTimeFrame}
+                    //   setpopUpOpen={setpopUpOpen}
+                    //   // setHideButton={setHideButton}
+                    //   // hideButton={hideButton}
+                    //   vote={modalData}
+                    //   setModalData={setModalData}
+                    //   type={"coin"}
+                    // // setVoteDetails={setVoteDetails}
+                    // />
                   }
                 </div>
                 {/* <div>

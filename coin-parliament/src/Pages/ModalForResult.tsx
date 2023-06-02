@@ -79,24 +79,30 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton, setModalData, setVoteDetails }: {
+function ModalForResult({ popUpOpen, vote, type, /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
   popUpOpen?: any,
   vote: any,
   type?: string,
-  setpopUpOpen?: any,
-  setHideButton?: any,
-  selectedTimeFrame?: any,
-  hideButton?: any,
-  setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
-  setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
+  // setpopUpOpen?: any,
+  // setHideButton?: any,
+  // selectedTimeFrame?: any,
+  // hideButton?: any,
+  // setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
+  // setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
 }) {
 
   const navigate = useNavigate();
-  // const setVoteDetails = useContext(VoteDispatchContext);
+  const setVoteDetails = useContext(VoteDispatchContext);
   useEffect(() => {
     if (popUpOpen) {
       handleShow();
       voteEndFinish();
+      // setVoteDetails((prev) => {
+      //   return {
+      //     ...prev,
+      //     openResultModal: false
+      //   }
+      // })
       // setpopUpOpen(false)
     }
   }, [popUpOpen])
@@ -114,18 +120,22 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   const removeVote = () => {
     setVoteDetails((prev) => {
       let temp = {};
-      Object.keys(prev).map((key: string) => {
-        if (vote?.voteId !== prev[key].voteId) {
-          if (prev[key].expiration > new Date().getTime()) {
-            temp = { ...temp, [`${prev[key].coin}_${prev[key]?.timeframe?.seconds}`]: prev[key] }
-          }
+      Object.keys(prev?.activeVotes).map((key: string) => {
+        // if (vote?.voteId !== prev[key].voteId) {
+        if (prev?.activeVotes[key].expiration > new Date().getTime() && vote?.voteId !== prev?.activeVotes[key].voteId) {
+          temp = { ...temp, [`${prev?.activeVotes[key].coin}_${prev?.activeVotes[key]?.timeframe?.seconds}`]: prev?.activeVotes[key] }
         }
       });
-      return temp;
+      return {
+        ...prev,
+        lessTimeVote: undefined,
+        activeVotes: temp,
+        openResultModal: false
+      };
     });
-    if (setModalData instanceof Function) {
-      setModalData(undefined);
-    }
+    // if (setModalData instanceof Function) {
+    //   setModalData(undefined);
+    // }
   }
 
 
@@ -140,6 +150,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
 
   const coin = coins[vote?.coin] || {};
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
+  console.log(paircoin, voteCoins, coins, "hello");
 
   const votelength = Object.keys(vote).length
 
