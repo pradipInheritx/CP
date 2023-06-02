@@ -15,6 +15,7 @@ import { voteEndFinish } from '../common/utils/SoundClick';
 import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
+import { Prev } from 'react-bootstrap/esm/PageItem';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -78,37 +79,32 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton, setModalData }: {
+function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton, setModalData, setVoteDetails }: {
   popUpOpen?: any,
   vote: any,
-  type?: any,
+  type?: string,
   setpopUpOpen?: any,
   setHideButton?: any,
   selectedTimeFrame?: any,
   hideButton?: any,
-  setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
+  setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
+  setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
 }) {
 
   const navigate = useNavigate();
+  // const setVoteDetails = useContext(VoteDispatchContext);
   useEffect(() => {
     if (popUpOpen) {
-      // console.log("i am working")
-      handleShow()
-
-      voteEndFinish()
-      // setHideButton(() => {
-      //   hideButton.filter((item:any, index:number) => {
-      //     return selectedTimeFrame != item
-      //   })
-      // })
-      console.log("i can open")
-      setpopUpOpen(false)
+      handleShow();
+      voteEndFinish();
+      // setpopUpOpen(false)
     }
   }, [popUpOpen])
 
 
   const [show, setShow] = useState(false);
-  const setVoteDetails = useContext(VoteDispatchContext);
+  // const setVoteDetails = useContext(VoteDispatchContext);
+
   const handleShow = () => setShow(true);
   const handleClose = () => {
     removeVote();
@@ -116,12 +112,13 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   };
 
   const removeVote = () => {
-    setVoteDetails((prev: { [key: string]: VoteResultProps }) => {
+    setVoteDetails((prev) => {
       let temp = {};
       Object.keys(prev).map((key: string) => {
-        // if (vote?.voteId !== prev[key].voteId) {
-        if (prev[key].expiration > new Date().getTime()) {
-          temp = { ...temp, [`${prev[key].coin}_${prev[key]?.timeframe?.seconds}`]: prev[key] }
+        if (vote?.voteId !== prev[key].voteId) {
+          if (prev[key].expiration > new Date().getTime()) {
+            temp = { ...temp, [`${prev[key].coin}_${prev[key]?.timeframe?.seconds}`]: prev[key] }
+          }
         }
       });
       return temp;

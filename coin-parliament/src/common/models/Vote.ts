@@ -33,6 +33,7 @@ export type VoteResultProps = VoteProps & {
   score?: number;
   CPMRangePercentage?: number;
   voteId?: string
+  voteType?: string
 };
 
 export type TimeFrame = {

@@ -28,6 +28,7 @@ import ModalForResult from "./ModalForResult";
 import { Coin } from "../common/models/Coin";
 import { decimal } from "../Components/Profile/utils";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
+import { PairVoteContext, PairVoteDispatchContext } from "Contexts/PairVoteProvider";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
@@ -203,11 +204,10 @@ const SinglePair = () => {
   //   vote &&
   //   ((!vote.expiration && vote.success === undefined) ||
   //     (vote.expiration && vote.success !== undefined));
-  const voteDetails = useContext(VoteContext);
-
-  const setVoteDetails = useContext(VoteDispatchContext);
+  const PairVoteDetails = useContext(PairVoteContext);
+  const setPairVoteDetails = useContext(PairVoteDispatchContext);
   const canVote = useMemo(() => {
-    return !!!voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`];
+    return !!!PairVoteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`];
     return vote &&
       ((!vote.expiration && vote.success === undefined) ||
         (vote.expiration && vote.success !== undefined));
@@ -216,7 +216,7 @@ const SinglePair = () => {
         (vote.expiration && vote.success !== undefined) ||
         Date.now() >= vote?.expiration)
     );
-  }, [/* vote.expiration, vote.success,  */selectedTimeFrame, voteDetails]);
+  }, [/* vote.expiration, vote.success,  */selectedTimeFrame, PairVoteDetails]);
 
   useEffect(() => {
 
@@ -253,41 +253,46 @@ const SinglePair = () => {
   // open modal
 
 
-  const [modalData, setModalData] = useState<VoteResultProps | undefined>();
-  const [modalData2, setModalData2] = useState<any>();
+  const [modalData, setModalData] = useState<any>();
+  const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   useEffect(() => {
+    let data: { [key: string]: VoteResultProps } = {};
     allActiveVotes.map((value: VoteResultProps | undefined) => {
       if (value) {
-        setVoteDetails((prev) => {
-          return {
-            ...prev,
-            [`${value.coin}_${value?.timeframe?.seconds}`]: value
-          }
-        })
+        data = {
+          ...data,
+          [`${value.coin}_${value?.timeframe?.seconds}`]: value
+        }
+      }
+    })
+    setPairVoteDetails((prev) => {
+      return {
+        ...prev,
+        ...data
       }
     })
   }, [allActiveVotes]);
   useEffect(() => {
-    let lessTimeVote: VoteResultProps | undefined;
-    Object.keys(voteDetails).map((value) => {
-      if (!lessTimeVote || lessTimeVote.expiration > voteDetails[value]?.expiration) {
-        lessTimeVote = voteDetails[value];
+    let tempTessTimeVote: VoteResultProps | undefined;
+    Object.keys(PairVoteDetails).map((value) => {
+      if (!tempTessTimeVote || tempTessTimeVote.expiration > PairVoteDetails[value]?.expiration) {
+        tempTessTimeVote = PairVoteDetails[value];
       }
       return {};
     });
-    if (lessTimeVote) {
-      setModalData(lessTimeVote);
+    if (tempTessTimeVote) {
+      setLessTimeVote(tempTessTimeVote);
     }
-  }, [voteDetails]);
+  }, [PairVoteDetails]);
   useEffect(() => {
-    if (modalData) {
+    if (lessTimeVote) {
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
 
       // voteTime date
-      let voteTime = new Date(modalData?.expiration);
+      let voteTime = new Date(lessTimeVote?.expiration);
 
       // finding the difference in total seconds between two dates
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
@@ -297,16 +302,16 @@ const SinglePair = () => {
           await getPriceCalculation({
             coin1: `${coin1?.symbol ? coin1.symbol + "usdt" : ""}`,
             coin2: `${coin2?.symbol ? coin2.symbol + "usdt" : ""}`,
-            voteId: modalData?.id,
-            voteTime: modalData?.voteTime,
-            valueVotingTime: modalData?.valueVotingTime,
-            expiration: modalData?.expiration,
+            voteId: lessTimeVote?.id,
+            voteTime: lessTimeVote?.voteTime,
+            valueVotingTime: lessTimeVote?.valueVotingTime,
+            expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
-            userId: modalData?.userId
+            userId: lessTimeVote?.userId
           }).then((response) => {
-            if (response?.data) {
+            if (response?.data && Object.keys(response.data).length > 0) {
               setpopUpOpen(true);
-              setModalData2(response?.data);
+              setModalData(response!.data);
             }
           }).catch(err => {
             if (err && err.message) {
@@ -317,10 +322,10 @@ const SinglePair = () => {
         return () => clearTimeout(timer);
       }
     }
-  }, [modalData]);
-  useEffect(() => {
-    setModalData(modalData2);
-  }, [modalData2])
+  }, [lessTimeVote]);
+  // useEffect(() => {
+  //   setModalData(modalData2);
+  // }, [modalData2])
 
   //end modal
 
@@ -396,7 +401,7 @@ const SinglePair = () => {
                     <>
                       <VotedCard
                         {...{
-                          vote: voteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
+                          vote: PairVoteDetails[`${params?.id}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
                           coins: coinUpdated, totals, symbol1, symbol2, voteId, selectedTimeFrame,
                           setSelectedTimeFrame, selectedTimeFrameArray, setpopUpOpen, hideButton, setHideButton,
                         }}
@@ -423,6 +428,7 @@ const SinglePair = () => {
                       hideButton={hideButton}
                       setModalData={setModalData}
                       type={"pair"}
+                      setVoteDetails={setPairVoteDetails}
                     />}
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
