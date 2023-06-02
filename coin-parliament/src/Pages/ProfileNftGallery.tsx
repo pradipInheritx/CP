@@ -575,6 +575,7 @@ useEffect(() => {
     }
 
   }
+  console.log("")
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       <div className='d-flex justify-content-center pt-5 flex-wrap '>
@@ -765,6 +766,7 @@ useEffect(() => {
           {cardShow == false &&  myCards == true && <p style={{
             color: "black"
           }}>First Select Colloction</p>}
+          
         </div>
       }
 
