@@ -348,6 +348,7 @@ function App() {
   const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
   const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
   const [afterVotePopup,setAfterVotePopup]=useState<any>(false)
+  const [albumOpen,setAlbumOpen]=useState<any>("false")
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -1035,8 +1036,10 @@ function App() {
           >
             <AppContext.Provider
                   value={{
-                    afterVotePopup,
-                    setAfterVotePopup,
+                    albumOpen,
+                    setAlbumOpen,                    
+                  afterVotePopup,
+                  setAfterVotePopup,
                   rewardExtraVote,
                   setRewardExtraVote,
                   headerExtraVote,
@@ -1380,7 +1383,7 @@ function App() {
                                             /> */}
                                             <Route
                                               path='nftAlbum'
-                                              element={<NFTGalleryCopy />}
+                                              element={<NFTGallery />}
                                             />
                                             <Route
                                               path='nftAlbum/:type'
@@ -1448,7 +1451,7 @@ function App() {
                                                 path={
                                                   ProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<ProfileNftGalleryCopy />}
+                                                element={<ProfileNftGallery />}
                                               />
                                               <Route
                                                 path={
@@ -1486,7 +1489,7 @@ function App() {
                                                 path={
                                                   FollowerProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<FwProfileNftGalleryCopy />}
+                                                element={<FwProfileNftGallery />}
                                               />
                                               <Route
                                                 path={

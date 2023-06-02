@@ -16,6 +16,7 @@ import UserContext from "../Contexts/User";
 import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
 import { Form } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
+import AppContext from "Contexts/AppContext";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -62,6 +63,7 @@ const Video = styled.video`
 
 const ProfileNftGallery = () => {
   const { user } = useContext(UserContext);
+  const {albumOpen,setAlbumOpen} = useContext(AppContext);
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
@@ -87,6 +89,14 @@ const ProfileNftGallery = () => {
     Summer: Summer,
     Science: Science,
   });
+
+useEffect(() => {
+  if (albumOpen != "") {
+    setSelectCollection(albumOpen)
+  setAlbumOpen("") 
+ }
+}, [albumOpen])
+
 
   const getNftCard = () => {
     const getCollectionType = firebase
@@ -708,7 +718,10 @@ const ProfileNftGallery = () => {
                         />
                       );
                     } else {
-                      // return <div className="d-flex justify-content-center"> <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p></div>
+                     if (filterCard.length - 1 == ind && cardPart.length - 1 == index) {                        
+                      // return  console.log("i am working")
+                        return <div className="d-flex justify-content-center"> <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p></div>
+                      }
                     }
                   }
                   else {
@@ -750,6 +763,9 @@ const ProfileNftGallery = () => {
           {cardShow == true ? <p style={{
             color: "black"
           }}>Data Not Found</p> : ""}
+          {cardShow == false &&  myCards == true && <p style={{
+            color: "black"
+          }}>First Select Colloction</p>}
         </div>
       }
 

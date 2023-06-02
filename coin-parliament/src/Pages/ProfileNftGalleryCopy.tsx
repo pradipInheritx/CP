@@ -16,6 +16,7 @@ import UserContext from "../Contexts/User";
 import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
 import { Form } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
+import AppContext from "Contexts/AppContext";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -69,7 +70,7 @@ const ProfileNftGallery = () => {
   const [searchedCard, setSearchedCard] = useState<any>([])
   const [allCard, setAllCard] = useState<any>([])
   const [cardType, setCardType] = useState<any>('all')
-
+const {albumOpen,setAlbumOpen} = useContext(AppContext);
   const [searchTerm, setSearchTerm] = useState<any>('')
   const [selectCollection, setSelectCollection] = useState<any>('none')
   const [backCards, setBackCards] = useState<any>([]);
@@ -88,6 +89,14 @@ const ProfileNftGallery = () => {
     Summer: Summer,
     Science: Science,
   });
+
+useEffect(() => {
+  if (albumOpen != "") {
+    setSelectCollection(albumOpen)
+  setAlbumOpen("") 
+ }
+}, [albumOpen])
+
 
   const getNftCard = () => {
     const getCollectionType = firebase
@@ -667,7 +676,7 @@ setAllCardArray(data)
                         />
                       );
                     } else {                                            
-                      console.log(filterCard.length,ind , cardPart.length,index  ,"i am working")
+                      
                       if (filterCard.length - 1 == ind && cardPart.length - 1 == index) {                        
                       // return  console.log("i am working")
                         return <div className="d-flex justify-content-center"> <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p></div>
