@@ -47,7 +47,6 @@ import {
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
 import {
-  sendToTokens,
   subscribeToTopic,
   unsubscribeToTopic,
 } from "./common/models/Subscribe";
@@ -411,7 +410,7 @@ exports.onVote = functions.firestore
     console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
-    await sendToTokens(vote);
+    //await sendToTokens(vote);
 
     await admin
       .firestore()
