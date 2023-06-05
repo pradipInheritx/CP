@@ -21,7 +21,7 @@ const CircularProgress = ({ percentage }) => {
         setProgressBarValue(0);
         const time = setTimeout(() => {
             setProgressBarValue(percentage);
-        }, [900]);
+        }, [800]);
     }, [percentage])
     return (
         <div style={{ width: w > 767 ? "98%" : "52%" }}>
@@ -38,9 +38,8 @@ const CircularProgress = ({ percentage }) => {
                 <AnimatedProgressProvider
                     valueStart={0}
                     valueEnd={progressBarValue}
-                    duration={progressBarValue > 30 ? 3 : 0}
+                    duration={progressBarValue > 5 ? 4 : 0}
                     easingFunction={easeQuadIn}
-
                 >
                     {(value) => {
                         const roundedValue = parseFloat(value.toFixed(2));
