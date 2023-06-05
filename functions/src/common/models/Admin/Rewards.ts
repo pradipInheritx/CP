@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+import * as admin from "firebase-admin";
 import { toUpper } from "lodash";
 import "../../../index"
 
@@ -448,9 +449,6 @@ export const updateCard = async (req: any, res: any) => {
                 totalQuantity
             ),
             cardImageUrl,
-            // cardImageUrl: cardImage
-            //     ? await uploadImage(cardImage, albumId, setId, "cardId")
-            //     : "",
             cardVideoUrl
         }
 
@@ -568,6 +566,36 @@ export const updateFileLink = async (forModule: string, fileType: string, id: st
             getCard.albumImageUrl = url
             await getAlbumDetailsQuery.set(getCard)
         }
+    }
+}
+
+export async function imageUpload(req: any, res: any) {
+    try {
+        console.log("")
+        const bucket = admin.storage().bucket('default-bucket');
+        // Upload the file to Cloud Firestore Storage
+        const file = req.file;
+        console.log("file ----", file)
+        const fileName = `${Date.now()}-${file.originalname}`;
+        const fileUpload = bucket.file(fileName);
+        const stream = fileUpload.createWriteStream({
+            metadata: {
+                contentType: file.mimetype,
+            },
+        });
+        stream.on('error', (error) => {
+            console.error(`Error uploading file: ${error}`);
+            res.status(500).send('Error uploading file');
+        });
+        stream.on('finish', () => {
+            const publicUrl = `https://storage.googleapis.com/default-bucket/${fileUpload.name}`;
+            console.log(`File uploaded to: ${publicUrl}`);
+            res.status(200).send(publicUrl);
+        });
+        stream.end(file.buffer);
+    } catch (error) {
+        console.error(`Error uploading file: ${error}`);
+        res.status(500).send('Error uploading file');
     }
 }
 

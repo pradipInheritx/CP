@@ -4,6 +4,10 @@ import * as admin from "firebase-admin";
 import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
+// import formidable from "formidable";
+import multer from 'multer';
+import path from "path"
+
 
 import cors from "cors";
 import {
@@ -137,6 +141,7 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  storageBucket: 'default-bucket.appspot.com'
 });
 
 exports.getAccessToken = () =>
@@ -215,6 +220,51 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     console.log("create user Error....", e);
     return false;
   }
+});
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100 MB
+  },
+});
+export const uploadVideo = functions.https.onRequest(async (req, res) => {
+
+  console.log("file -->", req.file)
+
+
+  upload.single('file')(req, res, (err: any) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: err });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file provided' });
+    }
+
+    const file = req.file;
+    const filename = Date.now() + '_' + file.originalname;
+    const filePath = path.join("/cards", filename); // Path to the destination folder in your Firebase Storage
+    const bucket = admin.storage().bucket('default-bucket')
+    const blob = bucket.file(filePath);
+    const blobStream = blob.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    blobStream.on('error', (err: any) => {
+      console.error(err);
+      return res.status(500).json({ error: err });
+    });
+
+    blobStream.on('finish', () => {
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+      return res.status(200).json({ fileUrl: publicUrl });
+    });
+
+    blobStream.end(file.buffer);
+  });
 });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
