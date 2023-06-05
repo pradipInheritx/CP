@@ -56,7 +56,6 @@ function Speed(props: SpeedProps) {
   //-12,1.4695761589768238e-15 -2.000000000000037,-200 1.9999999999999634,-200 12,0
   // -11.992689924229149,-0.4187939604300108 4.981117686462064,-199.94796439722415 8.978680994538447,-199.80836641041412 11.992689924229149,0.4187939604300116
 
-  console.log(needle, 'pkk');
 
   return (
     <>
@@ -223,7 +222,7 @@ function Speed(props: SpeedProps) {
                 }}
                 r={15}
               />
-              <motion.polyline className="fill-gray-700" points={needle.points} animate={{ points: needleAnimatePoint.current }} />
+              <motion.polyline className="fill-gray-700" points={needle.points} animate={{ points: /* needleAnimatePoint.current */needle.points }} />
 
 
             </g>

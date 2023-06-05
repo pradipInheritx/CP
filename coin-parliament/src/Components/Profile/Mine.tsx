@@ -101,9 +101,10 @@ const Mine = () => {
   // @ts-ignore 
   const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
+  console.log(currentCMP > 0 && currentCMPDiff > prevCMPDiff, userInfo?.voteStatistics?.score, currentCMP, currentCMPDiff, prevCMPDiff, 'hello');
 
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-  const remainingCMP = (currentCMP && currentCMPDiff > prevCMPDiff ? 100 : score);
+  const remainingCMP = (currentCMP > 0 && currentCMPDiff > prevCMPDiff ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   useEffect(() => {
