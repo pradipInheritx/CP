@@ -116,6 +116,7 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
+import ProfileNftGalleryCopy from "./Pages/ProfileNftGalleryCopy";
 import GameRule from "./Pages/GameRule";
 import Partners from "./Pages/Partners";
 import Foundations from "./Pages/Foundations";
@@ -137,6 +138,8 @@ import TermsAndConditions from "./Pages/TermsAndConditions";
 import { VoteContext, VoteContextType, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
 import { vote } from "common/models/canVote.test";
 import { setTimeout } from "timers";
+import NFTGalleryCopy from "Pages/NFTGalleryCopy";
+import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
 import ModalForResult from "Pages/ModalForResult";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -338,14 +341,15 @@ function App() {
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
-  const [remainingTimer, setRemainingTimer] = useState(0)
-  const [followerUserId, setFollowerUserId] = useState<string>('')
-  const [showBack, setShowBack] = useState<any>(false)
-  const [showReward, setShowReward] = useState<any>(0)
-  const [inOutReward, setInOutReward] = useState<any>(0)
-  const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
-  const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
-  const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
+  const [remainingTimer,setRemainingTimer]=useState(0)
+  const [followerUserId,setFollowerUserId]=useState<string>('')
+  const [showBack,setShowBack]=useState<any>(false)
+  const [showReward,setShowReward]=useState<any>(0)
+  const [inOutReward,setInOutReward]=useState<any>(0)
+  const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
+  const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
+  const [afterVotePopup,setAfterVotePopup]=useState<any>(false)
+  const [albumOpen,setAlbumOpen]=useState<any>("false")
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -1094,17 +1098,19 @@ function App() {
                 // console.log(e.target.value)
               }
               }
-            />
-            <ManagersContext.Provider
-              value={{
-                CPMSettingsMng,
-                VoteRulesMng,
-                TimeframesMng,
-                UserTypeMng,
-              }}
-            >
-              <AppContext.Provider
-                value={{
+          />
+          <ManagersContext.Provider
+            value={{
+              CPMSettingsMng,
+              VoteRulesMng,
+              TimeframesMng,
+              UserTypeMng,
+            }}
+          >
+            <AppContext.Provider
+                  value={{
+                    albumOpen,
+                    setAlbumOpen,                    
                   afterVotePopup,
                   setAfterVotePopup,
                   rewardExtraVote,
@@ -1444,6 +1450,10 @@ function App() {
                                               path='coins'
                                               element={<CoinMain />}
                                             />
+                                            {/* <Route
+                                              path='nftAlbum'
+                                              element={<NFTGallery />}
+                                            /> */}
                                             <Route
                                               path='nftAlbum'
                                               element={<NFTGallery />}

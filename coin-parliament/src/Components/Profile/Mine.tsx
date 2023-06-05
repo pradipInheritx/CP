@@ -30,6 +30,7 @@ import AnimationCard from "./Animation/AnimationCard";
 import { CurrentCMPContext } from "Contexts/CurrentCMP";
 import copy from "copy-to-clipboard";
 import Copy from "Components/icons/copyShare";
+import CoinAnimation from "common/CoinAnimation/CoinAnimation";
 
 
 const MyBadge = styled(Badge)`
@@ -185,7 +186,9 @@ const Mine = () => {
                   // @ts-ignore
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}
                 />
+                {inOutReward == 1 && <div className=""> <CoinAnimation/> </div>}
               </ForZoom>
+              
             </div>
             {/* @ts-ignore */}
             <div style={{ marginLeft: "10px" }}>
@@ -241,7 +244,8 @@ const Mine = () => {
                   PAX={userInfo?.rewardStatistics?.diamonds || 0}
                 // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
-                {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
+                  {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
+                  {inOutReward == 1 && <div className=""> <CoinAnimation/> </div>}
               </ForZoom>
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
@@ -331,7 +335,7 @@ const Mine = () => {
             )}
           </div>
         </Row>
-      </Container>
+      </Container>      
       <div>
         <Modal
           show={
