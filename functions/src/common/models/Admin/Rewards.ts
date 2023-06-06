@@ -16,6 +16,8 @@ interface Album {
 type Card = {
     albumId: string;
     setId: string;
+    albumName: string;
+    setName: string;
     cardName: string;
     cardType: string;
     quantity: number;
@@ -152,7 +154,6 @@ export const createCard = async (req: any, res: any) => {
         const { albumId, setId, cardName, cardStatus, cardType, totalQuantity, cardImageUrl, cardVideoUrl } = req.body;
 
         //Check Album is exist or not
-
         const getAlbum = await getAlbumDetails(albumId);
         if (!getAlbum) {
             return res.status(404).send({
@@ -177,6 +178,8 @@ export const createCard = async (req: any, res: any) => {
         const newCard: Card = {
             albumId,
             setId,
+            albumName: getAlbum.albumName,
+            setName: getSet.setName,
             cardName,
             cardType,
             quantity: totalQuantity,
@@ -418,7 +421,7 @@ export const updateCard = async (req: any, res: any) => {
     try {
 
         const { cardId } = req.params
-        const { albumId, setId, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImageUrl, cardVideoUrl } = req.body
+        const { albumId, setId, albumName, setName, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImageUrl, cardVideoUrl } = req.body
 
         const getCardQuery = await firestore().collection("cardsDetails").doc(cardId).get();
 
@@ -435,6 +438,8 @@ export const updateCard = async (req: any, res: any) => {
         const updatedCard: Card = {
             albumId,
             setId,
+            albumName,
+            setName,
             cardName,
             cardType,
             quantity,
