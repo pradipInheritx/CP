@@ -13,7 +13,7 @@ import { Leader } from "../../Contexts/CoinsContext";
 import Icon from "../Atoms/Checkbox/Icon";
 import AddFollower from "../icons/AddFollower";
 import Following from "../icons/Following";
-import { Link,  useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "../../common/models/Dictionary";
 import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
@@ -163,26 +163,27 @@ const UserCard = ({
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate()
-  const { setFollowerUserId} = useContext(AppContext)
-  const {userInfo ,user } = useContext(UserContext);
-  
-  
+  const { setFollowerUserId } = useContext(AppContext)
+  const { userInfo, user } = useContext(UserContext);
+
+
 
   const redirectTab = () => {
-    if (leader != undefined && setFollowerUserId != undefined) {setFollowerUserId(leader?.userId)
-    window.localStorage.setItem('followerId',leader?.userId)
+    if (leader != undefined && setFollowerUserId != undefined) {
+      setFollowerUserId(leader?.userId)
+      window.localStorage.setItem('followerId', leader?.userId)
     }
-    
-      // @ts-ignore
-      if (userInfo?.uid == leader?.userId) {
-        
-        navigate('/Profile/mine')
-      } else {
-        navigate('/followerProfile/mine')
-        
-      }
-    
-}
+
+    // @ts-ignore
+    if (userInfo?.uid == leader?.userId) {
+
+      navigate('/Profile/mine')
+    } else {
+      navigate('/followerProfile/mine')
+
+    }
+
+  }
 
   return (
     <Component515
@@ -197,12 +198,12 @@ const UserCard = ({
         }}
       >
         <ElementsAvatarAImage1 onClick={e => {
-          if (user) {            
+          if (user) {
             redirectTab()
           }
-          
-      
-      }}>
+
+
+        }}>
           <Avatar url={getAvatar(leader)} />
         </ElementsAvatarAImage1>
         <FlexCol>
@@ -226,20 +227,23 @@ const UserCard = ({
             {!expanded && <span className='mx-1'></span>}
           </Address>
         </FlexCol>
-        {userInfo?.uid !==leader?.userId ? <Component5031 style={{ background: checked ? "" : "white" }}>
-          <Icon
-            setChecked={setChecked}
-            checked={checked}
-            iconOff={<AddFollower />}
-            iconOn={<Following />}
-            name={`leader-${leader.userId}`}
-          />
-        </Component5031>:<Componentdiv></Componentdiv>}
+        {userInfo?.uid !== leader?.userId ?
+          <Component5031 style={{ background: checked ? "" : "white" }}>
+            <Icon
+              setChecked={setChecked}
+              checked={checked}
+              iconOff={<AddFollower />}
+              iconOn={<Following />}
+              name={`leader-${leader.userId}`}
+            />
+          </Component5031> :
+          <Componentdiv />
+        }
         {viewAllLink && (
           <div>
             <ViewAll to={viewAllLink}>
               {/* {translate("view all")} */}
-            {texts.ViewAll}
+              {texts.ViewAll}
             </ViewAll>
           </div>
         )}

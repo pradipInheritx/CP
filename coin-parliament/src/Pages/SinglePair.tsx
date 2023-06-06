@@ -377,7 +377,7 @@ const SinglePair = () => {
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
-                        {!voteNumber && remainingTimer ?
+                        {!voteNumber && !!new Date(remainingTimer).getDate() ?
                           <span style={{ marginLeft: '20px' }}>
                             {/* @ts-ignore */}
                             <Countdown date={remainingTimer}
