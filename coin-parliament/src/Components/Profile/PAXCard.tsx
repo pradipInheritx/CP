@@ -139,9 +139,9 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
           style={{backgroundColor: "rgba(0,0,0,0.8)",zIndex:"2200"}}
     >
       <div className="d-flex justify-content-end">
-        <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={()=>{
+        {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={()=>{
           handleClose()
-          }}></button>
+          }}></button> */}
         </div>
       <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}          

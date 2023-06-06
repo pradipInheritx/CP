@@ -124,8 +124,7 @@ const Mine = () => {
         setModelText(1)
         console.log(showBack, "viewshow")
         handleShow()
-        setShowBack(false)
-        console.log("Openpopup not")
+        setShowBack(false)        
       }, 10000);
     }
   }, []);
@@ -141,7 +140,7 @@ const Mine = () => {
         setRewardTimer(null);
         setShowReward(0);
         console.log("Openpopup")
-      }, 5000);
+      }, 10000);
     }
   }
   console.log(showBack, "viewshow back")
@@ -386,11 +385,11 @@ const Mine = () => {
           contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
         >
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
+            {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
               setRewardTimer(null);
               setShowReward(0);
               handleCardClose()
-            }}></button>
+            }}></button> */}
           </div>
           <Modal.Body
           >

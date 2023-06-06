@@ -24,6 +24,7 @@ import {useWindowSize} from "../../hooks/useWindowSize";
 import {getMaxWidth} from "../Coins/Coins";
 import { texts } from "../LoginComponent/texts";
 import { ButtonToolbar } from "react-bootstrap";
+import AppContext from "Contexts/AppContext";
 
 const Container = styled.div`
   display: grid;
@@ -60,6 +61,7 @@ const Pairs = ({
   const translate = useTranslation();
   let navigate = useNavigate();
   const { totals, allPairs, coins } = useContext(CoinContext);
+  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext);
   const [filter, setFilter] = useState("");
   const { userInfo, user } = useContext(UserContext);
   const [chosenPairs, setChosenPairs] = useState<string[][] | undefined>(
@@ -142,8 +144,16 @@ const pathname = location.pathname;
           <div>
             <Heart
               checked={filterByFav}
-              setChecked={() => {
-                setFilterByFav(!filterByFav);
+                    setChecked={() => {
+                
+              if(!user?.uid){
+                setLoginRedirectMessage('add Pair to favorites')
+                setLogin(true)
+              }
+                if (user?.uid) {
+                  setFilterByFav(!filterByFav);                  
+                }
+                
               }}
               id="filterByFav"
               name="filterByFav"

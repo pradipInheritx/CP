@@ -108,11 +108,12 @@ const SingalCard = () => {
 
   
 // const claimReward = httpsCallable(functions, "claimReward");
-  const getList = httpsCallable(functions, `cardHolderListing`);
-
-  const getFollwersList = async(id:any) => {
+  const getList = httpsCallable(functions, `cardHolderListing`);    
+  const getFollwersList = async (id: any) => {
+        
+    console.log(id,"allList")
     const result = await getList({ cardId: Number(id) }).then((list) => {
-      // @ts-ignore
+      // @ts-ignore      
       const FollowerList= list?.data?.map((items: any) => {                 
         return {
           leaders: items?.leader?.length || 0,
@@ -130,20 +131,11 @@ const SingalCard = () => {
           email:items?.email,
           lastName: items?.lastName,
         }
-      })
+      })        
 setFollowersDetails(FollowerList)
-
-
-      // @ts-ignore          
-      // list?.data?.map((items: any) => {
-      
-        
-      // })
     }).catch((error) => {
       console.log(`error: ${JSON.stringify(error)}`);
-    });;
-                // setRewardTimer(result);
-                
+    });;             
   }
    const getNftCard = () => {
   const getCards = firebase
@@ -208,19 +200,21 @@ setFollowersDetails(FollowerList)
                         return ( */}
                         <>
                           <NftOneCard                            
-                            DivClass={singalCardData?.type}
-                            HeaderText={singalCardData?.type}
-                            HeaderClass={`${singalCardData?.type}_text`}
-                            Serie={singalCardData?.name}
-                            BackCardName={singalCardData?.name}
-                            Rarity={singalCardData?.type}
+                            DivClass={singalCardData?.cardType}
+                            HeaderText={singalCardData?.cardType}
+                            HeaderClass={`${singalCardData?.cardType}_text`}
+                            Serie={singalCardData?.setName}
+                            BackCardName={singalCardData?.cardName}
+                            Rarity={singalCardData?.cardType}
+                            CollectionType={singalCardData?.albumName}
                             Quantity={singalCardData?.quantity}
                             holderNo={singalCardData?.noOfCardHolders}
-                            cardNo={`${((singalCardData?.name)?.toUpperCase())?.slice(0, 3) + singalCardData?.myID}`}
-                            GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((singalCardData?.name)?.toUpperCase())?.slice(0, 3) + singalCardData?.myID}`}
+                            cardNo={`${((singalCardData?.cardName)?.toUpperCase())?.slice(0, 2) + (singalCardData?.cardId)?.slice(0, 2)}`}
+                            // GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((singalCardData?.cardName)?.toUpperCase())?.slice(0, 3) + singalCardData?.cardId}`}
+                            GeneralSerialNo={singalCardData?.sno}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${singalCardData?.name}`}
+                            cardHeader={`${singalCardData?.cardName}`}
                             // cardNo={`${singalCardData.cardNo}`}
                             id={singalCardData?.cardId}
                             BackSideCard={BackSideCard}
@@ -256,7 +250,7 @@ setFollowersDetails(FollowerList)
 
           </div>   
            <div>
-            <Leaderboard            
+          <Leaderboard            
           {...{
           expanded: true,
           leaders: followersDetails?.filter((leader:any) => {
