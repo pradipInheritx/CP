@@ -282,17 +282,6 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
       }
     }
   }
-
-
-  // const uniqueUserListData = getUserListById(getAllVotesIn24Hours)
-
-  // console.log("uniqueUserListData ==>", uniqueUserListData)
-
-  // await uniqueUserListData.forEach(async (data: any) => {
-  //   const getUserDetailsQuery = await firestore().collection("users").doc(data.userId).get();
-  //   const getuserDetails = getUserDetailsQuery.data()
-  //   await sendNotificationForTitleUpgrade(getuserDetails)
-  // })
 }
 
 //For Title Update
