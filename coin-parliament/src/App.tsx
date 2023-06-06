@@ -1436,7 +1436,7 @@ function App() {
                                             /> */}
                                             <Route
                                               path='nftAlbum'
-                                              element={<NFTGallery />}
+                                              element={<NFTGalleryCopy />}
                                             />
                                             <Route
                                               path='nftAlbum/:type'
@@ -1504,7 +1504,7 @@ function App() {
                                                 path={
                                                   ProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<ProfileNftGallery />}
+                                                element={<ProfileNftGalleryCopy />}
                                               />
                                               <Route
                                                 path={
@@ -1542,7 +1542,7 @@ function App() {
                                                 path={
                                                   FollowerProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<FwProfileNftGallery />}
+                                                element={<FwProfileNftGalleryCopy />}
                                               />
                                               <Route
                                                 path={

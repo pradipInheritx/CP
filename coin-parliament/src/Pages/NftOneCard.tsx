@@ -155,7 +155,10 @@ export type BoxItems = {
   userId?:any;
   CollectionType?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,cardHeader,BackSideCard,id,flipCard,Serie,BackCardName,Rarity,Quantity,holderNo,MintedTime,PrivateSerialNo ,GeneralSerialNo,fulldata,userId,CollectionType}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType }: BoxItems) => {
+  
+
+
   const Width: number = window.screen.width 
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
@@ -166,7 +169,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass,width,Disable,cardNo ,ca
       let params = useParams();
   const { type} = params;
   
-console.log(Disable,"backCards Disable")
+
   return (
     
     <div

@@ -360,16 +360,16 @@ const Minting = ({
         // }}
         >
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
+            {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
               handleClose()
-            }}></button>
+            }}></button> */}
           </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
-            {/* continue voting */}
+            
             {/* @ts-ignore */}
             <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
           </Modal.Body>
-          {/* <Modal.Footer> */}
+          
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2" onClick={() => {
               setTimeout(() => {
@@ -406,10 +406,12 @@ const Minting = ({
         // id="Cmp-animation"
         >
 
-          <div className="d-flex justify-content-end" style={{ zIndex: '101' }}>
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
+          <div className="d-flex justify-content-end"
+
+          >
+            {/* <button type="button" className="btn-close" aria-label="Close" onClick={() => {
               handleCmpPopupClose()
-            }}></button>
+            }}></button> */}
           </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}

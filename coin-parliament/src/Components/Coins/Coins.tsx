@@ -23,6 +23,7 @@ import { Input } from "../Atoms/styles";
 import CoinsContext from "../../Contexts/CoinsContext";
 import { texts } from "../LoginComponent/texts";
 import { ButtonToolbar } from "react-bootstrap";
+import AppContext from "Contexts/AppContext";
 
 const Container = styled.div`
   display: grid;
@@ -66,6 +67,7 @@ const Coins = ({
   const translate = useTranslation();
   let navigate = useNavigate();
   const { coins, totals, allCoins } = useContext(CoinContext);
+  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext);
   const { userInfo, user } = useContext(UserContext);
   const [index, setIndex] = useState(0);
   const [data, setData] = useState<BearVsBullRow[]>(
@@ -135,7 +137,15 @@ const pathname = location.pathname;
             <Heart
               checked={filterByFav}
               setChecked={() => {
-                setFilterByFav(!filterByFav);
+                
+              if(!user?.uid){
+                setLoginRedirectMessage('add coin to favorites')
+                setLogin(true)
+              }
+                if (user?.uid) {
+                  setFilterByFav(!filterByFav);                  
+                }
+
               }}
               // color="var(--white)"
               id='filterByFav'
