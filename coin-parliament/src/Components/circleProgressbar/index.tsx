@@ -1,5 +1,5 @@
 //@ts-nocheck
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { render } from "react-dom";
 
 // Import react-circular-progressbar module and styles
@@ -11,11 +11,18 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 
 // Animation
-import { easeQuadInOut } from "d3-ease";
+import { easeQuadInOut, easeQuadIn } from "d3-ease";
 import AnimatedProgressProvider from "./AnimatedProgressProvider";
 import { useWindowSize } from "../../hooks/useWindowSize";
 const CircularProgress = ({ percentage }) => {
     const { width: w = 0 } = useWindowSize();
+    const [progressBarValue, setProgressBarValue] = useState(0);
+    useEffect(() => {
+        setProgressBarValue(0);
+        const time = setTimeout(() => {
+            setProgressBarValue(percentage);
+        }, [800]);
+    }, [percentage])
     return (
         <div style={{ width: w > 767 ? "98%" : "52%" }}>
             <CircularProgressbarWithChildren
@@ -30,9 +37,9 @@ const CircularProgress = ({ percentage }) => {
             >
                 <AnimatedProgressProvider
                     valueStart={0}
-                    valueEnd={percentage}
-                    duration={2}
-                    easingFunction={easeQuadInOut}
+                    valueEnd={progressBarValue}
+                    duration={progressBarValue > 5 ? 4 : 0}
+                    easingFunction={easeQuadIn}
                 >
                     {(value) => {
                         const roundedValue = parseFloat(value.toFixed(2));
@@ -44,7 +51,7 @@ const CircularProgress = ({ percentage }) => {
                                         strokeWidth={w > 767 ? 11 : 13}
                                         styles={buildStyles({
                                             pathColor: "#6352e8",
-                                            pathTransition: "none",
+                                            pathTransition: value === 0 ? "none" : "stroke-dashoffset 0.5s ease 0s",
                                             strokeLinecap: "butt",
                                             trailColor: (w > 767 ? "transparent" : '#160133')
                                         })}
@@ -59,7 +66,7 @@ const CircularProgress = ({ percentage }) => {
                     }}
                 </AnimatedProgressProvider>
             </CircularProgressbarWithChildren>
-        </div>
+        </div >
     );
 };
 

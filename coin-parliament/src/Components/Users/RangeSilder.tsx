@@ -9,19 +9,6 @@ import CoinsContext from "../../Contexts/CoinsContext";
 import { decimal } from "../Profile/utils";
 // import * as Motion from 'framer-motion';
 // const { motion, MotionConfig }= Motion
-// const useSpeedTest = () => {
-//   const [value, setValue] = useState(0);
-
-//   useAnimationFrame((t) => {
-//     if (value >= 100) return;
-//     setValue((t / 5500) * 100);
-//   });
-
-//   return {
-//     value: Math.min(value, 100)
-//   };
-// };
-
 
 
 
@@ -56,7 +43,6 @@ function Speed(props: SpeedProps) {
   //-12,1.4695761589768238e-15 -2.000000000000037,-200 1.9999999999999634,-200 12,0
   // -11.992689924229149,-0.4187939604300108 4.981117686462064,-199.94796439722415 8.978680994538447,-199.80836641041412 11.992689924229149,0.4187939604300116
 
-  console.log(needle, 'pkk');
 
   return (
     <>
@@ -208,7 +194,6 @@ function Speed(props: SpeedProps) {
             </g>
             <g id="needle" fill={"#2d2966"}>
               <motion.circle
-
                 animate={{
                   cx: needle.base.cx,
                   cy: needle.base.cy
@@ -216,16 +201,15 @@ function Speed(props: SpeedProps) {
                 r={2}
               />
               <motion.circle
-
                 animate={{
                   cx: needle.base.cx,
                   cy: needle.base.cy
                 }}
                 r={15}
               />
-              <motion.polyline className="fill-gray-700" points={needle.points} animate={{ points: needleAnimatePoint.current }} />
-
-
+              <motion.polyline className="fill-gray-700" animate={{
+                points: needle.points
+              }} />
             </g>
           </svg>
         </div>
@@ -258,12 +242,11 @@ export default function SpeedTest(
     return action < 0 ? 0 : action;
   }, 50)
   const { allCoinsSetting } = useContext(CoinsContext)
-  const [priceRange, setPriceRange] = useState(1)
+  const [priceRange, setPriceRange] = useState(1);
+  // const { value } = useSpeedTest(priceRange);
   // const [randomDecimal, setRandomDecimal] = useState(0)
 
   const getBorderColor = () => {
-
-
     if (symbol2 !== undefined) {
       // range bar for pair
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
@@ -354,3 +337,4 @@ export default function SpeedTest(
     </MotionConfig>
   );
 }
+

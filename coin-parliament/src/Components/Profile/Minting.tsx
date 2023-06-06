@@ -190,29 +190,28 @@ const Minting = ({
 
   // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
-    if (score == 100) {
+    if (score === 100) {
       setTimeout(() => {
         handleCmpPopupShow();
-      }, 3900);
+      }, 4900);
     }
   }, [score]);
   useEffect(() => {
     if (CmpPopupShow) {
-
-
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         container: document.querySelector(".Cmp-animation"),
         animationData: Confetti,
         renderer: "html", // "canvas", "html"
         loop: true, // boolean
-        autoplay: true, // boolean              
+        autoplay: true, // boolean   ,
       });
-      handleSoundWinCmp.play()
+      handleSoundWinCmp.play();
       setTimeout(function () {
-        Animation.pause();
-        handleSoundWinCmp.pause()
+        // Animation.destroy();
+        handleSoundWinCmp.pause();
       }, 4000);  // 5000 milliseconds = 5 seconds
+
       // setShowBack(false)
     }
   }, [CmpPopupShow]);
@@ -401,7 +400,7 @@ const Minting = ({
           // size="sm"
           backdrop="static"
           // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
-          contentClassName="Cmp-animation"
+          contentClassName=""
           aria-labelledby="contained-modal-title-vcenter"
           centered
         // id="Cmp-animation"
@@ -417,14 +416,16 @@ const Minting = ({
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* continue voting */}
             {/* @ts-ignore */}
-            <div className='py-2 d-flex flex-column  justify-content-center align-items-center'>
+
+            <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
+            <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>
               <strong className="py-2" style={{ fontSize: "20px" }}>Well done, Champ!</strong>
               <p className="py-2" style={{ fontSize: "20px" }}>You've reached your goal.</p>
               <p className="py-2" style={{ fontSize: "14px" }}>Go ahead and claim your reward - you deserve it!</p>
             </div>
 
           </Modal.Body>
-          <div className="d-flex justify-content-center pb-4">
+          <div className="d-flex justify-content-center pb-1" style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
                 if (claim) {
@@ -440,10 +441,8 @@ const Minting = ({
                 }
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
-            <Buttons.Primary className="mx-2" onClick={() => {
-              handleCmpPopupClose()
-            }}>Claim letter</Buttons.Primary>
           </div>
+          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim letter</div>
         </Modal>
       </div>
     </React.Fragment >
