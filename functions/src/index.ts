@@ -51,7 +51,6 @@ import {
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
 import {
-  sendToTokens,
   subscribeToTopic,
   unsubscribeToTopic,
 } from "./common/models/Subscribe";
@@ -97,6 +96,7 @@ import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.r
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
 import { uploadFiles } from "./common/helpers/fileUploadConfig";
+import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 
 // initialize express server
 const app = express();
@@ -399,7 +399,7 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
-    await setLeaders();
+
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
@@ -461,7 +461,7 @@ exports.onVote = functions.firestore
     console.log("vote =>", vote);
 
     await snapshot.ref.update(vote);
-    await sendToTokens(vote);
+    //await sendToTokens(vote);
 
     await admin
       .firestore()
@@ -661,12 +661,15 @@ exports.checkTitleUpgrade24Hour = functions.pubsub
   .schedule("0 0 * * *")
   .onRun(
     async () => {
+      await setLeaders();
       const date = new Date();
       const nowTime = date.getTime();
       const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
       await checkUserStatusIn24hrs(nowTime, yesterdayTime)
+      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime)
     }
   )
+
 exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   async (data) => {
     await getOldAndCurrentPriceAndMakeCalculation(data);
@@ -681,6 +684,7 @@ exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
     };
   }
 );
+
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");

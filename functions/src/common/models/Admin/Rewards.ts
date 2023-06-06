@@ -17,6 +17,8 @@ interface Album {
 type Card = {
     albumId: string;
     setId: string;
+    albumName: string;
+    setName: string;
     cardName: string;
     cardType: string;
     quantity: number;
@@ -153,7 +155,6 @@ export const createCard = async (req: any, res: any) => {
         const { albumId, setId, cardName, cardStatus, cardType, totalQuantity, cardImageUrl, cardVideoUrl } = req.body;
 
         //Check Album is exist or not
-
         const getAlbum = await getAlbumDetails(albumId);
         if (!getAlbum) {
             return res.status(404).send({
@@ -178,6 +179,8 @@ export const createCard = async (req: any, res: any) => {
         const newCard: Card = {
             albumId,
             setId,
+            albumName: getAlbum.albumName,
+            setName: getSet.setName,
             cardName,
             cardType,
             quantity: totalQuantity,
@@ -329,6 +332,8 @@ export const getCardListing = async (req: any, res: any) => {
                 return {
                     albumId: doc.data()?.albumId ? doc.data()?.albumId : "",
                     setId: doc.data()?.setId ? doc.data()?.setId : "",
+                    albumName: doc.data()?.albumName ? doc.data()?.albumName : "",
+                    setName: doc.data()?.setName ? doc.data()?.setName : "",
                     cardId: doc.id,
                     cardName: doc.data()?.cardName ? doc.data()?.cardName : "",
                     cardType: doc.data()?.cardType ? doc.data()?.cardType : "",
@@ -419,7 +424,7 @@ export const updateCard = async (req: any, res: any) => {
     try {
 
         const { cardId } = req.params
-        const { albumId, setId, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImageUrl, cardVideoUrl } = req.body
+        const { albumId, setId, albumName, setName, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImageUrl, cardVideoUrl } = req.body
 
         const getCardQuery = await firestore().collection("cardsDetails").doc(cardId).get();
 
@@ -436,6 +441,8 @@ export const updateCard = async (req: any, res: any) => {
         const updatedCard: Card = {
             albumId,
             setId,
+            albumName,
+            setName,
             cardName,
             cardType,
             quantity,

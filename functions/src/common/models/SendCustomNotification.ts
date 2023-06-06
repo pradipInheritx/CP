@@ -250,48 +250,38 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
   userTypesData = userTypesData.userTypes;
 
   for (let userId in userVoteGroupObj) {
-    const getUserDetailsQuery = await firestore().collection("users").doc(userId).get();
-    const getuserDetails = getUserDetailsQuery.data()
+    if (Object.prototype.hasOwnProperty.call(userVoteGroupObj, userId)) {
+      const getUserDetailsQuery = await firestore().collection("users").doc(userId).get();
+      const getuserDetails = getUserDetailsQuery.data()
 
-    let userVoteList =  userVoteGroupObj[userId];
+      let userVoteList = userVoteGroupObj[userId];
 
 
-    for(let vote = 0; vote < (userVoteList.length - 1) ; vote++) {
-      console.log("vote Index ->", vote);
-      console.log("userVoteList old =>", userVoteList[vote]);
-      console.log("userVoteList new =>", userVoteList[vote + 1]);
-      if(userVoteList[vote].status.name !== userVoteList[vote + 1].status.name) {
-        let oldStatusData = userTypesData.find((item: any)=> item.name === userVoteList[vote].status.name);
-        let newStatusData = userTypesData.find((item: any)=> item.name === userVoteList[vote + 1].status.name);
+      for (let vote = 0; vote < (userVoteList.length - 1); vote++) {
+        console.log("vote Index ->", vote);
+        console.log("userVoteList old =>", userVoteList[vote]);
+        console.log("userVoteList new =>", userVoteList[vote + 1]);
+        if (userVoteList[vote].status.name !== userVoteList[vote + 1].status.name) {
+          let oldStatusData = userTypesData.find((item: any) => item.name === userVoteList[vote].status.name);
+          let newStatusData = userTypesData.find((item: any) => item.name === userVoteList[vote + 1].status.name);
 
-        let status = newStatusData.index > oldStatusData.index ? 'Upgrade' : 'Downgrade';
-       
-        let message;
-        let title;
-        let statusName:any = userVoteList[vote + 1].status.name;
-        if(status === 'Upgrade') {
-          title = upgradeMessage[statusName];
-          message = `Vote to earn more!`;
-        } else if(status === 'Downgrade') {
-          title = downGradeMessage[statusName];
-          message = `Keep Voting to Rise Again!`;
+          let status = newStatusData.index > oldStatusData.index ? 'Upgrade' : 'Downgrade';
+
+          let message;
+          let title;
+          let statusName: any = userVoteList[vote + 1].status.name;
+          if (status === 'Upgrade') {
+            title = upgradeMessage[statusName];
+            message = `Vote to earn more!`;
+          } else if (status === 'Downgrade') {
+            title = downGradeMessage[statusName];
+            message = `Keep Voting to Rise Again!`;
+          }
+          await sendNotificationForTitleUpgrade(getuserDetails, message, title)
         }
-
-        await sendNotificationForTitleUpgrade(getuserDetails, message, title)
       }
     }
   }
-  
- 
-  // const uniqueUserListData = getUserListById(getAllVotesIn24Hours)
-
-  // console.log("uniqueUserListData ==>", uniqueUserListData)
-
-  // await uniqueUserListData.forEach(async (data: any) => {
-  //   const getUserDetailsQuery = await firestore().collection("users").doc(data.userId).get();
-  //   const getuserDetails = getUserDetailsQuery.data()
-  //   await sendNotificationForTitleUpgrade(getuserDetails)
-  // })
 }
 
 //For Title Update
