@@ -331,6 +331,8 @@ export const getCardListing = async (req: any, res: any) => {
                 return {
                     albumId: doc.data()?.albumId ? doc.data()?.albumId : "",
                     setId: doc.data()?.setId ? doc.data()?.setId : "",
+                    albumName: doc.data()?.albumName ? doc.data()?.albumName : "",
+                    setName: doc.data()?.setName ? doc.data()?.setName : "",
                     cardId: doc.id,
                     cardName: doc.data()?.cardName ? doc.data()?.cardName : "",
                     cardType: doc.data()?.cardType ? doc.data()?.cardType : "",
