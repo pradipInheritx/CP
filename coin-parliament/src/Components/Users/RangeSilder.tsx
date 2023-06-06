@@ -207,7 +207,7 @@ function Speed(props: SpeedProps) {
                 }}
                 r={15}
               />
-              <motion.polyline className="fill-gray-700" points={needle.points} animate={{
+              <motion.polyline className="fill-gray-700" animate={{
                 points: needle.points
               }} />
             </g>

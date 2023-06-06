@@ -213,34 +213,7 @@ function App() {
 
   }, [pathname])
 
-  const showToast = useCallback(
-    (
-      content: ToastContent,
-      type?: ToastType,
-      options: ToastOptions | undefined = {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        containerId: "toast",
-      }
-    ) => {
-      switch (type) {
-        case ToastType.ERROR:
-          toast.error(content, options);
-          break;
-        case ToastType.INFO:
-          toast.info(content, options);
-          break;
-        default:
-          toast.success(content, options);
-      }
-    },
-    []
-  );
+
 
   const showModal = useCallback(
     (
@@ -341,15 +314,15 @@ function App() {
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
-  const [remainingTimer,setRemainingTimer]=useState(0)
-  const [followerUserId,setFollowerUserId]=useState<string>('')
-  const [showBack,setShowBack]=useState<any>(false)
-  const [showReward,setShowReward]=useState<any>(0)
-  const [inOutReward,setInOutReward]=useState<any>(0)
-  const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
-  const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
-  const [afterVotePopup,setAfterVotePopup]=useState<any>(false)
-  const [albumOpen,setAlbumOpen]=useState<any>("false")
+  const [remainingTimer, setRemainingTimer] = useState(0)
+  const [followerUserId, setFollowerUserId] = useState<string>('')
+  const [showBack, setShowBack] = useState<any>(false)
+  const [showReward, setShowReward] = useState<any>(0)
+  const [inOutReward, setInOutReward] = useState<any>(0)
+  const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
+  const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
+  const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
+  const [albumOpen, setAlbumOpen] = useState<any>("false")
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -996,7 +969,7 @@ function App() {
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
-  // const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
+  const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
     Object.keys(voteDetails?.activeVotes).map((value) => {
@@ -1031,40 +1004,47 @@ function App() {
           const coin = lessTimeVote?.coin.split('-') || [];
           const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
           const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-          await getPriceCalculation({
-            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-            voteId: lessTimeVote?.id,
-            voteTime: lessTimeVote?.voteTime,
-            valueVotingTime: lessTimeVote?.valueVotingTime,
-            expiration: lessTimeVote?.expiration,
-            timestamp: Date.now(),
-            userId: lessTimeVote?.userId
-          }).then((response) => {
-            if (response?.data && Object.keys(response.data).length > 0) {
-              // setpopUpOpen(true);
-              // setModalData(response!.data);
-              // setLessTimeVote(undefined);
-              const res: Object = response!.data;
-              setVoteDetails((prev: VoteContextType) => {
-                return {
-                  ...prev,
-                  lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
-                  openResultModal: true
-                }
-              })
-              // setModalData(response!.data);
-            }
-          }).catch(err => {
-            if (err && err.message) {
-              console.log(err.message);
-            }
-          });
+          if ((!!!voteDetails?.lessTimeVote)) {
+            await getPriceCalculation({
+              coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+              coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+              voteId: lessTimeVote?.id,
+              voteTime: lessTimeVote?.voteTime,
+              valueVotingTime: lessTimeVote?.valueVotingTime,
+              expiration: lessTimeVote?.expiration,
+              timestamp: Date.now(),
+              userId: lessTimeVote?.userId
+            }).then((response) => {
+              if (response?.data && Object.keys(response.data).length > 0) {
+                // setpopUpOpen(true);
+                // setModalData(response!.data);
+                // setLessTimeVote(undefined);
+                const res: Object = response!.data;
+                // @ts-ignore
+
+                setVoteDetails((prev: VoteContextType) => {
+                  return {
+                    ...prev,
+                    lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
+                    openResultModal: true
+                  }
+                })
+
+                // setModalData(response!.data);
+              }
+            }).catch(err => {
+              if (err && err.message) {
+                console.log(err.message);
+              }
+            });
+          }
+
         }, (second_diff * 1000));
         return () => clearTimeout(timer);
       }
     }
   }
+
   ///END vote result //
 
   return loader ? (
@@ -1098,19 +1078,19 @@ function App() {
                 // console.log(e.target.value)
               }
               }
-          />
-          <ManagersContext.Provider
-            value={{
-              CPMSettingsMng,
-              VoteRulesMng,
-              TimeframesMng,
-              UserTypeMng,
-            }}
-          >
-            <AppContext.Provider
-                  value={{
-                    albumOpen,
-                    setAlbumOpen,                    
+            />
+            <ManagersContext.Provider
+              value={{
+                CPMSettingsMng,
+                VoteRulesMng,
+                TimeframesMng,
+                UserTypeMng,
+              }}
+            >
+              <AppContext.Provider
+                value={{
+                  albumOpen,
+                  setAlbumOpen,
                   afterVotePopup,
                   setAfterVotePopup,
                   rewardExtraVote,
@@ -1688,3 +1668,28 @@ function App() {
 }
 
 export default App;
+export const showToast = (
+  content: ToastContent,
+  type?: ToastType,
+  options: ToastOptions | undefined = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    containerId: "toast",
+  }
+) => {
+  switch (type) {
+    case ToastType.ERROR:
+      toast.error(content, options);
+      break;
+    case ToastType.INFO:
+      toast.info(content, options);
+      break;
+    default:
+      toast.success(content, options);
+  }
+};

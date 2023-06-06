@@ -20,18 +20,16 @@ window.changeLanguage = (lang: string) => {
 };
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <VoteProvider>
-        <PairVoteProvider>
-          <CurrentCMPProvider>
-            <App />
-          </CurrentCMPProvider>
-        </PairVoteProvider>
-      </VoteProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById("app")
+  <BrowserRouter>
+    <VoteProvider>
+      <PairVoteProvider>
+        <CurrentCMPProvider>
+          <App />
+        </CurrentCMPProvider>
+      </PairVoteProvider>
+    </VoteProvider>
+  </BrowserRouter>
+  , document.getElementById("app")
 );
 
 // If you want to start measuring performance in your app, pass a function

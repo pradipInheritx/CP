@@ -32,7 +32,7 @@ const Leaderboard = ({
 }) => {
   const location = useLocation();
   const pathname = location.pathname;
-  
+
   return (
     <div>
       <LeadersContainer>
@@ -43,7 +43,7 @@ const Leaderboard = ({
               style={{
                 width:
                   window.screen.width < 979 &&
-                  pathname?.includes("/influencers")
+                    pathname?.includes("/influencers")
                     ? "321px"
                     : "100%",
                 padding: "0 0 12px 0",

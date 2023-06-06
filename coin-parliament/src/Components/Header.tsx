@@ -193,7 +193,7 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward ,afterVotePopup , setAfterVotePopup} = useContext(AppContext);
+	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
@@ -242,9 +242,9 @@ const Header = ({
 		}
 
 	}, [voteNumber, votingTimer, afterVotePopup])
-	
+
 	useEffect(() => {
-		if (afterVotePopup) {			
+		if (afterVotePopup) {
 			setShow(true)
 			// setAfterVotePopup(false)
 		} else {
@@ -494,34 +494,29 @@ const Header = ({
 												<HeaderCenterMob className=''>
 													<div></div>
 													<div className='mt-1'>
-
-														{/* @ts-ignore */}
-
-														{/* // @ts-ignore */}
-														{/* {hours < 10 ? `0${hours}` : hours}: */}
-
-
 														{
-															followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
-																// @ts-ignore */
-																<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}><Countdown daysInHours zeroPadTime={2} date={votingTimer}
-																	renderer={({ hours, minutes, seconds, completed }) => {
-																		return (
-																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
-																				Wait {" "}
-																				{hours < 1 ? null : `${hours} :`}
-																				{minutes < 10 ? `0${minutes}` : minutes}:
-																				{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																				<br />
-																				or buy extra votes now.
-																			</span>
-																		);
+															followerPage && followerInfo != "" ? followerInfo?.displayName :
+																(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+																	// @ts-ignore */
+																	<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
+																		<Countdown daysInHours zeroPadTime={2} date={votingTimer}
+																			renderer={({ hours, minutes, seconds, completed }) => {
+																				return (
+																					<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
+																						Wait {" "}
+																						{hours < 1 ? null : `${hours} :`}
+																						{minutes < 10 ? `0${minutes}` : minutes}:
+																						{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
+																						<br />
+																						or buy extra votes now.
+																					</span>
+																				);
 
-																	}}
+																			}}
 
-																/></div>
-																:
-																<>
+																		/>
+																	</div>
+																	:
 																	<span
 																		style={{
 																			color: "#6352E8",
@@ -564,9 +559,8 @@ const Header = ({
 																		{" "}
 																		votes left
 																	</span>
-																</>}
+														}
 													</div>
-
 													{followerPage && followerInfo != "" ?
 														<Form.Check.Label
 															style={{ cursor: "pointer" }}
@@ -693,55 +687,47 @@ const Header = ({
 											<div className='w-100'>
 												<HeaderCenter className=''>
 													<div></div>
+
 													<p className='ml-5'>
-														{followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
-															// @ts-ignore
-															<span style={{ marginLeft: '20px' }}> <Countdown date={votingTimer}
-																renderer={({ hours, minutes, seconds, completed }) => {
+														{followerPage && followerInfo != "" ? followerInfo?.displayName :
+															(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+																// @ts-ignore
+																<span style={{ marginLeft: '20px' }}>
+																	<Countdown date={votingTimer}
+																		renderer={({ hours, minutes, seconds, completed }) => {
 
-																	return (
-																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400 }}>
-																			{/* {hours < 10 ? `0${hours}` : hours}: */}
-																			Wait {" "}
-																			{hours < 1 ? null : `${hours} :`}
-																			{minutes < 10 ? `0${minutes}` : minutes}:
-																			{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																			<p style={{ marginLeft: '30px' }}> or buy extra votes now.</p>
-																		</span>
-																	);
+																			return (
+																				<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400 }}>
+																					{/* {hours < 10 ? `0${hours}` : hours}: */}
+																					Wait {" "}
+																					{hours < 1 ? null : `${hours} :`}
+																					{minutes < 10 ? `0${minutes}` : minutes}:
+																					{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
+																					<p style={{ marginLeft: '30px' }}> or buy extra votes now.</p>
+																				</span>
+																			);
 
-																}}
-															/></span>
-															:
-															<>
+																		}}
+																	/>
+																</span>
+																:
 																<span
 																	style={{
 																		color: "#6352E8",
 																		fontSize: "11px",
 																		marginLeft: "11px",
-																		// zoom: `${showReward == 2 ? "150%" : ""}`
 																	}}
 																>
-																	{/* {Number(voteRules?.maxVotes) ||
-                              0 +
-                                // @ts-ignore
-                                Number(userInfo?.rewardStatistics?.extraVote) ||
-                              0 - Number(votesLast24Hours.length) ||
-                              0} */}
-																	{/* {voteNumber > 0 ? voteNumber : 0} */}
+
 																	{MyPath == "/profile/mine" ? <CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
 																		style={{
 																			fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
-
-																			// zoom: `${showReward == 2 ? "140%" : ""}`
 																		}}
 
 																		onEnd={() => {
 																			setInOutReward((prev: number) => {
-																				// console.log(prev,"showRewardCheck")
 																				return prev == 2 ? 3 : prev
 																			});
-																			// setTimeout(() => {
 																			setHeaderExtraVote((prev: number) => {
 																				if (prev != 0) {
 																					setShowReward((prev: number) => {
@@ -750,27 +736,15 @@ const Header = ({
 																				}
 																				return prev
 																			})
-																			// }, 500);
-																			// setTimeout(() => {
-																			//   setInOutReward((prev: number) =>{
-																			//       return prev == 2 ? 3 : prev
-																			//     })                                      
-																			// }, 2000);
-
-																			// setShowReward((prev: number) => {                                            
-																			//   if (prev==2) {                                        
-																			//     return  3                    
-																			//   }                                      
-																			// })
 																		}
 																		}
 																	/> :
-																		// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
 																		voteNumber && voteNumber + headerExtraVote
 																	}
 																	{" "}
 																	votes left
-																</span></>}
+																</span>
+														}
 													</p>
 													{followerPage && followerInfo != "" ?
 														<Form.Check.Label
@@ -793,8 +767,6 @@ const Header = ({
 
 															}
 														>
-															{/* {checked && iconOn}
-                              {!checked && iconOff} */}
 															{followUnfollow == true ? <Following /> : <AddFollower />}
 														</Form.Check.Label>
 														:
@@ -807,23 +779,30 @@ const Header = ({
 
 													}
 												</HeaderCenter>
-												<div
-													className=''
-													style={{
-														width: "50%",
-														marginLeft: "150px",
-														marginTop: "5px",
-														textAlign: "left",
-														fontWeight: "100px",
-													}}
-												>
-													{followerPage && followerInfo != "" ? <></> : <span className='mb-1 d-block' style={{ fontSize: "13px" }}>{`${userInfo?.displayName && userInfo?.displayName
-														}`}</span>}
+												{
+													!(followerPage && followerInfo != "") &&
+													<div
+														className=''
+														style={{
+															width: "50%",
+															marginLeft: "150px",
+															marginTop: "5px",
+															textAlign: "left",
+															fontWeight: "100px",
+														}}
+													>
+														{userInfo?.displayName &&
+															<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+																{userInfo?.displayName && userInfo?.displayName}
+															</span>
+														}
 
-													<MemberText>
-														{followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-													</MemberText>
-												</div>
+														{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>asds
+															{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
+														</MemberText>}
+													</div>
+												}
+
 											</div>
 										</div>
 									) : (
@@ -848,9 +827,9 @@ const Header = ({
 							onHide={handleClose}
 							aria-labelledby="contained-modal-title-vcenter"
 							centered
-							style={{ opacity: 1 ,zIndex:100}}
+							style={{ opacity: 1, zIndex: 100 }}
 							className="borderColor"
-						// animation={false}
+							// animation={false}
 							backdrop="static"
 						>
 							{/* <Modal.Header>
@@ -868,29 +847,32 @@ const Header = ({
 								<p className="text-uppercase text-center mb-3" > Out of votes? </p>
 								{/* <strong className="text-uppercase" style={{ fontSize: "20px" }}>Out of votes?</strong> */}
 								<div className="text-center">
-								<Link className="text-uppercase" to="/votingbooster" onClick={() => {
-									handleSoundClick()
-									navigate("/votingbooster")
-									setShow(false)
-									setAfterVotePopup(false)
-								}} >Buy Extra votes</Link> {" now or wait,".toUpperCase()} <span className="text-uppercase">
-									{/* @ts-ignore */}
-									<Countdown date={votingTimer}
-										renderer={({ hours, minutes, seconds, completed }) => {
-											return (
-												<span >
-													{/* {hours < 10 ? `0${hours}` : hours}: */}
-													{Number(voteRules?.maxVotes)} votes in {' '}
-													{hours < 1 ? null : `${hours} :`}
-													{minutes < 10 ? `0${minutes}` : minutes}:
-													{seconds < 10 ? `0${seconds}` : seconds}
-												</span>
-											);
+									<Link className="text-uppercase" to="/votingbooster" onClick={() => {
+										handleSoundClick()
+										navigate("/votingbooster")
+										setShow(false)
+										setAfterVotePopup(false)
+									}} >Buy Extra votes</Link> \
+									{" now or wait,".toUpperCase()}
+									<span className="text-uppercase">
+										{/* @ts-ignore */}
+										{!!new Date(votingTimer).getDate() && <Countdown date={votingTimer}
+											renderer={({ hours, minutes, seconds, completed }) => {
+												return (
+													<span >
+														{/* {hours < 10 ? `0${hours}` : hours}: */}
+														{Number(voteRules?.maxVotes)} votes in {' '}
+														{hours < 1 ? null : `${hours} :`}
+														{minutes < 10 ? `0${minutes}` : minutes}:
+														{seconds < 10 ? `0${seconds}` : seconds}
+													</span>
+												);
 
-										}}
-										/></span>
-									
-									</div>
+											}}
+										/>}
+									</span>
+
+								</div>
 							</Modal.Body>
 						</Modal>
 					</div>

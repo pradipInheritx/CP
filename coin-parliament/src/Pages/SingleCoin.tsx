@@ -89,9 +89,7 @@ const SingleCoin = () => {
   const [voteNumber, setVoteNumber] = useState<any>([]);
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
-  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun,
-    remainingTimer,
-    voteRules } = useContext(AppContext);
+  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules } = useContext(AppContext);
 
 
   // useEffect(() => {
@@ -390,57 +388,6 @@ const SingleCoin = () => {
     })
   }, [allActiveVotes]);
 
-  // useEffect(() => {
-  //   if (lessTimeVote) {
-  //     // let exSec = new Date(-).getSeconds();
-  //     // current date
-  //     let current = new Date();
-
-  //     // voteTime date
-  //     let voteTime = new Date(lessTimeVote?.expiration);
-
-  //     // finding the difference in total seconds between two dates
-  //     let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-  //     // console.log(second_diff, 'hello');
-  //     if (second_diff > 0) {
-  //       const timer = setTimeout(async () => {
-  //         await getPriceCalculation({
-  //           coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-  //           coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-  //           voteId: lessTimeVote?.id,
-  //           voteTime: lessTimeVote?.voteTime,
-  //           valueVotingTime: lessTimeVote?.valueVotingTime,
-  //           expiration: lessTimeVote?.expiration,
-  //           timestamp: Date.now(),
-  //           userId: lessTimeVote?.userId
-  //         }).then((response) => {
-  //           if (response?.data && Object.keys(response.data).length > 0) {
-  //             // setpopUpOpen(true);
-  //             // setModalData(response!.data);
-  //             const res: Object = response!.data;
-  //             setVoteDetails((prev) => {
-  //               return {
-  //                 ...prev,
-  //                 lessTimeVote: { ...res, voteType: 'coin' },
-  //                 openResultModal: true
-  //               }
-  //             })
-  //             // setModalData(response!.data);
-  //           }
-  //         }).catch(err => {
-  //           if (err && err.message) {
-  //             console.log(err.message);
-  //           }
-  //         });
-  //       }, (second_diff * 1000));
-  //       return () => clearTimeout(timer);
-  //     }
-  //   }
-  // }, [lessTimeVote]);
-  // useEffect(() => {
-  //   setModalData(modalData2);
-  // }, [modalData2]);
-
   //open modal
   return (
     <>
@@ -584,7 +531,7 @@ const SingleCoin = () => {
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                 <Link to="" style={{ textDecoration: 'none' }}>
                   <Other>
-                    {!voteNumber && remainingTimer ?
+                    {!voteNumber && !!new Date(remainingTimer).getDate() ?
                       <span style={{ marginLeft: '20px' }}>
                         {/* @ts-ignore */}
                         <Countdown date={remainingTimer}
