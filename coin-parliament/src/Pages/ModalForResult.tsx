@@ -16,6 +16,7 @@ import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
+import { lessTimeVoteDispatchContext } from 'Contexts/LessTimeVoteProvider';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -93,6 +94,7 @@ function ModalForResult({ popUpOpen, vote, type, /* setpopUpOpen *//* , setHideB
 
   const navigate = useNavigate();
   const setVoteDetails = useContext(VoteDispatchContext);
+  const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
   useEffect(() => {
     if (popUpOpen) {
       handleShow();
@@ -133,6 +135,10 @@ function ModalForResult({ popUpOpen, vote, type, /* setpopUpOpen *//* , setHideB
         openResultModal: false
       };
     });
+    // setLessTimeVoteDetails({
+    //   lessTimeVote: undefined,
+    //   openResultModal: false
+    // })
     // if (setModalData instanceof Function) {
     //   setModalData(undefined);
     // }
@@ -150,7 +156,6 @@ function ModalForResult({ popUpOpen, vote, type, /* setpopUpOpen *//* , setHideB
 
   const coin = coins[vote?.coin] || {};
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
-  console.log(paircoin, voteCoins, coins, "hello");
 
   const votelength = Object.keys(vote).length
 

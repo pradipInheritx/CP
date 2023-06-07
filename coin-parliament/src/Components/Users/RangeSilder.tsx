@@ -133,7 +133,6 @@ function Speed(props: SpeedProps) {
         </div>
         <div className="gauge">
           <svg className="w-full overflow-visible p-4 SvgCss" {...gauge.getSVGProps()}
-          // viewBox={window.screen.width >767? "0 0 50% 50%":"0 0 50% 50%"}
           >
             <g id="arcs">
               <path
@@ -192,7 +191,29 @@ function Speed(props: SpeedProps) {
                 );
               })}
             </g>
-            <g id="needle" fill={"#2d2966"}>
+            <g id="needle" fill="#2d2966">
+              <motion.circle
+                animate={{
+                  cx: needle.base.cx,
+                  cy: needle.base.cy
+                }}
+                r={2}
+              />
+              <motion.circle
+                animate={{
+                  cx: needle.base.cx,
+                  cy: needle.base.cy
+                }}
+                r={15}
+              />
+              <motion.line
+                stroke="#2d2966"
+                strokeWidth={4}
+
+                animate={{ x1: needle.base.cx, x2: needle.tip.cx, y1: needle.base.cy, y2: needle.tip.cy }}
+              />
+            </g>
+            {/* <g id="needle" fill={"#2d2966"}>
               <motion.circle
                 animate={{
                   cx: needle.base.cx,
@@ -210,7 +231,7 @@ function Speed(props: SpeedProps) {
               <motion.polyline className="fill-gray-700" animate={{
                 points: needle.points
               }} />
-            </g>
+            </g> */}
           </svg>
         </div>
       </div>
@@ -247,6 +268,10 @@ export default function SpeedTest(
   // const [randomDecimal, setRandomDecimal] = useState(0)
 
   const getBorderColor = () => {
+    if (vote?.expiration < new Date().getTime())
+      return;
+    console.log('height');
+
     if (symbol2 !== undefined) {
       // range bar for pair
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
@@ -337,4 +362,3 @@ export default function SpeedTest(
     </MotionConfig>
   );
 }
-

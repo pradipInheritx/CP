@@ -44,7 +44,7 @@ export const texts = {
   VoteForYourWinner: "Vote for your winner",
   SelectTimeFrame: "select time frame",
   YouMustLoggedInVote: "you must be logged in to vote",
-  Bear:"bear",
+  Bear: "bear",
   Bull: "bull",
   InstallCoinParliament: "Install CoinParliament app for best experience".toUpperCase(),
   Install: "Install".toUpperCase(),
@@ -97,11 +97,15 @@ export const texts = {
   Votes: "Votes".toUpperCase(),
   GamePts: "Game Pts".toUpperCase(),
   Card: "Card".toUpperCase(),
-  ForgetPassword:"Forget password",
-  Foundations:"Foundations",
-  Partners:"Partners",
+  ForgetPassword: "Forget password",
+  Foundations: "Foundations",
+  Partners: "Partners",
+  passwordValidation1: 'Password must be at least 8 characters.',
+  passwordValidation2: 'Password must contain 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character',
+  passwordValidation3: 'It must not contain more than 2 identical consecutive characters (AAA, iiii, ...).',
+  passwordValidation4: 'Password should be not contains user name.',
+  passwordValidation5: 'Confirm password  must be same as password.',
 
-  
 };
 
 export const urls = {
