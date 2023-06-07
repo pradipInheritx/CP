@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import "./index.css";
 import { VoteProvider } from "Contexts/VoteProvider";
 import { CurrentCMPProvider } from "Contexts/CurrentCMP";
-import { PairVoteContext, PairVoteProvider } from "Contexts/PairVoteProvider";
+import { lessTimeVoteContext, LessTimeVoteProvider } from "Contexts/LessTimeVoteProvider";
 
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
@@ -22,11 +22,11 @@ window.changeLanguage = (lang: string) => {
 ReactDOM.render(
   <BrowserRouter>
     <VoteProvider>
-      <PairVoteProvider>
+      <LessTimeVoteProvider>
         <CurrentCMPProvider>
           <App />
         </CurrentCMPProvider>
-      </PairVoteProvider>
+      </LessTimeVoteProvider>
     </VoteProvider>
   </BrowserRouter>
   , document.getElementById("app")

@@ -1007,24 +1007,23 @@ function App() {
           const coin = lessTimeVote?.coin.split('-') || [];
           const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
           const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-          if ((!!!voteDetails?.lessTimeVote)) {
-            await getPriceCalculation({
-              coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-              coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-              voteId: lessTimeVote?.id,
-              voteTime: lessTimeVote?.voteTime,
-              valueVotingTime: lessTimeVote?.valueVotingTime,
-              expiration: lessTimeVote?.expiration,
-              timestamp: Date.now(),
-              userId: lessTimeVote?.userId
-            }).then((response) => {
-              if (response?.data && Object.keys(response.data).length > 0) {
-                // setpopUpOpen(true);
-                // setModalData(response!.data);
-                // setLessTimeVote(undefined);
-                const res: Object = response!.data;
-                // @ts-ignore
-
+          await getPriceCalculation({
+            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+            voteId: lessTimeVote?.id,
+            voteTime: lessTimeVote?.voteTime,
+            valueVotingTime: lessTimeVote?.valueVotingTime,
+            expiration: lessTimeVote?.expiration,
+            timestamp: Date.now(),
+            userId: lessTimeVote?.userId
+          }).then((response) => {
+            if (response?.data && Object.keys(response.data).length > 0) {
+              // setpopUpOpen(true);
+              // setModalData(response!.data);
+              // setLessTimeVote(undefined);
+              const res: Object = response!.data;
+              // @ts-ignore
+              if ((!!voteDetails?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
                 setVoteDetails((prev: VoteContextType) => {
                   return {
                     ...prev,
@@ -1032,16 +1031,14 @@ function App() {
                     openResultModal: true
                   }
                 })
-
-                // setModalData(response!.data);
               }
-            }).catch(err => {
-              if (err && err.message) {
-                console.log(err.message);
-              }
-            });
-          }
-
+              // setModalData(response!.data);
+            }
+          }).catch(err => {
+            if (err && err.message) {
+              console.log(err.message);
+            }
+          });
         }, (second_diff * 1000));
         return () => clearTimeout(timer);
       }

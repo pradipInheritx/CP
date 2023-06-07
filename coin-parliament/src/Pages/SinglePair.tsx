@@ -28,7 +28,6 @@ import ModalForResult from "./ModalForResult";
 import { Coin } from "../common/models/Coin";
 import { decimal } from "../Components/Profile/utils";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
-import { PairVoteContext, PairVoteDispatchContext } from "Contexts/PairVoteProvider";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
