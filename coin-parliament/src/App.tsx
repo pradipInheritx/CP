@@ -725,9 +725,11 @@ function App() {
           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
 
           setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
 
           setTimeout(() => {
             if (user?.uid) {
+              console.log('hello');
 
               const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
               // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
@@ -980,6 +982,7 @@ function App() {
     });
     if (tempTessTimeVote) {
       // setLessTimeVote(tempTessTimeVote);
+      // console.log(voteDetails, 'pkk');
       timeEndCalculation(tempTessTimeVote);
     }
   }, [voteDetails?.activeVotes]);

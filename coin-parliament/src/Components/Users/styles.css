@@ -76,3 +76,6 @@ background: linear-gradient(90deg, rgba(212,208,243,1) 0%, rgba(99,82,232,1) 41%
   padding: 10px;
   background-position: center;  
 }
+.fill-gray-700{
+  color: black;
+}

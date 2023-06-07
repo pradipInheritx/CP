@@ -150,7 +150,6 @@ function ModalForResult({ popUpOpen, vote, type, /* setpopUpOpen *//* , setHideB
 
   const coin = coins[vote?.coin] || {};
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
-  console.log(paircoin, voteCoins, coins, "hello");
 
   const votelength = Object.keys(vote).length
 
