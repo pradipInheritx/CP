@@ -257,7 +257,7 @@ const Header = ({
 
 	useEffect(() => {
 
-		setVotingTimer(remainingTimer,)
+		setVotingTimer(remainingTimer);
 
 	}, [remainingTimer])
 	useEffect(() => {
