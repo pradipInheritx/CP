@@ -75,7 +75,7 @@ const VoteForm = function <
 
   // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
 
-
+// console.log(texts?.tooltip, "all Text")
   return (
     <Form
       className='mt-3'
@@ -114,7 +114,7 @@ const VoteForm = function <
           {/* <Title>{texts.yourVote}</Title> */}
         </div>
         <OverlayTrigger
-          overlay={(props) =>
+          overlay={(props) => 
             disabled ? (
               <Tooltip id='button-tooltip' {...props} >
                 {/* @ts-ignore */}

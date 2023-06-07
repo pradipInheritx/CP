@@ -117,7 +117,7 @@ const PairsForm = ({
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          valueVotingTime: [coinUpdated[coin1?.symbol]?.price + coinUpdated[coin1?.symbol]?.randomDecimal, coinUpdated[coin2?.symbol]?.price + coinUpdated[coin2?.symbol]?.randomDecimal],
+          valueVotingTime: [coinUpdated[coin1?.symbol]?.price || 0 + coinUpdated[coin1?.symbol]?.randomDecimal || 0, coinUpdated[coin2?.symbol]?.price || 0 + coinUpdated[coin2?.symbol]?.randomDecimal || 0],
           voteTime: Date.now(),
           expiration: Date.now() + chosenTimeframe.seconds * 1000,
           voteId: `${symbolCombination([coin1.symbol, coin2.symbol])}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`

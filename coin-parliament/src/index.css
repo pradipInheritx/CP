@@ -789,6 +789,7 @@ p.firebase-emulator-warning + iframe {
     font-size: 22px;
     line-height: 18px;
 }
+
 .cp_wallet {
     font-size: 9px;
     text-transform: none;
@@ -862,7 +863,8 @@ p.firebase-emulator-warning + iframe {
     width: 75px;
     height: 75px;
     border-radius: 75%;
-    border: #6352E8 solid 1px;
+    /* border: #6352E8 solid 1px;         */
+/* background-color: red; */
 }
 
 
@@ -1409,7 +1411,8 @@ html[dir="rtl"] .accordion-button {
     }
 }
 
-//rotate y axis 360
+/* //rotate y axis 360 */
+
 .rotateY360 {
     color:red;
     animation: spin 2s linear infinite;
@@ -1424,7 +1427,9 @@ html[dir="rtl"] .accordion-button {
       transform: rotateY(360deg);
     }
 }
-//popup style
+
+/* //popup style */
+
 .popupStyle {
     border-radius:60px 0px 60px 60px
 }

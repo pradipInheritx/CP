@@ -109,11 +109,12 @@ const SingalCard = () => {
   
 // const claimReward = httpsCallable(functions, "claimReward");
   const getList = httpsCallable(functions, `cardHolderListing`);    
-  const getFollwersList = async (id: any) => {
+  const getFollwersList = async (id: any) => {      
         
-    console.log(id,"allList")
-    const result = await getList({ cardId: Number(id) }).then((list) => {
-      // @ts-ignore      
+  
+    
+    await getList({ cardId: id }).then((list) => {       
+      // @ts-ignore          
       const FollowerList= list?.data?.map((items: any) => {                 
         return {
           leaders: items?.leader?.length || 0,
@@ -137,6 +138,7 @@ setFollowersDetails(FollowerList)
       console.log(`error: ${JSON.stringify(error)}`);
     });;             
   }
+
    const getNftCard = () => {
   const getCards = firebase
             .firestore()
@@ -162,7 +164,7 @@ setFollowersDetails(FollowerList)
     getNftCard()
     // alllist= getList({cardID:id})
     
-  }, []) 
+  }, [id]) 
   useEffect(() => {      
     // @ts-ignore
   setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))

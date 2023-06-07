@@ -179,8 +179,9 @@ export const LoginRegular = async (
       email,
       password
     );
+    console.log(userCredential,"userCredential")
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-console.log('firsttimelogin',isFirstLogin)
+// console.log('firsttimelogin',isFirstLogin)    
     if(auth?.currentUser?.emailVerified){
       if (isFirstLogin?.isNewUser) {
         saveUsername(userCredential?.user?.uid,'','')
@@ -196,10 +197,28 @@ console.log('firsttimelogin',isFirstLogin)
       }else{
         callback.successFunc(userCredential.user) 
       }
-     }
+    }    
     else  callback.errorFunc({message:'Please verify your email first.'} as Error);
-  } catch (e) {
-    callback.errorFunc(e as Error);
+  } catch (err) {
+
+    // console.log(err.message,"allcode")
+    
+// @ts-ignore
+    switch (err.code) {
+      case 'auth/wrong-password':
+        // Alert.alert('Email already in use !')
+        callback.errorFunc({ message: 'Your password is invalid.'} as Error);
+        break;
+      case 'auth/too-many-requests': 
+        callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .'} as Error);
+        break;
+      case 'auth/invalid-email':
+        // Alert.alert('Email already in use !')
+        callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .'} as Error);
+        break;
+      // @ts-ignore
+      default: callback.errorFunc({ message:err.message } as Error);
+    }    
   }
 };
 
@@ -233,7 +252,7 @@ export const SignupRegular = async (
   const auth = getAuth();
   try {
     validateSignup(payload);
-
+console.log("this function call")
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       payload.email,
