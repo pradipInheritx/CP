@@ -63,12 +63,14 @@ class Calculation {
   private readonly price: number | number[];
   private readonly id: string;
   private readonly userId: string;
+  private readonly status: any;
 
   constructor(
     voteResult: VoteResultProps,
     price: number | number[],
     id: string,
-    userId: string
+    userId: string,
+    status: any
   ) {
     console.log("voteResult =>", voteResult);
 
@@ -77,6 +79,7 @@ class Calculation {
     this.id = id;
     this.db = firestore();
     this.userId = userId;
+    this.status = status;
   }
 
   async calc(
@@ -288,7 +291,11 @@ class Calculation {
           "CPMRangeCurrentValue",
           CPMRangeCurrentValue
         );
-        if (averageValue <= CPMRangeCurrentValue) {
+
+        // This status is user from frontend
+        if (this.status) {
+          this.voteResult.success = this.status;
+        } else if (averageValue <= CPMRangeCurrentValue) {
           this.voteResult.success = 2;
         } else {
           this.voteResult.success = voteResult.direction === winner ? 1 : 0;
