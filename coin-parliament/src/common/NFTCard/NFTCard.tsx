@@ -20,6 +20,7 @@ import giftImage from "../../assets/images/giftCard.gif"
 
 type MintingProps = {
   cardType?: any;
+  rewardTimer?: any;
   setRewardTimer?: any;
   openpopup?: any;
   handleShareModleShow?: any;
@@ -83,7 +84,7 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShareModleShow ,handleCardClose}: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShareModleShow ,handleCardClose , rewardTimer}: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -346,7 +347,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
                 &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
               </span>
               <span className='cardname'>
-                THE <strong>HODLER</strong>
+                THE <strong>{ rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
               </span>
               <img src={TheEagle} alt='the hgodler' className='img-fluid'
                 // style={{ height: '98%' }}
