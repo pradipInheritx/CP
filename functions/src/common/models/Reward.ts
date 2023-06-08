@@ -115,7 +115,7 @@ async function getMultipleUsersByUserIds(userIds: Array<string>) {
     .get();
 
   console.log("userLIST >>>>>>>", userList);
-  const users = userList.docs.map((item: any) => {
+  const users = userList.forEach((item: any) => {
     users.push(item.data());
   });
   console.log("USER >>>>>>>>", users);

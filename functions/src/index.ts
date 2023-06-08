@@ -139,22 +139,7 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
-  storageBucket: 'default-bucket'
 });
-
-
-// Error(Img uipload):  GaxiosError: Request failed with status code 400
-export const uploadFile = functions.https.onRequest(async (req, res) => {
-  const result: any = await imageUploadFunction(req, res)
-  if (result) {
-    res.status(200).send("upload")
-  }
-  else {
-    res.status(400).send("not upload")
-
-  }
-});
-
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
