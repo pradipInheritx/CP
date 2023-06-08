@@ -8,12 +8,20 @@ export type VoteDataType = {
 export type VoteContextType = {
     activeVotes: VoteDataType,
     lessTimeVote: VoteResultProps | undefined | any,
-    openResultModal: boolean
+    openResultModal: boolean,
+    voteImpact: {
+        timeFrame: number,
+        impact: null | number
+    }
 }
 const defaultValue = {
     activeVotes: {},
     lessTimeVote: undefined,
-    openResultModal: false
+    openResultModal: false,
+    voteImpact: {
+        timeFrame: 0,
+        impact: null
+    }
 }
 // Create two context:
 // VoteContext: to query the context state

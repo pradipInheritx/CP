@@ -389,7 +389,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
         if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
           setLastTenSec(true)
         }
-        if (completed || true) {
+        if (completed) {
           if (vote && !vote?.success) {
             checkprice()
           }

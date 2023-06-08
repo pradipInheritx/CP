@@ -266,8 +266,17 @@ const SinglePair = () => {
     })
   }, [allActiveVotes]);
 
-  //   setModalData(modalData2);
-  // }, [modalData2])
+  useEffect(() => {
+    setVoteDetails((prev) => {
+      return {
+        ...prev,
+        voteImpact: {
+          timeFrame: selectedTimeFrame,
+          impact: null
+        }
+      }
+    })
+  }, [selectedTimeFrame]);
 
   //end modal
 

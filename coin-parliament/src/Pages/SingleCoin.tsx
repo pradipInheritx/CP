@@ -387,6 +387,17 @@ const SingleCoin = () => {
       }
     })
   }, [allActiveVotes]);
+  useEffect(() => {
+    setVoteDetails((prev) => {
+      return {
+        ...prev,
+        voteImpact: {
+          timeFrame: selectedTimeFrame,
+          impact: null
+        }
+      }
+    })
+  }, [selectedTimeFrame]);
 
   //open modal
   return (

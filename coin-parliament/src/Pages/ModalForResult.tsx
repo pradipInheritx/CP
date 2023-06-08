@@ -133,7 +133,7 @@ function ModalForResult({ popUpOpen, vote, type, setCalculateVote, /* setpopUpOp
         ...prev,
         lessTimeVote: undefined,
         activeVotes: temp,
-        openResultModal: false
+        openResultModal: false,
       };
     });
     setCalculateVote(true);
