@@ -6,6 +6,9 @@ import AppContext from "../../Contexts/AppContext";
 import styled, { css } from "styled-components";
 import { Modal } from "react-bootstrap";
 import { Buttons } from "../Atoms/Button/Button";
+import coinBg from "../../assets/images/coin_bg.png";
+
+
 
 type PAXCardProps = {
   walletId: string;
@@ -62,13 +65,25 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
         {texts.CoinParliamentBalance}
       </h6>
       <div className="d-flex justify-content-center align-items-center flex-column">
-        <div className="circle">
+        <div className="circle "
+        
+          style={{
+        backgroundImage: `url(${coinBg})`,
+        // backgroundImage: `url(${externalImage})`,
+        // backgroundSize: 'cover',
+          backgroundSize: "90px 87px",
+        // backgroundPosition: "2px 0px",
+        backgroundRepeat: 'no-repeat',
+            backgroundPosition: '-8px -5px',                    
+        // height: '500px',
+      }}
+        >
           <div
-            className="d-flex justify-content-center align-items-center flex-column"
+            className="d-flex justify-content-center align-items-center flex-column coin_Bg"
             style={{ height: 75, color: '#6352E8' }}
           >
             <div>
-              <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
+              <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
                 {inOutReward == 1 && showReward ==1 ? <CountUp className="PaxText" start={prevCountRef.current} end={PAX &&PAX} duration={5}
                   onEnd={() => {      
 

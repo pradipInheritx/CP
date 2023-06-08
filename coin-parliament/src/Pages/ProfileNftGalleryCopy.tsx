@@ -154,7 +154,7 @@ console.log(error,"error");
   const getCollectionType = firebase
   .firestore()
   .collection("cardsDetails")
-  .where("albumId", "==", collectionName)
+  .where("albumName", "==", collectionName)
   getCollectionType.get()
     .then((snapshot) => {  
     console.log(collectionName,"collectionName")
@@ -208,7 +208,7 @@ console.log(error,"error");
     //  setCardNameNew(serchresult)
       }
    else {
-     const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumId == selectCollection)
+     const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
      const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
      const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())        
      setAllCardNew(serchresult)
@@ -264,7 +264,7 @@ const onSelectName=(mycardName:any)=>{
     const cardWithName = allCardArrayNew.filter((card: any) => card.cardName !== mycardName)
     const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
     const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())    
-    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumId == selectCollection)
+    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
     //  console.log(finalValue,"serchresult")
     setAllCardNew(finalValue)
     //  setSearchedCard((pev:any)=>finalValue)
@@ -273,7 +273,7 @@ const onSelectName=(mycardName:any)=>{
      const cardWithName = allCardArrayNew.filter((card: any) => card.cardName == mycardName)
     const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
     const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())    
-    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumId == selectCollection)
+    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
     setAllCardNew(finalValue)
     //  console.log(finalValue,"serchresult")
     //  setSearchedCard((pev:any)=>finalValue)
@@ -491,7 +491,7 @@ const onSelectName=(mycardName:any)=>{
 
 
             {collectionType?.map((data: any, index: number) => {
-              return  <option selected value={data?.id} key={index}>{data?.albumName}</option>        
+              return  <option selected value={data?.albumName} key={index}>{data?.albumName}</option>        
             })}
 
           </select>
