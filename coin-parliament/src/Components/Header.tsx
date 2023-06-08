@@ -608,9 +608,9 @@ const Header = ({
 																{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
 															</span>
 													}
-													<MemberText>
-														{followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-													</MemberText>
+													{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
+														{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
+													</MemberText>}
 												</div>
 											</div>
 										</div>
@@ -645,15 +645,8 @@ const Header = ({
 							}}
 						>
 
-							<div className='d-flex w-100'
-
-
-							>
-								<ForZoom  {...{ showReward, inOutReward }}
-									className="w-100"
-								>
-
-
+							<div className='d-flex w-100'>
+								<ForZoom  {...{ showReward, inOutReward }} className="w-100">
 									{user?.uid && !login ? (
 										<div
 											className='d-flex  mx-auto w-25'
@@ -796,8 +789,7 @@ const Header = ({
 																{userInfo?.displayName && userInfo?.displayName}
 															</span>
 														}
-
-														{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>asds
+														{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
 															{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
 														</MemberText>}
 													</div>
@@ -810,8 +802,7 @@ const Header = ({
 									)}
 								</ForZoom>
 								{showReward == 2 && inOutReward == 2 && window.screen.width > 767 && <div className='w-100'></div>}
-								<Navbar.Brand as={Link} to='/'
-								>
+								<Navbar.Brand as={Link} to='/'>
 									<img src={BigLogo} alt='' />
 								</Navbar.Brand>
 							</div>
