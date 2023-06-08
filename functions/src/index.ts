@@ -91,8 +91,9 @@ import userTypeSettingsRouter from "./routes/UserTypeSettings";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
-import { uploadFiles } from "./common/helpers/fileUploadConfig";
+import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
+// import { imageUploadFunction } from "./common/models/Admin/Rewards";
 
 // initialize express server
 const app = express();
@@ -123,7 +124,8 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 
-app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", uploadFiles)
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", imageUploadFunction)
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -137,7 +139,22 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  storageBucket: 'default-bucket'
 });
+
+
+// Error(Img uipload):  GaxiosError: Request failed with status code 400
+export const uploadFile = functions.https.onRequest(async (req, res) => {
+  const result: any = await imageUploadFunction(req, res)
+  if (result) {
+    res.status(200).send("upload")
+  }
+  else {
+    res.status(400).send("not upload")
+
+  }
+});
+
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {

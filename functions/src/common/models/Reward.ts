@@ -115,8 +115,7 @@ async function getMultipleUsersByUserIds(userIds: Array<string>) {
     .get();
 
   console.log("userLIST >>>>>>>", userList);
-  const users: any = [];
-  userList.forEach((item: any) => {
+  const users = userList.docs.map((item: any) => {
     users.push(item.data());
   });
   console.log("USER >>>>>>>>", users);
@@ -319,6 +318,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
 
       const cardDataQuery = await firestore().collection("cardsDetails").doc(firstRewardCardObj.cardId).get();
       const cardData: any = { ...cardDataQuery.data(), cardId: cardDataQuery.id };
+
       cardData.sno = cardData.sno.filter(
         (item: any) => item != firstRewardCardSerialNo
       );
