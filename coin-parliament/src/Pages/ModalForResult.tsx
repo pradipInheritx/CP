@@ -80,10 +80,11 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type, /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
+function ModalForResult({ popUpOpen, vote, type, setCalculateVote, /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
   popUpOpen?: any,
   vote: any,
   type?: string,
+  setCalculateVote: React.Dispatch<React.SetStateAction<boolean>>
   // setpopUpOpen?: any,
   // setHideButton?: any,
   // selectedTimeFrame?: any,
@@ -135,6 +136,7 @@ function ModalForResult({ popUpOpen, vote, type, /* setpopUpOpen *//* , setHideB
         openResultModal: false
       };
     });
+    setCalculateVote(true);
     // setLessTimeVoteDetails({
     //   lessTimeVote: undefined,
     //   openResultModal: false
