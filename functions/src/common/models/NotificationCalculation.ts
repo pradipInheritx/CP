@@ -5,8 +5,8 @@ export async function getFollowersFollowingsAndVoteCoin(nowTime: number, yesterd
 
     const getAllVotesIn24HoursQuery: any = await firestore()
         .collection('votes')
-        .where("voteTime", ">", 1686036774)
-        .where("voteTime", "<", 1685950279541)
+        .where("voteTime", ">", nowTime)
+        .where("voteTime", "<", yesterdayTime)
         .orderBy('voteTime', 'desc')
         .get();
 
