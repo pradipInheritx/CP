@@ -458,9 +458,6 @@ export const updateCard = async (req: any, res: any) => {
                 totalQuantity
             ),
             cardImageUrl,
-            // cardImageUrl: cardImage
-            //     ? await uploadImage(cardImage, albumId, setId, "cardId")
-            //     : "",
             cardVideoUrl
         }
 
