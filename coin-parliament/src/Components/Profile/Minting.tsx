@@ -174,7 +174,7 @@ const Minting = ({
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, setRewardExtraVote, albumOpen,setAlbumOpen,inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
+  const { showReward, setShowReward, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
@@ -217,8 +217,9 @@ const Minting = ({
       // setShowBack(false)
     }
   }, [CmpPopupShow]);
-console.log(resultData,"resultData")
+  console.log(resultData, "resultData")
   const [animateButton, setAnimateButton] = useState<boolean>(false);
+
   return (
     <React.Fragment>
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
@@ -252,8 +253,13 @@ console.log(resultData,"resultData")
                   if (claim) {
                     setLoading(true);
                     const result = await claimReward({ uid: user?.uid });
-                    // @ts-ignore
                     setResultData(result)
+                    console.log(result, 'hello');
+
+                    if (result?.data) {
+                      // @ts-ignore
+                      setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
+                    }
                     handleShow()
                     setLoading(false);
                   } else {
@@ -284,94 +290,24 @@ console.log(resultData,"resultData")
 
           </div>
         )}
-        {/* <BtnLabelPrimary
-          style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "10px" }}
-          onClick={async () => {
-            handleSoundClick()
-            if (claim) {
-              setLoading(true);
-              console.log("reward");
-              const result = await claimReward({ uid: user?.uid });
-              // @ts-ignore
-              setResultData(result)
-              handleShow()
-              setLoading(false);
-            }
-          }}
-          disabled={!claim || loading || rewardTimer}
-        >
-          {!!claim && <Dot>{claim}</Dot>}
-          {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
-        </BtnLabelPrimary> */}
       </Container>
-      {
-        (width < 767 && false) && (
-          <div
-            style={{ marginTop: width > 767 ? 17 : 8.5, marginBottom: "16.31px" }}
-          >
-            <BtnLabelPrimary
-              className='w-100 mt-2'
-              style={{ boxShadow: "0px 3px 6px #00000029" }}
-              onClick={async () => {
-                if (claim) {
-                  setLoading(true);
-                  console.log("reward");
-                  const result = await claimReward({ uid: user?.uid });
-                  // @ts-ignore
-                  
-                  setResultData(result)
-                  handleShow()
-                  // setShowReward(1);
-                  // setInOutReward(1);
-                  // @ts-ignore
-                  // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
-                  // setRewardTimer(result);
-                  // setRewardExtraVote(10);
-                  // setRewardTimer({
-                  //   firstRewardCard: "legendary",
-                  //   secondRewardExtraVotes: 10,
-                  //   thirdRewardDiamonds: 10
-                  // });
-                  setLoading(false);
-                  console.log("rewardresult", result);
-                }
-              }}
-              disabled={!claim || loading || rewardTimer}
-            >
-              {!!claim && <Dot>{claim}</Dot>}
-              {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}
-              {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
-            </BtnLabelPrimary>
-          </div>
-        )
-      }
       <div>
         <Modal
           show={
             modalShow
           } onHide={handleClose}
-          // size="sm"
           backdrop="static"
-          // contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
           contentClassName={"modulebackground"}
           aria-labelledby="contained-modal-title-vcenter"
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
-        // style={{
-        //   backgroundColor:"transparent"
-        // }}
+
         >
-          <div className="d-flex justify-content-end">
-            {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
-              handleClose()
-            }}></button> */}
-          </div>
+
           <Modal.Body className="d-flex  justify-content-center align-items-center">
-            
-            {/* @ts-ignore */}
             <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
           </Modal.Body>
-          
+
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2" onClick={() => {
               setTimeout(() => {
