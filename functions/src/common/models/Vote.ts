@@ -124,16 +124,16 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   });
 
   for (let user = 0; user < getAllUsers.length; user++) {
-    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).where("voteTime", "<", last24HoursDate).orderBy('voteTime', 'desc').limit(1).get();
-    console.info("getLastUserVoteSnapshot", getLastUserVoteSnapshot)
-    let lastVotedData: any = [];
-    getLastUserVoteSnapshot.forEach(doc => {
-      lastVotedData.push({ id: doc.id, ...doc.data() })
-      console.info(doc.id, '=>', doc.data());
+    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).where("voteTime", "<", last24HoursDate).orderBy("voteTime", "desc").limit(1).get();
+    console.info("getLastUserVoteSnapshot", getLastUserVoteSnapshot);
+    const lastVotedData: any = [];
+    getLastUserVoteSnapshot.forEach((doc) => {
+      lastVotedData.push({ id: doc.id, ...doc.data() });
+      console.info(doc.id, "=>", doc.data());
     });
     if (lastVotedData && lastVotedData.length) {
       const body = "VOTE NOW!";
-      let token = getAllUsers[user].token;
+      const token = getAllUsers[user].token;
 
       console.info("Token,", token);
       const message: messaging.Message = {
@@ -161,7 +161,7 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
       });
     }
   }
-}
+};
 
 export const getOldAndCurrentPriceAndMakeCalculation = async (
   requestBody: any
@@ -177,44 +177,45 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
       expiration,
       timestamp,
       userId,
-      status
+      status,
     } = requestBody;
 
-    console.info("status", status)
+    console.info("status", status);
 
     // Snapshot Get From ID
-    console.info("Vote ID", voteId, typeof voteId)
+    console.info("Vote ID", voteId, typeof voteId);
     const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
-    console.info("getVoteRef", getVoteRef)
     const getVoteInstance = await getVoteRef.get();
-    console.info("getVoteInstance", getVoteInstance)
     const getVoteData = getVoteInstance.data();
-    console.info("getVoteData", getVoteData)
-
-    const vote = {
-      ...getVoteData,
-      expiration,
-      voteTime,
-      valueVotingTime,
-    } as unknown as VoteResultProps;
-
-    console.info("vote", getVoteData)
-
-    if (coin2) {
-      let priceOne = await getPriceOnParticularTime(coin1, timestamp);
-      let priceTwo = await getPriceOnParticularTime(coin2, timestamp);
-      price = [Number(priceOne), Number(priceTwo)];
-      console.info("Get Price", price)
-      const calc = new Calculation(vote, price, voteId, userId, status);
-      await calc.calc(getVoteRef);
+    console.info("getVoteData", getVoteData?.score);
+    if ((getVoteData && getVoteData.score === 0) || getVoteData && getVoteData.score) {
+      console.info("getVoteData", getVoteData);
+      // Do Nothing
     } else {
-      price = await getPriceOnParticularTime(coin1, timestamp);
-      console.info("Get Price", price)
-      const calc = new Calculation(vote, Number(price), voteId, userId, status);
-      await calc.calc(getVoteRef);
+      const vote = {
+        ...getVoteData,
+        expiration,
+        voteTime,
+        valueVotingTime,
+      } as unknown as VoteResultProps;
+
+      console.info("vote", getVoteData);
+
+      if (coin2) {
+        const priceOne = await getPriceOnParticularTime(coin1, timestamp);
+        const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
+        price = [Number(priceOne), Number(priceTwo)];
+        console.info("Get Price", price);
+        const calc = new Calculation(vote, price, voteId, userId, status);
+        await calc.calc(getVoteRef);
+      } else {
+        price = await getPriceOnParticularTime(coin1, timestamp);
+        console.info("Get Price", price);
+        const calc = new Calculation(vote, Number(price), voteId, userId, status);
+        await calc.calc(getVoteRef);
+      }
     }
   } catch (error) {
-    console.info("ERR:", error)
+    console.info("ERR:", error);
   }
-
 };
