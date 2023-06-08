@@ -269,13 +269,13 @@ const Header = ({
 	useEffect(() => {
 		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
 		// @ts-ignore
-		setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
+		setVoteNumber((Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
 
 		prevCountRef.current = voteNumber;
 
 
 		// console.log('votenumber',voteNumber, Number(voted))
-	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length, headerExtraVote]);
 
 
 
@@ -361,7 +361,6 @@ const Header = ({
 		setShow(false)
 
 	};
-
 	return (
 		<div>
 			<div className='' style={{ background: "none !important" }}>
@@ -528,27 +527,23 @@ const Header = ({
 
 
 																		{MyPath == "/profile/mine" ?
-																			<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
+																			<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
+																				style={{
+																					fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
+																				}}
 
 																				onEnd={() => {
 																					setInOutReward((prev: number) => {
-																						// console.log(prev,"showRewardCheck")
 																						return prev == 2 ? 3 : prev
 																					});
-
-																					// setTimeout(() => {                                      
 																					setHeaderExtraVote((prev: number) => {
 																						if (prev != 0) {
-																							setShowReward(3)
+																							setShowReward((prev: number) => {
+																								return prev == 2 ? 3 : prev
+																							})
 																						}
 																						return prev
 																					})
-																					// }, 100);
-																					// setShowReward((prev: number) => {                                            
-																					//   if (prev==2) {                                        
-																					//     return  3                    
-																					//   }                                      
-																					// })
 																				}
 																				}
 																			/> :
@@ -582,7 +577,7 @@ const Header = ({
 															}
 														>
 															{/* {checked && iconOn}
-                              {!checked && iconOff} */}
+                              								{!checked && iconOff} */}
 															{followUnfollow == true ? <Following /> : <AddFollower />}
 														</Form.Check.Label>
 														:
@@ -679,8 +674,6 @@ const Header = ({
 											</div>
 											<div className='w-100'>
 												<HeaderCenter className=''>
-													<div></div>
-
 													<p className='ml-5'>
 														{followerPage && followerInfo != "" ? followerInfo?.displayName :
 															(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
@@ -711,27 +704,29 @@ const Header = ({
 																		marginLeft: "11px",
 																	}}
 																>
+																	{console.log(headerExtraVote, voteNumber, 'votecllect')}
 
-																	{MyPath == "/profile/mine" ? <CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber && voteNumber} end={voteNumber && voteNumber + headerExtraVote} duration={3}
-																		style={{
-																			fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
-																		}}
+																	{MyPath == "/profile/mine" ?
+																		<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
+																			style={{
+																				fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
+																			}}
 
-																		onEnd={() => {
-																			setInOutReward((prev: number) => {
-																				return prev == 2 ? 3 : prev
-																			});
-																			setHeaderExtraVote((prev: number) => {
-																				if (prev != 0) {
-																					setShowReward((prev: number) => {
-																						return prev == 2 ? 3 : prev
-																					})
-																				}
-																				return prev
-																			})
-																		}
-																		}
-																	/> :
+																			onEnd={() => {
+																				setInOutReward((prev: number) => {
+																					return prev == 2 ? 3 : prev
+																				});
+																				setHeaderExtraVote((prev: number) => {
+																					if (prev != 0) {
+																						setShowReward((prev: number) => {
+																							return prev == 2 ? 3 : prev
+																						})
+																					}
+																					return prev
+																				})
+																			}
+																			}
+																		/> :
 																		voteNumber && voteNumber + headerExtraVote
 																	}
 																	{" "}
