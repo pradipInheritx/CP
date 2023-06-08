@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/sa.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -91,9 +91,9 @@ import userTypeSettingsRouter from "./routes/UserTypeSettings";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
-import { uploadFiles } from "./common/helpers/fileUploadConfig";
+import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
-import { imageUploadFunction } from "./common/models/Admin/Rewards";
+// import { imageUploadFunction } from "./common/models/Admin/Rewards";
 
 // initialize express server
 const app = express();
@@ -124,7 +124,8 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 
-app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", uploadFiles)
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", imageUploadFunction)
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
