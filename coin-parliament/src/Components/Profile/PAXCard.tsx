@@ -14,6 +14,8 @@ type PAXCardProps = {
   walletId: string;
   PAX: number;
   rewardTimer?: any;
+  countShow?: any;
+  setCountShow?: any;
 };
 
 type ZoomProps = {
@@ -42,19 +44,26 @@ const ForZoom = styled.div`
 `;
 
 
-const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
+const PAXCard = ({ walletId, PAX, rewardTimer,countShow ,setCountShow}: PAXCardProps) => {
   console.log(rewardTimer, "CheckrewardTimer")
-  const prevCountRef = useRef(PAX)
+  // const prevCountRef = useRef(PAX)
+  const prevCountRef = PAX - rewardTimer?.data?.thirdRewardDiamonds
   const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
   console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
-  useEffect(() => {
-    prevCountRef.current = PAX;
-  }, [])
+ 
+ 
+  // useEffect(() => {
+  //   // if (PAX != prevCountRef.current) {      
+  //     prevCountRef.current = PAX;
+  //   // }
+  // }, [PAX])
 
-  console.log(rewardExtraVote, "secondRewardExtraVotes")
+  // console.log(,PAX,"PAXall")
+
+  // console.log(rewardExtraVote, "secondRewardExtraVotes")
   const translate = useTranslation();
   return (
     <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3"
@@ -84,7 +93,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
           >
             <div>
               <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
-                {inOutReward == 1 && showReward ==1 ? <CountUp className="PaxText" start={prevCountRef.current} end={PAX &&PAX} duration={5}
+                {inOutReward == 1 && showReward ==1 ? <CountUp className="PaxText" start={prevCountRef} end={PAX &&PAX} duration={5}
                   onEnd={() => {      
 
                     setTimeout(() => {                                                                
@@ -131,7 +140,10 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
                   }
                   }
                 /> :
-                  PAX && PAX}
+                  <>
+                   {PAX && PAX}
+                  </>
+                }
               </span>
               {/* <span className="cp_PAX" >PTS</span> */}
             </div>
@@ -170,6 +182,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer }: PAXCardProps) => {
           {/* <Modal.Footer> */}
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2" onClick={() => {
+              setCountShow(false)
               setTimeout(() => {
 
                 setShowReward((prev: number) => {
