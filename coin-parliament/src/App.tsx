@@ -855,37 +855,6 @@ function App() {
       window.localStorage.removeItem('firstTimeloading')
     };
   }, [Object.keys(coins).length]);
-  // useEffect(() => {
-  //   window.addEventListener("focus", () => socket.connect());
-
-  //   return () => {
-
-  //   }
-  // }, [])
-  // useEffect(() => {
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   return () => {
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //   }
-  // }, []);
-
-  // const handleVisibilityChange = () => {
-  //   const isIPhone = /iPhone/i.test(navigator.userAgent);
-
-  //   if (isIPhone) {
-  //     console.log('This is an iPhone');
-  //   } else {
-  //     console.log('This is not an iPhone');
-  //   }
-  //   if (document.hidden) {
-  //     console.log("Browser window is minimized");
-  //     ws.close();
-  //     socket.close();
-  //   } else {
-  //     connect();
-  //     console.log("Browser window is not minimized");
-  //   }
-  // }
   const checkprice = async (vote: any) => {
     console.log(vote, "checkAllvote")
     const voteCoins = vote?.coin.split("-");
@@ -971,7 +940,7 @@ function App() {
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
-  const [lessTimeVote, setLessTimeVote] = useState<VoteResultProps | undefined>();
+  const [calculateVote, setCalculateVote] = useState<boolean>(true);
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
     Object.keys(voteDetails?.activeVotes).map((value) => {
@@ -980,12 +949,15 @@ function App() {
       }
       return {};
     });
-    if (tempTessTimeVote) {
+    if (tempTessTimeVote && calculateVote) {
+      console.log(tempTessTimeVote, calculateVote, 'pkkk');
+
       // setLessTimeVote(tempTessTimeVote);
       // console.log(voteDetails, 'pkk');
       timeEndCalculation(tempTessTimeVote);
+      setCalculateVote(false);
     }
-  }, [voteDetails?.activeVotes]);
+  }, [voteDetails?.activeVotes, calculateVote]);
   // useEffect(() => {
 
   // }, [lessTimeVote]);
@@ -1044,7 +1016,6 @@ function App() {
       }
     }
   }
-
   ///END vote result //
 
   return loader ? (
@@ -1630,6 +1601,7 @@ function App() {
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
+                        setCalculateVote={setCalculateVote}
                       />}
                     </UserContext.Provider>
                   </CoinsContext.Provider>
