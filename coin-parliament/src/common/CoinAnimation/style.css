@@ -67,9 +67,9 @@
             animation: bounce-in .4s ease;
           }
 
-          .coin1 {
+          /* .coin1 {
             position: absolute;
-            /* top: 0; */
+            top: 0;
             left: 0px;
             bottom: 0px;
             width: 100px;
@@ -79,7 +79,21 @@
             border-radius: 50%;
             box-shadow: 0 7px 0 #f5e649fc, inset 2px 0px 3px #f7e50e;
             border: solid #bb8217fc 2px; 
+          } */
+
+          .coin1 {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            width: 130px;
+            height: 50px;
+            background-image: url("../../assets/images/coin-img.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: contain; 
+            filter: drop-shadow(0px 1px 1px #666);
           }
+
           .animeted {
             animation-name: coin;
             animation-duration: .5s;

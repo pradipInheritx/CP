@@ -239,7 +239,9 @@ function App() {
   );
 
   useEffect(() => {
+
     if ('serviceWorker' in navigator) {
+      console.log("i am navigator working")
       navigator?.serviceWorker?.addEventListener("message", (message) => {
         const {
           notification: { body, title },
