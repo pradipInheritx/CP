@@ -7,6 +7,7 @@ import { Coin } from "../../common/models/Coin";
 import { VoteResultProps } from "../../common/models/Vote";
 import CoinsContext from "../../Contexts/CoinsContext";
 import { decimal } from "../Profile/utils";
+import { VoteDispatchContext } from "Contexts/VoteProvider";
 // import * as Motion from 'framer-motion';
 // const { motion, MotionConfig }= Motion
 
@@ -266,11 +267,24 @@ export default function SpeedTest(
   const [priceRange, setPriceRange] = useState(1);
   // const { value } = useSpeedTest(priceRange);
   // const [randomDecimal, setRandomDecimal] = useState(0)
-
+  const setVoteDetails = useContext(VoteDispatchContext);
+  useEffect(() => {
+    setVoteDetails((prev) => {
+      let voteImpact: number = (persentValue < 40 ? 0 :
+        (persentValue >= 40 && persentValue <= 60 ? 2 : 1)
+      )
+      return {
+        ...prev, voteImpact: {
+          timeFrame: prev?.voteImpact?.timeFrame,
+          impact: voteImpact
+        }
+      }
+    })
+  }, [persentValue]);
   const getBorderColor = () => {
-    if (vote?.expiration < new Date().getTime())
+    if (vote?.expiration < new Date().getTime()) {
       return;
-    console.log('height');
+    }
 
     if (symbol2 !== undefined) {
       // range bar for pair

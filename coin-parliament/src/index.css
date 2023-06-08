@@ -1431,9 +1431,9 @@ html[dir="rtl"] .accordion-button {
 /* //popup style */
 
 .popupStyle {
-    border-radius:60px 0px 60px 60px
+    border-radius:60px 0px 60px 60px !important;
 }
 
 .capitalize{
     text-transform: capitalize;
-    }
+}

@@ -13,6 +13,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -942,6 +943,7 @@ function App() {
   const setVoteDetails = useContext(VoteDispatchContext);
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const [calculateVote, setCalculateVote] = useState<boolean>(true);
+
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
     Object.keys(voteDetails?.activeVotes).map((value) => {
@@ -951,10 +953,6 @@ function App() {
       return {};
     });
     if (tempTessTimeVote && calculateVote) {
-      console.log(tempTessTimeVote, calculateVote, 'pkkk');
-
-      // setLessTimeVote(tempTessTimeVote);
-      // console.log(voteDetails, 'pkk');
       timeEndCalculation(tempTessTimeVote);
       setCalculateVote(false);
     }
@@ -962,9 +960,21 @@ function App() {
   // useEffect(() => {
 
   // }, [lessTimeVote]);
+  const voteImpact = useRef<{
+    timeFrame: number,
+    impact: null | number
+  }>({
+    timeFrame: 0,
+    impact: null
+  });
+  useEffect(() => {
+    console.log(voteDetails.voteImpact, 'pk');
 
+    voteImpact.current = voteDetails.voteImpact;
+  }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
+
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
@@ -974,21 +984,29 @@ function App() {
 
       // finding the difference in total seconds between two dates
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      // console.log(second_diff, 'hello');
       if (second_diff > 0) {
         const timer = setTimeout(async () => {
           const coin = lessTimeVote?.coin.split('-') || [];
           const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
           const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+          console.log(pathname, lessTimeVote?.timeframe.index, voteImpact.current, pathname.includes(lessTimeVote?.coin), 'pkkk');
+
           await getPriceCalculation({
-            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-            voteId: lessTimeVote?.id,
-            voteTime: lessTimeVote?.voteTime,
-            valueVotingTime: lessTimeVote?.valueVotingTime,
-            expiration: lessTimeVote?.expiration,
-            timestamp: Date.now(),
-            userId: lessTimeVote?.userId
+            ...{
+              coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+              coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+              voteId: lessTimeVote?.id,
+              voteTime: lessTimeVote?.voteTime,
+              valueVotingTime: lessTimeVote?.valueVotingTime,
+              expiration: lessTimeVote?.expiration,
+              timestamp: Date.now(),
+              userId: lessTimeVote?.userId,
+
+            }, ...(
+              (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
+                { status: voteImpact.current?.impact } :
+                {}
+            )
           }).then((response) => {
             if (response?.data && Object.keys(response.data).length > 0) {
               // setpopUpOpen(true);
