@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/sa.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -93,6 +93,7 @@ import pushNotificationSettingRouter from "./routes/PushNotificationSetting.rout
 import FollowTableRouter from "./routes/FollowTable.routes";
 import { uploadFiles } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
+import { imageUploadFunction } from "./common/models/Admin/Rewards";
 
 // initialize express server
 const app = express();
@@ -137,7 +138,22 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  storageBucket: 'default-bucket'
 });
+
+
+// Error(Img uipload):  GaxiosError: Request failed with status code 400
+export const uploadFile = functions.https.onRequest(async (req, res) => {
+  const result: any = await imageUploadFunction(req, res)
+  if (result) {
+    res.status(200).send("upload")
+  }
+  else {
+    res.status(400).send("not upload")
+
+  }
+});
+
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
