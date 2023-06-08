@@ -65,7 +65,7 @@ import PairsMain from "./Pages/PairsMain";
 import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
-import { getToken } from "firebase/messaging";
+import { getMessaging, getToken } from "firebase/messaging";
 import { Form } from "react-bootstrap";
 import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
@@ -487,6 +487,7 @@ function App() {
   }
 
   useEffect(() => {
+    const messaging = getMessaging();
     getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
     }).then((token) => setFcmToken(token));

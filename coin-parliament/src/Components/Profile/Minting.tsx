@@ -160,6 +160,7 @@ type MintingProps = {
   setRewardTimer?: any;
   rewardTimer?: any;
   claim?: number;
+  setCountShow?: any;
 };
 const claimReward = httpsCallable(functions, "claimReward");
 const Minting = ({
@@ -167,6 +168,7 @@ const Minting = ({
   setRewardTimer,
   rewardTimer,
   claim,
+  setCountShow
 }: MintingProps) => {
   const { width = 194 } = useWindowSize();
   const translate = useTranslation();
@@ -215,7 +217,7 @@ const Minting = ({
       // setShowBack(false)
     }
   }, [CmpPopupShow]);
-
+console.log(resultData,"resultData")
   const [animateButton, setAnimateButton] = useState<boolean>(false);
   return (
     <React.Fragment>
@@ -375,6 +377,7 @@ const Minting = ({
               setTimeout(() => {
                 setShowReward(1);
                 setInOutReward(1);
+                setCountShow(true)
                 // @ts-ignore
                 setAlbumOpen(resultData?.data?.firstRewardCardCollection);
                 // @ts-ignore

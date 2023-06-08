@@ -25,6 +25,7 @@ type MintingProps = {
   openpopup?: any;
   handleShareModleShow?: any;
   handleCardClose?: any;
+  setCountShow?: any;
 };
 
 
@@ -84,7 +85,7 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShareModleShow ,handleCardClose , rewardTimer}: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShareModleShow ,handleCardClose , rewardTimer,setCountShow}: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -405,11 +406,13 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
           setShowReward(0);
           handleShareModleShow()
           handleCardClose()
+          setCountShow(false)
         }}>Share Card</Buttons.Primary>
 
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
+          setCountShow(false)
           navigate("/profile/Album")
         }}>Check Win Card</Buttons.Primary>
       </div>
