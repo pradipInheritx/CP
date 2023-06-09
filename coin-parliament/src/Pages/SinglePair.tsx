@@ -340,7 +340,7 @@ const SinglePair = () => {
                           setConfetti={setConfetti}
                           selectedTimeFrame={selectedTimeFrame}
                           setSelectedTimeFrame={setSelectedTimeFrame}
-                          coinUpdated={coinUpdated}
+                          coinUpdated={coinUpdated}                                                                                                                                                                            
                         />
                       )}
                     </>
@@ -348,7 +348,7 @@ const SinglePair = () => {
                 </div>
                 <div className="text-center">
                   {/* @ts-ignore */}
-                  {!graphLoading && (!canVote/*  || hideButton.includes(selectedTimeFrame) */) && user && voteId && (
+                  {!graphLoading && !canVote && user && voteId && (
                     <>
                       <VotedCard
                         {...{
@@ -385,7 +385,7 @@ const SinglePair = () => {
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
-                        {!voteNumber && !!new Date(remainingTimer).getDate() ?
+                        {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
                           <span style={{ marginLeft: '20px' }}>
                             {/* @ts-ignore */}
                             <Countdown date={remainingTimer}

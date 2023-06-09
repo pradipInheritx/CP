@@ -76,6 +76,7 @@ const VoteForm = function <
   // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
 
 // console.log(texts?.tooltip, "all Text")
+  console.log(user,"selectedTimeFrame")
   return (
     <Form
       className='mt-3'

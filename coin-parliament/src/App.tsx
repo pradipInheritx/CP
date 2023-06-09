@@ -66,7 +66,7 @@ import PairsMain from "./Pages/PairsMain";
 import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
-import { getMessaging, getToken } from "firebase/messaging";
+import { getToken } from "firebase/messaging";
 import { Form } from "react-bootstrap";
 import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
@@ -239,22 +239,24 @@ function App() {
   );
 
   useEffect(() => {
+
     if ('serviceWorker' in navigator) {
+      console.log("i am navigator working")
       navigator?.serviceWorker?.addEventListener("message", (message) => {
         const {
           notification: { body, title },
         } = message.data["firebase-messaging-msg-data"] as {
           notification: { body: string; title: string };
         };
-        // showToast(
-        //   <div>
-        //     <h5>{title}</h5>
-        //     <p>{body}</p>
-        //   </div>
-        // );
+        showToast(
+          <div>
+            <h5>{title}</h5>
+            <p>{body}</p>
+          </div>
+        );
       });
     }
-  });
+  },[]);
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -487,8 +489,7 @@ function App() {
     );
   }
 
-  useEffect(() => {
-    const messaging = getMessaging();
+  useEffect(() => {    
     getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
     }).then((token) => setFcmToken(token));
@@ -857,6 +858,37 @@ function App() {
       window.localStorage.removeItem('firstTimeloading')
     };
   }, [Object.keys(coins).length]);
+  // useEffect(() => {
+  //   window.addEventListener("focus", () => socket.connect());
+
+  //   return () => {
+
+  //   }
+  // }, [])
+  // useEffect(() => {
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
+  //   return () => {
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
+  //   }
+  // }, []);
+
+  // const handleVisibilityChange = () => {
+  //   const isIPhone = /iPhone/i.test(navigator.userAgent);
+
+  //   if (isIPhone) {
+  //     console.log('This is an iPhone');
+  //   } else {
+  //     console.log('This is not an iPhone');
+  //   }
+  //   if (document.hidden) {
+  //     console.log("Browser window is minimized");
+  //     ws.close();
+  //     socket.close();
+  //   } else {
+  //     connect();
+  //     console.log("Browser window is not minimized");
+  //   }
+  // }
   const checkprice = async (vote: any) => {
     console.log(vote, "checkAllvote")
     const voteCoins = vote?.coin.split("-");
@@ -954,9 +986,8 @@ function App() {
     });
     if (tempTessTimeVote && calculateVote) {
       timeEndCalculation(tempTessTimeVote);
-      setCalculateVote(false);
     }
-  }, [voteDetails?.activeVotes, calculateVote]);
+  }, [voteDetails?.activeVotes]);
   // useEffect(() => {
 
   // }, [lessTimeVote]);
@@ -1035,6 +1066,7 @@ function App() {
       }
     }
   }
+
   ///END vote result //
 
   return loader ? (
@@ -1615,12 +1647,12 @@ function App() {
                       <ToastContainer enableMultiContainer containerId='toast' />
                       <ToastContainer enableMultiContainer containerId='modal' />
                       {modalOpen && <div className='fade modal-backdrop show' />}
-                      {/* //vote result modal */}
+                        {/* //vote result modal */}
+                        {/* @ts-ignore */}
                       {voteDetails?.lessTimeVote && <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
-                        setCalculateVote={setCalculateVote}
                       />}
                     </UserContext.Provider>
                   </CoinsContext.Provider>
