@@ -305,6 +305,7 @@ const Minting = ({
         >
 
           <Modal.Body className="d-flex  justify-content-center align-items-center">
+            {/* @ts-ignore */}
             <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
           </Modal.Body>
 

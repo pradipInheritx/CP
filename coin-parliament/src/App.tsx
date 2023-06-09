@@ -1612,7 +1612,7 @@ function App() {
                             </AppContainer>
                           </>
                         )}
-                      <ToastContainer enableMultiContainer containerId='toast' />
+                      <ToastContainer enableMultiContainer containerId='toast' limit={1} />
                       <ToastContainer enableMultiContainer containerId='modal' />
                       {modalOpen && <div className='fade modal-backdrop show' />}
                       {/* //vote result modal */}
@@ -1673,6 +1673,7 @@ export const showToast = (
     containerId: "toast",
   }
 ) => {
+  toast.dismiss();
   switch (type) {
     case ToastType.ERROR:
       toast.error(content, options);
