@@ -151,7 +151,7 @@ exports.getAccessToken = () =>
       ["https://www.googleapis.com/auth/firebase.messaging"],
       undefined
     );
-    jwtClient.authorize(function (err, tokens) {
+    jwtClient.authorize(function (err: any, tokens: any) {
       if (err) {
         reject(err);
         return;
