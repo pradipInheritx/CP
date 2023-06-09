@@ -4,11 +4,13 @@ import { faq } from "../common/consts/contents";
 import styled from "styled-components";
 
 const FQbox = styled.div`
-margin:auto;
+  margin:auto;
   max-width:800px;
+  outline: none;
+  box-shadow: none;
 `;
 const Header = styled(Accordion.Header)`
-  & .accordion-button {
+  & .accordion-button {    
     color: #6352e8;
     background-color: #fff;
     &::after {

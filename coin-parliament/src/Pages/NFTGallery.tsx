@@ -89,8 +89,7 @@ const NFTGallery = () => {
       .then((snapshot) => {          
                
        let allcollection= snapshot.docs.map((doc) => doc.data())
-        setCollectionType(allcollection)
-        
+        setCollectionType(allcollection)        
         allcollection?.map((allcolloection: any) => {
           setAllTypeofCard([...allTypeofCard,allcolloection]) 
           const data:any=[]

@@ -615,9 +615,11 @@ const Header = ({
 									)}
 								</ForZoom>
 								{showReward == 2 && window.screen.width < 767 && <div className="w-100"></div>}
-								<div className='mt-2 '>
-									<Title style={{ width: pathname === "/" ? "" : "" }}
+								<div className='mt-2'>
+									<Title
+										// style={{ width: pathname === "/" ? "" : "" }}
 									// onClick={handleSoundClick}
+										// className="border"
 									>
 										{mounted ? title : ""}
 									</Title>
