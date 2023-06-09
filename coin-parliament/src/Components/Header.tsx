@@ -640,30 +640,17 @@ const Header = ({
 							}}
 						>
 
-							<div className='d-flex w-100'>
-								<ForZoom  {...{ showReward, inOutReward }} className="w-100">
-									{user?.uid && !login ? (
-										<div
-											className='d-flex  mx-auto w-25'
-											style={{
-												position: "relative", height: "50px",
-												// width: `${showReward == 2 && inOutReward ? "2%" : "25%"}`,                      
-												// marginTop: `${showReward == 2 && "20px"}`,
-												// transition:  `${showReward == 2 && "transform 1s"}`
+							<div className='d-flex'>
+								<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
+									{(user?.uid && !login) && (
+										<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
+											<div onClick={() => navigate("/profile/mine")} style={{
+												position: "absolute",
+												marginLeft: "90px",
+												cursor: "pointer"
 											}}
-										>
-											<div
-												className=''
-												onClick={() => navigate("/profile/mine")}
-												style={{
-													position: "absolute",
-													marginLeft: "90px",
-													// marginTop: "px",
-													cursor: "pointer"
-												}}
 											>
 												<Avatars
-													// type={userInfo?.avatar as AvatarType}
 													type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
 													style={{
 														width: "60px",
@@ -673,8 +660,8 @@ const Header = ({
 												/>
 											</div>
 											<div className='w-100'>
-												<HeaderCenter className=''>
-													<p className='ml-5'>
+												<HeaderCenter className='d-flex justify-content-between' style={{ width: '16em' }}>
+													<p className='' style={{ marginRight: '1em' }}>
 														{followerPage && followerInfo != "" ? followerInfo?.displayName :
 															(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 																// @ts-ignore
@@ -701,11 +688,9 @@ const Header = ({
 																	style={{
 																		color: "#6352E8",
 																		fontSize: "11px",
-																		marginLeft: "11px",
+																		marginLeft: "50px",
 																	}}
 																>
-																	{console.log(headerExtraVote, voteNumber, 'votecllect')}
-
 																	{MyPath == "/profile/mine" ?
 																		<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
 																			style={{
@@ -727,43 +712,41 @@ const Header = ({
 																			}
 																			}
 																		/> :
-																		voteNumber && voteNumber + headerExtraVote
+																		voteNumber && voteNumber + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																	}
 																	{" "}
 																	votes left
 																</span>
 														}
 													</p>
-													{followerPage && followerInfo != "" ?
-														<Form.Check.Label
-															className=""
-															style={{ cursor: "pointer" }}
-															// htmlFor={id || name}
-															// className={className}
-															bsPrefix="label"
-															onClick={async () => {
-																setFollowUnfollow(!followUnfollow)
-																// console.log('folower',followerInfo)
-																const ll = leaders.find((l) => l.userId === followerInfo?.uid);
-																if (user && ll) {
+													{
+														<div style={{ marginRight: '1em' }}>
+															{followerPage && followerInfo != "" ?
+																<Form.Check.Label
+																	className=""
+																	style={{ cursor: "pointer" }}
 
-																	await follow(ll, user, !followUnfollow);
-																}
-																// @ts-ignore
-																//  await follow(followerInfo , user, checkFollow )
-															}
+																	bsPrefix="label"
+																	onClick={async () => {
+																		setFollowUnfollow(!followUnfollow)
+																		const ll = leaders.find((l) => l.userId === followerInfo?.uid);
+																		if (user && ll) {
 
-															}
-														>
-															{followUnfollow == true ? <Following /> : <AddFollower />}
-														</Form.Check.Label>
-														:
-														<PlusButton onClick={() => {
-															handleSoundClick()
-															navigate("/votingbooster")
-														}}>
-															<span>+</span>
-														</PlusButton>
+																			await follow(ll, user, !followUnfollow);
+																		}
+																	}
+																	}
+																>
+																	{followUnfollow == true ? <Following /> : <AddFollower />}
+																</Form.Check.Label>
+																:
+																<PlusButton onClick={() => {
+																	handleSoundClick()
+																	navigate("/votingbooster")
+																}}>
+																	<span>+</span>
+																</PlusButton>}
+														</div>
 
 													}
 												</HeaderCenter>
@@ -792,8 +775,6 @@ const Header = ({
 
 											</div>
 										</div>
-									) : (
-										<div className='w-100'></div>
 									)}
 								</ForZoom>
 								{showReward == 2 && inOutReward == 2 && window.screen.width > 767 && <div className='w-100'></div>}
