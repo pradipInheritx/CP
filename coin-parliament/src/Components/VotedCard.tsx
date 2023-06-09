@@ -292,7 +292,7 @@ const VotedCard = ({
               symbol1={symbol1}
               symbol2={symbol2}
             />}
-            <div className="mb-1" style={{ marginTop: '-3.5em', height: '4em' }}>
+            <div className="mb-1" style={{ marginTop: '-3em', height: '4em', paddingLeft: '10px' }}>
               <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
                 setLastTenSec={setLastTenSec}
               />
@@ -395,7 +395,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
           }
           // return data;
           return (
-            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em' }}>
+            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em' ,zIndex:"2220px"}}>
               {texts.Calculatingvoteresult}
             </span>
           );

@@ -68,7 +68,7 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward } = useContext(AppContext);
+  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward,setAlbumOpen } = useContext(AppContext);
   const { showModal, showToast } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
@@ -90,6 +90,8 @@ const Mine = () => {
     setData(result?.data);
     // console.log("user Id", result);
   };
+
+console.log(data,"alllistdata")
 
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
@@ -330,7 +332,13 @@ const Mine = () => {
                     </span>{" "}
                     {texts.GamePts}
                   </RewardList>
-                  <RewardList onClick={() => navigate('/profile/Album')}>
+                  <RewardList onClick={() => {
+                    {/* @ts-ignore */}
+                    setAlbumOpen(item?.winData?.firstRewardCardCollection);
+                    navigate('/profile/Album')
+                  }}
+                  
+                  >
                     {/* @ts-ignore */}
                     <span style={{ color: "#6352E8", }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
