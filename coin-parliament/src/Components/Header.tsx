@@ -498,6 +498,7 @@ const Header = ({
 																(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 																	// @ts-ignore */
 																	<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
+																		{/* @ts-ignore */}
 																		<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																			renderer={({ hours, minutes, seconds, completed }) => {
 																				return (
@@ -666,6 +667,7 @@ const Header = ({
 															(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 																// @ts-ignore
 																<span style={{ marginLeft: '20px' }}>
+																	{/* @ts-ignore */}
 																	<Countdown date={votingTimer}
 																		renderer={({ hours, minutes, seconds, completed }) => {
 
