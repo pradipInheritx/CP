@@ -2,7 +2,7 @@ importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js");
 importScripts(
   "https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js"
 );
-// a cbcb
+// develop
 let CACHE_NAME = 'coin-parliament';
 let urlsToCache = [
   '/',
@@ -51,6 +51,7 @@ self.addEventListener('activate', event => {
     })
   );
 });
+
 const config = {
   messagingSenderId: "742294999580",
 };
@@ -58,7 +59,7 @@ const config = {
 firebase.initializeApp(config);
 // console.log("sw initialized");
 
-const messaging = firebase.messaging(); //firebase.getMessaging;
+const messaging = firebase.messaging();
 
 messaging.setBackgroundMessageHandler(function (payload) {
   console.log(
@@ -75,4 +76,23 @@ messaging.setBackgroundMessageHandler(function (payload) {
   self.registration.showNotification(notificationTitle, notificationOptions);
 
   console.log("showed", notificationTitle, notificationOptions);
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  
+  // Add the logic here to redirect the user to the home page of your app
+  const homePageUrl = '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then(clients => {
+      for (let client of clients) {
+        if (client.url === homePageUrl && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(homePageUrl);
+      }
+    })
+  );
 });
