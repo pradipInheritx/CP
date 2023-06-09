@@ -210,3 +210,26 @@ const VoteForm = function <
 };
 
 export default VoteForm;
+
+
+// firstRewardCard
+// : 
+// "FIRE"
+// firstRewardCardCollection
+// : 
+// "Monsoon"
+// firstRewardCardId
+// : 
+// "n13hZSCun5U0KmOoZpYy"
+// firstRewardCardSerialNo
+// : 
+// ""
+// firstRewardCardType
+// : 
+// "EPIC"
+// secondRewardExtraVotes
+// : 
+// 17
+// thirdRewardDiamonds
+// : 
+// 5
