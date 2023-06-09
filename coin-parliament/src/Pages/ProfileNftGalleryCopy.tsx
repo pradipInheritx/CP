@@ -170,11 +170,12 @@ const ProfileNftGalleryCopy = () => {
         }).catch((error) => {
           console.log(error, "error");
         });
-   
+      const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) =>  item.albumName == collectionName )
+      // console.log(getAlbumId && getAlbumId[0]?.id,"checkalbumId")
       const getSetsType = firebase
         .firestore()
         .collection("nftGallery")
-        .doc(collectionName)
+        .doc(getAlbumId && getAlbumId[0]?.id)
         .collection("setDetails")
       getSetsType.get()
         .then((snapshot) => {
@@ -479,7 +480,7 @@ const ProfileNftGalleryCopy = () => {
     console.log(notFound, "searchedCard")
     return (
       <div className='' style={{ background: "white", minHeight: "80vh" }}>
-        <div className=" w-100 container pt-3" >
+        {/* <div className=" w-100 container pt-3" >
           <Row className="justify-content-md-center">
             <Col lg={3} sm={12} xs={13} className="">
               <input type='text' onChange={e => onSearch(e.target.value)} placeholder='Search...' className='py-2 rounded border w-100 mb-lg-0 mb-sm-3 mb-3' style={{ marginRight: '10px' }} />
@@ -554,9 +555,90 @@ const ProfileNftGalleryCopy = () => {
               <label htmlFor="default-checkbox" className="align-self-center">{texts.AvailableCards}</label>
             </Col>
           </Row>
+        </div> */}
+
+        <div className='d-flex justify-content-center pt-5 flex-wrap '>
+        <input
+          type='text'
+
+          onChange={e => onSearch(e.target.value)}
+          // onChange={(e)=>{HandelonchangeFilter(e)}}
+          placeholder='Search...'
+          className='py-2 mx-2 rounded border'
+        // style={{ width: "200px" }}
+
+        />
+        <div className={`${window.screen.width < 767 ? "py-3 px-3" : ""}`}>
+          <select
+            name='cars'
+            id='cars'
+            className='bg-white border rounded py-2'
+            value={selectCollection}
+            // onChange={e=>onCollectionChange(e.target.value)}
+            onChange={e => setSelectCollection(e.target.value)}
+          >
+            <option value='none'>{texts.SelectCollection}</option>
+                {collectionType?.map((data: any, index: number) => {
+                  return <option selected value={data?.albumName} key={index}>{data?.albumName}</option>
+            })}
+
+          </select>
+          <select
+            name='cars'
+            id='cars'
+            className='bg-white border rounded py-2 mx-2'
+            // onChange={e=>onCollectionChange(e.target.value)}
+            onChange={e => onSelectSets(e.target.value)}
+          >
+             <option value='none'>{texts.SelectSets}</option>
+                {setsValue?.map((data: any, index: number) => {
+                  return <option value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
+                })}
+          </select>
         </div>
+        <div className={`${window.screen.width < 767 ? "" : ""}`}>
 
+          <select
+            name='type'
+            id='type'
+            className='bg-white border rounded mx-1 py-2'
+            onChange={(e) => { onSelectType(e.target.value) }}
+          >
+            {selectCollection != "none" ? <><option value='all'>{texts.SelectType}</option>
+              <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
+              <option value={`${texts.Rare}`}>{texts.Rare}</option>
+              <option value={`${texts.Epic}`}>{texts.Epic}</option>
+              <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
+              <option value={`${texts.Common}`}>{texts.Common}</option></> :
+              <option value='all'>{texts.SelectType}</option>}
+          </select>
 
+          <select
+            className='bg-white border rounded py-2 mx-1'
+            // onChange={e=>onCollectionChange(e.target.value)}
+            onChange={e => onSelectName(e.target.value)}
+          >
+             <option value='none'>{texts.SelectName}</option>
+                {cardNameNew?.map((data: any, index: number) => {
+                  return <option value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
+                })}
+          </select>
+        </div>
+        <div
+          className="d-flex  justify-content-start align-items-center "
+        >
+
+          <Form.Check
+            style={{ fontSize: "20px", marginRight: "10px" }}
+            type="checkbox"
+            id={`default-checkbox`}
+            // label={`default checkbox`}
+            // onClick={availableCard}
+            onClick={() => { setMyCards(!myCards) }}
+          />
+          <label htmlFor="default-checkbox">{texts.AvailableCards}</label>
+        </div>
+      </div>      
         <GalleryType
           className=''
           style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
