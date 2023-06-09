@@ -146,10 +146,17 @@ const PairsForm = ({
     showToast,
   ]);
 
-  const disabled = useMemo(
-    () => selectedTimeFrame === undefined,
-    [selectedTimeFrame]
-  );
+  // const disabled = useMemo(
+  //   () => selectedTimeFrame === undefined,
+  //   [selectedTimeFrame]
+  // );
+
+const disabled = useMemo(
+    () => selectedTimeFrame === undefined || !canVote,
+    [selectedTimeFrame, canVote]
+  )
+
+
 
   const throttled_vote = useMemo(() => voteProcedure({ vote, sound, setConfetti }), [vote, sound, setConfetti]);
 
