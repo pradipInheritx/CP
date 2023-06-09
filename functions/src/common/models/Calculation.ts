@@ -254,6 +254,9 @@ class Calculation {
           voteResult.direction === Direction.BULL;
         this.voteResult.success = bull ? 1 : 0 || bear ? 1 : 0;
       }
+      if ((this.status === 0) || this.status) {
+        this.voteResult.success = this.status;
+      }
     } else {
       if (
         Array.isArray(voteResult.valueVotingTime) &&
@@ -293,12 +296,13 @@ class Calculation {
         );
 
         // This status is user from frontend
-        if (this.status) {
-          this.voteResult.success = this.status;
-        } else if (averageValue <= CPMRangeCurrentValue) {
+        if (averageValue <= CPMRangeCurrentValue) {
           this.voteResult.success = 2;
         } else {
           this.voteResult.success = voteResult.direction === winner ? 1 : 0;
+        }
+        if ((this.status === 0) || this.status) {
+          this.voteResult.success = this.status;
         }
       }
     }
