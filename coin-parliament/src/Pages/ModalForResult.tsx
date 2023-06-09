@@ -80,11 +80,13 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type, setCalculateVote, /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
+function ModalForResult({ popUpOpen, vote, type,
+  // setCalculateVote,
+   /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
   popUpOpen?: any,
   vote: any,
   type?: string,
-  setCalculateVote: React.Dispatch<React.SetStateAction<boolean>>
+  // setCalculateVote: React.Dispatch<React.SetStateAction<boolean>>
   // setpopUpOpen?: any,
   // setHideButton?: any,
   // selectedTimeFrame?: any,
@@ -136,7 +138,7 @@ function ModalForResult({ popUpOpen, vote, type, setCalculateVote, /* setpopUpOp
         openResultModal: false,
       };
     });
-    setCalculateVote(true);
+    // setCalculateVote(true);
     // setLessTimeVoteDetails({
     //   lessTimeVote: undefined,
     //   openResultModal: false
@@ -421,9 +423,10 @@ function ModalForResult({ popUpOpen, vote, type, setCalculateVote, /* setpopUpOp
           <div className='py-2  d-flex  justify-content-center'>
             <span style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
-                removeVote();
-                setShowBack(true);
+                console.log("i am working")
                 navigate('/profile/mine');
+                setShowBack(true);
+                removeVote();
               }}
             >
               <Other>{("CHECK PROGRESS")}</Other>

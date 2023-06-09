@@ -395,7 +395,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
           }
           // return data;
           return (
-            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em' }}>
+            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em' ,zIndex:"2220px"}}>
               {texts.Calculatingvoteresult}
             </span>
           );

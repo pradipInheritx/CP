@@ -103,6 +103,8 @@ useEffect(() => {
 }, [albumOpen])
 
 
+  console.log(albumOpen,"checkalbumOpen")
+  
  const getNftCard = () => {
   const getCollectionType = firebase
             .firestore()
@@ -122,15 +124,17 @@ useEffect(() => {
 
 
   const onCollectionChange = (collectionName: any) => {
+  
     if (searchTerm?.length ||  selectCollection!="none") {
   // console.log(selectCollection,cardType?.length,"selectCollection")
+      
     setCardShow(true)
   }
   else {
     setCardShow(false)
   }
 
-  if(collectionName==='none') {
+if(collectionName==='none') {
     const getCollectionType = firebase
   .firestore()
   .collection("nftGallery")
@@ -163,7 +167,9 @@ console.log(error,"error");
     data.push({ id: doc.id, ...doc.data() });
   });
       setCardNameNew(data)
-    setAllCardNew(data)     
+      setAllCardNew(data)     
+      console.log(data, collectionName, "allcarddata")
+      setCardShow(true)
   }).catch((error) => {
       console.log(error,"error");
   });
@@ -191,6 +197,8 @@ console.log(error,"error");
   }
   }
   
+// console.log(cardShow,myCards,"cardShow myCards")
+
     const onSearch = (searchTerm: any) => {  
   setSearchTerm(searchTerm)
   if (searchTerm?.length || selectCollection!="none") {
@@ -341,7 +349,7 @@ const onSelectName=(mycardName:any)=>{
 
 
   useEffect(() => {
-    onCollectionChange(selectCollection)
+    onCollectionChange(selectCollection)    
   }, [selectCollection])
 
   useEffect(() => {
@@ -564,7 +572,7 @@ const onSelectName=(mycardName:any)=>{
             style={{
               width: "600px"
             }}
-            onClick={() => { setSelectCollection(data?.id) }} key={index}>
+            onClick={() => { setSelectCollection(data?.albumName) }} key={index}>
             {allVideo[`${data?.albumName}`] ? <Video autoPlay={true} loop={true} playsInline>
               <source
                 src={allVideo[`${data?.albumName}`]}
@@ -634,7 +642,7 @@ const onSelectName=(mycardName:any)=>{
                         HeaderClass={`${item?.cardType}_text`}
                         // Serie={item?.setName}
                           Serie={item?.setName || "Set"+ (index+1)}
-                        BackCardName={item?.name}
+                        BackCardName={item?.cardName}
                         Rarity={item?.cardType}
                         Quantity={item?.totalQuantity}
                         holderNo={item?.noOfCardHolders}

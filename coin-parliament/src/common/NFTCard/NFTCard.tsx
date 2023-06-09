@@ -92,7 +92,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
   const [startY, setStartY] = useState<any>(0)
   const [cressShow, setCressShow] = useState<any>(false)
   const [scratchShound, setScratchShound] = useState<any>(false)
+  const [showImg, setShowImg] = useState<any>(false)
   const { showReward, setShowReward } = useContext(AppContext);
+  
+
   const [allFrontImg, setAllFrontImg] = useState<any>({
     COMMON: common,
     EPIC: epic,
@@ -180,6 +183,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
     setStartX(offsetX || layerX);
     setStartY(offsetY || layerY);
     setScratchShound(true)
+    setShowImg(true)
   };
 
   const scratchStartMobile = (e: any) => {
@@ -193,6 +197,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
     setStartX(offsetX);
     setStartY(offsetY);
     setScratchShound(true)
+    setShowImg(true)
   };
 
   const scratchMobile = (e: any) => {
@@ -343,7 +348,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
 
           {/* @ts-ignore */}
           <div className={classname} id="card-animation">
-            <div>
+            <div className={`${!showImg ?"d-none":""}`}>
               <span className={`${cardType.toLowerCase()}_text`}>
                 &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
               </span>

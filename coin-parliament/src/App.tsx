@@ -1320,7 +1320,7 @@ function App() {
                                         width: width && width > 979 ? 233 : "auto",
                                       }}
                                     >
-                                      <Link to={"/"}>
+                                      <Link to={"/"} className="border">
                                         {window.screen.width < 979 && (
                                           <Logo
                                             size={
