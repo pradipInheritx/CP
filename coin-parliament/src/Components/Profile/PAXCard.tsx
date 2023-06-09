@@ -44,7 +44,7 @@ const ForZoom = styled.div`
 `;
 
 
-const PAXCard = ({ walletId, PAX, rewardTimer,countShow ,setCountShow}: PAXCardProps) => {
+const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCardProps) => {
   console.log(rewardTimer, "CheckrewardTimer")
   // const prevCountRef = useRef(PAX)
   const prevCountRef = PAX - rewardTimer?.data?.thirdRewardDiamonds
@@ -53,8 +53,8 @@ const PAXCard = ({ walletId, PAX, rewardTimer,countShow ,setCountShow}: PAXCardP
   const [modalShow, setModalShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
- 
- 
+
+
   // useEffect(() => {
   //   // if (PAX != prevCountRef.current) {      
   //     prevCountRef.current = PAX;
@@ -75,39 +75,39 @@ const PAXCard = ({ walletId, PAX, rewardTimer,countShow ,setCountShow}: PAXCardP
       </h6>
       <div className="d-flex justify-content-center align-items-center flex-column">
         <div className="circle "
-        
+
           style={{
-        backgroundImage: `url(${coinBg})`,
-        // backgroundImage: `url(${externalImage})`,
-        // backgroundSize: 'cover',
-          backgroundSize: "90px 87px",
-        // backgroundPosition: "2px 0px",
-        backgroundRepeat: 'no-repeat',
-            backgroundPosition: '-8px -5px',                    
-        // height: '500px',
-      }}
+            backgroundImage: `url(${coinBg})`,
+            // backgroundImage: `url(${externalImage})`,
+            // backgroundSize: 'cover',
+            backgroundSize: "90px 87px",
+            // backgroundPosition: "2px 0px",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: '-8px -5px',
+            // height: '500px',
+          }}
         >
           <div
             className="d-flex justify-content-center align-items-center flex-column coin_Bg"
             style={{ height: 75, color: '#6352E8' }}
           >
             <div>
-              <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize:`${inOutReward==1?"30px":"20px"}`}}>
-                {inOutReward == 1 && showReward ==1 ? <CountUp className="PaxText" start={prevCountRef} end={PAX &&PAX} duration={5}
-                  onEnd={() => {      
+              <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "30px" : "20px"}` }}>
+                {inOutReward == 1 && showReward == 1 ? <CountUp className="PaxText" start={prevCountRef} end={PAX && PAX} duration={5}
+                  onEnd={() => {
 
-                    setTimeout(() => {                                                                
-                    setInOutReward((prev: number) => { 
-                          // console.log(prev,"showRewardCheck")
-                      if (prev == 1) {
-                        handleShow()
-                        return 2
-                      } else {
-                        return prev
-                      }                      
+                    setTimeout(() => {
+                      setInOutReward((prev: number) => {
+                        // console.log(prev,"showRewardCheck")
+                        if (prev == 1) {
+                          handleShow()
+                          return 2
+                        } else {
+                          return prev
+                        }
                       });
-                    }, 1000);  
-                    
+                    }, 1000);
+
                     // setInOutReward((prev: number) => { 
                     //     console.log(prev,"showRewardCheck")
                     //   return prev==1?2:prev
@@ -141,7 +141,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer,countShow ,setCountShow}: PAXCardP
                   }
                 /> :
                   <>
-                   {PAX && PAX}
+                    {PAX && PAX}
                   </>
                 }
               </span>
@@ -157,26 +157,26 @@ const PAXCard = ({ walletId, PAX, rewardTimer,countShow ,setCountShow}: PAXCardP
           show={
             modalShow
           } onHide={handleClose}
-      // size="sm"
-      backdrop="static"          
-      // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
-      contentClassName={"modulebackground"}
-      aria-labelledby="contained-modal-title-vcenter"
-          centered    
-          style={{backgroundColor: "rgba(0,0,0,0.8)",zIndex:"2200"}}
-    >
-      <div className="d-flex justify-content-end">
-        {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={()=>{
+          // size="sm"
+          backdrop="static"
+          // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+          contentClassName={"modulebackground"}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+        >
+          <div className="d-flex justify-content-end">
+            {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={()=>{
           handleClose()
           }}></button> */}
-        </div>
-      <Modal.Body className="d-flex  justify-content-center align-items-center">
-            {/* continue voting */}          
+          </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center">
+            {/* continue voting */}
             {/* @ts-ignore */}
             <div className=''>
-              <p style={{ fontSize: "20px" ,color:"white" }}>Congrats! You've won {rewardExtraVote} votes</p>
+              <p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {rewardExtraVote} votes</p>
             </div>
-             
+
 
           </Modal.Body>
           {/* <Modal.Footer> */}
@@ -191,18 +191,32 @@ const PAXCard = ({ walletId, PAX, rewardTimer,countShow ,setCountShow}: PAXCardP
                 })
               }, 1000);
 
+              // setTimeout(() => {
+              //   setRewardExtraVote((prev: number) => {
+              //     setShowReward((Showprev: number) => {
+              //       if (prev != 0 && Showprev == 2 || false) {
+              //         setHeaderExtraVote(prev)
+              //       }
+              //       return Showprev
+              //     })
+              //     return prev
+              //   })
+              // }, 3000);
+              handleClose();
               setTimeout(() => {
-                setRewardExtraVote((prev: number) => {
-                  setShowReward((Showprev: number) => {
-                    if (prev != 0 && Showprev == 2) {
-                      setHeaderExtraVote(prev)
-                    }
-                    return Showprev
-                  })
-                  return prev
+                setHeaderExtraVote((prev: any) => {
+                  return {
+                    ...prev,
+                    collect: true
+                  }
                 })
-              }, 3000);
-              handleClose()
+              }, 2800)
+              setTimeout(() => {
+                setHeaderExtraVote({
+                  vote: 0,
+                  collect: false
+                });
+              }, 9000)
             }}>Collect your Vote</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>

@@ -100,37 +100,36 @@ const Mine = () => {
   const currentCMP = useContext(CurrentCMPContext);
   const handleShareModleClose = () => setShareModleShow(false);
   const handleShareModleShow = () => setShareModleShow(true);
-  
+
 
   // @ts-ignore 
   const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
-  console.log(currentCMP > 0 && currentCMPDiff > prevCMPDiff, userInfo?.voteStatistics?.score, currentCMP, currentCMPDiff, prevCMPDiff, 'hello');
 
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
   const remainingCMP = (currentCMP > 0 && currentCMPDiff > prevCMPDiff ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
 
-  useEffect(() => {  
-  // @ts-ignore
-  setPaxValue(userInfo?.rewardStatistics?.diamonds)  
-}, [userInfo?.rewardStatistics?.diamonds])
+  useEffect(() => {
+    // @ts-ignore
+    setPaxValue(userInfo?.rewardStatistics?.diamonds)
+  }, [userInfo?.rewardStatistics?.diamonds])
 
 
-const prevPAXValue = useRef(paxValue)
+  const prevPAXValue = useRef(paxValue)
 
-  useEffect(() => {      
-    if (!prevPAXValue.current) {      
-      prevPAXValue.current = paxValue;  
-    }            
-    if (countShow) {   
+  useEffect(() => {
+    if (!prevPAXValue.current) {
+      prevPAXValue.current = paxValue;
+    }
+    if (countShow) {
       prevPAXValue.current = userInfo?.rewardStatistics?.diamonds || 0;
     }
-    
-  }, [paxValue,countShow])
-  
-  console.log(prevPAXValue.current,paxValue,"prevPAXValue")  
+
+  }, [paxValue, countShow])
+
+  console.log(prevPAXValue.current, paxValue, "prevPAXValue")
   useEffect(() => {
     rewardList();
   }, [rewardTimer]);
@@ -148,7 +147,7 @@ const prevPAXValue = useRef(paxValue)
         setModelText(1)
         console.log(showBack, "viewshow")
         handleShow()
-        setShowBack(false)        
+        setShowBack(false)
       }, 10000);
     }
   }, []);
@@ -213,12 +212,12 @@ const prevPAXValue = useRef(paxValue)
                   //   countShow ? paxValue :prevPAXValue.current
                   // }
                   PAX={
-                   prevPAXValue.current
+                    prevPAXValue.current
                   }
                 />
-                {inOutReward == 1 && <div className=""> <CoinAnimation/> </div>}
+                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
               </ForZoom>
-              
+
             </div>
             {/* @ts-ignore */}
             <div style={{ marginLeft: "10px" }}>
@@ -246,7 +245,7 @@ const prevPAXValue = useRef(paxValue)
                 {/* @ts-ignore */}
                 <Minting
                   {...{
-                      width,
+                    width,
                     setCountShow,
                     score: remainingCMP,
                     // @ts-ignore
@@ -269,21 +268,21 @@ const prevPAXValue = useRef(paxValue)
               <ForZoom
                 {...{ inOutReward }}
               >
-                  <PAXCard
-                    countShow={countShow}
+                <PAXCard
+                  countShow={countShow}
                   walletId={userInfo?.wallet || ""}
-                    rewardTimer={rewardTimer}
-                    setCountShow={setCountShow}
+                  rewardTimer={rewardTimer}
+                  setCountShow={setCountShow}
                   // @ts-ignore
                   // PAX={userInfo?.rewardStatistics?.diamonds || 0}
                   // PAX={paxValue}
-                    PAX={
-                   prevPAXValue.current
+                  PAX={
+                    prevPAXValue.current
                   }
                 // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
-                  {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
-                  {inOutReward == 1 && <div className=""> <CoinAnimation/> </div>}
+                {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
+                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
               </ForZoom>
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
@@ -373,7 +372,7 @@ const prevPAXValue = useRef(paxValue)
             )}
           </div>
         </Row>
-      </Container>      
+      </Container>
       <div>
         <Modal
           show={
@@ -435,7 +434,7 @@ const prevPAXValue = useRef(paxValue)
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow}  handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer}/>
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} />
           </Modal.Body>
         </Modal>
       </CardDiv>
