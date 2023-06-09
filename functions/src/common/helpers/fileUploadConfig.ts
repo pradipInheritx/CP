@@ -7,60 +7,57 @@ export const imageUploadFunction = async (req: any, res: any) => {
 
     const { fileType, forModule, id } = req.params;
     try {
-        const checkId = (forModule == "card") ? await getCardDetails(id) : await getAlbumDetails(id);
-        console.log("checkId -------", checkId)
+        const checkId = (forModule === "CARD") ? await getCardDetails(id) : await getAlbumDetails(id);
         if (!checkId?.albumName && !checkId?.cardName) {
             return res.status(404).send({
                 status: false,
-                message: `This id does not exist ${id} in ${forModule}`,
+                message: `This ID does not exist ${id} in ${forModule}`,
                 result: null,
             });
         }
-
-
 
         const busboy = Busboy({ headers: req.headers });
         let fileUpload: any;
         let fileToBeUploaded: any = {};
         const bucket = admin.storage().bucket("default-bucket")
-        // const storage = new Storage();
 
-        busboy.on('file', (fieldname: any, file: any, filename: any) => {
+        //On File Event
+        busboy.on('file', (fieldname: any, file: any, fileMeta: any) => {
+            fileToBeUploaded = { file: fileMeta.filename, type: fileMeta.mimeType };
 
-            fileToBeUploaded = { file: filename.filename, type: filename.mimeType };
-
-            // Use your bucket name here
-            fileUpload = bucket.file(filename.filename);
+            fileUpload = bucket.file(fileMeta.filename);
             const fileStream = file.pipe(fileUpload.createWriteStream({
                 metadata: {
-                    contentType: filename.mimeType,
+                    contentType: fileMeta.mimeType,
                 }
             }));
 
-            fileStream.on('error', (err: any) => {
-                console.log('Error(Img uipload): ', err);
-                return res.status(400).send({
+            //On Error Event
+            fileStream.on('error', (error: any) => {
+                console.error('File Upload Error Event:', error);
+                return res.status(500).send({
                     status: true,
-                    message: "Unable to upload image",
+                    message: "Unable to upload file",
                     result: null,
                 });
-                // res.status(200).send('Upload successful');
             });
         });
 
+        // On Finish Event
         busboy.on('finish', async () => {
             const downloadURL = await bucket
                 .file(fileToBeUploaded.file)
                 .publicUrl()
-            updateFileLink(forModule, fileType, id, downloadURL)
-            console.log("URL ------", downloadURL)
+            updateFileLink(forModule, fileType, id, downloadURL);
+
+            console.info("File Url", downloadURL);
+
             return res.status(200).send({
                 status: true,
                 message: "Image uploaded and card image url updated successfully",
                 result: { imageUrl: downloadURL },
             });
         });
-
         busboy.end(req.rawBody);
     } catch (error) {
         errorLogging("uploadFiles", "ERROR", error);
