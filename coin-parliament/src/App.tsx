@@ -1320,7 +1320,7 @@ function App() {
                                         width: width && width > 979 ? 233 : "auto",
                                       }}
                                     >
-                                      <Link to={"/"} className="border">
+                                      <Link to={"/"} className="">
                                         {window.screen.width < 979 && (
                                           <Logo
                                             size={
@@ -1644,7 +1644,7 @@ function App() {
                             </AppContainer>
                           </>
                         )}
-                      <ToastContainer enableMultiContainer containerId='toast' />
+                      <ToastContainer enableMultiContainer containerId='toast' limit={1} />
                       <ToastContainer enableMultiContainer containerId='modal' />
                       {modalOpen && <div className='fade modal-backdrop show' />}
                         {/* //vote result modal */}
@@ -1705,6 +1705,7 @@ export const showToast = (
     containerId: "toast",
   }
 ) => {
+  toast.dismiss();
   switch (type) {
     case ToastType.ERROR:
       toast.error(content, options);

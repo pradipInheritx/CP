@@ -205,7 +205,7 @@ function ModalForResult({ popUpOpen, vote, type,
                   <Logo {...{ symbol: vote?.coin || "", width: 30 }} />
                 </div>
                 <div className={`${window.screen.width < 767 ? "flex-column" : ""} w-100 d-flex justify-content-between`}>
-                  <div className={`${window.screen.width < 767 ? "w-100" : "w-50"} text-center`} style={{ paddingLeft: '2em' }}>
+                  <div className={`${window.screen.width < 767 ? "w-100" : "w-50"} text-center`} style={{ paddingLeft: (window.screen.width < 767 ? '0px' : '2em') }}>
                     <div className=''>
                       <span style={{ fontSize: "14px" }} className='px-3'>
                         {timeframeInitials(vote?.timeframe?.name)} VOTE
@@ -243,7 +243,7 @@ function ModalForResult({ popUpOpen, vote, type,
                   {/* <div
                     className='d-flex justify-content-around w-50'
                   > */}
-                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `} style={{ paddingLeft: '2em' }}>
+                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `} style={{ paddingLeft: (window.screen.width < 767 ? '0px' : '2em') }}>
                     <div className='text-center'>
                       <span style={{ fontSize: "13px", color: '#6352e8' }}>
                         VOTE RESULT
