@@ -516,7 +516,7 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
   const leaders = await firestore()
     .collection("users")
     .withConverter(userConverter)
-    .where(firestore.FieldPath.documentId(), "in", userIds)
+    .where("uid", "in", userIds)
     .get();
 
   const allLeaders = await getLeaders();
