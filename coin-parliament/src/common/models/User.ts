@@ -195,17 +195,16 @@ export const getAvatar = (userInfo: HasAvatar) => {
 export const toFollow = (leaders: string[], id: string) =>
   !leaders?.includes(id);
 
-export const setChecked =
-  (leaders: Leader[], user?: AuthUser) =>
-    async (userId: string, check: boolean) => {
-      const ll = leaders.find((l) => l.userId === userId);
-      if (user && ll) {
-        console.log('user follower', ll, user, check)
-        await follow(ll, user, check);
-      } else {
-        showToast("Please login in order to follow influencer.", ToastType.ERROR)
-      }
-    };
+export const setChecked = (leaders: Leader[], user?: AuthUser) =>
+  async (userId: string, check: boolean) => {
+    const ll = leaders.find((l) => l.userId === userId);
+    if (user && ll) {
+      console.log('user follower', ll, user, check)
+      await follow(ll, user, check);
+    } else {
+      // showToast("Please login in order to follow influencer.", ToastType.ERROR)
+    }
+  };
 
 export type NotificationProps = {
   user: string;
