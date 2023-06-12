@@ -255,7 +255,7 @@ function App() {
 
         if (typeCoinPair?.title.includes("-")) {
 
-          const getPairName = typeCoinPair?.title.split('')
+          const getPairName = typeCoinPair?.title.split(" ")
           
           // Redirect the user to the home page
           // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/pair/${}`;
@@ -1434,6 +1434,9 @@ function App() {
                                             <Route path='/' element={
 
                                               <Home />} />
+                                               <Route path='/firebase-messaging-sw.js#' element={
+
+<Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
