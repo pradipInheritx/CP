@@ -120,18 +120,21 @@ async function getMultipleUsersByUserIds(userIds: Array<string>) {
   //     userList.push(data.data())
   //   })
   // }
-
-  const userList: any = await firestore()
-    .collection("users")
-    .where("uid", "in", userIds)
-    .get();
-
-  console.log("userLIST >>>>>>>", userList);
-  userList.forEach((item: any) => {
-    users.push(item.data());
+  const queryPromises = userIds.map(user => {
+    return firestore().collection('users')
+      .where('uid', '==', user)
+      .get();
   });
+
+  const querySnapshots = await Promise.all(queryPromises);
+  const documentDataArray = querySnapshots.map(querySnapshot => {
+    return querySnapshot.docs.map(doc => doc.data());
+  });
+
+  console.log(documentDataArray[0]);
+
   console.log("USER >>>>>>>>", users);
-  return users;
+  return documentDataArray[0];
 }
 
 export async function getAllNftGalleryForCards() {
