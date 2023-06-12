@@ -517,7 +517,7 @@ exports.claimReward = functions.https.onCall(async (data) => {
 });
 
 exports.cardHolderListing = functions.https.onCall(async (data) => {
-  const { cardId } = data as { cardId: number };
+  const { cardId } = data as { cardId: string };
   const userList = await cardHolderListing(cardId);
   console.log("userList --->", userList);
   return userList;
