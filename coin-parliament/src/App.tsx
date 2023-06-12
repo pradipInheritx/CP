@@ -244,7 +244,7 @@ function App() {
     if ('serviceWorker' in navigator) {
       console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
-        const { notification: { body, title, click_action: homePageUrl } } = message.data["firebase-messaging-msg-data"];
+        const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
         console.log(message.data, "checknotification")
         showToast(
           <div>
@@ -254,27 +254,27 @@ function App() {
         );
     const typeName = {...message.data["firebase-messaging-msg-data"]?.notification}
 
-        if (typeName?.title.includes("-")) {
+        // if (typeName?.title.includes("-")) {
 
-          const getPairName = typeName?.title.split(" ")
-          const FinalName = getPairName[getPairName.length - 1]          
-          window.location.href = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;
-          // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;          
-          // console.log(makeUrl,"checkcoinpair")
-        }
-        else if (!typeName?.title.includes("-") && !typeName?.title.includes("mine")) {
-          const getCoinName = typeName?.title.split(" ")
-          const FinalName=getCoinName[getCoinName.length-1]          
-          window.location.href = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
-          // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
-          // console.log(makeUrl,"checkcoinpair")
-        }
-        else if (typeName?.title.includes("mine")) {          
-          window.location.href = 'https://coinparliamentstaging.firebaseapp.com/profile/mine';
-        }
-        else{          
-          window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
-        }
+        //   const getPairName = typeName?.title.split(" ")
+        //   const FinalName = getPairName[getPairName.length - 1]          
+        //   window.location.href = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;
+        //   // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;          
+        //   // console.log(makeUrl,"checkcoinpair")
+        // }
+        // else if (!typeName?.title.includes("-") && !typeName?.title.includes("mine")) {
+        //   const getCoinName = typeName?.title.split(" ")
+        //   const FinalName=getCoinName[getCoinName.length-1]          
+        //   window.location.href = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
+        //   // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
+        //   // console.log(makeUrl,"checkcoinpair")
+        // }
+        // else if (typeName?.title.includes("mine")) {          
+        //   window.location.href = 'https://coinparliamentstaging.firebaseapp.com/profile/mine';
+        // }
+        // else{          
+        //   window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
+        // }
       });
     }
   }, []);
