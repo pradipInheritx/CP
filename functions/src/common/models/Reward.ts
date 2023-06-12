@@ -109,13 +109,25 @@ async function getRewardTransactionsByCardId(cardId: string) {
 // get multiple users by user ids
 async function getMultipleUsersByUserIds(userIds: Array<string>) {
   console.log("getMultipleUsersByUserIds............");
+  const users: any = [];
+  // const userList: any = []
+  // for (let user in userIds) {
+  //   const getUserQuery: any = await firestore()
+  //     .collection("users")
+  //     .where("uid", "==", user)
+  //     .get();
+  //   getUserQuery.docs.map((data: any) => {
+  //     userList.push(data.data())
+  //   })
+  // }
+
   const userList: any = await firestore()
     .collection("users")
     .where("uid", "in", userIds)
     .get();
 
   console.log("userLIST >>>>>>>", userList);
-  const users = userList.forEach((item: any) => {
+  userList.forEach((item: any) => {
     users.push(item.data());
   });
   console.log("USER >>>>>>>>", users);
