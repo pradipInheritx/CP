@@ -238,27 +238,30 @@ function App() {
     []
   );
 
+
   useEffect(() => {
 
     if ('serviceWorker' in navigator) {
       console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, click_action: homePageUrl } } = message.data["firebase-messaging-msg-data"];
-    
+        console.log(message.data, "checknotification")
         showToast(
           <div>
             <h5>{title}</h5>
             <p>{body}</p>
           </div>
         );
-    
+
         if (true) {
           // Redirect the user to the home page
-          window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
+          // window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
+          console.log(message.data, "checknotification")
         }
       });
     }
-  },[]);
+  }, []);
+
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -1293,6 +1296,18 @@ function App() {
                                 }
                                 pathname={pathname}
                                 title={
+                                  // pathname !== "/" && !login ? (
+                                  //   <H1 style={{color: "var(--white)"}}>
+                                  //     {pathname !== "/login" && pathname !== "/signup" && fixTitle(
+                                  //       getTitle(
+                                  //         pages?.find((p) => p.slug === pathname.slice(1))
+                                  //           ?.title || pathname.slice(1),
+                                  //         lang,
+                                  //       ),
+                                  //       pathname,
+                                  //     )}
+                                  //   </H1>
+                                  // ) : (
                                   <HomeContainer
                                     className='d-flex flex-column justify-content-center align-items-center p-0'
                                     width={width}
