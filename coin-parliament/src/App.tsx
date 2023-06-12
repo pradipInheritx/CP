@@ -252,11 +252,28 @@ function App() {
             <p>{body}</p>
           </div>
         );
+    const typeName = {...message.data["firebase-messaging-msg-data"]?.notification}
 
-        if (true) {
-          // Redirect the user to the home page
-          // window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
-          console.log(message.data, "checknotification")
+        if (typeName?.title.includes("-")) {
+
+          const getPairName = typeName?.title.split(" ")
+          const FinalName = getPairName[getPairName.length - 1]          
+          window.location.href = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;
+          // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;          
+          // console.log(makeUrl,"checkcoinpair")
+        }
+        else if (!typeName?.title.includes("-") && !typeName?.title.includes("mine")) {
+          const getCoinName = typeName?.title.split(" ")
+          const FinalName=getCoinName[getCoinName.length-1]          
+          window.location.href = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
+          // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
+          // console.log(makeUrl,"checkcoinpair")
+        }
+        else if (typeName?.title.includes("mine")) {          
+          window.location.href = 'https://coinparliamentstaging.firebaseapp.com/profile/mine';
+        }
+        else{          
+          window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
         }
       });
     }
@@ -1439,6 +1456,9 @@ function App() {
                                             <Route path='/' element={
 
                                               <Home />} />
+                                               <Route path='/firebase-messaging-sw.js#' element={
+
+<Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
