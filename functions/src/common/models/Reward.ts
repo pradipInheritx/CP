@@ -91,7 +91,7 @@ async function getNftCollectionDataById(docId: string) {
 }
 
 // get all reward transactions by card id
-async function getRewardTransactionsByCardId(cardId: number) {
+async function getRewardTransactionsByCardId(cardId: string) {
   console.log("cardID >>>>", cardId);
   const transaction = await firestore()
     .collection("reward_transactions")
@@ -473,14 +473,14 @@ const sendNotificationForCpm = async (userId: any) => {
 
 
 // User listing for a particular card holders
-export const cardHolderListing: (cardId: number) => {
+export const cardHolderListing: (cardId: string) => {
   [key: string]: any;
-} = async (cardId: number) => {
+} = async (cardId: string) => {
   const transData: {
     winData: {
       firstRewardCard: string;
       firstRewardCardCollection: string;
-      firstRewardCardId: number;
+      firstRewardCardId: string;
       firstRewardCardSerialNo: string;
       firstRewardCardType: string;
       secondRewardExtraVotes: number;
