@@ -256,7 +256,7 @@ function App() {
         );
       });
     }
-  },[]);
+  }, []);
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -489,7 +489,7 @@ function App() {
     );
   }
 
-  useEffect(() => {    
+  useEffect(() => {
     getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
     }).then((token) => setFcmToken(token));
@@ -1276,12 +1276,11 @@ function App() {
                       {(getSubdomain() !== "admin" ||
                         (getSubdomain() === "admin" && !user)) && (
                           <>
-                            <Background pathname={pathname} />
+                            {/* <Background pathname={pathname} />e */}
                             <AppContainer
                               fluid
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
-                            // width={width}
                             >
 
                               <Header
@@ -1292,18 +1291,6 @@ function App() {
                                 }
                                 pathname={pathname}
                                 title={
-                                  // pathname !== "/" && !login ? (
-                                  //   <H1 style={{color: "var(--white)"}}>
-                                  //     {pathname !== "/login" && pathname !== "/signup" && fixTitle(
-                                  //       getTitle(
-                                  //         pages?.find((p) => p.slug === pathname.slice(1))
-                                  //           ?.title || pathname.slice(1),
-                                  //         lang,
-                                  //       ),
-                                  //       pathname,
-                                  //     )}
-                                  //   </H1>
-                                  // ) : (
                                   <HomeContainer
                                     className='d-flex flex-column justify-content-center align-items-center p-0'
                                     width={width}
@@ -1330,21 +1317,8 @@ function App() {
                                             }
                                           />
                                         )}
-                                        {/* {scrollPosition >= positionBreakpoint && window.screen.width<979 &&<Logo
-                                        size={Size.XSMALL}
-                                      />} */}
+
                                       </Link>
-                                      {
-                                        // ((scrollPosition < positionBreakpoint) && (width && width < 979)) && <H1
-                                        //   desktop={
-                                        //     width && width > 979 ? "true" : "false"
-                                        //   }
-                                        //   className="mt-2"
-                                        //   onClick={() => navigate("/", {replace: true})}
-                                        // >
-                                        //   {/* {!login && !firstTimeFoundationSelection && !firstTimeLogin &&!firstTimeAvatarSlection? capitalize(translate("coin parliament", lang)): null} */}
-                                        // </H1>
-                                      }
                                     </div>
                                   </HomeContainer>
                                 }
@@ -1647,8 +1621,8 @@ function App() {
                       <ToastContainer enableMultiContainer containerId='toast' limit={1} />
                       <ToastContainer enableMultiContainer containerId='modal' />
                       {modalOpen && <div className='fade modal-backdrop show' />}
-                        {/* //vote result modal */}
-                        {/* @ts-ignore */}
+                      {/* //vote result modal */}
+                      {/* @ts-ignore */}
                       {voteDetails?.lessTimeVote && <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
