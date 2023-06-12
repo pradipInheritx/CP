@@ -530,7 +530,7 @@ const Header = ({
 																{MyPath == "/profile/mine" ?
 																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
 																		style={{
-																			fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
+																			// fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
 																		}}
 
 																		onEnd={() => {
@@ -697,10 +697,6 @@ const Header = ({
 														>
 															{MyPath == "/profile/mine" ?
 																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
-																	style={{
-																		fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
-																	}}
-
 																	onEnd={() => {
 																		setInOutReward((prev: number) => {
 																			return prev == 2 ? 3 : prev

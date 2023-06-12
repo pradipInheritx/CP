@@ -216,7 +216,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   vote: 0,
                   collect: false
                 });
-              }, 9000)
+              }, 3000)
             }}>Collect your Vote</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
