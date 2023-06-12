@@ -251,11 +251,21 @@ function App() {
             <p>{body}</p>
           </div>
         );
-    
-        if (true) {
+    const typeCoinPair = {...message.data["firebase-messaging-msg-data"]?.notification}
+
+        if (typeCoinPair?.title.includes("-")) {
+
+          const getPairName = typeCoinPair?.title.split('')
+          
           // Redirect the user to the home page
-          window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
+          // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/pair/${}`;
+          // console.log(notification,"checkcoinpair")
+          console.log(getPairName ,"checkcoinpair")
         }
+        // if (true) {
+        //   // Redirect the user to the home page
+        //   window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
+        // }
       });
     }
   },[]);
