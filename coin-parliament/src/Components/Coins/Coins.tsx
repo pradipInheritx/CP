@@ -67,7 +67,7 @@ const Coins = ({
   const translate = useTranslation();
   let navigate = useNavigate();
   const { coins, totals, allCoins } = useContext(CoinContext);
-  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
   const { userInfo, user } = useContext(UserContext);
   const [index, setIndex] = useState(0);
   const [data, setData] = useState<BearVsBullRow[]>(
@@ -80,13 +80,13 @@ const Coins = ({
     [expanded, width]
   );
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
-            // const { changePrice, setChangePrice } = useContext(CoinsContext);
+  // const { changePrice, setChangePrice } = useContext(CoinsContext);
   const location = useLocation();
-const pathname = location.pathname;
+  const pathname = location.pathname;
   useEffect(() => {
     setData(getFilteredData(filter, coins, totals, allCoins));
   }, [filter, coins, totals, allCoins]);
- 
+
   useEffect(() => {
     if (filterByFav) {
       setFilter("");
@@ -104,98 +104,99 @@ const pathname = location.pathname;
 
   return (
     <>
-      {pathname == "/coins" 
+      {pathname == "/coins"
         ?
         <>
-        <h5 className="my-2 text-center">            
-              {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
-        <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>{
-          // texts.WhatYourPairVote
-        "GET IN THE RING"
-        }</strong>
-      </h5>
-      <Toolbar className="d-flex justify-content-center">
-        {expanded && (
-        <div className="d-flex justify-content-center align-items-center">          
-          <div className='px-1' >           
-            <Input
-              style={{
-                background: "transparent",
-                  color: "var(--white)",
-                width:`${window.screen.width >767?"300px":"200px"}`
-              }}
-              value={filter}
-              onChange={(e: { target: { value: string } }) => {
-                setFilter(e.target.value || ""); // Set undefined to remove the filter entirely
-              }}
-              name='filter'
-              required
-            />
-          </div>
+          <h5 className="my-2 text-center">
+            {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+            <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>{
+              // texts.WhatYourPairVote
+              "GET IN THE RING"
+            }</strong>
+          </h5>
+          <Toolbar className="d-flex justify-content-center">
+            {expanded && (
+              <div className="d-flex justify-content-center align-items-center">
+                <div className='px-1' >
+                  <Input
+                    style={{
+                      background: "transparent",
+                      color: "var(--white)",
+                      width: `${window.screen.width > 767 ? "300px" : "200px"}`
+                    }}
+                    value={filter}
+                    onChange={(e: { target: { value: string } }) => {
+                      setFilter(e.target.value || ""); // Set undefined to remove the filter entirely
+                    }}
+                    name='filter'
+                    required
+                  />
+                </div>
 
-          <div style={{ marginLeft: "10px" }}>
-            <Heart
-              checked={filterByFav}
-              setChecked={() => {
-                
-              if(!user?.uid){
-                setLoginRedirectMessage('add coin to favorites')
-                setLogin(true)
-              }
-                if (user?.uid) {
-                  setFilterByFav(!filterByFav);                  
-                }
+                <div style={{ marginLeft: "10px" }}>
+                  <Heart
+                    checked={filterByFav}
+                    setChecked={() => {
 
-              }}
-              // color="var(--white)"
-              id='filterByFav'
-              name='filterByFav'
-              size={24}
-            />
-          </div>      
+                      if (!user?.uid) {
+                        setLoginRedirectMessage('add coin to favorites')
+                        setLogin(true)
+                      }
+                      if (user?.uid) {
+                        setFilterByFav(!filterByFav);
+                      }
+
+                    }}
+                    // color="var(--white)"
+                    id='filterByFav'
+                    name='filterByFav'
+                    size={24}
+                    color="var(--white)"
+                  />
+                </div>
+              </div>
+            )}
+          </Toolbar>
+        </> : ""
+      }
+      <div className={pathname == '/coins' ? 'd-flex flex-column justify-content-center align-items-center py-3 px-2' : 'd-flex flex-column justify-content-center align-items-center'}>
+        <div className='px-0 m-auto w-100' style={{ maxWidth }}>
+          <Carousel
+            {...{
+              expanded,
+              id: "BearVsBull",
+              index,
+              setIndex: (i: number) => {
+                setIndex(i);
+                // sound.current?.play().then(void 0);
+              },
+              numRows,
+              cols: getNumCards(width, expanded),
+              gap: 9,
+              coins,
+              totals,
+              user,
+              userInfo,
+              data,
+              onFavClick,
+              navigate: (url) => navigate(url, { replace: true }),
+            }}
+          >
+            {!expanded && (
+              <Buttons.ClickableText
+                onClick={() => {
+                  navigate("/coins");
+                }}
+                style={{ color: "var(--white)", fontWeight: "400" }}
+              >
+                {/* {upperCase(translate("view all"))} */}
+                {texts.ViewAll}
+              </Buttons.ClickableText>
+            )}
+          </Carousel>
         </div>
-      )}
-          </Toolbar> 
-    </>:""
-     }
-    <div className={pathname=='/coins'?'d-flex flex-column justify-content-center align-items-center py-3 px-2':'d-flex flex-column justify-content-center align-items-center'}>          
-      <div className='px-0 m-auto w-100' style={{ maxWidth }}>
-        <Carousel
-          {...{
-            expanded,
-            id: "BearVsBull",
-            index,
-            setIndex: (i: number) => {
-              setIndex(i);
-              // sound.current?.play().then(void 0);
-            },
-            numRows,
-            cols: getNumCards(width, expanded),
-            gap: 9,
-            coins,
-            totals,
-            user,
-            userInfo,
-            data,
-            onFavClick,
-            navigate: (url) => navigate(url, { replace: true }),
-          }}
-        >
-          {!expanded && (
-            <Buttons.ClickableText
-              onClick={() => {
-                navigate("/coins");
-              }}
-              style={{ color: "var(--white)", fontWeight: "400" }}
-            >
-              {/* {upperCase(translate("view all"))} */}
-              {texts.ViewAll}
-            </Buttons.ClickableText>
-          )}
-        </Carousel>
       </div>
-      </div>
-      </>
+    </>
   );
 };
 

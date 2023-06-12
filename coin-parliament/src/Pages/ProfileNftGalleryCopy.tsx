@@ -101,7 +101,7 @@ const ProfileNftGalleryCopy = () => {
       setAlbumOpen("")
     }
   }, [albumOpen])
-  
+
   const getNftCard = () => {
     const getCollectionType = firebase
       .firestore()
@@ -121,10 +121,10 @@ const ProfileNftGalleryCopy = () => {
 
 
   const onCollectionChange = (collectionName: any) => {
-  
+
     if (searchTerm?.length || selectCollection != "none") {
       // console.log(selectCollection,cardType?.length,"selectCollection")
-      
+
       setCardShow(true)
     }
     else {
@@ -142,7 +142,7 @@ const ProfileNftGalleryCopy = () => {
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
           });
-  
+
           setCollectionType(data)
           // setAllCardArray(data)
           setCardShow(false)
@@ -170,7 +170,7 @@ const ProfileNftGalleryCopy = () => {
         }).catch((error) => {
           console.log(error, "error");
         });
-      const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) =>  item.albumName == collectionName )
+      const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
       // console.log(getAlbumId && getAlbumId[0]?.id,"checkalbumId")
       const getSetsType = firebase
         .firestore()
@@ -186,15 +186,15 @@ const ProfileNftGalleryCopy = () => {
           });
           setSetsValue(data)
           console.log("setsdata", data)
-    
+
         }).catch((error) => {
           console.log(error, "error");
         });
-    
-    
+
+
     }
   }
-  
+
   // console.log(cardShow,myCards,"cardShow myCards")
 
   // const onSearch = (searchTerm: any) => {
@@ -206,358 +206,358 @@ const ProfileNftGalleryCopy = () => {
   //     setCardShow(false)
   //   }
 
-    const onSearch = (searchTerm: any) => {
-      setSearchTerm(searchTerm)
-      if (searchTerm?.length || selectCollection != "none") {
-        setCardShow(true)
-      }
-      else {
-        setCardShow(false)
-      }
-
-
-      if (cardType === 'all' && selectCollection === "none" && setsCardId === "none") {
-        const serchresult = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-        setAllCardNew(serchresult)
-        //  setCardNameNew(serchresult)
-      }
-      else {
-        const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
-        const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
-        const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
-        setAllCardNew(serchresult)
-        //  setCardNameNew(serchresult)
-      }
+  const onSearch = (searchTerm: any) => {
+    setSearchTerm(searchTerm)
+    if (searchTerm?.length || selectCollection != "none") {
+      setCardShow(true)
+    }
+    else {
+      setCardShow(false)
     }
 
 
-    const onSelectType = (cardType: any) => {
-      setCardType(cardType)
-      console.log(setsCardId, "setsCardId")
-      if (cardType === 'all') {
-        const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-        const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)
-        setCardNameNew(forcardName)
-        setAllCardNew(forcardName)
-
-        setSetsCardName("none")
-      }
-      else {
-        setCardShow(true)
-        const typeCard = allCardArrayNew.filter((card: any) => card.cardType === cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-        const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)
-        setCardNameNew(forcardName)
-        setAllCardNew(forcardName)
-        setSetsCardName("none")
-      }
+    if (cardType === 'all' && selectCollection === "none" && setsCardId === "none") {
+      const serchresult = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      setAllCardNew(serchresult)
+      //  setCardNameNew(serchresult)
     }
-
-    const onSelectSets = (cardId: any) => {
-      setSetsCardId(cardId)
-      if (cardId === 'none') {
-        const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card.albumId == selectCollection)
-        const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-        setAllCardNew(forcardName)
-        setCardNameNew(forcardName)
-        setSetsCardName("none")
-      }
-      else {
-        setCardShow(true);
-        const cardWithId = allCardArrayNew.filter((card: any) => card.setId == cardId && card.albumId == selectCollection)
-        const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card.cardType !== cardType.toUpperCase() : card.cardType == cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-        setAllCardNew(forcardName)
-        setCardNameNew(forcardName)
-        setSetsCardName("none")
-      }
+    else {
+      const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
+      const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+      const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
+      setAllCardNew(serchresult)
+      //  setCardNameNew(serchresult)
     }
+  }
 
-    const onSelectName = (mycardName: any) => {
-      setSetsCardName(mycardName)
-      if (mycardName === 'none') {
-        const cardWithName = allCardArrayNew.filter((card: any) => card.cardName !== mycardName)
-        const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
-        const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
-        const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
-        //  console.log(finalValue,"serchresult")
-        setAllCardNew(finalValue)
-        //  setSearchedCard((pev:any)=>finalValue)
-      }
-      else {
-        const cardWithName = allCardArrayNew.filter((card: any) => card.cardName == mycardName)
-        const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
-        const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
-        const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
-        setAllCardNew(finalValue)
-        //  console.log(finalValue,"serchresult")
-        //  setSearchedCard((pev:any)=>finalValue)
-      }
+
+  const onSelectType = (cardType: any) => {
+    setCardType(cardType)
+    console.log(setsCardId, "setsCardId")
+    if (cardType === 'all') {
+      const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)
+      setCardNameNew(forcardName)
+      setAllCardNew(forcardName)
+
+      setSetsCardName("none")
     }
+    else {
+      setCardShow(true)
+      const typeCard = allCardArrayNew.filter((card: any) => card.cardType === cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)
+      setCardNameNew(forcardName)
+      setAllCardNew(forcardName)
+      setSetsCardName("none")
+    }
+  }
+
+  const onSelectSets = (cardId: any) => {
+    setSetsCardId(cardId)
+    if (cardId === 'none') {
+      const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card.albumId == selectCollection)
+      const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      setAllCardNew(forcardName)
+      setCardNameNew(forcardName)
+      setSetsCardName("none")
+    }
+    else {
+      setCardShow(true);
+      const cardWithId = allCardArrayNew.filter((card: any) => card.setId == cardId && card.albumId == selectCollection)
+      const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card.cardType !== cardType.toUpperCase() : card.cardType == cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      setAllCardNew(forcardName)
+      setCardNameNew(forcardName)
+      setSetsCardName("none")
+    }
+  }
+
+  const onSelectName = (mycardName: any) => {
+    setSetsCardName(mycardName)
+    if (mycardName === 'none') {
+      const cardWithName = allCardArrayNew.filter((card: any) => card.cardName !== mycardName)
+      const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+      const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
+      const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
+      //  console.log(finalValue,"serchresult")
+      setAllCardNew(finalValue)
+      //  setSearchedCard((pev:any)=>finalValue)
+    }
+    else {
+      const cardWithName = allCardArrayNew.filter((card: any) => card.cardName == mycardName)
+      const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+      const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
+      const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
+      setAllCardNew(finalValue)
+      //  console.log(finalValue,"serchresult")
+      //  setSearchedCard((pev:any)=>finalValue)
+    }
+  }
 
 
 
-    const getAllRewardsOfUser = async (uid: string) => {
+  const getAllRewardsOfUser = async (uid: string) => {
 
-      var winCards: {
-        firstRewardCard: string,
-        firstRewardCardCollection: string,
-        firstRewardCardId: number,
-        firstRewardCardSerialNo: string,
-        firstRewardCardType: string,
-        secondRewardExtraVotes: number,
-        thirdRewardDiamonds: number
+    var winCards: {
+      firstRewardCard: string,
+      firstRewardCardCollection: string,
+      firstRewardCardId: number,
+      firstRewardCardSerialNo: string,
+      firstRewardCardType: string,
+      secondRewardExtraVotes: number,
+      thirdRewardDiamonds: number
 
-      }[] = []
-      await firebase
-        .firestore()
-        .collection("reward_transactions")
-        .where("user", "==", uid)
-        .get()
-        .then((doc: any) => {
+    }[] = []
+    await firebase
+      .firestore()
+      .collection("reward_transactions")
+      .where("user", "==", uid)
+      .get()
+      .then((doc: any) => {
 
-          doc.forEach((cards: any, index: number) => {
-            // winCards.push(cards.data().)
-            winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
+        doc.forEach((cards: any, index: number) => {
+          // winCards.push(cards.data().)
+          winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
 
-          })
         })
-        .catch((error: any) => {
-          console.log("getAllRewardsOfUser Error", error)
-        })
+      })
+      .catch((error: any) => {
+        console.log("getAllRewardsOfUser Error", error)
+      })
 
-      setWinerCard(winCards)
+    setWinerCard(winCards)
+  }
+
+  const allWinerCard = () => {
+    // if (myCards) {
+    //   setSearchedCard(winerCard.length && winerCard?.map((winItem:any) => {
+    //     {
+    //       allCard.filter((card: any) => {
+    //         console.log(card,)
+    //           card.cardId == winItem.firstRewardCardId
+    //       }
+
+    //       )
+    //   }
+    // }))
+    // }
+    // else {
+    //   setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+    // }
+  }
+
+
+  useEffect(() => {
+    getNftCard()
+    // @ts-ignore
+    getAllRewardsOfUser(`${user?.uid}`)
+  }, [])
+
+
+  useEffect(() => {
+    onCollectionChange(selectCollection)
+  }, [selectCollection])
+
+  useEffect(() => {
+    onSearch(searchTerm)
+
+  }, [searchTerm])
+  useEffect(() => {
+    // onSearch(searchTerm)
+    onSelectType(cardType)
+    onSelectSets(setsCardId)
+    onSelectName(setsCardName)
+  }, [
+    // allCard
+    cardType, setsCardId, setsCardName
+  ])
+
+
+
+
+  const BackSideCard = (value: string | number) => {
+
+    if (backCards.includes(value)) {
+      let allBackCard = [...backCards];
+      allBackCard.splice(backCards.indexOf(value), 1);
+      setBackCards(allBackCard)
     }
-
-    const allWinerCard = () => {
-      // if (myCards) {
-      //   setSearchedCard(winerCard.length && winerCard?.map((winItem:any) => {
-      //     {
-      //       allCard.filter((card: any) => {
-      //         console.log(card,)
-      //           card.cardId == winItem.firstRewardCardId
-      //       }
-
-      //       )
-      //   }
-      // }))
-      // }
-      // else {
-      //   setSearchedCard(allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase())))
-      // }
-    }
-
-
-    useEffect(() => {
-      getNftCard()
-      // @ts-ignore
-      getAllRewardsOfUser(`${user?.uid}`)
-    }, [])
-
-
-    useEffect(() => {
-      onCollectionChange(selectCollection)
-    }, [selectCollection])
-
-    useEffect(() => {
-      onSearch(searchTerm)
-
-    }, [searchTerm])
-    useEffect(() => {
-      // onSearch(searchTerm)
-      onSelectType(cardType)
-      onSelectSets(setsCardId)
-      onSelectName(setsCardName)
-    }, [
-      // allCard
-      cardType, setsCardId, setsCardName
-    ])
-
-
-
-
-    const BackSideCard = (value: string | number) => {
-
-      if (backCards.includes(value)) {
-        let allBackCard = [...backCards];
-        allBackCard.splice(backCards.indexOf(value), 1);
-        setBackCards(allBackCard)
-      }
-      else {
-        setBackCards([...backCards, value])
-      };
+    else {
+      setBackCards([...backCards, value])
     };
+  };
 
 
-    function sliceDived(arr: any, partSize: any) {
-      const res = [];
-      for (let i = 0; i < arr.length; i += partSize) {
-        const DivideEqual = arr.slice(i, i + partSize);
-        res.push(DivideEqual);
+  function sliceDived(arr: any, partSize: any) {
+    const res = [];
+    for (let i = 0; i < arr.length; i += partSize) {
+      const DivideEqual = arr.slice(i, i + partSize);
+      res.push(DivideEqual);
+    }
+    // return res;
+
+    setEqualPart(res)
+
+  }
+
+  useEffect(() => {
+    if (allCardNew?.length > 0) {
+      sliceDived(allCardNew, 4)
+
+    }
+    else {
+      sliceDived(allCardNew, 4)
+      // setCardShow(false)
+    }
+  }, [allCardNew])
+
+
+
+  const CheckCardDisable = (cardId: any) => {
+    var disableCard;
+
+    let cardTrue = winerCard?.find((winCard: any, index: number) => {
+
+      if (winCard?.firstRewardCardId != cardId) {
+
+        disableCard = "CardDisebal"
+        return false
       }
-      // return res;
+      if (winCard?.firstRewardCardId == cardId) {
 
-      setEqualPart(res)
-
-    }
-
-    useEffect(() => {
-      if (allCardNew?.length > 0) {
-        sliceDived(allCardNew, 4)
-
+        disableCard = undefined
+        return true
       }
-      else {
-        sliceDived(allCardNew, 4)
-        // setCardShow(false)
+
+    })
+    return disableCard
+  }
+
+
+
+  const getMintedTime = (cardId: any) => {
+    var getMIntedTime;
+    let mintedTime = winerCard?.find((winCard: any, index: number) => {
+      if (winCard?.firstRewardCardId == cardId) {
+        const date = new Date(winCard?.seconds * 1000);
+        getMIntedTime = date.toLocaleString()
+        return true
       }
-    }, [allCardNew])
+    })
+    return getMIntedTime
+  }
 
+  const getPriSerialNo = (cardId: any) => {
+    var seriaNo;
+    let PriSerialNo = winerCard?.find((winCard: any, index: number) => {
+      if (winCard?.firstRewardCardId == cardId) {
+        seriaNo = winCard?.firstRewardCardSerialNo
+        return "hello"
+      }
+    })
+    return seriaNo
+  }
 
+  const [filterCard, setFilterCard] = useState<any>();
 
-    const CheckCardDisable = (cardId: any) => {
-      var disableCard;
+  useEffect(() => {
+    setFilterCard(equalPart);
+  }, [equalPart])
+  const availableCard = (e: React.FormEvent<HTMLInputElement>) => {
+    if (e.currentTarget.checked) {
+      let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
+      console.log(winnerCardId, winerCard, 'pkkk');
 
-      let cardTrue = winerCard?.find((winCard: any, index: number) => {
+      setFilterCard((prev: any) => {
 
-        if (winCard?.firstRewardCardId != cardId) {
-
-          disableCard = "CardDisebal"
-          return false
-        }
-        if (winCard?.firstRewardCardId == cardId) {
-
-          disableCard = undefined
-          return true
-        }
-
-      })
-      return disableCard
-    }
-
-
-
-    const getMintedTime = (cardId: any) => {
-      var getMIntedTime;
-      let mintedTime = winerCard?.find((winCard: any, index: number) => {
-        if (winCard?.firstRewardCardId == cardId) {
-          const date = new Date(winCard?.seconds * 1000);
-          getMIntedTime = date.toLocaleString()
-          return true
-        }
-      })
-      return getMIntedTime
-    }
-
-    const getPriSerialNo = (cardId: any) => {
-      var seriaNo;
-      let PriSerialNo = winerCard?.find((winCard: any, index: number) => {
-        if (winCard?.firstRewardCardId == cardId) {
-          seriaNo = winCard?.firstRewardCardSerialNo
-          return "hello"
-        }
-      })
-      return seriaNo
-    }
-
-    const [filterCard, setFilterCard] = useState<any>();
-
-    useEffect(() => {
+        return prev;
+      });
+    } else {
       setFilterCard(equalPart);
-    }, [equalPart])
-    const availableCard = (e: React.FormEvent<HTMLInputElement>) => {
-      if (e.currentTarget.checked) {
-        let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
-        console.log(winnerCardId, winerCard, 'pkkk');
-
-        setFilterCard((prev: any) => {
-
-          return prev;
-        });
-      } else {
-        setFilterCard(equalPart);
-      }
-
     }
 
-    console.log(notFound, "searchedCard")
-    return (
-      <div className='' style={{ background: "white", minHeight: "80vh" }}>
-        {/* <div className=" w-100 container pt-3" >
-          <Row className="justify-content-md-center">
-            <Col lg={3} sm={12} xs={13} className="">
-              <input type='text' onChange={e => onSearch(e.target.value)} placeholder='Search...' className='py-2 rounded border w-100 mb-lg-0 mb-sm-3 mb-3' style={{ marginRight: '10px' }} />
-            </Col>
-            <Col lg={2} sm={6} xs={6} className="" style={{ paddingRight: '0px' }} >
-              <select
-                name='cars'
-                id='cars'
-                style={{ marginRight: '10px' }}
-                className="bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
-                value={selectCollection}
-                onChange={e => setSelectCollection(e.target.value)}
-              >
-                <option value='none'>{texts.SelectCollection}</option>
-                {collectionType?.map((data: any, index: number) => {
-                  return <option selected value={data?.albumName} key={index}>{data?.albumName}</option>
-                })}
+  }
 
-              </select>
-            </Col>
-            <Col lg={2} sm={6} xs={6} className="" style={{ paddingRight: '0px' }}>
-              <select
-                name='cars'
-                id='cars'
-                className=" bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
-                onChange={e => onSelectSets(e.target.value)}
-                style={{ marginRight: '10px' }}
-              >
-                <option value='none'>{texts.SelectSets}</option>
-                {setsValue?.map((data: any, index: number) => {
-                  return <option value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
-                })}
-              </select>
-            </Col>
-            <Col lg={2} sm={6} xs={6} className="" style={{ paddingRight: '0px' }}>
-              <select
-                name='type'
-                id='type'
-                className="bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
-                onChange={(e) => { onSelectType(e.target.value) }}
-                style={{ marginRight: '10px' }}
-              >
-                {selectCollection != "none" ? <><option value='all'>{texts.SelectType}</option>
-                  <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
-                  <option value={`${texts.Rare}`}>{texts.Rare}</option>
-                  <option value={`${texts.Epic}`}>{texts.Epic}</option>
-                  <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
-                  <option value={`${texts.Common}`}>{texts.Common}</option></> :
-                  <option value='all'>{texts.SelectType}</option>}
-              </select>
-            </Col>
-            <Col lg={1} sm={6} xs={6} className="" style={{ paddingRight: '0px' }}>
-              <select
-                className="bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
-                style={{ marginRight: '10px' }}
-                onChange={e => onSelectName(e.target.value)}
-              >
-                <option value='none'>{texts.SelectName}</option>
-                {cardNameNew?.map((data: any, index: number) => {
-                  return <option value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
-                })}
-              </select>
-            </Col>
-            <Col lg={2} sm={12} xs={12} className="d-flex  mb-lg-0 mb-sm-3 mb-3">
-              <Form.Check
-                style={{ fontSize: "20px", marginRight: "10px" }}
-                className="align-self-center"
-                type="checkbox"
-                id={`default-checkbox`}
-                onClick={() => { setMyCards(!myCards) }}
-              />
-              <label htmlFor="default-checkbox" className="align-self-center">{texts.AvailableCards}</label>
-            </Col>
-          </Row>
-        </div> */}
+  console.log(notFound, "searchedCard")
+  return (
+    <div className='' style={{ background: "white", minHeight: "80vh" }}>
+      {/* <div className=" w-100 container pt-3 d-flex justify-content-center " >
+        <Row className="justify-content-md-center">
+          <Col lg={3} sm={12} xs={13} className="" style={{ paddingLeft: '0px' }}>
+            <input type='text' onChange={e => onSearch(e.target.value)} placeholder='Search...' className='py-2 rounded border w-100 mb-lg-0 mb-sm-3 mb-3' style={{ marginRight: '10px' }} />
+          </Col>
+          <Col lg={2} sm={6} xs={6} className="" style={{ padding: '0px' }} >
+            <select
+              name='cars'
+              id='cars'
+              style={{ marginRight: '10px' }}
+              className="bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
+              value={selectCollection}
+              onChange={e => setSelectCollection(e.target.value)}
+            >
+              <option value='none'>{texts.SelectCollection}</option>
+              {collectionType?.map((data: any, index: number) => {
+                return <option selected value={data?.albumName} key={index}>{data?.albumName}</option>
+              })}
 
-        <div className='d-flex justify-content-center pt-5 flex-wrap '>
+            </select>
+          </Col>
+          <Col lg={2} sm={6} xs={6} className="" style={{ paddingRight: '0px' }}>
+            <select
+              name='cars'
+              id='cars'
+              className=" bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
+              onChange={e => onSelectSets(e.target.value)}
+              style={{ marginRight: '10px' }}
+            >
+              <option value='none'>{texts.SelectSets}</option>
+              {setsValue?.map((data: any, index: number) => {
+                return <option value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
+              })}
+            </select>
+          </Col>
+          <Col lg={2} sm={6} xs={6} className="" style={{ paddingRight: '0px' }}>
+            <select
+              name='type'
+              id='type'
+              className="bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
+              onChange={(e) => { onSelectType(e.target.value) }}
+              style={{ marginRight: '10px' }}
+            >
+              {selectCollection != "none" ? <><option value='all'>{texts.SelectType}</option>
+                <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
+                <option value={`${texts.Rare}`}>{texts.Rare}</option>
+                <option value={`${texts.Epic}`}>{texts.Epic}</option>
+                <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
+                <option value={`${texts.Common}`}>{texts.Common}</option></> :
+                <option value='all'>{texts.SelectType}</option>}
+            </select>
+          </Col>
+          <Col lg={1} sm={6} xs={6} className="" style={{ paddingRight: '0px' }}>
+            <select
+              className="bg-white border rounded py-2 mb-lg-0 mb-sm-3 w-100 mb-3"
+              style={{ marginRight: '10px' }}
+              onChange={e => onSelectName(e.target.value)}
+            >
+              <option value='none'>{texts.SelectName}</option>
+              {cardNameNew?.map((data: any, index: number) => {
+                return <option value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
+              })}
+            </select>
+          </Col>
+          <Col lg={2} sm={12} xs={12} className="d-flex  mb-lg-0 mb-sm-3 mb-3" style={{ paddingRight: '0px' }}>
+            <Form.Check
+              style={{ fontSize: "20px", marginRight: "10px" }}
+              className="align-self-center"
+              type="checkbox"
+              id={`default-checkbox`}
+              onClick={() => { setMyCards(!myCards) }}
+            />
+            <label htmlFor="default-checkbox" className="align-self-center">{texts.AvailableCards}</label>
+          </Col>
+        </Row>
+      </div> */}
+
+      <div className='d-flex justify-content-center pt-5 flex-wrap '>
         <input
           type='text'
 
@@ -578,8 +578,8 @@ const ProfileNftGalleryCopy = () => {
             onChange={e => setSelectCollection(e.target.value)}
           >
             <option value='none'>{texts.SelectCollection}</option>
-                {collectionType?.map((data: any, index: number) => {
-                  return <option selected value={data?.albumName} key={index}>{data?.albumName}</option>
+            {collectionType?.map((data: any, index: number) => {
+              return <option selected value={data?.albumName} key={index}>{data?.albumName}</option>
             })}
 
           </select>
@@ -590,10 +590,10 @@ const ProfileNftGalleryCopy = () => {
             // onChange={e=>onCollectionChange(e.target.value)}
             onChange={e => onSelectSets(e.target.value)}
           >
-             <option value='none'>{texts.SelectSets}</option>
-                {setsValue?.map((data: any, index: number) => {
-                  return <option value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
-                })}
+            <option value='none'>{texts.SelectSets}</option>
+            {setsValue?.map((data: any, index: number) => {
+              return <option value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
+            })}
           </select>
         </div>
         <div className={`${window.screen.width < 767 ? "" : ""}`}>
@@ -618,10 +618,10 @@ const ProfileNftGalleryCopy = () => {
             // onChange={e=>onCollectionChange(e.target.value)}
             onChange={e => onSelectName(e.target.value)}
           >
-             <option value='none'>{texts.SelectName}</option>
-                {cardNameNew?.map((data: any, index: number) => {
-                  return <option value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
-                })}
+            <option value='none'>{texts.SelectName}</option>
+            {cardNameNew?.map((data: any, index: number) => {
+              return <option value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
+            })}
           </select>
         </div>
         <div
@@ -638,100 +638,61 @@ const ProfileNftGalleryCopy = () => {
           />
           <label htmlFor="default-checkbox">{texts.AvailableCards}</label>
         </div>
-      </div>      
-        <GalleryType
-          className=''
-          style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
-        >
-          {!myCards && !cardShow && collectionType?.map((data: any, index: number) => {
-            return <div
-              style={{
-                width: "600px"
-              }}
-              onClick={() => { setSelectCollection(data?.albumName) }} key={index}>
-              {allVideo[`${data?.albumName}`] ? <Video autoPlay={true} loop={true} playsInline>
-                <source
-                  src={allVideo[`${data?.albumName}`]}
-                  type="video/mp4"
-                />
-              </Video> : <p style={{ color: "black" }}>{data?.albumName}</p>}
-              {/* <p>{data?.collectionName} COLLECTION</p> */}
-            </div>
-          })}
-        </GalleryType>
+      </div>
+      <GalleryType
+        className=''
+        style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
+      >
+        {!myCards && !cardShow && collectionType?.map((data: any, index: number) => {
+          return <div
+            style={{
+              width: "600px"
+            }}
+            onClick={() => { setSelectCollection(data?.albumName) }} key={index}>
+            {allVideo[`${data?.albumName}`] ? <Video autoPlay={true} loop={true} playsInline>
+              <source
+                src={allVideo[`${data?.albumName}`]}
+                type="video/mp4"
+              />
+            </Video> : <p style={{ color: "black" }}>{data?.albumName}</p>}
+            {/* <p>{data?.collectionName} COLLECTION</p> */}
+          </div>
+        })}
+      </GalleryType>
 
-        {allCardNew?.length > 0 ?
-          <SummerCard className="mt-4">
-            {!!cardShow ? filterCard?.map((cardPart: any, ind: number) => {
-              return <div className='w-100 m-auto mb-4' key={ind}>
-                <SwiperBar>
-                  {cardPart?.map((item: any, index: number) => {
-                    if (myCards) {
+      {allCardNew?.length > 0 ?
+        <SummerCard className="mt-4">
+          {!!cardShow ? filterCard?.map((cardPart: any, ind: number) => {
+            return <div className='w-100 m-auto mb-4' key={ind}>
+              <SwiperBar>
+                {cardPart?.map((item: any, index: number) => {
+                  if (myCards) {
 
-                      if (winerCard.length && winerCard?.find((WinerItem: any) => WinerItem?.firstRewardCardId == item?.cardId)) {
-                        console.log("i am working")
-                        // setNotFound(notFound +1)
-                        notFound = true;
-                        return (
-                          <NftOneCard
-                            key={index}
-                            DivClass={item?.cardType}
-                            HeaderText={item?.cardType}
-                            HeaderClass={`${item?.cardType}_text`}
-                            Serie={item?.setName || "Set" + index}
-                            BackCardName={item?.cardName}
-                            Rarity={item?.cardType}
-                            Quantity={item?.totalQuantity}
-                            holderNo={item?.noOfCardHolders}
-                            // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                            // cardNo={item?.sno[index]}
-                            // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                            cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
-                            // GeneralSerialNo={}                            
-                            CollectionType={item?.albumName || "LEGENDARY"}
-                            MintedTime={getMintedTime(item?.cardId)}
-                            PrivateSerialNo={getPriSerialNo(item?.cardId)}
-                            Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
-                            userId={item?.setId}
-                            // Disable={"CardDisebal"}                            
-                            cardHeader={`${item?.cardName}`}
-                            id={item?.cardId}
-                            BackSideCard={BackSideCard}
-                            fulldata={item}
-                            flipCard={backCards?.includes(item?.cardId)}
-                          />
-                        );
-                      } else {
-
-                        if (filterCard.length - 1 == ind && cardPart.length - 1 == index) {
-                          // return  console.log("i am working")
-                          return <div className="d-flex justify-content-center"> {notFound == false && <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p>}</div>
-                        }
-                      }
-                    }
-                    else {
+                    if (winerCard.length && winerCard?.find((WinerItem: any) => WinerItem?.firstRewardCardId == item?.cardId)) {
+                      console.log("i am working")
+                      // setNotFound(notFound +1)
+                      notFound = true;
                       return (
                         <NftOneCard
                           key={index}
                           DivClass={item?.cardType}
                           HeaderText={item?.cardType}
                           HeaderClass={`${item?.cardType}_text`}
-                          // Serie={item?.setName}
-                          Serie={item?.setName || "Set" + (index + 1)}
+                          Serie={item?.setName || "Set" + index}
                           BackCardName={item?.cardName}
                           Rarity={item?.cardType}
                           Quantity={item?.totalQuantity}
                           holderNo={item?.noOfCardHolders}
                           // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                           // cardNo={item?.sno[index]}
-                          cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
                           // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                          cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
+                          // GeneralSerialNo={}                            
+                          CollectionType={item?.albumName || "LEGENDARY"}
                           MintedTime={getMintedTime(item?.cardId)}
                           PrivateSerialNo={getPriSerialNo(item?.cardId)}
                           Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
                           userId={item?.setId}
-                          // CollectionType={item?.collectionName}
-                          CollectionType={item?.albumName || "LEGENDARY"}
                           // Disable={"CardDisebal"}                            
                           cardHeader={`${item?.cardName}`}
                           id={item?.cardId}
@@ -740,29 +701,68 @@ const ProfileNftGalleryCopy = () => {
                           flipCard={backCards?.includes(item?.cardId)}
                         />
                       );
+                    } else {
+
+                      if (filterCard.length - 1 == ind && cardPart.length - 1 == index) {
+                        // return  console.log("i am working")
+                        return <div className="d-flex justify-content-center"> {notFound == false && <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p>}</div>
+                      }
                     }
-                  })}
-                  {/* {showWincardTExt ==true ? } */}
-                </SwiperBar>
-              </div>
-            })
-              : ""
-            }
-          </SummerCard> :
-          <div className="d-flex justify-content-center mt-5">
-            {cardShow == true && <p style={{
-              color: "black"
-            }}>Data Not Found</p>}
-            {cardShow == false && myCards == true && <p style={{
-              color: "black"
-            }}>First Select Colloction</p>}
-          </div>
-        }
+                  }
+                  else {
+                    return (
+                      <NftOneCard
+                        key={index}
+                        DivClass={item?.cardType}
+                        HeaderText={item?.cardType}
+                        HeaderClass={`${item?.cardType}_text`}
+                        // Serie={item?.setName}
+                        Serie={item?.setName || "Set" + (index + 1)}
+                        BackCardName={item?.cardName}
+                        Rarity={item?.cardType}
+                        Quantity={item?.totalQuantity}
+                        holderNo={item?.noOfCardHolders}
+                        // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                        // cardNo={item?.sno[index]}
+                        cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
+                        // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                        MintedTime={getMintedTime(item?.cardId)}
+                        PrivateSerialNo={getPriSerialNo(item?.cardId)}
+                        Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
+                        userId={item?.setId}
+                        // CollectionType={item?.collectionName}
+                        CollectionType={item?.albumName || "LEGENDARY"}
+                        // Disable={"CardDisebal"}                            
+                        cardHeader={`${item?.cardName}`}
+                        id={item?.cardId}
+                        BackSideCard={BackSideCard}
+                        fulldata={item}
+                        flipCard={backCards?.includes(item?.cardId)}
+                      />
+                    );
+                  }
+                })}
+                {/* {showWincardTExt ==true ? } */}
+              </SwiperBar>
+            </div>
+          })
+            : ""
+          }
+        </SummerCard> :
+        <div className="d-flex justify-content-center mt-5">
+          {cardShow == true && <p style={{
+            color: "black"
+          }}>Data Not Found</p>}
+          {cardShow == false && myCards == true && <p style={{
+            color: "black"
+          }}>First Select Colloction</p>}
+        </div>
+      }
 
 
 
-      </div >
-    );
-  };
+    </div >
+  );
+};
 
 export default ProfileNftGalleryCopy;
