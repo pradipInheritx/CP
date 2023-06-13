@@ -543,10 +543,10 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
   return leaders
     .map((leader) => {
       const { status } = leader;
-      const leaderObj = allLeaders.find((l) => l.userId === leader.uid);
+      const leaderObj = allLeaders.find((leaderData) => leaderData.userId === leader.uid);
       return leaderObj ? { ...leaderObj, status: status?.name } : undefined;
   })
-    .filter((l) => l);
+    .filter((leaderData) => leaderData);
 };
 
 export const errorLogging = async (
