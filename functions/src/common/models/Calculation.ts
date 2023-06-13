@@ -513,21 +513,40 @@ export const getLeaderUsers = async (userId: string) => {
 };
 
 export const getLeaderUsersByIds = async (userIds: string[]) => {
-  const leaders = await firestore()
-    .collection("users")
-    .withConverter(userConverter)
-    .where("uid", "in", userIds)
-    .get();
+  // const leaders = await firestore()
+  //   .collection("users")
+  //   .withConverter(userConverter)
+  //   .where("uid", "in", userIds)
+  //   .get();
+
+  const queryPromises = userIds.map(async (user) => {
+    return await firestore().collection('users')
+      .where('uid', '==', user)
+      .get();
+  });
+  
+  const querySnapshots = await Promise.all(queryPromises);
+  const leaders: any[] = [];
+
+  querySnapshots.forEach(querySnapshot => {
+    querySnapshot.docs.forEach(doc => {
+      const documentData = doc.data() as any;
+      leaders.push(documentData);
+    });
+  });
+
+  console.log("leaders =>", leaders);
+
 
   const allLeaders = await getLeaders();
 
-  return leaders.docs
+  return leaders
     .map((leader) => {
-      const { status } = leader.data();
-      const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+      const { status } = leader;
+      const leaderObj = allLeaders.find((leaderData) => leaderData.userId === leader.uid);
       return leaderObj ? { ...leaderObj, status: status?.name } : undefined;
-    })
-    .filter((l) => l);
+  })
+    .filter((leaderData) => leaderData);
 };
 
 export const errorLogging = async (
