@@ -292,9 +292,37 @@ const handleClick=()=>{
     }
     classes.forEach((c) => body.classList.add(c.toLowerCase()));
   }, [pathname]);
-  const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  // const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
+  const [allCoins, setAllCoins] = useState<string[]>(
+    [
+    "BTC",
+    "ETH",
+    "BNB",
+    "ADA",
+    "SOL",
+    "XRP",
+    "LUNA",
+    "DOGE",
+    "DOT",
+    "SHIB",
+    "MATIC",
+    "CRO",
+    "LTC",
+    "LINK",
+    "UNI",
+    "TRX",
+    "XLM",
+    "MANA",
+    "HBAR",
+    "VET",
+    "SAND",
+    "EOS",
+    "CAKE"
+  ]
+  );
   const [changePrice, setChangePrice] = useState<any>(0);
-  const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
+  // const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
+  const [allPairs, setAllPairs] = useState<Array<string[]>>([["BTC","ETH"],["BTC","ETH"],["BTC","ETH"],]);
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);
   const [paxData, setPaxData] = useState<PaxData>({} as PaxData);
   const [authStateChanged, setAuthStateChanged] = useState(false);
@@ -305,8 +333,55 @@ const handleClick=()=>{
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
+  // const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
+  //   getCoins() as { [symbol: string]: Coin }
+  // );
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
-    getCoins() as { [symbol: string]: Coin }
+    {
+    DEMO: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+    },
+    DEMO2: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+      },
+    
+    DEMO3: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+},
+    DEMO4: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+},
+    DEMO5: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+},
+    DEMO6: {
+      id: 4,
+    name: "Cardano",
+    price: 0.2738,
+    symbol:"ADA",
+    trend: 2.11,
+}
+  }
   );
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -331,6 +406,7 @@ const handleClick=()=>{
   );
   const [totals, setTotals] = useState<{ [key: string]: Totals }>(
     {} as { [key: string]: Totals }
+    // "3"
   );
   const [timeframes, setTimeframes] = useState<TimeFrame[]>([]);
   const [voteRules, setVoteRules] = useState<VoteRules>({} as VoteRules);
@@ -1119,25 +1195,24 @@ console.log('fmctoken',fcmToken)
                                     <div className='pwaPopup'  style={{display:pwaPopUp}}>
                                         <span>{texts.InstallCoinParliament}</span>
                                     <button
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={onClick}
-      style={{zIndex:99999}}
-    >
-      Install
-    </button>
-    <span
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={e=>setPwaPopUp('none')}
-                                          style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}
-    >
-      x
-    </span>
+                                        className="link-button"
+                                        id="setup_button"
+                                        aria-label="Install app"
+                                        title="Install app"
+                                        onClick={onClick}
+                                        style={{zIndex:99999}}
+                                      >
+                                        Install
+                                      </button>
+                                      <span
+                                        className="link-button"
+                                        id="setup_button"
+                                        aria-label="Install app"
+                                        title="Install app"
+                                        onClick={e=>setPwaPopUp('none')}
+                                        style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}>
+                                        x
+                                      </span>
                                       </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />

@@ -50,7 +50,8 @@ const Coins = ({
 }) => {
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
-  let navigate = useNavigate();
+  let navigate = useNavigate();  
+  
   const { coins, totals, allCoins } = useContext(CoinContext);
   const { userInfo, user } = useContext(UserContext);
   const [index, setIndex] = useState(0);
@@ -65,7 +66,7 @@ const Coins = ({
   );
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
             // const { changePrice, setChangePrice } = useContext(CoinsContext);
-
+  
   useEffect(() => {
     setData(getFilteredData(filter, coins, totals, allCoins));
   }, [filter, coins, totals, allCoins]);
