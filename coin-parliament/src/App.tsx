@@ -1008,6 +1008,7 @@ function App() {
     });
     if (tempTessTimeVote && calculateVote) {
       timeEndCalculation(tempTessTimeVote);
+      setCalculateVote(false);
     }
   }, [voteDetails?.activeVotes]);
   // useEffect(() => {
@@ -1021,7 +1022,7 @@ function App() {
     impact: null
   });
   useEffect(() => {
-    console.log(voteDetails.voteImpact, 'pk');
+    console.log(voteDetails.voteImpact, 'pkkk');
 
     voteImpact.current = voteDetails.voteImpact;
   }, [voteDetails]);
@@ -1083,7 +1084,7 @@ function App() {
               console.log(err.message);
             }
           });
-        }, (second_diff * 1000));
+        }, ((second_diff * 1000)));
         return () => clearTimeout(timer);
       }
     }
@@ -1664,6 +1665,7 @@ function App() {
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
+                        setCalculateVote={setCalculateVote}
                       />}
                     </UserContext.Provider>
                   </CoinsContext.Provider>

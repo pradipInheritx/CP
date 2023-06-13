@@ -372,7 +372,7 @@ export default function SpeedTest(
   }, [symbol1, allCoinsSetting, vote?.voteTime])
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }} >
-      <Speed value={persentValue || 50} />{/* // low<mid 40-60>high */}
+      <Speed value={persentValue} />{/* // low<mid 40-60>high */}
     </MotionConfig>
   );
 }
