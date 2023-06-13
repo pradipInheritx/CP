@@ -81,19 +81,19 @@ const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
 function ModalForResult({ popUpOpen, vote, type,
-  // setCalculateVote,
+  setCalculateVote,
    /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
-  popUpOpen?: any,
-  vote: any,
-  type?: string,
-  // setCalculateVote: React.Dispatch<React.SetStateAction<boolean>>
-  // setpopUpOpen?: any,
-  // setHideButton?: any,
-  // selectedTimeFrame?: any,
-  // hideButton?: any,
-  // setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
-  // setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
-}) {
+    popUpOpen?: any,
+    vote: any,
+    type?: string,
+    setCalculateVote: React.Dispatch<React.SetStateAction<boolean>>
+    // setpopUpOpen?: any,
+    // setHideButton?: any,
+    // selectedTimeFrame?: any,
+    // hideButton?: any,
+    // setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
+    // setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
+  }) {
 
   const navigate = useNavigate();
   const setVoteDetails = useContext(VoteDispatchContext);
@@ -135,10 +135,10 @@ function ModalForResult({ popUpOpen, vote, type,
         ...prev,
         lessTimeVote: undefined,
         activeVotes: temp,
-        openResultModal: false,
+        openResultModal: false
       };
     });
-    // setCalculateVote(true);
+    setCalculateVote(true);
     // setLessTimeVoteDetails({
     //   lessTimeVote: undefined,
     //   openResultModal: false
@@ -147,6 +147,7 @@ function ModalForResult({ popUpOpen, vote, type,
     //   setModalData(undefined);
     // }
   }
+
 
 
   const { coins } = useContext(CoinsContext);
@@ -371,9 +372,6 @@ function ModalForResult({ popUpOpen, vote, type,
                               // )
                               vote.valueVotingTime[1]
                             }
-                          </div>
-                          <div>
-                            {/* {vote.valueExpirationTime && <Trend num={trend} />} */}
                           </div>
                         </div>
                       </div>
