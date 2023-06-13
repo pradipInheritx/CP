@@ -172,7 +172,7 @@ export const LoginRegular = async (
   const auth = getAuth();
   const email = getValue(e, "email");
   const password = getValue(e, "password");
-
+  var showErroe = false;
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
@@ -201,24 +201,36 @@ export const LoginRegular = async (
     else  callback.errorFunc({message:'Please verify your email first.'} as Error);
   } catch (err) {
 
-    // console.log(err.message,"allcode")
     
-// @ts-ignore
+    // @ts-ignore
+    console.log(err.message,"allcode")
+    // @ts-ignore
     switch (err.code) {
       case 'auth/wrong-password':
-        // Alert.alert('Email already in use !')
+        
         callback.errorFunc({ message: 'Your password is invalid.'} as Error);
+        break;
+      case 'auth/user-not-found':
+        
+        callback.errorFunc({ message: 'This user not found'} as Error);
         break;
       case 'auth/too-many-requests': 
         callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .'} as Error);
         break;
-      case 'auth/invalid-email':
-        // Alert.alert('Email already in use !')
-        callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .'} as Error);
+      case 'auth/invalid-email':        
+        callback.errorFunc({ message: 'This Email is not Valid.'} as Error);
         break;
-      // @ts-ignore
-      default: callback.errorFunc({ message:err.message } as Error);
+      // @ts-ignore      
+      default: showErroe = true;
     }    
+
+    // @ts-ignore    
+    const matches = err.code.replace("auth/","");
+    const lastmatches = matches.replace(/\b(?:-)\b/gi," ");
+    if (showErroe) {
+      callback.errorFunc({ message: lastmatches } as Error);
+      showErroe=false
+    }
   }
 };
 
