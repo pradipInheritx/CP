@@ -119,7 +119,6 @@ const Menu = ({
         collapseOnSelect
         expand='lg'
         style={{
-          backgroundColor: '#6352e8',
           paddingRight: window.screen.width > 979 ? "20px" : "",
           paddingLeft: window.screen.width > 979 ? "20px" : "",
           // background:

@@ -244,14 +244,14 @@ function App() {
       console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, click_action: homePageUrl } } = message.data["firebase-messaging-msg-data"];
-    
+
         showToast(
           <div>
             <h5>{title}</h5>
             <p>{body}</p>
           </div>
         );
-    
+
         if (true) {
           // Redirect the user to the home page
           window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
@@ -1278,7 +1278,7 @@ function App() {
                       {(getSubdomain() !== "admin" ||
                         (getSubdomain() === "admin" && !user)) && (
                           <>
-                            {/* <Background pathname={pathname} />e */}
+                            <Background pathname={pathname} />
                             <AppContainer
                               fluid
                               pathname={pathname}
@@ -1424,9 +1424,9 @@ function App() {
                                             <Route path='/' element={
 
                                               <Home />} />
-                                               <Route path='/firebase-messaging-sw.js#' element={
+                                            <Route path='/firebase-messaging-sw.js#' element={
 
-<Home />} />
+                                              <Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
