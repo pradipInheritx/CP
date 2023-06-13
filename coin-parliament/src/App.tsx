@@ -252,7 +252,7 @@ function App() {
             <p>{body}</p>
           </div>
         );
-    const typeName = {...message.data["firebase-messaging-msg-data"]?.notification}
+        const typeName = { ...message.data["firebase-messaging-msg-data"]?.notification }
 
         // if (typeName?.title.includes("-")) {
 
@@ -1298,7 +1298,7 @@ function App() {
                       {(getSubdomain() !== "admin" ||
                         (getSubdomain() === "admin" && !user)) && (
                           <>
-                            {/* <Background pathname={pathname} />e */}
+                            <Background pathname={pathname} />
                             <AppContainer
                               fluid
                               pathname={pathname}
@@ -1456,9 +1456,9 @@ function App() {
                                             <Route path='/' element={
 
                                               <Home />} />
-                                               <Route path='/firebase-messaging-sw.js#' element={
+                                            <Route path='/firebase-messaging-sw.js#' element={
 
-<Home />} />
+                                              <Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
