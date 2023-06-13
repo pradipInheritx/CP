@@ -12,7 +12,10 @@ const FQbox = styled.div`
 const Header = styled(Accordion.Header)`
   & .accordion-button {    
     color: #6352e8;
-    background-color: #fff;
+    // background-color: #fff;
+     box-shadow: none;
+    border-color: rgba(0,0,0,.125);
+    z-index:0;
     &::after {
       margin-right: 0;
     }

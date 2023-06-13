@@ -82,7 +82,9 @@ self.addEventListener('notificationclick', event => {
   event.notification.close();
   
   // Add the logic here to redirect the user to the home page of your app
+  // const homePageUrl = '/';
   const homePageUrl = '/';
+
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then(clients => {
       for (let client of clients) {
