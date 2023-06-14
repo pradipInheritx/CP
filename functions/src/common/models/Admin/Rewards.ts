@@ -26,7 +26,7 @@ type Card = {
     quantity: number;
     totalQuantity: number;
     sno: string[];
-    noOfCardHolder: number;
+    noOfCardHolders: number;
     cardStatus: boolean;
     cardImageUrl: any;
     cardVideoUrl: any;
@@ -186,7 +186,7 @@ export const createCard = async (req: any, res: any) => {
             cardName,
             cardType,
             quantity: totalQuantity,
-            noOfCardHolder: 0,
+            noOfCardHolders: 0,
             totalQuantity,
             cardStatus,
             sno: await generateSerialNumber(
@@ -426,7 +426,7 @@ export const updateCard = async (req: any, res: any) => {
     try {
 
         const { cardId } = req.params
-        const { albumId, setId, albumName, setName, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImageUrl, cardVideoUrl } = req.body
+        const { albumId, setId, albumName, setName, cardName, cardType, quantity, totalQuantity, noOfCardHolders, cardStatus, cardImageUrl, cardVideoUrl } = req.body
 
         const getCardQuery = await firestore().collection("cardsDetails").doc(cardId).get();
 
@@ -449,7 +449,7 @@ export const updateCard = async (req: any, res: any) => {
             cardType,
             quantity,
             totalQuantity,
-            noOfCardHolder,
+            noOfCardHolders,
             cardStatus,
             sno: await generateSerialNumber(
                 getAlbum.albumName,

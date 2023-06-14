@@ -329,6 +329,8 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       const cardDataQuery = await firestore().collection("cardsDetails").doc(firstRewardCardObj.cardId).get();
       const cardData: any = { ...cardDataQuery.data(), cardId: cardDataQuery.id };
 
+      console.log("cardData", cardData);
+
       cardData.sno = cardData.sno.filter(
         (item: any) => item != firstRewardCardSerialNo
       );
@@ -344,11 +346,11 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
         thirdRewardDiamonds,
       };
 
-      const countTransactionCount = await firestore().collection('reward_transactions').where("winData.firstRewardCardId", "==", "firstRewardCardObj.cardId").get();
-      const countData = countTransactionCount.docs.map((data: any) => { data.data() })
-      console.log("countData ------", countData.length, firstRewardCardObj.noOfCardHolder)
-      if (countData.length >= firstRewardCardObj.noOfCardHolder) {
-        return "Minimum required allocation of this card is expired"
+      const countTransactionCount = await firestore().collection('reward_transactions').where("winData.firstRewardCardId", "==", firstRewardCardObj.cardId).get();
+      const countData = countTransactionCount.docs.map((e: any) => e.data())
+      console.log("countData ------", countData.length, firstRewardCardObj.noOfCardHolders)
+      if (countData.length > firstRewardCardObj.noOfCardHolders && countData.length !== 0) {
+        return { message : "Minimum required allocation of this card is expired."}
       }
 
       await addRewardTransaction(uid, winData, claimed + 1);
