@@ -39,6 +39,27 @@ const GalleryType = styled.div`
     }
   }
 `;
+
+const GalleryType2 = styled.div`
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:space-around;
+  color: black;
+  & div {
+    // border: 1px solid #5f4ce3;
+    width:${window.screen.width < 767?"80%":"340px" };
+    height:${window.screen.width < 767?"100px":"150px" };
+    // height:71px;
+    margin: 15px 10px;     
+    cursor: not-allowed;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+    // padding: 20px 20px;
+    text-align:center;
+    $ p {
+    }
+  }
+`;
 const SummerCard = styled.div`
 
   display: flex;
@@ -86,6 +107,7 @@ const NFTGalleryCopy = () => {
     Summer :Summer,
     Science :Science,
   })
+  const [TypeWather, setTypeWather] = useState<any>(["Partly Cloudy","Raining","Snowing","Lightning"])
   
   const getNftCardNew = () => {
   const getCollectionType = firebase
@@ -331,7 +353,13 @@ useEffect(() => {
   }
 }, [allCardNew])
   
-
+  const getSno = (Snumber:any) => {
+  console.log(Snumber.slice(0, -2),"Snumber")
+}
+  
+  
+  
+  console.log(allCardNew,"allCardNewcheck")
 
   return (
     <div className='' style={{ minHeight: "auto" }}>
@@ -434,9 +462,39 @@ useEffect(() => {
         </Video> : <p style={{color:"white"}}>{data?.albumName}</p>}
           {/* <p>{data?.collectionName} COLLECTION</p> */}
         </div>
-        })}
-       
+        })}     
       </GalleryType>
+
+      <GalleryType2 className='' style={{
+        width: `${window.screen.width > 787 ? "800px" : "100%"}`,
+        margin: "40px auto",
+        
+      }} >
+      {!cardShow && TypeWather?.map((data:any ,index:number) => {
+        return <div
+    // onClick={() => { setSelectCollection(data?.id) }} key={index}
+           style={{
+             width: "600px",
+            //  height:"150px",
+             backgroundColor:"#dddddd"             
+    }}
+    className="d-flex justify-content-center align-items-center"
+          > 
+    <i className="bi bi-lock-fill"
+    style={{fontSize:"50px"}}
+    ></i>  
+        {/* {allVideo[`${data?.albumName}`] ? <Video  autoPlay={true} loop={true} playsInline>
+          <source
+            src={allVideo[`${data?.albumName}`]}
+            type="video/mp4"
+          />
+        </Video> : <p style={{color:"white"}}>{data?.albumName}</p>} */}
+          {/* <p>{data?.collectionName} COLLECTION</p> */}
+          <p>{data}</p>
+        </div>
+        
+        })} 
+        </GalleryType2>     
       {allCardNew?.length > 0 ?
         <SummerCard className="mt-4">
             {!!cardShow ? equalPart?.map((cardPart:any ,ind:number) => {                    
@@ -457,7 +515,7 @@ useEffect(() => {
                             // cardNo={item?.sno[index]}
                             // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) }`}
                             cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
-                            GeneralSerialNo={item?.sno}
+                            GeneralSerialNo={item?.sno && (item?.sno[0])?.replace(/[0-9]/g, '')}
                             Serie={item?.setName || "Set"+ (index+1)}
                             CollectionType={item?.albumName || "LEGENDARY"}
                             

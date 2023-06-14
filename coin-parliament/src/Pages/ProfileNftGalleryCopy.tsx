@@ -184,8 +184,7 @@ const ProfileNftGalleryCopy = () => {
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
           });
-          setSetsValue(data)
-          console.log("setsdata", data)
+          setSetsValue(data)          
 
         }).catch((error) => {
           console.log(error, "error");
@@ -456,7 +455,7 @@ const ProfileNftGalleryCopy = () => {
     })
     return seriaNo
   }
-
+console.log(winerCard,"allwinerCard")
   const [filterCard, setFilterCard] = useState<any>();
 
   useEffect(() => {
@@ -477,7 +476,7 @@ const ProfileNftGalleryCopy = () => {
 
   }
 
-  console.log(notFound, "searchedCard")
+  console.log(allCardNew, "searchedCard")
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       {/* <div className=" w-100 container pt-3 d-flex justify-content-center " >

@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "../../common/models/Dictionary";
 import { texts } from "../LoginComponent/texts";
+import coinBg from '../../assets/images/coin_bg.png'
 
 type PAXCardProps = {
   walletId: string;
@@ -16,7 +17,18 @@ const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
         {texts.CoinParliamentBalance}
       </h6>
       <div className="d-flex justify-content-center align-items-center flex-column">
-        <div className="circle">
+        <div className="circle"        
+         style={{
+            backgroundImage: `url(${coinBg})`,
+            // backgroundImage: `url(${externalImage})`,
+            // backgroundSize: 'cover',
+            backgroundSize: "90px 87px",
+            // backgroundPosition: "2px 0px",
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: '-8px -5px',
+            // height: '500px',
+          }}
+        >
           <div
             className="d-flex justify-content-center align-items-center flex-column"
             style={{ height: 75,color:'#6352E8' }}
