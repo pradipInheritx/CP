@@ -1,6 +1,6 @@
 import React from "react";
-import {useTranslation} from "../common/models/Dictionary";
-import BigLogo from "../assets/svg/logoiconx2.svg";
+import { useTranslation } from "../common/models/Dictionary";
+import BigLogo from "../assets/svg/logoiconx2.png";
 const Spinner = () => {
   const translate = useTranslation();
   return (
