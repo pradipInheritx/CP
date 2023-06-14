@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/sa.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -496,7 +496,8 @@ async function getRewardTransactions(id: string) {
 
   const rewardTransactionData = transactions.docs
     .map((e) => e.data())
-    .sort((a, b) => b.winningTime - a.winningTime);
+    .sort((a, b) => b.transactionTime - a.transactionTime);
+  console.log("rewardTransactionData-------", rewardTransactionData)
   const afterAddingTime = rewardTransactionData.map((x) => {
     x.transactionTime = x.transactionTime?.toDate();
     return x;
