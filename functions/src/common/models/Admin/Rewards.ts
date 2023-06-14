@@ -26,7 +26,7 @@ type Card = {
     quantity: number;
     totalQuantity: number;
     sno: string[];
-    noOfCardHolder: number;
+    noOfCardHolders: number;
     cardStatus: boolean;
     cardImageUrl: any;
     cardVideoUrl: any;
@@ -186,7 +186,7 @@ export const createCard = async (req: any, res: any) => {
             cardName,
             cardType,
             quantity: totalQuantity,
-            noOfCardHolder: 0,
+            noOfCardHolders: 0,
             totalQuantity,
             cardStatus,
             sno: await generateSerialNumber(
@@ -341,7 +341,7 @@ export const getCardListing = async (req: any, res: any) => {
                     cardType: doc.data()?.cardType ? doc.data()?.cardType : "",
                     quantity: doc.data()?.quantity ? doc.data()?.quantity : "",
                     totalQuantity: doc.data()?.totalQuantity ? doc.data()?.totalQuantity : "",
-                    noOfCardHolder: doc.data()?.noOfCardHolder ? doc.data()?.noOfCardHolder : "",
+                    noOfCardHolders: doc.data()?.noOfCardHolders ? doc.data()?.noOfCardHolders : "",
                     cardStatus: doc.data()?.cardStatus ? doc.data()?.cardStatus : "",
                     sno: doc.data()?.sno ? doc.data()?.sno : "",
                     cardImageUrl: doc.data()?.cardImageUrl ? doc.data()?.cardImageUrl : "",
@@ -426,7 +426,7 @@ export const updateCard = async (req: any, res: any) => {
     try {
 
         const { cardId } = req.params
-        const { albumId, setId, albumName, setName, cardName, cardType, quantity, totalQuantity, noOfCardHolder, cardStatus, cardImageUrl, cardVideoUrl } = req.body
+        const { albumId, setId, albumName, setName, cardName, cardType, quantity, totalQuantity, noOfCardHolders, cardStatus, cardImageUrl, cardVideoUrl } = req.body
 
         const getCardQuery = await firestore().collection("cardsDetails").doc(cardId).get();
 
@@ -449,7 +449,7 @@ export const updateCard = async (req: any, res: any) => {
             cardType,
             quantity,
             totalQuantity,
-            noOfCardHolder,
+            noOfCardHolders,
             cardStatus,
             sno: await generateSerialNumber(
                 getAlbum.albumName,
