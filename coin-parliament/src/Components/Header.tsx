@@ -269,8 +269,7 @@ const Header = ({
 	useEffect(() => {
 		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
 		// @ts-ignore
-		setVoteNumber((Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-
+		setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
 		prevCountRef.current = voteNumber;
 
 
@@ -767,6 +766,7 @@ const Header = ({
 														{userInfo?.displayName && userInfo?.displayName}
 													</span>
 												}
+												{/* {console.log(followerInfo?.status?.name, userInfo?.status?.name, 'pkk')} */}
 												{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
 													{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
 												</MemberText>}
