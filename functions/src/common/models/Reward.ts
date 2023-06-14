@@ -109,7 +109,6 @@ async function getRewardTransactionsByCardId(cardId: string) {
 // get multiple users by user ids
 async function getMultipleUsersByUserIds(userIds: Array<string>) {
   console.log("getMultipleUsersByUserIds............");
-  const users: any = [];
 
   const queryPromises = userIds.map(user => {
     return firestore().collection('users')
@@ -118,14 +117,19 @@ async function getMultipleUsersByUserIds(userIds: Array<string>) {
   });
 
   const querySnapshots = await Promise.all(queryPromises);
-  const documentDataArray = querySnapshots.map(querySnapshot => {
-    return querySnapshot.docs.map(doc => doc.data());
+  
+  const users: any[] = [];
+
+  querySnapshots.forEach(querySnapshot => {
+    querySnapshot.docs.forEach(doc => {
+      const documentData = doc.data() as any;
+      users.push(documentData);
+    });
   });
 
-  console.log(documentDataArray[0]);
 
   console.log("USER >>>>>>>>", users);
-  return documentDataArray[0];
+  return users;
 }
 
 export async function getAllNftGalleryForCards() {
