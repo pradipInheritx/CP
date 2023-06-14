@@ -347,7 +347,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       const countTransactionCount = await firestore().collection('reward_transactions').where("winData.firstRewardCardId", "==", "firstRewardCardObj.cardId").get();
       const countData = countTransactionCount.docs.map((data: any) => { data.data() })
       console.log("countData ------", countData.length, firstRewardCardObj.noOfCardHolder)
-      if (countData.length >= firstRewardCardObj.noOfCardHolder) {
+      if (countData.length > firstRewardCardObj.noOfCardHolder) {
         return "Minimum required allocation of this card is expired"
       }
 
