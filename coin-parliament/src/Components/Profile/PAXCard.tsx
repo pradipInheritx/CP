@@ -45,9 +45,8 @@ const ForZoom = styled.div`
 
 
 const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCardProps) => {
-  console.log(rewardTimer, "CheckrewardTimer")
   // const prevCountRef = useRef(PAX)
-  const prevCountRef = PAX - rewardTimer?.data?.thirdRewardDiamonds
+  const prevCountRef = (PAX || 0) - (rewardTimer?.data?.thirdRewardDiamonds || 0)
   const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
   console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
@@ -141,7 +140,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   }
                 /> :
                   <>
-                    {PAX && PAX}
+                    {PAX || 0}
                   </>
                 }
               </span>

@@ -205,7 +205,7 @@ const SingleCoin = () => {
 
   useEffect(() => {
     const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
 
   }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length])
 
@@ -218,7 +218,7 @@ const SingleCoin = () => {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframes[selectedTimeFrame || 0]?.seconds });
       if (v) {
         // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
-        console.log(v.data(), "checkallv.data")
+        // console.log(v.data(), "checkallv.data")
         if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
         setVote(v.data());
         setVoteId(v.id);
@@ -232,7 +232,7 @@ const SingleCoin = () => {
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframe });
       if (v) {
-
+        console.log(v.id, "checkallv.data")
         return v
       }
     }
@@ -263,6 +263,8 @@ const SingleCoin = () => {
 
           }
         }))
+        console.log(tempAllActiveVotes, 'testing');
+
         setAllActiveVotes(() => {
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
         });
@@ -542,7 +544,7 @@ const SingleCoin = () => {
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                 <Link to="" style={{ textDecoration: 'none' }}>
                   <Other>
-                    {user &&  !voteNumber && !!new Date(remainingTimer).getDate() ?
+                    {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
                       <span style={{ marginLeft: '20px' }}>
                         {/* @ts-ignore */}
                         <Countdown date={remainingTimer}
