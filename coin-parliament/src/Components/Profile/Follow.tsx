@@ -27,9 +27,9 @@ export const getUsers = ({
   users?: string[];
   setUsers: (newUsers: Leader[]) => void;
 }) => {
-  try {
-    users?.length &&
+  try {    
       getLeaderUsersByIds({ userIds: users }).then((u) => {
+        console.log(u.data,"checkdata")
         setUsers(u.data);
       });
   } catch (e) {
@@ -43,11 +43,19 @@ const Follow = () => {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
 
+console.log(userInfo,"userInfo")
+
   useEffect(() => {
     getUsers({ users: userInfo?.leader, setUsers: setLeaders });
+    // getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+  }, [userInfo?.leader]);
+  useEffect(() => {
+    // getUsers({ users: userInfo?.leader, setUsers: setLeaders });
     getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
-  }, [userInfo?.leader, userInfo?.subscribers]);
+  }, [userInfo?.subscribers]);
 
+
+console.log(leaders,"allleaders")
   return (
     <Tabs
       defaultActiveKey="following"
@@ -59,7 +67,7 @@ const Follow = () => {
           title: capitalize(translate(`${texts.Following}`)),
           pane: (
             <div>
-              {(leaders || []).map((u, i) => {
+              {leaders && leaders.map((u, i) => {
                 return (
                   <div className="mb-2" style={{maxWidth:'85vw', margin:'auto'}}>
                     <UserCard
