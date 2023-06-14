@@ -292,13 +292,14 @@ const VotedCard = ({
               symbol1={symbol1}
               symbol2={symbol2}
             />}
-            <div className="mb-1" style={{ marginTop: window.screen.width < 370 ? '-8em' : (window.screen.width < 576 ? '-6.5em' : '-4.3em'), paddingLeft: '10px' }} /* style={{ marginTop: '-3em', height: '4em', paddingLeft: '10px' }} */>
+            <div className="mb-1" style={{ marginTop: window.screen.width < 370 ? '-8em' : (window.screen.width < 576 ? '-6.5em' : '-4.3em'), }} /* style={{ marginTop: '-3em', height: '4em', paddingLeft: '10px' }} */>
               <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
                 setLastTenSec={setLastTenSec}
               />
             </div>
             <BitcoinBTCBULL24H3864490
-              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center mt-4`}
+              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center  `}
+              style={{ marginTop: '3em ' }}
             >
               {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
 
@@ -395,7 +396,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
           }
           // return data;
           return (
-            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
+            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
               {texts.Calculatingvoteresult}
             </span>
           );
