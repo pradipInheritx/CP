@@ -341,7 +341,7 @@ export const getCardListing = async (req: any, res: any) => {
                     cardType: doc.data()?.cardType ? doc.data()?.cardType : "",
                     quantity: doc.data()?.quantity ? doc.data()?.quantity : "",
                     totalQuantity: doc.data()?.totalQuantity ? doc.data()?.totalQuantity : "",
-                    noOfCardHolder: doc.data()?.noOfCardHolder ? doc.data()?.noOfCardHolder : "",
+                    noOfCardHolders: doc.data()?.noOfCardHolders ? doc.data()?.noOfCardHolders : "",
                     cardStatus: doc.data()?.cardStatus ? doc.data()?.cardStatus : "",
                     sno: doc.data()?.sno ? doc.data()?.sno : "",
                     cardImageUrl: doc.data()?.cardImageUrl ? doc.data()?.cardImageUrl : "",
