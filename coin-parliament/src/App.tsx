@@ -425,7 +425,7 @@ function App() {
   //   return Followerinfo
   // }
 
-
+console.log(remainingTimer,"remainingTimer")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -1022,8 +1022,6 @@ function App() {
     impact: null
   });
   useEffect(() => {
-    console.log(voteDetails.voteImpact, 'pkkk');
-
     voteImpact.current = voteDetails.voteImpact;
   }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
@@ -1043,7 +1041,6 @@ function App() {
           const coin = lessTimeVote?.coin.split('-') || [];
           const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
           const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-          console.log(pathname, lessTimeVote?.timeframe.index, voteImpact.current, pathname.includes(lessTimeVote?.coin), 'pkkk');
 
           await getPriceCalculation({
             ...{

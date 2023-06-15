@@ -240,7 +240,7 @@ const SinglePair = () => {
   }, [selectedTimeFrame]);
   useEffect(() => {
     const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
 
   }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length])
 
@@ -340,7 +340,7 @@ const SinglePair = () => {
                           setConfetti={setConfetti}
                           selectedTimeFrame={selectedTimeFrame}
                           setSelectedTimeFrame={setSelectedTimeFrame}
-                          coinUpdated={coinUpdated}                                                                                                                                                                            
+                          coinUpdated={coinUpdated}
                         />
                       )}
                     </>
