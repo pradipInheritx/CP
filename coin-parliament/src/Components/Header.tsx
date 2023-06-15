@@ -494,7 +494,7 @@ const Header = ({
 											<div className='mt-1'>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
-														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate() || true) ?
+														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 															// @ts-ignore */
 															<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
 																{/* @ts-ignore */}
