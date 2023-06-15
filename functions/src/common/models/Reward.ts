@@ -347,7 +347,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       };
 
       // check card quanity 
-      if (firstRewardCardObj.quantity == 0 || firstRewardCardObj.noOfCardHolders == firstRewardCardObj.totalQuantity) {
+      if (firstRewardCardObj.quantity === 0 || firstRewardCardObj.noOfCardHolders === firstRewardCardObj.totalQuantity) {
         return {
           status: false,
           message: "Minimum required allocation of this card is expired.",
