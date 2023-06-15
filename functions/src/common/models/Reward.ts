@@ -263,6 +263,26 @@ export const addRewardTransaction: (
     console.log("Finished execution addRewardTransaction function");
   };
 
+export let counterStart = 0
+
+export const getPickRandomValueFromArrayFunc: any = async (pickTierArrar: any) => {
+  counterStart++;
+  const getFirstRewardCardObj: any = await pickRandomValueFromArray(pickTierArrar);
+  console.log("getFirstRewardCardObj-----", counterStart, getFirstRewardCardObj)
+
+  let returnValue;
+  if ((getFirstRewardCardObj.quantity === 0 || getFirstRewardCardObj.noOfCardHolders === getFirstRewardCardObj.totalQuantity) && counterStart < 5) {
+    returnValue = await getPickRandomValueFromArrayFunc(pickTierArrar);
+  } else {
+    counterStart = 0;
+    console.log("getFirstRewardCardObj final return-----", getFirstRewardCardObj)
+
+    returnValue = getFirstRewardCardObj
+  }
+
+  return returnValue;
+}
+
 export const claimReward: (uid: string) => { [key: string]: any } = async (
   uid: string
 ) => {
@@ -287,7 +307,9 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       const { pickedTierArray, tierName } = await pickCardTierByPercentageArray(
         tierPickupArray
       );
-      const firstRewardCardObj: any = pickRandomValueFromArray(pickedTierArray);
+
+      const firstRewardCardObj: any = await getPickRandomValueFromArrayFunc(pickedTierArray);
+
       console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
       const firstRewardCard = firstRewardCardObj["cardName"];
       const firstRewardCardSerialNo = firstRewardCardObj.sno.length ? pickRandomValueFromArray(
@@ -345,15 +367,6 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
         secondRewardExtraVotes,
         thirdRewardDiamonds,
       };
-
-      // check card quanity 
-      if (firstRewardCardObj.quantity === 0 || firstRewardCardObj.noOfCardHolders === firstRewardCardObj.totalQuantity) {
-        return {
-          status: false,
-          message: "Minimum required allocation of this card is expired.",
-          result: null,
-        }
-      }
 
       await addRewardTransaction(uid, winData, claimed + 1);
       const transData: any = await getRewardTransactionsByCardId(firstRewardCardObj.cardId);
