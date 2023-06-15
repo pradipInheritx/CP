@@ -10,7 +10,7 @@ export const validatePassword = (newPassword: string, confirmPassword: string, u
   return check1 && check4;
 };
 
-export const passwordValidation = (password: string, confirmPassword: string, userName: string) => {
+export const passwordValidation = (password: string, confirmPassword: string, userName?: string) => {
   const check1 = new RegExp(/(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/).test(password);
   const check2 = new RegExp(/\b^.*([a-zA-Z0-9])\1\1+.*\b/gm).test(password); //(AAA, iiii, ...) not contains
   if (password.length < 8) {
@@ -19,7 +19,7 @@ export const passwordValidation = (password: string, confirmPassword: string, us
     return texts.passwordValidation2;
   } else if (check2) {
     return texts.passwordValidation3;
-  } else if (password.includes(userName)) {
+  } else if (userName && password.includes(userName)) {
     return texts.passwordValidation4;
   } else if (password !== confirmPassword) {
     return texts.passwordValidation5;

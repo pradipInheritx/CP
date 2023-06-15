@@ -1716,6 +1716,7 @@ export const showToast = (
   }
 ) => {
   toast.dismiss();
+  toast.clearWaitingQueue();
   switch (type) {
     case ToastType.ERROR:
       toast.error(content, options);
