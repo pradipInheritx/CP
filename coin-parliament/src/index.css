@@ -1433,6 +1433,11 @@ html[dir="rtl"] .accordion-button {
 .popupStyle {
     border-radius:60px 0px 60px 60px !important;
 }
+.stayInGamePopupStyle {
+    border-radius:100px 0px 100px 100px !important;
+    width: 25em;
+    height: 14em;
+}
 
 .capitalize{
     text-transform: capitalize;

@@ -494,11 +494,11 @@ const Header = ({
 											<div className='mt-1'>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
-														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate() || true) ?
 															// @ts-ignore */
 															<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
 																{/* @ts-ignore */}
-																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
+																<Countdown daysInHours zeroPadTime={2} date={1686816369}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
 																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
@@ -663,30 +663,28 @@ const Header = ({
 									</div>
 									<div className='w-100'>
 										<HeaderCenter className='d-flex justify-content-between' style={{ width: '16em' }}>
-											<p className='' style={{ marginRight: '1em' }}>
-												{followerPage && followerInfo != "" ? followerInfo?.displayName :
-													(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
-														// @ts-ignore
-														<span style={{ marginLeft: '20px' }}>
-															{/* @ts-ignore */}
-															<Countdown date={votingTimer}
-																renderer={({ hours, minutes, seconds, completed }) => {
+											{followerPage && followerInfo != "" ? followerInfo?.displayName :
+												(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+													// @ts-ignore
+													<>
+														{/* @ts-ignore */}
+														<Countdown date={votingTimer}
+															renderer={({ hours, minutes, seconds, completed }) => {
+																return (
+																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400, paddingLeft: '3.5em' }}>
+																		Wait {" "}
+																		{hours < 1 ? null : `${hours} :`}
+																		{minutes < 10 ? `0${minutes}` : minutes}:
+																		{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
+																		or buy extra votes now.
+																	</span>
+																);
 
-																	return (
-																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400 }}>
-																			{/* {hours < 10 ? `0${hours}` : hours}: */}
-																			Wait {" "}
-																			{hours < 1 ? null : `${hours} :`}
-																			{minutes < 10 ? `0${minutes}` : minutes}:
-																			{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																			<p style={{ marginLeft: '30px' }}> or buy extra votes now.</p>
-																		</span>
-																	);
-
-																}}
-															/>
-														</span>
-														:
+															}}
+														/>
+													</>
+													:
+													<p className='' style={{ marginRight: '1em' }}>
 														<span
 															style={{
 																color: "#6352E8",
@@ -716,8 +714,8 @@ const Header = ({
 															{" "}
 															votes left
 														</span>
-												}
-											</p>
+													</p>
+											}
 											{
 												<div style={{ marginRight: '1em' }}>
 													{followerPage && followerInfo != "" ?
