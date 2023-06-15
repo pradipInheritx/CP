@@ -346,11 +346,13 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
         thirdRewardDiamonds,
       };
 
-      const countTransactionCount = await firestore().collection('reward_transactions').where("winData.firstRewardCardId", "==", firstRewardCardObj.cardId).get();
-      const countData = countTransactionCount.docs.map((e: any) => e.data())
-      console.log("countData ------", countData.length, firstRewardCardObj.noOfCardHolders)
-      if (countData.length > firstRewardCardObj.noOfCardHolders && countData.length !== 0) {
-        return { message: "Minimum required allocation of this card is expired." }
+      // check card quanity 
+      if (firstRewardCardObj.quantity == 0 || firstRewardCardObj.noOfCardHolders == firstRewardCardObj.totalQuantity) {
+        return {
+          status: false,
+          message: "Minimum required allocation of this card is expired.",
+          result: null,
+        }
       }
 
       await addRewardTransaction(uid, winData, claimed + 1);
