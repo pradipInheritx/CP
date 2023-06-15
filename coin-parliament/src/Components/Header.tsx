@@ -193,10 +193,11 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup } = useContext(AppContext);
+	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup ,setvoteNumberEnd} = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
+
 	const [votingTimer, setVotingTimer] = useState(0)
 	const [followerInfo, setFollowerInfo] = useState<any>()
 	const [followUnfollow, setFollowUnfollow] = useState<any>(false)
@@ -270,13 +271,14 @@ const Header = ({
 		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
 		// @ts-ignore
 		setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
+		setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
 		prevCountRef.current = voteNumber;
 
 
 		// console.log('votenumber',voteNumber, Number(voted))
 	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length, headerExtraVote]);
 
-
+console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 
 
 	const onSelect = (eventKey: string | null) => {
@@ -667,19 +669,19 @@ const Header = ({
 												{followerPage && followerInfo != "" ? followerInfo?.displayName :
 													(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 														// @ts-ignore
-														<span style={{ marginLeft: '20px' }}>
+														<span style={{ marginLeft: '25px' }}>
 															{/* @ts-ignore */}
 															<Countdown date={votingTimer}
 																renderer={({ hours, minutes, seconds, completed }) => {
 
 																	return (
-																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400 }}>
+																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 400 ,marginLeft: '10px'}}>
 																			{/* {hours < 10 ? `0${hours}` : hours}: */}
 																			Wait {" "}
 																			{hours < 1 ? null : `${hours} :`}
 																			{minutes < 10 ? `0${minutes}` : minutes}:
 																			{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																			<p style={{ marginLeft: '30px' }}> or buy extra votes now.</p>
+																			<p style={{ marginLeft: '35px' }}> or buy extra votes now.</p>
 																		</span>
 																	);
 
