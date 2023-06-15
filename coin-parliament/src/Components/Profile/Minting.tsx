@@ -22,6 +22,8 @@ import Confetti from "../../assets/animation/confetti.json";
 import { colors } from "../VoteForm";
 import Swal from 'sweetalert2';
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import { showToast } from "App";
+import { ToastType } from "Contexts/Notification";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -252,7 +254,17 @@ const Minting = ({
                   handleSoundClick()
                   if (claim) {
                     setLoading(true);
-                    const result = await claimReward({ uid: user?.uid });
+                    const result = await claimReward({ uid: user?.uid }).then((data: any) => {
+                      // showToast(data.data.firstRewardCard ,ToastType.ERROR);
+                      // console.log(data.data.firstRewardCard,"full data")
+                      handleShow()
+                      return data;
+                    }).catch((error) => {
+                      // callback={{
+                      //     successFunc: (params) => setUser(params),
+                      showToast(error.message,ToastType.ERROR);
+                        // }}
+                    });
                     setResultData(result)
                     console.log(result, 'hello');
 
@@ -260,7 +272,7 @@ const Minting = ({
                       // @ts-ignore
                       setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
                     }
-                    handleShow()
+                    
                     setLoading(false);
                   } else {
                     Swal.fire({
@@ -371,7 +383,17 @@ const Minting = ({
                 if (claim) {
                   setLoading(true);
                   console.log("reward");
-                  const result = await claimReward({ uid: user?.uid });
+                  const result = await claimReward({ uid: user?.uid }).then((data: any) => {
+                      // showToast(data.data.firstRewardCard ,ToastType.ERROR);
+                      // console.log(data.data.firstRewardCard,"full data")
+                    handleShow()
+                      return data;
+                    }).catch((error) => {
+                      // callback={{
+                      //     successFunc: (params) => setUser(params),
+                      showToast(error.message,ToastType.ERROR);
+                        // }}
+                    });
                   // @ts-ignore
                   setResultData(result)
                   handleShow()
