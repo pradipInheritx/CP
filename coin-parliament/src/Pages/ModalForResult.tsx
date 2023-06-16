@@ -111,7 +111,11 @@ function ModalForResult(showPopUp?:any, setShowPopUp?:any) {
                       <div>             
                         {/* @ts-ignore */}
                             <strong>{cardData.name1}</strong>
-                          </div>                                                
+                      </div>  
+                      <div>
+                            {/* @ts-ignore */}
+                            <strong>{cardData.price1}</strong>
+                          </div>
                         </div>
                       </div>
                     </CoinContainer>
@@ -151,12 +155,51 @@ function ModalForResult(showPopUp?:any, setShowPopUp?:any) {
                             {/* @ts-ignore */}
                             <strong>{cardData.name2}</strong>
                           </div>
+                          <div>
+                            {/* @ts-ignore */}
+                            <strong>{cardData.price2}</strong>
+                          </div>
                         </div>
                       </div>
                     </CoinContainer>
                   </div>
-                </div>              
-              </div>          
+            </div>    
+            <div style={{ minHeight: "100%" }} className=" text-center">
+                  <div className=''
+                    style={{ fontSize: "12px" }}
+                  >
+                    <p>VOTE RESULT</p>
+                    <p>
+                      {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
+                      {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
+                    </p>
+                    <p>Vote impact : LOW </p>
+                  </div>
+                  <CoinVoteTimer>
+                    {/* {vote?.valueExpirationTime && vote?.score && ( */}
+                      <>
+                        <strong>You progressed - {2.5}</strong> <span>CMP</span>
+                      </>
+
+                    {/* )} */}
+                  </CoinVoteTimer>
+                </div>
+
+            <Col className="text-center">
+                  {/* ${vote?.id} - */}
+                  <span className="sm_txt">
+                    {"123213498ASKDJ"} {' '}
+                    {window.screen.width < 768 && <br />}
+                    {`
+                    - ${moment(
+                      new Date()
+                    ).format("DD/MM/YYYY")}`}{' '} {`
+                     ${moment(
+                      new Date()
+                    ).format("HH:mm")}`}</span>
+                </Col>
+
+          </div>             
         </Modal.Body>      
       </Modal>
     </div>

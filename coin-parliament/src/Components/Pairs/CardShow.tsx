@@ -127,7 +127,7 @@ function CardShow() {
   const [allBUtton, setAllBUtton] = useState<any>([
     {
     time: "15 Sec",
-    Active:false,    
+    Active:true,    
     },
     {
     time: "30 Sec",
@@ -243,10 +243,10 @@ function CardShow() {
               }}
                 onClick={() => {                  
                   setShowSpdometer(true)
-                  // setTimeout(() => {
-                  //   setShowPopUp(true)
-                  //   setShowSpdometer(false)
-                  // }, 5000);
+                  setTimeout(() => {
+                    setShowPopUp(true)
+                    setShowSpdometer(false)
+                  }, 15000);
                 }
                 }
               >
@@ -269,11 +269,11 @@ function CardShow() {
               }}
                  onClick={() => {                  
                   setShowSpdometer(true)
-                  // setTimeout(() => {
-                  //   setShowPopUp(true)
-                  //   setShowSpdometer(false)
-                  //   console.log("i am working")
-                  // }, 5000);
+                  setTimeout(() => {
+                    setShowPopUp(true)
+                    setShowSpdometer(false)
+                    console.log("i am working")
+                  }, 15000);
                 }
                 }
               >
@@ -316,21 +316,29 @@ function CardShow() {
               </div>
             
               <RangeSilder />
-              <div>
-                <Countdown daysInHours zeroPadTime={2} date={15000}
-																	renderer={({ hours, minutes, seconds, completed }) => {
-																		return (
-																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>																				
-																				{hours < 1 ? null : `${hours} :`}
-																				{minutes < 10 ? `0${minutes}` : minutes}:
-																				{seconds < 10 ? `0${seconds}` : seconds} 																				
-																			</span>
-																		);
+              <div
+              
+                style={{
+                position:"relative"
+              }}
+              >
+                <Countdown date={Date.now() + 15000}
+                      renderer={({ hours, minutes, seconds, completed }) => {
+                        return (
+                          <span className="text-uppercase" style={{
+                            color: '#6352e8', fontSize: '20px', fontWeight: 100, lineHeight: "10%", position: "absolute",
+                            left:"42%",
+                            top:"-25px",
+                          }}>																				
+                            {hours < 1 ? null : `${hours} :`}
+                            {minutes < 10 ? `0${minutes}` : minutes}:
+                
+                            {seconds < 10 ? `0${seconds}` : seconds} 																				
+                          </span>
+                        );
 
-																	}}
-
-																/>
-
+                      }}
+										/>
               </div>
             </div>
             </div>
