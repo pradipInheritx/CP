@@ -174,6 +174,11 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
         </div>
       </Stack>
       <Modal show={show} onHide={handleClose} style={{ zIndex: 9999 }}>
+        <div className="d-flex justify-content-end">
+          <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+            handleClose()
+          }}></button>
+        </div>
         <Modal.Header >
           <Modal.Title>{translate(texts.firstTimeLoginModalTitle)}</Modal.Title>
         </Modal.Header>

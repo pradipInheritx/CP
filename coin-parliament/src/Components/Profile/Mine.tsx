@@ -110,9 +110,10 @@ const Mine = () => {
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
 
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-  const remainingCMP = (currentCMP > 0 && currentCMPDiff > prevCMPDiff ? 100 : score);
+  const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
+  console.log(currentCMPDiff, prevCMPDiff, currentCMP, userInfo?.voteStatistics?.score, 'pkkkkkkk');
 
   useEffect(() => {
     // @ts-ignore
@@ -243,7 +244,7 @@ const Mine = () => {
                 {...{
                   setCountShow,
                   width,
-                  score: remainingCMP,
+                  score: remainingCMP /* ((userInfo?.voteStatistics?.score || 0) > 0 ? remainingCMP : 0) */,
                   // @ts-ignore
                   // remainingCMP,
                   setRewardTimer,
