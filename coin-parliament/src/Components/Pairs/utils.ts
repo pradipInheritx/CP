@@ -1,5 +1,12 @@
 import {Coin} from "../../common/models/Coin";
-import {flatMap, throttle} from "lodash";
+import { flatMap, throttle } from "lodash";
+
+import EVE from "../../assets/logos/EVE.png";
+import LYON from "../../assets/logos/LYON.png";
+import CIN from "../../assets/logos/CIN.png";
+import DOR from "../../assets/logos/DOR.png";
+import BMG from "../../assets/logos/BMG.png";
+import PSG from "../../assets/logos/PSG.png";
 
 export const symbolCombination = (coins: string[]) =>
   coins.length === 2 ? `${coins[0]}-${coins[1]}` : "";
@@ -55,3 +62,31 @@ export const voteProcedure = ({vote, sound, setConfetti}: {
   //   setConfetti(false);
   // }, 6000);
 }, 1000);
+
+
+export const listData = [
+  {
+    name1: "EVE",
+    name2: "LYON",
+    price1: "123.002",
+    price2: "232.003",
+    img1: EVE,
+    img2: LYON,
+  },
+  // {
+  //   name1: "CIN",
+  //   name2: "DOR",
+  //   price1: "213.001",
+  //   price2: "423.001",
+  //   img1: CIN,
+  //   img2: DOR,
+  // },
+  // {
+  //   name1: "BMG",
+  //   name2: "PSG",
+  //   price1: "324.012",
+  //   price2: "132.103",
+  //   img1: BMG,
+  //   img2: PSG,
+  // }
+]

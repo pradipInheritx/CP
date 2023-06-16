@@ -47,7 +47,7 @@ import {
   RecaptchaVerifier,
 } from "firebase/auth";
 import axios from 'axios';
-import QRCode from "qrcode";
+// import QRCode from "qrcode";
 
 const title = {
   [LoginModes.LOGIN]: texts.login,

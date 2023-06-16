@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import { Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
 import Pairs from "../Components/Pairs/Pairs";
+import PairsCopy from "../Components/Pairs/PairsCopy";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
 import UserContext from "../Contexts/User";
@@ -154,7 +155,7 @@ const Home = () => {
             </H2>
             </>
           )}
-          <Pairs
+          {/* <Pairs
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
@@ -162,8 +163,8 @@ const Home = () => {
                 showModal(<NotLoggedInPopup />);
               }
             }}
-          />
-          <Coins
+          /> */}
+          {/* <Coins
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
@@ -173,7 +174,17 @@ const Home = () => {
                 // showModal(<NotLoggedInPopup/>);
               }
             }}
+          /> */}
+          <PairsCopy
+              onFavClick={async (...args) => {
+                  if (user) {
+                    await calcFavorites(...args);
+                  } else {
+                    showModal(<NotLoggedInPopup />);
+                  }
+                }}
           />
+            
 
 
 

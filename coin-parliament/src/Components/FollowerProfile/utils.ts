@@ -1,3 +1,5 @@
+
+
 export const validatePassword = (newPassword: string, username: string, confirmPassword: string) => {
   const check1 = new RegExp(
     /^(?=.*\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,15})$/
@@ -8,6 +10,8 @@ export const validatePassword = (newPassword: string, username: string, confirmP
   const check3 = !newPassword.includes(username);
   return check1 && check2 && check3 && check4;
 };
+
+
 
 export const CountryCode = [
   {

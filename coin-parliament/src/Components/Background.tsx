@@ -68,7 +68,8 @@ const Background = ({ pathname }: { pathname: string }) => {
             // border: "5px solid red",
             background:
               (isCoinsPairs(pathname) && pathname?.includes("coins/")) ||
-              (isCoinsPairs(pathname) && pathname?.includes("pairs/"))
+              (isCoinsPairs(pathname) && pathname?.includes("pairs/"))||
+              (isCoinsPairs(pathname) && pathname?.includes("CardShow/"))
                 ? "#160133"
                 : "",
           }}

@@ -62,6 +62,7 @@ import UserTypeManager from "./managers/UserTypeManager";
 import CoinMain from "./Pages/CoinMain";
 import firebase from "firebase/compat";
 import PairsMain from "./Pages/PairsMain";
+import CardShow from "./Components/Pairs/CardShow";
 import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
@@ -1216,6 +1217,10 @@ console.log('fmctoken',fcmToken)
                                       </div>
                                       <Routes>
                                         <Route path='/' element={<Home />} />
+                                        <Route
+                                          path='CardShow/:id'
+                                          element={<CardShow />}
+                                        />
                                         {/* <Route
                                           path='coins'
                                           element={<CoinMain />}
