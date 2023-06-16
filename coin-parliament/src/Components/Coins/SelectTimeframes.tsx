@@ -7,8 +7,7 @@ import { Title } from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import AppContext from "../../Contexts/AppContext";
 import { handleSoundClick } from "../../common/utils/SoundClick";
-
-
+import VoteTimeCircle from "common/VoteTimeCircle";
 export type SelectTimeframesProps = {
   timeframes: TimeFrame[];
   selectTimeframe: (c: TimeFrame) => void;
@@ -82,12 +81,12 @@ const SelectTimeframes = ({
       >
         {num > 1 &&
           timeframes.map((timeframe, k) => {
+            let checked = timeframe.index === selected
             return (
               <Col key={k} className='p-0'>
                 <Icon
                   inline='d-flex justify-content-center'
                   checked={timeframe.index === selected}
-
                   setChecked={() => {
                     selectTimeframe(timeframe);
                     handleSoundClick()
@@ -96,49 +95,50 @@ const SelectTimeframes = ({
                   type='radio'
                   id={"timeframe-" + timeframe.index}
                   value={timeframe.name}
-                  iconOn={
-                    <Buttons.TimeframeButton
-                      disabled={voted ? voted : false}
-                      {...{ checked: voted ? false : true }}
-                      cssDegree={cssDegree?.length > 0 ? cssDegree[k] : 0}
-                      // votePrice={votePrice?.length > 0 ? votePrice[k] : 0}
-                      votedDetails={votedDetails?.length > 0 ? votedDetails[k] : 0}
-                      buttonDetails={buttonDetails && buttonDetails[k]}
-                      PariButtonDetails={pariButtonDetails && pariButtonDetails[k]}
-                      buttonIndex={k}
-                      setHideButton={setHideButton}
-                      setpopUpOpen={setpopUpOpen}
-                      vote={vote}
-                    >
-                      {timeframe.name}
-                    </Buttons.TimeframeButton>
+                  iconOn={<VoteTimeCircle checked={checked} selectTimeframe={selectTimeframe} timeframe={timeframe} voteDetails={buttonDetails && buttonDetails[k]} />
+                    // <Buttons.TimeframeButton
+                    //   disabled={voted ? voted : false}
+                    //   {...{ checked: voted ? false : true }}
+                    //   cssDegree={cssDegree?.length > 0 ? cssDegree[k] : 0}
+                    //   // votePrice={votePrice?.length > 0 ? votePrice[k] : 0}
+                    //   votedDetails={votedDetails?.length > 0 ? votedDetails[k] : 0}
+                    //   buttonDetails={buttonDetails && buttonDetails[k]}
+                    //   PariButtonDetails={pariButtonDetails && pariButtonDetails[k]}
+                    //   buttonIndex={k}
+                    //   setHideButton={setHideButton}
+                    //   setpopUpOpen={setpopUpOpen}
+                    //   vote={vote}
+                    // >
+                    //   {timeframe.name}
+                    // </Buttons.TimeframeButton>
                   }
-                  iconOff={
-                    <Buttons.TimeframeButton
-                      {...{
-                        checked: selectedTimeFrameArray?.includes(
-                          timeframe.index
-                        ),
-                        cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
-                        // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
-                        votedDetails: votedDetails?.length > 0 ? votedDetails[k] : 0,
-                        buttonDetails: buttonDetails && buttonDetails[k],
-                        PariButtonDetails: pariButtonDetails && pariButtonDetails[k],
-                        vote
-                      }}
-                      showTimer={true}
-                    >
-                      {timeframe.name}
-                    </Buttons.TimeframeButton>
+                  iconOff={<VoteTimeCircle checked={checked} selectTimeframe={selectTimeframe} timeframe={timeframe} voteDetails={buttonDetails && buttonDetails[k]} />
+                    // <Buttons.TimeframeButton
+                    //   {...{
+                    //     checked: selectedTimeFrameArray?.includes(
+                    //       timeframe.index
+                    //     ),
+                    //     cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
+                    //     // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
+                    //     votedDetails: votedDetails?.length > 0 ? votedDetails[k] : 0,
+                    //     buttonDetails: buttonDetails && buttonDetails[k],
+                    //     PariButtonDetails: pariButtonDetails && pariButtonDetails[k],
+                    //     vote
+                    //   }}
+                    //   showTimer={true}
+                    // >
+                    //   {timeframe.name}
+                    // </Buttons.TimeframeButton>
                   }
                 />
+
               </Col>
             );
           })}
       </Row>
 
       {/* </Container> */}
-    </div>
+    </div >
   );
 };
 

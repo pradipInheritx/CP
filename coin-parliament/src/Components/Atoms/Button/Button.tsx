@@ -153,10 +153,10 @@ const TimeframeButton = ({
   setChecked,
   disabled,
   showTimer,
+  buttonDetails,
   cssDegree,
   // votePrice,
   votedDetails,
-  buttonDetails,
   PariButtonDetails,
   buttonIndex,
   setHideButton,
@@ -178,6 +178,8 @@ const TimeframeButton = ({
   setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
   vote: VoteResultProps
 }) => {
+  console.log(buttonDetails, 'buttonDetails');
+
   const [borderColor, setborderColor] = useState<string>("white");
   const [borderDeg, setBorderDeg] = useState<number>(0);
 
@@ -207,6 +209,7 @@ const TimeframeButton = ({
   }, [buttonDetails])
   // @ts-ignore
   const getDeg = (value) => {
+    return;
     if (value != undefined) {
       let t = value?.voteTime / 1000; //mili
       let d = value?.timeframe.seconds; //second already
@@ -246,6 +249,7 @@ const TimeframeButton = ({
   // }, [])
 
   const getBorderColor = () => {
+    return;
     let PricePer = livePrice / 100;
     if (symbol2 == undefined) {
 
