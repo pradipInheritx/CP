@@ -494,11 +494,11 @@ const Header = ({
 											<div className='mt-1'>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
-														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate() || true) ?
+														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 															// @ts-ignore */
 															<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
 																{/* @ts-ignore */}
-																<Countdown daysInHours zeroPadTime={2} date={1686816369}
+																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
 																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
