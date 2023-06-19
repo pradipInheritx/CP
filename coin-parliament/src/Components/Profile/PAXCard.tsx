@@ -91,7 +91,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
             style={{ height: 75, color: '#6352E8' }}
           >
             <div>
-              <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "30px" : "20px"}` }}>
+              <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"}` }}>
                 {inOutReward == 1 && showReward == 1 ? <CountUp className="PaxText" start={prevCountRef} end={PAX && PAX} duration={5}
                   onEnd={() => {
 

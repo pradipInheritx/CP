@@ -191,7 +191,6 @@ const Minting = ({
     setCmpPopupShow(true)
     // handleSoundWinCmp.play()    
   };
-
   // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
     if (score === 100) {
@@ -214,7 +213,7 @@ const Minting = ({
       setTimeout(function () {
         // Animation.destroy();
         handleSoundWinCmp.pause();
-      }, 4000);  // 5000 milliseconds = 5 seconds
+      }, 3000);  // 5000 milliseconds = 5 seconds
 
       // setShowBack(false)
     }
