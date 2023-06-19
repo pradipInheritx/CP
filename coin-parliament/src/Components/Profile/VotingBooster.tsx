@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext } from "react";
-import { Image } from "react-bootstrap";
+import { Col, Image, Row } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Pairs from "../Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,9 +18,27 @@ import ContentContext from "../../Contexts/ContentContext";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import InfluencersCarousel from "../Users/InfluencersCarousel";
 import { BorderRadius4px } from "../../styledMixins";
-import  votingbooster  from "../../assets/images/votingbooster_small.png";
+import votingbooster from "../../assets/images/votingbooster_small.png";
 
 const H2 = styled.h2`
+width: 100%;
+height: 45px;
+left: 806px;
+top: 129px;
+
+font-family: 'Poppins';
+font-style: normal;
+font-weight: 700;
+font-size: 30px;
+line-height: 45px;
+
+/* identical to box height */
+letter-spacing: 0.02em;
+text-transform: uppercase;
+
+color: #FEFEFE;
+
+text-shadow: 0px 1px 3px #5B03FF;
   font-size: var(--font-size-xxl);
   text-align: center;
 `;
@@ -32,6 +50,21 @@ const P = styled.p`
 const TextContainer = styled.div`
   max-width: 350px;
   margin: 0 auto;
+`;
+const Prices = styled.div`
+box-sizing: border-box;
+width: 264px;
+height: 261px;
+left: 1269px;
+top: 578px;
+background: linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%);
+`;
+const Corner = styled.div`
+  width: 0; 
+	height: 0; 
+	border-top: 50px solid #CA0088;
+	border-bottom: 50px solid transparent;
+	border-right: 50px solid transparent;
 `;
 
 const VotingBooster = () => {
@@ -91,41 +124,50 @@ const VotingBooster = () => {
 `;
   return (
     <>
-      <TextContainer
-            className=' d-xl-none'
-            style={{
-              textTransform: "none",
-              fontWeight: "400",
-              // maxWidth: "250px",
-            }}
-          >
-            <H2
-              style={{
-                // zIndex: 1,
-                fontWeight: "bold",
-                position: "relative",
-                marginTop: "44px",
-                fontSize: "1.25rem",
-              }}
-            >
-              {translate("BOOST YOUR VOTING POWER").toUpperCase()}
-            </H2>
-          </TextContainer>
-          {window.screen.width > 979 && (
-            <H2
-              style={{
-                zIndex: 1,
-                fontSize: "20px",
-                marginTop: "35px",
-                // paddingTop: "30px",
-              }}
-            >
-              {translate("BOOST YOUR VOTING POWER").toUpperCase()}
-            </H2>
-          )}
-        <div className="d-flex justify-content-center">
-          <img src={votingbooster} alt="" width={window.screen.width>767? "400px":"300px"}/>
-        </div>
+
+      <H2
+        style={{
+          zIndex: 1,
+          fontSize: "20px",
+          marginTop: "35px",
+          // paddingTop: "30px",
+        }}
+      >
+        {translate("BOOST YOUR VOTING POWER").toUpperCase()}
+      </H2>
+      <Row>
+        <Col sm={6} className="text-center">
+          <img src={votingbooster} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />
+        </Col>
+        <Col sm={6}>
+          <Row>
+            <Col sm={2}>
+              <Prices style={{}}>
+                <Corner>
+                  <span style={{
+                    position: 'absolute',
+                    width: '47px',
+                    height: '27px',
+                    left: '1278px',
+                    top: '247px',
+                    fontFamily: 'Poppins',
+                    fontStyle: 'normal',
+                    fontWeight: '700',
+                    fontSize: '22px',
+                    lineHeight: '26px'
+                  }}>20% EXTRA</span>
+                </Corner>
+              </Prices>
+            </Col>
+            <Col sm={2}></Col>
+            <Col sm={2}></Col>
+            <Col sm={2}></Col>
+          </Row>
+        </Col >
+      </Row >
+      <div className="d-flex justify-content-center">
+
+      </div>
       <div
         className='p-0 m-0 w-100 d-flex justify-content-center'
         style={{
@@ -139,7 +181,7 @@ const VotingBooster = () => {
             background: "#160133",
             width: `${window.screen.width > 979 ? "730px" : "100%"}`,
           }}
-        >          
+        >
           <div className='d-flex justify-content-around mt-4 text-center px-3 mb-4'>
             <PriceCard>
               <div>
