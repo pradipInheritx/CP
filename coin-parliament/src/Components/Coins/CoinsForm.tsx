@@ -75,7 +75,6 @@ const CoinsForm = ({
 
     return window.scrollTo(0, 0);
   }, []);
-  console.log(userInfo, 'pkk');
 
   const vote = useCallback(async () => {
     // console.log('coindata',coinUpdated[coin?.symbol]?.price)
