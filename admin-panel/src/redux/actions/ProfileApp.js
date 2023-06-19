@@ -17,6 +17,9 @@ export const getUserDetail = () => {
         }
       })
       .catch(error => {
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError('Something went wrong'));
       });
   };

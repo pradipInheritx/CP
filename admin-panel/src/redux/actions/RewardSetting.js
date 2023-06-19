@@ -24,6 +24,9 @@ export const getRewardSetting = () => {
         }
       })
       .catch(error => {
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError('There was something issue in responding server'));
       });
   };

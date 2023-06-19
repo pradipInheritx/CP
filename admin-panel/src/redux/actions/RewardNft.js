@@ -27,8 +27,14 @@ export const getRewardAlbum = (filterOptions = [], searchTerm = '', callbackFun)
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
+        if (data.status === false) {
+        console.log(data,"alldata")  
+        }
       })
       .catch(error => {
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError('There was something issue in responding server'));
       });
   };
