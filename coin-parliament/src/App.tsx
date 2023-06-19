@@ -13,6 +13,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -116,6 +117,7 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
+import ProfileNftGalleryCopy from "./Pages/ProfileNftGalleryCopy";
 import GameRule from "./Pages/GameRule";
 import Partners from "./Pages/Partners";
 import Foundations from "./Pages/Foundations";
@@ -134,9 +136,12 @@ import Login2fa from "./Components/LoginComponent/Login2fa";
 // import { handleSoundClick } from "./common/utils/SoundClick";
 // import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
-import { VoteContext, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
+import { VoteContext, VoteContextType, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
 import { vote } from "common/models/canVote.test";
 import { setTimeout } from "timers";
+import NFTGalleryCopy from "Pages/NFTGalleryCopy";
+import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
+import ModalForResult from "Pages/ModalForResult";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -164,6 +169,7 @@ function App() {
   const langDetector = useRef(null);
   let navigate = useNavigate();
   const { width } = useWindowSize();
+  const [voteNumberEnd, setvoteNumberEnd] = useState<any>(0)
   // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
   //   const [displayFullscreen,setDisplayFullscreen]=useState('none')
@@ -209,34 +215,7 @@ function App() {
 
   }, [pathname])
 
-  const showToast = useCallback(
-    (
-      content: ToastContent,
-      type?: ToastType,
-      options: ToastOptions | undefined = {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        containerId: "toast",
-      }
-    ) => {
-      switch (type) {
-        case ToastType.ERROR:
-          toast.error(content, options);
-          break;
-        case ToastType.INFO:
-          toast.info(content, options);
-          break;
-        default:
-          toast.success(content, options);
-      }
-    },
-    []
-  );
+
 
   const showModal = useCallback(
     (
@@ -260,23 +239,47 @@ function App() {
     []
   );
 
+
   useEffect(() => {
+
     if ('serviceWorker' in navigator) {
-      navigator?.serviceWorker?.addEventListener("message", (message) => {
-        const {
-          notification: { body, title },
-        } = message.data["firebase-messaging-msg-data"] as {
-          notification: { body: string; title: string };
-        };
-        // showToast(
-        //   <div>
-        //     <h5>{title}</h5>
-        //     <p>{body}</p>
-        //   </div>
-        // );
+      console.log("Navigator service worker is supported");
+      navigator.serviceWorker.addEventListener("message", (message) => {
+        const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
+        console.log(message.data, "checknotification")
+        showToast(
+          <div>
+            <h5>{title}</h5>
+            <p>{body}</p>
+          </div>
+        );
+        const typeName = { ...message.data["firebase-messaging-msg-data"]?.notification }
+
+        // if (typeName?.title.includes("-")) {
+
+        //   const getPairName = typeName?.title.split(" ")
+        //   const FinalName = getPairName[getPairName.length - 1]          
+        //   window.location.href = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;
+        //   // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/pairs/${FinalName}`;          
+        //   // console.log(makeUrl,"checkcoinpair")
+        // }
+        // else if (!typeName?.title.includes("-") && !typeName?.title.includes("mine")) {
+        //   const getCoinName = typeName?.title.split(" ")
+        //   const FinalName=getCoinName[getCoinName.length-1]          
+        //   window.location.href = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
+        //   // const makeUrl = `https://coinparliamentstaging.firebaseapp.com/coins/${FinalName}`;
+        //   // console.log(makeUrl,"checkcoinpair")
+        // }
+        // else if (typeName?.title.includes("mine")) {          
+        //   window.location.href = 'https://coinparliamentstaging.firebaseapp.com/profile/mine';
+        // }
+        // else{          
+        //   window.location.href = 'https://coinparliamentstaging.firebaseapp.com/';
+        // }
       });
     }
-  });
+  }, []);
+
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
     const classes = pathname
@@ -337,14 +340,15 @@ function App() {
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
-  const [remainingTimer,setRemainingTimer]=useState(0)
-  const [followerUserId,setFollowerUserId]=useState<string>('')
-  const [showBack,setShowBack]=useState<any>(false)
-  const [showReward,setShowReward]=useState<any>(0)
-  const [inOutReward,setInOutReward]=useState<any>(0)
-  const [headerExtraVote,setHeaderExtraVote]=useState<number>(0)
-  const [rewardExtraVote,setRewardExtraVote]=useState<number>(0)
-  const [afterVotePopup,setAfterVotePopup]=useState<any>(false)
+  const [remainingTimer, setRemainingTimer] = useState(0)
+  const [followerUserId, setFollowerUserId] = useState<string>('')
+  const [showBack, setShowBack] = useState<any>(false)
+  const [showReward, setShowReward] = useState<any>(0)
+  const [inOutReward, setInOutReward] = useState<any>(0)
+  const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
+  const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
+  const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
+  const [albumOpen, setAlbumOpen] = useState<any>("false")
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -422,7 +426,7 @@ function App() {
   //   return Followerinfo
   // }
 
-
+console.log(remainingTimer,"remainingTimer")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -746,10 +750,12 @@ function App() {
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
 
-          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          // setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
 
           setTimeout(() => {
             if (user?.uid) {
+              console.log('hello');
 
               const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
               // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
@@ -780,7 +786,62 @@ function App() {
 
 
   }, [userInfo?.voteStatistics?.total])
-  // console.log('usermfa',user,userInfo)
+  console.log('usermfa',userInfo)
+
+useEffect(() => {
+  if (user?.uid && voteNumberEnd==0) { 
+    const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+      // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+      const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+      const votesLast24HoursRef = firebase
+        .firestore()
+        .collection("votes")
+        .where("userId", "==", user?.uid)
+        .where("voteTime", ">=", last24Hour)
+        .where("voteTime", "<=", Date.now());
+      votesLast24HoursRef.get()
+        .then((snapshot) => {
+          // setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+
+          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          // console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');          
+          setTimeout(() => {
+            if (user?.uid) {
+              console.log('hello');
+
+              const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+              // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+              const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+              const votesLast24HoursRef = firebase
+                .firestore()
+                .collection("votes")
+                .where("userId", "==", user?.uid)
+                .where("voteTime", ">=", last24Hour)
+                .where("voteTime", "<=", Date.now());
+              // console.log('extravote11',votesLast24HoursRef)
+              votesLast24HoursRef.get()
+                .then((snapshot) => {
+                  setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+
+                })
+                .catch((error) => {
+                  console.log('extravoteError', error);
+                });
+            }
+          }, remaining);
+          console.log("yes i am working after vote")
+        })
+        .catch((error) => {
+          console.log('extravoteError', error);
+        });
+  }
+  
+}, [voteNumberEnd])
+
 
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
@@ -986,9 +1047,103 @@ function App() {
       getVotes().then(void 0);
     }
   }, [user?.uid]);
-  // const voteDetails = useContext(VoteContext);
-  // const setVoteDetails = useContext(VoteDispatchContext);
 
+  ///start vote result //
+  const voteDetails = useContext(VoteContext);
+  const setVoteDetails = useContext(VoteDispatchContext);
+  const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+  const [calculateVote, setCalculateVote] = useState<boolean>(true);
+
+  useEffect(() => {
+    let tempTessTimeVote: VoteResultProps | undefined;
+    Object.keys(voteDetails?.activeVotes).map((value) => {
+      if (!tempTessTimeVote || tempTessTimeVote.expiration > voteDetails?.activeVotes[value]?.expiration) {
+        tempTessTimeVote = voteDetails?.activeVotes[value];
+      }
+      return {};
+    });
+    if (tempTessTimeVote && calculateVote) {
+      timeEndCalculation(tempTessTimeVote);
+      setCalculateVote(false);
+    }
+  }, [voteDetails?.activeVotes]);
+  // useEffect(() => {
+
+  // }, [lessTimeVote]);
+  const voteImpact = useRef<{
+    timeFrame: number,
+    impact: null | number
+  }>({
+    timeFrame: 0,
+    impact: null
+  });
+  useEffect(() => {
+    voteImpact.current = voteDetails.voteImpact;
+  }, [voteDetails]);
+  const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
+    if (lessTimeVote) {
+
+      // let exSec = new Date(-).getSeconds();
+      // current date
+      let current = new Date();
+
+      // voteTime date
+      let voteTime = new Date(lessTimeVote?.expiration);
+
+      // finding the difference in total seconds between two dates
+      let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
+      if (second_diff > 0) {
+        const timer = setTimeout(async () => {
+          const coin = lessTimeVote?.coin.split('-') || [];
+          const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
+          const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+
+          await getPriceCalculation({
+            ...{
+              coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+              coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+              voteId: lessTimeVote?.id,
+              voteTime: lessTimeVote?.voteTime,
+              valueVotingTime: lessTimeVote?.valueVotingTime,
+              expiration: lessTimeVote?.expiration,
+              timestamp: Date.now(),
+              userId: lessTimeVote?.userId,
+
+            }, ...(
+              (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
+                { status: voteImpact.current?.impact } :
+                {}
+            )
+          }).then((response) => {
+            if (response?.data && Object.keys(response.data).length > 0) {
+              // setpopUpOpen(true);
+              // setModalData(response!.data);
+              // setLessTimeVote(undefined);
+              const res: Object = response!.data;
+              // @ts-ignore
+              if ((!!voteDetails?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
+                setVoteDetails((prev: VoteContextType) => {
+                  return {
+                    ...prev,
+                    lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
+                    openResultModal: true
+                  }
+                })
+              }
+              // setModalData(response!.data);
+            }
+          }).catch(err => {
+            if (err && err.message) {
+              console.log(err.message);
+            }
+          });
+        }, ((second_diff * 1000)));
+        return () => clearTimeout(timer);
+      }
+    }
+  }
+
+  ///END vote result //
 
   return loader ? (
     <div
@@ -1021,19 +1176,22 @@ function App() {
                 // console.log(e.target.value)
               }
               }
-          />
-          <ManagersContext.Provider
-            value={{
-              CPMSettingsMng,
-              VoteRulesMng,
-              TimeframesMng,
-              UserTypeMng,
-            }}
-          >
-            <AppContext.Provider
+            />
+            <ManagersContext.Provider
+              value={{
+                CPMSettingsMng,
+                VoteRulesMng,
+                TimeframesMng,
+                UserTypeMng,
+              }}
+            >
+              <AppContext.Provider
                   value={{
-                    afterVotePopup,
-                    setAfterVotePopup,
+                  setvoteNumberEnd,
+                  albumOpen,
+                  setAlbumOpen,
+                  afterVotePopup,
+                  setAfterVotePopup,
                   rewardExtraVote,
                   setRewardExtraVote,
                   headerExtraVote,
@@ -1200,8 +1358,6 @@ function App() {
                               fluid
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
-                              // width={width}
-                              className="pkkk"
                             >
 
                               <Header
@@ -1240,7 +1396,7 @@ function App() {
                                         width: width && width > 979 ? 233 : "auto",
                                       }}
                                     >
-                                      <Link to={"/"}>
+                                      <Link to={"/"} className="">
                                         {window.screen.width < 979 && (
                                           <Logo
                                             size={
@@ -1250,21 +1406,8 @@ function App() {
                                             }
                                           />
                                         )}
-                                        {/* {scrollPosition >= positionBreakpoint && window.screen.width<979 &&<Logo
-                                        size={Size.XSMALL}
-                                      />} */}
+
                                       </Link>
-                                      {
-                                        // ((scrollPosition < positionBreakpoint) && (width && width < 979)) && <H1
-                                        //   desktop={
-                                        //     width && width > 979 ? "true" : "false"
-                                        //   }
-                                        //   className="mt-2"
-                                        //   onClick={() => navigate("/", {replace: true})}
-                                        // >
-                                        //   {/* {!login && !firstTimeFoundationSelection && !firstTimeLogin &&!firstTimeAvatarSlection? capitalize(translate("coin parliament", lang)): null} */}
-                                        // </H1>
-                                      }
                                     </div>
                                   </HomeContainer>
                                 }
@@ -1368,13 +1511,20 @@ function App() {
                                             <Route path='/' element={
 
                                               <Home />} />
+                                            <Route path='/firebase-messaging-sw.js#' element={
+
+                                              <Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
                                             />
-                                            <Route
+                                            {/* <Route
                                               path='nftAlbum'
                                               element={<NFTGallery />}
+                                            /> */}
+                                            <Route
+                                              path='nftAlbum'
+                                              element={<NFTGalleryCopy />}
                                             />
                                             <Route
                                               path='nftAlbum/:type'
@@ -1442,7 +1592,7 @@ function App() {
                                                 path={
                                                   ProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<ProfileNftGallery />}
+                                                element={<ProfileNftGalleryCopy />}
                                               />
                                               <Route
                                                 path={
@@ -1480,7 +1630,7 @@ function App() {
                                                 path={
                                                   FollowerProfileTabs.ProfileNftGallery
                                                 }
-                                                element={<FwProfileNftGallery />}
+                                                element={<FwProfileNftGalleryCopy />}
                                               />
                                               <Route
                                                 path={
@@ -1560,10 +1710,17 @@ function App() {
                             </AppContainer>
                           </>
                         )}
-                      <ToastContainer enableMultiContainer containerId='toast' />
+                      <ToastContainer enableMultiContainer containerId='toast' limit={1} />
                       <ToastContainer enableMultiContainer containerId='modal' />
                       {modalOpen && <div className='fade modal-backdrop show' />}
-                      {/* </VoteProvider> */}
+                      {/* //vote result modal */}
+                      {/* @ts-ignore */}
+                      {voteDetails?.lessTimeVote && <ModalForResult
+                        popUpOpen={voteDetails.openResultModal}
+                        vote={voteDetails?.lessTimeVote}
+                        type={voteDetails?.lessTimeVote?.voteType || 'coin'}
+                        setCalculateVote={setCalculateVote}
+                      />}
                     </UserContext.Provider>
                   </CoinsContext.Provider>
                 </ContentContext.Provider>
@@ -1601,3 +1758,29 @@ function App() {
 }
 
 export default App;
+export const showToast = (
+  content: ToastContent,
+  type?: ToastType,
+  options: ToastOptions | undefined = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    containerId: "toast",
+  }
+) => {
+  toast.dismiss();
+  switch (type) {
+    case ToastType.ERROR:
+      toast.error(content, options);
+      break;
+    case ToastType.INFO:
+      toast.info(content, options);
+      break;
+    default:
+      toast.success(content, options);
+  }
+};

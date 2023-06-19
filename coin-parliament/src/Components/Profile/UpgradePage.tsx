@@ -24,6 +24,9 @@ import upgrade3 from "../../assets/svg/upgrade3.svg";
 import UpgradeCopy from "./UpgradeCopy";
 import { handleSoundClick } from "../../common/utils/SoundClick";
 import  upgrade from "../../assets/images/upgrade_small.png";
+import  Gift from "../../assets/images/Framegift.png";
+import  Frame from "../../assets/images/Frame.png";
+import  NftFrame from "../../assets/images/NftFrame.png";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -97,6 +100,28 @@ useEffect(() => {
     
   }
 `;
+  
+  const SideBox = styled.div` 
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom:50px; 
+  padding:20px 10px;  
+  // border: 1px solid red; 
+  border-bottom:none;
+//  border-image-source: linear-gradient(180.99deg, #CAB7FF 2.33%, #4D1A4B 45.7%, rgba(24, 14, 52, 0) 99.15%);
+  background: linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%), linear-gradient(180.99deg, #CAB7FF 2.33%, #4D1A4B 45.7%, rgba(24, 14, 52, 0) 99.15%);
+
+  & p {
+    font-size:19px;
+  }
+
+  & span {
+    font-size:12px;
+    line-height:15px;
+  }
+
+`;
   return (
     <>        
       <div
@@ -107,50 +132,13 @@ useEffect(() => {
           // width: `${window.screen.width > 979 ? "730px" : "100%"}`,
         }}
       >
-
-
-
         <div
           className=''
           style={{
             background: "#160133",
             width: `${window.screen.width > 979 ? "850px" : "100%"}`,
           }}
-        >
-          {/* <TextContainer
-            className='d-xl-none d-md-none'
-            style={
-              {
-                // textTransform: "none",
-              }
-            }
-          >
-            <H2
-              style={{
-                fontWeight: "bold",
-                position: "relative",
-                fontSize: "20px",
-                paddingTop: "45px",
-              }}
-            >
-              {translate("UPGRADE YOUR VOTING PASS!")}
-            </H2>
-            <p
-              className='fw-lighter'
-              style={{
-                // fontWeight: "100",
-                textAlign: "center",
-                marginTop: "20px",
-                fontSize: "15px",
-                padding: "0px 10px 0px 10px",
-              }}
-            >
-              {translate(
-                "By upgrading your voting pass you will be able to mint PAX token, earn NFTs and power up the voting"
-              )}
-            </p>
-          </TextContainer> */}
-          
+        >                    
             <H2
               style={{
                 fontSize: "1.25rem",
@@ -161,17 +149,76 @@ useEffect(() => {
               }}
             >
               {translate("Become a miner")}
-            </H2>
-            <div className="d-flex justify-content-center">
-                <img src={upgrade} alt="" width={window.screen.width>767? "400px":"300px"}/>
-            </div>
+          </H2>
           
-            <P
+          <P
             style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
-            className="px-2"
+            className="px-3 pt-4  pb-3"
             >              
                 Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.              
-            </P>                       
+          </P>  
+          <div className="d-flex justify-content-around align-items-center">
+            <div className="d-flex justify-content-center w-50">
+                <img src={upgrade} alt="" width={window.screen.width>767? "400px":"300px"}/>
+            </div>                                         
+            <div className="w-50">
+              <div>
+                <SideBox >                                                    
+                    <div 
+                    style={{ width: "30%" }}
+                    className="d-flex justify-content-center align-items-center"
+                    >
+                    <img src={Gift} alt="Gift"  width={"60px"}/>
+                    </div>
+                      
+                    <div className=""
+                    style={{width:"70%"}}
+                    >
+                      <p>Purchases</p>
+                      <span>Use your parliament coin (V2E) to buy merchandise</span>
+                      </div>
+                  
+                
+                </SideBox>
+
+
+                <SideBox >
+                  
+                    <div
+                    style={{ width: "30%" }}
+                    className="d-flex justify-content-center align-items-center"
+                    >
+
+                  <img src={NftFrame} alt="" width={"60px"}/>
+                    </div>
+                    <div
+                    style={{width:"70%"}}
+                    >
+                    <p>NFT converter</p>
+                    <span>Convert your cards collection to NFTs</span>
+                  </div>
+              
+                </SideBox>
+
+                <SideBox>
+                  
+                    <div
+                    style={{ width: "30%" }}
+                    className="d-flex justify-content-center align-items-center"
+                    >
+                  <img src={Frame} alt="" width={"60px"}/>
+                    </div>
+                    <div
+                    style={{width:"70%"}}
+                    >
+                      <p>Full mining machine</p>
+                      <span>Mine PAX BEP20 token</span>
+                  </div>
+              
+                </SideBox>
+              </div>
+            </div>                                         
+          </div>
           <div
             className='d-flex justify-content-around px-3 text-center flex-wrap'
             style={{ marginTop: "47px" }}
