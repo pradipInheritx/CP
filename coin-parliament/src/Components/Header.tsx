@@ -676,30 +676,28 @@ console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLas
 									</div>
 									<div className='w-100'>
 										<HeaderCenter className='d-flex justify-content-between' style={{ width: '16em' }}>
-											<p className='' style={{ marginRight: '1em' }}>
-												{followerPage && followerInfo != "" ? followerInfo?.displayName :
-													(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
-														// @ts-ignore
-														<span style={{ marginLeft: '25px' }}>
-															{/* @ts-ignore */}
-															<Countdown date={votingTimer}
-																renderer={({ hours, minutes, seconds, completed }) => {
+											{followerPage && followerInfo != "" ? followerInfo?.displayName :
+												(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+													// @ts-ignore
+													<>
+														{/* @ts-ignore */}
+														<Countdown date={votingTimer}
+															renderer={({ hours, minutes, seconds, completed }) => {
+																return (
+																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400, paddingLeft: '3.5em' }}>
+																		Wait {" "}
+																		{hours < 1 ? null : `${hours} :`}
+																		{minutes < 10 ? `0${minutes}` : minutes}:
+																		{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
+																		or buy extra votes now.
+																	</span>
+																);
 
-																	return (
-																		<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 400 ,marginLeft: '10px'}}>
-																			{/* {hours < 10 ? `0${hours}` : hours}: */}
-																			Wait {" "}
-																			{hours < 1 ? null : `${hours} :`}
-																			{minutes < 10 ? `0${minutes}` : minutes}:
-																			{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																			<p style={{ marginLeft: '35px' }}> or buy extra votes now.</p>
-																		</span>
-																	);
-
-																}}
-															/>
-														</span>
-														:
+															}}
+														/>
+													</>
+													:
+													<p className='' style={{ marginRight: '1em' }}>
 														<span
 															style={{
 																color: "#6352E8",
@@ -729,8 +727,8 @@ console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLas
 															{" "}
 															votes left
 														</span>
-												}
-											</p>
+													</p>
+											}
 											{
 												<div style={{ marginRight: '1em' }}>
 													{followerPage && followerInfo != "" ?

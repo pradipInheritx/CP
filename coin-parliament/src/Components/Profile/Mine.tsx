@@ -31,6 +31,7 @@ import { CurrentCMPContext } from "Contexts/CurrentCMP";
 import copy from "copy-to-clipboard";
 import Copy from "Components/icons/copyShare";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
+import Swal from "sweetalert2";
 
 
 const MyBadge = styled(Badge)`
@@ -68,7 +69,7 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward,setAlbumOpen } = useContext(AppContext);
+  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward, setAlbumOpen } = useContext(AppContext);
   const { showModal, showToast } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
@@ -91,7 +92,7 @@ const Mine = () => {
     // console.log("user Id", result);
   };
 
-console.log(data,"alllistdata")
+  console.log(data, "alllistdata")
 
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
@@ -109,9 +110,10 @@ console.log(data,"alllistdata")
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
 
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-  const remainingCMP = (currentCMP > 0 && currentCMPDiff > prevCMPDiff ? 100 : score);
+  const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
+  console.log(currentCMPDiff, prevCMPDiff, currentCMP, userInfo?.voteStatistics?.score, 'pkkkkkkk');
 
   useEffect(() => {
     // @ts-ignore
@@ -131,7 +133,6 @@ console.log(data,"alllistdata")
 
   }, [paxValue, countShow])
 
-  console.log(prevPAXValue.current, paxValue, "prevPAXValue")
   useEffect(() => {
     rewardList();
   }, [rewardTimer]);
@@ -143,12 +144,29 @@ console.log(data,"alllistdata")
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-
     if (showBack && remainingReward < 1) {
       setTimeout(() => {
         setModelText(1)
-        console.log(showBack, "viewshow")
-        handleShow()
+        // handleShow();
+        Swal.fire({
+          html:
+            "<div className='' style='text-align: left !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
+            "<strong style='font-size:20px'>Stay in the game</strong>" +
+            "<p style='font-size:20px'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+            "</div >",
+          color: 'black',
+          confirmButtonText: 'Continue Voting',
+          confirmButtonColor: '#6352e8',
+          showCloseButton: true,
+          customClass: {
+            popup: 'stayInGamePopupStyle',
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            goBack()
+          }
+        });
+
         setShowBack(false)
       }, 10000);
     }
@@ -168,7 +186,6 @@ console.log(data,"alllistdata")
       }, 10000);
     }
   }
-  console.log(showBack, "viewshow back")
 
   if (isV1()) {
     return (
@@ -227,7 +244,7 @@ console.log(data,"alllistdata")
                 {...{
                   setCountShow,
                   width,
-                  score: remainingCMP,
+                  score: remainingCMP /* ((userInfo?.voteStatistics?.score || 0) > 0 ? remainingCMP : 0) */,
                   // @ts-ignore
                   // remainingCMP,
                   setRewardTimer,
@@ -333,11 +350,11 @@ console.log(data,"alllistdata")
                     {texts.GamePts}
                   </RewardList>
                   <RewardList onClick={() => {
-                    {/* @ts-ignore */}
+                    {/* @ts-ignore */ }
                     setAlbumOpen(item?.winData?.firstRewardCardCollection);
                     navigate('/profile/Album')
                   }}
-                  
+
                   >
                     {/* @ts-ignore */}
                     <span style={{ color: "#6352E8", }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
@@ -398,7 +415,7 @@ console.log(data,"alllistdata")
           <Modal.Body>
             {/* continue voting */}
             {modelText == 1 && <div className='py-2  d-flex flex-column  justify-content-center'>
-              <strong style={{ fontSize: "20px" }}>Stay in the game</strong>
+              <strong style={{ fontSize: "20px" }}>Stay in the gamekl</strong>
               <p style={{ fontSize: "20px" }}>Only {100 - remainingCMP} CMP to reach your goal</p>
             </div>}
             {modelText == 2 && <div className='py-2  d-flex  flex-column justify-content-center'>
@@ -413,7 +430,7 @@ console.log(data,"alllistdata")
           < div className="d-flex justify-content-center " >
             <Buttons.Primary className="mx-2" onClick={goBack}>CONTINUE VOTING</Buttons.Primary>
           </div >
-        </Modal >
+        </Modal>
       </div >
 
       {/* Card Modal */}

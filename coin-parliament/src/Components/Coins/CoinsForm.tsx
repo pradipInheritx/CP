@@ -150,7 +150,7 @@ const CoinsForm = ({
     [selectedTimeFrame, canVote]
   );
 
-  console.log(disabled,"disabled")
+  console.log(disabled, "disabled")
 
   const throttled_vote = useMemo(
     () => voteProcedure({ vote, sound, setConfetti }),
