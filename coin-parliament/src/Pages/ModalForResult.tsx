@@ -17,6 +17,7 @@ import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { lessTimeVoteDispatchContext } from 'Contexts/LessTimeVoteProvider';
+import { first } from 'lodash';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -172,7 +173,12 @@ function ModalForResult({ popUpOpen, vote, type,
     setCurrentCMP(vote?.score || 0)
   }, [vote?.score])
 
-
+  var firstCoin: string = '0';
+  var secondCoin: string = '0';
+  if (type === "pair" && vote?.valueVotingTime.length > 1) {
+    firstCoin = ((/* Math.abs */(vote?.valueExpirationTime[0] - vote?.valueVotingTime[0]) * 100) / vote?.valueVotingTime[0]).toFixed(3);
+    secondCoin = ((/* Math.abs */(vote?.valueExpirationTime[1] - vote?.valueVotingTime[1]) * 100) / vote?.valueVotingTime[1]).toFixed(3);
+  }
   return (
     <div>
       {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
@@ -282,14 +288,8 @@ function ModalForResult({ popUpOpen, vote, type,
           }
           {
             type == "pair" && votelength ?
-              <div className=' w-100 '
-              // style={{boxShadow:" rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}
-              >
-                <div
-                  // className={`${window.screen.width < 767 ? "" : ""}`}
-                  className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}
-
-                >
+              <div className=' w-100 '>
+                <div className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}>
                   <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                     <CoinContainer winner={vote?.direction === 0}>
                       <div className=" ">
@@ -306,25 +306,20 @@ function ModalForResult({ popUpOpen, vote, type,
                           <div>{paircoin[0]?.symbol}</div>
 
                           <div>
-                            {vote?.valueExpirationTime &&
-                              // formatCurrency(                                              
-                              //   (vote?.valueExpirationTime as number[])[0]
-                              // )
-                              vote?.valueVotingTime[0]
-                            }
+                            {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]}
+                          </div>
+                          {console.log((Math.abs(vote?.valueVotingTime[0] - vote?.valueExpirationTime[0]) * 100) / vote?.valueVotingTime[0], vote, 'pkkkk')}
+                          <div>
+                            {firstCoin || 0}%
                           </div>
                           <div>
-                            {/* {vote?.valueExpirationTime && <Trend num={trend} />} */}
                           </div>
                         </div>
                       </div>
                     </CoinContainer>
                   </div>
-
-
                   <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                     <Col className="">
-                      {/* {window.screen.width < 767 ? "" : */}
                       <div className="">
                         <LineImg>
                           <Line />
@@ -363,28 +358,24 @@ function ModalForResult({ popUpOpen, vote, type,
                           </div>
                           {/* @ts-ignore */}
                           <div>{paircoin[1]?.symbol}</div>
-
                           <div>
-                            {vote.valueExpirationTime &&
-                              // formatCurrency(
-                              // (vote.valueExpirationTime as number[])[1]
-
-                              // )
-                              vote.valueVotingTime[1]
-                            }
+                            {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]}
+                          </div>
+                          <div>
+                            {secondCoin || 0}%
                           </div>
                         </div>
                       </div>
                     </CoinContainer>
                   </div>
                 </div>
-                <div style={{ minHeight: "100%" }} className=" text-center">
+                <div style={{ minHeight: "100%" }} className="text-center">
                   <div className=''
                     style={{ fontSize: "12px" }}
                   >
                     <p>VOTE RESULT</p>
+                    {vote?.coin?.split("-")[vote?.direction]}: {(vote?.direction === 0 ? (parseFloat(firstCoin) - parseFloat(secondCoin)) : (parseFloat(secondCoin) - parseFloat(firstCoin)))}
                     <p>
-                      {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
                       {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]}
                     </p>
                     <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
