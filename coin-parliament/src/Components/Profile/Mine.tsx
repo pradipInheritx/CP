@@ -150,9 +150,9 @@ const Mine = () => {
         // handleShow();
         Swal.fire({
           html:
-            "<div className='' style='text-align: left !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
-            "<strong style='font-size:20px'>Stay in the game</strong>" +
-            "<p style='font-size:20px'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+            "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
+            "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
+            "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
             "</div >",
           color: 'black',
           confirmButtonText: 'Continue Voting',

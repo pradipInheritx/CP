@@ -189,7 +189,7 @@ export const LoginRegular = async (
         const firstTimeLogin:Boolean=true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
-        console.log('firsttimelogin success')
+        console.log(isFirstLogin,'firsttimelogin success')
         // await sendEmail();
       setTimeout(() => {
         callback.successFunc(userCredential.user) 

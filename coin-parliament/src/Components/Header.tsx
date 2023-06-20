@@ -279,15 +279,19 @@ useEffect(() => {
 	}, [pages]);
 
 	useEffect(() => {
-		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+		// const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
 		// @ts-ignore
-		setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
+		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
+		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
+		setVoteNumber(Number(userInfo?.voteValue) + Number(userInfo?.rewardStatistics?.extraVote || 0));		
+		// @ts-ignore
+		setvoteNumberEnd(Number(userInfo?.voteValue));
+		// @ts-ignore
+		console.log(userInfo?.rewardStatistics?.extraVote,"userInfo")
 		prevCountRef.current = voteNumber;
-
-
 		// console.log('votenumber',voteNumber, Number(voted))
-	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length, headerExtraVote]);
+		// @ts-ignore
+	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote]);
 
 console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 
@@ -561,7 +565,7 @@ console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLas
 																		}
 																	/> :
 																	// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
-																	voteNumber && voteNumber + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																	Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																}
 
 																{" "}
@@ -722,7 +726,7 @@ console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLas
 																	}
 																	}
 																/> :
-																voteNumber && voteNumber + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 															}
 															{" "}
 															votes left
