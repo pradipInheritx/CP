@@ -34,6 +34,7 @@ import { toFollow } from "../common/models/User";
 import "./styles.css";
 import { handleSoundClick } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
+import { Other } from "Pages/SingleCoin";
 
 enum EventKeys {
 	LOGIN = "login",
@@ -188,7 +189,7 @@ const Header = ({
 
 
 
-	const { languages, setLang, setLogin, setSignup, setMenuOpen } =
+	const { languages, setLang, setLogin, setSignup, setMenuOpen,setShowBack } =
 		useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
@@ -197,6 +198,7 @@ const Header = ({
 	// console.log(showReward,inOutReward,"inOutReward")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
+	const [cmpModalOpen, setCmpModalOpen] = useState(false)
 
 	const [votingTimer, setVotingTimer] = useState(0)
 	const [followerInfo, setFollowerInfo] = useState<any>()
@@ -209,8 +211,17 @@ const Header = ({
 	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
 
 	const MyPath = window.location.pathname;
+	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 
 
+console.log(urlName,"")
+
+useEffect(() => {
+  
+	if (score == 100 && MyPath!=="/profile/mine") {
+		setCmpModalOpen(true)
+	}
+}, [score])
 
 
 	// console.log(urlName,"checkurlName")
@@ -844,6 +855,40 @@ console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLas
 						</div>
 					</Modal.Body>
 				</Modal>
+			</div>
+			<div>
+				<Modal show={cmpModalOpen} onHide={() => setCmpModalOpen(false)}
+					backdrop="static"
+					aria-labelledby="contained-modal-title-vcenter"
+      				centered
+				>
+					<Modal.Header>
+					{/* <Modal.Title>Modal heading</Modal.Title> */}
+					</Modal.Header>
+					<Modal.Body>
+						<p>You have achieved your goal .</p>
+						<div className='py-2  d-flex  justify-content-center'>
+            	<span style={{ textDecoration: 'none', cursor: 'pointer' }}
+						onClick={() => {   
+							setCmpModalOpen(false)  
+							navigate('/profile/mine');
+							setShowBack(true);                
+						}}
+            		>
+              <Other>{("CLAIM YOUR REWARD")}</Other>
+            </span>
+          </div>
+
+					</Modal.Body>
+					{/* <Modal.Footer>
+					<Button variant="secondary" onClick={()=>{}}>
+						Close
+					</Button>
+					<Button variant="primary" onClick={()=>{}}>
+						Save Changes
+					</Button>
+					</Modal.Footer> */}
+      			</Modal>
 			</div>
 		</MenuContainer>
 
