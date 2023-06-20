@@ -395,7 +395,7 @@ const Minting = ({
                     });
                   // @ts-ignore
                   setResultData(result)
-                  handleShow()
+                  // handleShow()
                   handleCmpPopupClose()
                   setLoading(false);
                   console.log("rewardresult", result);

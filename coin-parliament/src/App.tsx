@@ -170,6 +170,7 @@ function App() {
   const langDetector = useRef(null);
   let navigate = useNavigate();
   const { width } = useWindowSize();
+  const [voteNumberEnd, setvoteNumberEnd] = useState<any>(0)
   // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
   //   const [displayFullscreen,setDisplayFullscreen]=useState('none')
@@ -214,7 +215,6 @@ function App() {
     });
 
   }, [pathname])
-
 
 
   const showModal = useCallback(
@@ -745,39 +745,38 @@ function App() {
         .where("voteTime", ">=", last24Hour)
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
-        .then((snapshot) => {
+        .then((snapshot) => {            
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+          // let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+          // setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          // console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
 
-          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-          console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
+          // setTimeout(() => {
+          //   if (user?.uid) {
+          //     console.log('hello');
 
-          setTimeout(() => {
-            if (user?.uid) {
-              console.log('hello');
+          //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+          //     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+          //     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
 
-              const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-              // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-              const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+          //     const votesLast24HoursRef = firebase
+          //       .firestore()
+          //       .collection("votes")
+          //       .where("userId", "==", user?.uid)
+          //       .where("voteTime", ">=", last24Hour)
+          //       .where("voteTime", "<=", Date.now());
+          //     // console.log('extravote11',votesLast24HoursRef)
+          //     votesLast24HoursRef.get()
+          //       .then((snapshot) => {
+          //         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
 
-              const votesLast24HoursRef = firebase
-                .firestore()
-                .collection("votes")
-                .where("userId", "==", user?.uid)
-                .where("voteTime", ">=", last24Hour)
-                .where("voteTime", "<=", Date.now());
-              // console.log('extravote11',votesLast24HoursRef)
-              votesLast24HoursRef.get()
-                .then((snapshot) => {
-                  setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-
-                })
-                .catch((error) => {
-                  console.log('extravoteError', error);
-                });
-            }
-          }, remaining);
+          //       })
+          //       .catch((error) => {
+          //         console.log('extravoteError', error);
+          //       });
+          //   }
+          // }, remaining);
         })
         .catch((error) => {
           console.log('extravoteError', error);
@@ -786,7 +785,99 @@ function App() {
 
 
   }, [userInfo?.voteStatistics?.total])
-  // console.log('usermfa',user,userInfo)
+  console.log('usermfa',userInfo)
+
+  useEffect(() => {    
+    if (user?.uid && voteNumberEnd == 0) {
+      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+      // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+      const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+    const votesLast24HoursRef = firebase
+        .firestore()
+        .collection("votes")
+      .where("userId", "==", user?.uid)
+      // @ts-ignore
+        .where("voteTime", ">=", last24Hour)
+        .where("voteTime", "<=", Date.now());
+      votesLast24HoursRef.get()
+        .then((snapshot) => {            
+          setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
+
+      setTimeout(() => {
+      const usereData =firebase  
+        .firestore()
+        .collection("users")
+        .doc(user?.uid)
+        .set({ "voteValue": voteRules?.maxVotes }, { merge: true });    
+          }, remaining);
+        })
+        .catch((error) => {
+          console.log('extravoteError', error);
+        });
+    }
+
+  }, [voteNumberEnd])
+
+
+// useEffect(() => {
+//   if (user?.uid && voteNumberEnd==0) { 
+//     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+      
+//       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+//       const votesLast24HoursRef = firebase
+//         .firestore()
+//         .collection("votes")
+//         .where("userId", "==", user?.uid)
+//         .where("voteTime", ">=", last24Hour)
+//         .where("voteTime", "<=", Date.now());
+//       votesLast24HoursRef.get()
+//         .then((snapshot) => {
+      
+//           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+//           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+
+//           setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+      
+//           setTimeout(() => {
+//             if (user?.uid) {
+//               console.log('hello');
+
+//               const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+      
+//               const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+//               const votesLast24HoursRef = firebase
+//                 .firestore()
+//                 .collection("votes")
+//                 .where("userId", "==", user?.uid)
+//                 .where("voteTime", ">=", last24Hour)
+//                 .where("voteTime", "<=", Date.now());
+      
+//               votesLast24HoursRef.get()
+//                 .then((snapshot) => {
+//                   setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+
+//                 })
+//                 .catch((error) => {
+//                   console.log('extravoteError', error);
+//                 });
+//             }
+//           }, remaining);
+//           console.log("yes i am working after vote")
+//         })
+//         .catch((error) => {
+//           console.log('extravoteError', error);
+//         });
+//   }
+  
+// }, [voteNumberEnd])
+
 
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
@@ -1166,7 +1257,8 @@ function App() {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                  setvoteNumberEnd,
                   albumOpen,
                   setAlbumOpen,
                   afterVotePopup,

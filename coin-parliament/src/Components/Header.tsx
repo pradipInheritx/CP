@@ -34,6 +34,7 @@ import { toFollow } from "../common/models/User";
 import "./styles.css";
 import { handleSoundClick } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
+import { Other } from "Pages/SingleCoin";
 
 enum EventKeys {
 	LOGIN = "login",
@@ -188,15 +189,17 @@ const Header = ({
 
 
 
-	const { languages, setLang, setLogin, setSignup, setMenuOpen } =
+	const { languages, setLang, setLogin, setSignup, setMenuOpen,setShowBack } =
 		useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup } = useContext(AppContext);
+	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup ,setvoteNumberEnd} = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
+	const [cmpModalOpen, setCmpModalOpen] = useState(false)
+
 	const [votingTimer, setVotingTimer] = useState(0)
 	const [followerInfo, setFollowerInfo] = useState<any>()
 	const [followUnfollow, setFollowUnfollow] = useState<any>(false)
@@ -208,8 +211,18 @@ const Header = ({
 	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
 
 	const MyPath = window.location.pathname;
+	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 
 
+console.log(urlName,"")
+
+useEffect(() => {
+  
+	if (score > 99.98 && MyPath!=="/profile/mine") {
+		setCmpModalOpen(true)
+		console.log("i am working check",score)
+	}
+}, [score])
 
 
 	// console.log(urlName,"checkurlName")
@@ -267,16 +280,21 @@ const Header = ({
 	}, [pages]);
 
 	useEffect(() => {
-		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+		// const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
 		// @ts-ignore
-		setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
+		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
+		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
+		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
+		// @ts-ignore
+		setvoteNumberEnd(Number(userInfo?.voteValue));
+		// @ts-ignore
+		console.log(userInfo?.rewardStatistics?.extraVote,"userInfo")
 		prevCountRef.current = voteNumber;
-
-
 		// console.log('votenumber',voteNumber, Number(voted))
-	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length, headerExtraVote]);
+		// @ts-ignore
+	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote]);
 
-
+console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 
 
 	const onSelect = (eventKey: string | null) => {
@@ -548,7 +566,7 @@ const Header = ({
 																		}
 																	/> :
 																	// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
-																	voteNumber && voteNumber + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																	Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																}
 
 																{" "}
@@ -709,7 +727,7 @@ const Header = ({
 																	}
 																	}
 																/> :
-																voteNumber && voteNumber + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 															}
 															{" "}
 															votes left
@@ -840,6 +858,40 @@ const Header = ({
 						</div>
 					</Modal.Body>
 				</Modal>
+			</div>
+			<div>
+				<Modal show={cmpModalOpen} onHide={() => setCmpModalOpen(false)}
+					backdrop="static"
+					aria-labelledby="contained-modal-title-vcenter"
+      				centered
+				>
+					<Modal.Header>
+					{/* <Modal.Title>Modal heading</Modal.Title> */}
+					</Modal.Header>
+					<Modal.Body>
+						<p className="text-center" >You have achieved your goal .</p>
+						<div className='py-2  d-flex  justify-content-center'>
+            	<span style={{ textDecoration: 'none', cursor: 'pointer' }}
+						onClick={() => {   
+							setCmpModalOpen(false)  
+							navigate('/profile/mine');
+							setShowBack(true);                
+						}}
+            		>
+              <Other>{("CLAIM YOUR REWARD")}</Other>
+            </span>
+          </div>
+
+					</Modal.Body>
+					{/* <Modal.Footer>
+					<Button variant="secondary" onClick={()=>{}}>
+						Close
+					</Button>
+					<Button variant="primary" onClick={()=>{}}>
+						Save Changes
+					</Button>
+					</Modal.Footer> */}
+      			</Modal>
 			</div>
 		</MenuContainer>
 

@@ -9,6 +9,7 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import { handleSoundClick, VoteButton } from "../../common/utils/SoundClick";
+import firebase from "firebase/compat";
 
 export type VoteOption = {
   icon: React.ReactNode;
@@ -157,6 +158,28 @@ const Vote = ({
                 ...option0.buttonProps,
                 onClick: () => {
                   openPopup()
+                  // @ts-ignore
+                  if (userInfo?.voteValue > 0) {
+                    const usereData = firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({ "voteValue":userInfo?.voteValue - 1  }, { merge: true });   
+                  }
+                  // @ts-ignore
+                  if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
+                    const rewardData = userInfo?.rewardStatistics
+                    // @ts-ignore
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1 
+                    console.log(rewardData,"allrewardData")
+                    const usereData = firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({"rewardStatistics":rewardData}, { merge: true });   
+                  }
                   if (voteNumber > 0) {
                     VoteButton()
                     if (disabled && disabledText) {
@@ -198,6 +221,28 @@ const Vote = ({
                 ...option1.buttonProps,
                 onClick: () => {
                   openPopup()
+                // @ts-ignore
+                  if (userInfo?.voteValue > 0) {
+                    const usereData =firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({ "voteValue":userInfo?.voteValue - 1  }, { merge: true });   
+                  }
+                  // @ts-ignore
+                  if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
+                    const rewardData = userInfo?.rewardStatistics
+                    // @ts-ignore
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1 
+                    console.log(rewardData,"allrewardData")
+                    const usereData = firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({"rewardStatistics":rewardData}, { merge: true });   
+                  }
                   if (voteNumber > 0) {
                     VoteButton()
                     if (disabled && disabledText) {
