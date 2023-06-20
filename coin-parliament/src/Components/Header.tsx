@@ -284,7 +284,7 @@ useEffect(() => {
 		// @ts-ignore
 		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
 		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setVoteNumber(Number(userInfo?.voteValue || 0 )  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
+		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
