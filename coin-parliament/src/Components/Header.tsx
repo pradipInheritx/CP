@@ -218,8 +218,9 @@ console.log(urlName,"")
 
 useEffect(() => {
   
-	if (score == 100 && MyPath!=="/profile/mine") {
+	if (score > 99.98 && MyPath!=="/profile/mine") {
 		setCmpModalOpen(true)
+		console.log("i am working check",score)
 	}
 }, [score])
 
@@ -283,7 +284,7 @@ useEffect(() => {
 		// @ts-ignore
 		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
 		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setVoteNumber(Number(userInfo?.voteValue) + Number(userInfo?.rewardStatistics?.extraVote || 0));		
+		setVoteNumber(Number(userInfo?.voteValue || 0 )  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
@@ -868,7 +869,7 @@ console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLas
 					{/* <Modal.Title>Modal heading</Modal.Title> */}
 					</Modal.Header>
 					<Modal.Body>
-						<p>You have achieved your goal .</p>
+						<p className="text-center" >You have achieved your goal .</p>
 						<div className='py-2  d-flex  justify-content-center'>
             	<span style={{ textDecoration: 'none', cursor: 'pointer' }}
 						onClick={() => {   
