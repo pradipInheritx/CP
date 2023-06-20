@@ -142,6 +142,7 @@ import { setTimeout } from "timers";
 import NFTGalleryCopy from "Pages/NFTGalleryCopy";
 import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
 import ModalForResult from "Pages/ModalForResult";
+import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -425,7 +426,7 @@ function App() {
   //   return Followerinfo
   // }
 
-console.log(remainingTimer,"remainingTimer")
+  console.log(remainingTimer, "remainingTimer")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -995,8 +996,25 @@ console.log(remainingTimer,"remainingTimer")
   ///start vote result //
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
+
+  const completedVotes = useContext(CompletedVotesContext);
+  const setCompletedVotes = useContext(CompletedVotesDispatchContext);
+
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const [calculateVote, setCalculateVote] = useState<boolean>(true);
+  const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
+
+  useEffect(() => {
+    if (completedVotes.length > 0 && !voteDetails.openResultModal) {
+      setVoteDetails((prev: VoteContextType) => {
+        return {
+          ...prev,
+          lessTimeVote: completedVotes[0],
+          openResultModal: true
+        }
+      })
+    }
+  }, [completedVotes, voteDetails.openResultModal]);
 
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
@@ -1006,14 +1024,12 @@ console.log(remainingTimer,"remainingTimer")
       }
       return {};
     });
-    if (tempTessTimeVote && calculateVote) {
+    if (tempTessTimeVote /* && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId */ /* calculateVote */) {
+      setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
-      setCalculateVote(false);
+      // setCalculateVote(false);
     }
   }, [voteDetails?.activeVotes]);
-  // useEffect(() => {
-
-  // }, [lessTimeVote]);
   const voteImpact = useRef<{
     timeFrame: number,
     impact: null | number
@@ -1021,12 +1037,15 @@ console.log(remainingTimer,"remainingTimer")
     timeFrame: 0,
     impact: null
   });
+  const latestVote = useRef<VoteContextType>();
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
+    latestVote.current = voteDetails;
   }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
 
+      console.log(completedVotes, voteDetails, lessTimeVote, 'pkkk');
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
@@ -1036,56 +1055,73 @@ console.log(remainingTimer,"remainingTimer")
 
       // finding the difference in total seconds between two dates
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      if (second_diff > 0) {
-        const timer = setTimeout(async () => {
-          const coin = lessTimeVote?.coin.split('-') || [];
-          const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
-          const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+      // if (second_diff > 0) {
+      const timer = setTimeout(async () => {
+        const coin = lessTimeVote?.coin.split('-') || [];
+        const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
+        const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
 
-          await getPriceCalculation({
-            ...{
-              coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-              coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-              voteId: lessTimeVote?.id,
-              voteTime: lessTimeVote?.voteTime,
-              valueVotingTime: lessTimeVote?.valueVotingTime,
-              expiration: lessTimeVote?.expiration,
-              timestamp: Date.now(),
-              userId: lessTimeVote?.userId,
+        await getPriceCalculation({
+          ...{
+            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+            voteId: lessTimeVote?.id,
+            voteTime: lessTimeVote?.voteTime,
+            valueVotingTime: lessTimeVote?.valueVotingTime,
+            expiration: lessTimeVote?.expiration,
+            timestamp: Date.now(),
+            userId: lessTimeVote?.userId,
 
-            }, ...(
-              (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
-                { status: voteImpact.current?.impact } :
-                {}
-            )
-          }).then((response) => {
-            if (response?.data && Object.keys(response.data).length > 0) {
-              // setpopUpOpen(true);
-              // setModalData(response!.data);
-              // setLessTimeVote(undefined);
-              const res: Object = response!.data;
-              // @ts-ignore
-              if ((!!voteDetails?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
-                setVoteDetails((prev: VoteContextType) => {
-                  return {
-                    ...prev,
-                    lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
-                    openResultModal: true
-                  }
-                })
-              }
-              // setModalData(response!.data);
+          }, ...(
+            (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
+              { status: voteImpact.current?.impact } :
+              {}
+          )
+        }).then((response) => {
+          if (response?.data && Object.keys(response.data).length > 0) {
+            // setpopUpOpen(true);
+            // setModalData(response!.data);
+            // setLessTimeVote(undefined);
+            const res: VoteResultProps = response!.data as VoteResultProps;
+            // @ts-ignore
+            if ((!!latestVote?.current?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
+              setCompletedVotes((prev: VoteResultProps[]) => {
+                return [
+                  ...prev.filter(value => value.voteId != res.voteId),
+                  { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' }
+                ]
+              })
+              // setVoteDetails((prev: VoteContextType) => {
+              //   return {
+              //     ...prev,
+              //     lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
+              //     openResultModal: true
+              //   }
+              // })
             }
-          }).catch(err => {
-            if (err && err.message) {
-              console.log(err.message);
-            }
-          });
-        }, ((second_diff * 1000)));
-        return () => clearTimeout(timer);
-      }
+            // setModalData(response!.data);
+          }
+        }).catch(err => {
+          if (err && err.message) {
+            console.log(err.message);
+          }
+        });
+      }, (((second_diff || 0) * 1000)));
+      return () => clearTimeout(timer);
+      // }
     }
   }
+
+  // useEffect(() => {
+  // const coinData = firebase
+  //   .firestore()
+  //   .collection("settings").doc('settings')
+  // coinData.get()
+  //   .then((snapshot: any) => {
+  //     console.log('hello', snapshot.data().voteRules.maxVotes)
+
+  //     });
+  // }, [])
 
   ///END vote result //
 
@@ -1662,7 +1698,7 @@ console.log(remainingTimer,"remainingTimer")
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
-                        setCalculateVote={setCalculateVote}
+                        setLessTimeVoteDetails={setLessTimeVoteDetails}
                       />}
                     </UserContext.Provider>
                   </CoinsContext.Provider>
