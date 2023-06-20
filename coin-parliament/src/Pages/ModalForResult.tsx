@@ -173,12 +173,20 @@ function ModalForResult({ popUpOpen, vote, type,
     setCurrentCMP(vote?.score || 0)
   }, [vote?.score])
 
-  var firstCoin: string = '0';
-  var secondCoin: string = '0';
+  var firstCoin: number = 55;
+  var secondCoin: number = 55;
   if (type === "pair" && vote?.valueVotingTime.length > 1) {
-    firstCoin = ((/* Math.abs */(vote?.valueExpirationTime[0] - vote?.valueVotingTime[0]) * 100) / vote?.valueVotingTime[0]).toFixed(3);
-    secondCoin = ((/* Math.abs */(vote?.valueExpirationTime[1] - vote?.valueVotingTime[1]) * 100) / vote?.valueVotingTime[1]).toFixed(3);
+    const valueVotingTime = vote?.valueVotingTime[0];
+    const valueVotingTime1 = vote?.valueVotingTime[1];
+
+    const valueExpirationTime = vote?.valueExpirationTime[0];
+    const valueExpirationTime1 = vote?.valueExpirationTime[1];
+
+    firstCoin = ((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime);
+    secondCoin = ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1);
+    console.log(((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime), ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1), 'pkkk');
   }
+
   return (
     <div>
       {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
@@ -306,11 +314,10 @@ function ModalForResult({ popUpOpen, vote, type,
                           <div>{paircoin[0]?.symbol}</div>
 
                           <div>
-                            {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]}
+                            {/* {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]} */}
                           </div>
-                          {console.log((Math.abs(vote?.valueVotingTime[0] - vote?.valueExpirationTime[0]) * 100) / vote?.valueVotingTime[0], vote, 'pkkkk')}
                           <div>
-                            {firstCoin || 0}%
+                            {firstCoin.toFixed(3) || 0}%
                           </div>
                           <div>
                           </div>
@@ -359,10 +366,10 @@ function ModalForResult({ popUpOpen, vote, type,
                           {/* @ts-ignore */}
                           <div>{paircoin[1]?.symbol}</div>
                           <div>
-                            {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]}
+                            {/* {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]} */}
                           </div>
                           <div>
-                            {secondCoin || 0}%
+                            {secondCoin.toFixed(3) || 0}%
                           </div>
                         </div>
                       </div>
@@ -374,9 +381,9 @@ function ModalForResult({ popUpOpen, vote, type,
                     style={{ fontSize: "12px" }}
                   >
                     <p>VOTE RESULT</p>
-                    {vote?.coin?.split("-")[vote?.direction]}: {(vote?.direction === 0 ? (parseFloat(firstCoin) - parseFloat(secondCoin)) : (parseFloat(secondCoin) - parseFloat(firstCoin)))}
                     <p>
-                      {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]}
+                      {vote?.coin?.split("-")[vote?.direction]}: {(vote?.direction === 0 ? (/* Math.abs */(firstCoin) - /* Math.abs */(secondCoin)) : (/* Math.abs */(secondCoin) - /* Math.abs */(firstCoin))).toFixed(3)}%
+                      {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
                     </p>
                     <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
                   </div>
