@@ -369,7 +369,7 @@ function ModalForResult({ popUpOpen, vote, type,
                     </CoinContainer>
                   </div>
                 </div>
-                <div style={{ minHeight: "100%" }} className="text-center">
+                <div style={{ minHeight: "100%" }} className="text-center ">
                   <div className=''
                     style={{ fontSize: "12px" }}
                   >
