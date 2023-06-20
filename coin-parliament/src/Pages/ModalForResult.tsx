@@ -16,8 +16,7 @@ import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
-import { lessTimeVoteDispatchContext } from 'Contexts/LessTimeVoteProvider';
-import { first } from 'lodash';
+import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -82,12 +81,12 @@ const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
 function ModalForResult({ popUpOpen, vote, type,
-  setCalculateVote,
+  setLessTimeVoteDetails,
    /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
     popUpOpen?: any,
     vote: any,
     type?: string,
-    setCalculateVote: React.Dispatch<React.SetStateAction<boolean>>
+    setLessTimeVoteDetails: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
     // setpopUpOpen?: any,
     // setHideButton?: any,
     // selectedTimeFrame?: any,
@@ -98,7 +97,8 @@ function ModalForResult({ popUpOpen, vote, type,
 
   const navigate = useNavigate();
   const setVoteDetails = useContext(VoteDispatchContext);
-  const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
+  const setCompletedVotes = useContext(CompletedVotesDispatchContext);
+
   useEffect(() => {
     if (popUpOpen) {
       handleShow();
@@ -127,8 +127,7 @@ function ModalForResult({ popUpOpen, vote, type,
     setVoteDetails((prev) => {
       let temp = {};
       Object.keys(prev?.activeVotes).map((key: string) => {
-        // if (vote?.voteId !== prev[key].voteId) {
-        if (prev?.activeVotes[key].expiration > new Date().getTime() && vote?.voteId !== prev?.activeVotes[key].voteId) {
+        if (/* prev?.activeVotes[key].expiration > new Date().getTime() &&  */vote?.voteId !== prev?.activeVotes[key].voteId) {
           temp = { ...temp, [`${prev?.activeVotes[key].coin}_${prev?.activeVotes[key]?.timeframe?.seconds}`]: prev?.activeVotes[key] }
         }
       });
@@ -139,7 +138,8 @@ function ModalForResult({ popUpOpen, vote, type,
         openResultModal: false
       };
     });
-    setCalculateVote(true);
+    setCompletedVotes(prev => prev.filter(value => value.voteId != vote.voteId));
+    setLessTimeVoteDetails(undefined);
     // setLessTimeVoteDetails({
     //   lessTimeVote: undefined,
     //   openResultModal: false

@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import "./index.css";
 import { VoteProvider } from "Contexts/VoteProvider";
 import { CurrentCMPProvider } from "Contexts/CurrentCMP";
-import { lessTimeVoteContext, LessTimeVoteProvider } from "Contexts/LessTimeVoteProvider";
+import { CompletedVotesProvider } from "Contexts/CompletedVotesProvider";
 
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
@@ -22,11 +22,11 @@ window.changeLanguage = (lang: string) => {
 ReactDOM.render(
   <BrowserRouter>
     <VoteProvider>
-      <LessTimeVoteProvider>
+      <CompletedVotesProvider>
         <CurrentCMPProvider>
           <App />
         </CurrentCMPProvider>
-      </LessTimeVoteProvider>
+      </CompletedVotesProvider>
     </VoteProvider>
   </BrowserRouter>
   , document.getElementById("app")
@@ -39,9 +39,9 @@ reportWebVitals();
 // registerServiceWorker();
 
 const sw = "../service-worker.js";
-  // process.env.NODE_ENV === "production"
-  //   ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
-  //   : "./firebase-messaging-sw.js";
+// process.env.NODE_ENV === "production"
+//   ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
+//   : "./firebase-messaging-sw.js";
 
 if ("serviceWorker" in navigator) {
   navigator?.serviceWorker
