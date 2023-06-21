@@ -788,37 +788,27 @@ function App() {
   console.log('usermfa',userInfo)
 
   useEffect(() => {    
-    if (user?.uid && voteNumberEnd == 0) {
-      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-      // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-      const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-    const votesLast24HoursRef = firebase
-        .firestore()
-        .collection("votes")
-      .where("userId", "==", user?.uid)
-      // @ts-ignore
-        .where("voteTime", ">=", last24Hour)
-        .where("voteTime", "<=", Date.now());
-      votesLast24HoursRef.get()
-        .then((snapshot) => {            
-          setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-          console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
-
-      setTimeout(() => {
+    if (user?.uid && voteNumberEnd == 0) {      
+      const coinData = firebase
+      .firestore()
+      .collection("settings").doc('settings')
+    coinData.get()
+      .then((snapshot: any) => {
+        let remaining = snapshot.data().voteRules.timeLimit * 1000 
+        // console.log(Date.now()  + remaining  ,"checknowtime")
+        // console.log('hello', snapshot.data().voteRules.maxVotes)        
+        setRemainingTimer(remaining + Date.now())
+// console.log(remaining ,"allremaining")
+    setTimeout(() => {
       const usereData =firebase  
         .firestore()
         .collection("users")
         .doc(user?.uid)
         .set({ "voteValue": voteRules?.maxVotes }, { merge: true });    
           }, remaining);
-        })
-        .catch((error) => {
+      }) .catch((error) => {
           console.log('extravoteError', error);
-        });
+        });    
     }
 
   }, [voteNumberEnd])

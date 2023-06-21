@@ -123,12 +123,21 @@ const Vote = ({
   const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
   const { setLoginRedirectMessage, remainingTimer, loginRedirectMessage, setLogin, afterVotePopup, setAfterVotePopup, voteRules, login } = useContext(AppContext);
 
-  useEffect(() => {
-    const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+  // useEffect(() => {
+  //   const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+  //   // @ts-ignore
+  //   setVoteNumber(Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
+  //   // console.log('votenumber',voteNumber, Number(voted))
+  // }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+
+  useEffect(() => {		
+  // @ts-ignore
+		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
+							
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
-    // console.log('votenumber',voteNumber, Number(voted))
-  }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote ]);
+
+
 
   const openPopup = () => {
     if (voteNumber == 0 && remainingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
