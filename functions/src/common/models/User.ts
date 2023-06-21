@@ -42,7 +42,8 @@ export type UserProps = {
   rewardStatistics?: RewardStatistics;
   firstTimeLogin?: boolean;
   refereeScrore?: number;
-  googleAuthenticatorData?: any
+  googleAuthenticatorData?: any,
+  voteValue?: any
 };
 
 export type RewardStatistics = {
