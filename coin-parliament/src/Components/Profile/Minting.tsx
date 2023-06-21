@@ -191,15 +191,15 @@ const Minting = ({
     setCmpPopupShow(true)
   };
   useEffect(() => {
-    if (modalShow) {
+    if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
     }
-  }, [modalShow]);
+  }, [modalShow, CmpPopupShow]);
   useEffect(() => {
     if (score === 100) {
       setTimeout(() => {
         handleCmpPopupShow();
-      }, 4900);
+      }, 6100);
     }
   }, [score]);
   useEffect(() => {
