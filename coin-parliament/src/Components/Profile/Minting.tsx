@@ -189,9 +189,12 @@ const Minting = ({
   };
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
-    // handleSoundWinCmp.play()    
   };
-  // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
+  useEffect(() => {
+    if (modalShow) {
+      setCmpPopupShow(false);
+    }
+  }, [modalShow]);
   useEffect(() => {
     if (score === 100) {
       setTimeout(() => {
@@ -261,8 +264,8 @@ const Minting = ({
                     }).catch((error) => {
                       // callback={{
                       //     successFunc: (params) => setUser(params),
-                      showToast(error.message,ToastType.ERROR);
-                        // }}
+                      showToast(error.message, ToastType.ERROR);
+                      // }}
                     });
                     setResultData(result)
                     console.log(result, 'hello');
@@ -271,7 +274,7 @@ const Minting = ({
                       // @ts-ignore
                       setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
                     }
-                    
+
                     setLoading(false);
                   } else {
                     Swal.fire({
@@ -348,33 +351,18 @@ const Minting = ({
           show={
             CmpPopupShow
           } onHide={handleCmpPopupClose}
-          // size="sm"
           backdrop="static"
-          // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
           contentClassName=""
           aria-labelledby="contained-modal-title-vcenter"
           centered
-        // id="Cmp-animation"
         >
-
-          <div className="d-flex justify-content-end"
-
-          >
-            {/* <button type="button" className="btn-close" aria-label="Close" onClick={() => {
-              handleCmpPopupClose()
-            }}></button> */}
-          </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
-            {/* continue voting */}
-            {/* @ts-ignore */}
-
             <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
             <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>
               <strong className="py-2" style={{ fontSize: "20px" }}>Well done, Champ!</strong>
               <p className="py-2" style={{ fontSize: "20px" }}>You've reached your goal.</p>
               <p className="py-2" style={{ fontSize: "14px" }}>Go ahead and claim your reward - you deserve it!</p>
             </div>
-
           </Modal.Body>
           <div className="d-flex justify-content-center pb-1" style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
@@ -383,16 +371,11 @@ const Minting = ({
                   setLoading(true);
                   console.log("reward");
                   const result = await claimReward({ uid: user?.uid }).then((data: any) => {
-                      // showToast(data.data.firstRewardCard ,ToastType.ERROR);
-                      // console.log(data.data.firstRewardCard,"full data")
                     handleShow()
-                      return data;
-                    }).catch((error) => {
-                      // callback={{
-                      //     successFunc: (params) => setUser(params),
-                      showToast(error.message,ToastType.ERROR);
-                        // }}
-                    });
+                    return data;
+                  }).catch((error) => {
+                    showToast(error.message, ToastType.ERROR);
+                  });
                   // @ts-ignore
                   setResultData(result)
                   // handleShow()
