@@ -43,7 +43,8 @@ export type UserProps = {
   firstTimeLogin?: boolean;
   refereeScrore?: number;
   googleAuthenticatorData?: any,
-  voteValue?: any
+  voteValue?: number,
+
 };
 
 export type RewardStatistics = {

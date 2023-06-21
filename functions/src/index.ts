@@ -159,6 +159,11 @@ exports.getAccessToken = () =>
       resolve(tokens?.access_token);
     });
   });
+const getMaxVotes = async () => {
+  const getVoteAndReturnQuery = await admin.firestore().collection("settings").doc("settings").get();
+  const getVoteAndReturnData: any = getVoteAndReturnQuery.data();
+  return getVoteAndReturnData?.voteRules.maxVotes
+}
 
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
@@ -205,6 +210,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     firstTimeLogin: true,
     refereeScrore: 0,
     googleAuthenticatorData: {},
+    voteValue: await getMaxVotes()
   };
   try {
     console.log("new user >>>", userData, user.uid);
