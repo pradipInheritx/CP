@@ -609,6 +609,38 @@ export const verifyGoogleAuthOTP = async (req: any, res: any) => {
   }
 };
 
+export const updateUserCollections = async (req: any, res: any) => {
+  try {
+    const { updateKey, updateValue } = req.body;
+    const object: any = {};
+    object[updateKey] = updateValue
+    console.log("update key ---------", object)
+
+    //update the the data
+    const result = await admin.firestore().collection('users').get().then((snapshot: any) => {
+      snapshot.forEach((doc: any) => {
+        doc.ref.set(object, { merge: true })
+      })
+    }).catch((error) => {
+      errorLogging("addNewKeyandValueForUsers", "ERROR", error);
+    });
+
+    res.status(200).send({
+      status: true,
+      message: "key and value updated successfully",
+      result,
+    });
+  }
+  catch (error) {
+    errorLogging("addNewKeyandValueForUsers", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Error in addNewKeyandValueForUsers API ",
+      result: error,
+    });
+  }
+}
+
 export const errorLogging = async (
   funcName: string,
   type: string,
