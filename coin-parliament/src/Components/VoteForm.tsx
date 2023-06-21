@@ -37,7 +37,8 @@ type VoteFormProps<T> = {
   hideButton?: any;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
   setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  vote: VoteResultProps
+  vote: VoteResultProps,
+  disableVoteButton?: boolean
 };
 const VoteForm = function <
   T extends {
@@ -66,7 +67,8 @@ const VoteForm = function <
   hideButton,
   setHideButton,
   setpopUpOpen,
-  vote
+  vote,
+  disableVoteButton
 }: VoteFormProps<T>) {
   const { timeframes, login, remainingTimer } = useContext(AppContext);
   const { user } = useContext(UserContext);
@@ -75,8 +77,8 @@ const VoteForm = function <
 
   // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
 
-// console.log(texts?.tooltip, "all Text")
-  console.log(user,"selectedTimeFrame")
+  // console.log(texts?.tooltip, "all Text")
+  console.log(user, "selectedTimeFrame")
   return (
     <Form
       className='mt-3'
@@ -104,7 +106,8 @@ const VoteForm = function <
             hideButton,
             setHideButton,
             setpopUpOpen,
-            vote
+            vote,
+            disableVoteButton
           }}
         />
 
@@ -115,7 +118,7 @@ const VoteForm = function <
           {/* <Title>{texts.yourVote}</Title> */}
         </div>
         <OverlayTrigger
-          overlay={(props) => 
+          overlay={(props) =>
             disabled ? (
               <Tooltip id='button-tooltip' {...props} >
                 {/* @ts-ignore */}
@@ -154,7 +157,7 @@ const VoteForm = function <
               {...{
                 selectedOption,
                 setSelectedOption,
-              }}          
+              }}
               width={width || 266}
               // disabled={!canVote || disabled}
               disabled={

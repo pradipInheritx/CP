@@ -309,7 +309,7 @@ const VotedCard = ({
             </BitcoinBTCBULL24H3864490>
 
             <ID13020221942>
-              {voteId} - {moment(vote.voteTime).format("MM.DD.YYYY HH:mm")}
+              {voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
             </ID13020221942>
           </div>
 
