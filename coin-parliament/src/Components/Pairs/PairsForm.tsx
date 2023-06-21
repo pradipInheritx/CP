@@ -151,7 +151,7 @@ const PairsForm = ({
   //   [selectedTimeFrame]
   // );
 
-const disabled = useMemo(
+  const disabled = useMemo(
     () => selectedTimeFrame === undefined || !canVote,
     [selectedTimeFrame, canVote]
   )
@@ -160,7 +160,7 @@ const disabled = useMemo(
 
   const throttled_vote = useMemo(() => voteProcedure({ vote, sound, setConfetti }), [vote, sound, setConfetti]);
 
-
+  const [disableVoteButton, setDisableVoteButton] = useState(false);
   return (
     <Container className="">
       {/* @ts-ignore */}
@@ -168,8 +168,10 @@ const disabled = useMemo(
         {...{
           submit: () => {
             if (selectedTimeFrame !== undefined && selectedOption !== undefined) {
+              setDisableVoteButton(prev => !prev);
               setTimeout(() => {
                 throttled_vote();
+                setDisableVoteButton(prev => !prev);
               }, 700);
 
             }
@@ -183,6 +185,7 @@ const disabled = useMemo(
           setSelectedOption,
           id,
           canVote,
+          disableVoteButton,
           option1: {
             // buttonText:["vote","BULL"],
             alt: coin1.symbol,
