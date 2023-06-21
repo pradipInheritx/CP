@@ -403,7 +403,7 @@ const Minting = ({
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>
-          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim letter</div>
+          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim later</div>
         </Modal>
       </div>
     </React.Fragment >

@@ -284,7 +284,9 @@ useEffect(() => {
 		// @ts-ignore
 		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
 		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
+		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0));		
+		// @ts-ignore
+		console.log(headerExtraVote?.collect || 0,"headerExtraVote")
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
@@ -292,9 +294,9 @@ useEffect(() => {
 		prevCountRef.current = voteNumber;
 		// console.log('votenumber',voteNumber, Number(voted))
 		// @ts-ignore
-	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote]);
+	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote , headerExtraVote?.vote]);
 
-console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
+// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 
 
 	const onSelect = (eventKey: string | null) => {
@@ -550,7 +552,7 @@ console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLas
 																			// fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
 																		}}
 
-																		onEnd={() => {
+																		onEnd={() => {																			
 																			setInOutReward((prev: number) => {
 																				return prev == 2 ? 3 : prev
 																			});
