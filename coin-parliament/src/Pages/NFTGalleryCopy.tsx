@@ -359,7 +359,7 @@ useEffect(() => {
   
   
   
-  console.log(allCardNew,"allCardNewcheck")
+  console.log(cardNameNew,"allCardNewcheck")
 
   return (
     <div className='' style={{ minHeight: "auto" }}>
