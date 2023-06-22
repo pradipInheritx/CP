@@ -170,7 +170,7 @@ function ModalForResult({ popUpOpen, vote, type,
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
 
   useEffect(() => {
-    setCurrentCMP(vote?.score || 0)
+    // setCurrentCMP(vote?.score || 0)
   }, [vote?.score])
 
   var firstCoin: number = 55;
