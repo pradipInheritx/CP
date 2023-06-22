@@ -131,6 +131,7 @@ const Vote = ({
   // }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
   useEffect(() => {		
+    
   // @ts-ignore
 		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
 							
