@@ -263,18 +263,28 @@ export const addRewardTransaction: (
     console.log("Finished execution addRewardTransaction function");
   };
 
-export let counterStart = 0
+
 
 export const getPickRandomValueFromArrayFunc: any = async (pickTierArrar: any) => {
-  counterStart++;
+  if (pickTierArrar.length === 0) return {
+    status: false,
+    message: "All cards quaunity is over",
+    result: null,
+  };
   const getFirstRewardCardObj: any = await pickRandomValueFromArray(pickTierArrar);
-  console.log("getFirstRewardCardObj-----", counterStart, getFirstRewardCardObj)
+  console.log("getFirstRewardCardObj-----", getFirstRewardCardObj)
 
   let returnValue;
-  if ((getFirstRewardCardObj.quantity === 0 || getFirstRewardCardObj.noOfCardHolders === getFirstRewardCardObj.totalQuantity) && counterStart < 5) {
+  if ((getFirstRewardCardObj.quantity === 0 || getFirstRewardCardObj.noOfCardHolders === getFirstRewardCardObj.totalQuantity)) {
+    pickTierArrar.filter((card: any, index: number) => {
+      console.log("index -------", index)
+      if (card.cardId === getFirstRewardCardObj.cardId) pickTierArrar.splice(index, 1);
+    })
+    pickTierArrar.splice(0, pickTierArrar.length);
     returnValue = await getPickRandomValueFromArrayFunc(pickTierArrar);
+
   } else {
-    counterStart = 0;
+
     console.log("getFirstRewardCardObj final return-----", getFirstRewardCardObj)
 
     returnValue = getFirstRewardCardObj
@@ -311,6 +321,8 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       const firstRewardCardObj: any = await getPickRandomValueFromArrayFunc(pickedTierArray);
 
       console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
+
+      if (firstRewardCardObj?.status === false) return firstRewardCardObj
       const firstRewardCard = firstRewardCardObj["cardName"];
       const firstRewardCardSerialNo = firstRewardCardObj.sno.length ? pickRandomValueFromArray(
         firstRewardCardObj["sno"]
