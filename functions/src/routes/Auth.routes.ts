@@ -11,7 +11,8 @@ import {
   logout,
   generateGoogleAuthOTP,
   verifyGoogleAuthOTP,
-  updateUserCollections
+  updateUserCollections,
+  getUserList
 } from "../common/models/Admin/Admin";
 
 const authRouter = Router();
@@ -26,6 +27,7 @@ authRouter.post("/logout", auth, logout);
 authRouter.post("/generateGoogleAuthOTP", generateGoogleAuthOTP);
 authRouter.post("/verifyGoogleAuthOTP", verifyGoogleAuthOTP);
 authRouter.post("/updateUserCollections", updateUserCollections);
+authRouter.get("/getUserList", auth, getUserList);
 
 
 export default authRouter;
