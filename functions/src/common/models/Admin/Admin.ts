@@ -649,17 +649,16 @@ export const getUserList = async (req: any, res: any) => {
         getUserList.push(user.data());
       })
     });
-    console.log("userList =========", getUserList);
     res.status(200).send({
       status: true,
       message: "Get all users successfully",
       result: getUserList,
     });
   } catch (error) {
-    errorLogging("addNewKeyandValueForUsers", "ERROR", error);
+    errorLogging("getUserList", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: "Error in addNewKeyandValueForUsers API ",
+      message: "Error in getUserList API ",
       result: error,
     });
   }
