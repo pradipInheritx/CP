@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Badge, Button, Col, Container, Modal, Row } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import Collapse from "./Collapse";
@@ -11,7 +11,7 @@ import Minting from "./Minting";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { useTranslation } from "../../common/models/Dictionary";
 import styled, { css } from "styled-components";
-import NotificationContext from "../../Contexts/Notification";
+import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import Upgrade from "./Upgrade";
 import { isV1, ZoomCss } from "../App/App";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -27,6 +27,11 @@ import { texts } from "../LoginComponent/texts";
 import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
 import AnimationCard from "./Animation/AnimationCard";
+import { CurrentCMPContext } from "Contexts/CurrentCMP";
+import copy from "copy-to-clipboard";
+import Copy from "Components/icons/copyShare";
+import CoinAnimation from "common/CoinAnimation/CoinAnimation";
+import Swal from "sweetalert2";
 
 
 const MyBadge = styled(Badge)`
@@ -49,6 +54,13 @@ const CardDiv = styled.div`
 type ZoomProps = {
   inOutReward?: number
 };
+
+const I = styled.i`
+  cursor: pointer;
+  font-size:22px;
+  color:#6352e9;
+`;
+
 const ForZoom = styled.div`
 z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
  ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
@@ -57,8 +69,8 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward } = useContext(AppContext);
-  const { showModal } = useContext(NotificationContext);
+  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward, setAlbumOpen } = useContext(AppContext);
+  const { showModal, showToast } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
   const location = useLocation();
@@ -66,6 +78,10 @@ const Mine = () => {
   const [data, setData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
+  const [paxValue, setPaxValue] = React.useState(userInfo?.rewardStatistics?.diamonds || 0);
+
+  const [shareModleShow, setShareModleShow] = React.useState(false);
+  const [countShow, setCountShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
   let navigate = useNavigate();
   const rewardList = async () => {
@@ -76,14 +92,45 @@ const Mine = () => {
     // console.log("user Id", result);
   };
 
+  console.log(data, "alllistdata")
+
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
   const handleCardClose = () => setCardModalShow(false);
   const handleCardShow = () => setCardModalShow(true);
 
-  // @ts-ignore
-  const ClaimNumber = userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+  const currentCMP = useContext(CurrentCMPContext);
+  const handleShareModleClose = () => setShareModleShow(false);
+  const handleShareModleShow = () => setShareModleShow(true);
+
+
+  // @ts-ignore 
+  const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
+  const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
+
+  const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+  const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
+  const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
+
+
+  useEffect(() => {
+    // @ts-ignore
+    setPaxValue(userInfo?.rewardStatistics?.diamonds)
+  }, [userInfo?.rewardStatistics?.diamonds])
+
+
+  const prevPAXValue = useRef(paxValue)
+
+  useEffect(() => {
+    if (!prevPAXValue.current) {
+      prevPAXValue.current = paxValue;
+    }
+    if (countShow) {
+      prevPAXValue.current = userInfo?.rewardStatistics?.diamonds || 0;
+    }
+
+  }, [paxValue, countShow])
 
   useEffect(() => {
     rewardList();
@@ -96,14 +143,30 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-
-    if (showBack && ClaimNumber < 1) {
+    if (showBack && remainingReward < 1) {
       setTimeout(() => {
         setModelText(1)
-        console.log(showBack, "viewshow")
-        handleShow()
+        // handleShow();
+        Swal.fire({
+          html:
+            "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
+            "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
+            "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+            "</div >",
+          color: 'black',
+          confirmButtonText: 'Continue Voting',
+          confirmButtonColor: '#6352e8',
+          showCloseButton: true,
+          customClass: {
+            popup: 'stayInGamePopupStyle',
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            goBack()
+          }
+        });
+
         setShowBack(false)
-        console.log("Openpopup not")
       }, 10000);
     }
   }, []);
@@ -119,10 +182,9 @@ const Mine = () => {
         setRewardTimer(null);
         setShowReward(0);
         console.log("Openpopup")
-      }, 5000);
+      }, 10000);
     }
   }
-  console.log(showBack, "viewshow back")
 
   if (isV1()) {
     return (
@@ -139,46 +201,14 @@ const Mine = () => {
     navigate(-1);
   }
 
-  // @ts-ignore
-  const RemeingCmp = (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0
+  const url = "https://coinparliament.com/"
+  const shareText = "I won this unique card! Join the Parliament and win with me."
 
-  // console.log('userInfo',(userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0)
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
     <div>
       <Container >
-        {/* @ts-ignore */}
-        {/* <AnimationReward
-           setRewardTimer={setRewardTimer}
-           rewardTimer={rewardTimer}
-         /> */}
-        {/* {!!rewardTimer && showReward==3 && inOutReward==3 && (        
-          <div className=''>
-          
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />          
-        </div>
-        )} */}
-        {/* @ts-ignore */}
-
-        {/* <Player
-  autoplay
-  loop
-  src={animation}
-  style={{ height: '300px', width: '300px' }}
->
-  <Controls visible={true} buttons={['play', 'repeat', 'frame', 'debug']} />
-</Player> */}
-        {/* {!userInfo?.paid && (
-          <Row
-            className='flex-row-reverse'
-            role='button'
-          
-            onClick={() => navigate("/upgrade")}
-          >
-            <MyBadge bg='-'>{translate("upgrade your account")}</MyBadge>
-          </Row>
-        )} */}
         {width > 767 ? (
           <div className='d-flex justify-content-center mt-2'>
             <div>
@@ -188,36 +218,41 @@ const Mine = () => {
               </div>
               <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}>
                 {" "}
-                {/* <PAXCard
-                  walletId={userInfo?.wallet || ""}
-                  PAX={userInfo?.voteStatistics?.pax || 0}
-                /> */}
 
                 <PAXCard
+                  countShow={countShow}
                   walletId={userInfo?.wallet || ""}
                   rewardTimer={rewardTimer}
+                  setCountShow={setCountShow}
                   // @ts-ignore
-                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
-                // PAX={rewardTimer?.thirdRewardDiamonds|| 0  }
+                  // PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                  // PAX={
+                  //   countShow ? paxValue :prevPAXValue.current
+                  // }
+                  PAX={
+                    prevPAXValue.current
+                  }
                 />
+                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
               </ForZoom>
+
             </div>
             {/* @ts-ignore */}
             <div style={{ marginLeft: "10px" }}>
               <Minting
                 {...{
+                  setCountShow,
                   width,
-                  score:
-                    // @ts-ignore
-                    (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
+                  score: remainingCMP /* ((userInfo?.voteStatistics?.score || 0) > 0 ? remainingCMP : 0) */,
+                  // @ts-ignore
+                  // remainingCMP,
                   setRewardTimer,
                   rewardTimer,
                 }}
                 setRewardTimer={setRewardTimer}
                 rewardTimer={rewardTimer}
                 // @ts-ignore
-                claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
-                }
+                claim={remainingReward}
               />
             </div>
           </div>
@@ -229,17 +264,17 @@ const Mine = () => {
                 <Minting
                   {...{
                     width,
-                    score:
-                      // @ts-ignore
-                      (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
+                    setCountShow,
+                    score: remainingCMP,
+                    // @ts-ignore
+                    // remainingCMP,
                     setRewardTimer,
                     rewardTimer,
                   }}
                   setRewardTimer={setRewardTimer}
                   rewardTimer={rewardTimer}
                   // @ts-ignore
-                  claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
-                  }
+                  claim={remainingReward}
                 />
               </div>
             </Col>
@@ -252,13 +287,20 @@ const Mine = () => {
                 {...{ inOutReward }}
               >
                 <PAXCard
+                  countShow={countShow}
                   walletId={userInfo?.wallet || ""}
                   rewardTimer={rewardTimer}
+                  setCountShow={setCountShow}
                   // @ts-ignore
-                  PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                  // PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                  // PAX={paxValue}
+                  PAX={
+                    prevPAXValue.current
+                  }
                 // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
                 {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
+                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
               </ForZoom>
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
@@ -306,7 +348,13 @@ const Mine = () => {
                     </span>{" "}
                     {texts.GamePts}
                   </RewardList>
-                  <RewardList onClick={() => navigate('/profile/Album')}>
+                  <RewardList onClick={() => {
+                    {/* @ts-ignore */ }
+                    setAlbumOpen(item?.winData?.firstRewardCardCollection);
+                    navigate('/profile/Album')
+                  }}
+
+                  >
                     {/* @ts-ignore */}
                     <span style={{ color: "#6352E8", }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
@@ -366,8 +414,8 @@ const Mine = () => {
           <Modal.Body>
             {/* continue voting */}
             {modelText == 1 && <div className='py-2  d-flex flex-column  justify-content-center'>
-              <strong style={{ fontSize: "20px" }}>Stay in the game</strong>
-              <p style={{ fontSize: "20px" }}>Only {100 - RemeingCmp} CMP to reach your goal</p>
+              <strong style={{ fontSize: "20px" }}>Stay in the gamekl</strong>
+              <p style={{ fontSize: "20px" }}>Only {100 - remainingCMP} CMP to reach your goal</p>
             </div>}
             {modelText == 2 && <div className='py-2  d-flex  flex-column justify-content-center'>
               <strong style={{ fontSize: "20px" }}>Great job!!</strong>
@@ -380,10 +428,8 @@ const Mine = () => {
           {/* <Modal.Footer> */}
           < div className="d-flex justify-content-center " >
             <Buttons.Primary className="mx-2" onClick={goBack}>CONTINUE VOTING</Buttons.Primary>
-            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div >
-          {/* </Modal.Footer>       */}
-        </Modal >
+        </Modal>
       </div >
 
       {/* Card Modal */}
@@ -398,20 +444,131 @@ const Mine = () => {
           backdrop="static"
           aria-labelledby="contained-modal-title-vcenter"
           centered
-          contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
         >
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+            {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
               setRewardTimer(null);
               setShowReward(0);
               handleCardClose()
-            }}></button>
+            }}></button> */}
           </div>
           <Modal.Body
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} cardType={rewardTimer?.data?.firstRewardCardType} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} />
+          </Modal.Body>
+        </Modal>
+      </CardDiv>
+
+
+
+      {/* Share Link */}
+
+
+      <CardDiv>
+        <Modal
+          className=""
+          show={
+            shareModleShow
+          } onHide={handleShareModleClose}
+          // fullscreen="sm-down"
+          backdrop="static"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
+              handleShareModleClose()
+            }}
+            // style={{color:"white" , border:"1px solid red"}}
+            >
+
+            </button>
+          </div>
+          <Modal.Body
+          >
+            {/* continue voting */}
+            {/* @ts-ignore */}
+            <div className="d-flex justify-content-center my-3">
+              <strong className="mx-4" style={{ fontSize: '14px', textAlign: 'center', color: "white" }}>SHARE YOUR CARD NOW</strong>
+            </div>
+            <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
+              <div className="mx-3">
+                <span
+                  onClick={() => {
+                    copy(url);
+                    showToast(
+                      'Your Card link is copied to the clipboard.',
+                      ToastType.SUCCESS
+                    );
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Copy />
+                </span>
+                {/* <I
+              className="bi bi-clipboard-check-fill"
+              
+              onClick={() =>
+              {
+                copy(url);
+                showToast(
+                  'Your Card link is copied to the clipboard.',
+                  ToastType.SUCCESS
+                );
+               }
+              }
+            />  */}
+
+              </div>
+
+              <div className="mx-3">
+                <I
+                  className="bi-whatsapp"
+
+                  onClick={() =>
+                    window.open(
+                      `https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url}`.replace(
+                        " ",
+                        "+"
+                      )}&app_absent=0`,
+                      "_blank"
+                    )
+                  }
+                />
+              </div>
+              <div className="mx-3">
+                <I
+                  className="bi-twitter"
+                  onClick={() =>
+                    window.open(
+                      `https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`,
+                      "_blank"
+                    )
+                  }
+                />
+              </div>
+              <div className="mx-3">
+                <I
+                  className="bi bi-facebook"
+                  onClick={() =>
+                    window.open(
+                      `https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`,
+                      "_blank"
+                    )
+                  }
+                />
+
+              </div>
+
+            </div>
+
+
           </Modal.Body>
         </Modal>
       </CardDiv>

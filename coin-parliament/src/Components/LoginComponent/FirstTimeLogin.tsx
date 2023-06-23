@@ -116,7 +116,6 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
             <Form
               onSubmit={async (e) => {
                 e.preventDefault();
-                console.log(/^[a-zA-Z_]+$/g.test(username), 'pkkk');
 
                 if (username?.length < 16 && username?.length > 7 && /^[a-zA-Z_]+$/g.test(username)) {
                   checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));
@@ -175,6 +174,11 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
         </div>
       </Stack>
       <Modal show={show} onHide={handleClose} style={{ zIndex: 9999 }}>
+        <div className="d-flex justify-content-end">
+          <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+            handleClose()
+          }}></button>
+        </div>
         <Modal.Header >
           <Modal.Title>{translate(texts.firstTimeLoginModalTitle)}</Modal.Title>
         </Modal.Header>

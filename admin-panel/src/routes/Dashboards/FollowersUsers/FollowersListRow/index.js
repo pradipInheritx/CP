@@ -86,11 +86,11 @@ const FollowersListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelet
       <TableCell component="th" id={labelId} scope="row" padding="10">
         <Box display="flex" alignItems="center">
           <Box mr={{ xs: 4, md: 5 }}>
-            <CmtAvatar size={40} src={row?.avatar} alt={row?.name} />
+            <CmtAvatar size={40} src={row?.avatar} alt={row?.name || ""} />
           </Box>
           <div>
             <Typography className={classes.titleRoot} component="div" variant="h4">
-              {row?.displayName}
+              {row?.displayName || "-"}
             </Typography>
           </div>
         </Box>

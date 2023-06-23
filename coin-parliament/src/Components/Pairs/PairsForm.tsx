@@ -1,16 +1,16 @@
-import React, {RefObject, useCallback, useContext, useEffect, useMemo, useState} from "react";
-import {Col, Container, Row} from "react-bootstrap";
-import {useCanVote, voteConverter, VoteResultProps} from "../../common/models/Vote";
-import {Coin} from "../../common/models/Coin";
-import {addDoc, collection} from "firebase/firestore";
-import {db} from "../../firebase";
+import React, { RefObject, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
+import { useCanVote, voteConverter, VoteResultProps } from "../../common/models/Vote";
+import { Coin } from "../../common/models/Coin";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import VoteForm from "../VoteForm";
 import AppContext from "../../Contexts/AppContext";
-import {symbolCombination, voteProcedure} from "./utils";
-import {useTranslation} from "../../common/models/Dictionary";
+import { symbolCombination, voteProcedure } from "./utils";
+import { useTranslation } from "../../common/models/Dictionary";
 import styled from "styled-components";
-import NotificationContext, {ToastType} from "../../Contexts/Notification";
+import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import { cmpRangeCoin } from "../Profile/utils";
 
 // export const VS = styled(Col)`
@@ -69,7 +69,7 @@ const PairsForm = ({
   selectedTimeFrame,
   setSelectedTimeFrame,
   coinUpdated,
-hideButton
+  hideButton
 }: {
   coin1: Coin;
   coin2: Coin;
@@ -77,10 +77,10 @@ hideButton
   setLoading: (bool: boolean) => void;
   sound: RefObject<HTMLAudioElement>;
   setConfetti: (bool: boolean) => void;
-  selectedTimeFrame?:number;
-  setSelectedTimeFrame?:(n:number)=>void;
-  coinUpdated:any;
-  hideButton?:any;
+  selectedTimeFrame?: number;
+  setSelectedTimeFrame?: (n: number) => void;
+  coinUpdated: any;
+  hideButton?: any;
 }) => {
   const { user, userInfo } = useContext(UserContext);
   const { timeframes } = useContext(AppContext);
@@ -93,10 +93,10 @@ hideButton
   useEffect(() => {
     window.scrollTo(0, 0)
     return window.scrollTo(0, 0)
-}, [])
-  
+  }, [])
+
   const vote = useCallback(async () => {
- 
+
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -111,16 +111,16 @@ hideButton
         collection(db, "votes").withConverter(voteConverter),
         {
           coin: symbolCombination([coin1.symbol, coin2.symbol]),
-// @ts-ignore
+          // @ts-ignore
           CPMRangePercentage: cmpRangeCoin[chosenTimeframe?.index] || 10,
           direction: selectedOption,
           status: userInfo?.status,
           timeframe: timeframes && chosenTimeframe,
           userId: user?.uid,
-          valueVotingTime:[coinUpdated[coin1?.symbol]?.price+coinUpdated[coin1?.symbol]?.randomDecimal,coinUpdated[coin2?.symbol]?.price+coinUpdated[coin2?.symbol]?.randomDecimal],
-          voteTime:Date.now(),
-          expiration:Date.now() + chosenTimeframe.seconds * 1000 ,
-          voteId:`${symbolCombination([coin1.symbol, coin2.symbol])}-`+`${userInfo?.uid?.slice(0,5)}`+`${Date.now()}`
+          valueVotingTime: [coinUpdated[coin1?.symbol]?.price || 0 + coinUpdated[coin1?.symbol]?.randomDecimal || 0, coinUpdated[coin2?.symbol]?.price || 0 + coinUpdated[coin2?.symbol]?.randomDecimal || 0],
+          voteTime: Date.now(),
+          expiration: Date.now() + chosenTimeframe.seconds * 1000,
+          voteId: `${symbolCombination([coin1.symbol, coin2.symbol])}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`
         } as VoteResultProps
       );
       // showToast(translate("voted successfully"));
@@ -146,14 +146,21 @@ hideButton
     showToast,
   ]);
 
+  // const disabled = useMemo(
+  //   () => selectedTimeFrame === undefined,
+  //   [selectedTimeFrame]
+  // );
+
   const disabled = useMemo(
-    () => selectedTimeFrame === undefined,
-    [selectedTimeFrame]
-  );
-
-  const throttled_vote = useMemo(() => voteProcedure({vote, sound, setConfetti}), [vote, sound, setConfetti]);
+    () => selectedTimeFrame === undefined || !canVote,
+    [selectedTimeFrame, canVote]
+  )
 
 
+
+  const throttled_vote = useMemo(() => voteProcedure({ vote, sound, setConfetti }), [vote, sound, setConfetti]);
+
+  const [disableVoteButton, setDisableVoteButton] = useState(false);
   return (
     <Container className="">
       {/* @ts-ignore */}
@@ -161,10 +168,12 @@ hideButton
         {...{
           submit: () => {
             if (selectedTimeFrame !== undefined && selectedOption !== undefined) {
+              setDisableVoteButton(prev => !prev);
               setTimeout(() => {
-                throttled_vote();  
+                throttled_vote();
+                setDisableVoteButton(prev => !prev);
               }, 700);
-              
+
             }
           },
           hideButton,
@@ -176,10 +185,11 @@ hideButton
           setSelectedOption,
           id,
           canVote,
+          disableVoteButton,
           option1: {
             // buttonText:["vote","BULL"],
             alt: coin1.symbol,
-            image: <span style={{fontWeight:'600',fontSize:'24px'}}>{coin1.symbol}</span>,
+            image: <span style={{ fontWeight: '600', fontSize: '24px' }}>{coin1.symbol}</span>,
             title: (
               <div>
                 <span >{coin1.name}</span>
@@ -191,7 +201,7 @@ hideButton
           option2: {
             // buttonText:["vote","BEAR"],
             alt: coin2.symbol,
-            image: <span style={{fontWeight:'600',fontSize:'24px'}}>{coin2.symbol}</span>,
+            image: <span style={{ fontWeight: '600', fontSize: '24px' }}>{coin2.symbol}</span>,
             title: (
               <div>
                 <span>{coin2.name}</span>
@@ -210,8 +220,8 @@ hideButton
         }}
       >
         <VS>
-         <div style={{position:'absolute', top:'40%',left:window.screen.width<979?'4%':'-10%',fontSize:window.screen.width<979?'':'20px'}}> VS</div>
-          
+          <div style={{ position: 'absolute', top: '40%', left: window.screen.width < 979 ? '4%' : '-10%', fontSize: window.screen.width < 979 ? '' : '20px' }}> VS</div>
+
         </VS>
       </VoteForm>
     </Container>

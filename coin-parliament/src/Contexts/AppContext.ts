@@ -26,6 +26,10 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+
+  setvoteNumberEnd?: any,
+  albumOpen?: any,
+  setAlbumOpen?: any,
   afterVotePopup?: any,
   setAfterVotePopup?: any,
   inOutReward?: any,

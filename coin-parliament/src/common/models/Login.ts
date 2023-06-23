@@ -115,7 +115,9 @@ export const LoginAuthProvider = async (
 
     }
   } catch (e) {
+    console.log(e, "check this error 2")
     // @ts-ignore
+
     if (e?.code == 'auth/multi-factor-auth-required') {
       // The user is a multi-factor user. Second factor challenge is required.
       // @ts-ignore
@@ -172,15 +174,16 @@ export const LoginRegular = async (
   const auth = getAuth();
   const email = getValue(e, "email");
   const password = getValue(e, "password");
-
+  var showErroe = false;
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
+    console.log(userCredential,"userCredential")
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-console.log('firsttimelogin',isFirstLogin)
+// console.log('firsttimelogin',isFirstLogin)    
     if(auth?.currentUser?.emailVerified){
       if (isFirstLogin?.isNewUser) {
         saveUsername(userCredential?.user?.uid,'','')
@@ -188,7 +191,7 @@ console.log('firsttimelogin',isFirstLogin)
         const firstTimeLogin:Boolean=true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
-        console.log('firsttimelogin success')
+        console.log(isFirstLogin,'firsttimelogin success')
         // await sendEmail();
       setTimeout(() => {
         callback.successFunc(userCredential.user) 
@@ -196,10 +199,40 @@ console.log('firsttimelogin',isFirstLogin)
       }else{
         callback.successFunc(userCredential.user) 
       }
-     }
+    }    
     else  callback.errorFunc({message:'Please verify your email first.'} as Error);
-  } catch (e) {
-    callback.errorFunc(e as Error);
+  } catch (err) {
+
+    
+    // @ts-ignore
+    console.log(err.message,"allcode")
+    // @ts-ignore
+    switch (err.code) {
+      case 'auth/wrong-password':
+        
+        callback.errorFunc({ message: 'Your password is invalid.'} as Error);
+        break;
+      case 'auth/user-not-found':
+        
+        callback.errorFunc({ message: 'This user not found'} as Error);
+        break;
+      case 'auth/too-many-requests': 
+        callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .'} as Error);
+        break;
+      case 'auth/invalid-email':        
+        callback.errorFunc({ message: 'This Email is not Valid.'} as Error);
+        break;
+      // @ts-ignore      
+      default: showErroe = true;
+    }    
+
+    // @ts-ignore    
+    const matches = err.code.replace("auth/","");
+    const lastmatches = matches.replace(/\b(?:-)\b/gi," ");
+    if (showErroe) {
+      callback.errorFunc({ message: lastmatches } as Error);
+      showErroe=false
+    }
   }
 };
 
@@ -233,7 +266,7 @@ export const SignupRegular = async (
   const auth = getAuth();
   try {
     validateSignup(payload);
-
+console.log("this function call")
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       payload.email,
@@ -254,7 +287,17 @@ export const SignupRegular = async (
     
     callback.successFunc(userCredential.user);
   } catch (e) {
-    callback.errorFunc(e as Error);
+    // callback.errorFunc(e as Error);
+
+    // @ts-ignore
+    const matches = e.code.replace("auth/", "");
+    const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
+      callback.errorFunc({ message: lastmatches } as Error);
+    
+    
+
+    console.log(e , "check this error")
+    
   }
 };
 

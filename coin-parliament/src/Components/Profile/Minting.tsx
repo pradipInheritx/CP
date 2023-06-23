@@ -21,6 +21,9 @@ import { Buttons } from "../Atoms/Button/Button";
 import Confetti from "../../assets/animation/confetti.json";
 import { colors } from "../VoteForm";
 import Swal from 'sweetalert2';
+import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import { showToast } from "App";
+import { ToastType } from "Contexts/Notification";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -159,6 +162,7 @@ type MintingProps = {
   setRewardTimer?: any;
   rewardTimer?: any;
   claim?: number;
+  setCountShow?: any;
 };
 const claimReward = httpsCallable(functions, "claimReward");
 const Minting = ({
@@ -166,52 +170,60 @@ const Minting = ({
   setRewardTimer,
   rewardTimer,
   claim,
+  setCountShow
 }: MintingProps) => {
   const { width = 194 } = useWindowSize();
   const translate = useTranslation();
-  const { user } = useContext(UserContext);
+  const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, setRewardExtraVote, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
+  const { showReward, setShowReward, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
-
-  const handleCmpPopupClose = () => setCmpPopupShow(false);
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  const handleCmpPopupClose = () => {
+    setCmpPopupShow(false);
+    setCurrentCMP(0);
+  };
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
-    // handleSoundWinCmp.play()    
   };
-
-
-  console.log(showBack, "showBackshow")
-
-  // console.log(document.querySelector(".Cmp-animation"), "Cmp-animation")
   useEffect(() => {
-    if (score == 100) {   
-      
-      console.log(document.querySelector(".Cmp-animation") ,"i am working")
-      // handleCmpPopupShow()
-     const Animation = lottie.loadAnimation({
-      // @ts-ignore
-      container: document.querySelector(".Cmp-animation"),
-      animationData: Confetti,
-      renderer: "html", // "canvas", "html"
-      loop: true, // boolean
-      autoplay: true, // boolean              
+    if (modalShow && CmpPopupShow) {
+      setCmpPopupShow(false);
+    }
+  }, [modalShow, CmpPopupShow]);
+  useEffect(() => {
+    if (score === 100) {
+      setTimeout(() => {
+        handleCmpPopupShow();
+      }, 6100);
+    }
+  }, [score]);
+  useEffect(() => {
+    if (CmpPopupShow) {
+      const Animation = lottie.loadAnimation({
+        // @ts-ignore
+        container: document.querySelector(".Cmp-animation"),
+        animationData: Confetti,
+        renderer: "html", // "canvas", "html"
+        loop: true, // boolean
+        autoplay: true, // boolean   ,
       });
-      handleSoundWinCmp.play()
+      handleSoundWinCmp.play();
       setTimeout(function () {
-        Animation.pause();
-        handleSoundWinCmp.pause()
-      }, 4000);  // 5000 milliseconds = 5 seconds
+        // Animation.destroy();
+        handleSoundWinCmp.pause();
+      }, 3000);  // 5000 milliseconds = 5 seconds
+
       // setShowBack(false)
     }
-
-  }, [score])
-
+  }, [CmpPopupShow]);
+  console.log(resultData, "resultData")
   const [animateButton, setAnimateButton] = useState<boolean>(false);
+
   return (
     <React.Fragment>
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
@@ -227,7 +239,7 @@ const Minting = ({
             {texts.CPMinting}
           </Title>
           <I className='bi bi-info-circle' style={{ paddingRight: width < 767 ? '8em' : '' }}></I>
-          <CircularProgress percentage={score || 0} />
+          <CircularProgress percentage={(score || 0)} />
 
           {/* <PieChart
             percentage={score || 50}
@@ -244,15 +256,31 @@ const Minting = ({
                   handleSoundClick()
                   if (claim) {
                     setLoading(true);
-                    const result = await claimReward({ uid: user?.uid });
-                    // @ts-ignore
+                    const result = await claimReward({ uid: user?.uid }).then((data: any) => {
+                      // showToast(data.data.firstRewardCard ,ToastType.ERROR);
+                      // console.log(data.data.firstRewardCard,"full data")
+                      handleShow()
+                      return data;
+                    }).catch((error) => {
+                      // callback={{
+                      //     successFunc: (params) => setUser(params),
+                      showToast(error.message, ToastType.ERROR);
+                      // }}
+                    });
                     setResultData(result)
-                    handleShow()
+                    console.log(result, 'hello');
+
+                    if (result?.data) {
+                      // @ts-ignore
+                      setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
+                    }
+
                     setLoading(false);
                   } else {
                     Swal.fire({
-                      title: `You still need ${100 - score} CMP to claim your reward.`,
-
+                      title: '',
+                      text: `You still need ${100 - score} CMP to claim your reward.`,
+                      color: 'black',
                       confirmButtonText: 'Ok',
                       confirmButtonColor: '#6352e8',
                       customClass: {
@@ -266,7 +294,7 @@ const Minting = ({
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
-                disabled: (!claim || loading || rewardTimer)
+                disabled: (loading || rewardTimer)
               }}
             >
               {(!!claim) && <Dot>{claim}</Dot>
@@ -276,94 +304,33 @@ const Minting = ({
 
           </div>
         )}
-        {/* <BtnLabelPrimary
-          style={{ boxShadow: "0px 3px 6px #00000029", marginTop: "10px" }}
-          onClick={async () => {
-            handleSoundClick()
-            if (claim) {
-              setLoading(true);
-              console.log("reward");
-              const result = await claimReward({ uid: user?.uid });
-              // @ts-ignore
-              setResultData(result)
-              handleShow()
-              setLoading(false);
-            }
-          }}
-          disabled={!claim || loading || rewardTimer}
-        >
-          {!!claim && <Dot>{claim}</Dot>}
-          {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
-        </BtnLabelPrimary> */}
       </Container>
-      {
-        (width < 767 && false) && (
-          <div
-            style={{ marginTop: width > 767 ? 17 : 8.5, marginBottom: "16.31px" }}
-          >
-            <BtnLabelPrimary
-              className='w-100 mt-2'
-              style={{ boxShadow: "0px 3px 6px #00000029" }}
-              onClick={async () => {
-                if (claim) {
-                  setLoading(true);
-                  console.log("reward");
-                  const result = await claimReward({ uid: user?.uid });
-                  // @ts-ignore
-                  setResultData(result)
-                  handleShow()
-                  // setShowReward(1);
-                  // setInOutReward(1);
-                  // @ts-ignore
-                  // setRewardExtraVote(result?.data?.secondRewardExtraVotes);
-                  // setRewardTimer(result);
-                  // setRewardExtraVote(10);
-                  // setRewardTimer({
-                  //   firstRewardCard: "legendary",
-                  //   secondRewardExtraVotes: 10,
-                  //   thirdRewardDiamonds: 10
-                  // });
-                  setLoading(false);
-                  console.log("rewardresult", result);
-                }
-              }}
-              disabled={!claim || loading || rewardTimer}
-            >
-              {!!claim && <Dot>{claim}</Dot>}
-              {/* {loading ? "CLAIMING REWARDS..." : "CLAIM YOUR REWARDS"} */}
-              {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
-            </BtnLabelPrimary>
-          </div>
-        )
-      }
       <div>
         <Modal
           show={
             modalShow
           } onHide={handleClose}
-          // size="sm"
           backdrop="static"
-          // contentClassName={window.screen.width > 767 ? "card-content" : "card-contentMob"}
+          contentClassName={"modulebackground"}
           aria-labelledby="contained-modal-title-vcenter"
           centered
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
 
         >
-          <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
-              handleClose()
-            }}></button>
-          </div>
+
           <Modal.Body className="d-flex  justify-content-center align-items-center">
-            {/* continue voting */}
-            {/* @ts-ignore */}
-            <div className='py-2 '><p style={{ fontSize: "20px" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
+            {/* @ts-ignore*/}
+            <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
           </Modal.Body>
-          {/* <Modal.Footer> */}
+
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2" onClick={() => {
               setTimeout(() => {
                 setShowReward(1);
                 setInOutReward(1);
+                setCountShow(true)
+                // @ts-ignore
+                setAlbumOpen(resultData?.data?.firstRewardCardCollection);
                 // @ts-ignore
                 setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
                 setRewardTimer(resultData);
@@ -379,61 +346,47 @@ const Minting = ({
 
       {/* PopUp for complate 100cmp  */}
 
-      <div
-      >
+      <div>
         <Modal
           show={
             CmpPopupShow
           } onHide={handleCmpPopupClose}
-          // size="sm"
           backdrop="static"
-          // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
-          contentClassName="Cmp-animation"
+          contentClassName=""
           aria-labelledby="contained-modal-title-vcenter"
           centered
-        // id="Cmp-animation"
         >
-
-          <div className="d-flex justify-content-end"
-
-          >
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
-              handleCmpPopupClose()
-            }}></button>
-          </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
-            {/* continue voting */}
-            {/* @ts-ignore */}
-            <div className='py-2 d-flex flex-column  justify-content-center align-items-center'>
+            <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
+            <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>
               <strong className="py-2" style={{ fontSize: "20px" }}>Well done, Champ!</strong>
               <p className="py-2" style={{ fontSize: "20px" }}>You've reached your goal.</p>
               <p className="py-2" style={{ fontSize: "14px" }}>Go ahead and claim your reward - you deserve it!</p>
             </div>
-
           </Modal.Body>
-          {/* <Modal.Footer> */}
-          <div className="d-flex justify-content-center ">
+          <div className="d-flex justify-content-center pb-1" style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
                 if (claim) {
                   setLoading(true);
                   console.log("reward");
-                  const result = await claimReward({ uid: user?.uid });
+                  const result = await claimReward({ uid: user?.uid }).then((data: any) => {
+                    handleShow()
+                    return data;
+                  }).catch((error) => {
+                    showToast(error.message, ToastType.ERROR);
+                  });
                   // @ts-ignore
                   setResultData(result)
-                  handleShow()
+                  // handleShow()
                   handleCmpPopupClose()
                   setLoading(false);
                   console.log("rewardresult", result);
                 }
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
-            <Buttons.Primary className="mx-2" onClick={() => {
-              handleCmpPopupClose()
-            }}>Claim letter</Buttons.Primary>
-            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
           </div>
-          {/* </Modal.Footer>       */}
+          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim later</div>
         </Modal>
       </div>
     </React.Fragment >

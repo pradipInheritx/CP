@@ -7,21 +7,9 @@ import { Coin } from "../../common/models/Coin";
 import { VoteResultProps } from "../../common/models/Vote";
 import CoinsContext from "../../Contexts/CoinsContext";
 import { decimal } from "../Profile/utils";
+import { VoteDispatchContext } from "Contexts/VoteProvider";
 // import * as Motion from 'framer-motion';
 // const { motion, MotionConfig }= Motion
-// const useSpeedTest = () => {
-//   const [value, setValue] = useState(0);
-
-//   useAnimationFrame((t) => {
-//     if (value >= 100) return;
-//     setValue((t / 5500) * 100);
-//   });
-
-//   return {
-//     value: Math.min(value, 100)
-//   };
-// };
-
 
 
 
@@ -146,7 +134,6 @@ function Speed(props: SpeedProps) {
         </div>
         <div className="gauge">
           <svg className="w-full overflow-visible p-4 SvgCss" {...gauge.getSVGProps()}
-          // viewBox={window.screen.width >767? "0 0 50% 50%":"0 0 50% 50%"}
           >
             <g id="arcs">
               <path
@@ -205,9 +192,8 @@ function Speed(props: SpeedProps) {
                 );
               })}
             </g>
-            <g id="needle" fill={"#2d2966"}>
+            <g id="needle" fill="#2d2966">
               <motion.circle
-
                 animate={{
                   cx: needle.base.cx,
                   cy: needle.base.cy
@@ -215,17 +201,38 @@ function Speed(props: SpeedProps) {
                 r={2}
               />
               <motion.circle
-
                 animate={{
                   cx: needle.base.cx,
                   cy: needle.base.cy
                 }}
                 r={15}
               />
-              <motion.polyline className="fill-gray-700" points={needle.points} animate={{ points: needleAnimatePoint.current }} />
+              <motion.line
+                stroke="#2d2966"
+                strokeWidth={4}
 
-
+                animate={{ x1: needle.base.cx, x2: needle.tip.cx, y1: needle.base.cy, y2: needle.tip.cy }}
+              />
             </g>
+            {/* <g id="needle" fill={"#2d2966"}>
+              <motion.circle
+                animate={{
+                  cx: needle.base.cx,
+                  cy: needle.base.cy
+                }}
+                r={2}
+              />
+              <motion.circle
+                animate={{
+                  cx: needle.base.cx,
+                  cy: needle.base.cy
+                }}
+                r={15}
+              />
+              <motion.polyline className="fill-gray-700" animate={{
+                points: needle.points
+              }} />
+            </g> */}
           </svg>
         </div>
       </div>
@@ -257,13 +264,28 @@ export default function SpeedTest(
     return action < 0 ? 0 : action;
   }, 50)
   const { allCoinsSetting } = useContext(CoinsContext)
-  const [priceRange, setPriceRange] = useState(1)
+  const [priceRange, setPriceRange] = useState(1);
+  // const { value } = useSpeedTest(priceRange);
   // const [randomDecimal, setRandomDecimal] = useState(0)
-
+  const setVoteDetails = useContext(VoteDispatchContext);
+  useEffect(() => {
+    setVoteDetails((prev) => {
+      let voteImpact: number = (persentValue < 40 ? 0 :
+        (persentValue >= 40 && persentValue <= 60 ? 2 : 1)
+      )
+      return {
+        ...prev, voteImpact: {
+          timeFrame: prev?.voteImpact?.timeFrame,
+          impact: voteImpact
+        }
+      }
+    })
+  }, [persentValue]);
   const getBorderColor = () => {
+    if (vote?.expiration < new Date().getTime()) {
+      return;
+    }
 
-
-    // console.log(vote?.valueVotingTime, coins[symbol1]?.price, symbol2, symbol1, vote, coins, (coins[symbol1]?.randomDecimal || 20), 'pkkkk');
     if (symbol2 !== undefined) {
       // range bar for pair
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
@@ -348,10 +370,9 @@ export default function SpeedTest(
     if (!symbol1) return
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
-  console.log(persentValue, 'pkkk');
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }} >
-      <Speed value={persentValue || 50} />{/* // low<mid 40-60>high */}
+      <Speed value={persentValue} />{/* // low<mid 40-60>high */}
     </MotionConfig>
   );
 }

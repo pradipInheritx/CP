@@ -17,7 +17,7 @@ import styled from "styled-components";
 import { Buttons } from "../Components/Atoms/Button/Button";
 import { CardContainer, PageContainer } from "../Components/App/App";
 import { LineData } from "lightweight-charts";
-import { httpsCallable } from "firebase/functions";
+import { HttpsCallableResult, httpsCallable } from "firebase/functions";
 import Graph from "../Components/CPVI/Graph";
 import CoinsForm from "../Components/Coins/CoinsForm";
 import NotificationContext from "../Contexts/Notification";
@@ -31,6 +31,7 @@ import ModalForResult from "./ModalForResult";
 import { decimal } from "../Components/Profile/utils";
 import Progress from "../Components/CPVI/Progress";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
+import { Http2ServerResponse } from "http2";
 // import Speedometer from "./Speedometer";
 
 export const Title = styled.h2`
@@ -88,9 +89,7 @@ const SingleCoin = () => {
   const [voteNumber, setVoteNumber] = useState<any>([]);
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
-  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun,
-    remainingTimer,
-    voteRules } = useContext(AppContext);
+  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules } = useContext(AppContext);
 
 
   // useEffect(() => {
@@ -189,7 +188,6 @@ const SingleCoin = () => {
   }, [params?.id, voteId, vote?.voteTime]);
 
 
-  console.log(votedDetails, "checkallvotes")
   // useEffect(() => {
   //   if(vote.timeframe) {
   //     setTimeout(() => {
@@ -207,7 +205,7 @@ const SingleCoin = () => {
 
   useEffect(() => {
     const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
 
   }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length])
 
@@ -220,7 +218,7 @@ const SingleCoin = () => {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframes[selectedTimeFrame || 0]?.seconds });
       if (v) {
         // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
-        console.log(v.data(), "checkallv.data")
+        // console.log(v.data(), "checkallv.data")
         if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
         setVote(v.data());
         setVoteId(v.id);
@@ -234,7 +232,7 @@ const SingleCoin = () => {
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframe });
       if (v) {
-
+        console.log(v.id, "checkallv.data")
         return v
       }
     }
@@ -265,6 +263,8 @@ const SingleCoin = () => {
 
           }
         }))
+        console.log(tempAllActiveVotes, 'testing');
+
         setAllActiveVotes(() => {
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
         });
@@ -294,9 +294,6 @@ const SingleCoin = () => {
       mountedRef.current = false;
     };
   }, [selectedTimeFrame]);
-
-
-  console.log(selectedTimeFrame, "selectedTimeFrameChange")
 
   useEffect(() => {
 
@@ -337,7 +334,7 @@ const SingleCoin = () => {
 
   const canVote = useMemo(() => {
 
-    return !!!voteDetails[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`];
+    return !!!voteDetails?.activeVotes[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`];
     return (
       ((!vote.expiration && vote.success === undefined) ||
         (vote.expiration && vote.success !== undefined) ||
@@ -375,77 +372,35 @@ const SingleCoin = () => {
 
 
   // open modal
-  const [modalData, setModalData] = useState<VoteResultProps | undefined>();
-  const [modalData2, setModalData2] = useState<any>();
-  const coin1 = `${coins && symbol1 ? coins[symbol1]?.symbol?.toLowerCase() || "" : ""}`;
-  const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`;
-  const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   useEffect(() => {
+    let data: { [key: string]: VoteResultProps } = {};
     allActiveVotes.map((value: VoteResultProps | undefined) => {
       if (value) {
-        setVoteDetails((prev) => {
-          return {
-            ...prev,
-            [`${value.coin}_${value?.timeframe?.seconds}`]: value
-          }
-        })
+        data = {
+          ...data,
+          [`${value.coin}_${value?.timeframe?.seconds}`]: { ...value, voteType: 'coin' }
+        }
+      }
+    })
+    setVoteDetails((prev) => {
+      return {
+        ...prev,
+        activeVotes: { ...prev.activeVotes, ...data }
       }
     })
   }, [allActiveVotes]);
   useEffect(() => {
-    let lessTimeVote: VoteResultProps | undefined;
-    Object.keys(voteDetails).map((value) => {
-      if (!lessTimeVote || lessTimeVote.expiration > voteDetails[value]?.expiration) {
-        lessTimeVote = voteDetails[value];
+    setVoteDetails((prev) => {
+      return {
+        ...prev,
+        voteImpact: {
+          timeFrame: selectedTimeFrame,
+          impact: null
+        }
       }
-      return {};
-    });
-    if (lessTimeVote) {
-      setModalData(lessTimeVote);
-    }
-  }, [voteDetails]);
-  useEffect(() => {
-    if (modalData) {
-      // let exSec = new Date(-).getSeconds();
-      // current date
-      let current = new Date();
+    })
+  }, [selectedTimeFrame]);
 
-      // voteTime date
-      let voteTime = new Date(modalData?.expiration);
-
-      // finding the difference in total seconds between two dates
-      let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      // console.log(second_diff, 'hello');
-      if (second_diff > 0) {
-        const timer = setTimeout(async () => {
-          await getPriceCalculation({
-            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-            voteId: modalData?.id,
-            voteTime: modalData?.voteTime,
-            valueVotingTime: modalData?.valueVotingTime,
-            expiration: modalData?.expiration,
-            timestamp: Date.now(),
-            userId: modalData?.userId
-          }).then((response) => {
-            if (response?.data) {
-              setpopUpOpen(true);
-              setModalData2(response?.data);
-            }
-          }).catch(err => {
-            if (err && err.message) {
-              console.log(err.message);
-            }
-          });
-        }, (second_diff * 1000));
-        return () => clearTimeout(timer);
-      }
-    }
-    // console.log(modalData, 'pkkp');
-  }, [modalData]);
-  useEffect(() => {
-    setModalData(modalData2);
-  }, [modalData2])
   //open modal
   return (
     <>
@@ -516,7 +471,7 @@ const SingleCoin = () => {
                     <>
                       <VotedCard
                         {...{
-                          vote: voteDetails[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
+                          vote: voteDetails?.activeVotes[`${symbol1}_${timeframes[selectedTimeFrame]?.seconds}`] || {},
                           coins: coinUpdated,
                           totals,
                           symbol1,
@@ -554,18 +509,19 @@ const SingleCoin = () => {
                     </>
                   )}
                   {
-                    // @ts-ignore
-                    // hideButton.includes(selectedTimeFrame) &&
-                    modalData && <ModalForResult
-                      popUpOpen={popUpOpen}
-                      selectedTimeFrame={selectedTimeFrame}
-                      setpopUpOpen={setpopUpOpen}
-                      setHideButton={setHideButton}
-                      hideButton={hideButton}
-                      vote={modalData}
-                      setModalData={setModalData}
-                      type={"coin"}
-                    />
+                    // // @ts-ignore
+                    // // hideButton.includes(selectedTimeFrame) &&
+                    // modalData && <ModalForResult
+                    //   popUpOpen={popUpOpen}
+                    //   // selectedTimeFrame={selectedTimeFrame}
+                    //   setpopUpOpen={setpopUpOpen}
+                    //   // setHideButton={setHideButton}
+                    //   // hideButton={hideButton}
+                    //   vote={modalData}
+                    //   setModalData={setModalData}
+                    //   type={"coin"}
+                    // // setVoteDetails={setVoteDetails}
+                    // />
                   }
                 </div>
                 {/* <div>
@@ -588,7 +544,7 @@ const SingleCoin = () => {
               <div className="d-flex justify-content-center align-items-center mt-5 ">
                 <Link to="" style={{ textDecoration: 'none' }}>
                   <Other>
-                    {!voteNumber && remainingTimer ?
+                    {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
                       <span style={{ marginLeft: '20px' }}>
                         {/* @ts-ignore */}
                         <Countdown date={remainingTimer}

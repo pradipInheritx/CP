@@ -90,17 +90,18 @@ const Menu = ({
 }: MenuProps) => {
   const { menuOpen, setMenuOpen, login, firstTimeLogin } =
     useContext(AppContext);
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const { user } = useContext(UserContext);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
   const { width } = useWindowSize();
-  const handleClose = () =>{ setMenuOpen(false);
+  const handleClose = () => {
+    setMenuOpen(false);
     // handleSoundClick()
   }
   // console.log("hello")
   const handleShow = () => {
-    if (followerPage) {      
+    if (followerPage) {
       navigate(-1)
     }
     else {
@@ -108,7 +109,7 @@ const navigate = useNavigate();
     }
   };
   const translate = useTranslation();
-  
+
 
   const desktop = width && width > 979;
   return (
@@ -134,22 +135,23 @@ const navigate = useNavigate();
           {!desktop && (
             <div
               className='d-flex justify-content-start'
-              style={{ flexBasis: "20%" }}              
+              style={{ flexBasis: "20%" }}
             >
               <HamburgerBut
                 // variant='link'
-                onClick={()=>{handleShow()
+                onClick={() => {
+                  handleShow()
                   // handleSoundClick()
                 }}
                 className='position-relative'
                 style={{
-                  
-                  
-                  
+
+
+
                 }}
               >
-                
-                {followerPage ? <BackArrow /> :<Hamburger />}
+
+                {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
               </HamburgerBut>
             </div>
@@ -162,7 +164,7 @@ const navigate = useNavigate();
                 className='position-relative'
               >
                 {/* <Hamburger /> */}
-                {followerPage ? <BackArrow/> : <Hamburger />}
+                {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
               </HamburgerBut>
             </div>
@@ -195,7 +197,8 @@ const navigate = useNavigate();
                     key={i}
                     as={Link}
                     to={item.href}
-                    onClick={() =>{ setMenuOpen(false)
+                    onClick={() => {
+                      setMenuOpen(false)
                       // handleSoundClick()
                     }}
                   >

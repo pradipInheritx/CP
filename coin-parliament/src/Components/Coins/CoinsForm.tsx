@@ -77,7 +77,6 @@ const CoinsForm = ({
   }, []);
 
   const vote = useCallback(async () => {
-    // console.log('coindata',coinUpdated[coin?.symbol]?.price)
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -88,9 +87,6 @@ const CoinsForm = ({
       if (!user?.uid) {
         throw new Error("Attention! You must be signed-in to cast your vote!");
       }
-      // 1681801742363
-      // 1681801734542
-      // console.log('expirevotetime',Date.now() + chosenTimeframe.seconds * 1000 + 1597)
       const ref = await addDoc<VoteResultProps>(
         collection(db, "votes").withConverter(voteConverter),
         {
@@ -103,7 +99,7 @@ const CoinsForm = ({
           userId: user?.uid,
           voteTime: Date.now(),
           // @ts-ignore
-          valueVotingTime: coinUpdated[coin?.symbol]?.symbol == 'BTC' || coinUpdated[coin?.symbol]?.symbol == 'ETH' ? coinUpdated[coin?.symbol]?.price : coinUpdated[coin?.symbol]?.price + coinUpdated[coin?.symbol]?.randomDecimal,
+          valueVotingTime: coinUpdated[coin?.symbol]?.symbol == 'BTC' || coinUpdated[coin?.symbol]?.symbol == 'ETH' ? coinUpdated[coin?.symbol]?.price || 0 : coinUpdated[coin?.symbol]?.price || 0 + coinUpdated[coin?.symbol]?.randomDecimal || 0,
           expiration: Date.now() + chosenTimeframe.seconds * 1000,
           voteId: `${coin.symbol}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`
         } as VoteResultProps
@@ -123,8 +119,6 @@ const CoinsForm = ({
         };
         await updateDoc(userRef, newUserInfo);
       }
-      // showToast(translate("voted successfully"));
-      // await getMessaging();
       if (user?.uid) {
         setVoteId(ref.id);
       }
@@ -150,11 +144,13 @@ const CoinsForm = ({
     [selectedTimeFrame, canVote]
   );
 
+  console.log(disabled, "disabled")
+
   const throttled_vote = useMemo(
     () => voteProcedure({ vote, sound, setConfetti }),
     [vote, sound, setConfetti]
   );
-
+  const [disableVoteButton, setDisableVoteButton] = useState(false);
   return (
     <Container className='p-0 '>
       {/* @ts-ignore */}
@@ -173,14 +169,17 @@ const CoinsForm = ({
           cssDegree,
           votePrice,
           votedDetails,
+          disableVoteButton,
           submit: () => {
             // console.log('votebutton',selectedOption)
             if (
               selectedTimeFrame !== undefined &&
               selectedOption !== undefined
             ) {
+              setDisableVoteButton(prev => !prev);
               setTimeout(() => {
                 throttled_vote();
+                setDisableVoteButton(prev => !prev);
               }, 700);
 
             }

@@ -15,5 +15,19 @@ animation: blinker 1s linear infinite;
   }
 }
 .popupStyle {
-  border-radius:60px 0px 60px 60px
+  border-radius:100px 0px 100px 100px
 }
+
+.modulebackground{
+  background-color:transparent !important;
+  border: none !important;
+}
+.btn-close{
+  color: white !important;
+}
+/* #d4d0f3 */
+/* #6352e8 */
+
+/* .coin_Bg{
+ background-image: url(../../assets/images/coin_bg.png);
+} */

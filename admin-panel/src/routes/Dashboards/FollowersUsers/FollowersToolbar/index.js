@@ -73,7 +73,7 @@ const FollowersToolbar = ({
 
   const onSearchChipDelete = () => setSearchTerm('');
 
-  const numSelected = selected.length;
+const numSelected = selected.length;
 const navigate = useHistory();
   return (
     <React.Fragment>

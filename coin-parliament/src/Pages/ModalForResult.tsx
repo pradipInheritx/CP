@@ -8,14 +8,16 @@ import { formatCurrency } from '../common/models/Coin';
 import moment from "moment";
 import Line from '../Components/icons/line';
 import { timeframeInitials } from '../Components/Atoms/Button/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
 import { voteEndFinish } from '../common/utils/SoundClick';
 import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
+import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
+import { Prev } from 'react-bootstrap/esm/PageItem';
+import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
 // const silent = require("../assets/sounds/silent.mp3").default;
-
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
     props.winner ? "#6352E8" : "transparent"};
@@ -78,53 +80,76 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, selectedTimeFrame, hideButton, setModalData }: {
-  popUpOpen?: any,
-  vote: any,
-  type?: any,
-  setpopUpOpen?: any,
-  setHideButton?: any,
-  selectedTimeFrame?: any,
-  hideButton?: any,
-  setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
-}) {
+function ModalForResult({ popUpOpen, vote, type,
+  setLessTimeVoteDetails,
+   /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
+    popUpOpen?: any,
+    vote: any,
+    type?: string,
+    setLessTimeVoteDetails: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
+    // setpopUpOpen?: any,
+    // setHideButton?: any,
+    // selectedTimeFrame?: any,
+    // hideButton?: any,
+    // setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
+    // setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
+  }) {
 
+  const navigate = useNavigate();
+  const setVoteDetails = useContext(VoteDispatchContext);
+  const setCompletedVotes = useContext(CompletedVotesDispatchContext);
 
   useEffect(() => {
     if (popUpOpen) {
-      // console.log("i am working")
-      handleShow()
-
-      voteEndFinish()
-      // setHideButton(() => {
-      //   hideButton.filter((item:any, index:number) => {
-      //     return selectedTimeFrame != item
-      //   })
+      handleShow();
+      voteEndFinish();
+      // setVoteDetails((prev) => {
+      //   return {
+      //     ...prev,
+      //     openResultModal: false
+      //   }
       // })
-      console.log("i can open")
-      setpopUpOpen(false)
+      // setpopUpOpen(false)
     }
   }, [popUpOpen])
 
 
   const [show, setShow] = useState(false);
-  const setVoteDetails = useContext(VoteDispatchContext);
+  // const setVoteDetails = useContext(VoteDispatchContext);
+
   const handleShow = () => setShow(true);
   const handleClose = () => {
-    setVoteDetails((prev: { [key: string]: VoteResultProps }) => {
-      let temp = {};
-      Object.keys(prev).map((key: string) => {
-        if (vote?.voteId !== prev[key].voteId) {
-          temp = { ...temp, [`${prev[key].coin}_${prev[key]?.timeframe?.seconds}`]: prev[key] }
-        }
-      });
-      return temp;
-    });
-    if (setModalData instanceof Function) {
-      setModalData(undefined);
-    }
+    removeVote();
     // setShow(false);
   };
+
+  const removeVote = () => {
+    setVoteDetails((prev) => {
+      let temp = {};
+      Object.keys(prev?.activeVotes).map((key: string) => {
+        if (/* prev?.activeVotes[key].expiration > new Date().getTime() &&  */vote?.voteId !== prev?.activeVotes[key].voteId) {
+          temp = { ...temp, [`${prev?.activeVotes[key].coin}_${prev?.activeVotes[key]?.timeframe?.seconds}`]: prev?.activeVotes[key] }
+        }
+      });
+      return {
+        ...prev,
+        lessTimeVote: undefined,
+        activeVotes: temp,
+        openResultModal: false
+      };
+    });
+    setCompletedVotes(prev => prev.filter(value => value.voteId != vote.voteId));
+    setLessTimeVoteDetails(undefined);
+    // setLessTimeVoteDetails({
+    //   lessTimeVote: undefined,
+    //   openResultModal: false
+    // })
+    // if (setModalData instanceof Function) {
+    //   setModalData(undefined);
+    // }
+  }
+
+
 
   const { coins } = useContext(CoinsContext);
   const { showBack, setShowBack } = useContext(AppContext);
@@ -139,7 +164,28 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
   const votelength = Object.keys(vote).length
-  
+
+  //set reward cmp
+  const currentCMP = useContext(CurrentCMPContext);
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+
+  useEffect(() => {
+    // setCurrentCMP(vote?.score || 0)
+  }, [vote?.score])
+
+  var firstCoin: number = 55;
+  var secondCoin: number = 55;
+  if (type === "pair" && vote?.valueVotingTime.length > 1) {
+    const valueVotingTime = vote?.valueVotingTime[0];
+    const valueVotingTime1 = vote?.valueVotingTime[1];
+
+    const valueExpirationTime = vote?.valueExpirationTime[0];
+    const valueExpirationTime1 = vote?.valueExpirationTime[1];
+
+    firstCoin = ((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime);
+    secondCoin = ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1);
+    console.log(((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime), ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1), 'pkkk');
+  }
 
   return (
     <div>
@@ -174,7 +220,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
                   <Logo {...{ symbol: vote?.coin || "", width: 30 }} />
                 </div>
                 <div className={`${window.screen.width < 767 ? "flex-column" : ""} w-100 d-flex justify-content-between`}>
-                  <div className={`${window.screen.width < 767 ? "w-100" : "w-50"} text-center`}>
+                  <div className={`${window.screen.width < 767 ? "w-100" : "w-50"} text-center`} style={{ paddingLeft: (window.screen.width < 767 ? '0px' : '2em') }}>
                     <div className=''>
                       <span style={{ fontSize: "14px" }} className='px-3'>
                         {timeframeInitials(vote?.timeframe?.name)} VOTE
@@ -212,7 +258,7 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
                   {/* <div
                     className='d-flex justify-content-around w-50'
                   > */}
-                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `}>
+                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `} style={{ paddingLeft: (window.screen.width < 767 ? '0px' : '2em') }}>
                     <div className='text-center'>
                       <span style={{ fontSize: "13px", color: '#6352e8' }}>
                         VOTE RESULT
@@ -250,14 +296,8 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
           }
           {
             type == "pair" && votelength ?
-              <div className=' w-100 '
-              // style={{boxShadow:" rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}
-              >
-                <div
-                  // className={`${window.screen.width < 767 ? "" : ""}`}
-                  className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}
-
-                >
+              <div className=' w-100 '>
+                <div className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}>
                   <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                     <CoinContainer winner={vote?.direction === 0}>
                       <div className=" ">
@@ -274,25 +314,19 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
                           <div>{paircoin[0]?.symbol}</div>
 
                           <div>
-                            {vote?.valueExpirationTime &&
-                              // formatCurrency(                                              
-                              //   (vote?.valueExpirationTime as number[])[0]
-                              // )
-                              vote?.valueVotingTime[0]
-                            }
+                            {/* {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]} */}
                           </div>
                           <div>
-                            {/* {vote?.valueExpirationTime && <Trend num={trend} />} */}
+                            {firstCoin.toFixed(3) || 0}%
+                          </div>
+                          <div>
                           </div>
                         </div>
                       </div>
                     </CoinContainer>
                   </div>
-
-
                   <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                     <Col className="">
-                      {/* {window.screen.width < 767 ? "" : */}
                       <div className="">
                         <LineImg>
                           <Line />
@@ -331,32 +365,25 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
                           </div>
                           {/* @ts-ignore */}
                           <div>{paircoin[1]?.symbol}</div>
-
                           <div>
-                            {vote.valueExpirationTime &&
-                              // formatCurrency(
-                              // (vote.valueExpirationTime as number[])[1]
-
-                              // )
-                              vote.valueVotingTime[1]
-                            }
+                            {/* {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]} */}
                           </div>
                           <div>
-                            {/* {vote.valueExpirationTime && <Trend num={trend} />} */}
+                            {secondCoin.toFixed(3) || 0}%
                           </div>
                         </div>
                       </div>
                     </CoinContainer>
                   </div>
                 </div>
-                <div style={{ minHeight: "100%" }} className=" text-center">
+                <div style={{ minHeight: "100%" }} className="text-center ">
                   <div className=''
                     style={{ fontSize: "12px" }}
                   >
                     <p>VOTE RESULT</p>
                     <p>
-                      {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
-                      {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]}
+                      {vote?.coin?.split("-")[vote?.direction]}: {(vote?.direction === 0 ? (/* Math.abs */(firstCoin) - /* Math.abs */(secondCoin)) : (/* Math.abs */(secondCoin) - /* Math.abs */(firstCoin))).toFixed(3)}%
+                      {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
                     </p>
                     <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
                   </div>
@@ -390,13 +417,16 @@ function ModalForResult({ popUpOpen, vote, type, setpopUpOpen, setHideButton, se
 
 
           <div className='py-2  d-flex  justify-content-center'>
-            <Link to="/profile/mine" style={{ textDecoration: 'none' }}
+            <span style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
+                console.log("i am working")
+                navigate('/profile/mine');
                 setShowBack(true);
+                removeVote();
               }}
             >
               <Other>{("CHECK PROGRESS")}</Other>
-            </Link>
+            </span>
           </div>
         </Modal.Body>
         {/* <Modal.Footer>

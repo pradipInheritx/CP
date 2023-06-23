@@ -22,7 +22,8 @@ export type SelectTimeframesProps = {
   votedDetails?: any;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
   setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  vote: VoteResultProps
+  vote: VoteResultProps,
+  disableVoteButton?: boolean
 };
 
 const SelectTimeframes = ({
@@ -38,11 +39,11 @@ const SelectTimeframes = ({
   votedDetails,
   setHideButton,
   setpopUpOpen,
-  vote
+  vote,
+  disableVoteButton
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  console.log(timeframes, 'timeframes');
 
   const num = getNumTimeframes(timeframes);
   const [buttonDetails, setButtonDetails] = useState<any>();
@@ -56,6 +57,7 @@ const SelectTimeframes = ({
   useEffect(() => {
     setPariButtonDetails(allPariButtonTime);
   }, [allPariButtonTime]);
+
 
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
@@ -90,6 +92,9 @@ const SelectTimeframes = ({
                   checked={timeframe.index === selected}
 
                   setChecked={() => {
+                    //if user click on vote then all button disabled until response does not come for that vote
+                    if (disableVoteButton)
+                      return;
                     selectTimeframe(timeframe);
                     handleSoundClick()
                   }}

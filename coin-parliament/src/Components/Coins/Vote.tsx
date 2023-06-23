@@ -9,6 +9,7 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import { handleSoundClick, VoteButton } from "../../common/utils/SoundClick";
+import firebase from "firebase/compat";
 
 export type VoteOption = {
   icon: React.ReactNode;
@@ -108,34 +109,44 @@ const Vote = ({
   children,
 }: VoteProps) => {
   const [option0, option1] = options;
-  const { user , votesLast24Hours, userInfo } = useContext(UserContext);
-  
-	// const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
+  const { user, votesLast24Hours, userInfo } = useContext(UserContext);
+
+  // const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const { showModal, showToast } = useContext(NotificationContext);
   const [clickedOption1, setClickedOption1] = useState(false);
   const [clickedOption0, setClickedOption0] = useState(false);
-	const [voteNumber, setVoteNumber] = useState(0)
-var urlName = window.location.pathname.split('/');
-	const followerPage = urlName.includes("followerProfile")
-	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
-  const { setLoginRedirectMessage,remainingTimer, loginRedirectMessage, setLogin,afterVotePopup,setAfterVotePopup, voteRules ,login} = useContext(AppContext);
-  
-  useEffect(() => {
-		const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-		// @ts-ignore
-		setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)		
-		// console.log('votenumber',voteNumber, Number(voted))
-	}, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+  const [voteNumber, setVoteNumber] = useState(0)
+  var urlName = window.location.pathname.split('/');
+  const followerPage = urlName.includes("followerProfile")
+  const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
+  const { setLoginRedirectMessage, remainingTimer, loginRedirectMessage, setLogin, afterVotePopup, setAfterVotePopup, voteRules, login } = useContext(AppContext);
+
+  // useEffect(() => {
+  //   const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+  //   // @ts-ignore
+  //   setVoteNumber(Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
+  //   // console.log('votenumber',voteNumber, Number(voted))
+  // }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+
+  useEffect(() => {		
+    
+  // @ts-ignore
+		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
+							
+    // @ts-ignore
+	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote ]);
+
+
 
   const openPopup = () => {
-    if (voteNumber == 0 && remainingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {    
+    if (voteNumber == 0 && remainingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
       setAfterVotePopup(true)
-  }  
+    }
 
-}
-  
+  }
+
   return (
     <div
     // className="container"
@@ -157,12 +168,34 @@ var urlName = window.location.pathname.split('/');
                 ...option0.buttonProps,
                 onClick: () => {
                   openPopup()
-                  if (voteNumber > 0 ) {                    
+                  // @ts-ignore
+                  if (userInfo?.voteValue > 0) {
+                    const usereData = firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({ "voteValue":userInfo?.voteValue - 1  }, { merge: true });   
+                  }
+                  // @ts-ignore
+                  if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
+                    const rewardData = userInfo?.rewardStatistics
+                    // @ts-ignore
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1 
+                    console.log(rewardData,"allrewardData")
+                    const usereData = firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({"rewardStatistics":rewardData}, { merge: true });   
+                  }
+                  if (voteNumber > 0) {
                     VoteButton()
                     if (disabled && disabledText) {
                       if (!user) {
-  
-  
+
+
                         setLoginRedirectMessage('test');
                         setLogin(true);
                       } else {
@@ -198,19 +231,42 @@ var urlName = window.location.pathname.split('/');
                 ...option1.buttonProps,
                 onClick: () => {
                   openPopup()
-                  if(voteNumber > 0 ){
-                  VoteButton()
-                  if (disabled && disabledText) {
-                    if (!user) {
-                      showModal(<NotLoggedInPopup />);
-                    } else {
-                      showToast(disabledText, ToastType.ERROR);
-                    }
-                    return;
+                // @ts-ignore
+                  if (userInfo?.voteValue > 0) {
+                    const usereData =firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({ "voteValue":userInfo?.voteValue - 1  }, { merge: true });   
                   }
-                  setSelectedOption(1);
-                  setClickedOption1(true);
-                  setTimeout(() => setClickedOption1(false), 1000);}
+                  // @ts-ignore
+                  if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
+                    const rewardData = userInfo?.rewardStatistics
+                    // @ts-ignore
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1 
+                    console.log(rewardData,"allrewardData")
+                    const usereData = firebase  
+                        .firestore()
+                        .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                        .set({"rewardStatistics":rewardData}, { merge: true });   
+                  }
+                  if (voteNumber > 0) {
+                    VoteButton()
+                    if (disabled && disabledText) {
+                      if (!user) {
+                        showModal(<NotLoggedInPopup />);
+                      } else {
+                        showToast(disabledText, ToastType.ERROR);
+                      }
+                      return;
+                    }
+                    setSelectedOption(1);
+                    setClickedOption1(true);
+                    setTimeout(() => setClickedOption1(false), 1000);
+                  }
                 },
                 // onKeyUp: () => {
                 //   VoteButton()

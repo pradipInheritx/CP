@@ -79,6 +79,7 @@ const Span0 = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-overflow: 'ellipsis'
 `;
 
 const HeartContainer = styled.div`
@@ -205,7 +206,7 @@ const CoinCard = ({
 
 
 
-  <LogoContainer>
+  <LogoContainer className="">
     <Buttons.ClickableText onClick={onClick} style={{cursor: single ? "default" : undefined}}>
       <LogoImgContainer {...{single}}>
         <Logo {...{symbol: coin.symbol, width: single ? 45 : 40}} />
@@ -213,8 +214,24 @@ const CoinCard = ({
     </Buttons.ClickableText>
     <div className="my-2">
       <CoinNameXYZ {...{single}}>
-        {single && <div className="fw-bolder"> {coin.name}</div>}
-        {!single && <Span0><Buttons.ClickableText onClick={onClick} className="fw-bolder">
+        {single && <div className="fw-bolder"
+          style={{
+    boxSizing:"border-box",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  overflow: 'hidden',
+  wordWrap: "normal"
+        }}
+        > {coin.name}</div>}
+        {!single && <Span0
+                style={{
+    boxSizing:"border-box",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  overflow: 'hidden',
+  wordWrap: "normal"
+        }}
+        ><Buttons.ClickableText onClick={onClick} className="fw-bolder">
           {coin.name}
         </Buttons.ClickableText></Span0>}
         {single && <div>{coin.symbol}</div>}
@@ -323,7 +340,7 @@ const secColor= ()=>{
           name={name}
         />
       </HeartContainer>
-      <CardsContainer>
+      <CardsContainer  className="">
         <CoinCard color={colorFirst} coin={coin1} onClick={onClick} single={single} coins={coins}/>
         <OverlapGroup>
           <VS {...{single}}>VS</VS>

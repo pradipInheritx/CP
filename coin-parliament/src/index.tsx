@@ -7,6 +7,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "./index.css";
 import { VoteProvider } from "Contexts/VoteProvider";
+import { CurrentCMPProvider } from "Contexts/CurrentCMP";
+import { CompletedVotesProvider } from "Contexts/CompletedVotesProvider";
 
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
@@ -18,14 +20,16 @@ window.changeLanguage = (lang: string) => {
 };
 
 ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <VoteProvider>
-        <App />
-      </VoteProvider>
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById("app")
+  <BrowserRouter>
+    <VoteProvider>
+      <CompletedVotesProvider>
+        <CurrentCMPProvider>
+          <App />
+        </CurrentCMPProvider>
+      </CompletedVotesProvider>
+    </VoteProvider>
+  </BrowserRouter>
+  , document.getElementById("app")
 );
 
 // If you want to start measuring performance in your app, pass a function
@@ -34,10 +38,10 @@ ReactDOM.render(
 reportWebVitals();
 // registerServiceWorker();
 
-const sw =
-  process.env.NODE_ENV === "production"
-    ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
-    : "../firebase-messaging-sw.js";
+const sw = "../service-worker.js";
+// process.env.NODE_ENV === "production"
+//   ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
+//   : "./firebase-messaging-sw.js";
 
 if ("serviceWorker" in navigator) {
   navigator?.serviceWorker

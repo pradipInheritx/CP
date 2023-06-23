@@ -26,7 +26,11 @@ import { handleSoundClick } from "../../common/utils/SoundClick";
 import  upgrade from "../../assets/images/upgrade_small.png";
 import  Gift from "../../assets/images/Framegift.png";
 import  Frame from "../../assets/images/Frame.png";
-import  NftFrame from "../../assets/images/NftFrame.png";
+import NftFrame from "../../assets/images/NftFrame.png";
+
+import  XXCOIN from "../../assets/images/XXCOIN.png";
+import  XXVote from "../../assets/images/XXVote.png";
+import  VOUCHER from "../../assets/images/VOUCHER.png";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -114,6 +118,9 @@ useEffect(() => {
 
   & p {
     font-size:19px;
+    background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   }
 
   & span {
@@ -121,6 +128,26 @@ useEffect(() => {
     line-height:15px;
   }
 
+`;
+  
+  const BottomBox = styled.div` 
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top:${window.screen.width >767 ? "50px" :"10px"};
+  margin-bottom:${window.screen.width >767 ? "50px" :"10px"};
+  flex-direction: column;
+  width:${window.screen.width >767 ? "25%" :"100%"};
+  & p {
+    margin-top:5px;
+    font-size:13px;
+    text-align:center;
+   background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  }
 `;
   return (
     <>        
@@ -157,11 +184,19 @@ useEffect(() => {
             >              
                 Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.              
           </P>  
-          <div className="d-flex justify-content-around align-items-center">
-            <div className="d-flex justify-content-center w-50">
+          <div className="d-flex justify-content-around align-items-center flex-wrap"
+            style={{
+            // display:`${window.screen.width > 767 ? "flex" :""}`
+          }}
+          >
+            <div className="d-flex justify-content-center "
+            style={{width:`${window.screen.width > 767 ?"50%" :"100%"}`}}
+            >
                 <img src={upgrade} alt="" width={window.screen.width>767? "400px":"300px"}/>
             </div>                                         
-            <div className="w-50">
+            <div className=""
+            style={{width:`${window.screen.width > 767 ?"50%" :"100%"}`}}
+            >
               <div>
                 <SideBox >                                                    
                     <div 
@@ -219,7 +254,20 @@ useEffect(() => {
               </div>
             </div>                                         
           </div>
-          <div
+
+          <H2
+              style={{
+                fontSize: "1.25rem",
+                marginTop: "0px",
+                paddingTop: "30px",
+                fontWeight: "bold",
+                textTransform:'uppercase'
+              }}
+            >
+              {translate("In addition, you will receive the following gifts")}
+          </H2>
+          
+          {/* <div
             className='d-flex justify-content-around px-3 text-center flex-wrap'
             style={{ marginTop: "47px" }}
           >
@@ -243,7 +291,7 @@ useEffect(() => {
                   className='btn fw-bold'
                   style={{
                     background:
-                      " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" /* fallback for old browsers */,
+                      " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" ,
                     color: "#fff",                    
                     marginTop: "25px",                    
                     boxShadow: "0px 3px 6px #00000029",
@@ -281,7 +329,23 @@ useEffect(() => {
               }}
             >
               {translate("ONETIME PAYMENT OF $199")}
-            </H2>          
+            </H2>           */}
+          
+          <div className="d-flex justify-content-around my-4 flex-wrap">          
+            <BottomBox className="">
+              <img src={VOUCHER} alt="" width={"90px"} className="mt-5"/>
+              <p className="">Voucher for merchandise purchase</p>
+            </BottomBox>  
+            <BottomBox>
+              <img src={XXVote} alt="" width={"90px"}/>
+              <p className="mt-3">XX Extra votes</p>
+            </BottomBox>  
+            <BottomBox>
+              <img src={XXCOIN} alt="" width={"100px"}/>
+              <p className="mt-3">XX Parliament coins (V2E)</p>
+            </BottomBox>  
+          </div>
+          
           <div
             className='text-center mb-4'
             style={{
@@ -305,14 +369,15 @@ useEffect(() => {
                 background:
                   " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" /* fallback for old browsers */,
                 color: "#fff",
-                width: "340px",
+                width: "250px",
                 // margin: "20px",
-                padding: "14px 44px",
+                padding: "5px 0px",
                 boxShadow: "0px 3px 6px #00000029",
-                fontSize: "31px",
+                fontSize: "25px",
               }}
             >
-              BUY NOW
+              <p> UPGRADE NOW </p>
+              <span style={{ fontSize: "12px"}}>One time Payment of $199</span>
             </button>
           </div>        
         </div>

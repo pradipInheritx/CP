@@ -129,10 +129,11 @@ const VotedCard = ({
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
   const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
-    if (symbol2 !== undefined) {
+    if (vote && symbol2 !== undefined && Array.isArray(vote?.valueVotingTime)) {
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
       // @ts-ignore
-      let bothCurrentPrice = [...vote?.valueVotingTime];
+
+      let bothCurrentPrice = vote?.valueVotingTime;
       //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
       let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
@@ -291,13 +292,14 @@ const VotedCard = ({
               symbol1={symbol1}
               symbol2={symbol2}
             />}
-            <div className="mb-1" style={{ marginTop: '-4em', height: '4em' }}>
+            <div className="mb-1" style={{ marginTop: window.screen.width < 370 ? '-8em' : (window.screen.width < 576 ? '-6.5em' : '-4.3em'), }} /* style={{ marginTop: '-3em', height: '4em', paddingLeft: '10px' }} */>
               <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
                 setLastTenSec={setLastTenSec}
               />
             </div>
             <BitcoinBTCBULL24H3864490
-              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center mt-4`}
+              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center  `}
+              style={{ marginTop: '3em ' }}
             >
               {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
 
@@ -307,12 +309,12 @@ const VotedCard = ({
             </BitcoinBTCBULL24H3864490>
 
             <ID13020221942>
-              {voteId} - {moment(vote.voteTime).format("MM.DD.YYYY HH:mm")}
+              {voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
             </ID13020221942>
           </div>
 
         </div>
-      </Rectangle2620>
+      </Rectangle2620 >
     </>
   );
 };
@@ -394,7 +396,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
           }
           // return data;
           return (
-            <span style={{ color: "#7767f7", wordBreak: 'break-all' }}>
+            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
               {texts.Calculatingvoteresult}
             </span>
           );

@@ -16,6 +16,7 @@ import UserContext from "../Contexts/User";
 import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
 import { Form } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
+import AppContext from "Contexts/AppContext";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -62,6 +63,7 @@ const Video = styled.video`
 
 const ProfileNftGallery = () => {
   const { user } = useContext(UserContext);
+  const {albumOpen,setAlbumOpen} = useContext(AppContext);
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
@@ -87,6 +89,14 @@ const ProfileNftGallery = () => {
     Summer: Summer,
     Science: Science,
   });
+
+useEffect(() => {
+  if (albumOpen != "") {
+    setSelectCollection(albumOpen)
+  setAlbumOpen("") 
+ }
+}, [albumOpen])
+
 
   const getNftCard = () => {
     const getCollectionType = firebase
@@ -408,7 +418,6 @@ const ProfileNftGallery = () => {
       .then((doc: any) => {
 
         doc.forEach((cards: any, index: number) => {
-
           // winCards.push(cards.data().)
           winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
 
@@ -555,7 +564,6 @@ const ProfileNftGallery = () => {
   const availableCard = (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget.checked) {
       let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
-      console.log(winnerCardId);
 
       setFilterCard((prev: any) => {
 
@@ -566,6 +574,7 @@ const ProfileNftGallery = () => {
     }
 
   }
+  console.log("")
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       <div className='d-flex justify-content-center pt-5 flex-wrap '>
@@ -652,10 +661,6 @@ const ProfileNftGallery = () => {
           <label htmlFor="default-checkbox">{texts.AvailableCards}</label>
         </div>
       </div>
-
-
-
-
       <GalleryType
         className=''
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
@@ -712,7 +717,10 @@ const ProfileNftGallery = () => {
                         />
                       );
                     } else {
-                      // return <div className="d-flex justify-content-center"> <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p></div>
+                     if (filterCard.length - 1 == ind && cardPart.length - 1 == index) {                        
+                      // return  console.log("i am working")
+                        return <div className="d-flex justify-content-center"> <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p></div>
+                      }
                     }
                   }
                   else {
@@ -754,6 +762,10 @@ const ProfileNftGallery = () => {
           {cardShow == true ? <p style={{
             color: "black"
           }}>Data Not Found</p> : ""}
+          {cardShow == false &&  myCards == true && <p style={{
+            color: "black"
+          }}>First Select Colloction</p>}
+          
         </div>
       }
 

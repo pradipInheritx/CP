@@ -17,10 +17,15 @@ import uncommon from '../../assets/images/uncommonText.png';
 import { Buttons } from "../../Components/Atoms/Button/Button";
 import { useNavigate } from "react-router-dom";
 import giftImage from "../../assets/images/giftCard.gif"
+
 type MintingProps = {
   cardType?: any;
+  rewardTimer?: any;
   setRewardTimer?: any;
   openpopup?: any;
+  handleShareModleShow?: any;
+  handleCardClose?: any;
+  setCountShow?: any;
 };
 
 
@@ -80,14 +85,17 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShareModleShow ,handleCardClose , rewardTimer,setCountShow}: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
   const [startY, setStartY] = useState<any>(0)
   const [cressShow, setCressShow] = useState<any>(false)
   const [scratchShound, setScratchShound] = useState<any>(false)
+  const [showImg, setShowImg] = useState<any>(false)
   const { showReward, setShowReward } = useContext(AppContext);
+  
+
   const [allFrontImg, setAllFrontImg] = useState<any>({
     COMMON: common,
     EPIC: epic,
@@ -175,6 +183,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
     setStartX(offsetX || layerX);
     setStartY(offsetY || layerY);
     setScratchShound(true)
+    setShowImg(true)
   };
 
   const scratchStartMobile = (e: any) => {
@@ -188,6 +197,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
     setStartX(offsetX);
     setStartY(offsetY);
     setScratchShound(true)
+    setShowImg(true)
   };
 
   const scratchMobile = (e: any) => {
@@ -338,15 +348,18 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
 
           {/* @ts-ignore */}
           <div className={classname} id="card-animation">
-            <div>
+            <div className={`${!showImg ?"d-none":""}`}>
               <span className={`${cardType.toLowerCase()}_text`}>
                 &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
               </span>
               <span className='cardname'>
-                THE <strong>HODLER</strong>
+                THE <strong>{ rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
               </span>
-              <img src={giftImage} alt='the hgodler' className='img-fluid' style={{ height: '98%' }} />
-              {/* <div className='card-body h-100'>
+              <img src={TheEagle} alt='the hgodler' className='img-fluid'
+                // style={{ height: '98%' }}
+                width={"90%"}
+              />
+              {/* <div className={classname}>
                 {" "}
               </div> */}
             </div>
@@ -396,6 +409,15 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup }: MintingP
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
+          handleShareModleShow()
+          handleCardClose()
+          setCountShow(false)
+        }}>Share Card</Buttons.Primary>
+
+        <Buttons.Primary className="mx-2" onClick={() => {
+          setRewardTimer(null);
+          setShowReward(0);
+          setCountShow(false)
           navigate("/profile/Album")
         }}>Check Win Card</Buttons.Primary>
       </div>

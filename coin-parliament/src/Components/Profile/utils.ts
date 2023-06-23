@@ -1,26 +1,44 @@
-export const validatePassword = (newPassword: string, username: string, confirmPassword: string) => {
-  console.log('password1')
-  const check1 = new RegExp(
-    /^(?=.*\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,15})$/
-  ).test(newPassword);
+import { texts } from "Components/LoginComponent/texts";
 
+export const validatePassword = (newPassword: string, confirmPassword: string, username: string = '') => {
+  console.log('password1')
+  const check1 = new RegExp(/^(?=.*\d)(?=.*[A-Z])(?!.*[^a-zA-Z0-9@#$^+=])(.{8,15})$/).test(newPassword);
   const check2 = !new RegExp(/\b^.*([a-zA-Z0-9])\1\1+.*\b/gm).test(newPassword);
-  const check4 = newPassword === confirmPassword;
   const check3 = !newPassword.includes(username);
-  console.log('password1',check1 , check2,check3, check4)
-  return  check1 && check4;
+  const check4 = newPassword === confirmPassword;
+  console.log('password1', check1, check2, check3, check4)
+  return check1 && check4;
 };
-export const cmpRangeCoin:Object={
-  0:5,
-  1:5,
-  2:10,
-  3:10
+
+export const passwordValidation = (password: string, confirmPassword: string, userName?: string) => {
+  const check1 = new RegExp(/(?=^.{8,}$)(?=.*\d)(?=.*[!@#$%^&*]+)(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/).test(password);
+  const check2 = new RegExp(/\b^.*([a-zA-Z0-9])\1\1+.*\b/gm).test(password); //(AAA, iiii, ...) not contains
+  if (password.length < 8) {
+    return texts.passwordValidation1;
+  } else if (!check1) {
+    return texts.passwordValidation2;
+  } else if (check2) {
+    return texts.passwordValidation3;
+  } else if (userName && password.includes(userName)) {
+    return texts.passwordValidation4;
+  } else if (password !== confirmPassword) {
+    return texts.passwordValidation5;
+  } else {
+    return true;
+  }
 }
-export const cmpRangePair={
-  0:5,
-  1:5,
-  2:10,
-  3:10
+
+export const cmpRangeCoin: Object = {
+  0: 5,
+  1: 5,
+  2: 10,
+  3: 10
+}
+export const cmpRangePair = {
+  0: 5,
+  1: 5,
+  2: 10,
+  3: 10
 }
 interface Decimal {
   Symbol: string;
@@ -29,119 +47,119 @@ interface Decimal {
   [key: string]: any; // index signature to allow any string key
 }
 
-export const decimal: {[key: string]: Decimal} = {
+export const decimal: { [key: string]: Decimal } = {
   "BTC":
   {
-  Symbol: 'BTC',
-  decimal: 2,
-  multiply:100
-},
+    Symbol: 'BTC',
+    decimal: 2,
+    multiply: 100
+  },
   "ETH":
   {
-  Symbol: 'ETH',
-  decimal: 2,
-  multiply:100
+    Symbol: 'ETH',
+    decimal: 2,
+    multiply: 100
   },
-  
+
   "BNB": {
-  Symbol: 'BNB',
-  decimal: 1,
-  multiply:10
+    Symbol: 'BNB',
+    decimal: 1,
+    multiply: 10
   },
-  "ADA":{
-  Symbol: 'ADA',
-  decimal: 6,
-  multiply:1000000
+  "ADA": {
+    Symbol: 'ADA',
+    decimal: 6,
+    multiply: 1000000
   },
-  "SOL":{
-  Symbol: 'SOL',
-  decimal: 2,
-  multiply:100
+  "SOL": {
+    Symbol: 'SOL',
+    decimal: 2,
+    multiply: 100
   },
-  "XRP":{
-  Symbol: 'XRP',
-  decimal: 4,
-  multiply:10000
+  "XRP": {
+    Symbol: 'XRP',
+    decimal: 4,
+    multiply: 10000
   },
-  "DOGE":{
-  Symbol: 'DOGE',
-  decimal: 5,
-  multiply:100000
+  "DOGE": {
+    Symbol: 'DOGE',
+    decimal: 5,
+    multiply: 100000
   },
-  "DOT":{
-  Symbol: 'DOT',
-  decimal: 3,
-  multiply:1000
+  "DOT": {
+    Symbol: 'DOT',
+    decimal: 3,
+    multiply: 1000
   },
-  "SHIB":{
-  Symbol: 'SHIB',
-  decimal: 7,
-  multiply:10000000
+  "SHIB": {
+    Symbol: 'SHIB',
+    decimal: 7,
+    multiply: 10000000
   },
-  "MATIC":{
-  Symbol: 'MATIC',
-  decimal: 4,
-  multiply:10000
+  "MATIC": {
+    Symbol: 'MATIC',
+    decimal: 4,
+    multiply: 10000
   },
-  "CRO":{
-  Symbol: 'CRO',
-  decimal: 4,
-  multiply:10000
+  "CRO": {
+    Symbol: 'CRO',
+    decimal: 4,
+    multiply: 10000
   },
-  "LTC":{
-  Symbol: 'LTC',
-  decimal: 2,
-  multiply:100
+  "LTC": {
+    Symbol: 'LTC',
+    decimal: 2,
+    multiply: 100
   },
-  "LINK":{
-  Symbol: 'LINK',
-  decimal: 2,
-  multiply:100
+  "LINK": {
+    Symbol: 'LINK',
+    decimal: 2,
+    multiply: 100
   },
-  "UNI":{
-  Symbol: 'UNI',
-  decimal: 2,
-  multiply:100
+  "UNI": {
+    Symbol: 'UNI',
+    decimal: 2,
+    multiply: 100
   },
-  "TRX":{
-  Symbol: 'TRX',
-  decimal: 5,
-  multiply:100000
+  "TRX": {
+    Symbol: 'TRX',
+    decimal: 5,
+    multiply: 100000
   },
-  "XLM":{
-  Symbol: 'XLM',
-  decimal: 4,
-  multiply:10000
+  "XLM": {
+    Symbol: 'XLM',
+    decimal: 4,
+    multiply: 10000
   },
-  "MANA":{
-  Symbol: 'MANA',
-  decimal: 2,
-  multiply:100
+  "MANA": {
+    Symbol: 'MANA',
+    decimal: 2,
+    multiply: 100
   },
-  "HBAR":{
-  Symbol: 'HBAR',
-  decimal: 4,
-  multiply:10000
+  "HBAR": {
+    Symbol: 'HBAR',
+    decimal: 4,
+    multiply: 10000
   },
-  "VET":{
-  Symbol: 'VET',
-  decimal: 5,
-  multiply:100000
+  "VET": {
+    Symbol: 'VET',
+    decimal: 5,
+    multiply: 100000
   },
-  "SAND":{
-  Symbol: 'SAND',
-  decimal: 2,
-  multiply:100
+  "SAND": {
+    Symbol: 'SAND',
+    decimal: 2,
+    multiply: 100
   },
-  "EOS":{
-    Symbol:'EOS',
-  decimal: 2,
-  multiply:100
+  "EOS": {
+    Symbol: 'EOS',
+    decimal: 2,
+    multiply: 100
   },
-  "CAKE":{
-  Symbol: 'CAKE',
-  decimal: 3,
-  multiply:1000
+  "CAKE": {
+    Symbol: 'CAKE',
+    decimal: 3,
+    multiply: 1000
   },
 
 }

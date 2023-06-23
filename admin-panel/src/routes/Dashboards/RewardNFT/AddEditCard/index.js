@@ -116,32 +116,35 @@ const AddEditCard = ({ open, onCloseDialog,selectType }) => {
   console.log(currentAlbum,"currentAlbum")
   const dispatch = useDispatch();
   
-  useEffect(() => {       
+  useEffect(() => {   
+    console.log(currentCard,"currentCard")
     if (currentCard) {
       setCardName(currentCard?.cardName)
       setCardImgae(currentCard?.cardImageUrl)
       setNftTier(currentCard?.cardType)
       setCardStatus(currentCard?.cardStatus)
-      // setCollocation(currentCard?.albumId)
+      setCollocation(currentCard?.albumName)
       setQuanlity(currentCard?.totalQuantity)
-      // setSelectSets(currentCard?.setId)
+      setSelectSets(currentCard?.setName)
     }    
   }, [currentCard]);
 
-useEffect(() => {       
-  if (currentCard)
-  {
-    albumList && albumList.filter((item, index) => {
-    if (item?.albumId == currentCard?.albumId) {
-      setCollocation(item?.albumName)
-      item.setDetails.filter((childItem,inx) => {
-        if (childItem?.setId == currentCard?.setId) {
-          setSelectSets(childItem?.setName)
-        }
-      })
-    }
-    })}
-  }, [albumList,currentCard]);
+// useEffect(() => {       
+//   if (currentCard)
+//   {
+//     albumList && albumList.filter((item, index) => {
+//     if (item?.albumId == currentCard?.albumId) {
+//       setCollocation(item?.albumName)
+//       item.setDetails.filter((childItem,inx) => {
+//         if (childItem?.setId == currentCard?.setId) {
+//           setSelectSets(childItem?.setName)
+//         }
+//       })
+//     }
+//     })}
+//   }, [albumList,currentCard]);
+
+console.log(selectSets ,collocation,"CollocationselectSets" )
 
   const onSubmitClick = () => {    
     if (!cardName) {
@@ -309,7 +312,7 @@ useEffect(() => {
                   fullWidth
                   data={setsNames || []}
                   label="Select Sets"
-                  valueKey="slug"
+                  // valueKey="slug"
                   variant="outlined"
                   labelKey="title"
                   value={selectSets}

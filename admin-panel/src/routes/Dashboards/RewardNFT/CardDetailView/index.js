@@ -23,6 +23,8 @@ const UserDetailView = ({ selectType, open, onCloseDialog }) => {
 
   // const { name, email, status, phones, company, designation, profile_pic, starred } = currentUser;
 
+console.log(currentCard,"currentCardcheck")
+
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
       <Box className={classes.userInfoRoot}>
@@ -76,11 +78,9 @@ const UserDetailView = ({ selectType, open, onCloseDialog }) => {
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           Collocation :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {albumList.filter((item, index) => {
-              if (item.albumId == currentCard?.albumId) {
-                return item.albumName
-              }
-            })}
+            {/* {albumList.filter((item, index) => item.albumId == currentCard?.albumId ?item.albumName :"")} */}            
+            {currentCard?.albumName}
+            
           </Box>
         </Box>
 
