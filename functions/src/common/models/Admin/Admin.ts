@@ -641,6 +641,29 @@ export const updateUserCollections = async (req: any, res: any) => {
   }
 }
 
+export const getUserList = async (req: any, res: any) => {
+  try {
+    const getUserList: any = [];
+    await admin.firestore().collection('users').get().then((snapshot: any) => {
+      snapshot.forEach((user: any) => {
+        getUserList.push(user.data());
+      })
+    });
+    res.status(200).send({
+      status: true,
+      message: "Get all users successfully",
+      result: getUserList,
+    });
+  } catch (error) {
+    errorLogging("getUserList", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Error in getUserList API ",
+      result: error,
+    });
+  }
+}
+
 export const errorLogging = async (
   funcName: string,
   type: string,

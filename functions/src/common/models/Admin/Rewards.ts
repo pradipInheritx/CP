@@ -314,10 +314,7 @@ export const getCardListing = async (req: any, res: any) => {
         if (search) {
             getAllAlbumsData = await firestore()
                 .collection("cardsDetails")
-                .where(orderByConsolidate, ">=", search)
-                .where(orderByConsolidate, "<=", search + "\uf8ff")
-                .offset((page - 1) * limit)
-                .limit(limit)
+                .where(orderByConsolidate, "==", search)
                 .get();
         } else {
             getAllAlbumsData = await firestore()
@@ -351,13 +348,11 @@ export const getCardListing = async (req: any, res: any) => {
             }
         );
 
-        const CollectionRef: any = await firestore().collection("cardsDetails").get();
-        let totalCount = CollectionRef.size;
-
+        console.log("getNFTResponse----------", getNFTResponse)
         res.status(200).send({
             status: true,
             message: "Cards fetched successfully",
-            result: { data: getNFTResponse, totalCount },
+            result: { data: getNFTResponse },
         });
     } catch (error) {
         errorLogging("getAlbumListing", "ERROR", error);
