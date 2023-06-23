@@ -277,12 +277,9 @@ export const getPickRandomValueFromArrayFunc: any = async (pickTierArrar: any) =
   let returnValue;
   if ((getFirstRewardCardObj.quantity === 0 || getFirstRewardCardObj.noOfCardHolders === getFirstRewardCardObj.totalQuantity)) {
     pickTierArrar.filter((card: any, index: number) => {
-      console.log("index -------", index)
       if (card.cardId === getFirstRewardCardObj.cardId) pickTierArrar.splice(index, 1);
     })
-    pickTierArrar.splice(0, pickTierArrar.length);
     returnValue = await getPickRandomValueFromArrayFunc(pickTierArrar);
-
   } else {
 
     console.log("getFirstRewardCardObj final return-----", getFirstRewardCardObj)
