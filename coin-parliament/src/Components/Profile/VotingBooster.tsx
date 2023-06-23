@@ -21,20 +21,20 @@ import { BorderRadius4px } from "../../styledMixins";
 import votingbooster from "../../assets/images/votingbooster_small.png";
 import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
+import BGOBJECTS from "assets/images/BGOBJECTS.png"
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
 left: 806px;
 top: 129px;
-
 font-family: 'Poppins';
 font-style: normal;
 font-weight: 700;
-font-size: 30px;
+// font-size: 30px;
 line-height: 45px;
 color: #FEFEFE;
 text-shadow: 0px 1px 3px 0px #5B03FF;
-font-size: 30px;
+font-size: ${window.screen.width > 767 ? "30px" :"20px"};
 font-family: Poppins;
 font-weight: 700;
 letter-spacing: 0.6px;
@@ -81,14 +81,21 @@ text-transform: capitalize;
 `;
 const Price = styled.span`
 font-family: Poppins;
-font-size: 30px;
+font-size: 25px;
 font-weight: 700;
 line-height: 45px;
 text-align: left;
 color:#FFE927;
 text-shadow:-1px -1px 0px #AF6A19;
 display:block;
+margin-left:-0.4em;
 margin-top: -0.2em;
+`;
+const ExtraText = styled.p`
+font-size:14px;
+  background: -webkit-linear-gradient(270deg, #FEFEFE 20.94%, #3C1ABA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 `;
 
 
@@ -158,31 +165,66 @@ const VotingBooster = () => {
       >
         {translate("BOOST YOUR VOTING POWER").toUpperCase()}
       </H2>
-      <Row className="pt-5">
+      <Row className="pt-5 pb-5">
         <Col sm={6} className="d-flex justify-content-md-end justify-content-center">
-          <img src={votingbooster} alt="" width={window.screen.width > 767 ? "449px" : "300px"} />
+          <img src={votingbooster} alt=""  />
         </Col>
         <Col sm={6}>
           <Row className="">
             <Col lg={5} sm={6} className="d-flex justify-content-center">
-              <Prices style={{}}>
-                <Corner>
-                  <CornerText style={{
+              <Prices style={{}}>   
+               <div style={{
+                  backgroundImage: `url(${BGOBJECTS})`,
+                  position:"absolute",
+                  width: "264px",
+                  height: "330px",
+                  marginTop:"-75px",
+                  marginLeft: "-20px",
+                  opacity: "0.2",
+                  zIndex:"1"
+
+                }}>
+                  </div>  
+                <div
+                  style={{
+                    position:"relative",
+                    width: "95px",
+                    height: "95px",
+                  }}                    
+                  >
+                  {/* <CornerText style={{
                     color: '#FFF',
                     fontSize: '22px',
                     fontFamily: 'Poppins',
                     fontWeight: '700',
-
-                  }}>20% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText>
-                </Corner>
-                <div style={{ backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
-                  <ForOnly>For Only</ForOnly>
-                  <Price>$5.0</Price>
+                    
+                  }}>20% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText> */}
                 </div>
+                <div style={{ backgroundImage: `url(${Gift}) , url(${BGOBJECTS})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
+                  <ForOnly>For Only</ForOnly>
+                  <Price>$5.00</Price>
+                </div>
+                
+                <ExtraText className="text-center">
+                  <p>BUY 5 VOTES</p>
+                </ExtraText>
+                  
               </Prices>
             </Col>
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center">
               <Prices style={{}}>
+                <div style={{
+                  backgroundImage: `url(${BGOBJECTS})`,
+                  position:"absolute",
+                  width: "264px",
+                  height: "330px",
+                  marginTop:"-75px",
+                  marginLeft: "-20px",
+                  opacity: "0.2",
+                  zIndex:"1"
+
+                }}>
+                  </div>  
                 <Corner>
                   <CornerText style={{
                     color: '#FFF',
@@ -192,12 +234,85 @@ const VotingBooster = () => {
 
                   }}>20% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
                 </Corner>
+                <div style={{ backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
+                  <ForOnly>For Only</ForOnly>
+                  <Price>$10.00</Price>
+                </div>
+                <ExtraText className="text-center">
+                  <p>BUY 12 VOTES</p>
+                </ExtraText>
+              </Prices>
+            </Col>
+          </Row>
+          <Row className="mt-5">
+            <Col lg={5} sm={6} className="d-flex justify-content-center">
+              <Prices style={{}}>
+                <div style={{
+                  backgroundImage: `url(${BGOBJECTS})`,
+                  position:"absolute",
+                  width: "264px",
+                  height: "330px",
+                  marginTop:"-75px",
+                  marginLeft: "-20px",
+                  opacity: "0.2",
+                  zIndex:"1"
+
+                }}>
+                  </div>  
+                <Corner>
+                  <CornerText style={{
+                    color: '#FFF',
+                    fontSize: '22px',
+                    fontFamily: 'Poppins',
+                    fontWeight: '700',
+
+                  }}>25% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText>
+                </Corner>
+                <div style={{ backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
+                  <ForOnly>For Only</ForOnly>
+                  <Price>$15.00</Price>
+                </div>
+                <ExtraText className="text-center">
+                  <p>BUY 20 VOTES</p>
+                </ExtraText>
+              </Prices>
+            </Col>
+            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center">
+              <Prices style={{}}>
+                <div style={{
+                  backgroundImage: `url(${BGOBJECTS})`,
+                  position:"absolute",
+                  width: "264px",
+                  height: "330px",
+                  marginTop:"-75px",
+                  marginLeft: "-20px",
+                  opacity: "0.2",
+                  zIndex:"1"
+
+                }}>
+                  </div>  
+                <Corner>
+                  <CornerText style={{
+                    color: '#FFF',
+                    fontSize: '22px',
+                    fontFamily: 'Poppins',
+                    fontWeight: '700',
+
+                  }}>33% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
+                </Corner>
+                <div style={{ backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
+                  <ForOnly>For Only</ForOnly>
+                  <Price>$20.00</Price>
+                </div>
+                <ExtraText className="text-center">
+                  <p>BUY 30 VOTES</p>
+                </ExtraText>
               </Prices>
             </Col>
           </Row>
         </Col >
       </Row >
-      <div
+      {/* <div
         className='p-0 m-0 w-100 d-flex justify-content-center'
         style={{
           background: "#160133",
@@ -232,7 +347,7 @@ const VotingBooster = () => {
             </PriceCard>
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

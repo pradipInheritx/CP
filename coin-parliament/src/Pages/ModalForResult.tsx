@@ -285,7 +285,7 @@ function ModalForResult({ popUpOpen, vote, type,
                   <Row className="flex-column text-center">
 
                     <Col>
-                      <strong>You progressed - {vote.score}</strong> <span>CMP</span>
+                      <strong>You progressed - {vote.score}</strong> <span> CMP</span>
                     </Col>
 
                   </Row>
@@ -390,7 +390,7 @@ function ModalForResult({ popUpOpen, vote, type,
                   <CoinVoteTimer>
                     {vote?.valueExpirationTime && vote?.score && (
                       <>
-                        <strong>You progressed - {vote?.score}</strong> <span>CMP</span>
+                        <strong>You progressed - {vote?.score}</strong> <span> CMP</span>
                       </>
 
                     )}

@@ -434,7 +434,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
             <CoinVoteTimer>
               {vote.valueExpirationTime && vote.score && (
                 <>
-                  <strong>You progressed -  {vote.score}</strong><span>CMP</span>
+                  <strong>You progressed -  {vote.score}</strong><span> CMP</span>
                 </>
               )}
               {!vote.valueExpirationTime && (
