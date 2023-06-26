@@ -81,7 +81,7 @@ export const sendNotificationForFollwersFollowings = async (
   userId: any, coin: any
 ) => {
   console.log("Notification for following & followers");
-  const follwersFollwing: any = [];
+  let follwersFollwing: any = [];
   console.log("userID & Coin", userId, coin)
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
@@ -93,6 +93,10 @@ export const sendNotificationForFollwersFollowings = async (
   userData.children.forEach((user: any) => {
     follwersFollwing.push(user);
   });
+
+  //remove Duplicate Values and user himself
+  follwersFollwing = follwersFollwing.filter((item: any,
+    index: any) => (follwersFollwing.indexOf(item) === index) && item !== userId);
 
   follwersFollwing.forEach(async (id: any) => {
     console.log("id:", id)
@@ -172,14 +176,12 @@ async function subscribersNotification(subscribers: string[], userName: string) 
 export const voteExpireAndGetCpmNotification = async (userId: string, cpm: number, coin: string) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
 
-
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
   console.log("UserData:", userData);
   let token = userData.token;
-
+  console.log("called ")
   if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName)
-
 
   const message: messaging.Message = {
     token,
