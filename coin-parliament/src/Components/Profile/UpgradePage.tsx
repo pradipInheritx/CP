@@ -131,17 +131,19 @@ useEffect(() => {
 `;
   
   const BottomBox = styled.div` 
+  // border:1px solid red;
   display:flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   margin-top:${window.screen.width >767 ? "50px" :"10px"};
   margin-bottom:${window.screen.width >767 ? "50px" :"10px"};
   flex-direction: column;
-  width:${window.screen.width >767 ? "25%" :"100%"};
+  width:${window.screen.width >767 ? "30%" :"100%"};
+  height:${window.screen.width >767 ? "auto" :"130px"};
   & p {
     margin-top:5px;
-    font-size:13px;
+    font-size:14px;
     text-align:center;
    background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
   -webkit-background-clip: text;
@@ -198,22 +200,21 @@ useEffect(() => {
             style={{width:`${window.screen.width > 767 ?"50%" :"100%"}`}}
             >
               <div>
-                <SideBox >                                                    
-                    <div 
+                <SideBox>
+                  
+                    <div
                     style={{ width: "30%" }}
                     className="d-flex justify-content-center align-items-center"
                     >
-                    <img src={Gift} alt="Gift"  width={"60px"}/>
+                  <img src={Frame} alt="" width={"60px"}/>
                     </div>
-                      
-                    <div className=""
+                    <div
                     style={{width:"70%"}}
                     >
-                      <p>Purchases</p>
-                      <span>Use your parliament coin (V2E) to buy merchandise</span>
-                      </div>
-                  
-                
+                      <p>Full mining machine</p>
+                      <span>Mine PAX BEP20 token</span>
+                  </div>
+              
                 </SideBox>
 
 
@@ -235,22 +236,26 @@ useEffect(() => {
               
                 </SideBox>
 
-                <SideBox>
-                  
-                    <div
+                
+
+                <SideBox >                                                    
+                    <div 
                     style={{ width: "30%" }}
                     className="d-flex justify-content-center align-items-center"
                     >
-                  <img src={Frame} alt="" width={"60px"}/>
+                    <img src={Gift} alt="Gift"  width={"60px"}/>
                     </div>
-                    <div
+                      
+                    <div className=""
                     style={{width:"70%"}}
                     >
-                      <p>Full mining machine</p>
-                      <span>Mine PAX BEP20 token</span>
-                  </div>
-              
+                      <p>Purchases</p>
+                      <span>Use your parliament coin (V2E) to buy merchandise</span>
+                      </div>
+                  
+                
                 </SideBox>
+
               </div>
             </div>                                         
           </div>
@@ -261,7 +266,7 @@ useEffect(() => {
                 marginTop: "0px",
                 paddingTop: "30px",
                 fontWeight: "bold",
-                textTransform:'uppercase'
+                // textTransform:'uppercase'
               }}
             >
               {translate("In addition, you will receive the following gifts")}
@@ -333,16 +338,16 @@ useEffect(() => {
           
           <div className="d-flex justify-content-around my-4 flex-wrap">          
             <BottomBox className="">
-              <img src={VOUCHER} alt="" width={"90px"} className="mt-5"/>
+              <img src={VOUCHER} alt="" width={"100px"} className="mt-3"/>
               <p className="">Voucher for merchandise purchase</p>
             </BottomBox>  
-            <BottomBox>
+            <BottomBox className=" ">
               <img src={XXVote} alt="" width={"90px"}/>
-              <p className="mt-3">XX Extra votes</p>
+              <p className="mt-3">Extra votes</p>
             </BottomBox>  
-            <BottomBox>
+            <BottomBox className=" ">
               <img src={XXCOIN} alt="" width={"100px"}/>
-              <p className="mt-3">XX Parliament coins (V2E)</p>
+              <p className="mt-3">Parliament coins (V2E)</p>
             </BottomBox>  
           </div>
           
