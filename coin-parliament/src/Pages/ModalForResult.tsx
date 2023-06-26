@@ -184,7 +184,7 @@ function ModalForResult({ popUpOpen, vote, type,
 
     firstCoin = ((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime);
     secondCoin = ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1);
-    console.log(((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime), ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1), 'pkkk');
+    // console.log(((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime), ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1), 'pkkk');
   }
 
   return (

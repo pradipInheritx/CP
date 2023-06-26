@@ -286,6 +286,7 @@ export default function SpeedTest(
       return;
     }
 
+
     if (symbol2 !== undefined) {
       // range bar for pair
       let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
@@ -297,7 +298,7 @@ export default function SpeedTest(
       const newPairPrice = [(((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange, (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange]
       const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
       const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
-
+      console.log(bothCurrentPrice, bothLivePrice, newPairPrice, 'highLow');
       let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
