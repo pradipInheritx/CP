@@ -130,13 +130,13 @@ const Vote = ({
   //   // console.log('votenumber',voteNumber, Number(voted))
   // }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
-  useEffect(() => {		
-    
-  // @ts-ignore
-		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0));		
-							
+  useEffect(() => {
+
     // @ts-ignore
-	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote ]);
+    setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0));
+
+    // @ts-ignore
+  }, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote]);
 
 
 
@@ -170,25 +170,25 @@ const Vote = ({
                   openPopup()
                   // @ts-ignore
                   if (userInfo?.voteValue > 0) {
-                    const usereData = firebase  
-                        .firestore()
-                        .collection("users")
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
                       .doc(user?.uid)
                       // @ts-ignore
-                        .set({ "voteValue":userInfo?.voteValue - 1  }, { merge: true });   
+                      .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });
                   }
                   // @ts-ignore
                   if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
                     const rewardData = userInfo?.rewardStatistics
                     // @ts-ignore
-                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1 
-                    console.log(rewardData,"allrewardData")
-                    const usereData = firebase  
-                        .firestore()
-                        .collection("users")
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
+                    console.log(rewardData, "allrewardData")
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
                       .doc(user?.uid)
                       // @ts-ignore
-                        .set({"rewardStatistics":rewardData}, { merge: true });   
+                      .set({ "rewardStatistics": rewardData }, { merge: true });
                   }
                   if (voteNumber > 0) {
                     VoteButton()
@@ -231,27 +231,27 @@ const Vote = ({
                 ...option1.buttonProps,
                 onClick: () => {
                   openPopup()
-                // @ts-ignore
+                  // @ts-ignore
                   if (userInfo?.voteValue > 0) {
-                    const usereData =firebase  
-                        .firestore()
-                        .collection("users")
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
                       .doc(user?.uid)
                       // @ts-ignore
-                        .set({ "voteValue":userInfo?.voteValue - 1  }, { merge: true });   
+                      .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });
                   }
                   // @ts-ignore
                   if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
                     const rewardData = userInfo?.rewardStatistics
                     // @ts-ignore
-                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1 
-                    console.log(rewardData,"allrewardData")
-                    const usereData = firebase  
-                        .firestore()
-                        .collection("users")
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
+                    console.log(rewardData, "allrewardData")
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
                       .doc(user?.uid)
                       // @ts-ignore
-                        .set({"rewardStatistics":rewardData}, { merge: true });   
+                      .set({ "rewardStatistics": rewardData }, { merge: true });
                   }
                   if (voteNumber > 0) {
                     VoteButton()

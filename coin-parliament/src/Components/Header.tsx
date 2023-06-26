@@ -189,12 +189,12 @@ const Header = ({
 
 
 
-	const { languages, setLang, setLogin, setSignup, setMenuOpen,setShowBack } =
+	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack } =
 		useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup ,setvoteNumberEnd} = useContext(AppContext);
+	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
@@ -214,15 +214,15 @@ const Header = ({
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 
 
-console.log(urlName,"")
+	console.log(urlName, "")
 
-useEffect(() => {
-  
-	if (score > 99.98 && MyPath!=="/profile/mine") {
-		setCmpModalOpen(true)
-		console.log("i am working check",score)
-	}
-}, [score])
+	useEffect(() => {
+
+		if (score > 99.98 && MyPath !== "/profile/mine") {
+			setCmpModalOpen(true)
+			console.log("i am working check", score)
+		}
+	}, [score])
 
 
 	// console.log(urlName,"checkurlName")
@@ -284,19 +284,22 @@ useEffect(() => {
 		// @ts-ignore
 		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
 		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setVoteNumber(Number(userInfo?.voteValue || 0)  + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0));		
+		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0));
 		// @ts-ignore
-		console.log(headerExtraVote?.collect || 0,"headerExtraVote")
+		// console.log(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0), 'mye', headerExtraVote?.vote, userInfo?.rewardStatistics?.extraVote);
+
+		// @ts-ignore
+		console.log(headerExtraVote?.collect || 0, "headerExtraVote")
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
-		console.log(userInfo?.rewardStatistics?.extraVote,"userInfo")
+		console.log(userInfo?.rewardStatistics?.extraVote, "userInfo")
 		prevCountRef.current = voteNumber;
 		// console.log('votenumber',voteNumber, Number(voted))
 		// @ts-ignore
-	}, [userInfo?.voteValue , userInfo?.rewardStatistics?.extraVote , headerExtraVote?.vote]);
+	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 
-// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
+	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 
 
 	const onSelect = (eventKey: string | null) => {
@@ -552,7 +555,7 @@ useEffect(() => {
 																			// fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
 																		}}
 
-																		onEnd={() => {																			
+																		onEnd={() => {
 																			setInOutReward((prev: number) => {
 																				return prev == 2 ? 3 : prev
 																			});
@@ -865,24 +868,24 @@ useEffect(() => {
 				<Modal show={cmpModalOpen} onHide={() => setCmpModalOpen(false)}
 					backdrop="static"
 					aria-labelledby="contained-modal-title-vcenter"
-      				centered
+					centered
 				>
 					<Modal.Header>
-					{/* <Modal.Title>Modal heading</Modal.Title> */}
+						{/* <Modal.Title>Modal heading</Modal.Title> */}
 					</Modal.Header>
 					<Modal.Body>
 						<p className="text-center" >You have achieved your goal .</p>
 						<div className='py-2  d-flex  justify-content-center'>
-            	<span style={{ textDecoration: 'none', cursor: 'pointer' }}
-						onClick={() => {   
-							setCmpModalOpen(false)  
-							navigate('/profile/mine');
-							setShowBack(true);                
-						}}
-            		>
-              <Other>{("CLAIM YOUR REWARD")}</Other>
-            </span>
-          </div>
+							<span style={{ textDecoration: 'none', cursor: 'pointer' }}
+								onClick={() => {
+									setCmpModalOpen(false)
+									navigate('/profile/mine');
+									setShowBack(true);
+								}}
+							>
+								<Other>{("CLAIM YOUR REWARD")}</Other>
+							</span>
+						</div>
 
 					</Modal.Body>
 					{/* <Modal.Footer>
@@ -893,7 +896,7 @@ useEffect(() => {
 						Save Changes
 					</Button>
 					</Modal.Footer> */}
-      			</Modal>
+				</Modal>
 			</div>
 		</MenuContainer>
 
