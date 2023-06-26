@@ -161,6 +161,7 @@ const VotingBooster = () => {
         style={{
           zIndex: 1,
           marginTop: "35px",
+          fontSize:"1.25rem",
         }}
       >
         {translate("BOOST YOUR VOTING POWER").toUpperCase()}

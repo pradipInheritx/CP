@@ -27,17 +27,17 @@ const getUserActions = user => {
     // { action: 'email', label: 'Email', icon: <Mail /> },
   ];
 
-  if (user.status === 'active') {
-    actions.push({ action: 'suspend', label: 'Suspend', icon: <Block /> });
-  } else {
-    actions.push({
-      action: 'activate',
-      label: 'Reactivate',
-      icon: <CheckCircleOutline />,
-    });
-  }
+  // if (user.status === 'active') {
+  //   actions.push({ action: 'suspend', label: 'Suspend', icon: <Block /> });
+  // } else {
+  //   actions.push({
+  //     action: 'activate',
+  //     label: 'Reactivate',
+  //     icon: <CheckCircleOutline />,
+  //   });
+  // }
 
-  actions.push({ action: 'delete', label: 'Delete', icon: <Delete /> });
+  // actions.push({ action: 'delete', label: 'Delete', icon: <Delete /> });
   return actions;
 };
 
@@ -45,34 +45,36 @@ const UserListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, on
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  console.log(row ,"allrow")
   const onUserMenuClick = menu => {
     if (menu.action === 'view') {
       onUserView(row);
-    } else if (menu.action === 'edit') {
-      onUserEdit(row);
-    } else if (menu.action === 'email') {
-      dispatch(sentMailToUser());
-    } else if (menu.action === 'suspend') {
-      dispatch(updateUserStatus({ id: row.id, status: 'suspended' }));
-    } else if (menu.action === 'activate') {
-      dispatch(updateUserStatus({ id: row.id, status: 'active' }));
-    } else if (menu.action === 'delete') {
-      onUserDelete(row);
     }
+    // else if (menu.action === 'edit') {
+    //   onUserEdit(row);
+    // } else if (menu.action === 'email') {
+    //   dispatch(sentMailToUser());
+    // } else if (menu.action === 'suspend') {
+    //   dispatch(updateUserStatus({ id: row?.id, status: 'suspended' }));
+    // } else if (menu.action === 'activate') {
+    //   dispatch(updateUserStatus({ id: row?.id, status: 'active' }));
+    // } else if (menu.action === 'delete') {
+    //   onUserDelete(row);
+    // }
   };
 
-  const labelId = `enhanced-table-checkbox-${row.id}`;
-  const isItemSelected = isSelected(row.id);
+  const labelId = `enhanced-table-checkbox-${row?.id}`;
+  const isItemSelected = isSelected(row?.id);
   const userActions = getUserActions(row);
 
   return (
     <TableRow
       hover
-      // onClick={event => onRowClick(event, row.id)}
+      // onClick={event => onRowClick(event, row?.id)}
       role="checkbox"
       aria-checked={isItemSelected}
       tabIndex={-1}
-      key={row.id}
+      key={row?.id}
       selected={isItemSelected}>
       {/* <TableCell padding="checkbox">
         <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
@@ -80,22 +82,23 @@ const UserListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, on
       <TableCell component="th" id={labelId} scope="row" padding="normal">
         <Box display="flex" alignItems="center">
           <Box mr={{ xs: 4, md: 5 }}>
-            <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
+            <CmtAvatar size={40} src={row?.avatar || ""} alt={row?.displayName || "-"} />
           </Box>
           <div>
             <Typography className={classes.titleRoot} component="div" variant="h4">
-              {row.name}
+              {row?.displayName || "-"}
             </Typography>
           </div>
         </Box>
       </TableCell>
-      <TableCell>{row.name}</TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>
-        {row.status === 'suspended' ? `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})` : row.status}
-      </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell >{row.emailUsage} GB</TableCell>
+      <TableCell align="center">{row?.firstName  +  row?.firstName || "-"}</TableCell>
+      <TableCell align="center">{row?.email || "-"}</TableCell>
+      <TableCell>{row?.voteValue + row?.rewardStatistics?.extraVote || "-"}</TableCell>
+      {/* <TableCell>
+        {row?.status === 'suspended' ? `Suspended by ${row?.suspendedBy} (${timeFromNow(row?.suspendedAt)})` : row?.status}
+      </TableCell> */}
+      <TableCell align="center">{row?.phone || "-"}</TableCell>
+      <TableCell align="center">{row?.country || "-"}</TableCell>
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu items={userActions} onItemClick={onUserMenuClick} TriggerComponent={<MoreHoriz />} />
       </TableCell>

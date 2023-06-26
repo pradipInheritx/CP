@@ -30,12 +30,12 @@ const UserDetailView = ({ open, onCloseDialog }) => {
       <Box className={classes.userInfoRoot}>
         <Box mr={3} display="flex" alignItems="center">
           <Box className={classes.avatarView} mr={{ xs: 4, md: 6 }}>
-            <CmtAvatar size={70} src={currentUserDetelis?.profile_pic} alt={name} />
+            <CmtAvatar size={70} src={currentUserDetelis?.avatar} alt={currentUserDetelis?.displayName} />
           </Box>
 
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>{currentUserDetelis?.name}</Typography>
+              <Typography className={classes.titleRoot}>{currentUserDetelis?.displayName}</Typography>
               {/* <Box ml={1}>
                 <Checkbox
                   icon={<StarBorderIcon />}
@@ -78,15 +78,15 @@ const UserDetailView = ({ open, onCloseDialog }) => {
               {/* <EmailIcon /> */}
               User ID :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentUserDetelis?.UserID}
+                {currentUserDetelis?.uid}
               </Box>
                   
             </Box>
             <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-              Username :
+              Display Name :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentUserDetelis?.Username}
+                {currentUserDetelis?.displayName}
               </Box>
                   
             </Box>
@@ -107,34 +107,30 @@ const UserDetailView = ({ open, onCloseDialog }) => {
         </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
-              Parent :
+              Address :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {currentUserDetelis?.parent}
+                {currentUserDetelis?.address}
               </Box>                  
         </Box>        
             <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
               Email :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
-                {email}
+                {currentUserDetelis?.email}
                   </Box>
                   
               </Box>              
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
-          {/* <PhoneIcon /> */} Phone :
-          <Box ml={5}>
-            <CmtList
-              data={phones}
-              renderRow={(item, index) => (
-                <Box key={index} display="flex" alignItems="center">
-                  <Box color="text.secondary">{item.phone}</Box>
-                  {/* <Box ml={2} className={classes.labelRoot}>
-                    {item.label}
-                  </Box> */}
-                </Box>
-              )}
-            />
-          </Box>                  
+          {/* <PhoneIcon /> */} Phone :        
+            <Box ml={5} color="primary.main" component="p" className="pointer d-block">
+                {currentUserDetelis?.phone}
+                  </Box>        
+        </Box>
+        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
+          {/* <PhoneIcon /> */} Plan :        
+            <Box ml={5} color="primary.main" component="p" className="pointer d-block">
+                {currentUserDetelis?.Plan}
+                  </Box>        
         </Box>
          <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
@@ -144,11 +140,27 @@ const UserDetailView = ({ open, onCloseDialog }) => {
                   </Box>
                   
           </Box>  
+         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+              {/* <EmailIcon /> */}
+              Parent :
+              <Box ml={5} color="primary.main" component="p" className="pointer d-block">
+                {currentUserDetelis?.Parent}
+                  </Box>
+                  
+          </Box>  
           <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
               {/* <EmailIcon /> */}
               Quantity of Children :
               <Box ml={5} color="primary.main" component="p" className="pointer d-block">
                 {currentUserDetelis?.Quantity_of_Children}
+                  </Box>
+                  
+              </Box>  
+          <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+              {/* <EmailIcon /> */}
+              Chosen Foundation :
+              <Box ml={5} color="primary.main" component="p" className="pointer d-block">
+                {currentUserDetelis?.ChosenFoundation}
                   </Box>
                   
               </Box>  

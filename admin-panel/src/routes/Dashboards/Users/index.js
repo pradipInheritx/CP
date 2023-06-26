@@ -18,6 +18,7 @@ import NoRecordFound from './NoRecordFound';
 const UsersModule = () => {
   const classes = useStyles();
   const { usersDetelisList } = useSelector(({ UsersDetelis }) => UsersDetelis);
+  console.log(usersDetelisList,"usersDetelisList")
   const [orderBy, setOrderBy] = React.useState('name');
   const [order, setOrder] = React.useState('asc');
   const [page, setPage] = React.useState(0);
