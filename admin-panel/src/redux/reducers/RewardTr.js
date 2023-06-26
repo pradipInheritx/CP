@@ -18,7 +18,7 @@ export default (state = INIT_STATE, action) => {
     case GET_REWARDTR: {
       return {
         ...state,
-        rewardTrList: action.payload.data,   
+        rewardTrList: action.payload,   
         totalCount: action.payload?.totalCount,
       };
     }

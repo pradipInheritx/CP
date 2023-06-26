@@ -52,7 +52,7 @@ const labels = [
   { title: 'Other', slug: 'other' },
 ];
 const NftTierlabels = [
-  { title: 'Common', slug: 'Common' },
+  { title: 'Common', slug: 'Common' ,  },
   { title: 'Uncommon', slug: 'Uncommon' },
   { title: 'Rare', slug: 'Rare' },
   { title: 'Epic', slug: 'Epic' },

@@ -25,6 +25,7 @@ import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
 import TimeFrameDetailView from "./RewardTrDetailView";
 import NoRecordFound from "./NoRecordFound";
+import { getUsers } from "redux/actions/UsersDetelis";
 
 const RewardTrModule = () => {
   const classes = useStyles();
@@ -53,17 +54,26 @@ const RewardTrModule = () => {
 
   const dispatch = useDispatch();
   
-  useEffect(
-    () => {
-      dispatch(
-        getRewardTr(filterOptions, debouncedSearchTerm,page ,rowsPerPage ,orderBy ,order , () => {
-          setFilterApplied(!!filterOptions?.length || !!debouncedSearchTerm);
-          setUsersFetched(true);
-        })
-      );
-    },
-    [ dispatch, filterOptions, debouncedSearchTerm ,page,rowsPerPage,orderBy,order]
-  );
+  // useEffect(
+  //   () => {
+  //     dispatch(
+  //       getRewardTr(filterOptions, debouncedSearchTerm,page ,rowsPerPage ,orderBy ,order , () => {
+  //         setFilterApplied(!!filterOptions?.length || !!debouncedSearchTerm);
+  //         setUsersFetched(true);
+  //       })
+  //     );
+  //   },
+  //   [ dispatch, filterOptions, debouncedSearchTerm ,page,rowsPerPage,orderBy,order]
+  // );
+
+   useEffect(() => {
+    dispatch(
+      getUsers(filterOptions, debouncedSearchTerm, () => {
+        setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+        setUsersFetched(true);
+      }),
+    );
+  }, [dispatch, filterOptions, debouncedSearchTerm]);
   console.log(rewardTrList,"rewardTrList")
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
@@ -192,7 +202,7 @@ const handleConfirmUpdate = () => {
               rowCount={rewardTrList?.length}
             />
             <TableBody>
-              {!!rewardTrList.length ? (
+              {!!rewardTrList?.length && rewardTrList!=undefined  ? (
                 // stableSort(rewardTrList, getComparator(order, orderBy))
                 //   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   rewardTrList?.map((row, index) => (
@@ -232,7 +242,7 @@ const handleConfirmUpdate = () => {
         <TablePagination
           rowsPerPageOptions={[ 10, 20, 50 ]}
           component="div"
-          count={totalCount}
+          count={rewardTrList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handlePageChange}

@@ -22,7 +22,7 @@ import { timeFromNow } from "@jumbo/utils/dateHelper";
 const RewardTrDetailView = ({open, onCloseDialog}) => {
   const classes = useStyles();  
 const { currentRewardTr } = useSelector(({ RewardTr }) => RewardTr);
-
+  const { winData } = currentRewardTr
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
       <Box className={classes.userInfoRoot}>
@@ -32,7 +32,7 @@ const { currentRewardTr } = useSelector(({ RewardTr }) => RewardTr);
           </Box> */}
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>{`${currentRewardTr?.displayName}`}</Typography>
+              <Typography className={classes.titleRoot}>{`${winData?.firstRewardCard}`}</Typography>
             </Box>
             
           </Box>
@@ -61,21 +61,24 @@ const { currentRewardTr } = useSelector(({ RewardTr }) => RewardTr);
           {/* <EmailIcon /> */}
           Transaction ID : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentRewardTr?.totalVote}
+            {/* {currentRewardTr?.totalVote} */}
+            {winData?.firstRewardCardId}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
           {/* <EmailIcon /> */}
           Transaction Date : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentRewardTr?.successVote}
+            {/* {currentRewardTr?.successVote} */}
+            {winData?.date}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 7}}>
           {/* <EmailIcon /> */}
          Reward Type : 
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentRewardTr?.userScore}
+            {/* {currentRewardTr?.userScore} */}
+            {winData?.firstRewardCardType}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" mb={{xs: 4, sm: 5}}>
@@ -84,7 +87,8 @@ const { currentRewardTr } = useSelector(({ RewardTr }) => RewardTr);
             
             <Box ml={5} color="primary.main" component="p" className="pointer">
             {/* {timeFromNow(currentRewardTr?.createdAt)} */}
-            {currentRewardTr?.userRank}
+              {/* {currentRewardTr?.userRank} */}
+              {winData?.thirdRewardDiamonds}
           </Box>
           </Box>
         </Box>
@@ -94,7 +98,8 @@ const { currentRewardTr } = useSelector(({ RewardTr }) => RewardTr);
             
             <Box ml={5} color="primary.main" component="p" className="pointer">
             {/* {timeFromNow(currentRewardTr?.createdAt)} */}
-            {currentRewardTr?.userRank}
+              {/* {currentRewardTr?.userRank} */}
+              {winData?.secondRewardExtraVotes}
           </Box>
           </Box>
         </Box>
@@ -104,7 +109,8 @@ const { currentRewardTr } = useSelector(({ RewardTr }) => RewardTr);
             
             <Box ml={5} color="primary.main" component="p" className="pointer">
             {/* {timeFromNow(currentRewardTr?.createdAt)} */}
-            {currentRewardTr?.userRank}
+              {/* {currentRewardTr?.userRank} */}
+              {winData?.imgID}              
           </Box>
           </Box>
         </Box>

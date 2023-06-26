@@ -1,5 +1,6 @@
 import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from '../../services/auth/jwt/config';
+// import axios from '../../services/auth/jwt/config';
+import axios from 'axios';
 import {
 GET_REWARDTR,
 SET_REWARDTR_DETAILS,
@@ -11,24 +12,27 @@ DELETE_BULK_REWARDTR,
 
 export const localToken = localStorage.getItem('token');
 
-export const getRewardTr = (filterOptions = [], searchTerm = '',page ,rowsPerPage ,orderBy ,order , callbackFun) => {
-console.log(page ,rowsPerPage ,orderBy ,order ,"alldeteails")
+export const getRewardTr = ( id, filterOptions = [], searchTerm = '',page ,rowsPerPage ,orderBy ,order , callbackFun) => {
+
   return dispatch => {
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localToken;
-    dispatch(fetchStart());    
+    // axios.defaults.headers.common['Authorization'] = "";
+    dispatch(fetchStart());
     axios
-      .get(`voteSetting/getPerUserVote?limit=${rowsPerPage}&page=${page+1}&orderBy=${orderBy}&sort=${order}&search=${searchTerm}`)
+      .post(`https://us-central1-coin-parliament-staging.cloudfunctions.net/getRewardTransactions` , id)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_REWARDTR, payload: data.data.result });
           
+          console.log(data.data.result ,"data.dat")
           if (callbackFun) callbackFun(data.data);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
       })
       .catch(error => {
+
+        console.log(error,"data.data.resultget")
         if (error.response.data.result.name == "TokenExpiredError") {
           localStorage.clear();
         }

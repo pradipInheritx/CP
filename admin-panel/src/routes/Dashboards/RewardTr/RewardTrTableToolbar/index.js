@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Toolbar from "@material-ui/core/Toolbar";
 import clsx from "clsx";
 import Typography from "@material-ui/core/Typography";
@@ -7,12 +7,14 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import FilterListIcon from "@material-ui/icons/FilterList";
 import PropTypes from "prop-types";
-import {Button, Chip, Menu, MenuItem} from "@material-ui/core";
-import {useDispatch} from "react-redux";
+import {Button, Chip, Grid, InputLabel, Menu, MenuItem, Select} from "@material-ui/core";
+import {useDispatch, useSelector} from "react-redux";
 import ConfirmDialog from "../../../../@jumbo/components/Common/ConfirmDialog";
 import CmtSearch from "../../../../@coremat/CmtSearch";
 import useStyles from "./index.style";
 import Checkbox from "@material-ui/core/Checkbox";
+import AppSelectBox from "@jumbo/components/Common/formElements/AppSelectBox";
+import { getRewardTr } from "redux/actions/RewardTr";
 
 const filterOptionsList = [
   {label: "Active", value: "active"},
@@ -30,10 +32,25 @@ const RewardTrTableToolbar = ({
 }) => {
   const classes = useStyles();
   const [ openConfirmDialog, setOpenConfirmDialog ] = useState(false);
-  const [ anchorEl, setAnchorEl ] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [getUserID, setGetUserID] = React.useState("none");
+  // const [fullList, setFullList] = React.useState([]);
+  
 
   const dispatch = useDispatch();
+  const { usersDetelisList } = useSelector(({ UsersDetelis }) => UsersDetelis);
 
+  const fullList=[] 
+
+// useEffect(() => {
+//   if (usersDetelisList) {
+//     usersDetelisList.map((item ,index) => {
+//       fullList.push({uid:item.uid, slug:item.displayName})
+//     })
+//   }
+// }, [usersDetelisList])
+
+// console.log(fullList,"afullList")
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -73,6 +90,18 @@ const RewardTrTableToolbar = ({
 
   const numSelected = selected.length;
 
+  const getRewardTRList = (id) => {
+    const IdData = {
+      data: {
+        "uid": `${id}`
+      }
+    }
+    dispatch(
+        getRewardTr(IdData)        
+      );
+  }
+
+
   return (
     <React.Fragment>
       <Toolbar
@@ -101,6 +130,41 @@ const RewardTrTableToolbar = ({
           </Typography>
         )}
 
+        <Grid item xs={12} sm={6}>
+                  {/* <InputLabel id="demo-simple-select-autowidth-label">Select User</InputLabel> */}
+              <Select
+                  fullWidth
+                  data={usersDetelisList}
+                  labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                  label="Select User"
+                  valueKey="slug"
+                  variant="outlined"
+                  labelKey="title"
+                  value={getUserID}
+                onChange={e => {
+                  setGetUserID(e.target.value);
+                  // setCollocationError('');
+                }}
+                // helperText={collocationError}                     
+          >
+            <MenuItem value={"none"}>
+              Select User 
+            </MenuItem>
+          {usersDetelisList.map((item, index) => {
+          return (
+            <MenuItem key={index} value={item.uid}
+              onClick={()=>getRewardTRList(item.uid)}
+            >
+              {item.displayName || "-"}
+            </MenuItem>
+          );
+          })}
+        </Select>
+        </Grid>
+        
+
+        
         {numSelected > 0 ? (
           <Tooltip title="Delete">
             <IconButton aria-label="delete" onClick={onDeleteCLick}>
