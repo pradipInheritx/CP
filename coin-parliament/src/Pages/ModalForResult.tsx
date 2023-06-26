@@ -314,7 +314,7 @@ function ModalForResult({ popUpOpen, vote, type,
                           <div>{paircoin[0]?.symbol}</div>
 
                           <div>
-                            {/* {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]} */}
+                            {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]}
                           </div>
                           <div>
                             {firstCoin.toFixed(3) || 0}%
@@ -366,7 +366,7 @@ function ModalForResult({ popUpOpen, vote, type,
                           {/* @ts-ignore */}
                           <div>{paircoin[1]?.symbol}</div>
                           <div>
-                            {/* {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]} */}
+                            {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]}
                           </div>
                           <div>
                             {secondCoin.toFixed(3) || 0}%

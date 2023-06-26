@@ -106,18 +106,19 @@ const CoinsForm = ({
       );
       const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
       if (!updateExtravote) {
-        const userRef = doc(db, "users", user?.uid);
-        const newUserInfo = {
-          ...(userInfo as UserProps),
-          rewardStatistics: {
-            ...userInfo?.rewardStatistics,
+        // const userRef = doc(db, "users", user?.uid);
+        // console.log(userInfo, 'pkkkkkkkkkk');
 
-            // @ts-ignore
-            extraVote: userInfo?.rewardStatistics?.extraVote - 1,
+        // const newUserInfo = {
+        //   ...(userInfo as UserProps),
+        //   rewardStatistics: {
+        //     ...userInfo?.rewardStatistics,
 
-          }
-        };
-        await updateDoc(userRef, newUserInfo);
+        //     // @ts-ignore
+        //     extraVote: userInfo?.rewardStatistics?.extraVote /* - 1 */,
+        //   }
+        // };
+        // await updateDoc(userRef, newUserInfo);
       }
       if (user?.uid) {
         setVoteId(ref.id);
@@ -140,11 +141,13 @@ const CoinsForm = ({
   ]);
 
   const disabled = useMemo(
-    () => selectedTimeFrame === undefined || !canVote,
+    () => selectedTimeFrame === undefined || !((!propVote.expiration && propVote.success === undefined) ||
+      (propVote.expiration && propVote.success !== undefined) ||
+      Date.now() >= propVote?.expiration),
     [selectedTimeFrame, canVote]
   );
 
-  console.log(disabled, "disabled")
+  console.log(selectedTimeFrame, canVote, disabled, "disabled")
 
   const throttled_vote = useMemo(
     () => voteProcedure({ vote, sound, setConfetti }),

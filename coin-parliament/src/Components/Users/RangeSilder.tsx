@@ -295,10 +295,12 @@ export default function SpeedTest(
         return false
       }
       let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
-      const newPairPrice = [(((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange, (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange]
+      const newPairPrice = [
+        (((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange,
+        (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange
+      ]
       const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
       const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
-      console.log(bothCurrentPrice, bothLivePrice, newPairPrice, 'highLow');
       let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
@@ -306,6 +308,7 @@ export default function SpeedTest(
 
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+      console.log(bothCurrentPrice, bothLivePrice, newPairPrice, vote.direction, 'highLow');
 
       if ((averageValue == averageValue)) {
         if (50 - (newPairPrice[0] - newPairPrice[1]) < 0) {
