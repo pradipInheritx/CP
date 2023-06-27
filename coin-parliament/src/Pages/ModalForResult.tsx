@@ -17,6 +17,7 @@ import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from 'common/utils/helper';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -173,18 +174,9 @@ function ModalForResult({ popUpOpen, vote, type,
     // setCurrentCMP(vote?.score || 0)
   }, [vote?.score])
 
-  var firstCoin: number = 55;
-  var secondCoin: number = 55;
+  var pairCoinResult: calculateDiffBetweenCoinsType = { firstCoin: '', secondCoin: '', difference: '' };
   if (type === "pair" && vote?.valueVotingTime.length > 1) {
-    const valueVotingTime = vote?.valueVotingTime[0];
-    const valueVotingTime1 = vote?.valueVotingTime[1];
-
-    const valueExpirationTime = vote?.valueExpirationTime[0];
-    const valueExpirationTime1 = vote?.valueExpirationTime[1];
-
-    firstCoin = ((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime);
-    secondCoin = ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1);
-    // console.log(((/* Math.ceil */(valueExpirationTime - valueVotingTime) * 100) / valueVotingTime), ((/* Math.ceil */(valueExpirationTime1 - valueVotingTime1) * 100) / valueVotingTime1), 'pkkk');
+    pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
   }
 
   return (
@@ -314,10 +306,10 @@ function ModalForResult({ popUpOpen, vote, type,
                           <div>{paircoin[0]?.symbol}</div>
 
                           <div>
-                            {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]}
+                            {/* {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]} */}
                           </div>
                           <div>
-                            {firstCoin.toFixed(3) || 0}%
+                            {pairCoinResult?.firstCoin}%
                           </div>
                           <div>
                           </div>
@@ -366,10 +358,10 @@ function ModalForResult({ popUpOpen, vote, type,
                           {/* @ts-ignore */}
                           <div>{paircoin[1]?.symbol}</div>
                           <div>
-                            {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]}
+                            {/* {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]} */}
                           </div>
                           <div>
-                            {secondCoin.toFixed(3) || 0}%
+                            {pairCoinResult?.secondCoin}%
                           </div>
                         </div>
                       </div>
@@ -382,7 +374,7 @@ function ModalForResult({ popUpOpen, vote, type,
                   >
                     <p>VOTE RESULT</p>
                     <p>
-                      {vote?.coin?.split("-")[vote?.direction]}: {(vote?.direction === 0 ? (/* Math.abs */(firstCoin) - /* Math.abs */(secondCoin)) : (/* Math.abs */(secondCoin) - /* Math.abs */(firstCoin))).toFixed(3)}%
+                      {vote?.coin?.split("-")[vote?.direction]}: {pairCoinResult?.difference}%
                       {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
                     </p>
                     <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
