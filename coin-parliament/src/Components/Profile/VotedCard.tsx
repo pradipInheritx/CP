@@ -10,6 +10,8 @@ import { Col, Container, Row } from "react-bootstrap";
 import moment from "moment";
 import { timeframeInitials } from "../Atoms/Button/Button";
 import { MyCountdown } from "../VotedCard";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from "common/utils/helper";
+import { isArray } from "lodash";
 
 type VotedCardProps = {
   vote: VoteSnap;
@@ -95,6 +97,7 @@ type CoinProps = {
   index?: 0 | 1;
   id: string;
   coinSocketData?: any;
+  pairCoinResult?: calculateDiffBetweenCoinsType
 };
 
 const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
@@ -119,7 +122,7 @@ const calculate = (vote: VoteResultProps, index?: 0 | 1) => {
   }
 };
 
-const Coin = ({ vote, winner, index, id, coinSocketData }: CoinProps) => {
+const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinProps) => {
   const voteCoins = vote?.coin.split("-");
   console.log(vote, " checkvoteid")
   const { coins } = useContext(CoinsContext);
@@ -129,8 +132,6 @@ const Coin = ({ vote, winner, index, id, coinSocketData }: CoinProps) => {
   const trend = calculate(vote, index);
   const coin =
     (index === undefined ? coins[vote?.coin] : coins[voteCoins[index]]) || {};
-
-
 
   return pair ? (
     <CoinContainer winner={vote?.direction === index}>
@@ -144,25 +145,13 @@ const Coin = ({ vote, winner, index, id, coinSocketData }: CoinProps) => {
           </div>
           <div>{coin.symbol}</div>
           <div>
-            {/* {formatCurrency(
-              index === undefined
-                ? (vote?.valueVotingTime as unknown as number)
-                : (vote?.valueVotingTime as number[])[index]
-            )} */}
-          </div>
-          <div>
-            {vote.valueExpirationTime &&
-
-              // formatCurrency(
-              //   index === undefined
-              //       ? (vote?.valueVotingTime as unknown as number)
-              //       : (vote.valueExpirationTime as number[])[index]
-              // )
+            {/* {vote.valueExpirationTime &&
               // @ts-ignore
               index !== undefined && index == 0 ? vote?.valueVotingTime[0] : vote.valueVotingTime[1]
-            }
+            } */}
+            {index === 0 ? pairCoinResult?.firstCoin : pairCoinResult?.secondCoin}
+
           </div>
-          {/* <div>{vote.valueExpirationTime && <Trend num={trend} />}</div> */}
         </CoinName>
       </div>
     </CoinContainer>
@@ -289,7 +278,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData }: CoinProps) => {
                     {vote.direction ?
                       <>
                         {
-                          (vote?.valueVotingTime < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score) ?
+                          (Number(vote?.valueVotingTime || 0) < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score) ?
                             <RoundDiv backcolor={"#6352E8"}></RoundDiv> :
                             <>
                               {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
@@ -349,6 +338,11 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
   const winner = calculateWinner(vote);
   const pair = vote.coin.split("-").length > 1;
 
+  var pairCoinResult: calculateDiffBetweenCoinsType = { firstCoin: '', secondCoin: '', difference: '' };
+  if (pair && isArray(vote?.valueVotingTime) && isArray(vote?.valueExpirationTime)) {
+    pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
+  }
+
   return pair ? (
     <ProfilePairVote style={{ minWidth: window.screen.width < 979 ? '' : '480px', maxWidth: window.screen.width < 979 ? '' : '480px', }} >
       <Container>
@@ -359,6 +353,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
               winner={winner}
               index={pair ? 0 : undefined}
               id={id}
+              pairCoinResult={pairCoinResult}
             />
           </Col>
           <Col className="col-4 flex-column justify-content-end align-items-center h-100 ">
@@ -369,32 +364,9 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
             </div>
             <div className="align-self-end justify-content-end d-flex flex-column align-items-center">
               <div>
-                {/* <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/> */}
-                {/* {vote.direction?
-              
-                <>  { Math.abs((coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                
-                <>{(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                
-                {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
-                
-                }  </> :<>  { Math.abs((coins[vote?.coin.split("-")[0]].price / vote?.valueVotingTime[0]) - (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score ? <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>:
-                
-                <>{(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) < (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1])  &&!vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-                
-                {(coins[vote.coin.split("-")[0]].price / vote?.valueVotingTime[0]) > (coins[vote.coin.split("-")[1]].price / vote?.valueVotingTime[1]) && !vote?.score && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>}</>
-                }  </>
-                } */}
-
-                {/* // #D4D0F3
-// #6352E8
-// #3712B3 */}
                 <RoundDiv backcolor={vote.score === 1 ? "#3712B3" : vote.score === 0.5 ? "#6352E8" : vote.score === 0.25 ? "#D4D0F3" : "#6352E8"}>
 
                 </RoundDiv>
-                {/* { vote.score ===1 && <img src={process.env.PUBLIC_URL + `/images/icons/highgreen.png`}/>}
-              { vote.score ===0.5 && <img src={process.env.PUBLIC_URL + `/images/icons/mediumgreen.png`}/>}
-              { vote.score ===0.25 && <img src={process.env.PUBLIC_URL + `/images/icons/lightgreen.png`}/>} */}
               </div>
               <div style={{ minHeight: "100%" }}>
                 <PairsVoteVs>
@@ -411,6 +383,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
               winner={winner}
               index={pair ? 1 : undefined}
               id={id}
+              pairCoinResult={pairCoinResult}
             />
           </Col>
         </Row>
@@ -421,12 +394,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
             >
               <p>VOTE RESULT</p>
               {/* @ts-ignore */}
-              {vote?.valueExpirationTime?.length && <p>
-                {/* @ts-ignore */}
-                {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
-                {/* @ts-ignore */}
-                {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]}
-              </p>}
+              {(vote?.valueExpirationTime?.length && pairCoinResult?.difference) ? `${vote?.coin?.split("-")[vote?.direction]}: ${pairCoinResult?.difference}` : 0}%
               {/* @ts-ignore */}
               <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
             </div>
