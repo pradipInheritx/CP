@@ -87,27 +87,30 @@ const AddEditCard = ({ open, onCloseDialog,selectType }) => {
 
   const [cardImgae, setCardImgae] = useState('');
   const [cardImgaeError, setCardImgaeError] = useState('');
-
+  
   const [nftTier, setNftTier] = useState('');
   const [nftTierError, setNftTierError] = useState('');
-
+  
   const [quanlity, setQuanlity] = useState('');
   const [quanlityError, setQuanlityError] = useState('');
-
+  
   const [collocation, setCollocation] = useState('');
   const [collocationError, setCollocationError] = useState('');
-
+  
   const [selectSets, setSelectSets] = useState('');
   const [selectSetsError, setSelectSetsError] = useState('');
   
   const [cardStatus, setCardStatus] = useState('');
   const [setsNames, setSetsNames] = useState('');
   
+  const [cardImgaeSend, setCardImgaeSend] = useState('');
+  const [cardImgaeShow, setCardImgaeShow] = useState('');
 
   const { getRootProps, getInputProps } = useDropzone({
     accept:'image/*',
-    onDrop: acceptedFiles => {
-      setCardImgae(URL.createObjectURL(acceptedFiles[0]));
+    onDrop: acceptedFiles => {    
+      setCardImgaeShow(URL.createObjectURL(acceptedFiles[0]));
+      setCardImgaeSend(acceptedFiles[0]);
       setCardImgaeError("")
     },
   });
@@ -154,7 +157,7 @@ console.log(selectSets ,collocation,"CollocationselectSets" )
     } else if (!quanlity) {
       setQuanlityError(requiredMessage);
     }
-    else if (!cardImgae) {
+    else if (currentCard ? !cardImgae : !cardImgaeShow) {
       setCardImgaeError(imageMessage);
     }
     else if (!collocation) {
@@ -176,22 +179,25 @@ console.log(selectSets ,collocation,"CollocationselectSets" )
      cardType:nftTier,
      totalQuantity: quanlity,
      cardStatus: cardStatus || "Active",
-     cardImageUrl: cardImgae,
-      cardVideoUrl: "",     
- }    
+     cardImageUrl: cardImgae,    
+    cardVideoUrl: ""
+    }    
+    const cardImageUrl=cardImgaeSend
+
+    console.log(cardImageUrl,"cardImageUrl")
       if (currentCard) {
-      // dispatch(
-      //   updateRewardCard(currentCard?.cardId ,{ ...currentCard, ...CardDetail }, () => {
-      //     onCloseDialog();
-      //   }),
-      // );
+      dispatch(
+        updateRewardCard(currentCard?.cardId,{ ...currentCard, ...CardDetail },cardImageUrl, () => {
+          onCloseDialog();
+        }),
+      );
         console.log({ ...currentCard, ...CardDetail },"submitData")
     } else {
-      // dispatch(
-      //   addNewRewardCard(CardDetail, () => {
-      //     onCloseDialog();
-      //   }),
-      // );
+      dispatch(
+        addNewRewardCard(CardDetail, cardImageUrl,() => {
+          onCloseDialog();
+        }),
+      );
         console.log({...CardDetail},"submitData")
     }
 

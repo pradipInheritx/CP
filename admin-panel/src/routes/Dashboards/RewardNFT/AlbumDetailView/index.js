@@ -130,7 +130,7 @@ const AlbumDetailView = ({ selectType, open, onCloseDialog }) => {
             component='video'
             className={classes.media}
             // image={"path/to/file/video.webm"}
-            src={currentAlbum?.videoUrl}
+            src={currentAlbum?.albumVideoUrl}
             autoPlay
           />
           </Box>

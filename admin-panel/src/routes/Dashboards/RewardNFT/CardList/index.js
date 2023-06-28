@@ -147,7 +147,7 @@ const handleConfirmUpdate = () => {
 
   const handleConfirmDelete = () => {
     setOpenConfirmDialog(false);
-    dispatch(deleteRewardCard(selectedUser.albumId));
+    dispatch(deleteRewardCard(selectedUser.cardId));
   };
 
   const handleCancelDelete = () => {

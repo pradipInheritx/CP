@@ -98,6 +98,9 @@ const AddEditAlbum = ({ open, onCloseDialog,selectType }) => {
   const [albumVideo, setAlbumVideo] = useState('');
   const [albumVideoError, setAlbumVideoError] = useState('');
 
+  const [albumVideoShow, setAlbumVideoShow] = useState("");
+  
+
   const [albumVideoSend, setAlbumVideoSend] = useState('');
   
 
@@ -118,7 +121,7 @@ const  validRegExp = new RegExp(/^\d*\.?\d*$/);
   useEffect(() => {
     if (currentAlbum) {
       setAlbumName(currentAlbum?.albumName)
-      setAlbumVideo(currentAlbum?.videoUrl)
+      setAlbumVideo(currentAlbum?.albumVideoUrl)
       setTotalSets(currentAlbum?.setQuantity || currentAlbum?.setQunatity)      
       setSetsName(currentAlbum?.setDetails)      
     }    
@@ -180,23 +183,24 @@ const  validRegExp = new RegExp(/^\d*\.?\d*$/);
 console.log(albumNameError,albumVideoError,totalSetsError,setsNameError,"allError")
 
  const onAlbumSubmit = () => {
-    const AlbumDetail = {
-      videoUrl:albumVideo,
+    const AlbumDetail = {      
       albumName:albumName,
       setQunatity:totalSets,
-      setDetails:setsName,
-      // distributionLimit,      
+      setDetails:setsName,            
+    albumImageUrl: "",
+    albumVideoUrl: albumVideo,
     };
+   const videoUrl = albumVideoSend
    console.log(currentAlbum,"submitData")   
      if (currentAlbum) {
       dispatch(
-        updateRewardAlbum(currentAlbum?.albumId,AlbumDetail, () => {
+        updateRewardAlbum(currentAlbum?.albumId,AlbumDetail,videoUrl, () => {
           onCloseDialog();
         }),
       );
     } else {
       dispatch(
-        addNewRewardAlbum(AlbumDetail, () => {
+        addNewRewardAlbum(AlbumDetail,videoUrl, () => {
           onCloseDialog();
         }),
       );
@@ -271,9 +275,8 @@ console.log(albumNameError,albumVideoError,totalSetsError,setsNameError,"allErro
                 label="Total Sets"
                 value={totalSets}
                 onChange={e => {
-                  var finalValue = validRegExp.test(e.target.value);
-    if(finalValue)setTotalSets(e.target.value);
-                  
+               var finalValue = validRegExp.test(e.target.value);
+                if(finalValue)setTotalSets(e.target.value);                  
                   setTotalSetsError('');
                 }}
                 helperText={totalSetsError}
