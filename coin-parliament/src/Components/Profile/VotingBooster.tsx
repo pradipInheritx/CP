@@ -166,14 +166,28 @@ const VotingBooster = () => {
       >
         {translate("BOOST YOUR VOTING POWER").toUpperCase()}
       </H2>
-      <Row className="pt-5 pb-5">
-        <Col sm={6} className="d-flex justify-content-md-end justify-content-center">
+      <div className="pt-5 pb-5 d-flex justify-content-center"
+        style={{
+          flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
+          overflow:"hidden",
+          
+      }}
+      >
+        <div className="d-flex justify-content-center"
+        style={{
+          width:`${window.screen.width > 767? "49%" :"100%"}`
+        }}
+        >
           <img src={votingbooster} alt=""  />
-        </Col>
-        <Col sm={6}>
+        </div>
+        <div className=""
+          style={{
+          width:`${window.screen.width > 767? "49%" :"100%"}`
+        }}
+        >
           <Row className="">
             <Col lg={5} sm={6} className="d-flex justify-content-center">
-              <Prices style={{}}>   
+              <Prices style={{}} >   
                <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
                   position:"absolute",
@@ -224,7 +238,8 @@ const VotingBooster = () => {
                   opacity: "0.2",
                   zIndex:"1"
 
-                }}>
+                }}                
+                >
                   </div>  
                 <Corner>
                   <CornerText style={{
@@ -311,8 +326,8 @@ const VotingBooster = () => {
               </Prices>
             </Col>
           </Row>
-        </Col >
-      </Row >
+        </div >
+      </div >
       {/* <div
         className='p-0 m-0 w-100 d-flex justify-content-center'
         style={{
