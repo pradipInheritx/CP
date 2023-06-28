@@ -1784,7 +1784,7 @@ function App() {
                       {modalOpen && <div className='fade modal-backdrop show' />}
                       {/* //vote result modal */}
                       {/* @ts-ignore */}
-                      {voteDetails?.lessTimeVote && <ModalForResult
+                      {voteDetails?.lessTimeVote && user&&  <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
