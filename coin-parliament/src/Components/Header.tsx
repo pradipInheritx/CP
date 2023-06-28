@@ -686,7 +686,19 @@ const Header = ({
 									</div>
 									<div className='w-100'>
 										<HeaderCenter className='d-flex justify-content-between' style={{ width: '16em' }}>
-											{followerPage && followerInfo != "" ? followerInfo?.displayName :
+											{followerPage && followerInfo != "" ?
+												<>
+													<span className=""
+														style={{
+														marginLeft:"40px"
+													}}
+													>
+
+												{followerInfo?.displayName}
+													</span>
+												</>
+												
+												:
 												(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 													// @ts-ignore
 													<>

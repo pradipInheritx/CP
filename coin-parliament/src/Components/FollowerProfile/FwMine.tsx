@@ -42,7 +42,7 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const FwMine = () => {
   const {  user } = useContext(UserContext);
-  const{followerUserId}=useContext(AppContext)
+  const{followerUserId,setAlbumOpen}=useContext(AppContext)
   const[userInfo,setUserInfo]=useState<any>()
   const { userTypes } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
@@ -240,7 +240,11 @@ console.log(error,"error");
                     </span>{" "}
                     {texts.GamePts}
                   </RewardList>
-                  <RewardList onClick={()=>navigate('/followerProfile/Album')}>
+                  <RewardList onClick={() => {
+                    navigate('/followerProfile/Album')
+                    {/* @ts-ignore */}
+                    setAlbumOpen(item?.winData?.firstRewardCardCollection);
+                  }}>
                     {/* @ts-ignore */}
                     <span style={{ color: "#6352E8" }} onClick={()=>navigate('/followerProfile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
