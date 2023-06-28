@@ -220,7 +220,11 @@ const Header = ({
 
 		if (score > 99.98 && MyPath !== "/profile/mine") {
 			setCmpModalOpen(true)
-			console.log("i am working check", score)
+			
+		}
+		if (MyPath == "/profile/mine") {
+			setCmpModalOpen(false)
+			
 		}
 	}, [score])
 
@@ -883,7 +887,7 @@ const Header = ({
 					centered
 				>
 					<Modal.Header>
-						{/* <Modal.Title>Modal heading</Modal.Title> */}
+						
 					</Modal.Header>
 					<Modal.Body>
 						<p className="text-center" >You have achieved your goal .</p>
@@ -900,14 +904,7 @@ const Header = ({
 						</div>
 
 					</Modal.Body>
-					{/* <Modal.Footer>
-					<Button variant="secondary" onClick={()=>{}}>
-						Close
-					</Button>
-					<Button variant="primary" onClick={()=>{}}>
-						Save Changes
-					</Button>
-					</Modal.Footer> */}
+					
 				</Modal>
 			</div>
 		</MenuContainer>
