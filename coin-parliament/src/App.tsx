@@ -349,7 +349,7 @@ function App() {
   const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
-  const [albumOpen, setAlbumOpen] = useState<any>("false")
+  const [albumOpen, setAlbumOpen] = useState<any>("")
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
