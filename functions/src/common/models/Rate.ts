@@ -1,12 +1,15 @@
-import {ajax_, snapshotAllTickers} from "./Ajax";
-import {ICryptoSnapshotTickers} from "@polygon.io/client-js";
-import {firestore} from "firebase-admin";
+import { ajax_, snapshotAllTickers } from "./Ajax";
+import { ICryptoSnapshotTickers } from "@polygon.io/client-js";
+import { firestore } from "firebase-admin";
 import axios from "axios";
 
 import {
   getDataFromTimestampBaseURL,
   defaultHeaderForgetDataFromTimestamp,
+  getDataFromTimestampBaseURLFromCrypto,
+  getDataFromTimestampBaseURLFromKuCoin
 } from "../consts/config";
+import { Decimal } from "../utils/decimalOnSymbolPrice";
 
 export const getRateRemote_: () => Promise<
   CoinbaseResponse<Rate[]>
@@ -98,19 +101,48 @@ export const getPrice: (symbol: string) => any = async (symbol: string) => {
 };
 
 export const getPriceOnParticularTime = async (coin: any, timestamp: any) => {
-  console.info("In Function", "coin", coin, "timestamp", timestamp);
+  console.info("In Function", coin, "Timestamp", timestamp);
   try {
-    const getCoinPrice = await axios.get(
-        getDataFromTimestampBaseURL(coin, timestamp),
-        defaultHeaderForgetDataFromTimestamp
-    );
+    if (coin && coin.includes("cro")) {
 
-    console.info("getCoinPrice", getCoinPrice.data);
-    return getCoinPrice.data &&
-      getCoinPrice.data[0] &&
-      getCoinPrice.data[0].price ?
-      getCoinPrice.data[0].price :
-      0;
+      let getOnlyCoin = coin.substring(0, 3);
+
+      const getCoinPrice: any = await axios.get(
+        getDataFromTimestampBaseURLFromCrypto(`${getOnlyCoin.toUpperCase()}_USDT`, timestamp),
+        defaultHeaderForgetDataFromTimestamp
+      );
+
+      console.info("getCoinPrice 1:", getCoinPrice.data.result.data[0], "After Fixes", Number(getCoinPrice.data.result.data[0].a).toFixed(Decimal[coin.replace("usdt", "").toUpperCase()].decimal));
+
+      let getPriceAndFixValue = Number(getCoinPrice.data.result.data[0].a).toFixed(Decimal[getOnlyCoin.toUpperCase()].decimal);
+      return getCoinPrice && getCoinPrice.data && getCoinPrice.data.result.data[0].a ?
+        Number((getPriceAndFixValue).toString() + (Math.floor(Math.random() * 10)).toString()) :
+        0;
+    } else if (coin && coin.includes("cake")) {
+
+      let getOnlyCoin = coin.substring(0, 4);
+
+      const getCoinPrice: any = await axios.get(
+        getDataFromTimestampBaseURLFromKuCoin(`${getOnlyCoin.toUpperCase()}-USDT`, timestamp),
+        defaultHeaderForgetDataFromTimestamp
+      );
+      console.info("getCoinPrice 2", getCoinPrice.data.data.price);
+      console.info("getCoinPrice.data.data.price:", Number((getCoinPrice.data.data.price).toString() + (Math.floor(Math.random() * 10)).toString()));
+      let getPriceAndFixValue = Number(getCoinPrice.data.data.price).toFixed(Decimal[getOnlyCoin.toUpperCase()].decimal);
+      return getCoinPrice && getCoinPrice.data && getCoinPrice.data.data && getCoinPrice.data.data.price ?
+        Number((getPriceAndFixValue).toString() + (Math.floor(Math.random() * 10)).toString()) :
+        0;
+    } else {
+      const getCoinPrice: any = await axios.get(
+        getDataFromTimestampBaseURL(coin.toUpperCase(), timestamp),
+        defaultHeaderForgetDataFromTimestamp
+      );
+      let getPriceAndFixValue = Number(getCoinPrice.data[0].p).toFixed(Decimal[coin.replace("usdt", "").toUpperCase()].decimal);
+      console.info("Get Coin", coin, "getPriceAndFixValue", getPriceAndFixValue, "getCoinPrice 3:", getCoinPrice.data, "Get Price", Number((getPriceAndFixValue).toString() + (Math.floor(Math.random() * 10)).toString()));
+      return getCoinPrice && getCoinPrice.data && getCoinPrice.data[0].p ?
+        Number((getPriceAndFixValue).toString() + (Math.floor(Math.random() * 10)).toString()) :
+        0;
+    }
   } catch (error: any) {
     console.info("Error In Axios", error);
     return 0;

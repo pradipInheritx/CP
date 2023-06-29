@@ -14,8 +14,8 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/sa.json";
-import { getPrice } from "./common/models/Rate";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+// import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
   getLeaderUsers,
@@ -25,15 +25,16 @@ import {
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
 import {
-  calculateOffset,
+  // calculateOffset,
   updateVotesTotal,
   updateVotesTotalForSingleCoin,
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
+  checkInActivityOfVotesAndSendNotification,
 } from "./common/models/Vote";
 import {
-  fetchCoins,
+  // fetchCoins,
   getAllCoins,
   getAllPairs,
   Leader,
@@ -46,7 +47,6 @@ import {
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
 import {
-  sendToTokens,
   subscribeToTopic,
   unsubscribeToTopic,
 } from "./common/models/Subscribe";
@@ -63,7 +63,6 @@ import {
   shouldUpdateTransactions,
   updateProcessing,
 } from "./common/models/PAX";
-import { addRewardNFT } from "./common/models/Admin/Rewards"
 import {
   claimReward,
   addReward,
@@ -77,11 +76,24 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
-import { sendCustomNotificationOnSpecificUsers } from "./common/models/SendCustomNotification";
+import { sendNotificationForFollwersFollowings, sendCustomNotificationOnSpecificUsers, checkUserStatusIn24hrs } from "./common/models/SendCustomNotification";
+import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
-import voteSettingRouter from "./routes/voteSetting.routes";
+import coinRouter from "./routes/Coin.routes";
+import coinPairRouter from "./routes/CoinPair.routes";
+import rewardsDistributionRouter from "./routes/RewardsDistribution.routes";
+import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
+import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
+import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
+import userTypeSettingsRouter from "./routes/UserTypeSettings";
+import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
+import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
+import FollowTableRouter from "./routes/FollowTable.routes";
+import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
+import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
+// import { imageUploadFunction } from "./common/models/Admin/Rewards";
 
 // initialize express server
 const app = express();
@@ -101,7 +113,19 @@ main.use(bodyParser.urlencoded({ extended: false }));
  */
 app.use("/admin/sub-admin", subAdminRouter);
 app.use("/admin/auth", authAdminRouter);
-app.use("/admin/voteSetting", voteSettingRouter);
+app.use("/admin/rewards", rewardNftAdminRouter);
+app.use("/admin/coins", coinRouter);
+app.use("/admin/coinsPair", coinPairRouter);
+app.use("/admin/voteSetting", timeframeRouter);
+app.use("/admin/voteSetting", perUserVoteRouter);
+app.use("/admin/userTypeSettings", userTypeSettingsRouter);
+app.use("/admin/settings", voteAndSettingsRouter);
+app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
+app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
+app.use("/admin/FollowTable", FollowTableRouter);
+
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", imageUploadFunction)
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -114,8 +138,7 @@ exports.api = functions.https.onRequest(main);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
 });
 
 exports.getAccessToken = () =>
@@ -128,7 +151,7 @@ exports.getAccessToken = () =>
       ["https://www.googleapis.com/auth/firebase.messaging"],
       undefined
     );
-    jwtClient.authorize(function (err, tokens) {
+    jwtClient.authorize(function (err: any, tokens: any) {
       if (err) {
         reject(err);
         return;
@@ -136,6 +159,11 @@ exports.getAccessToken = () =>
       resolve(tokens?.access_token);
     });
   });
+const getMaxVotes = async () => {
+  const getVoteAndReturnQuery = await admin.firestore().collection("settings").doc("settings").get();
+  const getVoteAndReturnData: any = getVoteAndReturnQuery.data();
+  return getVoteAndReturnData?.voteRules.maxVotes
+}
 
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
@@ -179,24 +207,23 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    firstTimeLogin: true,
+    refereeScrore: 0,
+    googleAuthenticatorData: {},
+    voteValue: await getMaxVotes()
   };
-
   try {
+    console.log("new user >>>", userData, user.uid);
     return await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
   } catch (e) {
+    console.log("create user Error....", e);
     return false;
   }
 });
-
-// exports.getAuthTokens = functions.https.onCall(async (data) => {
-//   const {refresh_tokens} = data as { refresh_tokens: string };
-//   const response = await generateAuthTokens(refresh_tokens);
-//   return response;
-// });
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -330,8 +357,7 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
-    await getUpdatedDataFromWebsocket();
-    // await getCards();
+
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
@@ -379,32 +405,22 @@ exports.onVote = functions.firestore
 
     await updateVotesTotal();
     const data = snapshot.data() as VoteResultProps;
-    const voteTime = admin.firestore.Timestamp.now().toMillis();
-    const timeframe = data.timeframe;
-    const expiration = voteTime + calculateOffset(timeframe);
-    const [coin1, coin2] = data.coin.split("-");
-    let valueVotingTime;
+    console.log("data =>", data);
 
-    if (coin2) {
-      const coinFirst = await getPrice(coin1);
-      const coinSecond = await getPrice(coin2);
-      valueVotingTime = [coinFirst, coinSecond];
-    } else {
-      valueVotingTime = await getPrice(coin1);
-    }
+    const voteTime = admin.firestore.Timestamp.now().toMillis();
+    console.log("voteTime =>", voteTime);
 
     await updateVotesTotalForSingleCoin(data.coin);
 
     const vote = {
       ...snapshot.data(),
-      expiration,
-      voteTime,
-      valueVotingTime,
     } as unknown as VoteResultProps;
 
-    await snapshot.ref.update(vote);
+    console.log("vote =>", vote);
 
-    await sendToTokens(vote);
+    await snapshot.ref.update(vote);
+    //await sendToTokens(vote);
+
     await admin
       .firestore()
       .collection("users")
@@ -412,6 +428,15 @@ exports.onVote = functions.firestore
       .update({
         "voteStatistics.total": admin.firestore.FieldValue.increment(1),
       });
+
+    await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
+  });
+
+exports.noActivityIn24Hours = functions.pubsub
+  .schedule("every 10 minutes")
+  .onRun(async (context) => {
+    await checkInActivityOfVotesAndSendNotification();
+    await getCoinCurrentAndPastDataDifference();
   });
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
@@ -477,9 +502,10 @@ async function getRewardTransactions(id: string) {
 
   const rewardTransactionData = transactions.docs
     .map((e) => e.data())
-    .sort((a, b) => b.winningTime - a.winningTime);
+    .sort((a, b) => b.transactionTime - a.transactionTime);
+  console.log("rewardTransactionData-------", rewardTransactionData)
   const afterAddingTime = rewardTransactionData.map((x) => {
-    x.transactionTime = x.transactionTime.toDate();
+    x.transactionTime = x.transactionTime?.toDate();
     return x;
   });
   return afterAddingTime;
@@ -498,7 +524,7 @@ exports.claimReward = functions.https.onCall(async (data) => {
 });
 
 exports.cardHolderListing = functions.https.onCall(async (data) => {
-  const { cardId } = data as { cardId: number };
+  const { cardId } = data as { cardId: string };
   const userList = await cardHolderListing(cardId);
   console.log("userList --->", userList);
   return userList;
@@ -534,11 +560,11 @@ exports.onCreatePaxTransaction = functions.firestore
     }
   });
 
-exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-  [0, 60].forEach((i) => {
-    setTimeout(async () => await fetchCoins(), i * 1000);
-  });
-});
+// exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
+//   [0, 60].forEach((i) => {
+//     setTimeout(async () => await fetchCoins(), i * 1000);
+//   });
+// });
 
 exports.getUpdatedDataFromWebsocket = functions.pubsub
   .schedule("every 2 minutes")
@@ -575,6 +601,7 @@ exports.prepare24HourlyCPVI = functions.pubsub
   .schedule("0 0 * * *")
   .onRun(async () => {
     await prepareCPVI(24, "daily");
+
   });
 
 exports.prepareWeeklyCPVI = functions.pubsub
@@ -588,11 +615,35 @@ exports.getCPVIForVote = functions.https.onCall(async (data) => {
   return await getCPVIForVote(data);
 });
 
+
+exports.checkTitleUpgrade24Hour = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(
+    async () => {
+      await setLeaders();
+      const date = new Date();
+      const nowTime = date.getTime();
+      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+      await checkUserStatusIn24hrs(nowTime, yesterdayTime)
+      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime)
+    }
+  )
+
 exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   async (data) => {
-    return await getOldAndCurrentPriceAndMakeCalculation(data);
+    await getOldAndCurrentPriceAndMakeCalculation(data);
+    // After Vote Updated For The User
+    const getAfterUpdatedVoteRef = await admin.firestore().collection("votes").doc(data?.voteId);
+    const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
+    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance)
+    const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
+    console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    return {
+      voteId: getAfterUpdatedVoteInstance.id, ...getAfterVoteUpdatedData
+    };
   }
 );
+
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
@@ -614,21 +665,6 @@ const checkValidUsername = async (username: string) => {
 exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
-
-exports.addRewardNFT = functions.https.onCall(async (data) => {
-  const cardDetail = {
-    collectionId: data.collectionId,
-    setId: data.setId,
-    name: data.name,
-    type: data.type,
-    quantity: data.quantity,
-    totalQuantity: data.totalQuantity,
-    sno: data.sno,
-    cardImage: data.image,
-    noOfCardHolder: data.noOfCardHolder
-  }
-  return await addRewardNFT(cardDetail)
-})
 
 type GetVotesProps = { start: number; end: number; userId: string };
 
