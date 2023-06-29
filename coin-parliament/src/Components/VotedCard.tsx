@@ -309,7 +309,7 @@ const VotedCard = ({
             </BitcoinBTCBULL24H3864490>
 
             <ID13020221942>
-              {voteId} - {moment(vote.voteTime).format("MM.DD.YYYY HH:mm")}
+              {voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
             </ID13020221942>
           </div>
 
@@ -390,19 +390,27 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
         if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
           setLastTenSec(true)
         }
-        if (completed) {
+        if (completed ) {
           if (vote && !vote?.success) {
             checkprice()
           }
           // return data;
           return (
+            <div
+              style={{
+                // border: "1px solid red",
+                padding:"0em 0em 4em 0em", 
+              height:"1.4em"
+            }}
+            >
             <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
               {texts.Calculatingvoteresult}
             </span>
+            </div>
           );
         } else {
           return (
-            <div className="h-25" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, marginLeft: "10px" }}>
+            <div className="" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, marginLeft: "10px" }}>
               {hours < 1 ? null : `${hours} :`}
               {minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}

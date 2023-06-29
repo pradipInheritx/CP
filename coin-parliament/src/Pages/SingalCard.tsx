@@ -213,7 +213,8 @@ setFollowersDetails(FollowerList)
                             holderNo={singalCardData?.noOfCardHolders}
                             cardNo={`${((singalCardData?.cardName)?.toUpperCase())?.slice(0, 2) + (singalCardData?.cardId)?.slice(0, 2)}`}
                             // GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((singalCardData?.cardName)?.toUpperCase())?.slice(0, 3) + singalCardData?.cardId}`}
-                            GeneralSerialNo={singalCardData?.sno}
+                            // GeneralSerialNo={singalCardData?.sno}
+                            GeneralSerialNo={singalCardData?.sno && (singalCardData?.sno[0])?.replace(/[0-9]/g, '')}
                             // Disable={"CardDisebal"}
                             // When you pass CardDisebal this name then card is Disable
                             cardHeader={`${singalCardData?.cardName}`}

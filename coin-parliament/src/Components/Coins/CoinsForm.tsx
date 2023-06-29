@@ -75,10 +75,8 @@ const CoinsForm = ({
 
     return window.scrollTo(0, 0);
   }, []);
-  console.log(userInfo, 'pkk');
 
   const vote = useCallback(async () => {
-    // console.log('coindata',coinUpdated[coin?.symbol]?.price)
     if (!(selectedOption !== undefined && selectedTimeFrame !== undefined)) {
       return;
     }
@@ -89,9 +87,6 @@ const CoinsForm = ({
       if (!user?.uid) {
         throw new Error("Attention! You must be signed-in to cast your vote!");
       }
-      // 1681801742363
-      // 1681801734542
-      // console.log('expirevotetime',Date.now() + chosenTimeframe.seconds * 1000 + 1597)
       const ref = await addDoc<VoteResultProps>(
         collection(db, "votes").withConverter(voteConverter),
         {
@@ -111,21 +106,20 @@ const CoinsForm = ({
       );
       const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
       if (!updateExtravote) {
-        const userRef = doc(db, "users", user?.uid);
-        const newUserInfo = {
-          ...(userInfo as UserProps),
-          rewardStatistics: {
-            ...userInfo?.rewardStatistics,
+        // const userRef = doc(db, "users", user?.uid);
+        // console.log(userInfo, 'pkkkkkkkkkk');
 
-            // @ts-ignore
-            extraVote: userInfo?.rewardStatistics?.extraVote - 1,
+        // const newUserInfo = {
+        //   ...(userInfo as UserProps),
+        //   rewardStatistics: {
+        //     ...userInfo?.rewardStatistics,
 
-          }
-        };
-        await updateDoc(userRef, newUserInfo);
+        //     // @ts-ignore
+        //     extraVote: userInfo?.rewardStatistics?.extraVote /* - 1 */,
+        //   }
+        // };
+        // await updateDoc(userRef, newUserInfo);
       }
-      // showToast(translate("voted successfully"));
-      // await getMessaging();
       if (user?.uid) {
         setVoteId(ref.id);
       }
@@ -147,17 +141,19 @@ const CoinsForm = ({
   ]);
 
   const disabled = useMemo(
-    () => selectedTimeFrame === undefined || !canVote,
+    () => selectedTimeFrame === undefined || !((!propVote.expiration && propVote.success === undefined) ||
+      (propVote.expiration && propVote.success !== undefined) ||
+      Date.now() >= propVote?.expiration),
     [selectedTimeFrame, canVote]
   );
 
-  console.log(disabled, "disabled")
+  console.log(selectedTimeFrame, canVote, disabled, "disabled")
 
   const throttled_vote = useMemo(
     () => voteProcedure({ vote, sound, setConfetti }),
     [vote, sound, setConfetti]
   );
-
+  const [disableVoteButton, setDisableVoteButton] = useState(false);
   return (
     <Container className='p-0 '>
       {/* @ts-ignore */}
@@ -176,14 +172,17 @@ const CoinsForm = ({
           cssDegree,
           votePrice,
           votedDetails,
+          disableVoteButton,
           submit: () => {
             // console.log('votebutton',selectedOption)
             if (
               selectedTimeFrame !== undefined &&
               selectedOption !== undefined
             ) {
+              setDisableVoteButton(prev => !prev);
               setTimeout(() => {
                 throttled_vote();
+                setDisableVoteButton(prev => !prev);
               }, 700);
 
             }

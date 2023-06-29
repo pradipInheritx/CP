@@ -142,6 +142,8 @@ import { setTimeout } from "timers";
 import NFTGalleryCopy from "Pages/NFTGalleryCopy";
 import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
 import ModalForResult from "Pages/ModalForResult";
+import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
+import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -169,6 +171,7 @@ function App() {
   const langDetector = useRef(null);
   let navigate = useNavigate();
   const { width } = useWindowSize();
+  const [voteNumberEnd, setvoteNumberEnd] = useState<any>(0)
   // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
   //   const [displayFullscreen,setDisplayFullscreen]=useState('none')
@@ -213,7 +216,6 @@ function App() {
     });
 
   }, [pathname])
-
 
 
   const showModal = useCallback(
@@ -347,7 +349,7 @@ function App() {
   const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
-  const [albumOpen, setAlbumOpen] = useState<any>("false")
+  const [albumOpen, setAlbumOpen] = useState<any>("")
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -425,7 +427,7 @@ function App() {
   //   return Followerinfo
   // }
 
-console.log(remainingTimer,"remainingTimer")
+  console.log(remainingTimer, "remainingTimer")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -747,36 +749,35 @@ console.log(remainingTimer,"remainingTimer")
         .then((snapshot) => {
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+          // let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+          // setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          // console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
 
-          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-          console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
+          // setTimeout(() => {
+          //   if (user?.uid) {
+          //     console.log('hello');
 
-          setTimeout(() => {
-            if (user?.uid) {
-              console.log('hello');
+          //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+          //     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+          //     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
 
-              const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-              // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-              const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+          //     const votesLast24HoursRef = firebase
+          //       .firestore()
+          //       .collection("votes")
+          //       .where("userId", "==", user?.uid)
+          //       .where("voteTime", ">=", last24Hour)
+          //       .where("voteTime", "<=", Date.now());
+          //     // console.log('extravote11',votesLast24HoursRef)
+          //     votesLast24HoursRef.get()
+          //       .then((snapshot) => {
+          //         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
 
-              const votesLast24HoursRef = firebase
-                .firestore()
-                .collection("votes")
-                .where("userId", "==", user?.uid)
-                .where("voteTime", ">=", last24Hour)
-                .where("voteTime", "<=", Date.now());
-              // console.log('extravote11',votesLast24HoursRef)
-              votesLast24HoursRef.get()
-                .then((snapshot) => {
-                  setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-
-                })
-                .catch((error) => {
-                  console.log('extravoteError', error);
-                });
-            }
-          }, remaining);
+          //       })
+          //       .catch((error) => {
+          //         console.log('extravoteError', error);
+          //       });
+          //   }
+          // }, remaining);
         })
         .catch((error) => {
           console.log('extravoteError', error);
@@ -785,7 +786,95 @@ console.log(remainingTimer,"remainingTimer")
 
 
   }, [userInfo?.voteStatistics?.total])
-  // console.log('usermfa',user,userInfo)
+  console.log('usermfa', userInfo)
+  useEffect(() => {
+    if (user?.uid && voteNumberEnd == 0) {
+      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+      // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
+      const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+      const votesLast24HoursRef = firebase
+        .firestore()
+        .collection("votes")
+        .where("userId", "==", user?.uid)
+        .where("voteTime", ">=", last24Hour)
+        .where("voteTime", "<=", Date.now());
+      votesLast24HoursRef.get()
+        .then((snapshot) => {
+          setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+          // console.log(remaining ,"allremaining")
+          setTimeout(() => {
+            const usereData = firebase
+              .firestore()
+              .collection("users")
+              .doc(user?.uid)
+              .set({ "voteValue": voteRules?.maxVotes }, { merge: true });
+          }, remaining);
+        }).catch((error) => {
+          console.log('extravoteError', error);
+        });
+    }
+
+  }, [voteNumberEnd])
+
+
+  // useEffect(() => {
+  //   if (user?.uid && voteNumberEnd==0) { 
+  //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+
+  //       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+  //       const votesLast24HoursRef = firebase
+  //         .firestore()
+  //         .collection("votes")
+  //         .where("userId", "==", user?.uid)
+  //         .where("voteTime", ">=", last24Hour)
+  //         .where("voteTime", "<=", Date.now());
+  //       votesLast24HoursRef.get()
+  //         .then((snapshot) => {
+
+  //           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+  //           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
+
+  //           setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
+
+  //           setTimeout(() => {
+  //             if (user?.uid) {
+  //               console.log('hello');
+
+  //               const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+
+  //               const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+  //               const votesLast24HoursRef = firebase
+  //                 .firestore()
+  //                 .collection("votes")
+  //                 .where("userId", "==", user?.uid)
+  //                 .where("voteTime", ">=", last24Hour)
+  //                 .where("voteTime", "<=", Date.now());
+
+  //               votesLast24HoursRef.get()
+  //                 .then((snapshot) => {
+  //                   setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+
+  //                 })
+  //                 .catch((error) => {
+  //                   console.log('extravoteError', error);
+  //                 });
+  //             }
+  //           }, remaining);
+  //           console.log("yes i am working after vote")
+  //         })
+  //         .catch((error) => {
+  //           console.log('extravoteError', error);
+  //         });
+  //   }
+
+  // }, [voteNumberEnd])
+
 
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
@@ -995,8 +1084,26 @@ console.log(remainingTimer,"remainingTimer")
   ///start vote result //
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
+
+  const completedVotes = useContext(CompletedVotesContext);
+  const setCompletedVotes = useContext(CompletedVotesDispatchContext);
+
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const [calculateVote, setCalculateVote] = useState<boolean>(true);
+  const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  useEffect(() => {
+    if (completedVotes.length > 0 && !voteDetails.openResultModal) {
+      setVoteDetails((prev: VoteContextType) => {
+        return {
+          ...prev,
+          lessTimeVote: completedVotes[0],
+          openResultModal: true
+        }
+      });
+      setCurrentCMP(completedVotes[0]?.score || 0)
+    }
+  }, [completedVotes, voteDetails.openResultModal]);
 
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
@@ -1006,14 +1113,12 @@ console.log(remainingTimer,"remainingTimer")
       }
       return {};
     });
-    if (tempTessTimeVote && calculateVote) {
+    if (tempTessTimeVote /* && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId */ /* calculateVote */) {
+      setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
-      setCalculateVote(false);
+      // setCalculateVote(false);
     }
   }, [voteDetails?.activeVotes]);
-  // useEffect(() => {
-
-  // }, [lessTimeVote]);
   const voteImpact = useRef<{
     timeFrame: number,
     impact: null | number
@@ -1021,12 +1126,15 @@ console.log(remainingTimer,"remainingTimer")
     timeFrame: 0,
     impact: null
   });
+  const latestVote = useRef<VoteContextType>();
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
+    latestVote.current = voteDetails;
   }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
 
+      console.log(completedVotes, voteDetails, lessTimeVote, 'pkkk');
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
@@ -1036,56 +1144,73 @@ console.log(remainingTimer,"remainingTimer")
 
       // finding the difference in total seconds between two dates
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      if (second_diff > 0) {
-        const timer = setTimeout(async () => {
-          const coin = lessTimeVote?.coin.split('-') || [];
-          const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
-          const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+      // if (second_diff > 0) {
+      const timer = setTimeout(async () => {
+        const coin = lessTimeVote?.coin.split('-') || [];
+        const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
+        const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
 
-          await getPriceCalculation({
-            ...{
-              coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
-              coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
-              voteId: lessTimeVote?.id,
-              voteTime: lessTimeVote?.voteTime,
-              valueVotingTime: lessTimeVote?.valueVotingTime,
-              expiration: lessTimeVote?.expiration,
-              timestamp: Date.now(),
-              userId: lessTimeVote?.userId,
+        await getPriceCalculation({
+          ...{
+            coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
+            coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
+            voteId: lessTimeVote?.id,
+            voteTime: lessTimeVote?.voteTime,
+            valueVotingTime: lessTimeVote?.valueVotingTime,
+            expiration: lessTimeVote?.expiration,
+            timestamp: Date.now(),
+            userId: lessTimeVote?.userId,
 
-            }, ...(
-              (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
-                { status: voteImpact.current?.impact } :
-                {}
-            )
-          }).then((response) => {
-            if (response?.data && Object.keys(response.data).length > 0) {
-              // setpopUpOpen(true);
-              // setModalData(response!.data);
-              // setLessTimeVote(undefined);
-              const res: Object = response!.data;
-              // @ts-ignore
-              if ((!!voteDetails?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
-                setVoteDetails((prev: VoteContextType) => {
-                  return {
-                    ...prev,
-                    lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
-                    openResultModal: true
-                  }
-                })
-              }
-              // setModalData(response!.data);
+          }, ...(
+            (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
+              { status: voteImpact.current?.impact } :
+              {}
+          )
+        }).then((response) => {
+          if (response?.data && Object.keys(response.data).length > 0) {
+            // setpopUpOpen(true);
+            // setModalData(response!.data);
+            // setLessTimeVote(undefined);
+            const res: VoteResultProps = response!.data as VoteResultProps;
+            // @ts-ignore
+            if ((!!latestVote?.current?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
+              setCompletedVotes((prev: VoteResultProps[]) => {
+                return [
+                  ...prev.filter(value => value.voteId != res.voteId),
+                  { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' }
+                ]
+              })
+              // setVoteDetails((prev: VoteContextType) => {
+              //   return {
+              //     ...prev,
+              //     lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
+              //     openResultModal: true
+              //   }
+              // })
             }
-          }).catch(err => {
-            if (err && err.message) {
-              console.log(err.message);
-            }
-          });
-        }, ((second_diff * 1000)));
-        return () => clearTimeout(timer);
-      }
+            // setModalData(response!.data);
+          }
+        }).catch(err => {
+          if (err && err.message) {
+            console.log(err.message);
+          }
+        });
+      }, (((second_diff || 0) * 1000)));
+      return () => clearTimeout(timer);
+      // }
     }
   }
+
+  // useEffect(() => {
+  // const coinData = firebase
+  //   .firestore()
+  //   .collection("settings").doc('settings')
+  // coinData.get()
+  //   .then((snapshot: any) => {
+  //     console.log('hello', snapshot.data().voteRules.maxVotes)
+
+  //     });
+  // }, [])
 
   ///END vote result //
 
@@ -1131,6 +1256,7 @@ console.log(remainingTimer,"remainingTimer")
             >
               <AppContext.Provider
                 value={{
+                  setvoteNumberEnd,
                   albumOpen,
                   setAlbumOpen,
                   afterVotePopup,
@@ -1658,11 +1784,11 @@ console.log(remainingTimer,"remainingTimer")
                       {modalOpen && <div className='fade modal-backdrop show' />}
                       {/* //vote result modal */}
                       {/* @ts-ignore */}
-                      {voteDetails?.lessTimeVote && <ModalForResult
+                      {voteDetails?.lessTimeVote && user&&  <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
-                        setCalculateVote={setCalculateVote}
+                        setLessTimeVoteDetails={setLessTimeVoteDetails}
                       />}
                     </UserContext.Provider>
                   </CoinsContext.Provider>

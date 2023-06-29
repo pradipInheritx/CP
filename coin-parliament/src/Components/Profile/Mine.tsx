@@ -110,8 +110,13 @@ const Mine = () => {
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
 
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-  const remainingCMP = (currentCMP > 0 && currentCMPDiff > prevCMPDiff ? 100 : score);
+  const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
+
+  var urlName = window.location.pathname.split('/');
+  const ProfileUrl = urlName.includes("profile")
+  
+  console.log(ProfileUrl,urlName,"ProfileUrl")
 
 
   useEffect(() => {
@@ -143,16 +148,16 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-    if (showBack && remainingReward < 1) {
+    if (showBack && remainingReward < 1 && ProfileUrl && !modalShow) {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
         Swal.fire({
           html:
-            "<div className='' style='text-align: left !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
-            "<strong style='font-size:20px'>Stay in the game</strong>" +
-            "<p style='font-size:20px'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
-            "</div >",
+            // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
+            "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
+            "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+            "",
           color: 'black',
           confirmButtonText: 'Continue Voting',
           confirmButtonColor: '#6352e8',
@@ -243,7 +248,7 @@ const Mine = () => {
                 {...{
                   setCountShow,
                   width,
-                  score: remainingCMP,
+                  score: remainingCMP /* ((userInfo?.voteStatistics?.score || 0) > 0 ? remainingCMP : 0) */,
                   // @ts-ignore
                   // remainingCMP,
                   setRewardTimer,

@@ -99,6 +99,7 @@ const ProfileNftGalleryCopy = () => {
     if (albumOpen != "") {
       setSelectCollection(albumOpen)
       setAlbumOpen("")
+      
     }
   }, [albumOpen])
 
@@ -113,7 +114,7 @@ const ProfileNftGalleryCopy = () => {
           data.push({ id: doc.id, ...doc.data() });
         });
         setAllCardArrayNew(data)
-        console.log(data, "allcardData")
+        
       }).catch((error) => {
         console.log(error, "error");
       });
@@ -124,7 +125,7 @@ const ProfileNftGalleryCopy = () => {
 
     if (searchTerm?.length || selectCollection != "none") {
       // console.log(selectCollection,cardType?.length,"selectCollection")
-
+      
       setCardShow(true)
     }
     else {
@@ -145,6 +146,7 @@ const ProfileNftGalleryCopy = () => {
 
           setCollectionType(data)
           // setAllCardArray(data)
+          
           setCardShow(false)
 
         }).catch((error) => {
@@ -158,14 +160,14 @@ const ProfileNftGalleryCopy = () => {
         .where("albumName", "==", collectionName)
       getCollectionType.get()
         .then((snapshot) => {
-          console.log(collectionName, "collectionName")
+          
           const data: any = []
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
           });
           setCardNameNew(data)
           setAllCardNew(data)
-          console.log(data, collectionName, "allcarddata")
+          
           setCardShow(true)
         }).catch((error) => {
           console.log(error, "error");
@@ -179,7 +181,7 @@ const ProfileNftGalleryCopy = () => {
         .collection("setDetails")
       getSetsType.get()
         .then((snapshot) => {
-          console.log(collectionName, "collectionName")
+          
           const data: any = []
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
@@ -208,6 +210,7 @@ const ProfileNftGalleryCopy = () => {
   const onSearch = (searchTerm: any) => {
     setSearchTerm(searchTerm)
     if (searchTerm?.length || selectCollection != "none") {
+      
       setCardShow(true)
     }
     else {
@@ -217,6 +220,8 @@ const ProfileNftGalleryCopy = () => {
 
     if (cardType === 'all' && selectCollection === "none" && setsCardId === "none") {
       const serchresult = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      // setCardNameNew(serchresult)
+      
       setAllCardNew(serchresult)
       //  setCardNameNew(serchresult)
     }
@@ -224,6 +229,7 @@ const ProfileNftGalleryCopy = () => {
       const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
       const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
+      
       setAllCardNew(serchresult)
       //  setCardNameNew(serchresult)
     }
@@ -232,43 +238,49 @@ const ProfileNftGalleryCopy = () => {
 
   const onSelectType = (cardType: any) => {
     setCardType(cardType)
-    console.log(setsCardId, "setsCardId")
+    
     if (cardType === 'all') {
       const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)
+      const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card?.albumName == selectCollection)
+      
       setCardNameNew(forcardName)
       setAllCardNew(forcardName)
-
       setSetsCardName("none")
     }
     else {
+      
       setCardShow(true)
       const typeCard = allCardArrayNew.filter((card: any) => card.cardType === cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)
+      const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card?.albumName == selectCollection)
+      
       setCardNameNew(forcardName)
       setAllCardNew(forcardName)
       setSetsCardName("none")
     }
   }
-
   const onSelectSets = (cardId: any) => {
     setSetsCardId(cardId)
     if (cardId === 'none') {
-      const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card.albumId == selectCollection)
+      const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card?.albumName == selectCollection)
       const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      
       setAllCardNew(forcardName)
       setCardNameNew(forcardName)
       setSetsCardName("none")
     }
     else {
+      
       setCardShow(true);
-      const cardWithId = allCardArrayNew.filter((card: any) => card.setId == cardId && card.albumId == selectCollection)
+      const cardWithId = allCardArrayNew.filter((card: any) => card.setId == cardId && card?.albumName == selectCollection)
       const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card.cardType !== cardType.toUpperCase() : card.cardType == cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      
       setAllCardNew(forcardName)
       setCardNameNew(forcardName)
       setSetsCardName("none")
     }
   }
+
+
 
   const onSelectName = (mycardName: any) => {
     setSetsCardName(mycardName)
@@ -277,8 +289,8 @@ const ProfileNftGalleryCopy = () => {
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
-      //  console.log(finalValue,"serchresult")
       setAllCardNew(finalValue)
+      //  console.log(finalValue,"serchresult")
       //  setSearchedCard((pev:any)=>finalValue)
     }
     else {
@@ -455,7 +467,7 @@ const ProfileNftGalleryCopy = () => {
     })
     return seriaNo
   }
-console.log(winerCard,"allwinerCard")
+
   const [filterCard, setFilterCard] = useState<any>();
 
   useEffect(() => {
@@ -464,7 +476,6 @@ console.log(winerCard,"allwinerCard")
   const availableCard = (e: React.FormEvent<HTMLInputElement>) => {
     if (e.currentTarget.checked) {
       let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
-      console.log(winnerCardId, winerCard, 'pkkk');
 
       setFilterCard((prev: any) => {
 
@@ -475,8 +486,7 @@ console.log(winerCard,"allwinerCard")
     }
 
   }
-
-  console.log(allCardNew, "searchedCard")
+    
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       {/* <div className=" w-100 container pt-3 d-flex justify-content-center " >
@@ -667,8 +677,7 @@ console.log(winerCard,"allwinerCard")
                 {cardPart?.map((item: any, index: number) => {
                   if (myCards) {
 
-                    if (winerCard.length && winerCard?.find((WinerItem: any) => WinerItem?.firstRewardCardId == item?.cardId)) {
-                      console.log("i am working")
+                    if (winerCard.length && winerCard?.find((WinerItem: any) => WinerItem?.firstRewardCardId == item?.cardId)) {                    
                       // setNotFound(notFound +1)
                       notFound = true;
                       return (
@@ -703,7 +712,7 @@ console.log(winerCard,"allwinerCard")
                     } else {
 
                       if (filterCard.length - 1 == ind && cardPart.length - 1 == index) {
-                        // return  console.log("i am working")
+                        
                         return <div className="d-flex justify-content-center"> {notFound == false && <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p>}</div>
                       }
                     }

@@ -9,6 +9,7 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import { handleSoundClick, VoteButton } from "../../common/utils/SoundClick";
+import firebase from "firebase/compat";
 
 export type VoteOption = {
   icon: React.ReactNode;
@@ -122,12 +123,22 @@ const Vote = ({
   const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
   const { setLoginRedirectMessage, remainingTimer, loginRedirectMessage, setLogin, afterVotePopup, setAfterVotePopup, voteRules, login } = useContext(AppContext);
 
+  // useEffect(() => {
+  //   const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+  //   // @ts-ignore
+  //   setVoteNumber(Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
+  //   // console.log('votenumber',voteNumber, Number(voted))
+  // }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+
   useEffect(() => {
-    const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
+
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0)
-    // console.log('votenumber',voteNumber, Number(voted))
-  }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
+    setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0));
+
+    // @ts-ignore
+  }, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote]);
+
+
 
   const openPopup = () => {
     if (voteNumber == 0 && remainingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
@@ -157,6 +168,28 @@ const Vote = ({
                 ...option0.buttonProps,
                 onClick: () => {
                   openPopup()
+                  // @ts-ignore
+                  if (userInfo?.voteValue > 0) {
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                      .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });
+                  }
+                  // @ts-ignore
+                  if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
+                    const rewardData = userInfo?.rewardStatistics
+                    // @ts-ignore
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
+                    console.log(rewardData, "allrewardData")
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                      .set({ "rewardStatistics": rewardData }, { merge: true });
+                  }
                   if (voteNumber > 0) {
                     VoteButton()
                     if (disabled && disabledText) {
@@ -198,6 +231,28 @@ const Vote = ({
                 ...option1.buttonProps,
                 onClick: () => {
                   openPopup()
+                  // @ts-ignore
+                  if (userInfo?.voteValue > 0) {
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                      .set({ "voteValue": userInfo?.voteValue - 1 }, { merge: true });
+                  }
+                  // @ts-ignore
+                  if (userInfo?.rewardStatistics?.extraVote > 0 && userInfo?.voteValue == 0) {
+                    const rewardData = userInfo?.rewardStatistics
+                    // @ts-ignore
+                    rewardData.extraVote = userInfo?.rewardStatistics?.extraVote - 1
+                    console.log(rewardData, "allrewardData")
+                    const usereData = firebase
+                      .firestore()
+                      .collection("users")
+                      .doc(user?.uid)
+                      // @ts-ignore
+                      .set({ "rewardStatistics": rewardData }, { merge: true });
+                  }
                   if (voteNumber > 0) {
                     VoteButton()
                     if (disabled && disabledText) {

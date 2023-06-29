@@ -115,7 +115,9 @@ export const LoginAuthProvider = async (
 
     }
   } catch (e) {
+    console.log(e, "check this error 2")
     // @ts-ignore
+
     if (e?.code == 'auth/multi-factor-auth-required') {
       // The user is a multi-factor user. Second factor challenge is required.
       // @ts-ignore
@@ -189,7 +191,7 @@ export const LoginRegular = async (
         const firstTimeLogin:Boolean=true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
-        console.log('firsttimelogin success')
+        console.log(isFirstLogin,'firsttimelogin success')
         // await sendEmail();
       setTimeout(() => {
         callback.successFunc(userCredential.user) 
@@ -285,7 +287,17 @@ console.log("this function call")
     
     callback.successFunc(userCredential.user);
   } catch (e) {
-    callback.errorFunc(e as Error);
+    // callback.errorFunc(e as Error);
+
+    // @ts-ignore
+    const matches = e.code.replace("auth/", "");
+    const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
+      callback.errorFunc({ message: lastmatches } as Error);
+    
+    
+
+    console.log(e , "check this error")
+    
   }
 };
 

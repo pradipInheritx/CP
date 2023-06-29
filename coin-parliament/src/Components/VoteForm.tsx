@@ -37,7 +37,8 @@ type VoteFormProps<T> = {
   hideButton?: any;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
   setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  vote: VoteResultProps
+  vote: VoteResultProps,
+  disableVoteButton?: boolean
 };
 const VoteForm = function <
   T extends {
@@ -66,17 +67,19 @@ const VoteForm = function <
   hideButton,
   setHideButton,
   setpopUpOpen,
-  vote
+  vote,
+  disableVoteButton
 }: VoteFormProps<T>) {
-  const { timeframes, login, remainingTimer } = useContext(AppContext);
+  const { timeframes, login, remainingTimer,voteRules } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
+  const { userInfo } = useContext(UserContext);
 
   // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
 
-// console.log(texts?.tooltip, "all Text")
-  console.log(user,"selectedTimeFrame")
+  // console.log(texts?.tooltip, "all Text")
+  // console.log(voteRules, "selectedTimeFrame")
   return (
     <Form
       className='mt-3'
@@ -104,7 +107,8 @@ const VoteForm = function <
             hideButton,
             setHideButton,
             setpopUpOpen,
-            vote
+            vote,
+            disableVoteButton
           }}
         />
 
@@ -115,46 +119,51 @@ const VoteForm = function <
           {/* <Title>{texts.yourVote}</Title> */}
         </div>
         <OverlayTrigger
-          overlay={(props) => 
-            disabled ? (
-              <Tooltip id='button-tooltip' {...props} >
-                {/* @ts-ignore */}
-                {user ? <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}><Countdown daysInHours zeroPadTime={2} date={remainingTimer}
-                  renderer={({ hours, minutes, seconds, completed }) => {
-                    return (
-                      <span className="text-uppercase" style={{ color: '#fff', fontSize: '11px', fontWeight: 400 }}>
-                        Wait {" "}
-                        {hours < 1 ? null : `${hours} :`}
-                        {minutes < 10 ? `0${minutes}` : minutes}:
-                        {seconds < 10 ? `0${seconds}` : seconds} for 5 votes
-                        <br />
-                        or
-                        {/* buy extra votes now. */}
-                        <Link to="/votingbooster" style={{ color: "#fff" }}> buy extra votes now.</Link>
-                      </span>
-                    );
+          overlay={(props) => {
+            return (
+              (!!userInfo?.rewardStatistics && userInfo?.rewardStatistics?.extraVote <= 0 && Number(userInfo?.voteValue || 0) <= 0) ? (
+                user ?
+                  <Tooltip id='button-tooltip' {...props
+                  } >
+                    <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}>
+                      <Countdown daysInHours zeroPadTime={2} date={remainingTimer}
+                        renderer={({ hours, minutes, seconds, completed }) => {
+                          return (
+                            < >
+                              <span className="text-uppercase" style={{ color: '#fff', fontSize: '11px', fontWeight: 400 }}>
+                                Wait {" "}
+                                {hours < 1 ? null : `${hours} :`}
+                                {minutes < 10 ? `0${minutes}` : minutes}:
+                                {seconds < 10 ? `0${seconds}` : seconds} for {voteRules?.maxVotes} votes
+                                <br />
+                                or
+                                {/* buy extra votes now. */}
+                                <Link to="/votingbooster" style={{ color: "#fff" }}> buy extra votes now.</Link>
+                              </span>
+                            </>
+                          );
 
-                  }}
-                /></div> : `${texts.tooltip}`}
-
-                {/* <RangeSilder/> */}
-                {/* {texts.tooltip} */}
-              </Tooltip>
-            ) : selectedTimeFrame == undefined ? (
-              <Tooltip id='button-tooltip' {...props}>
-                {texts.tooltip}
-              </Tooltip>
-            ) : (
-              <></>
-            )
-          }
+                        }}
+                      />
+                    </div>
+                  </Tooltip>
+                  : `${texts.tooltip}`
+              ) : selectedTimeFrame == undefined ? (
+                <Tooltip id='button-tooltip' {...props}>
+                  {texts.tooltip}
+                </Tooltip>
+              ) : (
+                <></>
+              )
+            );
+          }}
         >
           <div className="">
             <CPVote
               {...{
                 selectedOption,
                 setSelectedOption,
-              }}          
+              }}
               width={width || 266}
               // disabled={!canVote || disabled}
               disabled={
@@ -204,8 +213,8 @@ const VoteForm = function <
             </CPVote>
           </div>
         </OverlayTrigger>
-      </div>
-    </Form>
+      </div >
+    </Form >
   );
 };
 

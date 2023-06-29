@@ -1,5 +1,5 @@
 import { fetchError, fetchStart, fetchSuccess } from './Common';
-import axios from 'axios';
+import axios from "../../services/auth/jwt/config";
 import {
 GET_USERDETELIS,
 ADD_USERDETELIS,
@@ -13,12 +13,12 @@ export const getUsers = (filterOptions = [], searchTerm = '', callbackFun) => {
   return dispatch => {
     dispatch(fetchStart());
     axios
-      .get('/users', { params: { filterOptions, searchTerm } })
+      .get('auth/getUserList')
       .then(data => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
-          dispatch({ type: GET_USERDETELIS, payload: data.data });
-          if (callbackFun) callbackFun(data.data);
+          dispatch({ type: GET_USERDETELIS, payload: data.data.result });
+          if (callbackFun) callbackFun(data.data.result);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }

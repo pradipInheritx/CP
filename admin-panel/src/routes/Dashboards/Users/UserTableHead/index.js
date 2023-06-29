@@ -20,13 +20,13 @@ const headCells = [
     label: 'Name',
   },  
   { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
-  { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+  { id: 'totalVote', numeric: false, disablePadding: false, label: 'Total Vote' },
   { id: 'phone', numeric: false, disablePadding: false, label: 'Phone' },
   {
-    id: 'lastLoginAt',
+    id: 'country',
     numeric: false,
     disablePadding: false,
-    label: 'Last Login',
+    label: 'Country',
   },
   // { id: 'emailUsage', numeric: true, disablePadding: false, label: 'Email Usage' },
 ];

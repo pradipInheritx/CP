@@ -25,6 +25,7 @@ import {useDebounce} from "../../../@jumbo/utils/commonHelper";
 import useStyles from "./index.style";
 import TimeFrameDetailView from "./RewardTrDetailView";
 import NoRecordFound from "./NoRecordFound";
+import { getUsers } from "redux/actions/UsersDetelis";
 
 const RewardTrModule = () => {
   const classes = useStyles();
@@ -53,17 +54,26 @@ const RewardTrModule = () => {
 
   const dispatch = useDispatch();
   
-  useEffect(
-    () => {
-      dispatch(
-        getRewardTr(filterOptions, debouncedSearchTerm,page ,rowsPerPage ,orderBy ,order , () => {
-          setFilterApplied(!!filterOptions?.length || !!debouncedSearchTerm);
-          setUsersFetched(true);
-        })
-      );
-    },
-    [ dispatch, filterOptions, debouncedSearchTerm ,page,rowsPerPage,orderBy,order]
-  );
+  // useEffect(
+  //   () => {
+  //     dispatch(
+  //       getRewardTr(filterOptions, debouncedSearchTerm,page ,rowsPerPage ,orderBy ,order , () => {
+  //         setFilterApplied(!!filterOptions?.length || !!debouncedSearchTerm);
+  //         setUsersFetched(true);
+  //       })
+  //     );
+  //   },
+  //   [ dispatch, filterOptions, debouncedSearchTerm ,page,rowsPerPage,orderBy,order]
+  // );
+
+   useEffect(() => {
+    dispatch(
+      getUsers(filterOptions, debouncedSearchTerm, () => {
+        setFilterApplied(!!filterOptions.length || !!debouncedSearchTerm);
+        setUsersFetched(true);
+      }),
+    );
+  }, [dispatch, filterOptions, debouncedSearchTerm]);
   console.log(rewardTrList,"rewardTrList")
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
