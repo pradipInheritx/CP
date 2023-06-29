@@ -550,7 +550,7 @@ export const deleteCard = async (req: any, res: any) => {
 }
 
 export const updateFileLink = async (forModule: string, fileType: string, id: string, url: string) => {
-    if (forModule == "card") {
+    if (forModule.toUpperCase() == "CARD") {
         let getCard: any = await getCardDetails(id);
         const getCardDetailsQuery = firestore().collection("cardsDetails").doc(id)
         if (fileType == 'video') {

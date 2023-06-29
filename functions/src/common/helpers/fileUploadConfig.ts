@@ -6,9 +6,20 @@ import { getAlbumDetails, getCardDetails, updateFileLink, errorLogging, } from "
 export const imageUploadFunction = async (req: any, res: any) => {
 
     const { fileType, forModule, id } = req.params;
+
+
     try {
-        const checkId = (forModule === "CARD") ? await getCardDetails(id) : await getAlbumDetails(id);
-        if (!checkId?.albumName && !checkId?.cardName) {
+        const checkId = forModule.toUpperCase() === "CARD" ? await getCardDetails(id)
+            : forModule.toUpperCase() === "ALBUM" ? await getAlbumDetails(id)
+                : { albumName: "", cardName: "", message: true };
+        if (checkId?.message) {
+            return res.status(400).send({
+                status: false,
+                message: `only ${"CARD"} and ${"ALBUM"} are allowed`,
+                result: null,
+            });
+        }
+        else if (!checkId?.albumName && !checkId?.cardName) {
             return res.status(404).send({
                 status: false,
                 message: `This ID does not exist ${id} in ${forModule}`,
