@@ -113,6 +113,11 @@ const Mine = () => {
   const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
+  var urlName = window.location.pathname.split('/');
+  const ProfileUrl = urlName.includes("profile")
+  
+  console.log(ProfileUrl,urlName,"ProfileUrl")
+
 
   useEffect(() => {
     // @ts-ignore
@@ -143,7 +148,7 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-    if (showBack && remainingReward < 1) {
+    if (showBack && remainingReward < 1 && ProfileUrl && !modalShow) {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
