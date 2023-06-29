@@ -46,18 +46,12 @@ function NumberFormatCustom({ onChange, ...other }) {
     />
   );
 }
-
-const labels = [
-  { title: 'Home', slug: 'home' },
-  { title: 'Office', slug: 'office' },
-  { title: 'Other', slug: 'other' },
-];
 const NftTierlabels = [
-  { title: 'Common', slug: 'Common' },
-  { title: 'Uncommon', slug: 'Uncommon' },
-  { title: 'Rare', slug: 'Rare' },
-  { title: 'Epic', slug: 'Epic' },
-  { title: 'Legendary', slug: 'Legendary' },  
+  { title: 'COMMON', slug: 'COMMON' },
+  { title: 'UNCOMMON', slug: 'UNCOMMON' },
+  { title: 'RARE', slug: 'RARE' },
+  { title: 'EPIC', slug: 'EPIC' },
+  { title: 'LEGENDARY', slug: 'LEGENDARY' },  
 ];
 
 const splitName = user => {
@@ -126,29 +120,31 @@ const AddEditCard = ({ open, onCloseDialog,selectType }) => {
       setCardImgae(currentCard?.cardImageUrl)
       setNftTier(currentCard?.cardType)
       setCardStatus(currentCard?.cardStatus)
-      setCollocation(currentCard?.albumName)
+      setCollocation(currentCard?.albumId)
       setQuanlity(currentCard?.totalQuantity)
-      setSelectSets(currentCard?.setName)
+      // setSetsNames(albumList?.filter((item,index ) => item?.albumId == currentCard?.albumId && item))
+      setSelectSets(currentCard?.setId)
     }    
   }, [currentCard]);
 
-// useEffect(() => {       
-//   if (currentCard)
-//   {
-//     albumList && albumList.filter((item, index) => {
-//     if (item?.albumId == currentCard?.albumId) {
-//       setCollocation(item?.albumName)
-//       item.setDetails.filter((childItem,inx) => {
-//         if (childItem?.setId == currentCard?.setId) {
-//           setSelectSets(childItem?.setName)
-//         }
-//       })
-//     }
-//     })}
-//   }, [albumList,currentCard]);
+useEffect(() => {       
+  if (currentCard)
+  {
+    albumList && albumList.filter((item, index) => {
+      if (item?.albumId == currentCard?.albumId) {
+      setSetsNames(item.setDetails)
+      // setCollocation(item?.albumName)
+      // item.setDetails.filter((childItem,inx) => {
+      //   if (childItem?.setId == currentCard?.setId) {
+      //     setSelectSets(childItem?.setName)
+      //   }
+      // })
+    }
+    })}
+  }, [albumList,currentCard]);
 
-console.log(selectSets ,collocation,"CollocationselectSets" )
-
+console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
+  
   const onSubmitClick = () => {    
     if (!cardName) {
       setCardNameError(requiredMessage);
@@ -296,7 +292,7 @@ console.log(selectSets ,collocation,"CollocationselectSets" )
                   fullWidth
                   data={albumList}
                   label="Select Collocation"
-                  valueKey="slug"
+                  valueKey="albumName"
                   variant="outlined"
                   labelKey="title"
                   value={collocation}

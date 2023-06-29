@@ -242,7 +242,7 @@ export const updateRewardCard = (cardId,CardDetail,cardImageUrl, callbackFun) =>
       .put(`rewards/updateCard/${cardId}`,CardDetail)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
-          dispatch(fetchSuccess('Selected Card was updated successfully.'));
+          // dispatch(fetchSuccess('Selected Card was updated successfully.'));
           dispatch({ type: EDIT_REWARDCARD, payload: data.data.result });
         if(cardId && cardImageUrl)
           {
@@ -261,7 +261,8 @@ export const updateRewardCard = (cardId,CardDetail,cardImageUrl, callbackFun) =>
         }
       })
       .catch(error => {
-        dispatch(fetchError('There was something issue in responding server'));
+        // console.log(error?.response,"responsemessage")
+        dispatch(fetchError(error?.response?.data?.message));
       });
   };
 };
