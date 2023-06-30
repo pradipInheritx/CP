@@ -1,5 +1,4 @@
-import * as functions from "firebase-functions";
-import {firestore} from "firebase-admin";
+import { firestore } from "firebase-admin";
 import * as jwt from "jsonwebtoken";
 import * as env from "../../env/env.json";
 interface JwtPayload {
@@ -9,31 +8,51 @@ interface JwtPayload {
 export async function auth(req: any, res: any, next: any) {
   try {
     const token = req
-        .header("Authorization")
+      .header("Authorization")
       ?.toString()
       .replace("Bearer ", "");
     if (!token) {
-      throw new functions.https.HttpsError("internal", "User Not Found");
+      return res.status(404).send({
+        status: false,
+        message: "User Not Found.",
+        result: null,
+      });
     }
 
     const decodedToken: any = jwt.verify(
-        token,
-        env.JWT_AUTH_SECRET
+      token,
+      env.JWT_AUTH_SECRET
     ) as JwtPayload;
 
     const getUser = await firestore()
-        .collection("admin")
-        .doc(decodedToken.userAdmin.id)
-        .get();
+      .collection("admin")
+      .doc(decodedToken.userAdmin.id)
+      .get();
 
     if (!getUser.data()) {
-      throw new functions.https.HttpsError("internal", "User Not Found");
+      return res.status(404).send({
+        status: false,
+        message: "User Not Found.",
+        result: null,
+      });
     }
 
-    req.user = {id: getUser.id, ...getUser.data()};
+    req.user = { id: getUser.id, ...getUser.data() };
     req.token = token;
     next();
   } catch (error) {
-    res.send(error);
+    errorLogging("logout", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong in server",
+      result: error,
+    });
   }
 }
+export const errorLogging = async (
+  funcName: string,
+  type: string,
+  error: any
+) => {
+  console.info(funcName, type, error);
+};

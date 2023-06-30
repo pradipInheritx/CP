@@ -1,6 +1,6 @@
 import * as firebaseAdmin from "firebase-admin";
 
-export type voteSettingProps = {
+export type timeframeProps = {
   chosen: boolean;
   index: number;
   name: string;
@@ -13,7 +13,7 @@ export const createTimeframe = async (req: any, res: any, next: any) => {
   try {
     const { chosen, index, name, seconds } = req.body;
 
-    const voteTimeData: voteSettingProps = {
+    const voteTimeData: timeframeProps = {
       chosen,
       index,
       name,
@@ -51,14 +51,10 @@ export const getTimeframe = async (req: any, res: any, next: any) => {
     const getAllTimeframes = await firebaseAdmin
       .firestore()
       .collection("settings")
-      .doc("voteSettings")
-      .collection("timeframes")
+      .doc("timeframes")
       .get();
 
-    const timeframes = getAllTimeframes.docs.map((doc: any) => ({
-      timeframeId: doc.id,
-      ...doc.data(),
-    }));
+    const timeframes = getAllTimeframes.data()
 
     res.status(200).send({
       status: true,
@@ -66,6 +62,7 @@ export const getTimeframe = async (req: any, res: any, next: any) => {
       result: timeframes,
     });
   } catch (error) {
+    errorLogging("getTimeframe", "ERROR", error);
     res.status(500).send({
       status: false,
       message: "Error while fetching Timeframes:",
@@ -74,55 +71,34 @@ export const getTimeframe = async (req: any, res: any, next: any) => {
   }
 };
 
-export const getTimeframeById = async (req: any, res: any, next: any) => {
-  try {
-    const { timeFrameId } = req.params;
 
-    const databaseQuery = await firebaseAdmin
+export const updateTimeframe = async (req: any, res: any, next: any) => {
+  try {
+    console.info("req.body", req.body)
+
+    await firebaseAdmin
       .firestore()
       .collection("settings")
-      .doc("voteSettings")
-      .collection("timeframes")
-      .doc(timeFrameId)
+      .doc("timeframes")
+      .set(req.body, { merge: true })
+
+    const getAllTimeframes = await firebaseAdmin
+      .firestore()
+      .collection("settings")
+      .doc("timeframes")
       .get();
 
-    const data = databaseQuery.data();
+    const updatedTimeframes = getAllTimeframes.data()
+
     res.status(200).send({
       status: true,
-      message: "TimeFrame fetched successfully",
-      result: {
-        ...data,
-        timeframeId: timeFrameId,
-      },
+      message: "Timeframes updated and fetched successfully",
+      result: updatedTimeframes,
     });
-  } catch (error) {
-    res.status(500).send({
-      status: false,
-      message: "Error while fetching TimeFrame:",
-      error: error,
-    });
-  }
-};
 
-export const deleteTimeframeById = async (req: any, res: any, next: any) => {
-  try {
-    const { timeFrameId } = req.params;
-    const timeframeRefRef = firebaseAdmin
-      .firestore()
-      .collection("settings")
-      .doc("voteSettings")
-      .collection("timeframes")
-      .doc(timeFrameId);
-
-    await timeframeRefRef.delete();
-    res.status(200).send({
-      status: true,
-      message: "Timeframe deleted successfully.",
-      result: null,
-    });
   } catch (error) {
-    errorLogging("deleteTimeframeById", "ERROR", error);
-    res.status(500).send(error);
+    errorLogging("updateTimeframe", "ERROR", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
