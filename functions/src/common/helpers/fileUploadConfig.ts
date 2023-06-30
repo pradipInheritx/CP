@@ -30,7 +30,7 @@ export const imageUploadFunction = async (req: any, res: any) => {
         const busboy = Busboy({ headers: req.headers });
         let fileUpload: any;
         let fileToBeUploaded: any = {};
-        const bucket = admin.storage().bucket("default-bucket")
+        const bucket = admin.storage().bucket("coin-parliament-staging.appspot.com")
 
         //On File Event
         busboy.on('file', (fieldname: any, file: any, fileMeta: any) => {
