@@ -100,13 +100,13 @@ const SubadminListRow = ({
       key={row?.id}
       selected={isItemSelected}
     >
-      <TableCell padding="checkbox">
+      {/* <TableCell padding="checkbox">
         <Checkbox
           checked={isItemSelected}
           inputProps={{"aria-labelledby": labelId}}
         />
-      </TableCell>
-      <TableCell component="th" id={labelId} scope="row" padding="none">
+      </TableCell> */}
+      <TableCell component="th" id={labelId} scope="row" padding="normal">
         <Box display="flex" alignItems="center">
           {/* <Box mr={{xs: 4, md: 5}}>
             <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
