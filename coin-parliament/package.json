@@ -66,6 +66,7 @@
     "jest-circus": "27.5.1",
     "jest-resolve": "27.5.1",
     "jest-watch-typeahead": "1.0.0",
+    "kill-port": "^2.0.1",
     "lightweight-charts": "^3.7.0",
     "lodash": "^4.17.21",
     "lottie-web": "^5.11.0",

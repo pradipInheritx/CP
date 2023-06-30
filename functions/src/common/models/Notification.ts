@@ -1,4 +1,4 @@
-import {firestore, messaging} from "firebase-admin";
+import { firestore, messaging } from "firebase-admin";
 
 export const sendNotification = async ({
   token,
@@ -11,11 +11,11 @@ export const sendNotification = async ({
   id: string;
   title: string;
   body:
-    | string
-    | {
-        body: string;
-        requireInteraction: boolean;
-      };
+  | string
+  | {
+    body: string;
+    requireInteraction: boolean;
+  };
   message: messaging.Message;
 }) => {
   try {

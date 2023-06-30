@@ -1,5 +1,5 @@
-import {Router} from "express";
-import {auth} from "../common/middleware/authentication";
+import { Router } from "express";
+import { auth } from "../common/middleware/authentication";
 
 import {
   adminCreate,
@@ -7,7 +7,12 @@ import {
   adminForgotPassword,
   adminChangePassword,
   adminResetPassword,
+  generateAuthTokens,
   logout,
+  generateGoogleAuthOTP,
+  verifyGoogleAuthOTP,
+  updateUserCollections,
+  getUserList
 } from "../common/models/Admin/Admin";
 
 const authRouter = Router();
@@ -17,6 +22,12 @@ authRouter.post("/login", login);
 authRouter.post("/forgot-password", adminForgotPassword);
 authRouter.post("/change-password", auth, adminChangePassword);
 authRouter.post("/reset-password", adminResetPassword);
+authRouter.post("/getAuthToken", generateAuthTokens);
 authRouter.post("/logout", auth, logout);
+authRouter.post("/generateGoogleAuthOTP", generateGoogleAuthOTP);
+authRouter.post("/verifyGoogleAuthOTP", verifyGoogleAuthOTP);
+authRouter.post("/updateUserCollections", updateUserCollections);
+authRouter.get("/getUserList", auth, getUserList);
+
 
 export default authRouter;

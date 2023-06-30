@@ -349,7 +349,7 @@ function App() {
   const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
-  const [albumOpen, setAlbumOpen] = useState<any>("false")
+  const [albumOpen, setAlbumOpen] = useState<any>("")
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -1784,7 +1784,7 @@ function App() {
                       {modalOpen && <div className='fade modal-backdrop show' />}
                       {/* //vote result modal */}
                       {/* @ts-ignore */}
-                      {voteDetails?.lessTimeVote && <ModalForResult
+                      {voteDetails?.lessTimeVote && user&&  <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}

@@ -62,7 +62,7 @@ const SummerCard = styled.div`
 
 const FwProfileNftGalleryCopy = () => {
   const { user } = useContext(UserContext);
-  const{followerUserId}=useContext(AppContext)
+  const{followerUserId,setAlbumOpen,albumOpen}=useContext(AppContext)
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
@@ -89,6 +89,16 @@ const FwProfileNftGalleryCopy = () => {
     Summer: Summer,
     Science:Science,
   });
+
+useEffect(() => {
+    if (albumOpen != "") {
+      setSelectCollection(albumOpen)
+      setAlbumOpen("")
+      
+    }
+  }, [albumOpen])
+
+console.log(albumOpen,"allalbumOpen")
 
   const getNftCard = () => {
   const getCollectionType = firebase
@@ -140,7 +150,8 @@ console.log(error,"error");
   const getCollectionType = firebase
   .firestore()
   .collection("cardsDetails")
-  .where("albumId", "==", collectionName)
+  // .where("albumId", "==", collectionName)
+    .where("albumName", "==", collectionName)
   getCollectionType.get()
     .then((snapshot) => {  
     console.log(collectionName,"collectionName")
@@ -153,12 +164,12 @@ console.log(error,"error");
   }).catch((error) => {
       console.log(error,"error");
   });
-   
+   const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
   const getSetsType = firebase
   .firestore()
-    .collection("nftGallery")
-      .doc(collectionName)
-      .collection("setDetails")
+     .collection("nftGallery")
+        .doc(getAlbumId && getAlbumId[0]?.id)
+        .collection("setDetails")
       getSetsType.get()
     .then((snapshot) => {  
     console.log(collectionName,"collectionName")
@@ -193,7 +204,7 @@ console.log(error,"error");
      setAllCardNew(serchresult)
       }
    else {
-     const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumId == selectCollection)
+     const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
      const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
      const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())        
      setAllCardNew(serchresult)
@@ -206,7 +217,7 @@ console.log(error,"error");
   console.log(setsCardId,"setsCardId")
   if (cardType === 'all') { 
     const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-    const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)
+    const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumName == selectCollection)
     
     setAllCardNew(forcardName)
 setCardNameNew(forcardName)
@@ -215,7 +226,7 @@ setCardNameNew(forcardName)
   else {    
     setCardShow(true)
     const typeCard = allCardArrayNew.filter((card: any) => card.cardType === cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
-    const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumId == selectCollection)        
+    const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumName == selectCollection)        
     console.log(forcardName , "forcardNamecard")
     setAllCardNew(forcardName)
     setCardNameNew(forcardName)
@@ -228,7 +239,7 @@ setCardNameNew(forcardName)
  const onSelectSets = (cardId: any) => {
     setSetsCardId(cardId)
   if (cardId === 'none') {    
-    const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card.albumId == selectCollection )
+    const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card.albumName == selectCollection )
     const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
     setAllCardNew(forcardName)
     setCardNameNew(forcardName)
@@ -236,7 +247,7 @@ setCardNameNew(forcardName)
   }
   else {    
     setCardShow(true);        
-    const cardWithId = allCardArrayNew.filter((card: any) => card.setId == cardId && card.albumId == selectCollection)
+    const cardWithId = allCardArrayNew.filter((card: any) => card.setId == cardId && card.albumName == selectCollection)
     const forcardName=cardWithId.filter((card: any) => cardType == "all" ? card.cardType !== cardType.toUpperCase() : card.cardType == cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))          
     setAllCardNew(forcardName)
     setCardNameNew(forcardName)
@@ -251,7 +262,7 @@ setCardNameNew(forcardName)
     const cardWithName = allCardArrayNew.filter((card: any) => card.cardName !== mycardName)
     const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
     const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())    
-    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumId == selectCollection)
+    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
     //  console.log(finalValue,"serchresult")
     // setCardNameNew(finalValue)    
     setAllCardNew(finalValue)
@@ -261,7 +272,7 @@ setCardNameNew(forcardName)
      const cardWithName = allCardArrayNew.filter((card: any) => card.cardName == mycardName)
     const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
     const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())    
-    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumId == selectCollection)
+    const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
     // setCardNameNew(finalValue)  
     setAllCardNew(finalValue)
     //  console.log(finalValue,"serchresult")
@@ -434,7 +445,7 @@ const CheckCardDisable = (cardId: any) => {
             
 
             {collectionType?.map((data:any ,index:number) => {
-              return  <option value={data?.id} selected key={index}>{data?.albumName}</option>        
+              return  <option value={data?.albumName} selected key={index}>{data?.albumName}</option>        
             })}
                 {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>

@@ -24,11 +24,11 @@ export async function generateAuthToken(userAdmin: any) {
     },
     env.JWT_AUTH_SECRET,
     {
-      expiresIn: "1d",
+      expiresIn: "7d",
     }
   );
 
-  const tokenExpiresAt = moment().add(1, "days").format("X");
+  const tokenExpiresAt = moment().add(7, "days").format("X");
 
   const authTokenObj = { token, tokenExpiresAt };
 

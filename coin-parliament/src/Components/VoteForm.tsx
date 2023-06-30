@@ -70,7 +70,7 @@ const VoteForm = function <
   vote,
   disableVoteButton
 }: VoteFormProps<T>) {
-  const { timeframes, login, remainingTimer } = useContext(AppContext);
+  const { timeframes, login, remainingTimer,voteRules } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -79,7 +79,7 @@ const VoteForm = function <
   // console.log(!hideButton.includes(selectedTimeFrame),"selectedTimeFrame Now")
 
   // console.log(texts?.tooltip, "all Text")
-  console.log(user, "selectedTimeFrame")
+  // console.log(voteRules, "selectedTimeFrame")
   return (
     <Form
       className='mt-3'
@@ -121,6 +121,7 @@ const VoteForm = function <
         <OverlayTrigger
           overlay={(props) => {
             return (
+              // @ts-ignore
               (!!userInfo?.rewardStatistics && userInfo?.rewardStatistics?.extraVote <= 0 && Number(userInfo?.voteValue || 0) <= 0) ? (
                 user ?
                   <Tooltip id='button-tooltip' {...props
@@ -134,7 +135,7 @@ const VoteForm = function <
                                 Wait {" "}
                                 {hours < 1 ? null : `${hours} :`}
                                 {minutes < 10 ? `0${minutes}` : minutes}:
-                                {seconds < 10 ? `0${seconds}` : seconds} for 5 votes
+                                {seconds < 10 ? `0${seconds}` : seconds} for {voteRules?.maxVotes} votes
                                 <br />
                                 or
                                 {/* buy extra votes now. */}
