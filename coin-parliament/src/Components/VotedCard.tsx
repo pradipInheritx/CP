@@ -11,7 +11,7 @@ import {
   PoppinsNormalGunsmoke9px,
 } from "../styledMixins";
 import moment from "moment";
-import { isEmpty } from "lodash";
+import { isArray, isEmpty } from "lodash";
 import SelectTimeframes from "./Coins/SelectTimeframes";
 import AppContext from "../Contexts/AppContext";
 import RangeSilder from "./Users/RangeSilder";
@@ -21,6 +21,8 @@ import { texts } from "./LoginComponent/texts";
 import { Button, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 import Swal from "sweetalert2";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from "common/utils/helper";
+import { VoteContext } from "Contexts/VoteProvider";
 
 
 
@@ -202,6 +204,28 @@ const VotedCard = ({
   ];
   const { timeframes } = useContext(AppContext);
   const translate = useTranslation();
+
+  // const setVoteDetails = useContext(VoteDispatchContext);
+  const voteDetails = useContext(VoteContext);
+  const [calcPer, setCalcPer] = useState<boolean>(true);
+  const [pairCoinResult, setPairCoinResult] = useState<calculateDiffBetweenCoinsType>({ firstCoin: '', secondCoin: '', difference: '' });
+  useEffect(() => {
+    if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
+      if (!voteDetails?.openResultModal && calcPer) {
+        setPairCoinResult((Prev) => {
+          if (isArray(vote.valueVotingTime)) {
+            return calculateDiffBetweenCoins(vote?.valueVotingTime, [coins[symbol1]?.price, coins[symbol2]?.price], vote?.direction);
+          }
+          return Prev;
+        })
+      }
+    }
+    if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
+      setPairCoinResult((Prev) => {
+        return calculateDiffBetweenCoins(voteDetails?.lessTimeVote?.valueVotingTime, voteDetails?.lessTimeVote?.valueExpirationTime, vote?.direction);
+      })
+    }
+  }, [vote, coins, voteDetails?.lessTimeVote]);
   if (!coin1) {
     return <></>;
   }
@@ -228,7 +252,7 @@ const VotedCard = ({
     // valueVotingTime = Number(valueVotingTime);
     console.log('votetime', valueVotingTime)
     row1 = coin2
-      ? `${votedCoin.symbol} - `
+      ? `${votedCoin.symbol} : `
       : `${voted} ${votedCoin.symbol}`;
 
     row2 = coin2
@@ -241,7 +265,6 @@ const VotedCard = ({
 
     row3 = `${vote.timeframe.name}`
   }
-  console.log('votetime', vote)
 
   return (
     <>
@@ -293,7 +316,7 @@ const VotedCard = ({
               symbol2={symbol2}
             />}
             <div className="mb-1" style={{ marginTop: window.screen.width < 370 ? '-8em' : (window.screen.width < 576 ? '-6.5em' : '-4.3em'), }} /* style={{ marginTop: '-3em', height: '4em', paddingLeft: '10px' }} */>
-              <MyCountdown expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
+              <MyCountdown setCalcPer={setCalcPer} expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
                 setLastTenSec={setLastTenSec}
               />
             </div>
@@ -305,7 +328,14 @@ const VotedCard = ({
 
 
               <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2 ? "You voted for " : ""}{row1}</Row1>
-              <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1>
+              {/* <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1> */}
+              <Row1 className="poppins-normal-blue-violet-14px-2">
+                {
+                  symbol2 ?
+                    `${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`
+                    : row2
+                }
+              </Row1>
             </BitcoinBTCBULL24H3864490>
 
             <ID13020221942>
@@ -324,11 +354,11 @@ export default VotedCard;
 let getresultFlag: any;
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 
-export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symbol2, openPopup, setLastTenSec, }:
+export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symbol2, openPopup, setLastTenSec, setCalcPer }:
   {
     expirationTime: number, vote?: any, voteId?: any
-    coins?: any, symbol1?: any, symbol2?: any, openPopup?: any, setLastTenSec?: any
-
+    coins?: any, symbol1?: any, symbol2?: any, openPopup?: any, setLastTenSec?: any,
+    setCalcPer?: React.Dispatch<React.SetStateAction<boolean>>
   }) => {
 
 
@@ -390,22 +420,25 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
         if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
           setLastTenSec(true)
         }
-        if (completed ) {
+        if (completed) {
           if (vote && !vote?.success) {
             checkprice()
+          }
+          if (setCalcPer) {
+            setCalcPer(false);
           }
           // return data;
           return (
             <div
               style={{
                 // border: "1px solid red",
-                padding:"0em 0em 4em 0em", 
-              height:"1.4em"
-            }}
+                padding: "0em 0em 4em 0em",
+                height: "1.4em"
+              }}
             >
-            <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
-              {texts.Calculatingvoteresult}
-            </span>
+              <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
+                {texts.Calculatingvoteresult}
+              </span>
             </div>
           );
         } else {
