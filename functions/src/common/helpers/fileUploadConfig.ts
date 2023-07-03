@@ -28,7 +28,7 @@ export const imageUploadFunction = async (req: any, res: any) => {
         }
 
         const busboy = Busboy({ headers: req.headers });
-        let fileUpload: any;
+
         // let fileToBeUploaded: any = {};
         const bucket = admin.storage().bucket("coin-parliament-staging.appspot.com")
 
@@ -36,13 +36,24 @@ export const imageUploadFunction = async (req: any, res: any) => {
         busboy.on('file', (fieldname: any, file: any, fileMeta: any) => {
             // fileToBeUploaded = { file: fileMeta.filename, type: fileMeta.mimeType };
 
-            fileUpload = bucket.file(fileMeta.filename).makePublic();
+            const fileUpload = bucket.file(fileMeta.filename);
             const fileStream = file.pipe(fileUpload.createWriteStream({
                 metadata: {
                     contentType: fileMeta.mimeType,
                 }
             }));
-
+            fileUpload.getSignedUrl({
+                action: 'read',
+                expires: '03-09-2491'
+            }).then(signedUrls => {
+                console.log("Public Url ------\n", signedUrls[0]);
+                updateFileLink(forModule, fileType, id, signedUrls[0]);
+                return res.status(200).send({
+                    status: true,
+                    message: "Image uploaded and card image url updated successfully",
+                    result: { imageUrl: signedUrls[0] },
+                });
+            });
 
             //On Error Event
             fileStream.on('error', (error: any) => {
@@ -61,21 +72,16 @@ export const imageUploadFunction = async (req: any, res: any) => {
             //     .file(fileToBeUploaded.file)
             //     .publicUrl()
 
-            fileUpload.getSignedUrl({
-                action: 'read',
-                expires: '03-09-2491'
-            }).then((signedUrls: any) => {
-                updateFileLink(forModule, fileType, id, signedUrls[0]);
-                return res.status(200).send({
-                    status: true,
-                    message: "Image uploaded and card image url updated successfully",
-                    result: { imageUrl: signedUrls[0] },
-                });
 
-            });
+            // console.info("File Url", downloadURL);
+
+            // return res.status(200).send({
+            //     status: true,
+            //     message: "Image uploaded and card image url updated successfully",
+            //     result: { imageUrl: downloadURL },
+            // });
         });
         busboy.end(req.rawBody);
-
     } catch (error) {
         errorLogging("uploadFiles", "ERROR", error);
         res.status(500).send({
