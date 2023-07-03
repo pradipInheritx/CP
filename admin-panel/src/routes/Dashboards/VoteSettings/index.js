@@ -77,7 +77,7 @@ const VoteSettingsModule = () => {
     console.log(allDatainfo,"allDatainfo")
 
       dispatch(
-        // updateVoteSetting(allDatainfo),
+        updateVoteSetting(allDatainfo),
       );    
   };
 

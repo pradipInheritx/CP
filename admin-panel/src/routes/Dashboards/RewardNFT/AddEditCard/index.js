@@ -153,7 +153,9 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
     } else if (!quanlity) {
       setQuanlityError(requiredMessage);
     }
-    else if (currentCard ? !cardImgae : !cardImgaeShow) {
+    else if (currentCard ? !cardImgae : !cardImgaeShow) {      
+
+      console.log(cardImgae,cardImgaeShow ,"cardImgaeShow")
       setCardImgaeError(imageMessage);
     }
     else if (!collocation) {
@@ -169,24 +171,25 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
 
   const onCardSubmit = () => {
      const CardDetail = {
-     albumId:collocation,
-     setId: selectSets,
-     cardName: cardName,
-     cardType:nftTier,
-     totalQuantity: quanlity,
-     cardStatus: cardStatus || "Active",
-     cardImageUrl: cardImgae,    
+    albumId:collocation,
+    setId: selectSets,
+    cardName: cardName,
+    setName: `${setsNames.filter((item,index)=>item.setId==selectSets ? item.setName:"")}`,
+    cardType: nftTier,
+    totalQuantity: quanlity,
+    cardStatus: cardStatus || "Active",
+    cardImageUrl: cardImgae,    
     cardVideoUrl: ""
-    }    
+    }      
     const cardImageUrl=cardImgaeSend
 
     console.log(cardImageUrl,"cardImageUrl")
       if (currentCard) {
-      dispatch(
-        updateRewardCard(currentCard?.cardId,{ ...currentCard, ...CardDetail },cardImageUrl, () => {
-          onCloseDialog();
-        }),
-      );
+      // dispatch(
+      //   updateRewardCard(currentCard?.cardId,{ ...currentCard, ...CardDetail },cardImageUrl, () => {
+      //     onCloseDialog();
+      //   }),
+      // );
         console.log({ ...currentCard, ...CardDetail },"submitData")
     } else {
       dispatch(

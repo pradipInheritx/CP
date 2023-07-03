@@ -1521,57 +1521,57 @@ export const sidebarNavs = [
     type: "section",
     children: AllTransactions
   },
-  {
-    name: <IntlMessages id={"sidebar.components"} />,
-    type: "section",
-    children: [
-      muiComponentsMenus,
-      cmtComponentsMenus,
-      widgetsMenus,
-      metricsMenus
-    ]
-  },
-  {
-    name: <IntlMessages id={"sidebar.Apps"} />,
-    type: "section",
-    children: appsMenus
-  },
+  // {
+  //   name: <IntlMessages id={"sidebar.components"} />,
+  //   type: "section",
+  //   children: [
+  //     muiComponentsMenus,
+  //     cmtComponentsMenus,
+  //     widgetsMenus,
+  //     metricsMenus
+  //   ]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.Apps"} />,
+  //   type: "section",
+  //   children: appsMenus
+  // },
   
-  {
-    name: <IntlMessages id={"sidebar.social"} />,
-    type: "section",
-    children: socialAppsMenus
-  },
-  {
-    name: <IntlMessages id={"sidebar.view"} />,
-    type: "section",
-    children: [customTimelineMenus, materialTimelineMenus]
-  },
-  {
-    name: <IntlMessages id={"sidebar.extensions"} />,
-    type: "section",
-    children: [editorsMenus, pickersMenus, ...extensionsMenus]
-  },
-  {
-    name: <IntlMessages id={"sidebar.modules"} />,
-    type: "section",
-    children: [calendarMenus]
-  },
-  {
-    name: <IntlMessages id={"sidebar.visualization"} />,
-    type: "section",
-    children: [chartMenus, mapsMenus]
-  },
-  {
-    name: <IntlMessages id={"sidebar.extraPages"} />,
-    type: "section",
-    children: [
-      loginPagesMenus,
-      signupPagesMenus,
-      forgotPasswordMenus,
-      errorPagesMenus
-    ]
-  }
+  // {
+  //   name: <IntlMessages id={"sidebar.social"} />,
+  //   type: "section",
+  //   children: socialAppsMenus
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.view"} />,
+  //   type: "section",
+  //   children: [customTimelineMenus, materialTimelineMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.extensions"} />,
+  //   type: "section",
+  //   children: [editorsMenus, pickersMenus, ...extensionsMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.modules"} />,
+  //   type: "section",
+  //   children: [calendarMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.visualization"} />,
+  //   type: "section",
+  //   children: [chartMenus, mapsMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.extraPages"} />,
+  //   type: "section",
+  //   children: [
+  //     loginPagesMenus,
+  //     signupPagesMenus,
+  //     forgotPasswordMenus,
+  //     errorPagesMenus
+  //   ]
+  // }
 ];
 
 export const horizontalDefaultNavs = [
