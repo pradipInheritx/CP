@@ -99,7 +99,11 @@ const AddEditCard = ({ open, onCloseDialog,selectType }) => {
   
   const [cardImgaeSend, setCardImgaeSend] = useState('');
   const [cardImgaeShow, setCardImgaeShow] = useState('');
+  
+  const [updateAlbumName, setUpdateAlbumName] = useState('');
+  const [updateSetName, setUpdateSetName] = useState('');
 
+console.log(updateAlbumName,updateSetName,"updateSetName")
   const { getRootProps, getInputProps } = useDropzone({
     accept:'image/*',
     onDrop: acceptedFiles => {    
@@ -170,11 +174,22 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
   };
 
   const onCardSubmit = () => {
+
+    // const getName = setsNames.find((item, index) => {
+    //   if (item.setId == selectSets) {
+    //     const name =item?.setName
+    //     return name
+    //   }
+    // })
+    
+    // console.log(getName ,"setNameCheck")
+
      const CardDetail = {
-    albumId:collocation,
+    albumId: collocation,
+    albumName:updateAlbumName,
     setId: selectSets,
     cardName: cardName,
-    setName: `${setsNames.filter((item,index)=>item.setId==selectSets ? item.setName:"")}`,
+    setName: updateSetName,    
     cardType: nftTier,
     totalQuantity: quanlity,
     cardStatus: cardStatus || "Active",
@@ -182,14 +197,13 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
     cardVideoUrl: ""
     }      
     const cardImageUrl=cardImgaeSend
-
-    console.log(cardImageUrl,"cardImageUrl")
+    
       if (currentCard) {
-      // dispatch(
-      //   updateRewardCard(currentCard?.cardId,{ ...currentCard, ...CardDetail },cardImageUrl, () => {
-      //     onCloseDialog();
-      //   }),
-      // );
+      dispatch(
+        updateRewardCard(currentCard?.cardId,{ ...currentCard, ...CardDetail },cardImageUrl, () => {
+          onCloseDialog();
+        }),
+      );
         console.log({ ...currentCard, ...CardDetail },"submitData")
     } else {
       dispatch(
@@ -231,6 +245,7 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
     setCollocation(e.target.value)
      albumList && albumList.filter((item, index) => {
        if (item?.albumId == e.target.value) {
+         setUpdateAlbumName(item?.albumName)
           setSetsNames(item?.setDetails)
       // setCollocation(item?.albumName)
       // item.setDetails.filter((childItem,inx) => {
@@ -240,7 +255,15 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
       // })
     }
     })    
-}
+  }
+  const handelSetName = (e)=>{
+    setSelectSets(e.target.value);
+    setsNames.map((item,index) => {
+      if (item?.setId == e.target.value) {
+        setUpdateSetName(item?.setName)
+      }
+    })
+  }
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}
@@ -265,6 +288,7 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
                 onChange={e => {
                   setCardName(e.target.value);
                   setCardNameError('');
+                  
                 }}
                 helperText={cardNameError}
               />
@@ -322,11 +346,13 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
                   labelKey="title"
                   value={selectSets}
                 onChange={e => {
-                  setSelectSets(e.target.value);
+
+                  handelSetName(e)                  
+                  console.log(e.target,"e.target")
                   setSelectSetsError('');
                 }}
                 renderRow={(item, index) => (
-                    <MenuItem key={index} value={item?.setId}>
+                    <MenuItem key={index} value={item?.setId} name={item?.setName}>
                       {item.setName}
                     </MenuItem>
                   )}
