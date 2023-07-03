@@ -29,12 +29,12 @@ export const imageUploadFunction = async (req: any, res: any) => {
 
         const busboy = Busboy({ headers: req.headers });
         let fileUpload: any;
-        let fileToBeUploaded: any = {};
+        // let fileToBeUploaded: any = {};
         const bucket = admin.storage().bucket("coin-parliament-staging.appspot.com")
 
         //On File Event
         busboy.on('file', (fieldname: any, file: any, fileMeta: any) => {
-            fileToBeUploaded = { file: fileMeta.filename, type: fileMeta.mimeType };
+            // fileToBeUploaded = { file: fileMeta.filename, type: fileMeta.mimeType };
 
             fileUpload = bucket.file(fileMeta.filename).makePublic();
             const fileStream = file.pipe(fileUpload.createWriteStream({
@@ -42,6 +42,7 @@ export const imageUploadFunction = async (req: any, res: any) => {
                     contentType: fileMeta.mimeType,
                 }
             }));
+
 
             //On Error Event
             fileStream.on('error', (error: any) => {
@@ -56,20 +57,25 @@ export const imageUploadFunction = async (req: any, res: any) => {
 
         // On Finish Event
         busboy.on('finish', async () => {
-            const downloadURL = await bucket
-                .file(fileToBeUploaded.file)
-                .publicUrl()
-            updateFileLink(forModule, fileType, id, downloadURL);
+            // const downloadURL = await bucket
+            //     .file(fileToBeUploaded.file)
+            //     .publicUrl()
 
-            console.info("File Url", downloadURL);
+            fileUpload.getSignedUrl({
+                action: 'read',
+                expires: '03-09-2491'
+            }).then((signedUrls: any) => {
+                updateFileLink(forModule, fileType, id, signedUrls[0]);
+                return res.status(200).send({
+                    status: true,
+                    message: "Image uploaded and card image url updated successfully",
+                    result: { imageUrl: signedUrls[0] },
+                });
 
-            return res.status(200).send({
-                status: true,
-                message: "Image uploaded and card image url updated successfully",
-                result: { imageUrl: downloadURL },
             });
         });
         busboy.end(req.rawBody);
+
     } catch (error) {
         errorLogging("uploadFiles", "ERROR", error);
         res.status(500).send({

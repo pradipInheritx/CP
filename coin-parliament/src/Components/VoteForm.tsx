@@ -127,7 +127,8 @@ const VoteForm = function <
                   <Tooltip id='button-tooltip' {...props
                   } >
                     <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}>
-                      <Countdown daysInHours zeroPadTime={2} date={remainingTimer}
+                    {/* @ts-ignore */}
+                     <Countdown daysInHours zeroPadTime={2} date={remainingTimer}
                         renderer={({ hours, minutes, seconds, completed }) => {
                           return (
                             < >
@@ -138,7 +139,7 @@ const VoteForm = function <
                                 {seconds < 10 ? `0${seconds}` : seconds} for {voteRules?.maxVotes} votes
                                 <br />
                                 or
-                                {/* buy extra votes now. */}
+                                {/ buy extra votes now. /}
                                 <Link to="/votingbooster" style={{ color: "#fff" }}> buy extra votes now.</Link>
                               </span>
                             </>
@@ -146,7 +147,7 @@ const VoteForm = function <
 
                         }}
                       />
-                    </div>
+                    </div> 
                   </Tooltip>
                   : `${texts.tooltip}`
               ) : selectedTimeFrame == undefined ? (
