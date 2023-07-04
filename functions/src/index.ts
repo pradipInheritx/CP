@@ -93,7 +93,6 @@ import pushNotificationSettingRouter from "./routes/PushNotificationSetting.rout
 import FollowTableRouter from "./routes/FollowTable.routes";
 import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
-// import { imageUploadFunction } from "./common/models/Admin/Rewards";
 
 // initialize express server
 const app = express();
