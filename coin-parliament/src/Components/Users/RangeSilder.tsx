@@ -263,6 +263,8 @@ export default function SpeedTest(
     }
     return action < 0 ? 0 : action;
   }, 50)
+
+  console.log(persentValue,"persentValueCheck")
   const { allCoinsSetting } = useContext(CoinsContext)
   const [priceRange, setPriceRange] = useState(1);
   // const { value } = useSpeedTest(priceRange);
@@ -351,17 +353,20 @@ export default function SpeedTest(
       } else {
         newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
       }
-      if (50 + newPrice > 100) {
-        setPersentValue(100);
-        return
-      }
-      if (50 - newPrice < 0) {
-        setPersentValue(0);
-        return
-      }
-      if (vote?.direction == 0) setPersentValue(50 + newPrice);
-      else setPersentValue(50 - newPrice);
 
+      console.log(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply) ,priceRange,"get price")
+      // console.log(Number(coins[symbol1]?.price),decimal[symbol1].multiply,Number(coins[symbol1]?.randomDecimal),Number(vote?.valueVotingTime),decimal[symbol1].multiply,priceRange, "AllnewPrice")
+      console.log(Number(coins[symbol1]?.price),newPrice,Number(coins[symbol1]?.randomDecimal), "get price 2")
+      // if (50 + newPrice > 100) {
+      //   setPersentValue(100);
+      //   return
+      // }
+      // if (50 - newPrice < 0) {
+      //   setPersentValue(0);
+      //   return
+      // }      
+      if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 :50 + newPrice);
+      else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);     
     }
   };
 

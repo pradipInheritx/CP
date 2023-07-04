@@ -94,6 +94,8 @@ const Votes = () => {
       voteId: vote?.id,
       voteTime: vote?.voteTime,
       valueVotingTime: vote?.valueVotingTime,
+      valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
+      valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,        
       expiration: vote?.expiration,
       timestamp: Date.now(),
       userId: vote?.userId

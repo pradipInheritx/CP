@@ -68,10 +68,10 @@ const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SingleCoin = () => {
   let params = useParams();
   const translate = useTranslation();
-  const { user, userInfo, votesLast24Hours } = useContext(UserContext);
-  const { coins, totals, ws, socket } = useContext(CoinContext);
-  const { showModal } = useContext(NotificationContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
+  const { user, userInfo, votesLast24Hours } = useContext(UserContext);
+  const { coins,setCoins, totals, ws, socket } = useContext(CoinContext);
+  const { showModal } = useContext(NotificationContext);
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
   const [voteId, setVoteId] = useState<string>();
   const [loading, setLoading] = useState(false);
@@ -91,6 +91,11 @@ const SingleCoin = () => {
   // const [graphLoading,setGraphLoading]=useState(false)
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules } = useContext(AppContext);
 
+  useEffect(() => {
+  if (coinUpdated) {
+    setCoins(coinUpdated)
+  }
+}, [coinUpdated])
 
   // useEffect(() => {
   //   const interval = setInterval(() => {

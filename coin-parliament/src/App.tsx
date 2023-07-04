@@ -312,6 +312,9 @@ function App() {
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
+let params = useParams();
+  const [symbol1, symbol2] = (params?.id || "").split("-");
+  console.log(symbol1,symbol2 ,params,window.location.pathname,"allCoins")
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
@@ -1011,6 +1014,8 @@ function App() {
       voteId: vote?.id,
       voteTime: vote?.voteTime,
       valueVotingTime: vote?.valueVotingTime,
+      // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
+      // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,
       expiration: vote?.expiration,
       timestamp: Date.now(),
       userId: vote?.userId
@@ -1150,20 +1155,26 @@ function App() {
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
 
+        console.log(coins[coin1.toUpperCase()]?.price,coins[coin2.toUpperCase()],coins,"coinsname")
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
             coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
             voteId: lessTimeVote?.id,
             voteTime: lessTimeVote?.voteTime,
-            valueVotingTime: lessTimeVote?.valueVotingTime,
+            valueVotingTime: lessTimeVote?.valueVotingTime,            
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
             userId: lessTimeVote?.userId,
 
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
-              { status: voteImpact.current?.impact } :
+              {
+                status: voteImpact.current?.impact,
+                valueExpirationTimeOfCoin1:coins[coin1.toUpperCase()]?.price || null,
+                valueExpirationTimeOfCoin2:coins[coin2.toUpperCase()]?.price || null,
+              }                            
+              :
               {}
           )
         }).then((response) => {
