@@ -68,7 +68,7 @@ const splitName = user => {
   return ['', ''];
 };
 
-const AddEditAlbum = ({ open, onCloseDialog,selectType }) => {
+const AddEditAlbum = ({ open, onCloseDialog,selectType}) => {
   const classes = useStyles();
   // const { currentUser } = useSelector(({ usersReducer }) => usersReducer);
   const { currentAlbum,currentCard } = useSelector(({ RewardNFT }) => RewardNFT);
@@ -196,12 +196,15 @@ console.log(albumNameError,albumVideoError,totalSetsError,setsNameError,"allErro
       dispatch(
         updateRewardAlbum(currentAlbum?.albumId,AlbumDetail,videoUrl, () => {
           onCloseDialog();
+          
         }),
       );
+       console.log({...currentAlbum, ...AlbumDetail } , "allalbumedeteial")
     } else {
       dispatch(
         addNewRewardAlbum(AlbumDetail,videoUrl, () => {
           onCloseDialog();
+          
         }),
       );
     }

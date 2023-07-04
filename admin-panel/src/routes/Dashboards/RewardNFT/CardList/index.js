@@ -36,6 +36,7 @@ const RewardCardList = () => {
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [ImageUpdate, setImageUpdate] = useState(0);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const dispatch = useDispatch();
@@ -47,7 +48,7 @@ const RewardCardList = () => {
         setUsersFetched(true);
       }),
     );
-  }, [dispatch, filterOptions, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
+  }, [dispatch, filterOptions, debouncedSearchTerm, page, rowsPerPage, orderBy, order,ImageUpdate]);
   
     useEffect(() => {
     dispatch(
@@ -225,13 +226,23 @@ const handleConfirmUpdate = () => {
         />
       </Paper>
 
-      {openUserDialog && <AddEditCard selectType={"card"} open={openUserDialog} onCloseDialog={handleCloseUserDialog} />}
-      {openViewDialog && <CardDetailView selectType={"card"} open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
+        {openUserDialog && <AddEditCard
+          selectType={"card"}
+          open={openUserDialog}
+          onCloseDialog={handleCloseUserDialog}
+          setImageUpdate={setImageUpdate}
+        />}
+        {openViewDialog && <CardDetailView
+          selectType={"card"}
+          open={openViewDialog}
+          onCloseDialog={handleCloseViewDialog}
+          setImageUpdate={setImageUpdate}
+        />}
 
       <ConfirmDialog
         open={openConfirmDialog}
-        title={`Confirm delete ${selectedUser.name}`}
-        content={'Are you sure, you want to  delete this user?'}
+        title={`Confirm delete ${selectedUser.cardName}`}
+        content={'Are you sure, you want to  delete this card?'}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         />

@@ -63,7 +63,7 @@ const splitName = user => {
   return ['', ''];
 };
 
-const AddEditCard = ({ open, onCloseDialog,selectType }) => {
+const AddEditCard = ({ open, onCloseDialog,selectType,setImageUpdate}) => {
   const classes = useStyles();
   // const { currentUser } = useSelector(({ usersReducer }) => usersReducer);
   const { currentAlbum,currentCard , albumList } = useSelector(({ RewardNFT }) => RewardNFT);
@@ -184,13 +184,14 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
     
     // console.log(getName ,"setNameCheck")
 
+
      const CardDetail = {
     albumId: collocation,
     albumName:updateAlbumName,
     setId: selectSets,
     cardName: cardName,
     setName: updateSetName,    
-    cardType: nftTier,
+       cardType: nftTier,    
     totalQuantity: quanlity,
     cardStatus: cardStatus || "Active",
     cardImageUrl: cardImgae,    
@@ -202,6 +203,7 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
       dispatch(
         updateRewardCard(currentCard?.cardId,{ ...currentCard, ...CardDetail },cardImageUrl, () => {
           onCloseDialog();
+          setImageUpdate((per)=>per++)
         }),
       );
         console.log({ ...currentCard, ...CardDetail },"submitData")
@@ -209,6 +211,7 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
       dispatch(
         addNewRewardCard(CardDetail, cardImageUrl,() => {
           onCloseDialog();
+          setImageUpdate((per)=>per++)
         }),
       );
         console.log({...CardDetail},"submitData")

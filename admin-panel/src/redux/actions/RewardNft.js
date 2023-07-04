@@ -5,12 +5,14 @@ import {
   SET_REWARDALBUM_DETAILS,
   ADD_REWARDALBUM,
   EDIT_REWARDALBUM,
+  EDIT_REWARDALBUMIMG,
   DELETE_REWARDALBUM,
 
   GET_REWARDCARD,
   SET_REWARDCARD_DETAILS,
   ADD_REWARDCARD,
   EDIT_REWARDCARD,
+  EDIT_REWARDCARDIMG,
   DELETE_REWARDCARD,  
 } from '../../@jumbo/constants/ActionTypes';
 
@@ -63,9 +65,14 @@ export const addNewRewardAlbum = (albumData, videoUrl , callbackFun) => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           // dispatch(fetchSuccess('New user was added successfully.'));
           dispatch({ type: ADD_REWARDALBUM, payload: data.data.result });
+            if (callbackFun && !videoUrl) {
+            callbackFun(data.data.result);
+            dispatch(fetchSuccess(data.data.message));
+          }
         if(data.data.result.albumId && videoUrl)
           {
-            axios.post(`${ForVideoImg}ALBUM/video/${data.data.result.albumId}`, formData, config).then((data) => {
+          axios.post(`${ForVideoImg}ALBUM/video/${data.data.result.albumId}`, formData, config).then((data) => {
+                dispatch({ type: EDIT_REWARDALBUMIMG, payload: data.data.result });
               dispatch(fetchSuccess(data.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
@@ -97,12 +104,15 @@ export const updateRewardAlbum = (Albumid,AlbumData, videoUrl,callbackFun) => {
     axios
       .put(`rewards/updateAlbum/${Albumid}`,AlbumData)
       .then(data => {
-        if (data.status === 200 || data.status === 201 || data.status === 204) {
-          dispatch(fetchSuccess('Selected user was updated successfully.'));
-          dispatch({ type: EDIT_REWARDALBUM, payload: data.data });
+        if (data.status === 200 || data.status === 201 || data.status === 204) {                  
+          if (callbackFun && !videoUrl) {
+            callbackFun(data.data.result);
+            dispatch(fetchSuccess(data.data.message));
+          }
           if(Albumid && videoUrl)
           {
             axios.post(`${ForVideoImg}ALBUM/video/${Albumid}`, formData, config).then((data) => {
+              dispatch({ type: EDIT_REWARDALBUMIMG, payload: data.data.result });
               dispatch(fetchSuccess(data.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
@@ -202,12 +212,16 @@ export const addNewRewardCard = (CardDetail,cardImage, callbackFun) => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           // dispatch(fetchSuccess('New card was added successfully.'));
           dispatch({ type: ADD_REWARDCARD, payload: data.data.result });
-          if(data.data.result.uid && cardImage)
-          {
-            // console.log("yes i am working")
+          if (callbackFun && !cardImage) {
+            callbackFun(data.data.result);
+            dispatch(fetchSuccess(data.data.message));
+          }
 
-            axios.post(`${ForVideoImg}CARD/image/${data.data.result.uid}`, formData, config).then((data) => {
-              dispatch(fetchSuccess(data.data.message));
+          if(data.data.result.uid && cardImage)
+          {            
+            axios.post(`${ForVideoImg}CARD/image/${data.data.result.uid}`, formData, config).then((imgdata) => {              
+              dispatch({ type: EDIT_REWARDCARDIMG, payload:imgdata.data.result});
+              dispatch(fetchSuccess(imgdata.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
               dispatch(fetchError(error.message));
@@ -242,13 +256,17 @@ export const updateRewardCard = (cardId,CardDetail,cardImageUrl, callbackFun) =>
       .put(`rewards/updateCard/${cardId}`,CardDetail)
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
-          // dispatch(fetchSuccess('Selected Card was updated successfully.'));
-          dispatch({ type: EDIT_REWARDCARD, payload: data.data.result });
+          dispatch({ type: EDIT_REWARDCARD, payload: data.data.result});          
+          if (callbackFun && !cardImageUrl) {
+            callbackFun(data.data.result);
+            dispatch(fetchSuccess('Selected Card was updated successfully.'));
+          }
         if(cardId && cardImageUrl)
           {
-            // console.log("yes i am working")
-            axios.post(`${ForVideoImg}CARD/image/${cardId}`, formData, config).then((data) => {
-              dispatch(fetchSuccess(data.data.message));
+            console.log("yes i am working")
+          axios.post(`${ForVideoImg}CARD/image/${cardId}`, formData, config).then((imgdata) => {
+              dispatch({ type: EDIT_REWARDCARDIMG, payload:imgdata.data.result}); 
+              dispatch(fetchSuccess(data.data.message));              
           if (callbackFun) callbackFun(data.data.result);
             }).catch((error) => {
               dispatch(fetchError(error.message));
@@ -288,6 +306,7 @@ export const updateRewardCardStatus = (data, callbackFun) => {
 };
 
 export const deleteRewardCard = (userId, callbackFun) => {
+  
   return dispatch => {
     dispatch(fetchStart());
     axios
