@@ -31,8 +31,10 @@ import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
+
+  console.log(params,"myParams")
   const translate = useTranslation();
-  const { coins, totals, ws, socket } = useContext(CoinContext);
+  const { coins,setCoins, totals, ws, socket } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [coin1, coin2] = [coins[symbol1], coins[symbol2]];
   const { user, userInfo, votesLast24Hours } = useContext(UserContext);
@@ -156,6 +158,13 @@ const SinglePair = () => {
       }
     }
   }
+
+useEffect(() => {
+  if (coinUpdated) {
+    setCoins(coinUpdated)
+  }
+}, [coinUpdated])
+
 
   useEffect(() => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
