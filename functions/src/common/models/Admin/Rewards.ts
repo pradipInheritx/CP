@@ -421,9 +421,13 @@ export const updateCard = async (req: any, res: any) => {
     try {
 
         const { cardId } = req.params
-        const { albumId, setId, albumName, setName, cardName, cardType, quantity, totalQuantity, noOfCardHolders, cardStatus, cardImageUrl, cardVideoUrl } = req.body
+        const { albumId, setId, cardName, cardType, quantity, totalQuantity, noOfCardHolders, cardStatus, cardImageUrl, cardVideoUrl } = req.body
 
         const getCardQuery = await firestore().collection("cardsDetails").doc(cardId).get();
+        const getAlbum: any = await getAlbumDetails(albumId);
+        const getSetQuery = await firestore().collection('nftGallery').doc(albumId).collection('setDetails').doc(setId).get();
+        const getSet: any = getSetQuery.data();
+        console.log("get set -----", getSet);
 
         if (!getCardQuery.data()) {
             return res.status(404).send({
@@ -432,14 +436,27 @@ export const updateCard = async (req: any, res: any) => {
                 result: null,
             });
         }
-        const getAlbum: any = await getAlbumDetails(albumId);
-        const getSet = getAlbum.setDetails.find((set: any) => set.id == setId)
+        if (!getAlbum) {
+            return res.status(404).send({
+                status: false,
+                message: `This album does not exist: ${albumId}`,
+                result: null,
+            });
+        }
+        if (!getSet) {
+            return res.status(404).send({
+                status: false,
+                message: `This set does not exist: ${setId}`,
+                result: null,
+            });
+        }
+
 
         const updatedCard: Card = {
             albumId,
             setId,
-            albumName,
-            setName,
+            albumName: getAlbum?.albumName,
+            setName: getSet?.setName,
             cardName,
             cardType,
             quantity,
@@ -457,7 +474,7 @@ export const updateCard = async (req: any, res: any) => {
         }
 
         //update card query
-        await firestore().collection("cardsDetails").doc(cardId).update(updatedCard)
+        await firestore().collection("cardsDetails").doc(cardId).set(updatedCard, { merge: true });
 
         res.status(200).send({
             status: true,
@@ -550,12 +567,14 @@ export const deleteCard = async (req: any, res: any) => {
 }
 
 export const updateFileLink = async (forModule: string, fileType: string, id: string, url: string) => {
+    console.log("Updating file")
     if (forModule.toUpperCase() == "CARD") {
         let getCard: any = await getCardDetails(id);
         const getCardDetailsQuery = firestore().collection("cardsDetails").doc(id)
         if (fileType == 'video') {
             getCard.cardVideoUrl = url
             await getCardDetailsQuery.set(getCard)
+
         } else {
             getCard.cardImageUrl = url
             await getCardDetailsQuery.set(getCard)
