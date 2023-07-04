@@ -174,6 +174,8 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
       voteId,
       voteTime,
       valueVotingTime,
+      valueExpirationTimeOfCoin1,
+      valueExpirationTimeOfCoin2,
       expiration,
       timestamp,
       userId,
@@ -202,14 +204,14 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
       console.info("vote", getVoteData);
 
       if (coin2) {
-        const priceOne = await getPriceOnParticularTime(coin1, timestamp);
-        const priceTwo = await getPriceOnParticularTime(coin2, timestamp);
+        const priceOne = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
+        const priceTwo = valueExpirationTimeOfCoin2 ? valueExpirationTimeOfCoin2 : await getPriceOnParticularTime(coin2, timestamp);
         price = [Number(priceOne), Number(priceTwo)];
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         await calc.calc(getVoteRef);
       } else {
-        price = await getPriceOnParticularTime(coin1, timestamp);
+        price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         await calc.calc(getVoteRef);
