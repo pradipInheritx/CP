@@ -1,10 +1,7 @@
 import { firestore } from "firebase-admin";
 // import * as admin from "firebase-admin";
-import { Storage } from "@google-cloud/storage"
 import { toUpper } from "lodash";
 import "../../../index"
-import Busboy from 'busboy';
-
 interface Sets {
     setName: string;
     sequence: string
@@ -176,8 +173,6 @@ export const createCard = async (req: any, res: any) => {
             });
         }
 
-        console.log("checkAlbums.albumName -----", getAlbum)
-        console.log("checkSets.setName -----", getSet)
         const newCard: Card = {
             albumId,
             setId,
@@ -198,7 +193,6 @@ export const createCard = async (req: any, res: any) => {
             cardImageUrl,
             cardVideoUrl,
         }
-
 
         const addQuery = await firestore().collection("cardsDetails").add(newCard);
 
@@ -405,7 +399,7 @@ export const updateAlbums = async (req: any, res: any) => {
         res.status(200).send({
             status: true,
             message: "The album has been update successfully",
-            result: { ...updatedAlbum, setDetails: updatedSets },
+            result: { albumId, ...updatedAlbum, setDetails: updatedSets },
         });
     } catch (error) {
         errorLogging("updateAlbums", "ERROR", error);
@@ -591,64 +585,6 @@ export const updateFileLink = async (forModule: string, fileType: string, id: st
         }
     }
 }
-
-export const imageUploadFunction = async (req: any, res: any) => {
-    const busboy = Busboy({ headers: req.headers });
-    const storage = new Storage();
-
-    busboy.on('file', (fieldname: any, file: any, filename: any) => {
-        console.log("file------", file)
-        console.log("file.mimetype------", filename.mimeType)
-        console.log("filename--------", filename)
-
-        // const bucket = admin.storage().bucket('default-bucket');
-
-        // const writeStream = bucket.file(filename).createWriteStream({
-        //     metadata: {
-        //         contentType: filename.mimeType,
-        //     },
-        // });
-
-        const bucket = storage.bucket("default-bucket") // Use your bucket name here
-        const fileUpload = bucket.file(filename.filename);
-
-        const fileStream = file.pipe(fileUpload.createWriteStream({
-            metadata: {
-                contentType: filename.mimeType,
-            }
-        }));
-
-        // fileStream.on('data', (data: any) => {
-        //     console.log("data-----", data.toString('base64'))
-        //     // writeStream.write(data);
-        // });
-
-        fileStream.on('end', () => {
-            // writeStream.end();
-            return true
-            // res.status(200).send('Upload successful');
-        });
-        fileStream.on('error', (err: any) => {
-            console.log('Error(Img uipload): ', err);
-            return false
-            // res.status(200).send('Upload successful');
-        });
-    });
-
-    busboy.on('finish', (data: any) => {
-        console.log("Error data --------", data)
-        return true
-        //  res.status(400).send('Invalid request: no file found in request');
-    });
-
-    busboy.end(req.rawBody);
-}
-
-
-
-
-
-
 
 export const errorLogging = async (
     funcName: string,
