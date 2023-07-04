@@ -199,7 +199,7 @@ export const createCard = async (req: any, res: any) => {
         res.status(200).send({
             status: true,
             message: "New album created.",
-            result: { uid: addQuery.id, ...newCard },
+            result: { cardId: addQuery.id, ...newCard },
         });
     } catch (error) {
         errorLogging("createCard", "ERROR", error);
@@ -370,17 +370,17 @@ export const updateAlbums = async (req: any, res: any) => {
             albumImageUrl,
             albumVideoUrl
         }
-        const updatedSets: Sets[] = setDetails
+        // const updatedSets: Sets[] = setDetails
 
         const checkAlbums = await firestore()
             .collection("nftGallery")
             .doc(albumId)
             .get();
-
+        console.log("check album --", checkAlbums.data())
         if (!checkAlbums.data()) {
             return res.status(404).send({
                 status: false,
-                message: `This album name is not found: ${albumName}`,
+                message: `This album id is not found: ${albumId}`,
                 result: null,
             });
         }
@@ -388,18 +388,23 @@ export const updateAlbums = async (req: any, res: any) => {
         //update Album query
         await firestore().collection("nftGallery").doc(albumId).set(updatedAlbum, { merge: true });
 
-        setDetails.forEach(async (sets: any) => {
+        const getSetDeatils: any = [];
+        let sets: any = "";
+        for (sets of setDetails) {
             const newSet = { setName: sets.setName, sequence: sets.sequence }
             if (sets.setId == "" || !sets.setId) {
-                await firestore().collection("nftGallery").doc(albumId).collection("setDetails").add(newSet)
+                const query = await firestore().collection("nftGallery").doc(albumId).collection("setDetails").add(newSet)
+                getSetDeatils.push({ setId: query.id, ...newSet })
+            } else {
+                await firestore().collection("nftGallery").doc(albumId).collection("setDetails").doc(sets.setId).set(newSet, { merge: true });
+                getSetDeatils.push(sets)
             }
-            await firestore().collection("nftGallery").doc(albumId).collection("setDetails").doc(sets.setId).set(newSet, { merge: true });
-        })
+        }
 
         res.status(200).send({
             status: true,
             message: "The album has been update successfully",
-            result: { albumId, ...updatedAlbum, setDetails: updatedSets },
+            result: { albumId, ...updatedAlbum, setDetails: getSetDeatils },
         });
     } catch (error) {
         errorLogging("updateAlbums", "ERROR", error);
@@ -560,18 +565,20 @@ export const deleteCard = async (req: any, res: any) => {
     }
 }
 
-export const updateFileLink = async (forModule: string, fileType: string, id: string, url: string) => {
+export const updateFileLink = async (forModule: string, fileType: string, id: string, url: string): Promise<any> => {
     console.log("Updating file")
     if (forModule.toUpperCase() == "CARD") {
         let getCard: any = await getCardDetails(id);
+
         const getCardDetailsQuery = firestore().collection("cardsDetails").doc(id)
         if (fileType == 'video') {
             getCard.cardVideoUrl = url
             await getCardDetailsQuery.set(getCard)
-
+            return (await getCardDetailsQuery.get()).data();
         } else {
             getCard.cardImageUrl = url
-            await getCardDetailsQuery.set(getCard)
+            await getCardDetailsQuery.set(getCard);
+            return (await getCardDetailsQuery.get()).data();
         }
     } else {
         let getCard: any = await getAlbumDetails(id);
@@ -579,9 +586,11 @@ export const updateFileLink = async (forModule: string, fileType: string, id: st
         if (fileType == 'video') {
             getCard.albumVideoUrl = url
             await getAlbumDetailsQuery.set(getCard)
+            return (await getAlbumDetailsQuery.get()).data();
         } else {
             getCard.albumImageUrl = url
-            await getAlbumDetailsQuery.set(getCard)
+            await getAlbumDetailsQuery.set(getCard);
+            return (await getAlbumDetailsQuery.get()).data();
         }
     }
 }

@@ -93,6 +93,7 @@ import pushNotificationSettingRouter from "./routes/PushNotificationSetting.rout
 import FollowTableRouter from "./routes/FollowTable.routes";
 import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
+import { auth } from "./common/middleware/authentication";
 
 // initialize express server
 const app = express();
@@ -123,7 +124,7 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 
-app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", imageUploadFunction)
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction)
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {
