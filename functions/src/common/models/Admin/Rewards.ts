@@ -479,7 +479,7 @@ export const updateCard = async (req: any, res: any) => {
         res.status(200).send({
             status: true,
             message: `${cardId} card has been update successfully`,
-            result: updatedCard,
+            result: { cardId, ...updatedCard },
         });
     } catch (error) {
         errorLogging("updateCard", "ERROR", error);
