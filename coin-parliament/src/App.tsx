@@ -1181,10 +1181,8 @@ useEffect(() => {
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
-                status: voteImpact.current?.impact,
-                // @ts-ignore
-                valueExpirationTimeOfCoin1:myCoins[coin1.toUpperCase()]?.price || null,
-                // @ts-ignore
+                status: voteImpact.current?.impact,                
+                valueExpirationTimeOfCoin1:myCoins[coin1.toUpperCase()]?.price || null,                
                 valueExpirationTimeOfCoin2:myCoins[coin2.toUpperCase()]?.price || null,
               }                            
               :
