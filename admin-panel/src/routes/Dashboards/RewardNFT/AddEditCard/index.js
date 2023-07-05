@@ -107,7 +107,8 @@ console.log(updateAlbumName,updateSetName,"updateSetName")
   const { getRootProps, getInputProps } = useDropzone({
     accept:'image/*',
     onDrop: acceptedFiles => {    
-      setCardImgaeShow(URL.createObjectURL(acceptedFiles[0]));
+      // setCardImgaeShow(URL.createObjectURL(acceptedFiles[0]));
+      setCardImgae(URL.createObjectURL(acceptedFiles[0]))
       setCardImgaeSend(acceptedFiles[0]);
       setCardImgaeError("")
     },
@@ -157,9 +158,9 @@ console.log(setsNames,selectSets ,collocation,nftTier,"CollocationselectSets" )
     } else if (!quanlity) {
       setQuanlityError(requiredMessage);
     }
-    else if (currentCard ? !cardImgae : !cardImgaeShow) {      
+    else if (!cardImgae) {      
 
-      console.log(cardImgae,cardImgaeShow ,"cardImgaeShow")
+      
       setCardImgaeError(imageMessage);
     }
     else if (!collocation) {

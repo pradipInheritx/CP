@@ -200,8 +200,8 @@ console.log(albumList,"allalbumList")
 
       <ConfirmDialog
         open={openConfirmDialog}
-        title={`Confirm delete ${selectedUser.name}`}
-        content={'Are you sure, you want to  delete this user?'}
+        title={`Confirm delete ${selectedUser.albumName}`}
+        content={'Are you sure, you want to  delete this Album?'}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
       />

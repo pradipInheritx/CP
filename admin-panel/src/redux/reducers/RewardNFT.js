@@ -20,6 +20,7 @@ const INIT_STATE = {
 
   cardList: [],
   currentCard: null,
+  totalCount: 0,
 };
 
 export default (state = INIT_STATE, action) => {
@@ -68,6 +69,7 @@ export default (state = INIT_STATE, action) => {
       return {        
         ...state,
         cardList: action.payload,
+        totalCount: action.payload?.totalCount,
       };
     }
     case SET_REWARDCARD_DETAILS: {

@@ -72,7 +72,7 @@ export const addNewRewardAlbum = (albumData, videoUrl , callbackFun) => {
         if(data.data.result.albumId && videoUrl)
           {
           axios.post(`${ForVideoImg}ALBUM/video/${data.data.result.albumId}`, formData, config).then((data) => {
-                dispatch({ type: EDIT_REWARDALBUMIMG, payload: data.data.result });
+                dispatch({ type: EDIT_REWARDALBUM, payload: data.data.result });
               dispatch(fetchSuccess(data.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
@@ -112,7 +112,7 @@ export const updateRewardAlbum = (Albumid,AlbumData, videoUrl,callbackFun) => {
           if(Albumid && videoUrl)
           {
             axios.post(`${ForVideoImg}ALBUM/video/${Albumid}`, formData, config).then((data) => {
-              dispatch({ type: EDIT_REWARDALBUMIMG, payload: data.data.result });
+              dispatch({ type: EDIT_REWARDALBUM, payload: data.data.result });
               dispatch(fetchSuccess(data.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
@@ -217,10 +217,10 @@ export const addNewRewardCard = (CardDetail,cardImage, callbackFun) => {
             dispatch(fetchSuccess(data.data.message));
           }
 
-          if(data.data.result.uid && cardImage)
+          if(data.data.result.cardId && cardImage)
           {            
-            axios.post(`${ForVideoImg}CARD/image/${data.data.result.uid}`, formData, config).then((imgdata) => {              
-              dispatch({ type: EDIT_REWARDCARDIMG, payload:imgdata.data.result});
+            axios.post(`${ForVideoImg}CARD/image/${data.data.result.cardId}`, formData, config).then((imgdata) => {              
+              dispatch({ type: EDIT_REWARDCARD, payload:imgdata.data.result});
               dispatch(fetchSuccess(imgdata.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
@@ -265,7 +265,7 @@ export const updateRewardCard = (cardId,CardDetail,cardImageUrl, callbackFun) =>
           {
             console.log("yes i am working")
           axios.post(`${ForVideoImg}CARD/image/${cardId}`, formData, config).then((imgdata) => {
-              dispatch({ type: EDIT_REWARDCARDIMG, payload:imgdata.data.result}); 
+              dispatch({ type: EDIT_REWARDCARD, payload:imgdata.data.result}); 
               dispatch(fetchSuccess(data.data.message));              
           if (callbackFun) callbackFun(data.data.result);
             }).catch((error) => {

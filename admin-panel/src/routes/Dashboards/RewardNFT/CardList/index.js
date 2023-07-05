@@ -21,7 +21,7 @@ import { deleteRewardCard, getRewardAlbum, getRewardCard, setCurrentCard, update
 
 const RewardCardList = () => {
   const classes = useStyles();  
-  const { cardList , albumList} = useSelector(({ RewardNFT }) => RewardNFT);
+  const { cardList , albumList,totalCount} = useSelector(({ RewardNFT }) => RewardNFT);
   const [orderBy, setOrderBy] = React.useState('name');
   const [order, setOrder] = React.useState('asc');
   const [page, setPage] = React.useState(0);
@@ -36,8 +36,10 @@ const RewardCardList = () => {
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [ImageUpdate, setImageUpdate] = useState(0);
+  
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+console.log(searchTerm,"searchTerm")
 
   const dispatch = useDispatch();
 
@@ -48,7 +50,7 @@ const RewardCardList = () => {
         setUsersFetched(true);
       }),
     );
-  }, [dispatch, filterOptions, debouncedSearchTerm, page, rowsPerPage, orderBy, order,ImageUpdate]);
+  }, [dispatch, filterOptions, debouncedSearchTerm, page, rowsPerPage, orderBy, order]);
   
     useEffect(() => {
     dispatch(
@@ -218,7 +220,7 @@ const handleConfirmUpdate = () => {
         <TablePagination
           rowsPerPageOptions={[10, 20, 50]}
           component="div"
-          count={cardList.length}
+          count={totalCount || cardList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handlePageChange}
@@ -230,13 +232,13 @@ const handleConfirmUpdate = () => {
           selectType={"card"}
           open={openUserDialog}
           onCloseDialog={handleCloseUserDialog}
-          setImageUpdate={setImageUpdate}
+         
         />}
         {openViewDialog && <CardDetailView
           selectType={"card"}
           open={openViewDialog}
           onCloseDialog={handleCloseViewDialog}
-          setImageUpdate={setImageUpdate}
+         
         />}
 
       <ConfirmDialog

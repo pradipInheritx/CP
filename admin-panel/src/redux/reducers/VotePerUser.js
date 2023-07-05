@@ -18,8 +18,7 @@ export default (state = INIT_STATE, action) => {
     case GET_VOTEPERUSER: {
       return {
         ...state,
-        votePerUserList: action.payload.data,
-        votePerUserList: action.payload.data,
+        votePerUserList: action.payload.data,        
         totalCount: action.payload?.totalCount,
       };
     }

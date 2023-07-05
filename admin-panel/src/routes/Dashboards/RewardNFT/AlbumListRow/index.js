@@ -27,15 +27,15 @@ const getUserActions = user => {
     // { action: 'email', label: 'Email', icon: <Mail /> },
   ];
 
-  if (user.status === 'active') {
-    actions.push({ action: 'suspend', label: 'Suspend', icon: <Block /> });
-  } else {
-    actions.push({
-      action: 'activate',
-      label: 'Reactivate',
-      icon: <CheckCircleOutline />,
-    });
-  }
+  // if (user.status === 'active') {
+  //   actions.push({ action: 'suspend', label: 'Suspend', icon: <Block /> });
+  // } else {
+  //   actions.push({
+  //     action: 'activate',
+  //     label: 'Reactivate',
+  //     icon: <CheckCircleOutline />,
+  //   });
+  // }
 
   actions.push({ action: 'delete', label: 'Delete', icon: <Delete /> });
   return actions;
