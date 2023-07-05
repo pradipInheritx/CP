@@ -100,6 +100,8 @@ export type CoinContextProps = {
   allCoinsSetting:any;
   changePrice: any;
   setChangePrice: any;
+  myCoins: any;
+  setMyCoins: any;
   coins: { [symbol: string]: Coin };
   setCoins: (coins: { [symbol: string]: Coin }) => void;
   totals: { [key: string]: Totals };

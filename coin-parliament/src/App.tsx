@@ -312,6 +312,12 @@ function App() {
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
+  const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(
+    getCoins() as { [symbol: string]: Coin }
+  );
+let params = useParams();
+  const [symbol1, symbol2] = (params?.id || "").split("-");
+  console.log(symbol1,symbol2 ,params,window.location.pathname,"allCoins")
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
@@ -628,15 +634,15 @@ function App() {
     //   setCoins(newAllCoins);
     //   // console.log('allcoins',coins)
     //   // saveCoins(newAllCoins);
-    // });
-    const coinData = firebase
+    // }); 
+     const coinData = firebase
       .firestore()
       .collection("stats").doc('coins')
     coinData.get()
       .then((snapshot: any) => {
         //  console.log('allcoin',snapshot.data())
         setCoins(snapshot.data());
-      });
+      }); 
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);
@@ -673,6 +679,13 @@ function App() {
       );
     });
   }, [user?.uid]);
+
+
+useEffect(() => {
+ 
+}, [])
+
+
 
   useEffect(() => {
     const auth = getAuth();
@@ -1011,6 +1024,8 @@ function App() {
       voteId: vote?.id,
       voteTime: vote?.voteTime,
       valueVotingTime: vote?.valueVotingTime,
+      // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
+      // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,
       expiration: vote?.expiration,
       timestamp: Date.now(),
       userId: vote?.userId
@@ -1143,27 +1158,34 @@ function App() {
       let voteTime = new Date(lessTimeVote?.expiration);
 
       // finding the difference in total seconds between two dates
+      
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       // if (second_diff > 0) {
-      const timer = setTimeout(async () => {
+      const timer = setTimeout(async () => {      
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
 
+        console.log(coins[coin1.toUpperCase()]?.price,coins[coin2.toUpperCase()],coins,"coinsname")
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
             coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
             voteId: lessTimeVote?.id,
             voteTime: lessTimeVote?.voteTime,
-            valueVotingTime: lessTimeVote?.valueVotingTime,
+            valueVotingTime: lessTimeVote?.valueVotingTime,            
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
             userId: lessTimeVote?.userId,
 
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
-              { status: voteImpact.current?.impact } :
+              {
+                status: voteImpact.current?.impact,                
+                valueExpirationTimeOfCoin1:myCoins[coin1.toUpperCase()]?.price || null,                
+                valueExpirationTimeOfCoin2:myCoins[coin2.toUpperCase()]?.price || null,
+              }                            
+              :
               {}
           )
         }).then((response) => {
@@ -1393,6 +1415,8 @@ function App() {
                       rest,
                       coins,
                       setCoins,
+                      myCoins,
+                        setMyCoins,
                       leaders,
                       setLeaders,
                       totals,

@@ -121,7 +121,6 @@ const VoteForm = function <
         <OverlayTrigger
           overlay={(props) => {
             return (
-              // @ts-ignore
               (!!userInfo?.rewardStatistics && userInfo?.rewardStatistics?.extraVote <= 0 && Number(userInfo?.voteValue || 0) <= 0) ? (
                 user ?
                   <Tooltip id='button-tooltip' {...props

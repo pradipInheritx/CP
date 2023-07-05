@@ -149,7 +149,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
               // @ts-ignore
               index !== undefined && index == 0 ? vote?.valueVotingTime[0] : vote.valueVotingTime[1]
             } */}
-            {index === 0 ? pairCoinResult?.firstCoin : pairCoinResult?.secondCoin}
+            {index === 0 ? pairCoinResult?.firstCoin : pairCoinResult?.secondCoin}%
 
           </div>
         </CoinName>
