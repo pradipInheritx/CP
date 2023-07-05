@@ -20,7 +20,7 @@ import { Grid } from 'react-virtualized';
 import GridContainer from '@jumbo/components/GridContainer';
 import ThreeTable from 'redux/reducers/ThreeTable';
 
-const FollowTableDetailView = ({ open, onCloseDialog }) => {
+const FollowersDetailView = ({ open, onCloseDialog }) => {
   const classes = useStyles();
   const { currentFollowerUsers } = useSelector(({ ThreeTable}) => ThreeTable);
 
@@ -109,9 +109,9 @@ const FollowTableDetailView = ({ open, onCloseDialog }) => {
   );
 };
 
-export default FollowTableDetailView;
+export default FollowersDetailView;
 
-FollowTableDetailView.prototype = {
+FollowersDetailView.prototype = {
   open: PropTypes.bool.isRequired,
   onCloseDialog: PropTypes.func,
 };

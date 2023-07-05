@@ -21,13 +21,16 @@ export const getVoteBoost = (filterOptions = [], searchTerm = '', callbackFun) =
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          dispatch({ type: GET_VOTEBOOST, payload: data.data.result });
+          dispatch({ type: GET_VOTEBOOST, payload: data.data.result.timeframes });
           if (callbackFun) callbackFun(data.data);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
       })
       .catch(error => {
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError('There was something issue in responding server'));
       });
   };

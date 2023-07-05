@@ -15,9 +15,9 @@ import EmailIcon from '@material-ui/icons/Email';
 import PhoneIcon from '@material-ui/icons/Phone';
 import useStyles from './index.style';
 import { Block, CheckCircleOutline } from '@material-ui/icons';
-import { Tooltip } from '@material-ui/core';
+import { CardMedia, Tooltip } from '@material-ui/core';
 
-const UserDetailView = ({ selectType, open, onCloseDialog }) => {
+const AlbumDetailView = ({ selectType, open, onCloseDialog }) => {
   const classes = useStyles();
   const { currentAlbum ,currentCard } = useSelector(({ RewardNFT }) => RewardNFT);
 
@@ -28,13 +28,12 @@ const UserDetailView = ({ selectType, open, onCloseDialog }) => {
       <Box className={classes.userInfoRoot}>
         <Box mr={3} display="flex" alignItems="center">
           <Box className={classes.avatarView} mr={{ xs: 4, md: 6 }}>
-            <CmtAvatar size={70} src={currentAlbum?.profile_pic || currentCard?.profile_pic} alt={currentCard?.name || currentAlbum?.name} />
+            {/* <CmtAvatar size={70} src={currentAlbum?.profile_pic} alt={currentAlbum?.name} /> */}
           </Box>
 
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>{currentCard?.name || currentAlbum?.name}</Typography>
-              
+              <Typography className={classes.titleRoot}>{currentAlbum?.albumName}</Typography>              
             </Box>           
           </Box>
         </Box>
@@ -42,16 +41,10 @@ const UserDetailView = ({ selectType, open, onCloseDialog }) => {
           <Box ml={1}>
             {selectType=="album" && <Tooltip title={currentAlbum?.status}>
               <IconButton aria-label="filter list">
-                {currentAlbum?.status === 'suspended' && <Block color="primary" />}
-                {currentAlbum?.status === 'active' && <CheckCircleOutline color="primary" />}
+                {/* {currentAlbum?.status === 'suspended' && <Block color="primary" />}
+                {currentAlbum?.status === 'active' && <CheckCircleOutline color="primary" />} */}
               </IconButton>
-            </Tooltip>}
-            {selectType=="card" && <Tooltip title={currentCard?.status}>
-              <IconButton aria-label="filter list">
-                {currentCard?.status === 'suspended' && <Block color="primary" />}
-                {currentCard?.status === 'active' && <CheckCircleOutline color="primary" />}
-              </IconButton>
-            </Tooltip>}
+            </Tooltip>}            
           </Box>
           <Box ml={1}>
             <IconButton onClick={onCloseDialog}>
@@ -67,21 +60,21 @@ const UserDetailView = ({ selectType, open, onCloseDialog }) => {
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           Album Name :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentAlbum?.email}
+            {currentAlbum?.albumName}
           </Box>
         </Box>
 
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           Total Sets :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentAlbum?.email}
+            {currentAlbum?.setQunatity}
           </Box>
         </Box>
 
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
           Total Cards :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentAlbum?.email}
+            {currentAlbum?.TotalCards}
           </Box>
         </Box>
 
@@ -107,88 +100,50 @@ const UserDetailView = ({ selectType, open, onCloseDialog }) => {
         </Box>        
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
           Sets Name :
-          <Box ml={5}>
+          {/* <Box ml={5}>
             <CmtList
-              data={currentAlbum?.phones}
+              data={currentAlbum?.setDetails}
               renderRow={(item, index) => (
                 <Box key={index} display="flex" alignItems="center">
-                  <Box color="text.secondary">{item.phone}</Box>
+                  <Box color="text.secondary">{item?.setName}</Box>
                   <Box ml={2} className={classes.labelRoot}>
-                    {item.label}
+                    {item?.setName}
                   </Box>
                 </Box>
               )}
             />
+          </Box> */}
+          <Box ml={5} display="flex">
+            {currentAlbum?.setDetails.map((item, index) => {              
+              return (<Box key={index}>                                  
+                  {item?.setName} {currentAlbum?.setDetails.lenght-1 !== index ? " , " :""}              
+                </Box>)
+            })}
           </Box>
         </Box>
 
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
+        <Box display="flex"  mb={{ xs: 4, sm: 7 }}>
           Album Video :
           <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentAlbum?.email}
+            {/* {currentAlbum?.email} */}
+            <CardMedia
+            component='video'
+            className={classes.media}
+            // image={"path/to/file/video.webm"}
+            src={currentAlbum?.albumVideoUrl}
+            autoPlay
+          />
           </Box>
         </Box>
       </Box>}
-
-      {selectType =="card" && <Box px={6} py={5}>
-        <Box mb={5} component="p" color="common.dark">
-          Card Detail
-        </Box>
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Card Name :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCard?.email}
-          </Box>
-        </Box>
-
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Rarity :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCard?.email}
-          </Box>
-        </Box>
-
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Collocation :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCard?.email}
-          </Box>
-        </Box>
-
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Minted Time :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCard?.email}
-          </Box>
-        </Box>
-
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Total Quanlity :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCard?.email}
-          </Box>
-        </Box>
-
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Number of Holder :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCard?.email}
-          </Box>
-        </Box>                
-        <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 7 }}>
-          Card Image :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {currentCard?.email}
-          </Box>
-        </Box>
-      </Box>}
+      
     </Dialog>
   );
 };
 
-export default UserDetailView;
+export default AlbumDetailView;
 
-UserDetailView.prototype = {
+AlbumDetailView.prototype = {
   open: PropTypes.bool.isRequired,
   onCloseDialog: PropTypes.func,
 };

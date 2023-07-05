@@ -4,7 +4,7 @@ import useStyles from './index.style';
 import RewardAlbumList from './AlbumList';
 import RewardCardList from './CardList';
 
-const UsersModule = () => {
+const RewardNFT = () => {
   const classes = useStyles();    
 //  for tab 
   const [value, setValue] = React.useState(0);
@@ -33,4 +33,4 @@ const UsersModule = () => {
   );
 };
 
-export default UsersModule;
+export default RewardNFT;

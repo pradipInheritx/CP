@@ -3,12 +3,14 @@ import {
   SET_REWARDALBUM_DETAILS,
   ADD_REWARDALBUM,
   EDIT_REWARDALBUM,
+  EDIT_REWARDALBUMIMG,
   DELETE_REWARDALBUM,
 
   GET_REWARDCARD,
   SET_REWARDCARD_DETAILS,
   ADD_REWARDCARD,
   EDIT_REWARDCARD,
+  EDIT_REWARDCARDIMG,
   DELETE_REWARDCARD,  
 } from '../../@jumbo/constants/ActionTypes';
 
@@ -43,20 +45,27 @@ export default (state = INIT_STATE, action) => {
     case EDIT_REWARDALBUM: {
       return {
         ...state,
-        albumList: state.albumList.map(user => (user.id === action.payload.id ? action.payload : user)),
+        albumList: state.albumList.map(album => (album.albumId === action.payload.albumId ? action.payload : album)),
+      };
+    }
+    case EDIT_REWARDALBUMIMG: {
+      return {
+        ...state,
+        albumList: state.albumList.map(album => (album.albumId === action.payload.id ? {...album,albumVideoUrl:action.payload.videoUrl} : album)),
       };
     }
     case DELETE_REWARDALBUM: {
       return {
         ...state,
-        albumList: state.albumList.filter(user => user.id !== action.payload),
+        albumList: state.albumList.filter(album => album.albumId !== action.payload),
       };
     }   
     
       // Reward Card
       
     case GET_REWARDCARD: {
-      return {
+      console.log(action.payload,"alllist")
+      return {        
         ...state,
         cardList: action.payload,
       };
@@ -76,13 +85,20 @@ export default (state = INIT_STATE, action) => {
     case EDIT_REWARDCARD: {
       return {
         ...state,
-        cardList: state.cardList.map(user => (user.id === action.payload.id ? action.payload : user)),
+        cardList: state.cardList.map(card => (card.cardId === action.payload.cardId ? action.payload : card)),
+      };
+    }
+    case EDIT_REWARDCARDIMG: {      
+      return {
+        ...state,
+        cardList: state.cardList.map(card => (card.cardId === action.payload?.id ? { ...card, cardImageUrl: action.payload?.imageUrl } : card)),
+        
       };
     }
     case DELETE_REWARDCARD: {
       return {
         ...state,
-        cardList: state.cardList.filter(user => user.id !== action.payload),
+        cardList: state.cardList.filter(card => card.cardId !== action.payload),
       };
     }    
     default:

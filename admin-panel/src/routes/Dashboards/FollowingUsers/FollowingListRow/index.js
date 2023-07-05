@@ -22,47 +22,53 @@ const useStyles = makeStyles(theme => ({
 
 const getUserActions = user => {
   const actions = [
-    { action: 'view', label: 'View', icon: <Visibility /> },
-    { action: 'edit', label: 'Edit', icon: <Edit /> },
+    {
+      action: 'view', label: 'View', icon: <Visibility />
+    },
+    // { action: 'edit', label: 'Edit', icon: <Edit /> },
     // { action: 'email', label: 'Email', icon: <Mail /> },
   ];
 
-  if (user.status === 'active') {
-    actions.push({ action: 'suspend', label: 'Suspend', icon: <Block /> });
-  } else {
-    actions.push({
-      action: 'activate',
-      label: 'Reactivate',
-      icon: <CheckCircleOutline />,
-    });
-  }
+  // if (user.status === 'active') {
+  //   actions.push({ action: 'suspend', label: 'Suspend', icon: <Block /> });
+  // } else {
+  //   actions.push({
+  //     action: 'activate',
+  //     label: 'Reactivate',
+  //     icon: <CheckCircleOutline />,
+  //   });
+  // }
 
-  actions.push({ action: 'delete', label: 'Delete', icon: <Delete /> });
+  // actions.push({ action: 'delete', label: 'Delete', icon: <Delete /> });
   return actions;
 };
 
-const UserListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
+const FollowingListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const onUserMenuClick = menu => {
     if (menu.action === 'view') {
       onUserView(row);
-    } else if (menu.action === 'edit') {
-      onUserEdit(row);
-    } else if (menu.action === 'email') {
-      dispatch(sentMailToUser());
-    } else if (menu.action === 'suspend') {
-      dispatch(updateUserStatus({ id: row.id, status: 'suspended' }));
-    } else if (menu.action === 'activate') {
-      dispatch(updateUserStatus({ id: row.id, status: 'active' }));
-    } else if (menu.action === 'delete') {
-      onUserDelete(row);
     }
+    // else if (menu.action === 'edit') {
+    //   onUserEdit(row);
+    // }
+    // else if (menu.action === 'email') {
+    //   dispatch(sentMailToUser());
+    // }
+    // else if (menu.action === 'suspend') {
+    //   dispatch(updateUserStatus({ id: row.id, status: 'suspended' }));
+    // }
+    // else if (menu.action === 'activate') {
+    //   dispatch(updateUserStatus({ id: row.id, status: 'active' }));
+    // }
+    // else if (menu.action === 'delete') {
+    //   onUserDelete(row);
+    // }
   };
 
-  const labelId = `enhanced-table-checkbox-${row.id}`;
-  const isItemSelected = isSelected(row.id);
+  const labelId = `enhanced-table-checkbox-${row?.id}`;
+  const isItemSelected = isSelected(row?.id);
   const userActions = getUserActions(row);
 
   return (
@@ -77,31 +83,33 @@ const UserListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, on
       {/* <TableCell padding="checkbox">
         <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
       </TableCell> */}
-      <TableCell component="th" id={labelId} scope="row" padding="normal">
+      <TableCell component="th" id={labelId} scope="row" padding="10">
         <Box display="flex" alignItems="center">
           <Box mr={{ xs: 4, md: 5 }}>
-            <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />
+            <CmtAvatar size={40} src={row?.avatar} alt={row?.name} />
           </Box>
           <div>
             <Typography className={classes.titleRoot} component="div" variant="h4">
-              {row.name}
+              {row?.displayName}
             </Typography>
           </div>
         </Box>
       </TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>{row.email}</TableCell>
-      <TableCell>
+      {/* <TableCell >{row.firstName || "-"}</TableCell> */}
+      <TableCell>{row?.phone|| "-"}</TableCell>
+      {/* <TableCell>
         {row.status === 'suspended' ? `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})` : row.status}
-      </TableCell>
-      <TableCell>{timeFromNow(row.lastLoginAt)}</TableCell>
-      <TableCell align="right">{row.emailUsage} GB</TableCell>
+      </TableCell> */}
+      <TableCell>{row?.email || "-" }</TableCell>      
+      {/* <TableCell>{row.followerCount  }</TableCell>       */}
+      <TableCell>{row?.refereeScrore || "-"}</TableCell>      
+      
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu items={userActions} onItemClick={onUserMenuClick} TriggerComponent={<MoreHoriz />} />
       </TableCell>
+
     </TableRow>
   );
 };
 
-export default React.memo(UserListRow);
+export default React.memo(FollowingListRow);

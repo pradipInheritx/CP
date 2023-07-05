@@ -33,6 +33,9 @@ export const getTimeFrame = (
         }
       })
       .catch(error => {
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError("There was something issue in responding server"));
       });
   };
@@ -78,7 +81,7 @@ export const updateTimeFrame = (timeFrame, callbackFun) => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
     axios
-      .put(`voteSetting/updateTimeframe/${timeFrame.timeframeId}`, timeFrame)
+      .put(`voteSetting/updateTimeframe/timeFrames`, {timeframes:timeFrame})
       .then(response => {
         if (
           response.status === 200 ||
@@ -100,28 +103,31 @@ export const updateTimeFrame = (timeFrame, callbackFun) => {
   };
 };
 
-export const updateTimeFrameStatus = (timeframes ,id, data, callbackFun) => {
-  console.log(timeframes,"check all data")
+export const updateTimeFrameStatus = (id, data, callbackFun) => {
+  console.log(id, data, "check all data");
   return dispatch => {
     axios.defaults.headers.common["Authorization"] = "Bearer " + localToken;
     dispatch(fetchStart());
-    axios      
-      .put(`voteSetting/updateTimeframe/timeFrames`,{timeframes:[...timeframes]})
-      .then( async (response) => {
-        if (response.status === 200 || response.status === 201 || response.status === 204) {          
-          console.log(response.data,"successfully")
+    axios
+      .put(`voteSetting/updateTimeframe/${id}`, data)
+      .then(response => {
+        if (
+          response.status === 200 ||
+          response.status === 201 ||
+          response.status === 204
+        ) {
+          console.log(response.data.message, "successfully");
           dispatch(fetchSuccess(response.data.message));
-          // dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result.timeframes });
-          dispatch({ type: GET_TIMEFRAME, payload: data.data.result.timeframes});
-          // if (callbackFun) callbackFun(response.data.result);
-        }
-        else {
-          dispatch(fetchError('There was something issue in responding server.'));          
+          dispatch({ type: EDIT_TIMEFRAME, payload: response.data.result });
+          if (callbackFun) callbackFun(response.data.result);
+        } else {
+          dispatch(
+            fetchError("There was something issue in responding server.")
+          );
         }
       })
       .catch(error => {
-        console.log("i am working first")
-        dispatch(fetchError('There was something issue in responding server'));
+        dispatch(fetchError("There was something issue in responding server"));
       });
   };
 };

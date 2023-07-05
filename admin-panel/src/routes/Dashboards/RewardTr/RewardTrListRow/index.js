@@ -120,9 +120,9 @@ const RewardTrListRow = ({
           </div>
         </Box>
       </TableCell> */}
-      <TableCell>{row?.displayName}</TableCell>
-      <TableCell>{row?.totalVote}</TableCell>
-      <TableCell>{row?.successVote}</TableCell>
+      <TableCell>{row?.winData?.firstRewardCardId || "-"}</TableCell>
+      <TableCell>{row?.winData?.date || "-"}</TableCell>
+      <TableCell>{row?.winData?.firstRewardCardType || "-"}</TableCell>
       
       {/* <TableCell>{row?.phone}</TableCell> */}
       {/* <TableCell>
@@ -134,9 +134,9 @@ const RewardTrListRow = ({
             `Active`
         )}
       </TableCell> */}
-      <TableCell>{row?.userScore}</TableCell>
-      <TableCell>{row?.userRank}</TableCell>
-      <TableCell>{row?.userRank}</TableCell>
+      <TableCell>{row?.winData?.thirdRewardDiamonds || "-"}</TableCell>
+      <TableCell>{row?.winData?.secondRewardExtraVotes || "-"}</TableCell>
+      <TableCell>{row?.winData?.imgId || "-"}</TableCell>
       {/* <TableCell align="right">{row.emailUsage} GB</TableCell> */}
       <TableCell align="center" onClick={event => event.stopPropagation()}>
         <CmtDropdownMenu

@@ -10,7 +10,7 @@ const headCells = [
   {
     id: "fisrtName",
     numeric: false,
-    disablePadding: true,
+    disablePadding: false,
     label: "Name"
   },
   {id: "email", numeric: false, disablePadding: false, label: "Email"},
@@ -41,14 +41,14 @@ function SubamdinTableHead({
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
+        {/* <TableCell padding="checkbox">
           <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{"aria-label": "select all desserts"}}
           />
-        </TableCell>
+        </TableCell> */}
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}

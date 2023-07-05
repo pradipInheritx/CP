@@ -42,37 +42,7 @@ const dashboardsMenus = [
     icon: <Group />,
     type: "item",
     link: "/dashboard/subadmin"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.coins"} />,
-    icon: <Group />,
-    type: "item",
-    link: "/dashboard/coins"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.pairs"} />,
-    icon: <Group />,
-    type: "item",
-    link: "/dashboard/pairs"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.users"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/users"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.usertypesetting"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/usertypesetting"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.timeframesetting"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/timeframesetting"
-  },
+  },  
   {
     name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
     icon: <People />,
@@ -85,48 +55,13 @@ const dashboardsMenus = [
     type: "item",
     link: "/dashboard/votebooster"
   },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.followtable"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/followtable"  || "/dashboard/followeruser" || "/dashboard/followinguser"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.coinsvotestable"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/coinsvotestable"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.pairsvotestable"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/pairsvotestable"
-  },
+  
 
   {
     name: <IntlMessages id={"sidebar.dashboard.votingpass"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/votingpass"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.rewardtransactions"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/rewardtransactions"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.paymenttransactions"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/paymenttransactions"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.cmptransactions"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/cmptransactions"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.transactiontypes"} />,
@@ -145,79 +80,56 @@ const dashboardsMenus = [
     icon: <People />,
     type: "item",
     link: "/dashboard/paxgeneral"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.cmpsettings"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/cmpsettings"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.votesettings"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/votesettings"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.rewardsettings"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/rewardsettings"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.returnsettings"} />,
-    icon: <People />,
-    type: "item",
-    link: "/dashboard/returnsettings"
-  },
+  }, 
+  
   {
     name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
     icon: <People />,
     type: "item",
     link: "/dashboard/rewardnft"
   },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.crypto"} />,
-    icon: <MonetizationOn />,
-    type: "item",
-    link: "/dashboard/crypto"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.listing"} />,
-    icon: <Domain />,
-    type: "item",
-    link: "/dashboard/listing"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.crm"} />,
-    icon: <Group />,
-    type: "item",
-    link: "/dashboard/crm"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.intranet"} />,
-    icon: <DonutSmall />,
-    type: "item",
-    link: "/dashboard/intranet"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.ecommerce"} />,
-    icon: <LocalGroceryStore />,
-    type: "item",
-    link: "/dashboard/eCommerce"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.news"} />,
-    icon: <ImportContacts />,
-    type: "item",
-    link: "/dashboard/news"
-  },
-  {
-    name: <IntlMessages id={"sidebar.dashboard.misc"} />,
-    icon: <LibraryBooks />,
-    type: "item",
-    link: "/dashboard/misc"
-  }
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.crypto"} />,
+  //   icon: <MonetizationOn />,
+  //   type: "item",
+  //   link: "/dashboard/crypto"
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.listing"} />,
+  //   icon: <Domain />,
+  //   type: "item",
+  //   link: "/dashboard/listing"
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.crm"} />,
+  //   icon: <Group />,
+  //   type: "item",
+  //   link: "/dashboard/crm"
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.intranet"} />,
+  //   icon: <DonutSmall />,
+  //   type: "item",
+  //   link: "/dashboard/intranet"
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.ecommerce"} />,
+  //   icon: <LocalGroceryStore />,
+  //   type: "item",
+  //   link: "/dashboard/eCommerce"
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.news"} />,
+  //   icon: <ImportContacts />,
+  //   type: "item",
+  //   link: "/dashboard/news"
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.dashboard.misc"} />,
+  //   icon: <LibraryBooks />,
+  //   type: "item",
+  //   link: "/dashboard/misc"
+  // }
 ];
 
 const muiComponentsInputsMenus = [
@@ -1053,6 +965,104 @@ const appsMenus = [
     link: "/apps/chat"
   }
 ];
+const AllTransactions = [
+  {
+    name: <IntlMessages id={"sidebar.dashboard.rewardtransactions"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/rewardtransactions"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.paymenttransactions"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/paymenttransactions"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.cmptransactions"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/cmptransactions"
+  },
+];
+const AllList = [  
+  {
+    name: <IntlMessages id={"sidebar.dashboard.coins"} />,
+    icon: <Group />,
+    type: "item",
+    link: "/dashboard/coins"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.pairs"} />,
+    icon: <Group />,
+    type: "item",
+    link: "/dashboard/pairs"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.users"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/users"
+  },
+];
+const AllTables = [
+  {
+    name: <IntlMessages id={"sidebar.dashboard.followtable"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/followtable"  || "/dashboard/followeruser" || "/dashboard/followinguser"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.coinsvotestable"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/coinsvotestable"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.pairsvotestable"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/pairsvotestable"
+  },
+];
+const AllSettings = [
+  {
+    name: <IntlMessages id={"sidebar.dashboard.usertypesetting"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/usertypesetting"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.timeframesetting"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/timeframesetting"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.cmpsettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/cmpsettings"
+  },  
+  {
+    name: <IntlMessages id={"sidebar.dashboard.votesettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/votesettings"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.rewardsettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/rewardsettings"
+  },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.returnsettings"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/returnsettings"
+  },
+];
 
 const socialAppsMenus = [
   {
@@ -1492,55 +1502,76 @@ export const sidebarNavs = [
     children: dashboardsMenus
   },
   {
-    name: <IntlMessages id={"sidebar.components"} />,
+    name: "All Lists",
     type: "section",
-    children: [
-      muiComponentsMenus,
-      cmtComponentsMenus,
-      widgetsMenus,
-      metricsMenus
-    ]
+    children: AllList
   },
   {
-    name: <IntlMessages id={"sidebar.Apps"} />,
+    name: "All Tables",
     type: "section",
-    children: appsMenus
+    children: AllTables
   },
   {
-    name: <IntlMessages id={"sidebar.social"} />,
+    name: "All Settings",
     type: "section",
-    children: socialAppsMenus
+    children: AllSettings
   },
   {
-    name: <IntlMessages id={"sidebar.view"} />,
+    name: "All Transactions",
     type: "section",
-    children: [customTimelineMenus, materialTimelineMenus]
+    children: AllTransactions
   },
-  {
-    name: <IntlMessages id={"sidebar.extensions"} />,
-    type: "section",
-    children: [editorsMenus, pickersMenus, ...extensionsMenus]
-  },
-  {
-    name: <IntlMessages id={"sidebar.modules"} />,
-    type: "section",
-    children: [calendarMenus]
-  },
-  {
-    name: <IntlMessages id={"sidebar.visualization"} />,
-    type: "section",
-    children: [chartMenus, mapsMenus]
-  },
-  {
-    name: <IntlMessages id={"sidebar.extraPages"} />,
-    type: "section",
-    children: [
-      loginPagesMenus,
-      signupPagesMenus,
-      forgotPasswordMenus,
-      errorPagesMenus
-    ]
-  }
+  // {
+  //   name: <IntlMessages id={"sidebar.components"} />,
+  //   type: "section",
+  //   children: [
+  //     muiComponentsMenus,
+  //     cmtComponentsMenus,
+  //     widgetsMenus,
+  //     metricsMenus
+  //   ]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.Apps"} />,
+  //   type: "section",
+  //   children: appsMenus
+  // },
+  
+  // {
+  //   name: <IntlMessages id={"sidebar.social"} />,
+  //   type: "section",
+  //   children: socialAppsMenus
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.view"} />,
+  //   type: "section",
+  //   children: [customTimelineMenus, materialTimelineMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.extensions"} />,
+  //   type: "section",
+  //   children: [editorsMenus, pickersMenus, ...extensionsMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.modules"} />,
+  //   type: "section",
+  //   children: [calendarMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.visualization"} />,
+  //   type: "section",
+  //   children: [chartMenus, mapsMenus]
+  // },
+  // {
+  //   name: <IntlMessages id={"sidebar.extraPages"} />,
+  //   type: "section",
+  //   children: [
+  //     loginPagesMenus,
+  //     signupPagesMenus,
+  //     forgotPasswordMenus,
+  //     errorPagesMenus
+  //   ]
+  // }
 ];
 
 export const horizontalDefaultNavs = [

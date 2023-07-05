@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Tab, Table, TableCell, TableContainer, TableRow, Tabs } from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
-import UserListRow from '../UserListRow';
+import AlbumListRow from '../AlbumListRow';
 import UserTableHead from '../UserTableHead';
 import UserTableToolbar from '../UserTableToolbar';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import AddEditUser from '../AddEditUser';
+import AddEditUser from '../AddEditAlbum';
 
 
 import useStyles from '../index.style';
-import UserDetailView from '../UserDetailView';
+import AlbumDetailView from '../AlbumDetailView';
 import NoRecordFound from '../NoRecordFound';
 import ConfirmDialog from '@jumbo/components/Common/ConfirmDialog';
 import { useDebounce } from '@jumbo/utils/commonHelper';
@@ -39,6 +39,8 @@ const RewardAlbumList = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const dispatch = useDispatch();
+
+console.log(albumList,"allalbumList")
 
   useEffect(() => {
     dispatch(
@@ -82,7 +84,6 @@ const RewardAlbumList = () => {
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
-
     setSelected(newSelected);
   };
 
@@ -117,7 +118,7 @@ const RewardAlbumList = () => {
 
   const handleConfirmDelete = () => {
     setOpenConfirmDialog(false);
-    dispatch(deleteRewardAlbum(selectedUser.id));
+    dispatch(deleteRewardAlbum(selectedUser.albumId));
   };
 
   const handleCancelDelete = () => {
@@ -159,7 +160,7 @@ const RewardAlbumList = () => {
                 stableSort(albumList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <UserListRow
+                    <AlbumListRow
                       key={index}
                       row={row}
                       onRowClick={handleRowClick}
@@ -195,7 +196,7 @@ const RewardAlbumList = () => {
       </Paper>
 
       {openUserDialog && <AddEditUser selectType={"album"} open={openUserDialog} onCloseDialog={handleCloseUserDialog} />}
-      {openViewDialog && <UserDetailView selectType={"album"} open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
+      {openViewDialog && <AlbumDetailView selectType={"album"} open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
 
       <ConfirmDialog
         open={openConfirmDialog}

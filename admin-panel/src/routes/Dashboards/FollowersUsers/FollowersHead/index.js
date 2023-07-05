@@ -33,7 +33,7 @@ const headCells = [
   },  
 ];
 
-function FollowTableHead({ classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort }) {
+function FollowersHead({ classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort }) {
   const onSortOrderChange = property => event => {
     onRequestSort(event, property);
   };
@@ -72,7 +72,7 @@ function FollowTableHead({ classes, onSelectAllClick, order, orderBy, numSelecte
   );
 }
 
-FollowTableHead.propTypes = {
+FollowersHead.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
@@ -82,4 +82,4 @@ FollowTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-export default React.memo(FollowTableHead);
+export default React.memo(FollowersHead);

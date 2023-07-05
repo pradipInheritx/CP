@@ -36,7 +36,7 @@ const getUserActions = user => {
   const actions = [
     {action: "view", label: "View", icon: <Visibility />},
     {action: "edit", label: "Edit", icon: <Edit />},
-    {action: "email", label: "Email", icon: <Mail />}
+    // {action: "email", label: "Email", icon: <Mail />}
   ];
 
   if (user?.status.trim() === "Active") {
@@ -71,9 +71,11 @@ const SubadminListRow = ({
       onUserView(row);
     } else if (menu.action === "edit") {
       onUserEdit(row);
-    } else if (menu.action === "email") {
-      dispatch(sentMailToSubAdmin());
-    } else if (menu.action === "Inactive") {
+    }
+    // else if (menu.action === "email") {
+    //   dispatch(sentMailToSubAdmin());
+    // }
+    else if (menu.action === "Inactive") {
       // dispatch(updateSubAdminStatus(row?.id,{ status: "Inactive"}));
       onUserStatusUpdate(row)
     } else if (menu.action === "Active") {
@@ -98,13 +100,13 @@ const SubadminListRow = ({
       key={row?.id}
       selected={isItemSelected}
     >
-      <TableCell padding="checkbox">
+      {/* <TableCell padding="checkbox">
         <Checkbox
           checked={isItemSelected}
           inputProps={{"aria-labelledby": labelId}}
         />
-      </TableCell>
-      <TableCell component="th" id={labelId} scope="row" padding="none">
+      </TableCell> */}
+      <TableCell component="th" id={labelId} scope="row" padding="normal">
         <Box display="flex" alignItems="center">
           {/* <Box mr={{xs: 4, md: 5}}>
             <CmtAvatar size={40} src={row.profile_pic} alt={row.name} />

@@ -9,6 +9,7 @@ import CmtAvatar from '../../../../@coremat/CmtAvatar';
 import { Box, Link, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { sentMailToUser, updateUserStatus } from '../../../../redux/actions/Users';
 
 const useStyles = makeStyles(theme => ({
@@ -47,6 +48,7 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
 
   
   const classes = useStyles();
+  const navigate = useHistory();
   const dispatch = useDispatch();
   const onUserMenuClick = menu => {
     if (menu.action === 'view') {
@@ -72,6 +74,16 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
   const labelId = `enhanced-table-checkbox-${row.id}`;
   const isItemSelected = isSelected(row.id);
   const userActions = getUserActions(row);
+
+const handleCellClick = (e,type,id) => {
+    // console.log(e.target.textContent);
+  if (type=="following") {    
+    navigate.push(`followinguser/${id}`)
+  } else if (type=="follower") {
+    navigate.push(`followeruser/${id}`)
+  }
+  console.log("i am working")
+}
 
   return (
     <TableRow
@@ -106,14 +118,26 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
       {/* <TableCell>
         {row.status === 'suspended' ? `Suspended by ${row.suspendedBy} (${timeFromNow(row.suspendedAt)})` : row.status}
       </TableCell> */}
-      <TableCell>
-        <Link to={`followinguser/${row.userId}`}>
+      <TableCell
+       
+      >
+        <Link
+          // to={`followinguser/${row.userId}`}
+          style={{cursor: "pointer"}}
+           onClick={(e) => { handleCellClick(e,"following",row?.userId) }}
+        >
         {row.followingCount}
         </Link>
         </TableCell>      
 
-      <TableCell>
-        <Link to={`followeruser/${row.userId}`}>
+      <TableCell
+      
+      >
+        <Link
+          // to={`followeruser/${row.userId}`}
+          style={{cursor: "pointer"}}
+           onClick={(e) => { handleCellClick(e,"follower",row?.userId) }}
+        >
           {row.followerCount}
           </Link>
       </TableCell>      

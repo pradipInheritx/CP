@@ -49,6 +49,7 @@ const RewardTrModule = () => {
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
 
+  console.log(cmpTrList,"cmpTrList")
   console.log(debouncedSearchTerm ,page,rowsPerPage ,"debouncedSearchTerm")
 
   const dispatch = useDispatch();

@@ -14,13 +14,14 @@ import ConfirmDialog from '../../../../@jumbo/components/Common/ConfirmDialog';
 import CmtSearch from '../../../../@coremat/CmtSearch';
 import useStyles from './index.style';
 import Checkbox from '@material-ui/core/Checkbox';
+import { useHistory } from 'react-router';
 
 const filterOptionsList = [
   { label: 'Active', value: 'active' },
   { label: 'Suspended', value: 'suspended' },
 ];
 
-const FollowTableToolbar = ({
+const FollowingToolbar = ({
   selected,
   setSelected,
   onUserAdd,
@@ -73,7 +74,7 @@ const FollowTableToolbar = ({
   const onSearchChipDelete = () => setSearchTerm('');
 
   const numSelected = selected.length;
-
+const navigate = useHistory();
   return (
     <React.Fragment>
       <Toolbar
@@ -86,10 +87,13 @@ const FollowTableToolbar = ({
           </Typography>
         ) : (
           <Typography className={classes.title} variant="h4" id="tableTitle" component="div">
-            Follower List{' '}
-            {/* <Button color="primary" onClick={() => onUserAdd(true)}>
-              Add New User
-            </Button> */}
+            {/* Follower List{' '} */}
+              <Button color="primary" onClick={() =>
+                navigate.push(`/dashboard/followtable`)
+                // onUserAdd(true)
+              }>
+             Back to Full Table
+            </Button>
           </Typography>
         )}
 
@@ -149,7 +153,7 @@ const FollowTableToolbar = ({
   );
 };
 
-FollowTableToolbar.propTypes = {
+FollowingToolbar.propTypes = {
   selected: PropTypes.array,
   setSelected: PropTypes.func,
   filterOptions: PropTypes.array,
@@ -159,4 +163,4 @@ FollowTableToolbar.propTypes = {
   onUserAdd: PropTypes.func,
 };
 
-export default React.memo(FollowTableToolbar);
+export default React.memo(FollowingToolbar);

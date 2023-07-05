@@ -43,7 +43,7 @@ const getUserActions = user => {
   return actions;
 };
 
-const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
+const FollowersListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDelete, onUserView }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const onUserMenuClick = menu => {
@@ -86,11 +86,11 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
       <TableCell component="th" id={labelId} scope="row" padding="10">
         <Box display="flex" alignItems="center">
           <Box mr={{ xs: 4, md: 5 }}>
-            <CmtAvatar size={40} src={row?.avatar} alt={row?.name} />
+            <CmtAvatar size={40} src={row?.avatar} alt={row?.name || ""} />
           </Box>
           <div>
             <Typography className={classes.titleRoot} component="div" variant="h4">
-              {row?.displayName}
+              {row?.displayName || "-"}
             </Typography>
           </div>
         </Box>
@@ -112,4 +112,4 @@ const FollowTableListRow = ({ row, isSelected, onRowClick, onUserEdit, onUserDel
   );
 };
 
-export default React.memo(FollowTableListRow);
+export default React.memo(FollowersListRow);

@@ -104,7 +104,6 @@ useEffect(() => {
       .collection("nft_gallery")
     getCollectionType.get()
       .then((snapshot) => {
-
         let allcollection = snapshot.docs.map((doc) => doc.data())
         setCollectionType(allcollection)
 

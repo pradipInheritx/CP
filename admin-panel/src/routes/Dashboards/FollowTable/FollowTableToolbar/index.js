@@ -86,7 +86,7 @@ const FollowTableToolbar = ({
           </Typography>
         ) : (
           <Typography className={classes.title} variant="h4" id="tableTitle" component="div">
-            {/* Follow List{' '} */}
+            Follow Table{' '}
             {/* <Button color="primary" onClick={() => onUserAdd(true)}>
               Add New User
             </Button> */}

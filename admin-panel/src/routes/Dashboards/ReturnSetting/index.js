@@ -17,7 +17,7 @@ import { requiredMessage } from '@jumbo/constants/ErrorMessages';
 
 const ReturnSettingModule = () => {
   const classes = useStyles();
- 
+ const  validRegExp = new RegExp(/^\d*\.?\d*$/);
   const [usersFetched, setUsersFetched] = useState(false);
   const [isFilterApplied, setFilterApplied] = useState(false);
   const [filterOptions, setFilterOptions] = React.useState([]);
@@ -112,7 +112,8 @@ console.log(ReturnSettingDetelis,"ReturnSettingDetelis")
                 }            
                 value={considerableAffec}
                 onChange={event => {
-                  setConsiderableAffec(event.target.value)
+                  var finalValue = validRegExp.test(event.target.value);
+                  if(finalValue) setConsiderableAffec(event.target.value)
                   setConsiderableAffecError("")
                 }}              
               margin="normal"
@@ -131,7 +132,8 @@ console.log(ReturnSettingDetelis,"ReturnSettingDetelis")
                 }   
                 value={mediumAffect}
                 onChange={event => {
-                  setMediumAffect(event.target.value)
+                  var finalValue = validRegExp.test(event.target.value);
+                  if(finalValue) setMediumAffect(event.target.value)
                   setMediumAffectError("")
                 }}
               defaultValue={ReturnSettingDetelis?.mediumAffect}
@@ -150,8 +152,9 @@ console.log(ReturnSettingDetelis,"ReturnSettingDetelis")
                   "High Range"
                 }    
                 value={minorAffect}
-                onChange={event => {
-                  setMinorAffect(event.target.value)
+                onChange={event => {                                    
+                  var finalValue = validRegExp.test(event.target.value);
+                  if(finalValue) setMinorAffect(event.target.value)                  
                   setMinorAffectError("")
                 }}
               defaultValue={ReturnSettingDetelis?.minorAffect}

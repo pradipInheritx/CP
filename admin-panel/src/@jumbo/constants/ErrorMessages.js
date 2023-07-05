@@ -1,4 +1,6 @@
 export const requiredMessage = 'This field is required!';
+export const videoMessage = 'Video is required!';
+export const imageMessage = 'Image is required!';
 export const bothNotSelectSame = 'Can not select both same symbol!';
 export const AllrequiredMessage = 'All field is required!';
 export const canNotbothEmpty = 'Can Not both Empty One is required!';

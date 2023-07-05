@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Table, TableCell, TableContainer, TableRow } from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
-import FollowTableListRow from './FollowTableListRow';
-import UserTableHead from './FollowTableHead';
-import UserTableToolbar from './FollowTableToolbar';
+import FollowersListRow from './FollowersListRow';
+import FollowersHead from './FollowersHead';
+import FollowersToolbar from './FollowersToolbar';
 import { getComparator, stableSort } from '../../../@jumbo/utils/tableHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getFollowTable, getFollowersUsers, setCurrentFollowTable, setFollowersUsers } from '../../../redux/actions/ThreeTable';
 import ConfirmDialog from '../../../@jumbo/components/Common/ConfirmDialog';
 import { useDebounce } from '../../../@jumbo/utils/commonHelper';
 import useStyles from './index.style';
-import UserDetailView from './FollowTableDetailView';
+import FollowersDetailView from './FollowersDetailView';
 import NoRecordFound from './NoRecordFound';
 import { useParams } from 'react-router';
 
@@ -122,7 +122,7 @@ const UsersModule = () => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <UserTableToolbar
+        <FollowersToolbar
           selected={selected}
           setSelected={setSelected}
           onUserAdd={setOpenUserDialog}
@@ -133,7 +133,7 @@ const UsersModule = () => {
         />
         <TableContainer className={classes.container}>
           <Table stickyHeader className={classes.table} aria-labelledby="tableTitle" aria-label="sticky enhanced table">
-            <UserTableHead
+            <FollowersHead
               classes={classes}
               numSelected={selected.length}
               order={order}
@@ -147,7 +147,7 @@ const UsersModule = () => {
                 stableSort(followerUsersList, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <FollowTableListRow
+                    <FollowersListRow
                       key={index}
                       row={row}
                       onRowClick={handleRowClick}
@@ -183,7 +183,7 @@ const UsersModule = () => {
       </Paper>
 
       {/* {openUserDialog && <AddEditUser open={openUserDialog} onCloseDialog={handleCloseUserDialog} />} */}
-      {openViewDialog && <UserDetailView open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
+      {openViewDialog && <FollowersDetailView open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
 
     </div>
   );

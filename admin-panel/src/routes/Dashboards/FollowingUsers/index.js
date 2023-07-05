@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Paper, Table, TableCell, TableContainer, TableRow } from '@material-ui/core';
 import TableBody from '@material-ui/core/TableBody';
 import TablePagination from '@material-ui/core/TablePagination';
-import FollowTableListRow from './FollowTableListRow';
-import UserTableHead from './FollowTableHead';
-import UserTableToolbar from './FollowTableToolbar';
+import FollowTableListRow from './FollowingListRow';
+import FollowingHead from './FollowingHead';
+import FollowingToolbar from './FollowingToolbar';
 import { getComparator, stableSort } from '../../../@jumbo/utils/tableHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getFollowTable, getFollowersUsers, getFollowingUsers, setCurrentFollowTable, setFollowingUsers } from '../../../redux/actions/ThreeTable';
 import ConfirmDialog from '../../../@jumbo/components/Common/ConfirmDialog';
 import { useDebounce } from '../../../@jumbo/utils/commonHelper';
 import useStyles from './index.style';
-import UserDetailView from './FollowTableDetailView';
+import FollowingDetailView from './FollowingDetailView';
 import NoRecordFound from './NoRecordFound';
 import { useParams } from 'react-router';
 
@@ -122,7 +122,7 @@ const UsersModule = () => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <UserTableToolbar
+        <FollowingToolbar
           selected={selected}
           setSelected={setSelected}
           onUserAdd={setOpenUserDialog}
@@ -133,7 +133,7 @@ const UsersModule = () => {
         />
         <TableContainer className={classes.container}>
           <Table stickyHeader className={classes.table} aria-labelledby="tableTitle" aria-label="sticky enhanced table">
-            <UserTableHead
+            <FollowingHead
               classes={classes}
               numSelected={selected.length}
               order={order}
@@ -183,7 +183,7 @@ const UsersModule = () => {
       </Paper>
 
       {/* {openUserDialog && <AddEditUser open={openUserDialog} onCloseDialog={handleCloseUserDialog} />} */}
-      {openViewDialog && <UserDetailView open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
+      {openViewDialog && <FollowingDetailView open={openViewDialog} onCloseDialog={handleCloseViewDialog} />}
 
     </div>
   );

@@ -24,12 +24,18 @@ export const getRewardTr = ( id, filterOptions = [], searchTerm = '',page ,rowsP
           dispatch(fetchSuccess());
           dispatch({ type: GET_REWARDTR, payload: data.data.result });
           
+          console.log(data.data.result ,"data.dat")
           if (callbackFun) callbackFun(data.data);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
       })
       .catch(error => {
+
+        console.log(error,"data.data.resultget")
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError('There was something issue in responding server'));
       });
   };

@@ -21,7 +21,7 @@ export const getTrTypes = (filterOptions = [], searchTerm = '', callbackFun) => 
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          dispatch({ type: GET_TRTYPES, payload: data.data.result });
+          dispatch({ type: GET_TRTYPES, payload: data.data.result.timeframes });
           
           if (callbackFun) callbackFun(data.data);
         } else {
@@ -29,6 +29,9 @@ export const getTrTypes = (filterOptions = [], searchTerm = '', callbackFun) => 
         }
       })
       .catch(error => {
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError('There was something issue in responding server'));
       });
   };

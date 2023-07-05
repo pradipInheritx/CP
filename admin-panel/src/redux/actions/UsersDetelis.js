@@ -18,12 +18,16 @@ export const getUsers = (filterOptions = [], searchTerm = '', callbackFun) => {
         if (data.status === 200) {
           dispatch(fetchSuccess());
           dispatch({ type: GET_USERDETELIS, payload: data.data.result });
+          
           if (callbackFun) callbackFun(data.data.result);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));
         }
       })
       .catch(error => {
+        if (error.response.data.result.name == "TokenExpiredError") {
+          localStorage.clear();
+        }
         dispatch(fetchError('There was something issue in responding server'));
       });
   };
