@@ -1,5 +1,5 @@
 import { firestore } from "firebase-admin";
-// import * as admin from "firebase-admin";
+import * as admin from "firebase-admin";
 import { toUpper } from "lodash";
 import "../../../index"
 interface Sets {
@@ -308,7 +308,8 @@ export const getCardListing = async (req: any, res: any) => {
         if (search) {
             getAllAlbumsData = await firestore()
                 .collection("cardsDetails")
-                .where(orderByConsolidate, "==", search)
+                .where(orderByConsolidate, ">=", search)
+                .where(orderByConsolidate, "<=", search + "\uf8ff")
                 .get();
         } else {
             getAllAlbumsData = await firestore()
@@ -342,11 +343,17 @@ export const getCardListing = async (req: any, res: any) => {
             }
         );
 
+
+        const getTotalDataQuery = await admin.firestore().collection('cardsDetails').get();
+        const getTotal = getTotalDataQuery.docs.length
+        console.log("Total data--", getTotal)
+
+
         console.log("getNFTResponse----------", getNFTResponse)
         res.status(200).send({
             status: true,
             message: "Cards fetched successfully",
-            result: { data: getNFTResponse },
+            result: { data: getNFTResponse, total: getTotal },
         });
     } catch (error) {
         errorLogging("getAlbumListing", "ERROR", error);
