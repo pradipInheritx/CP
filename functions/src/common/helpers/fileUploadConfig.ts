@@ -12,6 +12,7 @@ export const imageUploadFunction = async (req: any, res: any) => {
         const checkId = forModule.toUpperCase() === "CARD" ? await getCardDetails(id)
             : forModule.toUpperCase() === "ALBUM" ? await getAlbumDetails(id)
                 : { albumName: "", cardName: "", message: true };
+        console.log("check Id ------", checkId)
         if (checkId?.message) {
             return res.status(400).send({
                 status: false,
@@ -43,13 +44,13 @@ export const imageUploadFunction = async (req: any, res: any) => {
             fileUpload.getSignedUrl({
                 action: 'read',
                 expires: '03-09-2491'
-            }).then(signedUrls => {
+            }).then(async (signedUrls) => {
                 console.log("Public Url ------\n", signedUrls[0]);
-                updateFileLink(forModule, fileType, id, signedUrls[0]);
+                const result = await updateFileLink(forModule, fileType, id, signedUrls[0]);
                 return res.status(200).send({
                     status: true,
-                    message: "Image uploaded and card image url updated successfully",
-                    result: { id, imageUrl: signedUrls[0] },
+                    message: "Media uploaded and card image url updated successfully",
+                    result: { id, ...result },
                 });
             });
 
