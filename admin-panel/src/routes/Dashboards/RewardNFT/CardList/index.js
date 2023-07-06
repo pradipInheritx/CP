@@ -21,7 +21,8 @@ import { deleteRewardCard, getRewardAlbum, getRewardCard, setCurrentCard, update
 
 const RewardCardList = () => {
   const classes = useStyles();  
-  const { cardList , albumList,totalCount} = useSelector(({ RewardNFT }) => RewardNFT);
+  const { cardList, albumList, totalCount } = useSelector(({ RewardNFT }) => RewardNFT);
+  console.log(totalCount,cardList,"totalCount")
   const [orderBy, setOrderBy] = React.useState('name');
   const [order, setOrder] = React.useState('asc');
   const [page, setPage] = React.useState(0);
@@ -189,9 +190,9 @@ const handleConfirmUpdate = () => {
             />
             <TableBody>
               {!!cardList.length ? (
-                stableSort(cardList, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => (
+                // stableSort(cardList, getComparator(order, orderBy))
+                //   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  cardList.map((row, index) => (
                     <CardListRow
                       key={index}
                       row={row}

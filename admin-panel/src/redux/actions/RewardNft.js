@@ -72,7 +72,7 @@ export const addNewRewardAlbum = (albumData, videoUrl , callbackFun) => {
         if(data.data.result.albumId && videoUrl)
           {
           axios.post(`${ForVideoImg}ALBUM/video/${data.data.result.albumId}`, formData, config).then((data) => {
-                dispatch({ type: EDIT_REWARDALBUM, payload: data.data.result });
+                dispatch({ type: EDIT_REWARDALBUMIMG, payload: data.data.result });
               dispatch(fetchSuccess(data.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
@@ -112,7 +112,7 @@ export const updateRewardAlbum = (Albumid,AlbumData, videoUrl,callbackFun) => {
           if(Albumid && videoUrl)
           {
             axios.post(`${ForVideoImg}ALBUM/video/${Albumid}`, formData, config).then((data) => {
-              dispatch({ type: EDIT_REWARDALBUM, payload: data.data.result });
+              dispatch({ type: EDIT_REWARDALBUMIMG, payload: data.data.result });
               dispatch(fetchSuccess(data.data.message));
               if (callbackFun) callbackFun(data.data);
             }).catch((error) => {
@@ -180,7 +180,7 @@ export const getRewardCard = (filterOptions = [], searchTerm = '', page,rowsPerP
       .then(data => {
         if (data.status === 200 || data.status === 201 || data.status === 204) {
           dispatch(fetchSuccess());
-          dispatch({ type: GET_REWARDCARD, payload: data.data.result.data});
+          dispatch({ type: GET_REWARDCARD, payload: data.data.result});
           if (callbackFun) callbackFun(data.data.result.data);
         } else {
           dispatch(fetchError('There was something issue in responding server.'));

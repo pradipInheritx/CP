@@ -50,9 +50,10 @@ export default (state = INIT_STATE, action) => {
       };
     }
     case EDIT_REWARDALBUMIMG: {
+      console.log(action.payload,state.albumList.map(album => (album.albumId === action.payload.id ? {...album,albumVideoUrl:action.payload.albumVideoUrl} : album)),"albumList")
       return {
         ...state,
-        albumList: state.albumList.map(album => (album.albumId === action.payload.id ? {...album,albumVideoUrl:action.payload.videoUrl} : album)),
+        albumList: state.albumList.map(album => (album.albumId === action.payload.id ? {...album,albumVideoUrl:action.payload.albumVideoUrl} : album)),
       };
     }
     case DELETE_REWARDALBUM: {
@@ -65,11 +66,11 @@ export default (state = INIT_STATE, action) => {
       // Reward Card
       
     case GET_REWARDCARD: {
-      console.log(action.payload,"alllist")
+      
       return {        
         ...state,
-        cardList: action.payload,
-        totalCount: action.payload?.totalCount,
+        cardList: action.payload.data,
+        totalCount: action.payload?.total,
       };
     }
     case SET_REWARDCARD_DETAILS: {

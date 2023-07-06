@@ -40,7 +40,7 @@ const RewardAlbumList = () => {
 
   const dispatch = useDispatch();
 
-console.log(albumList,"allalbumList")
+console.log(albumList,"allalbumListCheck")
 
   useEffect(() => {
     dispatch(
