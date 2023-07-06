@@ -20,6 +20,7 @@ const Influencers = () => {
     }
   }, [/* chosenUserType */userTypes])
   // @ts-ignore
+console.log(leaders,"leaderslist")
 
   return (
     <div>

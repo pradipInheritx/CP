@@ -312,10 +312,11 @@ function App() {
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   const [socketConnect, setSocketConnect] = useState<any>(false)
-  // @ts-ignore
-  const getCoinPrice=JSON.parse(localStorage.getItem('CoinsPrice'))
+  // @ts-ignore  
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
-  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>( socketConnect ? getCoins() as { [symbol: string]: Coin }: localPrice);
+  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
+
   const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
@@ -375,6 +376,11 @@ let params = useParams();
   const [pwaPopUp, setPwaPopUp] = useState('block')
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
+
+console.log(coins,"allcoinsCheck")
+
+  const Coinkeys = Object.keys(coins && coins) || []
+  
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
@@ -557,7 +563,7 @@ let params = useParams();
   //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
   // }, [user?.uid, isAdmin]);
 
-  useEffect(() => {
+  useEffect(() => {    
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
       setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
 
@@ -645,7 +651,7 @@ let params = useParams();
     coinData.get()
       .then((snapshot: any) => {
         //  console.log('allcoin',snapshot.data())
-        setCoins(snapshot.data());
+        setCoins(snapshot.data());        
       }); 
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
@@ -684,22 +690,6 @@ let params = useParams();
     });
   }, [user?.uid]);
 
-
-// useEffect(() => {
-//       window.addEventListener('beforeunload', FixCoinPrice)
-     
-//       return () => {
-//       window.removeEventListener('beforeunload', FixCoinPrice)
-//     };
-// }, []);
-  
-  
-
-//   const FixCoinPrice = () => {
-//     const allCoinPrice=coins
-//     localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice));
-//   }
-
 window.onbeforeunload = function() {
   //  localStorage.clear();
       const allCoinPrice=coins
@@ -708,6 +698,7 @@ window.onbeforeunload = function() {
 
   useEffect(() => {
     const auth = getAuth();
+    console.log(auth,"getauth")
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
