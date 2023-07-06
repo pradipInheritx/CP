@@ -382,7 +382,7 @@ useEffect(() => {
               }}
             >
               <p> UPGRADE NOW </p>
-              <span style={{ fontSize: "12px"}}>One time Payment of $199</span>
+              <span style={{ fontSize: "12px"}}>One time Payment of <del>$199</del> $99</span>
             </button>
           </div>        
         </div>
