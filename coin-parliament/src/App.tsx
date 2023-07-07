@@ -67,7 +67,7 @@ import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
 import { getToken } from "firebase/messaging";
-import { Form } from "react-bootstrap";
+import { Form, ListGroup } from "react-bootstrap";
 import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
 import ContentContext, { ContentPage } from "./Contexts/ContentContext";
@@ -191,13 +191,13 @@ function App() {
   //     const elem = document.documentElement;
   //     if (elem.requestFullscreen) {
   //       elem.requestFullscreen();
-  //     } 
+  //     }
   //     // @ts-ignore
   //     else if (elem?.webkitRequestFullscreen) {
   //        // @ts-ignore
   //       elem?.webkitRequestFullscreen();
   //     }
-  //      // @ts-ignore 
+  //      // @ts-ignore
   //     else if (elem?.mozRequestFullScreen) {
   //        // @ts-ignore
   //       elem?.mozRequestFullScreen();
@@ -209,6 +209,8 @@ function App() {
   //     }
   //   }
   // }
+  
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -309,15 +311,18 @@ function App() {
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
-  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
-    getCoins() as { [symbol: string]: Coin }
-  );
+  const [socketConnect, setSocketConnect] = useState<any>(false)
+  // @ts-ignore  
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
+  const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
+  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
+
   const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
 let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  console.log(symbol1,symbol2 ,params,window.location.pathname,"allCoins")
+  
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
@@ -342,7 +347,7 @@ let params = useParams();
   const [totals, setTotals] = useState<{ [key: string]: Totals }>(
     {} as { [key: string]: Totals }
   );
-  const [timeframes, setTimeframes] = useState<TimeFrame[]>([]);
+  const [timeframes, setTimeframes] = useState<TimeFrame[]>([]);  
   const [voteRules, setVoteRules] = useState<VoteRules>({} as VoteRules);
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
@@ -356,6 +361,7 @@ let params = useParams();
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
+  
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -370,6 +376,11 @@ let params = useParams();
   const [pwaPopUp, setPwaPopUp] = useState('block')
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
+
+console.log(coins,"allcoinsCheck")
+
+  const Coinkeys = Object.keys(coins && coins) || []
+  
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
@@ -391,7 +402,6 @@ let params = useParams();
       Logout(setUser)
     }
   }, [])
-
 
   const onClick = (evt: any) => {
     // evt.preventDefault();
@@ -525,6 +535,8 @@ let params = useParams();
     }).then((token) => setFcmToken(token));
   }, []);
 
+console.log(fcmToken,"fcmToken")
+
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
     if (localStorageLang && languages.includes(localStorageLang)) {
@@ -553,7 +565,7 @@ let params = useParams();
   //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
   // }, [user?.uid, isAdmin]);
 
-  useEffect(() => {
+  useEffect(() => {    
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
       setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
 
@@ -641,7 +653,7 @@ let params = useParams();
     coinData.get()
       .then((snapshot: any) => {
         //  console.log('allcoin',snapshot.data())
-        setCoins(snapshot.data());
+        setCoins(snapshot.data());        
       }); 
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
@@ -680,15 +692,15 @@ let params = useParams();
     });
   }, [user?.uid]);
 
-
-useEffect(() => {
- 
-}, [])
-
-
+window.onbeforeunload = function() {
+  //  localStorage.clear();
+      const allCoinPrice=coins
+      localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice));
+}
 
   useEffect(() => {
     const auth = getAuth();
+    console.log(auth,"getauth")
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
@@ -926,6 +938,7 @@ useEffect(() => {
     console.log('websocket connected first time')
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
+      setSocketConnect(true)
       ws.send(JSON.stringify({
         method: 'SUBSCRIBE',
         params: coinTikerList,
@@ -935,7 +948,7 @@ useEffect(() => {
 
     socket = new WebSocket('wss://stream.crypto.com/v2/market');
 
-    socket.onopen = () => {
+    socket.onopen = () => {      
       const req = {
         id: 1,
         method: 'subscribe',

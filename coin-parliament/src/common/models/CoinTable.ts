@@ -29,9 +29,11 @@ export const getData = ({
   coins: { [p: string]: Coin };
   totals: { [p: string]: Totals };
   allCoins: string[]
-}) => {
-  return Object.values(coins)
-    .map((coin) => {
+  }) => {
+  
+  const coinkey = Object.values(coins)
+  
+  return coinkey.map((coin) => {
       return {
         symbol: coin.symbol,
         votes: getVotes(coin.symbol, totals),
