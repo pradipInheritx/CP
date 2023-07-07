@@ -535,7 +535,6 @@ console.log(coins,"allcoinsCheck")
     }).then((token) => setFcmToken(token));
   }, []);
 
-console.log(fcmToken,"fcmToken")
 
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
