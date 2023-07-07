@@ -70,7 +70,7 @@ const SingleCoin = () => {
   const translate = useTranslation();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const { user, userInfo, votesLast24Hours } = useContext(UserContext);
-  const { coins,setCoins,setMyCoins, totals, ws, socket } = useContext(CoinContext);
+  const { coins, setCoins, setMyCoins, totals, ws, socket } = useContext(CoinContext);
   const { showModal } = useContext(NotificationContext);
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
   const [voteId, setVoteId] = useState<string>();
@@ -94,10 +94,10 @@ const SingleCoin = () => {
   const setVoteDetails = useContext(VoteDispatchContext);
 
   useEffect(() => {
-  if (coinUpdated) {
-    setMyCoins(coinUpdated)
-  }
-}, [coinUpdated])
+    if (coinUpdated) {
+      setMyCoins(coinUpdated)
+    }
+  }, [coinUpdated])
 
   // useEffect(() => {
   //   const interval = setInterval(() => {

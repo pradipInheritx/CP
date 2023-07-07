@@ -108,16 +108,15 @@ const Mine = () => {
   // @ts-ignore 
   const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
-
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+
   const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
   var urlName = window.location.pathname.split('/');
   const ProfileUrl = urlName.includes("profile")
-  
-  console.log(ProfileUrl,urlName,"ProfileUrl")
 
+  // console.log(userInfo?.voteStatistics?.score, currentCMPDiff, prevCMPDiff, currentCMP, score, remainingCMP, 'pkkkk');
 
   useEffect(() => {
     // @ts-ignore

@@ -209,7 +209,7 @@ function App() {
   //     }
   //   }
   // }
-  
+
 
   useEffect(() => {
     window.scrollTo({
@@ -320,9 +320,8 @@ function App() {
   const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
-let params = useParams();
+  let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-  
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
@@ -347,7 +346,7 @@ let params = useParams();
   const [totals, setTotals] = useState<{ [key: string]: Totals }>(
     {} as { [key: string]: Totals }
   );
-  const [timeframes, setTimeframes] = useState<TimeFrame[]>([]);  
+  const [timeframes, setTimeframes] = useState<TimeFrame[]>([]);
   const [voteRules, setVoteRules] = useState<VoteRules>({} as VoteRules);
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
@@ -361,7 +360,7 @@ let params = useParams();
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
-  
+
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -377,10 +376,10 @@ let params = useParams();
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
 
-console.log(coins,"allcoinsCheck")
+  console.log(coins, "allcoinsCheck")
 
   const Coinkeys = Object.keys(coins && coins) || []
-  
+
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
@@ -564,7 +563,7 @@ console.log(coins,"allcoinsCheck")
   //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
   // }, [user?.uid, isAdmin]);
 
-  useEffect(() => {    
+  useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
       setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
 
@@ -646,14 +645,14 @@ console.log(coins,"allcoinsCheck")
     //   // console.log('allcoins',coins)
     //   // saveCoins(newAllCoins);
     // }); 
-     const coinData = firebase
+    const coinData = firebase
       .firestore()
       .collection("stats").doc('coins')
     coinData.get()
       .then((snapshot: any) => {
         //  console.log('allcoin',snapshot.data())
-        setCoins(snapshot.data());        
-      }); 
+        setCoins(snapshot.data());
+      });
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);
@@ -691,15 +690,15 @@ console.log(coins,"allcoinsCheck")
     });
   }, [user?.uid]);
 
-window.onbeforeunload = function() {
-  //  localStorage.clear();
-      const allCoinPrice=coins
-      localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice));
-}
+  window.onbeforeunload = function () {
+    //  localStorage.clear();
+    const allCoinPrice = coins
+    localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice));
+  }
 
   useEffect(() => {
     const auth = getAuth();
-    console.log(auth,"getauth")
+    console.log(auth, "getauth")
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
@@ -947,7 +946,7 @@ window.onbeforeunload = function() {
 
     socket = new WebSocket('wss://stream.crypto.com/v2/market');
 
-    socket.onopen = () => {      
+    socket.onopen = () => {
       const req = {
         id: 1,
         method: 'subscribe',
@@ -1121,6 +1120,9 @@ window.onbeforeunload = function() {
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
+      if (!pathname.toLowerCase().includes(`profile/mine`)) {
+        localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
+      }
       setVoteDetails((prev: VoteContextType) => {
         return {
           ...prev,
@@ -1128,7 +1130,7 @@ window.onbeforeunload = function() {
           openResultModal: true
         }
       });
-      setCurrentCMP(completedVotes[0]?.score || 0)
+      setCurrentCMP((completedVotes[0]?.score || 0) /* + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0') */)
     }
   }, [completedVotes, voteDetails.openResultModal]);
 
@@ -1170,22 +1172,22 @@ window.onbeforeunload = function() {
       let voteTime = new Date(lessTimeVote?.expiration);
 
       // finding the difference in total seconds between two dates
-      
+
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       // if (second_diff > 0) {
-      const timer = setTimeout(async () => {      
+      const timer = setTimeout(async () => {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
 
-        console.log(coins[coin1.toUpperCase()]?.price,coins[coin2.toUpperCase()],coins,"coinsname")
+        console.log(coins[coin1.toUpperCase()]?.price, coins[coin2.toUpperCase()], coins, "coinsname")
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
             coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
             voteId: lessTimeVote?.id,
             voteTime: lessTimeVote?.voteTime,
-            valueVotingTime: lessTimeVote?.valueVotingTime,            
+            valueVotingTime: lessTimeVote?.valueVotingTime,
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
             userId: lessTimeVote?.userId,
@@ -1193,10 +1195,10 @@ window.onbeforeunload = function() {
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
-                status: voteImpact.current?.impact,                
-                valueExpirationTimeOfCoin1:myCoins[coin1.toUpperCase()]?.price || null,                
-                valueExpirationTimeOfCoin2:myCoins[coin2.toUpperCase()]?.price || null,
-              }                            
+                status: voteImpact.current?.impact,
+                valueExpirationTimeOfCoin1: myCoins[coin1.toUpperCase()]?.price || null,
+                valueExpirationTimeOfCoin2: myCoins[coin2.toUpperCase()]?.price || null,
+              }
               :
               {}
           )
@@ -1213,14 +1215,7 @@ window.onbeforeunload = function() {
                   ...prev.filter(value => value.voteId != res.voteId),
                   { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' }
                 ]
-              })
-              // setVoteDetails((prev: VoteContextType) => {
-              //   return {
-              //     ...prev,
-              //     lessTimeVote: { ...res, voteType: coin.length > 1 ? 'pair' : 'coin' },
-              //     openResultModal: true
-              //   }
-              // })
+              });
             }
             // setModalData(response!.data);
           }
@@ -1428,7 +1423,7 @@ window.onbeforeunload = function() {
                       coins,
                       setCoins,
                       myCoins,
-                        setMyCoins,
+                      setMyCoins,
                       leaders,
                       setLeaders,
                       totals,
@@ -1820,7 +1815,7 @@ window.onbeforeunload = function() {
                       {modalOpen && <div className='fade modal-backdrop show' />}
                       {/* //vote result modal */}
                       {/* @ts-ignore */}
-                      {voteDetails?.lessTimeVote && user&&  <ModalForResult
+                      {voteDetails?.lessTimeVote && user && <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
