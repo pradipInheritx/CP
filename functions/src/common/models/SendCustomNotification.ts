@@ -101,35 +101,46 @@ export const sendNotificationForFollwersFollowings = async (
   follwersFollwing.forEach(async (id: any) => {
     console.log("id:", id)
     let userQuery = await firestore().collection("users").doc(id).get();
-    var follwersFollwingUserData: any = userQuery.data();
-    var token = follwersFollwingUserData.token;
+    let follwersFollwingUserData: any = userQuery.data();
 
-    console.log("userData:", userData)
-    console.log("token:", token)
-    console.log(`${userData.displayName} just voted for ${coin} take action now!`)
-    const message: messaging.Message = {
-      token,
-      notification: {
-        title: `👫 ${userData.displayName} just voted for ${coin}`,
-        body: 'Make Your Voice Heard Too! Vote Now!',
-      },
-      webpush: {
-        headers: {
-          Urgency: "high",
-        },
-        fcmOptions: {
-          link: "#", // TODO: put link for deep linking
-        },
-      },
-    };
-    console.log("Message:", message);
-    await sendNotification({
-      token,
-      id,
-      body: `Make Your Voice Heard Too! Vote Now!`,
-      title: `👫 ${userData.displayName} just voted for ${coin}`,
-      message,
-    });
+    if (follwersFollwingUserData) {
+      let token = follwersFollwingUserData?.token ? follwersFollwingUserData.token : null;
+      if (token) {
+        console.log("userData:-------", userData)
+        console.log("token:------- ", token)
+        console.log(`${userData.displayName} just voted for ${coin} take action now!`)
+        const message: messaging.Message = {
+          token,
+          notification: {
+            title: `👫 ${userData.displayName} just voted for ${coin}`,
+            body: 'Make Your Voice Heard Too! Vote Now!',
+          },
+          webpush: {
+            headers: {
+              Urgency: "high",
+            },
+            fcmOptions: {
+              link: "#", // TODO: put link for deep linking
+            },
+          },
+        };
+        console.log("Message:", message);
+        await sendNotification({
+          token,
+          id,
+          body: `Make Your Voice Heard Too! Vote Now!`,
+          title: `👫 ${userData.displayName} just voted for ${coin}`,
+          message,
+        });
+      }
+      else {
+        console.info("USER_TOKEN_NOT_FOUND", `User token not found of this user : ${follwersFollwingUserData}`)
+      }
+    }
+    else {
+      console.info("USER_NOT_FOUND", `User not found of this userId : ${id}`)
+    }
+
   });
 };
 
