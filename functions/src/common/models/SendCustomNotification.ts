@@ -90,9 +90,10 @@ export const sendNotificationForFollwersFollowings = async (
   userData.subscribers.forEach((user: any) => {
     follwersFollwing.push(user);
   });
-  userData.children.forEach((user: any) => {
+  userData.leader.forEach((user: any) => {
     follwersFollwing.push(user);
   });
+  console.log("Array Following--------", follwersFollwing)
 
   //remove Duplicate Values and user himself
   follwersFollwing = follwersFollwing.filter((item: any,
@@ -134,7 +135,7 @@ export const sendNotificationForFollwersFollowings = async (
         });
       }
       else {
-        console.info("USER_TOKEN_NOT_FOUND", `User token not found of this user : ${follwersFollwingUserData}`)
+        console.info("USER_TOKEN_NOT_FOUND", `User token not found of this user : ${id}`)
       }
     }
     else {
