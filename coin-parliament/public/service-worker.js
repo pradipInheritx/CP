@@ -73,8 +73,8 @@ messaging.setBackgroundMessageHandler(function (payload) {
   };
 
   /* eslint-disable-next-line no-restricted-globals */
-  // self.registration.showNotification(notificationTitle, notificationOptions);
-  self.ServiceWorkerRegistration.showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(notificationTitle, notificationOptions);
+  // self.ServiceWorkerRegistration.showNotification(notificationTitle, notificationOptions);
 
   console.log("showed", notificationTitle, notificationOptions);
 });
