@@ -443,7 +443,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
           );
         } else {
           return (
-            <div className="" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, marginLeft: "10px" }}>
+            <div className="" style={{ color: '#6352e8', fontSize: '30px', fontWeight: 400, }}>
               {hours < 1 ? null : `${hours} :`}
               {minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}

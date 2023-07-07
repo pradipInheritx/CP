@@ -67,7 +67,7 @@ import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
 import { getToken } from "firebase/messaging";
-import { Form } from "react-bootstrap";
+import { Form, ListGroup } from "react-bootstrap";
 import { rest } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
 import ContentContext, { ContentPage } from "./Contexts/ContentContext";
@@ -191,13 +191,13 @@ function App() {
   //     const elem = document.documentElement;
   //     if (elem.requestFullscreen) {
   //       elem.requestFullscreen();
-  //     } 
+  //     }
   //     // @ts-ignore
   //     else if (elem?.webkitRequestFullscreen) {
   //        // @ts-ignore
   //       elem?.webkitRequestFullscreen();
   //     }
-  //      // @ts-ignore 
+  //      // @ts-ignore
   //     else if (elem?.mozRequestFullScreen) {
   //        // @ts-ignore
   //       elem?.mozRequestFullScreen();
@@ -209,6 +209,8 @@ function App() {
   //     }
   //   }
   // }
+
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -309,15 +311,22 @@ function App() {
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
-  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
-    getCoins() as { [symbol: string]: Coin }
-  );
+  const [socketConnect, setSocketConnect] = useState<any>(false)
+  // @ts-ignore  
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
+  const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
+  const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
+
   const [myCoins, setMyCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
+<<<<<<< HEAD
   console.log(symbol1, symbol2, params, window.location.pathname, "allCoins")
+=======
+
+>>>>>>> aabea5fe301c79ddb6b8c9e5c5b725d36837c0c1
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
@@ -356,6 +365,7 @@ function App() {
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
+
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -370,6 +380,11 @@ function App() {
   const [pwaPopUp, setPwaPopUp] = useState('block')
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
+
+  console.log(coins, "allcoinsCheck")
+
+  const Coinkeys = Object.keys(coins && coins) || []
+
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
@@ -391,7 +406,6 @@ function App() {
       Logout(setUser)
     }
   }, [])
-
 
   const onClick = (evt: any) => {
     // evt.preventDefault();
@@ -524,6 +538,8 @@ function App() {
       vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
     }).then((token) => setFcmToken(token));
   }, []);
+
+  console.log(fcmToken, "fcmToken")
 
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
@@ -680,15 +696,15 @@ function App() {
     });
   }, [user?.uid]);
 
-
-  useEffect(() => {
-
-  }, [])
-
-
+  window.onbeforeunload = function () {
+    //  localStorage.clear();
+    const allCoinPrice = coins
+    localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice));
+  }
 
   useEffect(() => {
     const auth = getAuth();
+    console.log(auth, "getauth")
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
@@ -926,6 +942,7 @@ function App() {
     console.log('websocket connected first time')
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
+      setSocketConnect(true)
       ws.send(JSON.stringify({
         method: 'SUBSCRIBE',
         params: coinTikerList,

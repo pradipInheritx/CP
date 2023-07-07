@@ -116,7 +116,7 @@ const Mine = () => {
   var urlName = window.location.pathname.split('/');
   const ProfileUrl = urlName.includes("profile")
 
-  console.log(userInfo?.voteStatistics?.score, currentCMPDiff, prevCMPDiff, currentCMP, score, remainingCMP, 'pkkkk');
+  // console.log(userInfo?.voteStatistics?.score, currentCMPDiff, prevCMPDiff, currentCMP, score, remainingCMP, 'pkkkk');
 
   useEffect(() => {
     // @ts-ignore
