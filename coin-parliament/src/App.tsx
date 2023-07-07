@@ -322,11 +322,6 @@ function App() {
   );
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
-<<<<<<< HEAD
-  console.log(symbol1, symbol2, params, window.location.pathname, "allCoins")
-=======
-
->>>>>>> aabea5fe301c79ddb6b8c9e5c5b725d36837c0c1
   const [loader, setLoader] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
