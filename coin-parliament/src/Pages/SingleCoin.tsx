@@ -90,6 +90,8 @@ const SingleCoin = () => {
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules } = useContext(AppContext);
+  const voteDetails = useContext(VoteContext);
+  const setVoteDetails = useContext(VoteDispatchContext);
 
   useEffect(() => {
   if (coinUpdated) {
@@ -129,7 +131,7 @@ const SingleCoin = () => {
       clearInterval(interval)
     }
   }, [])
-  // console.log('coinprice',coinUpdated[symbol1]?.randomDecimal)
+  
   useEffect(() => {
     if (!ws) return
 
@@ -147,7 +149,7 @@ const SingleCoin = () => {
         //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
         // }
 
-        console.log('coinprice', Number(message?.c).toFixed(dot?.decimal || 2), coinUpdated[symbol]?.price, Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(coinUpdated[symbol]?.price))
+        // console.log('coinprice', Number(message?.c).toFixed(dot?.decimal || 2), coinUpdated[symbol]?.price, Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(coinUpdated[symbol]?.price))
         setCoinUpdated((prevCoins) => ({
           ...prevCoins,
           [symbol]: {
@@ -223,7 +225,7 @@ const SingleCoin = () => {
       if (v) {
         // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
         // console.log(v.data(), "checkallv.data")
-        if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
+        // if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
         setVote(v.data());
         setVoteId(v.id);
       } else setVote({} as VoteResultProps);
@@ -258,6 +260,8 @@ const SingleCoin = () => {
             setSelectedTimeFrameArray(newTimeframe)
           }
           else {
+            // console.log("i am working")
+            setSelectedTimeFrameArray(newTimeframe)
             // AllvoteValueObject.splice(index, 1);               
             // setAllButtonTime(AllvoteValueObject);
             //  setVotedDetails(AllvoteValueObject);
@@ -267,7 +271,7 @@ const SingleCoin = () => {
 
           }
         }))
-        console.log(tempAllActiveVotes, 'testing');
+        
 
         setAllActiveVotes(() => {
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
@@ -278,6 +282,8 @@ const SingleCoin = () => {
       });
 
   }, [user?.uid, params?.id, selectedTimeFrame, forRun, voteId, vote])
+
+
 
   useEffect(() => {
     return () => {
@@ -301,7 +307,7 @@ const SingleCoin = () => {
 
   useEffect(() => {
 
-    // console.log("i am working now", voteId)
+    
     if (voteId) {
       // getResultForPendingVote()
       onSnapshot(doc(db, "votes", voteId), (doc) => {
@@ -332,8 +338,7 @@ const SingleCoin = () => {
 
 
 
-  const voteDetails = useContext(VoteContext);
-  const setVoteDetails = useContext(VoteDispatchContext);
+  
 
 
   const canVote = useMemo(() => {
@@ -371,7 +376,7 @@ const SingleCoin = () => {
   const [popUpOpen, setpopUpOpen] = useState(false);
 
 
-  // console.log(hideButton,"i am working popUpOpen")
+  
 
 
 
