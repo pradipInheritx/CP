@@ -151,7 +151,21 @@ const Mine = () => {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
-        Swal.fire({
+        if (ProfileUrl) {   
+          Cmppopup();
+        }
+        
+        setShowBack(false)
+      }, 10000);
+    }
+  }, []);
+
+
+  const Cmppopup = () => {        
+    var urlName = window.location.pathname.split('/');
+    const UrlCheck = urlName.includes("profile")
+    if (UrlCheck) {
+     Swal.fire({    
           html:
             // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
             "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
@@ -169,11 +183,11 @@ const Mine = () => {
             goBack()
           }
         });
-
-        setShowBack(false)
-      }, 10000);
     }
-  }, []);
+    else{
+// console.log("i am working not")
+    }      
+}
 
   const openpopup = () => {
     if (showBack) {
