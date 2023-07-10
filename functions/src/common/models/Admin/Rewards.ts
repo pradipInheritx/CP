@@ -501,6 +501,13 @@ export const updateCard = async (req: any, res: any) => {
 export const deleteAlbum = async (req: any, res: any) => {
     try {
         const { albumId } = req.params
+
+        const checkAlbum = await getAlbumDetails(albumId);
+        if (checkAlbum) return res.status(404).send({
+            status: false,
+            message: `This album does not exist: ${albumId}`,
+            result: null,
+        });
         const setsArray: any = []
         const getAllSetsQuery = await firestore().collection("nftGallery").doc(albumId).collection("setDetails").get();
         getAllSetsQuery.docs.map((sets: any) => {
@@ -532,6 +539,21 @@ export const deleteSet = async (req: any, res: any) => {
     try {
         const { albumId, setId } = req.body
 
+        const checkAlbum = await getAlbumDetails(albumId);
+        if (checkAlbum) return res.status(404).send({
+            status: false,
+            message: `This album does not exist: ${albumId}`,
+            result: null,
+        });
+        const checkSets = await getSetsDetails(albumId, setId);
+        if (checkSets) return res.status(404).send({
+            status: false,
+            message: `This set does not exist: ${setId}`,
+            result: null,
+        });
+
+
+
         await firestore().collection("nftGallery").doc(albumId).collection("setDetails").doc(setId).delete();
 
         res.status(200).send({
@@ -553,6 +575,13 @@ export const deleteSet = async (req: any, res: any) => {
 export const deleteCard = async (req: any, res: any) => {
     try {
         const { cardId } = req.params
+
+        const checkCard = await getCardDetails(cardId);
+        if (checkCard) return res.status(404).send({
+            status: false,
+            message: `This card does not exist: ${cardId}`,
+            result: null,
+        });
 
         await firestore().collection("cardsDetails").doc(cardId).delete();
 
