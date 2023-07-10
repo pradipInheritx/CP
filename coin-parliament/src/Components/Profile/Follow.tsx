@@ -55,7 +55,7 @@ console.log(userInfo,"userInfo")
   }, [userInfo?.subscribers]);
 
 
-console.log(leaders,"allleaders")
+console.log(leaders,subscribers,"allleaders")
   return (
     <Tabs
       defaultActiveKey="following"

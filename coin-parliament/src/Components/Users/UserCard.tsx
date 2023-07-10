@@ -185,6 +185,8 @@ const UserCard = ({
 
   }
 
+  
+
   return (
     <Component515
       style={{ boxShadow: !pathname?.includes("/followers") ? "none" : "" }}

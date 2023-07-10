@@ -214,7 +214,7 @@ const Header = ({
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 
 
-	console.log(urlName, "")
+
 
 	useEffect(() => {
 
@@ -246,6 +246,7 @@ const Header = ({
 			});
 	}
 
+	console.log(followerInfo,"setFollowerInfo")
 	useEffect(() => {
 		getFollowerData()
 	}, [followerUserId])
@@ -630,9 +631,13 @@ const Header = ({
 														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
 													</span>
 											}
-											{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
+											{/* {(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
 												{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-											</MemberText>}
+											</MemberText>} */}
+
+											{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name }</MemberText>}
+
 										</div>
 									</div>
 								</div>
@@ -787,26 +792,25 @@ const Header = ({
 											}
 										</HeaderCenter>
 										{
-											!(followerPage && followerInfo != "") &&
+											// !(followerPage && followerInfo != "") &&
 											<div
 												className=''
-												style={{
-													width: "50%",
-													marginLeft: "150px",
-													marginTop: "5px",
-													textAlign: "left",
-													fontWeight: "100px",
-												}}
+												style={{width: "50%",marginLeft: "150px",marginTop: "5px",textAlign: "left",fontWeight: "100px",}}
 											>
-												{userInfo?.displayName &&
+												{/* {userInfo?.displayName &&
 													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
 														{userInfo?.displayName && userInfo?.displayName}
 													</span>
-												}
-												{/* {console.log(followerInfo?.status?.name, userInfo?.status?.name, 'pkk')} */}
-												{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
-													{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-												</MemberText>}
+												}													 */}
+													{
+												(followerPage && followerInfo != "") ?
+													<></> :
+													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+													</span>
+											}
+												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name }</MemberText>}
 											</div>
 										}
 
