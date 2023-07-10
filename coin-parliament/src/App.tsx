@@ -528,10 +528,16 @@ function App() {
     );
   }
 
+
+
   useEffect(() => {
     getToken(messaging, {
       vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    }).then((token) => setFcmToken(token));
+    }).then((token) => {
+      setFcmToken(token)
+    }).catch((e) => {
+      console.log('hello', e);
+    });
   }, []);
 
 
@@ -698,8 +704,8 @@ function App() {
 
   useEffect(() => {
     const auth = getAuth();
-    console.log(auth, "getauth")
     if (!firstTimeLogin) {
+
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
         console.log('provider', user?.providerData[0]?.providerId)
@@ -730,7 +736,7 @@ function App() {
           //     );
           //   });
 
-
+          console.log(auth, "getauth", fcmToken)
           try {
             if (fcmToken) {
               try {
@@ -745,7 +751,7 @@ function App() {
               }
             }
           } catch (e) {
-            console.log("An error occurred while retrieving token. ", e);
+            console.log("An error occurred while retrieving token. pkkkkkkkkk ", e);
           }
         } else {
           await updateUser();
