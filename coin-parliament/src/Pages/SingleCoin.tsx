@@ -89,7 +89,7 @@ const SingleCoin = () => {
   const [voteNumber, setVoteNumber] = useState<any>([]);
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
-  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules } = useContext(AppContext);
+  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules ,voteNumberEnd} = useContext(AppContext);
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
 
@@ -394,6 +394,7 @@ const SingleCoin = () => {
     setVoteDetails((prev) => {
       return {
         ...prev,
+        voteNot: voteNumberEnd,
         activeVotes: { ...prev.activeVotes, ...data }
       }
     })
@@ -409,6 +410,8 @@ const SingleCoin = () => {
       }
     })
   }, [selectedTimeFrame]);
+
+
 
   //open modal
   return (
@@ -550,7 +553,7 @@ const SingleCoin = () => {
                     </Modal>
                   </div>      */}
               </Container >
-              <div className="d-flex justify-content-center align-items-center mt-5 ">
+              <div className="d-flex justify-content-center align-items-center mt-5">
                 <Link to="" style={{ textDecoration: 'none' }}>
                   <Other>
                     {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
@@ -563,7 +566,7 @@ const SingleCoin = () => {
                               <span style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400 }}>
                                 {/* {hours < 10 ? `0${hours}` : hours}: */}
                                 {Number(voteRules?.maxVotes)} votes in {' '}
-                                {hours < 1 ? null : `${hours} :`}
+                                {hours < 1 ? null : `${hours}:`}
                                 {minutes < 10 ? `0${minutes}` : minutes}:
                                 {seconds < 10 ? `0${seconds}` : seconds}
                               </span>

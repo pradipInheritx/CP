@@ -60,7 +60,8 @@ const SinglePair = () => {
     setAllButtonTime,
     allButtonTime,
     remainingTimer,
-    voteRules
+    voteRules,
+    voteNumberEnd,
   } = useContext(AppContext);
   const [popUpOpen, setpopUpOpen] = useState(false);
   const [hideButton, setHideButton] = useState<number[]>([]);
@@ -269,9 +270,12 @@ useEffect(() => {
         }
       }
     })
+    
     setVoteDetails((prev) => {
       return {
         ...prev,
+        // voteNot: voteNumberEnd == 0 && Object.keys(voteDetails?.activeVotes).length == 0 ? true : undefined,
+        voteNot: voteNumberEnd ,
         activeVotes: { ...prev.activeVotes, ...data }
       }
     })
