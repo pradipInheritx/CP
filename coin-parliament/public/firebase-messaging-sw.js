@@ -1,3 +1,20 @@
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const DEFAULT_URL = process.env.REACT_APP_SITE_URL;
+  const url = event.notification?.data?.FCM_MSG?.notification?.click_action || DEFAULT_URL;
+  event.waitUntil(
+    clients.matchAll({ type: 'window' }).then((clientsArray) => {
+      const hadWindowToFocus = clientsArray.some((windowClient) =>
+        windowClient.url === url ? (windowClient.focus(), true) : false
+      );
+      if (!hadWindowToFocus)
+        clients.openWindow(url).then((windowClient) => (windowClient ? windowClient.focus() : null));
+    })
+  );
+});
+
+
 importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js");
 importScripts(
   "https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js"
@@ -14,7 +31,7 @@ self.addEventListener('install', event => {
   // Perform install steps
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(function(cache) {
+      .then(function (cache) {
         console.log('Opened cache');
         return cache.addAll(urlsToCache);
       })
@@ -25,14 +42,14 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(function(response) {
+      .then(function (response) {
         // Cache hit - return response
         if (response) {
           return response;
         }
         return fetch(event.request);
       }
-    )
+      )
   );
 });
 
@@ -78,21 +95,21 @@ messaging.setBackgroundMessageHandler(function (payload) {
   console.log("showed", notificationTitle, notificationOptions);
 });
 
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  
-  // Add the logic here to redirect the user to the home page of your app
-  const homePageUrl = 'https://example.com';
-  event.waitUntil(
-    clients.matchAll({ type: 'window' }).then(clients => {
-      for (let client of clients) {
-        if (client.url === homePageUrl && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow(homePageUrl);
-      }
-    })
-  );
-});
+// self.addEventListener('notificationclick', event => {
+//   event.notification.close();
+
+//   // Add the logic here to redirect the user to the home page of your app
+//   const homePageUrl = 'https://example.com';
+//   event.waitUntil(
+//     clients.matchAll({ type: 'window' }).then(clients => {
+//       for (let client of clients) {
+//         if (client.url === homePageUrl && 'focus' in client) {
+//           return client.focus();
+//         }
+//       }
+//       if (clients.openWindow) {
+//         return clients.openWindow(homePageUrl);
+//       }
+//     })
+//   );
+// });
