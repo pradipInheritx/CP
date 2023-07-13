@@ -5,6 +5,6 @@ import {
 
 const userRouter = Router();
 
-userRouter.post("/generic-signup", signUp);
+userRouter.post("/genericSignUp", signUp);
 
 export default userRouter;

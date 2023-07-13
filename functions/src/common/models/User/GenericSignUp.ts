@@ -70,7 +70,7 @@ export const signUp = async (req: any, res: any) => {
 
         return res.status(201).send({
             status: true,
-            message: "user added successfully",
+            message: "User added successfully",
             result: getData
         });
 
