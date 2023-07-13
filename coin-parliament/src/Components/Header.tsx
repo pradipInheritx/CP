@@ -35,6 +35,7 @@ import "./styles.css";
 import { handleSoundClick } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
+import { VoteContext } from "Contexts/VoteProvider";
 
 enum EventKeys {
 	LOGIN = "login",
@@ -194,8 +195,9 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
+	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
+	const followerUserId = localStorage.getItem("followerId")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
 	const [cmpModalOpen, setCmpModalOpen] = useState(false)
@@ -203,18 +205,20 @@ const Header = ({
 	const [votingTimer, setVotingTimer] = useState(0)
 	const [followerInfo, setFollowerInfo] = useState<any>()
 	const [followUnfollow, setFollowUnfollow] = useState<any>(false)
+	const [scrollUp, setScrollUp] = useState<any>(false)
 	const [show, setShow] = useState(false);
 	const { leaders } = useContext(CoinsContext);
 
 	var urlName = window.location.pathname.split('/');
 	const followerPage = urlName.includes("followerProfile")
+	const votingboosterPage = urlName.includes("votingbooster")
 	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
 
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-
-
-
+	const voteDetails = useContext(VoteContext);
+	const votelength = Object.keys(voteDetails?.activeVotes).length;
+console.log(voteDetails,"voteDetails")
 
 	useEffect(() => {
 
@@ -227,7 +231,6 @@ const Header = ({
 			
 		}
 	}, [score])
-
 
 	// console.log(urlName,"checkurlName")
 	const prevCountRef = useRef(voteNumber)
@@ -246,26 +249,31 @@ const Header = ({
 			});
 	}
 
-	console.log(followerInfo,"setFollowerInfo")
+	console.log(votelength,"setFollowerInfo")
 	useEffect(() => {
 		getFollowerData()
 	}, [followerUserId])
 
 	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
+		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot==0 ) {
+		console.log("i am working")
+			setTimeout(() => {				
+				setShow(true)
+			}, 1000);
 
-			setShow(true)
-		} else {
+		} else {			
+			console.log("i am working not")
 			setShow(false)
 		}
-
-	}, [voteNumber, votingTimer, afterVotePopup])
+	}, [voteNumber, votingTimer,votelength])
 
 	useEffect(() => {
-		if (afterVotePopup) {
+		if (afterVotePopup) {	
+			console.log("i am working 2")
 			setShow(true)
 			// setAfterVotePopup(false)
-		} else {
+		} else {			
+			console.log("i am working 2 not")
 			setShow(false)
 		}
 
@@ -308,6 +316,8 @@ const Header = ({
 
 
 	const onSelect = (eventKey: string | null) => {
+
+		console.log(eventKey ,"checkeventKey")
 		// handleSoundClick()
 		const auth = getAuth();
 
@@ -524,18 +534,18 @@ const Header = ({
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
 														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 															// @ts-ignore */
-															<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
+															<div className="" style={{ marginLeft: '20px', marginTop: "5px", lineHeight: "90%" }}>
 																{/* @ts-ignore */}
 																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
-																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
-																				Wait {" "}
-																				{hours < 1 ? null : `${hours} :`}
+																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 100, lineHeight: "10%",}}>
+																				{/* Wait {" "} */}
+																				{Number(voteRules?.maxVotes)} VOTES IN {" "}
+																				{hours < 1 ? null : `${hours}:`}
 																				{minutes < 10 ? `0${minutes}` : minutes}:
-																				{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																				<br />
-																				or buy extra votes now.
+																				{seconds < 10 ? `0${seconds}` : seconds}
+																				{/* for {Number(voteRules?.maxVotes)} votes <br /> or buy extra votes now. */}
 																			</span>
 																		);
 
@@ -611,9 +621,12 @@ const Header = ({
 												:
 												<PlusButtonMob onClick={() => {
 													handleSoundClick()
-													navigate("/votingbooster")
-												}}>
-													<span>+</span>
+													navigate("/votingbooster")												
+												}}												
+												>
+													<span
+													className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+													>+</span>
 												</PlusButtonMob>
 
 											}
@@ -715,12 +728,12 @@ const Header = ({
 														<Countdown date={votingTimer}
 															renderer={({ hours, minutes, seconds, completed }) => {
 																return (
-																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400, paddingLeft: '3.5em' }}>
-																		Wait {" "}
-																		{hours < 1 ? null : `${hours} :`}
+																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400, paddingLeft: '3.2em' }}>
+																		{Number(voteRules?.maxVotes)} VOTES IN {" "}
+																		{hours < 1 ? null : `${hours}:`}
 																		{minutes < 10 ? `0${minutes}` : minutes}:
-																		{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																		or buy extra votes now.
+																		{seconds < 10 ? `0${seconds}` : seconds}
+																		{/* for {Number(voteRules?.maxVotes)} votes or buy extra votes now. */}
 																	</span>
 																);
 
@@ -785,7 +798,9 @@ const Header = ({
 															handleSoundClick()
 															navigate("/votingbooster")
 														}}>
-															<span>+</span>
+															<span
+															className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+															>+</span>
 														</PlusButton>}
 												</div>
 

@@ -62,7 +62,8 @@ const CoinsForm = ({
   const translate = useTranslation();
   const [canVote, tooltipText] = useCanVote();
   const { timeframes, voteRules: { maxVotes, timeLimit } } = useContext(AppContext);
-
+var urlName = window.location.pathname.split('/');
+	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
   // console.log(timeframes,"timeframes")
   // const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>();
   const [selectedOption, setSelectedOption] = useState<number>();
@@ -81,7 +82,6 @@ const CoinsForm = ({
       return;
     }
     const chosenTimeframe = timeframes[selectedTimeFrame];
-
     try {
       setLoading(true);
       if (!user?.uid) {
@@ -103,10 +103,10 @@ const CoinsForm = ({
           expiration: Date.now() + chosenTimeframe.seconds * 1000,
           voteId: `${coin.symbol}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`
         } as VoteResultProps
-      );
-      const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
-      if (!updateExtravote) {
-        // const userRef = doc(db, "users", user?.uid);
+      )
+      const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);      
+       if (!updateExtravote) {
+         // const userRef = doc(db, "users", user?.uid);
         // console.log(userInfo, 'pkkkkkkkkkk');
 
         // const newUserInfo = {
@@ -184,7 +184,6 @@ const CoinsForm = ({
                 throttled_vote();
                 setDisableVoteButton(prev => !prev);
               }, 700);
-
             }
           },
           option1: {

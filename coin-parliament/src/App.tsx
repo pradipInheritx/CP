@@ -1111,7 +1111,7 @@ function App() {
     if (user?.uid) {
       getVotes().then(void 0);
     }
-  }, [user?.uid]);
+  }, [user?.uid]);  
 
   ///start vote result //
   const voteDetails = useContext(VoteContext);
@@ -1123,7 +1123,9 @@ function App() {
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const [calculateVote, setCalculateVote] = useState<boolean>(true);
   const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
-  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);  
+  
+
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
       if (!pathname.toLowerCase().includes(`profile/mine`)) {
@@ -1162,6 +1164,9 @@ function App() {
     impact: null
   });
   const latestVote = useRef<VoteContextType>();
+
+
+
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
     latestVote.current = voteDetails;
@@ -1290,7 +1295,8 @@ function App() {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                  voteNumberEnd,
                   setvoteNumberEnd,
                   albumOpen,
                   setAlbumOpen,

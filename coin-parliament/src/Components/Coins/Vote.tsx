@@ -147,6 +147,21 @@ const Vote = ({
 
   }
 
+  
+
+  const scrollUp = () => {
+    if (pageTrue && user?.uid && !login) {
+      setTimeout(() => {
+       window.scrollTo({
+              top: 200,      
+              behavior: "smooth",
+          });	 
+      }, 2000);       
+    }
+         
+  }
+	
+
   return (
     <div
     // className="container"
@@ -203,6 +218,7 @@ const Vote = ({
                       }
                       return;
                     }
+                    scrollUp()
                     setSelectedOption(0);
                     setClickedOption0(true);
                     setTimeout(() => setClickedOption0(false), 1000);
@@ -263,6 +279,7 @@ const Vote = ({
                       }
                       return;
                     }
+                    scrollUp()
                     setSelectedOption(1);
                     setClickedOption1(true);
                     setTimeout(() => setClickedOption1(false), 1000);

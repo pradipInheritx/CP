@@ -40,7 +40,8 @@ export const getUsers = ({
 const FwFollow = () => {
   const { user } = useContext(UserContext);
   const[userInfo,setUserInfo]=useState<any>()
-  const{followerUserId}=useContext(AppContext)
+  // const { followerUserId } = useContext(AppContext)
+  const followerUserId = localStorage.getItem("followerId")
   const translate = useTranslation();
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);

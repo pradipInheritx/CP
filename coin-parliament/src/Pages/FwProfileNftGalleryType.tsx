@@ -90,7 +90,8 @@ width:100%;
 const FwProfileNftGalleryType = () => {
   const { user } = useContext(UserContext);   
   const [filterIndex, setfilterIndex] = useState(0);
-  const{followerUserId}=useContext(AppContext)
+  // const{followerUserId}=useContext(AppContext)
+  const followerUserId = localStorage.getItem("followerId")
   const [backCards, setBackCards] = useState<any>([]);
   const [winerCard, setWinerCard] = useState<any>([]);
   const [searchTerm, setSearchTerm] = useState<any>('')

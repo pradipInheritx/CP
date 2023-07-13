@@ -62,7 +62,7 @@ const LoginAndSignup = ({
   return (
     <Stack
       gap={2}
-      className=' justify-content-center'
+      className=' justify-content-center border'
       style={{ height: "100vh", background: "var(--light-purple)" }}
     >
       <div className='container-center-horizontal'>

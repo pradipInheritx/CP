@@ -51,6 +51,8 @@ const SinglePair = () => {
   const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
   const [voteNumber, setVoteNumber] = useState(0)
+  
+  const [votingTimer, setVotingTimer] = useState(0)
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins);
   const [allActiveVotes, setAllActiveVotes] = useState<VoteResultProps[]>([]);
   const {
@@ -60,7 +62,8 @@ const SinglePair = () => {
     setAllButtonTime,
     allButtonTime,
     remainingTimer,
-    voteRules
+    voteRules,
+    voteNumberEnd,
   } = useContext(AppContext);
   const [popUpOpen, setpopUpOpen] = useState(false);
   const [hideButton, setHideButton] = useState<number[]>([]);
@@ -164,7 +167,13 @@ useEffect(() => {
     setMyCoins(coinUpdated)
   }
 }, [coinUpdated])
+  
+useEffect(() => {
+  setVotingTimer(remainingTimer)
+}, [remainingTimer])
 
+  
+  
 
   useEffect(() => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
@@ -269,9 +278,12 @@ useEffect(() => {
         }
       }
     })
+    
     setVoteDetails((prev) => {
       return {
         ...prev,
+        // voteNot: voteNumberEnd == 0 && Object.keys(voteDetails?.activeVotes).length == 0 ? true : undefined,
+        voteNot: voteNumberEnd ,
         activeVotes: { ...prev.activeVotes, ...data }
       }
     })
@@ -396,10 +408,10 @@ useEffect(() => {
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
-                        {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
+                        {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() ?
                           <span style={{ marginLeft: '20px' }}>
                             {/* @ts-ignore */}
-                            <Countdown date={remainingTimer}
+                            <Countdown date={votingTimer}
                               renderer={({ hours, minutes, seconds, completed }) => {
 
                                 return (

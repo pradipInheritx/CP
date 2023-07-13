@@ -55,7 +55,7 @@ const StatusNav = ({ userTypes, setChosen, chosen }: StatusNavProps) => {
   const translate = useTranslation();
   return (
     <Toolbar
-      className={`${window.screen.width < 767 ? "" : "d-flex justify-content-center"}`}
+      className={`${window.screen.width < 767 ? "" : "d-flex justify-content-center"} `}
 
     >
       {/* {userTypes.includes(chosen || "") && (
