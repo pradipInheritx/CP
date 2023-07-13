@@ -6,7 +6,7 @@ import {
 } from "../User";
 
 
-export const userSignUp = async (req: any, res: any) => {
+export const signUp = async (req: any, res: any) => {
 
     const {
 
@@ -84,7 +84,7 @@ export const userSignUp = async (req: any, res: any) => {
 
         return res.status(201).send({
             status: true,
-            message: "user added successfully",
+            message: "User added successfully",
             result: getData
         });
 
