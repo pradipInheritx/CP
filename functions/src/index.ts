@@ -13,7 +13,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/sa.json";
+import serviceAccount from "./serviceAccounts/sportparliament-service.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -94,6 +94,9 @@ cors({
   },
 });
 
+
+import userRouter from "./routes/genericSignUp.routes";
+
 // initialize express server
 const app = express();
 const main = express();
@@ -102,6 +105,7 @@ const main = express();
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
+app.use("/user", userRouter);
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
