@@ -62,7 +62,8 @@ const SummerCard = styled.div`
 
 const FwProfileNftGalleryCopy = () => {
   const { user } = useContext(UserContext);
-  const{followerUserId,setAlbumOpen,albumOpen}=useContext(AppContext)
+  const { setAlbumOpen, albumOpen } = useContext(AppContext)
+  const followerUserId = localStorage.getItem("followerId")
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
@@ -90,15 +91,16 @@ const FwProfileNftGalleryCopy = () => {
     Science:Science,
   });
 
+
+
 useEffect(() => {
     if (albumOpen != "") {
       setSelectCollection(albumOpen)
-      setAlbumOpen("")
-      
+      setAlbumOpen("")      
     }
   }, [albumOpen])
 
-console.log(albumOpen,"allalbumOpen")
+
 
   const getNftCard = () => {
   const getCollectionType = firebase
@@ -118,15 +120,14 @@ console.log(albumOpen,"allalbumOpen")
     }
   
  const onCollectionChange = (collectionName: any) => {
-    if (searchTerm?.length ||  selectCollection!="none") {
-  // console.log(selectCollection,cardType?.length,"selectCollection")
-    setCardShow(true)
+    if (searchTerm?.length ||  selectCollection!="none") {  
+      setCardShow(true)      
   }
   else {
     setCardShow(false)
-  }
-
-  if(collectionName==='none') {
+  }   
+   
+   if (collectionName === 'none') {       
     const getCollectionType = firebase
   .firestore()
   .collection("nftGallery")
@@ -146,7 +147,7 @@ data.push({id: doc.id, ...doc.data()});
 console.log(error,"error");
 });    
   }
-  else{
+   else {         
   const getCollectionType = firebase
   .firestore()
   .collection("cardsDetails")
@@ -154,13 +155,15 @@ console.log(error,"error");
     .where("albumName", "==", collectionName)
   getCollectionType.get()
     .then((snapshot) => {  
-    console.log(collectionName,"collectionName")
   const data:any=[]
   snapshot.forEach((doc) => {
     data.push({ id: doc.id, ...doc.data() });
-  });
+  }); 
+  
+      console.log(data ,"alldatacard")
       setAllCardNew(data)   
-    setCardNameNew(data)  
+      setCardNameNew(data)  
+      setCardShow(true)
   }).catch((error) => {
       console.log(error,"error");
   });
@@ -418,7 +421,7 @@ const CheckCardDisable = (cardId: any) => {
           return seriaNo    
   }
 
-
+console.log(allCardNew,"allCardNew" , cardShow)
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       <div className='d-flex justify-content-center pt-5 flex-wrap '>
@@ -498,7 +501,7 @@ const CheckCardDisable = (cardId: any) => {
         style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }}
       >        
         {!cardShow && collectionType?.map((data:any ,index:number) => {
-          return <div onClick={() => {setSelectCollection(data?.id)}} key={index}
+          return <div onClick={() => {setSelectCollection(data?.albumName)}} key={index}
            style={{
                 width: "600px"
           }}

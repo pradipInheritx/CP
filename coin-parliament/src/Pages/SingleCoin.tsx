@@ -87,6 +87,7 @@ const SingleCoin = () => {
   // const [votePrice, setvotePrice] = useState<any>([]);
   const [votedDetails, setVotedDetails] = useState<any>([]);
   const [voteNumber, setVoteNumber] = useState<any>([]);
+  const [votingTimer, setVotingTimer] = useState(0)
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules ,voteNumberEnd} = useContext(AppContext);
@@ -411,7 +412,9 @@ const SingleCoin = () => {
     })
   }, [selectedTimeFrame]);
 
-
+useEffect(() => {
+  setVotingTimer(remainingTimer)
+}, [remainingTimer])
 
   //open modal
   return (
@@ -556,10 +559,10 @@ const SingleCoin = () => {
               <div className="d-flex justify-content-center align-items-center mt-5">
                 <Link to="" style={{ textDecoration: 'none' }}>
                   <Other>
-                    {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
+                    {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() ?
                       <span style={{ marginLeft: '20px' }}>
                         {/* @ts-ignore */}
-                        <Countdown date={remainingTimer}
+                        <Countdown date={votingTimer}
                           renderer={({ hours, minutes, seconds, completed }) => {
 
                             return (

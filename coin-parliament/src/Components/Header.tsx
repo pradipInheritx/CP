@@ -195,8 +195,9 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
+	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
+	const followerUserId = localStorage.getItem("followerId")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
 	const [cmpModalOpen, setCmpModalOpen] = useState(false)
@@ -315,6 +316,8 @@ console.log(voteDetails,"voteDetails")
 
 
 	const onSelect = (eventKey: string | null) => {
+
+		console.log(eventKey ,"checkeventKey")
 		// handleSoundClick()
 		const auth = getAuth();
 
