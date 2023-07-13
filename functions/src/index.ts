@@ -13,7 +13,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/sportparliament-service.json";
+import serviceAccount from "./serviceAccounts/sportparliament.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -74,6 +74,7 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
+import userRouter from "./routes/genericSignUp.routes";
 // import {ws} from "./common/models/Ajax";
 
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
@@ -94,9 +95,6 @@ cors({
   },
 });
 
-
-import userRouter from "./routes/genericSignUp.routes";
-
 // initialize express server
 const app = express();
 const main = express();
@@ -105,7 +103,7 @@ const main = express();
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
-app.use("/user", userRouter);
+app.use("/user", userRouter); //Added Sign Up For Sport Parliament Using Global API
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));

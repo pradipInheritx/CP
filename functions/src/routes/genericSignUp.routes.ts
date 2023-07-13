@@ -1,13 +1,10 @@
 import { Router } from "express";
-
 import {
-    userSignUp
+    signUp
 } from "../common/models/User/GenericSignUp";
 
 const userRouter = Router();
 
-userRouter.post("/generic-signup", userSignUp);
-
-
+userRouter.post("/generic-signup", signUp);
 
 export default userRouter;

@@ -6,7 +6,7 @@ import {
 } from "../User";
 
 
-export const userSignUp = async (req: any, res: any) => {
+export const signUp = async (req: any, res: any) => {
 
     const { phoneNumber, displayName, photoURL, email } = req.body;
     const status: UserTypeProps = {
@@ -19,7 +19,6 @@ export const userSignUp = async (req: any, res: any) => {
         color: Colors.PLATINUM,
     };
     const userData: UserProps = {
-        // uid: user.uid,
         address: "",
         avatar: photoURL,
         country: "",
