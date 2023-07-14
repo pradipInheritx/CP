@@ -77,7 +77,6 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   const search = useLocation().search;
   const refer = new URLSearchParams(search).get("refer");
   
-  console.log(refer,"refer")
   const strings = {
     email: capitalize(translate(texts.email)),
     confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
@@ -93,7 +92,9 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   // };
   // https://us-central1-coinparliament-51ae1.cloudfunctions.net/assignReferrer
   return (
-    <> 
+    <div
+    style={{width:"300px"}}
+    > 
      {signupWithProviders? <>{Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100">
@@ -108,15 +109,16 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
         );
       })}
       <div className="my-3 align-self-center">
-        <OR className="mx-auto">{translate("or")}</OR>
-      </div>
+        <OR className="mx-auto text-center">{translate("or")}</OR>
+        </div>
+        <div className="w-100">
         <Form
       onSubmit={async (e) => {
         e.preventDefault();
         setEmail(((e.target as HTMLFormElement).elements.namedItem('email') as HTMLInputElement).value)
       setSignupWithProviders(false)
       }}
-      className="w-100"
+      
     >
         <Form.Group className="mb-3 w-100" controlId="login-email">
         <InputField
@@ -133,13 +135,13 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
           {strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
-      <Form.Group className="mb-2 mt-3 text-center" controlId="agree" >
+      <Form.Group className="mb-2 mt-3 d-flex justify-content-center" controlId="agree" >
         <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} >
        <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
                     {translate('terms & conditions')}
                   </Link>  and 
                   </p>
-                  <p><Link to={'/privacy'} style={{color: 'var(--blue-violet)'}}>
+                  <p className=" text-center"><Link to={'/privacy'} style={{color: 'var(--blue-violet)'}}>
                     privacy policy
                   </Link> of the site</p>
           {/* {translate(strings.agree)
@@ -157,7 +159,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
         </Checkbox>
       </Form.Group>
       </Form> 
-     
+     </div>
       </>
       
       
@@ -180,11 +182,11 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
             setSignupLoading(false)},
         }}
       />}
-       <div className='d-flex'>
+       <div className='d-flex justify-content-center'>
       <HaveAccountText className="mr-5"> {`${translate(texts.haveAccount)} `}</HaveAccountText>
       <Login  onClick={() => setSignup(false)}>{`${translate(texts.login)}`}</Login>
       </div>
-    </>
+    </div>
   );
 };
 

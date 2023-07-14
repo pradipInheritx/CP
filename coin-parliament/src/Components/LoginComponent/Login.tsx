@@ -97,7 +97,10 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
     
   };
   return (
-    <>
+    <div
+      className="text-center"
+    style={{width:"300px"}}
+    >
     {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
       {Object.values(LoginProviders).map((provider, i) => {
         return (
@@ -124,10 +127,10 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
           login={login}
         />
       </div>
-      <div className='d-flex'>
+      <div className='d-flex justify-content-center'>
        <ForgetPasswordText  onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
       </div>
-      <div className='d-flex  mt-2'>
+      <div className='d-flex justify-content-center mt-2'>
       <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText> 
       <SignUp  onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
       </div>
@@ -164,7 +167,7 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
           </Buttons.Primary>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 
