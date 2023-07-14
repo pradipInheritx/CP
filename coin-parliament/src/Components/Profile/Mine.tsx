@@ -151,7 +151,7 @@ const Mine = () => {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
-        if (ProfileUrl) {   
+        if (ProfileUrl && score != 100) {   
           Cmppopup();
         }
         
@@ -161,7 +161,8 @@ const Mine = () => {
   }, []);
 
 
-  const Cmppopup = () => {        
+  const Cmppopup = () => {    
+    console.log("yes i am working")
     var urlName = window.location.pathname.split('/');
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
@@ -251,7 +252,7 @@ const Mine = () => {
                     prevPAXValue.current
                   }
                 />
-                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
+                {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
               </ForZoom>
 
             </div>
@@ -318,7 +319,7 @@ const Mine = () => {
                 // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
                 {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
-                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
+                {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
               </ForZoom>
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
