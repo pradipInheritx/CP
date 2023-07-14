@@ -194,7 +194,7 @@ const Mine = () => {
       setTimeout(() => {
         setModelText(2)
         console.log(showBack, "viewshow")
-        handleShow()
+        // handleShow()
         setShowBack(false)
         handleCardClose()
         setRewardTimer(null);
