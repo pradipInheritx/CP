@@ -11,15 +11,18 @@ const Influencers = () => {
   const { userTypes } = useContext(AppContext);
   const [chosen, setChosen] = useState<string | undefined>("SPEAKER");
   const { chosenUserType, setChosenUserType } = useContext(AppContext);
+
+  console.log(chosenUserType,"chosenUserType")
   useEffect(() => {
     // setChosen(chosenUserType || "SPEAKER")
-    setChosen(userTypes[0]?.name.toUpperCase() || "SPEAKER")
+    setChosen(chosenUserType.toUpperCase() || userTypes[0]?.name.toUpperCase() || "SPEAKER")
     return () => {
       setChosen('')
       setChosenUserType('')
     }
   }, [/* chosenUserType */userTypes])
   // @ts-ignore
+console.log(leaders,"leaderslist")
 
   return (
     <div>

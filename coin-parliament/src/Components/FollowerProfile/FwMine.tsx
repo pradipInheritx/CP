@@ -42,7 +42,8 @@ const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const FwMine = () => {
   const {  user } = useContext(UserContext);
-  const{followerUserId,setAlbumOpen}=useContext(AppContext)
+  const{setAlbumOpen}=useContext(AppContext)
+  const followerUserId = localStorage.getItem("followerId")
   const[userInfo,setUserInfo]=useState<any>()
   const { userTypes } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
@@ -99,6 +100,9 @@ console.log(error,"error");
       />
     );
   }
+
+console.log(data,"data?.winData")
+
 
   return (
     <div>

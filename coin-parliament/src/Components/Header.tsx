@@ -35,6 +35,7 @@ import "./styles.css";
 import { handleSoundClick } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
+import { VoteContext } from "Contexts/VoteProvider";
 
 enum EventKeys {
 	LOGIN = "login",
@@ -194,8 +195,9 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, followerUserId, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
+	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
+	const followerUserId = localStorage.getItem("followerId")
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
 	const [cmpModalOpen, setCmpModalOpen] = useState(false)
@@ -203,27 +205,32 @@ const Header = ({
 	const [votingTimer, setVotingTimer] = useState(0)
 	const [followerInfo, setFollowerInfo] = useState<any>()
 	const [followUnfollow, setFollowUnfollow] = useState<any>(false)
+	const [scrollUp, setScrollUp] = useState<any>(false)
 	const [show, setShow] = useState(false);
 	const { leaders } = useContext(CoinsContext);
 
 	var urlName = window.location.pathname.split('/');
 	const followerPage = urlName.includes("followerProfile")
+	const votingboosterPage = urlName.includes("votingbooster")
 	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
 
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
-
-
-	console.log(urlName, "")
+	const voteDetails = useContext(VoteContext);
+	const votelength = Object.keys(voteDetails?.activeVotes).length;
+console.log(voteDetails,"voteDetails")
 
 	useEffect(() => {
 
 		if (score > 99.98 && MyPath !== "/profile/mine") {
 			setCmpModalOpen(true)
-			console.log("i am working check", score)
+			
+		}
+		if (MyPath == "/profile/mine") {
+			setCmpModalOpen(false)
+			
 		}
 	}, [score])
-
 
 	// console.log(urlName,"checkurlName")
 	const prevCountRef = useRef(voteNumber)
@@ -242,25 +249,31 @@ const Header = ({
 			});
 	}
 
+	console.log(votelength,"setFollowerInfo")
 	useEffect(() => {
 		getFollowerData()
 	}, [followerUserId])
 
 	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login) {
+		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot==0 ) {
+		console.log("i am working")
+			setTimeout(() => {				
+				setShow(true)
+			}, 1000);
 
-			setShow(true)
-		} else {
+		} else {			
+			console.log("i am working not")
 			setShow(false)
 		}
-
-	}, [voteNumber, votingTimer, afterVotePopup])
+	}, [voteNumber, votingTimer,votelength])
 
 	useEffect(() => {
-		if (afterVotePopup) {
+		if (afterVotePopup) {	
+			console.log("i am working 2")
 			setShow(true)
 			// setAfterVotePopup(false)
-		} else {
+		} else {			
+			console.log("i am working 2 not")
 			setShow(false)
 		}
 
@@ -303,6 +316,8 @@ const Header = ({
 
 
 	const onSelect = (eventKey: string | null) => {
+
+		console.log(eventKey ,"checkeventKey")
 		// handleSoundClick()
 		const auth = getAuth();
 
@@ -519,18 +534,18 @@ const Header = ({
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
 														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 															// @ts-ignore */
-															<div className="" style={{ marginLeft: '20px', marginTop: "0px", lineHeight: "90%" }}>
+															<div className="" style={{ marginLeft: '20px', marginTop: "5px", lineHeight: "90%" }}>
 																{/* @ts-ignore */}
 																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
-																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '8px', fontWeight: 100, lineHeight: "10%" }}>
-																				Wait {" "}
-																				{hours < 1 ? null : `${hours} :`}
+																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 100, lineHeight: "10%",}}>
+																				{/* Wait {" "} */}
+																				{Number(voteRules?.maxVotes)} VOTES IN {" "}
+																				{hours < 1 ? null : `${hours}:`}
 																				{minutes < 10 ? `0${minutes}` : minutes}:
-																				{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																				<br />
-																				or buy extra votes now.
+																				{seconds < 10 ? `0${seconds}` : seconds}
+																				{/* for {Number(voteRules?.maxVotes)} votes <br /> or buy extra votes now. */}
 																			</span>
 																		);
 
@@ -606,9 +621,12 @@ const Header = ({
 												:
 												<PlusButtonMob onClick={() => {
 													handleSoundClick()
-													navigate("/votingbooster")
-												}}>
-													<span>+</span>
+													navigate("/votingbooster")												
+												}}												
+												>
+													<span
+													className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+													>+</span>
 												</PlusButtonMob>
 
 											}
@@ -626,9 +644,13 @@ const Header = ({
 														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
 													</span>
 											}
-											{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
+											{/* {(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
 												{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-											</MemberText>}
+											</MemberText>} */}
+
+											{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name }</MemberText>}
+
 										</div>
 									</div>
 								</div>
@@ -706,12 +728,12 @@ const Header = ({
 														<Countdown date={votingTimer}
 															renderer={({ hours, minutes, seconds, completed }) => {
 																return (
-																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '9px', fontWeight: 400, paddingLeft: '3.5em' }}>
-																		Wait {" "}
-																		{hours < 1 ? null : `${hours} :`}
+																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400, paddingLeft: '3.2em' }}>
+																		{Number(voteRules?.maxVotes)} VOTES IN {" "}
+																		{hours < 1 ? null : `${hours}:`}
 																		{minutes < 10 ? `0${minutes}` : minutes}:
-																		{seconds < 10 ? `0${seconds}` : seconds} for {Number(voteRules?.maxVotes)} votes
-																		or buy extra votes now.
+																		{seconds < 10 ? `0${seconds}` : seconds}
+																		{/* for {Number(voteRules?.maxVotes)} votes or buy extra votes now. */}
 																	</span>
 																);
 
@@ -776,33 +798,34 @@ const Header = ({
 															handleSoundClick()
 															navigate("/votingbooster")
 														}}>
-															<span>+</span>
+															<span
+															className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+															>+</span>
 														</PlusButton>}
 												</div>
 
 											}
 										</HeaderCenter>
 										{
-											!(followerPage && followerInfo != "") &&
+											// !(followerPage && followerInfo != "") &&
 											<div
 												className=''
-												style={{
-													width: "50%",
-													marginLeft: "150px",
-													marginTop: "5px",
-													textAlign: "left",
-													fontWeight: "100px",
-												}}
+												style={{width: "50%",marginLeft: "150px",marginTop: "5px",textAlign: "left",fontWeight: "100px",}}
 											>
-												{userInfo?.displayName &&
+												{/* {userInfo?.displayName &&
 													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
 														{userInfo?.displayName && userInfo?.displayName}
 													</span>
-												}
-												{/* {console.log(followerInfo?.status?.name, userInfo?.status?.name, 'pkk')} */}
-												{(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
-													{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-												</MemberText>}
+												}													 */}
+													{
+												(followerPage && followerInfo != "") ?
+													<></> :
+													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+													</span>
+											}
+												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name }</MemberText>}
 											</div>
 										}
 
@@ -883,7 +906,7 @@ const Header = ({
 					centered
 				>
 					<Modal.Header>
-						{/* <Modal.Title>Modal heading</Modal.Title> */}
+						
 					</Modal.Header>
 					<Modal.Body>
 						<p className="text-center" >You have achieved your goal .</p>
@@ -900,14 +923,7 @@ const Header = ({
 						</div>
 
 					</Modal.Body>
-					{/* <Modal.Footer>
-					<Button variant="secondary" onClick={()=>{}}>
-						Close
-					</Button>
-					<Button variant="primary" onClick={()=>{}}>
-						Save Changes
-					</Button>
-					</Modal.Footer> */}
+					
 				</Modal>
 			</div>
 		</MenuContainer>

@@ -108,11 +108,15 @@ const Mine = () => {
   // @ts-ignore 
   const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
-
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+
   const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
   const remainingReward = (userInfo?.rewardStatistics?.total || 0) - (userInfo?.rewardStatistics?.claimed || 0);
 
+  var urlName = window.location.pathname.split('/');
+  const ProfileUrl = urlName.includes("profile")
+
+  // console.log(userInfo?.voteStatistics?.score, currentCMPDiff, prevCMPDiff, currentCMP, score, remainingCMP, 'pkkkk');
 
   useEffect(() => {
     // @ts-ignore
@@ -143,11 +147,26 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-    if (showBack && remainingReward < 1) {
+    if (showBack && remainingReward < 1 && ProfileUrl && !modalShow) {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
-        Swal.fire({
+        if (ProfileUrl && score != 100) {   
+          Cmppopup();
+        }
+        
+        setShowBack(false)
+      }, 10000);
+    }
+  }, []);
+
+
+  const Cmppopup = () => {    
+    console.log("yes i am working")
+    var urlName = window.location.pathname.split('/');
+    const UrlCheck = urlName.includes("profile")
+    if (UrlCheck) {
+     Swal.fire({    
           html:
             // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
             "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
@@ -165,18 +184,18 @@ const Mine = () => {
             goBack()
           }
         });
-
-        setShowBack(false)
-      }, 10000);
     }
-  }, []);
+    else{
+// console.log("i am working not")
+    }      
+}
 
   const openpopup = () => {
     if (showBack) {
       setTimeout(() => {
         setModelText(2)
         console.log(showBack, "viewshow")
-        handleShow()
+        // handleShow()
         setShowBack(false)
         handleCardClose()
         setRewardTimer(null);
@@ -233,7 +252,7 @@ const Mine = () => {
                     prevPAXValue.current
                   }
                 />
-                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
+                {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
               </ForZoom>
 
             </div>
@@ -300,7 +319,7 @@ const Mine = () => {
                 // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
                 />
                 {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
-                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
+                {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
               </ForZoom>
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />

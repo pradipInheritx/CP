@@ -18,7 +18,8 @@ const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMa
 const FwVotes = () => {
   const pageSize = useMemo(() => 3, []);
   const { user } = useContext(UserContext);
-  const {followerUserId } = useContext(AppContext);
+  // const {followerUserId } = useContext(AppContext);
+  const followerUserId = localStorage.getItem("followerId")
   const translate = useTranslation();
   const [index, setIndex] = useState(0);  
   const [allCoinsPrais, setAllCoinsPrais] = useState<any>([]);

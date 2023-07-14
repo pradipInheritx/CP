@@ -76,7 +76,9 @@ const ForgetPassword = ({ setForgetPassword, setUser, setSignup, authProvider, l
   }
   return (
     <>
-      <div className="mb-3 w-100">
+      <div className="mb-3 "
+      style={{width:"300px"}}
+      >
         <Form
           onSubmit={async (e) => {
             e.preventDefault();

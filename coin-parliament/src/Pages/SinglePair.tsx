@@ -31,8 +31,10 @@ import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SinglePair = () => {
   let params = useParams();
+
+  console.log(params,"myParams")
   const translate = useTranslation();
-  const { coins, totals, ws, socket } = useContext(CoinContext);
+  const { coins,setCoins,setMyCoins, totals, ws, socket } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [coin1, coin2] = [coins[symbol1], coins[symbol2]];
   const { user, userInfo, votesLast24Hours } = useContext(UserContext);
@@ -49,6 +51,8 @@ const SinglePair = () => {
   const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
   const [voteNumber, setVoteNumber] = useState(0)
+  
+  const [votingTimer, setVotingTimer] = useState(0)
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins);
   const [allActiveVotes, setAllActiveVotes] = useState<VoteResultProps[]>([]);
   const {
@@ -58,7 +62,8 @@ const SinglePair = () => {
     setAllButtonTime,
     allButtonTime,
     remainingTimer,
-    voteRules
+    voteRules,
+    voteNumberEnd,
   } = useContext(AppContext);
   const [popUpOpen, setpopUpOpen] = useState(false);
   const [hideButton, setHideButton] = useState<number[]>([]);
@@ -157,6 +162,19 @@ const SinglePair = () => {
     }
   }
 
+useEffect(() => {
+  if (coinUpdated) {
+    setMyCoins(coinUpdated)
+  }
+}, [coinUpdated])
+  
+useEffect(() => {
+  setVotingTimer(remainingTimer)
+}, [remainingTimer])
+
+  
+  
+
   useEffect(() => {
     Promise.all([choseTimeFrame(timeframes[0]?.seconds), choseTimeFrame(timeframes[1]?.seconds), choseTimeFrame(timeframes[2]?.seconds), choseTimeFrame(timeframes[3]?.seconds)])
       .then(responses => {
@@ -179,6 +197,8 @@ const SinglePair = () => {
       });
 
   }, [user?.uid, params?.id, selectedTimeFrame, voteId, vote])
+
+  
   useEffect(() => {
     return () => {
       setAllButtonTime();
@@ -258,9 +278,12 @@ const SinglePair = () => {
         }
       }
     })
+    
     setVoteDetails((prev) => {
       return {
         ...prev,
+        // voteNot: voteNumberEnd == 0 && Object.keys(voteDetails?.activeVotes).length == 0 ? true : undefined,
+        voteNot: voteNumberEnd ,
         activeVotes: { ...prev.activeVotes, ...data }
       }
     })
@@ -385,10 +408,10 @@ const SinglePair = () => {
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
-                        {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
+                        {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() ?
                           <span style={{ marginLeft: '20px' }}>
                             {/* @ts-ignore */}
-                            <Countdown date={remainingTimer}
+                            <Countdown date={votingTimer}
                               renderer={({ hours, minutes, seconds, completed }) => {
 
                                 return (

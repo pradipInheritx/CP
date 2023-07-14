@@ -62,7 +62,8 @@ const SummerCard = styled.div`
 
 const FwProfileNftGallery = () => {
   const { user } = useContext(UserContext);
-  const{followerUserId}=useContext(AppContext)
+  // const{followerUserId}=useContext(AppContext)
+  const followerUserId = localStorage.getItem("followerId")
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])

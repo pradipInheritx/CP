@@ -65,7 +65,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs }: TabsProps) => {
           })}
         </Nav>
       </Container>
-      <div >
+      <div  className="pb-1">
         <Tab.Content>
           <Content>
             {tabs.map((t, i) => {

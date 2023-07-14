@@ -68,10 +68,10 @@ const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 const SingleCoin = () => {
   let params = useParams();
   const translate = useTranslation();
-  const { user, userInfo, votesLast24Hours } = useContext(UserContext);
-  const { coins, totals, ws, socket } = useContext(CoinContext);
-  const { showModal } = useContext(NotificationContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
+  const { user, userInfo, votesLast24Hours } = useContext(UserContext);
+  const { coins, setCoins, setMyCoins, totals, ws, socket } = useContext(CoinContext);
+  const { showModal } = useContext(NotificationContext);
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
   const [voteId, setVoteId] = useState<string>();
   const [loading, setLoading] = useState(false);
@@ -87,10 +87,18 @@ const SingleCoin = () => {
   // const [votePrice, setvotePrice] = useState<any>([]);
   const [votedDetails, setVotedDetails] = useState<any>([]);
   const [voteNumber, setVoteNumber] = useState<any>([]);
+  const [votingTimer, setVotingTimer] = useState(0)
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
-  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules } = useContext(AppContext);
+  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules ,voteNumberEnd} = useContext(AppContext);
+  const voteDetails = useContext(VoteContext);
+  const setVoteDetails = useContext(VoteDispatchContext);
 
+  useEffect(() => {
+    if (coinUpdated) {
+      setMyCoins(coinUpdated)
+    }
+  }, [coinUpdated])
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -110,7 +118,6 @@ const SingleCoin = () => {
       ...prevCoins,
       [symbol1]: {
         ...prevCoins[symbol1],
-
         randomDecimal: (prevCoins[symbol1]?.randomDecimal || 5) + (Math.random() < 5 ? -1 : 1)
       },
     }));
@@ -125,7 +132,7 @@ const SingleCoin = () => {
       clearInterval(interval)
     }
   }, [])
-  // console.log('coinprice',coinUpdated[symbol1]?.randomDecimal)
+  
   useEffect(() => {
     if (!ws) return
 
@@ -143,7 +150,7 @@ const SingleCoin = () => {
         //   livePrice.current[obj].randomDecimal = coinUpdated[obj]?.randomDecimal ||5 + Math.random()<5?1:1;
         // }
 
-        console.log('coinprice', Number(message?.c).toFixed(dot?.decimal || 2), coinUpdated[symbol]?.price, Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(coinUpdated[symbol]?.price))
+        // console.log('coinprice', Number(message?.c).toFixed(dot?.decimal || 2), coinUpdated[symbol]?.price, Number(Number(message?.c).toFixed(dot?.decimal || 2)) == Number(coinUpdated[symbol]?.price))
         setCoinUpdated((prevCoins) => ({
           ...prevCoins,
           [symbol]: {
@@ -219,7 +226,7 @@ const SingleCoin = () => {
       if (v) {
         // if (v.data().timeframe?.seconds===3600) setSelectedTimeFrame(0)
         // console.log(v.data(), "checkallv.data")
-        if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
+        // if (v.data().timeframe?.seconds === 3600) setSelectedTimeFrameArray([...newTimeframe, 0])
         setVote(v.data());
         setVoteId(v.id);
       } else setVote({} as VoteResultProps);
@@ -254,6 +261,8 @@ const SingleCoin = () => {
             setSelectedTimeFrameArray(newTimeframe)
           }
           else {
+            // console.log("i am working")
+            setSelectedTimeFrameArray(newTimeframe)
             // AllvoteValueObject.splice(index, 1);               
             // setAllButtonTime(AllvoteValueObject);
             //  setVotedDetails(AllvoteValueObject);
@@ -263,7 +272,7 @@ const SingleCoin = () => {
 
           }
         }))
-        console.log(tempAllActiveVotes, 'testing');
+        
 
         setAllActiveVotes(() => {
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
@@ -274,6 +283,8 @@ const SingleCoin = () => {
       });
 
   }, [user?.uid, params?.id, selectedTimeFrame, forRun, voteId, vote])
+
+
 
   useEffect(() => {
     return () => {
@@ -297,7 +308,7 @@ const SingleCoin = () => {
 
   useEffect(() => {
 
-    // console.log("i am working now", voteId)
+    
     if (voteId) {
       // getResultForPendingVote()
       onSnapshot(doc(db, "votes", voteId), (doc) => {
@@ -328,8 +339,7 @@ const SingleCoin = () => {
 
 
 
-  const voteDetails = useContext(VoteContext);
-  const setVoteDetails = useContext(VoteDispatchContext);
+  
 
 
   const canVote = useMemo(() => {
@@ -367,7 +377,7 @@ const SingleCoin = () => {
   const [popUpOpen, setpopUpOpen] = useState(false);
 
 
-  // console.log(hideButton,"i am working popUpOpen")
+  
 
 
 
@@ -385,6 +395,7 @@ const SingleCoin = () => {
     setVoteDetails((prev) => {
       return {
         ...prev,
+        voteNot: voteNumberEnd,
         activeVotes: { ...prev.activeVotes, ...data }
       }
     })
@@ -400,6 +411,10 @@ const SingleCoin = () => {
       }
     })
   }, [selectedTimeFrame]);
+
+useEffect(() => {
+  setVotingTimer(remainingTimer)
+}, [remainingTimer])
 
   //open modal
   return (
@@ -541,20 +556,20 @@ const SingleCoin = () => {
                     </Modal>
                   </div>      */}
               </Container >
-              <div className="d-flex justify-content-center align-items-center mt-5 ">
+              <div className="d-flex justify-content-center align-items-center mt-5">
                 <Link to="" style={{ textDecoration: 'none' }}>
                   <Other>
-                    {user && !voteNumber && !!new Date(remainingTimer).getDate() ?
+                    {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() ?
                       <span style={{ marginLeft: '20px' }}>
                         {/* @ts-ignore */}
-                        <Countdown date={remainingTimer}
+                        <Countdown date={votingTimer}
                           renderer={({ hours, minutes, seconds, completed }) => {
 
                             return (
                               <span style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400 }}>
                                 {/* {hours < 10 ? `0${hours}` : hours}: */}
                                 {Number(voteRules?.maxVotes)} votes in {' '}
-                                {hours < 1 ? null : `${hours} :`}
+                                {hours < 1 ? null : `${hours}:`}
                                 {minutes < 10 ? `0${minutes}` : minutes}:
                                 {seconds < 10 ? `0${seconds}` : seconds}
                               </span>
