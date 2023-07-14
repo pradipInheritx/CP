@@ -90,7 +90,7 @@ const SingleCoin = () => {
   const [votingTimer, setVotingTimer] = useState(0)
   const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
   // const [graphLoading,setGraphLoading]=useState(false)
-  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules ,voteNumberEnd} = useContext(AppContext);
+  const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules, voteNumberEnd } = useContext(AppContext);
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
 
@@ -132,7 +132,7 @@ const SingleCoin = () => {
       clearInterval(interval)
     }
   }, [])
-  
+
   useEffect(() => {
     if (!ws) return
 
@@ -272,7 +272,7 @@ const SingleCoin = () => {
 
           }
         }))
-        
+
 
         setAllActiveVotes(() => {
           return tempAllActiveVotes.filter((value: VoteResultProps) => value !== undefined);
@@ -308,7 +308,7 @@ const SingleCoin = () => {
 
   useEffect(() => {
 
-    
+
     if (voteId) {
       // getResultForPendingVote()
       onSnapshot(doc(db, "votes", voteId), (doc) => {
@@ -339,7 +339,7 @@ const SingleCoin = () => {
 
 
 
-  
+
 
 
   const canVote = useMemo(() => {
@@ -377,7 +377,7 @@ const SingleCoin = () => {
   const [popUpOpen, setpopUpOpen] = useState(false);
 
 
-  
+
 
 
 
@@ -412,9 +412,9 @@ const SingleCoin = () => {
     })
   }, [selectedTimeFrame]);
 
-useEffect(() => {
-  setVotingTimer(remainingTimer)
-}, [remainingTimer])
+  useEffect(() => {
+    setVotingTimer(remainingTimer)
+  }, [remainingTimer])
 
   //open modal
   return (

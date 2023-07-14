@@ -27,11 +27,11 @@ export const getUsers = ({
   users?: string[];
   setUsers: (newUsers: Leader[]) => void;
 }) => {
-  try {    
-      getLeaderUsersByIds({ userIds: users }).then((u) => {
-        console.log(u.data,"checkdata")
-        setUsers(u.data);
-      });
+  try {
+    getLeaderUsersByIds({ userIds: users }).then((u) => {
+      console.log(u.data, "checkdata")
+      setUsers(u.data);
+    });
   } catch (e) {
     setUsers([] as Leader[]);
   }
@@ -43,7 +43,7 @@ const Follow = () => {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
 
-console.log(userInfo,"userInfo")
+  console.log(userInfo, "userInfo")
 
   useEffect(() => {
     getUsers({ users: userInfo?.leader, setUsers: setLeaders });
@@ -55,12 +55,12 @@ console.log(userInfo,"userInfo")
   }, [userInfo?.subscribers]);
 
 
-console.log(leaders,subscribers,"allleaders")
+  console.log(leaders, subscribers, "allleaders")
   return (
     <Tabs
       defaultActiveKey="following"
       id="profile-follow"
-      onSelect={() => {}}
+      onSelect={() => { }}
       tabs={[
         {
           eventKey: "following",
@@ -69,7 +69,7 @@ console.log(leaders,subscribers,"allleaders")
             <div>
               {leaders && leaders.map((u, i) => {
                 return (
-                  <div className="mb-2" style={{maxWidth:'85vw', margin:'auto'}}>
+                  <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
                     <UserCard
                       key={i}
                       leader={u}
@@ -96,20 +96,20 @@ console.log(leaders,subscribers,"allleaders")
             <>
               {(subscribers || []).map((s, i) => {
                 return (
-                  <div className="mb-2" style={{maxWidth:'85vw', margin:'auto'}}>
-                  <UserCard
-                    key={i}
-                    leader={s}
-                    checked={!!userInfo?.leader?.includes(s.userId)}
-                    setChecked={() =>
-                      user &&
-                      follow(
-                        s,
-                        user,
-                        toFollow(userInfo?.leader || [], s.userId)
-                      )
-                    }
-                  />
+                  <div className="mb-2" style={{ maxWidth: '85vw', margin: 'auto' }}>
+                    <UserCard
+                      key={i}
+                      leader={s}
+                      checked={!!userInfo?.leader?.includes(s.userId)}
+                      setChecked={() =>
+                        user &&
+                        follow(
+                          s,
+                          user,
+                          toFollow(userInfo?.leader || [], s.userId)
+                        )
+                      }
+                    />
                   </div>
                 );
               })}

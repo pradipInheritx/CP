@@ -1,4 +1,4 @@
-import React, {  useContext } from "react";
+import React, { useContext } from "react";
 import "./Login.css";
 import { Stack } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
@@ -13,20 +13,20 @@ import { texts } from "./texts";
 
 
 export type FirstTimeAvatarSelectionProps = {
-    user: any;
-    setFirstTimeAvatarSelection:any;
-  };
-const FirstTimeAvatarSelection = ({ user,setFirstTimeAvatarSelection }: FirstTimeAvatarSelectionProps) => {
+  user: any;
+  setFirstTimeAvatarSelection: any;
+};
+const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection }: FirstTimeAvatarSelectionProps) => {
   const translate = useTranslation();
-  const {showToast} = useContext(NotificationContext);
-  const FoundationArray=['Foundation One','Foundation Two','Foundation Three','Foundation Four','Foundation Five'
-]
+  const { showToast } = useContext(NotificationContext);
+  const FoundationArray = ['Foundation One', 'Foundation Two', 'Foundation Three', 'Foundation Four', 'Foundation Five'
+  ]
   const onSubmitAvatar = async (type: AvatarType) => {
     if (user?.uid) {
       const userRef = doc(db, "users", user?.uid);
       try {
-        const foundationName = FoundationArray[Math.trunc(Math.random()*4)]
-        await setDoc(userRef, {avatar: type,foundationName}, {merge: true});
+        const foundationName = FoundationArray[Math.trunc(Math.random() * 4)]
+        await setDoc(userRef, { avatar: type, foundationName }, { merge: true });
         // await setDoc(userRef, { foundationName }, { merge: true });
         showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
@@ -40,14 +40,14 @@ const FirstTimeAvatarSelection = ({ user,setFirstTimeAvatarSelection }: FirstTim
     <Stack
       gap={2}
       className=" justify-content-center"
-      style={{ minHeight: "100vh", background:'var(--light-purple)' ,paddingTop:'100px',flexDirection:'row'}}
+      style={{ minHeight: "100vh", background: 'var(--light-purple)', paddingTop: '100px', flexDirection: 'row' }}
     >
       <AvatarsModal
-         {...{
+        {...{
           onSubmit: onSubmitAvatar,
           onClose: () => console.log('click'),
-          }}
-         />                
+        }}
+      />
     </Stack>
   );
 };

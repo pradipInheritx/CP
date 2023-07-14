@@ -36,8 +36,8 @@ export type Leader = {
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
 
 export const follow = async (leader: Leader, you: User, add: boolean) => {
-  
-  
+
+
   const subscribe = httpsCallable(functions, "subscribe");
   await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps);
 
@@ -54,7 +54,7 @@ export const follow = async (leader: Leader, you: User, add: boolean) => {
       { leader: firebase.firestore.FieldValue.arrayRemove(leader?.userId) },
       { merge: true }
     );
-  } 
+  }
 };
 
 export const totalsConverter = {
@@ -97,7 +97,7 @@ export const coinDataConverter = {
 };
 
 export type CoinContextProps = {
-  allCoinsSetting:any;
+  allCoinsSetting: any;
   changePrice: any;
   setChangePrice: any;
   myCoins: any;
@@ -110,7 +110,7 @@ export type CoinContextProps = {
   setLeaders: (leaders: Leader[]) => void;
   rest: ICryptoClient;
   ws: WebSocket;
-  socket:WebSocket;
+  socket: WebSocket;
   allCoins: string[];
   allPairs: Array<string[]>;
 };

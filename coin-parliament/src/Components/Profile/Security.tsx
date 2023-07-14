@@ -60,21 +60,21 @@ const Security = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [show, setShow] = useState(false);
   const [phone, setPhone] = useState("");
-  const [countryCode,setCountryCode]= useState('972')
+  const [countryCode, setCountryCode] = useState('972')
   const [verificationCodeSent, setVerifiactionCodeSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationIdData, setVerificationIdData] = useState("");
-  const [tabsArray,setTabsArray]=useState<any>([])
+  const [tabsArray, setTabsArray] = useState<any>([])
   const auth = getAuth();
-  console.log('auth',u?.providerData[0]?.providerId=='password' )
-  const authProvider=u?.providerData[0]?.providerId=='password'? true :false
+  console.log('auth', u?.providerData[0]?.providerId == 'password')
+  const authProvider = u?.providerData[0]?.providerId == 'password' ? true : false
   useEffect(() => {
-    setTabsArray(authProvider?[
+    setTabsArray(authProvider ? [
       {
         eventKey: "password",
         title: "Password",
         pane: (
-         <ChangePassword/>
+          <ChangePassword />
         ),
       },
       {
@@ -82,22 +82,22 @@ const Security = () => {
         title: "2FA",
         pane: (
           <>
-          <GoogleAuthenticator/>
+            <GoogleAuthenticator />
           </>
-        // 
+          // 
         ),
       },
-    ]:[
+    ] : [
       {
         eventKey: "2fa",
         title: "2FA",
         pane: (
-          <GoogleAuthenticator/>
+          <GoogleAuthenticator />
         ),
       },
     ])
     setPhone(user?.phone || '')
-    
+
   }, [])
   const handleClose = () => {
     setShow(false);
@@ -114,8 +114,8 @@ const Security = () => {
       }
     }
   };
-  
-  
+
+
   const authMFA = () => {
     const recaptchaVerifier = new RecaptchaVerifier(
       "recaptcha-container-id",
@@ -125,7 +125,7 @@ const Security = () => {
           // reCAPTCHA solved, you can proceed with
           // phoneAuthProvider.verifyPhoneNumber(...).
           // onSolvedRecaptcha();
-         
+
         },
       },
       auth
@@ -141,7 +141,7 @@ const Security = () => {
         };
 
         const phoneAuthProvider = new PhoneAuthProvider(auth);
-        
+
         // Send SMS verification code.
         return phoneAuthProvider.verifyPhoneNumber(
           phoneInfoOptions,
@@ -149,7 +149,7 @@ const Security = () => {
         );
       })
       .then(function (verificationId) {
-        
+
         // Ask user for the verification code. Then:
         setVerificationIdData(verificationId);
         setVerifiactionCodeSent(true);
@@ -169,14 +169,14 @@ const Security = () => {
   };
   return (
     <>
-    
+
       <Tabs
-      defaultActiveKey={authProvider?"password":'2fa'}
-      id="profile-follow"
-      onSelect={() => {}}
-      tabs={tabsArray}
-    />
-    
+        defaultActiveKey={authProvider ? "password" : '2fa'}
+        id="profile-follow"
+        onSelect={() => { }}
+        tabs={tabsArray}
+      />
+
       {/* <Modal show={show} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
         <Modal.Header >
           <Modal.Title>2FA</Modal.Title>

@@ -57,7 +57,7 @@ const Security = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [show, setShow] = useState(false);
   const [phone, setPhone] = useState("");
-  const [countryCode,setCountryCode]= useState('972')
+  const [countryCode, setCountryCode] = useState('972')
   const [verificationCodeSent, setVerifiactionCodeSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationIdData, setVerificationIdData] = useState("");
@@ -79,7 +79,7 @@ const Security = () => {
       }
     }
   };
-  
+
   const auth = getAuth();
   const authMFA = () => {
     const recaptchaVerifier = new RecaptchaVerifier(
@@ -90,7 +90,7 @@ const Security = () => {
           // reCAPTCHA solved, you can proceed with
           // phoneAuthProvider.verifyPhoneNumber(...).
           // onSolvedRecaptcha();
-         
+
         },
       },
       auth
@@ -106,7 +106,7 @@ const Security = () => {
         };
 
         const phoneAuthProvider = new PhoneAuthProvider(auth);
-        
+
         // Send SMS verification code.
         return phoneAuthProvider.verifyPhoneNumber(
           phoneInfoOptions,
@@ -149,15 +149,15 @@ const Security = () => {
                     </Col>
                   </Row>
                   <Row>
-                    <Col>                                            
+                    <Col>
                       <>
                         <FormControl
                           type="password"
                           value={oldPassword || ""}
                           onChange={(e) => setOldPassword(e.target.value)}
                           disabled={!changePassword}
-                        />                           
-                      </>                                            
+                        />
+                      </>
                     </Col>
                   </Row>
                   <Row>
@@ -166,77 +166,77 @@ const Security = () => {
                     </Col>
                   </Row>
                   <Row>
-                    <Col>                                            
+                    <Col>
                       <>
                         <FormControl
                           type="password"
                           value={newPassword || ""}
                           onChange={(e) => setNewPassword(e.target.value)}
                           disabled={!changePassword}
-                        />                           
-                      </>                                            
+                        />
+                      </>
                     </Col>
                   </Row>
                   <Row>
                     <Col>
-                      <Label>{ texts.confirmPassword}</Label>
+                      <Label>{texts.confirmPassword}</Label>
                     </Col>
                   </Row>
                   <Row>
-                    <Col>                                           
+                    <Col>
                       <>
                         <FormControl
                           type="password"
                           value={confirmPassword || ""}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           disabled={!changePassword}
-                        />                           
-                      </>                                             
+                        />
+                      </>
                     </Col>
                   </Row>
                   <Row>
                     <Col className="d-flex justify-content-between mt-3">
-                      <>                            
-                    {changePassword && (
-                      
-                        <Button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setChangePassword(false);
-                          }}
-                        >
-                          <span aria-hidden="true">Cancel</span>
-                        </Button>
+                      <>
+                        {changePassword && (
+
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setChangePassword(false);
+                            }}
+                          >
+                            <span aria-hidden="true">Cancel</span>
+                          </Button>
                         )}
-                        </>
-                        <Button
-                          onClick={async (e) => {
-                            e.preventDefault();
-                            if (!changePassword) {
-                              setChangePassword(true);
+                      </>
+                      <Button
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          if (!changePassword) {
+                            setChangePassword(true);
+                          } else {
+                            if (
+                              u &&
+                              userInfo?.displayName &&
+                              validatePassword(
+                                confirmPassword,
+                                newPassword,
+                                userInfo?.displayName
+                              )
+                            ) {
+                              await updatePassword(u, newPassword);
+                              showToast(texts.PasswordUpdatSuccess);
+                              setChangePassword(false);
                             } else {
-                              if (
-                                u &&
-                                userInfo?.displayName &&
-                                validatePassword(
-                                  confirmPassword,
-                                  newPassword,                                  
-                                  userInfo?.displayName
-                                )
-                              ) {
-                                await updatePassword(u, newPassword);
-                                showToast(texts.PasswordUpdatSuccess);
-                                setChangePassword(false);
-                              } else {
-                                showToast(
-                                  texts.PasswordMustContain,ToastType.ERROR
-                                );
-                              }
+                              showToast(
+                                texts.PasswordMustContain, ToastType.ERROR
+                              );
                             }
-                          }}
-                        >
-                          {changePassword ? "submit" : "change"}
-                        </Button>
+                          }
+                        }}
+                      >
+                        {changePassword ? "submit" : "change"}
+                      </Button>
                     </Col>
                   </Row>
                   <Row>
@@ -256,7 +256,7 @@ const Security = () => {
                               id="mfa-enable"
                               checked={user?.mfa || true}
                               onChange={async (e) => {
-                               
+
                                 const newUserInfo = {
                                   ...(userInfo as UserProps),
                                   mfa: true,
@@ -301,7 +301,7 @@ const Security = () => {
                               name="mfa"
                               id="mfa-disable"
                               checked={!user?.mfa || false}
-                              
+
                             />
                             {!user?.mfa && (
                               <BtnLabelPrimary
@@ -317,23 +317,23 @@ const Security = () => {
                                 onClick={async (e) => {
                                   // @ts-ignore
                                   var options = multiFactor(auth?.currentUser).enrolledFactors;
-// Present user the option to unenroll.
-console.log('option',options)
-// @ts-ignore
-return multiFactor(auth?.currentUser).unenroll(options[0])
-  .then(function(res) {
-    // User successfully unenrolled selected factor.
-    
-    const newUserInfo = {
-      ...(userInfo as UserProps),
-      mfa: false,
-    };
-    setUserInfo(newUserInfo);
-     onSubmit(newUserInfo);
-  }).catch(function(error) {
-    // Handler error.
-  });
-                                
+                                  // Present user the option to unenroll.
+                                  console.log('option', options)
+                                  // @ts-ignore
+                                  return multiFactor(auth?.currentUser).unenroll(options[0])
+                                    .then(function (res) {
+                                      // User successfully unenrolled selected factor.
+
+                                      const newUserInfo = {
+                                        ...(userInfo as UserProps),
+                                        mfa: false,
+                                      };
+                                      setUserInfo(newUserInfo);
+                                      onSubmit(newUserInfo);
+                                    }).catch(function (error) {
+                                      // Handler error.
+                                    });
+
                                 }}
                                 htmlFor="mfa-disable"
                                 className="w-100"
@@ -353,7 +353,7 @@ return multiFactor(auth?.currentUser).unenroll(options[0])
           </Row>
         </Container>
       </Form>
-      <Modal show={show} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
+      <Modal show={show} onHide={handleClose} style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' }}>
         <Modal.Header >
           <Modal.Title>2FA</Modal.Title>
         </Modal.Header>
@@ -370,21 +370,21 @@ return multiFactor(auth?.currentUser).unenroll(options[0])
         ) : (
           <Modal.Body>
             <p>Please enter your phone number for 2FA.</p>
-            <div className='d-flex mt-3 pl-5' style={{marginLeft:'20px'}}>
+            <div className='d-flex mt-3 pl-5' style={{ marginLeft: '20px' }}>
               <p className='mr-2'>+</p>
               <FormControl
-              style={{marginLeft:'5px',marginRight:'5px',maxWidth:'60px'}}
-              className="w-25 mr-2"
-              type="tel"
-              value={countryCode}
-              onChange={(e) => setCountryCode(e.target.value)}
-            />
-            <FormControl
-              className="ml-2 w-50"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
+                style={{ marginLeft: '5px', marginRight: '5px', maxWidth: '60px' }}
+                className="w-25 mr-2"
+                type="tel"
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+              />
+              <FormControl
+                className="ml-2 w-50"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
             </div>
           </Modal.Body>
         )}
@@ -394,15 +394,16 @@ return multiFactor(auth?.currentUser).unenroll(options[0])
             // disabled={!valid}
             onClick={async () => {
               if (verificationCodeSent) {
-                verifyCode().then(res=>{
+                verifyCode().then(res => {
                   const newUserInfo = {
                     ...(userInfo as UserProps),
                     mfa: true,
-                    phone:phone,
+                    phone: phone,
                   };
                   setUserInfo(newUserInfo);
-                   onSubmit(newUserInfo);
-                  showToast(texts.FASecurityAdded)}).catch(err=>showToast(texts.WrongCode, ToastType.ERROR));
+                  onSubmit(newUserInfo);
+                  showToast(texts.FASecurityAdded)
+                }).catch(err => showToast(texts.WrongCode, ToastType.ERROR));
                 handleClose();
               } else {
                 authMFA();

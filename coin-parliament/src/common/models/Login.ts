@@ -27,6 +27,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
+import { SignupRegularForSportParliament } from "./SportParliamentLogin";
 const sendEmail = httpsCallable(functions, "sendEmail");
 
 export enum LoginModes {
@@ -69,11 +70,11 @@ export const LoginAuthProvider = async (
     content: ToastContent,
     type?: ToastType,
     options?: ToastOptions | undefined,
-   
+
   ) => void,
-  setSmsVerification?:(s:string)=>void,
-  callback?:(s:any)=>void,
-  refer?:any,
+  setSmsVerification?: (s: string) => void,
+  callback?: (s: any) => void,
+  refer?: any,
 ) => {
   const auth = getAuth();
   try {
@@ -81,37 +82,38 @@ export const LoginAuthProvider = async (
     const user = result.user;
     const isFirstLogin = getAdditionalUserInfo(result)
     const userRef = doc(db, "users", user.uid);
-      const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
-      const info = userinfo.data();
+    const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
+    const info = userinfo.data();
     // await sendEmail().then(()=>console.log('welcome mail')).catch(err=>console.log('welcome error',err))
-    if(callback){
-      
-      // console.log('callback called for refeer',user)
-      callback({parent: refer, child: user.uid})
-    }
-      
-    if (isFirstLogin?.isNewUser) {
-      saveUsername(user.uid,'','')
+    if (callback) {
 
-      const firstTimeLogin:Boolean=true
-     
+      // console.log('callback called for refeer',user)
+      callback({ parent: refer, child: user.uid })
+    }
+
+    if (isFirstLogin?.isNewUser) {
+      saveUsername(user.uid, '', '')
+
+      const firstTimeLogin: Boolean = true
+
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
       console.log('firsttimelogin success')
-      
-    setTimeout(() => {
-      
-      setUser(user);
-    }, 100);
-    }else{
-   
-      console.log('user',info)
+
+      setTimeout(() => {
+
+        setUser(user);
+      }, 100);
+    } else {
+
+      console.log('user', info)
       // @ts-ignore
-      if(info?.mfa) {
-        
+      if (info?.mfa) {
+
         console.log('datacalled')
         // @ts-ignore
-        setSmsVerification(true)}
-    // setUser(user);
+        setSmsVerification(true)
+      }
+      // setUser(user);
 
     }
   } catch (e) {
@@ -122,41 +124,41 @@ export const LoginAuthProvider = async (
       // The user is a multi-factor user. Second factor challenge is required.
       // @ts-ignore
       const resolver = getMultiFactorResolver(auth, e);
-      
+
       const phoneInfoOptions = {
         multiFactorHint: resolver?.hints[0],
         session: resolver?.session
-    };
-    // console.log('phonebook',phoneInfoOptions)
-    const phoneAuthProvider = new PhoneAuthProvider(auth);
-    const recaptchaVerifier = new RecaptchaVerifier(
-      "loginId",
-      {
-        size: "invisible",
-        callback: function () {
-          // reCAPTCHA solved, you can proceed with
-          // phoneAuthProvider.verifyPhoneNumber(...).
-          // onSolvedRecaptcha();
-         
+      };
+      // console.log('phonebook',phoneInfoOptions)
+      const phoneAuthProvider = new PhoneAuthProvider(auth);
+      const recaptchaVerifier = new RecaptchaVerifier(
+        "loginId",
+        {
+          size: "invisible",
+          callback: function () {
+            // reCAPTCHA solved, you can proceed with
+            // phoneAuthProvider.verifyPhoneNumber(...).
+            // onSolvedRecaptcha();
+
+          },
         },
-      },
-      auth
-    );
-    // console.log('captcha',recaptchaVerifier)
-phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
-    .then(function (verificationId) {
-       // @ts-ignore
-      setSmsVerification({verificationId,resolver})
-      
-        // verificationId will be needed for sign-in completion.
-    }).catch(err=>console.log('captcha',err));
-    //   ...
-  }
-  else{
-    const errorMessage = (e as Error).message;
-    console.log('error message',errorMessage)
-    showToast(errorMessage=='Firebase: Error (auth/popup-closed-by-user).' || errorMessage=='Error (auth/cancelled-popup-request).'?'Authentication popup was closed by the user':errorMessage, ToastType.ERROR);
-  }
+        auth
+      );
+      // console.log('captcha',recaptchaVerifier)
+      phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
+        .then(function (verificationId) {
+          // @ts-ignore
+          setSmsVerification({ verificationId, resolver })
+
+          // verificationId will be needed for sign-in completion.
+        }).catch(err => console.log('captcha', err));
+      //   ...
+    }
+    else {
+      const errorMessage = (e as Error).message;
+      console.log('error message', errorMessage)
+      showToast(errorMessage == 'Firebase: Error (auth/popup-closed-by-user).' || errorMessage == 'Error (auth/cancelled-popup-request).' ? 'Authentication popup was closed by the user' : errorMessage, ToastType.ERROR);
+    }
   }
 };
 
@@ -181,57 +183,57 @@ export const LoginRegular = async (
       email,
       password
     );
-    console.log(userCredential,"userCredential")
+    console.log(userCredential, "userCredential")
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-// console.log('firsttimelogin',isFirstLogin)    
-    if(auth?.currentUser?.emailVerified){
+    // console.log('firsttimelogin',isFirstLogin)    
+    if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
-        saveUsername(userCredential?.user?.uid,'','')
+        saveUsername(userCredential?.user?.uid, '', '')
 
-        const firstTimeLogin:Boolean=true
+        const firstTimeLogin: Boolean = true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
-        console.log(isFirstLogin,'firsttimelogin success')
+        console.log(isFirstLogin, 'firsttimelogin success')
         // await sendEmail();
-      setTimeout(() => {
-        callback.successFunc(userCredential.user) 
-      }, 100);
-      }else{
-        callback.successFunc(userCredential.user) 
+        setTimeout(() => {
+          callback.successFunc(userCredential.user)
+        }, 100);
+      } else {
+        callback.successFunc(userCredential.user)
       }
-    }    
-    else  callback.errorFunc({message:'Please verify your email first.'} as Error);
+    }
+    else callback.errorFunc({ message: 'Please verify your email first.' } as Error);
   } catch (err) {
 
-    
+
     // @ts-ignore
-    console.log(err.message,"allcode")
+    console.log(err.message, "allcode")
     // @ts-ignore
     switch (err.code) {
       case 'auth/wrong-password':
-        
-        callback.errorFunc({ message: 'Your password is invalid.'} as Error);
+
+        callback.errorFunc({ message: 'Your password is invalid.' } as Error);
         break;
       case 'auth/user-not-found':
-        
-        callback.errorFunc({ message: 'This user not found'} as Error);
+
+        callback.errorFunc({ message: 'This user not found' } as Error);
         break;
-      case 'auth/too-many-requests': 
-        callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .'} as Error);
+      case 'auth/too-many-requests':
+        callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .' } as Error);
         break;
-      case 'auth/invalid-email':        
-        callback.errorFunc({ message: 'This Email is not Valid.'} as Error);
+      case 'auth/invalid-email':
+        callback.errorFunc({ message: 'This Email is not Valid.' } as Error);
         break;
       // @ts-ignore      
       default: showErroe = true;
-    }    
+    }
 
     // @ts-ignore    
-    const matches = err.code.replace("auth/","");
-    const lastmatches = matches.replace(/\b(?:-)\b/gi," ");
+    const matches = err.code.replace("auth/", "");
+    const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
     if (showErroe) {
       callback.errorFunc({ message: lastmatches } as Error);
-      showErroe=false
+      showErroe = false
     }
   }
 };
@@ -266,25 +268,25 @@ export const SignupRegular = async (
   const auth = getAuth();
   try {
     validateSignup(payload);
-console.log("this function call")
+    console.log("this function call")
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       payload.email,
       payload.password
     );
-    
-// @ts-ignore
+
+    // @ts-ignore
     await sendEmailVerification(auth?.currentUser);
-    const firstTimeLogin:Boolean=true
+    const firstTimeLogin: Boolean = true
     // @ts-ignore
 
     const userRef = doc(db, "users", auth?.currentUser?.uid);
     await setDoc(userRef, { firstTimeLogin }, { merge: true })
     console.log('firsttimelogin success')
     // @ts-ignore
-    saveUsername(auth?.currentUser?.uid,'','')
+    saveUsername(auth?.currentUser?.uid, '', '')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))
-    
+
     callback.successFunc(userCredential.user);
   } catch (e) {
     // callback.errorFunc(e as Error);
@@ -292,14 +294,19 @@ console.log("this function call")
     // @ts-ignore
     const matches = e.code.replace("auth/", "");
     const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
-      callback.errorFunc({ message: lastmatches } as Error);
-    
-    
-
-    console.log(e , "check this error")
-    
+    callback.errorFunc({ message: lastmatches } as Error);
   }
 };
+
+export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
+  SignupRegularForSportParliament(payload, callback).then((res) => {
+    if (res) {
+      SignupRegular(payload, callback);
+    }
+  }).catch(() => {
+
+  });
+}
 
 export type SignupPayload = {
   email: string;

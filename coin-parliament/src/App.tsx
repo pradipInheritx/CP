@@ -362,10 +362,11 @@ function App() {
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
-  const localID = localStorage.getItem("userId") ||  false
+  const localID = localStorage.getItem("userId") || false
   // const [localID, setLocalID] = useState<any>(
-     
+
   // )  
+  console.log(login, 'pkkk');
 
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
@@ -730,7 +731,7 @@ function App() {
 
           onSnapshot(doc(db, "users", user.uid), async (doc) => {
             await setUserInfo(doc.data() as UserProps);
-            setDisplayName((doc.data() as UserProps).displayName + "");            
+            setDisplayName((doc.data() as UserProps).displayName + "");
           });
           // const votesLast24HoursRef = firebase
           //   .firestore()
@@ -1121,7 +1122,7 @@ function App() {
     if (user?.uid) {
       getVotes().then(void 0);
     }
-  }, [user?.uid]);  
+  }, [user?.uid]);
 
   ///start vote result //
   const voteDetails = useContext(VoteContext);
@@ -1133,8 +1134,8 @@ function App() {
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const [calculateVote, setCalculateVote] = useState<boolean>(true);
   const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
-  const setCurrentCMP = useContext(CurrentCMPDispatchContext);  
-  
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+
 
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
@@ -1264,7 +1265,7 @@ function App() {
 
   ///END vote result //
 
-console.log(user , userInfo?.uid , mfaLogin,login,"user userInfo?.uid mfaLogin")
+  console.log(user, userInfo?.uid, mfaLogin, login, "user userInfo?.uid mfaLogin")
 
   return loader ? (
     <div
@@ -1307,7 +1308,7 @@ console.log(user , userInfo?.uid , mfaLogin,login,"user userInfo?.uid mfaLogin")
               }}
             >
               <AppContext.Provider
-                  value={{
+                value={{
                   voteNumberEnd,
                   setvoteNumberEnd,
                   albumOpen,
@@ -1823,23 +1824,17 @@ console.log(user , userInfo?.uid , mfaLogin,login,"user userInfo?.uid mfaLogin")
                                                   element={<Content />}
                                                 />
                                               ))}
-                                          
+
                                             <Route path='*' element={<Content />} />
-                                          
-                                          
-                                          {<Route path='/GenericSignup' element={
-                                           !user && !localID ? 
-                                            <GenericLoginSignup 
-                                                {...{
-                                              authProvider: LoginAuthProvider,
-                                              loginAction: LoginRegular,
-                                              signupAction: SignupRegular,
-                                            }}                                      
-                                        />
-                                        : <Navigate to="/" />
+
+
+                                            {<Route path='/generic-signup' element={
+                                              !user && !localID ?
+                                                <GenericLoginSignup />
+                                                : <Navigate to="/" />
                                             } />}
-                                          
-                                        </Routes>                                                                               
+
+                                          </Routes>
                                         </Container>
                                         <Footer />
                                       </>
