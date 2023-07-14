@@ -23,12 +23,14 @@ const Notifications = () => {
   // }
  
   // }, [notifications])
-  
+
   const translate = useTranslation()
   return (
     <Container className="py-4">
       {!notifications.length && <P>{translate("you have no notifications")}</P>}
-      {notifications.map((notification,index) => {
+      {
+        notifications.sort((a:any, b:any) => b.time - a.time)
+        .map((notification, index) => {
         const date = (notification.time && notification.time.toDate()) || undefined;
         return <Notification date={date} title={notification.message.title} body={notification.message.body} key={index} />;
       })}

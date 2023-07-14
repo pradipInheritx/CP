@@ -77,6 +77,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   const search = useLocation().search;
   const refer = new URLSearchParams(search).get("refer");
   
+  console.log(refer,"refer")
   const strings = {
     email: capitalize(translate(texts.email)),
     confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
