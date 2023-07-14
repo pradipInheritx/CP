@@ -23,19 +23,19 @@ type ZoomProps = {
 };
 
 const ZoomCss = css`
-    // transform: scale(1.4);
-//     animation: zoom-in-zoom-out 4s ease ;
-//     @keyframes zoom-in-zoom-out {
-//   0% {
-//     transform: scale(1);
-//   }
-//   50% {
-//     transform: scale(1.4);
-//   }
-//   100% {
-//     transform: scale(1);
-//   }
-// }
+    transform: scale(1.4);
+    animation: zoom-in-zoom-out 4s infinite ;
+    @keyframes zoom-in-zoom-out {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 `;
 
 const ForZoom = styled.div`
