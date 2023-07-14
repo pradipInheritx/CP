@@ -8,7 +8,20 @@ import {
 
 export const signUp = async (req: any, res: any) => {
 
-    const { phoneNumber, displayName, photoURL, email } = req.body;
+    const {
+
+        address,
+        avatar,
+        country,
+        email,
+        firstName,
+        lastName,
+        displayName,
+        phone,
+        subscribers,
+        children,
+        favorites,
+    } = req.body;
     const status: UserTypeProps = {
         name: "Member",
         weight: 1,
@@ -19,17 +32,18 @@ export const signUp = async (req: any, res: any) => {
         color: Colors.PLATINUM,
     };
     const userData: UserProps = {
-        address: "",
-        avatar: photoURL,
-        country: "",
+        // uid: user.uid,
+        address,
+        avatar,
+        country,
         email,
-        firstName: "",
-        lastName: "",
+        firstName,
+        lastName,
         mfa: false,
         displayName,
-        phone: phoneNumber,
-        subscribers: [],
-        children: [],
+        phone,
+        subscribers,
+        children,
         voteStatistics: {
             total: 0,
             successful: 0,
@@ -45,7 +59,7 @@ export const signUp = async (req: any, res: any) => {
             extraVote: 0,
             diamonds: 0,
         },
-        favorites: [],
+        favorites,
         status,
     };
 
