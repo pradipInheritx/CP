@@ -583,6 +583,7 @@ function App() {
       (querySnapshot) => {
         setNotifications(
           querySnapshot.docs.map((doc) => {
+            console.log(doc.data(),".data")
             return doc.data() as NotificationProps;
           })
         );
