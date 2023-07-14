@@ -1,14 +1,14 @@
 /** @format */
 
 import React, { FormEvent, useContext, useState } from "react";
-import "./Login.css";
+// import "./Login.css";
 import { Stack } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import { LoginModes, SignupPayload } from "../../common/models/Login";
 import { useTranslation } from "../../common/models/Dictionary";
 import AppContext from "../../Contexts/AppContext";
 import Styles from "./styles";
-import Login from "./Login";
+// import Login from "./Login";
 import Signup from "./Signup";
 import { User as AuthUser } from "@firebase/auth";
 import { AuthProvider } from "firebase/auth";
@@ -18,7 +18,7 @@ import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import { ToastType } from "../../Contexts/Notification";
 import { useLocation } from "react-router-dom";
 import Refer from "../../Pages/Refer";
-import ForgetPassword from "./ForgetPassword";
+// import ForgetPassword from "./ForgetPassword";
 
 const title = {
   [LoginModes.LOGIN]: texts.login,
@@ -45,7 +45,7 @@ export type LoginAndSignupProps = {
   ) => Promise<void>;
 };
 
-const LoginAndSignup = ({
+const GenericLoginSignup = ({
   authProvider,
   loginAction,
   signupAction,
@@ -63,16 +63,17 @@ const LoginAndSignup = ({
     <Stack
       gap={2}
       className=' justify-content-center'
-      style={{ height: "100vh", background: "var(--light-purple)" }}
+      style={{ height: "70vh", background: "var(--light-purple)" }}
     >
       <div className='container-center-horizontal'>
         <div className='login-signin screen'>
-          {!forgetPassword ? (
+          {/* {!forgetPassword ? (
             <Styles.Title>{translate(title[mode])}</Styles.Title>
           ) : (
             <Styles.Title>{translate("Forget Password".toUpperCase())}</Styles.Title>
-          )}
-          {mode === LoginModes.LOGIN && !forgetPassword && (
+          )} */}
+          <Styles.Title>{translate("Generic Signup".toUpperCase())}</Styles.Title>
+          {/* {mode === LoginModes.LOGIN && !forgetPassword && (
             <Login
               setForgetPassword={setForgetPassword}
               setUser={setUser}
@@ -80,8 +81,8 @@ const LoginAndSignup = ({
               authProvider={authProvider}
               login={loginAction}
             />
-          )}
-          {mode === LoginModes.LOGIN && forgetPassword && (
+          )} */}
+          {/* {mode === LoginModes.LOGIN && forgetPassword && (
             <ForgetPassword
               setForgetPassword={setForgetPassword}
               setUser={setUser}
@@ -89,8 +90,8 @@ const LoginAndSignup = ({
               authProvider={authProvider}
               login={loginAction}
             />
-          )}
-          {mode === LoginModes.SIGNUP && (
+          )} */}
+          {/* {mode === LoginModes.SIGNUP && ( */}
             <>
               {/* {refer && (<Refer />)} */}
               {
@@ -102,11 +103,11 @@ const LoginAndSignup = ({
                 />
               }
             </>
-          )}
+          {/* )} */}
         </div>
       </div>
     </Stack>
   );
 };
 
-export default LoginAndSignup;
+export default GenericLoginSignup;

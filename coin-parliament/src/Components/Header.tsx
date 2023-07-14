@@ -331,15 +331,18 @@ console.log(voteDetails,"voteDetails")
 				setSignup(true);
 				break;
 			case EventKeys.LOGOUT:
-				// console.log("i am working")
+				
 				signOut(auth)
-					.then((res) => {
+				.then((res) => {
 						Logout(setUser);
 						setLogin(true);
+						// console.log("i am working error")	
+					localStorage.removeItem("userId")
 					})
 					.catch((error) => {
-						// console.log("i am working error")
+						console.log("i am working error 2")
 						setLogin(true);
+						localStorage.removeItem("userId")
 						const errorMessage = error.message;
 						// console.log(errorMessage,"i am working error");
 					});
