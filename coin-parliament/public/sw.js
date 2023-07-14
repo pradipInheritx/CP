@@ -1,3 +1,4 @@
+import { onMessage } from "firebase/messaging";
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
@@ -77,7 +78,6 @@ firebase.initializeApp(config);
 // console.log("sw initialized");
 
 const messaging = firebase.messaging();
-
 messaging.setBackgroundMessageHandler(function (payload) {
   console.log(
     "[firebase-messaging-sw.js] Received background message ",
@@ -93,6 +93,16 @@ messaging.setBackgroundMessageHandler(function (payload) {
   self.registration.showNotification(notificationTitle, notificationOptions);
 
   console.log("showed", notificationTitle, notificationOptions);
+});
+onMessage(messaging, (payload) => {
+  const notificationTitle = "Background Message Title";
+  const notificationOptions = {
+    body: JSON.stringify(payload.data),
+    icon: "/firebase-logo.png",
+  };
+
+  /* eslint-disable-next-line no-restricted-globals */
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // self.addEventListener('notificationclick', event => {
