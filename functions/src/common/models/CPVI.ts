@@ -93,10 +93,10 @@ export const getUniqCoins = async () => {
   const allData = await firestore().collection("settings").doc("coins").get();
   return allData
     ? uniq(
-        (allData.data() as { coins: { symbol: string }[] }).coins.map(
-          (d) => d.symbol
-        )
+      (allData.data() as { coins: { symbol: string }[] }).coins.map(
+        (d) => d.symbol
       )
+    )
     : [];
 };
 
@@ -112,10 +112,10 @@ export const getUniqPairs = async () => {
   const allData = await firestore().collection("settings").doc("pairs").get();
   return allData
     ? uniq(
-        (
-          allData.data() as { pairs: { symbol1: string; symbol2: string }[] }
-        ).pairs.map((d) => `${d.symbol1}-${d.symbol2}`)
-      )
+      (
+        allData.data() as { pairs: { symbol1: string; symbol2: string }[] }
+      ).pairs.map((d) => `${d.symbol1}-${d.symbol2}`)
+    )
     : [];
 };
 
@@ -449,11 +449,7 @@ export const getCPVIForVote = async ({ id }: { id: string }) => {
         firestore.Timestamp.fromDate(
           moment().subtract(fromTimeData, "hours").toDate()
         )
-      )
-      .get();
-    if (!orderBookData.docs.length) {
-    } else {
-    }
+      ).get();
     const orderBook = orderBookData.docs
       .map((d) => d.data())
       .map((doc) => {
