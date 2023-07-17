@@ -411,7 +411,7 @@ function ModalForResult({ popUpOpen, vote, type,
           <div className='py-2  d-flex  justify-content-center'>
             <span style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
-                console.log("i am working")
+                
                 navigate('/profile/mine');
                 setShowBack(true);
                 removeVote();

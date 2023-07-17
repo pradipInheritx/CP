@@ -162,7 +162,7 @@ const Mine = () => {
 
 
   const Cmppopup = () => {    
-    console.log("yes i am working")
+    
     var urlName = window.location.pathname.split('/');
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
@@ -186,7 +186,7 @@ const Mine = () => {
         });
     }
     else{
-// console.log("i am working not")
+
     }      
 }
 

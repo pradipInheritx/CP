@@ -256,24 +256,24 @@ console.log(voteDetails,"voteDetails")
 
 	useEffect(() => {
 		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot==0 ) {
-		console.log("i am working")
+		
 			setTimeout(() => {				
 				setShow(true)
 			}, 1000);
 
 		} else {			
-			console.log("i am working not")
+		
 			setShow(false)
 		}
 	}, [voteNumber, votingTimer,votelength])
 
 	useEffect(() => {
 		if (afterVotePopup) {	
-			console.log("i am working 2")
+		
 			setShow(true)
 			// setAfterVotePopup(false)
 		} else {			
-			console.log("i am working 2 not")
+		
 			setShow(false)
 		}
 
@@ -331,17 +331,17 @@ console.log(voteDetails,"voteDetails")
 				setSignup(true);
 				break;
 			case EventKeys.LOGOUT:
-				// console.log("i am working")
+				
 				signOut(auth)
 					.then((res) => {
 						Logout(setUser);
 						setLogin(true);
 					})
 					.catch((error) => {
-						// console.log("i am working error")
+				
 						setLogin(true);
 						const errorMessage = error.message;
-						// console.log(errorMessage,"i am working error");
+				
 					});
 				break;
 			case EventKeys.EDIT:
