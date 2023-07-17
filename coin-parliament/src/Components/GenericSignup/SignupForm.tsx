@@ -110,7 +110,7 @@ const SignupForm = ({
       </div>
 
       <Form.Group className="mb-2  text-center" controlId="agree">
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
+        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} required={true}>
           <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
             {translate('terms & conditions')}
           </Link>  and

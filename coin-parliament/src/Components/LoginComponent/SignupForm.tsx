@@ -30,7 +30,7 @@ const SignupForm = ({
   signup: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 
 }) => {
   const translate = useTranslation();

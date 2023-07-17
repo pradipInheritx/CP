@@ -42,7 +42,7 @@ export type LoginAndSignupProps = {
   signupAction: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 };
 
 const LoginAndSignup = ({

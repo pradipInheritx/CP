@@ -28,6 +28,9 @@ import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
 import { SignupRegularForSportParliament } from "./SportParliamentLogin";
+import { SignupRegularForStockParliament } from "./StockParliamentLogin";
+import { toast } from "react-toastify";
+import { showToast } from "App";
 const sendEmail = httpsCallable(functions, "sendEmail");
 
 export enum LoginModes {
@@ -286,8 +289,8 @@ export const SignupRegular = async (
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid, '', '')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))
-
-    callback.successFunc(userCredential.user);
+    showToast("User register successfully.", ToastType.SUCCESS);
+    return true;
   } catch (e) {
     // callback.errorFunc(e as Error);
 
@@ -295,13 +298,18 @@ export const SignupRegular = async (
     const matches = e.code.replace("auth/", "");
     const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
     callback.errorFunc({ message: lastmatches } as Error);
+    return false;
   }
 };
 
 export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
-  SignupRegularForSportParliament(payload, callback).then((res) => {
+  SignupRegular(payload, callback).then((res) => {
     if (res) {
-      SignupRegular(payload, callback);
+      SignupRegularForSportParliament(payload, callback).then((res) => {
+        if (res) {
+          SignupRegularForStockParliament(payload, callback);
+        }
+      })
     }
   }).catch(() => {
 
