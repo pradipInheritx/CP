@@ -96,14 +96,11 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   onEnd={() => {
 
                     setTimeout(() => {
+                      handleShow()
                       setInOutReward((prev: number) => {
-                        // console.log(prev,"showRewardCheck")
-                        if (prev == 1) {
-                          handleShow()
-                          return 2
-                        } else {
-                          return prev
-                        }
+                        return 2;
+                        // return prev == 1 ? 2 : prev;
+
                       });
                     }, 1000);
 

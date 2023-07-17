@@ -97,7 +97,11 @@ const Mine = () => {
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
-  const handleCardClose = () => setCardModalShow(false);
+  const handleCardClose = () => {
+    setCardModalShow(false);
+    setInOutReward(0);
+    setShowReward(0);
+  };
   const handleCardShow = () => setCardModalShow(true);
 
   const currentCMP = useContext(CurrentCMPContext);
@@ -151,44 +155,44 @@ const Mine = () => {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
-        if (ProfileUrl && score != 100) {   
+        if (ProfileUrl && score != 100) {
           Cmppopup();
         }
-        
+
         setShowBack(false)
       }, 10000);
     }
   }, []);
 
 
-  const Cmppopup = () => {    
+  const Cmppopup = () => {
     console.log("yes i am working")
     var urlName = window.location.pathname.split('/');
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
-     Swal.fire({    
-          html:
-            // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
-            "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
-            "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
-            "",
-          color: 'black',
-          confirmButtonText: 'Continue Voting',
-          confirmButtonColor: '#6352e8',
-          showCloseButton: true,
-          customClass: {
-            popup: 'stayInGamePopupStyle',
-          }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            goBack()
-          }
-        });
+      Swal.fire({
+        html:
+          // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
+          "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
+          "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+          "",
+        color: 'black',
+        confirmButtonText: 'Continue Voting',
+        confirmButtonColor: '#6352e8',
+        showCloseButton: true,
+        customClass: {
+          popup: 'stayInGamePopupStyle',
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          goBack()
+        }
+      });
     }
-    else{
-// console.log("i am working not")
-    }      
-}
+    else {
+      // console.log("i am working not")
+    }
+  }
 
   const openpopup = () => {
     if (showBack) {
