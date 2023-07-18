@@ -61,10 +61,10 @@ const I = styled.i`
   color:#6352e9;
 `;
 
-const ForZoom = styled.div`
-z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
- ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
-`;
+// const ForZoom = styled.div`
+// z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
+//  ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
+// `;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
@@ -97,7 +97,11 @@ const Mine = () => {
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
-  const handleCardClose = () => setCardModalShow(false);
+  const handleCardClose = () => {
+    setCardModalShow(false);
+    setInOutReward(0);
+    setShowReward(0);
+  };
   const handleCardShow = () => setCardModalShow(true);
 
   const currentCMP = useContext(CurrentCMPContext);
@@ -151,10 +155,10 @@ const Mine = () => {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
-        if (ProfileUrl && score != 100) {   
+        if (ProfileUrl && score != 100) {
           Cmppopup();
         }
-        
+
         setShowBack(false)
       }, 10000);
     }
@@ -166,29 +170,29 @@ const Mine = () => {
     var urlName = window.location.pathname.split('/');
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
-     Swal.fire({    
-          html:
-            // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
-            "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
-            "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
-            "",
-          color: 'black',
-          confirmButtonText: 'Continue Voting',
-          confirmButtonColor: '#6352e8',
-          showCloseButton: true,
-          customClass: {
-            popup: 'stayInGamePopupStyle',
-          }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            goBack()
-          }
-        });
+      Swal.fire({
+        html:
+          // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
+          "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
+          "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+          "",
+        color: 'black',
+        confirmButtonText: 'Continue Voting',
+        confirmButtonColor: '#6352e8',
+        showCloseButton: true,
+        customClass: {
+          popup: 'stayInGamePopupStyle',
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          goBack()
+        }
+      });
     }
-    else{
-
-    }      
-}
+    else {
+      // console.log("i am working not")
+    }
+  }
 
   const openpopup = () => {
     if (showBack) {
@@ -235,25 +239,20 @@ const Mine = () => {
                 {" "}
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
-              <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}>
-                {" "}
+              {/* <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}> */}
 
-                <PAXCard
-                  countShow={countShow}
-                  walletId={userInfo?.wallet || ""}
-                  rewardTimer={rewardTimer}
-                  setCountShow={setCountShow}
-                  // @ts-ignore
-                  // PAX={userInfo?.rewardStatistics?.diamonds || 0}
-                  // PAX={
-                  //   countShow ? paxValue :prevPAXValue.current
-                  // }
-                  PAX={
-                    prevPAXValue.current
-                  }
-                />
-                {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
-              </ForZoom>
+              <PAXCard
+                countShow={countShow}
+                walletId={userInfo?.wallet || ""}
+                rewardTimer={rewardTimer}
+                setCountShow={setCountShow}
+                PAX={paxValue}
+              // PAX={
+              //   prevPAXValue.current
+              // }
+              />
+              {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
+              {/* </ForZoom> */}
 
             </div>
             {/* @ts-ignore */}
@@ -302,25 +301,22 @@ const Mine = () => {
               md={6}
               className='d-flex flex-column flex-md-column-reverse'
             >
-              <ForZoom
+              {/* <ForZoom
                 {...{ inOutReward }}
-              >
-                <PAXCard
-                  countShow={countShow}
-                  walletId={userInfo?.wallet || ""}
-                  rewardTimer={rewardTimer}
-                  setCountShow={setCountShow}
-                  // @ts-ignore
-                  // PAX={userInfo?.rewardStatistics?.diamonds || 0}
-                  // PAX={paxValue}
-                  PAX={
-                    prevPAXValue.current
-                  }
-                // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
-                />
-                {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
-                {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
-              </ForZoom>
+              > */}
+              <PAXCard
+                countShow={countShow}
+                walletId={userInfo?.wallet || ""}
+                rewardTimer={rewardTimer}
+                setCountShow={setCountShow}
+                // @ts-ignore
+                // PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                PAX={paxValue}
+              // PAX={
+              //   prevPAXValue.current
+              // }
+              />
+              {/* </ForZoom> */}
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
@@ -454,6 +450,7 @@ const Mine = () => {
       {/* Card Modal */}
 
       <CardDiv>
+        {/* reward modal 5 */}
         <Modal
           className=""
           show={

@@ -224,6 +224,42 @@ const Minting = ({
   console.log(resultData, "resultData")
   const [animateButton, setAnimateButton] = useState<boolean>(false);
 
+  const claimRewardHandler = async () => {
+    handleSoundClick()
+    if (claim) {
+      setLoading(true);
+      const result = await claimReward({ uid: user?.uid }).then((data: any) => {
+        handleShow()
+        return data;
+      }).catch((error) => {
+        showToast(error.message, ToastType.ERROR);
+      });
+      setResultData(result);
+      setRewardTimer(result);
+      if (result?.data) {
+        // @ts-ignore
+        setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
+      }
+
+      setLoading(false);
+    } else {
+      Swal.fire({
+        title: '',
+        text: `You still need ${100 - score} CMP to claim your reward.`,
+        color: 'black',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#6352e8',
+        customClass: {
+          popup: 'popupStyle',
+        }
+      });
+    }
+    setAnimateButton(true);
+    setTimeout(() => setAnimateButton(false), 1000);
+  }
+
+
+
   return (
     <React.Fragment>
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
@@ -252,45 +288,7 @@ const Minting = ({
             <Option0
               style={{ marginTop: "10px" }}
               {...{
-                onClick: async () => {
-                  handleSoundClick()
-                  if (claim) {
-                    setLoading(true);
-                    const result = await claimReward({ uid: user?.uid }).then((data: any) => {
-                      // showToast(data.data.firstRewardCard ,ToastType.ERROR);
-                      // console.log(data.data.firstRewardCard,"full data")
-                      handleShow()
-                      return data;
-                    }).catch((error) => {
-                      // callback={{
-                      //     successFunc: (params) => setUser(params),
-                      showToast(error.message, ToastType.ERROR);
-                      // }}
-                    });
-                    setResultData(result)
-                    console.log(result, 'hello');
-
-                    if (result?.data) {
-                      // @ts-ignore
-                      setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
-                    }
-
-                    setLoading(false);
-                  } else {
-                    Swal.fire({
-                      title: '',
-                      text: `You still need ${100 - score} CMP to claim your reward.`,
-                      color: 'black',
-                      confirmButtonText: 'Ok',
-                      confirmButtonColor: '#6352e8',
-                      customClass: {
-                        popup: 'popupStyle',
-                      }
-                    });
-                  }
-                  setAnimateButton(true);
-                  setTimeout(() => setAnimateButton(false), 1000);
-                },
+                onClick: claimRewardHandler,
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
@@ -306,6 +304,7 @@ const Minting = ({
         )}
       </Container>
       <div>
+        {/* reward modal 1 */}
         <Modal
           show={
             modalShow
@@ -317,7 +316,6 @@ const Minting = ({
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
 
         >
-
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* @ts-ignore*/}
             <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
@@ -328,12 +326,12 @@ const Minting = ({
               setTimeout(() => {
                 setShowReward(1);
                 setInOutReward(1);
-                setCountShow(true)
+                // setCountShow(true)
                 // @ts-ignore
                 setAlbumOpen(resultData?.data?.firstRewardCardCollection);
                 // @ts-ignore
                 setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
-                setRewardTimer(resultData);
+                // setRewardTimer(resultData); i commented here because i set this when i get result 
               }, 1000);
 
               handleClose()
@@ -367,22 +365,8 @@ const Minting = ({
           <div className="d-flex justify-content-center pb-1" style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
-                if (claim) {
-                  setLoading(true);
-                  console.log("reward");
-                  const result = await claimReward({ uid: user?.uid }).then((data: any) => {
-                    handleShow()
-                    return data;
-                  }).catch((error) => {
-                    showToast(error.message, ToastType.ERROR);
-                  });
-                  // @ts-ignore
-                  setResultData(result)
-                  // handleShow()
-                  handleCmpPopupClose()
-                  setLoading(false);
-                  console.log("rewardresult", result);
-                }
+                claimRewardHandler();
+                handleCmpPopupClose();
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>

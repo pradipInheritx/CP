@@ -583,7 +583,7 @@ function App() {
       (querySnapshot) => {
         setNotifications(
           querySnapshot.docs.map((doc) => {
-            console.log(doc.data(),".data")
+            console.log(doc.data(), ".data")
             return doc.data() as NotificationProps;
           })
         );
@@ -1112,7 +1112,7 @@ function App() {
     if (user?.uid) {
       getVotes().then(void 0);
     }
-  }, [user?.uid]);  
+  }, [user?.uid]);
 
   ///start vote result //
   const voteDetails = useContext(VoteContext);
@@ -1124,8 +1124,8 @@ function App() {
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const [calculateVote, setCalculateVote] = useState<boolean>(true);
   const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
-  const setCurrentCMP = useContext(CurrentCMPDispatchContext);  
-  
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+
 
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
@@ -1296,7 +1296,7 @@ function App() {
               }}
             >
               <AppContext.Provider
-                  value={{
+                value={{
                   voteNumberEnd,
                   setvoteNumberEnd,
                   albumOpen,
