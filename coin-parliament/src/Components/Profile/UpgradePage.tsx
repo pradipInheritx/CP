@@ -22,6 +22,7 @@ import upgrade1 from "../../assets/svg/upgrade1.svg";
 import upgrade2 from "../../assets/svg/upgrade2.svg";
 import upgrade3 from "../../assets/svg/upgrade3.svg";
 import UpgradeCopy from "./UpgradeCopy";
+import PaymentPop from "./PaymentPop";
 import { handleSoundClick } from "../../common/utils/SoundClick";
 import  upgrade from "../../assets/images/upgrade_small.png";
 import  Gift from "../../assets/images/Framegift.png";
@@ -54,13 +55,11 @@ const UpgradePage = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-const [clicked,setClicked]=useState(false)
+  const [clicked, setClicked] = useState(false)
   const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
 useEffect(() => {
-  
-
   return () => {
     setClicked(false)
   }
@@ -365,10 +364,8 @@ useEffect(() => {
               className='btn '
               onClick={() => {
                 if(clicked) return
-                setClicked(true)
-                
-                handleSoundClick()
-                showModal(<UpgradeCopy />)
+                setClicked(true)                
+                handleSoundClick()                
               }}
               style={{
                 background:
@@ -387,6 +384,12 @@ useEffect(() => {
           </div>        
         </div>
       </div>
+      {clicked &&
+        <PaymentPop
+        openPopup={clicked}
+        setClicked={setClicked}
+      />
+      }
     </>
   );
 };
