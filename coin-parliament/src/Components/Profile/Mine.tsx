@@ -165,8 +165,8 @@ const Mine = () => {
   }, []);
 
 
-  const Cmppopup = () => {
-    console.log("yes i am working")
+  const Cmppopup = () => {    
+    
     var urlName = window.location.pathname.split('/');
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
