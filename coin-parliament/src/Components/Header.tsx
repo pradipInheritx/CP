@@ -554,22 +554,9 @@ const Header = ({
 																/>
 															</div>
 															:
-															<span
-																style={{
-																	color: "#6352E8",
-																	// zoom: `${showReward == 2 ? "150%" : ""}`
-																	// fontSize:"11px",
-																	marginLeft: "10px",
-																}}
-															>
-
-
-																{MyPath == "/profile/mine" ?
+															<span style={{ color: "#6352E8", marginLeft: "10px", }}>
+																{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
-																		style={{
-																			// fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
-																		}}
-
 																		onEnd={() => {
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
@@ -687,13 +674,8 @@ const Header = ({
 					style={{
 						flexBasis: "100%",
 						textAlign: "center",
-						//  transform: `${showReward == 2 && "scale(1)"}`,
-						//     marginTop: `${showReward == 2 && "50px"}`
-						// width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
-						// textAlign: desktop ? undefined : "center",
 					}}
 				>
-
 					<div className='d-flex'>
 						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
 							{(user?.uid && !login) && (
@@ -756,7 +738,8 @@ const Header = ({
 																marginLeft: "50px",
 															}}
 														>
-															{MyPath == "/profile/mine" ?
+															{/* reward modal 4 */}
+															{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
 																	onEnd={() => {
 																		setInOutReward((prev: number) => {

@@ -232,10 +232,10 @@ const Minting = ({
         handleShow()
         return data;
       }).catch((error) => {
-
         showToast(error.message, ToastType.ERROR);
       });
-      setResultData(result)
+      setResultData(result);
+      setRewardTimer(result);
       if (result?.data) {
         // @ts-ignore
         setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
@@ -304,6 +304,7 @@ const Minting = ({
         )}
       </Container>
       <div>
+        {/* reward modal 1 */}
         <Modal
           show={
             modalShow
@@ -315,7 +316,6 @@ const Minting = ({
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
 
         >
-
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             {/* @ts-ignore*/}
             <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
@@ -326,12 +326,12 @@ const Minting = ({
               setTimeout(() => {
                 setShowReward(1);
                 setInOutReward(1);
-                setCountShow(true)
+                // setCountShow(true)
                 // @ts-ignore
                 setAlbumOpen(resultData?.data?.firstRewardCardCollection);
                 // @ts-ignore
                 setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
-                setRewardTimer(resultData);
+                // setRewardTimer(resultData); i commented here because i set this when i get result 
               }, 1000);
 
               handleClose()
