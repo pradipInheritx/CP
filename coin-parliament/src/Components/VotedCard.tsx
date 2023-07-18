@@ -377,7 +377,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
   const TenSec = expirationTime - (expirationTime - 10000)
   // console.log(TenSec ,"TenSec")
   // if (expirationTime == TenSec) {
-  //   console.log("i am working")
+
   // }
   const coin1 = `${coins && symbol1 ? coins[symbol1]?.symbol?.toLowerCase() || "" : ""}`
   const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`
@@ -397,7 +397,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     //   userId: vote?.userId
     // }).then((data) => {
     //   if (data.data == null) {
-    //     // console.log(data.data,"i am working data.data")
+    
     //     // getVotes(index).then(void 0);
     //     // openPopup(true)
 

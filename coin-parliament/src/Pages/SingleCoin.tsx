@@ -261,7 +261,7 @@ const SingleCoin = () => {
             setSelectedTimeFrameArray(newTimeframe)
           }
           else {
-            // console.log("i am working")
+            
             setSelectedTimeFrameArray(newTimeframe)
             // AllvoteValueObject.splice(index, 1);               
             // setAllButtonTime(AllvoteValueObject);

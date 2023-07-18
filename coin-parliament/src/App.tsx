@@ -896,7 +896,7 @@ function App() {
   //                 });
   //             }
   //           }, remaining);
-  //           console.log("yes i am working after vote")
+  
   //         })
   //         .catch((error) => {
   //           console.log('extravoteError', error);

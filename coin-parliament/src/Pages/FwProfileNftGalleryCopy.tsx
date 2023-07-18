@@ -93,11 +93,33 @@ const FwProfileNftGalleryCopy = () => {
 
 
 
-useEffect(() => {
-    if (albumOpen != "") {
-      setSelectCollection(albumOpen)
-      setAlbumOpen("")      
+  useEffect(() => {
+  if (albumOpen != "") {
+      const getCollectionType = firebase
+        .firestore()
+        .collection("nftGallery")
+      getCollectionType.get()
+        .then((snapshot) => {
+
+          const data: any = []
+          snapshot.forEach((doc) => {
+            data.push({ id: doc.id, ...doc.data() });
+          });
+
+          setCollectionType(data)
+          setSelectCollection(albumOpen)    
+          
+          setCardShow(false)
+
+        }).catch((error) => {
+          console.log(error, "error");
+        });
+      setAlbumOpen("")    
     }
+    // if (albumOpen != "") {
+    //   setSelectCollection(albumOpen)
+    //   setAlbumOpen("")      
+    // }
   }, [albumOpen])
 
 
@@ -126,7 +148,7 @@ useEffect(() => {
   else {
     setCardShow(false)
   }   
-   
+   onSelectSets("none")
    if (collectionName === 'none') {       
     const getCollectionType = firebase
   .firestore()
@@ -163,6 +185,7 @@ console.log(error,"error");
       console.log(data ,"alldatacard")
       setAllCardNew(data)   
       setCardNameNew(data)  
+      // onSelectSets("none")
       setCardShow(true)
   }).catch((error) => {
       console.log(error,"error");
@@ -181,7 +204,7 @@ console.log(error,"error");
     data.push({ id: doc.id, ...doc.data() });
   });
       setSetsValue(data)
-      console.log("setsdata",data)
+      setCardType("all")
     
   }).catch((error) => {
       console.log(error,"error");
@@ -460,11 +483,12 @@ console.log(allCardNew,"allCardNew" , cardShow)
                 id='cars'
                 className='bg-white border rounded py-2 mx-2'
                 // onChange={e=>onCollectionChange(e.target.value)}
+            value={setsCardId}
                 onChange={e=>onSelectSets(e.target.value)}
               >
             <option value='none'>{texts.SelectSets}</option>            
             {setsValue?.map((data:any ,index:number ) => {
-              return  <option value={ data?.id} key={index}>{`${((data?.setName)?.toUpperCase())}`}</option>        
+              return  <option selected value={ data?.id} key={index}>{`${((data?.setName)?.toUpperCase())}`}</option>        
             })}            
           </select>
           </div>
@@ -473,7 +497,8 @@ console.log(allCardNew,"allCardNew" , cardShow)
                 name='type'
                 id='type'
                 className='bg-white border rounded mx-2 py-2'
-                onChange={(e)=>{onSelectType(e.target.value)}}
+            onChange={(e) => { onSelectType(e.target.value) }}
+            value={cardType}
               >
                 {selectCollection !="none"?<><option value='all'>{texts.SelectType}</option>
                 <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
@@ -487,11 +512,12 @@ console.log(allCardNew,"allCardNew" , cardShow)
           <select                
                 className='bg-white border rounded py-2 mx-1'
                 // onChange={e=>onCollectionChange(e.target.value)}
-                onChange={e=>onSelectName(e.target.value)}
+            onChange={e => onSelectName(e.target.value)}
+            value={setsCardName}
               >
             <option value='none'>{texts.SelectName}</option>       
             {cardNameNew?.map((data:any ,index:number ) => {
-              return  <option value={ data?.cardName} key={index}>{`${data?.cardName}`}</option>          
+              return  <option selected value={ data?.cardName} key={index}>{`${data?.cardName}`}</option>          
             })}            
           </select>              
             </div>
