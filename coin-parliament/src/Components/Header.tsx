@@ -218,17 +218,17 @@ const Header = ({
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const voteDetails = useContext(VoteContext);
 	const votelength = Object.keys(voteDetails?.activeVotes).length;
-console.log(voteDetails,"voteDetails")
+	console.log(voteDetails, "voteDetails")
 
 	useEffect(() => {
 
 		if (score > 99.98 && MyPath !== "/profile/mine") {
 			setCmpModalOpen(true)
-			
+
 		}
 		if (MyPath == "/profile/mine") {
 			setCmpModalOpen(false)
-			
+
 		}
 	}, [score])
 
@@ -249,30 +249,30 @@ console.log(voteDetails,"voteDetails")
 			});
 	}
 
-	console.log(votelength,"setFollowerInfo")
+	console.log(votelength, "setFollowerInfo")
 	useEffect(() => {
 		getFollowerData()
 	}, [followerUserId])
 
 	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot==0 ) {
-		console.log("i am working")
-			setTimeout(() => {				
+		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot == 0) {
+			console.log("i am working")
+			setTimeout(() => {
 				setShow(true)
 			}, 1000);
 
-		} else {			
+		} else {
 			console.log("i am working not")
 			setShow(false)
 		}
-	}, [voteNumber, votingTimer,votelength])
+	}, [voteNumber, votingTimer, votelength])
 
 	useEffect(() => {
-		if (afterVotePopup) {	
+		if (afterVotePopup) {
 			console.log("i am working 2")
 			setShow(true)
 			// setAfterVotePopup(false)
-		} else {			
+		} else {
 			console.log("i am working 2 not")
 			setShow(false)
 		}
@@ -317,7 +317,7 @@ console.log(voteDetails,"voteDetails")
 
 	const onSelect = (eventKey: string | null) => {
 
-		console.log(eventKey ,"checkeventKey")
+		console.log(eventKey, "checkeventKey")
 		// handleSoundClick()
 		const auth = getAuth();
 
@@ -539,7 +539,7 @@ console.log(voteDetails,"voteDetails")
 																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
-																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 100, lineHeight: "10%",}}>
+																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 100, lineHeight: "10%", }}>
 																				{/* Wait {" "} */}
 																				{Number(voteRules?.maxVotes)} VOTES IN {" "}
 																				{hours < 1 ? null : `${hours}:`}
@@ -554,34 +554,28 @@ console.log(voteDetails,"voteDetails")
 																/>
 															</div>
 															:
-															<span
-																style={{
-																	color: "#6352E8",
-																	// zoom: `${showReward == 2 ? "150%" : ""}`
-																	// fontSize:"11px",
-																	marginLeft: "10px",
-																}}
-															>
-
-
-																{MyPath == "/profile/mine" ?
+															<span style={{ color: "#6352E8", marginLeft: "10px", }}>
+																{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
-																		style={{
-																			// fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
-																		}}
-
 																		onEnd={() => {
 																			setInOutReward((prev: number) => {
-																				return prev == 2 ? 3 : prev
+																				// return prev == 2 ? 3 : prev
+																				return 3
 																			});
-																			setHeaderExtraVote((prev: number) => {
-																				if (prev != 0) {
-																					setShowReward((prev: number) => {
-																						return prev == 2 ? 3 : prev
-																					})
-																				}
-																				return prev
-																			})
+																			if (headerExtraVote != 0) {
+																				setShowReward((prev: number) => {
+																					return 3;
+																				});
+																			}
+																			// setHeaderExtraVote((prev: number) => {
+																			// 	if (prev != 0) {
+																			// 		setShowReward((prev: number) => {
+																			// 			// return prev == 2 ? 3 : prev
+																			// 			return 3;
+																			// 		})
+																			// 	}
+																			// 	return prev
+																			// })
 																		}
 																		}
 																	/> :
@@ -621,11 +615,11 @@ console.log(voteDetails,"voteDetails")
 												:
 												<PlusButtonMob onClick={() => {
 													handleSoundClick()
-													navigate("/votingbooster")												
-												}}												
+													navigate("/votingbooster")
+												}}
 												>
 													<span
-													className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+														className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
 													>+</span>
 												</PlusButtonMob>
 
@@ -649,7 +643,7 @@ console.log(voteDetails,"voteDetails")
 											</MemberText>} */}
 
 											{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
-												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name }</MemberText>}
+											{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 
 										</div>
 									</div>
@@ -680,13 +674,8 @@ console.log(voteDetails,"voteDetails")
 					style={{
 						flexBasis: "100%",
 						textAlign: "center",
-						//  transform: `${showReward == 2 && "scale(1)"}`,
-						//     marginTop: `${showReward == 2 && "50px"}`
-						// width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
-						// textAlign: desktop ? undefined : "center",
 					}}
 				>
-
 					<div className='d-flex'>
 						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
 							{(user?.uid && !login) && (
@@ -712,14 +701,14 @@ console.log(voteDetails,"voteDetails")
 												<>
 													<span className=""
 														style={{
-														marginLeft:"40px"
-													}}
+															marginLeft: "40px"
+														}}
 													>
 
-												{followerInfo?.displayName}
+														{followerInfo?.displayName}
 													</span>
 												</>
-												
+
 												:
 												(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 													// @ts-ignore
@@ -749,20 +738,29 @@ console.log(voteDetails,"voteDetails")
 																marginLeft: "50px",
 															}}
 														>
-															{MyPath == "/profile/mine" ?
+															{/* reward modal 4 */}
+															{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
 																	onEnd={() => {
 																		setInOutReward((prev: number) => {
-																			return prev == 2 ? 3 : prev
+																			// return prev == 2 ? 3 : prev
+																			return 3
 																		});
-																		setHeaderExtraVote((prev: number) => {
-																			if (prev != 0) {
-																				setShowReward((prev: number) => {
-																					return prev == 2 ? 3 : prev
-																				})
-																			}
-																			return prev
-																		})
+																		if (headerExtraVote != 0) {
+																			setShowReward((prev: number) => {
+																				return 3;
+																			});
+																		}
+																		// setHeaderExtraVote((prev: number) => {
+																		// 	if (prev != 0) {
+																		// 		setShowReward((prev: number) => {
+																		// 			// return prev == 2 ? 3 : prev
+																		// 			return 3;
+																		// 		})
+																		// 	}
+																		// 	return prev
+																		// })
+
 																	}
 																	}
 																/> :
@@ -799,7 +797,7 @@ console.log(voteDetails,"voteDetails")
 															navigate("/votingbooster")
 														}}>
 															<span
-															className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
+																className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
 															>+</span>
 														</PlusButton>}
 												</div>
@@ -810,22 +808,22 @@ console.log(voteDetails,"voteDetails")
 											// !(followerPage && followerInfo != "") &&
 											<div
 												className=''
-												style={{width: "50%",marginLeft: "150px",marginTop: "5px",textAlign: "left",fontWeight: "100px",}}
+												style={{ width: "50%", marginLeft: "150px", marginTop: "5px", textAlign: "left", fontWeight: "100px", }}
 											>
 												{/* {userInfo?.displayName &&
 													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
 														{userInfo?.displayName && userInfo?.displayName}
 													</span>
 												}													 */}
-													{
-												(followerPage && followerInfo != "") ?
-													<></> :
-													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
-													</span>
-											}
+												{
+													(followerPage && followerInfo != "") ?
+														<></> :
+														<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+															{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+														</span>
+												}
 												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
-												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name }</MemberText>}
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 											</div>
 										}
 
@@ -906,7 +904,7 @@ console.log(voteDetails,"voteDetails")
 					centered
 				>
 					<Modal.Header>
-						
+
 					</Modal.Header>
 					<Modal.Body>
 						<p className="text-center" >You have achieved your goal .</p>
@@ -923,7 +921,7 @@ console.log(voteDetails,"voteDetails")
 						</div>
 
 					</Modal.Body>
-					
+
 				</Modal>
 			</div>
 		</MenuContainer>
