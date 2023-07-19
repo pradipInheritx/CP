@@ -1,4 +1,3 @@
-import { onMessage } from "firebase/messaging";
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
@@ -71,9 +70,8 @@ self.addEventListener('activate', event => {
 });
 
 const config = {
-  messagingSenderId: "742294999580",
+  messagingSenderId: "950952702753",
 };
-
 firebase.initializeApp(config);
 // console.log("sw initialized");
 
@@ -93,16 +91,6 @@ messaging.setBackgroundMessageHandler(function (payload) {
   self.registration.showNotification(notificationTitle, notificationOptions);
 
   console.log("showed", notificationTitle, notificationOptions);
-});
-onMessage(messaging, (payload) => {
-  const notificationTitle = "Background Message Title";
-  const notificationOptions = {
-    body: JSON.stringify(payload.data),
-    icon: "/firebase-logo.png",
-  };
-
-  /* eslint-disable-next-line no-restricted-globals */
-  self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // self.addEventListener('notificationclick', event => {

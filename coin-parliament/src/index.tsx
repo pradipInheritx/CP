@@ -9,7 +9,6 @@ import "./index.css";
 import { VoteProvider } from "Contexts/VoteProvider";
 import { CurrentCMPProvider } from "Contexts/CurrentCMP";
 import { CompletedVotesProvider } from "Contexts/CompletedVotesProvider";
-
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
   const langDetector = document.getElementById("lang-detector");
@@ -38,7 +37,7 @@ ReactDOM.render(
 reportWebVitals();
 // registerServiceWorker();
 
-const sw = "../service-worker.js";
+const sw = "../public/sw.js";
 // process.env.NODE_ENV === "production"
 //   ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
 //   : "./firebase-messaging-sw.js";
