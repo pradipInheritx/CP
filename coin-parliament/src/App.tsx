@@ -531,14 +531,29 @@ function App() {
 
 
   useEffect(() => {
-    getToken(messaging, {
-      vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    }).then((token) => {
-      setFcmToken(token)
-    }).catch((e) => {
-      console.log('hello', e);
-    });
+    Notification.requestPermission()
+      .then((permission) => {
+        if (permission === "granted") {
+          console.log("Notification permission granted.");
+          // Get the device token to send messages to individual devices
+          getToken(messaging, {
+            vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
+          }).then((token) => {
+            setFcmToken(token)
+          }).catch((e) => {
+            console.log('hello', e);
+          });
+        } else {
+          console.log("Notification permission denied.");
+          return null;
+        }
+      }).catch((error) => {
+        console.error("Error getting notification permission:", error);
+      });
+
   }, []);
+
+
 
 
   useEffect(() => {
