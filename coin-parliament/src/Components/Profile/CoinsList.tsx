@@ -272,7 +272,7 @@ axios.post('https://console.dev.welldapp.io/api/transactions', data, {
                     handalAmoutValue(e)
                   }}
                 /> */}
-                <p>Upgread you account need to Pay 99$</p>
+                <p>Upgrade your account need to Pay 99$</p>
                 { Number(accountBalance) < 99 && <span style={{fontSize:"12px",color:"red"}}>you have insufficient balance to make this payment</span>}
               </div>
               </div>
