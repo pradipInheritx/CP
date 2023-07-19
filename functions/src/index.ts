@@ -541,18 +541,18 @@ exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
   });
 });
 
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 2 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
+// exports.getUpdatedDataFromWebsocket = functions.pubsub
+//   .schedule("every 2 minutes")
+//   .onRun(async () => {
+//     await getUpdatedDataFromWebsocket();
+//   });
 
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 5 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
+// exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+//   .schedule("every 5 minutes")
+//   .onRun(async () => {
+//     await getAllUpdated24HourRecords();
+//     await removeTheBefore24HoursData();
+//   });
 
 exports.prepareEveryFiveMinuteCPVI = functions.pubsub
   .schedule("*/3 * * * *")
