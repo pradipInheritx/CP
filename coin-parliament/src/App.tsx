@@ -144,6 +144,7 @@ import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
 import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import CoinsList from "Components/Profile/CoinsList";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -1772,6 +1773,10 @@ function App() {
                                             <Route
                                               path='/upgrade'
                                               element={<UpgradePage />}
+                                            />
+                                            <Route
+                                              path='/paymentList'
+                                              element={<CoinsList />}
                                             />
                                             <Route
                                               path='/votingbooster'
