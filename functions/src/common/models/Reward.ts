@@ -5,6 +5,7 @@ import * as admin from "firebase-admin";
 import { userConverter, UserProps } from "../models/User";
 import { sendNotification } from "./Notification";
 import { messaging } from "firebase-admin";
+import { toArray } from "lodash";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -108,7 +109,7 @@ async function getRewardTransactionsByCardId(cardId: string) {
 
 // get multiple users by user ids
 async function getMultipleUsersByUserIds(userIds: Array<string>) {
-  console.log("getMultipleUsersByUserIds............");
+  console.log("getMultipleUsersByUserIds............", userIds);
 
   const queryPromises = userIds.map(user => {
     return firestore().collection('users')
@@ -531,9 +532,11 @@ export const cardHolderListing: (cardId: string) => {
     user: string;
   }[] = await getRewardTransactionsByCardId(cardId);
   console.log("transData cardHolderListing---", transData);
-  const userIds = transData.map((item: any) => item.user);
-  console.log("users map cardHolderListing---", userIds);
-  const users: any = await getMultipleUsersByUserIds(userIds);
+  let userIds: any = transData.map((item: any) => item.user);
+  userIds = new Set(userIds);
+  let userList = toArray(userIds)
+  console.log("users map cardHolderListing---", userList);
+  const users: any = await getMultipleUsersByUserIds(userList);
   // console.log("users cardHolderListing---", users)
   return users;
 };
