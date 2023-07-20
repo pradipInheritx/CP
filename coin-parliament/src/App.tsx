@@ -327,7 +327,8 @@ function App() {
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
-  const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+  const [firstTimeLogin, setFirstTimeLogin] = useState(false); 
+  const [showMenubar, setShowMenuBar] = useState(false); 
   const [user, setUser] = useState<User>();
   const [userInfo, setUserInfo] = useState<UserProps>();
   const [displayName, setDisplayName] = useState<string>("");
@@ -443,7 +444,8 @@ function App() {
   //   return Followerinfo
   // }
 
-  console.log(remainingTimer, "remainingTimer")
+  // console.log(remainingTimer, "remainingTimer")
+  console.log(firstTimeAvatarSlection, "firstTimeAvatarSlectionapp")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -492,6 +494,7 @@ function App() {
     // @ts-ignore
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
+      setShowMenuBar(true)
     }
 
   }, [userInfo]);
@@ -793,7 +796,7 @@ function App() {
         .where("voteTime", ">=", last24Hour)
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
-        .then((snapshot) => {
+        .then((snapshot) => {          
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
           // let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
@@ -834,8 +837,10 @@ function App() {
 
   }, [userInfo?.voteStatistics?.total])
   console.log('usermfa', userInfo)
+
   useEffect(() => {
-    if (user?.uid && voteNumberEnd == 0) {
+    if (voteNumberEnd == 0 && user?.uid) {
+      console.log(voteNumberEnd,"voteNumberEnd")
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
@@ -847,7 +852,9 @@ function App() {
         .where("voteTime", ">=", last24Hour)
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
-        .then((snapshot) => {
+        .then((snapshot) => {     
+          console.log(voteNumberEnd)
+          console.log("i am working ")
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
@@ -1272,6 +1279,8 @@ function App() {
 
   ///END vote result //
 
+console.log(firstTimeLogin,"firstTimeLogin")
+
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -1359,7 +1368,10 @@ function App() {
                   signup,
                   setSignup,
                   firstTimeLogin,
-                  setFirstTimeLogin,
+                    setFirstTimeLogin,
+                    showMenubar,
+                    setShowMenuBar,
+                  firstTimeAvatarSlection,
                   menuOpen,
                   setMenuOpen,
                   fcmToken,
@@ -1547,7 +1559,7 @@ function App() {
                                 <FirstTimeLogin
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
-                                  }
+                                  }                                  
                                   generate={generateUsername}
                                   saveUsername={async (username) => {
                                     if (user?.uid) {
@@ -1565,7 +1577,7 @@ function App() {
                                   user={user}
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
-                                  }
+                                  }                                
                                 />
                               )}
                               {/* {!firstTimeAvatarSlection &&

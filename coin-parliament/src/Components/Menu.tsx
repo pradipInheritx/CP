@@ -87,8 +87,8 @@ const Menu = ({
   items = [],
   title,
   pathname,
-}: MenuProps) => {
-  const { menuOpen, setMenuOpen, login, firstTimeLogin } =
+}: MenuProps) => {  
+  const { menuOpen, setMenuOpen, login,showMenubar} =
     useContext(AppContext);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
@@ -112,6 +112,9 @@ const Menu = ({
 
 
   const desktop = width && width > 979;
+  
+
+
   return (
     <>
       <NavContainer
@@ -137,7 +140,7 @@ const Menu = ({
               className='d-flex justify-content-start'
               style={{ flexBasis: "20%" }}
             >
-              <HamburgerBut
+              {!showMenubar && <HamburgerBut
                 // variant='link'
                 onClick={() => {
                   handleShow()
@@ -153,12 +156,12 @@ const Menu = ({
 
                 {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </HamburgerBut>
+              </HamburgerBut>}
             </div>
           )}
-          {desktop && (
+          {desktop &&(
             <div className='d-flex justify-content-start check'>
-              <HamburgerBut
+              {!showMenubar && <HamburgerBut
                 // variant='link'
                 onClick={handleShow}
                 className='position-relative'
@@ -166,7 +169,7 @@ const Menu = ({
                 {/* <Hamburger /> */}
                 {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </HamburgerBut>
+              </HamburgerBut>}
             </div>
           )}
           {children}

@@ -190,7 +190,7 @@ const Header = ({
 
 
 
-	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack } =
+	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack,showMenubar} =
 		useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
@@ -311,9 +311,7 @@ const Header = ({
 		// console.log('votenumber',voteNumber, Number(voted))
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
-
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
-
 
 	const onSelect = (eventKey: string | null) => {
 
@@ -509,7 +507,10 @@ const Header = ({
 										transition: `width 1s ease;`
 									}}
 								>
-									<div className='' onClick={() => navigate("/profile/mine")}
+									<div className='' onClick={() =>{
+											if(!showMenubar) navigate("/profile/mine")
+												}	
+								}
 										style={{
 											position: "absolute",
 											marginTop: "7px",
@@ -614,8 +615,10 @@ const Header = ({
 												</Form.Check.Label>
 												:
 												<PlusButtonMob onClick={() => {
-													handleSoundClick()
-													navigate("/votingbooster")
+													if (!showMenubar) {														
+														handleSoundClick()
+														navigate("/votingbooster")
+													}
 												}}
 												>
 													<span
@@ -680,7 +683,11 @@ const Header = ({
 						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
 							{(user?.uid && !login) && (
 								<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
-									<div onClick={() => navigate("/profile/mine")} style={{
+									<div onClick={() => {
+										if(!showMenubar) navigate("/profile/mine")
+									}}
+										
+										style={{
 										position: "absolute",
 										marginLeft: "90px",
 										cursor: "pointer"
@@ -793,8 +800,13 @@ const Header = ({
 														</Form.Check.Label>
 														:
 														<PlusButton onClick={() => {
-															handleSoundClick()
-															navigate("/votingbooster")
+
+															if (!showMenubar) {														
+														handleSoundClick()
+														navigate("/votingbooster")
+													}
+															// handleSoundClick()
+															// navigate("/votingbooster")
 														}}>
 															<span
 																className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}

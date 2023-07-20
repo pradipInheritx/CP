@@ -221,7 +221,9 @@ axios.post('https://console.dev.welldapp.io/api/transactions', data, {
       </div> 
         :
         <div className="d-flex justify-content-center align-items-center">
-        <p>Please consider installing Metamask</p>
+          {/* <p>Please consider installing Metamask</p> */}
+          <p>Please consider <a href="https://metamask.io/download/" target="_blank">Installing Metamask</a></p>
+          
         </div>  
       }
       <Modal

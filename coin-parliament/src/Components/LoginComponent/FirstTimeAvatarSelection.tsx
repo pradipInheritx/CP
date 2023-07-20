@@ -9,16 +9,18 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { toast } from "react-toastify";
 import { texts } from "./texts";
+import AppContext from "Contexts/AppContext";
 
 
 
 export type FirstTimeAvatarSelectionProps = {
     user: any;
-    setFirstTimeAvatarSelection:any;
+  setFirstTimeAvatarSelection: any;
   };
-const FirstTimeAvatarSelection = ({ user,setFirstTimeAvatarSelection }: FirstTimeAvatarSelectionProps) => {
+const FirstTimeAvatarSelection = ({ user,setFirstTimeAvatarSelection,}: FirstTimeAvatarSelectionProps) => {
   const translate = useTranslation();
-  const {showToast} = useContext(NotificationContext);
+  const { showToast } = useContext(NotificationContext);
+  const { setFirstTimeLogin ,setShowMenuBar} = useContext(AppContext);
   const FoundationArray=['Foundation One','Foundation Two','Foundation Three','Foundation Four','Foundation Five'
 ]
   const onSubmitAvatar = async (type: AvatarType) => {
@@ -30,7 +32,9 @@ const FirstTimeAvatarSelection = ({ user,setFirstTimeAvatarSelection }: FirstTim
         // await setDoc(userRef, { foundationName }, { merge: true });
         showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
-        setFirstTimeAvatarSelection(false)
+        setFirstTimeAvatarSelection(false)        
+        setShowMenuBar(false)
+setShowMenuBar(false)
       } catch (e) {
         showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }
