@@ -110,8 +110,8 @@ const ProfileNftGalleryCopy = () => {
           });
 
           setCollectionType(data)
-          setSelectCollection(albumOpen)  
-          
+          setSelectCollection(albumOpen)   
+          setSetsValue([])
           setCardShow(false)
 
         }).catch((error) => {
@@ -166,7 +166,7 @@ const ProfileNftGalleryCopy = () => {
 
           setCollectionType(data)
           // setAllCardArray(data)
-          console.log(data,"collectionType")
+          setSetsValue([])
           setCardShow(false)
 
         }).catch((error) => {

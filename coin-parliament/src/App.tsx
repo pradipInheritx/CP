@@ -144,6 +144,7 @@ import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
 import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import CoinsList from "Components/Profile/CoinsList";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -531,14 +532,29 @@ function App() {
 
 
   useEffect(() => {
-    getToken(messaging, {
-      vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    }).then((token) => {
-      setFcmToken(token)
-    }).catch((e) => {
-      console.log('hello', e);
-    });
+    Notification.requestPermission()
+      .then((permission) => {
+        if (permission === "granted") {
+          console.log("Notification permission granted.");
+          // Get the device token to send messages to individual devices
+          getToken(messaging, {
+            vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
+          }).then((token) => {
+            setFcmToken(token)
+          }).catch((e) => {
+            console.log('hello', e);
+          });
+        } else {
+          console.log("Notification permission denied.");
+          return null;
+        }
+      }).catch((error) => {
+        console.error("Error getting notification permission:", error);
+      });
+
   }, []);
+
+
 
 
   useEffect(() => {
@@ -1757,6 +1773,10 @@ function App() {
                                             <Route
                                               path='/upgrade'
                                               element={<UpgradePage />}
+                                            />
+                                            <Route
+                                              path='/paymentList'
+                                              element={<CoinsList />}
                                             />
                                             <Route
                                               path='/votingbooster'

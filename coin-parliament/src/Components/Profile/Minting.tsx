@@ -8,11 +8,11 @@ import PieChart from "./PieChart";
 import Collapse from "./Collapse";
 import { useTranslation } from "../../common/models/Dictionary";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../styledMixins";
-import { Form, Modal } from "react-bootstrap";
+import { Form, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
-import { stubFalse } from "lodash";
+import { divide, stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
 import { handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
@@ -158,6 +158,7 @@ const I = styled.i`
   text-align: center;
 `;
 type MintingProps = {
+  
   score: number;
   setRewardTimer?: any;
   rewardTimer?: any;
@@ -166,6 +167,7 @@ type MintingProps = {
 };
 const claimReward = httpsCallable(functions, "claimReward");
 const Minting = ({
+  
   score,
   setRewardTimer,
   rewardTimer,
@@ -179,6 +181,7 @@ const Minting = ({
   const { showReward, setShowReward, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
+  const [tooltipShow, setTooltipShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
@@ -242,7 +245,7 @@ const Minting = ({
       }
 
       setLoading(false);
-    } else {
+    } else {      
       Swal.fire({
         title: '',
         text: `You still need ${100 - score} CMP to claim your reward.`,
@@ -259,10 +262,32 @@ const Minting = ({
   }
 
 
+  // const tooltip = (props:any) => {
+    
+  // };
+
+
 
   return (
     <React.Fragment>
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
+        {tooltipShow &&
+          <div
+            style={{
+            display:"relative"
+          }}
+          >
+              <div className="newtooltip"
+              style={{
+                // right: "0%",
+                marginLeft: "16%",
+                marginTop:"0%",
+                }}
+              >
+                  <p>Your CMP count</p>
+              </div>
+              </div>
+            }
         <div
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
@@ -274,7 +299,46 @@ const Minting = ({
             {/* {translate("CP Minting")} */}
             {texts.CPMinting}
           </Title>
-          <I className='bi bi-info-circle' style={{ paddingRight: width < 767 ? '8em' : '' }}></I>
+          
+          {/* <OverlayTrigger placement="top" overlay={(props:any) => {
+            return (
+              
+                  <Tooltip  {...props} className="mytooltip" id="tooltip-left"    
+                    style={{
+                      // width: "200px",
+                      // color: "red",                    
+                      // border: "1px solid red",
+                      marginLeft: "66%",
+                      // marginTop:"2.5%",
+                  }}
+              >
+                <p
+                  style={{
+                                        
+                }}
+                >
+                  Your CMP Count
+                </p>
+              </Tooltip>
+          
+            )
+          }}
+          
+          >    */}
+          {/* <I className='bi bi-info-circle'></I>             */}               
+            <I className='bi bi-info-circle ' style={{ paddingRight: width < 767 ? '8em' : '' }}
+             onMouseDown={(e) => {
+             setTooltipShow(false)
+            }}
+            onMouseUp={(e) => {
+             setTooltipShow(true)
+            }}
+            onMouseEnter={() => setTooltipShow(true)}
+            onMouseLeave={() => setTooltipShow(false)} 
+            ></I>           
+          {/* </OverlayTrigger> */}
+
+
           <CircularProgress percentage={(score || 0)} />
 
           {/* <PieChart

@@ -27,6 +27,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
+import { showToast } from "App";
 const sendEmail = httpsCallable(functions, "sendEmail");
 
 export enum LoginModes {
@@ -274,7 +275,9 @@ console.log("this function call")
     );
     
 // @ts-ignore
-    await sendEmailVerification(auth?.currentUser);
+     await sendEmailVerification(auth?.currentUser).then((data) => {
+       showToast("Successfully sent  verification link on your mail");
+    });
     const firstTimeLogin:Boolean=true
     // @ts-ignore
 

@@ -126,7 +126,8 @@ const NFTGalleryCopy = () => {
       });    
     }
   
-const onCollectionChange = (collectionName: any) => {
+  const onCollectionChange = (collectionName: any) => {
+  onSelectSets("none")
     if (searchTerm?.length ||  selectCollection!="none") {
   // console.log(selectCollection,cardType?.length,"selectCollection")
     setCardShow(true)
@@ -149,6 +150,7 @@ data.push({id: doc.id, ...doc.data()});
   
   setCollectionType(data)
 // setAllCardArray(data)
+  setSetsValue([])
   setCardShow(false)
 
 }).catch((error) => {
@@ -186,8 +188,8 @@ console.log(error,"error");
     data.push({ id: doc.id, ...doc.data() });
   });
       setSetsValue(data)
-      console.log("setsdata",data)
-    
+      console.log("setsdata", data)
+      setCardType("all")
   }).catch((error) => {
       console.log(error,"error");
     });
@@ -359,7 +361,7 @@ useEffect(() => {
   
   
   
-  console.log(cardNameNew,"allCardNewcheck")
+  console.log(setsCardId,cardType,setsCardName,"allCardNewcheck")
 
   return (
     <div className='' style={{ minHeight: "auto" }}>
@@ -404,12 +406,13 @@ useEffect(() => {
                 id='cars'
                 className='bg-white border rounded py-2 mx-1'
                 // onChange={e=>onCollectionChange(e.target.value)}
-                onChange={e=>onSelectSets(e.target.value)}
+            onChange={e => onSelectSets(e.target.value)}
+            value={setsCardId}
               >
             <option value='none'>{texts.SelectSets}</option>            
             {setsValue?.map((data:any ,index:number ) => {
               // return  <option value={ data?.setId} key={index}>{`${((data?.setName)?.toUpperCase())?.slice(0, 3) + data?.setId}`}</option>        
-              return  <option value={ data?.id} key={index}>{`${((data?.setName)?.toUpperCase())}`}</option>        
+              return  <option selected value={ data?.id} key={index}>{`${((data?.setName)?.toUpperCase())}`}</option>        
             })}            
           </select>
           </div>
@@ -418,7 +421,8 @@ useEffect(() => {
                 name='type'
                 id='type'
                 className='bg-white border rounded mx-1 py-2'
-                onChange={(e)=>{onSelectType(e.target.value)}}
+            onChange={(e) => { onSelectType(e.target.value) }}
+            value={cardType}
               >
                 {selectCollection !="none"?<><option value='all'>{texts.SelectType}</option>
                 <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
@@ -431,11 +435,12 @@ useEffect(() => {
           <select                
                 className='bg-white border rounded py-2 mx-1'
                 // onChange={e=>onCollectionChange(e.target.value)}
-                onChange={e=>onSelectName(e.target.value)}
+            onChange={e => onSelectName(e.target.value)}
+            value={setsCardName}
               >
             <option value='none'>{texts.SelectName}</option>       
             {cardNameNew?.map((data:any ,index:number ) => {
-              return  <option value={ data?.cardName} key={index}>{`${data?.cardName}`}</option>        
+              return  <option selected value={ data?.cardName} key={index}>{`${data?.cardName}`}</option>        
             })}            
           </select>
             </div>

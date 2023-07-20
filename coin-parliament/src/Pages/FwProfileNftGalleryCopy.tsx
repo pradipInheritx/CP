@@ -108,7 +108,7 @@ const FwProfileNftGalleryCopy = () => {
 
           setCollectionType(data)
           setSelectCollection(albumOpen)    
-          
+          setSetsValue([])
           setCardShow(false)
 
         }).catch((error) => {
@@ -163,6 +163,7 @@ data.push({id: doc.id, ...doc.data()});
   
   setCollectionType(data)
 // setAllCardArray(data)
+  setSetsValue([])
   setCardShow(false)
 
 }).catch((error) => {

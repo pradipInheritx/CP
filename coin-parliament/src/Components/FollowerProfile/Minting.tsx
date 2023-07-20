@@ -7,12 +7,13 @@ import PieChart from "./PieChart";
 import Collapse from "./Collapse";
 import { useTranslation } from "../../common/models/Dictionary";
 import { InputAndButton, PoppinsMediumWhite12px } from "../../styledMixins";
-import { Form } from "react-bootstrap";
+import { Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
 import { stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
+import  './Style.css';
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -123,7 +124,8 @@ const Minting = ({
   const { width = 194 } = useWindowSize();
   const translate = useTranslation();
   const { user } = useContext(UserContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  
+  const [tooltipShow, setTooltipShow] = React.useState(false);
 
   return (
     <React.Fragment>
@@ -132,6 +134,24 @@ const Minting = ({
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
         >
+          {tooltipShow &&
+          <div
+            style={{
+                display: "relative",
+          }}
+          >
+              <div className="newtooltip2"
+              style={{
+                // right: "0%",
+                width:"80%",
+                marginLeft: "-30%",
+                marginTop:"-4%",
+                }}
+              >
+                  <p>Your CMP count</p>
+              </div>
+              </div>
+            }
           <Title
             className='box_title d-md-block text-white d-none mb-4'
             {...{ width }}
@@ -140,7 +160,19 @@ const Minting = ({
             {/* {translate("CP Minting")} */}
             {texts.CPMinting}
           </Title>
-          <I className='bi bi-info-circle'></I>
+          
+          
+          <I className='bi bi-info-circle'
+           onMouseDown={(e) => {
+             setTooltipShow(false)
+            }}
+            onMouseUp={(e) => {
+             setTooltipShow(true)
+            }}
+            onMouseEnter={() => setTooltipShow(true)}
+            onMouseLeave={() => setTooltipShow(false)} 
+          ></I>
+          
           <PieChart
             percentage={score || 0}
             pax={0} // TODO: ask

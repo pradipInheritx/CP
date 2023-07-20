@@ -130,8 +130,10 @@ const Pairs = ({
                     style={{
                       background: "transparent",
                       color: "var(--white)",
-                      width: `${window.screen.width > 767 ? "300px" : "200px"}`
+                      width: `${window.screen.width > 767 ? "300px" : "200px"}`                      
                     }}
+                    placeholder="Search.."
+                    className="placeholderColor"
                     value={filter}
                     onChange={(e) => {
                       setFilter(e.target.value || ""); // Set undefined to remove the filter entirely

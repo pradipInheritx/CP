@@ -1442,3 +1442,6 @@ html[dir="rtl"] .accordion-button {
 .capitalize{
     text-transform: capitalize;
 }
+.placeholderColor::placeholder{
+    color:white !important;
+}
