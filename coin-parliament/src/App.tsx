@@ -540,9 +540,10 @@ function App() {
           getToken(messaging, {
             vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
           }).then((token) => {
-            setFcmToken(token)
+            setFcmToken(token);
+            console.log('token', token);
           }).catch((e) => {
-            console.log('hello', e);
+            console.log('token', e);
           });
         } else {
           console.log("Notification permission denied.");
@@ -1640,9 +1641,7 @@ function App() {
                                             <Route path='/' element={
 
                                               <Home />} />
-                                            <Route path='/firebase-messaging-sw.js#' element={
-
-                                              <Home />} />
+                                            <Route path='/firebase-messaging-sw.js' element={<Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
