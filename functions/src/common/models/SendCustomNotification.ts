@@ -236,11 +236,13 @@ export const errorLogging = async (
 // }
 
 export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTimeFrame: number) => {
+  console.log('-------Start checkUserStatusIn24hrs-------')
+  console.log("todayTimeFrame  -  yesterdayTimeFrame == ", todayTimeFrame, yesterdayTimeFrame)
   const getAllVotesIn24Hours: any[] = [];
   const getAllVotesIn24HoursQuery: any = await firestore()
     .collection('votes')
-    .where("voteTime", ">", todayTimeFrame)
-    .where("voteTime", "<", yesterdayTimeFrame)
+    .where("voteTime", "<", todayTimeFrame)
+    .where("voteTime", ">", yesterdayTimeFrame)
     .orderBy('voteTime', 'desc')
     .get();
 
@@ -249,6 +251,7 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
     getAllVotesIn24Hours.push({ userId, status });
   });
 
+  console.log("getAllVotesIn24Hours ------", getAllVotesIn24Hours)
   // Group the array of objects by the 'userId' property
   let userVoteGroupObj = getAllVotesIn24Hours.reduce((result, item) => {
     (result[item.userId] = result[item.userId] || []).push(item);
@@ -291,11 +294,13 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
             title = downGradeMessage[statusName];
             message = `Keep Voting to Rise Again!`;
           }
+          console.log("call sendNotificationForTitleUpgrade function")
           await sendNotificationForTitleUpgrade(getuserDetails, message, title)
         }
       }
     }
   }
+  console.log('-------End checkUserStatusIn24hrs-------');
 }
 
 //For Title Update
