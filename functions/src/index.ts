@@ -459,6 +459,31 @@ exports.updateLeadersCron = functions.pubsub
     }
   });
 
+
+exports.checkTitleUpgrade24Hour = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(
+    async () => {
+      const date = new Date();
+      const nowTime = date.getTime();
+      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+      await checkUserStatusIn24hrs(nowTime, yesterdayTime)
+      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime)
+    }
+  );
+
+// exports.checkNotification = functions.https.onCall(
+//   async (data) => {
+//     console.log("set leader Done")
+//     const { tt, yt } = data;
+//     // const date = new Date();
+//     // const nowTime = date.getTime();
+//     // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+//     await checkUserStatusIn24hrs(tt, yt)
+//     await getFollowersFollowingsAndVoteCoin(tt, yt)
+//   }
+// );
+
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
 
@@ -616,18 +641,7 @@ exports.getCPVIForVote = functions.https.onCall(async (data) => {
 });
 
 
-exports.checkTitleUpgrade24Hour = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(
-    async () => {
-      await setLeaders();
-      const date = new Date();
-      const nowTime = date.getTime();
-      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-      await checkUserStatusIn24hrs(nowTime, yesterdayTime)
-      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime)
-    }
-  )
+
 
 exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   async (data) => {
