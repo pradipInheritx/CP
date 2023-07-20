@@ -37,9 +37,9 @@ import {
   Leader,
   prepareCPVI,
   fetchAskBidCoin,
-  getUpdatedDataFromWebsocket,
-  getAllUpdated24HourRecords,
-  removeTheBefore24HoursData,
+  // getUpdatedDataFromWebsocket,
+  // getAllUpdated24HourRecords,
+  // removeTheBefore24HoursData,
 } from "./common/models/Coin";
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
@@ -103,7 +103,7 @@ const main = express();
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
-app.use("/user", userRouter); //Added Sign Up For Sport Parliament Using Global API
+app.use("/user", userRouter); // Added Sign Up For Sport Parliament Using Global API
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
