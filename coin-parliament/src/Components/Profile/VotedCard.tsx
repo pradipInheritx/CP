@@ -208,7 +208,8 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
 
                           <MyCountdown expirationTime={vote.expiration || 0}
                           // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
-                          />
+                              />
+
                         </Col>
                       </Row>
                     )}
@@ -276,20 +277,19 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
                   </Col>
                   {!vote.valueExpirationTime && <Col xs={2} className="">
                     {vote.direction ?
-                      <>
-                        {
-                          (Number(vote?.valueVotingTime || 0) < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score) ?
+                        <>
+                          {/* @ts-ignore */}
+                        {(Number(vote?.valueVotingTime || 0) < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score) ?
                             <RoundDiv backcolor={"#6352E8"}></RoundDiv> :
-                            <>
-                              {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
-                              {vote?.valueVotingTime > coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}
+                              <>
+                                {/* @ts-ignore */}
+                                {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>} {vote?.valueVotingTime > coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}
                             </>
                         }
                       </> :
-                      <>
-                        {vote?.valueVotingTime < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv> :
-                          <>{vote?.valueVotingTime > coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>}
-                            {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
+                        <>
+                          {/* @ts-ignore */}
+                        {vote?.valueVotingTime < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv> : <>{vote?.valueVotingTime > coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>} {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                         }
                       </>
                     }
@@ -343,6 +343,8 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
     pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
   }
 
+  console.log(vote?.valueExpirationTime,"valueExpirationTime")
+
   return pair ? (
     <ProfilePairVote style={{ minWidth: window.screen.width < 979 ? '' : '480px', maxWidth: window.screen.width < 979 ? '' : '480px', }} >
       <Container>
@@ -389,15 +391,16 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
         </Row>
         <Row>
           <div style={{ minHeight: "100%" }} className="text-center">
-            <div className=''
+            {/* @ts-ignore */}
+            {vote?.valueExpirationTime && vote?.valueExpirationTime?.length &&<div className=''
               style={{ fontSize: "12px" }}
             >
               <p>VOTE RESULT</p>
               {/* @ts-ignore */}
-              {(vote?.valueExpirationTime?.length && pairCoinResult?.difference) ? `${vote?.coin?.split("-")[vote?.direction]}: ${pairCoinResult?.difference}` : 0}%
+              {(vote?.valueExpirationTime && vote?.valueExpirationTime.length && pairCoinResult?.difference) ? `${vote?.coin?.split("-")[vote?.direction]}: ${pairCoinResult?.difference}` : 0}%
               {/* @ts-ignore */}
               <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
-            </div>
+            </div>}
 
             <CoinVoteTimer>
               {vote.valueExpirationTime && vote.score && (
@@ -406,9 +409,11 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
                 </>
               )}
               {!vote.valueExpirationTime && (
-                <MyCountdown expirationTime={vote.expiration || 0}
-                // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
-                />
+                <div className="mb-3">
+                  <MyCountdown expirationTime={vote.expiration || 0}
+                  // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
+                  />
+                </div>
               )}
             </CoinVoteTimer>
           </div>
