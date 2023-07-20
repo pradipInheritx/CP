@@ -124,6 +124,8 @@ const Coins = ({
                       color: "var(--white)",
                       width: `${window.screen.width > 767 ? "300px" : "200px"}`
                     }}
+                    className="placeholderColor"
+                    placeholder="Search.."
                     value={filter}
                     onChange={(e: { target: { value: string } }) => {
                       setFilter(e.target.value || ""); // Set undefined to remove the filter entirely
