@@ -124,12 +124,12 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   });
 
   for (let user = 0; user < getAllUsers.length; user++) {
-    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].uid).where("voteTime", "<", last24HoursDate).orderBy("voteTime", "desc").limit(1).get();
+    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).where("voteTime", "<", last24HoursDate).orderBy("voteTime", "desc").limit(1).get();
     console.info("getLastUserVoteSnapshot", getLastUserVoteSnapshot);
     const lastVotedData: any = [];
-    getLastUserVoteSnapshot.docs.forEach((doc) => {
+    getLastUserVoteSnapshot.forEach((doc) => {
       lastVotedData.push({ id: doc.id, ...doc.data() });
-      console.info("getLastUserVoteSnapshot", doc.id, "=>", doc.data());
+      console.info(doc.id, "=>", doc.data());
     });
     if (lastVotedData && lastVotedData.length) {
       const body = "VOTE NOW!";
