@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/sa.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -472,17 +472,20 @@ exports.checkTitleUpgrade24Hour = functions.pubsub
     }
   );
 
-// exports.checkNotification = functions.https.onCall(
-//   async (data) => {
-//     console.log("set leader Done")
-//     const { tt, yt } = data;
-//     // const date = new Date();
-//     // const nowTime = date.getTime();
-//     // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-//     await checkUserStatusIn24hrs(tt, yt)
-//     await getFollowersFollowingsAndVoteCoin(tt, yt)
-//   }
-// );
+// for Testing purposes
+exports.checkTitleUpgradeNotification = functions.https.onCall(
+  async (data) => {
+    console.log("------- call set leader function -------");
+    await setLeaders();
+    console.log("set leader Done");
+    const { todayTime, yesterdayTime } = data;
+    // const date = new Date();
+    // const nowTime = date.getTime();
+    // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+    await checkUserStatusIn24hrs(todayTime, yesterdayTime);
+    await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
+  }
+);
 
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
