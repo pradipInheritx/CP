@@ -37,7 +37,7 @@ ReactDOM.render(
 reportWebVitals();
 // registerServiceWorker();
 
-const sw = "../public/sw.js";
+const sw = "./firebase-messaging-sw.js";
 // process.env.NODE_ENV === "production"
 //   ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
 //   : "./firebase-messaging-sw.js";
@@ -46,7 +46,7 @@ if ("serviceWorker" in navigator) {
   navigator?.serviceWorker
     .register(sw)
     .then(function (registration) {
-      console.log("Registration successful, scope is:", registration.scope);
+      console.log("Registration successful, scope is:", registration.scope, sw);
     })
     .catch(function (err) {
       console.log("Service worker registration failed, error:", err);
