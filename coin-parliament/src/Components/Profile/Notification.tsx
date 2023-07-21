@@ -32,6 +32,7 @@ const Date = styled.div`
   text-align: left;
   opacity: 1;
   width:96px;
+  line-height: 16px;  
 `;
 
 const Msg = styled.div`
@@ -65,11 +66,12 @@ const Body = styled.div`
   color: var(---160133);
   text-align: left;
   opacity: 1;
+  line-height: 16px;  
 `;
 
 const Notification = ({date, title, body}: NotificationProps) => {
   return (
-    <Container>
+    <Container className="mt-2">
       <Date>{date && moment(date).format("hh:mm DD.MM.YYYY")}</Date>
       <Msg>
         <div>
