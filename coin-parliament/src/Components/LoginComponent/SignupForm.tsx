@@ -108,7 +108,9 @@ const SignupForm = ({
       </Form.Group>
 
       <div className="mt-4 mb-3">
-        <Buttons.Primary fullWidth={true} type="submit" >
+        <Buttons.Primary fullWidth={true} type="submit" 
+        disabled={!agree}
+        >
           {signupLoading ? 'Wait...' : strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>

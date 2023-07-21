@@ -32,6 +32,7 @@ import NftFrame from "../../assets/images/NftFrame.png";
 import  XXCOIN from "../../assets/images/XXCOIN.png";
 import  XXVote from "../../assets/images/XXVote.png";
 import  VOUCHER from "../../assets/images/VOUCHER.png";
+import { useNavigate } from "react-router-dom";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -129,6 +130,8 @@ useEffect(() => {
 
 `;
   
+
+let navigate = useNavigate();
   const BottomBox = styled.div` 
   // border:1px solid red;
   display:flex;
@@ -364,7 +367,8 @@ useEffect(() => {
               className='btn '
               onClick={() => {
                 if(clicked) return
-                setClicked(true)                
+                // setClicked(true)   
+                navigate("/paymentList")             
                 handleSoundClick()                
               }}
               style={{
@@ -384,12 +388,12 @@ useEffect(() => {
           </div>        
         </div>
       </div>
-      {clicked &&
+      {/* {clicked &&
         <PaymentPop
         openPopup={clicked}
         setClicked={setClicked}
       />
-      }
+      } */}
     </>
   );
 };
