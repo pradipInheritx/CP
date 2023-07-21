@@ -130,6 +130,16 @@ class Calculation {
 
       voteStatistics.score += score;
 
+      //Send Notification For CMP Change
+      const getVotesQuery = await firestore()
+        .collection("votes")
+        .doc(this.id)
+        .get();
+      const getVote: any = getVotesQuery.data();
+      console.log("send Notification for CPM")
+      console.log("send Notification Details - - userId, score, getVote.coin", userId, score, getVote.coin)
+      await voteExpireAndGetCpmNotification(userId, score, getVote.coin)
+
       // For Add Only Commission In Current User
       const { CPMSettings } = await Refer.getSettings();
       const { pctReferralActivity } = CPMSettings;
@@ -137,19 +147,10 @@ class Calculation {
       user.refereeScrore = (user.refereeScrore ? user.refereeScrore : 0) + commission;
 
       await ref.set({ voteStatistics, refereeScrore: user.refereeScrore }, { merge: true });
-
+      console.log("user.parent -----", user.parent)
       if (user.parent) {
         const refer = new Refer(user.parent, "");
         await refer.payParent(score);
-        //Send Notification For CMP Change
-        const getVotesQuery = await firestore()
-          .collection("votes")
-          .doc(this.id)
-          .get();
-        const getVote: any = getVotesQuery.data();
-        console.log("send Notification for CPM")
-        await voteExpireAndGetCpmNotification(userId, score, getVote.coin)
-
 
       }
     } catch (error) {
@@ -524,7 +525,7 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
       .where('uid', '==', user)
       .get();
   });
-  
+
   const querySnapshots = await Promise.all(queryPromises);
   const leaders: any[] = [];
 
@@ -545,7 +546,7 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
       const { status } = leader;
       const leaderObj = allLeaders.find((leaderData) => leaderData.userId === leader.uid);
       return leaderObj ? { ...leaderObj, status: status?.name } : undefined;
-  })
+    })
     .filter((leaderData) => leaderData);
 };
 

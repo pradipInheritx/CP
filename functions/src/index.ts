@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/sa.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -432,12 +432,8 @@ exports.onVote = functions.firestore
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
   });
 
-exports.noActivityIn24Hours = functions.pubsub
-  .schedule("every 10 minutes")
-  .onRun(async (context) => {
-    await checkInActivityOfVotesAndSendNotification();
-    await getCoinCurrentAndPastDataDifference();
-  });
+
+
 
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
@@ -454,21 +450,41 @@ exports.updateLeadersCron = functions.pubsub
   .onRun(async () => {
     try {
       await setLeaders();
+
     } catch (e) {
       console.log(e);
     }
   });
 
 
+//----------Start Notifications scheduler-------------
+exports.noActivityIn24Hours = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    console.log("---Start noActivityIn24Hours -------");
+    await checkInActivityOfVotesAndSendNotification();
+    console.log("---End noActivityIn24Hours -------");
+  });
+
+exports.getCoinCurrentAndPastDataDifference = functions.pubsub
+  .schedule("every 10 minutes")
+  .onRun(async () => {
+    console.log("---Start getCoinCurrentAndPastDataDifference -------");
+    await getCoinCurrentAndPastDataDifference();
+    console.log("---End getCoinCurrentAndPastDataDifference -------");
+  })
+
 exports.checkTitleUpgrade24Hour = functions.pubsub
   .schedule("0 0 * * *")
   .onRun(
     async () => {
+      console.log("---Start checkTitleUpgrade24Hour -------");
       const date = new Date();
       const nowTime = date.getTime();
       const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
       await checkUserStatusIn24hrs(nowTime, yesterdayTime)
-      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime)
+      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
+      console.log("---End checkTitleUpgrade24Hour -------");
     }
   );
 
@@ -486,6 +502,8 @@ exports.checkTitleUpgradeNotification = functions.https.onCall(
     await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
   }
 );
+
+//----------End Notifications scheduler-------------
 
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
