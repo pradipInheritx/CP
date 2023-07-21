@@ -153,7 +153,6 @@ const SinglePair = () => {
     }
   }, [voteId, getCpviData, vote, totals, selectedTimeFrame])
   const choseTimeFrame = async (timeframe: any) => {
-
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframe });
       if (v) {
