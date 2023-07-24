@@ -27,8 +27,10 @@ import {
   Coin,
   DBCoin,
   DBPair,
+  formatCurrency,
   getAllCoins,
   getCoins,
+  precision,
   saveAllCoins,
   // saveCoins,
 } from "./common/models/Coin";
@@ -1190,9 +1192,10 @@ function App() {
     impact: null
   });
   const latestVote = useRef<VoteContextType>();
-
-
-
+  const latestCoins = useRef<{ [symbol: string]: Coin }>({});
+  useEffect(() => {
+    latestCoins.current = myCoins;
+  }, [myCoins])
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
     latestVote.current = voteDetails;
@@ -1215,8 +1218,8 @@ function App() {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+        console.log(parseFloat(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')), 'coinsname');
 
-        console.log(coins[coin1.toUpperCase()]?.price, coins[coin2.toUpperCase()], coins, "coinsname")
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1232,8 +1235,8 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: voteImpact.current?.impact,
-                valueExpirationTimeOfCoin1: myCoins[coin1.toUpperCase()]?.price || null,
-                valueExpirationTimeOfCoin2: myCoins[coin2.toUpperCase()]?.price || null,
+                valueExpirationTimeOfCoin1: parseFloat(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')) || null,
+                valueExpirationTimeOfCoin2: parseFloat(formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')) || null,
               }
               :
               {}

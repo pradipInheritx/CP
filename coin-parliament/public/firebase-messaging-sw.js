@@ -74,17 +74,17 @@ firebase.initializeApp(config);
 // console.log("sw initialized");
 
 const messaging = firebase.messaging();
-// messaging.setBackgroundMessageHandler(function (payload) {
-//     console.log('[firebase-messaging-sw.js] Received background message', payload.data);
-//     const notification = payload.data;
-//     const notificationTitle = notification.title;
-//     const notificationOptions = {
-//         body: notification.message,
-//         icon: notification.icon || "",
-//         click_action: 'https://hello.com'
-//     };
-//     return self.registration.showNotification(notificationTitle, notificationOptions);
-// });
+messaging.setBackgroundMessageHandler(function (payload) {
+    console.log('[firebase-messaging-sw.js] Received background message', payload.data);
+    const notification = payload.data;
+    const notificationTitle = notification.title;
+    const notificationOptions = {
+        body: notification.message,
+        icon: notification.icon || "",
+        click_action: 'https://hello.com'
+    };
+    return self.registration.showNotification(notificationTitle, notificationOptions);
+});
 
 // self.addEventListener('notificationclick', event => {
 //   event.notification.close();
