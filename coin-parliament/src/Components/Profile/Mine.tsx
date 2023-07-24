@@ -147,6 +147,7 @@ const Mine = () => {
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
+      
       handleCardShow();
     }
   }, [inOutReward, showReward, rewardTimer]);

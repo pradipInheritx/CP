@@ -4,7 +4,7 @@ import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import UserContext from "../Contexts/User";
+import UserContext, { getUserInfo } from "../Contexts/User";
 import { Logout } from "../common/models/Login";
 import AppContext from "../Contexts/AppContext";
 import ContentContext from "../Contexts/ContentContext";
@@ -29,7 +29,7 @@ import { db, functions } from "../firebase";
 import firebase from "firebase/compat";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
-import CoinsContext, { follow } from "../Contexts/CoinsContext";
+import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
 import { handleSoundClick } from "../common/utils/SoundClick";
@@ -217,8 +217,7 @@ const Header = ({
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const voteDetails = useContext(VoteContext);
-	const votelength = Object.keys(voteDetails?.activeVotes).length;
-	console.log(voteDetails, "voteDetails")
+	const votelength = Object.keys(voteDetails?.activeVotes).length;	
 
 	useEffect(() => {
 
@@ -249,11 +248,19 @@ const Header = ({
 			});
 	}
 
-	console.log(votelength, "setFollowerInfo")
 	useEffect(() => {
-		getFollowerData()
+		getFollowerData()				
 	}, [followerUserId])
 
+	useEffect(() => {					
+		// @ts-ignore
+		if (userInfo?.leader?.includes(followerUserId)) {				
+			setFollowUnfollow(true)			
+		}
+		else {
+			setFollowUnfollow(false)			
+		}		
+	}, [followerUserId,userInfo])
 	useEffect(() => {
 		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot==0 ) {
 		
@@ -312,6 +319,13 @@ const Header = ({
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
+
+	console.log(showReward, inOutReward, "showRewardsetShowReward")
+	
+
+	
+
+
 
 	const onSelect = (eventKey: string | null) => {
 
