@@ -166,7 +166,6 @@ const SinglePair = () => {
       setMyCoins(coinUpdated)
     }
   }, [coinUpdated])
-  console.log(coinUpdated, myCoins, 'myCoins');
 
   useEffect(() => {
     setVotingTimer(remainingTimer)

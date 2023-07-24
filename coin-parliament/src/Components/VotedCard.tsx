@@ -213,10 +213,10 @@ const VotedCard = ({
   useEffect(() => {
     if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
       if (!voteDetails?.openResultModal && calcPer) {
-        console.log(parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
+        console.log(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''), parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
 
-        let value1 = parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', ''))
-        let value2 = parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', ''))
+        let value1 = parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''))
+        let value2 = parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '').replaceAll(',', ''))
         setPairCoinResult((Prev) => {
           if (isArray(vote.valueVotingTime)) {
             return calculateDiffBetweenCoins(vote?.valueVotingTime, [value1, value2], vote?.direction);
@@ -334,7 +334,7 @@ const VotedCard = ({
 
               <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2 ? "You voted for " : ""}{row1}</Row1>
               {/* <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1> */}
-              <Row1 className="poppins-normal-blue-violet-14px-2 "                
+              <Row1 className="poppins-normal-blue-violet-14px-2 "
               >
                 {
                   symbol2 ?
