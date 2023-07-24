@@ -11,7 +11,7 @@ type NotificationProps = {
 const Container = styled.div`
   width: 100%;
   max-width: 360px;
-  height: 62px;
+  height: auto;
   background: var(--white) 0 0% no-repeat padding-box;
   box-shadow: 0 3px 6px #00000029;
   border-radius: 6px;
@@ -20,7 +20,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
-  padding: 20px;
+  padding: 15px;
   margin: 0 auto 1px;
 `;
 const Date = styled.div`
@@ -56,6 +56,7 @@ const Title = styled.div`
   opacity: 1;
   font-weight: 500;
   margin-right: 2px;
+  
 `;
 
 const Body = styled.div`
@@ -75,7 +76,9 @@ const Notification = ({date, title, body}: NotificationProps) => {
       <Date>{date && moment(date).format("hh:mm DD.MM.YYYY")}</Date>
       <Msg>
         <div>
-          <Title>{title}:</Title>
+          <Title>{title}</Title>
+          <br />
+          <br />
           <Body>{body}</Body>
         </div>
       </Msg>
