@@ -222,7 +222,7 @@ function App() {
 
   }, [pathname])
 
-
+// console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
