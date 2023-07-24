@@ -436,6 +436,7 @@ function App() {
     setUser(user);
 
     const info = await getUserInfo(user);
+    console.log("i am working")
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);

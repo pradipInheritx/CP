@@ -334,7 +334,8 @@ const VotedCard = ({
 
               <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2 ? "You voted for " : ""}{row1}</Row1>
               {/* <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1> */}
-              <Row1 className="poppins-normal-blue-violet-14px-2">
+              <Row1 className="poppins-normal-blue-violet-14px-2 "                
+              >
                 {
                   symbol2 ?
                     `${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`
