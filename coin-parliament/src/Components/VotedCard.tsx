@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Direction, VoteResultProps } from "../common/models/Vote";
 import Countdown from "react-countdown";
-import { Coin } from "../common/models/Coin";
+import { Coin, formatCurrency, precision } from "../common/models/Coin";
 import { useTranslation } from "../common/models/Dictionary";
 import styled from "styled-components";
 import {
@@ -209,12 +209,17 @@ const VotedCard = ({
   const voteDetails = useContext(VoteContext);
   const [calcPer, setCalcPer] = useState<boolean>(true);
   const [pairCoinResult, setPairCoinResult] = useState<calculateDiffBetweenCoinsType>({ firstCoin: '', secondCoin: '', difference: '' });
+
   useEffect(() => {
     if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
       if (!voteDetails?.openResultModal && calcPer) {
+        console.log(parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
+
+        let value1 = parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', ''))
+        let value2 = parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', ''))
         setPairCoinResult((Prev) => {
           if (isArray(vote.valueVotingTime)) {
-            return calculateDiffBetweenCoins(vote?.valueVotingTime, [coins[symbol1]?.price, coins[symbol2]?.price], vote?.direction);
+            return calculateDiffBetweenCoins(vote?.valueVotingTime, [value1, value2], vote?.direction);
           }
           return Prev;
         })
@@ -397,7 +402,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     //   userId: vote?.userId
     // }).then((data) => {
     //   if (data.data == null) {
-    
+
     //     // getVotes(index).then(void 0);
     //     // openPopup(true)
 
