@@ -327,8 +327,8 @@ function App() {
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
-  const [firstTimeLogin, setFirstTimeLogin] = useState(false); 
-  const [showMenubar, setShowMenuBar] = useState(false); 
+  const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+  const [showMenubar, setShowMenuBar] = useState(false);
   const [user, setUser] = useState<User>();
   const [userInfo, setUserInfo] = useState<UserProps>();
   const [displayName, setDisplayName] = useState<string>("");
@@ -797,7 +797,7 @@ function App() {
         .where("voteTime", ">=", last24Hour)
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
-        .then((snapshot) => {          
+        .then((snapshot) => {
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
           // let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
@@ -841,7 +841,7 @@ function App() {
 
   useEffect(() => {
     if (voteNumberEnd == 0 && user?.uid) {
-      console.log(voteNumberEnd,"voteNumberEnd")
+      console.log(voteNumberEnd, "voteNumberEnd")
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
@@ -853,7 +853,7 @@ function App() {
         .where("voteTime", ">=", last24Hour)
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
-        .then((snapshot) => {     
+        .then((snapshot) => {
           console.log(voteNumberEnd)
           console.log("i am working ")
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
@@ -921,7 +921,7 @@ function App() {
   //                 });
   //             }
   //           }, remaining);
-  
+
   //         })
   //         .catch((error) => {
   //           console.log('extravoteError', error);
@@ -1176,7 +1176,7 @@ function App() {
       }
       return {};
     });
-    if (tempTessTimeVote /* && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId */ /* calculateVote */) {
+    if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId /* calculateVote */) {
       setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
@@ -1199,7 +1199,6 @@ function App() {
   }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
-
       console.log(completedVotes, voteDetails, lessTimeVote, 'pkkk');
       // let exSec = new Date(-).getSeconds();
       // current date
@@ -1266,21 +1265,9 @@ function App() {
       // }
     }
   }
-
-  // useEffect(() => {
-  // const coinData = firebase
-  //   .firestore()
-  //   .collection("settings").doc('settings')
-  // coinData.get()
-  //   .then((snapshot: any) => {
-  //     console.log('hello', snapshot.data().voteRules.maxVotes)
-
-  //     });
-  // }, [])
-
   ///END vote result //
 
-console.log(firstTimeLogin,"firstTimeLogin")
+  console.log(firstTimeLogin, "firstTimeLogin")
 
   return loader ? (
     <div
@@ -1369,9 +1356,9 @@ console.log(firstTimeLogin,"firstTimeLogin")
                   signup,
                   setSignup,
                   firstTimeLogin,
-                    setFirstTimeLogin,
-                    showMenubar,
-                    setShowMenuBar,
+                  setFirstTimeLogin,
+                  showMenubar,
+                  setShowMenuBar,
                   firstTimeAvatarSlection,
                   menuOpen,
                   setMenuOpen,
@@ -1560,7 +1547,7 @@ console.log(firstTimeLogin,"firstTimeLogin")
                                 <FirstTimeLogin
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
-                                  }                                  
+                                  }
                                   generate={generateUsername}
                                   saveUsername={async (username) => {
                                     if (user?.uid) {
@@ -1578,7 +1565,7 @@ console.log(firstTimeLogin,"firstTimeLogin")
                                   user={user}
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
-                                  }                                
+                                  }
                                 />
                               )}
                               {/* {!firstTimeAvatarSlection &&
