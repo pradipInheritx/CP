@@ -13,7 +13,7 @@ import "./styles.css";
 import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
 // @ts-ignore
-import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Space from '../assets/avatars/videos/Science.mp4';
 import { Col, Form, Row } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
@@ -93,7 +93,7 @@ const ProfileNftGalleryCopy = () => {
     Monsoon: Monsoon,
     Winter: Winter,
     Summer: Summer,
-    Science: Science,
+    Space: Space,
   });
 
   useEffect(() => {
@@ -740,6 +740,7 @@ const ProfileNftGalleryCopy = () => {
                           BackSideCard={BackSideCard}
                           fulldata={item}
                           flipCard={backCards?.includes(item?.cardId)}
+                          ImgUrl={item?.cardImageUrl || ""}
                         />
                       );
                     } else {
@@ -779,6 +780,7 @@ const ProfileNftGalleryCopy = () => {
                         BackSideCard={BackSideCard}
                         fulldata={item}
                         flipCard={backCards?.includes(item?.cardId)}
+                        ImgUrl={item?.cardImageUrl || ""}
                       />
                     );
                   }

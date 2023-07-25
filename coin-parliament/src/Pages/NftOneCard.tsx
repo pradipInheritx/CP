@@ -154,8 +154,9 @@ export type BoxItems = {
   fulldata?:any;
   userId?:any;
   CollectionType?:any;
+  ImgUrl?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType }: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType ,ImgUrl}: BoxItems) => {
   
 
 
@@ -264,7 +265,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             <br />
             <div className='card-body'>
               <img
-                src={TheEagle}
+                src={ImgUrl || TheEagle}
                 alt='the hgodler'
                 className=''
                 width={"200px"}
