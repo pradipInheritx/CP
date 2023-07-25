@@ -26,7 +26,7 @@ export const getUsers = ({
 }: {
   users?: string[];
   setUsers: (newUsers: Leader[]) => void;
-}) => {
+  }) => {  
   try {    
       getLeaderUsersByIds({ userIds: users }).then((u) => {
         console.log(u.data,"checkdata")

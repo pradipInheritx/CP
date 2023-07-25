@@ -131,7 +131,9 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
         />
       </Form.Group>
       <div className="my-1">
-        <Buttons.Primary fullWidth={true} type="submit"  >
+        <Buttons.Primary fullWidth={true} type="submit"  
+        disabled={!agree}
+        >
           {strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>

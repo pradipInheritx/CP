@@ -147,6 +147,7 @@ const Mine = () => {
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
+      
       handleCardShow();
     }
   }, [inOutReward, showReward, rewardTimer]);
@@ -176,7 +177,7 @@ const Mine = () => {
         html:
           // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
           "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
-          "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+          "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
           "",
         color: 'black',
         confirmButtonText: 'Continue Voting',
@@ -432,7 +433,7 @@ const Mine = () => {
           <Modal.Body>
             {/* continue voting */}
             {modelText == 1 && <div className='py-2  d-flex flex-column  justify-content-center'>
-              <strong style={{ fontSize: "20px" }}>Stay in the gamekl</strong>
+              <strong style={{ fontSize: "20px" }}>Stay in the game</strong>
               <p style={{ fontSize: "20px" }}>Only {100 - remainingCMP} CMP to reach your goal</p>
             </div>}
             {modelText == 2 && <div className='py-2  d-flex  flex-column justify-content-center'>

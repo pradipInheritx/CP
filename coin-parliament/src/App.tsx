@@ -27,8 +27,10 @@ import {
   Coin,
   DBCoin,
   DBPair,
+  formatCurrency,
   getAllCoins,
   getCoins,
+  precision,
   saveAllCoins,
   // saveCoins,
 } from "./common/models/Coin";
@@ -220,7 +222,7 @@ function App() {
 
   }, [pathname])
 
-
+// console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
@@ -250,13 +252,13 @@ function App() {
       console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
-        console.log(message.data, "checknotification")
-        showToast(
-          <div>
-            <h5>{title}</h5>
-            <p>{body}</p>
-          </div>
-        );
+        console.log(message.data, "checknotification")        
+        //   showToast(
+        //   <div>
+        //     <h5>{title}</h5>
+        //     <p>{body}</p>
+        //   </div>
+        // );      
         const typeName = { ...message.data["firebase-messaging-msg-data"]?.notification }
 
         // if (typeName?.title.includes("-")) {
@@ -327,8 +329,8 @@ function App() {
   const [mounted, setMounted] = useState(false);
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
-  const [firstTimeLogin, setFirstTimeLogin] = useState(false); 
-  const [showMenubar, setShowMenuBar] = useState(false); 
+  const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+  const [showMenubar, setShowMenuBar] = useState(false);
   const [user, setUser] = useState<User>();
   const [userInfo, setUserInfo] = useState<UserProps>();
   const [displayName, setDisplayName] = useState<string>("");
@@ -434,6 +436,7 @@ function App() {
     setUser(user);
 
     const info = await getUserInfo(user);
+    console.log("i am working")
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
@@ -796,7 +799,7 @@ function App() {
         .where("voteTime", ">=", last24Hour)
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
-        .then((snapshot) => {          
+        .then((snapshot) => {
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
           // let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
@@ -840,7 +843,7 @@ function App() {
 
   useEffect(() => {
     if (voteNumberEnd == 0 && user?.uid) {
-      console.log(voteNumberEnd,"voteNumberEnd")
+      console.log(voteNumberEnd, "voteNumberEnd")
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
@@ -852,7 +855,7 @@ function App() {
         .where("voteTime", ">=", last24Hour)
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
-        .then((snapshot) => {     
+        .then((snapshot) => {
           console.log(voteNumberEnd)
           console.log("i am working ")
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
@@ -920,7 +923,7 @@ function App() {
   //                 });
   //             }
   //           }, remaining);
-  
+
   //         })
   //         .catch((error) => {
   //           console.log('extravoteError', error);
@@ -1175,7 +1178,7 @@ function App() {
       }
       return {};
     });
-    if (tempTessTimeVote /* && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId */ /* calculateVote */) {
+    if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId /* calculateVote */) {
       setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
@@ -1189,16 +1192,16 @@ function App() {
     impact: null
   });
   const latestVote = useRef<VoteContextType>();
-
-
-
+  const latestCoins = useRef<{ [symbol: string]: Coin }>({});
+  useEffect(() => {
+    latestCoins.current = myCoins;
+  }, [myCoins])
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
     latestVote.current = voteDetails;
   }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
-
       console.log(completedVotes, voteDetails, lessTimeVote, 'pkkk');
       // let exSec = new Date(-).getSeconds();
       // current date
@@ -1215,8 +1218,8 @@ function App() {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+        console.log(parseFloat(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')), 'coinsname');
 
-        console.log(coins[coin1.toUpperCase()]?.price, coins[coin2.toUpperCase()], coins, "coinsname")
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1232,8 +1235,8 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: voteImpact.current?.impact,
-                valueExpirationTimeOfCoin1: myCoins[coin1.toUpperCase()]?.price || null,
-                valueExpirationTimeOfCoin2: myCoins[coin2.toUpperCase()]?.price || null,
+                valueExpirationTimeOfCoin1: parseFloat(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')) || null,
+                valueExpirationTimeOfCoin2: parseFloat(formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')) || null,
               }
               :
               {}
@@ -1265,21 +1268,9 @@ function App() {
       // }
     }
   }
-
-  // useEffect(() => {
-  // const coinData = firebase
-  //   .firestore()
-  //   .collection("settings").doc('settings')
-  // coinData.get()
-  //   .then((snapshot: any) => {
-  //     console.log('hello', snapshot.data().voteRules.maxVotes)
-
-  //     });
-  // }, [])
-
   ///END vote result //
 
-console.log(firstTimeLogin,"firstTimeLogin")
+  console.log(firstTimeLogin, "firstTimeLogin")
 
   return loader ? (
     <div
@@ -1368,9 +1359,9 @@ console.log(firstTimeLogin,"firstTimeLogin")
                   signup,
                   setSignup,
                   firstTimeLogin,
-                    setFirstTimeLogin,
-                    showMenubar,
-                    setShowMenuBar,
+                  setFirstTimeLogin,
+                  showMenubar,
+                  setShowMenuBar,
                   firstTimeAvatarSlection,
                   menuOpen,
                   setMenuOpen,
@@ -1559,7 +1550,7 @@ console.log(firstTimeLogin,"firstTimeLogin")
                                 <FirstTimeLogin
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
-                                  }                                  
+                                  }
                                   generate={generateUsername}
                                   saveUsername={async (username) => {
                                     if (user?.uid) {
@@ -1577,7 +1568,7 @@ console.log(firstTimeLogin,"firstTimeLogin")
                                   user={user}
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
-                                  }                                
+                                  }
                                 />
                               )}
                               {/* {!firstTimeAvatarSlection &&
