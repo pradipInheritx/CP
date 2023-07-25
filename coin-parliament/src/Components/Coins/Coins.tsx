@@ -92,7 +92,7 @@ const Coins = ({
     //   setFilter("");
     // }
     if (filterByFav) {
-      setData(getFilteredDataByFav(favorites, coins, totals, allCoins));
+      setData(getFilteredDataByFav( filter,favorites, coins, totals, allCoins));
     } else {
       if (!filter) {
         setData(getData({ coins, totals, allCoins }));
