@@ -222,7 +222,7 @@ function App() {
 
   }, [pathname])
 
-
+// console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
@@ -252,13 +252,13 @@ function App() {
       console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
-        console.log(message.data, "checknotification")
-        showToast(
-          <div>
-            <h5>{title}</h5>
-            <p>{body}</p>
-          </div>
-        );
+        console.log(message.data, "checknotification")        
+        //   showToast(
+        //   <div>
+        //     <h5>{title}</h5>
+        //     <p>{body}</p>
+        //   </div>
+        // );      
         const typeName = { ...message.data["firebase-messaging-msg-data"]?.notification }
 
         // if (typeName?.title.includes("-")) {
