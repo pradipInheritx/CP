@@ -325,24 +325,30 @@ const VotedCard = ({
                 setLastTenSec={setLastTenSec}
               />
             </div>
-            <BitcoinBTCBULL24H3864490
-              className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center  `}
-              style={{ marginTop: '3em ' }}
-            >
-              {/* <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1> */}
-
-
-              <Row1 className="poppins-normal-blackcurrant-14px mx-2"> {coin2 ? "You voted for " : ""}{row1}</Row1>
-              {/* <Row1 className="poppins-normal-blue-violet-14px-2">{row2}</Row1> */}
-              <Row1 className="poppins-normal-blue-violet-14px-2 "
+            {symbol2 ?
+              <div className="container pt-4">
+                <div className="row justify-content-center align-items-center">
+                  <div className="col-sm-7 col-7 text-right p-0">
+                    <Row1 style={{ textAlign: 'right' }}>{"You voted for "}{row1}</Row1>
+                  </div>
+                  <div className="col-sm-4 col-4 text-left p-0">
+                    <Row1 className="text-left">&nbsp;{
+                      `${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`
+                    }</Row1>
+                  </div>
+                </div>
+              </div> :
+              <BitcoinBTCBULL24H3864490
+                className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center  `}
+                style={{ marginTop: '3em ' }}
               >
-                {
-                  symbol2 ?
-                    `${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`
-                    : row2
-                }
-              </Row1>
-            </BitcoinBTCBULL24H3864490>
+                <Row1 className="poppins-normal-blackcurrant-14px mx-2">{row1}</Row1>
+                <Row1 className="poppins-normal-blue-violet-14px-2 "
+                >
+                  {row2}
+                </Row1>
+              </BitcoinBTCBULL24H3864490>}
+
 
             <ID13020221942>
               {voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
