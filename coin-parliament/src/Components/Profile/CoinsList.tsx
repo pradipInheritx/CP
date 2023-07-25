@@ -18,7 +18,6 @@ const CoinList = styled.div`
 `;
 
 
-
 const CoinsList = () => {
   const [coinsList, setCoinsList] = useState([])
   const [selectPayment, setSelectPayment] = useState(0);
@@ -37,15 +36,65 @@ const CoinsList = () => {
 
   }, [])
 
+  
+
+  
+useEffect(() => {
+const script = document.createElement("script")
+  if (script) {
+    script.src =
+      "https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=votetoearn&init=true&autoconnect=false&visible=true"
+    script.async = true;
+    document.body.appendChild(script)     
+}
+
+    return () => {
+      // clean up the script when the component in unmounted
+      document.body.removeChild(script)
+    }
+  }, [coinsList])
+
+
+
+//   const ButtonCheck = () => {
+//   //   return (
+//   //   <p>
+//   //       <label htmlFor="wldpbtn">Button</label>
+//   //       <button
+//   //         name='wldpbtn'
+//   //         id='wldpbtn'>
+//   //         hello
+//   //       </button>
+//   //   </p>
+//   // )
+    
+//     return React.createElement(
+//     "div",
+//     {style:{color:"red"}, id: 'wldpbtn', className: "wldpbtn"},
+//     "Here I am",
+//   );
+// }
+
   return (
     <div
       style={{
         width: "100%",
       }}
     >
-
+      {
+        // ButtonCheck()
+        <p>
+        <label htmlFor="wldpbtn">Button</label>
+        <button
+          name='wldpbtn'
+          id='wldpbtn'>
+          
+        </button>
+    </p>
+    }
+      
       <div className="d-flex justify-content-center flex-column align-items-center">
-
+  
         <div>
           <h4 className="text-center">Select Payment mode</h4>
           <div className="d-flex flex-column justify-content-center align-items-start px-5">
@@ -83,8 +132,8 @@ const CoinsList = () => {
         {selectPayment !=0 &&
         coinsList.map((item: any, index: any) => {
           return (
-            <>
-              <CoinList>
+            
+              <CoinList key={index}>
                 <div className="d-flex justify-content-between align-items-center">
                   <div className="d-flex align-items-center">
                     <Image
@@ -115,7 +164,7 @@ const CoinsList = () => {
                   />
                 </div>
               </CoinList>
-            </>
+            
           )
         })
       // :
@@ -124,7 +173,14 @@ const CoinsList = () => {
       // </>
       }
       </div>
-
+      {/* <p className="mx-4">
+        <label htmlFor="wldpbtn">Button</label>
+        <div
+          // name='wldpbtn'
+          id='wldpbtn'>
+        Hello      
+      </div>
+      </p> */}
     </div>
 
   );
