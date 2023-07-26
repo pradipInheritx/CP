@@ -40,6 +40,27 @@ animation: blinker 1s linear infinite;
     position: absolute;
     z-index: 10;
 }
+
+
+.wm-center-div{
+  margin-top: 10% !important;
+}
+
+@media (max-width: 992px){
+.wm-center-div{
+  margin-top: 10% !important;
+}
+}
+/* @media (max-width: 768px){
+.wm-center-div{
+  margin-top: 12% !important;
+}
+} */
+@media (max-width: 556px){
+.wm-center-div{
+  margin-top: 35% !important;
+}
+}
 /* .newtooltip .mytooltip::before {
     top: 7px;
     left: -21px;

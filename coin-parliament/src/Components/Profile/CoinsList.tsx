@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
 
 import firebase from "firebase/compat";
+import { Buttons } from "Components/Atoms/Button/Button";
 
 const CoinList = styled.div`
   // border:1px solid red;
@@ -22,6 +23,17 @@ const CoinsList = () => {
   const [coinsList, setCoinsList] = useState([])
   const [selectPayment, setSelectPayment] = useState(0);
   const [CheckCoin, setCheckCoin] = useState(0);
+const [cardModalShow, setCardModalShow] = React.useState(false);
+
+  
+  const handleCardClose = () => setCardModalShow(false);      
+  const handleCardShow = () => setCardModalShow(true);
+  
+  useEffect(() => {
+    if(CheckCoin!=0) handleCardShow()
+  }, [CheckCoin])
+  
+
   useEffect(() => {
     const getCoinList = firebase
       .firestore()
@@ -36,33 +48,20 @@ const CoinsList = () => {
 
   }, [])
   const mybtn =(window as any).wldp.connectionWallet
+  const CheckConnection =(window as any).wldp.isWalletConnected
+
+//   console.log((window as any).wldp, "Checkconnect")
+  
+//   console.log(CheckConnection().then((data:any) => {
+//   console.log(data,"alldata")
+// }),"checkdataCheckConnection")
 
   return (
     <div
       style={{
         width: "100%",
       }}
-    >
-      {
-        // ButtonCheck()
-    //     <p>
-    //     <label htmlFor="wldpbtn">Button</label>
-    //     <button
-    //       name='wldpbtn'
-    //       id='wldpbtn'>
-          
-    //     </button>
-    // </p>
-        
-        
-      }
-      <button onClick={() => { mybtn("connect") }}>
-      Connect
-      </button>
-      <button onClick={() => { mybtn("disconnect","true") }}>
-      Disconnect
-      </button>
-      
+    >            
       <div className="d-flex justify-content-center flex-column align-items-center">
   
         <div>
@@ -137,20 +136,48 @@ const CoinsList = () => {
             
           )
         })
-      // :
-      // <>
-      // Please First Select Payment mode
-      // </>
       }
       </div>
-      {/* <p className="mx-4">
-        <label htmlFor="wldpbtn">Button</label>
-        <div
-          // name='wldpbtn'
-          id='wldpbtn'>
-        Hello      
+
+      <div>
+        
+        {/* reward modal 5 */}
+        <Modal
+          className=""
+          show={
+            cardModalShow
+          } onHide={handleCardClose}
+          // fullscreen="sm-down"
+          backdrop="static"          
+          centered          
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close" aria-label="Close" onClick={() => {handleCardClose()}}></button>
+          </div>
+          <Modal.Body>  
+            {/* <div className="d-flex ">
+              <p>Please use this button for Connect or Disconnect !</p>
+            </div> */}
+              <div className="d-flex justify-content-center pb-3" style={{ zIndex: '101' }}>
+            <Buttons.Primary className="mx-2"
+              onClick={() => {
+                mybtn("connect")
+                handleCardClose()
+              }}
+            >Connect</Buttons.Primary>
+            <Buttons.Error className="mx-2"
+              onClick={() => {
+                mybtn("disconnect", "true")
+                handleCardClose()
+              }}
+            >Disconnect</Buttons.Error>
+          </div>  
+          </Modal.Body>
+
+                                          
+        </Modal>
+      
       </div>
-      </p> */}
     </div>
 
   );
