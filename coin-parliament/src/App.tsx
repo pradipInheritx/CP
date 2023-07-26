@@ -316,7 +316,7 @@ function App() {
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   const [socketConnect, setSocketConnect] = useState<any>(false)
   // @ts-ignore  
-  const getCoinPrice = /* localStorage.getItem('CoinsPrice') */'' ? JSON.parse(/* localStorage.getItem('CoinsPrice') */'') : {}
+  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
 
