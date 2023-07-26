@@ -95,7 +95,7 @@ const CircularProgress = ({ percentage }) => {
                                 trailColor: (w > 767 ? "transparent" : '#160133')
                             })}
                         >
-                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - localStorage.getItem(`${user?.uid}_newScores`))}/100</span>
+                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - 0/* localStorage.getItem(`${user?.uid}_newScores`) */)}/100</span>
                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                         </CircularProgressbarWithChildren>
