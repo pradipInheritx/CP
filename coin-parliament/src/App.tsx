@@ -222,7 +222,7 @@ function App() {
 
   }, [pathname])
 
-// console.log("for commit")
+  // console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
@@ -252,7 +252,7 @@ function App() {
       console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
-        console.log(message.data, "checknotification")        
+        console.log(message.data, "checknotification")
         //   showToast(
         //   <div>
         //     <h5>{title}</h5>
@@ -538,29 +538,36 @@ function App() {
 
 
   useEffect(() => {
-    Notification.requestPermission()
-      .then((permission) => {
-        if (permission === "granted") {
-          console.log("Notification permission granted.");
-          // Get the device token to send messages to individual devices
-          getToken(messaging, {
-            vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-          }).then((token) => {
-            setFcmToken(token);
-            console.log('token', token);
-          }).catch((e) => {
-            console.log('token', e);
-          });
-        } else {
-          console.log("Notification permission denied.");
-          return null;
-        }
-      }).catch((error) => {
-        console.error("Error getting notification permission:", error);
-      });
+    // Notification.requestPermission()
+    //   .then((permission) => {
+    //     if (permission === "granted") {
+    //       console.log("Notification permission granted.");
+    //       // Get the device token to send messages to individual devices
+
+    //     } else {
+    //       console.log("Notification permission denied.");
+    //       return null;
+    //     }
+    //   }).catch((error) => {
+    //     console.error("Error getting notification permission:", error);
+    //   });
+
+    getMessageToken();
 
   }, []);
-
+  const getMessageToken = async () => {
+    const messagingResolve = await messaging;
+    if (messagingResolve) {
+      getToken(messagingResolve, {
+        vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
+      }).then((token) => {
+        setFcmToken(token);
+        console.log('token', token);
+      }).catch((e) => {
+        console.log('token', e);
+      });
+    }
+  }
 
 
 
