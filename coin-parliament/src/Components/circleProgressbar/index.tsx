@@ -23,12 +23,12 @@ const CircularProgress = ({ percentage }) => {
     console.log(startValue, percentage, 'startValue');
 
     useEffect(() => {
-        let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
+        let newScore = /* localStorage.getItem(`${user?.uid}_newScores`) ||  */'0'
         if (progressBarValue && newScore != '0') {
             let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
             setStartValue(prevScore);
             const time = setTimeout(() => {
-                localStorage.setItem(`${user?.uid}_newScores`, 0);
+                // localStorage.setItem(`${user?.uid}_newScores`, 0);
             }, [4000]);
         }
     }, [progressBarValue]);
@@ -54,7 +54,7 @@ const CircularProgress = ({ percentage }) => {
                     trailColor: "transparent"
                 })}
             >
-                {(startValue !== false && localStorage.getItem(`${user?.uid}_newScores`) != '0') ?
+                {(startValue !== false && ''/* localStorage.getItem(`${user?.uid}_newScores`) */ != '0') ?
                     <AnimatedProgressProvider
                         valueStart={startValue}
                         valueEnd={progressBarValue}
@@ -86,7 +86,7 @@ const CircularProgress = ({ percentage }) => {
                         }}
                     </AnimatedProgressProvider> : <div>
                         <CircularProgressbarWithChildren
-                            value={(percentage - localStorage.getItem(`${user?.uid}_newScores`))}
+                            value={(percentage - 0/* localStorage.getItem(`${user?.uid}_newScores`) */)}
                             strokeWidth={w > 767 ? 11 : 13}
                             styles={buildStyles({
                                 pathColor: "#6352e8",

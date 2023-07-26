@@ -6,11 +6,11 @@ messaging.onMessage((payload) => {
 });
 
 const setTokenSentToServer = (sent: boolean) => {
-  window.localStorage.setItem("sentToServer", sent ? "1" : "0");
+  // window.localStorage.setItem("sentToServer", sent ? "1" : "0");
 };
 
-const isTokenSentToServer = () =>
-  window.localStorage.getItem("sentToServer") === "1";
+const isTokenSentToServer = () => true;
+  /* window.localStorage.getItem("sentToServer") === "1" */;
 
 const sendTokenToServer = (currentToken: string) => {
   if (!isTokenSentToServer()) {

@@ -1,6 +1,6 @@
 import currency from "currency.js";
-import {uniq} from "lodash";
-import {SwipeEventData} from "react-swipeable";
+import { uniq } from "lodash";
+import { SwipeEventData } from "react-swipeable";
 
 export type Coin = {
   name: string;
@@ -9,7 +9,7 @@ export type Coin = {
   price: number;
   trend?: number;
   CPMRangePercentage?: number;
-  randomDecimal?:number;
+  randomDecimal?: number;
 };
 
 export type CoinSnap = {
@@ -17,7 +17,7 @@ export type CoinSnap = {
   data: { [symbol: string]: Coin };
 };
 
-export const formatCurrency = (v: number, precision: number = 2) => currency(v, {precision}).format();
+export const formatCurrency = (v: number, precision: number = 2) => currency(v, { precision }).format();
 
 export type Rate = {
   id: number;
@@ -61,7 +61,7 @@ export type Rate = {
 export const getCoins = () => {
   let coins: { [symbol: string]: Coin };
   try {
-    coins = JSON.parse(localStorage.getItem("coins") + "");
+    coins = JSON.parse(/* localStorage.getItem("coins") */'' + "");
   } catch (e) {
     coins = {};
   }
@@ -71,7 +71,7 @@ export const getCoins = () => {
 export const getAllCoins = () => {
   let allCoins: string[];
   try {
-    allCoins = JSON.parse(localStorage.getItem("allCoins") + "");
+    allCoins = JSON.parse(/* localStorage.getItem("allCoins") */'' + "");
   } catch (e) {
     allCoins = [];
   }
@@ -80,11 +80,11 @@ export const getAllCoins = () => {
 };
 
 export const saveAllCoins = (allCoins: string[]) => {
-  localStorage.setItem("allCoins", JSON.stringify(allCoins));
+  // localStorage.setItem("allCoins", JSON.stringify(allCoins));
 };
 
 export const saveCoins = (coins: { [symbol: string]: Coin }) => {
-  localStorage.setItem("coins", JSON.stringify(coins));
+  // localStorage.setItem("coins", JSON.stringify(coins));
 };
 
 export const validateCoins = <T extends { id: string }>(c: T[]) =>

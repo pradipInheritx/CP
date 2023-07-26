@@ -171,7 +171,7 @@ const UserCard = ({
   const redirectTab = () => {
     if (leader != undefined && setFollowerUserId != undefined) {
       setFollowerUserId(leader?.userId)
-      window.localStorage.setItem('followerId', leader?.userId)
+      // window.localStorage.setItem('followerId', leader?.userId)
     }
 
     // @ts-ignore
@@ -185,7 +185,7 @@ const UserCard = ({
 
   }
 
-  
+
 
   return (
     <Component515

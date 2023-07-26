@@ -222,7 +222,7 @@ function App() {
 
   }, [pathname])
 
-// console.log("for commit")
+  // console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
@@ -252,7 +252,7 @@ function App() {
       console.log("Navigator service worker is supported");
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
-        console.log(message.data, "checknotification")        
+        console.log(message.data, "checknotification")
         //   showToast(
         //   <div>
         //     <h5>{title}</h5>
@@ -316,7 +316,7 @@ function App() {
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   const [socketConnect, setSocketConnect] = useState<any>(false)
   // @ts-ignore  
-  const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
+  const getCoinPrice = /* localStorage.getItem('CoinsPrice') */'' ? JSON.parse(/* localStorage.getItem('CoinsPrice') */'') : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(socketConnect ? getCoins() as { [symbol: string]: Coin } : localPrice);
 
@@ -397,7 +397,7 @@ function App() {
   }, []);
   // @ts-ignore
   useEffect(() => {
-    const isMFAPassed = window.localStorage.getItem('mfa_passed')
+    const isMFAPassed: string = /* window.localStorage.getItem('mfa_passed') */'';
     if (isMFAPassed == 'true' && !login) {
 
       console.log('2faCalled')
@@ -471,7 +471,7 @@ function App() {
       setLogin(false);
       setSignup(false);
     } else {
-      const isMFAPassed = window.localStorage.getItem('mfa_passed')
+      const isMFAPassed: string = ''/* window.localStorage.getItem('mfa_passed') */;
       if (!user && isMFAPassed !== 'true') {
         console.log('2faCalled3')
         setLogin(false);
@@ -565,7 +565,7 @@ function App() {
 
 
   useEffect(() => {
-    const localStorageLang = localStorage.getItem("lang");
+    const localStorageLang = /* localStorage.getItem("lang") */'eng';
     if (localStorageLang && languages.includes(localStorageLang)) {
       setMounted(true);
     }
@@ -577,7 +577,7 @@ function App() {
         void 0
       );
 
-      localStorage.setItem("lang", lang);
+      /* localStorage.setItem("lang", lang); */
     }
   }, [lang, user?.uid]);
 
@@ -723,7 +723,7 @@ function App() {
   window.onbeforeunload = function () {
     //  localStorage.clear();
     const allCoinPrice = coins
-    localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice));
+    /* localStorage.setItem('CoinsPrice', JSON.stringify(allCoinPrice)); */
   }
 
   useEffect(() => {
@@ -1157,7 +1157,7 @@ function App() {
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
       if (!pathname.toLowerCase().includes(`profile/mine`)) {
-        localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
+        // localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(/* localStorage.getItem(`${user?.uid}_newScores`) */'' || '0')}`);
       }
       setVoteDetails((prev: VoteContextType) => {
         return {

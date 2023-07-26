@@ -190,14 +190,14 @@ const Header = ({
 
 
 
-	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack,showMenubar} =
+	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar } =
 		useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
 	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
-	const followerUserId = localStorage.getItem("followerId")
+	const followerUserId = /* localStorage.getItem("followerId") */'';
 	const translate = useTranslation();
 	const [voteNumber, setVoteNumber] = useState(0)
 	const [cmpModalOpen, setCmpModalOpen] = useState(false)
@@ -217,7 +217,7 @@ const Header = ({
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const voteDetails = useContext(VoteContext);
-	const votelength = Object.keys(voteDetails?.activeVotes).length;	
+	const votelength = Object.keys(voteDetails?.activeVotes).length;
 
 	useEffect(() => {
 
@@ -249,38 +249,38 @@ const Header = ({
 	}
 
 	useEffect(() => {
-		getFollowerData()				
+		getFollowerData()
 	}, [followerUserId])
 
-	useEffect(() => {					
+	useEffect(() => {
 		// @ts-ignore
-		if (userInfo?.leader?.includes(followerUserId)) {				
-			setFollowUnfollow(true)			
+		if (userInfo?.leader?.includes(followerUserId)) {
+			setFollowUnfollow(true)
 		}
 		else {
-			setFollowUnfollow(false)			
-		}		
-	}, [followerUserId,userInfo])
+			setFollowUnfollow(false)
+		}
+	}, [followerUserId, userInfo])
 	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot==0 ) {
-		
-			setTimeout(() => {				
+		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot == 0) {
+
+			setTimeout(() => {
 				setShow(true)
 			}, 1000);
 
-		} else {			
-		
+		} else {
+
 			setShow(false)
 		}
 	}, [voteNumber, votingTimer, votelength])
 
 	useEffect(() => {
 		if (afterVotePopup) {
-			
+
 			setShow(true)
 			// setAfterVotePopup(false)
 		} else {
-			
+
 			setShow(false)
 		}
 
@@ -321,9 +321,9 @@ const Header = ({
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 
 	console.log(showReward, inOutReward, "showRewardsetShowReward")
-	
 
-	
+
+
 
 
 
@@ -343,17 +343,17 @@ const Header = ({
 				setSignup(true);
 				break;
 			case EventKeys.LOGOUT:
-				
+
 				signOut(auth)
 					.then((res) => {
 						Logout(setUser);
 						setLogin(true);
 					})
 					.catch((error) => {
-				
+
 						setLogin(true);
 						const errorMessage = error.message;
-				
+
 					});
 				break;
 			case EventKeys.EDIT:
@@ -521,10 +521,10 @@ const Header = ({
 										transition: `width 1s ease;`
 									}}
 								>
-									<div className='' onClick={() =>{
-											if(!showMenubar) navigate("/profile/mine")
-												}	
-								}
+									<div className='' onClick={() => {
+										if (!showMenubar) navigate("/profile/mine")
+									}
+									}
 										style={{
 											position: "absolute",
 											marginTop: "7px",
@@ -629,7 +629,7 @@ const Header = ({
 												</Form.Check.Label>
 												:
 												<PlusButtonMob onClick={() => {
-													if (!showMenubar) {														
+													if (!showMenubar) {
 														handleSoundClick()
 														navigate("/votingbooster")
 													}
@@ -698,14 +698,14 @@ const Header = ({
 							{(user?.uid && !login) && (
 								<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
 									<div onClick={() => {
-										if(!showMenubar) navigate("/profile/mine")
+										if (!showMenubar) navigate("/profile/mine")
 									}}
-										
+
 										style={{
-										position: "absolute",
-										marginLeft: "90px",
-										cursor: "pointer"
-									}}
+											position: "absolute",
+											marginLeft: "90px",
+											cursor: "pointer"
+										}}
 									>
 										<Avatars
 											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
@@ -815,10 +815,10 @@ const Header = ({
 														:
 														<PlusButton onClick={() => {
 
-															if (!showMenubar) {														
-														handleSoundClick()
-														navigate("/votingbooster")
-													}
+															if (!showMenubar) {
+																handleSoundClick()
+																navigate("/votingbooster")
+															}
 															// handleSoundClick()
 															// navigate("/votingbooster")
 														}}>

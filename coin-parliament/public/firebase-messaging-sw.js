@@ -81,7 +81,6 @@ messaging.setBackgroundMessageHandler(function (payload) {
     const notificationOptions = {
         body: notification.message,
         icon: notification.icon || "",
-        click_action: 'https://hello.com'
     };
     return self.registration.showNotification(notificationTitle, notificationOptions);
 });
