@@ -551,17 +551,23 @@ function App() {
     //   }).catch((error) => {
     //     console.error("Error getting notification permission:", error);
     //   });
-    getToken(messaging, {
-      vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    }).then((token) => {
-      setFcmToken(token);
-      console.log('token', token);
-    }).catch((e) => {
-      console.log('token', e);
-    });
+
+    getMessageToken();
 
   }, []);
-
+  const getMessageToken = async () => {
+    const messagingResolve = await messaging;
+    if (messagingResolve) {
+      getToken(messagingResolve, {
+        vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
+      }).then((token) => {
+        setFcmToken(token);
+        console.log('token', token);
+      }).catch((e) => {
+        console.log('token', e);
+      });
+    }
+  }
 
 
 
