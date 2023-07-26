@@ -4,7 +4,7 @@ import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getApp } from "firebase/app";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { getMessaging } from "firebase/messaging";
+import { getMessaging, isSupported } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -19,7 +19,19 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-export const messaging = getMessaging();
+export const messaging = (async () => {
+  try {
+    const isSupportedBrowser = await isSupported();
+    if (isSupportedBrowser) {
+      return getMessaging();
+    }
+    console.log('Firebase not supported this browser');
+    return null;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+})();
 export const db = getFirestore();
 export const auth = getAuth();
 export const functions = getFunctions(getApp());

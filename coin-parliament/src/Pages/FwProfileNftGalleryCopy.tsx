@@ -14,7 +14,7 @@ import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
 import AppContext from "../Contexts/AppContext";
 // @ts-ignore
-import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4';import Science from '../assets/avatars/videos/Science.mp4';
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4';import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4';import Space from '../assets/avatars/videos/Science.mp4';
 import { texts } from "../Components/LoginComponent/texts";
 
 // import { Firestore } from "firebase/firestore";
@@ -88,7 +88,7 @@ const FwProfileNftGalleryCopy = () => {
     Monsoon: Monsoon,
     Winter: Winter,
     Summer: Summer,
-    Science:Science,
+    Space: Space,
   });
 
 
@@ -577,7 +577,8 @@ console.log(allCardNew,"allCardNew" , cardShow)
                             id={item?.cardId}
                             BackSideCard={BackSideCard}
                             fulldata={item}                            
-                            flipCard={backCards?.includes(item?.cardId)}
+                          flipCard={backCards?.includes(item?.cardId)}
+                          ImgUrl={item?.cardImageUrl || ""}
                           />                        
                       );
                     })}

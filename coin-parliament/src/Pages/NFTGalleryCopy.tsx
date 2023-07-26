@@ -8,7 +8,7 @@ import MyCarousel from "../Components/Carousel/Carousel";
 
 import NftOneCard from "./NftOneCard";
 // @ts-ignore
-import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4';import Summer from '../assets/avatars/videos/Summer.mp4'; import Space from '../assets/avatars/videos/Science.mp4';
 
 
 import "./styles.css";
@@ -105,7 +105,7 @@ const NFTGalleryCopy = () => {
     Monsoon:Monsoon,
     Winter :Winter,
     Summer :Summer,
-    Science :Science,
+    Space :Space,
   })
   const [TypeWather, setTypeWather] = useState<any>(["Partly Cloudy","Raining","Snowing","Lightning"])
   
@@ -532,7 +532,8 @@ useEffect(() => {
                             id={item?.id}
                             BackSideCard={BackSideCard}
                             fulldata={item}                            
-                            flipCard={backCards?.includes(item?.id)}
+                              flipCard={backCards?.includes(item?.id)}                          
+                              ImgUrl={item?.cardImageUrl || ""}
                           />                        
                       );
                     })}
