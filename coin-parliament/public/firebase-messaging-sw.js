@@ -73,7 +73,8 @@ const config = {
 firebase.initializeApp(config);
 // console.log("sw initialized");
 
-const messaging = firebase.messaging();
+const messaging = /* firebase.messaging.isSupported() ? */ firebase.messaging()/*  : null */;
+// if (messaging) {
 messaging.setBackgroundMessageHandler(function (payload) {
     console.log('[firebase-messaging-sw.js] Received background message', payload.data);
     const notification = payload.data;
@@ -81,10 +82,11 @@ messaging.setBackgroundMessageHandler(function (payload) {
     const notificationOptions = {
         body: notification.message,
         icon: notification.icon || "",
-        click_action: 'https://hello.com'
     };
     return self.registration.showNotification(notificationTitle, notificationOptions);
 });
+// }
+
 
 // self.addEventListener('notificationclick', event => {
 //   event.notification.close();
