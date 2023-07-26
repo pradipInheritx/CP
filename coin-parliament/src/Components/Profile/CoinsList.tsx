@@ -35,45 +35,7 @@ const CoinsList = () => {
       });
 
   }, [])
-
-  
-
-  
-useEffect(() => {
-const script = document.createElement("script")
-  if (script) {
-    script.src =
-      "https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=votetoearn&init=true&autoconnect=false&visible=true"
-    script.async = true;
-    document.body.appendChild(script)     
-}
-
-    return () => {
-      // clean up the script when the component in unmounted
-      document.body.removeChild(script)
-    }
-  }, [coinsList])
-
-
-
-//   const ButtonCheck = () => {
-//   //   return (
-//   //   <p>
-//   //       <label htmlFor="wldpbtn">Button</label>
-//   //       <button
-//   //         name='wldpbtn'
-//   //         id='wldpbtn'>
-//   //         hello
-//   //       </button>
-//   //   </p>
-//   // )
-    
-//     return React.createElement(
-//     "div",
-//     {style:{color:"red"}, id: 'wldpbtn', className: "wldpbtn"},
-//     "Here I am",
-//   );
-// }
+  const mybtn =(window as any).wldp.connectionWallet
 
   return (
     <div
@@ -83,15 +45,23 @@ const script = document.createElement("script")
     >
       {
         // ButtonCheck()
-        <p>
-        <label htmlFor="wldpbtn">Button</label>
-        <button
-          name='wldpbtn'
-          id='wldpbtn'>
+    //     <p>
+    //     <label htmlFor="wldpbtn">Button</label>
+    //     <button
+    //       name='wldpbtn'
+    //       id='wldpbtn'>
           
-        </button>
-    </p>
-    }
+    //     </button>
+    // </p>
+        
+        
+      }
+      <button onClick={() => { mybtn("connect") }}>
+      Connect
+      </button>
+      <button onClick={() => { mybtn("disconnect","true") }}>
+      Disconnect
+      </button>
       
       <div className="d-flex justify-content-center flex-column align-items-center">
   
