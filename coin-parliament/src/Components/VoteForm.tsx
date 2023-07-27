@@ -70,7 +70,7 @@ const VoteForm = function <
   vote,
   disableVoteButton
 }: VoteFormProps<T>) {
-  const { timeframes, login, remainingTimer,voteRules } = useContext(AppContext);
+  const { timeframes, login, remainingTimer, voteRules, afterVotePopup } = useContext(AppContext);
   const { user } = useContext(UserContext);
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
@@ -121,15 +121,20 @@ const VoteForm = function <
         <OverlayTrigger
           overlay={(props) => {
             return (
-              (!!userInfo?.rewardStatistics && userInfo?.rewardStatistics?.extraVote <= 0 && Number(userInfo?.voteValue || 0) <= 0) ? (
+              (!!userInfo?.rewardStatistics && userInfo?.rewardStatistics?.extraVote <= 0 && Number(userInfo?.voteValue || 0) <= 0 && !afterVotePopup) ? ( //to stop "tooltip" and "out of votes modal open same" add !afterVotePopup
                 user ?
                   <Tooltip id='button-tooltip' {...props
                   } >
+<<<<<<< HEAD
                     <div className="" style={{
                       marginLeft: '20px', marginTop: "0px",
                       zIndex:95,
                     }}>
                   {/* @ts-ignore */}
+=======
+                    <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}>
+                      {/* @ts-ignore */}
+>>>>>>> 13dea4366e03b7549ca96a12f0bb9874c368b2fc
                       <Countdown daysInHours zeroPadTime={2} date={remainingTimer}
                         renderer={({ hours, minutes, seconds, completed }) => {
                           return (
@@ -146,7 +151,6 @@ const VoteForm = function <
                               </span>
                             </>
                           );
-
                         }}
                       />
                     </div>
