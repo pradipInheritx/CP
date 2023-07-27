@@ -121,7 +121,8 @@ const Votes = styled.div`
 `;
 
 const HeartContainer = styled.div`
-  top: 12.5em;
+  top: ${(props: { isHeader: boolean, single: boolean }) => props.isHeader ? "5em" : "12.5em"};
+  right: ${(props: { isHeader: boolean, single: boolean }) => props.isHeader ? "5em" : "1em"};
   position: absolute;
   align-self: ${(props: { single: boolean }) =>
     props.single ? "flex-end" : "flex-start"};
@@ -152,6 +153,7 @@ export type CoinCardProps = {
   onClick?: () => void;
   name?: string;
   single?: boolean;
+  isHeader?: boolean;
 };
 
 export const LogoImgContainer = styled.div`
@@ -181,6 +183,7 @@ const Card = ({
   onClick,
   name = "favorites",
   single = false,
+  isHeader = false,
 }: CoinCardProps) => {
   const { user } = useContext(UserContext);
   const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
@@ -223,7 +226,7 @@ const Card = ({
       onMouseLeave={() => setZoom(false)}
       onClick={onClick}
     >
-      <HeartContainer {...{ single }} style={{ marginTop: Object.keys(params).length !== 0 ? '' : '-142px' }} onClick={
+      <HeartContainer {...{ single, isHeader }} style={{ marginTop: Object.keys(params).length !== 0 ? '' : '-142px' }} onClick={
         () => {
           if (!user?.uid) {
             setLoginRedirectMessage('add coin to favorites')
@@ -256,7 +259,7 @@ const Card = ({
               )}
             </Span0>
             <Span1 style={{ fontSize: "20px" }}>
-              {single && <span>{coins[symbol]?.symbol}</span>}
+              {single && <span>{symbol}</span>}
               {!single && (
                 <Buttons.ClickableText onClick={onClick}>
                   {coins[symbol]?.symbol}
