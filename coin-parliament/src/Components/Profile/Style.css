@@ -61,6 +61,12 @@ animation: blinker 1s linear infinite;
   margin-top: 35% !important;
 }
 }
+.wm-modal [type="button"] {
+  cursor: pointer;
+  background-color: black;
+  transition: background-color .2s ease-in-out 0s,color .2s ease-in-out 0s;
+  min-height:6em !important;
+}
 /* .newtooltip .mytooltip::before {
     top: 7px;
     left: -21px;

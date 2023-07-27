@@ -9,6 +9,7 @@ import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
   Link,
+  Navigate,
   Route,
   Routes,
   useLocation,
@@ -1222,7 +1223,7 @@ function App() {
   }
   ///END vote result //
 
-  console.log(firstTimeLogin, "firstTimeLogin")
+  console.log(login, user,userInfo?.uid,"firstTimeLogin")
 
   return loader ? (
     <div
@@ -1631,10 +1632,12 @@ function App() {
                                             />
                                             <Route
                                               path={ProfileTabs.profile}
-                                              element={<Profile />}
+                                            element={<Profile />}
+                                            
                                             >
                                               <Route
-                                                path={ProfileTabs.edit}
+                                              path={ProfileTabs.edit}
+                                              
                                                 element={<PersonalInfo />}
                                               />
                                               <Route
@@ -1725,13 +1728,19 @@ function App() {
 
                                             {/* Fowller component  end*/}
                                             <Route
-                                              path='/upgrade'
+                                            path='/upgrade'
+                                            // element={user && userInfo?.uid ? <UpgradePage /> : <Navigate to="/" />}
                                               element={<UpgradePage />}
                                             />
-                                            <Route
+                                            {/* <Route
                                               path='/paymentList'
                                               element={<CoinsList />}
-                                            />
+                                          /> */}
+                                          
+                                          <Route path='/paymentList'
+                                            // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
+                                            element={<CoinsList />}
+                                          />                                                                                  
                                             <Route
                                               path='/votingbooster'
                                               element={<VotingBooster />}
