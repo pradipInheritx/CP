@@ -125,8 +125,8 @@ function ModalForResult({ popUpOpen, vote, type,
   };
 
   const removeVote = () => {
+    let temp = {};
     setVoteDetails((prev) => {
-      let temp = {};
       Object.keys(prev?.activeVotes).map((key: string) => {
         if (/* prev?.activeVotes[key].expiration > new Date().getTime() &&  */vote?.voteId !== prev?.activeVotes[key].voteId) {
           temp = { ...temp, [`${prev?.activeVotes[key].coin}_${prev?.activeVotes[key]?.timeframe?.seconds}`]: prev?.activeVotes[key] }
@@ -139,6 +139,9 @@ function ModalForResult({ popUpOpen, vote, type,
         openResultModal: false
       };
     });
+    if (Object.keys(temp)?.length <= 0) {
+      setAfterVotePopup(true);
+    }
     setCompletedVotes(prev => prev.filter(value => value.voteId != vote.voteId));
     setLessTimeVoteDetails(undefined);
     // setLessTimeVoteDetails({
@@ -153,7 +156,7 @@ function ModalForResult({ popUpOpen, vote, type,
 
 
   const { coins } = useContext(CoinsContext);
-  const { showBack, setShowBack } = useContext(AppContext);
+  const { showBack, setShowBack, setAfterVotePopup } = useContext(AppContext);
   const winner = calculateWinner(vote);
   // console.log(vote,"allVote1")
   const voteCoins = vote?.coin?.split("-");
@@ -411,7 +414,7 @@ function ModalForResult({ popUpOpen, vote, type,
           <div className='py-2  d-flex  justify-content-center'>
             <span style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
-                
+
                 navigate('/profile/mine');
                 setShowBack(true);
                 removeVote();

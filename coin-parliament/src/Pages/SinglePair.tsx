@@ -410,7 +410,7 @@ const SinglePair = () => {
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
-                        {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() ?
+                        {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() && false ?
                           <span style={{ marginLeft: '20px' }}>
                             {/* @ts-ignore */}
                             <Countdown date={votingTimer}
