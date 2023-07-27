@@ -22,6 +22,7 @@ import votingbooster from "../../assets/images/votingbooster_small.png";
 import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
+import { useNavigate } from "react-router-dom";
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -111,6 +112,9 @@ const VotingBooster = () => {
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
+let navigate = useNavigate(); 
+   
+
 
   const BoxCard = styled.div`
   width:${screenWidth()};
@@ -186,7 +190,11 @@ const VotingBooster = () => {
         }}
         >
           <Row className="">
-            <Col lg={5} sm={6} className="d-flex justify-content-center">
+            <Col lg={5} sm={6} className="d-flex justify-content-center"
+              onClick={() => {
+              navigate("/paymentList")
+            }}
+            >
               <Prices style={{}} >   
                <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
@@ -226,7 +234,11 @@ const VotingBooster = () => {
                   
               </Prices>
             </Col>
-            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center">
+            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
+              onClick={() => {
+              navigate("/paymentList")
+            }}
+            >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
@@ -261,7 +273,12 @@ const VotingBooster = () => {
             </Col>
           </Row>
           <Row className="mt-5">
-            <Col lg={5} sm={6} className="d-flex justify-content-center">
+            <Col lg={5} sm={6} className="d-flex justify-content-center"
+            
+              onClick={() => {
+              navigate("/paymentList")
+            }}
+            >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
@@ -293,7 +310,11 @@ const VotingBooster = () => {
                 </ExtraText>
               </Prices>
             </Col>
-            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center">
+            <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
+              onClick={() => {
+              navigate("/paymentList")
+            }}
+            >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,

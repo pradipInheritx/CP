@@ -23,17 +23,21 @@ const CoinsList = () => {
   const [coinsList, setCoinsList] = useState([])
   const [selectPayment, setSelectPayment] = useState(0);
   const [CheckCoin, setCheckCoin] = useState(0);
+  const [selectCoin, setSelectCoin] = useState("none");
 const [cardModalShow, setCardModalShow] = React.useState(false);
 
   
-  const handleCardClose = () => setCardModalShow(false);      
+  const handleCardClose = () => {
+    setCardModalShow(false)
+    setCheckCoin(0)
+  };      
   const handleCardShow = () => setCardModalShow(true);
   
   useEffect(() => {
     if(CheckCoin!=0) handleCardShow()
   }, [CheckCoin])
   
-
+console.log(selectCoin,"selectCoin")
   useEffect(() => {
     const getCoinList = firebase
       .firestore()
@@ -62,12 +66,16 @@ const [cardModalShow, setCardModalShow] = React.useState(false);
         width: "100%",
       }}
     >            
-      <div className="d-flex justify-content-center flex-column align-items-center">
+      {selectCoin == "none" ?<div className="d-flex justify-content-center flex-column align-items-center mt-5">
   
         <div>
           <h4 className="text-center">Select Payment mode</h4>
-          <div className="d-flex flex-column justify-content-center align-items-start px-5">
-            <div className="d-flex  my-3">
+          <div className="d-flex flex-column justify-content-center align-items-start "
+            style={{
+            paddingLeft:`${window.screen.width >767 ?"40px" :"30px"}`
+          }}
+          >
+            <div className="d-flex  mt-3 mb-2">
               <Form.Check
                 type={"radio"}
                 onChange={() => {
@@ -75,10 +83,27 @@ const [cardModalShow, setCardModalShow] = React.useState(false);
                 }}
                 checked={selectPayment == 1 ? true : false}
                 id={`disabled-default-radio-1`}
+                  style={{
+                fontSize:"17px"
+              }}
               />
-              <label htmlFor="disabled-default-radio-1" className="mx-3">Cryptocurrency</label>
+              <label htmlFor="disabled-default-radio-1" className="mx-3"
+                style={{
+                fontSize:"17px"
+              }}
+              >Cryptocurrency</label>
             </div>
-            <div className="d-flex my-3">
+            {selectPayment !=0 && <div className="my-3">
+              <Form.Select aria-label="Default select example"              
+              onChange={(e) => { setSelectCoin(e.target.value) }}
+              >
+                  <option value="none">Select Coin</option>
+                {coinsList.map((item: any, index: any) => {
+                  return <option value={item.name}>{item.name}</option>
+                })}               
+                </Form.Select>
+            </div>}
+            <div className="d-flex my-2">
               <Form.Check
                 disabled
                 
@@ -88,17 +113,23 @@ const [cardModalShow, setCardModalShow] = React.useState(false);
                 }}
                 checked={selectPayment == 2 ? true : false}
                 id={`disabled-default-radio-2`}
+                  style={{
+                fontSize:"17px"
+              }}
               />
               <label
                 style={{
-                  color: "#dddddd"
+                  color: "#dddddd",
+                  fontSize:"17px"
                 }}
-                htmlFor="disabled-default-radio-2" className=" mx-3">Debit / Credit Card </label>
+                htmlFor="disabled-default-radio-2" className="mx-3"
+                              
+              >Debit / Credit Card </label>
             </div>
           </div>
-        </div>
-
-        {selectPayment !=0 &&
+        </div>        
+        
+        {/* {selectPayment !=0 &&
         coinsList.map((item: any, index: any) => {
           return (
             
@@ -118,7 +149,7 @@ const [cardModalShow, setCardModalShow] = React.useState(false);
                     />
                     <p className="mx-3">{item.name}</p>
                   </div>
-                  {/* <Buttons.Primary onClick={()=>{}}>Connect</Buttons.Primary> */}
+                  <Buttons.Primary onClick={()=>{}}>Connect</Buttons.Primary>
                   <Form.Check
                     style={{
                       fontSize: "20px"
@@ -136,8 +167,39 @@ const [cardModalShow, setCardModalShow] = React.useState(false);
             
           )
         })
+      } */}
+      </div> :
+        <>
+          <div className="d-flex justify-content-center flex-column align-items-center mt-5">            
+            {/* <p
+              className="py-2"
+              style={{
+              fontSize:"17px"
+            }}
+            >Coin Name : {selectCoin}</p> */}
+            <p
+              className="pb-3"
+              style={{
+              fontSize:"23px"
+            }}
+            >Pay 99$ using {selectCoin}</p>
+            <div className="d-flex ">
+<Buttons.Default className="my-3 mx-3"
+              onClick={() => {
+                setSelectCoin("none")
+              }}
+            >Back</Buttons.Default>
+<Buttons.Primary className="my-3 mx-3"
+              onClick={() => {
+                setCheckCoin(1)
+              }}
+            >Pay Now</Buttons.Primary>
+            </div>
+            
+
+          </div>    
+        </>
       }
-      </div>
 
       <div>
         
@@ -152,7 +214,10 @@ const [cardModalShow, setCardModalShow] = React.useState(false);
           centered          
         >
           <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => {handleCardClose()}}></button>
+            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
+              handleCardClose()
+              setCheckCoin(0)
+            }}></button>
           </div>
           <Modal.Body>  
             {/* <div className="d-flex ">
@@ -162,13 +227,15 @@ const [cardModalShow, setCardModalShow] = React.useState(false);
             <Buttons.Primary className="mx-2"
               onClick={() => {
                 mybtn("connect")
-                handleCardClose()
+                handleCardClose()                  
+                setSelectCoin("none")
               }}
             >Connect</Buttons.Primary>
             <Buttons.Error className="mx-2"
               onClick={() => {
                 mybtn("disconnect", "true")
-                handleCardClose()
+                handleCardClose()                
+                setSelectCoin("none")
               }}
             >Disconnect</Buttons.Error>
           </div>  
