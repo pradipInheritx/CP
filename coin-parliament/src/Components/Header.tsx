@@ -189,7 +189,6 @@ const Header = ({
 	const desktop = width && width > 979;
 
 
-
 	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar } =
 		useContext(AppContext);
 	const { pages } = useContext(ContentContext);
@@ -217,8 +216,6 @@ const Header = ({
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const voteDetails = useContext(VoteContext);
-	const votelength = Object.keys(voteDetails?.activeVotes).length;
-
 	useEffect(() => {
 
 		if (score > 99.98 && MyPath !== "/profile/mine") {
@@ -262,17 +259,14 @@ const Header = ({
 		}
 	}, [followerUserId, userInfo])
 	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot == 0) {
-
+		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && Object.keys(voteDetails?.activeVotes).length == 0 && voteDetails?.voteNot == 0) {
 			setTimeout(() => {
 				setShow(true)
 			}, 1000);
-
 		} else {
-
 			setShow(false)
 		}
-	}, [voteNumber, votingTimer, votelength])
+	}, [voteNumber, votingTimer, voteDetails?.activeVotes])
 
 	useEffect(() => {
 		if (afterVotePopup) {

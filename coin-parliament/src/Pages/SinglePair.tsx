@@ -53,7 +53,10 @@ const SinglePair = () => {
   const [voteNumber, setVoteNumber] = useState(0)
 
   const [votingTimer, setVotingTimer] = useState(0)
-  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins);
+  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>({});
+  useEffect(() => {
+    setCoinUpdated(coins);
+  }, [coins])
   const [allActiveVotes, setAllActiveVotes] = useState<VoteResultProps[]>([]);
   const {
     timeframes,
