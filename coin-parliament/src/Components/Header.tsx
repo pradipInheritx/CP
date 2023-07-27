@@ -257,27 +257,28 @@ const Header = ({
 		else {
 			setFollowUnfollow(false)
 		}
-	}, [followerUserId, userInfo])
+	}, [followerUserId, userInfo]);
 	useEffect(() => {
+		console.log(voteNumber, /* votingTimer, */ voteDetails, 'hello');
 		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && Object.keys(voteDetails?.activeVotes).length == 0 && voteDetails?.voteNot == 0) {
-			setTimeout(() => {
-				setShow(true)
-			}, 1000);
+			// setTimeout(() => {
+			// setShow(true);
+			// setAfterVotePopup(true);
+			// }, 1000);
 		} else {
-			setShow(false)
+			setAfterVotePopup(false);
+			// setShow(false)
 		}
-	}, [voteNumber, votingTimer, voteDetails?.activeVotes])
+	}, [voteNumber, /* votingTimer, */ voteDetails])
 
-	useEffect(() => {
-		if (afterVotePopup) {
-			setShow(true)
-			// setAfterVotePopup(false)
-		} else {
+	// useEffect(() => {
+	// 	if (afterVotePopup) {
+	// 		setShow(true)
+	// 	} else {
+	// 		setShow(false)
+	// 	}
 
-			setShow(false)
-		}
-
-	}, [afterVotePopup])
+	// }, [afterVotePopup])
 
 
 
@@ -401,7 +402,7 @@ const Header = ({
 
 	const handleClose = () => {
 		setShow(false)
-
+		setAfterVotePopup(false);
 	};
 	return (
 
@@ -862,7 +863,7 @@ const Header = ({
 			<div>
 				<Modal
 					dialogClassName="modal-35w"
-					show={show}
+					show={/* show */afterVotePopup}
 					size="lg"
 					onHide={handleClose}
 					aria-labelledby="contained-modal-title-vcenter"
