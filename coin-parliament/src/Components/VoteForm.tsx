@@ -125,16 +125,8 @@ const VoteForm = function <
                 user ?
                   <Tooltip id='button-tooltip' {...props
                   } >
-<<<<<<< HEAD
-                    <div className="" style={{
-                      marginLeft: '20px', marginTop: "0px",
-                      zIndex:95,
-                    }}>
-                  {/* @ts-ignore */}
-=======
                     <div className="" style={{ marginLeft: '20px', marginTop: "0px", }}>
                       {/* @ts-ignore */}
->>>>>>> 13dea4366e03b7549ca96a12f0bb9874c368b2fc
                       <Countdown daysInHours zeroPadTime={2} date={remainingTimer}
                         renderer={({ hours, minutes, seconds, completed }) => {
                           return (
