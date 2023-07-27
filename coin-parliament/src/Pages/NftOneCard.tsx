@@ -259,7 +259,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             <div>
               {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
               <span className='cardname'>
-                THE<strong> {cardHeader}</strong>
+                <strong> {cardHeader}</strong>
               </span>
             </div>
             <br />
