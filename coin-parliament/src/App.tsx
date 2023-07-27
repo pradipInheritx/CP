@@ -885,61 +885,6 @@ function App() {
   }, [voteNumberEnd])
 
 
-  // useEffect(() => {
-  //   if (user?.uid && voteNumberEnd==0) { 
-  //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-
-  //       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-  //       const votesLast24HoursRef = firebase
-  //         .firestore()
-  //         .collection("votes")
-  //         .where("userId", "==", user?.uid)
-  //         .where("voteTime", ">=", last24Hour)
-  //         .where("voteTime", "<=", Date.now());
-  //       votesLast24HoursRef.get()
-  //         .then((snapshot) => {
-
-  //           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-  //           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-
-  //           setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-
-  //           setTimeout(() => {
-  //             if (user?.uid) {
-  //               console.log('hello');
-
-  //               const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-
-  //               const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-  //               const votesLast24HoursRef = firebase
-  //                 .firestore()
-  //                 .collection("votes")
-  //                 .where("userId", "==", user?.uid)
-  //                 .where("voteTime", ">=", last24Hour)
-  //                 .where("voteTime", "<=", Date.now());
-
-  //               votesLast24HoursRef.get()
-  //                 .then((snapshot) => {
-  //                   setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-
-  //                 })
-  //                 .catch((error) => {
-  //                   console.log('extravoteError', error);
-  //                 });
-  //             }
-  //           }, remaining);
-
-  //         })
-  //         .catch((error) => {
-  //           console.log('extravoteError', error);
-  //         });
-  //   }
-
-  // }, [voteNumberEnd])
-
-
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
     const key = getKeyByLang(lang);
