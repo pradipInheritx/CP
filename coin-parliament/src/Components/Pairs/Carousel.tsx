@@ -1,15 +1,15 @@
-import React, {useContext, useMemo, useState} from "react";
-import {Coin, swipeOptions} from "../../common/models/Coin";
-import {UserProps} from "../../common/models/User";
-import {User as AuthUser} from "@firebase/auth";
+import React, { useContext, useMemo, useState } from "react";
+import { Coin, swipeOptions } from "../../common/models/Coin";
+import { UserProps } from "../../common/models/User";
+import { User as AuthUser } from "@firebase/auth";
 import Card from "./Card";
-import {User} from "firebase/auth";
+import { User } from "firebase/auth";
 import styled from "styled-components";
-import {PairsRow} from "../../common/models/PairTable";
-import {symbolCombination} from "./utils";
+import { PairsRow } from "../../common/models/PairTable";
+import { symbolCombination } from "./utils";
 import CardsContainer from "./CardContainer";
-import {useSwipeable} from "react-swipeable";
-import {useWindowSize} from "../../hooks/useWindowSize";
+import { useSwipeable } from "react-swipeable";
+import { useWindowSize } from "../../hooks/useWindowSize";
 import CPCarousel from "../Carousel/Carousel";
 import CoinsContext from "../../Contexts/CoinsContext";
 import { handleSoundClick } from "../../common/utils/SoundClick";
@@ -107,9 +107,9 @@ const Carousel = ({
   children,
 }: CarouselProps) => {
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
-  const {coins} = useContext(CoinsContext);
+  const { coins } = useContext(CoinsContext);
   const [active, setActive] = useState(0);
-  const {width} = useWindowSize();
+  const { width } = useWindowSize();
   const handlers = useSwipeable(
     swipeOptions({
       index,
@@ -119,56 +119,56 @@ const Carousel = ({
       total: pairs.length,
     }),
   );
-  
 
-// const zoomDiv = (e:any) =>{
-//     e.target.style.transform = 'scale(1.2)';
-//   }
+
+  // const zoomDiv = (e:any) =>{
+  //     e.target.style.transform = 'scale(1.2)';
+  //   }
 
   return !expanded ? (
     <form id={id} className="carousel slide " data-bs-ride="carousel" onSubmit={e => e.preventDefault()}>
       <CPCarousel centerMode={!(window.screen.width && window.screen.width > 969)}
-      cursorShow={true}
+        cursorShow={true}
       >{
-        Object.keys(pairs).map((pair, i) => {
-          const {current} = getThreePairs(pairs, i);
-          const [coin1, coin2] = current;
-          const combination = symbolCombination([
-            coin1.symbol,
-            coin2.symbol,
-          ]);
-          return (
-            <div className='mx-1' key={i}>
-            <Card
-            
-              // key={i}
-              coins={coins}
-              favorite={favorites.includes(combination)}
-              setFavorite={() => {
-                onFavClick(favorites, user, id);
-                setIndex(index);
-              }}
-              coin1={coin1}
-              coin2={coin2}
-                onClick={() => {
-                handleSoundClick()
-                const url = "/pairs/" + combination;
-                if (navigate) {
-                  navigate(url);
-                }
-              }}
-            />
-            </div>
-          );
-        })
-      }</CPCarousel>
+          Object.keys(pairs).map((pair, i) => {
+            const { current } = getThreePairs(pairs, i);
+            const [coin1, coin2] = current;
+            const combination = symbolCombination([
+              coin1.symbol,
+              coin2.symbol,
+            ]);
+            return (
+              <div className='mx-1' key={i}>
+                <Card
+
+                  // key={i}
+                  coins={coins}
+                  favorite={favorites.includes(combination)}
+                  setFavorite={() => {
+                    onFavClick(favorites, user, id);
+                    setIndex(index);
+                  }}
+                  coin1={coin1}
+                  coin2={coin2}
+                  onClick={() => {
+                    handleSoundClick()
+                    const url = "/pairs/" + combination;
+                    if (navigate) {
+                      navigate(url);
+                    }
+                  }}
+                />
+              </div>
+            );
+          })
+        }</CPCarousel>
       <ButtonContainer>{children}</ButtonContainer>
     </form>
   ) : (
     <form id={id} className="carousel slide " data-bs-ride="carousel">
       <div className="carousel-inner">
         {pairs.map((pair, i) => {
-          const {prev, current, next} = getThreePairs(pairs, i);
+          const { prev, current, next } = getThreePairs(pairs, i);
           const arr = expanded
             ? data.map((el) => {
               return pairs.find((p) => {
@@ -184,13 +184,13 @@ const Carousel = ({
             <div
               className={`carousel-item ${i === active ? "active" : ""}`}
               key={i}
-              
+
             >
               <CardsContainer
                 cols={cols}
                 gap={gap}
                 offset={offset}
-                {...handlers}                
+                {...handlers}
               >
                 {arr.map((pair, j) => {
                   const [coin1, coin2] = pair || [];

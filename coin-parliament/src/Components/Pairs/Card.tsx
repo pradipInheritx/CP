@@ -84,9 +84,8 @@ const Span0 = styled.div`
 
 const HeartContainer = styled.div`
   display: flex;
-  margin-right: -50px;
-    margin-top: -80px;
-    position: absolute;
+  top:1em;
+  position: absolute;
   align-self: ${(props: { single: boolean }) =>
     props.single ? "flex-end" : "flex-start"};
 `;
@@ -332,7 +331,6 @@ const Card = ({
           }
         }}>
         <Heart
-
           checked={favorite}
           setChecked={setFavorite}
           id={`fav-${combination}`}
