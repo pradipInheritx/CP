@@ -14,6 +14,7 @@ import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
 import { cardFlip } from "../common/utils/SoundClick";
+import { Ratio } from "react-bootstrap";
 
 
 const Card = styled.div`
@@ -155,8 +156,9 @@ export type BoxItems = {
   userId?:any;
   CollectionType?:any;
   ImgUrl?:any;
+  VideoUrl?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType ,ImgUrl}: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType ,ImgUrl,VideoUrl}: BoxItems) => {
   
 
 
@@ -170,6 +172,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
       let params = useParams();
   const { type} = params;
   
+  console.log(VideoUrl,"VideoUrl")
 
   return (
     
@@ -264,12 +267,23 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             </div>
             <br />
             <div className='card-body'>
-              <img
-                src={ImgUrl || TheEagle}
-                alt='the hgodler'
-                className=''
-                width={"200px"}
-              />
+              {VideoUrl ?
+                <Ratio
+                  style={{
+                  width:"220px"
+                }}
+                >
+                    <embed type="" src={VideoUrl} />
+                </Ratio>
+                :                
+                <img
+              src={ImgUrl || TheEagle}
+              alt='the hgodler'
+              className=''
+              width={"200px"}
+            />
+              }
+              
             </div>
           </div>
         </Card>
