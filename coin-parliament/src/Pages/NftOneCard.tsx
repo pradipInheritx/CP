@@ -265,23 +265,46 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
                 <strong> {cardHeader}</strong>
               </span>
             </div>
-            <br />
+            {/* <br /> */}
             <div className='card-body'>
               {VideoUrl ?
                 <Ratio
                   style={{
-                  width:"220px"
+                  width:"300px"
                 }}
                 >
                     <embed type="" src={VideoUrl} />
                 </Ratio>
-                :                
-                <img
-              src={ImgUrl || TheEagle}
-              alt='the hgodler'
-              className=''
-              width={"200px"}
-            />
+                :   
+                <div
+                  style={{
+                    width: "250px",
+                    height:"220px",
+                    // border:"1px solid red",
+                    // overflow:"hidden"
+                  }}
+                  className="d-flex justify-content-center"
+                >
+                      <img
+                    src={ImgUrl || TheEagle}
+                    alt='the hgodler'
+                        className='image-fluid'
+                        style={{
+                          // border:"1px solid red",
+                          // zoom:"1.6",
+                          // backgroundPosition:" center",
+                          
+                          width: "255px",
+                          margin: "auto",
+                          display: "block",
+                          marginTop:"-15px",
+                        }}
+                    // width={"250px"}
+                    // width={"100%"}
+                    // height={"100%"}
+                    // width={"100%"}
+                        />
+                  </div>
               }
               
             </div>

@@ -24,6 +24,7 @@ const CoinsList = () => {
   const [selectPayment, setSelectPayment] = useState(0);
   const [CheckCoin, setCheckCoin] = useState(0);
   const [selectCoin, setSelectCoin] = useState("none");
+  const [connectCheck, setConnectCheck] = useState();
 const [cardModalShow, setCardModalShow] = React.useState(false);
 
   
@@ -51,59 +52,98 @@ console.log(selectCoin,"selectCoin")
       });
 
   }, [])
-  const mybtn =(window as any).wldp.connectionWallet
-  const CheckConnection =(window as any).wldp.isWalletConnected
+  const mybtn =(window as any)?.wldp?.connectionWallet
+  // const CheckConnection =(window as any)?.wldp?.isWalletConnected
+  // const getWalletConnectedAddress =(window as any)?.wldp?.getWalletConnectedAddress
 
-//   console.log((window as any).wldp, "Checkconnect")
+  console.log((window as any).wldp ,"(window as any).wldp")
+
+// const Checkconnect = () => {
+//   (window as any)?.wldp?.isWalletConnected().then((data:any) => {
+//    setConnectCheck(data)
+//  })   
+// }
   
-//   console.log(CheckConnection().then((data:any) => {
-//   console.log(data,"alldata")
-// }),"checkdataCheckConnection")
+  // console.log(CheckConnection().then((data:any) => {
+  //   setConnectCheck(data)
+  // }))
+  
+
+  // useEffect(() => {
+  // Checkconnect()    
+  // CheckConnection().then((data:any) => {
+  //   setConnectCheck(data)
+  // })
+  // }, [selectCoin])
+  
+    // console.log(connectCheck, "checkdataCheckConnection")
+  
+  
+  // console.log(getWalletConnectedAddress().then((data:any) => {
+  //   console.log(data,"getWalletConnectedAddress")
+  // }).catch((err:any) => {
+  //   console.log(err,"errgetWalletConnectedAddress")
+  // })
+  
+  // )
 
   return (
     <div
       style={{
         width: "100%",
       }}
+      className="d-flex justify-content-center"
     >            
-      {selectCoin == "none" ?<div className="d-flex justify-content-center flex-column align-items-center mt-5">
+      <div className="d-flex justify-content-center flex-column align-items-center mt-5  p-4"
+      
+      
+      >
   
-        <div>
-          <h4 className="text-center">Select Payment mode</h4>
+       {selectCoin =="none" && <div>
+          <h1 className="text-center mb-3">Select Payment mode</h1>
           <div className="d-flex flex-column justify-content-center align-items-start "
             style={{
-            paddingLeft:`${window.screen.width >767 ?"40px" :"30px"}`
+            paddingLeft:`${window.screen.width >767 ? "60px" : "30px"}`
           }}
-          >
-            <div className="d-flex  mt-3 mb-2">
+          >  
+            <div className="d-flex">
+              <div className="d-flex justify-content-center align-items-start  mt-3 mb-2 w-100"
+              
+              >              
               <Form.Check
                 type={"radio"}
                 onChange={() => {
                   setSelectPayment(1)
-                }}
+                }}                
                 checked={selectPayment == 1 ? true : false}
                 id={`disabled-default-radio-1`}
                   style={{
-                fontSize:"17px"
-              }}
+                    fontSize: "17px",                    
+                  }}              
               />
               <label htmlFor="disabled-default-radio-1" className="mx-3"
                 style={{
                 fontSize:"17px"
               }}
-              >Cryptocurrency</label>
-            </div>
+              >Cryptocurrency</label>  
+              </div>
             {selectPayment !=0 && <div className="my-3">
               <Form.Select aria-label="Default select example"              
-              onChange={(e) => { setSelectCoin(e.target.value) }}
+                  onChange={(e) => { setSelectCoin(e.target.value) }}
+                  style={{
+                    width:"150px"
+                  }}
               >
                   <option value="none">Select Coin</option>
                 {coinsList.map((item: any, index: any) => {
                   return <option value={item.name}>{item.name}</option>
                 })}               
                 </Form.Select>
-            </div>}
-            <div className="d-flex my-2">
+              </div>}                                       
+
+            </div> 
+
+            <div className="d-flex my-2 mt-3">
               <Form.Check
                 disabled
                 
@@ -127,83 +167,48 @@ console.log(selectCoin,"selectCoin")
               >Debit / Credit Card </label>
             </div>
           </div>
-        </div>        
+        </div>  }                     
         
-        {/* {selectPayment !=0 &&
-        coinsList.map((item: any, index: any) => {
-          return (
-            
-              <CoinList key={index}>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <Image
-                      src={process.env.PUBLIC_URL + `/images/logos/${item?.symbol?.toUpperCase()}.svg`}
-                      style={{
-                        margin: "0 auto",
-                        width: 40,
-                        height: 40,
-                      }}
-                      onError={(e) =>
-                        ((e.target as HTMLImageElement).src = "/images/no_logo.png")
-                      }
-                    />
-                    <p className="mx-3">{item.name}</p>
-                  </div>
-                  <Buttons.Primary onClick={()=>{}}>Connect</Buttons.Primary>
-                  <Form.Check
-                    style={{
-                      fontSize: "20px"
-                    }}
-                    type={"radio"}
+        {/* For pay button div */}
+        
 
-                    onChange={() => {
-                      setCheckCoin(index + 1)
-                    }}
-                    checked={index + 1 == CheckCoin}
-                    id={`disabled-default-radio-2`}
-                  />
-                </div>
-              </CoinList>
-            
-          )
-        })
-      } */}
-      </div> :
-        <>
-          <div className="d-flex justify-content-center flex-column align-items-center mt-5">            
-            {/* <p
-              className="py-2"
-              style={{
-              fontSize:"17px"
-            }}
-            >Coin Name : {selectCoin}</p> */}
+        {selectCoin != "none" &&
+          <>
+              <div className=""
+                style={{
+                
+              }}
+              >            
             <p
               className="pb-3"
               style={{
-              fontSize:"23px"
+              fontSize:"27px"
             }}
             >Pay 99$ using {selectCoin}</p>
-            <div className="d-flex ">
-<Buttons.Default className="my-3 mx-3"
+            <div className="d-flex justify-content-around mt-3">
+          <Buttons.Default className="mx-3"
               onClick={() => {
                 setSelectCoin("none")
               }}
-            >Back</Buttons.Default>
-<Buttons.Primary className="my-3 mx-3"
+              >
+                Back
+              </Buttons.Default>
+            <Buttons.Primary className=""
               onClick={() => {
                 setCheckCoin(1)
-              }}
-            >Pay Now</Buttons.Primary>
+              }}>
+                    Pay Now
+            </Buttons.Primary>
             </div>
             
 
           </div>    
-        </>
-      }
+        </>}
 
-      <div>
         
-        {/* reward modal 5 */}
+        {/* Module for connect  */}
+        
+
         <Modal
           className=""
           show={
@@ -220,22 +225,26 @@ console.log(selectCoin,"selectCoin")
             }}></button>
           </div>
           <Modal.Body>  
-            {/* <div className="d-flex ">
-              <p>Please use this button for Connect or Disconnect !</p>
-            </div> */}
+            <div className="d-flex ">
+              {/* <p>Please Use this button for Connect</p> */}
+            </div>
               <div className="d-flex justify-content-center pb-3" style={{ zIndex: '101' }}>
-            <Buttons.Primary className="mx-2"
+              <Buttons.Primary className="mx-2"
+                // disabled={connectCheck && connectCheck==true}
               onClick={() => {
                 mybtn("connect")
                 handleCardClose()                  
                 setSelectCoin("none")
+                // setConnectCheck(false)
               }}
             >Connect</Buttons.Primary>
-            <Buttons.Error className="mx-2"
+              <Buttons.Error className="mx-2"
+                // disabled={connectCheck == undefined || connectCheck == false}
               onClick={() => {
                 mybtn("disconnect", "true")
                 handleCardClose()                
                 setSelectCoin("none")
+                // setConnectCheck(true)
               }}
             >Disconnect</Buttons.Error>
           </div>  
@@ -243,10 +252,8 @@ console.log(selectCoin,"selectCoin")
 
                                           
         </Modal>
-      
       </div>
-    </div>
-
+      </div>    
   );
 };
 
