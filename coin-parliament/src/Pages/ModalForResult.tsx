@@ -230,7 +230,7 @@ function ModalForResult({ popUpOpen, vote, type,
                     <div >
                       {vote?.direction == 0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
                       <span>
-                        $  {vote?.valueVotingTime as unknown as number}
+                        $  {vote?.valueVotingTime + ''}
                       </span>
                     </div>
                     <div>
@@ -261,9 +261,7 @@ function ModalForResult({ popUpOpen, vote, type,
                         VOTE RESULT
                       </span>
                       <div style={{ fontSize: "14px" }}>
-                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} {' '} $ {vote.valueExpirationTime &&
-                          vote?.valueExpirationTime as unknown as number
-                        }
+                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} {' '} $ {vote.valueExpirationTime && vote?.valueExpirationTime + ''}
                       </div>
                       <div>
                         <span>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</span>

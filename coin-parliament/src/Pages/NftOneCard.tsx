@@ -336,7 +336,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
               <u
             onClick={() => {
                 navigate(`/singalCard/${CollectionType || type}/${id}`)            
-                setSingalCardData({ ...fulldata, myID: userId })
+                // setSingalCardData({ ...fulldata, myID: userId })
                 localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
             }}> View All</u></span> : 0} </span>}
             
