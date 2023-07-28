@@ -85,7 +85,7 @@ const Cross = styled.div`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShareModleShow ,handleCardClose , rewardTimer,setCountShow}: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow }: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -94,7 +94,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
   const [scratchShound, setScratchShound] = useState<any>(false)
   const [showImg, setShowImg] = useState<any>(false)
   const { showReward, setShowReward } = useContext(AppContext);
-  
+
 
   const [allFrontImg, setAllFrontImg] = useState<any>({
     COMMON: common,
@@ -348,12 +348,12 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup ,handleShar
 
           {/* @ts-ignore */}
           <div className={classname} id="card-animation">
-            <div className={`${!showImg ?"d-none":""}`}>
+            <div className={`${!showImg ? "d-none" : ""}`}>
               <span className={`${cardType.toLowerCase()}_text`}>
                 &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
               </span>
               <span className='cardname'>
-                THE <strong>{ rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
+                <strong>{rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
               </span>
               <img src={TheEagle} alt='the hgodler' className='img-fluid'
                 // style={{ height: '98%' }}
