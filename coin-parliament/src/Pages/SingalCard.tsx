@@ -18,6 +18,7 @@ import { httpsCallable } from "@firebase/functions";
 import firebase from "firebase/compat";
 import { Other } from "./SingleCoin";
 import { translate, useTranslation } from "../common/models/Dictionary";
+import { Ratio } from "react-bootstrap";
 
 const CenterItem = styled.div`
   background-color: #f2f2f2;  
@@ -65,7 +66,7 @@ const SingalCard = () => {
   const [backCards, setBackCards] = useState<any>([]);
   const { user, userInfo } = useContext(UserContext);
   const { leaders } = useContext(CoinsContext);
-  const { userTypes } = useContext(AppContext);
+  const {albumOpen, setAlbumOpen , userTypes } = useContext(AppContext);
   const [chosen, setChosen] = useState<string | undefined>();
   
 
@@ -223,6 +224,8 @@ setFollowersDetails(FollowerList)
                             BackSideCard={BackSideCard}
                             // flipCard={backCards == singalCardData.id ? true : false}
                             flipCard={backCards?.includes(singalCardData?.cardId)}
+                            ImgUrl={singalCardData?.cardImageUrl || ""}
+                            VideoUrl={singalCardData?.cardVideoUrl || ""}
                           />
                         </>
                       {/* );
@@ -236,12 +239,12 @@ setFollowersDetails(FollowerList)
           </SummerCard>
           <div className="d-flex justify-content-center  pt-2 pb-4">
                     <Other onClick={() => {
-                      navigate(-1);
-                    }}>{translate("Veiw All Cards")}</Other>
-                  </div> 
-            
-          </div>
-          
+                // navigate(-1);
+                    setAlbumOpen(singalCardData?.albumName);
+                    navigate('/nftAlbum')
+                  }}>{translate("Veiw All Cards")}</Other>
+                  </div>             
+          </div>                  
           <div>  
             <div>
           <div className="text-center my-3">

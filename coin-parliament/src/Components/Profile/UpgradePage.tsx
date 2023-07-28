@@ -131,7 +131,8 @@ useEffect(() => {
 `;
   
 
-let navigate = useNavigate();
+  let navigate = useNavigate();
+  
   const BottomBox = styled.div` 
   // border:1px solid red;
   display:flex;
