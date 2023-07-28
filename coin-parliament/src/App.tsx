@@ -1172,8 +1172,10 @@ function App() {
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
         // console.log(latestCoins.current, 'coinsname');
-        let valueExpirationTimeOfCoin1 = `${parseFloat(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''))}${!['BTC', 'ETH'].includes(coin1.toUpperCase()) ? latestCoins.current[coin1.toUpperCase()]?.randomDecimal : ''}`
-        let valueExpirationTimeOfCoin2 = `${parseFloat(formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''))}${(!['BTC', 'ETH'].includes(coin2.toUpperCase()) && latestCoins.current[coin2.toUpperCase()]) ? latestCoins.current[coin2.toUpperCase()]?.randomDecimal : ''}`
+        console.log(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''), 'test');
+
+        let valueExpirationTimeOfCoin1 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${!['BTC', 'ETH'].includes(coin1.toUpperCase()) ? latestCoins.current[coin1.toUpperCase()]?.randomDecimal : ''}`
+        let valueExpirationTimeOfCoin2 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${(!['BTC', 'ETH'].includes(coin2.toUpperCase()) && latestCoins.current[coin2.toUpperCase()]) ? latestCoins.current[coin2.toUpperCase()]?.randomDecimal : ''}`
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
