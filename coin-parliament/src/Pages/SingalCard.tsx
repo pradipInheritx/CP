@@ -73,27 +73,39 @@ const SingalCard = () => {
 
 console.log(leaders,"allleaders")
 
-  const BackSideCard = (value: string | number) => {
-    // @ts-ignore
-    let allBackCard = backCards;
-    // @ts-ignore
-    // setBackCards(backCards == value ? "" : value);
-    backCards.length > 0
-      ? backCards?.map((items: any, index: number) => {
-        if (items == value) {
-          // @ts-ignore
-          allBackCard.splice(index, 1);
-          setBackCards(allBackCard);
-        } else {
-          // @ts-ignore
+  // const BackSideCard = (value: string | number) => {
+  //   // @ts-ignore
+  //   let allBackCard = backCards;
+  //   // @ts-ignore
+  //   // setBackCards(backCards == value ? "" : value);
+  //   backCards.length > 0
+  //     ? backCards?.map((items: any, index: number) => {
+  //       if (items == value) {
+  //         // @ts-ignore
+  //         allBackCard.splice(index, 1);
+  //         setBackCards(allBackCard);
+  //       } else {
+  //         // @ts-ignore
 
-          setBackCards([...backCards, value]);
-        }
-        // @ts-ignore
-      })
-      : setBackCards([...backCards, value]);
+  //         setBackCards([...backCards, value]);
+  //       }
+  //       // @ts-ignore
+  //     })
+  //     : setBackCards([...backCards, value]);
+  // };
+
+
+   const BackSideCard = (value: string | number) => {
+    // @ts-ignore
+  if (backCards.includes(value)) {       
+        let allBackCard = [...backCards];
+        allBackCard.splice(backCards.indexOf(value), 1);
+        setBackCards(allBackCard)
+    }
+    else {
+      setBackCards([...backCards, value])
+    };
   };
-
   
 
   const [cardsDetails, setCardsDetails] = useState<any>()
