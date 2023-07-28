@@ -383,7 +383,10 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
 
       console.log("TRANSDATSA", transData);
       const userIds = transData.map((item: any) => item.user);
-      cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1;
+
+      //cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1; // Previous Code
+
+      cardData.noOfCardHolders = Array.from(new Set(userIds)).length ? Array.from(new Set(userIds)).length + 1 : Array.from(new Set(userIds)).length;
 
       await firestore()
         .collection("cardsDetails")
