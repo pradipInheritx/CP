@@ -11,13 +11,14 @@ import { timeframeInitials } from '../Components/Atoms/Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
-import { voteEndFinish } from '../common/utils/SoundClick';
+import { VoteButton } from '../common/utils/SoundClick';
 import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
 import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from 'common/utils/helper';
+import UserContext from 'Contexts/User';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -99,11 +100,12 @@ function ModalForResult({ popUpOpen, vote, type,
   const navigate = useNavigate();
   const setVoteDetails = useContext(VoteDispatchContext);
   const setCompletedVotes = useContext(CompletedVotesDispatchContext);
+  const { userInfo } = useContext(UserContext);
 
   useEffect(() => {
     if (popUpOpen) {
+      VoteButton(true);
       handleShow();
-      voteEndFinish();
       // setVoteDetails((prev) => {
       //   return {
       //     ...prev,
@@ -139,7 +141,7 @@ function ModalForResult({ popUpOpen, vote, type,
         openResultModal: false
       };
     });
-    if (Object.keys(temp)?.length <= 0) {
+    if (Object.keys(temp)?.length <= 0 && (Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0)) <= 0) {
       setAfterVotePopup(true);
     }
     setCompletedVotes(prev => prev.filter(value => value.voteId != vote.voteId));

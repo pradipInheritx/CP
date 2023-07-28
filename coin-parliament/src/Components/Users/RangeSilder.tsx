@@ -210,7 +210,6 @@ function Speed(props: SpeedProps) {
               <motion.line
                 stroke="#2d2966"
                 strokeWidth={4}
-
                 animate={{ x1: needle.base.cx, x2: needle.tip.cx, y1: needle.base.cy, y2: needle.tip.cy }}
               />
             </g>
@@ -261,10 +260,10 @@ export default function SpeedTest(
     if (action > 100) {
       return 100;
     }
-    return action < 0 ? 0 : action;
+    return action < 0 ? 0 : ((typeof action == 'number' && !isNaN(action)) ? action : state);
   }, 50)
 
-  console.log(persentValue,"persentValueCheck")
+  console.log(persentValue, "persentValueCheck")
   const { allCoinsSetting } = useContext(CoinsContext)
   const [priceRange, setPriceRange] = useState(1);
   // const { value } = useSpeedTest(priceRange);
@@ -354,9 +353,9 @@ export default function SpeedTest(
         newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
       }
 
-      console.log(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply) ,priceRange,"get price")
+      console.log(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply), priceRange, "get price")
       // console.log(Number(coins[symbol1]?.price),decimal[symbol1].multiply,Number(coins[symbol1]?.randomDecimal),Number(vote?.valueVotingTime),decimal[symbol1].multiply,priceRange, "AllnewPrice")
-      console.log(Number(coins[symbol1]?.price),newPrice,Number(coins[symbol1]?.randomDecimal), "get price 2")
+      console.log(Number(coins[symbol1]?.price), newPrice, Number(coins[symbol1]?.randomDecimal), "get price 2")
       // if (50 + newPrice > 100) {
       //   setPersentValue(100);
       //   return
@@ -365,8 +364,8 @@ export default function SpeedTest(
       //   setPersentValue(0);
       //   return
       // }      
-      if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 :50 + newPrice);
-      else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);     
+      if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 : 50 + newPrice);
+      else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);
     }
   };
 
