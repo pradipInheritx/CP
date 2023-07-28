@@ -11,7 +11,7 @@ import { timeframeInitials } from '../Components/Atoms/Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
-import { voteEndFinish } from '../common/utils/SoundClick';
+import { VoteButton } from '../common/utils/SoundClick';
 import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
@@ -104,8 +104,8 @@ function ModalForResult({ popUpOpen, vote, type,
 
   useEffect(() => {
     if (popUpOpen) {
+      VoteButton(true);
       handleShow();
-      voteEndFinish();
       // setVoteDetails((prev) => {
       //   return {
       //     ...prev,
