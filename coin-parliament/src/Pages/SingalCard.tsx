@@ -71,6 +71,7 @@ const SingalCard = () => {
   
 
 
+console.log(leaders,"allleaders")
 
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
@@ -116,7 +117,8 @@ const SingalCard = () => {
     
     await getList({ cardId: id }).then((list) => {       
       // @ts-ignore          
-      const FollowerList= list?.data?.map((items: any) => {                 
+      const FollowerList = list?.data?.map((items: any) => {  
+        // console.log(items,"allitems")
         return {
           leaders: items?.leader?.length || 0,
           displayName:items?.displayName,
@@ -127,7 +129,7 @@ const SingalCard = () => {
           country: items?.country,
           score: items?.voteStatistics?.score,
           totalVote: items?.voteStatistics?.total,
-          subscribers: 5,
+          subscribers: items?.subscribers.length || 0,
           pct: items?.voteStatistics?.successful / items?.voteStatistics?.total,
           firstName: items?.firstName,
           email:items?.email,
@@ -171,7 +173,7 @@ setFollowersDetails(FollowerList)
   setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))
   }, []) 
 
-  
+  console.log(followersDetails,"followersDetails")
   
   
   return (
