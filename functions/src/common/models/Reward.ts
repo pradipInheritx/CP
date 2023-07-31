@@ -380,18 +380,17 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
 
       await addRewardTransaction(uid, winData, claimed + 1);
       const transData: any = await getRewardTransactionsByCardId(firstRewardCardObj.cardId);
-
-      console.log("TRANSDATSA", transData);
+      console.log("TRANSDATA", transData);
       const userIds = transData.map((item: any) => item.user);
-      //cardData.noOfCardHolders = Array.from(new Set(userIds)).length + 1; // Previous Code
-      cardData.noOfCardHolders = Array.from(new Set(userIds)).length ? Array.from(new Set(userIds)).length : Array.from(new Set(userIds)).length + 1;
-
-      await firestore()
-        .collection("cardsDetails")
-        .doc(firstRewardCardObj.cardId)
-        .set(cardData);
-      console.log("Finished execution claimReward function");
-      return winData;
+      if (userIds && userIds.length) {
+        cardData.noOfCardHolders = Array.from(new Set(userIds)).length;
+        await firestore()
+          .collection("cardsDetails")
+          .doc(firstRewardCardObj.cardId)
+          .set(cardData);
+        console.log("Finished execution claimReward function");
+        return winData;
+      }
     } else {
       console.log("Finished execution claimReward function");
       return {
