@@ -8,7 +8,7 @@ import {
 import { Direction, voteConverter, VoteResultProps } from "./Vote";
 import { firestore } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
-import { voteExpireAndGetCpmNotification } from "./SendCustomNotification"
+import { voteExpireAndGetCpmNotification, poolMiningNotification } from "./SendCustomNotification"
 
 
 export type Totals = {
@@ -151,7 +151,10 @@ class Calculation {
       if (user.parent) {
         const refer = new Refer(user.parent, "");
         await refer.payParent(score);
-
+        // send Notification
+        console.log("pool mining Notification is calling: -- ", user.parent, user.displayName || "", user.refereeScrore)
+        console.log("score -- ", score)
+        await poolMiningNotification(user.parent, user.displayName || "", user.refereeScrore)
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);
