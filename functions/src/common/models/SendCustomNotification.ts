@@ -148,7 +148,7 @@ export const sendNotificationForFollwersFollowings = async (
 
 
 
-async function subscribersNotification(subscribers: string[], userName: string) {
+async function subscribersNotification(subscribers: string[], userName: string, cmp: number) {
   console.log("Beging subscribers notification")
   subscribers.forEach(async (user: string) => {
     const userDetailsQuery = await firestore().collection("users").doc(user).get();
@@ -157,7 +157,7 @@ async function subscribersNotification(subscribers: string[], userName: string) 
     const message: messaging.Message = {
       token,
       notification: {
-        title: `You just earnd ${"1.12"} CMP from ${userName}`,
+        title: `You just earnd ${cmp} CMP from ${userName}`,
         body: "",
       },
       webpush: {
@@ -185,7 +185,7 @@ async function subscribersNotification(subscribers: string[], userName: string) 
 
 
 
-export const voteExpireAndGetCpmNotification = async (userId: string, cpm: number, coin: string) => {
+export const voteExpireAndGetCpmNotification = async (userId: string, cmp: number, coin: string) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
 
   const userFindQuery = await firestore().collection("users").doc(userId).get();
@@ -193,12 +193,12 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cpm: numbe
   console.log("UserData:", userData);
   let token = userData.token;
   console.log("called ")
-  if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName)
+  if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName, cmp)
 
   const message: messaging.Message = {
     token,
     notification: {
-      title: `💰 You just earnd ${cpm} cpm 🤑`,
+      title: `💰 You just earnd ${cmp} cmp 🤑`,
       body: `${coin} more CPM to complete the mission and claim your rewards!`,
     },
     webpush: {
@@ -216,7 +216,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cpm: numbe
     token,
     id: userId,
     body: `${coin} more CPM to complete the mission and claim your rewards!`,
-    title: `💰 You just earnd ${cpm} cpm 🤑`,
+    title: `💰 You just earnd ${cmp} cmp 🤑`,
     message,
   });
   console.log("End Push Notification of voteExpireAndGetCpmNotification")
@@ -332,4 +332,40 @@ export const sendNotificationForTitleUpgrade = async (user: any, body: any, titl
       id: user.uid,
     });
   }
+}
+
+
+export async function poolMiningNotification(parentId: string, childrenName: string, cmp: number) {
+  console.log("Beging pool mining notification")
+
+  const userDetailsQuery = await firestore().collection("users").doc(parentId).get();
+  const userData: any = userDetailsQuery.data();
+  const token = userData.token;
+  const message: messaging.Message = {
+    token,
+    notification: {
+      title: `You just earnd ${cmp} CMP from ${childrenName}`,
+      body: "",
+    },
+    webpush: {
+      headers: {
+        Urgency: "high",
+      },
+      fcmOptions: {
+        link: "#", // TODO: put link for deep linking
+      },
+    },
+  };
+  console.log("message:", message);
+
+  await sendNotification({
+    token,
+    id: parentId,
+    body: "",
+    title: `You just earnd ${cmp} CMP from ${childrenName}`,
+    message,
+  });
+
+
+  console.log("Finished pool minig notification")
 }
