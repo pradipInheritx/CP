@@ -152,7 +152,8 @@ class Calculation {
         const refer = new Refer(user.parent, "");
         await refer.payParent(score);
         // send Notification
-        console.log("pool mining Notification is calling", user.parent, user.displayName || "", user.refereeScrore)
+        console.log("pool mining Notification is calling: -- ", user.parent, user.displayName || "", user.refereeScrore)
+        console.log("score -- ", score)
         await poolMiningNotification(user.parent, user.displayName || "", user.refereeScrore)
       }
     } catch (error) {
