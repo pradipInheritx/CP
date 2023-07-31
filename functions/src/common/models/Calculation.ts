@@ -144,7 +144,7 @@ class Calculation {
       const { CPMSettings } = await Refer.getSettings();
       const { pctReferralActivity } = CPMSettings;
       const commission = Number(score * pctReferralActivity) / 100;
-      user.refereeScrore = (user.refereeScrore ? user.refereeScrore : 0) + commission;
+      user.refereeScrore = (user.refereeScrore ? user.refereeScrore : 0) + parseFloat(commission.toFixed(5));
 
       await ref.set({ voteStatistics, refereeScrore: user.refereeScrore }, { merge: true });
       console.log("user.parent -----", user.parent)
