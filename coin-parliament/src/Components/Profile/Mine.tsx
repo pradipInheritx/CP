@@ -61,10 +61,10 @@ const I = styled.i`
   color:#6352e9;
 `;
 
-const ForZoom = styled.div`
-z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
- ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
-`;
+// const ForZoom = styled.div`
+// z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
+//  ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
+// `;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
@@ -83,6 +83,7 @@ const Mine = () => {
   const [shareModleShow, setShareModleShow] = React.useState(false);
   const [countShow, setCountShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
+
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -97,7 +98,11 @@ const Mine = () => {
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
-  const handleCardClose = () => setCardModalShow(false);
+  const handleCardClose = () => {
+    setCardModalShow(false);
+    setInOutReward(0);
+    setShowReward(0);
+  };
   const handleCardShow = () => setCardModalShow(true);
 
   const currentCMP = useContext(CurrentCMPContext);
@@ -142,6 +147,7 @@ const Mine = () => {
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
+
       handleCardShow();
     }
   }, [inOutReward, showReward, rewardTimer]);
@@ -151,25 +157,27 @@ const Mine = () => {
       setTimeout(() => {
         setModelText(1)
         // handleShow();
-        if (ProfileUrl) {
+        if (ProfileUrl && score != 100) {
           Cmppopup();
         }
 
         setShowBack(false)
       }, 10000);
     }
+
   }, []);
 
 
   const Cmppopup = () => {
     var urlName = window.location.pathname.split('/');
+
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
       Swal.fire({
         html:
           // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
           "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
-          "<p style='font-size:20px;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+          "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
           "",
         color: 'black',
         confirmButtonText: 'Continue Voting',
@@ -194,7 +202,7 @@ const Mine = () => {
       setTimeout(() => {
         setModelText(2)
         console.log(showBack, "viewshow")
-        handleShow()
+        // handleShow()
         setShowBack(false)
         handleCardClose()
         setRewardTimer(null);
@@ -234,25 +242,20 @@ const Mine = () => {
                 {" "}
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
-              <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}>
-                {" "}
+              {/* <ForZoom {...{ inOutReward }} style={{ marginTop: "7px" }}> */}
 
-                <PAXCard
-                  countShow={countShow}
-                  walletId={userInfo?.wallet || ""}
-                  rewardTimer={rewardTimer}
-                  setCountShow={setCountShow}
-                  // @ts-ignore
-                  // PAX={userInfo?.rewardStatistics?.diamonds || 0}
-                  // PAX={
-                  //   countShow ? paxValue :prevPAXValue.current
-                  // }
-                  PAX={
-                    prevPAXValue.current
-                  }
-                />
-                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
-              </ForZoom>
+              <PAXCard
+                countShow={countShow}
+                walletId={userInfo?.wallet || ""}
+                rewardTimer={rewardTimer}
+                setCountShow={setCountShow}
+                PAX={paxValue}
+              // PAX={
+              //   prevPAXValue.current
+              // }
+              />
+              {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
+              {/* </ForZoom> */}
 
             </div>
             {/* @ts-ignore */}
@@ -281,6 +284,7 @@ const Mine = () => {
                 {/* @ts-ignore */}
                 <Minting
                   {...{
+
                     width,
                     setCountShow,
                     score: remainingCMP,
@@ -301,25 +305,22 @@ const Mine = () => {
               md={6}
               className='d-flex flex-column flex-md-column-reverse'
             >
-              <ForZoom
+              {/* <ForZoom
                 {...{ inOutReward }}
-              >
-                <PAXCard
-                  countShow={countShow}
-                  walletId={userInfo?.wallet || ""}
-                  rewardTimer={rewardTimer}
-                  setCountShow={setCountShow}
-                  // @ts-ignore
-                  // PAX={userInfo?.rewardStatistics?.diamonds || 0}
-                  // PAX={paxValue}
-                  PAX={
-                    prevPAXValue.current
-                  }
-                // PAX={rewardTimer?.thirdRewardDiamonds || 0 }
-                />
-                {/* <Collapse title={"view PAX history"}>{}</Collapse> */}
-                {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
-              </ForZoom>
+              > */}
+              <PAXCard
+                countShow={countShow}
+                walletId={userInfo?.wallet || ""}
+                rewardTimer={rewardTimer}
+                setCountShow={setCountShow}
+                // @ts-ignore
+                // PAX={userInfo?.rewardStatistics?.diamonds || 0}
+                PAX={paxValue}
+              // PAX={
+              //   prevPAXValue.current
+              // }
+              />
+              {/* </ForZoom> */}
               <div className='mb-2'>
                 <LevelCard userTypes={userTypes} userInfo={userInfo} />
               </div>
@@ -432,7 +433,7 @@ const Mine = () => {
           <Modal.Body>
             {/* continue voting */}
             {modelText == 1 && <div className='py-2  d-flex flex-column  justify-content-center'>
-              <strong style={{ fontSize: "20px" }}>Stay in the gamekl</strong>
+              <strong style={{ fontSize: "20px" }}>Stay in the game</strong>
               <p style={{ fontSize: "20px" }}>Only {100 - remainingCMP} CMP to reach your goal</p>
             </div>}
             {modelText == 2 && <div className='py-2  d-flex  flex-column justify-content-center'>
@@ -453,6 +454,7 @@ const Mine = () => {
       {/* Card Modal */}
 
       <CardDiv>
+        {/* reward modal 5 */}
         <Modal
           className=""
           show={

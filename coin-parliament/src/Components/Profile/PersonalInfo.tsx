@@ -47,7 +47,7 @@ const PersonalInfo = () => {
     setLastName(userInfo?.lastName || '')
     setEmail(userInfo?.email || '')
     setPhone({ phone: userInfo?.phone })
-  }, []);
+  }, [userInfo]);
 
   const createPost = async (id: string) => {
     if (!id) return
@@ -89,8 +89,9 @@ const PersonalInfo = () => {
     if (countryCode === data.country) {
       setCountryCode(data.countryCode);
     }
-  }
 
+  }
+// console.log(phone,"Phonenumber")
   useEffect(() => {
     axios
       .get("https://ipapi.co/json/")
@@ -101,6 +102,8 @@ const PersonalInfo = () => {
         console.log(error);
       });
   }, [phone]);
+  console.log(userCurrentCountryCode,phone, "phonenumber");
+
   return (
     <>
 
@@ -185,6 +188,7 @@ const PersonalInfo = () => {
                     setEmail(e.target.value);
                   },
                   edit: !edit,
+                  // edit: true,
                 }}
               />
               <SelectTextfield
@@ -193,14 +197,16 @@ const PersonalInfo = () => {
               >
                 <PhoneInput
                   inputStyle={{ width: "100%", padding: "20px 0px 20px 50px" }}
+                  placeholder=""
                   inputProps={{
                     name: 'phone',
                     required: true,
                     disabled: !edit
                   }}
                   disableDropdown={!edit}
-                  country={!phone?.phone ? userCurrentCountryCode : ''}
-                  value={phone?.phone || ""}
+                  country={phone?.phone == undefined ? userCurrentCountryCode : ''}
+                  // country={""}
+                  value={phone?.phone && phone?.phone}
                   onChange={handleOnChange}
                 />
               </SelectTextfield>

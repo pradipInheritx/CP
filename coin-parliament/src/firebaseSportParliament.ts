@@ -19,7 +19,7 @@ const firebaseConfig = {
 const sportParliament = firebase.initializeApp(firebaseConfig, 'sportParliament');
 
 export const messaging = getMessaging();
-export const db = getFirestore();
+export const db = getFirestore(sportParliament);
 export const auth = getAuth();
 export const functions = getFunctions(getApp());
 export const storage = getStorage();

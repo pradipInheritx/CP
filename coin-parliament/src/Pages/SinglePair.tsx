@@ -34,7 +34,7 @@ const SinglePair = () => {
 
   console.log(params, "myParams")
   const translate = useTranslation();
-  const { coins, setCoins, setMyCoins, totals, ws, socket } = useContext(CoinContext);
+  const { coins, setCoins, setMyCoins, totals, ws, socket, myCoins } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [coin1, coin2] = [coins[symbol1], coins[symbol2]];
   const { user, userInfo, votesLast24Hours } = useContext(UserContext);
@@ -53,7 +53,10 @@ const SinglePair = () => {
   const [voteNumber, setVoteNumber] = useState(0)
 
   const [votingTimer, setVotingTimer] = useState(0)
-  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins);
+  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>({});
+  useEffect(() => {
+    setCoinUpdated(coins);
+  }, [coins])
   const [allActiveVotes, setAllActiveVotes] = useState<VoteResultProps[]>([]);
   const {
     timeframes,
@@ -153,7 +156,6 @@ const SinglePair = () => {
     }
   }, [voteId, getCpviData, vote, totals, selectedTimeFrame])
   const choseTimeFrame = async (timeframe: any) => {
-
     if (user?.uid && params?.id) {
       const v = await Vote.getVote({ userId: user?.uid, coin: params?.id, timeFrame: timeframe });
       if (v) {
@@ -408,7 +410,7 @@ const SinglePair = () => {
                   <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
-                        {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() ?
+                        {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() && false ?
                           <span style={{ marginLeft: '20px' }}>
                             {/* @ts-ignore */}
                             <Countdown date={votingTimer}

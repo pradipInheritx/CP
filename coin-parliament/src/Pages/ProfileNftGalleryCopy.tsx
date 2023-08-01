@@ -13,7 +13,7 @@ import "./styles.css";
 import SwiperBar from "./SwiperBar";
 import UserContext from "../Contexts/User";
 // @ts-ignore
-import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Science from '../assets/avatars/videos/Science.mp4';
+import Monsoon from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Space from '../assets/avatars/videos/Science.mp4';
 import { Col, Form, Row } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
@@ -81,28 +81,48 @@ const ProfileNftGalleryCopy = () => {
   const [setsCardId, setSetsCardId] = useState<any>('none')
   const [setsValue, setSetsValue] = useState<any>([])
   const [setsCardName, setSetsCardName] = useState<any>('none')
+  const [myAlbumID, setMyAlbumID] = useState<any>('')
   const [showWincardTExt, setShowWincardTExt] = useState<any>(false)
   const [cardName, setCardName] = useState<any>([])
   const [cardNameNew, setCardNameNew] = useState<any>([])
   const [allCardArrayNew, setAllCardArrayNew] = useState<any>([])
   const [allCardNew, setAllCardNew] = useState<any>([])
-  // const [notFound,setNotFound]=useState<any>(0)
+  // const [notFound,setNotFound]=useState<any>(0) 
   var notFound = false;
   const [allVideo, setAllVideo] = useState<any>({
     Monsoon: Monsoon,
     Winter: Winter,
     Summer: Summer,
-    Science: Science,
+    Space: Space,
   });
 
   useEffect(() => {
     if (albumOpen != "") {
-      setSelectCollection(albumOpen)
-      setAlbumOpen("")
-      
+      const getCollectionType = firebase
+        .firestore()
+        .collection("nftGallery")
+      getCollectionType.get()
+        .then((snapshot) => {
+
+          const data: any = []
+          snapshot.forEach((doc) => {
+            data.push({ id: doc.id, ...doc.data() });
+          });
+
+          setCollectionType(data)
+          setSelectCollection(albumOpen)   
+          setSetsValue([])
+          setCardShow(false)
+
+        }).catch((error) => {
+          console.log(error, "error");
+        });
+      setAlbumOpen("")    
     }
   }, [albumOpen])
 
+
+  
   const getNftCard = () => {
     const getCollectionType = firebase
       .firestore()
@@ -120,9 +140,8 @@ const ProfileNftGalleryCopy = () => {
       });
   }
 
-
   const onCollectionChange = (collectionName: any) => {
-
+    onSelectSets("none")
     if (searchTerm?.length || selectCollection != "none") {
       // console.log(selectCollection,cardType?.length,"selectCollection")
       
@@ -133,6 +152,7 @@ const ProfileNftGalleryCopy = () => {
     }
 
     if (collectionName === 'none') {
+      
       const getCollectionType = firebase
         .firestore()
         .collection("nftGallery")
@@ -146,14 +166,16 @@ const ProfileNftGalleryCopy = () => {
 
           setCollectionType(data)
           // setAllCardArray(data)
-          
+          setSetsValue([])
           setCardShow(false)
 
         }).catch((error) => {
           console.log(error, "error");
         });
+      
     }
-    else {
+    else {   
+      
       const getCollectionType = firebase
         .firestore()
         .collection("cardsDetails")
@@ -162,16 +184,19 @@ const ProfileNftGalleryCopy = () => {
         .then((snapshot) => {
           
           const data: any = []
-          snapshot.forEach((doc) => {
+          snapshot.forEach((doc) => {            
             data.push({ id: doc.id, ...doc.data() });
-          });
+          });   
+          console.log("i am working")
           setCardNameNew(data)
-          setAllCardNew(data)
+          setAllCardNew(data)          
           
+          // setCardType("all")
           setCardShow(true)
         }).catch((error) => {
           console.log(error, "error");
-        });
+        });   
+      
       const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
       // console.log(getAlbumId && getAlbumId[0]?.id,"checkalbumId")
       const getSetsType = firebase
@@ -179,15 +204,15 @@ const ProfileNftGalleryCopy = () => {
         .collection("nftGallery")
         .doc(getAlbumId && getAlbumId[0]?.id)
         .collection("setDetails")
-      getSetsType.get()
+        getSetsType.get()
         .then((snapshot) => {
           
           const data: any = []
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
           });
-          setSetsValue(data)          
-
+          setSetsValue(data)  
+          setCardType("all")
         }).catch((error) => {
           console.log(error, "error");
         });
@@ -196,6 +221,7 @@ const ProfileNftGalleryCopy = () => {
     }
   }
 
+  console.log(cardType,setsCardId,setsCardName,"allnames")
   // console.log(cardShow,myCards,"cardShow myCards")
 
   // const onSearch = (searchTerm: any) => {
@@ -238,8 +264,8 @@ const ProfileNftGalleryCopy = () => {
 
   const onSelectType = (cardType: any) => {
     setCardType(cardType)
-    
     if (cardType === 'all') {
+      console.log(allCardArrayNew,"forcardName")
       const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card?.albumName == selectCollection)
       
@@ -260,7 +286,7 @@ const ProfileNftGalleryCopy = () => {
   }
   const onSelectSets = (cardId: any) => {
     setSetsCardId(cardId)
-    if (cardId === 'none') {
+    if (cardId === 'none') {      
       const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card?.albumName == selectCollection)
       const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       
@@ -285,6 +311,7 @@ const ProfileNftGalleryCopy = () => {
   const onSelectName = (mycardName: any) => {
     setSetsCardName(mycardName)
     if (mycardName === 'none') {
+      
       const cardWithName = allCardArrayNew.filter((card: any) => card.cardName !== mycardName)
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
@@ -486,7 +513,9 @@ const ProfileNftGalleryCopy = () => {
     }
 
   }
-    
+  
+  console.log(allCardNew,"allCardNew")
+
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       {/* <div className=" w-100 container pt-3 d-flex justify-content-center " >
@@ -597,11 +626,13 @@ const ProfileNftGalleryCopy = () => {
             id='cars'
             className='bg-white border rounded py-2 mx-2'
             // onChange={e=>onCollectionChange(e.target.value)}
+            value={setsCardId}
             onChange={e => onSelectSets(e.target.value)}
+            
           >
             <option value='none'>{texts.SelectSets}</option>
             {setsValue?.map((data: any, index: number) => {
-              return <option value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
+              return <option selected value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
             })}
           </select>
         </div>
@@ -612,9 +643,10 @@ const ProfileNftGalleryCopy = () => {
             id='type'
             className='bg-white border rounded mx-1 py-2'
             onChange={(e) => { onSelectType(e.target.value) }}
+            value={cardType}
           >
-            {selectCollection != "none" ? <><option value='all'>{texts.SelectType}</option>
-              <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
+            {selectCollection != "none" ? <><option value='all' >{texts.SelectType}</option>
+              <option value={`${texts.Legendary}`} >{texts.Legendary}</option>
               <option value={`${texts.Rare}`}>{texts.Rare}</option>
               <option value={`${texts.Epic}`}>{texts.Epic}</option>
               <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
@@ -626,10 +658,11 @@ const ProfileNftGalleryCopy = () => {
             className='bg-white border rounded py-2 mx-1'
             // onChange={e=>onCollectionChange(e.target.value)}
             onChange={e => onSelectName(e.target.value)}
+            value={setsCardName}
           >
             <option value='none'>{texts.SelectName}</option>
             {cardNameNew?.map((data: any, index: number) => {
-              return <option value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
+              return <option selected value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
             })}
           </select>
         </div>
@@ -707,6 +740,7 @@ const ProfileNftGalleryCopy = () => {
                           BackSideCard={BackSideCard}
                           fulldata={item}
                           flipCard={backCards?.includes(item?.cardId)}
+                          ImgUrl={item?.cardImageUrl || ""}
                         />
                       );
                     } else {
@@ -746,6 +780,7 @@ const ProfileNftGalleryCopy = () => {
                         BackSideCard={BackSideCard}
                         fulldata={item}
                         flipCard={backCards?.includes(item?.cardId)}
+                        ImgUrl={item?.cardImageUrl || ""}
                       />
                     );
                   }

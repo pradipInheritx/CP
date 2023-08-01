@@ -11,13 +11,14 @@ import { timeframeInitials } from '../Components/Atoms/Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
-import { voteEndFinish } from '../common/utils/SoundClick';
+import { VoteButton } from '../common/utils/SoundClick';
 import { VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
 import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from 'common/utils/helper';
+import UserContext from 'Contexts/User';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -99,11 +100,12 @@ function ModalForResult({ popUpOpen, vote, type,
   const navigate = useNavigate();
   const setVoteDetails = useContext(VoteDispatchContext);
   const setCompletedVotes = useContext(CompletedVotesDispatchContext);
+  const { userInfo } = useContext(UserContext);
 
   useEffect(() => {
     if (popUpOpen) {
+      VoteButton(true);
       handleShow();
-      voteEndFinish();
       // setVoteDetails((prev) => {
       //   return {
       //     ...prev,
@@ -125,8 +127,8 @@ function ModalForResult({ popUpOpen, vote, type,
   };
 
   const removeVote = () => {
+    let temp = {};
     setVoteDetails((prev) => {
-      let temp = {};
       Object.keys(prev?.activeVotes).map((key: string) => {
         if (/* prev?.activeVotes[key].expiration > new Date().getTime() &&  */vote?.voteId !== prev?.activeVotes[key].voteId) {
           temp = { ...temp, [`${prev?.activeVotes[key].coin}_${prev?.activeVotes[key]?.timeframe?.seconds}`]: prev?.activeVotes[key] }
@@ -139,6 +141,9 @@ function ModalForResult({ popUpOpen, vote, type,
         openResultModal: false
       };
     });
+    if (Object.keys(temp)?.length <= 0 && (Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0)) <= 0) {
+      setAfterVotePopup(true);
+    }
     setCompletedVotes(prev => prev.filter(value => value.voteId != vote.voteId));
     setLessTimeVoteDetails(undefined);
     // setLessTimeVoteDetails({
@@ -153,7 +158,7 @@ function ModalForResult({ popUpOpen, vote, type,
 
 
   const { coins } = useContext(CoinsContext);
-  const { showBack, setShowBack } = useContext(AppContext);
+  const { showBack, setShowBack, setAfterVotePopup } = useContext(AppContext);
   const winner = calculateWinner(vote);
   // console.log(vote,"allVote1")
   const voteCoins = vote?.coin?.split("-");
@@ -225,7 +230,7 @@ function ModalForResult({ popUpOpen, vote, type,
                     <div >
                       {vote?.direction == 0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
                       <span>
-                        $  {vote?.valueVotingTime as unknown as number}
+                        $  {vote?.valueVotingTime + ''}
                       </span>
                     </div>
                     <div>
@@ -256,9 +261,7 @@ function ModalForResult({ popUpOpen, vote, type,
                         VOTE RESULT
                       </span>
                       <div style={{ fontSize: "14px" }}>
-                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} {' '} $ {vote.valueExpirationTime &&
-                          vote?.valueExpirationTime as unknown as number
-                        }
+                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} {' '} $ {vote.valueExpirationTime && vote?.valueExpirationTime + ''}
                       </div>
                       <div>
                         <span>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</span>
@@ -411,7 +414,7 @@ function ModalForResult({ popUpOpen, vote, type,
           <div className='py-2  d-flex  justify-content-center'>
             <span style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
-                console.log("i am working")
+
                 navigate('/profile/mine');
                 setShowBack(true);
                 removeVote();

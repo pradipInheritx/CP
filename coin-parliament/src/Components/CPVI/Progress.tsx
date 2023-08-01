@@ -140,12 +140,12 @@ const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true 
           </Bar>
 
         </div>
-        <VSContainer className="w-100 d-flex justify-content-center" >
-          {<VS color="var(--color-d4d0f3)" pct={pct} compare={compare} />}
-          {((pct || 0) < 80 && (pct || 0) > 20 && symbol2) && <div style={{ color: '#6352E8', position: 'absolute', marginTop: '21px' }}>VS</div>}
-          {/* <div style={{color:'#6352E8', marginTop:'21px'}}>{pct}</div>
+        {/* <VSContainer className="w-100 d-flex justify-content-center" > */}
+        {/* {<VS color="var(--color-d4d0f3)" pct={pct} compare={compare} />} */}
+        {/* {((pct || 0) < 80 && (pct || 0) > 20 && symbol2) && <div style={{ color: '#6352E8', position: 'absolute', marginTop: '21px' }}>VS</div>} */}
+        {/* <div style={{color:'#6352E8', marginTop:'21px'}}>{pct}</div>
         <div style={{color:'#6352E8', marginTop:'21px'}}>{100-(pct||0)}</div> */}
-        </VSContainer>
+        {/* </VSContainer> */}
         <div className="w-100 d-flex justify-content-between mb-3">
           <Symbol1>{symbol1}</Symbol1>
           {symbol2 && <Symbol2>{symbol2}</Symbol2>}

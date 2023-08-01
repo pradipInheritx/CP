@@ -157,10 +157,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
           </Form.Group>
         </Form>
 
-      </>
-
-
-        :
+      </> :
         <SignupForm
           signupLoading={signupLoading}
           setSignupLoading={setSignupLoading}

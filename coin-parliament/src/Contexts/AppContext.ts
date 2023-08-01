@@ -26,7 +26,10 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
-  voteNumberEnd:any,
+  voteNumberEnd: any,
+  setShowMenuBar: any,
+  showMenubar: any,
+  firstTimeAvatarSlection:any,
   setvoteNumberEnd?: any,
   albumOpen?: any,
   setAlbumOpen?: any,

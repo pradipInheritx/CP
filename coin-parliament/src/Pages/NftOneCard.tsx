@@ -14,6 +14,7 @@ import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
 import { cardFlip } from "../common/utils/SoundClick";
+import { Ratio } from "react-bootstrap";
 
 
 const Card = styled.div`
@@ -154,8 +155,10 @@ export type BoxItems = {
   fulldata?:any;
   userId?:any;
   CollectionType?:any;
+  ImgUrl?:any;
+  VideoUrl?:any;
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType }: BoxItems) => {
+const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType ,ImgUrl,VideoUrl}: BoxItems) => {
   
 
 
@@ -169,6 +172,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
       let params = useParams();
   const { type} = params;
   
+  console.log(VideoUrl,"VideoUrl")
 
   return (
     
@@ -258,17 +262,51 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             <div>
               {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
               <span className='cardname'>
-                THE<strong> {cardHeader}</strong>
+                <strong> {cardHeader}</strong>
               </span>
             </div>
-            <br />
+            {/* <br /> */}
             <div className='card-body'>
-              <img
-                src={TheEagle}
-                alt='the hgodler'
-                className=''
-                width={"200px"}
-              />
+              {VideoUrl ?
+                <Ratio
+                  style={{
+                  width:"300px"
+                }}
+                >
+                    <embed type="" src={VideoUrl} />
+                </Ratio>
+                :   
+                <div
+                  style={{
+                    width: "250px",
+                    height:"220px",
+                    // border:"1px solid red",
+                    // overflow:"hidden"
+                  }}
+                  className="d-flex justify-content-center"
+                >
+                      <img
+                    src={ImgUrl || TheEagle}
+                    alt='the hgodler'
+                        className='image-fluid'
+                        style={{
+                          // border:"1px solid red",
+                          // zoom:"1.6",
+                          // backgroundPosition:" center",
+                          
+                          width: "255px",
+                          margin: "auto",
+                          display: "block",
+                          marginTop:"-15px",
+                        }}
+                    // width={"250px"}
+                    // width={"100%"}
+                    // height={"100%"}
+                    // width={"100%"}
+                        />
+                  </div>
+              }
+              
             </div>
           </div>
         </Card>
@@ -294,10 +332,11 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             <span>
               {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {["followerProfile", "profile"].includes(pathnameName[1])? <span>Minted Time : {MintedTime}</span> : <span className="d-inline">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}<u
+            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}
+              <u
             onClick={() => {
                 navigate(`/singalCard/${CollectionType || type}/${id}`)            
-                setSingalCardData({ ...fulldata, myID: userId })
+                // setSingalCardData({ ...fulldata, myID: userId })
                 localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
             }}> View All</u></span> : 0} </span>}
             

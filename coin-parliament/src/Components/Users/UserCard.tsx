@@ -166,7 +166,7 @@ const UserCard = ({
   const { setFollowerUserId } = useContext(AppContext)
   const { userInfo, user } = useContext(UserContext);
 
-
+console.log(leader,"allleader")
 
   const redirectTab = () => {
     if (leader != undefined && setFollowerUserId != undefined) {

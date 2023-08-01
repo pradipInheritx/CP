@@ -88,11 +88,11 @@ const Coins = ({
   }, [filter, coins, totals, allCoins]);
 
   useEffect(() => {
+    // if (filterByFav) {
+    //   setFilter("");
+    // }
     if (filterByFav) {
-      setFilter("");
-    }
-    if (filterByFav) {
-      setData(getFilteredDataByFav(favorites, coins, totals, allCoins));
+      setData(getFilteredDataByFav( filter,favorites, coins, totals, allCoins));
     } else {
       if (!filter) {
         setData(getData({ coins, totals, allCoins }));
@@ -119,11 +119,15 @@ const Coins = ({
               <div className="d-flex justify-content-center align-items-center">
                 <div className='px-1' >
                   <Input
+                    // disabled={filterByFav}
                     style={{
                       background: "transparent",
                       color: "var(--white)",
                       width: `${window.screen.width > 767 ? "300px" : "200px"}`
                     }}
+                    className="placeholderColor"
+                    // placeholder={filterByFav ?"Check only Fav Coins":"Search.."}
+                    placeholder={"Search.."}
                     value={filter}
                     onChange={(e: { target: { value: string } }) => {
                       setFilter(e.target.value || ""); // Set undefined to remove the filter entirely

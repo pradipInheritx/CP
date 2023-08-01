@@ -32,6 +32,7 @@ export const texts = {
   PasswordResetLinkSent: "Password reset link has been sent to your email.",
   AgreetNc: "You must agree to t&c",
   PasswordUpdatSuccess: "Password updated successfully.",
+  PasswordUpdatSuccesslogout: "You need to login again because password is changed",
   PasswordMustContain: "Password must contain at least 1 capital letter(s) (ABCDEFGHIJKLMNOPQRSTUVWXYZ). It must contain at least 1 numeric character(s) (0123456789). It must not contain more than 3 identical consecutive characters (AAA, iiii, $$$$$ ...). It must not contain your user name.",
   FASecurityAdded: "2FA security added to your account.",
   WrongCode: "Wrong code please try again.",

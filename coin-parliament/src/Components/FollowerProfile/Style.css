@@ -1,0 +1,15 @@
+.newtooltip2{
+  background: var(--color-160133) 0 0% no-repeat padding-box;
+    border: 2px solid var(--color-6352e8);
+    box-shadow: 0 3px 6px #00000029;
+    border-radius: 0 20px 20px 20px;
+    opacity: 1;
+    font: var(--font-style-normal) normal var(--font-weight-normal) var(--font-size-12)/var(--line-spacing-13) var(--font-family-poppins);
+    letter-spacing: var(--character-spacing-0);
+    color: var(--color-ffffff);
+    text-align: center;
+    /* width: 300px; */
+    padding: 15px !important;  
+    position: absolute;
+    z-index: 10;
+}

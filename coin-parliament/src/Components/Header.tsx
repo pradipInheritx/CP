@@ -4,7 +4,7 @@ import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import UserContext from "../Contexts/User";
+import UserContext, { getUserInfo } from "../Contexts/User";
 import { Logout } from "../common/models/Login";
 import AppContext from "../Contexts/AppContext";
 import ContentContext from "../Contexts/ContentContext";
@@ -29,7 +29,7 @@ import { db, functions } from "../firebase";
 import firebase from "firebase/compat";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
-import CoinsContext, { follow } from "../Contexts/CoinsContext";
+import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
 import { handleSoundClick } from "../common/utils/SoundClick";
@@ -189,8 +189,7 @@ const Header = ({
 	const desktop = width && width > 979;
 
 
-
-	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack } =
+	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar } =
 		useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
@@ -217,9 +216,6 @@ const Header = ({
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 	const voteDetails = useContext(VoteContext);
-	const votelength = Object.keys(voteDetails?.activeVotes).length;
-	console.log(voteDetails, "voteDetails")
-
 	useEffect(() => {
 
 		if (score > 99.98 && MyPath !== "/profile/mine") {
@@ -249,35 +245,40 @@ const Header = ({
 			});
 	}
 
-	console.log(votelength, "setFollowerInfo")
 	useEffect(() => {
 		getFollowerData()
 	}, [followerUserId])
 
 	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && votelength == 0 && voteDetails?.voteNot == 0) {
-			console.log("i am working")
-			setTimeout(() => {
-				setShow(true)
-			}, 1000);
-
-		} else {
-			console.log("i am working not")
-			setShow(false)
+		// @ts-ignore
+		if (userInfo?.leader?.includes(followerUserId)) {
+			setFollowUnfollow(true)
 		}
-	}, [voteNumber, votingTimer, votelength])
-
+		else {
+			setFollowUnfollow(false)
+		}
+	}, [followerUserId, userInfo]);
 	useEffect(() => {
-		if (afterVotePopup) {
-			console.log("i am working 2")
-			setShow(true)
-			// setAfterVotePopup(false)
+		console.log(voteNumber, /* votingTimer, */ voteDetails, 'hello');
+		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && Object.keys(voteDetails?.activeVotes).length == 0 && voteDetails?.voteNot == 0) {
+			// setTimeout(() => {
+			// setShow(true);
+			// setAfterVotePopup(true);
+			// }, 1000);
 		} else {
-			console.log("i am working 2 not")
-			setShow(false)
+			setAfterVotePopup(false);
+			// setShow(false)
 		}
+	}, [voteNumber, /* votingTimer, */ voteDetails])
 
-	}, [afterVotePopup])
+	// useEffect(() => {
+	// 	if (afterVotePopup) {
+	// 		setShow(true)
+	// 	} else {
+	// 		setShow(false)
+	// 	}
+
+	// }, [afterVotePopup])
 
 
 
@@ -311,8 +312,13 @@ const Header = ({
 		// console.log('votenumber',voteNumber, Number(voted))
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
-
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
+
+	console.log(showReward, inOutReward, "showRewardsetShowReward")
+
+
+
+
 
 
 	const onSelect = (eventKey: string | null) => {
@@ -340,11 +346,10 @@ const Header = ({
 						localStorage.removeItem("userId")
 					})
 					.catch((error) => {
-						console.log("i am working error 2")
 						setLogin(true);
 						localStorage.removeItem("userId")
 						const errorMessage = error.message;
-						// console.log(errorMessage,"i am working error");
+
 					});
 				break;
 			case EventKeys.EDIT:
@@ -399,7 +404,7 @@ const Header = ({
 
 	const handleClose = () => {
 		setShow(false)
-
+		setAfterVotePopup(false);
 	};
 	return (
 
@@ -512,7 +517,10 @@ const Header = ({
 										transition: `width 1s ease;`
 									}}
 								>
-									<div className='' onClick={() => navigate("/profile/mine")}
+									<div className='' onClick={() => {
+										if (!showMenubar) navigate("/profile/mine")
+									}
+									}
 										style={{
 											position: "absolute",
 											marginTop: "7px",
@@ -557,34 +565,28 @@ const Header = ({
 																/>
 															</div>
 															:
-															<span
-																style={{
-																	color: "#6352E8",
-																	// zoom: `${showReward == 2 ? "150%" : ""}`
-																	// fontSize:"11px",
-																	marginLeft: "10px",
-																}}
-															>
-
-
-																{MyPath == "/profile/mine" ?
+															<span style={{ color: "#6352E8", marginLeft: "10px", }}>
+																{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
-																		style={{
-																			// fontSize: `${showReward == 2 && inOutReward == 2 ? "15px" : "11px"}`
-																		}}
-
 																		onEnd={() => {
 																			setInOutReward((prev: number) => {
-																				return prev == 2 ? 3 : prev
+																				// return prev == 2 ? 3 : prev
+																				return 3
 																			});
-																			setHeaderExtraVote((prev: number) => {
-																				if (prev != 0) {
-																					setShowReward((prev: number) => {
-																						return prev == 2 ? 3 : prev
-																					})
-																				}
-																				return prev
-																			})
+																			if (headerExtraVote != 0) {
+																				setShowReward((prev: number) => {
+																					return 3;
+																				});
+																			}
+																			// setHeaderExtraVote((prev: number) => {
+																			// 	if (prev != 0) {
+																			// 		setShowReward((prev: number) => {
+																			// 			// return prev == 2 ? 3 : prev
+																			// 			return 3;
+																			// 		})
+																			// 	}
+																			// 	return prev
+																			// })
 																		}
 																		}
 																	/> :
@@ -623,8 +625,10 @@ const Header = ({
 												</Form.Check.Label>
 												:
 												<PlusButtonMob onClick={() => {
-													handleSoundClick()
-													navigate("/votingbooster")
+													if (!showMenubar) {
+														handleSoundClick()
+														navigate("/votingbooster")
+													}
 												}}
 												>
 													<span
@@ -683,22 +687,21 @@ const Header = ({
 					style={{
 						flexBasis: "100%",
 						textAlign: "center",
-						//  transform: `${showReward == 2 && "scale(1)"}`,
-						//     marginTop: `${showReward == 2 && "50px"}`
-						// width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
-						// textAlign: desktop ? undefined : "center",
 					}}
 				>
-
 					<div className='d-flex'>
 						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
 							{(user?.uid && !login) && (
 								<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
-									<div onClick={() => navigate("/profile/mine")} style={{
-										position: "absolute",
-										marginLeft: "90px",
-										cursor: "pointer"
+									<div onClick={() => {
+										if (!showMenubar) navigate("/profile/mine")
 									}}
+
+										style={{
+											position: "absolute",
+											marginLeft: "90px",
+											cursor: "pointer"
+										}}
 									>
 										<Avatars
 											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
@@ -752,20 +755,29 @@ const Header = ({
 																marginLeft: "50px",
 															}}
 														>
-															{MyPath == "/profile/mine" ?
+															{/* reward modal 4 */}
+															{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
 																	onEnd={() => {
 																		setInOutReward((prev: number) => {
-																			return prev == 2 ? 3 : prev
+																			// return prev == 2 ? 3 : prev
+																			return 3
 																		});
-																		setHeaderExtraVote((prev: number) => {
-																			if (prev != 0) {
-																				setShowReward((prev: number) => {
-																					return prev == 2 ? 3 : prev
-																				})
-																			}
-																			return prev
-																		})
+																		if (headerExtraVote != 0) {
+																			setShowReward((prev: number) => {
+																				return 3;
+																			});
+																		}
+																		// setHeaderExtraVote((prev: number) => {
+																		// 	if (prev != 0) {
+																		// 		setShowReward((prev: number) => {
+																		// 			// return prev == 2 ? 3 : prev
+																		// 			return 3;
+																		// 		})
+																		// 	}
+																		// 	return prev
+																		// })
+
 																	}
 																	}
 																/> :
@@ -798,8 +810,13 @@ const Header = ({
 														</Form.Check.Label>
 														:
 														<PlusButton onClick={() => {
-															handleSoundClick()
-															navigate("/votingbooster")
+
+															if (!showMenubar) {
+																handleSoundClick()
+																navigate("/votingbooster")
+															}
+															// handleSoundClick()
+															// navigate("/votingbooster")
 														}}>
 															<span
 																className={`${voteNumber == 0 && votingTimer && user?.uid && !login && !votingboosterPage && "HeaderText"}`}
@@ -848,12 +865,12 @@ const Header = ({
 			<div>
 				<Modal
 					dialogClassName="modal-35w"
-					show={show}
+					show={/* show */afterVotePopup}
 					size="lg"
 					onHide={handleClose}
 					aria-labelledby="contained-modal-title-vcenter"
 					centered
-					style={{ opacity: 1, zIndex: 100 }}
+					style={{ opacity: 1, zIndex: 9999 }}
 					className="borderColor"
 					// animation={false}
 					backdrop="static"
@@ -888,7 +905,7 @@ const Header = ({
 											<span >
 												{/* {hours < 10 ? `0${hours}` : hours}: */}
 												{Number(voteRules?.maxVotes)} votes in {' '}
-												{hours < 1 ? null : `${hours} :`}
+												{hours < 1 ? null : `${hours}:`}
 												{minutes < 10 ? `0${minutes}` : minutes}:
 												{seconds < 10 ? `0${seconds}` : seconds}
 											</span>

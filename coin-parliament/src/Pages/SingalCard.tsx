@@ -18,6 +18,7 @@ import { httpsCallable } from "@firebase/functions";
 import firebase from "firebase/compat";
 import { Other } from "./SingleCoin";
 import { translate, useTranslation } from "../common/models/Dictionary";
+import { Ratio } from "react-bootstrap";
 
 const CenterItem = styled.div`
   background-color: #f2f2f2;  
@@ -65,34 +66,46 @@ const SingalCard = () => {
   const [backCards, setBackCards] = useState<any>([]);
   const { user, userInfo } = useContext(UserContext);
   const { leaders } = useContext(CoinsContext);
-  const { userTypes } = useContext(AppContext);
+  const { albumOpen, setAlbumOpen, userTypes } = useContext(AppContext);
   const [chosen, setChosen] = useState<string | undefined>();
 
 
 
+  console.log(leaders, "allleaders")
+
+  // const BackSideCard = (value: string | number) => {
+  //   // @ts-ignore
+  //   let allBackCard = backCards;
+  //   // @ts-ignore
+  //   // setBackCards(backCards == value ? "" : value);
+  //   backCards.length > 0
+  //     ? backCards?.map((items: any, index: number) => {
+  //       if (items == value) {
+  //         // @ts-ignore
+  //         allBackCard.splice(index, 1);
+  //         setBackCards(allBackCard);
+  //       } else {
+  //         // @ts-ignore
+
+  //         setBackCards([...backCards, value]);
+  //       }
+  //       // @ts-ignore
+  //     })
+  //     : setBackCards([...backCards, value]);
+  // };
+
 
   const BackSideCard = (value: string | number) => {
     // @ts-ignore
-    let allBackCard = backCards;
-    // @ts-ignore
-    // setBackCards(backCards == value ? "" : value);
-    backCards.length > 0
-      ? backCards?.map((items: any, index: number) => {
-        if (items == value) {
-          // @ts-ignore
-          allBackCard.splice(index, 1);
-          setBackCards(allBackCard);
-        } else {
-          // @ts-ignore
-
-          setBackCards([...backCards, value]);
-        }
-        // @ts-ignore
-      })
-      : setBackCards([...backCards, value]);
+    if (backCards.includes(value)) {
+      let allBackCard = [...backCards];
+      allBackCard.splice(backCards.indexOf(value), 1);
+      setBackCards(allBackCard)
+    }
+    else {
+      setBackCards([...backCards, value])
+    };
   };
-
-
 
   const [cardsDetails, setCardsDetails] = useState<any>()
   const [nftAlbumData, setNftAlbumData] = useState<any>()
@@ -116,6 +129,7 @@ const SingalCard = () => {
     await getList({ cardId: id }).then((list) => {
       // @ts-ignore          
       const FollowerList = list?.data?.map((items: any) => {
+        // console.log(items,"allitems")
         return {
           leaders: items?.leader?.length || 0,
           displayName: items?.displayName,
@@ -126,7 +140,7 @@ const SingalCard = () => {
           country: items?.country,
           score: items?.voteStatistics?.score,
           totalVote: items?.voteStatistics?.total,
-          subscribers: 5,
+          subscribers: items?.subscribers.length || 0,
           pct: items?.voteStatistics?.successful / items?.voteStatistics?.total,
           firstName: items?.firstName,
           email: items?.email,
@@ -171,6 +185,9 @@ const SingalCard = () => {
   }, [])
 
 
+
+
+  console.log(followersDetails, "followersDetails")
 
 
   return (
@@ -223,25 +240,27 @@ const SingalCard = () => {
                     BackSideCard={BackSideCard}
                     // flipCard={backCards == singalCardData.id ? true : false}
                     flipCard={backCards?.includes(singalCardData?.cardId)}
+                    ImgUrl={singalCardData?.cardImageUrl || ""}
+                    VideoUrl={singalCardData?.cardVideoUrl || ""}
                   />
                 </>
                 {/* );
                       }
                       
                     })}                                */}
-              </div>
+              </div >
               {/* );
             })} */}
 
             </SummerCard>
             <div className="d-flex justify-content-center  pt-2 pb-4">
               <Other onClick={() => {
-                navigate(-1);
+                // navigate(-1);
+                setAlbumOpen(singalCardData?.albumName);
+                navigate('/nftAlbum')
               }}>{translate("Veiw All Cards")}</Other>
             </div>
-
-          </div>
-
+          </div >
           <div>
             <div>
               <div className="text-center my-3">
@@ -269,9 +288,9 @@ const SingalCard = () => {
               </div>
             </div>
           </div>
-        </CenterItem>
-      </div>
-    </div>
+        </CenterItem >
+      </div >
+    </div >
   );
 };
 

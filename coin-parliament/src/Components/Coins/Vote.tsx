@@ -147,20 +147,20 @@ const Vote = ({
 
   }
 
-  
+
 
   const scrollUp = () => {
     if (pageTrue && user?.uid && !login) {
       setTimeout(() => {
-       window.scrollTo({
-              top: 200,      
-              behavior: "smooth",
-          });	 
-      }, 2000);       
+        window.scrollTo({
+          top: 200,
+          behavior: "smooth",
+        });
+      }, 2000);
     }
-         
+
   }
-	
+
 
   return (
     <div

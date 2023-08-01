@@ -28,8 +28,10 @@ import {
   Coin,
   DBCoin,
   DBPair,
+  formatCurrency,
   getAllCoins,
   getCoins,
+  precision,
   saveAllCoins,
   // saveCoins,
 } from "./common/models/Coin";
@@ -146,6 +148,7 @@ import FwProfileNftGalleryCopy from "Pages/FwProfileNftGalleryCopy";
 import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import CoinsList from "Components/Profile/CoinsList";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -221,7 +224,7 @@ function App() {
 
   }, [pathname])
 
-
+  // console.log("for commit")
   const showModal = useCallback(
     (
       content: ToastContent,
@@ -252,12 +255,12 @@ function App() {
       navigator.serviceWorker.addEventListener("message", (message) => {
         const { notification: { body, title, } } = message.data["firebase-messaging-msg-data"];
         console.log(message.data, "checknotification")
-        showToast(
-          <div>
-            <h5>{title}</h5>
-            <p>{body}</p>
-          </div>
-        );
+        //   showToast(
+        //   <div>
+        //     <h5>{title}</h5>
+        //     <p>{body}</p>
+        //   </div>
+        // );      
         const typeName = { ...message.data["firebase-messaging-msg-data"]?.notification }
 
         // if (typeName?.title.includes("-")) {
@@ -329,6 +332,7 @@ function App() {
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
   const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+  const [showMenubar, setShowMenuBar] = useState(false);
   const [user, setUser] = useState<User>();
   const [userInfo, setUserInfo] = useState<UserProps>();
   const [displayName, setDisplayName] = useState<string>("");
@@ -366,7 +370,6 @@ function App() {
   // const [localID, setLocalID] = useState<any>(
 
   // )  
-  console.log(login, 'pkkk');
 
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
@@ -439,6 +442,7 @@ function App() {
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
     const info = await getUserInfo(user);
+    console.log("i am working")
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
@@ -449,7 +453,8 @@ function App() {
   //   return Followerinfo
   // }
 
-  console.log(remainingTimer, "remainingTimer")
+  // console.log(remainingTimer, "remainingTimer")
+  console.log(firstTimeAvatarSlection, "firstTimeAvatarSlectionapp")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -499,6 +504,7 @@ function App() {
 
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
+      setShowMenuBar(true)
     }
 
   }, [userInfo]);
@@ -539,14 +545,37 @@ function App() {
 
 
   useEffect(() => {
-    getToken(messaging, {
-      vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    }).then((token) => {
-      setFcmToken(token)
-    }).catch((e) => {
-      console.log('hello', e);
-    });
+    // Notification.requestPermission()
+    //   .then((permission) => {
+    //     if (permission === "granted") {
+    //       console.log("Notification permission granted.");
+    //       // Get the device token to send messages to individual devices
+
+    //     } else {
+    //       console.log("Notification permission denied.");
+    //       return null;
+    //     }
+    //   }).catch((error) => {
+    //     console.error("Error getting notification permission:", error);
+    //   });
+
+    getMessageToken();
+
   }, []);
+  const getMessageToken = async () => {
+    const messagingResolve = await messaging;
+    if (messagingResolve) {
+      getToken(messagingResolve, {
+        vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
+      }).then((token) => {
+        setFcmToken(token);
+        console.log('token', token);
+      }).catch((e) => {
+        console.log('token', e);
+      });
+    }
+  }
+
 
 
   useEffect(() => {
@@ -591,6 +620,7 @@ function App() {
       (querySnapshot) => {
         setNotifications(
           querySnapshot.docs.map((doc) => {
+            console.log(doc.data(), ".data")
             return doc.data() as NotificationProps;
           })
         );
@@ -827,8 +857,10 @@ function App() {
 
   }, [userInfo?.voteStatistics?.total])
   console.log('usermfa', userInfo)
+
   useEffect(() => {
-    if (user?.uid && voteNumberEnd == 0) {
+    if (voteNumberEnd == 0 && user?.uid) {
+      console.log(voteNumberEnd, "voteNumberEnd")
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
@@ -841,6 +873,8 @@ function App() {
         .where("voteTime", "<=", Date.now());
       votesLast24HoursRef.get()
         .then((snapshot) => {
+          console.log(voteNumberEnd)
+          console.log("i am working ")
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
@@ -859,61 +893,6 @@ function App() {
     }
 
   }, [voteNumberEnd])
-
-
-  // useEffect(() => {
-  //   if (user?.uid && voteNumberEnd==0) { 
-  //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-
-  //       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-  //       const votesLast24HoursRef = firebase
-  //         .firestore()
-  //         .collection("votes")
-  //         .where("userId", "==", user?.uid)
-  //         .where("voteTime", ">=", last24Hour)
-  //         .where("voteTime", "<=", Date.now());
-  //       votesLast24HoursRef.get()
-  //         .then((snapshot) => {
-
-  //           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-  //           let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-
-  //           setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-
-  //           setTimeout(() => {
-  //             if (user?.uid) {
-  //               console.log('hello');
-
-  //               const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-
-  //               const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-  //               const votesLast24HoursRef = firebase
-  //                 .firestore()
-  //                 .collection("votes")
-  //                 .where("userId", "==", user?.uid)
-  //                 .where("voteTime", ">=", last24Hour)
-  //                 .where("voteTime", "<=", Date.now());
-
-  //               votesLast24HoursRef.get()
-  //                 .then((snapshot) => {
-  //                   setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-
-  //                 })
-  //                 .catch((error) => {
-  //                   console.log('extravoteError', error);
-  //                 });
-  //             }
-  //           }, remaining);
-  //           console.log("yes i am working after vote")
-  //         })
-  //         .catch((error) => {
-  //           console.log('extravoteError', error);
-  //         });
-  //   }
-
-  // }, [voteNumberEnd])
 
 
   useEffect(() => {
@@ -1161,7 +1140,7 @@ function App() {
       }
       return {};
     });
-    if (tempTessTimeVote /* && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId */ /* calculateVote */) {
+    if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId /* calculateVote */) {
       setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
@@ -1175,8 +1154,10 @@ function App() {
     impact: null
   });
   const latestVote = useRef<VoteContextType>();
-
-
+  const latestCoins = useRef<{ [symbol: string]: Coin }>({});
+  useEffect(() => {
+    latestCoins.current = myCoins;
+  }, [myCoins]);
 
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
@@ -1184,8 +1165,6 @@ function App() {
   }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
-
-      console.log(completedVotes, voteDetails, lessTimeVote, 'pkkk');
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
@@ -1201,8 +1180,11 @@ function App() {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+        // console.log(latestCoins.current, 'coinsname');
+        console.log(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''), 'test');
 
-        console.log(coins[coin1.toUpperCase()]?.price, coins[coin2.toUpperCase()], coins, "coinsname")
+        let valueExpirationTimeOfCoin1 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${!['BTC', 'ETH'].includes(coin1.toUpperCase()) ? latestCoins.current[coin1.toUpperCase()]?.randomDecimal : ''}`
+        let valueExpirationTimeOfCoin2 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${(!['BTC', 'ETH'].includes(coin2.toUpperCase()) && latestCoins.current[coin2.toUpperCase()]) ? latestCoins.current[coin2.toUpperCase()]?.randomDecimal : ''}`
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1218,8 +1200,8 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: voteImpact.current?.impact,
-                valueExpirationTimeOfCoin1: myCoins[coin1.toUpperCase()]?.price || null,
-                valueExpirationTimeOfCoin2: myCoins[coin2.toUpperCase()]?.price || null,
+                valueExpirationTimeOfCoin1: valueExpirationTimeOfCoin1 || null,
+                valueExpirationTimeOfCoin2: (valueExpirationTimeOfCoin2 && valueExpirationTimeOfCoin2 !== '0' ? valueExpirationTimeOfCoin2 : null),
               }
               :
               {}
@@ -1251,21 +1233,9 @@ function App() {
       // }
     }
   }
-
-  // useEffect(() => {
-  // const coinData = firebase
-  //   .firestore()
-  //   .collection("settings").doc('settings')
-  // coinData.get()
-  //   .then((snapshot: any) => {
-  //     console.log('hello', snapshot.data().voteRules.maxVotes)
-
-  //     });
-  // }, [])
-
   ///END vote result //
 
-  console.log(user, userInfo?.uid, mfaLogin, login, "user userInfo?.uid mfaLogin")
+  console.log(login, user, userInfo?.uid, "firstTimeLogin")
 
   return loader ? (
     <div
@@ -1355,6 +1325,9 @@ function App() {
                   setSignup,
                   firstTimeLogin,
                   setFirstTimeLogin,
+                  showMenubar,
+                  setShowMenuBar,
+                  firstTimeAvatarSlection,
                   menuOpen,
                   setMenuOpen,
                   fcmToken,
@@ -1636,9 +1609,7 @@ function App() {
                                             <Route path='/' element={
 
                                               <Home />} />
-                                            <Route path='/firebase-messaging-sw.js#' element={
-
-                                              <Home />} />
+                                            <Route path='/firebase-messaging-sw.js' element={<Home />} />
                                             <Route
                                               path='coins'
                                               element={<CoinMain />}
@@ -1674,9 +1645,11 @@ function App() {
                                             <Route
                                               path={ProfileTabs.profile}
                                               element={<Profile />}
+
                                             >
                                               <Route
                                                 path={ProfileTabs.edit}
+
                                                 element={<PersonalInfo />}
                                               />
                                               <Route
@@ -1768,7 +1741,17 @@ function App() {
                                             {/* Fowller component  end*/}
                                             <Route
                                               path='/upgrade'
+                                              // element={user && userInfo?.uid ? <UpgradePage /> : <Navigate to="/" />}
                                               element={<UpgradePage />}
+                                            />
+                                            {/* <Route
+                                              path='/paymentList'
+                                              element={<CoinsList />}
+                                          /> */}
+
+                                            <Route path='/paymentList'
+                                              // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
+                                              element={<CoinsList />}
                                             />
                                             <Route
                                               path='/votingbooster'

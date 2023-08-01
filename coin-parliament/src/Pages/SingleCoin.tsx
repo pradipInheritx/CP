@@ -70,7 +70,7 @@ const SingleCoin = () => {
   const translate = useTranslation();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const { user, userInfo, votesLast24Hours } = useContext(UserContext);
-  const { coins, setCoins, setMyCoins, totals, ws, socket } = useContext(CoinContext);
+  const { coins, setCoins, myCoins, setMyCoins, totals, ws, socket } = useContext(CoinContext);
   const { showModal } = useContext(NotificationContext);
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
   const [voteId, setVoteId] = useState<string>();
@@ -88,7 +88,10 @@ const SingleCoin = () => {
   const [votedDetails, setVotedDetails] = useState<any>([]);
   const [voteNumber, setVoteNumber] = useState<any>([]);
   const [votingTimer, setVotingTimer] = useState(0)
-  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>(coins)
+  const [coinUpdated, setCoinUpdated] = useState<{ [symbol: string]: Coin }>({});
+  useEffect(() => {
+    setCoinUpdated(coins);
+  }, [coins])
   // const [graphLoading,setGraphLoading]=useState(false)
   const { timeframes, setAllButtonTime, allButtonTime, forRun, setForRun, remainingTimer, voteRules, voteNumberEnd } = useContext(AppContext);
   const voteDetails = useContext(VoteContext);
@@ -99,6 +102,7 @@ const SingleCoin = () => {
       setMyCoins(coinUpdated)
     }
   }, [coinUpdated])
+  // console.log(coinUpdated, myCoins, 'mycoins');
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -261,7 +265,7 @@ const SingleCoin = () => {
             setSelectedTimeFrameArray(newTimeframe)
           }
           else {
-            // console.log("i am working")
+
             setSelectedTimeFrameArray(newTimeframe)
             // AllvoteValueObject.splice(index, 1);               
             // setAllButtonTime(AllvoteValueObject);
@@ -456,6 +460,7 @@ const SingleCoin = () => {
                   symbol={coin.symbol}
                   coins={coinUpdated}
                   totals={totals}
+                  isHeader={true}
                 />
               </CardContainer>
               <Container>
@@ -559,7 +564,7 @@ const SingleCoin = () => {
               <div className="d-flex justify-content-center align-items-center mt-5">
                 <Link to="" style={{ textDecoration: 'none' }}>
                   <Other>
-                    {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() ?
+                    {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() && false ?
                       <span style={{ marginLeft: '20px' }}>
                         {/* @ts-ignore */}
                         <Countdown date={votingTimer}

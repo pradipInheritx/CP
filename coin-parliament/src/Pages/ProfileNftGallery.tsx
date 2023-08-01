@@ -719,7 +719,7 @@ useEffect(() => {
                       );
                     } else {
                      if (filterCard.length - 1 == ind && cardPart.length - 1 == index) {                        
-                      // return  console.log("i am working")
+                      
                         return <div className="d-flex justify-content-center"> <p style={{ color: "black", fontSize: "14px" }}>Data Not Found</p></div>
                       }
                     }

@@ -39,6 +39,8 @@ export const follow = async (leader: Leader, you: User, add: boolean) => {
 
 
   const subscribe = httpsCallable(functions, "subscribe");
+  const setLeadersOnce = httpsCallable(functions, "setLeadersOnce");
+
   await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps);
 
   if (add) {
@@ -48,13 +50,13 @@ export const follow = async (leader: Leader, you: User, add: boolean) => {
       { merge: true }
     );
   } else {
-    console.log("yes i am working")
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
       { leader: firebase.firestore.FieldValue.arrayRemove(leader?.userId) },
       { merge: true }
     );
   }
+  await setLeadersOnce({ data: {} });
 };
 
 export const totalsConverter = {

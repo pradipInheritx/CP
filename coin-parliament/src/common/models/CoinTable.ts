@@ -50,6 +50,7 @@ export const filterCoins = (
   coins: { [symbol: string]: Coin },
   filterBy: string[]
 ) => {
+  
   const newCoins: { [symbol: string]: Coin } = {};
   Object.keys(coins).forEach((key) => {
     if (filterBy.includes(coins[key].symbol)) {
@@ -61,16 +62,33 @@ export const filterCoins = (
 };
 
 export const filterData = (
+  type: any,
+  str:any,
   result: string[],
   callback: (total: string[], current: string) => string[],
   coins: { [p: string]: Coin },
   totals: { [p: string]: Totals },
   allCoins: string[],
 ) => {
-  const filteredKeys = result.reduce(callback, [] as string[]);
-  const newCoins = filterCoins(coins, filteredKeys);
-  return getData({coins: newCoins, totals, allCoins});
+  const filteredKeys = result.reduce(callback, [] as string[]);  
+  const filterText = filterDataText(str,filteredKeys)
+  const newCoins = filterCoins(coins, type == "fav" && str ? filterText : filteredKeys );
+  return getData({ coins: newCoins, totals, allCoins });
 };
+export const filterDataText = (
+  str: string,
+  filterBy: string[]
+) => {  
+  
+  let filtertext: string[] = []
+  filterBy.map((item,index) => {
+    if (str && item.includes(str) ) {
+      filtertext.push(item)
+    }
+  })
+  return filtertext 
+};
+
 
 export const getFilteredData = (
   filter: string,
@@ -88,7 +106,11 @@ export const getFilteredData = (
       ...names.filter((s) => s?.indexOf(str) !== -1),
     ]);
 
+const type = "tex"
+
     return filterData(
+      type,
+      str,
       result,
       (total, current) => {
         if (coins[current]?.name === str || coins[current]?.symbol === str) {
@@ -108,17 +130,22 @@ export const getFilteredData = (
 };
 
 export const getFilteredDataByFav = (
+  filter: string,
   result: string[],
   coins: { [p: string]: Coin },
   totals: { [p: string]: Totals },
   allCoins: string[],
 ) => {
+const type="fav"
+  const str = filter.toUpperCase();
   return filterData(
+    type,
+    str,
     result,
     (total, current) => {
       if (result.includes(coins[current]?.symbol)) {
         total.push(current);
-      }
+      }           
       return total;
     },
     coins,

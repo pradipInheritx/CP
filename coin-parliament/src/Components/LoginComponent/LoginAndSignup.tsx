@@ -65,7 +65,8 @@ const LoginAndSignup = ({
       className=' justify-content-center'
       style={{ height: "100vh", background: "var(--light-purple)" }}
     >
-      <div className='container-center-horizontal'>
+      <div className='container-center-horizontal'
+      >
         <div className='login-signin screen'>
           {!forgetPassword ? (
             <Styles.Title>{translate(title[mode])}</Styles.Title>

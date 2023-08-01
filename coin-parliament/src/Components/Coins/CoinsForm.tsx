@@ -99,7 +99,7 @@ const CoinsForm = ({
           userId: user?.uid,
           voteTime: Date.now(),
           // @ts-ignore
-          valueVotingTime: coinUpdated[coin?.symbol]?.symbol == 'BTC' || coinUpdated[coin?.symbol]?.symbol == 'ETH' ? coinUpdated[coin?.symbol]?.price || 0 : coinUpdated[coin?.symbol]?.price || 0 + coinUpdated[coin?.symbol]?.randomDecimal || 0,
+          valueVotingTime: coinUpdated[coin?.symbol]?.symbol == 'BTC' || coinUpdated[coin?.symbol]?.symbol == 'ETH' ? coinUpdated[coin?.symbol]?.price || 0 : `${coinUpdated[coin?.symbol]?.price || 0}${coinUpdated[coin?.symbol]?.randomDecimal || 0}`,
           expiration: Date.now() + chosenTimeframe.seconds * 1000,
           voteId: `${coin.symbol}-` + `${userInfo?.uid?.slice(0, 5)}` + `${Date.now()}`
         } as VoteResultProps

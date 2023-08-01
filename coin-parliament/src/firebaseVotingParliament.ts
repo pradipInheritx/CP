@@ -18,12 +18,12 @@ const firebaseConfig = {
 };
 
 
-const sportParliament = firebase.initializeApp(firebaseConfig, 'votingParliament');
+const votingParliament = firebase.initializeApp(firebaseConfig, 'votingParliament');
 
 export const messaging = getMessaging();
-export const db = getFirestore();
+export const db = getFirestore(votingParliament);
 export const auth = getAuth();
 export const functions = getFunctions(getApp());
 export const storage = getStorage();
 
-export default sportParliament;
+export default votingParliament;

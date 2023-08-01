@@ -36,7 +36,7 @@ const Leaderboard = ({
   const pathname = location.pathname;
   const { setLoginRedirectMessage, setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
-
+console.log(leaders ,"leaderscheck")
   return (
     <div>
       <LeadersContainer>

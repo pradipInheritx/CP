@@ -75,13 +75,17 @@ const Pairs = ({
   );
   const [filterByFav, setFilterByFav] = useState(false);
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
+
+  console.log(userInfo?.favorites, "userInfo?.favorites")
   const [index, setIndex] = useState(0);
   const sound = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    const newData = getFilteredData(filter, pairs(chosenPairs), totals);
-    setData(newData);
-  }, [chosenPairs, pairs, totals, filter]);
+    if (!filterByFav) {
+      const newData = getFilteredData(filter, pairs(chosenPairs), totals);
+      setData(newData);
+    }
+  }, [chosenPairs, pairs, totals, filter, filterByFav]);
 
   useEffect(() => {
     const newPairs = getChosenPairs(allPairs, filter);
@@ -89,11 +93,11 @@ const Pairs = ({
   }, [filter, allPairs]);
 
   useEffect(() => {
+    // if (filterByFav) {
+    //   setFilter("");
+    // }
     if (filterByFav) {
-      setFilter("");
-    }
-    if (filterByFav) {
-      const newData = getFilteredDataByFav(favorites, pairs(), totals);
+      const newData = getFilteredDataByFav(filter, favorites, pairs(), totals);
       setData(newData);
     } else {
       if (!filter) {
@@ -132,6 +136,8 @@ const Pairs = ({
                       color: "var(--white)",
                       width: `${window.screen.width > 767 ? "300px" : "200px"}`
                     }}
+                    placeholder="Search.."
+                    className="placeholderColor"
                     value={filter}
                     onChange={(e) => {
                       setFilter(e.target.value || ""); // Set undefined to remove the filter entirely

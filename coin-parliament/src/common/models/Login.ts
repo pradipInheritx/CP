@@ -31,6 +31,7 @@ import { SignupRegularForSportParliament } from "./SportParliamentLogin";
 import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { toast } from "react-toastify";
 import { showToast } from "App";
+import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 const sendEmail = httpsCallable(functions, "sendEmail");
 
 export enum LoginModes {
@@ -279,7 +280,9 @@ export const SignupRegular = async (
     );
 
     // @ts-ignore
-    await sendEmailVerification(auth?.currentUser);
+    await sendEmailVerification(auth?.currentUser).then((data) => {
+      showToast("Successfully sent  verification link on your mail");
+    });
     const firstTimeLogin: Boolean = true
     // @ts-ignore
 
@@ -303,13 +306,11 @@ export const SignupRegular = async (
 };
 
 export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
-  SignupRegular(payload, callback).then((res) => {
+  SignupRegular(payload, callback).then(async (res) => {
     if (res) {
-      SignupRegularForSportParliament(payload, callback).then((res) => {
-        if (res) {
-          SignupRegularForStockParliament(payload, callback);
-        }
-      })
+      await SignupRegularForSportParliament(payload, callback);
+      await SignupRegularForStockParliament(payload, callback);
+      await SignupRegularForVotingParliament(payload, callback);
     }
   }).catch(() => {
 
