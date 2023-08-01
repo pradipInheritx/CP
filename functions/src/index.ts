@@ -21,6 +21,7 @@ import {
   getLeaderUsers,
   getLeaderUsersByIds,
   setLeaders,
+  makePayment
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
@@ -124,7 +125,8 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 
-app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction)
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
+app.post("payment/makePayment", auth, makePayment);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {
@@ -791,3 +793,5 @@ exports.sendEmail = functions.https.onCall(async () => {
   };
   await sgMail.send(msg);
 });
+
+
