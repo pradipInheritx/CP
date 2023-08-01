@@ -560,3 +560,9 @@ export const errorLogging = async (
 ) => {
   console.log(funcName, type, error); // We will modify later
 };
+
+export const makePayment = (req: any, res: any) => {
+  const { userId, walletType, amount, coin, status, timestamp } = req.body;
+  console.log(userId, walletType, amount, coin, status, timestamp)
+  return
+}
