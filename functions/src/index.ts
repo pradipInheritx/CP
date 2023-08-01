@@ -126,7 +126,7 @@ app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
-app.post("payment/makePayment", auth, makePayment);
+app.post("/payment/makePayment", auth, makePayment);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {
