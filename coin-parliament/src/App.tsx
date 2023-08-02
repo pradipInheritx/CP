@@ -1149,14 +1149,14 @@ function App() {
   const latestCoins = useRef<{ [symbol: string]: Coin }>({});
   useEffect(() => {
     latestCoins.current = myCoins;
-  }, [myCoins])
+  }, [myCoins]);
+
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
     latestVote.current = voteDetails;
   }, [voteDetails]);
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
-      console.log(completedVotes, voteDetails, lessTimeVote, 'pkkk');
       // let exSec = new Date(-).getSeconds();
       // current date
       let current = new Date();
@@ -1172,8 +1172,11 @@ function App() {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-        console.log(parseFloat(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')), 'coinsname');
+        // console.log(latestCoins.current, 'coinsname');
+        console.log(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''), 'test');
 
+        let valueExpirationTimeOfCoin1 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${!['BTC', 'ETH'].includes(coin1.toUpperCase()) ? latestCoins.current[coin1.toUpperCase()]?.randomDecimal : ''}`
+        let valueExpirationTimeOfCoin2 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${(!['BTC', 'ETH'].includes(coin2.toUpperCase()) && latestCoins.current[coin2.toUpperCase()]) ? latestCoins.current[coin2.toUpperCase()]?.randomDecimal : ''}`
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1189,8 +1192,8 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: voteImpact.current?.impact,
-                valueExpirationTimeOfCoin1: parseFloat(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')) || null,
-                valueExpirationTimeOfCoin2: parseFloat(formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')) || null,
+                valueExpirationTimeOfCoin1: valueExpirationTimeOfCoin1 || null,
+                valueExpirationTimeOfCoin2: (valueExpirationTimeOfCoin2 && valueExpirationTimeOfCoin2 !== '0' ? valueExpirationTimeOfCoin2 : null),
               }
               :
               {}
@@ -1224,7 +1227,11 @@ function App() {
   }
   ///END vote result //
 
+<<<<<<< HEAD
   // console.log(login, user,userInfo?.uid,"firstTimeLogin")
+=======
+  console.log(login, user, userInfo?.uid, "firstTimeLogin")
+>>>>>>> 0c2d39b4d33933e59a46de1cbd5e68474ffe58a0
 
   return loader ? (
     <div
@@ -1633,12 +1640,12 @@ function App() {
                                             />
                                             <Route
                                               path={ProfileTabs.profile}
-                                            element={<Profile />}
-                                            
+                                              element={<Profile />}
+
                                             >
                                               <Route
-                                              path={ProfileTabs.edit}
-                                              
+                                                path={ProfileTabs.edit}
+
                                                 element={<PersonalInfo />}
                                               />
                                               <Route
@@ -1729,20 +1736,19 @@ function App() {
 
                                             {/* Fowller component  end*/}
                                             <Route
-                                            path='/upgrade'
-                                            // element={user && userInfo?.uid ? <UpgradePage /> : <Navigate to="/" />}
+                                              path='/upgrade'
+                                              // element={user && userInfo?.uid ? <UpgradePage /> : <Navigate to="/" />}
                                               element={<UpgradePage />}
                                             />
                                             {/* <Route
                                               path='/paymentList'
                                               element={<CoinsList />}
                                           /> */}
-                                          
-                                          <Route path='/paymentList'
-                                            // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
-                                            element={<CoinsList />}
-                                            // element={<CoinsListDesgin />}
-                                          />                                                                                  
+
+                                            <Route path='/paymentList'
+                                              // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
+                                              element={<CoinsList />}
+                                            />
                                             <Route
                                               path='/votingbooster'
                                               element={<VotingBooster />}
