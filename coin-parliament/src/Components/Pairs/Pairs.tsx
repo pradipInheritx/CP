@@ -76,7 +76,7 @@ const Pairs = ({
   const [filterByFav, setFilterByFav] = useState(false);
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
 
-  console.log(userInfo?.favorites, "userInfo?.favorites")
+  // console.log(userInfo?.favorites, "userInfo?.favorites")
   const [index, setIndex] = useState(0);
   const sound = useRef<HTMLAudioElement>(null);
 
