@@ -374,6 +374,8 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
         firstRewardCard,
         firstRewardCardCollection: getAlbumData.albumName,
         firstRewardCardSerialNo,
+        firstRewardCardImageUrl: firstRewardCardObj.cardImageUrl,
+        firstRewardCardVideoUrl: firstRewardCardObj.cardVideoUrl,
         secondRewardExtraVotes,
         thirdRewardDiamonds,
       };
@@ -435,6 +437,8 @@ export type winRewardData = {
   firstRewardCard: string;
   firstRewardCardSerialNo: string;
   firstRewardCardCollection: string;
+  firstRewardCardImageUrl: string;
+  firstRewardCardVideoUrl: string;
   secondRewardExtraVotes: number;
   thirdRewardDiamonds: number;
   firstRewardCardId: number;
