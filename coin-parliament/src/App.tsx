@@ -1227,12 +1227,7 @@ function App() {
   }
   ///END vote result //
 
-<<<<<<< HEAD
-  // console.log(login, user,userInfo?.uid,"firstTimeLogin")
-=======
-  console.log(login, user, userInfo?.uid, "firstTimeLogin")
->>>>>>> 0c2d39b4d33933e59a46de1cbd5e68474ffe58a0
-
+  
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
