@@ -20,8 +20,7 @@ import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
-  setLeaders,
-  makePayment
+  setLeaders
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
@@ -92,6 +91,7 @@ import userTypeSettingsRouter from "./routes/UserTypeSettings";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
+import PaymentRouter from "./routes/Payments.routes";
 import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
@@ -124,9 +124,9 @@ app.use("/admin/settings", voteAndSettingsRouter);
 app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
+app.use("/payment", PaymentRouter);
 
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
-app.post("/payment/makePayment", auth, makePayment);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {
