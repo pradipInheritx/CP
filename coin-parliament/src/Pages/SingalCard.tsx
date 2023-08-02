@@ -71,7 +71,7 @@ const SingalCard = () => {
   
 
 
-console.log(leaders,"allleaders")
+// console.log(leaders,"allleaders")
 
   // const BackSideCard = (value: string | number) => {
   //   // @ts-ignore
