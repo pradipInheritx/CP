@@ -148,6 +148,7 @@ import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import CoinsList from "Components/Profile/CoinsList";
+// import CoinsListDesgin from "Components/Profile/CoinsList";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -381,7 +382,7 @@ function App() {
   const [mfaLogin, setMfaLogin] = useState(false)
   const [allCoinsSetting, setAllCoinsSetting] = useState([])
 
-  console.log(coins, "allcoinsCheck")
+  // console.log(coins, "allcoinsCheck")
 
   const Coinkeys = Object.keys(coins && coins) || []
 
@@ -449,7 +450,7 @@ function App() {
   // }
 
   // console.log(remainingTimer, "remainingTimer")
-  console.log(firstTimeAvatarSlection, "firstTimeAvatarSlectionapp")
+  // console.log(firstTimeAvatarSlection, "firstTimeAvatarSlectionapp")
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -614,7 +615,7 @@ function App() {
       (querySnapshot) => {
         setNotifications(
           querySnapshot.docs.map((doc) => {
-            console.log(doc.data(), ".data")
+            
             return doc.data() as NotificationProps;
           })
         );
@@ -847,7 +848,7 @@ function App() {
 
 
   }, [userInfo?.voteStatistics?.total])
-  console.log('usermfa', userInfo)
+  // console.log('usermfa', userInfo)
 
   useEffect(() => {
     if (voteNumberEnd == 0 && user?.uid) {
@@ -1226,7 +1227,11 @@ function App() {
   }
   ///END vote result //
 
+<<<<<<< HEAD
+  // console.log(login, user,userInfo?.uid,"firstTimeLogin")
+=======
   console.log(login, user, userInfo?.uid, "firstTimeLogin")
+>>>>>>> 0c2d39b4d33933e59a46de1cbd5e68474ffe58a0
 
   return loader ? (
     <div
