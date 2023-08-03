@@ -77,6 +77,7 @@ export const sendCustomNotificationOnSpecificUsers = async (
   }
 };
 
+// For Followers and Following
 export const sendNotificationForFollwersFollowings = async (
   userId: any, coin: any
 ) => {
@@ -147,44 +148,7 @@ export const sendNotificationForFollwersFollowings = async (
 
 
 
-
-async function subscribersNotification(subscribers: string[], userName: string, cmp: number) {
-  console.log("Beging subscribers notification")
-  subscribers.forEach(async (user: string) => {
-    const userDetailsQuery = await firestore().collection("users").doc(user).get();
-    const userData: any = userDetailsQuery.data();
-    const token = userData.token;
-    const message: messaging.Message = {
-      token,
-      notification: {
-        title: `You just earnd ${cmp} CMP from ${userName}`,
-        body: "",
-      },
-      webpush: {
-        headers: {
-          Urgency: "high",
-        },
-        fcmOptions: {
-          link: "#", // TODO: put link for deep linking
-        },
-      },
-    };
-    console.log("message:", message);
-
-    await sendNotification({
-      token,
-      id: user,
-      body: "",
-      title: `You just earnd ${"1.12"} CMP from ${userName}`,
-      message,
-    });
-
-  })
-  console.log("Finished subscribers notification")
-}
-
-
-
+// For Vote Expiry
 export const voteExpireAndGetCpmNotification = async (userId: string, cmp: number, coin: string) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
 
@@ -221,16 +185,40 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cmp: numbe
   });
   console.log("End Push Notification of voteExpireAndGetCpmNotification")
 }
+async function subscribersNotification(subscribers: string[], userName: string, cmp: number) {
+  console.log("Beging subscribers notification")
+  subscribers.forEach(async (user: string) => {
+    const userDetailsQuery = await firestore().collection("users").doc(user).get();
+    const userData: any = userDetailsQuery.data();
+    const token = userData.token;
+    const message: messaging.Message = {
+      token,
+      notification: {
+        title: `You just earnd ${cmp} CMP from ${userName}`,
+        body: "",
+      },
+      webpush: {
+        headers: {
+          Urgency: "high",
+        },
+        fcmOptions: {
+          link: "#", // TODO: put link for deep linking
+        },
+      },
+    };
+    console.log("message:", message);
 
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};
+    await sendNotification({
+      token,
+      id: user,
+      body: "",
+      title: `You just earnd ${"1.12"} CMP from ${userName}`,
+      message,
+    });
 
-
+  })
+  console.log("Finished subscribers notification")
+}
 // function getUserListById(userList: any) {
 //   return [...new Map(userList.map((item: any) => [item["userId"], item])).values()]
 // }
@@ -334,7 +322,7 @@ export const sendNotificationForTitleUpgrade = async (user: any, body: any, titl
   }
 }
 
-
+// For Pool Earning
 export async function poolMiningNotification(parentId: string, childrenName: string, cmp: number) {
   console.log("Beging pool mining notification")
 
@@ -367,3 +355,47 @@ export async function poolMiningNotification(parentId: string, childrenName: str
   });
   console.log("Finished pool minig notification")
 }
+
+// For Block Complete
+export const sendNotificationForCpm = async (userId: any) => {
+  const userRef = await firestore().collection("users").doc(userId).get();
+  const user: any = userRef.data();
+  console.log("userId from sendNotificationForCpm : ", user)
+  const token = user.token;
+  if (!token) {
+    console.log("Token not found");
+  }
+
+  const message: messaging.Message = {
+    token,
+    notification: {
+      title: "Wow",
+      body: "Claim your rewards now!",
+    },
+    webpush: {
+      headers: {
+        Urgency: "high",
+      },
+      fcmOptions: {
+        link: "#", // TODO: put link for deep linking
+      },
+    },
+  };
+  console.log("Message:", message);
+  await sendNotification({
+    token,
+    message,
+    body: "Claim your rewards now!",
+    title: "Wow",
+    id: userId,
+  });
+};
+
+// Error Function
+export const errorLogging = async (
+  funcName: string,
+  type: string,
+  error: any
+) => {
+  console.info(funcName, type, error);
+};
