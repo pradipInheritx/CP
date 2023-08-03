@@ -1445,3 +1445,6 @@ html[dir="rtl"] .accordion-button {
 .placeholderColor::placeholder{
     color:white !important;
 }
+iframe{
+    display:none !important;
+}
