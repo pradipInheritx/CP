@@ -144,9 +144,8 @@ class Calculation {
       const { CPMSettings } = await Refer.getSettings();
       const { pctReferralActivity } = CPMSettings;
       const commission = Number(score * pctReferralActivity) / 100;
-      user.refereeScrore = (user.refereeScrore ? user.refereeScrore : 0) + parseFloat(commission.toFixed(5));
-
-      await ref.set({ voteStatistics, refereeScrore: user.refereeScrore }, { merge: true });
+      let refereeScrore: number = parseFloat(((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(3));
+      await ref.set({ voteStatistics, refereeScrore: refereeScrore }, { merge: true });
       console.log("user.parent -----", user.parent)
       if (user.parent) {
         const refer = new Refer(user.parent, "");
@@ -154,7 +153,7 @@ class Calculation {
         // send Notification
         console.log("pool mining Notification is calling: -- ", user.parent, user.displayName || "", user.refereeScrore)
         console.log("score -- ", score)
-        await poolMiningNotification(user.parent, user.displayName || "", user.refereeScrore)
+        await poolMiningNotification(user.parent, user.displayName || "", refereeScrore)
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);

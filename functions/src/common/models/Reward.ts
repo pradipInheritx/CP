@@ -3,9 +3,8 @@ import * as admin from "firebase-admin";
 // import { getStorage, getDownloadURL,ref } from "firebase/storage"
 // import path from "path";
 import { userConverter, UserProps } from "../models/User";
-import { sendNotification } from "./Notification";
-import { messaging } from "firebase-admin";
 import { toArray } from "lodash";
+import { sendNotificationForCpm } from "./SendCustomNotification";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -478,43 +477,11 @@ export const addReward: (
         },
         { merge: true }
       );
+    console.log("Send the block complete notification : ", userId);
     await sendNotificationForCpm(userId); // For Send Notification
     console.log("Finished execution addReward function");
     return;
   }
-};
-
-const sendNotificationForCpm = async (userId: any) => {
-  const userRef = await firestore().collection("users").doc(userId).get();
-  const user: any = userRef.data();
-  const token = user.token;
-  if (!token) {
-    console.log("Token not found");
-  }
-
-  const message: messaging.Message = {
-    token,
-    notification: {
-      title: "Wow",
-      body: "Claim your rewards now!",
-    },
-    webpush: {
-      headers: {
-        Urgency: "high",
-      },
-      fcmOptions: {
-        link: "#", // TODO: put link for deep linking
-      },
-    },
-  };
-  console.log("Message:", message);
-  await sendNotification({
-    token,
-    message,
-    body: "Claim your rewards now!",
-    title: "Wow",
-    id: userId,
-  });
 };
 
 
