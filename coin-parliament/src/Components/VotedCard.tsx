@@ -21,7 +21,7 @@ import { texts } from "./LoginComponent/texts";
 import { Button, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 import Swal from "sweetalert2";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from "common/utils/helper";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor } from "common/utils/helper";
 import { VoteContext } from "Contexts/VoteProvider";
 
 
@@ -328,13 +328,18 @@ const VotedCard = ({
             {symbol2 ?
               <div className="container pt-4">
                 <div className="row justify-content-center align-items-center">
-                  <div className="col-sm-7 col-7 text-right p-0">
-                    <Row1 style={{ textAlign: 'right', fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.2em' : '' }}>{"You voted for "}{row1}</Row1>
+                  <div className={`col-sm-7 ${window.screen.width < 300 ? '' : 'col-7 text-right'} p-0`}>
+                    <Row1 style={{ textAlign: (window.screen.width < 300 ? 'center' : 'right'), fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.2em' : '' }}>{"You voted for "}{row1}</Row1>
                   </div>
-                  <div className="col-sm-4 col-4 text-left p-0">
-                    <Row1 className="text-left" style={{ fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.1em' : '' }}>&nbsp;
+                  <div className={`col-sm-4 ${window.screen.width < 300 ? '' : 'col-4 text-left'}  p-0`}>
+                    <Row1 className={`${(window.screen.width < 300 ? 'text-center' : 'left')}`}
+                      style={{
+                        fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.1em' : '',
+                        color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)),
+                      }}>
+                      &nbsp;
                       {/* {`${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`} */}
-                      {`${pairCoinResult?.difference}%`}
+                      {`${pairCoinResult?.difference.replaceAll('-', '')}%`}
                     </Row1>
                   </div>
                 </div>
