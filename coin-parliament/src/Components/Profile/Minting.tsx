@@ -158,7 +158,7 @@ const I = styled.i`
   text-align: center;
 `;
 type MintingProps = {
-  
+
   score: number;
   setRewardTimer?: any;
   rewardTimer?: any;
@@ -167,7 +167,7 @@ type MintingProps = {
 };
 const claimReward = httpsCallable(functions, "claimReward");
 const Minting = ({
-  
+
   score,
   setRewardTimer,
   rewardTimer,
@@ -245,7 +245,7 @@ const Minting = ({
       }
 
       setLoading(false);
-    } else {      
+    } else {
       Swal.fire({
         title: '',
         text: `You still need ${100 - score} CMP to claim your reward.`,
@@ -254,6 +254,7 @@ const Minting = ({
         confirmButtonColor: '#6352e8',
         customClass: {
           popup: 'popupStyle',
+          container: 'popupStyleContainer'
         }
       });
     }
@@ -263,7 +264,7 @@ const Minting = ({
 
 
   // const tooltip = (props:any) => {
-    
+
   // };
 
 
@@ -274,20 +275,20 @@ const Minting = ({
         {tooltipShow &&
           <div
             style={{
-            display:"relative"
-          }}
+              display: "relative"
+            }}
           >
-              <div className="newtooltip"
+            <div className="newtooltip"
               style={{
                 // right: "0%",
                 marginLeft: "16%",
-                marginTop:"0%",
-                }}
-              >
-                  <p>Your CMP count</p>
-              </div>
-              </div>
-            }
+                marginTop: "0%",
+              }}
+            >
+              <p>Your CMP count</p>
+            </div>
+          </div>
+        }
         <div
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
@@ -299,7 +300,7 @@ const Minting = ({
             {/* {translate("CP Minting")} */}
             {texts.CPMinting}
           </Title>
-          
+
           {/* <OverlayTrigger placement="top" overlay={(props:any) => {
             return (
               
@@ -325,17 +326,17 @@ const Minting = ({
           }}
           
           >    */}
-          {/* <I className='bi bi-info-circle'></I>             */}               
-            <I className='bi bi-info-circle ' style={{ paddingRight: width < 767 ? '8em' : '' }}
-             onMouseDown={(e) => {
-             setTooltipShow(false)
+          {/* <I className='bi bi-info-circle'></I>             */}
+          <I className='bi bi-info-circle ' style={{ paddingRight: width < 767 ? '8em' : '' }}
+            onMouseDown={(e) => {
+              setTooltipShow(false)
             }}
             onMouseUp={(e) => {
-             setTooltipShow(true)
+              setTooltipShow(true)
             }}
             onMouseEnter={() => setTooltipShow(true)}
-            onMouseLeave={() => setTooltipShow(false)} 
-            ></I>           
+            onMouseLeave={() => setTooltipShow(false)}
+          ></I>
           {/* </OverlayTrigger> */}
 
 
