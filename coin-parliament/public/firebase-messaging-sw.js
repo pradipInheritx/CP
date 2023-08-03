@@ -14,9 +14,7 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 });
 importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js");
-importScripts(
-    "https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js"
-);
+importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js");
 // develop
 let CACHE_NAME = 'coin-parliament';
 let urlsToCache = [
@@ -45,7 +43,7 @@ self.addEventListener('fetch', event => {
                 if (response) {
                     return response;
                 }
-                return fetch(event.request);
+                return fetch(event.request.clone());
             }
             )
     );
