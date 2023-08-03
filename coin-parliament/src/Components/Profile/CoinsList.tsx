@@ -24,11 +24,11 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width >767 ? "60%":"98%"};
+  width:${window.screen.width >767 ? "60%":"99%"};
   border-radius:10px;
   background-color:#1e0243;
   padding :30px;
-  display:flex;
+  display:flex;  
   flex-wrap:${window.screen.width > 767 ? "" : "wrap"}
 `;
 
@@ -50,6 +50,7 @@ width:${window.screen.width >767 ? "65%":"98%"};
 margin:${window.screen.width > 767 ? "" : "auto"};
  margin-left:${window.screen.width >767 ? "20px":""};
  margin-top:${window.screen.width > 767 ? "" : "30px"};
+ 
 `;
 
 const Paymentdiv = styled.div`
@@ -82,14 +83,18 @@ const CoinsList = () => {
 
   const [coinsList, setCoinsList] = useState([])
   const [selectPayment, setSelectPayment] = useState(0);
-  const [CheckCoin, setCheckCoin] = useState(0);
   const [selectCoin, setSelectCoin] = useState("none");
+  const [CheckCoin, setCheckCoin] = useState(0);
   const [coinInfo, setCoinInfo] = useState([]);  
-  const infoWallet = localStorage.getItem("wldp-cache-provider")
-  const [walletName, setWalletName] = React.useState(infoWallet && infoWallet || []);
+  
+  // const connectOrNot = localStorage.getItem("wldp_disconnect");
+
+  const [connectOrNot, setConnectOrNot] = React.useState(false);
+  const [walletName, setWalletName] = React.useState("");
   const { userInfo, user } = useContext(UserContext);
   const [payamount, setPayamount ] = useState(99);
   const [payButton, setPayButton ] = useState(false);
+  const [showOptionList, setShowOptionList ] = useState(false);
 const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
 // Insufficient balance 
@@ -113,24 +118,21 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
 
   }, [])
 
+  useEffect(() => {
+    // if (localStorage.getItem("wldp-cache-provider")) {   
+      // @ts-ignore
+    setWalletName(localStorage.getItem("wldp-cache-provider"))    
+  // }
+}, [connectOrNot])
+
+
 //  For put email in userid 
 
   useEffect(() => {
     (window as any)?.wldp?.send_uid(`${user?.email}`).then((data:any) => {       
       console.log(data,"username")
-    })  
+    })      
   }, [])
-
-  //  For connect with wallet 
-
-  useEffect(() => {    
-    if (!localStorage.getItem("wldp-cache-provider") && selectCoin!="none") {
-      mybtn("connect").then((data: any) => {
-        // @ts-ignore
-        setWalletName(localStorage.getItem("wldp-cache-provider"))
-      })
-    }
-  }, [selectCoin])
 
   const mybtn = (window as any)?.wldp?.connectionWallet
     
@@ -143,21 +145,6 @@ const payNow = () => {
   // @ts-ignore
  "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
     }
-
-//     const data = {
-//   method: "getTransaction",
-//   callback_secret: "",
-//   callback_url: "",
-//   user:`${user?.email}`,
-//       params: {
-//     // @ts-ignore
-//       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-//         amount: "0.105",
-//       // @ts-ignore
-//       token: `${coinInfo?.symbol}`,
-//       network: "5"
-//   }
-// }
   
   const data = {
     userId: `${user?.uid}`,
@@ -173,10 +160,16 @@ const payNow = () => {
 axios.post("https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/payment/makePayment", data, {
     headers: headers
   })
-  .then((response) => {
+  .then( async (response) => {
     // console.log(response.data ,"response")
-    setPayButton(false)
-    showToast(response?.data?.message)
+    
+    await showToast(response?.data?.message)    
+    setPayButton(false);
+    setSelectPayment(0);
+    setSelectCoin("none");
+    await mybtn("disconnect", "true").then(() => {
+        setConnectOrNot(!connectOrNot)
+      })
   })
   .catch((error) => {
     showToast(error.message,ToastType.ERROR)
@@ -202,6 +195,12 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
     } else {
       showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
       setPayButton(false)
+      setSelectPayment(0);
+      setSelectCoin("none");
+      mybtn("disconnect", "true").then(() => {
+        setConnectOrNot(!connectOrNot)
+      })
+
     }
   })
   .catch((error) => {
@@ -238,6 +237,7 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
     })
   };
 
+  console.log(walletName ,"setWalletName")
 
   return (
     <div
@@ -245,8 +245,15 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
         width: "100%",
       }}
       className="d-flex justify-content-center flex-column align-items-center"
-    >               
-      <Boxdiv className="mt-5">
+    >       
+      <div className="mt-3">
+        <h4>Select Payment Mode</h4>
+      </div>  
+      <Boxdiv className="mt-5"
+        style={{
+        justifyContent:`${selectPayment == 0 ? "center" :""}`
+      }}
+      >
         <Opctiondiv>
           <div
             style={{
@@ -270,34 +277,44 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
             <p className="mx-2">Debit & Credit cards</p>
           </div>
         </Opctiondiv>
-        { selectCoin == "none" &&<Sidediv>          
-          <Form.Select aria-label="Default select"              
-            size="lg"
-                  onChange={ async (e)  => {
-                    // @ts-ignore
-                    setSelectCoin(coinsList[e.target.value].name); setCoinInfo(coinsList[e.target.value])
-                    if (e.target.value) {
-                      await mybtn("disconnect", "true")
-                await mybtn("connect").then((data: any) => {
-                  // @ts-ignore
-                  setWalletName(localStorage.getItem("wldp-cache-provider"))
-                })
-                    }
+        {selectPayment == 1 && selectCoin == "none" && <Sidediv>
+          <div className="pay-custom-select-container"            
+          >
+        <div
+          className={showOptionList ? "pay-selected-text active" : "pay-selected-text"}
+            onClick={() => {              
+              setShowOptionList(!showOptionList)
+            }
+            }              
+        >
+          {selectCoin !=="none" ? selectCoin : "Select coin" }
+        </div>
+        {showOptionList && (
+          <ul className="pay-select-options">
+            {coinsList.map((option:any ,index:number) => {
+              return (
+                <li
+                  className="pay-custom-select-option"
+                  data-name={option.name}
+                  key={option.id}
+                  onClick={ async () => {
+                    setSelectCoin(option.name)
+                    setCoinInfo(option)
+                    setShowOptionList(!showOptionList)
+                    await mybtn("disconnect", "true").then(() => {
+                      setConnectOrNot(!connectOrNot)
+                    })
                   }}
-                  style={{
-                    // width:"150px"
-                    background: "none",
-                    color: "white",
-                    outline: "none",
-                  }}
-              >
-                  <option value="none">Select Coin</option>
-            {selectPayment && coinsList.map((item: any, index: any) => {                  
-                    return <option value={index} key={index}>{item.name}</option>
-                })               }
-                </Form.Select>
-
+                >
+                  {option.name}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
         </Sidediv>}
+        
 
         {selectCoin != "none" && <Paymentdiv>
           <div className="d-flex flex-column justify-content-center align-items-center">
@@ -306,26 +323,38 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
                   style={{
                   fontSize:"20px"
                 }}
-                >Pay 99$ using {selectCoin}</p>
-                  <p className="my-1">Your are connected with : {walletName} </p>
-
-                  <p className="my-1">If you want to choose another wallet ?  <span
+            >Pay 99$ using {selectCoin}</p>
+             {!walletName && 
+              <>
+              <p className="my-1"
+                style={{
+                fontSize:`${window.screen.width > 767 ?"13px" :"11px"}`,
+              }}
+              >
+                Your are not connected with any wallat !
+                  <span
                     style={{
                       color: "#3366CC",
-                      cursor:"pointer",
+                    cursor: "pointer",
+                        fontSize:`${window.screen.width > 767 ?"13px" :"12px"}`,                      
                       }}
                   onClick={async () => {                  
                     await mybtn("disconnect", "true")
+                    setConnectOrNot(true)
                     await mybtn("connect").then((data: any) => {
+                      setConnectOrNot(false)
                       // @ts-ignore
                       setWalletName(localStorage.getItem("wldp-cache-provider"))
                     })
                   }}
-                      >  &nbsp; Click here </span></p>
+                >  &nbsp; Connect Now </span></p>
+              </>
+            }                           
           </div>
         </Paymentdiv> }       
       </Boxdiv>
       {selectCoin != "none" &&
+        localStorage.getItem("wldp-cache-provider") &&
       <Divbutton>
         <button
           style={{
@@ -334,10 +363,13 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
             color: "#543cd6",
             background: "none",
             }}
-            onClick={() => {
+            onClick={ async () => {
                 setSelectCoin("none")
                 // mybtn("disconnect", "true")
-                setCoinInfo([])
+              setCoinInfo([])
+              await mybtn("disconnect", "true").then(() => {
+        setConnectOrNot(!connectOrNot)
+      })
               }}
         >Cancel</button>
         <button
@@ -347,9 +379,9 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
             opacity:`${payButton ?"0.6":"1"}`
             }}
             disabled={payButton}
-            onClick={() => {
+            onClick={ async () => {          
               send()
-               setPayButton(true)
+              setPayButton(true)
             }}
         >Pay Now</button>
       </Divbutton>

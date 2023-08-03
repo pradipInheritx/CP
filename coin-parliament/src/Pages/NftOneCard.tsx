@@ -60,7 +60,7 @@ const Card = styled.div`
     
   }
   &.CardDisebal{
-    opacity: 0.5;
+    opacity: 0.2;
   }
 `;
 const CardName = styled.div`

@@ -333,12 +333,14 @@ const Header = ({
 
 				signOut(auth)
 					.then((res) => {
-						Logout(setUser);
+						Logout(setUser);						
+						navigate("/")
 						setLogin(true);
 					})
 					.catch((error) => {
-
+						navigate("/")
 						setLogin(true);
+
 						const errorMessage = error.message;
 
 					});

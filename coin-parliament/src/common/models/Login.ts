@@ -59,6 +59,7 @@ export const Logout = (setUser: () => void) => {
     })
     .catch((error) => {
       const errorMessage = error.message;
+      navigate("/")
       console.log(errorMessage);
     });
 };

@@ -32,6 +32,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { Logout } from 'common/models/Login';
 import AppContext from 'Contexts/AppContext';
+import { useNavigate } from 'react-router-dom';
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
@@ -73,7 +74,7 @@ const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+let navigate = useNavigate();
   const onSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const validatePassword = passwordValidation(newPassword, confirmPassword, (userInfo?.displayName || ''));
@@ -95,10 +96,12 @@ const ChangePassword = () => {
               signOut(auth)
               .then((res) => {
                 Logout(setUser);
+                navigate("/")
                 setLogin(true);
                   })
                   .catch((error) => {
                 
+                    navigate("/")
                     setLogin(true);
                     const errorMessage = error.message;
                 
