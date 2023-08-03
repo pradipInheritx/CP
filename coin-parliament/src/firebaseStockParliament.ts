@@ -4,7 +4,7 @@ import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { getApp } from "firebase/app";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
-import { getMessaging } from "firebase/messaging";
+import { getMessaging, isSupported } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDLKqQ1J-m6YPVLhLYTd_OZFLHUoWu6qSU",
@@ -21,7 +21,19 @@ const firebaseConfig = {
 
 const stockParliament = firebase.initializeApp(firebaseConfig, 'stockParliament');
 
-export const messaging = getMessaging();
+export const messaging = (async () => {
+  try {
+    const isSupportedBrowser = await isSupported();
+    if (isSupportedBrowser) {
+      return getMessaging();
+    }
+    console.log('StockFirebase not supported this browser');
+    return null;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+})();
 export const db = getFirestore(stockParliament);
 export const auth = getAuth();
 export const functions = getFunctions(getApp());

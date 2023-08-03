@@ -10,3 +10,7 @@ export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpira
         difference: difference || '0'
     }
 }
+
+export const getCoinDifferenceColor = (value: number) => {
+    return value < 0 ? '#fa0202' : value > 0 ? '#08c90b' : '#050505'
+}

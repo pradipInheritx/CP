@@ -621,7 +621,7 @@ function App() {
       (querySnapshot) => {
         setNotifications(
           querySnapshot.docs.map((doc) => {
-            
+
             return doc.data() as NotificationProps;
           })
         );
@@ -1236,7 +1236,6 @@ function App() {
   }
   ///END vote result //
 
-  
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
