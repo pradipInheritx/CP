@@ -1,13 +1,13 @@
-import React, {useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import GeneralPage from "../GeneralPage";
-import {Form} from "react-bootstrap";
-import {Buttons} from "../Components/Atoms/Button/Button";
-import {httpsCallable} from "firebase/functions";
-import {functions} from "../firebase";
+import { Form } from "react-bootstrap";
+import { Buttons } from "../Components/Atoms/Button/Button";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../firebase";
 import Spinner from "../Components/Spinner";
 import styled from "styled-components";
-import NotificationContext, {ToastType} from "../Contexts/Notification";
-import {Link} from "react-router-dom";
+import NotificationContext, { ToastType } from "../Contexts/Notification";
+import { Link } from "react-router-dom";
 
 const sendEmail = httpsCallable(functions, "sendEmail");
 
@@ -49,22 +49,22 @@ const Contact = () => {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const {showToast} = useContext(NotificationContext);
+  const { showToast } = useContext(NotificationContext);
 
   return (
     <GeneralPage>
-      
+
       {!sent && (<React.Fragment>
         <h1>Contact Us</h1>
         {sending && (
-          <Spinner/>
+          <Spinner />
         )}
         {!sending && (
           <Form onSubmit={async e => {
             e.preventDefault();
             try {
               setSending(true);
-              await sendEmail({name, subject, message});
+              await sendEmail({ name, subject, message });
               setSending(false);
               setSent(true);
             } catch (e) {
@@ -73,15 +73,15 @@ const Contact = () => {
             }
           }}>
             <Form.Group className="mb-3" controlId="name">
-              <Form.Control type="text" placeholder="YourName" value={name} onChange={(e) => setName(e.target.value)}/>
+              <Form.Control type="text" placeholder="YourName" value={name} onChange={(e) => setName(e.target.value)} />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="subject">
               <Form.Control type="text" placeholder="Subject" value={subject}
-                            onChange={(e) => setSubject(e.target.value)}/>
+                onChange={(e) => setSubject(e.target.value)} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="message">
-              <Form.Control as="textarea" rows={3} value={message} onChange={(e) => setMessage(e.target.value)}/>
+              <Form.Control as="textarea" rows={3} value={message} onChange={(e) => setMessage(e.target.value)} />
             </Form.Group>
             <Buttons.Primary fullWidth={true} type="submit">
               Send
@@ -97,8 +97,8 @@ const Contact = () => {
         <Back>
           <Link to={"/"}>Go back to homepage</Link>
         </Back>
-        </React.Fragment>)}
-        
+      </React.Fragment>)}
+
     </GeneralPage>
   );
 };

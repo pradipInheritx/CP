@@ -76,7 +76,7 @@ const Security = () => {
   //     }
   //   }
   // };
-  
+
   // const auth = getAuth();
   // const authMFA = () => {
   //   const recaptchaVerifier = new RecaptchaVerifier(
@@ -87,7 +87,7 @@ const Security = () => {
   //         // reCAPTCHA solved, you can proceed with
   //         // phoneAuthProvider.verifyPhoneNumber(...).
   //         // onSolvedRecaptcha();
-         
+
   //       },
   //     },
   //     auth
@@ -103,7 +103,7 @@ const Security = () => {
   //       };
 
   //       const phoneAuthProvider = new PhoneAuthProvider(auth);
-        
+
   //       // Send SMS verification code.
   //       return phoneAuthProvider.verifyPhoneNumber(
   //         phoneInfoOptions,
@@ -111,7 +111,7 @@ const Security = () => {
   //       );
   //     })
   //     .then(function (verificationId) {
-  
+
   //       // Ask user for the verification code. Then:
   //       setVerificationIdData(verificationId);
   //       setVerifiactionCodeSent(true);

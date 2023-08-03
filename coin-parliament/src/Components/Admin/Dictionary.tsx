@@ -138,7 +138,7 @@ const AdminDictionary = () => {
     setNewValue("");
   };
 
-  const uploadCSV = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
+  const uploadCSV = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => { };
 
   const downloadCsvEmpty = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>

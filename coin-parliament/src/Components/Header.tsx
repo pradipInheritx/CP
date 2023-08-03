@@ -336,11 +336,13 @@ const Header = ({
 						Logout(setUser);						
 						navigate("/")
 						setLogin(true);
+						// console.log("i am working error")	
+						localStorage.removeItem("userId")
 					})
 					.catch((error) => {
-						navigate("/")
+						navigate("/")						
 						setLogin(true);
-
+						localStorage.removeItem("userId")
 						const errorMessage = error.message;
 
 					});
@@ -883,21 +885,12 @@ const Header = ({
 						<p className="text-uppercase text-center mb-3" > Out of votes? </p>
 						{/* <strong className="text-uppercase" style={{ fontSize: "20px" }}>Out of votes?</strong> */}
 						<div className="text-center">
-							<Link className="text-uppercase" to="/votingbooster" onClick={() => {
-								handleSoundClick()
-								navigate("/votingbooster")
-								setShow(false)
-								setAfterVotePopup(false)
-							}} >Buy Extra votes</Link> \
-							{" now or wait,".toUpperCase()}
-							<span className="text-uppercase">
+							WAIT <span className="text-uppercase">
 								{/* @ts-ignore */}
 								{!!new Date(votingTimer).getDate() && <Countdown date={votingTimer}
 									renderer={({ hours, minutes, seconds, completed }) => {
 										return (
 											<span >
-												{/* {hours < 10 ? `0${hours}` : hours}: */}
-												{Number(voteRules?.maxVotes)} votes in {' '}
 												{hours < 1 ? null : `${hours}:`}
 												{minutes < 10 ? `0${minutes}` : minutes}:
 												{seconds < 10 ? `0${seconds}` : seconds}
@@ -906,8 +899,13 @@ const Header = ({
 
 									}}
 								/>}
-							</span>
-
+							</span> FOR {Number(voteRules?.maxVotes)} VOTES OR&nbsp;
+							<Link className="text-uppercase" to="/votingbooster" onClick={() => {
+								handleSoundClick()
+								navigate("/votingbooster")
+								setShow(false)
+								setAfterVotePopup(false)
+							}} >Buy Extra votes</Link>
 						</div>
 					</Modal.Body>
 				</Modal>

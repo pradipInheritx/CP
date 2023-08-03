@@ -83,7 +83,7 @@ const Mine = () => {
   const [shareModleShow, setShareModleShow] = React.useState(false);
   const [countShow, setCountShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
-  
+
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -147,7 +147,7 @@ const Mine = () => {
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
-      
+
       handleCardShow();
     }
   }, [inOutReward, showReward, rewardTimer]);
@@ -162,15 +162,14 @@ const Mine = () => {
         }
 
         setShowBack(false)
-      }, 10000);      
+      }, 15000);
     }
 
   }, []);
 
-
-  const Cmppopup = () => {        
+  const Cmppopup = () => {
     var urlName = window.location.pathname.split('/');
-    
+
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
       Swal.fire({
@@ -180,11 +179,13 @@ const Mine = () => {
           "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
           "",
         color: 'black',
+        showConfirmButton: ((userInfo?.rewardStatistics?.extraVote || 0) + parseInt(userInfo?.voteValue || '0') > 0),
         confirmButtonText: 'Continue Voting',
         confirmButtonColor: '#6352e8',
-        showCloseButton: true,
+        showCloseButton: false,
         customClass: {
           popup: 'stayInGamePopupStyle',
+          htmlContainer: 'pt-3'
         }
       }).then((result) => {
         if (result.isConfirmed) {
@@ -261,7 +262,7 @@ const Mine = () => {
             {/* @ts-ignore */}
             <div style={{ marginLeft: "10px" }}>
               <Minting
-                {...{                  
+                {...{
                   setCountShow,
                   width,
                   score: remainingCMP /* ((userInfo?.voteStatistics?.score || 0) > 0 ? remainingCMP : 0) */,
@@ -283,8 +284,8 @@ const Mine = () => {
               <div className='d-flex justify-content-center align-items-center flex-column mb-2'>
                 {/* @ts-ignore */}
                 <Minting
-                    {...{
-                    
+                  {...{
+
                     width,
                     setCountShow,
                     score: remainingCMP,
