@@ -7,6 +7,11 @@ import styled from "styled-components";
 
 import firebase from "firebase/compat";
 import { Buttons } from "Components/Atoms/Button/Button";
+import axios from "axios";
+import UserContext from "Contexts/User";
+import { auth } from "firebase";
+import { showToast } from "App";
+import { ToastType } from "Contexts/Notification";
 
 const CoinList = styled.div`
   // border:1px solid red;
@@ -18,27 +23,82 @@ const CoinList = styled.div`
   border-radius:10px;
 `;
 
+const Boxdiv = styled.div`
+  width:${window.screen.width >767 ? "60%":"98%"};
+  border-radius:10px;
+  background-color:#1e0243;
+  padding :30px;
+  display:flex;
+  flex-wrap:${window.screen.width > 767 ? "" : "wrap"}
+`;
+
+const Opctiondiv = styled.div`
+  border:1px solid white;
+  border-radius:10px;
+  overflow:hidden;
+  width:${window.screen.width > 767 ? "33%" : "98%"};
+  margin:${window.screen.width > 767 ? "" : "auto"};
+  font-size:15px;
+  & div{
+    padding:13px;
+    display:flex;    
+  }
+`;
+
+const Sidediv = styled.div`
+width:${window.screen.width >767 ? "65%":"98%"};
+margin:${window.screen.width > 767 ? "" : "auto"};
+ margin-left:${window.screen.width >767 ? "20px":""};
+ margin-top:${window.screen.width > 767 ? "" : "30px"};
+`;
+
+const Paymentdiv = styled.div`
+//  width:65%;
+width:${window.screen.width > 767 ? "65%" : "98%"};
+margin-top:${window.screen.width > 767 ? "" : "30px"};
+ display:flex;
+  justify-content: center;
+    align-items: center;
+ margin-left:20px;
+`;
+const Divbutton = styled.div`
+  width:60%;
+  border-radius:10px;
+
+  display:flex;
+  justify-content: end;
+  & button {
+    width:150px;
+    margin:20px 0px;
+    padding:10px;
+    border:none;
+    border-radius:5px;
+  }
+`;
+
 
 const CoinsList = () => {
+
+
   const [coinsList, setCoinsList] = useState([])
   const [selectPayment, setSelectPayment] = useState(0);
   const [CheckCoin, setCheckCoin] = useState(0);
   const [selectCoin, setSelectCoin] = useState("none");
-  const [connectCheck, setConnectCheck] = useState();
-const [cardModalShow, setCardModalShow] = React.useState(false);
+  const [coinInfo, setCoinInfo] = useState([]);  
+  const infoWallet = localStorage.getItem("wldp-cache-provider")
+  const [walletName, setWalletName] = React.useState(infoWallet && infoWallet || []);
+  const { userInfo, user } = useContext(UserContext);
+  const [payamount, setPayamount ] = useState(99);
+  const [payButton, setPayButton ] = useState(false);
+const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
+// Insufficient balance 
+
+  // Buy more tokens here or swap from other tokens with balance on this account here
+
+
+//  For put email in userid 
   
-  const handleCardClose = () => {
-    setCardModalShow(false)
-    setCheckCoin(0)
-  };      
-  const handleCardShow = () => setCardModalShow(true);
-  
-  useEffect(() => {
-    if(CheckCoin!=0) handleCardShow()
-  }, [CheckCoin])
-  
-console.log(selectCoin,"selectCoin")
   useEffect(() => {
     const getCoinList = firebase
       .firestore()
@@ -52,207 +112,249 @@ console.log(selectCoin,"selectCoin")
       });
 
   }, [])
-  const mybtn =(window as any)?.wldp?.connectionWallet
-  // const CheckConnection =(window as any)?.wldp?.isWalletConnected
-  // const getWalletConnectedAddress =(window as any)?.wldp?.getWalletConnectedAddress
 
-  console.log((window as any).wldp ,"(window as any).wldp")
+//  For put email in userid 
 
-// const Checkconnect = () => {
-//   (window as any)?.wldp?.isWalletConnected().then((data:any) => {
-//    setConnectCheck(data)
-//  })   
+  useEffect(() => {
+    (window as any)?.wldp?.send_uid(`${user?.email}`).then((data:any) => {       
+      console.log(data,"username")
+    })  
+  }, [])
+
+  //  For connect with wallet 
+
+  useEffect(() => {    
+    if (!localStorage.getItem("wldp-cache-provider") && selectCoin!="none") {
+      mybtn("connect").then((data: any) => {
+        // @ts-ignore
+        setWalletName(localStorage.getItem("wldp-cache-provider"))
+      })
+    }
+  }, [selectCoin])
+
+  const mybtn = (window as any)?.wldp?.connectionWallet
+    
+//  for do payment 
+
+const payNow = () => {
+    const headers = {
+  'Content-Type': 'application/json',  
+      "accept": "application/json",
+  // @ts-ignore
+ "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+    }
+
+//     const data = {
+//   method: "getTransaction",
+//   callback_secret: "",
+//   callback_url: "",
+//   user:`${user?.email}`,
+//       params: {
+//     // @ts-ignore
+//       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+//         amount: "0.105",
+//       // @ts-ignore
+//       token: `${coinInfo?.symbol}`,
+//       network: "5"
+//   }
 // }
   
-  // console.log(CheckConnection().then((data:any) => {
-  //   setConnectCheck(data)
-  // }))
+  const data = {
+    userId: `${user?.uid}`,
+    userEmail: `${sessionStorage.getItem("wldp_user")}`,
+    walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+    amount: payamount,
+    network: "5",
+    // @ts-ignore
+    origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+    token: "ETH"
+}
   
+axios.post("https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/payment/makePayment", data, {
+    headers: headers
+  })
+  .then((response) => {
+    // console.log(response.data ,"response")
+    setPayButton(false)
+    showToast(response?.data?.message)
+  })
+  .catch((error) => {
+    showToast(error.message,ToastType.ERROR)
+    console.log(error
+      , "errorpayment")
+  })
+  }
+  
+  const GetBalance = (accoutnId:any , token:any) => {
+    const headers = {
+  'Content-Type': 'application/json',  
+      "accept": "application/json",
+  // @ts-ignore
+ "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+    }  
+axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
+    headers: headers
+  })
+  .then((response) => {
+    const balance = response?.data?.data?.balance;
+    if (balance >= payamount) {
+      payNow()
+    } else {
+      showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
+      setPayButton(false)
+    }
+  })
+  .catch((error) => {
+    showToast(error.message,ToastType.ERROR)
+    console.log(error
+      , "errorpayment")
+  })
+  }  
 
-  // useEffect(() => {
-  // Checkconnect()    
-  // CheckConnection().then((data:any) => {
-  //   setConnectCheck(data)
-  // })
-  // }, [selectCoin])
-  
-    // console.log(connectCheck, "checkdataCheckConnection")
-  
-  
-  // console.log(getWalletConnectedAddress().then((data:any) => {
-  //   console.log(data,"getWalletConnectedAddress")
-  // }).catch((err:any) => {
-  //   console.log(err,"errgetWalletConnectedAddress")
-  // })
-  
-  // )
+  const send = () => {
+    const obj = {
+      method: "getTransaction",      
+      user: `${sessionStorage.getItem("wldp_user")}`,
+      params: {
+        // @ts-ignore
+        origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+        amount: payamount,
+        // @ts-ignore
+        // token:"ETH",
+        token:`${coinInfo?.symbol.toUpperCase()}`,
+        network: "5"
+      },
+      application: "votetoearn",
+      uid:`${sessionStorage.getItem("wldp_wsid")}`,
+    };
+    console.log(obj, "alldata");
+    (window as any).wldp.send_msg(obj).then((res: any) => {
+      // @ts-ignore
+      GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)    
+      
+    }).catch((err:any) => {
+      console.log(err, "allerr")
+      
+    })
+  };
+
 
   return (
     <div
       style={{
         width: "100%",
       }}
-      className="d-flex justify-content-center"
-    >            
-      <div className="d-flex justify-content-center flex-column align-items-center mt-5  p-4"
-      
-      
-      >
-  
-       {selectCoin =="none" && <div>
-          <h1 className="text-center mb-3">Select Payment mode</h1>
-          <div className="d-flex flex-column justify-content-center align-items-start "
+      className="d-flex justify-content-center flex-column align-items-center"
+    >               
+      <Boxdiv className="mt-5">
+        <Opctiondiv>
+          <div
             style={{
-            paddingLeft:`${window.screen.width >767 ? "60px" : "30px"}`
+              cursor:"pointer",
+              borderBottom: "1px solid white",
+              background:`${selectPayment && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+            }}
+            onClick={() => {
+              setSelectPayment(1)
+            }}
+          >
+            <i className="bi bi-coin"></i>
+            <p className="mx-2">Cryptocurrency</p>
+          </div>
+          <div
+            style={{
+              cursor: "not-allowed",
           }}
-          >  
-            <div className="d-flex">
-              <div className="d-flex justify-content-center align-items-start  mt-3 mb-2 w-100"
-              
-              >              
-              <Form.Check
-                type={"radio"}
-                onChange={() => {
-                  setSelectPayment(1)
-                }}                
-                checked={selectPayment == 1 ? true : false}
-                id={`disabled-default-radio-1`}
+          >
+            <i className="bi bi-credit-card-fill "></i>
+            <p className="mx-2">Debit & Credit cards</p>
+          </div>
+        </Opctiondiv>
+        { selectCoin == "none" &&<Sidediv>          
+          <Form.Select aria-label="Default select"              
+            size="lg"
+                  onChange={ async (e)  => {
+                    // @ts-ignore
+                    setSelectCoin(coinsList[e.target.value].name); setCoinInfo(coinsList[e.target.value])
+                    if (e.target.value) {
+                      await mybtn("disconnect", "true")
+                await mybtn("connect").then((data: any) => {
+                  // @ts-ignore
+                  setWalletName(localStorage.getItem("wldp-cache-provider"))
+                })
+                    }
+                  }}
                   style={{
-                    fontSize: "17px",                    
-                  }}              
-              />
-              <label htmlFor="disabled-default-radio-1" className="mx-3"
-                style={{
-                fontSize:"17px"
-              }}
-              >Cryptocurrency</label>  
-              </div>
-            {selectPayment !=0 && <div className="my-3">
-              <Form.Select aria-label="Default select example"              
-                  onChange={(e) => { setSelectCoin(e.target.value) }}
-                  style={{
-                    width:"150px"
+                    // width:"150px"
+                    background: "none",
+                    color: "white",
+                    outline: "none",
                   }}
               >
                   <option value="none">Select Coin</option>
-                {coinsList.map((item: any, index: any) => {
-                  return <option value={item.name}>{item.name}</option>
-                })}               
+            {selectPayment && coinsList.map((item: any, index: any) => {                  
+                    return <option value={index} key={index}>{item.name}</option>
+                })               }
                 </Form.Select>
-              </div>}                                       
 
-            </div> 
+        </Sidediv>}
 
-            <div className="d-flex my-2 mt-3">
-              <Form.Check
-                disabled
-                
-                type={"radio"}
-                onChange={() => {
-                  setSelectPayment(2)
-                }}
-                checked={selectPayment == 2 ? true : false}
-                id={`disabled-default-radio-2`}
+        {selectCoin != "none" && <Paymentdiv>
+          <div className="d-flex flex-column justify-content-center align-items-center">
+              <p
+                  className="my-1"
                   style={{
-                fontSize:"17px"
-              }}
-              />
-              <label
-                style={{
-                  color: "#dddddd",
-                  fontSize:"17px"
+                  fontSize:"20px"
                 }}
-                htmlFor="disabled-default-radio-2" className="mx-3"
-                              
-              >Debit / Credit Card </label>
-            </div>
-          </div>
-        </div>  }                     
-        
-        {/* For pay button div */}
-        
+                >Pay 99$ using {selectCoin}</p>
+                  <p className="my-1">Your are connected with : {walletName} </p>
 
-        {selectCoin != "none" &&
-          <>
-              <div className=""
-                style={{
-                
-              }}
-              >            
-            <p
-              className="pb-3"
-              style={{
-              fontSize:"27px"
+                  <p className="my-1">If you want to choose another wallet ?  <span
+                    style={{
+                      color: "#3366CC",
+                      cursor:"pointer",
+                      }}
+                  onClick={async () => {                  
+                    await mybtn("disconnect", "true")
+                    await mybtn("connect").then((data: any) => {
+                      // @ts-ignore
+                      setWalletName(localStorage.getItem("wldp-cache-provider"))
+                    })
+                  }}
+                      >  &nbsp; Click here </span></p>
+          </div>
+        </Paymentdiv> }       
+      </Boxdiv>
+      {selectCoin != "none" &&
+      <Divbutton>
+        <button
+          style={{
+            marginRight: "20px",
+            border: "1px solid #543cd6",
+            color: "#543cd6",
+            background: "none",
             }}
-            >Pay 99$ using {selectCoin}</p>
-            <div className="d-flex justify-content-around mt-3">
-          <Buttons.Default className="mx-3"
-              onClick={() => {
+            onClick={() => {
                 setSelectCoin("none")
+                // mybtn("disconnect", "true")
+                setCoinInfo([])
               }}
-              >
-                Back
-              </Buttons.Default>
-            <Buttons.Primary className=""
-              onClick={() => {
-                setCheckCoin(1)
-              }}>
-                    Pay Now
-            </Buttons.Primary>
-            </div>
-            
-
-          </div>    
-        </>}
-
-        
-        {/* Module for connect  */}
-        
-
-        <Modal
-          className=""
-          show={
-            cardModalShow
-          } onHide={handleCardClose}
-          // fullscreen="sm-down"
-          backdrop="static"          
-          centered          
-        >
-          <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
-              handleCardClose()
-              setCheckCoin(0)
-            }}></button>
-          </div>
-          <Modal.Body>  
-            <div className="d-flex ">
-              {/* <p>Please Use this button for Connect</p> */}
-            </div>
-              <div className="d-flex justify-content-center pb-3" style={{ zIndex: '101' }}>
-              <Buttons.Primary className="mx-2"
-                // disabled={connectCheck && connectCheck==true}
-              onClick={() => {
-                mybtn("connect")
-                handleCardClose()                  
-                setSelectCoin("none")
-                // setConnectCheck(false)
-              }}
-            >Connect</Buttons.Primary>
-              <Buttons.Error className="mx-2"
-                // disabled={connectCheck == undefined || connectCheck == false}
-              onClick={() => {
-                mybtn("disconnect", "true")
-                handleCardClose()                
-                setSelectCoin("none")
-                // setConnectCheck(true)
-              }}
-            >Disconnect</Buttons.Error>
-          </div>  
-          </Modal.Body>
-
-                                          
-        </Modal>
-      </div>
+        >Cancel</button>
+        <button
+          style={{
+            background: "#543cd6",
+              color: "white",
+            opacity:`${payButton ?"0.6":"1"}`
+            }}
+            disabled={payButton}
+            onClick={() => {
+              send()
+               setPayButton(true)
+            }}
+        >Pay Now</button>
+      </Divbutton>
+      }
+      
       </div>    
   );
 };

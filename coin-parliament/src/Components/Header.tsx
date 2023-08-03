@@ -314,13 +314,6 @@ const Header = ({
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 
-	console.log(showReward, inOutReward, "showRewardsetShowReward")
-
-
-
-
-
-
 	const onSelect = (eventKey: string | null) => {
 
 		console.log(eventKey, "checkeventKey")

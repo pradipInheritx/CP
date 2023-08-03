@@ -20,7 +20,7 @@ export const getData = ({
   }) => {
   const filterpair = str ? filterpairdata(str, pairs) : [...pairs]
 
-  console.log(pairs,"filterpair")
+  // console.log(pairs,"filterpair")
 
   return filterpair
     .map((combination:any) => {
@@ -151,7 +151,7 @@ export const getPairData = ({
 }) => {
   const filterpair = str ? filterpairdata(str, pairs) : [...pairs]
 
-  console.log(pairs, "onlyfilterpair")
+  // console.log(pairs, "onlyfilterpair")
 
   return filterpair
     .map((combination: any) => {

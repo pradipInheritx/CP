@@ -193,28 +193,52 @@ const Card = ({
   const prevCountRef = useRef(currentPrice)
 
   // console.log('reference',coins[symbol]?.randomDecimal)
-  const OnlyCheckColor = () => {
+  // const OnlyCheckColor = () => {
+  //   // setInterval(() => {
+  //   if (coins[symbol]?.price == prevCountRef.current) {
+  //     setChangeColor("black")
+  //   }
+  //   else if (coins[symbol]?.price > prevCountRef.current) {
+  //     console.log("check i am working")
+  //     setChangeColor("Green")
+  //   }
+  //   else if (coins[symbol]?.price < prevCountRef.current) {
+  //     setChangeColor("Red")
+  //   }
+  //   // },5000);
+  //   // console.log(coins[symbol]?.price,"checkprice")
+  //   setCurrentPrice(coins[symbol]?.price)
+  // }
+  // useEffect(() => {
+  //   // console.log(currentPrice,"currentPrice")
+  //   prevCountRef.current = currentPrice;
+  //   OnlyCheckColor()
+  // }, [
+  //   coins[symbol]?.price,
+  // ])
+  
+const OnlyCheckColor = () => {
     // setInterval(() => {            
-    if (coins[symbol]?.price == prevCountRef.current) {
+    if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` == prevCountRef.current) {
       setChangeColor("black")
     }
-    else if (coins[symbol]?.price > prevCountRef.current) {
+    else if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` > prevCountRef.current) {
       setChangeColor("Green")
     }
-    else if (coins[symbol]?.price < prevCountRef.current) {
+    else if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` < prevCountRef.current) {
       setChangeColor("Red")
     }
     // },5000);
-    setCurrentPrice(coins[symbol]?.price)
+    setCurrentPrice(`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}`)
   }
   useEffect(() => {
     prevCountRef.current = currentPrice;
     OnlyCheckColor()
   }, [
-    coins[symbol]?.price
+    `${coins[symbol]?.price}${coins[symbol]?.randomDecimal}`
   ])
 
-
+// console.log(coins[symbol]?.price,"check both price")
 
   let params = useParams();
 
@@ -225,6 +249,7 @@ const Card = ({
       onMouseEnter={() => setZoom(true)}
       onMouseLeave={() => setZoom(false)}
       onClick={onClick}
+      
     >
       <HeartContainer {...{ single, isHeader }} style={{ marginTop: Object.keys(params).length !== 0 ? '' : '-142px' }} onClick={
         () => {
@@ -246,7 +271,7 @@ const Card = ({
         <LogoImgContainer onClick={onClick} single={single}>
           <Logo {...{ symbol, single }} />
         </LogoImgContainer>
-        <div className="my-2">
+        <div className="my-2 ">
           <CoinNameXYZ {...{ single }}>
             <Span0 style={{ fontSize: "20px" }}>
               {single && (

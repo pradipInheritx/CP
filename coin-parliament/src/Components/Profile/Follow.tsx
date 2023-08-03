@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import UserContext from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
@@ -27,7 +27,7 @@ export const getUsers = ({
   users?: string[];
   setUsers: (newUsers: Leader[]) => void;
   }) => {  
-  try {    
+  try {        
       getLeaderUsersByIds({ userIds: users }).then((u) => {
         console.log(u.data,"checkdata")
         setUsers(u.data);
@@ -46,16 +46,19 @@ const Follow = () => {
 console.log(userInfo,"userInfo")
 
   useEffect(() => {
-    getUsers({ users: userInfo?.leader, setUsers: setLeaders });
-    // getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+    if (userInfo?.leader) {      
+      getUsers({ users: userInfo?.leader, setUsers: setLeaders });
+    }
   }, [userInfo?.leader]);
+
   useEffect(() => {
-    // getUsers({ users: userInfo?.leader, setUsers: setLeaders });
-    getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+    if(userInfo?.subscribers){      
+      getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+    }
   }, [userInfo?.subscribers]);
 
 
-console.log(leaders,subscribers,"allleaders")
+// console.log(leaders,subscribers,"allleaders")
   return (
     <Tabs
       defaultActiveKey="following"
@@ -121,4 +124,4 @@ console.log(leaders,subscribers,"allleaders")
   );
 };
 
-export default Follow;
+export default  Follow;
