@@ -345,7 +345,7 @@ export async function poolMiningNotification(parentId: string, childrenName: str
     token,
     notification: {
       title: `You just earnd ${cmp} CMP from ${childrenName}`,
-      body: "",
+      body: `You just earnd ${cmp} CMP from ${childrenName}`,
     },
     webpush: {
       headers: {
@@ -361,11 +361,9 @@ export async function poolMiningNotification(parentId: string, childrenName: str
   await sendNotification({
     token,
     id: parentId,
-    body: "",
+    body: `You just earnd ${cmp} CMP from ${childrenName}`,
     title: `You just earnd ${cmp} CMP from ${childrenName}`,
     message,
   });
-
-
   console.log("Finished pool minig notification")
 }
