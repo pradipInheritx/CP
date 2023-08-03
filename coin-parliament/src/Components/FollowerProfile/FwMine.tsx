@@ -41,10 +41,10 @@ const RewardList = styled.p`
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const FwMine = () => {
-  const {  user } = useContext(UserContext);
-  const{setAlbumOpen}=useContext(AppContext)
+  const { user } = useContext(UserContext);
+  const { setAlbumOpen } = useContext(AppContext)
   const followerUserId = localStorage.getItem("followerId")
-  const[userInfo,setUserInfo]=useState<any>()
+  const [userInfo, setUserInfo] = useState<any>()
   const { userTypes } = useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
@@ -53,35 +53,35 @@ const FwMine = () => {
   const [rewardTimer, setRewardTimer] = useState(null);
   const [data, setData] = useState([]);
   let navigate = useNavigate();
-  
+
   const rewardList = async () => {
-  
+
     const result = await getRewardTransactions({ uid: followerUserId });
     // @ts-ignore
     setData(result?.data);
-  
+
   };
 
-  
-  const getFollowerData =()=>{
-  
+
+  const getFollowerData = () => {
 
 
-  const getCollectionType = firebase
-  .firestore()
-  .collection("users")
-  .where("uid", "==", followerUserId)
-getCollectionType.get()
-.then((snapshot) => {        
 
-snapshot.docs?.map(doc=>setUserInfo(doc.data()))
+    const getCollectionType = firebase
+      .firestore()
+      .collection("users")
+      .where("uid", "==", followerUserId)
+    getCollectionType.get()
+      .then((snapshot) => {
 
- 
- 
+        snapshot.docs?.map(doc => setUserInfo(doc.data()))
 
-}).catch((error) => {
-console.log(error,"error");
-});    
+
+
+
+      }).catch((error) => {
+        console.log(error, "error");
+      });
   }
 
 
@@ -101,16 +101,16 @@ console.log(error,"error");
     );
   }
 
-console.log(data,"data?.winData")
+  console.log(data, "data?.winData")
 
 
   return (
     <div>
       <Container >
         {/* @ts-ignore */}
-        {!!rewardTimer && ( <AnimationReward setRewardTimer={setRewardTimer}rewardTimer={rewardTimer} />)}
+        {!!rewardTimer && (<AnimationReward setRewardTimer={setRewardTimer} rewardTimer={rewardTimer} />)}
 
-              {/* <Player
+        {/* <Player
         autoplay
         loop
         src={animation}
@@ -158,7 +158,7 @@ console.log(data,"data?.winData")
                 setRewardTimer={setRewardTimer}
                 rewardTimer={rewardTimer}
                 // @ts-ignore
-                claim={ userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
+                claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                 }
               />
             </div>
@@ -171,15 +171,15 @@ console.log(data,"data?.winData")
                 <Minting
                   {...{
                     width,
-                      score:
+                    score:
                       // @ts-ignore
                       (userInfo?.voteStatistics?.score || 0) - userInfo?.rewardStatistics?.total * 100 || 0,
                     setRewardTimer,
                     rewardTimer,
                   }}
                   setRewardTimer={setRewardTimer}
-                    rewardTimer={rewardTimer}
-                    // @ts-ignore
+                  rewardTimer={rewardTimer}
+                  // @ts-ignore
                   claim={userInfo?.rewardStatistics?.total - userInfo?.rewardStatistics?.claimed
                   }
                 />
@@ -212,7 +212,7 @@ console.log(data,"data?.winData")
               color: "#6352E8",
               fontSize: "12px",
               marginTop: "30px",
-              width:`${window.screen.width>767?"730px":"100%"}`
+              width: `${window.screen.width > 767 ? "730px" : "100%"}`
             }}
           >
             <div
@@ -246,11 +246,11 @@ console.log(data,"data?.winData")
                   </RewardList>
                   <RewardList onClick={() => {
                     navigate('/followerProfile/Album')
-                    {/* @ts-ignore */}
+                    {/* @ts-ignore */ }
                     setAlbumOpen(item?.winData?.firstRewardCardCollection);
                   }}>
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" }} onClick={()=>navigate('/followerProfile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
+                    <span style={{ color: "#6352E8" }} onClick={() => navigate('/followerProfile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}

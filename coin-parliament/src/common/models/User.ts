@@ -15,6 +15,7 @@ export type UserProps = {
   displayName?: string;
   address?: string;
   firstName?: string;
+  firstTimeLogin?: boolean;
   lastName?: string;
   email?: string;
   avatar?: string;
@@ -46,6 +47,7 @@ class User implements UserProps {
   private readonly _displayName: string | undefined;
   private readonly _email: string | undefined;
   private readonly _firstName: string | undefined;
+  private readonly _firstTimeLogin: boolean | undefined;
   private readonly _lastName: string | undefined;
   private readonly _leader: string[] | undefined;
   private readonly _mfa: boolean | undefined;
@@ -65,6 +67,7 @@ class User implements UserProps {
     this._displayName = user.displayName;
     this._email = user.email;
     this._firstName = user.firstName;
+    this._firstTimeLogin = user.firstTimeLogin;
     this._lastName = user.lastName;
     this._leader = user.leader;
     this._mfa = user.mfa;
@@ -110,6 +113,9 @@ class User implements UserProps {
 
   get firstName(): string | undefined {
     return this._firstName;
+  }
+  get firstTimeLogin(): boolean | undefined {
+    return this._firstTimeLogin;
   }
 
   get lastName(): string | undefined {
