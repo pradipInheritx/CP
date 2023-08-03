@@ -83,7 +83,7 @@ const Mine = () => {
   const [shareModleShow, setShareModleShow] = React.useState(false);
   const [countShow, setCountShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
-  
+
   let navigate = useNavigate();
   const rewardList = async () => {
     // console.log("user Id called");
@@ -147,7 +147,7 @@ const Mine = () => {
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
-      
+
       handleCardShow();
     }
   }, [inOutReward, showReward, rewardTimer]);
@@ -162,15 +162,15 @@ const Mine = () => {
         }
 
         setShowBack(false)
-      }, 10000);      
+      }, 10000);
     }
 
   }, []);
 
 
-  const Cmppopup = () => {        
+  const Cmppopup = () => {
     var urlName = window.location.pathname.split('/');
-    
+
     const UrlCheck = urlName.includes("profile")
     if (UrlCheck) {
       Swal.fire({
@@ -261,7 +261,7 @@ const Mine = () => {
             {/* @ts-ignore */}
             <div style={{ marginLeft: "10px" }}>
               <Minting
-                {...{                  
+                {...{
                   setCountShow,
                   width,
                   score: remainingCMP /* ((userInfo?.voteStatistics?.score || 0) > 0 ? remainingCMP : 0) */,
@@ -283,8 +283,8 @@ const Mine = () => {
               <div className='d-flex justify-content-center align-items-center flex-column mb-2'>
                 {/* @ts-ignore */}
                 <Minting
-                    {...{
-                    
+                  {...{
+
                     width,
                     setCountShow,
                     score: remainingCMP,

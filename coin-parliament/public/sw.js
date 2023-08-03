@@ -14,9 +14,7 @@ self.addEventListener('notificationclick', (event) => {
     event.notification.close();
 });
 importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js");
-importScripts(
-    "https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js"
-);
+importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js");
 // develop
 let CACHE_NAME = 'coin-parliament';
 let urlsToCache = [
@@ -45,7 +43,7 @@ self.addEventListener('fetch', event => {
                 if (response) {
                     return response;
                 }
-                return fetch(event.request);
+                return fetch(event.request.clone());
             }
             )
     );
@@ -88,21 +86,19 @@ messaging.setBackgroundMessageHandler(function (payload) {
 // }
 
 
-// self.addEventListener('notificationclick', event => {
-//   event.notification.close();
+//show when app is on
+// self.addEventListener('push', (event) => {
+//   if (event.data) {
+//     const pushData = event.data.json();
 
-//   // Add the logic here to redirect the user to the home page of your app
-//   const homePageUrl = 'https://example.com';
-//   event.waitUntil(
-//     clients.matchAll({ type: 'window' }).then(clients => {
-//       for (let client of clients) {
-//         if (client.url === homePageUrl && 'focus' in client) {
-//           return client.focus();
-//         }
-//       }
-//       if (clients.openWindow) {
-//         return clients.openWindow(homePageUrl);
-//       }
-//     })
-//   );
+//     const notificationOptions = {
+//       body: pushData.notification.body,
+//       icon: payload.notification.icon,
+//       // Customize other notification options as needed
+//     };
+
+//     event.waitUntil(
+//       self.registration.showNotification(pushData.notification.title, notificationOptions)
+//     );
+//   }
 // });

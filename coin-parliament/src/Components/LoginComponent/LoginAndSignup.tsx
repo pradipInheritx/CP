@@ -42,7 +42,7 @@ export type LoginAndSignupProps = {
   signupAction: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 };
 
 const LoginAndSignup = ({
@@ -62,7 +62,7 @@ const LoginAndSignup = ({
   return (
     <Stack
       gap={2}
-      className=' justify-content-center border'
+      className=' justify-content-center'
       style={{ height: "100vh", background: "var(--light-purple)" }}
     >
       <div className='container-center-horizontal'

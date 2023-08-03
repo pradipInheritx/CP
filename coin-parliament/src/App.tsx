@@ -76,6 +76,7 @@ import { httpsCallable } from "firebase/functions";
 import ContentContext, { ContentPage } from "./Contexts/ContentContext";
 import Content from "./Pages/Content";
 import LoginAndSignup from "./Components/LoginComponent/LoginAndSignup";
+import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
 import {
   LoginAuthProvider,
   LoginRegular,
@@ -366,6 +367,10 @@ function App() {
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
+  const localID = localStorage.getItem("userId") || false
+  // const [localID, setLocalID] = useState<any>(
+
+  // )  
 
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
@@ -434,9 +439,9 @@ function App() {
       // }, 2000);
     }
   }, [user, userInfo]);
+
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
-
     const info = await getUserInfo(user);
     console.log("i am working")
     setUserInfo(info);
@@ -497,6 +502,7 @@ function App() {
   useEffect(() => {
 
     // @ts-ignore
+
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
       setShowMenuBar(true)
@@ -751,6 +757,9 @@ function App() {
           setLoginRedirectMessage("");
           await updateUser(user);
           setUserUid(user?.uid);
+
+          localStorage.setItem("userId", user.uid)
+
           onSnapshot(doc(db, "users", user.uid), async (doc) => {
             await setUserInfo(doc.data() as UserProps);
             setDisplayName((doc.data() as UserProps).displayName + "");
@@ -1798,7 +1807,16 @@ function App() {
                                                   element={<Content />}
                                                 />
                                               ))}
+
                                             <Route path='*' element={<Content />} />
+
+
+                                            {<Route path='/generic-signup' element={
+                                              !user && !localID ?
+                                                <GenericLoginSignup />
+                                                : <Navigate to="/" />
+                                            } />}
+
                                           </Routes>
                                         </Container>
                                         <Footer />

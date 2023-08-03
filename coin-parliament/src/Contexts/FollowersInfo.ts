@@ -1,5 +1,5 @@
 import React from "react";
-import {NotificationProps, userConverter, UserProps} from "../common/models/User";
+import { NotificationProps, userConverter, UserProps } from "../common/models/User";
 import { User as AuthUser } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db, functions } from "../firebase";
@@ -45,12 +45,12 @@ export const getFollowerInfo = async (id?: string) => {
   // const FollowerDetails=[]
   if (id) {
 
-    
+
     const ref = doc(db, "users", id);
 
     const userinfo = await getDoc(ref);
 
-    
+
     // FollowerDetails.push(userinfo.data()) 
 
     // const info = userinfo.data();
@@ -65,7 +65,7 @@ export const getFollowerInfo = async (id?: string) => {
   // return FollowerDetails
 }
 
-export const saveUsername = async (uid: string, displayName: string,avatar:string) => {
+export const saveUsername = async (uid: string, displayName: string, avatar: string) => {
   const userRef = doc(db, "users", uid);
   await setDoc(userRef, { displayName, avatar }, { merge: true });
 };

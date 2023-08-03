@@ -71,13 +71,13 @@ const FollowerProfile = () => {
   let navigate = useNavigate();
   const translate = useTranslation();
 
-  
+
   useEffect(() => {
     setChosenByDefault(pathname);
-   
+
     return () => setAvatarMode(false);
   }, [pathname]);
- 
+
   // if (!user) {
   //   return (
   //     <Navigate
@@ -89,7 +89,7 @@ const FollowerProfile = () => {
   //   );
   // }
 
- 
+
 
   const onSubmitAvatar = async (type: AvatarType) => {
     if (user?.uid) {
@@ -97,7 +97,7 @@ const FollowerProfile = () => {
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
         showToast(translate(texts.UserInfoUpdate));
-        
+
         toast.dismiss();
       } catch (e) {
         showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
@@ -105,7 +105,7 @@ const FollowerProfile = () => {
     }
   };
 
-  
+
   return user ? (
     <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
@@ -120,12 +120,12 @@ const FollowerProfile = () => {
       )}
       {!avatarMode && (
         <OuterContainer>
-          <CardContainer className={`${window.screen.width > 979? "BigScreen":""}`}>
+          <CardContainer className={`${window.screen.width > 979 ? "BigScreen" : ""}`}>
             <>
               <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>
                 {window.screen.width < 979 && (
                   <Container
-                    fluid                    
+                    fluid
                     style={{
                       // paddingTop: 60,
                       paddingLeft: "0px",
@@ -136,63 +136,63 @@ const FollowerProfile = () => {
                       FollowerProfileTabs.edit as string,
                       FollowerProfileTabs.password as string,
                     ].includes(pathname) && (
-                      <ImageTabs
-                        {...{
-                          chosenByDefault,
-                          handleSelect: (eventKey: string | null) => {
-                            if (isV1() && eventKey === FollowerProfileTabs.mine) {
-                              showToast(
-                                translate(texts.FeatureAvailableSoon),
-                                ToastType.INFO
-                              );
-                              return;
-                            }
-                            navigate("./" + eventKey, { replace: true });
-                          },
-                          tabs: [
-                            {
-                              component: <></>,
-                              label: "Mining",
-                              icon: <Mine />,
-                              eventKey: FollowerProfileTabs.mine,
+                        <ImageTabs
+                          {...{
+                            chosenByDefault,
+                            handleSelect: (eventKey: string | null) => {
+                              if (isV1() && eventKey === FollowerProfileTabs.mine) {
+                                showToast(
+                                  translate(texts.FeatureAvailableSoon),
+                                  ToastType.INFO
+                                );
+                                return;
+                              }
+                              navigate("./" + eventKey, { replace: true });
                             },
-                            {
-                              component: <></>,
-                              label: "Pool Mining",
-                              icon: <Share />,
-                              eventKey: FollowerProfileTabs.share,
-                            },
-                            {
-                              component: <></>,
-                              label: FollowerProfileTabs.votes,
-                              icon: <Votes />,
-                              eventKey: FollowerProfileTabs.votes,
-                            },
-                            {
-                              component: <></>,
-                              label: FollowerProfileTabs.ProfileNftGallery,
-                              icon: <Gallery />,
-                              eventKey: FollowerProfileTabs.ProfileNftGallery,
-                            },
-                            
-                            
-                            {
-                              component: <></>,
-                              label: FollowerProfileTabs.followers,
-                              icon: <ProfileFollowing />,
-                              eventKey: FollowerProfileTabs.followers,
-                            },
-                            // {
-                            //   component: <></>,
-                            //   label: FollowerProfileTabs.notifications,
-                            //   icon: <Notifications />,
-                            //   eventKey: FollowerProfileTabs.notifications,
-                            // },
-                            
-                          ],
-                        }}
-                      />
-                    )}
+                            tabs: [
+                              {
+                                component: <></>,
+                                label: "Mining",
+                                icon: <Mine />,
+                                eventKey: FollowerProfileTabs.mine,
+                              },
+                              {
+                                component: <></>,
+                                label: "Pool Mining",
+                                icon: <Share />,
+                                eventKey: FollowerProfileTabs.share,
+                              },
+                              {
+                                component: <></>,
+                                label: FollowerProfileTabs.votes,
+                                icon: <Votes />,
+                                eventKey: FollowerProfileTabs.votes,
+                              },
+                              {
+                                component: <></>,
+                                label: FollowerProfileTabs.ProfileNftGallery,
+                                icon: <Gallery />,
+                                eventKey: FollowerProfileTabs.ProfileNftGallery,
+                              },
+
+
+                              {
+                                component: <></>,
+                                label: FollowerProfileTabs.followers,
+                                icon: <ProfileFollowing />,
+                                eventKey: FollowerProfileTabs.followers,
+                              },
+                              // {
+                              //   component: <></>,
+                              //   label: FollowerProfileTabs.notifications,
+                              //   icon: <Notifications />,
+                              //   eventKey: FollowerProfileTabs.notifications,
+                              // },
+
+                            ],
+                          }}
+                        />
+                      )}
                     {[
                       FollowerProfileTabs.edit as string,
                       FollowerProfileTabs.password as string,
@@ -227,7 +227,7 @@ const FollowerProfile = () => {
                               {
                                 component: <></>,
                                 label: FollowerProfileTabs.wallet,
-                                icon: <Wallet/>,
+                                icon: <Wallet />,
                                 eventKey: FollowerProfileTabs.wallet,
                               },
                             ],
@@ -245,7 +245,7 @@ const FollowerProfile = () => {
         className='p-0'
         style={{ minHeight: window.screen.width < 979 ? "68vh" : "70vh" }}
       >
-        <div  className="w-100"  style={{ color: "var(--black)" }}>
+        <div className="w-100" style={{ color: "var(--black)" }}>
           <div className='p-0 col'>
             {/* <Col > */}
             <Outlet />

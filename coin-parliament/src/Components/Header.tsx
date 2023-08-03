@@ -335,10 +335,12 @@ const Header = ({
 					.then((res) => {
 						Logout(setUser);
 						setLogin(true);
+						// console.log("i am working error")	
+						localStorage.removeItem("userId")
 					})
 					.catch((error) => {
-
 						setLogin(true);
+						localStorage.removeItem("userId")
 						const errorMessage = error.message;
 
 					});

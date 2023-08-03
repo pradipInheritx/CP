@@ -81,115 +81,115 @@ const SummerCard = styled.div`
   }
 `;
 
-const NFTGallerySearchCard = ({data}:{data:any}) => {
-//     const { singalCardData,setSingalCardData} = useContext(AppContext);
-
-  
-//   const [menuItem, setMenuItem] = useState([
-//     { name: "View All" },
-//     { name: "Common" },
-//     { name: "UnCommon" },
-//     { name: "Epic" },
-//     { name: "Rare" },
-//     { name: "Legendary" },
-//   ]);
-//     const [nftAlbumData,setNftAlbumData] = useState<any>();
-//   const [CardValue, setCardValue] = useState([]);
-//   const [backCards, setBackCards] = useState<any>([]);
-//   const [checkCard, setcheckCard] = useState([
-//     { cardType: "Legendary" },
-//     { cardType: "Legendary" },
-//     { cardType: "Legendary" },
-//     { cardType: "Legendary" },
-//     { cardType: "Legendary" },
-//   ]);
-//   const [filterIndex, setfilterIndex] = useState(0);
-
-//   useEffect(() => {
-//     HandleFilter(filterIndex);
-//   }, [filterIndex]);
-
-//   const HandleFilter = (filterIndex?: number | string | undefined) => {
-//     // var allCard: any = cards;
-//     // if (filterIndex && filterIndex > 0) {
-//     //   allCard.filter((item: any, ind: number) => {
-//     //     if (ind + 1 == filterIndex) {
-//     //       var cardItem: any = [item];
-//     //       setCardValue(cardItem);
-//     //     }
-//     //   });
-//     // } else {
-//     //   setCardValue(allCard);
-//     // }
-//   };
+const NFTGallerySearchCard = ({ data }: { data: any }) => {
+  //     const { singalCardData,setSingalCardData} = useContext(AppContext);
 
 
+  //   const [menuItem, setMenuItem] = useState([
+  //     { name: "View All" },
+  //     { name: "Common" },
+  //     { name: "UnCommon" },
+  //     { name: "Epic" },
+  //     { name: "Rare" },
+  //     { name: "Legendary" },
+  //   ]);
+  //     const [nftAlbumData,setNftAlbumData] = useState<any>();
+  //   const [CardValue, setCardValue] = useState([]);
+  //   const [backCards, setBackCards] = useState<any>([]);
+  //   const [checkCard, setcheckCard] = useState([
+  //     { cardType: "Legendary" },
+  //     { cardType: "Legendary" },
+  //     { cardType: "Legendary" },
+  //     { cardType: "Legendary" },
+  //     { cardType: "Legendary" },
+  //   ]);
+  //   const [filterIndex, setfilterIndex] = useState(0);
+
+  //   useEffect(() => {
+  //     HandleFilter(filterIndex);
+  //   }, [filterIndex]);
+
+  //   const HandleFilter = (filterIndex?: number | string | undefined) => {
+  //     // var allCard: any = cards;
+  //     // if (filterIndex && filterIndex > 0) {
+  //     //   allCard.filter((item: any, ind: number) => {
+  //     //     if (ind + 1 == filterIndex) {
+  //     //       var cardItem: any = [item];
+  //     //       setCardValue(cardItem);
+  //     //     }
+  //     //   });
+  //     // } else {
+  //     //   setCardValue(allCard);
+  //     // }
+  //   };
 
 
-//   const BackSideCard = (value: string | number) => {
-//     // @ts-ignore
-//      let allBackCard = [...backCards];
-//      // @ts-ignore
-//      // setBackCards(backCards == value ? "" : value);
-//      backCards.length > 0
-//        ? backCards?.map((items: any, index: number) => {
-//            if (items == value) {
-//              // @ts-ignore
-//              allBackCard.splice(index, 1);
-//              setBackCards(allBackCard);
-//            } else {
-//              // @ts-ignore
-
-//              setBackCards([...backCards, value]);
-//            }
-//            // @ts-ignore
-//          })
-//        : setBackCards([...backCards, value]);
-//   };
-
-//   const HandleFilterByInput = (value: string | number) => {
-//     // var allCard: any = cards;
-//     // var cardItem = allCard.map((item:any, index:number) => {
-//     //     item.map((subItme:any) => {
-//     //       Object.keys(subItme).filter((keyItem, index) => {
-//     //         if (subItme[keyItem].includes('CP')) {
-//     //           return subItme
-//     //         }
-//     //       });
-//     //     });
-//     //       });
-
-//     // setCardValue(allCard)
-//   };
-//   let params = useParams();
-//   const { type } = params;
 
 
-//    const getNftCard = () => {
-//   const getCards = firebase
-//             .firestore()
-//             .collection("nft_gallery")
-//     getCards.get()
-//       .then((snapshot) => {        
+  //   const BackSideCard = (value: string | number) => {
+  //     // @ts-ignore
+  //      let allBackCard = [...backCards];
+  //      // @ts-ignore
+  //      // setBackCards(backCards == value ? "" : value);
+  //      backCards.length > 0
+  //        ? backCards?.map((items: any, index: number) => {
+  //            if (items == value) {
+  //              // @ts-ignore
+  //              allBackCard.splice(index, 1);
+  //              setBackCards(allBackCard);
+  //            } else {
+  //              // @ts-ignore
 
-//        let allcollection= snapshot.docs.map((doc) => doc.data())
-//           // setCollectionType(allcollection)
+  //              setBackCards([...backCards, value]);
+  //            }
+  //            // @ts-ignore
+  //          })
+  //        : setBackCards([...backCards, value]);
+  //   };
 
-//         allcollection?.map((card) => {
+  //   const HandleFilterByInput = (value: string | number) => {
+  //     // var allCard: any = cards;
+  //     // var cardItem = allCard.map((item:any, index:number) => {
+  //     //     item.map((subItme:any) => {
+  //     //       Object.keys(subItme).filter((keyItem, index) => {
+  //     //         if (subItme[keyItem].includes('CP')) {
+  //     //           return subItme
+  //     //         }
+  //     //       });
+  //     //     });
+  //     //       });
 
-//           if (card?.collectionName==type) {
-//             setNftAlbumData(card?.setDetails)
-//           }          
-//         })
-//       }).catch((error) => {
-//         console.log(error,"error");
-//       })
-//       ;    
-// }
+  //     // setCardValue(allCard)
+  //   };
+  //   let params = useParams();
+  //   const { type } = params;
 
-// useEffect(() => {
-//     getNftCard()
-//   }, [params])
+
+  //    const getNftCard = () => {
+  //   const getCards = firebase
+  //             .firestore()
+  //             .collection("nft_gallery")
+  //     getCards.get()
+  //       .then((snapshot) => {        
+
+  //        let allcollection= snapshot.docs.map((doc) => doc.data())
+  //           // setCollectionType(allcollection)
+
+  //         allcollection?.map((card) => {
+
+  //           if (card?.collectionName==type) {
+  //             setNftAlbumData(card?.setDetails)
+  //           }          
+  //         })
+  //       }).catch((error) => {
+  //         console.log(error,"error");
+  //       })
+  //       ;    
+  // }
+
+  // useEffect(() => {
+  //     getNftCard()
+  //   }, [params])
 
   return (
     <div className=''>
@@ -223,8 +223,8 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
               // onChange={(e)=>{HandelonchangeFilter(e)}}
               placeholder='Search...'
               className='py-2 mx-3 rounded border'
-              // style={{ width: "200px" }}
-              
+            // style={{ width: "200px" }}
+
             />
             <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
               <select
@@ -240,7 +240,7 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
                 name='type'
                 id='type'
                 className='bg-white border rounded mx-2 py-2'
-                // onChange={(e)=>{onSelectType(e.target.value)}}
+              // onChange={(e)=>{onSelectType(e.target.value)}}
               >
                 <option value='all'>{texts.SelectType}</option>
                 <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
@@ -269,48 +269,48 @@ const NFTGallerySearchCard = ({data}:{data:any}) => {
           <SummerCard>
             {/* {nftAlbumData?.map((items:any, index:number) => {
               return ( */}
-                <div className='w-100 m-auto mb-4 '>
-                  {/* @ts-ignore */}
-                  <SwiperBar>
-                    {/* @ts-ignore */}
-                    {data?.map((item: any , index:number) => {
-                      
-                      return (
-                        <>
-                          <NftOneCard
-                            key={index}
-                            DivClass={item?.type}
-                            HeaderText={item?.type}
-                            HeaderClass={`${item?.type}_text`}
-                            // Serie={items?.name}
-                            BackCardName={item?.name}
-                            Rarity={item?.type}
-                            Quantity={item?.quantity}
-                            holderNo={item?.noOfCardHolders}
-                            // cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
-                            // GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
-                            // userId={items?.id}
-                            // Disable={"CardDisebal"}
-                            // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item?.name}`}
-                            
-                            // cardNo={`${item.cardNo}`}
-                            id={item?.cardId}
-                            // BackSideCard={BackSideCard}
-                            fulldata={item}
-                            // flipCard={backCards == item.id ? true : false}
-                            // flipCard={backCards?.includes(item?.cardId)}
-                          />
-                        </>
-                      );
-                    })}
-                  </SwiperBar>
-                </div>
-              {/* ); */}
+            <div className='w-100 m-auto mb-4 '>
+              {/* @ts-ignore */}
+              <SwiperBar>
+                {/* @ts-ignore */}
+                {data?.map((item: any, index: number) => {
+
+                  return (
+                    <>
+                      <NftOneCard
+                        key={index}
+                        DivClass={item?.type}
+                        HeaderText={item?.type}
+                        HeaderClass={`${item?.type}_text`}
+                        // Serie={items?.name}
+                        BackCardName={item?.name}
+                        Rarity={item?.type}
+                        Quantity={item?.quantity}
+                        holderNo={item?.noOfCardHolders}
+                        // cardNo={`${((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                        // GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((items?.name)?.toUpperCase())?.slice(0, 3) + items?.id}`}
+                        // userId={items?.id}
+                        // Disable={"CardDisebal"}
+                        // When you pass CardDisebal this name then card is Disable
+                        cardHeader={`${item?.name}`}
+
+                        // cardNo={`${item.cardNo}`}
+                        id={item?.cardId}
+                        // BackSideCard={BackSideCard}
+                        fulldata={item}
+                      // flipCard={backCards == item.id ? true : false}
+                      // flipCard={backCards?.includes(item?.cardId)}
+                      />
+                    </>
+                  );
+                })}
+              </SwiperBar>
+            </div>
+            {/* ); */}
             {/* })} */}
           </SummerCard>
 
-          
+
           {/* <SummerCard>
             {CardValue.map((items, index) => {
               return (
