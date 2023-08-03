@@ -162,11 +162,10 @@ const Mine = () => {
         }
 
         setShowBack(false)
-      }, 10000);
+      }, 15000);
     }
 
   }, []);
-
 
   const Cmppopup = () => {
     var urlName = window.location.pathname.split('/');
@@ -180,11 +179,13 @@ const Mine = () => {
           "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
           "",
         color: 'black',
+        showConfirmButton: ((userInfo?.rewardStatistics?.extraVote || 0) + parseInt(userInfo?.voteValue || '0') > 0),
         confirmButtonText: 'Continue Voting',
         confirmButtonColor: '#6352e8',
-        showCloseButton: true,
+        showCloseButton: false,
         customClass: {
           popup: 'stayInGamePopupStyle',
+          htmlContainer: 'pt-3'
         }
       }).then((result) => {
         if (result.isConfirmed) {

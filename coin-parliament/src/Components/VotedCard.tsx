@@ -329,12 +329,13 @@ const VotedCard = ({
               <div className="container pt-4">
                 <div className="row justify-content-center align-items-center">
                   <div className="col-sm-7 col-7 text-right p-0">
-                    <Row1 style={{ textAlign: 'right', fontSize: window.screen.width < 345 ? '1.2em' : '' }}>{"You voted for "}{row1}</Row1>
+                    <Row1 style={{ textAlign: 'right', fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.2em' : '' }}>{"You voted for "}{row1}</Row1>
                   </div>
                   <div className="col-sm-4 col-4 text-left p-0">
-                    <Row1 className="text-left" style={{ fontSize: window.screen.width < 345 ? '1.1em' : '' }}>&nbsp;{
-                      `${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`
-                    }</Row1>
+                    <Row1 className="text-left" style={{ fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.1em' : '' }}>&nbsp;
+                      {/* {`${(vote?.direction == 0 ? pairCoinResult.firstCoin : pairCoinResult.secondCoin)}%`} */}
+                      {`${pairCoinResult?.difference}%`}
+                    </Row1>
                   </div>
                 </div>
               </div> :
