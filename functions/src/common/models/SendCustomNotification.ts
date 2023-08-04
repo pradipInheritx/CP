@@ -185,43 +185,6 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cmp: numbe
   });
   console.log("End Push Notification of voteExpireAndGetCpmNotification")
 }
-// async function subscribersNotification(subscribers: string[], userName: string, cmp: number) {
-//   console.log("Beging subscribers notification")
-//   subscribers.forEach(async (user: string) => {
-//     const userDetailsQuery = await firestore().collection("users").doc(user).get();
-//     const userData: any = userDetailsQuery.data();
-//     const token = userData.token;
-//     const message: messaging.Message = {
-//       token,
-//       notification: {
-//         title: `You just earnd ${cmp} CMP from ${userName}`,
-//         body: "",
-//       },
-//       webpush: {
-//         headers: {
-//           Urgency: "high",
-//         },
-//         fcmOptions: {
-//           link: "#", // TODO: put link for deep linking
-//         },
-//       },
-//     };
-//     console.log("message:", message);
-
-//     await sendNotification({
-//       token,
-//       id: user,
-//       body: "",
-//       title: `You just earnd ${"1.12"} CMP from ${userName}`,
-//       message,
-//     });
-
-//   })
-//   console.log("Finished subscribers notification")
-// }
-// function getUserListById(userList: any) {
-//   return [...new Map(userList.map((item: any) => [item["userId"], item])).values()]
-// }
 
 export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTimeFrame: number) => {
   console.log('-------Start checkUserStatusIn24hrs-------')
