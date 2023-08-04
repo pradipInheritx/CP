@@ -249,7 +249,7 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
       <div className="mt-3">
         <h4>Select Payment Mode</h4>
       </div>  
-      <Boxdiv className="mt-5"
+      <Boxdiv className={`${window.screen.width > 767 ?"mt-5" : "mt-3"}`}
         style={{
         justifyContent:`${selectPayment == 0 ? "center" :""}`
       }}
@@ -290,7 +290,11 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
           {selectCoin !=="none" ? selectCoin : "Select coin" }
         </div>
         {showOptionList && (
-          <ul className="pay-select-options">
+              <ul className="pay-select-options"
+                style={{
+                height:`${window.screen.width > 767 ?"300px" : "200px"}`
+              }}
+              >
             {coinsList.map((option:any ,index:number) => {
               return (
                 <li

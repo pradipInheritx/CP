@@ -54,7 +54,7 @@ const SignupForm = ({
     }
     // @ts-ignore
     setSignupLoading(true)
-    await genericLogin(
+  await genericLogin(
       {
         email,
         password,
