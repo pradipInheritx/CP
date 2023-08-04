@@ -39,7 +39,6 @@ const CircularProgress = ({ percentage }) => {
             setProgressBarValue(percentage);
         }, [800]);
     }, [percentage]);
-    // console.log(user?.uid, 'pkk');
 
     // currentScore=localStorage.getItem('')
     return (

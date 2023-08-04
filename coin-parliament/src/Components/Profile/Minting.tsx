@@ -189,6 +189,7 @@ const Minting = ({
   const handleCmpPopupClose = () => {
     setCmpPopupShow(false);
     setCurrentCMP(0);
+    localStorage.setItem(`${user?.uid}_newScores`, '0');
   };
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
@@ -202,7 +203,7 @@ const Minting = ({
     if (score === 100) {
       setTimeout(() => {
         handleCmpPopupShow();
-      }, 6100);
+      }, 0/* 6100 */);
     }
   }, [score]);
   useEffect(() => {
@@ -216,15 +217,17 @@ const Minting = ({
         autoplay: true, // boolean   ,
       });
       handleSoundWinCmp.play();
-      setTimeout(function () {
-        // Animation.destroy();
-        handleSoundWinCmp.pause();
-      }, 3000);  // 5000 milliseconds = 5 seconds
+      // setTimeout(function () {
+      //   // Animation.destroy();
+      //   handleSoundWinCmp.pause();
+      // }, 3000);  // 5000 milliseconds = 5 seconds
 
       // setShowBack(false)
+    } else {
+      handleSoundWinCmp.pause();
     }
   }, [CmpPopupShow]);
-  console.log(resultData, "resultData")
+
   const [animateButton, setAnimateButton] = useState<boolean>(false);
 
   const claimRewardHandler = async () => {
@@ -407,8 +410,8 @@ const Minting = ({
         </Modal>
       </div>
 
-      {/* PopUp for complate 100cmp  */}
 
+      {/* PopUp for complete 100cmp  */}
       <div>
         <Modal
           show={

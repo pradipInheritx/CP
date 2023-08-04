@@ -33,18 +33,19 @@ export const handleSoundClickCard = {
     scratchSound.play();
   },
   pause: () => {
-    scratchSound.pause()
+    scratchSound.pause();
+    scratchSound.currentTime = 0;
   }
 
 };
 
 export const handleSoundWinCmp = {
-
   play: () => {
     WinCmpSound.play();
   },
   pause: () => {
-    WinCmpSound.pause()
+    WinCmpSound.pause();
+    WinCmpSound.currentTime = 0;
   }
 
 };
@@ -80,6 +81,7 @@ export const VoteButton = (voteEndSound = false) => {
   } else {
     voteEnd.play();
     voteEnd.pause();
+    voteEnd.currentTime = 0;
     voteButtonSound.play();
   }
 
