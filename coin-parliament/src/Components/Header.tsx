@@ -331,12 +331,14 @@ const Header = ({
 
 				signOut(auth)
 					.then((res) => {
-						Logout(setUser);
+						Logout(setUser);						
+						navigate("/")
 						setLogin(true);
 						// console.log("i am working error")	
 						localStorage.removeItem("userId")
 					})
 					.catch((error) => {
+						navigate("/")						
 						setLogin(true);
 						localStorage.removeItem("userId")
 						const errorMessage = error.message;
