@@ -13,25 +13,25 @@ function AnimationCard({ cardType = "legendary" }: MintingProps) {
   const [startY, setStartY] = useState<any>(0)
 
   const HEIGHT = 230;
-const WIDTH = 150;
+  const WIDTH = 150;
   const cardDiv = useRef()
-  
-useEffect(() => {
+
+  useEffect(() => {
     const canvas = cardDiv.current;
     // @ts-ignore
-  const context = canvas.getContext("2d"); 
+    const context = canvas.getContext("2d");
     context.fillStyle = "#ddd";
-  context.fillRect(0, 0, WIDTH, HEIGHT);
+    context.fillRect(0, 0, WIDTH, HEIGHT);
     context.lineWidth = 10;
     context.lineJoin = "round";
     return () => {
       // second
     }
   }, [])
-  
+
   const scratchStart = (e: any) => {
-    console.log(scratchStart,"scratchStartWork")
-    const { layerX, layerY } = e.nativeEvent;    
+    console.log(scratchStart, "scratchStartWork")
+    const { layerX, layerY } = e.nativeEvent;
     setisDrawing(true);
     setStartX(layerX);
     setStartY(layerY);
@@ -39,59 +39,59 @@ useEffect(() => {
 
 
 
-  
+
   const scratch = (e: any) => {
-      const { layerX, layerY } = e.nativeEvent;
-      console.log(e,"scratchWOrk")
+    const { layerX, layerY } = e.nativeEvent;
+    console.log(e, "scratchWOrk")
     // @ts-ignore
     const context = cardDiv.current.getContext("2d");
 
     if (!isDrawing) {
       return;
     }
-console.log(layerX,layerY, e,"contextCheck")
+    console.log(layerX, layerY, e, "contextCheck")
     context.globalCompositeOperation = "destination-out";
     context.beginPath();
-    context.moveTo(startX,startY);
+    context.moveTo(startX, startY);
     context.lineTo(layerX, layerY);
     context.closePath();
     context.stroke();
-    
+
     setStartX(layerX);
     setStartY(layerY);
   };
 
   const scratchEnd = (e: any) => {
-    console.log(scratchEnd,"scratchEndWork")
-      setisDrawing(false)    
+    console.log(scratchEnd, "scratchEndWork")
+    setisDrawing(false)
   };
-  
+
 
 
 
   return (
     <>
-      {/* @ts-ignore */}     
-    <canvas className="border" ref={cardDiv}
-          onMouseDown={(e) =>  scratchStart(e) }
-          onMouseUp={(e) =>  scratchEnd(e) }
-          onMouseMove={(e) =>  scratch(e) }          
-          onTouchStart={(e) =>  scratchStart(e) }
-          onTouchEnd={(e) =>  scratchEnd(e) }
-        onTouchMove={(e) =>  scratch(e) }   
-         width={`${WIDTH}px`}
+      {/* @ts-ignore */}
+      <canvas className="border" ref={cardDiv}
+        onMouseDown={(e) => scratchStart(e)}
+        onMouseUp={(e) => scratchEnd(e)}
+        onMouseMove={(e) => scratch(e)}
+        onTouchStart={(e) => scratchStart(e)}
+        onTouchEnd={(e) => scratchEnd(e)}
+        onTouchMove={(e) => scratch(e)}
+        width={`${WIDTH}px`}
         height={`${HEIGHT}px`}
-          id="canvas"
-       
+        id="canvas"
+
       >
-      <div className={classname}>
-       
-      
-      </div>
+        <div className={classname}>
+
+
+        </div>
       </canvas>
-    
-    
-      </>
+
+
+    </>
   );
 }
 
