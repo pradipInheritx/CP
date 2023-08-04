@@ -189,8 +189,7 @@ const Header = ({
 	const desktop = width && width > 979;
 
 
-	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar } =
-		useContext(AppContext);
+	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar } = useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
@@ -259,7 +258,6 @@ const Header = ({
 		}
 	}, [followerUserId, userInfo]);
 	useEffect(() => {
-		console.log(voteNumber, /* votingTimer, */ voteDetails, 'hello');
 		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && Object.keys(voteDetails?.activeVotes).length == 0 && voteDetails?.voteNot == 0) {
 			// setTimeout(() => {
 			// setShow(true);
