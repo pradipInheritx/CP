@@ -69,13 +69,13 @@ const getHeight = (props: Pathname) => {
     return "233px";
   }
   if (
-    props.pathname.replace("/","").toLowerCase()=="about"  ||
+    props.pathname.replace("/", "").toLowerCase() == "about" ||
     props.pathname.replace("/", "").toLowerCase() == "privacy" ||
-    props.pathname.replace("/","").toLowerCase()=="contact" ||
-    props.pathname.replace("/","").toLowerCase()=="faq" ||
+    props.pathname.replace("/", "").toLowerCase() == "contact" ||
+    props.pathname.replace("/", "").toLowerCase() == "faq" ||
     props.pathname.replace("/", "").toLowerCase() == "terms-and-condition" ||
     props.pathname.replace("/", "").toLowerCase() == "partners" ||
-    props.pathname.replace("/", "").toLowerCase() == "foundations" 
+    props.pathname.replace("/", "").toLowerCase() == "foundations"
   ) {
     return "auto";
   }
@@ -83,34 +83,34 @@ const getHeight = (props: Pathname) => {
 };
 
 export const isHomeBg = (pathname: string) =>
-  ["/", "/influencers","/coins","/pairs","/nftAlbum"].includes(pathname);
+  ["/", "/influencers", "/coins", "/pairs", "/nftAlbum"].includes(pathname);
 
 export const AppContainer = styled(Container)`
   ${(props: Pathname) =>
     isHomeBg(props.pathname)
       ? Gradient1
       : isCoinsPairs(props.pathname)
-      ? Gradient3
-      : isCommanPage(props.pathname) ?
-        css`background: white`
-      : css`
+        ? Gradient3
+        : isCommanPage(props.pathname) ?
+          css`background: white`
+          : css`
   background: rgb(99, 82, 232);
   background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;
-  background:${window.screen.width < 767 ?"#d4d0f3":"#d4d0f3"};  
+  background:${window.screen.width < 767 ? "#d4d0f3" : "#d4d0f3"};  
 `};
   ${PoppinsMediumWhite12px};
   opacity: 1;
   min-height: ${(props: Pathname) =>
     isSinglePage(props.pathname, "coins") ||
-    isProfile(props.pathname) ||
-    isSinglePage(props.pathname, "pairs")
+      isProfile(props.pathname) ||
+      isSinglePage(props.pathname, "pairs")
       ? ""
       : "100vh"};
   height: ${(props: Pathname) => getHeight(props)};
   border-radius: ${(props: Pathname) =>
     isSinglePage(props.pathname, "coins") ||
-    isProfile(props.pathname) ||
-    isSinglePage(props.pathname, "pairs")
+      isProfile(props.pathname) ||
+      isSinglePage(props.pathname, "pairs")
       ? "0px 0px 87px 0px"
       : ""};
   padding: 0;
@@ -140,7 +140,7 @@ export const HomeContainer = styled(Container)`
 
     & span {
       display: ${(props: { width?: number }) =>
-        `${props.width && props.width > 969 ? "inline" : "block"}`};
+    `${props.width && props.width > 969 ? "inline" : "block"}`};
     }
   }
 

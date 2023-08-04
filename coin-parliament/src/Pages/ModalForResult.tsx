@@ -17,7 +17,7 @@ import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from 'common/utils/helper';
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor } from 'common/utils/helper';
 import UserContext from 'Contexts/User';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
@@ -376,10 +376,11 @@ function ModalForResult({ popUpOpen, vote, type,
                     style={{ fontSize: "12px" }}
                   >
                     <p>VOTE RESULT</p>
-                    <p>
-                      {vote?.coin?.split("-")[vote?.direction]}: {pairCoinResult?.difference}%
+                    <span>{vote?.coin?.split("-")[vote?.direction]}:</span>&nbsp;
+                    <span style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)) }}>
+                      {pairCoinResult?.difference.replaceAll('-', '')}%
                       {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
-                    </p>
+                    </span>
                     <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
                   </div>
                   <CoinVoteTimer>

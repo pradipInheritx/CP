@@ -10,7 +10,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import moment from "moment";
 import { timeframeInitials } from "../Atoms/Button/Button";
 import { MyCountdown } from "../VotedCard";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType } from "common/utils/helper";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor } from "common/utils/helper";
 import { isArray } from "lodash";
 
 type VotedCardProps = {
@@ -208,7 +208,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
 
                           <MyCountdown expirationTime={vote.expiration || 0}
                           // vote={vote} voteId={id} coins={coins} symbol1={voteCoins[0]} symbol2={voteCoins[1]}
-                              />
+                          />
 
                         </Col>
                       </Row>
@@ -277,18 +277,18 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
                   </Col>
                   {!vote.valueExpirationTime && <Col xs={2} className="">
                     {vote.direction ?
-                        <>
-                          {/* @ts-ignore */}
+                      <>
+                        {/* @ts-ignore */}
                         {(Number(vote?.valueVotingTime || 0) < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score) ?
-                            <RoundDiv backcolor={"#6352E8"}></RoundDiv> :
-                              <>
-                                {/* @ts-ignore */}
-                                {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>} {vote?.valueVotingTime > coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}
-                            </>
+                          <RoundDiv backcolor={"#6352E8"}></RoundDiv> :
+                          <>
+                            {/* @ts-ignore */}
+                            {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>} {vote?.valueVotingTime > coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}
+                          </>
                         }
                       </> :
-                        <>
-                          {/* @ts-ignore */}
+                      <>
+                        {/* @ts-ignore */}
                         {vote?.valueVotingTime < Number(vote?.valueVotingTime) + (Number(vote?.valueVotingTime) * 1 / 100) && vote?.valueVotingTime > Number(vote?.valueVotingTime) - (Number(vote?.valueVotingTime) * 1 / 100) && !vote.score ? <RoundDiv backcolor={"#6352E8"}></RoundDiv> : <>{vote?.valueVotingTime > coin.price && !vote.score && <RoundDiv backcolor={"#3712B3"}></RoundDiv>} {vote?.valueVotingTime < coin.price && !vote.score && <RoundDiv backcolor={"#D4D0F3"}></RoundDiv>}</>
                         }
                       </>
@@ -343,7 +343,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
     pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
   }
 
-  console.log(vote?.valueExpirationTime,"valueExpirationTime")
+  console.log(vote?.valueExpirationTime, "valueExpirationTime")
 
   return pair ? (
     <ProfilePairVote style={{ minWidth: window.screen.width < 979 ? '' : '480px', maxWidth: window.screen.width < 979 ? '' : '480px', }} >
@@ -392,12 +392,15 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
         <Row>
           <div style={{ minHeight: "100%" }} className="text-center">
             {/* @ts-ignore */}
-            {vote?.valueExpirationTime && vote?.valueExpirationTime?.length &&<div className=''
+            {vote?.valueExpirationTime && vote?.valueExpirationTime?.length && <div className=''
               style={{ fontSize: "12px" }}
             >
               <p>VOTE RESULT</p>
-              {/* @ts-ignore */}
-              {(vote?.valueExpirationTime && vote?.valueExpirationTime.length && pairCoinResult?.difference) ? `${vote?.coin?.split("-")[vote?.direction]}: ${pairCoinResult?.difference}` : 0}%
+              {vote?.coin?.split("-")[vote?.direction]}: &nbsp;
+              <span style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)) }}>
+                {/* @ts-ignore */}
+                {(vote?.valueExpirationTime && vote?.valueExpirationTime.length && pairCoinResult?.difference) ? `${pairCoinResult?.difference.replaceAll('-', '')}` : 0}%
+              </span>
               {/* @ts-ignore */}
               <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
             </div>}
