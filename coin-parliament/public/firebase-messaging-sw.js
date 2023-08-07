@@ -1,108 +1,66 @@
-self.addEventListener('notificationclick', (event) => {
-    event.preventDefault();
-    const DEFAULT_URL = '/'
-    const url = event.notification?.data?.click_action || DEFAULT_URL;
+let cacheApp = 'application';
+this.addEventListener('install', (event) => {
     event.waitUntil(
-        clients.matchAll({ type: 'window' }).then((clientsArray) => {
-            const hadWindowToFocus = clientsArray.some((windowClient) =>
-                windowClient.url === url ? (windowClient.focus(), true) : false
-            );
-            if (!hadWindowToFocus)
-                clients.openWindow(url).then((windowClient) => (windowClient ? windowClient.focus() : null));
-        })
-    );
-    event.notification.close();
+        caches.open(cacheApp).then((cache) => {
+            urls = [
+                '/static/js/bundle.js',
+                '/static/js/main.chunk.js',
+                'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css',
+                'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css',
+                'https://s3.tradingview.com/tv.js',
+                'https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=votetoearn&init=true&autoconnect=false&visible=true',
+                '/favicon.ico',
+                '/manifest.json',
+                'https://bridgeapp-dev.welldapp.com/assets/data/netwoks-rpc.json',
+                '/static/js/vendors~main.chunk.js',
+                'https://api.coingecko.com/api/v3/coins/ethereum',
+                'https://bridgeapp-dev.welldapp.com/assets/data/networks-names.json',
+                'https://bridgeapp-dev.welldapp.com/assets/data/tokens.json',
+                '/firebase-messaging-sw.js',
+                '/android-chrome-192x192.png',
+                '/images/no_logo.png',
+                '/index.html',
+                '/',
+            ]
+            cache.addAll(urls);
+        }).catch(() => { })
+    )
 });
+
+this.addEventListener('fetch', (event) => {
+
+    // event.waitUntil(this.registration.showNotification('Hello', {
+    //     body: 'Body',
+    //     click_action: "http://localhost:3000"
+    // }))
+    if (!navigator.onLine) {
+        event.respondWith(
+            caches.match(event.request).then((res) => {
+                if (res) {
+                    return res;
+                }
+                let requestUrl = event.request.clone();
+                fetch(requestUrl);
+            })
+        )
+    }
+});
+
+
 importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js");
 importScripts(
     "https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js"
 );
-// develop
-let CACHE_NAME = 'coin-parliament';
-let urlsToCache = [
-    '/',
-    '/completed'
-];
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('../firebase-messaging-sw.js').then((res) => {
+        console.log('FB ServiceWorker Registered');
 
-// Install a service worker
-self.addEventListener('install', event => {
-    // Perform install steps
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(function (cache) {
-                console.log('Opened cache');
-                return cache.addAll(urlsToCache);
-            })
-    );
-});
-
-// Cache and return requests
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(function (response) {
-                // Cache hit - return response
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request);
-            }
-            )
-    );
-});
-
-// Update a service worker
-self.addEventListener('activate', event => {
-    let cacheWhitelist = ['your-app-name'];
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
-});
-
-const config = {
+    }).catch(() => {
+        console.log('FB ServiceWorker Error');
+    });
+}
+firebase.initializeApp({
     messagingSenderId: "950952702753",
-};
-firebase.initializeApp(config);
-// console.log("sw initialized");
-
-const messaging = /* firebase.messaging.isSupported() ? */ firebase.messaging()/*  : null */;
-// if (messaging) {
-messaging.setBackgroundMessageHandler(function (payload) {
-    console.log('[firebase-messaging-sw.js] Received background message', payload.data);
-    const notification = payload.data;
-    const notificationTitle = notification.title;
-    const notificationOptions = {
-        body: notification.message,
-        icon: notification.icon || "",
-    };
-    return self.registration.showNotification(notificationTitle, notificationOptions);
 });
-// }
 
-
-// self.addEventListener('notificationclick', event => {
-//   event.notification.close();
-
-//   // Add the logic here to redirect the user to the home page of your app
-//   const homePageUrl = 'https://example.com';
-//   event.waitUntil(
-//     clients.matchAll({ type: 'window' }).then(clients => {
-//       for (let client of clients) {
-//         if (client.url === homePageUrl && 'focus' in client) {
-//           return client.focus();
-//         }
-//       }
-//       if (clients.openWindow) {
-//         return clients.openWindow(homePageUrl);
-//       }
-//     })
-//   );
-// });
+const messaging = firebase.messaging();
