@@ -34,8 +34,7 @@ export const imageUploadFunction = async (req: any, res: any) => {
 
         //On File Event
         busboy.on('file', (fieldname: any, file: any, fileMeta: any) => {
-
-            const fileUpload = bucket.file(fileMeta.filename);
+            const fileUpload = bucket.file(`${checkId.albumName}/${fileMeta.filename}`);
             const fileStream = file.pipe(fileUpload.createWriteStream({
                 metadata: {
                     contentType: fileMeta.mimeType,
