@@ -293,8 +293,9 @@ export const SignupRegular = async (
     console.log('firsttimelogin success')
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid, '', '')
-    // console.log('signup', await sendEmailVerification(auth?.currentUser))
     showToast("User register successfully.", ToastType.SUCCESS);
+    // @ts-ignore
+    callback.successFunc(auth?.currentUser)
     return true;
   } catch (e) {
     // callback.errorFunc(e as Error);
