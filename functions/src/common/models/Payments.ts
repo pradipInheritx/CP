@@ -69,3 +69,45 @@ export const makePayment = async (req: any, res: any) => {
 export const storeInDBOfPayment = async (metaData: any, response: any) => {
     await firestore().collection("payments").add({ ...metaData, ...response, timestamp: firestore.FieldValue.serverTimestamp() })
 }
+
+//get user payment information by userId
+export const isUserUpgraded = async (req: any, res: any) => {
+    try {
+        const { userId } = req.params;
+
+        const getTransactionQuery = await firestore().collection('payment').where('userId', '==', userId).get();
+        const getPaymentData = getTransactionQuery.docs.map((payment) => { return payment.data() });
+        console.log("get transaction ; ", getPaymentData);
+
+        if (!getPaymentData.length) {
+            return res.status(404).send({
+                status: false,
+                message: "data not found",
+                data: []
+            });
+        }
+
+        res.status(200).send({
+            status: true,
+            message: "fetch data successfully",
+            data: getPaymentData
+        });
+
+    } catch (error) {
+        errorLogging("isUserUpgraded", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
+
+
+export const errorLogging = async (
+    funcName: string,
+    type: string,
+    error: any
+) => {
+    console.info(funcName, type, error);
+};
