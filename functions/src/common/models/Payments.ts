@@ -75,21 +75,22 @@ export const isUserUpgraded = async (req: any, res: any) => {
     try {
         const { userId } = req.params;
 
-        const getTransactionQuery = await firestore().collection('payment').where('userId', '==', userId).get();
+        const getTransactionQuery = await firestore().collection('payments').where('userId', '==', userId).get();
+        console.info("getTransactionQuery", getTransactionQuery)
         const getPaymentData = getTransactionQuery.docs.map((payment) => { return payment.data() });
         console.log("get transaction ; ", getPaymentData);
 
         if (!getPaymentData.length) {
             return res.status(404).send({
                 status: false,
-                message: "data not found",
+                message: "Payment not found",
                 data: []
             });
         }
 
         res.status(200).send({
             status: true,
-            message: "fetch data successfully",
+            message: "Payment transaction fetched successfully",
             data: getPaymentData
         });
 
