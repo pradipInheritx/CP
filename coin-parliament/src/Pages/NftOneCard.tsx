@@ -8,7 +8,7 @@ import bkgnd5 from "../assets/images/bkgnd5.png";
 import bkgnd3 from "../assets/images/bkgnd3.png";
 import bkgnd2 from "../assets/images/bkgnd2.png";
 import bkgnd from "../assets/images/bkgnd.png";
-import TheEagle from "../assets/images/TheEagle.png";
+import TheEagle from "../assets/images/TheEagle1.png";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
