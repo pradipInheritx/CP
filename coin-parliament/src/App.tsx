@@ -123,7 +123,7 @@ import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import ProfileNftGalleryCopy from "./Pages/ProfileNftGalleryCopy";
 import GameRule from "./Pages/GameRule";
-import Partners from "./Pages/Partners";
+import Partners from "./Pages/partners/Partners";
 import Foundations from "./Pages/Foundations";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
