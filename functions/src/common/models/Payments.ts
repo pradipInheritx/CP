@@ -67,7 +67,12 @@ export const makePayment = async (req: any, res: any) => {
 
 
 export const storeInDBOfPayment = async (metaData: any, response: any) => {
+    metaData?.userId ? await addIsUpgradedValue(metaData.userId) : "";
     await firestore().collection("payments").add({ ...metaData, ...response, timestamp: firestore.FieldValue.serverTimestamp() })
+}
+
+const addIsUpgradedValue = async (userId: string) => {
+    await firestore().collection('users').doc(userId).set({ isUpgraded: true }, { merge: true });
 }
 
 //get user payment information by userId
