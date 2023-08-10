@@ -31,15 +31,15 @@ import {
   getOldAndCurrentPriceAndMakeCalculation,
 } from "./common/models/Vote";
 import {
-  fetchCoins,
+  //fetchCoins,
   getAllCoins,
   getAllPairs,
   Leader,
   prepareCPVI,
-  fetchAskBidCoin,
-  getUpdatedDataFromWebsocket,
-  getAllUpdated24HourRecords,
-  removeTheBefore24HoursData,
+  // fetchAskBidCoin,
+  // getUpdatedDataFromWebsocket,
+  // getAllUpdated24HourRecords,
+  // removeTheBefore24HoursData,
 } from "./common/models/Coin";
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
@@ -533,36 +533,36 @@ exports.onCreatePaxTransaction = functions.firestore
     }
   });
 
-exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-  [0, 60].forEach((i) => {
-    setTimeout(async () => await fetchCoins(), i * 1000);
-  });
-});
+// exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
+//   [0, 60].forEach((i) => {
+//     setTimeout(async () => await fetchCoins(), i * 1000);
+//   });
+// });
 
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 2 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
+// exports.getUpdatedDataFromWebsocket = functions.pubsub
+//   .schedule("every 2 minutes")
+//   .onRun(async () => {
+//     await getUpdatedDataFromWebsocket();
+//   });
 
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 5 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
+// exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+//   .schedule("every 5 minutes")
+//   .onRun(async () => {
+//     await getAllUpdated24HourRecords();
+//     await removeTheBefore24HoursData();
+//   });
 
-exports.prepareEveryFiveMinuteCPVI = functions.pubsub
-  .schedule("*/3 * * * *")
-  .onRun(async () => {
-    await Promise.all([await fetchAskBidCoin()]);
-  });
+// exports.prepareEveryFiveMinuteCPVI = functions.pubsub
+//   .schedule("*/3 * * * *")
+//   .onRun(async () => {
+//     await Promise.all([await fetchAskBidCoin()]);
+//   });
 
-exports.prepareHourlyCPVI = functions.pubsub
-  .schedule("0 * * * *")
-  .onRun(async () => {
-    await prepareCPVI(1, "hourly");
-  });
+// exports.prepareHourlyCPVI = functions.pubsub
+//   .schedule("0 * * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(1, "hourly");
+//   });
 
 exports.prepare4HourlyCPVI = functions.pubsub
   .schedule("0 */4 * * *")
