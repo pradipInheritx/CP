@@ -114,6 +114,7 @@ const Signup = () => {
           // signup={signup}
           callback={{
             successFunc: async (params) => {
+              console.log(params,"we are not get")
               if (refer && params?.uid) await assign({ parent: refer, child: params.uid });
               setLogin(true);
               setSignupLoading(false);

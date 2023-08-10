@@ -362,10 +362,27 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
               <span className='cardname'>
                 <strong>{rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
               </span>
-              <img src={TheEagle} alt='the hgodler' className='img-fluid'
-                // style={{ height: '98%' }}
-                width={"90%"}
+              <div
+                className="d-flex justify-content-center"
+              style={{
+                    width: "237px",
+                    height:"240px",
+                    // border:"1px solid red",
+                    // overflow:"hidden"
+              }}
+                
+              >
+                <img src={rewardTimer?.data?.firstRewardCardImageUrl || TheEagle} alt='the hgodler'
+                  // className='img-fluid'
+                  style={{
+                   width: "255px",
+                  margin: "auto",
+                  display: "block",
+                  marginTop:"-15px",
+                }}
+                // width={"100%"}
               />
+              </div>
               {/* <div className={classname}>
                 {" "}
               </div> */}
