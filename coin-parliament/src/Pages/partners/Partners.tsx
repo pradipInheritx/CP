@@ -79,9 +79,9 @@ const
           <div className="d-flex justify-content-center">
             <span className={classes.headerTitle}>We believe in Partnerships!</span>
           </div>
-          <div style={{ paddingLeft: '35em', paddingRight: '29em' }}>
-            <div className="row mt-5">
-              <div className="col-sm-7">
+          <div className="d-flex justify-content-center align-items-center ">
+            <div className={`row mt-5`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
+              <div className="col-md-7">
                 <span className={classes.subHeaderText}>How does the Coin Parliament partners' program work?</span>
                 <div className={classes.description}>
                   <ol>
@@ -99,7 +99,7 @@ const
                   </ol>
                 </div>
               </div>
-              <div className="col-sm-5">
+              <div className="col-md-5 text-center">
                 <img src={earn} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />
               </div>
             </div>
@@ -111,6 +111,7 @@ const
             <button
               id="my-tooltip-click"
               className={classes.inviteButton}
+              style={{ width: window.screen.width <= 425 ? '10em' : 'auto' }}
               onClick={() => {
                 if (!user?.uid) {
                   setLogin(true)
@@ -130,7 +131,13 @@ const
               <span className="material-icons-outlined me-2">share</span>
               <span className="material-symbols-outlined">arrow_drop_down</span>
             </button>
-            {showShare && <div className={classes.shareBox}>
+            {showShare && <div className={classes.shareBox} style={window.screen.width <= 425 ? {
+              marginLeft: '2em',
+              top: '12em',
+            } : {
+              marginLeft: '25em',
+              top: '7em',
+            }}>
               <span className="material-symbols-outlined text-secondary me-2"
                 onClick={() => {
                   copy(url);

@@ -898,7 +898,7 @@ const Header = ({
 
 									}}
 								/>}
-							</span> FOR {Number(voteRules?.maxVotes)} VOTES OR&nbsp;
+							</span> FOR {Number(voteRules?.maxVotes)} VOTES OR{window.screen.width < 465 ? <br /> : <>&nbsp;</>}
 							<Link style={{ color: "#160133", textDecoration: 'none' }} className="text-uppercase" to="/votingbooster" onClick={() => {
 								handleSoundClick()
 								navigate("/votingbooster")

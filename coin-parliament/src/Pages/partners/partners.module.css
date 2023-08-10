@@ -76,6 +76,7 @@
 }
 
 .headerTitle{
+    text-align:center;
     color: #FEFEFE;
     text-shadow: 0px 1px 3px #5B03FF;
     font-family: Poppins;
@@ -89,7 +90,6 @@
 }
 
 .subHeaderText{
-    padding-left: 1rem;
     background: linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%);
     background-clip: text;
     -webkit-background-clip: text;
@@ -106,10 +106,9 @@
     font-family: Poppins;
     font-size: 1.1875rem;
     font-style: normal;
-    font-weight: 400;
-    text-align: justify;
-    line-height: 2.5rem; /* 236.842% */
-    letter-spacing: 0.02375rem;
+    /* font-weight: 400; */
+    /* line-height: 2.5rem;  */
+    /* letter-spacing: 0.02375rem; */
     text-transform: capitalize; 
 }
 .footerText{
@@ -135,22 +134,22 @@
     text-transform: capitalize;
 }
 .inviteButton{
+    position:relative;
     margin-top:1.5em;
-    width: 33.1875rem;
-    height: 6.25rem !important;
+    padding:1em;
     flex-shrink: 0;
-    border-radius: 0.625rem !important;
+    border-radius: 0.625em !important;
     border-color:#543CD6;
     background: #543CD6 !important;
 
     color: #FEFEFE;
     text-shadow: 0px 1px 3px #5B03FF;
     font-family: Poppins;
-    font-size: 1.75rem;
+    font-size: 1.75em;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    letter-spacing: 0.035rem;
+    letter-spacing: 0.035em;
     text-transform: uppercase;
 }
 .shareBox{
@@ -159,8 +158,6 @@
     display:flex;
     justify-content:center;
     align-items:center;
-    margin-left:31em;
-    top:9em;
     width: 11.9rem;
     height: 3.76856rem;
     flex-shrink: 0;

@@ -9,6 +9,7 @@ import "./index.css";
 import { VoteProvider } from "Contexts/VoteProvider";
 import { CurrentCMPProvider } from "Contexts/CurrentCMP";
 import { CompletedVotesProvider } from "Contexts/CompletedVotesProvider";
+import { VoteEndCoinPriceProvider } from "Contexts/VoteEndCoinPrice";
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
   const langDetector = document.getElementById("lang-detector");
@@ -20,13 +21,15 @@ window.changeLanguage = (lang: string) => {
 
 ReactDOM.render(
   <BrowserRouter>
-    <VoteProvider>
-      <CompletedVotesProvider>
-        <CurrentCMPProvider>
-          <App />
-        </CurrentCMPProvider>
-      </CompletedVotesProvider>
-    </VoteProvider>
+    <VoteEndCoinPriceProvider>
+      <VoteProvider>
+        <CompletedVotesProvider>
+          <CurrentCMPProvider>
+            <App />
+          </CurrentCMPProvider>
+        </CompletedVotesProvider>
+      </VoteProvider>
+    </VoteEndCoinPriceProvider>
   </BrowserRouter>
   , document.getElementById("app")
 );

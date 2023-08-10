@@ -22,8 +22,9 @@ import { Button, Image, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 import Swal from "sweetalert2";
 import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinColor, getCoinDifferenceColor } from "common/utils/helper";
-import { VoteContext } from "Contexts/VoteProvider";
+import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 import Line from "./icons/line";
+import { VoteEndCoinPriceContext, VoteEndCoinPriceDispatchContext } from "Contexts/VoteEndCoinPrice";
 
 
 
@@ -206,34 +207,56 @@ const VotedCard = ({
   const { timeframes } = useContext(AppContext);
   const translate = useTranslation();
 
-  // const setVoteDetails = useContext(VoteDispatchContext);
+  const setVoteEndCoinPrice = useContext(VoteEndCoinPriceDispatchContext);
+  const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
   const voteDetails = useContext(VoteContext);
   const [calcPer, setCalcPer] = useState<boolean>(true);
-  const [pairCoinResult, setPairCoinResult] = useState<calculateDiffBetweenCoinsType>({ firstCoin: '', secondCoin: '', difference: '' });
-  const [currentCoinPrice, setCurrentCoinPrice] = useState('0');
+  const [pairCoinResult, setPairCoinResult] = useState<calculateDiffBetweenCoinsType>({ firstCoin: '0', secondCoin: '0', difference: '0' });
+
   useEffect(() => {
     if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
       if (!voteDetails?.openResultModal && calcPer) {
         // console.log(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''), parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
 
-        let value1 = parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''))
-        let value2 = parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '').replaceAll(',', ''))
+        let value1 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00';
+        let value2 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin2 || '0.00';
+
         setPairCoinResult((Prev) => {
-          if (isArray(vote.valueVotingTime)) {
-            return calculateDiffBetweenCoins(vote?.valueVotingTime, [value1, value2], vote?.direction);
+          if (isArray(vote.valueVotingTime) && value1 && value2) {
+            return calculateDiffBetweenCoins(vote?.valueVotingTime, [+value1, +value2], vote?.direction);
           }
           return Prev;
         })
       }
-    } else {
-      setCurrentCoinPrice(`${formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')} ${(symbol1 != 'BTC' && symbol1 != 'ETH') && coins[symbol1]?.randomDecimal}`)
     }
-    if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
-      setPairCoinResult((Prev) => {
-        return calculateDiffBetweenCoins(voteDetails?.lessTimeVote?.valueVotingTime, voteDetails?.lessTimeVote?.valueExpirationTime, vote?.direction);
-      })
-    }
+    // if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
+    //   setPairCoinResult((Prev) => {
+    //     return calculateDiffBetweenCoins(voteDetails?.lessTimeVote?.valueVotingTime, voteDetails?.lessTimeVote?.valueExpirationTime, vote?.direction);
+    //   })
+    // }
+  }, [JSON.stringify(voteEndCoinPrice[`${vote?.coin}_${vote?.timeframe?.seconds}`])]);
+
+  useEffect(() => {
+    calculateCurrentPrice();
   }, [vote, coins, voteDetails?.lessTimeVote]);
+
+  const calculateCurrentPrice = () => {
+    if (vote?.expiration < new Date().getTime()) {
+      return;
+    }
+    let value1 = `${formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol1.toUpperCase()) ? coins[symbol1]?.randomDecimal : ''}`
+    let value2 = symbol2 ? `${formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol2.toUpperCase()) ? coins[symbol2]?.randomDecimal : ''}` : '0.00'
+    setVoteEndCoinPrice((prev) => {
+      return {
+        ...prev,
+        [`${vote?.coin}_${vote?.timeframe?.seconds}`]: {
+          coin1: value1,
+          coin2: value2
+        }
+      }
+    })
+  }
+  console.log(voteEndCoinPrice, 'pkkkk');
   if (!coin1) {
     return <></>;
   }
@@ -386,17 +409,19 @@ const VotedCard = ({
                   </div>
                   <div className="d-flex align-items-center justify-content-center" style={{
                     fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.1em' : '1.5em',
-                    color: getCoinColor(parseFloat(currentCoinPrice), parseFloat(row2.replaceAll('$', '').replaceAll(',', ''))),
+                    color: getCoinColor(parseFloat(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00'), parseFloat(row2.replaceAll('$', '').replaceAll(',', ''))),
                   }}>
-                    {formatCurrency(coins[symbol1]?.price, precision[symbol1])}{(symbol1 != 'BTC' && symbol1 != 'ETH') && coins[symbol1]?.randomDecimal}
+                    ${voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || 0.00}
                   </div>
                 </div>
                 <BitcoinBTCBULL24H3864490
-                  className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center  `}
+                  className={`d-flex justify-content-center`}
+
                 >
-                  <Row1 className="poppins-normal-blackcurrant-14px mx-2">You voted for {row1}</Row1>
-                  <Row1 className="poppins-normal-blue-violet-14px-2 ">
-                    {row2}
+                  <Row1 className="poppins-normal-blackcurrant-14px mx-2" style={{ fontSize: window.screen.width < 325 ? '1.1em' : '' }}>You voted for </Row1>
+                  {window.screen.width < 330 && <br />}
+                  <Row1 className="poppins-normal-blue-violet-14px-2 " style={{ fontSize: window.screen.width < 325 ? '1.1em' : '' }}>
+                    {row1}  {row2}
                   </Row1>
                 </BitcoinBTCBULL24H3864490>
               </>

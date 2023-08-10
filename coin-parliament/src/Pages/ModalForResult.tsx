@@ -277,8 +277,7 @@ function ModalForResult({ popUpOpen, vote, type,
               <div style={{ color: "#6352E8" }}>
                 {vote.score && (
                   <Row className="flex-column text-center">
-
-                    <Col style={{ fontSize: (window.screen.width < 350 ? '0.8125em' : '') }}>
+                    <Col style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
                       <strong>You progressed - {vote.score}</strong> <span> CMP</span>
                     </Col>
 
@@ -385,7 +384,7 @@ function ModalForResult({ popUpOpen, vote, type,
                   <CoinVoteTimer>
                     {vote?.valueExpirationTime && vote?.score && (
                       <>
-                        <div style={{ fontSize: (window.screen.width < 350 ? '0.8125em' : '') }}>
+                        <div style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
                           <strong>You progressed - {vote.score}</strong> <span> CMP</span>
                         </div>
                       </>
