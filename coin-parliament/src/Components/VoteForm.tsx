@@ -118,104 +118,60 @@ const VoteForm = function <
         <div className='mb-3'>
           {/* <Title>{texts.yourVote}</Title> */}
         </div>
-        <OverlayTrigger
-          overlay={(props) => {
-            return (
-              (!!userInfo?.rewardStatistics && userInfo?.rewardStatistics?.extraVote <= 0 && Number(userInfo?.voteValue || 0) <= 0 && !afterVotePopup) ? ( //to stop "tooltip" and "out of votes modal open same" add !afterVotePopup
-                user ?
-                  <Tooltip id='button-tooltip' {...props
-                  } >
-                    <div className="" style={{
-                      marginLeft: '20px', marginTop: "0px",
-                      zIndex: 95,
-                    }}>
+        <div className="">
+          <CPVote
+            {...{
+              selectedOption,
+              setSelectedOption,
+            }}
+            width={width || 266}
+            // disabled={!canVote || disabled}
+            disabled={
+              // !!!user && selectedTimeFrame !== undefined
+              //   ? false
+              //   : !canVote || disabled
+              //     ? true
+              //     : false
+              !!!user
+            }
+            disabledText={texts.tooltip}
+            options={[
+              {
+                icon:
+                  typeof option1.image === "string" ? (
+                    <img src={option1.image} alt={option1.alt} />
+                  ) : (
+                    <>
+                      {/* <p>vote {option1.image} BEAR</p> */}
                       {/* @ts-ignore */}
-                      <Countdown daysInHours zeroPadTime={2} date={remainingTimer}
-                        renderer={({ hours, minutes, seconds, completed }) => {
-                          return (
-                            < >
-                              <span className="text-uppercase" style={{ color: '#fff', fontSize: '11px', fontWeight: 400 }}>
-                                Wait {" "}
-                                {hours < 1 ? null : `${hours} :`}
-                                {minutes < 10 ? `0${minutes}` : minutes}:
-                                {seconds < 10 ? `0${seconds}` : seconds} for {voteRules?.maxVotes} votes
-                                <br />
-                                or
-                                {/* buy extra votes now. */}
-                                <Link to="/votingbooster" style={{ color: "#fff" }}> buy extra votes now.</Link>
-                              </span>
-                            </>
-                          );
-                        }}
-                      />
-                    </div>
-                  </Tooltip>
-                  : `${texts.tooltip}`
-              ) : selectedTimeFrame == undefined ? (
-                <Tooltip id='button-tooltip' {...props}>
-                  {texts.tooltip}
-                </Tooltip>
-              ) : (
-                <></>
-              )
-            );
-          }}
-        >
-          <div className="">
-            <CPVote
-              {...{
-                selectedOption,
-                setSelectedOption,
-              }}
-              width={width || 266}
-              // disabled={!canVote || disabled}
-              disabled={
-                // !!!user && selectedTimeFrame !== undefined
-                //   ? false
-                //   : !canVote || disabled
-                //     ? true
-                //     : false
-                !!!user
-              }
-              disabledText={texts.tooltip}
-              options={[
-                {
-                  icon:
-                    typeof option1.image === "string" ? (
-                      <img src={option1.image} alt={option1.alt} />
-                    ) : (
-                      <>
-                        {/* <p>vote {option1.image} BEAR</p> */}
-                        {/* @ts-ignore */}
-                        {option1?.buttonText ? <p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p> : <> Vote<p>{option1.image}</p> </>}
-                      </>
-                    ),
-                  buttonProps: {
-                    children: undefined,
-                  },
+                      {option1?.buttonText ? <p>{option1?.buttonText[0]} {option1.image} {option1?.buttonText[1]}</p> : <> Vote<p>{option1.image}</p> </>}
+                    </>
+                  ),
+                buttonProps: {
+                  children: undefined,
                 },
-                {
-                  icon:
-                    typeof option2.image === "string" ? (
-                      <img src={option2.image} alt={option2.alt} />
-                    ) : (
-                      <>
-                        {" "}
-                        {/* <p>vote {option2.image} BEAR</p> */}
-                        {/* @ts-ignore */}
-                        {option2?.buttonText ? <p>{option2?.buttonText[0]} {option2.image} {option2?.buttonText[1]}</p> : <> Vote<p>{option2.image}</p> </>}
-                      </>
-                    ),
-                  buttonProps: {
-                    children: undefined,
-                  },
+              },
+              {
+                icon:
+                  typeof option2.image === "string" ? (
+                    <img src={option2.image} alt={option2.alt} />
+                  ) : (
+                    <>
+                      {" "}
+                      {/* <p>vote {option2.image} BEAR</p> */}
+                      {/* @ts-ignore */}
+                      {option2?.buttonText ? <p>{option2?.buttonText[0]} {option2.image} {option2?.buttonText[1]}</p> : <> Vote<p>{option2.image}</p> </>}
+                    </>
+                  ),
+                buttonProps: {
+                  children: undefined,
                 },
-              ]}
-            >
-              {children}
-            </CPVote>
-          </div>
-        </OverlayTrigger>
+              },
+            ]}
+          >
+            {children}
+          </CPVote>
+        </div>
       </div >
     </Form >
   );

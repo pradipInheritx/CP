@@ -4,7 +4,7 @@ import { User } from "firebase/auth";
 import { Callback } from "../../common/models/utils";
 import { genericLogin } from "common/models/Login";
 import InputField from "../Atoms/Input/InputField";
-import { texts, urls } from "./texts";
+import { texts, urls } from "Components/LoginComponent/texts";
 import Checkbox from "../Atoms/Checkbox/Checkbox";
 import { useTranslation } from "../../common/models/Dictionary";
 import { Buttons } from "../Atoms/Button/Button";
@@ -54,7 +54,7 @@ const SignupForm = ({
     }
     // @ts-ignore
     setSignupLoading(true)
-  await genericLogin(
+    await genericLogin(
       {
         email,
         password,
