@@ -241,7 +241,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
       }}
     >
       <div className='front'>
-        <Card darkTheme={darkTheme} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+        <Card darkTheme={!!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
           minHeight: "318px",
           minWidth: "250px",
           backgroundColor: 'black !important',
