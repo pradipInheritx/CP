@@ -355,18 +355,21 @@ useEffect(() => {
           </div>
           {/* @ts-ignore */}
           {userInfo?.isUpgraded ?
-            <H2
+            <div
               style={{
                 fontSize: "1.25rem",
                 marginTop: "0px",
                 // paddingTop: "30px",
                 marginBottom:"30px",
-                fontWeight: "bold",
+                fontWeight: "bold"
+                ,
                 // textTransform:'uppercase'
               }}
+              className="text-center"
             >
-              {translate("Congratulations , You have already upgraded your account")}
-          </H2>
+                    <p>🎉 Congratulations 🎉</p>
+               <p>You have already upgraded your account</p>
+          </div>
             :
             <div
             className='text-center mb-4'
