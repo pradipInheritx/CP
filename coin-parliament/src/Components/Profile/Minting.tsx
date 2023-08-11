@@ -407,41 +407,41 @@ const Minting = ({
           // className="d-flex justify-content-center align-items-center"
 
           backdrop="static"
-            // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
-            contentClassName={"modulebackground ForBigDiv"}
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
-          >
-              <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
+          // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+          contentClassName={"modulebackground ForBigDiv"}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+        >
+          <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
             style={{
-            width:`${window.screen.width > 767 ?"500px" :"100%"}`,
-            height:"400px"
-          }}
-        >         
+              width: `${window.screen.width > 767 ? "500px" : "100%"}`,
+              height: "400px"
+            }}
+          >
             <Popuphead>Congrats!</Popuphead>
-            {/* @ts-ignore*/}            
-            <div className=''><p style={{ fontSize: "24px", color: "white" ,fontWeight:"600"}}>You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
-          
+            {/* @ts-ignore*/}
+            <div className=''><p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
 
-          <div className="d-flex justify-content-center ">
-            <Buttons.Primary className="mx-2" onClick={() => {
-              setTimeout(() => {
-                setShowReward(1);
-                setInOutReward(1);
-                // setCountShow(true)
-                // @ts-ignore
-                setAlbumOpen(resultData?.data?.firstRewardCardCollection);
-                // @ts-ignore
-                setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
-                // setRewardTimer(resultData); i commented here because i set this when i get result 
-              }, 1000);
 
-              handleClose()
-            }}>COLLECT YOUR COIN</Buttons.Primary>
-            {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
+            <div className="d-flex justify-content-center ">
+              <Buttons.Primary className="mx-2" onClick={() => {
+                setTimeout(() => {
+                  setShowReward(1);
+                  setInOutReward(1);
+                  // setCountShow(true)
+                  // @ts-ignore
+                  setAlbumOpen(resultData?.data?.firstRewardCardCollection);
+                  // @ts-ignore
+                  setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
+                  // setRewardTimer(resultData); i commented here because i set this when i get result 
+                }, 1000);
+
+                handleClose()
+              }}>COLLECT YOUR COIN</Buttons.Primary>
+              {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
             </div>
-            </Modal.Body>
+          </Modal.Body>
           {/* </Modal.Footer>       */}
         </Modal>
       </div>
