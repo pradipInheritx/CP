@@ -334,13 +334,16 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
             <span>
               {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}&nbsp;&nbsp;
-              <u
-                onClick={() => {
+            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline"
+            onClick={() => {
                   navigate(`/singalCard/${CollectionType || type}/${id}`)
                   // setSingalCardData({ ...fulldata, myID: userId })
-                  localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
-                }}>View All</u></span> : 0} </span>}
+                  localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))}}
+            >{holderNo}&nbsp;&nbsp;View All
+              {/* <u
+                
+                }}>View All</u> */}
+                </span> : 0} </span>}
 
             {/* {["followerProfile", "profile"].includes(pathnameName[1]) &&
               <>

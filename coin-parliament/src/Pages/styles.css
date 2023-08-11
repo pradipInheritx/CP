@@ -44,8 +44,8 @@
   margin: 10px;
 }
 .flipped > .front {
-      transform: rotateY(180deg);
-                    }
+  transform: rotateY(180deg);
+}
 .flipped > .back {
     transform: rotateY(0deg);
       }
