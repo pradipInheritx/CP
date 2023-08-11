@@ -376,7 +376,7 @@ const Mine = () => {
 
                   >
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8", }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
+                    <span style={{ color: "#6352E8" }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}
@@ -466,7 +466,8 @@ const Mine = () => {
           aria-labelledby="contained-modal-title-vcenter"
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
-          contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
+          // @ts-ignore
+          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
         >
           <div className="d-flex justify-content-end">
             {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
@@ -476,6 +477,9 @@ const Mine = () => {
             }}></button> */}
           </div>
           <Modal.Body
+            style={{
+              padding: "0px"
+            }}
           >
             {/* continue voting */}
             {/* @ts-ignore */}

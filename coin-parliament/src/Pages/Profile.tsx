@@ -10,7 +10,8 @@ import { Gradient2 } from "../styledMixins";
 import { isV1, PageContainer } from "../Components/App/App";
 import ImageTabs from "../Components/Profile/ImageTabs";
 import Votes from "../Components/icons/votes2";
-import Mine from "../Components/icons/mine";
+// import Mine from "../Components/icons/mine";
+import Minenew from "../Components/icons/minenew";
 import Share from "../Components/icons/share";
 import ProfileFollowing from "../Components/icons/ProfileFollowing";
 import Gallery from "../Components/icons/Gallery";
@@ -25,10 +26,15 @@ import { useTranslation } from "../common/models/Dictionary";
 import Spinner from "../Components/Spinner";
 import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
-import ProfileNftGallery from "./ProfileNftGallery";
+// import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
 import { texts } from "../Components/LoginComponent/texts";
 import { handleSoundClick } from "../common/utils/SoundClick";
+import Sharenew from "Components/icons/sharenew";
+import Votesnew from "Components/icons/votesnew";
+import Gallerynew from "Components/icons/Gallerynew";
+import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
+import Notificationsnew from "Components/icons/notificationsnew";
 
 export enum ProfileTabs {
   profile = "profile",
@@ -142,7 +148,8 @@ const Profile = () => {
                     navigate("/upgrade")
                   }} style={{ cursor: "pointer" }} >
                     {/* {translate("upgrade your account")} */}
-                    {texts.UpgradeYourAccount}
+                    {/* @ts-ignore */}
+                    {userInfo?.isUpgraded ? ("your account is upgraded").toUpperCase() : texts.UpgradeYourAccount}
                   </MyBadge>
                 </Row>
               )}
@@ -178,25 +185,25 @@ const Profile = () => {
                               {
                                 component: <></>,
                                 label: "Mining",
-                                icon: <Mine />,
+                                icon: <Minenew />,
                                 eventKey: ProfileTabs.mine,
                               },
                               {
                                 component: <></>,
                                 label: "Pool Mining",
-                                icon: <Share />,
+                                icon: <Sharenew />,
                                 eventKey: ProfileTabs.share,
                               },
                               {
                                 component: <></>,
                                 label: ProfileTabs.votes,
-                                icon: <Votes />,
+                                icon: <Votesnew />,
                                 eventKey: ProfileTabs.votes,
                               },
                               {
                                 component: <></>,
                                 label: ProfileTabs.ProfileNftGallery,
-                                icon: <Gallery />,
+                                icon: <Gallerynew />,
                                 eventKey: ProfileTabs.ProfileNftGallery,
                               },
 
@@ -204,13 +211,13 @@ const Profile = () => {
                               {
                                 component: <></>,
                                 label: ProfileTabs.followers,
-                                icon: <ProfileFollowing />,
+                                icon: <ProfileFollowingnew />,
                                 eventKey: ProfileTabs.followers,
                               },
                               {
                                 component: <></>,
                                 label: ProfileTabs.notifications,
-                                icon: <Notifications />,
+                                icon: <Notificationsnew />,
                                 eventKey: ProfileTabs.notifications,
                               },
 
