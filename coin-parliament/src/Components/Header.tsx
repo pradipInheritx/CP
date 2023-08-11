@@ -529,7 +529,7 @@ const Header = ({
 												width: "45px",
 												// border: "1px solid #6352E8",
 												// @ts-ignore
-												boxShadow: `${userInfo?.isUpgraded  ?"1px 0px 5px #ffd700":"1px 0px 5px #6352E8"}`, backgroundColor: `${userInfo?.isUpgraded  ?"#ffd700":"#6352E8"}`,
+												boxShadow: `${(userInfo?.isUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
 											}}
 										/>
 									</div>
@@ -704,7 +704,7 @@ const Header = ({
 											style={{
 												width: "60px",
 												// @ts-ignore
-												boxShadow: `${userInfo?.isUpgraded ?"1px 0px 5px #ffd700":"1px 0px 5px #6352E8"}`, backgroundColor: `${userInfo?.isUpgraded  ?"#ffd700":"#6352E8"}`,
+												boxShadow: `${(userInfo?.isUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
 												// boxShadow: "1px 0px 5px #6352E8",
 												// backgroundColor: "#6352E8",
 											}}

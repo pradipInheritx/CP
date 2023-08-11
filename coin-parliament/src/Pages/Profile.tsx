@@ -53,7 +53,7 @@ export enum ProfileTabs {
 export const CardContainer = styled.div`
 overflow:hidden;
 &.BigScreen{
-// background:#d4d0f3;
+background:#d4d0f3;
   height: 140px;
   padding: 0;
   
