@@ -47,7 +47,7 @@ export enum ProfileTabs {
 export const CardContainer = styled.div`
 overflow:hidden;
 &.BigScreen{
-background:#d4d0f3;
+// background:#d4d0f3;
   height: 140px;
   padding: 0;
   
@@ -131,7 +131,7 @@ const Profile = () => {
       {!avatarMode && (
         <OuterContainer>
 
-          <CardContainer className={`${window.screen.width > 979 ? "BigScreen" : ""}`}>
+          <CardContainer className={`${window.screen.width > 979 ? "BigScreen " : ""}`} style={{ backgroundColor: '' }}>
             <>
               {!userInfo?.paid && (
                 <Row

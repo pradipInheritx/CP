@@ -39,7 +39,7 @@ const BGContainer = styled.div`
   background:#160133;
   ${(props: Props) =>
     isProfile(props.pathname)
-      ? "border-radius: 0px 0px 80px 0px"
+      ? "border-radius: 0px 0px 0px 0px"
       : "border-radius: 0px 0px 0px 0px"
   };
   
