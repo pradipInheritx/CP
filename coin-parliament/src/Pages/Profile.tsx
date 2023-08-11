@@ -25,7 +25,7 @@ import { useTranslation } from "../common/models/Dictionary";
 import Spinner from "../Components/Spinner";
 import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
-import ProfileNftGallery from "./ProfileNftGallery";
+// import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
 import { texts } from "../Components/LoginComponent/texts";
 import { handleSoundClick } from "../common/utils/SoundClick";
@@ -142,7 +142,8 @@ const Profile = () => {
                     navigate("/upgrade")
                   }} style={{ cursor: "pointer" }} >
                     {/* {translate("upgrade your account")} */}
-                    {texts.UpgradeYourAccount}
+                    {/* @ts-ignore */}
+                    {userInfo?.isUpgraded ? ("your account is upgraded").toUpperCase() : texts.UpgradeYourAccount}
                   </MyBadge>
                 </Row>
               )}
