@@ -23,19 +23,19 @@ type ImageTabsProps = {
 };
 
 const Circle = styled(Button)`
-  background: var(--color-ffffff) 0 0% no-repeat padding-box;
-  box-shadow: 0 2px 3px #6352e83b;
-  border-radius: 45px;
+  // background: var(--color-ffffff) 0 0% no-repeat padding-box;
+  // box-shadow: 0 2px 3px #6352e83b;
+  // border-radius: 45px;
   opacity: 1;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   padding: 0;
 `;
 const Menubox = styled.div`
 display:flex;
 justify-content: center;
-flex-decoration:column;
 align-items: center;
+flex-direction: column;
   width: 80px;
   height: 60px;
   margin:0px 5px;
