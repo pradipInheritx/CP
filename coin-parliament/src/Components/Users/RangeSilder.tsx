@@ -345,29 +345,19 @@ export default function SpeedTest(
         return false
       }
 
-      // console.log('newprice',((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)))
       let newPrice = 0;
       if (['BTS', 'ETH'].includes(symbol1)) {
-        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+        newPrice = Math.ceil(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
       } else {
-        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+        newPrice = Math.ceil(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
       }
 
-      console.log(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply), priceRange, "get price")
-      // console.log(Number(coins[symbol1]?.price),decimal[symbol1].multiply,Number(coins[symbol1]?.randomDecimal),Number(vote?.valueVotingTime),decimal[symbol1].multiply,priceRange, "AllnewPrice")
-      console.log(Number(coins[symbol1]?.price), newPrice, Number(coins[symbol1]?.randomDecimal), "get price 2")
-      // if (50 + newPrice > 100) {
-      //   setPersentValue(100);
-      //   return
-      // }
-      // if (50 - newPrice < 0) {
-      //   setPersentValue(0);
-      //   return
-      // }      
+      console.log('coin', coins[symbol1], 'vote value', vote?.valueVotingTime, 'decimal', decimal[symbol1], 'price', priceRange, allCoinsSetting, 'final value', ((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply), "get price")
       if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 : 50 + newPrice);
       else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);
     }
   };
+  console.log(persentValue, 'hello');
 
 
   useEffect(() => {
