@@ -186,13 +186,12 @@ function ModalForResult({ popUpOpen, vote, type,
 
   return (
     <div>
-      {/* <iframe src="silence.mp3" allow="autoplay" id="audio" style={{display: "none"}}></iframe> */}
       <Modal show={show} onHide={handleClose}
         backdrop="static"
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
-        style={{ zIndex: 100 }}
+        style={{ zIndex: 1000 }}
       >
         <div className='d-flex justify-content-between'>
           <div></div>
@@ -278,8 +277,7 @@ function ModalForResult({ popUpOpen, vote, type,
               <div style={{ color: "#6352E8" }}>
                 {vote.score && (
                   <Row className="flex-column text-center">
-
-                    <Col>
+                    <Col style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
                       <strong>You progressed - {vote.score}</strong> <span> CMP</span>
                     </Col>
 
@@ -386,7 +384,9 @@ function ModalForResult({ popUpOpen, vote, type,
                   <CoinVoteTimer>
                     {vote?.valueExpirationTime && vote?.score && (
                       <>
-                        <strong>You progressed - {vote?.score}</strong> <span> CMP</span>
+                        <div style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
+                          <strong>You progressed - {vote.score}</strong> <span> CMP</span>
+                        </div>
                       </>
 
                     )}

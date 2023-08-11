@@ -17,7 +17,7 @@ import { cardFlip } from "../common/utils/SoundClick";
 import { Ratio } from "react-bootstrap";
 
 
-const Card = styled.div`
+const Card = styled.div<{ darkTheme: boolean }>`
 
   border-radius: 0px 0px 8px 8px;
   text-transform: uppercase;
@@ -25,38 +25,38 @@ const Card = styled.div`
   line-height: 14px;
 
   &.LEGENDARY {
-    background-image: url(${bkgnd4}) !important;
+    background-image: url(${props => !props.darkTheme && bkgnd4}) !important;
     color: #160133;
     border: #f5e7b5 solid 8px;
-    background-color: #f5e7b5;
+    background-color: black;
   }
   
 
   &.RARE {
-    background-image: url(${bkgnd5}) !important;
+    background-image: url(${props => !props.darkTheme && bkgnd5}) !important;
     color: #160133;
     border: #d2d2d2 solid 8px;
-    background-color: #d2d2d2;
+    background-color: black;
   }  
   &.EPIC {
-    background-image: url(${bkgnd3}) !important;
+    background-image: url(${props => !props.darkTheme && bkgnd3}) !important;
     color: #d4d0f3;
     border: #6352e8 solid 8px;
-    background-color: #6352e8;
+    background-color: black;
   }
   &.UNCOMMON {
-    background-image: url(${bkgnd2}) !important;
+    background-image: url(${props => !props.darkTheme && bkgnd2}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
     border-radius: 0px 0px 8px 8px;
-    background-color: #d4d0f3;
+    background-color: black;
   }
   &.COMMON {
-    background-image: url(${bkgnd}) !important;
+    background-image: url(${props => !props.darkTheme && bkgnd}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
     border-radius: 0px 0px 8px 8px;
-    background-color: #d4d0f3;
+    background-color: black;
     
   }
   &.CardDisebal{
@@ -128,7 +128,7 @@ const CardBack = styled.div`
     padding: 0px 0px 2px 0px;
   }
 `;
-  
+
 
 
 
@@ -141,58 +141,59 @@ export type BoxItems = {
   Disable?: string;
   cardNo?: string;
   cardHeader?: string;
-  BackSideCard?: (e: any) => void ;
+  BackSideCard?: (e: any) => void;
   id?: string | number;
-  flipCard?: boolean | string;  
-  Serie?:string;
-  BackCardName?:string;
-   Rarity?:string;
-   Quantity?:string;
+  flipCard?: boolean | string;
+  Serie?: string;
+  BackCardName?: string;
+  Rarity?: string;
+  Quantity?: string;
   holderNo?: string | number;
   MintedTime?: string | number;
   PrivateSerialNo?: string | number;
   GeneralSerialNo?: string | number;
-  fulldata?:any;
-  userId?:any;
-  CollectionType?:any;
-  ImgUrl?:any;
-  VideoUrl?:any;
+  fulldata?: any;
+  userId?: any;
+  CollectionType?: any;
+  ImgUrl?: any;
+  VideoUrl?: any;
+  darkTheme?: boolean
 };
-const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType ,ImgUrl,VideoUrl}: BoxItems) => {
-  
+const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl }: BoxItems) => {
 
 
-  const Width: number = window.screen.width 
+
+  const Width: number = window.screen.width
   const [flip, setFlip] = useState(true)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
-  const { singalCardData, setSingalCardData } = useContext(AppContext);    
-  
-      let params = useParams();
-  const { type} = params;
-  
-  console.log(VideoUrl,"VideoUrl")
+  const { singalCardData, setSingalCardData } = useContext(AppContext);
+
+  let params = useParams();
+  const { type } = params;
+
+  console.log(VideoUrl, "VideoUrl")
 
   return (
-    
+
     <div
       onMouseEnter={() => {
-        if (Disable == "" || Disable == undefined && window.screen.width > 767) {          
+        if (Disable == "" || Disable == undefined && window.screen.width > 767) {
           setFlip(false);
-          if (flipCard != true) {            
+          if (flipCard != true) {
             cardFlip()
           }
-        }        
+        }
       }}
       onMouseLeave={() => {
-        if (Disable == "" || Disable == undefined && window.screen.width > 767) {                 
+        if (Disable == "" || Disable == undefined && window.screen.width > 767) {
           setFlip(true);
           // cardFlip()
           // if (flipCard != true) {            
           //   cardFlip()
           // }
-        }        
+        }
       }}
       // onFocus={() => {
       //   if (Disable == "" || Disable == undefined) {          
@@ -211,48 +212,49 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
       // @ts-ignore
       // flipcard===id =true
       // flag = false = flipclass
-      className={`card-container ${
-        flipCard == true || flip != true ? "flipped" : ""
-      }`}
-      onClick={(e:any) => {
-        if (Disable == "" || Disable == undefined) { 
-          console.log('data',e.currentTarget.className?.includes('flipped'), flipCard)
-         if(window.screen.width>767) {
-          if(!flip && !flipCard){
-            setFlip(true)
-            cardFlip()
-            return
+      className={`card-container ${flipCard == true || flip != true ? "flipped" : ""
+        }`}
+      onClick={(e: any) => {
+        if (Disable == "" || Disable == undefined) {
+          console.log('data', e.currentTarget.className?.includes('flipped'), flipCard)
+          if (window.screen.width > 767) {
+            if (!flip && !flipCard) {
+              setFlip(true)
+              cardFlip()
+              return
+            }
+
+
+            // setFlip(!flip);
           }
-          
-         
-          // setFlip(!flip);
-        }
           // @ts-ignore
           BackSideCard(id);
-          if (window.screen.width < 767) {            
+          if (window.screen.width < 767) {
             cardFlip()
           }
         }
-        
+
       }}
       style={{
         minHeight: "330px",
-        minWidth:"250px",
+        minWidth: "250px",
       }}
     >
       <div className='front'>
-        {/* First Div  */}
-        <Card className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+        <Card darkTheme={!!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
           minHeight: "318px",
-          minWidth:"250px"
-      }}>
+          minWidth: "250px",
+          backgroundColor: 'black !important',
+          backgroundImage: (darkTheme ? 'none !important' : ''),
+          color: (darkTheme ? "white" : ''),
+        }}>
           <div>
             {" "}
             <div className='d-flex justify-content-between'>
               <div className='opacity-0' style={{ fontSize: "12px" }}>
                 <span className='px-2'>{cardNo}</span>
               </div>
-              <CenterText className={HeaderClass}>
+              <CenterText className={HeaderClass} >
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
               <div className='' style={{ fontSize: "12px" }}>
@@ -261,7 +263,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             </div>
             <div>
               {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
-              <span className='cardname'>
+              <span className='cardname' style={{ color: (darkTheme ? "white" : '') }}>
                 <strong> {cardHeader}</strong>
               </span>
             </div>
@@ -270,43 +272,43 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
               {VideoUrl ?
                 <Ratio
                   style={{
-                  width:"300px"
-                }}
+                    width: "300px"
+                  }}
                 >
-                    <embed type="" src={VideoUrl} />
+                  <embed type="" src={VideoUrl} />
                 </Ratio>
-                :   
+                :
                 <div
                   style={{
                     width: "250px",
-                    height:"220px",
+                    height: "220px",
                     // border:"1px solid red",
                     // overflow:"hidden"
                   }}
                   className="d-flex justify-content-center"
                 >
-                      <img
+                  <img
                     src={ImgUrl || TheEagle}
                     alt='the hgodler'
-                        className='image-fluid'
-                        style={{
-                          // border:"1px solid red",
-                          // zoom:"1.6",
-                          // backgroundPosition:" center",
-                          
-                          width: "255px",
-                          margin: "auto",
-                          display: "block",
-                          marginTop:"-15px",
-                        }}
-                    // width={"250px"}
-                    // width={"100%"}
-                    // height={"100%"}
-                    // width={"100%"}
-                        />
-                  </div>
+                    className='image-fluid'
+                    style={{
+                      // border:"1px solid red",
+                      // zoom:"1.6",
+                      // backgroundPosition:" center",
+
+                      width: "255px",
+                      margin: "auto",
+                      display: "block",
+                      marginTop: "-15px",
+                    }}
+                  // width={"250px"}
+                  // width={"100%"}
+                  // height={"100%"}
+                  // width={"100%"}
+                  />
+                </div>
               }
-              
+
             </div>
           </div>
         </Card>
@@ -314,8 +316,8 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
       <div className='back'>
         <CardBack className='shadow tex-center' style={{
           minHeight: "318px",
-          minWidth:"250px",
-      }}>
+          minWidth: "250px",
+        }}>
           <div className='d-flex justify-content-center mt-2'>
             <img src={logo} alt='' width='60px' height='60px' />
           </div>
@@ -323,7 +325,7 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             <span>
               {["followerProfile", "profile"].includes(pathnameName[1])
                 ? `Serial No. : ${PrivateSerialNo || ""}`
-                : `Serial No. : ${GeneralSerialNo || ""}` }
+                : `Serial No. : ${GeneralSerialNo || ""}`}
             </span>
             <span>Collection : {CollectionType || type}</span>
             <span>Set (Serie) : {Serie}</span>
@@ -332,14 +334,14 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
             <span>
               {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}
+            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline">{holderNo}&nbsp;&nbsp;
               <u
-            onClick={() => {
-                navigate(`/singalCard/${CollectionType || type}/${id}`)            
-                // setSingalCardData({ ...fulldata, myID: userId })
-                localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
-            }}> View All</u></span> : 0} </span>}
-            
+                onClick={() => {
+                  navigate(`/singalCard/${CollectionType || type}/${id}`)
+                  // setSingalCardData({ ...fulldata, myID: userId })
+                  localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
+                }}>View All</u></span> : 0} </span>}
+
             {/* {["followerProfile", "profile"].includes(pathnameName[1]) &&
               <>
               <span>
@@ -347,11 +349,11 @@ const NftOneCard = ({ DivClass, HeaderText, HeaderClass, width, Disable, cardNo,
               </span>
               </>
               } */}
-            
+
           </div>
         </CardBack>
       </div>
-    </div>
+    </div >
   );
 };
 

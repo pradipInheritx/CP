@@ -122,7 +122,7 @@ import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
-import Partners from "./Pages/Partners";
+import Partners from "./Pages/partners/Partners";
 import Foundations from "./Pages/Foundations";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
@@ -146,6 +146,7 @@ import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import CoinsList from "Components/Profile/CoinsList";
+import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -1109,9 +1110,9 @@ function App() {
   const setCompletedVotes = useContext(CompletedVotesDispatchContext);
 
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
-  const [calculateVote, setCalculateVote] = useState<boolean>(true);
   const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
 
   useEffect(() => {
@@ -1152,15 +1153,16 @@ function App() {
     impact: null
   });
   const latestVote = useRef<VoteContextType>();
-  const latestCoins = useRef<{ [symbol: string]: Coin }>({});
+  const latestCoinsPrice = useRef<VoteEndCoinPriceType>({});
   useEffect(() => {
-    latestCoins.current = myCoins;
-  }, [myCoins]);
+    latestCoinsPrice.current = voteEndCoinPrice;
+  }, [voteEndCoinPrice]);
 
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
     latestVote.current = voteDetails;
   }, [voteDetails]);
+
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
       // let exSec = new Date(-).getSeconds();
@@ -1179,10 +1181,10 @@ function App() {
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
         // console.log(latestCoins.current, 'coinsname');
-        console.log(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''), 'test');
+        // console.log(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''), 'test');
 
-        let valueExpirationTimeOfCoin1 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${!['BTC', 'ETH'].includes(coin1.toUpperCase()) ? latestCoins.current[coin1.toUpperCase()]?.randomDecimal : ''}`
-        let valueExpirationTimeOfCoin2 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${(!['BTC', 'ETH'].includes(coin2.toUpperCase()) && latestCoins.current[coin2.toUpperCase()]) ? latestCoins.current[coin2.toUpperCase()]?.randomDecimal : ''}`
+        // let valueExpirationTimeOfCoin1 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${!['BTC', 'ETH'].includes(coin1.toUpperCase()) ? latestCoins.current[coin1.toUpperCase()]?.randomDecimal : ''}`
+        // let valueExpirationTimeOfCoin2 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${(!['BTC', 'ETH'].includes(coin2.toUpperCase()) && latestCoins.current[coin2.toUpperCase()]) ? latestCoins.current[coin2.toUpperCase()]?.randomDecimal : ''}`
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1198,8 +1200,8 @@ function App() {
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
                 status: voteImpact.current?.impact,
-                valueExpirationTimeOfCoin1: valueExpirationTimeOfCoin1 || null,
-                valueExpirationTimeOfCoin2: (valueExpirationTimeOfCoin2 && valueExpirationTimeOfCoin2 !== '0' ? valueExpirationTimeOfCoin2 : null),
+                valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,
+                valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,
               }
               :
               {}

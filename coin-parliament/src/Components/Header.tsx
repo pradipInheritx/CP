@@ -331,14 +331,14 @@ const Header = ({
 
 				signOut(auth)
 					.then((res) => {
-						Logout(setUser);						
+						Logout(setUser);
 						navigate("/")
 						setLogin(true);
 						// console.log("i am working error")	
 						localStorage.removeItem("userId")
 					})
 					.catch((error) => {
-						navigate("/")						
+						navigate("/")
 						setLogin(true);
 						localStorage.removeItem("userId")
 						const errorMessage = error.message;
@@ -541,14 +541,14 @@ const Header = ({
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
 														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 															// @ts-ignore */
-															<div className="" style={{ marginLeft: '20px', marginTop: "5px", lineHeight: "90%" }}>
+															<div style={{ marginLeft: '20px', marginTop: "5px", lineHeight: "90%", textAlign: 'center', }}>
 																{/* @ts-ignore */}
 																<Countdown daysInHours zeroPadTime={2} date={votingTimer}
 																	renderer={({ hours, minutes, seconds, completed }) => {
 																		return (
-																			<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 100, lineHeight: "10%", }}>
+																			<span style={{ color: '#6352e8', fontSize: window.screen.width <= 340 ? '0.7889em' : '12px', fontWeight: 100, lineHeight: "10%", }}>
 																				{/* Wait {" "} */}
-																				{Number(voteRules?.maxVotes)} VOTES IN {" "}
+																				{Number(voteRules?.maxVotes)} Votes in{" "}
 																				{hours < 1 ? null : `${hours}:`}
 																				{minutes < 10 ? `0${minutes}` : minutes}:
 																				{seconds < 10 ? `0${seconds}` : seconds}
@@ -561,7 +561,7 @@ const Header = ({
 																/>
 															</div>
 															:
-															<span style={{ color: "#6352E8", marginLeft: "10px", }}>
+															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
 																		onEnd={() => {
@@ -732,8 +732,8 @@ const Header = ({
 														<Countdown date={votingTimer}
 															renderer={({ hours, minutes, seconds, completed }) => {
 																return (
-																	<span className="text-uppercase" style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400, paddingLeft: '3.2em' }}>
-																		{Number(voteRules?.maxVotes)} VOTES IN {" "}
+																	<span style={{ color: '#6352e8', fontSize: '12px', fontWeight: 400, paddingLeft: '3.2em' }}>
+																		{Number(voteRules?.maxVotes)} Votes in {" "}
 																		{hours < 1 ? null : `${hours}:`}
 																		{minutes < 10 ? `0${minutes}` : minutes}:
 																		{seconds < 10 ? `0${seconds}` : seconds}
@@ -749,8 +749,8 @@ const Header = ({
 														<span
 															style={{
 																color: "#6352E8",
-																fontSize: "11px",
 																marginLeft: "50px",
+																fontSize: window.screen.width <= 340 ? '0.7889em' : '12px'
 															}}
 														>
 															{/* reward modal 4 */}
@@ -868,10 +868,11 @@ const Header = ({
 					onHide={handleClose}
 					aria-labelledby="contained-modal-title-vcenter"
 					centered
-					style={{ opacity: 1, zIndex: 9999 }}
+					style={{ opacity: 1, zIndex: 9999, }}
 					className="borderColor"
 					// animation={false}
 					backdrop="static"
+					contentClassName={window.screen.width <= 750 ? "w-100" : 'w-auto'}
 				>
 					{/* <Modal.Header>
 
@@ -902,8 +903,8 @@ const Header = ({
 
 									}}
 								/>}
-							</span> FOR {Number(voteRules?.maxVotes)} VOTES OR&nbsp;
-							<Link className="text-uppercase" to="/votingbooster" onClick={() => {
+							</span> FOR {Number(voteRules?.maxVotes)} VOTES OR{window.screen.width < 465 ? <br /> : <>&nbsp;</>}
+							<Link style={{ color: "#160133", textDecoration: 'none' }} className="text-uppercase" to="/votingbooster" onClick={() => {
 								handleSoundClick()
 								navigate("/votingbooster")
 								setShow(false)
@@ -940,7 +941,7 @@ const Header = ({
 
 				</Modal>
 			</div>
-		</MenuContainer>
+		</MenuContainer >
 
 	);
 };
