@@ -399,6 +399,9 @@ const Header = ({
 		setShow(false)
 		setAfterVotePopup(false);
 	};
+
+
+
 	return (
 
 		<MenuContainer
@@ -524,9 +527,9 @@ const Header = ({
 											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
 											style={{
 												width: "45px",
-												boxShadow: "1px 0px 5px #6352E8",
 												// border: "1px solid #6352E8",
-												backgroundColor: "#6352E8",
+												// @ts-ignore
+												boxShadow: `${(userInfo?.isUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
 											}}
 										/>
 									</div>
@@ -700,8 +703,10 @@ const Header = ({
 											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
 											style={{
 												width: "60px",
-												boxShadow: "1px 0px 5px #6352E8",
-												backgroundColor: "#6352E8",
+												// @ts-ignore
+												boxShadow: `${(userInfo?.isUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
+												// boxShadow: "1px 0px 5px #6352E8",
+												// backgroundColor: "#6352E8",
 											}}
 										/>
 									</div>

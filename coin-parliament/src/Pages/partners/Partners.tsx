@@ -162,7 +162,7 @@ const
           </div>
           <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
           </div>
-        </PoolBox >
+        </PoolBox>
       </div >
     );
 

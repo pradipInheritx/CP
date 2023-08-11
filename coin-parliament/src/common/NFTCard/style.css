@@ -21,10 +21,10 @@
   border-radius: 0px 0px 8px 8px;
   background-color: #f5e7b5;
   text-transform: uppercase;
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 25px;
+  line-height: 25px;
   font-weight: bold;
-  top: 10px;
+  /* top: 10px; */
 }
 .common_text {
   border: #d4d0f3 solid 6px;
@@ -33,10 +33,10 @@
   border-radius: 0px 0px 8px 8px;
   background-color: #d4d0f3;
   text-transform: uppercase;
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 25px;
+  line-height: 25px;
   font-weight: bold;
-  top: 10px;
+  /* top: 10px; */
 }
 .epic_text {
   border: #6352e8 solid 6px;
@@ -45,34 +45,42 @@
   border-radius: 0px 0px 8px 8px;
   background-color: #6352e8;
   text-transform: uppercase;
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 25px;
+  line-height: 25px;
   font-weight: bold;
-  top: 10px;
+  /* top: 10px; */
 }
 .rare_text {
-  border: #d2d2d2 solid 6px;
+  /* border: #d2d2d2 solid 6px; */
   color: #160133;
 
-  border-radius: 0px 0px 8px 8px;
+  /* border-radius: 0px 0px 8px 8px; */
   background-color: #d2d2d2;
   text-transform: uppercase;
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 25px;
+  line-height: 25px;
   font-weight: bold;
-  top: 10px;
+  /* top: 10px; */
 }
 .uncommon_text {
-  border: #d4d0f3 solid 6px;
-  color: #160133;
+  /* border: #d4d0f3 solid 6px;
+  color: #160133; */
 
-  border-radius: 0px 0px 8px 8px;
-  background-color: #d4d0f3;
+  /* border-radius: 0px 0px 8px 8px; */
+  /* background-color: #d4d0f3; */
   text-transform: uppercase;
-  font-size: 14px;
-  line-height: 14px;
+  color: white;
+  font-size: 25px;
+  line-height: 25px;
   font-weight: bold;
-  top: 10px;
+  /* top: 10px; */
+}
+.class_text{
+text-transform: uppercase;
+  color: white;
+  font-size: 15px;
+  line-height: 15px;
+  font-weight: bold;
 }
 
 .legendary {

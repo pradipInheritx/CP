@@ -22,6 +22,43 @@ animation: blinker 1s linear infinite;
   background-color:transparent !important;
   border: none !important;
 }
+
+.ForBigDiv{
+  margin: 0px !important;
+  padding: 0px !important;
+  background-image:url("../../assets/images/popupline.png"), url("../../assets/images/popupbg.png");
+  /* background-position: cover; */
+    background-attachment: fixed;
+  background-position: center; 
+  border-radius:0px 0px 0px 0px !important;
+  width: 100% !important;
+}
+.ForBigNft{
+  margin: 0px !important;
+  padding: 0px !important;
+  /* background-image:url("../../assets/images/popupline.png"), url("../../assets/images/popupbg.png"); */
+  /* background-position: cover; */
+    background-attachment: fixed;
+  background-position: center; 
+  border-radius:0px 0px 0px 0px !important;
+  width: 100% !important;
+}
+.legendaryBG{
+  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/legendaryBG.png");
+}
+.rareBG{
+  background-image:url("../../assets/images/rarelineBG.png"), url("../../assets/images/rareBG.png");
+}
+.uncommonBG{
+  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/uncommonBG.png");
+}
+.epicBG{
+  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/epicBG.png");
+}
+.commonBG{
+  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/commonBG.png");
+}
+
 .btn-close{
   color: white !important;
 }

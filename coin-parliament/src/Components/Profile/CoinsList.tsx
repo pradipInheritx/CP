@@ -12,6 +12,8 @@ import UserContext from "Contexts/User";
 import { auth } from "firebase";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const CoinList = styled.div`
   // border:1px solid red;
@@ -93,8 +95,10 @@ const CoinsList = () => {
   const [walletName, setWalletName] = React.useState("");
   const { userInfo, user } = useContext(UserContext);
   const [payamount, setPayamount ] = useState(99);
+  const [getbalance, setGetbalance ] = useState(0);
   const [payButton, setPayButton ] = useState(false);
   const [showOptionList, setShowOptionList ] = useState(false);
+  const [afterPay, setAfterPay ] = useState(false);
 const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
 // Insufficient balance 
@@ -103,6 +107,7 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
 
 
 //  For put email in userid 
+  const navigate = useNavigate();
   
   useEffect(() => {
     const getCoinList = firebase
@@ -137,6 +142,64 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
   const mybtn = (window as any)?.wldp?.connectionWallet
     
 //  for do payment 
+  
+  const handleAfterPayClose = () => setAfterPay(false);
+  const handleAfterPayShow = () => setAfterPay(true);
+
+
+  const afterPayPopup = (type:any ,msg:any) => {
+  if (type=="error") {
+   Swal.fire({
+    icon: 'error',
+    title: 'Payment Failed',
+    // text: 'Your account balance is : ${balance} , This is insufficient balance for this payment',
+    html: "<span>Your account balance is : " + (getbalance)  + " , This is insufficient balance for this payment</span>", 
+    showCancelButton: true,
+    cancelButtonColor: '#d33',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#543cd6',
+     confirmButtonText: 'Try Again',
+      allowOutsideClick: false,
+  allowEscapeKey: false,
+  // footer: '<a href="">Why do I have this issue?</a>'
+}).then( async (result) => {
+  if (result.isConfirmed) {
+   handleAfterPayClose()
+    send()
+  } else if (result.isDismissed) {
+    // setSelectPayment(0);
+    // setSelectCoin("none");
+   navigate("/profile/mine")
+    await mybtn("disconnect", "true").then(() => {
+        setConnectOrNot(!connectOrNot)
+      })
+  }
+})
+    } 
+
+   if (type=="success") {
+   Swal.fire({
+    icon: 'success',
+    title: 'Payment Successfull',
+    text: msg,
+    showCloseButton: false,
+    confirmButtonColor: '#543cd6',
+     confirmButtonText: 'Ok',
+    allowOutsideClick: false,
+  allowEscapeKey: false,
+  // footer: '<a href="">Why do I have this issue?</a>'
+}).then( async (result) => {
+  if (result.isConfirmed) {
+    handleAfterPayClose()
+     navigate("/profile/mine")
+    await mybtn("disconnect", "true").then(() => {
+        setConnectOrNot(!connectOrNot)
+      })
+    // send()
+  }
+})
+  }    
+}
 
 const payNow = () => {
     const headers = {
@@ -163,13 +226,15 @@ axios.post("https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v
   .then( async (response) => {
     // console.log(response.data ,"response")
     
-    await showToast(response?.data?.message)    
+    // await showToast(response?.data?.message)    
     setPayButton(false);
-    setSelectPayment(0);
-    setSelectCoin("none");
-    await mybtn("disconnect", "true").then(() => {
-        setConnectOrNot(!connectOrNot)
-      })
+    // setSelectPayment(0);
+    // setSelectCoin("none");
+    // await mybtn("disconnect", "true").then(() => {
+    //     setConnectOrNot(!connectOrNot)
+    //   })
+    handleAfterPayShow()
+    afterPayPopup("success",response?.data?.message)
   })
   .catch((error) => {
     showToast(error.message,ToastType.ERROR)
@@ -191,20 +256,23 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
   .then((response) => {
     const balance = response?.data?.data?.balance;
     if (balance >= payamount) {
+      setGetbalance(balance)
       payNow()
     } else {
-      showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
+      // showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
       setPayButton(false)
-      setSelectPayment(0);
-      setSelectCoin("none");
-      mybtn("disconnect", "true").then(() => {
-        setConnectOrNot(!connectOrNot)
-      })
+      // setSelectPayment(0);
+      // setSelectCoin("none");
+      handleAfterPayShow()
+      afterPayPopup("error",response?.data?.message)
+      // mybtn("disconnect", "true").then(() => {
+      //   setConnectOrNot(!connectOrNot)
+      // })
 
     }
   })
   .catch((error) => {
-    showToast(error.message,ToastType.ERROR)
+    // showToast(error.message,ToastType.ERROR)
     console.log(error
       , "errorpayment")
   })
@@ -391,6 +459,35 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
       </Divbutton>
       }
       
+        {/* <Modal
+          className=""
+          show={
+          afterPay
+          } onHide={handleAfterPayClose}
+          // fullscreen="sm-down"
+          backdrop="static"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+        // contentClassName={"modulebackground"}
+        >
+          <div className="d-flex justify-content-end">
+            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
+              handleAfterPayClose()
+            }}
+            // style={{color:"white" , border:"1px solid red"}}
+            >
+
+            </button>
+          </div>
+          <Modal.Body
+          >       
+               
+            <div>Hello i am popup</div>
+          </Modal.Body>
+        </Modal> */}
+      
+
       </div>    
   );
 };
