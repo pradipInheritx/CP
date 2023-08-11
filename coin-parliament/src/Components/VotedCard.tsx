@@ -256,7 +256,6 @@ const VotedCard = ({
       }
     })
   }
-  console.log(voteEndCoinPrice, 'pkkkk');
   if (!coin1) {
     return <></>;
   }
