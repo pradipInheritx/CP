@@ -1,9 +1,9 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
 import { texts } from "./LoginComponent/texts";
-
+import XTwitter from "assets/images/x-twitter-white.svg"
 const FooterContainer = styled.footer`
   bottom: 0;
   width: 100%;
@@ -38,30 +38,28 @@ const I = styled.i`
   margin:5px;
 `;
 const Footer = () => {
-  const {appStats, paxData} = useContext(AppContext);
+  const { appStats, paxData } = useContext(AppContext);
   return (
     <FooterContainer>
-        <p style={{marginBottom:'5px'}}><I
-              className="bi-twitter"
-              
-              onClick={() =>
-                window.open(
-                  `https://twitter.com/CoinParliament`,
-                  "_blank"
-                )
-              }
-            />
-            <img
-            style={{margin:'5px', marginTop:'-3px'}}
-            height='17'
-            src={ process.env.PUBLIC_URL + '/images/icons/facebook.svg'}
-            // onClick={() =>
-            //   window.open(
-            //     "https://www.facebook.com/CoinParliament","_blank"
-            //   )
-            // }
-            />
-            {/* <img
+      <p style={{ marginBottom: '5px' }}>
+        <img src={XTwitter} height='22' width={'15'} className="me-1 pb-1" style={{ cursor: 'pointer' }}
+          onClick={() =>
+            window.open(
+              `https://twitter.com/CoinParliament`,
+              "_blank"
+            )
+          } />
+        <img
+          style={{ margin: '5px', marginTop: '-3px' }}
+          height='17'
+          src={process.env.PUBLIC_URL + '/images/icons/facebook.svg'}
+        // onClick={() =>
+        //   window.open(
+        //     "https://www.facebook.com/CoinParliament","_blank"
+        //   )
+        // }
+        />
+        {/* <img
             style={{marginTop:'-5px'}}
             height='28'
             src={ process.env.PUBLIC_URL + '/images/icons/youtube.svg'}
@@ -71,26 +69,26 @@ const Footer = () => {
               )
             }
             /> */}
-            <I
-              className="bi bi-instagram"
-              
-              onClick={() =>
-                window.open(
-                  `https://www.instagram.com/coinparliament/`,
-                  "_blank"
-                )
-              }
-            />
-            <I
-              className="bi bi-tiktok"
-              
-              onClick={() =>
-                window.open(
-                  `https://www.tiktok.com/@coinparliament`,
-                  "_blank"
-                )
-              }
-            /></p>
+        <I
+          className="bi bi-instagram"
+
+          onClick={() =>
+            window.open(
+              `https://www.instagram.com/coinparliament/`,
+              "_blank"
+            )
+          }
+        />
+        <I
+          className="bi bi-tiktok"
+
+          onClick={() =>
+            window.open(
+              `https://www.tiktok.com/@coinparliament`,
+              "_blank"
+            )
+          }
+        /></p>
       {/* <p>Coin Parliament © 2022 | Block {paxData?.blocksGiven || 0}, 1PAX = 10USD</p>
       <p>Total votes = {appStats?.totalVotes || 0} </p>
       <p>
@@ -107,32 +105,32 @@ const Footer = () => {
         <Link
           to="/influencers">Influencers</Link>.
       </p> */}
-      
+
       <p> PAX BEP20 Total supply : 21M | Minted quantity : 0   </p><p> Current block number : 0 | Next halving : in 210,000 blocks  </p>
       <p>Current block reward 50 | Current value 8.28$</p>
-     
-
-
-      <p style={{marginTop:'10px',marginBottom:'5px'}}>
-       
-       <span><Link
-         to="/privacy">Privacy Policy</Link>
-    </span>
-    {' '}| {' '}
-    <span>
-    <Link
-         to="/terms-and-condition">Terms & Conditions</Link>
-         </span>
-     </p>
- 
 
 
 
+      <p style={{ marginTop: '10px', marginBottom: '5px' }}>
 
-       {/* <p>Copyright © 2022 CoinParliament. All rights reserved.</p> */}
-     
-            <p>Copyright © 2023 CoinParliament. All rights reserved.</p>
-       {/* <p>Coin Parliament © 2022</p> */}
+        <span><Link
+          to="/privacy">Privacy Policy</Link>
+        </span>
+        {' '}| {' '}
+        <span>
+          <Link
+            to="/terms-and-condition">Terms & Conditions</Link>
+        </span>
+      </p>
+
+
+
+
+
+      {/* <p>Copyright © 2022 CoinParliament. All rights reserved.</p> */}
+
+      <p>Copyright © 2023 CoinParliament. All rights reserved.</p>
+      {/* <p>Coin Parliament © 2022</p> */}
     </FooterContainer>
   );
 };

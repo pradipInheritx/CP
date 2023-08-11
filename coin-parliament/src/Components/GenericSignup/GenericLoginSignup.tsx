@@ -6,7 +6,7 @@ import { Stack } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Styles from "./styles";
 import Signup from "./Signup";
-import { texts } from "./texts";
+import { texts } from "Components/LoginComponent/texts";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { PoppinsBoldBlueViolet14px, PoppinsMediumBlack12px } from "../../styledMixins";

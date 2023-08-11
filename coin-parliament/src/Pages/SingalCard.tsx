@@ -241,6 +241,7 @@ const SingalCard = () => {
                     flipCard={backCards?.includes(singalCardData?.cardId)}
                     ImgUrl={singalCardData?.cardImageUrl || ""}
                     VideoUrl={singalCardData?.cardVideoUrl || ""}
+                    darkTheme={true}
                   />
                 </>
                 {/* );

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import SignupForm from "./SignupForm";
-import { texts, urls } from "./texts";
+import { texts, urls } from "Components/LoginComponent/texts";
 import { useTranslation } from "../../common/models/Dictionary";
 import { AuthProvider, User } from "firebase/auth";
 import { LoginProviders, providers, SignupPayload } from "../../common/models/Login";
@@ -114,6 +114,7 @@ const Signup = () => {
           // signup={signup}
           callback={{
             successFunc: async (params) => {
+              console.log(params,"we are not get")
               if (refer && params?.uid) await assign({ parent: refer, child: params.uid });
               setLogin(true);
               setSignupLoading(false);
