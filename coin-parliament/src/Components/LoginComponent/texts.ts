@@ -70,7 +70,7 @@ export const texts = {
   CPMinting: "YOUR MINING PROGRESS".toUpperCase(),
   YourLevel: "Your Level".toUpperCase(),
   CoinParliamentBalance: "PARLIAMENT COIN".toUpperCase(),
-  CLAIMINGREWARDS:"CLAIMING REWARDS...",
+  CLAIMINGREWARDS: "CLAIMING REWARDS...",
   CLAIMYOURREWARDS: "CLAIM YOUR REWARDS",
   WEBELIEVEINPARTNERSHIPS: "WE BELIEVE IN PARTNERSHIPS!",
   friends: "friends".toUpperCase(),

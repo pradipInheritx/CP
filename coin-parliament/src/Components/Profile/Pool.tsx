@@ -21,8 +21,8 @@ const Pool = () => {
 
   return (
     <>
-      <div className={`${window.screen.width>767?"pt-4":""}`}>
-        <div className="mb-3">
+      <div className={`${window.screen.width > 767 ? "pt-4" : ""}`} style={{ backgroundColor: '#160133' }}>
+        <div>
           <Share
             url={referralUrl}
             text={"share & earn"}
