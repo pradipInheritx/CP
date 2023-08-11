@@ -50,7 +50,7 @@ const TextContainer = styled.div`
 
 const UpgradePage = () => {
   const translate = useTranslation();
-  const { user } = useContext(UserContext);
+  const { user ,userInfo} = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
@@ -353,8 +353,22 @@ useEffect(() => {
               <p className="mt-3">Parliament coins (V2E)</p>
             </BottomBox>  
           </div>
-          
-          <div
+          {/* @ts-ignore */}
+          {userInfo?.isUpgraded ?
+            <H2
+              style={{
+                fontSize: "1.25rem",
+                marginTop: "0px",
+                // paddingTop: "30px",
+                marginBottom:"30px",
+                fontWeight: "bold",
+                // textTransform:'uppercase'
+              }}
+            >
+              {translate("Congratulations , You have already upgraded your account")}
+          </H2>
+            :
+            <div
             className='text-center mb-4'
             style={{
               zIndex: 1,
@@ -386,7 +400,7 @@ useEffect(() => {
               <p> UPGRADE NOW </p>
               <span style={{ fontSize: "12px"}}>One time Payment of <del>$199</del> $99</span>
             </button>
-          </div>        
+          </div> }       
         </div>
       </div>
       {/* {clicked &&

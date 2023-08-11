@@ -80,6 +80,19 @@
   display: flex;
   justify-content: center;
 }
+.color-back{
+  border: 1px solid #543cd6;
+  background-color: #2f1975;
+  color: white;
+  padding: 0px 10px;
+
+}
+.color-back::placeholder{
+  color: white; 
+}
+.color-back:focus{
+  outline: none;
+}
 
 
 @media screen and (max-width: 450px) {

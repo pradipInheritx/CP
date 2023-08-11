@@ -27,6 +27,11 @@ import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
 import Wallet from "../Components/icons/Wallet";
 import { texts } from "../Components/LoginComponent/texts";
+import Minenew from "Components/icons/minenew";
+import Sharenew from "Components/icons/sharenew";
+import Votesnew from "Components/icons/votesnew";
+import Gallerynew from "Components/icons/Gallerynew";
+import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
 
 export enum FollowerProfileTabs {
   FollowerProfile = "followerProfile",
@@ -153,25 +158,25 @@ const FollowerProfile = () => {
                               {
                                 component: <></>,
                                 label: "Mining",
-                                icon: <Mine />,
+                                icon: <Minenew />,
                                 eventKey: FollowerProfileTabs.mine,
                               },
                               {
                                 component: <></>,
                                 label: "Pool Mining",
-                                icon: <Share />,
+                                icon: <Sharenew />,
                                 eventKey: FollowerProfileTabs.share,
                               },
                               {
                                 component: <></>,
                                 label: FollowerProfileTabs.votes,
-                                icon: <Votes />,
+                                icon: <Votesnew />,
                                 eventKey: FollowerProfileTabs.votes,
                               },
                               {
                                 component: <></>,
                                 label: FollowerProfileTabs.ProfileNftGallery,
-                                icon: <Gallery />,
+                                icon: <Gallerynew />,
                                 eventKey: FollowerProfileTabs.ProfileNftGallery,
                               },
 
@@ -179,7 +184,7 @@ const FollowerProfile = () => {
                               {
                                 component: <></>,
                                 label: FollowerProfileTabs.followers,
-                                icon: <ProfileFollowing />,
+                                icon: <ProfileFollowingnew />,
                                 eventKey: FollowerProfileTabs.followers,
                               },
                               // {

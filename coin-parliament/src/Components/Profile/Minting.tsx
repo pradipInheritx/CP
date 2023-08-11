@@ -157,6 +157,24 @@ const I = styled.i`
 
   text-align: center;
 `;
+
+const Popuphead = styled.p`
+  font-size:25px;
+  font-weight:600;
+background: linear-gradient(180deg, #FFF8A6 29.44%, #FFC00B 73.33%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  // text-shadow: 0px 1px 3px #FFCB35;
+font-family: Poppins;
+font-size: 25px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+letter-spacing: 2px;
+text-transform: uppercase;
+`;
+
+
 type MintingProps = {
 
   score: number;
@@ -377,17 +395,34 @@ const Minting = ({
           show={
             modalShow
           } onHide={handleClose}
-          backdrop="static"
-          contentClassName={"modulebackground"}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          // backdrop="static"
+          // contentClassName={"modulebackground  ForBigDiv"}
+          // aria-labelledby="contained-modal-title-vcenter"
+          // centered
+          // style={{
+          //   backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200",
+          //   // padding: "0px",
+          //   // margin:"0px",
+          // }}
+          // className="d-flex justify-content-center align-items-center"
 
-        >
-          <Modal.Body className="d-flex  justify-content-center align-items-center">
-            {/* @ts-ignore*/}
-            <div className='py-2 '><p style={{ fontSize: "20px", color: "white" }}>Congrats! You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
-          </Modal.Body>
+          backdrop="static"
+            // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
+            contentClassName={"modulebackground ForBigDiv"}
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          >
+              <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
+            style={{
+            width:`${window.screen.width > 767 ?"500px" :"100%"}`,
+            height:"400px"
+          }}
+        >         
+            <Popuphead>Congrats!</Popuphead>
+            {/* @ts-ignore*/}            
+            <div className=''><p style={{ fontSize: "24px", color: "white" ,fontWeight:"600"}}>You've won {resultData?.data?.thirdRewardDiamonds} coins </p></div>
+          
 
           <div className="d-flex justify-content-center ">
             <Buttons.Primary className="mx-2" onClick={() => {
@@ -403,9 +438,10 @@ const Minting = ({
               }, 1000);
 
               handleClose()
-            }}>COLLECT NOW</Buttons.Primary>
+            }}>COLLECT YOUR COIN</Buttons.Primary>
             {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
-          </div>
+            </div>
+            </Modal.Body>
           {/* </Modal.Footer>       */}
         </Modal>
       </div>
