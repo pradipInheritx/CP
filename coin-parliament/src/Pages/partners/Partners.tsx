@@ -55,7 +55,7 @@ const
           <div className={classes.stepContainer}>
             <div className={classes.tableCell}>
               <button className={classes.step}>
-                <img src={signUpImage} />
+                <img src={signUpImage} style={{ width: '3em' }} />
               </button>
               <a className={classes.buttonText}>SIGN UP</a>
               <div className={classes.stepConnecterNext}></div>
@@ -127,16 +127,16 @@ const
                 );
               }}
             >
-              INVITE YOUR FRIENDS NOW!
+              <span>INVITE YOUR FRIENDS NOW!</span>{window.screen.width <= 425 && <br />}
               <span className="material-icons-outlined me-2">share</span>
               <span className="material-symbols-outlined">arrow_drop_down</span>
             </button>
             {showShare && <div className={classes.shareBox} style={window.screen.width <= 425 ? {
               marginLeft: '2em',
-              top: '12em',
+              top: '9em',
             } : {
-              marginLeft: '25em',
-              top: '7em',
+              marginLeft: '16em',
+              top: '4em',
             }}>
               <span className="material-symbols-outlined text-secondary me-2"
                 onClick={() => {

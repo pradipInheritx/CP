@@ -12,47 +12,50 @@
 @media(min-width: 750px) {
     .stepContainer{
         display: table;
-        width: 50%;
+        width: 40%;
         margin: 0px auto; 
     }
 }
 .tableCell{
-    width: 33.3333%;
+    width: 0.5em;
     display: table-cell;
     position: relative;
     padding-top: 0px;
 }
 .step{
-    width: 6.25rem;
-    height: 6.25rem;
+    width: 4rem;
+    height: 4rem;
     margin: 0px auto;
     flex-shrink: 0;
     border-radius: 100%;
     text-align: center;
     padding: 1px;
-    font-size: 16px;
+    font-size: 10px;
     color: rgb(255, 255, 255);
     display: block;
     border-color:#593EDA;
     fill: linear-gradient(180deg, #604EE5 0%, #4102B4 100%);
-    background-image: url("assets/images/partnersStep.svg");
+    background-image: url("assets/images/Ellipse.svg");
+}
+.step img{
+    width:3em;
 }
 .stepConnecterNext{
     position: absolute;
-    top: 50px;
+    top: 36px;
     height: 1px;
     border-top: 1px solid rgb(82, 14, 175);
     right: 0px;
-    left: 50%;
+    left: 42%;
     margin-left: 54px;
 }
 .stepConnecterPrev{
     position: absolute;
-    top: 50px;
+    top: 36px;
     height: 1px;
     border-top: 1px solid rgb(82, 14, 175);
     left: 0px;
-    right: 50%;
+    right: 42%;
     margin-right: 54px;
 }
 
@@ -66,7 +69,7 @@
     
     text-align: center;
     font-family: Poppins;
-    font-size: 1.375rem;
+    font-size: 1rem;
     font-style: normal;
     font-weight: 600;
     line-height: normal;
@@ -80,7 +83,7 @@
     color: #FEFEFE;
     text-shadow: 0px 1px 3px #5B03FF;
     font-family: Poppins;
-    font-size: 1.875rem;
+    font-size: 1.25rem;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -104,15 +107,15 @@
 .description{
     color: #FFF;
     font-family: Poppins;
-    font-size: 1.1875rem;
     font-style: normal;
-    /* font-weight: 400; */
-    /* line-height: 2.5rem;  */
-    /* letter-spacing: 0.02375rem; */
+
     text-transform: capitalize; 
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
 }
 .footerText{
-    margin-top:3.5em;
+    margin-top:2em;
     color: #FEFEFE;
     text-align: center;
     font-family: Poppins;
@@ -136,21 +139,28 @@
 .inviteButton{
     position:relative;
     margin-top:1.5em;
-    padding:1em;
+    padding-top:0.5em;
+    padding-bottom:1.5em;
+    padding-left:1em;
+    padding-right:1em;
     flex-shrink: 0;
     border-radius: 0.625em !important;
     border-color:#543CD6;
     background: #543CD6 !important;
-
+    bottom:0.2em;
     color: #FEFEFE;
     text-shadow: 0px 1px 3px #5B03FF;
     font-family: Poppins;
-    font-size: 1.75em;
+    font-size: 1.2em;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
     letter-spacing: 0.035em;
     text-transform: uppercase;
+}
+.inviteButton span{
+    position: relative;
+    top: 0.3em;
 }
 .shareBox{
     padding-top:1em;
