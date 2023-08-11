@@ -94,7 +94,7 @@ const CoinsList = () => {
   const [connectOrNot, setConnectOrNot] = React.useState(false);
   const [walletName, setWalletName] = React.useState("");
   const { userInfo, user } = useContext(UserContext);
-  const [payamount, setPayamount ] = useState(0);
+  const [payamount, setPayamount ] = useState(99);
   const [getbalance, setGetbalance ] = useState(0);
   const [payButton, setPayButton ] = useState(false);
   const [showOptionList, setShowOptionList ] = useState(false);

@@ -33,7 +33,8 @@ const Circle = styled(Button)`
 `;
 const Menubox = styled.div`
 display:flex;
-justify-content: center;
+padding-top:5px;
+justify-content:space-around;
 align-items: center;
 flex-direction: column;
   width: 80px;
@@ -91,7 +92,7 @@ const NavLink = styled(Nav.Link)`
 
     * {
     fill: ${(props: Props) =>
-    `${props.iconName !== "Album"
+    `${props.iconName !== ""
       ? 'white'
       : ''
     }`};
@@ -145,12 +146,12 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
                   className="d-flex flex-column align-items-center"
                 >
                   <Menubox>                  
-                      <Circle
+                      {/* <Circle
                         className="border"
                         disabled={isV1() && tab.eventKey === ProfileTabs.mine}
-                      >
+                      > */}
                         {tab.icon}
-                      </Circle>
+                      {/* </Circle> */}
                         {tab.label && <Label>{tab.label.toUpperCase()}</Label>}
                     </Menubox>
                 </NavLink>
