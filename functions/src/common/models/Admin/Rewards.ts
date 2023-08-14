@@ -45,8 +45,8 @@ export async function getSetsDetails(albumId: string, setId: string) {
 
 
 export async function getCardDetails(cardId: string) {
-    const albumDetails = await firestore().collection("cardsDetails").doc(cardId).get()
-    return albumDetails.data()
+    const cardDetails = await firestore().collection("cardsDetails").doc(cardId).get()
+    return cardDetails.data()
 }
 
 // generate serial number string for cards
