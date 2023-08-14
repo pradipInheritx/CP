@@ -156,14 +156,10 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   const userData: any = userFindQuery.data();
 
   console.log("UserData:", userData);
-  let getLatestScore = parseInt(voteStatistics.score);
-  if (voteStatistics && getLatestScore > 100) {
-    let getSplitNumber = getLatestScore.toString().split(".");
-    let beforeDecimal = (parseInt(getSplitNumber[0]) / 100);
-    let afterDecimal = getSplitNumber[1] ? parseInt(getSplitNumber[1]) : 0;
-    let getMultiplyHundred = beforeDecimal * 100;
-    let differenceFromCurrentValue = getLatestScore - getMultiplyHundred;
-    remainingCMP = (100 - (differenceFromCurrentValue + afterDecimal));
+  let score = voteStatistics.score;
+  if (voteStatistics && parseInt(voteStatistics.score) > 100) {
+    let currentScore = score % 100;
+    remainingCMP = 100 - parseFloat(currentScore.toFixed(2));
   } else {
     remainingCMP = 100 - voteStatistics.score;
   }
