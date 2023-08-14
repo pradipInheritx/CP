@@ -83,13 +83,13 @@ function createArrayByPercentageForPickingTier(cmp: number) {
 }
 
 // get collection data by document id
-async function getNftCollectionDataById(docId: string) {
-  const collectionData = await firestore()
-    .collection("nftGallery")
-    .doc(docId)
-    .get();
-  return collectionData.data();
-}
+// async function getNftCollectionDataById(docId: string) {
+//   const collectionData = await firestore()
+//     .collection("nftGallery")
+//     .doc(docId)
+//     .get();
+//   return collectionData.data();
+// }
 
 // get all reward transactions by card id
 async function getRewardTransactionsByCardId(cardId: string) {
@@ -156,7 +156,7 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
     console.log("PERCENTAGE ARR", percentageArr);
 
     const cards = await getAllNftGalleryForCards();
-
+    console.log("cards : ", cards)
     const groupByType: any = groupBy(["cardType"]);
     console.log("groupByType --------", groupByType);
 
@@ -293,7 +293,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
     if (total - claimed > 0) {
       const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
       const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
-      const { pickedTierArray, tierName } = await pickCardTierByPercentageArray(
+      const { pickedTierArray } = await pickCardTierByPercentageArray(
         tierPickupArray
       );
 
@@ -350,12 +350,11 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
         (item: any) => item != firstRewardCardSerialNo
       );
       getRewardCardDetails.quantity = getRewardCardDetails.sno.length;
-      const getAlbumData: any = await getNftCollectionDataById(firstRewardCardObj.albumId)
       const winData: winRewardData = {
-        firstRewardCardType: tierName,
+        firstRewardCardType: getRewardCardDetails.cardType,
         firstRewardCardId: getRewardCardDetails.cardId,
         firstRewardCard,
-        firstRewardCardCollection: getAlbumData.albumName,
+        firstRewardCardCollection: getRewardCardDetails.albumName,
         firstRewardCardSerialNo,
         firstRewardCardImageUrl: getRewardCardDetails.cardImageUrl,
         firstRewardCardVideoUrl: getRewardCardDetails.cardVideoUrl,
