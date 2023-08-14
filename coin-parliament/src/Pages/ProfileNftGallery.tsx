@@ -108,8 +108,7 @@ const ProfileNftGallery = () => {
           const data: any = []
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
-          });
-
+          });          
           setCollectionType(data)
           setSelectCollection(albumOpen)   
           setSetsValue([])
@@ -133,7 +132,7 @@ const ProfileNftGallery = () => {
         const data: any = []
         snapshot.forEach((doc) => {
           data.push({ id: doc.id, ...doc.data() });
-        });
+        });        
         setAllCardArrayNew(data)
         
       }).catch((error) => {
@@ -189,6 +188,7 @@ const ProfileNftGallery = () => {
             data.push({ id: doc.id, ...doc.data() });
           });   
           console.log("i am working")
+          data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
           setCardNameNew(data)
           setAllCardNew(data)          
           
@@ -248,7 +248,7 @@ const ProfileNftGallery = () => {
     if (cardType === 'all' && selectCollection === "none" && setsCardId === "none") {
       const serchresult = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       // setCardNameNew(serchresult)
-      
+      serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
       setAllCardNew(serchresult)
       //  setCardNameNew(serchresult)
     }
@@ -256,7 +256,7 @@ const ProfileNftGallery = () => {
       const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
       const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
-      
+      serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
       setAllCardNew(serchresult)
       //  setCardNameNew(serchresult)
     }
@@ -269,7 +269,7 @@ const ProfileNftGallery = () => {
       console.log(allCardArrayNew,"forcardName")
       const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
       const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card?.albumName == selectCollection)
-      
+      forcardName.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
       setCardNameNew(forcardName)
       setAllCardNew(forcardName)
       setSetsCardName("none")
@@ -290,7 +290,7 @@ const ProfileNftGallery = () => {
     if (cardId === 'none') {      
       const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card?.albumName == selectCollection)
       const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-      
+      forcardName.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
       setAllCardNew(forcardName)
       setCardNameNew(forcardName)
       setSetsCardName("none")
@@ -317,6 +317,7 @@ const ProfileNftGallery = () => {
       const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
       const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())
       const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
+      finalValue.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
       setAllCardNew(finalValue)
       //  console.log(finalValue,"serchresult")
       //  setSearchedCard((pev:any)=>finalValue)
@@ -676,6 +677,7 @@ const ProfileNftGallery = () => {
                           fulldata={item}
                           flipCard={backCards?.includes(item?.cardId)}
                           ImgUrl={item?.cardImageUrl || ""}
+                          VideoUrl={item?.cardVideoUrl || ""}
                         />
                       );
                     } else {
@@ -716,6 +718,7 @@ const ProfileNftGallery = () => {
                         fulldata={item}
                         flipCard={backCards?.includes(item?.cardId)}
                         ImgUrl={item?.cardImageUrl || ""}
+                          VideoUrl={item?.cardVideoUrl || ""}
                       />
                     );
                   }

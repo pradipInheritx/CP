@@ -220,8 +220,8 @@ function App() {
       top: 0,
       behavior: 'smooth',
     });
-
-  }, [pathname])
+    console.log('scrollUp ');
+  }, [JSON.stringify(location.pathname)]);
 
   // console.log("for commit")
   const showModal = useCallback(

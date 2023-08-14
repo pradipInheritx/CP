@@ -185,7 +185,8 @@ console.log(error,"error");
     data.push({ id: doc.id, ...doc.data() });
   }); 
   
-      console.log(data ,"alldatacard")
+      console.log(data, "alldatacard")
+      data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
       setAllCardNew(data)   
       setCardNameNew(data)  
       // onSelectSets("none")
@@ -230,12 +231,14 @@ console.log(error,"error");
    if (cardType === 'all' && selectCollection === "none" && setsCardId === "none")
    {           
      const serchresult = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+     serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))   
      setAllCardNew(serchresult)
       }
    else {
      const serchValue = allCardArrayNew.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
      const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
      const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())        
+     serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
      setAllCardNew(serchresult)
    }
 }
@@ -247,6 +250,7 @@ console.log(error,"error");
   if (cardType === 'all') { 
     const typeCard = allCardArrayNew.filter((card: any) => card.cardType != cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
     const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumName == selectCollection)
+    forcardName.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
     
     setAllCardNew(forcardName)
 setCardNameNew(forcardName)
@@ -255,7 +259,7 @@ setCardNameNew(forcardName)
   else {    
     setCardShow(true)
     const typeCard = allCardArrayNew.filter((card: any) => card.cardType === cardType.toUpperCase() && card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
-    const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumName == selectCollection)        
+    const forcardName = typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId && card.albumName == selectCollection)            
     console.log(forcardName , "forcardNamecard")
     setAllCardNew(forcardName)
     setCardNameNew(forcardName)
@@ -270,6 +274,7 @@ setCardNameNew(forcardName)
   if (cardId === 'none') {    
     const cardWithId = allCardArrayNew.filter((card: any) => card.setId !== cardId && card.albumName == selectCollection )
     const forcardName = cardWithId.filter((card: any) => cardType == "all" ? card?.cardType !== cardType.toUpperCase() : card?.cardType == cardType.toUpperCase() && card?.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
+    forcardName.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
     setAllCardNew(forcardName)
     setCardNameNew(forcardName)
     setSetsCardName("none")
@@ -292,6 +297,7 @@ setCardNameNew(forcardName)
     const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
     const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.cardType == cardType.toUpperCase() : card.cardType != cardType.toUpperCase())    
     const finalValue = cardNameType.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card?.albumName == selectCollection)
+    finalValue.sort((a: any, b: any) => a.setName.localeCompare(b.setName))  
     //  console.log(finalValue,"serchresult")
     // setCardNameNew(finalValue)    
     setAllCardNew(finalValue)
@@ -609,6 +615,7 @@ console.log(allCardNew,"allCardNew" , cardShow)
                             fulldata={item}                            
                           flipCard={backCards?.includes(item?.cardId)}
                           ImgUrl={item?.cardImageUrl || ""}
+                          VideoUrl={item?.cardVideoUrl || ""}
                           />                        
                       );
                     })}

@@ -42,7 +42,8 @@ type MintingProps = {
 const MainDiv = styled.div`
   opacity: 1; 
   z-index: 2200;  
-  width:${window.screen.width > 767 ? "500px" : "95%"};
+  // width:${window.screen.width > 767 ? "500px" : "95%"};
+  width:100%;
   display: flex;
   justify-content: center;
   align-items: center; 
@@ -55,26 +56,6 @@ const ScratchCard = styled.canvas`
   z-index: 2202;  
   width:100%;
   height: 100%;
-`;
-const Cross = styled.div`
-  position: absolute;
-  // top:${window.screen.width > 767 ? "0" : "2.5%"};
-  // right:${window.screen.width > 767 ? "0" : "2.5%"};  
-  top:-10%;
-  right:-17%;  
-  zIndex:99999;
-  width:30px;
-  height:30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // border:1px solid red;
-  border-radius:50px;
-  background-color:#5d49df;
-  color:white;
-  font-size:15px;
-
-
 `;
 
 
@@ -90,15 +71,16 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const [allColor, setAllColor] = useState<any>({
     epic: {
       color:"white",
-      background:"rgba(84, 60, 214, 0.85)",
+      background:"#4938CD",
       backgroundimg:newepic,
-      fill:"#543cd6"
+      fill:"#4938CD"
     },
     common: {
-      color:"#6438C1",
-      background:"#A27CF9",
+
+      color:"white",
+      background:"#C8C0F3",
       backgroundimg:newcommon,
-      fill:"#6438C1"
+      fill:"#4938CD"
     },
     rare: {
       color:"#292929",
@@ -107,9 +89,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       backgroundimg:newrare,
     },
     uncommon: {
-      color:"white",
-      background:"#7F3FC9",
-      fill: "#6119B2",
+      color:"#6438C1",
+      background:"#A27CF9",
+      fill: "#6438C1",
       backgroundimg:newuncommon,
     },
     legendary: {

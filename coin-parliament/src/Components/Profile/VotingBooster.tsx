@@ -102,7 +102,7 @@ font-size:14px;
 
 const VotingBooster = () => {
   const translate = useTranslation();
-  const { user } = useContext(UserContext);
+  const { user,userInfo } = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
@@ -112,7 +112,8 @@ const VotingBooster = () => {
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
-let navigate = useNavigate(); 
+  let navigate = useNavigate(); 
+
    
 
 
@@ -192,7 +193,8 @@ let navigate = useNavigate();
           <Row className="">
             <Col lg={5} sm={6} className="d-flex justify-content-center"
               onClick={() => {
-              navigate("/paymentList")
+                // @ts-ignore
+              if(!userInfo?.isUpgraded)navigate("/paymentList")              
             }}
             >
               <Prices style={{}} >   
@@ -236,7 +238,8 @@ let navigate = useNavigate();
             </Col>
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
               onClick={() => {
-              navigate("/paymentList")
+                // @ts-ignore
+              if(!userInfo?.isUpgraded)navigate("/paymentList")
             }}
             >
               <Prices style={{}}>
@@ -276,7 +279,8 @@ let navigate = useNavigate();
             <Col lg={5} sm={6} className="d-flex justify-content-center"
             
               onClick={() => {
-              navigate("/paymentList")
+                // @ts-ignore
+                if(!userInfo?.isUpgraded)navigate("/paymentList")
             }}
             >
               <Prices style={{}}>
@@ -312,7 +316,8 @@ let navigate = useNavigate();
             </Col>
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
               onClick={() => {
-              navigate("/paymentList")
+                // @ts-ignore
+                if(!userInfo?.isUpgraded)navigate("/paymentList")
             }}
             >
               <Prices style={{}}>

@@ -392,13 +392,13 @@ const VotedCard = ({
                   Current change between the coins
                 </div>
                 <div className="d-flex align-items-center justify-content-center" style={{
-                  fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.1em' : '1.5em',
+                  fontSize: '1.7em',
                   color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)),
                 }}>
                   {`${pairCoinResult?.difference.replaceAll('-', '')}%`}
                 </div>
                 <div className="row justify-content-center align-items-center">
-                  <Row1 style={{ textAlign: 'center', fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.2em' : '' }}>{"You voted for "}{voted}</Row1>
+                  <Row1 style={{ textAlign: 'center', fontSize: window.screen.width <= 400 ? '1em' : '1.1em' }}>{"You voted for "}{voted}</Row1>
                 </div>
               </div> :
               <>
@@ -407,7 +407,7 @@ const VotedCard = ({
                     Current {symbol1} value
                   </div>
                   <div className="d-flex align-items-center justify-content-center" style={{
-                    fontSize: window.screen.width <= 370 ? window.screen.width <= 330 ? '1em' : '1.1em' : '1.5em',
+                    fontSize: '1.7em',
                     color: getCoinColor(parseFloat(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00'), parseFloat(row2.replaceAll('$', '').replaceAll(',', ''))),
                   }}>
                     ${voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || 0.00}
@@ -417,9 +417,9 @@ const VotedCard = ({
                   className={`d-flex justify-content-center`}
 
                 >
-                  <Row1 className="poppins-normal-blackcurrant-14px mx-2" style={{ fontSize: window.screen.width < 325 ? '1.1em' : '' }}>You voted for </Row1>
+                  <Row1 className="poppins-normal-blackcurrant-14px mx-2" style={{ fontSize: window.screen.width < 400 ? '1em' : '1.1em' }}>You voted for </Row1>
                   {window.screen.width < 330 && <br />}
-                  <Row1 className="poppins-normal-blue-violet-14px-2 " style={{ fontSize: window.screen.width < 325 ? '1.1em' : '' }}>
+                  <Row1 className="poppins-normal-blue-violet-14px-2 " style={{ fontSize: window.screen.width < 400 ? '1em' : '1.1em' }}>
                     {row1}  {row2}
                   </Row1>
                 </BitcoinBTCBULL24H3864490>

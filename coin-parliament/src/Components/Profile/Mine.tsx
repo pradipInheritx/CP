@@ -153,7 +153,7 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-    if (showBack && remainingReward < 1 && ProfileUrl && !modalShow) {
+    if (showBack && ProfileUrl && !modalShow && (userInfo?.voteStatistics?.score || 0) < 100) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
       setTimeout(() => {
         setModelText(1)
         // handleShow();
