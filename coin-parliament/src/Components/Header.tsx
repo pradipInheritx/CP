@@ -2,7 +2,7 @@
 
 import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import UserContext, { getUserInfo } from "../Contexts/User";
 import { Logout } from "../common/models/Login";
@@ -886,8 +886,13 @@ const Header = ({
 					<Modal.Body>
 
 						{/* <hr /> */}
-						<p className="text-uppercase text-center mb-3" > Out of votes? </p>
-						{/* <strong className="text-uppercase" style={{ fontSize: "20px" }}>Out of votes?</strong> */}
+						<p className="text-uppercase text-center mb-3" > Out of votes? &nbsp;
+							<span onClick={() => {
+								setShow(false)
+								setAfterVotePopup(false);
+								navigate('/votingbooster');
+							}} style={{ fontSize: '1.5em', textDecoration: 'none', color: '#775cff' }}>+</span>
+						</p>
 						<div className="text-center">
 							WAIT <span className="text-uppercase">
 								{/* @ts-ignore */}
@@ -920,11 +925,12 @@ const Header = ({
 					aria-labelledby="contained-modal-title-vcenter"
 					centered
 				>
-					<Modal.Header>
-
-					</Modal.Header>
+					<div className="d-flex justify-content-end">
+						<button type="button" className="btn-close " aria-label="Close" onClick={() => setCmpModalOpen(false)}></button>
+					</div>
 					<Modal.Body>
-						<p className="text-center" >You have achieved your goal .</p>
+						<p className="text-center">Congratulations 🎉</p>
+						<p className="text-center"> You've reached your  goal! </p>
 						<div className='py-2  d-flex  justify-content-center'>
 							<span style={{ textDecoration: 'none', cursor: 'pointer' }}
 								onClick={() => {
@@ -933,7 +939,7 @@ const Header = ({
 									setShowBack(true);
 								}}
 							>
-								<Other>{("CLAIM YOUR REWARD")}</Other>
+								<Other>{("CHECK IT OUT")}</Other>
 							</span>
 						</div>
 

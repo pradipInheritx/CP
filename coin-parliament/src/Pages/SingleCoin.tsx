@@ -430,7 +430,7 @@ const SingleCoin = () => {
         width={width}
         height={height}
       />} */}
-      <PageContainer fluid radius={87}>
+      <PageContainer fluid radius={87} >
         <>
           {coin ? (
             <>
@@ -510,13 +510,14 @@ const SingleCoin = () => {
                       {cpviData?.length && params?.id && (
                         graphLoading ? <CalculatingVotes /> :
                           <>
-                            <Progress
+                            {/* Temporary commented   */}
+                            {/* <Progress
                               totals={totals}
                               progressData={totals[`${symbol1}`]}
                               symbol1={'BULL'}
                               symbol2={'BEAR'}
                               pct={cpviData[cpviData?.length - 1]?.value || 0}
-                            />
+                            /> */}
 
                             {/* <Graph
                               data={cpviData}
