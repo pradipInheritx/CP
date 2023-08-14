@@ -151,19 +151,31 @@ export const sendNotificationForFollwersFollowings = async (
 // For Vote Expiry
 export const voteExpireAndGetCpmNotification = async (userId: string, cmp: number, coin: string) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
-
+  let remainingCMP: any = 0;
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
+
   console.log("UserData:", userData);
+
+  let voteStatistics: any = userData?.voteStatistics ? userData.voteStatistics : "";
+  if (voteStatistics && parseInt(voteStatistics.score) > 100) {
+    let getExtraRemainder = voteStatistics.score / 100;
+    let getMultiplyHundred = getExtraRemainder * 100;
+    let differenceFromCurrentValue = voteStatistics.score - getMultiplyHundred;
+    remainingCMP = 100 - differenceFromCurrentValue;
+  } else {
+    remainingCMP = 100 - voteStatistics.score;
+  }
+
   let token = userData.token;
-  console.log("called ")
+  console.log("Called Token", token)
   // if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName, cmp)
 
   const message: messaging.Message = {
     token,
     notification: {
       title: `💰 You just earnd ${cmp} cmp 🤑`,
-      body: `${coin} more CPM to complete the mission and claim your rewards!`,
+      body: `${remainingCMP} more CMP to complete the mission and claim your rewards!`,
     },
     webpush: {
       headers: {
@@ -179,7 +191,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cmp: numbe
   await sendNotification({
     token,
     id: userId,
-    body: `${coin} more CPM to complete the mission and claim your rewards!`,
+    body: `${remainingCMP} more CMP to complete the mission and claim your rewards!`,
     title: `💰 You just earnd ${cmp} cmp 🤑`,
     message,
   });
