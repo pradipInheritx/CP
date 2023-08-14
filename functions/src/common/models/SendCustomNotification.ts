@@ -149,20 +149,21 @@ export const sendNotificationForFollwersFollowings = async (
 
 
 // For Vote Expiry
-export const voteExpireAndGetCpmNotification = async (userId: string, cmp: number, coin: string) => {
+export const voteExpireAndGetCpmNotification = async (userId: string, voteStatistics: any, cmp: number, coin: string) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
   let remainingCMP: any = 0;
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
 
   console.log("UserData:", userData);
-
-  let voteStatistics: any = userData?.voteStatistics ? userData.voteStatistics : "";
-  if (voteStatistics && parseInt(voteStatistics.score) > 100) {
-    let getExtraRemainder = voteStatistics.score / 100;
-    let getMultiplyHundred = getExtraRemainder * 100;
-    let differenceFromCurrentValue = voteStatistics.score - getMultiplyHundred;
-    remainingCMP = 100 - differenceFromCurrentValue;
+  let getLatestScore = parseInt(voteStatistics.score);
+  if (voteStatistics && getLatestScore > 100) {
+    let getSplitNumber = getLatestScore.toString().split(".");
+    let beforeDecimal = (parseInt(getSplitNumber[0]) / 100);
+    let afterDecimal = getSplitNumber[1] ? parseInt(getSplitNumber[1]) : 0;
+    let getMultiplyHundred = beforeDecimal * 100;
+    let differenceFromCurrentValue = getLatestScore - getMultiplyHundred;
+    remainingCMP = (100 - (differenceFromCurrentValue + afterDecimal));
   } else {
     remainingCMP = 100 - voteStatistics.score;
   }

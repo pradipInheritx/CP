@@ -138,7 +138,7 @@ class Calculation {
       const getVote: any = getVotesQuery.data();
       console.log("send Notification for CPM")
       console.log("send Notification Details - - userId, score, getVote.coin", userId, score, getVote.coin)
-      await voteExpireAndGetCpmNotification(userId, score, getVote.coin)
+      await voteExpireAndGetCpmNotification(userId, voteStatistics, score, getVote.coin)
 
       // For Add Only Commission In Current User
       const { CPMSettings } = await Refer.getSettings();
