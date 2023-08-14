@@ -2,7 +2,7 @@
 
 import { Button, Container, Form, Modal, Navbar } from "react-bootstrap";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import UserContext, { getUserInfo } from "../Contexts/User";
 import { Logout } from "../common/models/Login";
@@ -886,8 +886,13 @@ const Header = ({
 					<Modal.Body>
 
 						{/* <hr /> */}
-						<p className="text-uppercase text-center mb-3" > Out of votes? </p>
-						{/* <strong className="text-uppercase" style={{ fontSize: "20px" }}>Out of votes?</strong> */}
+						<p className="text-uppercase text-center mb-3" > Out of votes? &nbsp;
+							<span onClick={() => {
+								setShow(false)
+								setAfterVotePopup(false);
+								navigate('/votingbooster');
+							}} style={{ fontSize: '1.5em', textDecoration: 'none', color: '#775cff' }}>+</span>
+						</p>
 						<div className="text-center">
 							WAIT <span className="text-uppercase">
 								{/* @ts-ignore */}
