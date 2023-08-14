@@ -158,11 +158,10 @@ export const voteExpireAndGetCpmNotification = async (userId: string, cmp: numbe
   console.log("UserData:", userData);
 
   let voteStatistics: any = userData?.voteStatistics ? userData.voteStatistics : "";
+  let score = voteStatistics.score;
   if (voteStatistics && parseInt(voteStatistics.score) > 100) {
-    let getExtraRemainder = voteStatistics.score / 100;
-    let getMultiplyHundred = getExtraRemainder * 100;
-    let differenceFromCurrentValue = voteStatistics.score - getMultiplyHundred;
-    remainingCMP = 100 - differenceFromCurrentValue;
+    let currentScore = score % 100;
+    remainingCMP = 100 - parseFloat(currentScore.toFixed(2));
   } else {
     remainingCMP = 100 - voteStatistics.score;
   }
