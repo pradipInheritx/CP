@@ -242,6 +242,7 @@ const SingalCard = () => {
                     ImgUrl={singalCardData?.cardImageUrl || ""}
                     VideoUrl={singalCardData?.cardVideoUrl || ""}
                     darkTheme={true}
+                    Hide360Icon={true}
                   />
                 </>
                 {/* );
