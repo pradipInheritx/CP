@@ -149,7 +149,7 @@ export const sendNotificationForFollwersFollowings = async (
 
 
 // For Vote Expiry
-export const voteExpireAndGetCpmNotification = async (userId: string, cmp: number, coin: string) => {
+export const voteExpireAndGetCpmNotification = async (userId: string, voteStatistics: any, cmp: number, coin: string) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
   let remainingCMP: any = 0;
   const userFindQuery = await firestore().collection("users").doc(userId).get();
