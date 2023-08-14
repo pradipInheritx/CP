@@ -145,7 +145,8 @@ export async function getAllNftGalleryForCards() {
       cardType: card.cardType,
       quantity: card.quantity,
       noOfCardHolders: card.noOfCardHolders,
-      totalQuantity: card.totalQuantity
+      totalQuantity: card.totalQuantity,
+      status: card.status
     });
   });
   return array;
@@ -304,8 +305,8 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       if (firstRewardCardObj?.status === false) return firstRewardCardObj
       const firstRewardCard = firstRewardCardObj["cardName"];
 
-      console.log("firstRewardCard.cardId --", firstRewardCard.cardId)
-      const getRewardCardDetails: any = await getCardDetails(firstRewardCard.cardId);
+      console.log("firstRewardCard.cardId --", firstRewardCardObj.cardId)
+      const getRewardCardDetails: any = await getCardDetails(firstRewardCardObj.cardId);
       const firstRewardCardSerialNo = getRewardCardDetails.sno.length ? pickRandomValueFromArray(
         getRewardCardDetails["sno"]
       ) : ""; // Added this condition because somnetimes sno is blank
