@@ -257,7 +257,7 @@ const Minting = ({
         return data;
       }).catch((error) => {
         showToast(error.message, ToastType.ERROR);
-      });
+      });      
       setResultData(result);
       setRewardTimer(result);
       if (result?.data) {
@@ -287,7 +287,6 @@ const Minting = ({
   // const tooltip = (props:any) => {
 
   // };
-
 
 
   return (

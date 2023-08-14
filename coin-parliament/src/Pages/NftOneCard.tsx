@@ -8,6 +8,7 @@ import bkgnd5 from "../assets/images/bkgnd5.png";
 import bkgnd3 from "../assets/images/bkgnd3.png";
 import bkgnd2 from "../assets/images/bkgnd2.png";
 import bkgnd from "../assets/images/bkgnd.png";
+import Showround from "../assets/images/Showround.png";
 import TheEagle from "../assets/images/TheEagle1.png";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
@@ -15,6 +16,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
 import { cardFlip } from "../common/utils/SoundClick";
 import { Ratio } from "react-bootstrap";
+import VideoPopup from "./VideoPopup";
 
 
 const Card = styled.div<{ darkTheme: boolean }>`
@@ -157,14 +159,17 @@ export type BoxItems = {
   CollectionType?: any;
   ImgUrl?: any;
   VideoUrl?: any;
-  darkTheme?: boolean
+  darkTheme?: boolean;
+  Hide360Icon?: boolean
+  
 };
-const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl }: BoxItems) => {
+const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl,Hide360Icon }: BoxItems) => {
 
 
 
   const Width: number = window.screen.width
   const [flip, setFlip] = useState(true)
+  const [Videoshow, setVideoshow] = useState(false)
   const pathname = window.location.pathname;
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
@@ -241,7 +246,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
       }}
     >
       <div className='front'>
-        <Card darkTheme={!!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+        <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
           minHeight: "318px",
           minWidth: "250px",
           backgroundColor: 'black !important',
@@ -251,25 +256,55 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
           <div>
             {" "}
             <div className='d-flex justify-content-between'>
-              <div className='opacity-0' style={{ fontSize: "12px" }}>
-                <span className='px-2'>{cardNo}</span>
+              <div className='opacity-1' style={{
+                fontSize: "12px",
+              width:"25%"
+              }}
+              
+              >               
+                {!Hide360Icon ?
+                  <img
+                    className=""
+                  style={{
+                    // position: "absolute",
+                    // right: 15,
+                    padding: "0px 0px 0px 10px",  
+                    cursor:"pointer"
+                  }}
+                    width={"35px"}                    
+                  onClick={() => {
+                    setVideoshow(true)
+                    console.log("yes i am wokring")
+                  }}
+                    src={Showround}
+                />:
+                  <span className='px-2 opacity-0'>{cardNo}</span>}
               </div>
-              <CenterText className={HeaderClass} >
+              <CenterText className={HeaderClass}
+                style={{
+                width:"50%"
+              }}
+              >
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
-              <div className='' style={{ fontSize: "12px" }}>
+              <div className='' style={{ fontSize: "12px",width:"25%",textAlign:"right" }}>
                 <span className='px-2 py-2'>{cardNo || ""}</span>
               </div>
             </div>
             <div>
               {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
-              <span className='cardname' style={{ color: (darkTheme ? "white" : '') }}>
+              <span className='cardname' style={{
+                color: (darkTheme ? "white" : ''),              
+              }}              
+              >
                 <strong> {cardHeader}</strong>
-              </span>
+
+                
+              </span>              
             </div>
             {/* <br /> */}
             <div className='card-body'>
-              {VideoUrl ?
+              {VideoUrl && darkTheme ?
                 <Ratio
                   style={{
                     width: "300px"
@@ -297,6 +332,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                       // backgroundPosition:" center",
 
                       width: "255px",
+                      height: "255px",
                       margin: "auto",
                       display: "block",
                       marginTop: "-15px",
@@ -356,6 +392,15 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
           </div>
         </CardBack>
       </div>
+      {Videoshow && <VideoPopup
+        fulldata={fulldata}     
+        setVideoshow={setVideoshow}
+              Videoshow={Videoshow}
+              videoUrl={VideoUrl}
+        imgUrl={ImgUrl}
+        MintedTime={MintedTime}
+        PrivateSerialNo={PrivateSerialNo}
+              />}
     </div >
   );
 };
