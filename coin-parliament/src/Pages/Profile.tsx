@@ -93,6 +93,7 @@ const Profile = () => {
 
   useEffect(() => {
     setChosenByDefault(pathname);
+
     return () => setAvatarMode(false);
   }, [pathname]);
 

@@ -920,11 +920,12 @@ const Header = ({
 					aria-labelledby="contained-modal-title-vcenter"
 					centered
 				>
-					<Modal.Header>
-
-					</Modal.Header>
+					<div className="d-flex justify-content-end">
+						<button type="button" className="btn-close " aria-label="Close" onClick={() => setCmpModalOpen(false)}></button>
+					</div>
 					<Modal.Body>
-						<p className="text-center" >You have achieved your goal .</p>
+						<p className="text-center">Congratulations 🎉</p>
+						<p className="text-center"> You've reached your  goal! </p>
 						<div className='py-2  d-flex  justify-content-center'>
 							<span style={{ textDecoration: 'none', cursor: 'pointer' }}
 								onClick={() => {
@@ -933,7 +934,7 @@ const Header = ({
 									setShowBack(true);
 								}}
 							>
-								<Other>{("CLAIM YOUR REWARD")}</Other>
+								<Other>{("CHECK IT OUT")}</Other>
 							</span>
 						</div>
 
