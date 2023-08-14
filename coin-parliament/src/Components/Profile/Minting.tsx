@@ -221,7 +221,7 @@ const Minting = ({
     if (score === 100) {
       setTimeout(() => {
         handleCmpPopupShow();
-      }, 0/* 6100 */);
+      }, 5100);
     }
   }, [score]);
   useEffect(() => {
@@ -458,6 +458,9 @@ const Minting = ({
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            <button type="button" className="btn-close " aria-label="Close" onClick={handleCmpPopupClose}></button>
+          </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
             <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>

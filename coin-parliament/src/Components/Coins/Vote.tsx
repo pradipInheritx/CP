@@ -153,7 +153,7 @@ const Vote = ({
     if (pageTrue && user?.uid && !login) {
       setTimeout(() => {
         window.scrollTo({
-          top: 200,
+          top: 320,
           behavior: "smooth",
         });
       }, 2000);
