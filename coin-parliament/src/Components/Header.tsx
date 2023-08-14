@@ -877,22 +877,42 @@ const Header = ({
 					{/* <Modal.Header>
 
               </Modal.Header> */}
-					<div className="d-flex justify-content-end">
-						<button type="button" className="btn-close " aria-label="Close" onClick={() => {
-							setShow(false)
-							setAfterVotePopup(false)
-						}}></button>
+					<div className="d-flex justify-content-between">
+						<div className="d-flex flex-grow-1 justify-content-center">
+							<p className="text-uppercase text-center" > Out of votes? &nbsp;
+								{/* <span onClick={() => {
+									setShow(false)
+									setAfterVotePopup(false);
+									navigate('/votingbooster');
+								}} style={{ fontSize: '1.5em', textDecoration: 'none', color: '#775cff' }}>+</span> */}
+
+							</p>
+							<PlusButton className="d-flex justify-content-center" style={{ padding: '1px', fontSize: '17px' }} onClick={() => {
+								setShow(false);
+								setAfterVotePopup(false);
+								if (!showMenubar) {
+									handleSoundClick()
+									navigate("/votingbooster")
+								}
+								// handleSoundClick()
+								// navigate("/votingbooster")
+							}}>
+								<span
+									className={`text-center HeaderText`}
+								>+</span>
+							</PlusButton>
+						</div>
+						<div className="d-flex justify-content-end">
+							<button type="button" className="btn-close " aria-label="Close" onClick={() => {
+								setShow(false)
+								setAfterVotePopup(false)
+							}}></button>
+						</div>
 					</div>
 					<Modal.Body>
 
 						{/* <hr /> */}
-						<p className="text-uppercase text-center mb-3" > Out of votes? &nbsp;
-							<span onClick={() => {
-								setShow(false)
-								setAfterVotePopup(false);
-								navigate('/votingbooster');
-							}} style={{ fontSize: '1.5em', textDecoration: 'none', color: '#775cff' }}>+</span>
-						</p>
+
 						<div className="text-center">
 							WAIT <span className="text-uppercase">
 								{/* @ts-ignore */}
