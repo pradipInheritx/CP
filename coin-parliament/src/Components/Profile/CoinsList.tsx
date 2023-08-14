@@ -166,13 +166,14 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
   if (result.isConfirmed) {
    handleAfterPayClose()
     send()
+    checkAndPay()
   } else if (result.isDismissed) {
     // setSelectPayment(0);
     // setSelectCoin("none");
    navigate("/profile/mine")
-    await mybtn("disconnect", "true").then(() => {
-        setConnectOrNot(!connectOrNot)
-      })
+    // await mybtn("disconnect", "true").then(() => {
+    //     setConnectOrNot(!connectOrNot)
+    //   })
   }
 })
     } 
@@ -192,9 +193,9 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
   if (result.isConfirmed) {
     handleAfterPayClose()
      navigate("/profile/mine")
-    await mybtn("disconnect", "true").then(() => {
-        setConnectOrNot(!connectOrNot)
-      })
+    // await mybtn("disconnect", "true").then(() => {
+    //     setConnectOrNot(!connectOrNot)
+    //   })
     // send()
   }
 })
@@ -220,7 +221,7 @@ const payNow = () => {
     token: "ETH"
 }
   
-axios.post("https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/payment/makePayment", data, {
+axios.post(`${ApiUrl}payment/makePayment`, data, {
     headers: headers
   })
   .then( async (response) => {
@@ -297,13 +298,37 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
     console.log(obj, "alldata");
     (window as any).wldp.send_msg(obj).then((res: any) => {
       // @ts-ignore
-      GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)    
-      
+      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)          
     }).catch((err:any) => {
       console.log(err, "allerr")
       
     })
   };
+
+  const checkAndPay = () => {
+  (window as any).wldp.isWalletConnected()
+            .then((res:any) => {
+                if(res === true){
+                    // send the API for payment
+                    // console.log('Here we send the API call for payment')
+                  // @ts-ignore
+                  GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)  
+                }
+                else {
+                   (window as any).wldp.connectionWallet('connect','ethereum')
+                    .then((account:any) => {
+                        if(account) {
+                           // send the API for payment
+                          //  console.log('Here we send the API call for payment') 
+                      // @ts-ignore
+                      GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)  
+                        }
+                    })    
+                }
+            })
+
+}
+
 
   console.log(walletName ,"setWalletName")
 
@@ -372,10 +397,10 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
                   onClick={ async () => {
                     setSelectCoin(option.name)
                     setCoinInfo(option)
-                    setShowOptionList(!showOptionList)
-                    await mybtn("disconnect", "true").then(() => {
-                      setConnectOrNot(!connectOrNot)
-                    })
+                    // setShowOptionList(!showOptionList)
+                    // await mybtn("disconnect", "true").then(() => {
+                    //   setConnectOrNot(!connectOrNot)
+                    // })
                   }}
                 >
                   {option.name}
@@ -396,7 +421,7 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
                   fontSize:"20px"
                 }}
             >Pay 99$ using {selectCoin}</p>
-             {!walletName && 
+             {/* {!walletName && 
               <>
               <p className="my-1"
                 style={{
@@ -421,12 +446,13 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
                   }}
                 >  &nbsp; Connect Now </span></p>
               </>
-            }                           
+            }                            */}
           </div>
         </Paymentdiv> }       
       </Boxdiv>
-      {selectCoin != "none" &&
-        localStorage.getItem("wldp-cache-provider") &&
+      {
+        selectCoin != "none" &&
+        // localStorage.getItem("wldp-cache-provider") &&
       <Divbutton>
         <button
           style={{
@@ -439,9 +465,9 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
                 setSelectCoin("none")
                 // mybtn("disconnect", "true")
               setCoinInfo([])
-              await mybtn("disconnect", "true").then(() => {
-        setConnectOrNot(!connectOrNot)
-      })
+      //         await mybtn("disconnect", "true").then(() => {
+      //   setConnectOrNot(!connectOrNot)
+      // })
               }}
         >Cancel</button>
         <button
@@ -454,6 +480,7 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
             onClick={ async () => {          
               send()
               setPayButton(true)
+              checkAndPay()
             }}
         >Pay Now</button>
       </Divbutton>
