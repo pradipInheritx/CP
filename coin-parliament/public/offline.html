@@ -7,9 +7,14 @@
     <title>Document</title>
 </head>
 
-<body>
-    <h1>Offline</h1>
+<body style="background-color: #160133;color: white;text-align:center;padding: 0px;margin: 0px;">
+    <img src="" alt="" srcset="" id="image">
     <script>
+        if (window.screen.width <= 500) {
+            document.getElementById('image').src = '/mobile_homeScreen.png'
+        } else {
+            document.getElementById('image').src = '/homescreen.png'
+        }
         // Function to refresh the page
         function refreshPage() {
             location.reload();

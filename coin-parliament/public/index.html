@@ -47,24 +47,6 @@
   <script
     src='https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=votetoearn&init=true&autoconnect=false&visible=true'></script>
   <!-- <script  src='https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=votetoearn&init=true&autoconnect=true&visible=false'></script> -->
-  <script>
-    // Function to refresh the page
-    function refreshPage() {
-      location.reload();
-    }
-
-    // Function to schedule refresh every 5 seconds
-    function scheduleRefresh() {
-      if (!navigator.onLine) {
-        refreshPage();
-      } else {
-        setTimeout(scheduleRefresh, 5000); // 5000 milliseconds = 5 seconds
-      }
-    }
-
-    // Initial call to start scheduling refresh
-    scheduleRefresh();
-  </script>
 </body>
 
 </html>
