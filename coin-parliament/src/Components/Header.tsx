@@ -214,18 +214,18 @@ const Header = ({
 
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+
 	const voteDetails = useContext(VoteContext);
-	useEffect(() => {
+	// useEffect(() => {
+	// 	if (score > 99.98 && MyPath !== "/profile/mine") {
+	// 		setCmpModalOpen(true)
 
-		if (score > 99.98 && MyPath !== "/profile/mine") {
-			setCmpModalOpen(true)
+	// 	}
+	// 	if (MyPath == "/profile/mine") {
+	// 		setCmpModalOpen(false)
 
-		}
-		if (MyPath == "/profile/mine") {
-			setCmpModalOpen(false)
-
-		}
-	}, [score])
+	// 	}
+	// }, [score]);
 
 	// console.log(urlName,"checkurlName")
 	const prevCountRef = useRef(voteNumber)
@@ -939,7 +939,7 @@ const Header = ({
 					</Modal.Body>
 				</Modal>
 			</div>
-			<div>
+			{/* <div>
 				<Modal show={cmpModalOpen} onHide={() => setCmpModalOpen(false)}
 					backdrop="static"
 					aria-labelledby="contained-modal-title-vcenter"
@@ -966,7 +966,7 @@ const Header = ({
 					</Modal.Body>
 
 				</Modal>
-			</div>
+			</div> */}
 		</MenuContainer >
 
 	);

@@ -8,11 +8,11 @@ import { formatCurrency } from '../common/models/Coin';
 import moment from "moment";
 import Line from '../Components/icons/line';
 import { timeframeInitials } from '../Components/Atoms/Button/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
 import { VoteButton } from '../common/utils/SoundClick';
-import { VoteDispatchContext } from 'Contexts/VoteProvider';
+import { VoteContext, VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
@@ -82,19 +82,21 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type,
+function ModalForResult({
+  popUpOpen,
+  vote,
+  type,
   setLessTimeVoteDetails,
-   /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
+  setShowComplete100CMP,
+  currentCMP,
+}
+  : {
     popUpOpen?: any,
     vote: any,
     type?: string,
-    setLessTimeVoteDetails: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
-    // setpopUpOpen?: any,
-    // setHideButton?: any,
-    // selectedTimeFrame?: any,
-    // hideButton?: any,
-    // setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
-    // setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
+    setLessTimeVoteDetails: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
+    setShowComplete100CMP: React.Dispatch<React.SetStateAction<boolean>>,
+    currentCMP: number
   }) {
 
   const navigate = useNavigate();
@@ -106,24 +108,24 @@ function ModalForResult({ popUpOpen, vote, type,
     if (popUpOpen) {
       VoteButton(true);
       handleShow();
-      // setVoteDetails((prev) => {
-      //   return {
-      //     ...prev,
-      //     openResultModal: false
-      //   }
-      // })
-      // setpopUpOpen(false)
     }
   }, [popUpOpen])
-
-
   const [show, setShow] = useState(false);
-  // const setVoteDetails = useContext(VoteDispatchContext);
+
+  /// show 100 CMP complete modal
+  const location = useLocation();
+  const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
+  const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
+  const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+  const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
+  /// show 100 CMP complete modal
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
     removeVote();
-    // setShow(false);
+    if (remainingCMP > 99.98 && location.pathname !== "/profile/mine") {
+      setShowComplete100CMP(true);
+    }
   };
 
   const removeVote = () => {
@@ -170,14 +172,6 @@ function ModalForResult({ popUpOpen, vote, type,
   const paircoin = pair ? [coins[voteCoins[0]], coins[voteCoins[1]]] : {};
 
   const votelength = Object.keys(vote).length
-
-  //set reward cmp
-  const currentCMP = useContext(CurrentCMPContext);
-  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
-
-  useEffect(() => {
-    // setCurrentCMP(vote?.score || 0)
-  }, [vote?.score])
 
   var pairCoinResult: calculateDiffBetweenCoinsType = { firstCoin: '', secondCoin: '', difference: '' };
   if (type === "pair" && vote?.valueVotingTime.length > 1) {
