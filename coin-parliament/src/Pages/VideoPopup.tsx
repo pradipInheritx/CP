@@ -97,6 +97,7 @@ console.log(videoUrl,imgUrl,"allmidea")
                     ImgUrl={fulldata?.cardImageUrl || ""}
                     VideoUrl={fulldata?.cardVideoUrl || ""}
                     darkTheme={true}
+                    fulldata={fulldata}
                     Hide360Icon={true}                        
                       userId={fulldata?.setId}  
                     MintedTime={MintedTime}  
