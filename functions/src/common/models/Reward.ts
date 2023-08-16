@@ -303,7 +303,6 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
 
       if (firstRewardCardObj?.status === false) return firstRewardCardObj
-      const firstRewardCard = firstRewardCardObj["cardName"];
 
       console.log("firstRewardCard.cardId --", firstRewardCardObj.cardId)
       const getRewardCardDetails: any = await getCardDetails(firstRewardCardObj.cardId);
@@ -354,7 +353,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       const winData: winRewardData = {
         firstRewardCardType: getRewardCardDetails.cardType,
         firstRewardCardId: getRewardCardDetails.cardId,
-        firstRewardCard,
+        firstRewardCard: getRewardCardDetails.cardName,
         firstRewardCardCollection: getRewardCardDetails.albumName,
         firstRewardCardSerialNo,
         firstRewardCardImageUrl: getRewardCardDetails.cardImageUrl,
