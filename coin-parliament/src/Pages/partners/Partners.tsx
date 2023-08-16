@@ -106,12 +106,12 @@ const
 
           </div>
           <p className={`${classes.footerText} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>
-          <p className={`${classes.footerText} text-center m-0`}> That’s it, </p>
+          <p className={`${classes.footerText} text-center m-0`}> that’s it, </p>
           <div className="d-flex justify-content-center" style={{ position: 'relative' }}>
             <button
               id="my-tooltip-click"
               className={classes.inviteButton}
-              style={{ width: window.screen.width <= 425 ? '10em' : 'auto' }}
+              style={{ fontSize: window.screen.width <= 425 ? '1em' : '' }}
               onClick={() => {
                 if (!user?.uid) {
                   setLogin(true)
@@ -127,17 +127,20 @@ const
                 );
               }}
             >
-              <span>INVITE YOUR FRIENDS NOW!</span>{window.screen.width <= 425 && <br />}
+              <span>INVITE YOUR FRIENDS NOW!</span>{window.screen.width < 275 && <br />}
               <span className="material-icons-outlined me-2">share</span>
               <span className="material-symbols-outlined">arrow_drop_down</span>
             </button>
-            {showShare && <div className={classes.shareBox} style={window.screen.width <= 425 ? {
+            {showShare && <div className={classes.shareBox} style={window.screen.width < 300 ? {
               marginLeft: '2em',
-              top: '9em',
+              top: '5em',
+            } : (window.screen.width <= 425 ? {
+              marginLeft: '13em',
+              top: '4em',
             } : {
               marginLeft: '16em',
               top: '4em',
-            }}>
+            })}>
               <span className="material-symbols-outlined text-secondary me-2"
                 onClick={() => {
                   copy(url);
