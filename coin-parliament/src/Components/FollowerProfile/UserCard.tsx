@@ -21,6 +21,11 @@ import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
 import Wallet from "../icons/Wallet";
 import { texts } from "../LoginComponent/texts";
+import Minenew from "Components/icons/minenew";
+import Sharenew from "Components/icons/sharenew";
+import Votesnew from "Components/icons/votesnew";
+import Gallerynew from "Components/icons/Gallerynew";
+import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
 
 const OverlapGroup1 = styled.div`
   
@@ -160,25 +165,25 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: "Mining",
-                        icon: <Mine />,
+                        icon: <Minenew />,
                         eventKey: FollowerProfileTabs.mine,
                       },
                       {
                         component: <></>,
                         label: "Pool Mining",
-                        icon: <Share />,
+                        icon: <Sharenew />,
                         eventKey: FollowerProfileTabs.share,
                       },
                       {
                         component: <></>,
                         label: FollowerProfileTabs.votes,
-                        icon: <Votes />,
+                        icon: <Votesnew />,
                         eventKey: FollowerProfileTabs.votes,
                       },
                       {
                         component: <></>,
                         label: FollowerProfileTabs.ProfileNftGallery,
-                        icon: <Gallery />,
+                        icon: <Gallerynew />,
                         eventKey: FollowerProfileTabs.ProfileNftGallery,
                       },
                       
@@ -186,7 +191,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: FollowerProfileTabs.followers,
-                        icon: <ProfileFollowing />,
+                        icon: <ProfileFollowingnew />,
                         eventKey: FollowerProfileTabs.followers,
                       },
                       // {

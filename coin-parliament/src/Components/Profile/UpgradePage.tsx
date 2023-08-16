@@ -27,6 +27,7 @@ import { handleSoundClick } from "../../common/utils/SoundClick";
 import  upgrade from "../../assets/images/upgrade_small.png";
 import  Gift from "../../assets/images/Framegift.png";
 import  Frame from "../../assets/images/Frame.png";
+import  Framemoney from "../../assets/images/Framemoney.png";
 import NftFrame from "../../assets/images/NftFrame.png";
 
 import  XXCOIN from "../../assets/images/XXCOIN.png";
@@ -50,7 +51,7 @@ const TextContainer = styled.div`
 
 const UpgradePage = () => {
   const translate = useTranslation();
-  const { user } = useContext(UserContext);
+  const { user ,userInfo} = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
@@ -209,6 +210,23 @@ useEffect(() => {
                     style={{ width: "30%" }}
                     className="d-flex justify-content-center align-items-center"
                     >
+                  <img src={Framemoney} alt="" width={"70px"}/>
+                    </div>
+                    <div
+                    style={{width:"70%"}}
+                    >
+                      <p>Lifetime commission</p>
+                      <span>Earn 50% lifetime commission of all your friends' total purchases.</span>
+                  </div>
+              
+                </SideBox>
+                
+                <SideBox>
+                  
+                    <div
+                    style={{ width: "30%" }}
+                    className="d-flex justify-content-center align-items-center"
+                    >
                   <img src={Frame} alt="" width={"60px"}/>
                     </div>
                     <div
@@ -273,71 +291,7 @@ useEffect(() => {
               }}
             >
               {translate("In addition, you will receive the following gifts")}
-          </H2>
-          
-          {/* <div
-            className='d-flex justify-content-around px-3 text-center flex-wrap'
-            style={{ marginTop: "47px" }}
-          >
-            <BoxCard>
-              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
-                Get an exclusive Avatar NFT
-              </p>
-              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
-                <img className='' src={upgrade1} alt='' />
-              </div>
-            </BoxCard>
-            
-            <BoxCard>
-              <p className='text-center' style={{ color: "#160133",height:'53px' }}>
-                Get extra votes
-              </p>
-              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
-              
-              <button
-                  type='button'
-                  className='btn fw-bold'
-                  style={{
-                    background:
-                      " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" ,
-                    color: "#fff",                    
-                    marginTop: "25px",                    
-                    boxShadow: "0px 3px 6px #00000029",
-                    fontSize: "10px",
-                  }}
-                >
-                  100 VOTES
-                </button>
-              </div>
-            </BoxCard>
-            <BoxCard>
-              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
-                Convert your cards collection to NFT
-              </p>
-              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
-              <img className='' src={upgrade1} alt='' />
-              </div>
-            </BoxCard>
-            <BoxCard>
-              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
-                Mine PAX BEP20 tokens
-              </p>
-              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
-                <img className='' src={upgrade2} alt='' />
-              </div>
-            </BoxCard>
-          </div>        
-          
-            <H2
-              style={{
-                zIndex: 1,
-                fontSize: "20px",
-                marginTop: "0px",
-                paddingTop: "30px",
-              }}
-            >
-              {translate("ONETIME PAYMENT OF $199")}
-            </H2>           */}
+          </H2>               
           
           <div className="d-flex justify-content-around my-4 flex-wrap">          
             <BottomBox className="">
@@ -353,8 +307,25 @@ useEffect(() => {
               <p className="mt-3">Parliament coins (V2E)</p>
             </BottomBox>  
           </div>
-          
-          <div
+          {/* @ts-ignore */}
+          {userInfo?.isUpgraded ?
+            <div
+              style={{
+                fontSize: "1.25rem",
+                marginTop: "0px",
+                // paddingTop: "30px",
+                marginBottom:"30px",
+                fontWeight: "bold"
+                ,
+                // textTransform:'uppercase'
+              }}
+              className="text-center"
+            >
+                    <p>🎉 Congratulations 🎉</p>
+               <p>You have already upgraded your account</p>
+          </div>
+            :
+            <div
             className='text-center mb-4'
             style={{
               zIndex: 1,
@@ -386,7 +357,7 @@ useEffect(() => {
               <p> UPGRADE NOW </p>
               <span style={{ fontSize: "12px"}}>One time Payment of <del>$199</del> $99</span>
             </button>
-          </div>        
+          </div> }       
         </div>
       </div>
       {/* {clicked &&
