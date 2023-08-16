@@ -156,8 +156,6 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   const userData: any = userFindQuery.data();
 
   console.log("UserData:", userData);
-
-  let voteStatistics: any = userData?.voteStatistics ? userData.voteStatistics : "";
   let score = voteStatistics.score;
   if (voteStatistics && parseInt(voteStatistics.score) > 100) {
     let currentScore = score % 100;
