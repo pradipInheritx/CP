@@ -352,7 +352,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       // add reward details into reward_transaction collection
       await addRewardTransaction(uid, winData, claimed + 1);
 
-      const transData: any = await getRewardTransactionsByCardId(firstRewardCardObj.cardId);
+      const transData: any = await getRewardTransactionsByCardId(getRewardCardDetails.cardId);
       console.log("TRANSDATA", transData);
 
       const userIds = transData.map((item: any) => item.user);
