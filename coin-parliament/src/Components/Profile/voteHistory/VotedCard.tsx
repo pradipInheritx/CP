@@ -145,7 +145,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
           </div>
           <div>{coin.symbol}</div>
           <div style={{ color: getCoinDifferenceColor(index === 0 ? parseFloat(pairCoinResult?.firstCoin || '0') : parseFloat(pairCoinResult?.secondCoin || '0')) }}>
-            {index === 0 ? pairCoinResult?.firstCoin : pairCoinResult?.secondCoin}%
+            {(index === 0 ? pairCoinResult?.firstCoin : pairCoinResult?.secondCoin)?.replaceAll('-', '')}%
 
           </div>
         </CoinName>
