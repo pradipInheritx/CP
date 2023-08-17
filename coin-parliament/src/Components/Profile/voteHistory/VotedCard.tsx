@@ -155,11 +155,11 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
     <div className="profile_coin_vote shadow-sm mb-3 text-center" style={{ minWidth: window.screen.width < 500 ? '98%' : '35rem', }}>
       <Container className="p-2 ">
         <div className="row">
-          <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0 pe-1">
+          <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0 pe-1" style={{ fontSize: (widthLess390 ? '0.8em' : '') }}>
             <Logo {...{ symbol: vote.coin || "", width: 30 }} />
             <span className="fw-bold">{coin.name}</span>
             <span className="">{vote.coin}</span>
-            <span className="">{vote.timeframe.name} VOTE</span>
+            <span className="" >{vote.timeframe.name} VOTE</span>
           </div>
           <div className="col-sm-4 col-4 d-flex flex-column justify-content-center align-items-center p-0">
             <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`}>You voted for</span>
