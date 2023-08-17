@@ -89,11 +89,12 @@ async function getRewardTransactionsByCardId(cardId: string) {
     .collection("reward_transactions")
     .where("winData.firstRewardCardId", "==", cardId)
     .get();
-  const transData: any = [];
+  // const transData: any = [];
   console.log("trasnaction >>>>>>", transaction);
-  transaction.forEach((item: any) => {
-    console.log("item.data ?>>>>>>>", item.data());
-    transData.push(item.data());
+  const transData: any = transaction.forEach((item: any) => {
+    // console.log("item.data ?>>>>>>>", item.data());
+    // transData.push(item.data());
+    return item.data();
   });
   return transData;
 }
@@ -143,73 +144,48 @@ export async function getAllNftGalleryForCards() {
   return array;
 }
 
-const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
-  try {
-    console.log("PERCENTAGE ARR", percentageArr);
+async function selectPickedTierArray(cardTier: string) {
+  const cardsArrayByTier: object[] = []
+  const cardTierArrQuery = await firestore().collection('cardsDetails').where('cardType', '==', cardTier).get();
+  cardTierArrQuery.docs.map((cardData: any) => {
+    let card = cardData.data();
+    cardsArrayByTier.push({
+      cardId: card.id,
+      albumId: card.albumId,
+      cardName: card.cardName,
+      cardType: card.cardType,
+      quantity: card.quantity,
+      noOfCardHolders: card.noOfCardHolders,
+      totalQuantity: card.totalQuantity,
+      cardStatus: card.cardStatus
+    });
+  })
+  return cardsArrayByTier
+}
 
-    const cards = await getAllNftGalleryForCards();
-    console.log("cards : ", cards)
-    const groupByType: any = groupBy(["cardType"]);
-    console.log("groupByType --------", groupByType);
-
-    const cardsByTier: any = groupByType(cards);
-    console.log("CARDS TIER ==>", cardsByTier);
-
-    let selectedTier = getRandomSelectedTier(cardsByTier, percentageArr);
-    console.log("RETURN SELECTED TIER VALUE -> ", selectedTier);
-
-    const selectedCardTier = Object.keys(cardsByTier)[selectedTier];
-    console.log("SELECTED CARD TIER", selectedCardTier);
-
-    const pickedTierArray = cardsByTier[selectedCardTier];
-    console.log("PICKED TIER ARRAY", pickedTierArray);
-
-    return { tierName: selectedCardTier, pickedTierArray };
-  } catch (error) {
-    console.info("ERROR:", "pickCardTierByPercentageArray", error)
-    return { tierName: "", pickedTierArray: [] };
-  }
-};
-
-function getRandomSelectedTier(cardsByTier: any, percentageArr: any): number {
+function getRandomSelectedTier(percentageArr: any): string {
+  const cardsTierArr: any = ['COMMON', 'UNCOMMON', 'RARE', 'EPIC', 'LEGENDARY'];
   const randomIndex = Math.floor(Math.random() * percentageArr.length);
   console.log("RANDOM INDEX", randomIndex);
 
-  const selectedTier = percentageArr[randomIndex];
-  console.log("SELECTED TIER", selectedTier);
-  console.log(
-    "Object.keys(cardsByTier).length",
-    Object.keys(cardsByTier).length
-  );
-
-  let returnValue;
-
-  returnValue = selectedTier;
-
-  if (selectedTier >= Object.keys(cardsByTier).length) {
-    returnValue = getRandomSelectedTier(cardsByTier, percentageArr);
-  }
-
-  return returnValue;
+  const selectedTierFromPercentagArr = percentageArr[randomIndex];
+  console.log("SELECTED TIER", selectedTierFromPercentagArr);
+  return cardsTierArr[selectedTierFromPercentagArr]
 }
 
-const groupBy =
-  <T>(keys: (keyof T)[]) =>
-    (array: T[]): Record<string, T[]> =>
-      array.reduce((objectsByKeyValue, obj) => {
-        const value = keys.map((key) => obj[key]).join("-");
-        objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-        return objectsByKeyValue;
-      }, {} as Record<string, T[]>);
-
-const pickRandomValueFromArray = (arr: string[]): string => {
-  // generate a random index
-  const randomIndex = Math.floor(Math.random() * arr.length);
-
-  // use the random index to access a random element from the array
-  const randomElement = arr[randomIndex];
-  return randomElement;
+const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
+  try {
+    const selectCardType = await getRandomSelectedTier(percentageArr);
+    console.log('Select card Tier : ', selectCardType);
+    const pickedTierArray = await selectPickedTierArray(selectCardType);
+    console.log('picked tier array : ', pickedTierArray);
+    return { pickedTierArray };
+  } catch (error) {
+    console.info("ERROR:", "pickCardTierByPercentageArray", error)
+    return { pickedTierArray: [] };
+  }
 };
+
 
 const getRandomNumber = (range: number[]): number => {
   const [min, max] = range;
@@ -237,31 +213,46 @@ export const addRewardTransaction: (
     console.log("Finished execution addRewardTransaction function");
   };
 
-export const getPickRandomValueFromArrayFunc: any = async (pickTierArrar: any) => {
-  if (pickTierArrar.length === 0) return {
+function cardQuantityOver() {
+  return {
     status: false,
     message: "All cards quaunity is over",
     result: null,
   };
-  const getFirstRewardCardObj: any = await pickRandomValueFromArray(pickTierArrar);
+}
+export const getPickRandomValueFromArrayFunc: any = async (pickTierArrar: any) => {
+  if (pickTierArrar.length === 0) return cardQuantityOver();
+  // generate a random index
+  const randomIndex = Math.floor(Math.random() * pickTierArrar.length);
+
+  // use the random index to access a random element from the array
+  const getFirstRewardCardObj: any = pickTierArrar[randomIndex]
   console.log("getFirstRewardCardObj-----", getFirstRewardCardObj)
 
   let returnValue;
-  if ((getFirstRewardCardObj.quantity === 0 || getFirstRewardCardObj.noOfCardHolders === getFirstRewardCardObj.totalQuantity)) {
+  if (pickTierArrar.length === 0) return cardQuantityOver();
+  if (getFirstRewardCardObj.quantity === 0 ||
+    getFirstRewardCardObj.noOfCardHolders === getFirstRewardCardObj.totalQuantity ||
+    getFirstRewardCardObj?.cardStatus?.toLowerCase() != "Active"
+  ) {
     pickTierArrar.filter((card: any, index: number) => {
       if (card.cardId === getFirstRewardCardObj.cardId) pickTierArrar.splice(index, 1);
     })
     returnValue = await getPickRandomValueFromArrayFunc(pickTierArrar);
   } else {
-
     console.log("getFirstRewardCardObj final return-----", getFirstRewardCardObj)
-
     returnValue = getFirstRewardCardObj
   }
-
   return returnValue;
 }
+const pickRandomValueFromArray = (arr: string[]): string => {
+  // generate a random index
+  const randomIndex = Math.floor(Math.random() * arr.length);
 
+  // use the random index to access a random element from the array
+  const randomElement = arr[randomIndex];
+  return randomElement;
+};
 export const claimReward: (uid: string) => { [key: string]: any } = async (
   uid: string
 ) => {
@@ -289,13 +280,9 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
 
       console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
 
-      if (firstRewardCardObj?.cardStatus != "Active") return firstRewardCardObj;
+      if (firstRewardCardObj?.cardStatus?.toLowerCase() != "active") return firstRewardCardObj;
 
       console.log("firstRewardCard.cardId --", firstRewardCardObj.cardId);
-      const getRewardCardDetails: any = await getCardDetails(firstRewardCardObj.cardId);
-      const firstRewardCardSerialNo = getRewardCardDetails.sno.length ? pickRandomValueFromArray(
-        getRewardCardDetails["sno"]
-      ) : ""; // Added this condition because somnetimes sno is blank
 
       const secondRewardExtraVotes = getRandomNumber(
         distribution[cmp].extraVotePickFromRange
@@ -312,6 +299,10 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       };
 
       console.log("rewardObj1......", rewardObj);
+
+      // get the selected card details
+      const getRewardCardDetails: any = await getCardDetails(firstRewardCardObj.cardId);
+
       rewardObj.claimed += 1;
       rewardObj?.cards?.length
         ? rewardObj.cards.push(getRewardCardDetails.cardName)
@@ -330,11 +321,17 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
         .doc(uid)
         .set({ rewardStatistics: rewardObj }, { merge: true });
 
+      //Select random serial number from card
+      const firstRewardCardSerialNo = getRewardCardDetails.sno.length ? pickRandomValueFromArray(
+        getRewardCardDetails["sno"]
+      ) : ""; // Added this condition because somnetimes sno is blank
+
       // remove the Serial number from the card
       getRewardCardDetails.sno = getRewardCardDetails.sno.filter(
         (item: any) => item != firstRewardCardSerialNo
       );
 
+      // update the card quantity in card collection
       getRewardCardDetails.quantity = getRewardCardDetails.sno.length;
 
       const winData: winRewardData = {
@@ -352,6 +349,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
       // add reward details into reward_transaction collection
       await addRewardTransaction(uid, winData, claimed + 1);
 
+      // get the transaction details
       const transData: any = await getRewardTransactionsByCardId(getRewardCardDetails.cardId);
       console.log("TRANSDATA", transData);
 
@@ -361,7 +359,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
         await firestore()
           .collection("cardsDetails")
           .doc(firstRewardCardObj.cardId)
-          .set(getRewardCardDetails);
+          .set(getRewardCardDetails, { merge: true });
         console.log("Finished execution claimReward function");
         return winData;
       }
