@@ -321,8 +321,9 @@ useEffect(() => {
               }}
               className="text-center"
             >
-                    <p>🎉 Congratulations 🎉</p>
-               <p>You have already upgraded your account</p>
+                    <p className="py-2" > Congratulations </p>
+               <p className="py-2">YOU'RE NOW A MINER</p>
+               <p className="py-2">Now you can enjoy the benefits of being a miner.</p>
           </div>
             :
             <div

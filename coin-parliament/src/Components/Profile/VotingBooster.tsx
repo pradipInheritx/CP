@@ -194,7 +194,7 @@ const VotingBooster = () => {
             <Col lg={5} sm={6} className="d-flex justify-content-center"
               onClick={() => {
                 // @ts-ignore
-              if(!userInfo?.isUpgraded)navigate("/paymentList")              
+              navigate("/upgrade")              
             }}
             >
               <Prices style={{}} >   
@@ -239,7 +239,7 @@ const VotingBooster = () => {
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
               onClick={() => {
                 // @ts-ignore
-              if(!userInfo?.isUpgraded)navigate("/paymentList")
+              navigate("/upgrade")
             }}
             >
               <Prices style={{}}>
@@ -280,7 +280,7 @@ const VotingBooster = () => {
             
               onClick={() => {
                 // @ts-ignore
-                if(!userInfo?.isUpgraded)navigate("/paymentList")
+                navigate("/upgrade")
             }}
             >
               <Prices style={{}}>
@@ -317,7 +317,7 @@ const VotingBooster = () => {
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
               onClick={() => {
                 // @ts-ignore
-                if(!userInfo?.isUpgraded)navigate("/paymentList")
+                navigate("/upgrade")
             }}
             >
               <Prices style={{}}>
