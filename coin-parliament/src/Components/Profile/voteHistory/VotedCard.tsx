@@ -132,7 +132,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
   const trend = calculate(vote, index);
   const coin =
     (index === undefined ? coins[vote?.coin] : coins[voteCoins[index]]) || {};
-
+  const widthLess390 = window.screen.width < 390;
   return pair ? (
     <CoinContainer winner={vote?.direction === index}>
       <div className="d-flex w-100 justify-content-center align-items-center flex-column mt-2 ">
@@ -152,7 +152,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
       </div>
     </CoinContainer>
   ) : (
-    <div className="profile_coin_vote shadow-sm mb-3 text-center" style={{ minWidth: window.screen.width < 500 ? '97%' : '35rem', }}>
+    <div className="profile_coin_vote shadow-sm mb-3 text-center" style={{ minWidth: window.screen.width < 500 ? '98%' : '35rem', }}>
       <Container className="p-2 ">
         <div className="row">
           <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0 pe-1">
@@ -163,7 +163,9 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
           </div>
           <div className="col-sm-4 col-4 d-flex flex-column justify-content-center align-items-center p-0">
             <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`}>You voted for</span>
-            <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`}> {vote.direction == 0 ? "BULL" : "BEAR"} {vote.coin} ${vote?.valueVotingTime}</span>
+            <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`} style={{ fontSize: (widthLess390 ? '0.9em' : '') }}>
+              {vote.direction == 0 ? "BULL" : "BEAR"} {vote.coin} ${vote?.valueVotingTime}
+            </span>
             <span className="sm_txt">{vote.id} </span>
             <span className="sm_txt"> {moment(new Date(vote.voteTime)).format("DD/MM/YYYY HH:mm")}</span>
           </div>
@@ -171,12 +173,12 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
             <>
               <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0">
                 <span style={{ fontSize: '0.8em' }} className="">VOTE RESULT</span>
-                <span className="fw-normal"> {vote.direction == 0 ? "BULL" : "BEAR"} ${vote?.valueExpirationTime}</span>
+                <span className="fw-normal" style={{ fontSize: (widthLess390 ? '0.9em' : '') }}> {vote.direction == 0 ? "BULL" : "BEAR"} ${vote?.valueExpirationTime}</span>
                 {/* @ts-ignore */}
-                <span style={{ fontSize: '0.8em' }}>Vote impact : {vote.success === 2 ? 'MID' : vote.success === 1 ? 'HIGH' : 'LOW'} </span>
+                <span style={{ fontSize: widthLess390 ? '0.69em' : '0.8em' }}>Vote impact : {vote.success === 2 ? 'MID' : vote.success === 1 ? 'HIGH' : 'LOW'} </span>
               </div>
               <div className="col-sm-2 col-2 d-flex flex-column justify-content-center align-items-center p-0 ps-1" style={{ color: '#604de4' }}>
-                <span style={{ fontSize: '0.8em' }}>You progressed </span>
+                <span style={{ fontSize: widthLess390 ? '0.69em' : '0.8em' }}>You progressed </span>
                 <strong className="fs-6">{vote.score}</strong>
                 <span className="fs-6">CMP</span>
               </div>
