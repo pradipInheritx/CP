@@ -320,7 +320,7 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
 
       const winData: winRewardData = {
         firstRewardCardType: getRewardCardDetails.cardType,
-        firstRewardCardId: getRewardCardDetails.cardId,
+        firstRewardCardId: firstRewardCardObj.cardId,
         firstRewardCard: getRewardCardDetails.cardName,
         firstRewardCardCollection: getRewardCardDetails.albumName,
         firstRewardCardSerialNo,
