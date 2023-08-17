@@ -145,7 +145,7 @@ export async function getAllNftGalleryForCards() {
 }
 
 async function selectPickedTierArray(cardTier: string) {
-  const cardsArrayByTier: object[] = []
+  const cardsArrayByTier: any[] = []
   const cardTierArrQuery = await firestore().collection('cardsDetails').where('cardType', '==', cardTier).get();
   cardTierArrQuery.docs.map((cardData: any) => {
     let card = cardData.data();
