@@ -125,24 +125,6 @@ async function getMultipleUsersByUserIds(userIds: Array<string>) {
   return users;
 }
 
-export async function getAllNftGalleryForCards() {
-  const snapshot = await firestore().collection("cardsDetails").get();
-  const array: any = [];
-  snapshot.forEach((doc) => {
-    let card = doc.data();
-    array.push({
-      cardId: doc.id,
-      albumId: card.albumId,
-      cardName: card.cardName,
-      cardType: card.cardType,
-      quantity: card.quantity,
-      noOfCardHolders: card.noOfCardHolders,
-      totalQuantity: card.totalQuantity,
-      cardStatus: card.cardStatus
-    });
-  });
-  return array;
-}
 
 async function selectPickedTierArray(cardTier: string) {
   const cardsArrayByTier: any[] = []
@@ -150,7 +132,7 @@ async function selectPickedTierArray(cardTier: string) {
   cardTierArrQuery.docs.map((cardData: any) => {
     let card = cardData.data();
     cardsArrayByTier.push({
-      cardId: card.id,
+      cardId: cardData.id,
       albumId: card.albumId,
       cardName: card.cardName,
       cardType: card.cardType,
@@ -179,10 +161,10 @@ const pickCardTierByPercentageArray = async (percentageArr: number[]) => {
     console.log('Select card Tier : ', selectCardType);
     const pickedTierArray = await selectPickedTierArray(selectCardType);
     console.log('picked tier array : ', pickedTierArray);
-    return { pickedTierArray };
+    return pickedTierArray;
   } catch (error) {
     console.info("ERROR:", "pickCardTierByPercentageArray", error)
-    return { pickedTierArray: [] };
+    return [];
   }
 };
 
@@ -220,31 +202,33 @@ function cardQuantityOver() {
     result: null,
   };
 }
-export const getPickRandomValueFromArrayFunc: any = async (pickTierArrar: any) => {
-  if (pickTierArrar.length === 0) return cardQuantityOver();
+
+export const getPickRandomValueFromArrayFunc: any = async (cardTierArray: any) => {
+  console.log("CARD_TIER_ARRAY_LENGTH_1 : ", cardTierArray.length)
+  if (cardTierArray.length === 0) return cardQuantityOver();
   // generate a random index
-  const randomIndex = Math.floor(Math.random() * pickTierArrar.length);
+  const randomIndex = Math.floor(Math.random() * cardTierArray.length);
 
   // use the random index to access a random element from the array
-  const getFirstRewardCardObj: any = pickTierArrar[randomIndex]
+  const getFirstRewardCardObj: any = cardTierArray[randomIndex]
   console.log("getFirstRewardCardObj-----", getFirstRewardCardObj)
 
   let returnValue;
-  if (pickTierArrar.length === 0) return cardQuantityOver();
   if (getFirstRewardCardObj.quantity === 0 ||
     getFirstRewardCardObj.noOfCardHolders === getFirstRewardCardObj.totalQuantity ||
     getFirstRewardCardObj?.cardStatus?.toLowerCase() != "Active"
   ) {
-    pickTierArrar.filter((card: any, index: number) => {
-      if (card.cardId === getFirstRewardCardObj.cardId) pickTierArrar.splice(index, 1);
+    cardTierArray.filter((card: any, index: number) => {
+      if (card.cardId === getFirstRewardCardObj.cardId) cardTierArray.splice(index, 1);
     })
-    returnValue = await getPickRandomValueFromArrayFunc(pickTierArrar);
+    returnValue = await getPickRandomValueFromArrayFunc(cardTierArray);
   } else {
     console.log("getFirstRewardCardObj final return-----", getFirstRewardCardObj)
     returnValue = getFirstRewardCardObj
   }
   return returnValue;
 }
+
 const pickRandomValueFromArray = (arr: string[]): string => {
   // generate a random index
   const randomIndex = Math.floor(Math.random() * arr.length);
@@ -253,6 +237,7 @@ const pickRandomValueFromArray = (arr: string[]): string => {
   const randomElement = arr[randomIndex];
   return randomElement;
 };
+
 export const claimReward: (uid: string) => { [key: string]: any } = async (
   uid: string
 ) => {
@@ -274,10 +259,10 @@ export const claimReward: (uid: string) => { [key: string]: any } = async (
     if (total - claimed > 0) {
       const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
       const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
-      const { pickedTierArray } = await pickCardTierByPercentageArray(tierPickupArray);
+      const pickedTierArray = await pickCardTierByPercentageArray(tierPickupArray);
+      console.log("pickedTierArray : ", tierPickupArray);
 
       const firstRewardCardObj: any = await getPickRandomValueFromArrayFunc(pickedTierArray);
-
       console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
 
       if (firstRewardCardObj?.cardStatus?.toLowerCase() != "active") return firstRewardCardObj;
