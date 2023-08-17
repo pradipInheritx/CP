@@ -89,12 +89,11 @@ async function getRewardTransactionsByCardId(cardId: string) {
     .collection("reward_transactions")
     .where("winData.firstRewardCardId", "==", cardId)
     .get();
-  // const transData: any = [];
+  const transData: any = [];
   console.log("trasnaction >>>>>>", transaction);
-  const transData: any = transaction.forEach((item: any) => {
-    // console.log("item.data ?>>>>>>>", item.data());
-    // transData.push(item.data());
-    return item.data();
+  transaction.forEach((item: any) => {
+    console.log("item.data ?>>>>>>>", item.data());
+    transData.push(item.data());
   });
   return transData;
 }
