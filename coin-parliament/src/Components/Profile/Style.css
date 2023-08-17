@@ -26,7 +26,11 @@ animation: blinker 1s linear infinite;
 .ForBigDiv{
   margin: 0px !important;
   padding: 0px !important;
-  background-image:url("../../assets/images/popupline.png"), url("../../assets/images/popupbg.png");
+/* background-image:url("../../assets/images/popupline.png") , linear-gradient(180deg, #543CD6 0%, #361F86 48.96%, #160133 100%); */
+background-image:url("../../assets/images/popupbg2.png");
+  /* background-image:url("../../assets/images/popupline.png"), url("../../assets/images/popupbg.png"); */
+  /* background: linear-gradient(180deg, #543CD6 0%, #361F86 48.96%, #160133 100%); */
+/* box-shadow: 1px 1px 30px 0px #8a76fb; */
   /* background-position: cover; */
     background-attachment: fixed;
   background-position: center; 
@@ -44,23 +48,28 @@ animation: blinker 1s linear infinite;
   width: 100% !important;
 }
 .legendaryBG{
-  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/legendaryBG.png");
+  background:url("../../assets/images/linesBG.png"),linear-gradient(180deg, #FFE224 0%, #FFC92B 48.96%, #FFB434 100%);
+  /* background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/legendaryBG.png"); */
     background-position: center,center;
 }
 .rareBG{
-  background-image:url("../../assets/images/rarelineBG.png"), url("../../assets/images/rareBG.png");
+  background:url("../../assets/images/rarelineBG.png"),linear-gradient(180deg, #F8F8F8 0%, #EEE 48.96%, #C1C1C1 100%);;
+  /* background-image:url("../../assets/images/rarelineBG.png"), url("../../assets/images/rareBG.png"); */
     background-position: center,center;
 }
 .uncommonBG{
-  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/uncommonBG.png");
+  background:url("../../assets/images/linesBG.png"), linear-gradient(180deg, #C6ABFF 0%, #E1D2FF 100%);
+  /* background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/uncommonBG.png"); */
     background-position: center,center;
 }
 .epicBG{
-  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/epicBG.png");
+  /* background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/epicBG.png"); */
+  background:url("../../assets/images/linesBG.png"),linear-gradient(180deg, #B7AFF5 0%, #6355D0 100%);
     background-position: center,center;
 }
 .commonBG{
-  background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/commonBG.png");
+  background:url("../../assets/images/linesBG.png"),linear-gradient(180deg, #C5B9FF 0%, #EDEAFB 100%);
+  /* background-image:url("../../assets/images/linesBG.png"), url("../../assets/images/commonBG.png"); */
     background-position: center,center;
 }
 
