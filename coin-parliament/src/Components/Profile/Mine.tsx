@@ -79,7 +79,7 @@ const Mine = () => {
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
   const [paxValue, setPaxValue] = React.useState(userInfo?.rewardStatistics?.diamonds || 0);
-
+  const [befornotShow, setBefornotShow] = useState<any>(true)
   const [shareModleShow, setShareModleShow] = React.useState(false);
   const [countShow, setCountShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
@@ -467,7 +467,7 @@ const Mine = () => {
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           // @ts-ignore
-          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
+          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${!befornotShow && rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${!befornotShow && rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
         >
           <div className="d-flex justify-content-end">
             {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
@@ -483,7 +483,7 @@ const Mine = () => {
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} />
           </Modal.Body>
         </Modal>
       </CardDiv>

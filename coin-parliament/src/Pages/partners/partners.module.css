@@ -119,19 +119,18 @@
     color: #FEFEFE;
     text-align: center;
     font-family: Poppins;
-    font-size: 1.1875rem;
+    font-size: 1.4rem;
     font-style: normal;
     font-weight: 400;
     line-height: 2.1875rem; /* 184.211% */
     letter-spacing: 0.02375rem;
-    text-transform: capitalize;
 }
 .foreverText{
     color: #FEFEFE;
     font-family: Poppins;
-    font-size: 1.1875rem;
+    font-size: 1.4rem;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 725;
     line-height: 2.1875rem;
     letter-spacing: 0.02375rem;
     text-transform: capitalize;
@@ -175,4 +174,15 @@
 }
 .shareBox img,span{
     cursor:pointer;
+}
+
+.shareSubHeaderText{
+   
+    background-clip: text;
+    font-family: Poppins;
+    font-size: 1.1rem;
+    font-style: normal;
+    font-weight: 800;
+    line-height: normal;
+    letter-spacing: 0.0275rem;
 }

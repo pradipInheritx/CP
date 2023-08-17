@@ -129,7 +129,6 @@ const VotedCard = ({
 
 }) => {
 
-  const [lastTenSec, setLastTenSec] = useState<any>(false);
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
   const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
@@ -382,9 +381,7 @@ const VotedCard = ({
               symbol2={symbol2}
             />
             <div className="mb-1" style={{ marginTop: window.screen.width < 370 ? '-8em' : (window.screen.width < 576 ? '-6.5em' : '-4.3em'), }} /* style={{ marginTop: '-3em', height: '4em', paddingLeft: '10px' }} */>
-              <MyCountdown setCalcPer={setCalcPer} expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen}
-                setLastTenSec={setLastTenSec}
-              />
+              <MyCountdown setCalcPer={setCalcPer} expirationTime={expirationTime} vote={vote} voteId={voteId} coins={coins} symbol1={symbol1} symbol2={symbol2} openPopup={setpopUpOpen} />
             </div>
             {symbol2 ?
               <div className={`container pt-2`}>
@@ -471,9 +468,9 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
   const coin2 = `${coins && symbol2 ? coins[symbol2]?.symbol?.toLowerCase() || "" : ""}`
 
   const checkprice = async () => {
-    if (!getresultFlag) return
-    getresultFlag = false;
-    console.log('price called')
+    // if (!getresultFlag) return
+    // getresultFlag = false;
+    // console.log('price called')
     // const data = await getPriceCalculation({
     //   coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
     //   coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
@@ -505,8 +502,8 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
       date={new Date(expirationTime)}
       renderer={({ hours, minutes, seconds, completed }) => {
 
-        if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11) {
-          setLastTenSec(true)
+        if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11 && setLastTenSec instanceof Function) {
+          setLastTenSec(true);
         }
         if (completed) {
           if (vote && !vote?.success) {

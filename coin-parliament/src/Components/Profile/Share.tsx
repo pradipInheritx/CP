@@ -54,20 +54,23 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
         <span className={classes.headerTitle}>We believe in Partnerships!</span>
       </div>
       <div className="d-flex justify-content-center pt-5 text-center">
-        <span className={classes.subHeaderText}>Invite your friends to become Coin Parliament members</span>
+        <span className={classes.shareSubHeaderText} style={{ color: '#FEFEFE' }}>Invite your friends to become </span>
       </div>
       <div className="d-flex justify-content-center text-center">
-        <span className={classes.subHeaderText}>and enjoy the benefits of being our partner.</span>
+        <span className={classes.shareSubHeaderText} style={{ color: '#684dc9', background: "linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%)", WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Coin Parliament</span>
+      </div>
+      <div className="d-flex justify-content-center text-center">
+        <span className={classes.shareSubHeaderText} style={{ color: '#FEFEFE' }}>members and enjoy the benefits of being our partner.</span>
       </div>
 
       <div className="d-flex justify-content-center align-items-center">
         <div className={`row mt-3`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
           <div className="col-md-6 d-flex  align-items-center">
             <div className={classes.description}>
-              <ol>
+              <ul>
                 <li>Accelerating your mining progress.</li>
                 <li> Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
-              </ol>
+              </ul>
             </div>
           </div>
           <div className="col-md-5 text-center">
@@ -76,12 +79,12 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
         </div>
       </div>
       <p className={`${classes.footerText} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>
-      <p className={`${classes.footerText} text-center m-0`}> That’s it, </p>
+      <p className={`${classes.footerText} text-center m-0`}> that’s it, </p>
       <div className="d-flex justify-content-center" style={{ position: 'relative' }}>
         <button
           id="my-tooltip-click"
           className={classes.inviteButton}
-          style={{ width: window.screen.width <= 425 ? '10em' : 'auto' }}
+          style={{ fontSize: window.screen.width <= 425 ? '1em' : '' }}
           onClick={() => {
             if (!user?.uid) {
               setLogin(true)
@@ -92,17 +95,20 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
             return;
           }}
         >
-          <span>SHARE NOW TO START EARNING!</span>{window.screen.width <= 425 && <br />}
+          <span>SHARE NOW TO START EARNING!</span>{window.screen.width < 300 && <br />}
           <span className="material-icons-outlined me-2">share</span>
           <span className="material-symbols-outlined">arrow_drop_down</span>
         </button>
-        {showShare && <div className={classes.shareBox} style={window.screen.width <= 425 ? {
+        {showShare && <div className={classes.shareBox} style={window.screen.width < 300 ? {
           marginLeft: '2em',
-          top: '9em',
+          top: '5em',
+        } : (window.screen.width <= 425 ? {
+          marginLeft: '13em',
+          top: '4em',
         } : {
           marginLeft: '16em',
           top: '4em',
-        }}>
+        })}>
           <span className="material-symbols-outlined text-secondary me-2"
             onClick={() => {
               copy(url);

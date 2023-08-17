@@ -22,6 +22,7 @@ firebase.initializeApp(firebaseConfig);
 export const messaging = (async () => {
   try {
     const isSupportedBrowser = await isSupported();
+    console.log(isSupportedBrowser, 'token');
     if (isSupportedBrowser) {
       return getMessaging();
     }

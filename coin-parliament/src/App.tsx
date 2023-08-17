@@ -103,7 +103,7 @@ import Mine from "./Components/Profile/Mine";
 import Follow from "./Components/Profile/Follow";
 import Pool from "./Components/Profile/Pool";
 import { useWindowSize } from "./hooks/useWindowSize";
-import Votes from "./Components/Profile/Votes";
+import Votes from "./Components/Profile/voteHistory/Votes";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import FAQ from "./Pages/FAQ";
 import styled from "styled-components";
@@ -128,7 +128,7 @@ import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
 import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
-import FwVotes from "./Components/FollowerProfile/FwVotes";
+import FwVotes from "./Components/FollowerProfile/voteHistory/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
@@ -147,6 +147,7 @@ import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/C
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import CoinsList from "Components/Profile/CoinsList";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
+import Complete100CMPModal from "Components/Complete100CMPModal";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -1102,6 +1103,11 @@ function App() {
     }
   }, [user?.uid]);
 
+  /// show 100 CMP complete modal
+  const [completedVoteCMP, setCompletedVoteCMP] = useState<number>(0);
+  const [showComplete100CMP, setShowComplete100CMP] = useState(false);
+  ///show 100 CMP complete modal
+
   ///start vote result //
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
@@ -1128,6 +1134,8 @@ function App() {
         }
       });
       setCurrentCMP((completedVotes[0]?.score || 0) /* + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0') */)
+      setCompletedVoteCMP((completedVotes[0]?.score || 0));
+
     }
   }, [completedVotes, voteDetails.openResultModal]);
 
@@ -1835,7 +1843,11 @@ function App() {
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
                         setLessTimeVoteDetails={setLessTimeVoteDetails}
+                        setShowComplete100CMP={setShowComplete100CMP}
+                        currentCMP={completedVoteCMP}
                       />}
+                      {/* complete 100 cmp notify  */}
+                      <Complete100CMPModal setCurrentCMP={setCompletedVoteCMP} showComplete100CMP={showComplete100CMP} setShowComplete100CMP={setShowComplete100CMP} />
                     </UserContext.Provider>
                   </CoinsContext.Provider>
                 </ContentContext.Provider>
