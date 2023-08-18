@@ -230,8 +230,7 @@ function ModalForResult({
                       <Col className="">
                         {/* ${vote?.id} -  */}
                         <span className="sm_txt">
-
-                          {vote?.voteId} </span>
+                          {vote?.voteId}</span>
                         {window?.screen?.width < 768 && <br />}
                         <span className="sm_txt">
 

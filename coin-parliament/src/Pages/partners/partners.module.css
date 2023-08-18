@@ -115,15 +115,16 @@
     line-height: 2;
 }
 .footerText{
-    margin-top:2em;
+    text-align:center;
     color: #FEFEFE;
-    text-align: center;
+    text-shadow: 0px 1px 3px #5B03FF;
     font-family: Poppins;
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     font-style: normal;
-    font-weight: 400;
-    line-height: 2.1875rem; /* 184.211% */
-    letter-spacing: 0.02375rem;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.0375rem;
+    margin-top:2.6em;
 }
 .foreverText{
     color: #FEFEFE;
@@ -175,7 +176,6 @@
 .shareBox img,span{
     cursor:pointer;
 }
-
 .shareSubHeaderText{
    
     background-clip: text;
