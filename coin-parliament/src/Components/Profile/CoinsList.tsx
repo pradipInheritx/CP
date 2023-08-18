@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useState, useEffect } from "react";
-import { Form, Image, Modal } from "react-bootstrap";
+import { Form, Image, InputGroup, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
 
@@ -35,10 +35,11 @@ const Boxdiv = styled.div`
 `;
 
 const Opctiondiv = styled.div`
-  border:1px solid white;
+  border:1px solid #cab7ff;
   border-radius:10px;
   overflow:hidden;
   width:${window.screen.width > 767 ? "33%" : "98%"};
+  height:100px;
   margin:${window.screen.width > 767 ? "" : "auto"};
   font-size:15px;
   & div{
@@ -52,7 +53,22 @@ width:${window.screen.width >767 ? "65%":"98%"};
 margin:${window.screen.width > 767 ? "" : "auto"};
  margin-left:${window.screen.width >767 ? "20px":""};
  margin-top:${window.screen.width > 767 ? "" : "30px"};
- 
+`;
+
+const Inputvalue = styled.input`
+background:none;
+border:1px solid #cab7ff;
+padding:12px;
+color:white;
+caret-color: "white";
+&:focus {
+        outline: none;
+        // box-shadow: 0px 0px 2px red;
+    };
+::placeholder {
+        color:white;
+    };
+
 `;
 
 const Paymentdiv = styled.div`
@@ -71,7 +87,22 @@ const Divbutton = styled.div`
   display:flex;
   justify-content: end;
   & button {
-    width:150px;
+    width:"150px";
+    margin:20px 0px;
+    padding:10px;
+    border:none;
+    border-radius:5px;
+  }
+`;
+
+const Secbutton = styled.div`
+  width:${window.screen.width >767 ?"60%":"80%"};
+  border-radius:10px;
+
+  display:flex;
+  justify-content: end;
+  & button {
+    width:${window.screen.width >767 ?"64%":"100%"};
     margin:20px 0px;
     padding:10px;
     border:none;
@@ -84,7 +115,7 @@ const CoinsList = () => {
 
 
   const [coinsList, setCoinsList] = useState([])
-  const [selectPayment, setSelectPayment] = useState(0);
+  const [selectPayment, setSelectPayment] = useState(2);
   const [selectCoin, setSelectCoin] = useState("none");
   const [CheckCoin, setCheckCoin] = useState(0);
   const [coinInfo, setCoinInfo] = useState([]);  
@@ -305,6 +336,10 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
     })
   };
 
+  const handleInputChange = (type:any) => {
+    
+}
+
   const checkAndPay = () => {
   (window as any).wldp.isWalletConnected()
             .then((res:any) => {
@@ -351,8 +386,8 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
           <div
             style={{
               cursor:"pointer",
-              borderBottom: "1px solid white",
-              background:`${selectPayment && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+              borderBottom: "1px solid #cab7ff",
+              background:`${selectPayment == 1 ? "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)" :""}`,
             }}
             onClick={() => {
               setSelectPayment(1)
@@ -363,10 +398,16 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
           </div>
           <div
             style={{
-              cursor: "not-allowed",
-          }}
+              // cursor: "not-allowed",
+              cursor:"pointer",
+              borderBottom: "1px solid #cab7ff",
+              background:`${selectPayment == 2 ? "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)":""}`,
+            }}
+            onClick={() => {
+              setSelectPayment(2)
+            }}
           >
-            <i className="bi bi-credit-card-fill "></i>
+            <i className="bi bi-credit-card-fill"></i>
             <p className="mx-2">Debit & Credit cards</p>
           </div>
         </Opctiondiv>
@@ -397,10 +438,6 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
                   onClick={ async () => {
                     setSelectCoin(option.name)
                     setCoinInfo(option)
-                    // setShowOptionList(!showOptionList)
-                    // await mybtn("disconnect", "true").then(() => {
-                    //   setConnectOrNot(!connectOrNot)
-                    // })
                   }}
                 >
                   {option.name}
@@ -411,6 +448,25 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
         )}
       </div>
         </Sidediv>}
+
+        {selectPayment == 2 && <Sidediv>
+          <div >
+            <Inputvalue placeholder="Card Number" className="w-100" type="number"
+              style={{
+                borderBottom: "none",
+                borderRadius:"8px 8px 0px 0px",
+            }}
+            />
+            <Inputvalue placeholder={`${window.screen.width >767 ? "Valid Through (MM/YY)" :"MM/YY"}`} className="w-50" type="text"/>
+            <Inputvalue placeholder="CVV" className="w-50" type="text" />
+            <Inputvalue placeholder="Name On Card" className="w-100" type="text"
+              style={{
+                borderTop: "none",
+                borderRadius:"0px 0px 8px 8px",
+            }}
+            />
+         </div>
+        </Sidediv>}
         
 
         {selectCoin != "none" && <Paymentdiv>
@@ -420,33 +476,7 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
                   style={{
                   fontSize:"20px"
                 }}
-            >Pay 99$ using {selectCoin}</p>
-             {/* {!walletName && 
-              <>
-              <p className="my-1"
-                style={{
-                fontSize:`${window.screen.width > 767 ?"13px" :"11px"}`,
-              }}
-              >
-                Your are not connected with any wallat !
-                  <span
-                    style={{
-                      color: "#3366CC",
-                    cursor: "pointer",
-                        fontSize:`${window.screen.width > 767 ?"13px" :"12px"}`,                      
-                      }}
-                  onClick={async () => {                  
-                    await mybtn("disconnect", "true")
-                    setConnectOrNot(true)
-                    await mybtn("connect").then((data: any) => {
-                      setConnectOrNot(false)
-                      // @ts-ignore
-                      setWalletName(localStorage.getItem("wldp-cache-provider"))
-                    })
-                  }}
-                >  &nbsp; Connect Now </span></p>
-              </>
-            }                            */}
+            >Pay 99$ using {selectCoin}</p>           
           </div>
         </Paymentdiv> }       
       </Boxdiv>
@@ -463,11 +493,7 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
             }}
             onClick={ async () => {
                 setSelectCoin("none")
-                // mybtn("disconnect", "true")
               setCoinInfo([])
-      //         await mybtn("disconnect", "true").then(() => {
-      //   setConnectOrNot(!connectOrNot)
-      // })
               }}
         >Cancel</button>
         <button
@@ -484,6 +510,26 @@ axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`,{
             }}
         >Pay Now</button>
       </Divbutton>
+      }
+
+      {
+        selectPayment == 2 &&
+        // localStorage.getItem("wldp-cache-provider") &&
+      <Secbutton>        
+        <button
+          style={{
+            background: "#543cd6",
+              color: "white",
+            opacity:`${payButton ?"0.6":"1"}`
+            }}
+            // disabled={payButton}
+            // onClick={ async () => {          
+            //   send()
+            //   setPayButton(true)
+            //   checkAndPay()
+            // }}
+        >Pay $ 99.00</button>
+      </Secbutton>
       }
       
         {/* <Modal
