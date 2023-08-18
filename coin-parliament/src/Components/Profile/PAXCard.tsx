@@ -120,32 +120,13 @@ setSliverCoin(true)
           >
             <div
               className="d-flex justify-content-center align-items-center flex-column coin_Bg"
-              style={{ height: 75, color: '#6352E8' }}
+              style={{ height: 75, }}
             >
               <div>
-                <span className="cp_Value vstack " style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"} ` }}>
-                  {/* PARLIAMENT COIN-reward modal 2*/}
-                  {
-                    // showCoinIncrement === 1 ?
-                    // <CountUp className="PaxText" start={prevCountRef} end={PAX && PAX} duration={5}
-                    //   onEnd={() => {
-                    //     console.log('reward modal 2');
-                    //     setTimeout(() => {
-                    //       // handleShow();
-                    //       // setShowCoinIncrement(2);
-                    //       // setPrevCountRef(PAX);
-                    //       // setInOutReward((prev: number) => {
-                    //       //   return 2;
-                    //       //   // return prev == 1 ? 2 : prev;
-                    //       // });
-                    //     }, 1000);
-                    //   }
-                    //   }
-                    // /> :
-                    <>
+                <span className="cp_Value vstack coinText" style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"} ` }}>                  
+                    
                       {prevCountRef || 0}
-                    </>
-                  }
+                    
                 </span>
                 {/* <span className="cp_PAX" >PTS</span> */}
               </div>
@@ -188,17 +169,17 @@ setSliverCoin(true)
                   width: "100px",
                   height: "100px",
                   borderRadius: "75%",
-              backgroundImage: `url(${coinBg})`,
-              backgroundSize: "100px 100px",
+                  backgroundImage: `url(${coinBg})`,
+                  backgroundSize: "100px 100px",
                   backgroundRepeat: 'no-repeat',
-                  fontSize: "25px",
-                  color: "#6352e8",
-              fontWeight:"600",
+              //     fontSize: "25px",
+              //     color: "#6352e8",
+              // fontWeight:"600",
               // backgroundPosition: '-10px -10px',
             }}
               >
                 {showCoinIncrement === 1 ?
-                    <CountUp className="PaxText" start={prevCountRef} end={PAX && PAX} duration={5}
+                    <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
                       onEnd={() => {                        
                         setTimeout(() => {
                           handleShow();
@@ -214,7 +195,9 @@ setSliverCoin(true)
                       }
                     /> :
                     <>
+                    <span className="coinText">
                       {prevCountRef || 0}
+                    </span>
                     </>
                   }
               </div>

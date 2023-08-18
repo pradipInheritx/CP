@@ -91,6 +91,17 @@ animation: blinker 1s linear infinite;
     position: absolute;
     z-index: 10;
 }
+.coinText{  
+text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.50); 
+font-family: Poppins;
+font-size: 58px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+text-transform: capitalize;
+color:#dedada;
+font-size: 25px !important;
+}
 
 
 .wm-center-div{

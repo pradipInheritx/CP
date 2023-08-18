@@ -215,6 +215,7 @@ function App() {
   //   }
   // }
 
+  
 
   useEffect(() => {
     window.scrollTo({
@@ -222,6 +223,11 @@ function App() {
       behavior: 'smooth',
     });
     console.log('scrollUp ');
+       const urlpath = window.location.pathname      
+  if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") &&  (urlpath != "/paymentList")) {      
+      console.log("yes i am working")
+      localStorage.removeItem("PayAmount");
+    }        
   }, [JSON.stringify(location.pathname)]);
 
   // console.log("for commit")

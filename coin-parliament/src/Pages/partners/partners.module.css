@@ -74,7 +74,7 @@
     font-weight: 600;
     line-height: normal;
     letter-spacing: 0.0275rem;
-    text-transform: capitalize;
+
     padding-top: 1.5rem;
 }
 
@@ -101,18 +101,18 @@
     font-size: 1.1rem;
     font-style: normal;
     font-weight: 800;
-    line-height: normal;
-    letter-spacing: 0.0275rem;
+    line-height: 5;
+    letter-spacing: 0.0275rem;        
 }
 .description{
     color: #FFF;
     font-family: Poppins;
     font-style: normal;
 
-    text-transform: capitalize; 
+    
     font-size: 1rem;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 2;
 }
 .footerText{
     margin-top:2em;
@@ -133,7 +133,7 @@
     font-weight: 725;
     line-height: 2.1875rem;
     letter-spacing: 0.02375rem;
-    text-transform: capitalize;
+    
 }
 .inviteButton{
     position:relative;

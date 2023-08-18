@@ -49,63 +49,6 @@ const TextContainer = styled.div`
   margin: 0 auto;
 `;
 
-const UpgradePage = () => {
-  const translate = useTranslation();
-  const { user ,userInfo} = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
-    useContext(AppContext);
-  const { showModal } = useContext(NotificationContext);
-  const { quotes } = useContext(ContentContext);
-  const { width } = useWindowSize();
-  const [clicked, setClicked] = useState(false)
-  const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
-  const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
-  const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
-useEffect(() => {
-  return () => {
-    setClicked(false)
-  }
-}, [])
-
-  const BoxCard = styled.div`
-  width:${screenWidth()};
-  paddinng-top:20px;
-  background-color:#fff;
-  border:3px solid #6352E8;
-  margin : 10px 0px 10px 0px;
-  display:"flex"
-  justify-content: ${flexType()};
-   flex-wrap: wrap;
-  border-radius:6px;
-  padding:10px;
-  & 
-  p {
-    color:'#160133';
-    text-algin:"left";
-    font-size:14px
-  }
-`;
-
-  const PriceCard = styled.div`
-  width:${screenWidth()};
-  paddinng-top:20px;
-  background:linear-gradient(to bottom, #6352E8 0%, #3712B3 100%);
-  display:"flex"
-  justify-content: ${flexType()};
-   flex-wrap: wrap;
-  border-radius:6px;
-  font-weight: lighter;
-  boxShadow: 0px 3px 6px #00000029;
-  
-  & 
-  div {
-    color:#fff;
-    font-size:14px;
-    padding:14px 18px;
-    
-  }
-`;
-  
   const SideBox = styled.div` 
   display:flex;
   justify-content: center;
@@ -132,7 +75,7 @@ useEffect(() => {
 `;
   
 
-  let navigate = useNavigate();
+  
   
   const BottomBox = styled.div` 
   // border:1px solid red;
@@ -155,6 +98,34 @@ useEffect(() => {
 
   }
 `;
+
+const UpgradePage = () => {
+  const translate = useTranslation();
+  const { user ,userInfo} = useContext(UserContext);
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
+    useContext(AppContext);
+  const { showModal } = useContext(NotificationContext);
+  const { quotes } = useContext(ContentContext);
+  const { width } = useWindowSize();
+  const [clicked, setClicked] = useState(false)
+  const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
+  const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
+  const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
+useEffect(() => {
+  return () => {
+    setClicked(false)
+  }
+}, [])
+  let navigate = useNavigate();
+
+  const upgradeProfile = (amount:any,extravote:any) => {
+    handleSoundClick()     
+    let payvalue = [amount,"UPGRADE",extravote]
+    let PayValuestring = JSON.stringify(payvalue)
+    localStorage.setItem("PayAmount", PayValuestring);
+    navigate("/paymentList")   
+  }
+
   return (
     <>        
       <div
@@ -339,10 +310,13 @@ useEffect(() => {
               type='button'
               className='btn '
               onClick={() => {
-                if(clicked) return
+                // if(clicked) return
                 // setClicked(true)   
-                navigate("/paymentList")             
-                handleSoundClick()                
+                
+                // localStorage.setItem("PayAmount", "99"); 
+                // navigate("/paymentList")             
+                // handleSoundClick()     
+                upgradeProfile(99,0)
               }}
               style={{
                 background:
