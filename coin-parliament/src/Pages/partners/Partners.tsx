@@ -77,22 +77,23 @@ const
             </div>
           </div>
           <div className="d-flex justify-content-center">
-            <span className={classes.headerTitle}>We believe in Partnerships!</span>
+            {/* <span className={classes.headerTitle}>We believe in Partnerships!</span> */}
           </div>
           <div className="d-flex justify-content-center align-items-center ">
             <div className={`row mt-5`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
               <div className="col-md-7">
-                <span className={classes.subHeaderText}>How does the coin parliament partners' program work?</span>
-                <div className={classes.description}>
+                {/* <span className={classes.subHeaderText}>How does the Coin Parliament partners' program work?</span> */}
+                <span className={`${classes.subHeaderText} mb-3`}>How does it work?</span>
+                <div className={classes.description} style={{ fontWeight: 'bold', fontSize: '1.5em' }}>
                   <ol>
-                    <li>Sign up to become a member of Coin Parliament .</li>
-                    <li>Invite your friends from any social media platform using your unique referral link.</li>
+                    <li>Sign up to become a member and upgrade your account to mining account.</li>
+                    <li>Invite your friends from any social media platform using your uniique referral link.</li>
                     <li>
-                      Enjoy the benefits of the Coin Parliament partner program .
+                      Start earning .
                       <ul style={{ listStyleType: 'disc', padding: '0px', paddingLeft: '1em' }}>
-                        <li>Accelerating your mining progress</li>
-                        <li>Every referred vote will contribute to your CMP progress. Upon completion of 100 CMP (closing block), you will be eligible for rewards.</li>
-                        <li>Receive 50% of all your friends' total purchases directly to your wallet.</li>
+                        <li className="mt-2">Accelerating your mining progress. Every referred vote will contribute to your CMP progress. Upon completion of 100 CMP (closing block), you will be eligible for rewards.</li>
+                        <li className="mt-2">Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
+                        {/* <li>Receive 50% of all your friends' total purchases directly to your wallet.</li> */}
                       </ul>
                     </li>
 
@@ -106,6 +107,7 @@ const
 
           </div>
           <p className={`${classes.footerText} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>
+          {/* <p className={`${classes.footerText} text-center m-0`}> that’s it, </p> */}
           <div className="d-flex justify-content-center" style={{ position: 'relative' }}>
             <button
               id="my-tooltip-click"

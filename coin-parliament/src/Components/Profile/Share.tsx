@@ -66,7 +66,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
       <div className="d-flex justify-content-center align-items-center">
         <div className={`row mt-3`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
           <div className="col-md-6 d-flex  align-items-center">
-            <div className={classes.description} style={{ fontSize: '1.5em' }}>
+            <div className={classes.description} style={{ fontSize: '1.5em', fontWeight: 'bold' }}>
               <ul>
                 <li>Accelerating your mining progress.</li>
                 <li> Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
