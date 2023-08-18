@@ -303,8 +303,8 @@ function ModalForResult({
                           <div>
                             {/* {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]} */}
                           </div>
-                          <div>
-                            {pairCoinResult?.firstCoin}%
+                          <div style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.firstCoin)) }}>
+                            {pairCoinResult?.firstCoin.replaceAll('-', '')}%
                           </div>
                           <div>
                           </div>
@@ -355,8 +355,8 @@ function ModalForResult({
                           <div>
                             {/* {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]} */}
                           </div>
-                          <div>
-                            {pairCoinResult?.secondCoin}%
+                          <div style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.firstCoin)) }}>
+                            {pairCoinResult?.secondCoin.replaceAll('-', '')}%
                           </div>
                         </div>
                       </div>
@@ -418,7 +418,7 @@ function ModalForResult({
               <Other>{("CHECK PROGRESS")}</Other>
             </span>
           </div>
-        </Modal.Body>
+        </Modal.Body >
         {/* <Modal.Footer>
                   <Button variant="secondary" onClick={handleClose}>
                     Close
@@ -427,8 +427,8 @@ function ModalForResult({
                     Save Changes
                   </Button>
                 </Modal.Footer> */}
-      </Modal>
-    </div>
+      </Modal >
+    </div >
   )
 }
 

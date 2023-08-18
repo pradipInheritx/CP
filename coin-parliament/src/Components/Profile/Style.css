@@ -30,7 +30,7 @@ animation: blinker 1s linear infinite;
   background-image:url("../../assets/images/popupbg2.png");
   /* background-image:url("../../assets/images/popupline.png"), url("../../assets/images/popupbg.png"); */
   /* background: linear-gradient(180deg, #543CD6 0%, #361F86 48.96%, #160133 100%); */
-/* box-shadow: 1px 1px 5px 0px #8a76fb; */
+/* box-shadow: 1px 1px 30px 0px #8a76fb; */
   /* background-position: cover; */
     background-attachment: fixed;
   background-position: center; 
