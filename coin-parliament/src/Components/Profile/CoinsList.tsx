@@ -232,7 +232,8 @@ const CoinsList = () => {
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
       amount: payamount,
-      network: "5",
+      network: "11155111",
+
       // @ts-ignore
       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
       token: "ETH",
