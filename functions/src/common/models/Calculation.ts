@@ -97,6 +97,81 @@ class Calculation {
     await this.setTotals();
   }
 
+  calcValueExpirationTime(): void {
+    console.log("calcValueExpirationTime", this.price, typeof this.price);
+    this.voteResult.valueExpirationTime = this.price;
+  }
+
+  calcSuccess(): void {
+    const { voteResult } = this;
+    console.info("voteResult", voteResult)
+    //const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
+    let CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
+    if (typeof this.price === "number") {
+      const startValue = voteResult.valueVotingTime;
+      const endValue: any = voteResult?.valueExpirationTime;
+
+      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue)
+
+      const downRange = Number(startValue) - Number(CPMRangeCurrentValue)
+
+      if (typeof startValue === "number" && typeof endValue === "number") {
+        const trendChange = Number(
+          Number(((endValue || 0) / (startValue || 1) - 1) * 100).toFixed(3)
+        );
+        voteResult.trendChange = trendChange;
+      }
+
+      if (endValue && endValue < upRange && endValue > downRange) {
+        this.voteResult.success = 2;
+      } else {
+        console.log("successValue Changed rand point not working");
+        const bear =
+          !!endValue &&
+          endValue <= startValue &&
+          voteResult.direction === Direction.BEAR;
+        const bull =
+          !!endValue &&
+          endValue > startValue &&
+          voteResult.direction === Direction.BULL;
+        this.voteResult.success = bull ? 1 : 0 || bear ? 1 : 0;
+      }
+      if ((this.status === 0) || this.status) {
+        this.voteResult.success = this.status;
+      }
+    } else {
+      if (
+        Array.isArray(voteResult.valueVotingTime) &&
+        Array.isArray(voteResult.valueExpirationTime)
+      ) {
+
+        const diff = [
+          voteResult.valueExpirationTime[0] - voteResult.valueVotingTime[0],
+          voteResult.valueExpirationTime[1] - voteResult.valueVotingTime[1],
+        ];
+
+        const winner = diff[0] < diff[1] ? 1 : 0;
+        const averageValue = Math.abs(diff[0] - diff[1]);
+        console.info(
+          "averageValue",
+          averageValue,
+          "CPMRangeCurrentValue",
+          CPMRangeCurrentValue
+        );
+
+        // This status is user from frontend
+        if (averageValue <= CPMRangeCurrentValue) {
+          this.voteResult.success = 2;
+        } else {
+          this.voteResult.success = voteResult.direction === winner ? 1 : 0;
+        }
+        if ((this.status === 0) || this.status) {
+          this.voteResult.success = this.status;
+        }
+      }
+    }
+  }
+
   async updateVote(
     ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
@@ -104,7 +179,6 @@ class Calculation {
     console.log("this.voteResult ========", this.voteResult);
     await ref.set(this.voteResult, { merge: true });
   }
-
 
   async giveAway(): Promise<void> {
     try {
@@ -186,132 +260,7 @@ class Calculation {
       .set(totals, { merge: true });
   }
 
-  calcValueExpirationTime(): void {
-    console.log("calcValueExpirationTime", this.price, typeof this.price);
-    this.voteResult.valueExpirationTime = this.price;
-  }
-
-  // calcSuccess(): void {
-  //   const {voteResult} = this;
-  //   if (typeof this.price === "number") {
-  //     const bear =
-  //       !!voteResult.valueExpirationTime &&
-  //       voteResult.valueExpirationTime <= voteResult.valueVotingTime &&
-  //       voteResult.direction === Direction.BEAR;
-  //     const bull =
-  //       !!voteResult.valueExpirationTime &&
-  //       voteResult.valueExpirationTime > voteResult.valueVotingTime &&
-  //       voteResult.direction === Direction.BULL;
-  //     this.voteResult.success = bull || bear;
-  //   } else {
-  //     if (
-  //       Array.isArray(voteResult.valueVotingTime) &&
-  //       Array.isArray(voteResult.valueExpirationTime)
-  //     ) {
-  //       const diff = [
-  //         voteResult.valueExpirationTime[0] / voteResult.valueVotingTime[0],
-  //         voteResult.valueExpirationTime[1] / voteResult.valueVotingTime[1],
-  //       ];
-
-  //       const winner = diff[0] < diff[1] ? 1 : 0;
-  //       this.voteResult.success = voteResult.direction === winner;
-  //     }
-  //   }
-  // }
-
-  calcSuccess(): void {
-    const { voteResult } = this;
-    console.info("voteResult", voteResult)
-    //const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
-    let CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
-    if (typeof this.price === "number") {
-      const startValue = voteResult.valueVotingTime;
-      const endValue: any = voteResult?.valueExpirationTime;
-      // const upRange: any =
-      //   Number(startValue) +
-      //   (Number(startValue) * CPMReturnRangePercentage) / 100;
-      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue)
-      // const downRange =
-      //   Number(startValue) -
-      //   (Number(startValue) * CPMReturnRangePercentage) / 100;
-
-      const downRange = Number(startValue) - Number(CPMRangeCurrentValue)
-
-      if (typeof startValue === "number" && typeof endValue === "number") {
-        const trendChange = Number(
-          Number(((endValue || 0) / (startValue || 1) - 1) * 100).toFixed(3)
-        );
-        voteResult.trendChange = trendChange;
-      }
-
-      if (endValue && endValue < upRange && endValue > downRange) {
-        this.voteResult.success = 2;
-      } else {
-        console.log("successValue Changed rand point not working");
-        const bear =
-          !!endValue &&
-          endValue <= startValue &&
-          voteResult.direction === Direction.BEAR;
-        const bull =
-          !!endValue &&
-          endValue > startValue &&
-          voteResult.direction === Direction.BULL;
-        this.voteResult.success = bull ? 1 : 0 || bear ? 1 : 0;
-      }
-      if ((this.status === 0) || this.status) {
-        this.voteResult.success = this.status;
-      }
-    } else {
-      if (
-        Array.isArray(voteResult.valueVotingTime) &&
-        Array.isArray(voteResult.valueExpirationTime)
-      ) {
-        // const diff = [
-        //   voteResult.valueExpirationTime[0] / voteResult.valueVotingTime[0],
-        //   voteResult.valueExpirationTime[1] / voteResult.valueVotingTime[1],
-        // ];
-
-        // const winner = diff[0] < diff[1] ? 1 : 0;
-        // const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-        // console.info(
-        //   "averageValue",
-        //   averageValue,
-        //   "CPMReturnRangePercentage",
-        //   CPMReturnRangePercentage
-        // );
-        // if (averageValue <= CPMReturnRangePercentage) {
-        //   this.voteResult.success = 2;
-        // } else {
-        //   this.voteResult.success = voteResult.direction === winner ? 1 : 0;
-        // }
-
-        const diff = [
-          voteResult.valueExpirationTime[0] - voteResult.valueVotingTime[0],
-          voteResult.valueExpirationTime[1] - voteResult.valueVotingTime[1],
-        ];
-
-        const winner = diff[0] < diff[1] ? 1 : 0;
-        const averageValue = Math.abs(diff[0] - diff[1]);
-        console.info(
-          "averageValue",
-          averageValue,
-          "CPMRangeCurrentValue",
-          CPMRangeCurrentValue
-        );
-
-        // This status is user from frontend
-        if (averageValue <= CPMRangeCurrentValue) {
-          this.voteResult.success = 2;
-        } else {
-          this.voteResult.success = voteResult.direction === winner ? 1 : 0;
-        }
-        if ((this.status === 0) || this.status) {
-          this.voteResult.success = this.status;
-        }
-      }
-    }
-  }
-}
+} // end the calculation class
 
 const getLeaders = async () => {
   const snapshotUsers = await firestore()
