@@ -27,8 +27,8 @@ export const getUserWalletBalance = async (req: any, res: any) => {
 }
 
 export const makePayment = async (req: any, res: any) => {
-    const { userId, userEmail, walletType, amount, network, origincurrency, token } = req.body;
-    console.log(userId, userEmail, walletType, amount, network, origincurrency, token)
+    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
+    console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes)
     const headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
@@ -49,10 +49,11 @@ export const makePayment = async (req: any, res: any) => {
 
 
     if (getResponseAfterTransaction && getResponseAfterTransaction.status === 201) {
-        await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token }, getResponseAfterTransaction.data)
+        await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes }, getResponseAfterTransaction.data)
+
         res.status(200).json({
             status: true,
-            message: `Payment done successfully of amount ${amount}`,
+            message: `Payment done successfully of amount ${amount}$`,
             data: getResponseAfterTransaction.data
         })
     } else {
@@ -64,26 +65,45 @@ export const makePayment = async (req: any, res: any) => {
     }
 }
 
-
-
 export const storeInDBOfPayment = async (metaData: any, response: any) => {
-    metaData?.userId ? await addIsUpgradedValue(metaData.userId) : "";
+    if (metaData.transactionType === "UPGRADE" && metaData?.userId) {
+        await addIsUpgradedValue(metaData.userId)
+    }
+    if (metaData.transactionType === "EXTRAVOTES") {
+        await addIsExtraVotePurchase(metaData)
+    }
     await firestore().collection("payments").add({ ...metaData, ...response, timestamp: firestore.FieldValue.serverTimestamp() })
 }
 
+const addIsExtraVotePurchase = async (metaData: any) => {
+    const userDocumentRef = firestore().collection('users').doc(metaData.userId);
+    userDocumentRef.get()
+        .then(doc => {
+            if (doc.exists) {
+                const data: any = doc.data();
+                const originalValue = data.rewardStatistics.extraVote;
+                const modifiedValue = originalValue + metaData.numberOfVotes;
+                data.objectField.someValue = modifiedValue;
+                userDocumentRef.set(data);
+            } else {
+                errorLogging("isUserExtraVote", "ERROR", "Something went wrong while add the extra votes");
+            }
+        })
+        .catch(error => {
+            errorLogging("isUserExtraVote", "ERROR", error);
+        });
+}
+
 const addIsUpgradedValue = async (userId: string) => {
-    await firestore().collection('users').doc(userId).set({ isUpgraded: true }, { merge: true });
+    await firestore().collection('users').doc(userId).set({ rewardStatistics: true }, { merge: true });
 }
 
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {
     try {
         const { userId } = req.params;
-
         const getTransactionQuery = await firestore().collection('payments').where('userId', '==', userId).get();
-        console.info("getTransactionQuery", getTransactionQuery)
         const getPaymentData = getTransactionQuery.docs.map((payment) => { return payment.data() });
-        console.log("get transaction ; ", getPaymentData);
 
         if (!getPaymentData.length) {
             return res.status(404).send({
