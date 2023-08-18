@@ -214,7 +214,7 @@ const VotedCard = ({
 
   useEffect(() => {
     if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
-      if (!voteDetails?.openResultModal && calcPer) {
+      // if (!voteDetails?.openResultModal && calcPer) {
         // console.log(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''), parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
 
         let value1 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00';
@@ -226,7 +226,7 @@ const VotedCard = ({
           }
           return Prev;
         })
-      }
+      // }
     }
     // if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
     //   setPairCoinResult((Prev) => {
