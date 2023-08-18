@@ -92,12 +92,12 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   const translate = useTranslation();
   const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); //1 =show 1>=hide
   const [sliverCoin, setSliverCoin] = useState(false);
-   //1 =show 1>=hide
+  //1 =show 1>=hide
   useEffect(() => {
     if (inOutReward === 1 && !modalShow && !showCoinIncrement) {
       setShowCoinIncrement(1);
-setSliverCoin(true)
-    }    
+      setSliverCoin(true)
+    }
   }, [inOutReward, modalShow]);
 
 
@@ -123,10 +123,10 @@ setSliverCoin(true)
               style={{ height: 75, }}
             >
               <div>
-                <span className="cp_Value vstack coinText" style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"} ` }}>                  
-                    
-                      {prevCountRef || 0}
-                    
+                <span className="cp_Value vstack coinText" style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"} ` }}>
+
+                  {prevCountRef || 0}
+
                 </span>
                 {/* <span className="cp_PAX" >PTS</span> */}
               </div>
@@ -151,17 +151,17 @@ setSliverCoin(true)
             centered
             style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           >
-              <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
-            style={{
-            width:`${window.screen.width > 767 ?"500px" :"100%"}`,
-            height:"400px"
-          }}
-          >
+            <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
+              style={{
+                width: `${window.screen.width > 767 ? "500px" : "100%"}`,
+                height: "400px"
+              }}
+            >
 
-            {/* <Popuphead>Congrats!</Popuphead> */}
+              {/* <Popuphead>Congrats!</Popuphead> */}
               {/* @ts-ignore */}
               <div className=''>
-                <p style={{ fontSize: "24px", color: "white" ,fontWeight:"600"}}>{("parliament coins").toLocaleUpperCase()}</p>
+                <p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>{("parliament coins").toLocaleUpperCase()}</p>
               </div>
               <div
                 className="d-flex justify-content-center align-items-center"
@@ -172,44 +172,44 @@ setSliverCoin(true)
                   backgroundImage: `url(${coinBg})`,
                   backgroundSize: "100px 100px",
                   backgroundRepeat: 'no-repeat',
-              //     fontSize: "25px",
-              //     color: "#6352e8",
-              // fontWeight:"600",
-              // backgroundPosition: '-10px -10px',
-            }}
+                  //     fontSize: "25px",
+                  //     color: "#6352e8",
+                  // fontWeight:"600",
+                  // backgroundPosition: '-10px -10px',
+                }}
               >
                 {showCoinIncrement === 1 ?
-                    <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
-                      onEnd={() => {                        
-                        setTimeout(() => {
-                          handleShow();
-                          setShowCoinIncrement(2);
-                          setPrevCountRef(PAX);
-                          setSliverCoin(false)
-                          // setInOutReward((prev: number) => {
-                          //   return 2;
-                          //   // return prev == 1 ? 2 : prev;
-                          // });
-                        }, 1000);
-                      }
-                      }
-                    /> :
-                    <>
+                  <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
+                    onEnd={() => {
+                      setTimeout(() => {
+                        handleShow();
+                        setShowCoinIncrement(2);
+                        setPrevCountRef(PAX);
+                        setSliverCoin(false)
+                        // setInOutReward((prev: number) => {
+                        //   return 2;
+                        //   // return prev == 1 ? 2 : prev;
+                        // });
+                      }, 1000);
+                    }
+                    }
+                  /> :
+                  <>
                     <span className="coinText">
                       {prevCountRef || 0}
                     </span>
-                    </>
-                  }
+                  </>
+                }
               </div>
-              
-              {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}            
-            {/* <Modal.Footer> */}
-            
-              </Modal.Body>
+
+              {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
+              {/* <Modal.Footer> */}
+
+            </Modal.Body>
             {/* </Modal.Footer>       */}
           </Modal>
         </div>
-        
+
 
 
 
@@ -227,54 +227,54 @@ setSliverCoin(true)
             centered
             style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           >
-              <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
-            style={{
-            width:`${window.screen.width > 767 ?"500px" :"100%"}`,
-            height:"400px"
-          }}
-          >
+            <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
+              style={{
+                width: `${window.screen.width > 767 ? "500px" : "100%"}`,
+                height: "400px"
+              }}
+            >
 
-            <Popuphead>Congrats!</Popuphead>
+              <Popuphead>Congrats!</Popuphead>
               {/* @ts-ignore */}
               <div className=''>
-                <p style={{ fontSize: "24px", color: "white" ,fontWeight:"600"}}>You've won {rewardExtraVote} votes</p>
+                <p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>You've won {rewardExtraVote} votes</p>
               </div>
 
 
-            
-            {/* <Modal.Footer> */}
-            <div className="d-flex justify-content-center ">
-              <Buttons.Primary className="mx-2" onClick={() => {
-                setCountShow(false)
-                setShowReward((prev: number) => {
-                  return 2;
-                  // return prev == 1 ? 2 : prev
-                });
-                setInOutReward((prev: number) => {
-                  return 2;
-                });
-                setTimeout(() => {
-                  setShowCoinIncrement(0);
-                }, 2000);
-                handleClose();
-                setTimeout(() => {
-                  setHeaderExtraVote((prev: any) => {
-                    return {
-                      ...prev,
-                      collect: true
-                    }
-                  })
-                }, 2800)
-                setTimeout(() => {
-                  setHeaderExtraVote({
-                    vote: 0,
-                    collect: false
+
+              {/* <Modal.Footer> */}
+              <div className="d-flex justify-content-center ">
+                <Buttons.Primary className="mx-2" onClick={() => {
+                  setCountShow(false)
+                  setShowReward((prev: number) => {
+                    return 2;
+                    // return prev == 1 ? 2 : prev
                   });
-                }, 3000)
-              }}>Collect your Vote</Buttons.Primary>
-              {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
+                  setInOutReward((prev: number) => {
+                    return 2;
+                  });
+                  setTimeout(() => {
+                    setShowCoinIncrement(0);
+                  }, 2000);
+                  handleClose();
+                  setTimeout(() => {
+                    setHeaderExtraVote((prev: any) => {
+                      return {
+                        ...prev,
+                        collect: true
+                      }
+                    })
+                  }, 2800)
+                  setTimeout(() => {
+                    setHeaderExtraVote({
+                      vote: 0,
+                      collect: false
+                    });
+                  }, 3000)
+                }}>Collect your Vote</Buttons.Primary>
+                {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
               </div>
-              </Modal.Body>
+            </Modal.Body>
             {/* </Modal.Footer>       */}
           </Modal>
         </div>

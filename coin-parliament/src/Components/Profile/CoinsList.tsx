@@ -109,8 +109,8 @@ const CoinsList = () => {
 
 
   //  For put email in userid
-  
-  
+
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -148,10 +148,10 @@ const CoinsList = () => {
       console.log(data, "username")
     })
     // @ts-ignore
-    let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))    
+    let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
     setPayamount(AllInfo[0])
     setPayType(AllInfo[1])
-    setExtraVote(AllInfo[2])    
+    setExtraVote(AllInfo[2])
   }, [])
 
   const mybtn = (window as any)?.wldp?.connectionWallet
@@ -168,7 +168,7 @@ const CoinsList = () => {
         icon: 'error',
         title: 'Payment Failed',
         // text: 'Your account balance is : ${balance} , This is insufficient balance for this payment',
-        html: "<span>Your account balance is : " + (getbalance) + " , This is insufficient balance for this payment</span>",
+        html: msg || "<span>Your account balance is : " + (getbalance) + " , This is insufficient balance for this payment</span>",
         showCancelButton: true,
         cancelButtonColor: '#d33',
         cancelButtonText: 'Start Over Again',
@@ -237,7 +237,7 @@ const CoinsList = () => {
       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
       token: "ETH",
       transactionType: payType,
-    numberOfVotes: extraVote,
+      numberOfVotes: extraVote,
     }
 
     axios.post(`${ApiUrl}payment/makePayment`, data, {
@@ -257,9 +257,12 @@ const CoinsList = () => {
         afterPayPopup("success", response?.data?.message)
       })
       .catch((error) => {
-        showToast(error.message, ToastType.ERROR)
-        console.log(error
-          , "errorpayment")
+        // showToast(error.message, ToastType.ERROR)
+        console.log(error, "errorpayment");
+        setPayButton(false);
+        if (error?.message) {
+          afterPayPopup("error", error?.message);
+        }
       })
   }
 
@@ -276,7 +279,7 @@ const CoinsList = () => {
       .then((response) => {
         const balance = response?.data?.data?.balance;
         const currentAmount = payamount || 99
-        if (balance >= currentAmount ) {
+        if (balance >= currentAmount) {
           setGetbalance(balance)
           payNow()
         } else {
@@ -285,7 +288,7 @@ const CoinsList = () => {
           // setSelectPayment(0);
           // setSelectCoin("none");
           handleAfterPayShow()
-          afterPayPopup("error", response?.data?.message)
+          afterPayPopup("error", '')
           // mybtn("disconnect", "true").then(() => {
           //   setConnectOrNot(!connectOrNot)
           // })
@@ -294,8 +297,11 @@ const CoinsList = () => {
       })
       .catch((error) => {
         // showToast(error.message,ToastType.ERROR)
-        console.log(error
-          , "errorpayment")
+        console.log(error, "errorpayment");
+        setPayButton(false);
+        if (error?.message) {
+          afterPayPopup("error", error?.message);
+        }
       })
   }
 

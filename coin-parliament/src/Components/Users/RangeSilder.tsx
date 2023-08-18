@@ -260,7 +260,7 @@ export default function SpeedTest(
     if (action > 100) {
       return 100;
     }
-    return action < 0 ? 0 : ((typeof action == 'number' && !isNaN(action)) ? action : state);
+    return action < 0 ? 1 : ((typeof action == 'number' && !isNaN(action)) ? action : state);
   }, 50)
 
   console.log(persentValue, "persentValueCheck")
