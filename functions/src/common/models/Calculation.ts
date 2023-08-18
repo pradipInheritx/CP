@@ -511,7 +511,7 @@ export const errorLogging = async (
 };
 
 export const makePayment = (req: any, res: any) => {
-  const { userId, walletType, amount, coin, status, timestamp } = req.body;
-  console.log(userId, walletType, amount, coin, status, timestamp)
+  const { userId, walletType, amount, coin, status, timestamp, transactioType } = req.body;
+  console.log(userId, walletType, amount, coin, status, timestamp, transactioType)
   return
 }
