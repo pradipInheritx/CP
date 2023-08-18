@@ -26,8 +26,8 @@ animation: blinker 1s linear infinite;
 .ForBigDiv{
   margin: 0px !important;
   padding: 0px !important;
-/* background-image:url("../../assets/images/popupline.png") , linear-gradient(180deg, #543CD6 0%, #361F86 48.96%, #160133 100%); */
-background-image:url("../../assets/images/popupbg2.png");
+  /* background-image:url("../../assets/images/popupline.png") , linear-gradient(180deg, #543CD6 0%, #361F86 48.96%, #160133 100%); */
+  background-image:url("../../assets/images/popupbg2.png");
   /* background-image:url("../../assets/images/popupline.png"), url("../../assets/images/popupbg.png"); */
   /* background: linear-gradient(180deg, #543CD6 0%, #361F86 48.96%, #160133 100%); */
 /* box-shadow: 1px 1px 30px 0px #8a76fb; */
@@ -90,6 +90,17 @@ background-image:url("../../assets/images/popupbg2.png");
     padding: 15px !important;  
     position: absolute;
     z-index: 10;
+}
+.coinText{  
+text-shadow: 0px 1px 4px rgba(0, 0, 0, 0.50); 
+font-family: Poppins;
+font-size: 58px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+text-transform: capitalize;
+color:#dedada;
+font-size: 25px !important;
 }
 
 
