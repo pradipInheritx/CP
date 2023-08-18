@@ -125,6 +125,7 @@ const UpgradePage = () => {
     localStorage.setItem("PayAmount", PayValuestring);
     navigate("/paymentList")
   }
+  
 
   return (
     <>
@@ -143,7 +144,8 @@ const UpgradePage = () => {
             width: `${window.screen.width > 979 ? "850px" : "100%"}`,
           }}
         >
-          <H2
+          {/* @ts-ignore */}
+         {!userInfo?.isUpgraded && <H2
             style={{
               fontSize: "1.25rem",
               marginTop: "0px",
@@ -153,14 +155,46 @@ const UpgradePage = () => {
             }}
           >
             {translate("Become a miner")}
-          </H2>
-
-          <P
+          </H2>}
+          {/* @ts-ignore */}
+          {userInfo?.isUpgraded && <H2
+            style={{
+              fontSize: "1.25rem",
+              marginTop: "0px",
+              paddingTop: "30px",
+              fontWeight: "bold",
+              textTransform: 'uppercase'
+            }}
+          >
+            {translate("Congratulations")}
+          </H2>}
+{/* @ts-ignore */}
+          {userInfo?.isUpgraded && <H2
+            style={{
+              fontSize: "1.25rem",
+              marginTop: "0px",
+              paddingTop: "30px",
+              fontWeight: "bold",
+              textTransform: 'uppercase'
+            }}
+          >
+            {translate("YOU'RE NOW A MINER")}
+          </H2>}
+          
+        {/* @ts-ignore */}
+         {!userInfo?.isUpgraded && <P
             style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
             className="px-3 pt-4  pb-3"
           >
             Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.
-          </P>
+          </P>}
+{/* @ts-ignore */}
+          {userInfo?.isUpgraded && <P
+            style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
+            className="px-3 pt-4  pb-3"
+          >
+            Now you can<strong> enjoy the benefits</strong>  of being a miner.
+          </P>}
           <div className="d-flex justify-content-around align-items-center flex-wrap"
             style={{
               // display:`${window.screen.width > 767 ? "flex" :""}`
@@ -251,8 +285,8 @@ const UpgradePage = () => {
               </div>
             </div>
           </div>
-
-          <H2
+            {/* @ts-ignore */}
+          {!userInfo?.isUpgraded && <H2
             style={{
               fontSize: "1.25rem",
               marginTop: "0px",
@@ -262,7 +296,7 @@ const UpgradePage = () => {
             }}
           >
             {translate("In addition, you will receive the following gifts")}
-          </H2>
+          </H2>}
 
           <div className="d-flex justify-content-around my-4 flex-wrap">
             <BottomBox className="">
@@ -279,24 +313,7 @@ const UpgradePage = () => {
             </BottomBox>
           </div>
           {/* @ts-ignore */}
-          {userInfo?.isUpgraded ?
-            <div
-              style={{
-                fontSize: "1.25rem",
-                marginTop: "0px",
-                // paddingTop: "30px",
-                marginBottom: "30px",
-                fontWeight: "bold"
-                ,
-                // textTransform:'uppercase'
-              }}
-              className="text-center"
-            >
-              <p className="py-2" > Congratulations </p>
-              <p className="py-2">YOU'RE NOW A MINER</p>
-              <span className="py-2" style={{ fontWeight: 'normal' }}>Now you can <strong>enjoy the benefits</strong> of being a miner.</span>
-            </div>
-            :
+          {!userInfo?.isUpgraded &&
             <div
               className='text-center mb-4'
               style={{
