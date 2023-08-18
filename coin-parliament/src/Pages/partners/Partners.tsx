@@ -87,7 +87,7 @@ const
                 <div className={classes.description} style={{ fontWeight: 'bold', fontSize: '1.5em' }}>
                   <ol>
                     <li>Sign up to become a member and upgrade your account to mining account.</li>
-                    <li>Invite your friends from any social media platform using your uniique referral link.</li>
+                    <li>Invite your friends from any social media platform using your unique referral link.</li>
                     <li>
                       Start earning .
                       <ul style={{ listStyleType: 'disc', padding: '0px', paddingLeft: '1em' }}>
