@@ -356,6 +356,8 @@ const CoinsList = () => {
   }
 
 
+
+
   console.log(walletName, "setWalletName")
 
   return (
