@@ -25,17 +25,3 @@ animation: blinker 1s linear infinite;
     opacity: 0;
   }
 }
-
-.coinText{
-    text-shadow: 0px 1px 8px rgba(0, 0, 0, 0.25);
-    font-family: Poppins;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    text-transform: capitalize;
-    background: linear-gradient(182deg, #FFF 0%, #ffffff 650%, #fff 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-text-stroke: 0.5px #bfb7b78a;
-}
