@@ -82,7 +82,7 @@ const
           <div className="d-flex justify-content-center align-items-center ">
             <div className={`row mt-5`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
               <div className="col-md-7">
-                <span className={classes.subHeaderText}>How does the Coin Parliament partners' program work?</span>
+                <span className={classes.subHeaderText}>How does the coin parliament partners' program work?</span>
                 <div className={classes.description}>
                   <ol>
                     <li>Sign up to become a member of Coin Parliament .</li>
@@ -106,7 +106,6 @@ const
 
           </div>
           <p className={`${classes.footerText} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>
-          <p className={`${classes.footerText} text-center m-0`}> that’s it, </p>
           <div className="d-flex justify-content-center" style={{ position: 'relative' }}>
             <button
               id="my-tooltip-click"

@@ -66,7 +66,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
       <div className="d-flex justify-content-center align-items-center">
         <div className={`row mt-3`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
           <div className="col-md-6 d-flex  align-items-center">
-            <div className={classes.description}>
+            <div className={classes.description} style={{ fontSize: '1.5em' }}>
               <ul>
                 <li>Accelerating your mining progress.</li>
                 <li> Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
@@ -79,7 +79,6 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
         </div>
       </div>
       <p className={`${classes.footerText} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>
-      <p className={`${classes.footerText} text-center m-0`}> that’s it, </p>
       <div className="d-flex justify-content-center" style={{ position: 'relative' }}>
         <button
           id="my-tooltip-click"

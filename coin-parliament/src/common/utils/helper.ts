@@ -12,8 +12,17 @@ export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpira
 }
 
 export const getCoinDifferenceColor = (value: number) => {
-    return value < 0 ? '#fa0202' : value > 0 ? '#cedf58' : '#050505'
+    return value < 0 ? '#fa0202' : value > 0 ? 'green' : '#050505'
 }
 export const getCoinColor = (currentValue: number, prevValue: number) => {
-    return currentValue < prevValue ? '#fa0202' : currentValue > prevValue ? '#08c90b' : '#050505'
+    return currentValue < prevValue ? '#fa0202' : currentValue > prevValue ? 'green' : '#050505'
+}
+
+export const scrollUp = () => {
+    setTimeout(() => {
+        window.scrollTo({
+            top: 300,
+            behavior: "smooth",
+        });
+    }, 2000);
 }

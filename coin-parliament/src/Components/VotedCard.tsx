@@ -255,6 +255,14 @@ const VotedCard = ({
       }
     })
   }
+  useEffect(() => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: 300,
+        behavior: "smooth",
+      });
+    }, 0);
+  }, []);
   if (!coin1) {
     return <></>;
   }
@@ -425,7 +433,7 @@ const VotedCard = ({
 
 
             <ID13020221942>
-              {voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
+              {vote.voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
             </ID13020221942>
           </div>
         </div>

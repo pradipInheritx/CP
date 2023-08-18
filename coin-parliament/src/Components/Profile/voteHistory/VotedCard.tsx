@@ -3,8 +3,6 @@ import { VoteResultProps, VoteSnap } from "../../../common/models/Vote";
 import styled from "styled-components";
 import Line from "../../icons/line";
 import CoinsContext from "../../../Contexts/CoinsContext";
-import { formatCurrency } from "../../../common/models/Coin";
-import Trend from "../../Atoms/utils/Trend";
 import { Logo } from "../../Pairs/Card";
 import { Col, Container, NavLink, Row } from "react-bootstrap";
 import moment from "moment";
@@ -132,7 +130,8 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
   const trend = calculate(vote, index);
   const coin =
     (index === undefined ? coins[vote?.coin] : coins[voteCoins[index]]) || {};
-  const widthLess390 = window.screen.width < 390;
+  const widthLess400 = window.screen.width < 400;
+  const coinPrice = (index === 0 ? pairCoinResult?.firstCoin : pairCoinResult?.secondCoin)?.replaceAll('-', '');
   return pair ? (
     <CoinContainer winner={vote?.direction === index}>
       <div className="d-flex w-100 justify-content-center align-items-center flex-column mt-2 ">
@@ -145,7 +144,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
           </div>
           <div>{coin.symbol}</div>
           <div style={{ color: getCoinDifferenceColor(index === 0 ? parseFloat(pairCoinResult?.firstCoin || '0') : parseFloat(pairCoinResult?.secondCoin || '0')) }}>
-            {(index === 0 ? pairCoinResult?.firstCoin : pairCoinResult?.secondCoin)?.replaceAll('-', '')}%
+            {coinPrice && coinPrice + '%'}
 
           </div>
         </CoinName>
@@ -155,7 +154,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
     <div className="profile_coin_vote shadow-sm mb-3 text-center" style={{ minWidth: window.screen.width < 500 ? '98%' : '35rem', }}>
       <Container className="p-2 ">
         <div className="row">
-          <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0 pe-1" style={{ fontSize: (widthLess390 ? '0.8em' : '') }}>
+          <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0 pe-1" style={{ fontSize: (widthLess400 ? '0.8em' : '') }}>
             <Logo {...{ symbol: vote.coin || "", width: 30 }} />
             <span className="fw-bold">{coin.name}</span>
             <span className="">{vote.coin}</span>
@@ -163,22 +162,22 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
           </div>
           <div className="col-sm-4 col-4 d-flex flex-column justify-content-center align-items-center p-0">
             <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`}>You voted for</span>
-            <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`} style={{ fontSize: (widthLess390 ? '0.9em' : '') }}>
+            <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`} style={{ fontSize: (widthLess400 ? '0.9em' : '') }}>
               {vote.direction == 0 ? "BULL" : "BEAR"} {vote.coin} ${vote?.valueVotingTime}
             </span>
-            <span className="sm_txt">{vote.id} </span>
-            <span className="sm_txt"> {moment(new Date(vote.voteTime)).format("DD/MM/YYYY HH:mm")}</span>
+            <span className="sm_txt" style={{ fontSize: (widthLess400 ? '7.9px' : '') }}>{vote?.voteId} </span>
+            <span className="sm_txt" style={{ fontSize: (widthLess400 ? '7.9px' : '') }}> {moment(new Date(vote.voteTime)).format("DD/MM/YYYY HH:mm")}</span>
           </div>
           {vote.score ?
             <>
               <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0">
                 <span style={{ fontSize: '0.8em' }} className="">VOTE RESULT</span>
-                <span className="fw-normal" style={{ fontSize: (widthLess390 ? '0.9em' : '') }}> {vote.direction == 0 ? "BULL" : "BEAR"} ${vote?.valueExpirationTime}</span>
+                <span className="fw-normal" style={{ fontSize: (widthLess400 ? '0.9em' : '') }}> {vote.direction == 0 ? "BULL" : "BEAR"} ${vote?.valueExpirationTime}</span>
                 {/* @ts-ignore */}
-                <span style={{ fontSize: widthLess390 ? '0.69em' : '0.8em' }}>Vote impact : {vote.success === 2 ? 'MID' : vote.success === 1 ? 'HIGH' : 'LOW'} </span>
+                <span style={{ fontSize: widthLess400 ? '0.69em' : '0.8em' }}>Vote impact : {vote.success === 2 ? 'MID' : vote.success === 1 ? 'HIGH' : 'LOW'} </span>
               </div>
               <div className="col-sm-2 col-2 d-flex flex-column justify-content-center align-items-center p-0 ps-1" style={{ color: '#604de4' }}>
-                <span style={{ fontSize: widthLess390 ? '0.69em' : '0.8em' }}>You progressed </span>
+                <span style={{ fontSize: widthLess400 ? '0.69em' : '0.8em' }}>You progressed </span>
                 <strong className="fs-6">{vote.score}</strong>
                 <span className="fs-6">CMP</span>
               </div>
@@ -187,7 +186,7 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
             <div className="col-sm-5 col-5 d-flex flex-column justify-content-center align-items-center p-0">
               <MyCountdown expirationTime={vote.expiration || 0} />
               <Link to={`/coins/${vote?.coin}?timeFrame=${vote?.timeframe.index}`} className="text-decoration-none">
-                <span className={`fs-6`} style={{ color: '#7767f7' }}>CHECK VOTE</span>
+                <span className={`fs-6`} style={{ color: '#7767f7' }} >CHECK VOTE</span>
               </Link>
             </div>
           }
@@ -436,7 +435,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
                 <div className="d-flex flex-column justify-content-center align-items-center p-0">
                   <MyCountdown expirationTime={vote.expiration || 0} />
                   <Link to={`/pairs/${vote?.coin}?timeFrame=${vote?.timeframe.index}`} className="text-decoration-none mt-3 mb-1">
-                    <span className={`fs-6 pt-5`} style={{ color: '#7767f7' }}>CHECK VOTE</span>
+                    <span className={`fs-6 pt-5`} style={{ color: '#7767f7' }} >CHECK VOTE</span>
                   </Link>
                 </div>
               )}
@@ -445,7 +444,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
         </Row>
         <Row className="">
           <Col className="justify-content-center w-100 mb-2">
-            <SmText className="text-center">{`${id} - ${moment(
+            <SmText className="text-center">{`${vote.voteId} - ${moment(
               new Date(vote?.voteTime)
             ).format("DD/MM/YYYY")} ${moment(
               new Date(vote?.voteTime)
