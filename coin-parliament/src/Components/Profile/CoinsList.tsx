@@ -94,7 +94,9 @@ const CoinsList = () => {
   const [connectOrNot, setConnectOrNot] = React.useState(false);
   const [walletName, setWalletName] = React.useState("");
   const { userInfo, user } = useContext(UserContext);
-  const [payamount, setPayamount] = useState(99);
+  const [payamount, setPayamount] = useState();
+  const [payType, setPayType] = useState();
+  const [extraVote, setExtraVote] = useState(0);
   const [getbalance, setGetbalance] = useState(0);
   const [payButton, setPayButton] = useState(false);
   const [showOptionList, setShowOptionList] = useState(false);
@@ -106,7 +108,9 @@ const CoinsList = () => {
   // Buy more tokens here or swap from other tokens with balance on this account here
 
 
-  //  For put email in userid 
+  //  For put email in userid
+  
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -130,6 +134,12 @@ const CoinsList = () => {
     // }
   }, [connectOrNot])
 
+  useEffect(() => {
+    if (!localStorage.getItem("PayAmount")) {
+      navigate("/upgrade")
+    }
+  }, [])
+
 
   //  For put email in userid 
 
@@ -137,6 +147,11 @@ const CoinsList = () => {
     (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
       console.log(data, "username")
     })
+    // @ts-ignore
+    let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))    
+    setPayamount(AllInfo[0])
+    setPayType(AllInfo[1])
+    setExtraVote(AllInfo[2])    
   }, [])
 
   const mybtn = (window as any)?.wldp?.connectionWallet
@@ -156,7 +171,7 @@ const CoinsList = () => {
         html: "<span>Your account balance is : " + (getbalance) + " , This is insufficient balance for this payment</span>",
         showCancelButton: true,
         cancelButtonColor: '#d33',
-        cancelButtonText: 'Start over again',
+        cancelButtonText: 'Start Over Again',
         confirmButtonColor: '#543cd6',
         confirmButtonText: 'Try Again',
         allowOutsideClick: false,
@@ -169,8 +184,10 @@ const CoinsList = () => {
           checkAndPay()
         } else if (result.isDismissed) {
           // setSelectPayment(0);
-          // setSelectCoin("none");
-          navigate("/profile/mine")
+          setShowOptionList(false)
+          setSelectCoin("none");
+          // navigate("/profile/mine")
+          // localStorage.removeItem("PayAmount");
           // await mybtn("disconnect", "true").then(() => {
           //     setConnectOrNot(!connectOrNot)
           //   })
@@ -185,7 +202,7 @@ const CoinsList = () => {
         text: msg,
         showCloseButton: false,
         confirmButtonColor: '#543cd6',
-        confirmButtonText: 'Ok',
+        confirmButtonText: 'Close',
         allowOutsideClick: false,
         allowEscapeKey: false,
         // footer: '<a href="">Why do I have this issue?</a>'
@@ -218,7 +235,9 @@ const CoinsList = () => {
       network: "5",
       // @ts-ignore
       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-      token: "ETH"
+      token: "ETH",
+      transactionType: payType,
+    numberOfVotes: extraVote,
     }
 
     axios.post(`${ApiUrl}payment/makePayment`, data, {
@@ -256,7 +275,8 @@ const CoinsList = () => {
     })
       .then((response) => {
         const balance = response?.data?.data?.balance;
-        if (balance >= payamount) {
+        const currentAmount = payamount || 99
+        if (balance >= currentAmount ) {
           setGetbalance(balance)
           payNow()
         } else {
@@ -420,7 +440,7 @@ const CoinsList = () => {
               style={{
                 fontSize: "20px"
               }}
-            >Pay 99$ using {selectCoin}</p>
+            >Pay {payamount}$ using {selectCoin}</p>
             {/* {!walletName && 
               <>
               <p className="my-1"
