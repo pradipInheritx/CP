@@ -2,6 +2,8 @@ import { firestore, messaging } from "firebase-admin";
 import { userConverter } from "./User";
 import { sendNotification } from "./Notification";
 import { upgradeMessage, downGradeMessage } from "../consts/config";
+import dotenv from 'dotenv';
+dotenv.config();
 // import { object } from "firebase-functions/v1/storage";
 
 export type CustomNotification = {
@@ -40,6 +42,9 @@ export const sendCustomNotificationOnSpecificUsers = async (
               webpush: {
                 headers: {
                   Urgency: "high",
+                },
+                fcmOptions: {
+                  link: `${process.env.REACT_APP_SITE_URL}`, // TODO: put link for deep linking
                 },
               },
             };
@@ -84,6 +89,7 @@ export const sendNotificationForFollwersFollowings = async (
   console.log("Notification for following & followers");
   let follwersFollwing: any = [];
   console.log("userID & Coin", userId, coin)
+  const checkCoin = coin.split('-')
   const userFindQuery = await firestore().collection("users").doc(userId).get();
   const userData: any = userFindQuery.data();
   console.log(userData);
@@ -122,7 +128,7 @@ export const sendNotificationForFollwersFollowings = async (
               Urgency: "high",
             },
             fcmOptions: {
-              link: "#", // TODO: put link for deep linking
+              link: `${process.env.REACT_APP_SITE_URL}/${checkCoin.length == 2 ? 'pair' : 'coin'}/${coin}`, // TODO: put link for deep linking
             },
           },
         };
@@ -145,8 +151,6 @@ export const sendNotificationForFollwersFollowings = async (
 
   });
 };
-
-
 
 // For Vote Expiry
 export const voteExpireAndGetCpmNotification = async (userId: string, voteStatistics: any, cmp: number, coin: string) => {
@@ -179,7 +183,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
         Urgency: "high",
       },
       fcmOptions: {
-        link: "#", // TODO: put link for deep linking
+        link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
       },
     },
   };
@@ -280,7 +284,7 @@ export const sendNotificationForTitleUpgrade = async (user: any, body: any, titl
           Urgency: "high",
         },
         fcmOptions: {
-          link: "#", // TODO: put link
+          link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
         },
       },
     };
@@ -312,7 +316,7 @@ export async function poolMiningNotification(parentId: string, childrenName: str
         Urgency: "high",
       },
       fcmOptions: {
-        link: "#", // TODO: put link for deep linking
+        link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
       },
     },
   };
@@ -349,7 +353,7 @@ export const sendNotificationForCpm = async (userId: any) => {
         Urgency: "high",
       },
       fcmOptions: {
-        link: "#", // TODO: put link for deep linking
+        link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
       },
     },
   };
