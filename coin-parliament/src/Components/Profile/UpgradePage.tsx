@@ -221,7 +221,8 @@ const UpgradePage = () => {
                     style={{ width: "70%" }}
                   >
                     <p>Lifetime commission</p>
-                    <span>Earn 50% lifetime commission of all your referral friends' total purchases.</span>
+                    {/* <span>Earn 50% lifetime commission of all your referral friends' total purchases.</span> */}
+                    <span>Lifetime passive income rev-share program Receive 50% of all your friend's total purchases.</span>
                   </div>
 
                 </SideBox>
