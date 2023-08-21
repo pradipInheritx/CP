@@ -51,13 +51,17 @@ const
     const [showShare, setShowShare] = useState(false);
     return (
       <div className={classes.partnersMain}>
+        <div className="d-flex justify-content-center">
+            <span className={classes.headerTitle}>We believe in Partnerships!</span>
+          </div>
         <PoolBox style={{ paddingTop: '5em' }}>
+          
           <div className={classes.stepContainer}>
             <div className={classes.tableCell}>
               <button className={classes.step}>
                 <img src={signUpImage} style={{ width: '3em' }} />
               </button>
-              <a className={classes.buttonText}>SIGN UP</a>
+              <a className={classes.buttonText}>{("SIGN UP & upgrade your account").toLocaleUpperCase()}</a>
               <div className={classes.stepConnecterNext}></div>
             </div>
             <div className={classes.tableCell}>
@@ -75,11 +79,70 @@ const
               <a className={classes.buttonText}>ENJOY YOUR BENEFIT</a>
               <div className={classes.stepConnecterPrev}></div>
             </div>
-          </div>
+          </div>          
           <div className="d-flex justify-content-center">
-            {/* <span className={classes.headerTitle}>We believe in Partnerships!</span> */}
+            <span className={classes.headerTitle}>50% Lifetime passive income rev-share program</span>
           </div>
-          <div className="d-flex justify-content-center align-items-center ">
+
+          {/* extra button */}
+
+          <div className="d-flex justify-content-center mt-3" style={{ position: 'relative' }}>
+            <button
+              id="my-tooltip-click"
+              className={classes.inviteButton}
+              style={{ fontSize: window.screen.width <= 425 ? '1em' : '' }}
+              onClick={() => {
+                if (!user?.uid) {
+                  setLogin(true)
+                  return
+                } else {
+                  setShowShare(prev => !prev);
+                }
+                return;
+                copy(referralUrl);
+                showToast(
+                  'Your referral link is copied to the clipboard.',
+                  ToastType.SUCCESS
+                );
+              }}
+            >
+              <span>INVITE YOUR FRIENDS NOW!</span>{window.screen.width < 275 && <br />}
+              <span className="material-icons-outlined me-2">share</span>
+              <span className="material-symbols-outlined">arrow_drop_down</span>
+            </button>
+            {showShare && <div className={classes.shareBox} style={window.screen.width < 300 ? {
+              marginLeft: '2em',
+              top: '5em',
+            } : (window.screen.width <= 425 ? {
+              marginLeft: '13em',
+              top: '4em',
+            } : {
+              marginLeft: '16em',
+              top: '4em',
+            })}>
+              <span className="material-symbols-outlined text-secondary me-2"
+                onClick={() => {
+                  copy(url);
+                  showToast(
+                    'Your referral link is copied to the clipboard.',
+                    ToastType.SUCCESS
+                  );
+                }}>
+                content_copy
+              </span>
+              <a href={`https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url}`.replace(" ", "+")}&app_absent=0`} target="_blank" onClick={() => setShowShare(false)}>
+                <img src={whatsApp} className="me-2" />
+              </a>
+              <a href={`https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
+                <img src={XTwitter} width={'25px'} height={'25px'} className="me-2" />
+              </a>
+              <a href={`https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
+                <img src={facebook} className="me-2" />
+              </a>
+            </div>
+            }
+          </div>
+          <div className="d-flex justify-content-center align-items-center ">            
             <div className={`row mt-5`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
               <div className="col-md-7">
                 {/* <span className={classes.subHeaderText}>How does the Coin Parliament partners' program work?</span> */}
