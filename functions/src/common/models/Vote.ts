@@ -217,10 +217,6 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
         await calc.calc(getVoteRef);
       }
 
-      let getVote = await getVoteRef.get();
-      return {
-        voteId: getVoteRef.id, ...getVote.data()
-      };
     }
   } catch (error) {
     console.info("ERR:", error);

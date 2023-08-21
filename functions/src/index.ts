@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/sa.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -668,14 +668,16 @@ exports.getCPVIForVote = functions.https.onCall(async (data) => {
 
 exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   async (data) => {
-    const getAfterUpdatedVoteRef = await getOldAndCurrentPriceAndMakeCalculation(data);
+    await getOldAndCurrentPriceAndMakeCalculation(data);
     // After Vote Updated For The User
-    // const getAfterUpdatedVoteRef = await admin.firestore().collection("votes").doc(data?.voteId);
-    // const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
-    // console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance)
-    // const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
-    // console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
-    return getAfterUpdatedVoteRef;
+    const getAfterUpdatedVoteRef = await admin.firestore().collection("votes").doc(data?.voteId);
+    const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
+    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance)
+    const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
+    console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
+    return {
+      voteId: getAfterUpdatedVoteInstance.id, ...getAfterVoteUpdatedData
+    };
   }
 );
 
