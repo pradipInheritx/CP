@@ -25,6 +25,7 @@ import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinColor,
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 import Line from "./icons/line";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceDispatchContext } from "Contexts/VoteEndCoinPrice";
+import { CompletedVotesContext } from "Contexts/CompletedVotesProvider";
 
 
 
@@ -502,7 +503,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     // });
 
   }
-
+  const completedVotes = useContext(CompletedVotesContext);
 
   return (
     // @ts-ignore
@@ -510,6 +511,9 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
       date={new Date(expirationTime)}
       renderer={({ hours, minutes, seconds, completed }) => {
 
+        if (hours === 0 && minutes === 0 && seconds <= 3 && completedVotes.length <= 0) {
+          // navigator.vibrate(3000);
+        }
         if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11 && setLastTenSec instanceof Function) {
           setLastTenSec(true);
         }
@@ -529,8 +533,8 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
                 height: "1.4em"
               }}
             >
-              <span style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: window.screen.width < 576 ? '10.5px' : '' }}>
-                {texts.Calculatingvoteresult}
+              <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: '1.5em' }}>
+                {texts.waitForIt}
               </span>
             </div>
           );

@@ -215,7 +215,7 @@ function App() {
   //   }
   // }
 
-  
+
 
   useEffect(() => {
     window.scrollTo({
@@ -223,11 +223,11 @@ function App() {
       behavior: 'smooth',
     });
     console.log('scrollUp ');
-       const urlpath = window.location.pathname      
-  if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") &&  (urlpath != "/paymentList")) {      
+    const urlpath = window.location.pathname
+    if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList")) {
       console.log("yes i am working")
       localStorage.removeItem("PayAmount");
-    }        
+    }
   }, [JSON.stringify(location.pathname)]);
 
   // console.log("for commit")
@@ -1190,7 +1190,13 @@ function App() {
 
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       // if (second_diff > 0) {
+      setTimeout(() => {
+        console.log('start vibrate');
+        navigator.vibrate(99999999);
+      }, (((second_diff - 3 || 0) * 1000)))
       const timer = setTimeout(async () => {
+        console.log('called API vibrate');
+
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
@@ -1221,6 +1227,7 @@ function App() {
               {}
           )
         }).then((response) => {
+          navigator.vibrate([]);
           if (response?.data && Object.keys(response.data).length > 0) {
             // setpopUpOpen(true);
             // setModalData(response!.data);
