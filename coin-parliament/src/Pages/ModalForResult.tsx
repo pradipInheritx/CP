@@ -17,7 +17,7 @@ import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor } from 'common/utils/helper';
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getSingleCoinPriceColor } from 'common/utils/helper';
 import UserContext from 'Contexts/User';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
@@ -216,14 +216,10 @@ function ModalForResult({
                         {timeframeInitials(vote?.timeframe?.name)} VOTE
                       </span>
                     </div>
-
-                    {/* <span>
-                      {coin.name} - {coin.symbol}
-                    </span> */}
                     <div >
                       {vote?.direction == 0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
                       <span>
-                        $  {vote?.valueVotingTime + ''}
+                        ${vote?.valueVotingTime + ''}
                       </span>
                     </div>
                     <div>
@@ -252,8 +248,16 @@ function ModalForResult({
                       <span style={{ fontSize: "13px", color: '#6352e8' }}>
                         VOTE RESULT
                       </span>
-                      <div style={{ fontSize: "14px" }}>
-                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} {' '} $ {vote.valueExpirationTime && vote?.valueExpirationTime + ''}
+                      <div style={{
+                        fontSize: "14px",
+                      }}>
+                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'}
+                        <span style={{
+                          color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote.valueExpirationTime || 0.00), vote?.direction)
+                        }}>
+                          &nbsp;${vote.valueExpirationTime && vote?.valueExpirationTime + ''}
+
+                        </span>
                       </div>
                       <div>
                         <span>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</span>
@@ -271,7 +275,7 @@ function ModalForResult({
                 {vote.score && (
                   <Row className="flex-column text-center">
                     <Col style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
-                      <strong>You progressed - {vote.score}</strong> <span> CMP</span>
+                      You progressed - <strong>{vote.score}</strong> <span> CMP</span>
                     </Col>
 
                   </Row>
@@ -367,7 +371,7 @@ function ModalForResult({
                     style={{ fontSize: "12px" }}
                   >
                     <p>VOTE RESULT</p>
-                    <span>{vote?.coin?.split("-")[vote?.direction]}:</span>&nbsp;
+                    <span>{vote?.coin?.split("-")[vote?.direction]}&nbsp;</span>&nbsp;
                     <span style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)) }}>
                       {pairCoinResult?.difference.replaceAll('-', '')}%
                       {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
@@ -378,7 +382,7 @@ function ModalForResult({
                     {vote?.valueExpirationTime && vote?.score && (
                       <>
                         <div style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
-                          <strong>You progressed - {vote.score}</strong> <span> CMP</span>
+                          You progressed - <strong>{vote.score}</strong> <span> CMP</span>
                         </div>
                       </>
 
@@ -390,8 +394,7 @@ function ModalForResult({
                   <span className="sm_txt">
                     {vote?.voteId} {' '}
                     {window.screen.width < 768 && <br />}
-                    {`
-                    - ${moment(
+                    {`${moment(
                       new Date(vote?.voteTime)
                     ).format("DD/MM/YYYY")}`}{' '} {`
                      ${moment(
@@ -399,8 +402,6 @@ function ModalForResult({
                     ).format("HH:mm")}`}</span>
                 </Col>
               </div>
-
-
               : ""
           }
 
