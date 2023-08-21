@@ -17,6 +17,16 @@ export const getCoinDifferenceColor = (value: number) => {
 export const getCoinColor = (currentValue: number, prevValue: number) => {
     return currentValue < prevValue ? '#fa0202' : currentValue > prevValue ? 'green' : '#050505'
 }
+export const getSingleCoinPriceColor = (votingPrice: number, currentPrice: number, direction: number) => {
+    //0 bull,1 bear
+    console.log(votingPrice, currentPrice, direction, 'colorTest');
+
+    if (direction) {
+        return votingPrice > currentPrice ? 'green' : votingPrice < currentPrice ? '#fa0202' : '#050505'
+    } else {
+        return votingPrice < currentPrice ? 'green' : votingPrice > currentPrice ? '#fa0202' : '#050505'
+    }
+}
 
 export const scrollUp = () => {
     setTimeout(() => {

@@ -21,7 +21,7 @@ import { texts } from "./LoginComponent/texts";
 import { Button, Image, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 import Swal from "sweetalert2";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinColor, getCoinDifferenceColor } from "common/utils/helper";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getSingleCoinPriceColor } from "common/utils/helper";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 import Line from "./icons/line";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceDispatchContext } from "Contexts/VoteEndCoinPrice";
@@ -216,17 +216,17 @@ const VotedCard = ({
   useEffect(() => {
     if (isArray(vote.valueVotingTime) && vote?.valueVotingTime.length > 1) {
       // if (!voteDetails?.openResultModal && calcPer) {
-        // console.log(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''), parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
+      // console.log(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', ''), parseFloat(formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')), parseFloat(formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '')), 'coinsname');
 
-        let value1 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00';
-        let value2 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin2 || '0.00';
+      let value1 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00';
+      let value2 = voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin2 || '0.00';
 
-        setPairCoinResult((Prev) => {
-          if (isArray(vote.valueVotingTime) && value1 && value2) {
-            return calculateDiffBetweenCoins(vote?.valueVotingTime, [+value1, +value2], vote?.direction);
-          }
-          return Prev;
-        })
+      setPairCoinResult((Prev) => {
+        if (isArray(vote.valueVotingTime) && value1 && value2) {
+          return calculateDiffBetweenCoins(vote?.valueVotingTime, [+value1, +value2], vote?.direction);
+        }
+        return Prev;
+      })
       // }
     }
     // if (voteDetails?.lessTimeVote && voteDetails?.lessTimeVote.coin === vote.coin && voteDetails?.lessTimeVote?.timeframe?.seconds === vote?.timeframe?.seconds) {
@@ -414,7 +414,7 @@ const VotedCard = ({
                   </div>
                   <div className="d-flex align-items-center justify-content-center" style={{
                     fontSize: '1.7em',
-                    color: getCoinColor(parseFloat(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00'), parseFloat(row2.replaceAll('$', '').replaceAll(',', ''))),
+                    color: getSingleCoinPriceColor(parseFloat(row2.replaceAll('$', '').replaceAll(',', '')), parseFloat(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00'), vote?.direction),
                   }}>
                     ${voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || 0.00}
                   </div>
@@ -423,7 +423,7 @@ const VotedCard = ({
                   className={`d-flex justify-content-center`}
 
                 >
-                  <Row1 className="poppins-normal-blackcurrant-14px mx-2" style={{ fontSize: window.screen.width < 400 ? '1em' : '1.1em' }}>You voted for </Row1>
+                  <Row1 className="poppins-normal-blackcurrant-14px" style={{ fontSize: window.screen.width < 400 ? '1em' : '1.1em', }}>You voted for&nbsp;</Row1>
                   {window.screen.width < 330 && <br />}
                   <Row1 className="poppins-normal-blue-violet-14px-2 " style={{ fontSize: window.screen.width < 400 ? '1em' : '1.1em' }}>
                     {row1}  {row2}
@@ -434,7 +434,7 @@ const VotedCard = ({
 
 
             <ID13020221942>
-              {vote.voteId} - {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
+              {vote.voteId} {moment(vote.voteTime).format("DD/MM/YYYY HH:mm")}
             </ID13020221942>
           </div>
         </div>

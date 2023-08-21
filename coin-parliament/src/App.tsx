@@ -1191,7 +1191,11 @@ function App() {
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       // if (second_diff > 0) {
       setTimeout(() => {
-        navigator.vibrate(99999999);
+        if ("vibrate" in navigator) {
+          navigator.vibrate(99999999);
+        } else {
+          console.log('vibrate not working ');
+        }
       }, (((second_diff - 3 || 0) * 1000)))
       const timer = setTimeout(async () => {
         const coin = lessTimeVote?.coin.split('-') || [];
@@ -1224,7 +1228,12 @@ function App() {
               {}
           )
         }).then((response) => {
-          navigator.vibrate([]);
+          if ("vibrate" in navigator) {
+            navigator.vibrate([]);
+          } else {
+            console.log('vibrate not working ');
+
+          }
           if (response?.data && Object.keys(response.data).length > 0) {
             // setpopUpOpen(true);
             // setModalData(response!.data);
@@ -1242,6 +1251,12 @@ function App() {
             // setModalData(response!.data);
           }
         }).catch(err => {
+          if ("vibrate" in navigator) {
+            navigator.vibrate([]);
+          } else {
+            console.log('vibrate not working ');
+
+          }
           if (err && err.message) {
             console.log(err.message);
           }
