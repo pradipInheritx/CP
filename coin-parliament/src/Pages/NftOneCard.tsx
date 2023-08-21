@@ -338,11 +338,11 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
 
                       // width: "255px",
                       // height: "255px",                      
-                      height: `${BigCard ?"355px":"255px"}`,
-                      width: `${BigCard ?"355px":"255px"}` ,
+                      height: `${BigCard ?"355px":"245px"}`,
+                      width: `${BigCard ?"355px":"245px"}` ,
                       margin: "auto",
                       display: "block",
-                      marginTop: "-15px",
+                      marginTop: "-10px",
                     }}
                   // width={"250px"}
                   // width={"100%"}

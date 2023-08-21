@@ -458,8 +458,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
               <div
                 className="d-flex justify-content-center"
               style={{
-                    width: "237px",
-                    height:"240px",
+                    width: "245px",
+                    height:"245px",
                     // border:"1px solid red",
                     // overflow:"hidden"
               }}
@@ -471,7 +471,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                    width: "255px",
                   margin: "auto",
                   display: "block",
-                  marginTop:"-15px",
+                  marginTop:"-10px",
                 }}
                 // width={"100%"}
               />
