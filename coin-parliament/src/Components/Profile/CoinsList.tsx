@@ -180,7 +180,7 @@ const CoinsList = () => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           handleAfterPayClose()
-          send()
+          // send()
           checkAndPay()
         } else if (result.isDismissed) {
           // setSelectPayment(0);
@@ -285,7 +285,10 @@ const CoinsList = () => {
           payNow()
         } else {
           // showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
+          send()
+          console.log("i am call now")
           setPayButton(false)
+
           // setSelectPayment(0);
           // setSelectCoin("none");
           handleAfterPayShow()
@@ -314,7 +317,7 @@ const CoinsList = () => {
         // @ts-ignore
         // token:"ETH",
         token: `${coinInfo?.symbol.toUpperCase()}`,
-        network: "5"
+        network: "11155111"
       },
       application: "votetoearn",
       uid: `${sessionStorage.getItem("wldp_wsid")}`,
@@ -504,7 +507,7 @@ const CoinsList = () => {
             }}
             disabled={payButton}
             onClick={async () => {
-              send()
+              // send()
               setPayButton(true)
               checkAndPay()
             }}
