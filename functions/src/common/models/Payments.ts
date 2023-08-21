@@ -83,7 +83,7 @@ const addIsExtraVotePurchase = async (metaData: any) => {
                 const data: any = doc.data();
                 const originalValue = data.rewardStatistics.extraVote;
                 const modifiedValue = originalValue + metaData.numberOfVotes;
-                data.objectField.someValue = modifiedValue;
+                data.rewardStatistics.extraVote = modifiedValue;
                 userDocumentRef.set(data);
             } else {
                 errorLogging("isUserExtraVote", "ERROR", "Something went wrong while add the extra votes");
