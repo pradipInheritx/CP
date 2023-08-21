@@ -34,7 +34,7 @@ const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
             style={{ height: 75, color: '#6352E8' }}
           >
             <div>
-              <span className="cp_Value vstack" style={{ paddingBottom: '2px', fontSize: '20px' }}>{PAX}</span>
+              <span className="cp_Value vstack coinText" style={{ paddingBottom: '2px', fontSize: '20px' }}>{PAX}</span>
               {/* <span className="cp_PAX" >PTS</span> */}
             </div>
           </div>
