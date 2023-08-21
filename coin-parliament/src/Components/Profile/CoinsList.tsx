@@ -285,14 +285,14 @@ const CoinsList = () => {
           payNow()
         } else {
           // showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
-          send()
-          console.log("i am call now")
           setPayButton(false)
-
           // setSelectPayment(0);
           // setSelectCoin("none");
           handleAfterPayShow()
-          afterPayPopup("error", '')          
+          afterPayPopup("error", '')
+          // mybtn("disconnect", "true").then(() => {
+          //   setConnectOrNot(!connectOrNot)
+          // })
 
         }
       })
@@ -306,31 +306,31 @@ const CoinsList = () => {
       })
   }
 
-  const send = () => {
-    const obj = {
-      method: "getTransaction",
-      user: `${sessionStorage.getItem("wldp_user")}`,
-      params: {
-        // @ts-ignore
-        origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-        amount: payamount,
-        // @ts-ignore
-        // token:"ETH",
-        token: `${coinInfo?.symbol.toUpperCase()}`,
-        network: "11155111"
-      },
-      application: "votetoearn",
-      uid: `${sessionStorage.getItem("wldp_wsid")}`,
-    };
-    console.log(obj, "alldata");
-    (window as any).wldp.send_msg(obj).then((res: any) => {
-      // @ts-ignore
-      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)          
-    }).catch((err: any) => {
-      console.log(err, "allerr")
+  // const send = () => {
+  //   const obj = {
+  //     method: "getTransaction",
+  //     user: `${sessionStorage.getItem("wldp_user")}`,
+  //     params: {
+  //       // @ts-ignore
+  //       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+  //       amount: payamount,
+  //       // @ts-ignore
+  //       // token:"ETH",
+  //       token: `${coinInfo?.symbol.toUpperCase()}`,
+  //       network: "5"
+  //     },
+  //     application: "votetoearn",
+  //     uid: `${sessionStorage.getItem("wldp_wsid")}`,
+  //   };
+  //   console.log(obj, "alldata");
+  //   (window as any).wldp.send_msg(obj).then((res: any) => {
+  //     // @ts-ignore
+  //     // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)          
+  //   }).catch((err: any) => {
+  //     console.log(err, "allerr")
 
-    })
-  };
+  //   })
+  // };
 
   const checkAndPay = () => {
     (window as any).wldp.isWalletConnected()
