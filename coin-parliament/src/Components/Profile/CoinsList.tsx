@@ -289,10 +289,7 @@ const CoinsList = () => {
           // setSelectPayment(0);
           // setSelectCoin("none");
           handleAfterPayShow()
-          afterPayPopup("error", '')
-          // mybtn("disconnect", "true").then(() => {
-          //   setConnectOrNot(!connectOrNot)
-          // })
+          afterPayPopup("error", '')          
 
         }
       })
