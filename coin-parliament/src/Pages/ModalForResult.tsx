@@ -405,10 +405,9 @@ function ModalForResult({
           }
 
 
-          <div className='py-2  d-flex  justify-content-center'>
-            <span style={{ textDecoration: 'none', cursor: 'pointer' }}
+          <div className='py-2 d-flex flex-column  justify-content-center text-center'>
+            <span className='d-flex justify-content-center' style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
-
                 navigate('/profile/mine');
                 setShowBack(true);
                 removeVote();
@@ -416,6 +415,8 @@ function ModalForResult({
             >
               <Other>{("CHECK PROGRESS")}</Other>
             </span>
+            <span className='pt-3' style={{ textDecoration: 'none', cursor: 'default' }}>Stay in the game!</span>
+            <span className='pt-1 d-flex justify-content-center' style={{ color: '#6352e8' }} onClick={handleClose}>CONTINUE VOTING</span>
           </div>
         </Modal.Body >
         {/* <Modal.Footer>
