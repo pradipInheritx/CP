@@ -197,7 +197,7 @@ class Calculation {
         settings.data()?.voteRules,
         user.status
       );
-      await firestore()
+      await this.db
         .collection("votes")
         .doc(this.id)
         .set({ score }, { merge: true });
@@ -205,14 +205,14 @@ class Calculation {
       voteStatistics.score += score;
 
       //Send Notification For CMP Change
-      const getVotesQuery = await firestore()
-        .collection("votes")
-        .doc(this.id)
-        .get();
-      const getVote: any = getVotesQuery.data();
+      // const getVotesQuery = await this.db
+      //   .collection("votes")
+      //   .doc(this.id)
+      //   .get();
+      // const getVote: any = getVotesQuery.data();
       console.log("send Notification for CPM")
-      console.log("send Notification Details - - userId, score, getVote.coin", userId, score, getVote.coin)
-      await voteExpireAndGetCpmNotification(userId, voteStatistics, score, getVote.coin)
+      console.log("send Notification Details - - userId, score,this.voteResult.coin", userId, score, this.voteResult.coin)
+      await voteExpireAndGetCpmNotification(userId, voteStatistics, score, this.voteResult.coin)
 
       // For Add Only Commission In Current User
       const { CPMSettings } = await Refer.getSettings();
@@ -510,8 +510,3 @@ export const errorLogging = async (
   console.log(funcName, type, error); // We will modify later
 };
 
-export const makePayment = (req: any, res: any) => {
-  const { userId, walletType, amount, coin, status, timestamp, transactioType } = req.body;
-  console.log(userId, walletType, amount, coin, status, timestamp, transactioType)
-  return
-}
