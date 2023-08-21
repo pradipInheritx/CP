@@ -415,7 +415,7 @@ function ModalForResult({
             >
               <Other>{("CHECK PROGRESS")}</Other>
             </span>
-            <span className='pt-1' style={{ textDecoration: 'none', cursor: 'default' }}>Stay in the game!</span>
+            <span className='pt-3' style={{ textDecoration: 'none', cursor: 'default' }}>Stay in the game!</span>
             <span className='pt-1 d-flex justify-content-center' style={{ color: '#6352e8' }} onClick={handleClose}>CONTINUE VOTING</span>
           </div>
         </Modal.Body >
