@@ -8,7 +8,7 @@ import { Col, Container, NavLink, Row } from "react-bootstrap";
 import moment from "moment";
 import { timeframeInitials } from "../../Atoms/Button/Button";
 import { MyCountdown } from "../../VotedCard";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor } from "common/utils/helper";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getSingleCoinPriceColor } from "common/utils/helper";
 import { isArray } from "lodash";
 import { Link } from "react-router-dom";
 
@@ -172,7 +172,13 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
             <>
               <div className="col-sm-3 col-3 d-flex flex-column justify-content-center align-items-center p-0">
                 <span style={{ fontSize: '0.8em' }} className="">VOTE RESULT</span>
-                <span className="fw-normal" style={{ fontSize: (widthLess400 ? '0.9em' : '') }}> {vote.direction == 0 ? "BULL" : "BEAR"} ${vote?.valueExpirationTime}</span>
+                <div className="fw-normal" style={{ fontSize: (widthLess400 ? '0.9em' : '') }}>
+                  {vote.direction == 0 ? "BULL" : "BEAR"}
+                  &nbsp;
+                  {/* @ts-ignore */}
+                  <span style={{ color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote?.valueExpirationTime || 0.00), vote?.direction) }}>
+                    ${vote?.valueExpirationTime}</span>
+                </div>
                 {/* @ts-ignore */}
                 <span style={{ fontSize: widthLess400 ? '0.69em' : '0.8em' }}>Vote impact : {vote.success === 2 ? 'MID' : vote.success === 1 ? 'HIGH' : 'LOW'} </span>
               </div>
@@ -329,8 +335,8 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
 
           </Col>
         </div>
-      </Container>
-    </div>
+      </Container >
+    </div >
   );
 };
 
