@@ -1,18 +1,19 @@
-self.addEventListener('notificationclick', (event) => {
-    event.preventDefault();
-    const DEFAULT_URL = '/'
-    const url = event.notification?.data?.click_action || DEFAULT_URL;
-    event.waitUntil(
-        clients.matchAll({ type: 'window' }).then((clientsArray) => {
-            const hadWindowToFocus = clientsArray.some((windowClient) =>
-                windowClient.url === url ? (windowClient.focus(), true) : false
-            );
-            if (!hadWindowToFocus)
-                clients.openWindow(url).then((windowClient) => (windowClient ? windowClient.focus() : null));
-        })
-    );
-    event.notification.close();
-});
+// self.addEventListener('notificationclick', (event) => {
+//     event.preventDefault();
+//     const data = event.data.json();
+//     const DEFAULT_URL = '/' + JSON.stringify(data?.notification?.click_action);
+//     const url = data?.notification?.click_action || DEFAULT_URL;
+//     event.waitUntil(
+//         clients.matchAll({ type: 'window' }).then((clientsArray) => {
+//             const hadWindowToFocus = clientsArray.some((windowClient) =>
+//                 windowClient.url === url ? (windowClient.focus(), true) : false
+//             );
+//             if (!hadWindowToFocus)
+//                 clients.openWindow(url).then((windowClient) => (windowClient ? windowClient.focus() : null));
+//         })
+//     );
+//     event.notification.close();
+// });
 importScripts("https://www.gstatic.com/firebasejs/4.13.0/firebase-app.js");
 importScripts(
     "https://www.gstatic.com/firebasejs/4.13.0/firebase-messaging.js"
@@ -73,18 +74,42 @@ const config = {
 firebase.initializeApp(config);
 // console.log("sw initialized");
 
-const messaging = /* firebase.messaging.isSupported() ? */ firebase.messaging()/*  : null */;
-// if (messaging) {
-messaging.setBackgroundMessageHandler(function (payload) {
-    console.log('[firebase-messaging-sw.js] Received background message', payload.data);
-    const notification = payload.data;
-    const notificationTitle = notification.title;
-    const notificationOptions = {
-        body: notification.message,
-        icon: notification.icon || "",
-    };
-    return self.registration.showNotification(notificationTitle, notificationOptions);
+const messaging = firebase.messaging();
+self.addEventListener('push', (event) => {
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then(function (clientList) {
+                const isForeground = clientList.some(function (client) {
+                    return client.visibilityState === 'visible';
+                });
+                if (isForeground && false) {
+                    // Handle foreground push notification event
+                    const data = event.data.json();
+                    const title = data.notification.title;
+                    const options = {
+                        body: data.notification.body,
+                        icon: data.notification.icon,
+                        click_action: data.notification.click_action
+                    };
+                    return self.registration.showNotification(title, options);
+                }
+
+            })
+    );
+
 });
+
+// if (messaging) {
+// messaging.setBackgroundMessageHandler(function (payload) {
+//     console.log('[firebase-messaging-sw.js] Received background message', payload.data);
+//     const notification = payload.data;
+//     const notificationTitle = notification.title;
+//     const notificationOptions = {
+//         body: 'notification.message',
+//         icon: notification.icon || "",
+//     };
+//     return self.registration.showNotification(notificationTitle, notificationOptions);
+// });
 // }
 
 

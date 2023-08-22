@@ -422,7 +422,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
               style={{ fontSize: "12px" }}
             >
               <p>VOTE RESULT</p>
-              {vote?.coin?.split("-")[vote?.direction]}: &nbsp;
+              {vote?.coin?.split("-")[vote?.direction]}&nbsp;
               <span style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)) }}>
                 {/* @ts-ignore */}
                 {(vote?.valueExpirationTime && vote?.valueExpirationTime.length && pairCoinResult?.difference) ? `${pairCoinResult?.difference.replaceAll('-', '')}` : 0}%
@@ -434,7 +434,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
             <CoinVoteTimer>
               {vote.valueExpirationTime && vote.score && (
                 <>
-                  <strong>You progressed -  {vote.score}</strong><span> CMP</span>
+                  You progressed -<strong>  {vote.score} <span> CMP</span></strong>
                 </>
               )}
               {!vote.valueExpirationTime && (
@@ -450,7 +450,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
         </Row>
         <Row className="">
           <Col className="justify-content-center w-100 mb-2">
-            <SmText className="text-center">{`${vote.voteId} - ${moment(
+            <SmText className="text-center">{`${vote.voteId}  ${moment(
               new Date(vote?.voteTime)
             ).format("DD/MM/YYYY")} ${moment(
               new Date(vote?.voteTime)
