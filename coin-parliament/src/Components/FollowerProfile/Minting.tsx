@@ -134,7 +134,8 @@ const Minting = ({
           className='d-flex justify-content-center align-items-center flex-column'
           style={{ position: "relative", marginTop: width < 767 ? "13px" : "" }}
         >
-          {tooltipShow &&
+          {
+            tooltipShow &&
           <div
             style={{
                 display: "relative",
@@ -143,12 +144,28 @@ const Minting = ({
               <div className="newtooltip2"
               style={{
                 // right: "0%",
-                width:"80%",
-                marginLeft: "-30%",
-                marginTop:"-4%",
+                // width:"80%",
+                // marginLeft: "-30%",
+                // marginTop: "-4%",
+                
+                width:`${window.screen.width > 767 ? "150%":"165%"}`,
+                marginLeft: `${window.screen.width > 767 ? "-30%":"-80%"}`,
+                // left: `${window.screen.width > 767 ? "-10":"-25"}`,
+                marginTop:`${window.screen.width > 767 ? "15%":"17%"}`,
                 }}
               >
-                  <p>Your CMP count</p>
+                  {/* <p>Your CMP count</p> */}
+                <p className="mt-1 text-end lh-base">                  
+                  This dynamic system amplifies your rewards as you actively vote and impact the game. 
+                </p>                
+                  <p className="mt-3 text-end lh-base">
+                  Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones. 
+                </p> 
+                
+                  <p className="mt-3 text-end lh-base">
+                  As you climb through user levels, CMP reflects your dedication, making your experience in Coin Parliament uniquely rewarding and engaging.
+                  </p>
+                  
               </div>
               </div>
             }

@@ -551,23 +551,8 @@ function App() {
 
 
   useEffect(() => {
-    // Notification.requestPermission()
-    //   .then((permission) => {
-    //     if (permission === "granted") {
-    //       console.log("Notification permission granted.");
-    //       // Get the device token to send messages to individual devices
-
-    //     } else {
-    //       console.log("Notification permission denied.");
-    //       return null;
-    //     }
-    //   }).catch((error) => {
-    //     console.error("Error getting notification permission:", error);
-    //   });
-
     getMessageToken();
-
-  }, []);
+  }, [userInfo]);
   const getMessageToken = async () => {
     const messagingResolve = await messaging;
     if (messagingResolve) {
