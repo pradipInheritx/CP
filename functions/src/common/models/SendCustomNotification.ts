@@ -43,6 +43,7 @@ export const sendCustomNotificationOnSpecificUsers = async (
                   Urgency: "high",
                 },
                 fcmOptions: {
+
                   link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
                 },
               },
@@ -127,10 +128,11 @@ export const sendNotificationForFollwersFollowings = async (
               Urgency: "high",
             },
             fcmOptions: {
-              link: `${env.BASE_SITE_URL}/${checkCoin.length == 2 ? 'pair' : 'coin'}/${coin}`, // TODO: put link for deep linking
+              link: `${env.BASE_SITE_URL}/${checkCoin.length == 2 ? 'pairs' : 'coins'}/${coin}`, // TODO: put link for deep linking
             },
           },
         };
+        console.log("notification link: ", `${env.BASE_SITE_URL}/${checkCoin.length == 2 ? 'pairs' : 'coins'}/${coin}`);
         console.log("Message:", message);
         await sendNotification({
           token,
@@ -319,6 +321,7 @@ export async function poolMiningNotification(parentId: string, childrenName: str
       },
     },
   };
+  console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
   console.log("message:", message);
 
   await sendNotification({
@@ -356,6 +359,7 @@ export const sendNotificationForCpm = async (userId: any) => {
       },
     },
   };
+  console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
   console.log("Message:", message);
   await sendNotification({
     token,
