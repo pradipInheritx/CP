@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body style="background-color: #160133;color: white;text-align:center;padding: 0px;margin: 0px;">
+    <img src="" alt="" srcset="" id="image">
+    <script>
+        if (window.screen.width <= 500) {
+            document.getElementById('image').src = '/mobile_homeScreen.png'
+        } else {
+        }
+        // Function to refresh the page
+        function refreshPage() {
+            location.reload();
+        }
+
+        // Schedule refresh every 5 seconds
+        setInterval(refreshPage, 1000); // 5000 milliseconds = 5 seconds
+    </script>
+</body>
+
+</html>

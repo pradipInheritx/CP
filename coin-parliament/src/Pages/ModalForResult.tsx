@@ -275,7 +275,7 @@ function ModalForResult({
                 {vote.score && (
                   <Row className="flex-column text-center">
                     <Col style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
-                      You progressed - <strong>{vote.score}</strong> <span> CMP</span>
+                      You progressed - <strong>{vote.score} <span> CMP</span></strong>
                     </Col>
 
                   </Row>
@@ -382,7 +382,7 @@ function ModalForResult({
                     {vote?.valueExpirationTime && vote?.score && (
                       <>
                         <div style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
-                          You progressed - <strong>{vote.score}</strong> <span> CMP</span>
+                          You progressed - <strong>{vote.score}<span> CMP</span></strong>
                         </div>
                       </>
 
