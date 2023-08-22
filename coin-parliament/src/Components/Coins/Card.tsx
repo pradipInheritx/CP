@@ -216,8 +216,8 @@ const Card = ({
   // }, [
   //   coins[symbol]?.price,
   // ])
-  
-const OnlyCheckColor = () => {
+
+  const OnlyCheckColor = () => {
     // setInterval(() => {            
     if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` == prevCountRef.current) {
       setChangeColor("black")
@@ -238,7 +238,7 @@ const OnlyCheckColor = () => {
     `${coins[symbol]?.price}${coins[symbol]?.randomDecimal}`
   ])
 
-// console.log(coins[symbol]?.price,"check both price")
+  // console.log(coins[symbol]?.price,"check both price")
 
   let params = useParams();
 
@@ -249,7 +249,7 @@ const OnlyCheckColor = () => {
       onMouseEnter={() => setZoom(true)}
       onMouseLeave={() => setZoom(false)}
       onClick={onClick}
-      
+
     >
       <HeartContainer {...{ single, isHeader }} style={{ marginTop: Object.keys(params).length !== 0 ? '' : '-142px' }} onClick={
         () => {
