@@ -1453,3 +1453,14 @@ html[dir="rtl"] .accordion-button {
 iframe{
     display:none !important;
 }
+
+.loading {
+    clip-path: inset(0 1.2ch 0 0);
+    animation: l 1s steps(5) infinite;
+  }
+  
+  @keyframes l {
+    to {
+      clip-path: inset(0 -1ch 0 0)
+    }
+  }

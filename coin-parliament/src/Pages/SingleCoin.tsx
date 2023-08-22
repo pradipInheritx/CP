@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Container } from "react-bootstrap";
 import CoinContext from "../Contexts/CoinsContext";
 
@@ -80,7 +80,11 @@ const SingleCoin = () => {
   const [cpviData, setCpviData] = useState<LineData[]>();
   const mountedRef = useRef(true);
   // const {width, height} = useWindowSize();
+  const [searchParams] = useSearchParams();
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
+  useEffect(() => {
+    setSelectedTimeFrame(parseInt(searchParams.get('timeFrame') || '0'));
+  }, [JSON.stringify(searchParams.get('timeFrame'))]);
   const [selectedTimeFrameArray, setSelectedTimeFrameArray] = useState<any>([])
   const [graphLoading, setGraphLoading] = useState(false)
   // const [cssDegree, setcssDegree] = useState<any>([]);

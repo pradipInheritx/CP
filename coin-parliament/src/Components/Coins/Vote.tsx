@@ -10,6 +10,7 @@ import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import { handleSoundClick, VoteButton } from "../../common/utils/SoundClick";
 import firebase from "firebase/compat";
+import { scrollUp } from "common/utils/helper";
 
 export type VoteOption = {
   icon: React.ReactNode;
@@ -149,16 +150,10 @@ const Vote = ({
 
 
 
-  const scrollUp = () => {
+  const scrollAtVoteFrame = () => {
     if (pageTrue && user?.uid && !login) {
-      setTimeout(() => {
-        window.scrollTo({
-          top: 300,
-          behavior: "smooth",
-        });
-      }, 2000);
+      // scrollUp();
     }
-
   }
 
 
@@ -209,16 +204,14 @@ const Vote = ({
                     VoteButton()
                     if (disabled && disabledText) {
                       if (!user) {
-
-
-                        setLoginRedirectMessage('test');
+                        setLoginRedirectMessage('');
                         setLogin(true);
                       } else {
                         showToast(disabledText, ToastType.ERROR);
                       }
                       return;
                     }
-                    scrollUp()
+                    scrollAtVoteFrame()
                     setSelectedOption(0);
                     setClickedOption0(true);
                     setTimeout(() => setClickedOption0(false), 1000);
@@ -279,7 +272,7 @@ const Vote = ({
                       }
                       return;
                     }
-                    scrollUp()
+                    scrollAtVoteFrame()
                     setSelectedOption(1);
                     setClickedOption1(true);
                     setTimeout(() => setClickedOption1(false), 1000);

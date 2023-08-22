@@ -1,15 +1,15 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { ButtonGroup } from "react-bootstrap";
-import { functions } from "../../firebase";
-import { GetVotesResponse, VoteSnap, VotesResponse } from "../../common/models/Vote";
-import UserContext from "../../Contexts/User";
-import { useTranslation } from "../../common/models/Dictionary";
+import { functions } from "../../../firebase";
+import { GetVotesResponse, VoteSnap, VotesResponse } from "../../../common/models/Vote";
+import UserContext from "../../../Contexts/User";
+import { useTranslation } from "../../../common/models/Dictionary";
 import { capitalize } from "lodash";
 import { httpsCallable } from "firebase/functions";
-import Button from "../Atoms/Button/Button";
-import Tabs from "./Tabs";
+import Button from "../../Atoms/Button/Button";
+import Tabs from "../Tabs";
 import VotedCard from "./VotedCard";
-import { texts } from "../LoginComponent/texts";
+import { texts } from "../../LoginComponent/texts";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -144,11 +144,9 @@ const Votes = () => {
 
   const callbackFun = () => {
     if (user?.uid) {
-
       getVotes(index).then(void 0);
     }
   }
-
 
   return (
     <Tabs
@@ -176,9 +174,7 @@ const Votes = () => {
           pane: (
             <div className="d-flex justify-content-center align-items-center flex-column">
               {votes.coins.votes.map((v, i) => (
-                <div className="mb-2" key={i}>
-                  <MyVotedCard v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />
-                </div>
+                <MyVotedCard key={i} v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />
               ))}
               {getButtons(votes.coins)}
             </div>

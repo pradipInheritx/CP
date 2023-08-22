@@ -1,5 +1,5 @@
 import React from "react";
-import { default as CPVotedCard } from "./VotedCard";
+import { default as CPVotedCard } from "./voteHistory/VotedCard";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { VoteSnap } from "../../common/models/Vote";
 import { Colors } from "../../common/models/UserType";

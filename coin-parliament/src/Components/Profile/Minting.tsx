@@ -411,7 +411,10 @@ const Minting = ({
           aria-labelledby="contained-modal-title-vcenter"
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
+          id="popupid"
         >
+
+          
           <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
             style={{
               width: `${window.screen.width > 767 ? "500px" : "100%"}`,
@@ -463,9 +466,9 @@ const Minting = ({
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
             <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>
-              <strong className="py-2" style={{ fontSize: "20px" }}>Well done, Champ!</strong>
-              <p className="py-2" style={{ fontSize: "20px" }}>You've reached your goal.</p>
-              <p className="py-2" style={{ fontSize: "14px" }}>Go ahead and claim your reward - you deserve it!</p>
+              <strong className="py-2" style={{ fontSize: "20px" ,textAlign:"center" }}>Well done, Champ!</strong>
+              <p className="py-2" style={{ fontSize: "20px" ,textAlign:"center" }}>You've reached your goal.</p>
+              <p className="py-2" style={{ fontSize: "14px" ,textAlign:"center" }}>Go ahead and claim your reward , You deserve it!</p>
             </div>
           </Modal.Body>
           <div className="d-flex justify-content-center pb-1" style={{ zIndex: '101' }}>

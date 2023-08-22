@@ -8,16 +8,16 @@ import { formatCurrency } from '../common/models/Coin';
 import moment from "moment";
 import Line from '../Components/icons/line';
 import { timeframeInitials } from '../Components/Atoms/Button/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
 import { VoteButton } from '../common/utils/SoundClick';
-import { VoteDispatchContext } from 'Contexts/VoteProvider';
+import { VoteContext, VoteDispatchContext } from 'Contexts/VoteProvider';
 import { VoteResultProps } from 'common/models/Vote';
 import { CurrentCMPContext, CurrentCMPDispatchContext, CurrentCMPProvider } from 'Contexts/CurrentCMP';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { CompletedVotesDispatchContext } from 'Contexts/CompletedVotesProvider';
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor } from 'common/utils/helper';
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getSingleCoinPriceColor } from 'common/utils/helper';
 import UserContext from 'Contexts/User';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
@@ -82,19 +82,21 @@ const calculate = (vote: any, index?: 0 | 1 | undefined) => {
 const calculateWinner = (vote: any) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-function ModalForResult({ popUpOpen, vote, type,
+function ModalForResult({
+  popUpOpen,
+  vote,
+  type,
   setLessTimeVoteDetails,
-   /* setpopUpOpen *//* , setHideButton, selectedTimeFrame, hideButton *//* , setModalData,  *//* setVoteDetails */ }: {
+  setShowComplete100CMP,
+  currentCMP,
+}
+  : {
     popUpOpen?: any,
     vote: any,
     type?: string,
-    setLessTimeVoteDetails: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>
-    // setpopUpOpen?: any,
-    // setHideButton?: any,
-    // selectedTimeFrame?: any,
-    // hideButton?: any,
-    // setModalData?: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
-    // setVoteDetails: React.Dispatch<React.SetStateAction<{ [key: string]: VoteResultProps }>>
+    setLessTimeVoteDetails: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
+    setShowComplete100CMP: React.Dispatch<React.SetStateAction<boolean>>,
+    currentCMP: number
   }) {
 
   const navigate = useNavigate();
@@ -106,24 +108,24 @@ function ModalForResult({ popUpOpen, vote, type,
     if (popUpOpen) {
       VoteButton(true);
       handleShow();
-      // setVoteDetails((prev) => {
-      //   return {
-      //     ...prev,
-      //     openResultModal: false
-      //   }
-      // })
-      // setpopUpOpen(false)
     }
   }, [popUpOpen])
-
-
   const [show, setShow] = useState(false);
-  // const setVoteDetails = useContext(VoteDispatchContext);
+
+  /// show 100 CMP complete modal
+  const location = useLocation();
+  const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
+  const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
+  const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
+  const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
+  /// show 100 CMP complete modal
 
   const handleShow = () => setShow(true);
   const handleClose = () => {
     removeVote();
-    // setShow(false);
+    if (remainingCMP > 99.98 && location.pathname !== "/profile/mine") {
+      setShowComplete100CMP(true);
+    }
   };
 
   const removeVote = () => {
@@ -171,14 +173,6 @@ function ModalForResult({ popUpOpen, vote, type,
 
   const votelength = Object.keys(vote).length
 
-  //set reward cmp
-  const currentCMP = useContext(CurrentCMPContext);
-  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
-
-  useEffect(() => {
-    // setCurrentCMP(vote?.score || 0)
-  }, [vote?.score])
-
   var pairCoinResult: calculateDiffBetweenCoinsType = { firstCoin: '', secondCoin: '', difference: '' };
   if (type === "pair" && vote?.valueVotingTime.length > 1) {
     pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
@@ -222,22 +216,17 @@ function ModalForResult({ popUpOpen, vote, type,
                         {timeframeInitials(vote?.timeframe?.name)} VOTE
                       </span>
                     </div>
-
-                    {/* <span>
-                      {coin.name} - {coin.symbol}
-                    </span> */}
                     <div >
                       {vote?.direction == 0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
                       <span>
-                        $  {vote?.valueVotingTime + ''}
+                        ${vote?.valueVotingTime + ''}
                       </span>
                     </div>
                     <div>
                       <Col className="">
                         {/* ${vote?.id} -  */}
                         <span className="sm_txt">
-
-                          {vote?.voteId} </span>
+                          {vote?.voteId}</span>
                         {window?.screen?.width < 768 && <br />}
                         <span className="sm_txt">
 
@@ -259,8 +248,16 @@ function ModalForResult({ popUpOpen, vote, type,
                       <span style={{ fontSize: "13px", color: '#6352e8' }}>
                         VOTE RESULT
                       </span>
-                      <div style={{ fontSize: "14px" }}>
-                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} {' '} $ {vote.valueExpirationTime && vote?.valueExpirationTime + ''}
+                      <div style={{
+                        fontSize: "14px",
+                      }}>
+                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'}
+                        <span style={{
+                          color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote.valueExpirationTime || 0.00), vote?.direction)
+                        }}>
+                          &nbsp;${vote.valueExpirationTime && vote?.valueExpirationTime + ''}
+
+                        </span>
                       </div>
                       <div>
                         <span>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</span>
@@ -278,7 +275,7 @@ function ModalForResult({ popUpOpen, vote, type,
                 {vote.score && (
                   <Row className="flex-column text-center">
                     <Col style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
-                      <strong>You progressed - {vote.score}</strong> <span> CMP</span>
+                      You progressed - <strong>{vote.score} <span> CMP</span></strong>
                     </Col>
 
                   </Row>
@@ -309,8 +306,8 @@ function ModalForResult({ popUpOpen, vote, type,
                           <div>
                             {/* {vote?.valueExpirationTime && vote?.valueVotingTime[0]} - {vote?.valueExpirationTime[0]} */}
                           </div>
-                          <div>
-                            {pairCoinResult?.firstCoin}%
+                          <div style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.firstCoin)) }}>
+                            {pairCoinResult?.firstCoin.replaceAll('-', '')}%
                           </div>
                           <div>
                           </div>
@@ -361,8 +358,8 @@ function ModalForResult({ popUpOpen, vote, type,
                           <div>
                             {/* {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]} */}
                           </div>
-                          <div>
-                            {pairCoinResult?.secondCoin}%
+                          <div style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.firstCoin)) }}>
+                            {pairCoinResult?.secondCoin.replaceAll('-', '')}%
                           </div>
                         </div>
                       </div>
@@ -374,7 +371,7 @@ function ModalForResult({ popUpOpen, vote, type,
                     style={{ fontSize: "12px" }}
                   >
                     <p>VOTE RESULT</p>
-                    <span>{vote?.coin?.split("-")[vote?.direction]}:</span>&nbsp;
+                    <span>{vote?.coin?.split("-")[vote?.direction]}&nbsp;</span>&nbsp;
                     <span style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)) }}>
                       {pairCoinResult?.difference.replaceAll('-', '')}%
                       {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
@@ -385,7 +382,7 @@ function ModalForResult({ popUpOpen, vote, type,
                     {vote?.valueExpirationTime && vote?.score && (
                       <>
                         <div style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
-                          <strong>You progressed - {vote.score}</strong> <span> CMP</span>
+                          You progressed - <strong>{vote.score}<span> CMP</span></strong>
                         </div>
                       </>
 
@@ -397,8 +394,7 @@ function ModalForResult({ popUpOpen, vote, type,
                   <span className="sm_txt">
                     {vote?.voteId} {' '}
                     {window.screen.width < 768 && <br />}
-                    {`
-                    - ${moment(
+                    {`${moment(
                       new Date(vote?.voteTime)
                     ).format("DD/MM/YYYY")}`}{' '} {`
                      ${moment(
@@ -406,16 +402,13 @@ function ModalForResult({ popUpOpen, vote, type,
                     ).format("HH:mm")}`}</span>
                 </Col>
               </div>
-
-
               : ""
           }
 
 
-          <div className='py-2  d-flex  justify-content-center'>
-            <span style={{ textDecoration: 'none', cursor: 'pointer' }}
+          <div className='py-2 d-flex flex-column  justify-content-center text-center'>
+            <span className='d-flex justify-content-center' style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
-
                 navigate('/profile/mine');
                 setShowBack(true);
                 removeVote();
@@ -423,8 +416,10 @@ function ModalForResult({ popUpOpen, vote, type,
             >
               <Other>{("CHECK PROGRESS")}</Other>
             </span>
+            <span className='pt-3' style={{ textDecoration: 'none', cursor: 'default' }}>Stay in the game!</span>
+            <span className='pt-1 d-flex justify-content-center' style={{ color: '#6352e8' }} onClick={handleClose}>CONTINUE VOTING</span>
           </div>
-        </Modal.Body>
+        </Modal.Body >
         {/* <Modal.Footer>
                   <Button variant="secondary" onClick={handleClose}>
                     Close
@@ -433,8 +428,8 @@ function ModalForResult({ popUpOpen, vote, type,
                     Save Changes
                   </Button>
                 </Modal.Footer> */}
-      </Modal>
-    </div>
+      </Modal >
+    </div >
   )
 }
 

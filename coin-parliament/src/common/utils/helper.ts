@@ -12,8 +12,27 @@ export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpira
 }
 
 export const getCoinDifferenceColor = (value: number) => {
-    return value < 0 ? '#fa0202' : value > 0 ? '#08c90b' : '#050505'
+    return value < 0 ? '#fa0202' : value > 0 ? 'green' : '#050505'
 }
 export const getCoinColor = (currentValue: number, prevValue: number) => {
-    return currentValue < prevValue ? '#fa0202' : currentValue > prevValue ? '#08c90b' : '#050505'
+    return currentValue < prevValue ? '#fa0202' : currentValue > prevValue ? 'green' : '#050505'
+}
+export const getSingleCoinPriceColor = (votingPrice: number, currentPrice: number, direction: number) => {
+    //0 bull,1 bear
+    console.log(votingPrice, currentPrice, direction, 'colorTest');
+
+    if (direction) {
+        return votingPrice > currentPrice ? 'green' : votingPrice < currentPrice ? '#fa0202' : '#050505'
+    } else {
+        return votingPrice < currentPrice ? 'green' : votingPrice > currentPrice ? '#fa0202' : '#050505'
+    }
+}
+
+export const scrollUp = () => {
+    setTimeout(() => {
+        window.scrollTo({
+            top: 300,
+            behavior: "smooth",
+        });
+    }, 2000);
 }

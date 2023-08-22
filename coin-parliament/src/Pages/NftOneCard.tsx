@@ -105,7 +105,7 @@ const CenterText = styled.div`
 
 //  back Side Card
 
-const CardBack = styled.div`
+const CardBack = styled.div<{ CardSize:any }>`
   overflow: hidden;
   border-radius: 8px 8px 8px 8px;
   text-transform: uppercase;
@@ -118,7 +118,7 @@ const CardBack = styled.div`
   & span {
     font-weight: 100;
     opacity: 0.8;
-    font-size: 10px;
+    font-size: ${props => props.CardSize ?"12px":"10px"};
     line-height: 10px;
     display: inline-block;
     width: 95%;
@@ -127,7 +127,9 @@ const CardBack = styled.div`
     border-bottom: 1px solid #5f4edb;
     color: #fff;
     margin: 0px 5px;
-    padding: 0px 0px 2px 0px;
+    // padding: 23px 0px 5px 0px;
+    padding:${props => props.CardSize ? "22px 0px 5px 0px":"0px 0px 2px 0px"};
+
   }
 `;
 
@@ -160,10 +162,11 @@ export type BoxItems = {
   ImgUrl?: any;
   VideoUrl?: any;
   darkTheme?: boolean;
-  Hide360Icon?: boolean
+  Hide360Icon?: boolean;
+  BigCard?: boolean;
   
 };
-const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl,Hide360Icon }: BoxItems) => {
+const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl,Hide360Icon,BigCard }: BoxItems) => {
 
 
 
@@ -178,7 +181,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
   let params = useParams();
   const { type } = params;
 
-  console.log(VideoUrl, "VideoUrl")
+
 
   return (
 
@@ -241,14 +244,16 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
 
       }}
       style={{
-        minHeight: "330px",
-        minWidth: "250px",
+        minHeight: `${BigCard ?"430px":"330px"}`,
+        minWidth: `${BigCard ?"350px":"250px"}` ,
       }}
     >
       <div className='front'>
         <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
-          minHeight: "318px",
-          minWidth: "250px",
+          // minHeight: "318px",
+          // minWidth: "250px",
+          minHeight: `${BigCard ?"418px":"318px"}`,
+          minWidth: `${BigCard ?"350px":"250px"}` ,
           backgroundColor: 'black !important',
           backgroundImage: (darkTheme ? 'none !important' : ''),
           color: (darkTheme ? "white" : ''),
@@ -307,7 +312,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               {VideoUrl && darkTheme ?
                 <Ratio
                   style={{
-                    width: "300px"
+                    width:`${BigCard ?"400px":"300px"}`,          
                   }}
                 >
                   <embed type="" src={VideoUrl} />
@@ -331,11 +336,13 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                       // zoom:"1.6",
                       // backgroundPosition:" center",
 
-                      width: "255px",
-                      height: "255px",
+                      // width: "255px",
+                      // height: "255px",                      
+                      height: `${BigCard ?"355px":"245px"}`,
+                      width: `${BigCard ?"355px":"245px"}` ,
                       margin: "auto",
                       display: "block",
-                      marginTop: "-15px",
+                      marginTop: "-10px",
                     }}
                   // width={"250px"}
                   // width={"100%"}
@@ -350,12 +357,14 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
         </Card>
       </div>
       <div className='back'>
-        <CardBack className='shadow tex-center' style={{
-          minHeight: "318px",
-          minWidth: "250px",
+        <CardBack CardSize={BigCard} className='shadow tex-center' style={{
+          // minHeight: "318px",
+          // minWidth: "250px",
+          minHeight: `${BigCard ?"418px":"318px"}`,
+          minWidth: `${BigCard ?"350px":"250px"}` ,
         }}>
           <div className='d-flex justify-content-center mt-2'>
-            <img src={logo} alt='' width='60px' height='60px' />
+            <img src={logo} alt='' width={`${BigCard ?"80px":"60px"}`} height={`${BigCard ?"80px":"60px"}`} />
           </div>
           <div className='mt-2 mb-3'>
             <span>

@@ -24,7 +24,7 @@ function VideoPopup({fulldata,Videoshow,setVideoshow,videoUrl,imgUrl,MintedTime,
     }, [Videoshow])
     
 console.log(videoUrl,imgUrl,"allmidea")
-    console.log(videoUrl, "offornot")
+    console.log(fulldata, "offornot")
     
      const BackSideCard = (value: string | number) => {
     // @ts-ignore
@@ -43,14 +43,13 @@ console.log(videoUrl,imgUrl,"allmidea")
         <Modal        
         show={smShow}
         onHide={() => setSmShow(false)}
-            //   aria-labelledby="example-modal-sizes-title-sm"
-              backdrop="static"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          style={{ backgroundColor: "rgb(0 0 0 / 95%)", zIndex: "2200" }}
+        //   aria-labelledby="example-modal-sizes-title-sm"
+        backdrop="static"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        style={{ backgroundColor: "rgb(0 0 0 / 95%)", zIndex: "2200" }}
           // @ts-ignore
-          contentClassName={"modulebackground"}
-
+        contentClassName={"modulebackground ForBigNft"}
           >
               <div className="d-flex justify-content-end">
             <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
@@ -81,10 +80,10 @@ console.log(videoUrl,imgUrl,"allmidea")
                     CollectionType={fulldata?.albumName}
                     Quantity={fulldata?.totalQuantity}
                     holderNo={fulldata?.noOfCardHolders}
-                    cardNo={`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + (fulldata?.cardId)?.slice(0, 2)}`}
+                    cardNo={`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + (fulldata?.cardId || fulldata?.id )?.slice(0, 2)}`}              
                     PrivateSerialNo={PrivateSerialNo}
                     // GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((fulldata?.cardName)?.toUpperCase())?.slice(0, 3) + fulldata?.cardId}`}
-                    // GeneralSerialNo={fulldata?.sno}
+                    // GeneralSerialNo={fulldata?.sno}              
                     GeneralSerialNo={fulldata?.sno && (fulldata?.sno[0])?.replace(/[0-9]/g, '')}
                     // Disable={"CardDisebal"}
                     // When you pass CardDisebal this name then card is Disable
@@ -97,9 +96,11 @@ console.log(videoUrl,imgUrl,"allmidea")
                     ImgUrl={fulldata?.cardImageUrl || ""}
                     VideoUrl={fulldata?.cardVideoUrl || ""}
                     darkTheme={true}
+                    fulldata={fulldata}
                     Hide360Icon={true}                        
                       userId={fulldata?.setId}  
-                    MintedTime={MintedTime}  
+              MintedTime={MintedTime}  
+                BigCard={true}
                       />   
                   </div>    
         </Modal.Body>

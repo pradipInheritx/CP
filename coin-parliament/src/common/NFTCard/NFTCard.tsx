@@ -36,6 +36,8 @@ type MintingProps = {
   handleShareModleShow?: any;
   handleCardClose?: any;
   setCountShow?: any;
+  setBefornotShow?: any;
+  befornotShow?: any;
 };
 
 
@@ -59,7 +61,7 @@ const ScratchCard = styled.canvas`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow }: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow ,setBefornotShow ,befornotShow}: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -68,6 +70,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const [scratchShound, setScratchShound] = useState<any>(false)
   const [showImg, setShowImg] = useState<any>(false)
   const [scratchFinish, setScratchFinish] = useState<any>(false)
+  // const [befornotShow, setBefornotShow] = useState<any>(true)
   const [allColor, setAllColor] = useState<any>({
     epic: {
       color:"white",
@@ -163,13 +166,14 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     //   context.fillStyle = "#000";
     // context.font = "15px Helvetica";
     // context.fillText("Scratch", WIDTH /3 , 160);
-
     context.lineWidth = window.screen.width < 768 ? 10 : 50;
-    context.lineJoin = "brush";
+    context.lineJoin = "brush";    
     return () => {
       // second
     }
   }, [])
+
+  console.log(befornotShow,"befornotShow")
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {
@@ -196,7 +200,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     setStartX(offsetX || layerX);
     setStartY(offsetY || layerY);
     setScratchShound(true)
-    setShowImg(true)
+    setShowImg(true)    
+    setBefornotShow(false)
+    
   };
   const scratch = (e: any) => {
     console.log('PC continue');
@@ -279,6 +285,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     // setScratchShound(true);
     handleSoundClickCard.play();
     setShowImg(true);
+    
+      setBefornotShow(false)
+    
   };
 
   const scratchMobile = (e: any) => {
@@ -397,7 +406,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
 
           </ScratchCard>}
-        <div          
+        {!befornotShow && <div          
           className="d-flex justify-content-center"
           style={{
           position:"relative"
@@ -412,6 +421,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           >
             &nbsp; {cardType?.toUpperCase()} &nbsp;
           </p>
+          {
           <svg width="250" height="52" viewBox="0 0 406 52" fill="none" xmlns="http://www.w3.org/2000/svg"
             style={{
               marginTop: "-11px",              
@@ -419,10 +429,11 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           >  
           <path d="M383.12 0.959961H22.75C14.78 1.11164 9 0.959183 0.5 0.960653C35.5 0.958056 41.9 51.96 68.11 51.96H337.76C363.97 51.96 373.5 8.4998 406 0.998833C399.5 0.959961 391.095 1.12288 383.12 0.959961Z" fill={allColor[`${cardType.toLowerCase()}`].fill} />            
           </svg>
+          }
        
-        </div>
+        </div>}
       
-      <MainDiv
+      {!befornotShow && <MainDiv
           className=""
           id="foranimation"
       >
@@ -447,8 +458,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
               <div
                 className="d-flex justify-content-center"
               style={{
-                    width: "237px",
-                    height:"240px",
+                    width: "245px",
+                    height:"245px",
                     // border:"1px solid red",
                     // overflow:"hidden"
               }}
@@ -460,7 +471,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                    width: "255px",
                   margin: "auto",
                   display: "block",
-                  marginTop:"-15px",
+                  marginTop:"-10px",
                 }}
                 // width={"100%"}
               />
@@ -472,10 +483,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           </div>
           
         </div>
-      </MainDiv>
-      <div
-        // className="w-100 d-flex justify-content-center mt-3"
-        className={`${!cressShow ? "" : ""} w-100 d-flex justify-content-center mb-3`}
+        </MainDiv>}
+        {!befornotShow &&        
+      <div        
+        className={`w-100 d-flex justify-content-center mb-3`}
       >
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
@@ -499,7 +510,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
             backgroundColor:`${allColor[`${cardType.toLowerCase()}`].fill}`
           }}
           >Check Win Card</Buttons.Primary>
-        </div>
+          </div>
+        }
         </div>
     </>
   );

@@ -103,7 +103,7 @@ import Mine from "./Components/Profile/Mine";
 import Follow from "./Components/Profile/Follow";
 import Pool from "./Components/Profile/Pool";
 import { useWindowSize } from "./hooks/useWindowSize";
-import Votes from "./Components/Profile/Votes";
+import Votes from "./Components/Profile/voteHistory/Votes";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import FAQ from "./Pages/FAQ";
 import styled from "styled-components";
@@ -128,7 +128,7 @@ import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
 import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
-import FwVotes from "./Components/FollowerProfile/FwVotes";
+import FwVotes from "./Components/FollowerProfile/voteHistory/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
@@ -147,6 +147,7 @@ import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/C
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import CoinsList from "Components/Profile/CoinsList";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
+import Complete100CMPModal from "Components/Complete100CMPModal";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -215,12 +216,18 @@ function App() {
   // }
 
 
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
     console.log('scrollUp ');
+    const urlpath = window.location.pathname
+    if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList")) {
+      console.log("yes i am working")
+      localStorage.removeItem("PayAmount");
+    }
   }, [JSON.stringify(location.pathname)]);
 
   // console.log("for commit")
@@ -544,23 +551,8 @@ function App() {
 
 
   useEffect(() => {
-    // Notification.requestPermission()
-    //   .then((permission) => {
-    //     if (permission === "granted") {
-    //       console.log("Notification permission granted.");
-    //       // Get the device token to send messages to individual devices
-
-    //     } else {
-    //       console.log("Notification permission denied.");
-    //       return null;
-    //     }
-    //   }).catch((error) => {
-    //     console.error("Error getting notification permission:", error);
-    //   });
-
     getMessageToken();
-
-  }, []);
+  }, [userInfo]);
   const getMessageToken = async () => {
     const messagingResolve = await messaging;
     if (messagingResolve) {
@@ -1102,6 +1094,11 @@ function App() {
     }
   }, [user?.uid]);
 
+  /// show 100 CMP complete modal
+  const [completedVoteCMP, setCompletedVoteCMP] = useState<number>(0);
+  const [showComplete100CMP, setShowComplete100CMP] = useState(false);
+  ///show 100 CMP complete modal
+
   ///start vote result //
   const voteDetails = useContext(VoteContext);
   const setVoteDetails = useContext(VoteDispatchContext);
@@ -1128,6 +1125,8 @@ function App() {
         }
       });
       setCurrentCMP((completedVotes[0]?.score || 0) /* + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0') */)
+      setCompletedVoteCMP((completedVotes[0]?.score || 0));
+
     }
   }, [completedVotes, voteDetails.openResultModal]);
 
@@ -1176,6 +1175,13 @@ function App() {
 
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       // if (second_diff > 0) {
+      setTimeout(() => {
+        if ("vibrate" in navigator) {
+          navigator.vibrate(99999999);
+        } else {
+          console.log('vibrate not working ');
+        }
+      }, (((second_diff - 3 || 0) * 1000)))
       const timer = setTimeout(async () => {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
@@ -1207,6 +1213,12 @@ function App() {
               {}
           )
         }).then((response) => {
+          if ("vibrate" in navigator) {
+            navigator.vibrate([]);
+          } else {
+            console.log('vibrate not working ');
+
+          }
           if (response?.data && Object.keys(response.data).length > 0) {
             // setpopUpOpen(true);
             // setModalData(response!.data);
@@ -1224,6 +1236,12 @@ function App() {
             // setModalData(response!.data);
           }
         }).catch(err => {
+          if ("vibrate" in navigator) {
+            navigator.vibrate([]);
+          } else {
+            console.log('vibrate not working ');
+
+          }
           if (err && err.message) {
             console.log(err.message);
           }
@@ -1835,7 +1853,11 @@ function App() {
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
                         setLessTimeVoteDetails={setLessTimeVoteDetails}
+                        setShowComplete100CMP={setShowComplete100CMP}
+                        currentCMP={completedVoteCMP}
                       />}
+                      {/* complete 100 cmp notify  */}
+                      <Complete100CMPModal setCurrentCMP={setCompletedVoteCMP} showComplete100CMP={showComplete100CMP} setShowComplete100CMP={setShowComplete100CMP} />
                     </UserContext.Provider>
                   </CoinsContext.Provider>
                 </ContentContext.Provider>

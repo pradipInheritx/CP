@@ -112,53 +112,15 @@ const VotingBooster = () => {
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
-  let navigate = useNavigate(); 
-
-   
-
-
-  const BoxCard = styled.div`
-  width:${screenWidth()};
-  paddinng-top:20px;
-  background-color:#fff;
-  border:3px solid #6352E8;
-  display:"flex"
-  justify-content: ${flexType()};
-   flex-wrap: wrap;
-  border-radius:6px;
-  padding:10px;
-  & 
-  p {
-    color:'#160133';
-    text-algin:"left";
-    font-size:14px
-  }
-`;
-
-  const PriceCard = styled.div`
-  width:${screenWidth()};
-  background:#fff;
-  display:"flex"
-  justify-content: ${flexType()};
-   flex-wrap: wrap;
-  border-radius:50px 0px 50px 50px;
-  border:1px solid #6352E8;
-  font-weight: lighter;
-  boxShadow: 0px 3px 6px #00000029;
+  let navigate = useNavigate();   
   
-  & 
-  div {
-    color:#6352E8;    
-    padding:14px 18px;
-    & p{
-      font-size:13px;
-      font-weight:600;      
-    }
-    & span{
-      font-size:12px;
-    }
+  const getExtraVote = (amount: any, extravote: any) => {    
+    let payvalue = [amount,"EXTRAVOTES",extravote]
+    let PayValuestring = JSON.stringify(payvalue)
+    localStorage.setItem("PayAmount", PayValuestring);  
+    navigate("/paymentList")   
   }
-`;
+
   return (
     <>
 
@@ -192,9 +154,12 @@ const VotingBooster = () => {
         >
           <Row className="">
             <Col lg={5} sm={6} className="d-flex justify-content-center"
+              style={{
+                cursor:"pointer",
+              }}
               onClick={() => {
                 // @ts-ignore
-              if(!userInfo?.isUpgraded)navigate("/paymentList")              
+               getExtraVote(5,5)
             }}
             >
               <Prices style={{}} >   
@@ -237,9 +202,11 @@ const VotingBooster = () => {
               </Prices>
             </Col>
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
+              style={{
+                cursor:"pointer",
+              }}
               onClick={() => {
-                // @ts-ignore
-              if(!userInfo?.isUpgraded)navigate("/paymentList")
+                getExtraVote(10,12)                                                
             }}
             >
               <Prices style={{}}>
@@ -277,10 +244,12 @@ const VotingBooster = () => {
           </Row>
           <Row className="mt-5">
             <Col lg={5} sm={6} className="d-flex justify-content-center"
-            
+            style={{
+                cursor:"pointer",
+              }}
               onClick={() => {
                 // @ts-ignore
-                if(!userInfo?.isUpgraded)navigate("/paymentList")
+                getExtraVote(15,20)
             }}
             >
               <Prices style={{}}>
@@ -315,9 +284,11 @@ const VotingBooster = () => {
               </Prices>
             </Col>
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
+              style={{
+                cursor:"pointer",
+              }}
               onClick={() => {
-                // @ts-ignore
-                if(!userInfo?.isUpgraded)navigate("/paymentList")
+                getExtraVote(20,30)
             }}
             >
               <Prices style={{}}>
