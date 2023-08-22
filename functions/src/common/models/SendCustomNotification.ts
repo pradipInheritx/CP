@@ -2,9 +2,8 @@ import { firestore, messaging } from "firebase-admin";
 import { userConverter } from "./User";
 import { sendNotification } from "./Notification";
 import { upgradeMessage, downGradeMessage } from "../consts/config";
-import dotenv from 'dotenv';
-dotenv.config();
-// import { object } from "firebase-functions/v1/storage";
+import env from '../../env/env.json'
+
 
 export type CustomNotification = {
   title: string;
@@ -44,7 +43,7 @@ export const sendCustomNotificationOnSpecificUsers = async (
                   Urgency: "high",
                 },
                 fcmOptions: {
-                  link: `${process.env.REACT_APP_SITE_URL}`, // TODO: put link for deep linking
+                  link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
                 },
               },
             };
@@ -128,7 +127,7 @@ export const sendNotificationForFollwersFollowings = async (
               Urgency: "high",
             },
             fcmOptions: {
-              link: `${process.env.REACT_APP_SITE_URL}/${checkCoin.length == 2 ? 'pair' : 'coin'}/${coin}`, // TODO: put link for deep linking
+              link: `${env.BASE_SITE_URL}/${checkCoin.length == 2 ? 'pair' : 'coin'}/${coin}`, // TODO: put link for deep linking
             },
           },
         };
@@ -183,7 +182,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
         Urgency: "high",
       },
       fcmOptions: {
-        link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+        link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
       },
     },
   };
@@ -284,7 +283,7 @@ export const sendNotificationForTitleUpgrade = async (user: any, body: any, titl
           Urgency: "high",
         },
         fcmOptions: {
-          link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+          link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
         },
       },
     };
@@ -316,7 +315,7 @@ export async function poolMiningNotification(parentId: string, childrenName: str
         Urgency: "high",
       },
       fcmOptions: {
-        link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+        link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
       },
     },
   };
@@ -353,7 +352,7 @@ export const sendNotificationForCpm = async (userId: any) => {
         Urgency: "high",
       },
       fcmOptions: {
-        link: `${process.env.REACT_APP_SITE_URL}/profile/mine`, // TODO: put link for deep linking
+        link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
       },
     },
   };
