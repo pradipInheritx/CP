@@ -347,9 +347,9 @@ export default function SpeedTest(
 
       let newPrice = 0;
       if (['BTS', 'ETH'].includes(symbol1)) {
-        newPrice = Math.ceil(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
       } else {
-        newPrice = Math.ceil(((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
       }
 
       console.log('coin', coins[symbol1], 'vote value', vote?.valueVotingTime, 'decimal', decimal[symbol1], 'price', priceRange, allCoinsSetting, 'final value', ((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply), "get price")
