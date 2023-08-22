@@ -57,18 +57,17 @@ const SideBox = styled.div`
   padding:20px 10px;  
   // border: 1px solid red; 
   border-bottom:none;
-//  border-image-source: linear-gradient(180.99deg, #CAB7FF 2.33%, #4D1A4B 45.7%, rgba(24, 14, 52, 0) 99.15%);
   background: linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%), linear-gradient(180.99deg, #CAB7FF 2.33%, #4D1A4B 45.7%, rgba(24, 14, 52, 0) 99.15%);
 
   & p {
-    font-size:19px;
+    font-size:15px;    
     background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   }
 
   & span {
-    font-size:12px;
+    font-size:11px;
     line-height:15px;
   }
 
@@ -220,9 +219,22 @@ const UpgradePage = () => {
                   <div
                     style={{ width: "70%" }}
                   >
-                    <p>Lifetime commission</p>
+                    {window.screen.width < 450 ?                      
+                      <>
+                      <p>Lifetime passive income </p>
+                      <p>rev-share program</p>
+                      </>
+                      :
+                      <>
+                      <p>Lifetime passive income rev-share</p>
+                      <p>program</p>
+                      </>
+                    }
+                    {/* {window.screen.width < 450 && <p>rev-share program</p>}
+                    {window.screen.width < 450 && <p>rev-share program</p>} */}
                     {/* <span>Earn 50% lifetime commission of all your referral friends' total purchases.</span> */}
-                    <span>Lifetime passive income rev-share program Receive 50% of all your friend's total purchases.</span>
+                    {/* <span>Lifetime passive income rev-share program Receive 50% of all your friend's total purchases.</span> */}
+                    <span>Receive 50% of all your friend's total purchases.</span>
                   </div>
 
                 </SideBox>

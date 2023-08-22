@@ -46,7 +46,8 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
   const [tooltipShow, setTooltipShow] = React.useState(false);
   return (
     <div className=" cp_level dark_prpl_bkgnd mx-auto pb-4" style={{ position: 'relative' }}>
- {tooltipShow &&
+      {
+        tooltipShow &&
           <div
             style={{
             display:"relative"
@@ -54,12 +55,18 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
           >
               <div className="newtooltip"
               style={{
-                // right: "0%",
-                marginLeft: "16%",
-                marginTop:"0%",
+                
+                // marginLeft: "16%",
+                // marginTop:"0%",
+                width:`${window.screen.width > 767 ? "150%":"150%"}`,
+                marginLeft: `${window.screen.width > 767 ? "":"-20%"}`,
+                marginTop:`${window.screen.width > 767 ? "15%":"15%"}`,
                 }}
               >
-                  <p>User type level</p>
+            {/* <p>User type level</p> */}            
+                  <p className="mt-3 text-end lh-base">Your level reflects your recent voting activities. Regular participation helps maintain or elevate your level.</p>
+                  <p className="mt-3 text-end lh-base">Should your voting frequency decrease, you might move down the levels. </p>
+                  <p className="mt-3 text-end lh-base">The good news? You can always climb back up.</p>
               </div>
               </div>
             }
