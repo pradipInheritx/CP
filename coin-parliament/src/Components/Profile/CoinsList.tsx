@@ -267,70 +267,76 @@ const CoinsList = () => {
       })
   }
 
-  const GetBalance = (accoutnId: any, token: any) => {
-    const headers = {
-      'Content-Type': 'application/json',
-      "accept": "application/json",
-      // @ts-ignore
-      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
-    }
-    axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`, {
-      headers: headers
-    })
-      .then((response) => {
-        const balance = response?.data?.data?.balance;
-        const currentAmount = payamount || 99
-        if (balance >= currentAmount) {
-          setGetbalance(balance)
-          payNow()
-        } else {
-          // showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
-          setPayButton(false)
-          // setSelectPayment(0);
-          // setSelectCoin("none");
-          handleAfterPayShow()
-          afterPayPopup("error", '')
-          // mybtn("disconnect", "true").then(() => {
-          //   setConnectOrNot(!connectOrNot)
-          // })
-
-        }
-      })
-      .catch((error) => {
-        // showToast(error.message,ToastType.ERROR)
-        console.log(error, "errorpayment");
-        setPayButton(false);
-        if (error?.message) {
-          afterPayPopup("error", error?.message);
-        }
-      })
-  }
-
-  // const send = () => {
-  //   const obj = {
-  //     method: "getTransaction",
-  //     user: `${sessionStorage.getItem("wldp_user")}`,
-  //     params: {
-  //       // @ts-ignore
-  //       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-  //       amount: payamount,
-  //       // @ts-ignore
-  //       // token:"ETH",
-  //       token: `${coinInfo?.symbol.toUpperCase()}`,
-  //       network: "5"
-  //     },
-  //     application: "votetoearn",
-  //     uid: `${sessionStorage.getItem("wldp_wsid")}`,
-  //   };
-  //   console.log(obj, "alldata");
-  //   (window as any).wldp.send_msg(obj).then((res: any) => {
+  // const GetBalance = (accoutnId: any, token: any) => {
+  //   const headers = {
+  //     'Content-Type': 'application/json',
+  //     "accept": "application/json",
   //     // @ts-ignore
-  //     // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)          
-  //   }).catch((err: any) => {
-  //     console.log(err, "allerr")
-
+  //     "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+  //   }
+  //   axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`, {
+  //     headers: headers
   //   })
-  // };
+  //     .then((response) => {
+  //       const balance = response?.data?.data?.balance;
+  //       const currentAmount = payamount || 99
+  //       if (balance >= currentAmount) {
+  //         setGetbalance(balance)
+  //         payNow()
+  //       } else {
+  //         // showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
+  //         setPayButton(false)
+  //         // setSelectPayment(0);
+  //         // setSelectCoin("none");
+  //         handleAfterPayShow()
+  //         afterPayPopup("error", '')
+  //         // mybtn("disconnect", "true").then(() => {
+  //         //   setConnectOrNot(!connectOrNot)
+  //         // })
+
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       // showToast(error.message,ToastType.ERROR)
+  //       console.log(error, "errorpayment");
+  //       setPayButton(false);
+  //       if (error?.message) {
+  //         afterPayPopup("error", error?.message);
+  //       }
+  //     })
+  // }
+
+  const send = () => {
+    const obj = {
+      method: "getTransaction",
+      callback_secret: "https://www.apple.com/in/",
+  callback_url: "https://www.google.com/",
+      user: `${sessionStorage.getItem("wldp_user")}`,
+      params: {
+        // @ts-ignore
+        origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+        // amount: payamount,
+        amount: 0.0001,
+        // @ts-ignore
+        token: `${coinInfo?.symbol.toUpperCase()}`,
+        network: "11155111"
+      },
+      application: "votetoearn",
+      uid: `${sessionStorage.getItem("wldp_wsid")}`,
+    };
+    console.log(obj, "alldata");
+    (window as any).wldp.send_msg(obj).then((res: any) => {
+      // @ts-ignore
+      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+      (window as any).transaction_status_message().then((data:any) => {
+        console.log(data,"getrespons")
+      })
+      console.log(res, "alldata");
+    }).catch((err: any) => {
+      console.log(err, "allerr")
+
+    })
+  };
 
   const checkAndPay = () => {
     (window as any).wldp.isWalletConnected()
@@ -339,16 +345,18 @@ const CoinsList = () => {
           // send the API for payment
           // console.log('Here we send the API call for payment')
           // @ts-ignore
-          GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+          // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+          send()
         }
         else {
           (window as any).wldp.connectionWallet('connect', 'ethereum')
             .then((account: any) => {
               if (account) {
+                send()
                 // send the API for payment
                 //  console.log('Here we send the API call for payment') 
                 // @ts-ignore
-                GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+                // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
               }
             })
         }
