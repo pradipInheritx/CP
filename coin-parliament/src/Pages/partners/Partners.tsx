@@ -61,7 +61,7 @@ const
               <button className={classes.step}>
                 <img src={signUpImage} style={{ width: '3em' }} />
               </button>
-              {window.screen.width < 400 ?
+              {window.screen.width < 450 ?
                 <div className="mt-3"
                 >
                   <a className={classes.buttonText}>SIGN UP &</a>
@@ -83,7 +83,7 @@ const
                 <img src={inviteUser} />
               </button>
 
-              {window.screen.width < 400
+              {window.screen.width < 450
                 ?
                 <div className="mt-3">
                   <a className={classes.buttonText}>INVITE YOUR</a>
@@ -109,7 +109,7 @@ const
             </div>
           </div>          
           <div className="d-flex justify-content-center">
-            <span className={classes.headerTitle}>50% Lifetime passive income rev-share program</span>
+            <span className={classes.headerTitle}>50% Lifetime passive income</span>
           </div>
 
           {/* extra button */}
@@ -183,7 +183,16 @@ const
                       Start earning .
                       <ul style={{ listStyleType: 'disc', padding: '0px', paddingLeft: '1em' }}>
                         <li className="mt-2">Accelerating your mining progress. Every referred vote will contribute to your CMP progress. Upon completion of 100 CMP (closing block), you will be eligible for rewards.</li>
-                        <li className="mt-2">Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
+                        <li className={`${classes.textsomechange} mt-2`}>
+                          <div
+                            style={{
+                            lineHeight:"1.7"
+                          }}
+                          >
+                            <span >Lifetime</span> passive income rev-share program, receive <span>50%</span> of all your friends' total purchases <span>directly</span> to your wallet.
+                          </div>
+                        
+                        </li>
                         {/* <li>Receive 50% of all your friends' total purchases directly to your wallet.</li> */}
                       </ul>
                     </li>
