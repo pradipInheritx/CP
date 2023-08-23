@@ -76,7 +76,8 @@ const
               <button className={classes.step}>
                 <img src={Gift} />
               </button>
-              <a className={classes.buttonText}>ENJOY YOUR BENEFIT</a>
+              {/* <a className={classes.buttonText}>ENJOY YOUR BENEFIT</a> */}
+              <a className={classes.buttonText}>START EARNING</a>
               <div className={classes.stepConnecterPrev}></div>
             </div>
           </div>          
