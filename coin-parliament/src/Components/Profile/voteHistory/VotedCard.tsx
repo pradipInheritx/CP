@@ -158,12 +158,11 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
             <Logo {...{ symbol: vote.coin || "", width: 30 }} />
             <span className="fw-bold">{coin.name}</span>
             <span className="">{vote.coin}</span>
-            <span className="" >{vote.timeframe.name} VOTE</span>
           </div>
           <div className="col-sm-4 col-4 d-flex flex-column justify-content-center align-items-center p-0">
-            <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`}>You voted for</span>
+            <span className="" >{vote.timeframe.name}</span>
             <span className={`${window.screen.width > 502 && 'fs-6'} fw-normal`} style={{ fontSize: (widthLess400 ? '0.9em' : '') }}>
-              {vote.direction == 0 ? "BULL" : "BEAR"} {vote.coin} ${vote?.valueVotingTime}
+              {vote.direction == 0 ? "BULL" : "BEAR"} ${vote?.valueVotingTime}
             </span>
             <span className="sm_txt" style={{ fontSize: (widthLess400 ? '7.9px' : '') }}>{vote?.voteId} </span>
             <span className="sm_txt" style={{ fontSize: (widthLess400 ? '7.9px' : '') }}> {moment(new Date(vote.voteTime)).format("DD/MM/YYYY HH:mm")}</span>

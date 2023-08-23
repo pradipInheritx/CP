@@ -61,14 +61,39 @@ const
               <button className={classes.step}>
                 <img src={signUpImage} style={{ width: '3em' }} />
               </button>
-              <a className={classes.buttonText}>{("SIGN UP & upgrade your account").toLocaleUpperCase()}</a>
+              {window.screen.width < 450 ?
+                <div className="mt-3"
+                >
+                  <a className={classes.buttonText}>SIGN UP &</a>
+                  <a className={classes.buttonText}>UPGRADE YOUR</a>
+                  <a className={classes.buttonText}>ACCOUNT</a>
+                </div>
+                :
+                <div                
+                  className="mt-3"
+                >
+                  <a className={classes.buttonText}>SIGN UP & UPGRADE YOUR</a>
+                  <a className={classes.buttonText}>ACCOUNT</a>
+                </div>
+              }
               <div className={classes.stepConnecterNext}></div>
             </div>
             <div className={classes.tableCell}>
               <button className={classes.step}>
                 <img src={inviteUser} />
               </button>
-              <a className={classes.buttonText}>INVITE YOUR FRIENDS</a>
+
+              {window.screen.width < 450
+                ?
+                <div className="mt-3">
+                  <a className={classes.buttonText}>INVITE YOUR</a>
+                  <a className={classes.buttonText}>FRIENDS</a>
+                </div>
+                :
+                <div className="mt-3">
+                  <a className={classes.buttonText}>INVITE YOUR FRIENDS</a>
+                </div>
+              }
               <div className={classes.stepConnecterPrev}></div>
               <div className={classes.stepConnecterNext}></div>
             </div>
@@ -76,12 +101,15 @@ const
               <button className={classes.step}>
                 <img src={Gift} />
               </button>
-              <a className={classes.buttonText}>ENJOY YOUR BENEFIT</a>
+              {/* <a className={classes.buttonText}>ENJOY YOUR BENEFIT</a> */}
+              <div className="mt-3">
+                <a className={classes.buttonText}>START EARNING</a>
+                </div>
               <div className={classes.stepConnecterPrev}></div>
             </div>
           </div>          
           <div className="d-flex justify-content-center">
-            <span className={classes.headerTitle}>50% Lifetime passive income rev-share program</span>
+            <span className={classes.headerTitle}>50% Lifetime passive income</span>
           </div>
 
           {/* extra button */}
@@ -155,7 +183,16 @@ const
                       Start earning .
                       <ul style={{ listStyleType: 'disc', padding: '0px', paddingLeft: '1em' }}>
                         <li className="mt-2">Accelerating your mining progress. Every referred vote will contribute to your CMP progress. Upon completion of 100 CMP (closing block), you will be eligible for rewards.</li>
-                        <li className="mt-2">Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
+                        <li className={`${classes.textsomechange} mt-2`}>
+                          <div
+                            style={{
+                            lineHeight:"1.7"
+                          }}
+                          >
+                            <span >Lifetime</span> passive income rev-share program, receive <span>50%</span> of all your friends' total purchases <span>directly</span> to your wallet.
+                          </div>
+                        
+                        </li>
                         {/* <li>Receive 50% of all your friends' total purchases directly to your wallet.</li> */}
                       </ul>
                     </li>

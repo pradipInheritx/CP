@@ -75,7 +75,11 @@
     line-height: normal;
     letter-spacing: 0.0275rem;
 
-    padding-top: 1.5rem;
+    /* padding-top: 1.5rem; */
+}
+.textsomechange span{
+    font-size: 1.2em;
+    color:#5e4be2;
 }
 
 .headerTitle{
