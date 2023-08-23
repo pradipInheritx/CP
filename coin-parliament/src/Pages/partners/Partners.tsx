@@ -61,14 +61,39 @@ const
               <button className={classes.step}>
                 <img src={signUpImage} style={{ width: '3em' }} />
               </button>
-              <a className={classes.buttonText}>{("SIGN UP & upgrade your account").toLocaleUpperCase()}</a>
+              {window.screen.width < 400 ?
+                <div className="mt-3"
+                >
+                  <a className={classes.buttonText}>SIGN UP &</a>
+                  <a className={classes.buttonText}>UPGRADE YOUR</a>
+                  <a className={classes.buttonText}>ACCOUNT</a>
+                </div>
+                :
+                <div                
+                  className="mt-3"
+                >
+                  <a className={classes.buttonText}>SIGN UP & UPGRADE YOUR</a>
+                  <a className={classes.buttonText}>ACCOUNT</a>
+                </div>
+              }
               <div className={classes.stepConnecterNext}></div>
             </div>
             <div className={classes.tableCell}>
               <button className={classes.step}>
                 <img src={inviteUser} />
               </button>
-              <a className={classes.buttonText}>INVITE YOUR FRIENDS</a>
+
+              {window.screen.width < 400
+                ?
+                <div className="mt-3">
+                  <a className={classes.buttonText}>INVITE YOUR</a>
+                  <a className={classes.buttonText}>FRIENDS</a>
+                </div>
+                :
+                <div className="mt-3">
+                  <a className={classes.buttonText}>INVITE YOUR FRIENDS</a>
+                </div>
+              }
               <div className={classes.stepConnecterPrev}></div>
               <div className={classes.stepConnecterNext}></div>
             </div>
@@ -77,7 +102,9 @@ const
                 <img src={Gift} />
               </button>
               {/* <a className={classes.buttonText}>ENJOY YOUR BENEFIT</a> */}
-              <a className={classes.buttonText}>START EARNING</a>
+              <div className="mt-3">
+                <a className={classes.buttonText}>START EARNING</a>
+                </div>
               <div className={classes.stepConnecterPrev}></div>
             </div>
           </div>          

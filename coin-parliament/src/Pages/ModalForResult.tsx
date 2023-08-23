@@ -182,18 +182,20 @@ function ModalForResult({
     <div>
       <Modal show={show} onHide={handleClose}
         backdrop="static"
-        size="lg"
+        size={type === 'pair' ? "lg" : undefined}
         aria-labelledby="contained-modal-title-vcenter"
         centered
         style={{ zIndex: 1000 }}
       >
-        <div className='d-flex justify-content-between'>
+        <div className='d-flex justify-content-end'>
           <div></div>
-          <div className='text-center mb-2' style={{
+          {/* <div className='text-center mb-2' style={{
             color: "#6352e8",
             fontWeight: "300",
             marginLeft: `${window.screen.width < 767 ? "10%" : ""}`
-          }}>{type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""}</div>
+          }}>
+            {type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""}
+          </div> */}
           <div className="d-flex justify-content-end">
             <button type="button" className="btn-close " aria-label="Close" onClick={handleClose}></button>
           </div>
@@ -205,23 +207,62 @@ function ModalForResult({
                 // boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"
               }}
             >
-              <div className={`${window.screen.width < 767 ? "flex-column" : ""} d-flex justify-content-center align-items-center`}>
-                <div className=" pb-2">
+              <div className={`${window.screen.width < 767 ? "flex-column" : "flex-column"} d-flex justify-content-center align-items-center`}>
+                <div className="pb-2 d-flex flex-column justify-content-center align-items-center">
                   <Logo {...{ symbol: vote?.coin || "", width: 30 }} />
+                  <strong>{coins[vote?.coin]?.name} </strong>
+                  {vote?.coin}
+                  <strong>{timeframeInitials(vote?.timeframe?.name)} </strong>
+                  <div>
+                    {vote?.direction == 0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
+                    <span>
+                      ${vote?.valueVotingTime + ''}
+                    </span>
+                  </div>
+                  <div className='text-center mt-2'>
+                    <span style={{ fontSize: "15px", color: '#6352e8' }}>
+                      VOTE RESULT
+                    </span>
+                    <div style={{
+                      fontSize: "14px",
+                    }}>
+                      {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'}
+                      <span style={{
+                        color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote.valueExpirationTime || 0.00), vote?.direction)
+                      }}>
+                        &nbsp;${vote.valueExpirationTime && vote?.valueExpirationTime + ''}
+
+                      </span>
+                    </div>
+                    <div>
+                      <span>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</span>
+                    </div>
+                    <div>
+                      {/* {vote.valueExpirationTime && (
+                          <Trend num={trend} />
+                        )} */}
+                    </div>
+                  </div>
                 </div>
-                <div className={`${window.screen.width < 767 ? "flex-column" : ""} w-100 d-flex justify-content-between`}>
+                <div className={`${window.screen.width < 767 ? "flex-column" : "flex-column"} w-100 d-flex justify-content-center align-items-center`}>
                   <div className={`${window.screen.width < 767 ? "w-100" : "w-50"} text-center`} style={{ paddingLeft: (window.screen.width < 767 ? '0px' : '2em') }}>
-                    <div className=''>
-                      <span style={{ fontSize: "14px" }} className='px-3'>
-                        {timeframeInitials(vote?.timeframe?.name)} VOTE
-                      </span>
-                    </div>
-                    <div >
-                      {vote?.direction == 0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
-                      <span>
-                        ${vote?.valueVotingTime + ''}
-                      </span>
-                    </div>
+
+
+                  </div>
+                  {/* <div
+                    className='d-flex justify-content-around w-50'
+                  > */}
+                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `} style={{ paddingLeft: (window.screen.width < 767 ? '0px' : '2em') }}>
+
+                  </div>
+                </div>
+              </div>
+              <div style={{ color: "#6352E8" }}>
+                {vote.score && (
+                  <Row className="flex-column text-center">
+                    <Col style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
+                      You progressed - <strong>{vote.score} <span> CMP</span></strong>
+                    </Col>
                     <div>
                       <Col className="">
                         {/* ${vote?.id} -  */}
@@ -239,45 +280,6 @@ function ModalForResult({
                           ).format("HH:mm")}`}</span>
                       </Col>
                     </div>
-                  </div>
-                  {/* <div
-                    className='d-flex justify-content-around w-50'
-                  > */}
-                  <div className={`${window.screen.width < 767 ? "w-100 justify-content-center my-2" : "w-50 justify-content-around"}  d-flex `} style={{ paddingLeft: (window.screen.width < 767 ? '0px' : '2em') }}>
-                    <div className='text-center'>
-                      <span style={{ fontSize: "13px", color: '#6352e8' }}>
-                        VOTE RESULT
-                      </span>
-                      <div style={{
-                        fontSize: "14px",
-                      }}>
-                        {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'}
-                        <span style={{
-                          color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote.valueExpirationTime || 0.00), vote?.direction)
-                        }}>
-                          &nbsp;${vote.valueExpirationTime && vote?.valueExpirationTime + ''}
-
-                        </span>
-                      </div>
-                      <div>
-                        <span>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</span>
-                      </div>
-                      <div>
-                        {/* {vote.valueExpirationTime && (
-                          <Trend num={trend} />
-                        )} */}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div style={{ color: "#6352E8" }}>
-                {vote.score && (
-                  <Row className="flex-column text-center">
-                    <Col style={{ fontSize: (window.screen.width < 370 ? '0.8125em' : '') }}>
-                      You progressed - <strong>{vote.score} <span> CMP</span></strong>
-                    </Col>
-
                   </Row>
                 )}
               </div>
@@ -330,10 +332,9 @@ function ModalForResult({
                           </RoundDiv>
 
                         </div>
-                        <div style={{ minHeight: "100%" }}>
+                        <div style={{ minHeight: "100%", fontWeight: 'bold' }}>
                           <PairsVoteVs>
-                            {vote?.coin?.split("-")[vote?.direction]} {" "}
-
+                            <strong>{vote?.coin?.split("-")[vote?.direction]} - {timeframeInitials(vote?.timeframe?.name)}</strong>
                           </PairsVoteVs>
                         </div>
 
