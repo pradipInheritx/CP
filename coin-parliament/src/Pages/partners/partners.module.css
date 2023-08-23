@@ -77,6 +77,10 @@
 
     /* padding-top: 1.5rem; */
 }
+.textsomechange span{
+    font-size: 1.2em;
+    color:#5e4be2;
+}
 
 .headerTitle{
     text-align:center;
