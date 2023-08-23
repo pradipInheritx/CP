@@ -8,6 +8,7 @@ import { VoteResultProps } from "../../common/models/Vote";
 import CoinsContext from "../../Contexts/CoinsContext";
 import { decimal } from "../Profile/utils";
 import { VoteDispatchContext } from "Contexts/VoteProvider";
+import { VoteEndCoinPriceContext } from "Contexts/VoteEndCoinPrice";
 // import * as Motion from 'framer-motion';
 // const { motion, MotionConfig }= Motion
 
@@ -255,15 +256,13 @@ export default function SpeedTest(
   }
 ) {
   // const { value } = useSpeedTest();
-
+  const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
   const [persentValue, setPersentValue] = useReducer((state: number, action: number) => {
     if (action > 100) {
       return 100;
     }
     return action < 0 ? 1 : ((typeof action == 'number' && !isNaN(action)) ? action : state);
   }, 50)
-
-  console.log(persentValue, "persentValueCheck")
   const { allCoinsSetting } = useContext(CoinsContext)
   const [priceRange, setPriceRange] = useState(1);
   // const { value } = useSpeedTest(priceRange);
@@ -338,31 +337,43 @@ export default function SpeedTest(
 
         }
       }
-    } else if (symbol2 == undefined) {
+    } else if (symbol2 == undefined && !Array.isArray(vote?.valueVotingTime)) {
       // range bar for single coin
       if (!vote?.valueVotingTime) {
         setPersentValue(50)
         return false
       }
 
-      let newPrice = 0;
-      if (['BTS', 'ETH'].includes(symbol1)) {
-        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
-      } else {
-        newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
-      }
+      // let newPrice = 0;
+      // if (['BTS', 'ETH'].includes(symbol1)) {
+      //   newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      // } else {
+      //   newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
+      // }
+      // if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 : 50 + newPrice);
+      // else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);
 
-      console.log('coin', coins[symbol1], 'vote value', vote?.valueVotingTime, 'decimal', decimal[symbol1], 'price', priceRange, allCoinsSetting, 'final value', ((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply), "get price")
-      if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 : 50 + newPrice);
-      else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);
+      let tempNewValue = parseFloat(voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0') * decimal[symbol1].multiply;
+      let tempOldValue = vote?.valueVotingTime * decimal[symbol1].multiply;
+      if (tempNewValue === tempOldValue) {
+        setPersentValue(50);
+      } else if (vote?.direction == 0) {
+        const temp = (tempNewValue - tempOldValue) / priceRange;
+        console.log(tempOldValue, tempNewValue, temp, 'pkkk');
+        setPersentValue(50 + temp);
+      }
+      else {
+        const temp = (tempOldValue - tempNewValue) / priceRange;
+        console.log(tempOldValue, tempNewValue, temp, 'pkkk');
+        setPersentValue(50 + temp);
+      }
     }
   };
-  console.log(persentValue, 'hello');
 
 
   useEffect(() => {
     getBorderColor()
-  }, [coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime, coins[symbol1]?.randomDecimal, coins[symbol1]?.randomDecimal])
+  }, [JSON.stringify(voteEndCoinPrice[`${vote?.coin}_${vote?.timeframe?.seconds}`])/* coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime, coins[symbol1]?.randomDecimal, coins[symbol1]?.randomDecimal */])
 
   useEffect(() => {
     if (!symbol1) return
