@@ -214,7 +214,7 @@ function ModalForResult({
                   {vote?.coin}
                   <strong>{timeframeInitials(vote?.timeframe?.name)} </strong>
                   <div>
-                    {vote?.direction == 0 ? "BULL" : "BEAR"} {coin.symbol} &nbsp;
+                    {vote?.direction == 0 ? "BULL" : "BEAR"} &nbsp;
                     <span>
                       ${vote?.valueVotingTime + ''}
                     </span>
@@ -226,7 +226,8 @@ function ModalForResult({
                     <div style={{
                       fontSize: "14px",
                     }}>
-                      {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'}
+                      {/* {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} */}
+                      {vote?.direction == 0 ? "BULL" : "BEAR"}
                       <span style={{
                         color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote.valueExpirationTime || 0.00), vote?.direction)
                       }}>
@@ -359,7 +360,7 @@ function ModalForResult({
                           <div>
                             {/* {vote.valueExpirationTime && vote.valueVotingTime[1]} - {vote?.valueExpirationTime[1]} */}
                           </div>
-                          <div style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.firstCoin)) }}>
+                          <div style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.secondCoin)) }}>
                             {pairCoinResult?.secondCoin.replaceAll('-', '')}%
                           </div>
                         </div>
@@ -411,6 +412,7 @@ function ModalForResult({
             <span className='d-flex justify-content-center' style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
                 navigate('/profile/mine');
+                localStorage.setItem('continueVotingUrl', `/${type == "pair" ? 'pairs' : 'coins'}/${coins[vote?.coin]?.symbol}`);
                 setShowBack(true);
                 removeVote();
               }}
@@ -418,7 +420,10 @@ function ModalForResult({
               <Other>{("CHECK PROGRESS")}</Other>
             </span>
             <span className='pt-3' style={{ textDecoration: 'none', cursor: 'default' }}>Stay in the game!</span>
-            <span className='pt-1 d-flex justify-content-center' style={{ color: '#6352e8' }} onClick={handleClose}>CONTINUE VOTING</span>
+            <span className='pt-1 d-flex justify-content-center' style={{ color: '#6352e8' }} onClick={() => {
+              handleClose();
+              navigate(`/${type == "pair" ? 'pairs' : 'coins'}/${coins[vote?.coin]?.symbol}`);
+            }}>CONTINUE VOTING</span>
           </div>
         </Modal.Body >
         {/* <Modal.Footer>

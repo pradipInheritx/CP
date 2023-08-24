@@ -510,10 +510,6 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     <Countdown
       date={new Date(expirationTime)}
       renderer={({ hours, minutes, seconds, completed }) => {
-
-        if (hours === 0 && minutes === 0 && seconds <= 3 && completedVotes.length <= 0) {
-          // navigator.vibrate(3000);
-        }
         if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11 && setLastTenSec instanceof Function) {
           setLastTenSec(true);
         }
