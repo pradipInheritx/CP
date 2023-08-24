@@ -412,7 +412,7 @@ function ModalForResult({
             <span className='d-flex justify-content-center' style={{ textDecoration: 'none', cursor: 'pointer' }}
               onClick={() => {
                 navigate('/profile/mine');
-                localStorage.setItem('continueVotingUrl', `/${type == "pair" ? 'pairs' : 'coins'}/${coins[vote?.coin]?.symbol}`);
+                localStorage.setItem('continueVotingUrl', `/${type == "pair" ? 'pairs' : 'coins'}/${vote?.coin}`);
                 setShowBack(true);
                 removeVote();
               }}
@@ -422,7 +422,7 @@ function ModalForResult({
             <span className='pt-3' style={{ textDecoration: 'none', cursor: 'default' }}>Stay in the game!</span>
             <span className='pt-1 d-flex justify-content-center' style={{ color: '#6352e8' }} onClick={() => {
               handleClose();
-              navigate(`/${type == "pair" ? 'pairs' : 'coins'}/${coins[vote?.coin]?.symbol}`);
+              navigate(`/${type == "pair" ? 'pairs' : 'coins'}/${vote?.coin}`);
             }}>CONTINUE VOTING</span>
           </div>
         </Modal.Body >
