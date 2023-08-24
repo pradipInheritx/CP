@@ -1044,6 +1044,8 @@ function App() {
         const newVotes = await getVotesFunc({
           userId: user?.uid,
         });
+        console.log('app pkkk');
+
         // @ts-ignore
         let result = JSON.parse(newVotes?.data)
         if (newVotes?.data) {
@@ -1175,13 +1177,13 @@ function App() {
 
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       // if (second_diff > 0) {
-      setTimeout(() => {
-        if ("vibrate" in navigator) {
-          navigator.vibrate(99999999);
-        } else {
-          console.log('vibrate not working ');
-        }
-      }, (((second_diff - 3 || 0) * 1000)))
+      // setTimeout(() => {
+      //   if ("vibrate" in navigator) {
+      //     navigator.vibrate(99999999);
+      //   } else {
+      //     console.log('vibrate not working ');
+      //   }
+      // }, (((second_diff - 3 || 0) * 1000)))
       const timer = setTimeout(async () => {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
@@ -1213,12 +1215,12 @@ function App() {
               {}
           )
         }).then((response) => {
-          if ("vibrate" in navigator) {
-            navigator.vibrate([]);
-          } else {
-            console.log('vibrate not working ');
+          // if ("vibrate" in navigator) {
+          //   navigator.vibrate([]);
+          // } else {
+          //   console.log('vibrate not working ');
 
-          }
+          // }
           if (response?.data && Object.keys(response.data).length > 0) {
             // setpopUpOpen(true);
             // setModalData(response!.data);
@@ -1236,12 +1238,6 @@ function App() {
             // setModalData(response!.data);
           }
         }).catch(err => {
-          if ("vibrate" in navigator) {
-            navigator.vibrate([]);
-          } else {
-            console.log('vibrate not working ');
-
-          }
           if (err && err.message) {
             console.log(err.message);
           }

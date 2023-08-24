@@ -10,10 +10,12 @@ import Button from "../../Atoms/Button/Button";
 import Tabs from "../Tabs";
 import VotedCard from "./VotedCard";
 import { texts } from "../../LoginComponent/texts";
+import { CompletedVotesContext } from "Contexts/CompletedVotesProvider";
 
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const Votes = () => {
+  const completedVotes = useContext(CompletedVotesContext);
   const pageSize = useMemo(() => 3, []);
   const { user } = useContext(UserContext);
   const translate = useTranslation();
@@ -77,7 +79,7 @@ const Votes = () => {
       .catch(error => {
         console.error('promiseAll', error);
       });
-  }, [votes?.coins?.total, votes?.pairs?.total, pageSize])
+  }, [votes?.coins?.total, votes?.pairs?.total, pageSize,])
 
 
 
@@ -142,9 +144,15 @@ const Votes = () => {
     }
   }, [getVotes, user?.uid, index]);
 
+
+  useEffect(() => { // here
+    if (completedVotes?.length > 0) {
+      getVotes(index).then(void 0).catch(() => { });
+    }
+  }, [JSON.stringify(completedVotes)]);
   const callbackFun = () => {
     if (user?.uid) {
-      getVotes(index).then(void 0);
+      // getVotes(index).then(void 0); // to make change 148 so no need this
     }
   }
 
