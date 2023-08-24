@@ -97,14 +97,14 @@ export const sendNotificationForFollwersFollowings = async (
   userData.subscribers.forEach((user: any) => {
     follwersFollwing.push(user);
   });
-  userData.leader.forEach((user: any) => {
-    follwersFollwing.push(user);
-  });
+  // userData.leader.forEach((user: any) => {
+  //   follwersFollwing.push(user);
+  // });
   console.log("Array Following--------", follwersFollwing)
 
   //remove Duplicate Values and user himself
-  follwersFollwing = follwersFollwing.filter((item: any,
-    index: any) => (follwersFollwing.indexOf(item) === index) && item !== userId);
+  // follwersFollwing = follwersFollwing.filter((item: any,
+  //   index: any) => (follwersFollwing.indexOf(item) === index) && item !== userId);
 
   follwersFollwing.forEach(async (id: any) => {
     console.log("id:", id)
