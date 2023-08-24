@@ -192,7 +192,6 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
     console.info("getVoteData", getVoteData?.score);
     if ((getVoteData && getVoteData.score === 0) || getVoteData && getVoteData.score) {
       console.info("getVoteData", getVoteData);
-      // Do Nothing
     } else {
       const vote = {
         ...getVoteData,
@@ -210,12 +209,14 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         await calc.calc(getVoteRef);
+
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         await calc.calc(getVoteRef);
       }
+
     }
   } catch (error) {
     console.info("ERR:", error);
