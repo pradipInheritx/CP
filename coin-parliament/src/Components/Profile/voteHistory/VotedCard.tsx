@@ -8,7 +8,7 @@ import { Col, Container, NavLink, Row } from "react-bootstrap";
 import moment from "moment";
 import { timeframeInitials } from "../../Atoms/Button/Button";
 import { MyCountdown } from "../../VotedCard";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getSingleCoinPriceColor } from "common/utils/helper";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getPairResultColor, getSingleCoinPriceColor } from "common/utils/helper";
 import { isArray } from "lodash";
 import { Link } from "react-router-dom";
 
@@ -422,7 +422,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
             >
               <p>VOTE RESULT</p>
               {vote?.coin?.split("-")[vote?.direction]}&nbsp;
-              <span style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)) }}>
+              <span style={{ color: getPairResultColor(parseFloat(pairCoinResult?.firstCoin), parseFloat(pairCoinResult?.secondCoin), vote?.direction) }}>
                 {/* @ts-ignore */}
                 {(vote?.valueExpirationTime && vote?.valueExpirationTime.length && pairCoinResult?.difference) ? `${pairCoinResult?.difference.replaceAll('-', '')}` : 0}%
               </span>
