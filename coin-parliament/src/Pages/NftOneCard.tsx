@@ -279,7 +279,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     width={"35px"}                    
                   onClick={() => {
                     setVideoshow(true)
-                    console.log("yes i am wokring")
                   }}
                     src={Showround}
                 />:

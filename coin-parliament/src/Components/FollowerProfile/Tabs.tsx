@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Tab } from "react-bootstrap";
+import { Form, Nav, Tab } from "react-bootstrap";
 import styled from "styled-components";
 
 type TabsProps = {
@@ -7,6 +7,8 @@ type TabsProps = {
   id: string;
   onSelect: () => void;
   tabs: { eventKey: string; title: string; pane: React.ReactNode }[];
+  setRunVote?: any;
+  runVote?: any;
 };
 
 const Container = styled.div`
@@ -44,27 +46,44 @@ const Content = styled.div`
   }
 `;
 
-const Tabs = ({ defaultActiveKey, id, onSelect, tabs }: TabsProps) => {
+const Tabs = ({ defaultActiveKey, id, onSelect, tabs ,setRunVote , runVote}: TabsProps) => {
   return (
     <Tab.Container
       {...{
         defaultActiveKey,
         id,
         onSelect,
-      }}
+      }}      
+      
     >
       <Container className="d-flex justify-content-center align-items-center" style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>
-        <Nav variant="tabs">
+        <Nav variant="tabs" className="">
           {tabs.map((t, i) => {
             return (
               <Nav.Item key={i}>
-                <Nav.Link eventKey={t.eventKey} style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>{t.title}</Nav.Link>
+                <Nav.Link eventKey={t.eventKey} style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>{t.title.toUpperCase()}</Nav.Link>
               </Nav.Item>
             );
           })}
         </Nav>
+        {/* <input type="check" onChange={() => { setRunVote(!runVote) }} /> */}
+        <div
+          className="d-flex  justify-content-start align-items-center "
+        >
+
+          <Form.Check
+            className="boxCheck"
+            style={{ fontSize: "20px", marginRight: "10px",outline:0 }}
+            type="checkbox"
+            id={`default-checkbox`}
+            // label={`default checkbox`}
+            // onClick={availableCard}
+            onClick={() => {setRunVote(!runVote) }}
+          />
+          <label htmlFor="default-checkbox" className="custom-control-label" style={{color:window.screen.width > 767?'#6352e8':'white'}}>Open vote</label>
+        </div>
       </Container>
-      <div>
+      <div  className="pb-1">
         <Tab.Content>
           <Content>
             {tabs.map((t, i) => {
@@ -76,7 +95,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs }: TabsProps) => {
             })}
           </Content>
         </Tab.Content>
-      </div>
+      </div>            
     </Tab.Container>
   );
 };

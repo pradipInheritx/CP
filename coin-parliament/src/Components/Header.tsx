@@ -514,7 +514,7 @@ const Header = ({
 									}}
 								>
 									<div className='' onClick={() => {
-										if (!showMenubar) navigate("/profile/mine")
+										if (!showMenubar && !followerPage) navigate("/profile/mine")
 									}
 									}
 										style={{
@@ -563,7 +563,7 @@ const Header = ({
 															:
 															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
+																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
 																		onEnd={() => {
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
@@ -690,7 +690,7 @@ const Header = ({
 							{(user?.uid && !login) && (
 								<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
 									<div onClick={() => {
-										if (!showMenubar) navigate("/profile/mine")
+										if (!showMenubar && !followerPage) navigate("/profile/mine")
 									}}
 
 										style={{
@@ -755,7 +755,7 @@ const Header = ({
 														>
 															{/* reward modal 4 */}
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
+																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
 																	onEnd={() => {
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev

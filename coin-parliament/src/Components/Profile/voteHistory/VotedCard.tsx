@@ -17,6 +17,7 @@ type VotedCardProps = {
   id: string;
   coinSocketData?: any;
   callbackFun?: any;
+  setRunVote?: any;
 };
 
 const ProfilePairVote = styled.div`
@@ -342,8 +343,9 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
 const calculateWinner = (vote: VoteResultProps) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) => {
+const VotedCard = ({ vote, id, coinSocketData, callbackFun , setRunVote }: VotedCardProps) => {
 
+  console.log(vote ," all vote data")
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
 
