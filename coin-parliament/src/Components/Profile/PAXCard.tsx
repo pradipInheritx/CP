@@ -64,13 +64,13 @@ text-transform: uppercase;
 const ForZoom = styled.div` 
  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss : ""}`} ;
  `;
- //  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? BoxSet : ""}`}; 
- 
- // const ForZoom2 = styled.div`
- //  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss2 : ""}`} `;
- const ForZoom2 = styled.div`
+//  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? BoxSet : ""}`}; 
+
+// const ForZoom2 = styled.div`
+//  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss2 : ""}`} `;
+const ForZoom2 = styled.div`
  z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
- ${(props: ZoomProps) => `${(props.showCoinIncrement === 1 && window.screen.width <450 ) ? ZoomCss2 : ""}`} ;
+ ${(props: ZoomProps) => `${(props.showCoinIncrement === 1 && window.screen.width < 450) ? ZoomCss2 : ""}`} ;
 `;
 
 
@@ -88,7 +88,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   }, [PAX, latestRewardCoins]);
 
 
-  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward ,setBackgrounHide,backgrounHide} = useContext(AppContext);
+  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward, setBackgrounHide, backgrounHide } = useContext(AppContext);
   console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
@@ -113,7 +113,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
         {...{ showCoinIncrement }}
         style={{
           // @ts-ignore
-          position:`${window.screen.width >767 && showCoinIncrement ==1 ? "fixed" : ""}`,
+          position: `${window.screen.width > 767 && showCoinIncrement == 1 ? "absolute" : ""}`,
           height: "143px",
         }}
       >
@@ -142,27 +142,27 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                         handleSoundWinCmp.play();
                       }}
                       onEnd={() => {
-                      handleSoundWinCmp.pause();
-                      setTimeout(() => {
-                        handleShow();
-                        setShowCoinIncrement(2);
-                        setPrevCountRef(PAX);
-                        setSliverCoin(false)
-                        setBackgrounHide(false)
-                        // setInOutReward((prev: number) => {
-                        //   return 2;
-                        //   // return prev == 1 ? 2 : prev;
-                        // });
-                      }, 1000);
-                    }
-                    }
-                  /> :
-                  <>
-                    <span className="coinText">
-                      {prevCountRef || 0}
-                    </span>
-                  </>
-                }
+                        handleSoundWinCmp.pause();
+                        setTimeout(() => {
+                          handleShow();
+                          setShowCoinIncrement(2);
+                          setPrevCountRef(PAX);
+                          setSliverCoin(false)
+                          setBackgrounHide(false)
+                          // setInOutReward((prev: number) => {
+                          //   return 2;
+                          //   // return prev == 1 ? 2 : prev;
+                          // });
+                        }, 1000);
+                      }
+                      }
+                    /> :
+                    <>
+                      <span className="coinText">
+                        {prevCountRef || 0}
+                      </span>
+                    </>
+                  }
 
                   {/* {prevCountRef || 0} */}
 

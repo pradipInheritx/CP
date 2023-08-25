@@ -45,3 +45,13 @@ export const scrollUp = () => {
         });
     }, 2000);
 }
+
+export const divideArray = (arr: any, partSize: any) => {
+    let res: any = [];
+    for (let i = 0; i < arr.length; i += partSize) {
+        const DivideEqual = arr.slice(i, i + partSize);
+        res = [...res, DivideEqual]
+    }
+    return res;
+
+}

@@ -32,6 +32,7 @@ import copy from "copy-to-clipboard";
 import Copy from "Components/icons/copyShare";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
 import Swal from "sweetalert2";
+import RewardHistory from "./rewardHistory";
 
 
 const MyBadge = styled(Badge)`
@@ -65,7 +66,6 @@ const I = styled.i`
 // z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
 //  ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
 // `;
-const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
@@ -75,7 +75,6 @@ const Mine = () => {
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
-  const [data, setData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
   const [paxValue, setPaxValue] = React.useState(userInfo?.rewardStatistics?.diamonds || 0);
@@ -85,15 +84,8 @@ const Mine = () => {
   const [modelText, setModelText] = React.useState(0);
 
   let navigate = useNavigate();
-  const rewardList = async () => {
-    // console.log("user Id called");
-    const result = await getRewardTransactions({ uid: user?.uid });
-    // @ts-ignore
-    setData(result?.data);
-    // console.log("user Id", result);
-  };
 
-  console.log(data, "alllistdata")
+
 
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
@@ -141,9 +133,6 @@ const Mine = () => {
 
   }, [paxValue, countShow])
 
-  useEffect(() => {
-    rewardList();
-  }, [rewardTimer]);
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
@@ -333,120 +322,7 @@ const Mine = () => {
           </Row>
         )}
         <Row className='align-items-stretch mt-1 d-flex justify-content-center'>
-          <div
-            style={{
-              background: "white",
-              textAlign: "center",
-              color: "#6352E8",
-              fontSize: "12px",
-              marginTop: "30px",
-              width: `${window.screen.width > 767 ? "730px" : "100%"}`
-            }}
-          >
-            <div
-              style={{
-                marginTop: "20px",
-                marginBottom: "20px",
-                fontSize: "12px",
-              }}
-            >
-              {texts.REWARDHISTORY}
-            </div>
-            {data.map((item, index) => (
-              <div key={index}
-                className="my-2"
-              style={{
-                    background:"#d9d9d9"
-                  }}
-              >
-                {" "}
-                <div className='d-flex justify-content-around px-5 py-2'                                                  
-                >                  
-                  {/* @ts-ignore */}
-                  <RewardList
-                    className=""
-                    style={{
-                      width:"30%"
-                  }}
-                  >
-                    <span
-                      // style={{ color: "#6352E8" }}
-                    >
-                      {/* @ts-ignore */}
-                      {item?.winData?.thirdRewardDiamonds}
-                    </span>{" "}
-                    {/* {texts.GamePts} */}
-                   &nbsp;{texts.parliamentcoin}
-                  </RewardList>
-                  {/* @ts-ignore */}
-                  <RewardList className="d-flex justify-content-center "
-                    style={{
-                      width: "32%",
-                      borderLeft: "1px solid black",
-                      borderRight: "1px solid black",
-                      
-                  }}
-                  >
-                    <span style={{ color: "#6352E8" }}>
-                      {/* @ts-ignore */}
-                      {item?.winData?.secondRewardExtraVotes}
-                    </span>{" "}
-                    {/* {texts.Votes} */}
-                    &nbsp; {texts.ExtraVotes}
-                  </RewardList>
-                  <RewardList className="" onClick={() => {
-                    {/* @ts-ignore */ }
-                    setAlbumOpen(item?.winData?.firstRewardCardCollection);
-                    navigate('/profile/Album')
-                  }}
-                    style={{                    
-                      width: "30%"                      
-                  }}
-                  >
-                    {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" }} onClick={() => navigate('/profile/Album')}>
-                      {/* {item?.winData?.firstRewardCard} */}
-                      {/* @ts-ignore */ }
-                      {item?.winData?.firstRewardCardId}
-                    </span>
-                    {/* {texts.Card} */}
-                  </RewardList>
-                </div>
-                {/* @ts-ignore */}
-                {/* <span
-                  className='px-5 d-flex justify-content-center pb-1'
-                  style={{
-                    textAlign: "start",
-                    color: "#868686",
-                    fontSize: "8px",
-                    // marginBottom: "6px",
-                    // marginLeft: "20px",
-                  }}
-                >                  
-                  {item?.user}
-                </span> */}
-                {/* {data?.length - 1 != index ? (
-                  <hr
-                    className='solid'
-                    style={{ margin: "15px 30px 12px 30px" }}
-                  />
-                ) : (
-                  <p className='solid' style={{ margin: "28px" }}></p>
-                )} */}
-              </div>
-            ))}
-            {!data?.length && (
-              <>
-                {" "}
-                <div className='d-flex justify-content-around px-5'>
-                  <RewardList>-</RewardList>
-                  <RewardList>-</RewardList>
-                  <RewardList>-</RewardList>
-                </div>
-                <p className='solid' style={{ margin: "28px" }}></p>
-              </>
-            )}
-          </div>
+          <RewardHistory rewardTimer={rewardTimer} />
         </Row>
       </Container>
       <div>
@@ -499,7 +375,7 @@ const Mine = () => {
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           // @ts-ignore
-          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${ rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
+          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
         >
           <div className="d-flex justify-content-end">
             {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {

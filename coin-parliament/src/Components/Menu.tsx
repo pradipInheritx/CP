@@ -112,16 +112,16 @@ const Menu = ({
   items = [],
   title,
   pathname,
-}: MenuProps) => {  
-  const { menuOpen, setMenuOpen, login,showMenubar} =
+}: MenuProps) => {
+  const { menuOpen, setMenuOpen, login, showMenubar } =
     useContext(AppContext);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
-  const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); 
+  const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0);
   const { width } = useWindowSize();
-  const {backgrounHide} = useContext(AppContext);
+  const { backgrounHide } = useContext(AppContext);
   const handleClose = () => {
     setMenuOpen(false);
     // handleSoundClick()
@@ -139,14 +139,14 @@ const Menu = ({
 
 
   const desktop = width && width > 979;
-  
-    useEffect(() => {
-      if (backgrounHide) {
-        setShowCoinIncrement(1)
-      } else {
-        setShowCoinIncrement(0)
-      }
-    
+
+  useEffect(() => {
+    if (backgrounHide) {
+      setShowCoinIncrement(1)
+    } else {
+      setShowCoinIncrement(0)
+    }
+
   }, [backgrounHide]);
 
 
@@ -154,12 +154,12 @@ const Menu = ({
   return (
     <>
       <CoinPopup {...{ showCoinIncrement }} className="">
-        
-        </CoinPopup>
+
+      </CoinPopup>
       <NavContainer
         pathname={pathname}
         collapseOnSelect
-        expand='lg'        
+        expand='lg'
         style={{
           paddingRight: window.screen.width > 979 ? "20px" : "",
           paddingLeft: window.screen.width > 979 ? "20px" : "",
@@ -198,7 +198,7 @@ const Menu = ({
               </HamburgerBut>}
             </div>
           )}
-          {desktop &&(
+          {desktop && (
             <div className='d-flex justify-content-start check'>
               {!showMenubar && <HamburgerBut
                 // variant='link'
@@ -254,7 +254,7 @@ const Menu = ({
               })}
           </Nav>
         </Offcanvas.Body>
-        </MenuContainer>
+      </MenuContainer>
 
     </>
   );
