@@ -238,7 +238,7 @@ const Mine = () => {
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
-    <div>
+    <div className="border">
       <Container >
         {width > 767 ? (
           <div className='d-flex justify-content-center mt-2'>
@@ -353,58 +353,86 @@ const Mine = () => {
               {texts.REWARDHISTORY}
             </div>
             {data.map((item, index) => (
-              <div key={index}>
+              <div key={index}
+                className="my-2"
+              style={{
+                    background:"#d9d9d9"
+                  }}
+              >
                 {" "}
-                <div className='d-flex justify-content-around px-5'>
+                <div className='d-flex justify-content-around px-5 py-2'                                                  
+                >                  
                   {/* @ts-ignore */}
-                  <RewardList>
+                  <RewardList
+                    className=""
+                    style={{
+                      width:"30%"
+                  }}
+                  >
+                    <span
+                      // style={{ color: "#6352E8" }}
+                    >
+                      {/* @ts-ignore */}
+                      {item?.winData?.thirdRewardDiamonds}
+                    </span>{" "}
+                    {/* {texts.GamePts} */}
+                   &nbsp;{texts.parliamentcoin}
+                  </RewardList>
+                  {/* @ts-ignore */}
+                  <RewardList className="d-flex justify-content-center "
+                    style={{
+                      width: "32%",
+                      borderLeft: "1px solid black",
+                      borderRight: "1px solid black",
+                      
+                  }}
+                  >
                     <span style={{ color: "#6352E8" }}>
                       {/* @ts-ignore */}
                       {item?.winData?.secondRewardExtraVotes}
                     </span>{" "}
-                    {texts.Votes}
+                    {/* {texts.Votes} */}
+                    &nbsp; {texts.ExtraVotes}
                   </RewardList>
-                  {/* @ts-ignore */}
-                  <RewardList>
-                    <span style={{ color: "#6352E8" }}>
-                      {/* @ts-ignore */}
-                      {item?.winData?.thirdRewardDiamonds}
-                    </span>{" "}
-                    {texts.GamePts}
-                  </RewardList>
-                  <RewardList onClick={() => {
+                  <RewardList className="" onClick={() => {
                     {/* @ts-ignore */ }
                     setAlbumOpen(item?.winData?.firstRewardCardCollection);
                     navigate('/profile/Album')
                   }}
-
+                    style={{                    
+                      width: "30%"                      
+                  }}
                   >
                     {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
+                    <span style={{ color: "#6352E8" }} onClick={() => navigate('/profile/Album')}>
+                      {/* {item?.winData?.firstRewardCard} */}
+                      {/* @ts-ignore */ }
+                      {item?.winData?.firstRewardCardId}
+                    </span>
+                    {/* {texts.Card} */}
                   </RewardList>
                 </div>
                 {/* @ts-ignore */}
-                <p
-                  className='px-5'
+                {/* <span
+                  className='px-5 d-flex justify-content-center pb-1'
                   style={{
                     textAlign: "start",
                     color: "#868686",
                     fontSize: "8px",
-                    marginTop: "6px",
-                    marginLeft: "20px",
+                    // marginBottom: "6px",
+                    // marginLeft: "20px",
                   }}
-                >
-                  {/* @ts-ignore */}
+                >                  
                   {item?.user}
-                </p>
-                {data?.length - 1 != index ? (
+                </span> */}
+                {/* {data?.length - 1 != index ? (
                   <hr
                     className='solid'
                     style={{ margin: "15px 30px 12px 30px" }}
                   />
                 ) : (
                   <p className='solid' style={{ margin: "28px" }}></p>
-                )}
+                )} */}
               </div>
             ))}
             {!data?.length && (
@@ -471,7 +499,7 @@ const Mine = () => {
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           // @ts-ignore
-          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${!befornotShow && rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${!befornotShow && rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
+          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${ rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
         >
           <div className="d-flex justify-content-end">
             {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {

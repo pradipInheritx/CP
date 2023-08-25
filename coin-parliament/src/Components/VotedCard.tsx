@@ -183,6 +183,7 @@ const VotedCard = ({
     }
   };
 
+console.log("getpair vote",vote)
 
 
   useEffect(() => {
@@ -303,6 +304,8 @@ const VotedCard = ({
 
     row3 = `${vote.timeframe.name}`
   }
+  
+
 
   return (
     <>
