@@ -541,27 +541,34 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   );
 });
 
-async function getRewardTransactions(id: string) {
+async function getRewardTransactions(id: string, pageSize: any, pageNumber: any) {
+
   const transactions = await admin
     .firestore()
     .collection("reward_transactions")
-    .where("user", "==", id)
-    .get();
+    .where("user", "==", id).offset((pageNumber - 1) * pageSize).limit(pageSize)
 
-  const rewardTransactionData = transactions.docs
-    .map((e) => e.data())
-    .sort((a, b) => b.transactionTime - a.transactionTime);
-  console.log("rewardTransactionData-------", rewardTransactionData)
-  const afterAddingTime = rewardTransactionData.map((x) => {
-    x.transactionTime = x.transactionTime?.toDate();
-    return x;
-  });
-  return afterAddingTime;
+  const tempTransactionData: any = [];
+  const querySnapshot = await transactions.get();
+
+  await querySnapshot.forEach((doc) => {
+    tempTransactionData.push({ rewardId: doc.id, ...doc.data() })
+  })
+
+  console.info("tempTransactionData", tempTransactionData)
+
+  const rewardTransactionData = tempTransactionData
+    .map((e: any) => e)
+    .sort((a: any, b: any) => b.transactionTime - a.transactionTime);
+
+  console.info("rewardTransactionData", rewardTransactionData)
+
+  return rewardTransactionData;
 }
 
 exports.getRewardTransactions = functions.https.onCall(async (data) => {
-  const { uid } = data as { uid: string };
-  return await getRewardTransactions(uid);
+  const { uid, pageSize, pageNumber } = data as { uid: string, pageSize: any, pageNumber: any };
+  return await getRewardTransactions(uid, pageSize, pageNumber);
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
