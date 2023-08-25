@@ -106,7 +106,7 @@ const Votes = () => {
     })
   }
 
-  const MyVotedCard = useCallback(({ v, coinSocketData, callbackFun }: { v: VoteSnap, coinSocketData?: any, callbackFun?: any }) => {
+  const MyVotedCard = useCallback(({ v, coinSocketData, callbackFun }: { v: VoteSnap, coinSocketData?: any, callbackFun?: any }) => {    
     return <VotedCard vote={v} id={v.id} coinSocketData={coinSocketData} callbackFun={callbackFun} />;
   }, []);
 

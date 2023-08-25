@@ -60,14 +60,13 @@ text-transform: uppercase;
 const ForZoom = styled.div` 
 
 `;
-// ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss : ""}`} ;
+//  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss : ""}`} ;
 
 // const ForZoom2 = styled.div`
-
+// z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
+//  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss2 : ""}`} `;
 const ForZoom2 = styled.div`
 `;
-// z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
-    // ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss2 : ""}`} ;
 
 
 
@@ -104,8 +103,11 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
 
   return (
     <ForZoom2 {...{ showCoinIncrement }} style={{ marginTop: "7px" }}>
-      <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3"
+      <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3 "
         {...{ showCoinIncrement }}
+        style={{
+          height:"143px"
+        }}
       >
         <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
           {texts.CoinParliamentBalance}
@@ -203,9 +205,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                 }
               </div>
 
-              {inOutReward == 1 && <div className="">
-                {/* <CoinAnimation /> */}
-              </div>}
+              {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
               {/* <Modal.Footer> */}
 
             </Modal.Body>

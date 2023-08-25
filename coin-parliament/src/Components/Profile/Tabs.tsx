@@ -48,6 +48,7 @@ const Content = styled.div`
 
 const Tabs = ({ defaultActiveKey, id, onSelect, tabs ,setRunVote , runVote}: TabsProps) => {
   return (
+    <>
     <Tab.Container
       {...{
         defaultActiveKey,
@@ -66,11 +67,12 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs ,setRunVote , runVote}: Tab
             );
           })}
         </Nav>
-        {/* <input type="check" onChange={() => { setRunVote(!runVote) }} /> */}
+        {/* <input type="check" onChange={() => { setRunVote(!runVote) }} /> */}        
+        </Container>
         <div
-          className="d-flex  justify-content-start align-items-center "
+          className="d-flex justify-content-center align-items-center mt-2"
         >
-
+          <div className="d-flex justify-content-start align-items-center">
           <Form.Check
             className="boxCheck"
             style={{ fontSize: "20px", marginRight: "10px",outline:0 }}
@@ -80,9 +82,9 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs ,setRunVote , runVote}: Tab
             // onClick={availableCard}
             onClick={() => {setRunVote(!runVote) }}
           />
-          <label htmlFor="default-checkbox" className="custom-control-label" style={{color:window.screen.width > 767?'#6352e8':'white'}}>Open vote</label>
+            <label htmlFor="default-checkbox" className="custom-control-label" style={{ color:"#6352e8"}}>Open vote</label>
+            </div>
         </div>
-      </Container>
       <div  className="pb-1">
         <Tab.Content>
           <Content>
@@ -96,7 +98,8 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs ,setRunVote , runVote}: Tab
           </Content>
         </Tab.Content>
       </div>            
-    </Tab.Container>
+      </Tab.Container>      
+      </>
   );
 };
 
