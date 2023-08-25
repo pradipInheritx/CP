@@ -32,7 +32,7 @@ import Following from "./icons/Following";
 import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
-import { handleSoundClick } from "../common/utils/SoundClick";
+import { handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
 import { VoteContext } from "Contexts/VoteProvider";
@@ -169,7 +169,9 @@ export const OuterContainer = styled.div`
 //   border-radius: 0 0 87px 0;
 // `;
 
-const MenuContainer = styled(Menu)``;
+const MenuContainer = styled(Menu)`
+border:1px solid red;
+`;
 
 const Header = ({
 	title,
@@ -407,6 +409,7 @@ const Header = ({
 		<MenuContainer
 			pathname={pathname}
 			onSelect={onSelect}
+			
 			items={[
 				{
 					href: "/",
@@ -514,7 +517,7 @@ const Header = ({
 									}}
 								>
 									<div className='' onClick={() => {
-										if (!showMenubar) navigate("/profile/mine")
+										if (!showMenubar && !followerPage) navigate("/profile/mine")
 									}
 									}
 										style={{
@@ -563,8 +566,12 @@ const Header = ({
 															:
 															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
-																		onEnd={() => {
+																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
+																		onStart={() => {
+																		handleSoundWinCmp.play()
+																	}}
+																	onEnd={() => {
+																		handleSoundWinCmp.pause()																		
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
 																				return 3
@@ -690,7 +697,7 @@ const Header = ({
 							{(user?.uid && !login) && (
 								<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
 									<div onClick={() => {
-										if (!showMenubar) navigate("/profile/mine")
+										if (!showMenubar && !followerPage) navigate("/profile/mine")
 									}}
 
 										style={{
@@ -749,14 +756,18 @@ const Header = ({
 														<span
 															style={{
 																color: "#6352E8",
-																marginLeft: "50px",
+																marginLeft: "40px",
 																fontSize: window.screen.width <= 340 ? '0.7889em' : '12px'
 															}}
 														>
 															{/* reward modal 4 */}
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={3}
+																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
+																	onStart={() => {
+																		handleSoundWinCmp.play()
+																	}}
 																	onEnd={() => {
+																		handleSoundWinCmp.pause()
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
 																			return 3

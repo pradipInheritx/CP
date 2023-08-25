@@ -31,7 +31,7 @@ const FwVotes = () => {
 
   const [coinSubscription, setCoinSubscription] = useState([])
   const [coinSocketData, setCoinSocketData] = useState([])
-
+const [runVote, setRunVote] = useState(false);
   const getVotes = useCallback(
     async (start: number) => {
       if (followerUserId) {
@@ -128,6 +128,8 @@ const FwVotes = () => {
       defaultActiveKey="pairs"
       id="profile-votes"
       onSelect={() => setIndex(0)}
+      setRunVote={setRunVote}
+      runVote={runVote}
       tabs={[
         {
           eventKey: "pairs",
@@ -135,11 +137,25 @@ const FwVotes = () => {
           title: capitalize(`${texts.Pair}`),
           pane: (
             <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.pairs.votes.map((v, i) => (
+              {/* {votes.pairs.votes.map((v, i) => (
                 <div className="mb-2" key={i}>
                   <MyVotedCard v={v} callbackFun={callbackFun} />
                 </div>
-              ))}
+              ))} */}
+              {runVote && votes.pairs.votes.map((v, i) => {
+                if (!v.score) {                
+                  return <div className="mb-2" key={i}>
+                    <MyVotedCard v={v} callbackFun={callbackFun} />
+                  </div>
+                }
+              })}
+              {!runVote && votes.pairs.votes.map((v, i) => {                
+                  
+               return  <div className="mb-2" key={i}>
+                    <MyVotedCard v={v} callbackFun={callbackFun} />
+                  </div>
+                
+              })}
               {getButtons(votes.pairs)}
             </div>
           ),
@@ -149,9 +165,21 @@ const FwVotes = () => {
           title: capitalize(`${texts.Coin}`),
           pane: (
             <div className="d-flex justify-content-center align-items-center flex-column">
-              {votes.coins.votes.map((v, i) => (
+              {/* {votes.coins.votes.map((v, i) => (
                 <MyVotedCard v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />
-              ))}
+              ))} */}
+              {runVote && votes.coins.votes.map((v, i) => {
+                if (!v.score) {                  
+              return    <MyVotedCard key={i} v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />
+                }                
+              }
+              )}
+
+              {!runVote && votes.coins.votes.map((v, i) => {                
+                return  <MyVotedCard key={i} v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />                
+              }
+              )}
+
               {getButtons(votes.coins)}
             </div>
           ),

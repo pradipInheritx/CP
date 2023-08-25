@@ -32,6 +32,7 @@ import copy from "copy-to-clipboard";
 import Copy from "Components/icons/copyShare";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
 import Swal from "sweetalert2";
+import RewardHistory from "./rewardHistory";
 
 
 const MyBadge = styled(Badge)`
@@ -65,7 +66,6 @@ const I = styled.i`
 // z-index:${(props: ZoomProps) => `${props.inOutReward == 1 ? "2200" : ""}`};  
 //  ${(props: ZoomProps) => `${props.inOutReward == 1 ? ZoomCss : ""}`} 
 // `;
-const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
@@ -75,7 +75,6 @@ const Mine = () => {
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
-  const [data, setData] = useState([]);
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
   const [paxValue, setPaxValue] = React.useState(userInfo?.rewardStatistics?.diamonds || 0);
@@ -85,15 +84,8 @@ const Mine = () => {
   const [modelText, setModelText] = React.useState(0);
 
   let navigate = useNavigate();
-  const rewardList = async () => {
-    // console.log("user Id called");
-    const result = await getRewardTransactions({ uid: user?.uid });
-    // @ts-ignore
-    setData(result?.data);
-    // console.log("user Id", result);
-  };
 
-  console.log(data, "alllistdata")
+
 
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
@@ -141,9 +133,6 @@ const Mine = () => {
 
   }, [paxValue, countShow])
 
-  useEffect(() => {
-    rewardList();
-  }, [rewardTimer]);
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
@@ -153,7 +142,7 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-    if (showBack && ProfileUrl && !modalShow && (userInfo?.voteStatistics?.score || 0) < 100) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
+    if (showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
       setTimeout(() => {
         setModelText(1)
         // handleShow();
@@ -189,7 +178,11 @@ const Mine = () => {
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          goBack()
+          let continueVotingUrl = localStorage.getItem('continueVotingUrl');
+          if (continueVotingUrl) {
+            localStorage.removeItem('continueVotingUrl');
+            navigate(continueVotingUrl);
+          }
         }
       });
     }
@@ -234,7 +227,7 @@ const Mine = () => {
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
-    <div>
+    <div className="border">
       <Container >
         {width > 767 ? (
           <div className='d-flex justify-content-center mt-2'>
@@ -329,92 +322,7 @@ const Mine = () => {
           </Row>
         )}
         <Row className='align-items-stretch mt-1 d-flex justify-content-center'>
-          <div
-            style={{
-              background: "white",
-              textAlign: "center",
-              color: "#6352E8",
-              fontSize: "12px",
-              marginTop: "30px",
-              width: `${window.screen.width > 767 ? "730px" : "100%"}`
-            }}
-          >
-            <div
-              style={{
-                marginTop: "20px",
-                marginBottom: "20px",
-                fontSize: "12px",
-              }}
-            >
-              {texts.REWARDHISTORY}
-            </div>
-            {data.map((item, index) => (
-              <div key={index}>
-                {" "}
-                <div className='d-flex justify-content-around px-5'>
-                  {/* @ts-ignore */}
-                  <RewardList>
-                    <span style={{ color: "#6352E8" }}>
-                      {/* @ts-ignore */}
-                      {item?.winData?.secondRewardExtraVotes}
-                    </span>{" "}
-                    {texts.Votes}
-                  </RewardList>
-                  {/* @ts-ignore */}
-                  <RewardList>
-                    <span style={{ color: "#6352E8" }}>
-                      {/* @ts-ignore */}
-                      {item?.winData?.thirdRewardDiamonds}
-                    </span>{" "}
-                    {texts.GamePts}
-                  </RewardList>
-                  <RewardList onClick={() => {
-                    {/* @ts-ignore */ }
-                    setAlbumOpen(item?.winData?.firstRewardCardCollection);
-                    navigate('/profile/Album')
-                  }}
-
-                  >
-                    {/* @ts-ignore */}
-                    <span style={{ color: "#6352E8" }} onClick={() => navigate('/profile/Album')}>{item?.winData?.firstRewardCard}</span> {texts.Card}
-                  </RewardList>
-                </div>
-                {/* @ts-ignore */}
-                <p
-                  className='px-5'
-                  style={{
-                    textAlign: "start",
-                    color: "#868686",
-                    fontSize: "8px",
-                    marginTop: "6px",
-                    marginLeft: "20px",
-                  }}
-                >
-                  {/* @ts-ignore */}
-                  {item?.user}
-                </p>
-                {data?.length - 1 != index ? (
-                  <hr
-                    className='solid'
-                    style={{ margin: "15px 30px 12px 30px" }}
-                  />
-                ) : (
-                  <p className='solid' style={{ margin: "28px" }}></p>
-                )}
-              </div>
-            ))}
-            {!data?.length && (
-              <>
-                {" "}
-                <div className='d-flex justify-content-around px-5'>
-                  <RewardList>-</RewardList>
-                  <RewardList>-</RewardList>
-                  <RewardList>-</RewardList>
-                </div>
-                <p className='solid' style={{ margin: "28px" }}></p>
-              </>
-            )}
-          </div>
+          <RewardHistory rewardTimer={rewardTimer} />
         </Row>
       </Container>
       <div>
@@ -467,7 +375,7 @@ const Mine = () => {
           centered
           style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
           // @ts-ignore
-          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${!befornotShow && rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${!befornotShow && rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
+          contentClassName={window.screen.width > 767 ? `card-content modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG` : `card-contentMob modulebackground ForBigNft ${rewardTimer?.data?.firstRewardCardType.toLowerCase()}BG`}
         >
           <div className="d-flex justify-content-end">
             {/* <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {

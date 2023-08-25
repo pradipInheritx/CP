@@ -8,7 +8,7 @@ import { Col, Container, NavLink, Row } from "react-bootstrap";
 import moment from "moment";
 import { timeframeInitials } from "../../Atoms/Button/Button";
 import { MyCountdown } from "../../VotedCard";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getSingleCoinPriceColor } from "common/utils/helper";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getPairResultColor, getSingleCoinPriceColor } from "common/utils/helper";
 import { isArray } from "lodash";
 import { Link } from "react-router-dom";
 
@@ -17,6 +17,7 @@ type VotedCardProps = {
   id: string;
   coinSocketData?: any;
   callbackFun?: any;
+  setRunVote?: any;
 };
 
 const ProfilePairVote = styled.div`
@@ -342,8 +343,9 @@ const Coin = ({ vote, winner, index, id, coinSocketData, pairCoinResult }: CoinP
 const calculateWinner = (vote: VoteResultProps) =>
   Math.max(calculate(vote, 0), calculate(vote, 1));
 
-const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) => {
+const VotedCard = ({ vote, id, coinSocketData, callbackFun , setRunVote }: VotedCardProps) => {
 
+  console.log(vote ," all vote data")
   const { coins } = useContext(CoinsContext);
   //  Math.abs((coins[vote.coin.split("-")[0]].price
 
@@ -422,7 +424,7 @@ const VotedCard = ({ vote, id, coinSocketData, callbackFun }: VotedCardProps) =>
             >
               <p>VOTE RESULT</p>
               {vote?.coin?.split("-")[vote?.direction]}&nbsp;
-              <span style={{ color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)) }}>
+              <span style={{ color: getPairResultColor(parseFloat(pairCoinResult?.firstCoin), parseFloat(pairCoinResult?.secondCoin), vote?.direction) }}>
                 {/* @ts-ignore */}
                 {(vote?.valueExpirationTime && vote?.valueExpirationTime.length && pairCoinResult?.difference) ? `${pairCoinResult?.difference.replaceAll('-', '')}` : 0}%
               </span>

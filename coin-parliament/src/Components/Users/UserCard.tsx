@@ -166,7 +166,7 @@ const UserCard = ({
   const { setFollowerUserId } = useContext(AppContext)
   const { userInfo, user } = useContext(UserContext);
 
-// console.log(leader,"allleader")
+  // console.log(leader,"allleader")
 
   const redirectTab = () => {
     if (leader != undefined && setFollowerUserId != undefined) {
@@ -180,12 +180,10 @@ const UserCard = ({
       navigate('/Profile/mine')
     } else {
       navigate('/followerProfile/mine')
-
     }
-
   }
 
-  
+
 
   return (
     <Component515
@@ -209,7 +207,7 @@ const UserCard = ({
           <Avatar url={getAvatar(leader)} />
         </ElementsAvatarAImage1>
         <FlexCol>
-          <UsernameUnique>{leader.displayName}</UsernameUnique>
+          <UsernameUnique className="pb-1">{leader.displayName}</UsernameUnique>
           <Group4092>
             <Minister>{translate(leader?.status || "")}</Minister>
             {/* <Minister>{translate(leader?.status?.name || "")}</Minister> */}
@@ -223,7 +221,8 @@ const UserCard = ({
             </span>
             {expanded && (
               <span className='mx-1'>
-                {Number(Number(leader.pct * 100).toFixed(2))}%
+                {/* {Number(Number(leader.pct * 100).toFixed(2))}&nbsp;Score */}
+                {leader?.score || 0}&nbsp;Score
               </span>
             )}
             {!expanded && <span className='mx-1'></span>}

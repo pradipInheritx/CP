@@ -164,9 +164,6 @@ const SingalCard = () => {
         const collectionType = allcollection?.map((allCard: any) => {
           return allCard?.setDetails
         })
-        // const oneCard = collectionType?.map((cardById: any) => {      
-        //     return cardById                                 
-        // })                      
       }).catch((error) => {
         console.log(error, "error");
       })
@@ -180,8 +177,27 @@ const SingalCard = () => {
   }, [id])
   useEffect(() => {
     // @ts-ignore
-    setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))
-  }, [])
+    // setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))
+    getCardDetails();
+  }, []);
+  const getCardDetails = () => {
+    const getCard = firebase
+      .firestore()
+      .collection("cardsDetails")
+      .where("cardId", "==", id)
+    getCard.get()
+      .then((snapshot) => {
+        let data = snapshot.docs.map((doc) => doc.data());
+        if (data.length > 0) {
+          setSingalCardData(data[0]);
+        }
+        console.log(data, id, 'pkkkk');
+
+      }).catch((error) => {
+        console.log(error, "error");
+      })
+      ;
+  }
 
 
 

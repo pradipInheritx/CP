@@ -21,7 +21,7 @@ import { texts } from "./LoginComponent/texts";
 import { Button, Image, Modal } from "react-bootstrap";
 import { handleSoundClick, lastTensecWait } from "../common/utils/SoundClick";
 import Swal from "sweetalert2";
-import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getSingleCoinPriceColor } from "common/utils/helper";
+import { calculateDiffBetweenCoins, calculateDiffBetweenCoinsType, getCoinDifferenceColor, getPairResultColor, getSingleCoinPriceColor } from "common/utils/helper";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 import Line from "./icons/line";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceDispatchContext } from "Contexts/VoteEndCoinPrice";
@@ -183,6 +183,7 @@ const VotedCard = ({
     }
   };
 
+console.log("getpair vote",vote)
 
 
   useEffect(() => {
@@ -303,6 +304,8 @@ const VotedCard = ({
 
     row3 = `${vote.timeframe.name}`
   }
+  
+
 
   return (
     <>
@@ -399,7 +402,7 @@ const VotedCard = ({
                 </div>
                 <div className="d-flex align-items-center justify-content-center" style={{
                   fontSize: '1.7em',
-                  color: getCoinDifferenceColor(parseFloat(pairCoinResult?.difference)),
+                  color: getPairResultColor(parseFloat(pairCoinResult?.firstCoin), parseFloat(pairCoinResult?.secondCoin), vote?.direction),
                 }}>
                   {`${pairCoinResult?.difference.replaceAll('-', '')}%`}
                 </div>
@@ -510,10 +513,6 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
     <Countdown
       date={new Date(expirationTime)}
       renderer={({ hours, minutes, seconds, completed }) => {
-
-        if (hours === 0 && minutes === 0 && seconds <= 3 && completedVotes.length <= 0) {
-          // navigator.vibrate(3000);
-        }
         if (hours == 0 && minutes == 0 && seconds > 0 && seconds < 11 && setLastTenSec instanceof Function) {
           setLastTenSec(true);
         }
