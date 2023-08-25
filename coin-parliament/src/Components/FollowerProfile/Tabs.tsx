@@ -33,7 +33,7 @@ const Container = styled.div`
         text-align: center;
         opacity: 1;
         border: 0;
-        border-bottom:${window.screen.width <767? "3px solid #fff":"3px solid #5d49e0" };
+        border-bottom:${window.screen.width < 767 ? "3px solid #fff" : "3px solid #5d49e0"};
       }
     }
   }
@@ -46,45 +46,45 @@ const Content = styled.div`
   }
 `;
 
-const Tabs = ({ defaultActiveKey, id, onSelect, tabs ,setRunVote , runVote}: TabsProps) => {
+const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote }: TabsProps) => {
   return (
     <Tab.Container
       {...{
         defaultActiveKey,
         id,
         onSelect,
-      }}      
-      
+      }}
+
     >
-      <Container className="d-flex justify-content-center align-items-center" style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>
+      <Container className="d-flex justify-content-center align-items-center" style={{ background: window.screen.width < 979 ? '#6352e8' : '', color: window.screen.width < 979 ? '' : '#6352e8' }}>
         <Nav variant="tabs" className="">
           {tabs.map((t, i) => {
             return (
               <Nav.Item key={i}>
-                <Nav.Link eventKey={t.eventKey} style={{background:window.screen.width<979?'#6352e8':'',color:window.screen.width<979?'':'#6352e8'}}>{t.title.toUpperCase()}</Nav.Link>
+                <Nav.Link eventKey={t.eventKey} style={{ background: window.screen.width < 979 ? '#6352e8' : '', color: window.screen.width < 979 ? '' : '#6352e8' }}>{t.title.toUpperCase()}</Nav.Link>
               </Nav.Item>
             );
           })}
         </Nav>
-        {/* <input type="check" onChange={() => { setRunVote(!runVote) }} /> */} 
+        {/* <input type="check" onChange={() => { setRunVote(!runVote) }} /> */}
       </Container>
       <div
-          className="d-flex justify-content-center align-items-center mt-2"
-        >
-          <div className="d-flex justify-content-start align-items-center">
+        className="d-flex justify-content-center align-items-center mt-2 d-none"
+      >
+        <div className="d-flex justify-content-start align-items-center">
           <Form.Check
             className="boxCheck"
-            style={{ fontSize: "20px", marginRight: "10px",outline:0 }}
+            style={{ fontSize: "20px", marginRight: "10px", outline: 0 }}
             type="checkbox"
             id={`default-checkbox`}
             // label={`default checkbox`}
             // onClick={availableCard}
-            onClick={() => {setRunVote(!runVote) }}
+            onClick={() => { setRunVote(!runVote) }}
           />
-            <label htmlFor="default-checkbox" className="custom-control-label" style={{ color:"#6352e8"}}>Open vote</label>
-            </div>
+          <label htmlFor="default-checkbox" className="custom-control-label" style={{ color: "#6352e8" }}>Open vote</label>
         </div>
-      <div  className="pb-1">
+      </div>
+      <div className="pb-1">
         <Tab.Content>
           <Content>
             {tabs.map((t, i) => {
@@ -96,7 +96,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs ,setRunVote , runVote}: Tab
             })}
           </Content>
         </Tab.Content>
-      </div>            
+      </div>
     </Tab.Container>
   );
 };

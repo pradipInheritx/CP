@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { ButtonGroup } from "react-bootstrap";
 import Button from "Components/Atoms/Button/Button";
 import moment from 'moment';
+import AppContext from 'Contexts/AppContext';
 
 const RewardList = styled.p`
   font-size: 10px;
@@ -16,6 +17,7 @@ const RewardList = styled.p`
 `;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
 const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null }> = ({ rewardTimer, userId }) => {
+    const { setAlbumOpen } = useContext(AppContext);
     const { userInfo, user } = useContext(UserContext);
     const [data, setData] = useState([]);
     const [totalData, setTotalData] = useState<number>(0);
@@ -67,41 +69,46 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null }> = ({
                         <RewardList
                             className=""
                             style={{ width: "30%" }}>
-                            <span style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.7' : '1.2em', fontWeight: 'normal' }}>
+                            <span style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}>
                                 {/* @ts-ignore */}
                                 {item?.winData?.thirdRewardDiamonds}&nbsp; {texts.parliamentcoin}
                             </span>{" "}
 
                         </RewardList>
-                        <RewardList className="d-flex justify-content-center "
-                            style={{
-                                width: "32%",
-                                borderLeft: "1px solid black",
-                                borderRight: "1px solid black",
-
-                            }}
-                        >
-                            <span style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.7' : '1.2em', fontWeight: 'normal' }}>
+                        <div style={{
+                            borderLeft: "1px solid black",
+                            maxHeight: '1.3rem'
+                        }} />
+                        <RewardList className="d-flex justify-content-center ">
+                            <span style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}>
                                 {/* @ts-ignore */}
                                 {item?.winData?.secondRewardExtraVotes} &nbsp; {texts.ExtraVotes}
                             </span>{" "}
 
                         </RewardList>
-                        <RewardList className="" onClick={() => {
-                            {/* @ts-ignore */ }
-                            setAlbumOpen(item?.winData?.firstRewardCardCollection);
-                            navigate('/profile/Album')
-                        }}
+                        <div style={{
+                            borderLeft: "1px solid black",
+                            maxHeight: '1.3rem'
+                        }} />
+                        <RewardList className=""
                             style={{
                                 width: "30%",
                                 color: "#050505"
                             }}
                         >
-                            {/* @ts-ignore */}
-                            <span style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.7' : '1.2em', fontWeight: 'normal' }} onClick={() => navigate('/profile/Album')}>
+                            <span
+                                style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}
+                                onClick={() => {
+
+                                    {/* @ts-ignore */ }
+                                    // setAlbumOpen(item?.winData?.firstRewardCardCollection);
+
+                                    navigate(`/singalCard/${item?.winData?.firstRewardCardCollection}/${item?.winData?.firstRewardCardId}`);
+                                }}
+                            >
                                 {/* {item?.winData?.firstRewardCard} */}
                                 {/* @ts-ignore */}
-                                {item?.winData?.firstRewardCardId}
+                                CARD ID &nbsp;{item?.winData?.firstRewardCardSerialNo}
                             </span>
                         </RewardList>
                     </div>
