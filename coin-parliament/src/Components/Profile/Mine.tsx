@@ -153,7 +153,7 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-    if (showBack && ProfileUrl && !modalShow && (userInfo?.voteStatistics?.score || 0) < 100) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
+    if (showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
       setTimeout(() => {
         setModelText(1)
         // handleShow();
@@ -189,7 +189,11 @@ const Mine = () => {
         }
       }).then((result) => {
         if (result.isConfirmed) {
-          goBack()
+          let continueVotingUrl = localStorage.getItem('continueVotingUrl');
+          if (continueVotingUrl) {
+            localStorage.removeItem('continueVotingUrl');
+            navigate(continueVotingUrl);
+          }
         }
       });
     }
