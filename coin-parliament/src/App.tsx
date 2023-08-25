@@ -323,6 +323,7 @@ function App() {
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   const [socketConnect, setSocketConnect] = useState<any>(false)
+  const [backgrounHide, setBackgrounHide] = useState<any>(false)
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
@@ -1294,7 +1295,9 @@ function App() {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                    setBackgrounHide,
+                    backgrounHide,
                   voteNumberEnd,
                   setvoteNumberEnd,
                   albumOpen,

@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  setBackgrounHide?: any,
+  backgrounHide?: any,
   voteNumberEnd: any,
   setShowMenuBar: any,
   showMenubar: any,

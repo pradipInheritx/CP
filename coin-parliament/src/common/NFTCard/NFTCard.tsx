@@ -14,6 +14,8 @@ import epic from '../../assets/images/epicText.png';
 import legendary from '../../assets/images/legendaryText.png';
 import rare from '../../assets/images/rareText.png';
 import uncommon from '../../assets/images/uncommonText.png';
+import Showround from '../../assets/images/Showround.png';
+import firebase from "firebase/compat";
 
 import newcommon from '../../assets/images/newcommon.png';
 import newepic from '../../assets/images/newepic.png';
@@ -27,6 +29,9 @@ import { useNavigate } from "react-router-dom";
 import giftImage from "../../assets/images/giftCard.gif"
 import popupbg from "../../assets/images/popupbg.png"
 import popupline from "../../assets/images/popupline.png"
+import { doc } from "firebase/firestore";
+import VideoPopup from "Pages/VideoPopup";
+import UserContext from "Contexts/User";
 
 type MintingProps = {
   cardType?: any;
@@ -82,6 +87,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const [scratchShound, setScratchShound] = useState<any>(false)
   const [showImg, setShowImg] = useState<any>(false)
   const [scratchFinish, setScratchFinish] = useState<any>(false)
+  const [Videoshow, setVideoshow] = useState(false)
+  const [fulldata, setFulldata] = useState([])
   // const [befornotShow, setBefornotShow] = useState<any>(true)
   const [allColor, setAllColor] = useState<any>({
     epic: {
@@ -121,7 +128,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       // backgroundimg:newlegendary,
     },
   })
+
   const { showReward, setShowReward } = useContext(AppContext);
+  const [ mintedTime, setMintedTime ] = useState("");
+  const { user } = useContext(UserContext);
 
 
   const [allFrontImg, setAllFrontImg] = useState<any>({
@@ -132,9 +142,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     UNCOMMON: uncommon,
   })
   const [rotateCard, setRotateCard] = useState<boolean>(false);
+  // const MintedTime = new Date(1691676648*1000);
 
   const navigate = useNavigate();
-
   const cardDiv = useRef()
   const forwidth = document.getElementById("card-animation")
 
@@ -145,6 +155,67 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const HEIGHT = 320;
 
 
+
+
+  useEffect(() => {
+    
+console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
+    const getCardDetails = firebase
+      .firestore()
+      
+.collection("cardsDetails")
+.where("cardId", "==", rewardTimer?.data?.firstRewardCardId)  
+    getCardDetails.get()
+      .then((snapshot) => {
+         const data:any=[]
+          snapshot.forEach((doc) => {
+            data.push({ id: doc.id, ...doc.data() });
+          });
+        setFulldata(data[0])
+        console.log(data,"rewardcarddata")
+        // setAllCardArrayNew(data)
+        console.log(data,"allcardData")
+      }).catch((error) => {
+        console.log(error,"error");
+      });
+    
+    const getTime = []
+    
+    const getRewardTransactions = firebase
+     .firestore()
+      .collection("reward_transactions")
+      .where("user", "==", user?.uid)      
+      getRewardTransactions.get()
+      .then((doc: any) => {
+
+        doc.forEach((cards: any, index: number) => {
+          // winCards.push(cards.data().)
+          if (cards.data()?.winData?.firstRewardCardSerialNo == rewardTimer?.data?.firstRewardCardSerialNo) {            
+            const date = new Date(cards.data()?.transactionTime?.seconds * 1000);
+            // console.log(cards.data()?.transactionTime?.seconds,"getMIntedTime")            
+            var getMIntedTime = date.toLocaleString()
+           setMintedTime(getMIntedTime)           
+            // getTime.push(
+            //   { ...cards.data().winData, ...cards.data().transactionTime}
+            // )
+            
+          }
+        })
+
+        // console.log(getTime,"getTime")
+      })
+      .catch((error: any) => {
+        console.log("getAllRewardsOfUser Error", error)
+      })
+
+    // const userRef = doc(db, "cardsDetails", rewardTimer?.data?.firstRewardCardId);
+    return () => {
+      
+    };
+  }, []);
+
+
+// console.log(mintedTime,"getMIntedTime")
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {
@@ -375,6 +446,15 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     setScratchShound(false);
   };
 
+// const getMintedTime = () => {  
+//     // const date = new Date(winCard?.seconds * 1000);
+  
+//     const date = new Date(1691676648 * 1000);
+//   var getMIntedTime = date.toLocaleString()
+//    return  getMIntedTime
+  
+    
+//   }
 
 
   return (
@@ -383,33 +463,68 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
         height:"100%",
     }}
     >    
-      <div></div>
+      <div
+      // onClick={()=>setVideoshow(true)}
+      >
+        {/* click */}
+      </div>
       <MainDiv>
         <div style={{
           position: "relative",
-
-        }}>
-          {/* <Cross
-        className={`${!cressShow ? "d-none" : ""} `}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setRewardTimer(null);
-          setShowReward(0);
-        }}    
-      >
-          <span>
-            X
-          </span> 
-        </Cross> */}
+        }}>        
           {/* @ts-ignore */}
-
-
-          {/* @ts-ignore */}
-          <div className={classname} id="card-animation">
-            <div className={`${!showImg ?"d-none":""}`}>
-              <span className={`${cardType.toLowerCase()}_text`}>
+          <div className={classname} id="card-animation2"
+          
+          >
+            <div className={`${!showImg ? "d-none" : ""}`}>
+              <div className="d-flex justify-content-around">
+                <div className={`${!fulldata ? "opacity-0":""}`}
+                style={{
+                width:"25%"
+              }}
+                >
+                {/* {!Hide360Icon ? */}
+                  <img
+                    className=""
+                  style={{
+                    // position: "absolute",
+                    // right: 15,
+                    padding: "0px 0px 0px 10px",  
+                    cursor:"pointer"
+                  }}
+                    width={"35px"}                    
+                  onClick={() => {
+                    setVideoshow(true)
+                  }}
+                    src={Showround}
+                  />
+                  {/* :
+                    <span className='px-2 opacity-0'
+                      style={{
+                      fontWeight:"bold"
+                    }}
+                    >123A</span>} */}
+              </div>
+                <span className={`${cardType.toLowerCase()}_text`}
+                style={{
+                width:"50%"
+              }}
+                >
                 &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
               </span>
+                <span className={`${!fulldata ? "opacity-0":""} px-2`}
+                  style={{
+                    fontSize: "12px",
+                    width: "25%",
+                    textAlign: "right",
+                    fontWeight:"bold"
+                // width:"25%"
+              }}
+                >
+                  {/* @ts-ignore */}
+                {`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + (fulldata?.id)?.slice(0, 2)}`}
+              </span>
+              </div>
               <span className='cardname'>
                 <strong>{ rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
               </span>
@@ -429,7 +544,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
             </div>
           </div>
           {/* @ts-ignore */}
-          <ScratchCard ref={cardDiv}
+          { !cressShow && <ScratchCard ref={cardDiv}
             onMouseDown={(e) => {
               e.stopPropagation()
               if (window.screen.width < 768) return
@@ -463,7 +578,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           >
 
 
-          </ScratchCard>
+          </ScratchCard>}
         </div>
       </MainDiv>
       <div
@@ -499,7 +614,18 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
         >
         YOUR COLLECTION  {/* Check Win Card */}
         </Buttons.Primary>
-      </div>
+      </div>      
+      {Videoshow && <VideoPopup
+        fulldata={fulldata}     
+        setVideoshow={setVideoshow}
+        Videoshow={Videoshow}
+        // @ts-ignore
+        videoUrl={fulldata?.cardVideoUrl}
+        // @ts-ignore
+        imgUrl={fulldata?.cardImageUrl}
+        MintedTime={mintedTime}
+        PrivateSerialNo={rewardTimer.data.firstRewardCardSerialNo}
+              />}
     </div>
 
   );

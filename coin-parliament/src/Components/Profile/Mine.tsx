@@ -234,7 +234,7 @@ const Mine = () => {
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
   return (
-    <div>
+    <div className="border">
       <Container >
         {width > 767 ? (
           <div className='d-flex justify-content-center mt-2'>

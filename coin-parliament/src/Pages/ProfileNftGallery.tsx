@@ -476,6 +476,8 @@ const ProfileNftGallery = () => {
 
   const getMintedTime = (cardId: any) => {
     var getMIntedTime;
+console.log(winerCard,"winerCardcheck")
+
     let mintedTime = winerCard?.find((winCard: any, index: number) => {
       if (winCard?.firstRewardCardId == cardId) {
         const date = new Date(winCard?.seconds * 1000);

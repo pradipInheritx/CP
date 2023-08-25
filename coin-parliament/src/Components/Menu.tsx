@@ -1,12 +1,12 @@
 /** @format */
 
 import { Button, Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "../common/models/Dictionary";
 import { ContentPage } from "../Contexts/ContentContext";
 import AppContext from "../Contexts/AppContext";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Gradient2 } from "../styledMixins";
 import Hamburger from "./Atoms/Hamburger";
 import { useWindowSize } from "../hooks/useWindowSize";
@@ -62,6 +62,31 @@ const NavContainer = styled(Navbar)`
   overflow: hidden;
   width: 100%;
   z-index: 1000;
+  // border:1px solid red;  
+`;
+type ZoomProps = {
+  inOutReward?: number,
+  coinIncrement?: boolean,
+  showCoinIncrement: number,
+};
+
+const BoxSet = css`
+background-color: rgba(0,0,0,0.8);
+  position: fixed;
+  width:100%;
+  height: 100vh;
+  z-index:2000;
+`;
+const BoxSet2 = css`
+background-color:none;
+  // position: fixed;
+  // width:100%;
+  // height: 100vh;
+  // z-index:2000;
+`;
+
+const CoinPopup = styled.div`
+${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? BoxSet : BoxSet2}`};   
 `;
 const HamburgerBut = styled.button`
 background:none;
@@ -94,7 +119,9 @@ const Menu = ({
   const { user } = useContext(UserContext);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
+  const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); 
   const { width } = useWindowSize();
+  const {backgrounHide} = useContext(AppContext);
   const handleClose = () => {
     setMenuOpen(false);
     // handleSoundClick()
@@ -113,14 +140,26 @@ const Menu = ({
 
   const desktop = width && width > 979;
   
+    useEffect(() => {
+      if (backgrounHide) {
+        setShowCoinIncrement(1)
+      } else {
+        setShowCoinIncrement(0)
+      }
+    
+  }, [backgrounHide]);
+
 
 
   return (
     <>
+      <CoinPopup {...{ showCoinIncrement }} className="">
+        
+        </CoinPopup>
       <NavContainer
         pathname={pathname}
         collapseOnSelect
-        expand='lg'
+        expand='lg'        
         style={{
           paddingRight: window.screen.width > 979 ? "20px" : "",
           paddingLeft: window.screen.width > 979 ? "20px" : "",
@@ -215,7 +254,8 @@ const Menu = ({
               })}
           </Nav>
         </Offcanvas.Body>
-      </MenuContainer>
+        </MenuContainer>
+
     </>
   );
 };
