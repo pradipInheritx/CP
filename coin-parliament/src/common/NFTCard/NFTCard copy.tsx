@@ -41,29 +41,17 @@ type MintingProps = {
 };
 
 
-// const MainDiv = styled.div`
-//   opacity: 1; 
-//   z-index: 2200;  
-//   // width:${window.screen.width > 767 ? "500px" : "95%"};
-//   width:100%;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center; 
-// transition:  opacity 1s ease;
-// border:1px solid red;
-
-// `;
-
-const MainDiv = styled.div`  
+const MainDiv = styled.div`
   opacity: 1; 
-  z-index: 2200;
+  z-index: 2200;  
+  // width:${window.screen.width > 767 ? "500px" : "95%"};
+  width:100%;
   display: flex;
   justify-content: center;
   align-items: center; 
-  transition:  opacity 1s ease;
+transition:  opacity 1s ease;
+
 `;
-
-
 const ScratchCard = styled.canvas`
   position: absolute;
   top: 0;
@@ -87,38 +75,33 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
     epic: {
       color:"white",
       background:"#4938CD",
-      backgroundimg:epic,
-      // backgroundimg:newepic,
+      backgroundimg:newepic,
       fill:"#4938CD"
     },
     common: {
 
       color:"white",
       background:"#C8C0F3",
-      // backgroundimg:newcommon,
-      backgroundimg:common,
+      backgroundimg:newcommon,
       fill:"#4938CD"
     },
     rare: {
       color:"#292929",
       background:"#9D9D9D",
       fill: "#7E7E7E",
-      backgroundimg:rare,
-      // backgroundimg:newrare,
+      backgroundimg:newrare,
     },
     uncommon: {
       color:"#6438C1",
       background:"#A27CF9",
       fill: "#6438C1",
-      backgroundimg:uncommon,
-      // backgroundimg:newuncommon,
+      backgroundimg:newuncommon,
     },
     legendary: {
       color:"#292929",
       background:"#DC9F26",
       fill: "#A89120",
-      backgroundimg:legendary,
-      // backgroundimg:newlegendary,
+      backgroundimg:newlegendary,
     },
   })
   const { showReward, setShowReward } = useContext(AppContext);
@@ -139,11 +122,8 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const forwidth = document.getElementById("card-animation")
 
   console.log(forwidth,"forwidth")
-  // const WIDTH =  window.screen.width > 767 ? 500 : window.screen.width - 10 ;
-  // const HEIGHT = 460;
-  const WIDTH = 252;
-  const HEIGHT = 320;
-
+  const WIDTH =  window.screen.width > 767 ? 500 : window.screen.width - 10 ;
+  const HEIGHT = 460;
 
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
@@ -272,7 +252,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
-        container: document.querySelector("#card-animation"),
+        container: document.querySelector("#foranimation"),
         animationData: confetti,
         renderer: "html", // "canvas", "html"
         loop: true, // boolean
@@ -358,7 +338,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
-        container: document.querySelector("#card-animation"),
+        container: document.querySelector("#foranimation"),
         animationData: confetti,
         renderer: "html", // "canvas", "html"
         loop: true, // boolean
@@ -378,58 +358,20 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
 
   return (
-    <div className="d-flex justify-content-around align-items-center flex-column"
-      style={{        
-        height:"100%",
-    }}
-    >    
-      <div></div>
-      <MainDiv>
-        <div style={{
+    <>
+      <div className="d-flex flex-column justify-content-between align-items-center"
+        // id={`${!scratchFinish && "card-animation"}`}
+        id="card-animation"
+        style={{
+          height: "460px",          
           position: "relative",
-
-        }}>
-          {/* <Cross
-        className={`${!cressShow ? "d-none" : ""} `}
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          setRewardTimer(null);
-          setShowReward(0);
-        }}    
+        }}
+      
+      
+          
       >
-          <span>
-            X
-          </span> 
-        </Cross> */}
-          {/* @ts-ignore */}
-
-
-          {/* @ts-ignore */}
-          <div className={classname} id="card-animation">
-            <div className={`${!showImg ?"d-none":""}`}>
-              <span className={`${cardType.toLowerCase()}_text`}>
-                &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
-              </span>
-              <span className='cardname'>
-                <strong>{ rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
-              </span>
-              <div
-                className="d-flex justify-content-center">
-                <img src={rewardTimer?.data?.firstRewardCardImageUrl || TheEagle} alt='the hgodler'
-                  // className='img-fluid'
-                  style={{
-                   width: "245px",
-                  margin: "auto",
-                  display: "block",
-                  marginTop:"-7px",
-                }}
-                // width={"100%"}
-              />
-              </div>
-            </div>
-          </div>
-          {/* @ts-ignore */}
-          <ScratchCard ref={cardDiv}
+        {/* @ts-ignore */}
+          {!scratchFinish && <ScratchCard ref={cardDiv}
             onMouseDown={(e) => {
               e.stopPropagation()
               if (window.screen.width < 768) return
@@ -463,12 +405,88 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           >
 
 
-          </ScratchCard>
+          </ScratchCard>}
+        {!befornotShow && <div          
+          className="d-flex justify-content-center"
+          style={{
+          position:"relative"
+          }}          
+        >
+          <p
+            // className={`${cardType.toLowerCase()}_text`}
+            className="class_text mt-2"
+          style={{
+            position: "absolute",            
+        }}
+          >
+            &nbsp; {cardType?.toUpperCase()} &nbsp;
+          </p>
+          {
+          <svg width="250" height="52" viewBox="0 0 406 52" fill="none" xmlns="http://www.w3.org/2000/svg"
+            style={{
+              marginTop: "-11px",              
+          }}
+          >  
+          <path d="M383.12 0.959961H22.75C14.78 1.11164 9 0.959183 0.5 0.960653C35.5 0.958056 41.9 51.96 68.11 51.96H337.76C363.97 51.96 373.5 8.4998 406 0.998833C399.5 0.959961 391.095 1.12288 383.12 0.959961Z" fill={allColor[`${cardType.toLowerCase()}`].fill} />            
+          </svg>
+          }
+       
+        </div>}
+      
+      {!befornotShow && <MainDiv
+          className=""
+          id="foranimation"
+      >
+          <div
+
+          >    
+          {/* @ts-ignore */}
+            <div
+              className=""            
+            >
+            <div className={`${!showImg ? "d-none" : ""}`}>
+              {/* <span className={`${cardType.toLowerCase()}_text`}>
+                &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
+              </span> */}
+                <span className='cardname'
+                  style={{
+                  color:`${allColor[`${cardType.toLowerCase()}`].color}`
+                }}
+                >
+                <strong>{rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
+              </span>
+              <div
+                className="d-flex justify-content-center"
+              style={{
+                    width: "245px",
+                    height:"245px",
+                    // border:"1px solid red",
+                    // overflow:"hidden"
+              }}
+                
+              >
+                <img src={rewardTimer?.data?.firstRewardCardImageUrl || TheEagle} alt='the hgodler'
+                  // className='img-fluid'
+                  style={{
+                   width: "255px",
+                  margin: "auto",
+                  display: "block",
+                  marginTop:"-10px",
+                }}
+                // width={"100%"}
+              />
+              </div>
+              {/* <div className={classname}>
+                {" "}
+              </div> */}
+            </div>
+          </div>
+          
         </div>
-      </MainDiv>
-      <div
-        // className="w-100 d-flex justify-content-center mt-3"
-        className={`${!cressShow ? "opacity-0" : ""} w-100 d-flex justify-content-center `}
+        </MainDiv>}
+        {!befornotShow &&        
+      <div        
+        className={`w-100 d-flex justify-content-center mb-3`}
       >
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
@@ -476,32 +494,26 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           handleShareModleShow()
           handleCardClose()
           setCountShow(false)
-        }}
-        style={{
-          backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
-          width:`${"120px"}`
           }}
-        >
-          {/* Share Card */}
-          BARG & WIN
-        </Buttons.Primary>
+            style={{
+            backgroundColor:`${allColor[`${cardType.toLowerCase()}`].fill}`
+          }}
+          >Share Card</Buttons.Primary>
 
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
           setCountShow(false)
           navigate("/profile/Album")
-        }}
-        style={{
-          backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
-          width:`${"120px"}`
           }}
-        >
-        YOUR COLLECTION  {/* Check Win Card */}
-        </Buttons.Primary>
-      </div>
-    </div>
-
+            style={{
+            backgroundColor:`${allColor[`${cardType.toLowerCase()}`].fill}`
+          }}
+          >Check Win Card</Buttons.Primary>
+          </div>
+        }
+        </div>
+    </>
   );
 }
 

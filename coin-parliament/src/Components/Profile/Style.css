@@ -227,3 +227,12 @@ content: "" !important;
 /* .pay-custom-select-container ul li:hover {
  
 } */
+
+
+/* .boxCheck:focus{
+box-shadow:none !important;
+} */
+
+.boxCheck:focus ~ .custom-control-label::before {
+  box-shadow:none !important;
+}
