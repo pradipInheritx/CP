@@ -99,29 +99,29 @@ const ProfileNftGallery = () => {
     Space: Space,
   });
 
-  useEffect(() => {
-    if (albumOpen != "") {
-      const getCollectionType = firebase
-        .firestore()
-        .collection("nftGallery")
-      getCollectionType.get()
-        .then((snapshot) => {
+  // useEffect(() => {
+  //   if (albumOpen != "") {
+  //     const getCollectionType = firebase
+  //       .firestore()
+  //       .collection("nftGallery")
+  //     getCollectionType.get()
+  //       .then((snapshot) => {
 
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
-          setCollectionType(data)
-          setSelectCollection(albumOpen)
-          setSetsValue([])
-          setCardShow(false)
+  //         const data: any = []
+  //         snapshot.forEach((doc) => {
+  //           data.push({ id: doc.id, ...doc.data() });
+  //         });
+  //         setCollectionType(data)
+  //         setSelectCollection(albumOpen)
+  //         setSetsValue([])
+  //         setCardShow(false)
 
-        }).catch((error) => {
-          console.log(error, "error");
-        });
-      setAlbumOpen("")
-    }
-  }, [albumOpen])
+  //       }).catch((error) => {
+  //         console.log(error, "error");
+  //       });
+  //     setAlbumOpen("")
+  //   }
+  // }, [albumOpen])
 
 
 
@@ -478,6 +478,8 @@ const ProfileNftGallery = () => {
 
   const getMintedTime = (cardId: any) => {
     var getMIntedTime;
+    console.log(winerCard, "winerCardcheck")
+
     let mintedTime = winerCard?.find((winCard: any, index: number) => {
       if (winCard?.firstRewardCardId == cardId) {
         const date = new Date(winCard?.seconds * 1000);
@@ -553,7 +555,7 @@ const ProfileNftGallery = () => {
   useEffect(() => {
     let tempFilter = allCards;
     if (searchValue !== '') {
-      tempFilter = tempFilter.filter((value: any) => value.cardName.toLowerCase() === searchValue.toLowerCase());
+      tempFilter = tempFilter.filter((value: any) => value.cardName.toLowerCase().includes(searchValue.toLowerCase()));
     }
     if (collectionValue !== 'none') {
       tempFilter = tempFilter.filter((value: any) => value.albumName.toLowerCase() === collectionValue.toLowerCase());

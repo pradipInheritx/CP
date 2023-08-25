@@ -9,6 +9,7 @@ import { Buttons } from "../Atoms/Button/Button";
 import coinBg from "../../assets/images/coin_bg.png";
 import { ZoomCss as ZoomCss2 } from "../App/App";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
+import { handleSoundWinCmp } from "common/utils/SoundClick";
 
 
 type PAXCardProps = {
@@ -26,20 +27,22 @@ type ZoomProps = {
 };
 
 const ZoomCss = css`
-    transform: scale(1.4);
-    animation: zoom-in-zoom-out 4s infinite ;
-    @keyframes zoom-in-zoom-out {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.4);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
+    transform: scale(1.1);    
+    z-index:2000;
+//     animation: zoom-in-zoom-out 4s infinite ;
+//     @keyframes zoom-in-zoom-out {
+//   0% {
+//     transform: scale(1);
+//   }
+//   50% {
+//     transform: scale(1.4);
+//   }
+//   100% {
+//     transform: scale(1);
+//   }
+// }
 `;
+
 const Popuphead = styled.p`
   font-size:25px;
   font-weight:600;
@@ -57,15 +60,17 @@ text-transform: uppercase;
 `;
 
 
-const ForZoom = styled.div` 
 
-`;
-//  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss : ""}`} ;
+const ForZoom = styled.div` 
+ ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss : ""}`} ;
+ `;
+//  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? BoxSet : ""}`}; 
 
 // const ForZoom2 = styled.div`
-// z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
 //  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss2 : ""}`} `;
 const ForZoom2 = styled.div`
+ z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
+ ${(props: ZoomProps) => `${(props.showCoinIncrement === 1 && window.screen.width < 450) ? ZoomCss2 : ""}`} ;
 `;
 
 
@@ -83,7 +88,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   }, [PAX, latestRewardCoins]);
 
 
-  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward } = useContext(AppContext);
+  const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward, setBackgrounHide, backgrounHide } = useContext(AppContext);
   console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
@@ -96,7 +101,8 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   useEffect(() => {
     if (inOutReward === 1 && !modalShow && !showCoinIncrement) {
       setShowCoinIncrement(1);
-      setSliverCoin(true)
+      setBackgrounHide(true)
+      // setSliverCoin(true)
     }
   }, [inOutReward, modalShow]);
 
@@ -106,7 +112,9 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
       <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3 "
         {...{ showCoinIncrement }}
         style={{
-          height:"143px"
+          // @ts-ignore
+          position: `${window.screen.width > 767 && showCoinIncrement == 1 ? "absolute" : ""}`,
+          height: "143px",
         }}
       >
         <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
@@ -128,7 +136,35 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
               <div>
                 <span className="cp_Value vstack coinText" style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"} ` }}>
 
-                  {prevCountRef || 0}
+                  {showCoinIncrement === 1 ?
+                    <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
+                      onStart={() => {
+                        handleSoundWinCmp.play();
+                      }}
+                      onEnd={() => {
+                        handleSoundWinCmp.pause();
+                        setTimeout(() => {
+                          handleShow();
+                          setShowCoinIncrement(2);
+                          setPrevCountRef(PAX);
+                          setSliverCoin(false)
+                          setBackgrounHide(false)
+                          // setInOutReward((prev: number) => {
+                          //   return 2;
+                          //   // return prev == 1 ? 2 : prev;
+                          // });
+                        }, 1000);
+                      }
+                      }
+                    /> :
+                    <>
+                      <span className="coinText">
+                        {prevCountRef || 0}
+                      </span>
+                    </>
+                  }
+
+                  {/* {prevCountRef || 0} */}
 
                 </span>
                 {/* <span className="cp_PAX" >PTS</span> */}

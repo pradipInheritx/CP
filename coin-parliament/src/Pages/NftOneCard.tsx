@@ -182,7 +182,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
   const { type } = params;
 
 
-
+console.log(MintedTime,"MintedTimecheck")
   return (
 
     <div

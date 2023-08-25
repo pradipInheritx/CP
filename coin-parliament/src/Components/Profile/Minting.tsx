@@ -201,6 +201,7 @@ const Minting = ({
   const [modalShow, setModalShow] = React.useState(false);
   const [tooltipShow, setTooltipShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
+  const [ClickedOption, setClickedOption] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
@@ -249,6 +250,8 @@ const Minting = ({
   const [animateButton, setAnimateButton] = useState<boolean>(false);
 
   const claimRewardHandler = async () => {
+    setAnimateButton(true);
+    setTimeout(() => setAnimateButton(false), 1000);
     handleSoundClick()
     if (claim) {
       setLoading(true);
@@ -278,16 +281,14 @@ const Minting = ({
           container: 'popupStyleContainer'
         }
       });
-    }
-    setAnimateButton(true);
-    setTimeout(() => setAnimateButton(false), 1000);
+    }    
   }
 
 
   // const tooltip = (props:any) => {
 
   // };
-
+console.log(animateButton,"setAnimateButton")
 
   return (
     <React.Fragment>
@@ -480,11 +481,11 @@ const Minting = ({
               <p className="py-2" style={{ fontSize: "14px" ,textAlign:"center" }}>Go ahead and claim your reward , You deserve it!</p>
             </div>
           </Modal.Body>
-          <div className="d-flex justify-content-center pb-1" style={{ zIndex: '101' }}>
+          <div className="d-flex justify-content-center pb-1 " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
                 claimRewardHandler();
-                handleCmpPopupClose();
+                handleCmpPopupClose();                
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>

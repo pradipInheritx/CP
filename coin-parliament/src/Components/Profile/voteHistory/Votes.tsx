@@ -145,6 +145,8 @@ const Votes = () => {
 
   useEffect(() => { // here
     if (completedVotes?.length > 0) {
+      console.log('completedVotes');
+
       getVotes(index, runVote).then(void 0).catch(() => { });
     }
   }, [JSON.stringify(completedVotes)]);
