@@ -718,10 +718,10 @@ exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
 
-type GetVotesProps = { start: number; end: number; userId: string };
+type GetVotesProps = { start: number; end: number; userId: string, isOpenVote: any };
 
-const getVotes = async ({ start, end, userId }: GetVotesProps) => {
-  console.log("voteCoinApi called");
+const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
+  console.log("voteCoinApi called", "isOpenVote", isOpenVote);
   // const votes = await admin.firestore()
   //   .collection("votes")
   //   .withConverter(voteConverter)
@@ -741,6 +741,8 @@ const getVotes = async ({ start, end, userId }: GetVotesProps) => {
     getAllCoins(),
     getAllPairs(),
   ]);
+
+
   const allVotes = votes.docs
     .map((v) => {
       return { ...v.data(), id: v.id };
@@ -765,6 +767,8 @@ const getVotes = async ({ start, end, userId }: GetVotesProps) => {
         pairs: VoteResultProps[];
       }
     );
+
+
   const getAllVotesData = {
     coins: {
       votes: allVotes.coins.slice(start, end),
@@ -775,13 +779,35 @@ const getVotes = async ({ start, end, userId }: GetVotesProps) => {
       total: allVotes.pairs.length,
     },
   };
+
+  if (isOpenVote) {
+    if (getAllVotesData && getAllVotesData.coins && getAllVotesData.coins.votes && getAllVotesData.coins.votes.length) {
+      for (let coinVote = 0; coinVote < getAllVotesData.coins.votes.length; coinVote++) {
+        console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.coins.votes[coinVote].valueExpirationTime);
+        if (getAllVotesData.coins.votes[coinVote].valueExpirationTime) {
+          getAllVotesData.coins.votes.splice(coinVote, 1);
+        }
+      }
+    }
+    if (getAllVotesData && getAllVotesData.pairs && getAllVotesData.pairs.votes && getAllVotesData.pairs.votes.length) {
+      for (let pairVote = 0; pairVote < getAllVotesData.coins.votes.length; pairVote++) {
+        console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.pairs.votes[pairVote].valueExpirationTime);
+        if (getAllVotesData.pairs.votes[pairVote].valueExpirationTime) {
+          getAllVotesData.pairs.votes.splice(pairVote, 1);
+        }
+      }
+    }
+  }
+  console.info("getAllVotesData Coins", getAllVotesData.coins.votes);
+  console.info("getAllVotesData Pairs", getAllVotesData.pairs.votes);
+
   return JSON.stringify(getAllVotesData);
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
-  const { start, end, userId } = data as GetVotesProps;
+  const { start, end, userId, isOpenVote } = data as GetVotesProps;
   console.log("voteApiCalled");
-  return await getVotes({ start, end, userId });
+  return await getVotes({ start, end, userId, isOpenVote });
 });
 
 exports.getLeaderUsers = functions.https.onCall(async (data, context) => {
