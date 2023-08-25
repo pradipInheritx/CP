@@ -706,15 +706,14 @@ const ProfileNftGallery = () => {
                     borderRadius: "10px",
                   }}
                 >
-                  videos
-                  {/* {allVideo[`${data?.albumName.replace(" ", "")}`] ? <Video autoPlay={true} loop={true} playsInline>
-              <source
-                src={allVideo[`${data?.albumName.replace(" ", "")}`]}
-                type="video/mp4"
-              />
-            </Video> :
-              <p style={{ color: "white" }}>{data?.albumName}</p>
-            } */}
+                  {allVideo[`${data?.albumName.replace(" ", "")}`] ? <Video autoPlay={true} loop={true} playsInline>
+                    <source
+                      src={allVideo[`${data?.albumName.replace(" ", "")}`]}
+                      type="video/mp4"
+                    />
+                  </Video> :
+                    <p style={{ color: "white" }}>{data?.albumName}</p>
+                  }
                   {/* <p>{data?.collectionName} COLLECTION</p> */}
                 </div>
               )
