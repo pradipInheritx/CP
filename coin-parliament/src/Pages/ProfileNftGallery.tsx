@@ -531,11 +531,11 @@ const ProfileNftGallery = () => {
   const [collectionCardValue, setCollectionCardValue] = useState<any>('none');
   const [displayMyCards, setDisplayMyCards] = useState<boolean>(false);
   useEffect(() => {
-    if (localStorage.getItem('filterCollectionName')) {
+    if (localStorage.getItem('filterCollectionName') && allCards.length > 0) {
       setCollectionValue(localStorage.getItem('filterCollectionName'));
       setSelectCollection(localStorage.getItem('filterCollectionName'));
     }
-  }, []);
+  }, [allCards]);
   const getCardDetails = () => {
     const getCollectionType = firebase
       .firestore()
