@@ -2,6 +2,8 @@ import { firestore } from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
 import { getAllCoins as getAllCoin } from "../Coin";
 import axios from "axios";
+import env from '../../../env/env.json'
+
 // import { getPriceOnParticularTime } from "../Rate";
 
 import {
@@ -302,7 +304,7 @@ const getAllUsersAndSendNotification = async (
           Urgency: "high",
         },
         fcmOptions: {
-          link: "#", // TODO: put link for deep linking
+          link: `${env.BASE_SITE_URL}/coins/${coinName}`, // TODO: put link for deep linking
         },
       },
     };
@@ -368,7 +370,7 @@ export const getCoinCurrentAndPastDataDifference = async () => {
         console.log("sent notification on down");
         await getAllUsersAndSendNotification(
           coin.coinName,
-          `Coin ${coin.coinName}  value drop! Make your vote now! ⏬`
+          `Coin ${coin.coinName} value drop! Make your vote now! ⏬`
         );
       }
       if (coin.differnceInPercentag > 5) {
@@ -376,7 +378,7 @@ export const getCoinCurrentAndPastDataDifference = async () => {
         console.log("sent notification on up");
         await getAllUsersAndSendNotification(
           coin.coinName,
-          `Coin ${coin.coinName}  is on fire! Make your vote now! ⏫`
+          `Coin ${coin.coinName} is on fire! Make your vote now! ⏫`
         );
       }
     });

@@ -772,6 +772,8 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
         pairs: VoteResultProps[];
       }
     );
+  console.log('allVotes : ' + allVotes);
+
 
 
   const getAllVotesData = {
