@@ -530,6 +530,14 @@ const ProfileNftGallery = () => {
   const [collectionTypeValue, setCollectionTypeValue] = useState<any>('all');
   const [collectionCardValue, setCollectionCardValue] = useState<any>('none');
   const [displayMyCards, setDisplayMyCards] = useState<boolean>(false);
+  useEffect(() => {
+    
+    if (localStorage.getItem('filterCollectionName') && allCards.length > 0) {
+      setCollectionValue(localStorage.getItem('filterCollectionName'));
+      setSelectCollection(localStorage.getItem('filterCollectionName'));
+      localStorage.removeItem("filterCollectionName")
+    }
+  }, [allCards]);
   const getCardDetails = () => {
     const getCollectionType = firebase
       .firestore()
@@ -574,7 +582,7 @@ const ProfileNftGallery = () => {
       tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
     }
     setMyFilter(divideArray(tempFilter, 4));
-  }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards]);
+  }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards]);
   console.log(myFilter, searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, 'allCardNew');
 
 
@@ -700,7 +708,7 @@ const ProfileNftGallery = () => {
           {
             collectionType?.map((data: any, index: number) => {
               return (
-                <div className="" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
+                <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }} key={index}
                   style={{
                     width: "380px",
                     overflow: "hidden",
@@ -721,7 +729,6 @@ const ProfileNftGallery = () => {
               )
             })
           }
-
         </GalleryType>
         :
         myFilter?.length > 0 ?

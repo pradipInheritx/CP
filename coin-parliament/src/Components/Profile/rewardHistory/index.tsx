@@ -16,7 +16,7 @@ const RewardList = styled.p`
   cursor: pointer;
 `;
 const getRewardTransactions = httpsCallable(functions, "getRewardTransactions");
-const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null }> = ({ rewardTimer, userId }) => {
+const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null , isFollower?:boolean}> = ({ rewardTimer, userId,isFollower }) => {
     const { setAlbumOpen } = useContext(AppContext);
     const { userInfo, user } = useContext(UserContext);
     const [data, setData] = useState([]);
@@ -100,10 +100,20 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null }> = ({
                                 style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}
                                 onClick={() => {
 
-                                    {/* @ts-ignore */ }
                                     // setAlbumOpen(item?.winData?.firstRewardCardCollection);
-
-                                    navigate(`/singalCard/${item?.winData?.firstRewardCardCollection}/${item?.winData?.firstRewardCardId}`);
+                                    {/* @ts-ignore */ }
+                                    
+                                    {/* @ts-ignore */ }
+                                    // navigate(`/singalCard/${item?.winData?.firstRewardCardCollection}/${item?.winData?.firstRewardCardId}`);
+                                    if (isFollower) {
+                                        navigate(`/followerProfile/Album`);
+                                        // @ts-ignore
+                                        setAlbumOpen(item?.winData?.firstRewardCardCollection);
+                                    } else {
+                                        navigate(`/profile/Album`);                                        
+                                        // @ts-ignore
+                                        localStorage.setItem('filterCollectionName', item?.winData?.firstRewardCardCollection);
+                                    }                                        
                                 }}
                             >
                                 {/* {item?.winData?.firstRewardCard} */}
