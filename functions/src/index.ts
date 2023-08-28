@@ -543,10 +543,15 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
 
 async function getRewardTransactions(id: string, pageSize: any, pageNumber: any) {
 
-  const transactions = await admin
+  const transactionsBaseQuery = await admin
     .firestore()
     .collection("reward_transactions")
-    .where("user", "==", id).offset((pageNumber - 1) * pageSize).limit(pageSize)
+
+  const transactions = await transactionsBaseQuery
+    .where("user", "==", id)
+    .offset((pageNumber - 1) * pageSize)
+    .limit(pageSize)
+    .orderBy('transactionTime', 'desc')
 
   const transactionsForCount = await admin
     .firestore()
