@@ -772,7 +772,7 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
         pairs: VoteResultProps[];
       }
     );
-  console.log('allVotes : ' + allVotes);
+  console.log('allVotes : ', allVotes);
 
 
 
@@ -786,6 +786,9 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
       total: allVotes.pairs.length,
     },
   };
+
+  console.log('getAllVotesData : ', getAllVotesData);
+
 
   if (isOpenVote) {
     if (getAllVotesData && getAllVotesData.coins && getAllVotesData.coins.votes && getAllVotesData.coins.votes.length) {
