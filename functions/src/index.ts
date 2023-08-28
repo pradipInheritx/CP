@@ -789,7 +789,7 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
 
   console.log('getAllVotesData : ', getAllVotesData);
 
-  let filterVotes: object = { coins: [], pairs: [] };
+  let filterVotes: any = { coins: [], pairs: [] };
   if (isOpenVote) {
     if (getAllVotesData && getAllVotesData.coins && getAllVotesData.coins.votes && getAllVotesData.coins.votes.length) {
       filterVotes = { coins: getAllVotesData.coins.votes.filter((vote) => !vote.valueExpirationTime), ...filterVotes }
