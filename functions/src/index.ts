@@ -791,6 +791,7 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
         console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.coins.votes[coinVote].valueExpirationTime);
         if (getAllVotesData.coins.votes[coinVote].valueExpirationTime) {
           getAllVotesData.coins.votes.splice(coinVote, 1);
+          console.log('after remove value from getAllVotesData.coins.votes : ', getAllVotesData.coins.votes);
         }
       }
     }
@@ -799,6 +800,7 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
         console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.pairs.votes[pairVote].valueExpirationTime);
         if (getAllVotesData.pairs.votes[pairVote].valueExpirationTime) {
           getAllVotesData.pairs.votes.splice(pairVote, 1);
+          console.log('after remove value from getAllVotesData.pairs.votes : ', getAllVotesData.pairs.votes);
         }
       }
     }
