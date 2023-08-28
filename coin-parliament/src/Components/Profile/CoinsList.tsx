@@ -306,31 +306,32 @@ const CoinsList = () => {
       })
   }
 
-  // const send = () => {
-  //   const obj = {
-  //     method: "getTransaction",
-  //     user: `${sessionStorage.getItem("wldp_user")}`,
-  //     params: {
-  //       // @ts-ignore
-  //       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-  //       amount: payamount,
-  //       // @ts-ignore
-  //       // token:"ETH",
-  //       token: `${coinInfo?.symbol.toUpperCase()}`,
-  //       network: "5"
-  //     },
-  //     application: "votetoearn",
-  //     uid: `${sessionStorage.getItem("wldp_wsid")}`,
-  //   };
-  //   console.log(obj, "alldata");
-  //   (window as any).wldp.send_msg(obj).then((res: any) => {
-  //     // @ts-ignore
-  //     // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)          
-  //   }).catch((err: any) => {
-  //     console.log(err, "allerr")
+  const send = () => {
+    const obj = {
+      method: "getTransaction",
+      user: `${sessionStorage.getItem("wldp_user")}`,
+      params: {
+        // @ts-ignore
+        origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+        amount: 0.001,
+        // amount: payamount,
+        // @ts-ignore
+        // token:"ETH",
+        token: `${coinInfo?.symbol.toUpperCase()}`,
+        network: "11155111"
+      },
+      application: "votetoearn",
+      uid: `${sessionStorage.getItem("wldp_wsid")}`,
+    };
+    console.log(obj, "alldata");
+    (window as any).wldp.send_msg(obj).then((res: any) => {
+      // @ts-ignore
+      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)          
+    }).catch((err: any) => {
+      console.log(err, "allerr")
 
-  //   })
-  // };
+    })
+  };
 
   const checkAndPay = () => {
     (window as any).wldp.isWalletConnected()
@@ -339,16 +340,18 @@ const CoinsList = () => {
           // send the API for payment
           // console.log('Here we send the API call for payment')
           // @ts-ignore
-          GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+          // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+          send()
         }
         else {
           (window as any).wldp.connectionWallet('connect', 'ethereum')
             .then((account: any) => {
               if (account) {
                 // send the API for payment
-                //  console.log('Here we send the API call for payment') 
+                //  console.log('Here we send the API call for payment')
                 // @ts-ignore
-                GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+                // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+                send()
               }
             })
         }

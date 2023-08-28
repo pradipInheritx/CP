@@ -4,13 +4,15 @@ import { texts } from "../LoginComponent/texts";
 import CountUp from "react-countup";
 import AppContext from "../../Contexts/AppContext";
 import styled, { css } from "styled-components";
-import { Modal } from "react-bootstrap";
+import { Modal, Ratio } from "react-bootstrap";
 import { Buttons } from "../Atoms/Button/Button";
 import coinBg from "../../assets/images/coin_bg.png";
+import coin_bgVET from "../../assets/images/coin_bgVET.png";
 import { ZoomCss as ZoomCss2 } from "../App/App";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
-import { handleSoundWinCmp } from "common/utils/SoundClick";
-
+import { handleExtraCoin, handleSoundWinCmp } from "common/utils/SoundClick";
+// @ts-ignore
+import Wildwest from '../../assets/avatars/videos/Winter.mp4';
 
 type PAXCardProps = {
   walletId: string;
@@ -27,7 +29,7 @@ type ZoomProps = {
 };
 
 const ZoomCss = css`
-    transform: scale(1.1);    
+    // transform: scale(1.1);    
     z-index:2000;
 //     animation: zoom-in-zoom-out 4s infinite ;
 //     @keyframes zoom-in-zoom-out {
@@ -91,6 +93,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   const { showReward, setShowReward, setHeaderExtraVote, rewardExtraVote, setRewardExtraVote, inOutReward, setInOutReward, setBackgrounHide, backgrounHide } = useContext(AppContext);
   console.log(showReward, "CheckshowReward")
   const [modalShow, setModalShow] = React.useState(false);
+  const [videoShow, setVideoShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
 
@@ -114,16 +117,19 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
         style={{
           // @ts-ignore
           position: `${window.screen.width > 767 && showCoinIncrement == 1 ? "absolute" : ""}`,
-          height: "143px",
+          height: "160px",
         }}
       >
-        <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
+        <h6 className="box_title card-header " style={{
+          fontSize: '12px', paddingTop: '15px',
+          // paddingBottom: '10px'
+        }}>
           {texts.CoinParliamentBalance}
         </h6>
-        <div className="d-flex justify-content-center align-items-center flex-column">
+        {/* <div className="d-flex justify-content-center align-items-center flex-column">
           <div className="circle "
             style={{
-              backgroundImage: `url(${coinBg})`,
+              backgroundImage: `url(${coin_bgVET})`,
               backgroundSize: "90px 87px",
               backgroundRepeat: 'no-repeat',
               backgroundPosition: '-8px -5px',
@@ -139,10 +145,10 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   {showCoinIncrement === 1 ?
                     <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
                       onStart={() => {
-                        handleSoundWinCmp.play();
+                        handleExtraCoin.play();
                       }}
                       onEnd={() => {
-                        handleSoundWinCmp.pause();
+                        handleExtraCoin.pause();
                         setTimeout(() => {
                           handleShow();
                           setShowCoinIncrement(2);
@@ -164,16 +170,58 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                     </>
                   }
 
-                  {/* {prevCountRef || 0} */}
+                
 
                 </span>
-                {/* <span className="cp_PAX" >PTS</span> */}
+                
               </div>
             </div>
           </div>
           <p className="cp_wallet mt-3">{walletId}</p>
-        </div>
+        </div> */}
 
+        <div
+          style={{
+          cursor:"pointer"
+        }}
+        //   onClick={() => {
+        //     setVideoShow(true)
+        // }}
+        >
+          <img src={coin_bgVET} alt="" width="90px" />
+        </div>
+        <span
+        style={{fontSize:"15px"}}
+        >
+          {showCoinIncrement === 1 ?
+            <>
+                    <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
+                      onStart={() => {
+                        handleExtraCoin.play();
+                      }}
+                      onEnd={() => {
+                        handleExtraCoin.pause();
+                        setTimeout(() => {
+                          handleShow();
+                          setShowCoinIncrement(2);
+                          setPrevCountRef(PAX);
+                          setSliverCoin(false)
+                          setBackgrounHide(false)
+                          // setInOutReward((prev: number) => {
+                          //   return 2;
+                          //   // return prev == 1 ? 2 : prev;
+                          // });
+                        }, 1000);
+                      }
+                      }
+                    /> VTE </>:
+                    <>
+                      <span className="coinText">
+                        {prevCountRef || 0} VTE
+                      </span>
+                    </>
+                  }
+        </span>
         <div>
           {/* reward modal 3 */}
           <Modal
@@ -248,7 +296,46 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
             {/* </Modal.Footer>       */}
           </Modal>
         </div>
+<div>
+        <Modal        
+        show={videoShow}
+            onHide={() => (
+          setVideoShow(false)
+        )}
+        //   aria-labelledby="example-modal-sizes-title-sm"
+        backdrop="static"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        style={{ backgroundColor: "rgb(0 0 0 / 80%)", zIndex: "2200" }}
+          // @ts-ignore
+        contentClassName={"modulebackground ForBigNft"}
+          >
+              <div className="d-flex justify-content-end">
+              <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
+                setVideoShow(false)
+            }}          
+            >
 
+            </button>
+          </div>        
+        <Modal.Body>
+              {/* <div>
+                <Ratio               
+                  // style={{
+                  //   width:`300px`,          
+                  // }}
+                >
+                  <embed type="" src={Wildwest} />
+                </Ratio>
+                </div> */}
+              <p className="text-center"
+                style={{
+                color:"white"
+              }}
+              >Coin Video Here</p>
+        </Modal.Body>
+      </Modal>
+    </div>
 
 
 
@@ -317,9 +404,6 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
             {/* </Modal.Footer>       */}
           </Modal>
         </div>
-
-
-
       </ForZoom >
     </ForZoom2>
   );

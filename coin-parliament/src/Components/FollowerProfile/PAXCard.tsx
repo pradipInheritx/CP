@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "../../common/models/Dictionary";
 import { texts } from "../LoginComponent/texts";
 import coinBg from '../../assets/images/coin_bg.png'
+import coin_bgVET from "../../assets/images/coin_bgVET.png";
+import { Modal, Ratio } from "react-bootstrap";
+// @ts-ignore
+import Wildwest from '../../assets/avatars/videos/Winter.mp4';
 
 type PAXCardProps = {
   walletId: string;
@@ -9,14 +13,23 @@ type PAXCardProps = {
 };
 
 const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
+
+  const [videoShow, setVideoShow] = useState(false)
   const translate = useTranslation();
   return (
-    <div className="cp_balance dark_prpl_bkgnd mx-auto mb-3">
-      <h6 className="box_title card-header " style={{ fontSize: '12px', paddingTop: '15px', paddingBottom: '10px' }}>
+    <div className="cp_balance dark_prpl_bkgnd mx-auto mb-3"
+      style={{
+      height: "160px",
+    }}
+    >
+      <h6 className="box_title card-header " style={{
+        fontSize: '12px', paddingTop: '15px',
+        // paddingBottom: '10px'
+      }}>
         {/* {translate("Coin Parliament Balance")} */}
         {texts.CoinParliamentBalance}
       </h6>
-      <div className="d-flex justify-content-center align-items-center flex-column">
+      {/* <div className="d-flex justify-content-center align-items-center flex-column">
         <div className="circle"
           style={{
             backgroundImage: `url(${coinBg})`,
@@ -35,12 +48,72 @@ const PAXCard = ({ walletId, PAX }: PAXCardProps) => {
           >
             <div>
               <span className="cp_Value vstack coinText" style={{ paddingBottom: '2px', fontSize: '20px' }}>{PAX}</span>
-              {/* <span className="cp_PAX" >PTS</span> */}
+              
             </div>
           </div>
-        </div>
-        <p className="cp_wallet mt-3">{walletId}</p>
-      </div>
+        </div>        
+      </div> */}
+
+      <div
+        style={{
+          cursor:"pointer"
+        }}
+        //   onClick={() => {
+        //     setVideoShow(true)
+        // }}
+        >
+          <img src={coin_bgVET} alt="" width="90px" />
+        </div>          
+      <span className="coinText"
+        style={{
+        fontSize:"15px"
+      }}
+      >
+              {PAX} VTE
+            </span>                    
+
+      
+      <div>
+        <Modal        
+        show={videoShow}
+            onHide={() => (
+          setVideoShow(false)
+        )}
+        //   aria-labelledby="example-modal-sizes-title-sm"
+        backdrop="static"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+        style={{ backgroundColor: "rgb(0 0 0 / 80%)", zIndex: "2200" }}
+          // @ts-ignore
+        contentClassName={"modulebackground ForBigNft"}
+          >
+              <div className="d-flex justify-content-end">
+              <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
+                setVideoShow(false)
+            }}          
+            >
+
+            </button>
+          </div>        
+        <Modal.Body>
+              <div>
+                {/* <Ratio              
+                  // style={{
+                  //   width:`300px`,          
+                  // }}
+                >
+                  <embed type="" src={Wildwest} />
+                </Ratio> */}
+              
+              <p className="text-center"
+                style={{
+                color:"white"
+              }}
+              >Coin Video Here</p>
+                </div>
+        </Modal.Body>
+      </Modal>
+    </div>
     </div>
   );
 };

@@ -10,6 +10,8 @@ const silent = require("../../assets/sounds/silence.mp3").default;
 const scratch = require("../../assets/sounds/scratch.mp3").default;
 const WinCmp = require("../../assets/sounds/WinCmp.mp3").default;
 const giveVote = require("../../assets/sounds/mail-sent.mp3").default;
+const getVote = require("../../assets/sounds/ExtraVote.m4a").default;
+const getCoin = require("../../assets/sounds/ExtraCoin.mp3").default;
 
 const audio = new Audio(buttonClick);
 const onFlipcard = new Audio(Flipcard);
@@ -22,11 +24,35 @@ const silentSound = new Audio(silent);
 const scratchSound = new Audio(scratch);
 const WinCmpSound = new Audio(WinCmp);
 const voteEnd = new Audio(voteResult);
+const ExtraVote = new Audio(getVote);
+const ExtraCoin = new Audio(getCoin);
 
 export const handleSoundClick = () => {
   // console.log('play sound')
   audio.play();
 };
+
+export const handleExtraVote = {
+  play: () => {
+    ExtraVote.play();
+  },
+  pause: () => {
+    ExtraVote.pause();
+    ExtraVote.currentTime = 0;
+  }
+};
+
+export const handleExtraCoin = {
+  play: () => {
+    ExtraCoin.play();
+  },
+  pause: () => {
+    ExtraCoin.pause();
+    ExtraCoin.currentTime = 0;
+  }
+};
+
+
 export const handleSoundClickCard = {
 
   play: () => {

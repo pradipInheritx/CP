@@ -205,7 +205,7 @@ const FwMine = () => {
           </Row>
         )}
         <Row className='align-items-stretch mt-1 d-flex justify-content-center'>
-          <RewardHistory rewardTimer={rewardTimer} userId={followerUserId} />
+          <RewardHistory rewardTimer={rewardTimer} userId={followerUserId} isFollower={true} />
         </Row>
       </Container>
     </div>
