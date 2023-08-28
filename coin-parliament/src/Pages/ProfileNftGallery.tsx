@@ -530,6 +530,12 @@ const ProfileNftGallery = () => {
   const [collectionTypeValue, setCollectionTypeValue] = useState<any>('all');
   const [collectionCardValue, setCollectionCardValue] = useState<any>('none');
   const [displayMyCards, setDisplayMyCards] = useState<boolean>(false);
+  useEffect(() => {
+    if (localStorage.getItem('filterCollectionName')) {
+      setCollectionValue(localStorage.getItem('filterCollectionName'));
+      setSelectCollection(localStorage.getItem('filterCollectionName'));
+    }
+  }, []);
   const getCardDetails = () => {
     const getCollectionType = firebase
       .firestore()
@@ -574,7 +580,7 @@ const ProfileNftGallery = () => {
       tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
     }
     setMyFilter(divideArray(tempFilter, 4));
-  }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards]);
+  }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards]);
   console.log(myFilter, searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, 'allCardNew');
 
 
