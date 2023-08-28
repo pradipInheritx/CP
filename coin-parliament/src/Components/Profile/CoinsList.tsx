@@ -306,38 +306,6 @@ const CoinsList = () => {
   //     })
   // }
 
-  // const send = () => {
-  //   const obj = {
-  //     method: "getTransaction",
-  //     callback_secret: "https://www.apple.com/in/",
-  // callback_url: "https://www.google.com/",
-  //     user: `${sessionStorage.getItem("wldp_user")}`,
-  //     params: {
-  //       // @ts-ignore
-  //       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-  //       // amount: payamount,
-  //       amount: 0.0001,
-  //       // @ts-ignore
-  //       token: `${coinInfo?.symbol.toUpperCase()}`,
-  //       network: "11155111"
-  //     },
-  //     application: "votetoearn",
-  //     uid: `${sessionStorage.getItem("wldp_wsid")}`,
-  //   };
-  //   console.log(obj, "alldata");
-  //   (window as any).wldp.send_msg(obj).then((res: any) => {
-  //     // @ts-ignore
-  //     // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
-  //     (window as any).transaction_status_message().then((data:any) => {
-  //       console.log(data,"getrespons")
-  //     })
-  //     console.log(res, "alldata");
-  //   }).catch((err: any) => {
-  //     console.log(err, "allerr")
-
-  //   })
-  // };
-  
   const send = () => {
     const obj = {
       method: "getTransaction",
@@ -356,19 +324,51 @@ const CoinsList = () => {
       application: "votetoearn",
       uid: `${sessionStorage.getItem("wldp_wsid")}`,
     };
+    console.log(obj, "alldata");
+    (window as any).wldp.send_msg(obj).then((res: any) => {
+      // @ts-ignore
+      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+      (window as any).transaction_status_message().then((data:any) => {
+        console.log(data,"getrespons")
+      })
+      console.log(res, "alldata");
+    }).catch((err: any) => {
+      console.log(err, "allerr")
+
+    })
+  };
+  
+  // const send = () => {
+  //   const obj = {
+  //     method: "getTransaction",
+  //     callback_secret: "https://www.apple.com/in/",
+  // callback_url: "https://www.google.com/",
+  //     user: `${sessionStorage.getItem("wldp_user")}`,
+  //     params: {
+  //       // @ts-ignore
+  //       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+  //       // amount: payamount,
+  //       amount: 0.0001,
+  //       // @ts-ignore
+  //       token: `${coinInfo?.symbol.toUpperCase()}`,
+  //       network: "11155111"
+  //     },
+  //     application: "votetoearn",
+  //     uid: `${sessionStorage.getItem("wldp_wsid")}`,
+  //   };
   
 
-    (window as any).wldp.send_msg_client(obj)
-      .then((msg: any) => {
-                  console.log(msg,"getmsg")
-                  // const fc = (/\W/i.test(msg.message)) ? 'danger' : 'success'
-                  // console.log(fc,"getresult")
-                    // document.getElementById('customContentRes').innerHTML = '<pre class="text-'+fc+'">'+JSON.stringify(msg,false,2)+'</pre>'
-                    // setTimeout(() => { document.getElementById('customContentRes').innerHTML = '' }, 300000);
-                    // window.scrollTo(0, document.body.scrollHeight)
-                })
+  //   (window as any).wldp.send_msg_client(obj)
+  //     .then((msg: any) => {
+  //                 console.log(msg,"getmsg")
+  //                 // const fc = (/\W/i.test(msg.message)) ? 'danger' : 'success'
+  //                 // console.log(fc,"getresult")
+  //                   // document.getElementById('customContentRes').innerHTML = '<pre class="text-'+fc+'">'+JSON.stringify(msg,false,2)+'</pre>'
+  //                   // setTimeout(() => { document.getElementById('customContentRes').innerHTML = '' }, 300000);
+  //                   // window.scrollTo(0, document.body.scrollHeight)
+  //               })
 
-  };
+  // };
 
   const checkAndPay = () => {
     (window as any).wldp.isWalletConnected()
@@ -378,13 +378,13 @@ const CoinsList = () => {
           // console.log('Here we send the API call for payment')
           // @ts-ignore
           // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
-          // send()
+          send()
         }
         else {
           (window as any).wldp.connectionWallet('connect', 'ethereum')
             .then((account: any) => {
               if (account) {
-                // send()
+                send()
                 // send the API for payment
                 //  console.log('Here we send the API call for payment') 
                 // @ts-ignore
