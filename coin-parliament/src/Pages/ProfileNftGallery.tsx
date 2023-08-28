@@ -700,7 +700,7 @@ const ProfileNftGallery = () => {
           {
             collectionType?.map((data: any, index: number) => {
               return (
-                <div className="" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
+                <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }} key={index}
                   style={{
                     width: "380px",
                     overflow: "hidden",
@@ -721,7 +721,6 @@ const ProfileNftGallery = () => {
               )
             })
           }
-
         </GalleryType>
         :
         myFilter?.length > 0 ?
