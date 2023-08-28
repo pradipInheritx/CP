@@ -572,7 +572,7 @@ const NFTGallery = () => {
                       // CollectionType={item?.albumId}
                       // Disable={"CardDisebal"}                            
                       cardHeader={`${item?.cardName}`}
-                      id={item?.id}
+                      id={item?.id || item?.cardId}
                       BackSideCard={BackSideCard}
                       fulldata={item}
                       flipCard={backCards?.includes(item?.id)}

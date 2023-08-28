@@ -177,27 +177,26 @@ const SingalCard = () => {
   }, [id])
   useEffect(() => {
     // @ts-ignore
-    // setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))
-    getCardDetails();
+    setSingalCardData(JSON.parse(localStorage.getItem("singalCardData")))
+    // getCardDetails();
   }, []);
-  const getCardDetails = () => {
-    const getCard = firebase
-      .firestore()
-      .collection("cardsDetails")
-      .where("cardId", "==", id)
-    getCard.get()
-      .then((snapshot) => {
-        let data = snapshot.docs.map((doc) => doc.data());
-        if (data.length > 0) {
-          setSingalCardData(data[0]);
-        }
-        console.log(data, id, 'pkkkk');
+  // const getCardDetails = () => {
+  //   const getCard = firebase
+  //     .firestore()
+  //     .collection("cardsDetails")
+  //     .where("cardId", "==", id)
+  //   getCard.get()
+  //     .then((snapshot) => {
+  //       let data = snapshot.docs.map((doc) => doc.data());
+  //       if (data.length > 0) {
+  //         setSingalCardData(data[0]);
+  //       }        
 
-      }).catch((error) => {
-        console.log(error, "error");
-      })
-      ;
-  }
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     })
+  //     ;
+  // }
 
 
 
@@ -243,7 +242,7 @@ const SingalCard = () => {
                     CollectionType={singalCardData?.albumName}
                     Quantity={singalCardData?.quantity}
                     holderNo={singalCardData?.noOfCardHolders}
-                    cardNo={`${((singalCardData?.cardName)?.toUpperCase())?.slice(0, 2) + (singalCardData?.cardId)?.slice(0, 2)}`}
+                    cardNo={`${((singalCardData?.cardName)?.toUpperCase())?.slice(0, 2) + (singalCardData?.id)?.slice(0, 2)}`}
                     // GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((singalCardData?.cardName)?.toUpperCase())?.slice(0, 3) + singalCardData?.cardId}`}
                     // GeneralSerialNo={singalCardData?.sno}
                     GeneralSerialNo={singalCardData?.sno && (singalCardData?.sno[0])?.replace(/[0-9]/g, '')}
@@ -260,15 +259,8 @@ const SingalCard = () => {
                     darkTheme={true}
                     Hide360Icon={true}
                   />
-                </>
-                {/* );
-                      }
-                      
-                    })}                                */}
+                </>                
               </div >
-              {/* );
-            })} */}
-
             </SummerCard>
             <div className="d-flex justify-content-center  pt-2 pb-4">
               <Other onClick={() => {
