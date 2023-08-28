@@ -551,7 +551,7 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
     .where("user", "==", id)
     .offset((pageNumber - 1) * pageSize)
     .limit(pageSize)
-    .orderBy('transactionTime', 'desc')
+  // .orderBy('transactionTime', 'desc')
 
   const transactionsForCount = await admin
     .firestore()
