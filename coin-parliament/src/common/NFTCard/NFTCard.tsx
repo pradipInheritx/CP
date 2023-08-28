@@ -168,8 +168,21 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
     getCardDetails.get()
       .then((snapshot) => {
          const data:any=[]
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
+        snapshot.forEach((doc) => {
+            let cardData=doc.data()
+            data.push({              
+                cardType:cardData?.cardType,
+                setName:cardData?.setName,
+                cardName:cardData?.cardName,
+                albumName:cardData?.albumName,
+                noOfCardHolders:cardData?.noOfCardHolders,
+                cardId:cardData?.cardId,
+                id:cardData?.cardId,
+                totalQuantity:cardData?.totalQuantity,
+                cardImageUrl:cardData?.cardImageUrl,
+                cardVideoUrl:cardData?.cardVideoUrl,
+                setId:cardData?.setId,
+            });
           });
         setFulldata(data[0])
         console.log(data,"rewardcarddata")
@@ -339,7 +352,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       setCressShow(true);
       setRotateCard(true);
       setScratchShound(false)
-      openpopup()
+      openpopup()      
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
@@ -473,7 +486,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
           position: "relative",
         }}>        
           {/* @ts-ignore */}
-          <div className={classname} id="card-animation2"
+          <div className={classname} id="card-animation1"
           
           >
             <div className={`${!showImg ? "d-none" : ""}`}>

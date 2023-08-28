@@ -32,7 +32,7 @@ import Following from "./icons/Following";
 import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
-import { handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
+import { handleExtraVote, handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
 import { VoteContext } from "Contexts/VoteProvider";
@@ -568,10 +568,10 @@ const Header = ({
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
 																		onStart={() => {
-																		handleSoundWinCmp.play()
+																		handleExtraVote.play()
 																	}}
 																	onEnd={() => {
-																		handleSoundWinCmp.pause()																		
+																		handleExtraVote.pause()																		
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
 																				return 3
@@ -764,10 +764,10 @@ const Header = ({
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
 																	onStart={() => {
-																		handleSoundWinCmp.play()
+																		handleExtraVote.play()
 																	}}
 																	onEnd={() => {
-																		handleSoundWinCmp.pause()
+																		handleExtraVote.pause()
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
 																			return 3

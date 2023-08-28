@@ -80,7 +80,7 @@ console.log(videoUrl,imgUrl,"allmidea")
                     CollectionType={fulldata?.albumName}
                     Quantity={fulldata?.totalQuantity}
                     holderNo={fulldata?.noOfCardHolders}
-                    cardNo={`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + (fulldata?.cardId || fulldata?.id )?.slice(0, 2)}`}              
+                    cardNo={`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + ((fulldata?.cardId || fulldata?.id).toUpperCase())?.slice(0, 2)}`}              
                     PrivateSerialNo={PrivateSerialNo}
                     // GeneralSerialNo={`${((type)?.toUpperCase())?.slice(0, 3) + ((fulldata?.cardName)?.toUpperCase())?.slice(0, 3) + fulldata?.cardId}`}
                     // GeneralSerialNo={fulldata?.sno}              
@@ -99,8 +99,8 @@ console.log(videoUrl,imgUrl,"allmidea")
                     fulldata={fulldata}
                     Hide360Icon={true}                        
                       userId={fulldata?.setId}  
-              MintedTime={MintedTime}  
-                BigCard={true}
+                  MintedTime={MintedTime}  
+                    BigCard={true}
                       />   
                   </div>    
         </Modal.Body>

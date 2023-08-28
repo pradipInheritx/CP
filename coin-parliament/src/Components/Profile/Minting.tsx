@@ -30,7 +30,7 @@ const Container = styled.div`
   border-radius: 6px;
   opacity: 1;
   padding: ${(props: { width: number }) =>
-    `${props.width > 767 ? "12px 28px 25px" : "0"}`};
+    `${props.width > 767 ? "12px 28px 41.5px" : "0"}`};
   background: ${(props: { width: number }) =>
     `${props.width > 767 ? "#160133" : "none"}`};
   color: #d4d0f3;
