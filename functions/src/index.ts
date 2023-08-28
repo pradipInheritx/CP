@@ -789,7 +789,7 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
 
   console.log('getAllVotesData : ', getAllVotesData);
 
-  let filterVotes: object = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
+  let filterVotes: any = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
   if (isOpenVote) {
     if (getAllVotesData && getAllVotesData.coins && getAllVotesData.coins.votes && getAllVotesData.coins.votes.length) {
       filterVotes = {
