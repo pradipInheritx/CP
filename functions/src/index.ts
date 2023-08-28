@@ -789,31 +789,38 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
 
   console.log('getAllVotesData : ', getAllVotesData);
 
-
+  let filterVotes: object = { coins: [], pairs: [] };
   if (isOpenVote) {
     if (getAllVotesData && getAllVotesData.coins && getAllVotesData.coins.votes && getAllVotesData.coins.votes.length) {
-      for (let coinVote = 0; coinVote < getAllVotesData.coins.votes.length; coinVote++) {
-        console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.coins.votes[coinVote].valueExpirationTime);
-        if (getAllVotesData.coins.votes[coinVote].valueExpirationTime) {
-          getAllVotesData.coins.votes.splice(coinVote, 1);
-          console.log('after remove value from getAllVotesData.coins.votes : ', getAllVotesData.coins.votes);
-        }
-      }
+      filterVotes = { coins: getAllVotesData.coins.votes.filter((vote) => !vote.valueExpirationTime), ...filterVotes }
+      console.log("filterVotes.coins : ", filterVotes);
+
+      // for (let coinVote = 0; coinVote < getAllVotesData.coins.votes.length; coinVote++) {
+      //   console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.coins.votes[coinVote].valueExpirationTime);
+      //   if (getAllVotesData.coins.votes[coinVote].valueExpirationTime) {
+      //     getAllVotesData.coins.votes.splice(coinVote, 1);
+      //     console.log('after remove value from getAllVotesData.coins.votes : ', getAllVotesData.coins.votes);
+      //   }
+      // }
     }
     if (getAllVotesData && getAllVotesData.pairs && getAllVotesData.pairs.votes && getAllVotesData.pairs.votes.length) {
-      for (let pairVote = 0; pairVote < getAllVotesData.coins.votes.length; pairVote++) {
-        console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.pairs.votes[pairVote].valueExpirationTime);
-        if (getAllVotesData.pairs.votes[pairVote].valueExpirationTime) {
-          getAllVotesData.pairs.votes.splice(pairVote, 1);
-          console.log('after remove value from getAllVotesData.pairs.votes : ', getAllVotesData.pairs.votes);
-        }
-      }
+      filterVotes = { pairs: getAllVotesData.pairs.votes.filter((vote) => !vote.valueExpirationTime), ...filterVotes }
+      console.log("filterVotes.pairs : ", filterVotes);
+
+      // for (let pairVote = 0; pairVote < getAllVotesData.coins.votes.length; pairVote++) {
+      //   console.info("getAllVotesData.coins.votes[coinVote].valueExpirationTime", getAllVotesData.pairs.votes[pairVote].valueExpirationTime);
+      //   if (getAllVotesData.pairs.votes[pairVote].valueExpirationTime) {
+      //     getAllVotesData.pairs.votes.splice(pairVote, 1);
+      //     console.log('after remove value from getAllVotesData.pairs.votes : ', getAllVotesData.pairs.votes);
+      //   }
+      // }
     }
   }
-  console.info("getAllVotesData Coins", getAllVotesData.coins.votes);
-  console.info("getAllVotesData Pairs", getAllVotesData.pairs.votes);
+  // console.info("getAllVotesData Coins", getAllVotesData.coins.votes);
+  // console.info("getAllVotesData Pairs", getAllVotesData.pairs.votes);
+  console.log("final filterVotes : ", filterVotes);
 
-  return JSON.stringify(getAllVotesData);
+  return JSON.stringify(filterVotes);
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
