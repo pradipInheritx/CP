@@ -560,7 +560,7 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
 
   const rewardsTransactionTotalCount = (await transactionsForCount.get()).size;
   console.info("rewardsTransactionTotalCount", rewardsTransactionTotalCount)
-  const tempTransactionData: object[] = [];
+  const tempTransactionData: any[] = [];
   const querySnapshot = await transactions.get();
 
   await querySnapshot.forEach((doc) => {
