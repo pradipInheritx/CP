@@ -815,12 +815,16 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
       //   }
       // }
     }
+
+    console.log("final filterVotes : ", filterVotes);
+
+    return JSON.stringify(filterVotes);
+  } else {
+    return JSON.stringify(getAllVotesData);
   }
   // console.info("getAllVotesData Coins", getAllVotesData.coins.votes);
   // console.info("getAllVotesData Pairs", getAllVotesData.pairs.votes);
-  console.log("final filterVotes : ", filterVotes);
 
-  return JSON.stringify(filterVotes);
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
