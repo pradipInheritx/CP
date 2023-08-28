@@ -100,10 +100,12 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null }> = ({
                                 style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}
                                 onClick={() => {
 
-                                    {/* @ts-ignore */ }
                                     // setAlbumOpen(item?.winData?.firstRewardCardCollection);
-
-                                    navigate(`/singalCard/${item?.winData?.firstRewardCardCollection}/${item?.winData?.firstRewardCardId}`);
+                                    {/* @ts-ignore */ }
+                                    localStorage.setItem('filterCollectionName', item?.winData?.firstRewardCardCollection);
+                                    {/* @ts-ignore */ }
+                                    // navigate(`/singalCard/${item?.winData?.firstRewardCardCollection}/${item?.winData?.firstRewardCardId}`);
+                                    navigate(`/profile/Album`);
                                 }}
                             >
                                 {/* {item?.winData?.firstRewardCard} */}
