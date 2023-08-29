@@ -727,14 +727,6 @@ type GetVotesProps = { start: number; end: number; userId: string, isOpenVote: a
 
 const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
   console.log("voteCoinApi called", "isOpenVote", isOpenVote);
-  // const votes = await admin.firestore()
-  //   .collection("votes")
-  //   .withConverter(voteConverter)
-  //   .where("userId", "==", userId)
-  //   .get();
-
-  // const coins = await getAllCoins();
-  // const pairs = await getAllPairs();
 
   const [votes, coins, pairs] = await Promise.all([
     admin
@@ -789,7 +781,8 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
 
   console.log('getAllVotesData : ', getAllVotesData);
 
-  let filterVotes: object = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
+  let filterVotes: any = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
+
 
   if (isOpenVote) {
     if (getAllVotesData.coins.total) {
@@ -812,16 +805,34 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
       }
       console.log("filterVotes.pairs : ", filterVotes);
     }
-
-    console.log("final filterVotes : ", filterVotes);
-
-    return JSON.stringify(filterVotes);
   } else {
-    return JSON.stringify(getAllVotesData);
+    if (getAllVotesData.coins.total) {
+      filterVotes = {
+        coins: {
+          votes: getAllVotesData.coins.votes.filter((vote) => vote.valueExpirationTime),
+          total: getAllVotesData.coins.total,
+        },
+        ...filterVotes
+      }
+      console.log("filterVotes.coins : ", filterVotes);
+    }
+    if (getAllVotesData.pairs.total) {
+      filterVotes = {
+        pairs: {
+          votes: getAllVotesData.pairs.votes.filter((vote) => vote.valueExpirationTime),
+          total: getAllVotesData.pairs.total,
+        },
+        ...filterVotes
+      }
+      console.log("filterVotes.pairs : ", filterVotes);
+    }
+
+
   }
   // console.info("getAllVotesData Coins", getAllVotesData.coins.votes);
   // console.info("getAllVotesData Pairs", getAllVotesData.pairs.votes);
-
+  console.log("final filterVotes : ", filterVotes);
+  return JSON.stringify(filterVotes);
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
