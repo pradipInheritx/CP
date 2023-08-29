@@ -723,10 +723,12 @@ exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
 
-type GetVotesProps = { start: number; end: number; userId: string, isOpenVote: any };
+type GetVotesProps = { start: number; end: number; userId: string, isOpenVote: boolean };
 
 const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
-  console.log("voteCoinApi called", "isOpenVote", isOpenVote);
+  console.log("voteCoinApi called isOpenVote");
+  console.log("start, end, userId, isOpenVote : ", start, end, userId, isOpenVote);
+
 
   const [votes, coins, pairs] = await Promise.all([
     admin
@@ -785,32 +787,26 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     // for coins
     if (getAllVotesData.coins.votes.length) {
       let coinsVotes = getAllVotesData.coins.votes.filter((vote) => !vote.valueExpirationTime);
-
-      let total = coinsVotes.slice().length;
-      console.log('getAllVotesData.coins.total is called : ', coinsVotes, total);
+      filterVotes.coins.total = coinsVotes.slice().length;
+      console.log('getAllVotesData.coins.total is called : ', coinsVotes.length, coinsVotes);
       filterVotes.coins.votes = coinsVotes.slice(start, end)
-      console.log('coin total : ', total);
-
-      filterVotes.coins.total = total
-      console.log("filterVotes.coins : ", filterVotes);
+      console.log("filterVotes.coins : ", filterVotes.coins);
     }
 
     // For pairs
-    if (getAllVotesData.pairs.total) {
+    if (getAllVotesData.pairs.votes.length) {
       let pairsVotes = getAllVotesData.pairs.votes.filter((vote) => !vote.valueExpirationTime);
-      let total = pairsVotes.slice().length
-      console.log('getAllVotesData.pairs.total is called : ', pairsVotes, total);
-
+      filterVotes.pairs.total = pairsVotes.slice().length;
+      console.log('getAllVotesData.pairs.total is called : ', pairsVotes.length, pairsVotes);
       filterVotes.pairs.votes = pairsVotes.slice(start, end)
-      console.log('pair total : ', total);
-      filterVotes.pairs.total = total;
-      console.log("filterVotes.pairs : ", filterVotes);
+      console.log("filterVotes.pairs : ", filterVotes.pairs);
     }
     console.log("final filterVotes : ", filterVotes);
 
 
     return JSON.stringify(filterVotes);
   } else {
+    console.log('getAllVotesData called')
     return JSON.stringify(getAllVotesData);
   }
 };
