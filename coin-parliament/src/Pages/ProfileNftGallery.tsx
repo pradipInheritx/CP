@@ -531,7 +531,7 @@ const ProfileNftGallery = () => {
   const [collectionCardValue, setCollectionCardValue] = useState<any>('none');
   const [displayMyCards, setDisplayMyCards] = useState<boolean>(false);
   useEffect(() => {
-    
+
     if (localStorage.getItem('filterCollectionName') && allCards.length > 0) {
       setCollectionValue(localStorage.getItem('filterCollectionName'));
       setSelectCollection(localStorage.getItem('filterCollectionName'));
@@ -716,12 +716,9 @@ const ProfileNftGallery = () => {
                     borderRadius: "10px",
                   }}
                 >
-                  {allVideo[`${data?.albumName.replace(" ", "")}`] ? <Video autoPlay={true} loop={true} playsInline>
-                    <source
-                      src={allVideo[`${data?.albumName.replace(" ", "")}`]}
-                      type="video/mp4"
-                    />
-                  </Video> :
+                  {data?.albumVideoUrl ?
+                    <img src={data?.albumVideoUrl} width={'100%'} height={'100%'} />
+                    :
                     <p style={{ color: "white" }}>{data?.albumName}</p>
                   }
                   {/* <p>{data?.collectionName} COLLECTION</p> */}
