@@ -174,6 +174,7 @@ export const createCard = async (req: any, res: any) => {
         }
 
         const newCard: Card = {
+
             albumId,
             setId,
             albumName: getAlbum.albumName,
@@ -192,9 +193,12 @@ export const createCard = async (req: any, res: any) => {
             ),
             cardImageUrl,
             cardVideoUrl,
-        }
+        };
 
-        const addQuery = await firestore().collection("cardsDetails").add(newCard);
+        const baseCardQuery = firestore().collection("cardsDetails");
+        const addQuery = await baseCardQuery.add(newCard); //create card
+        await baseCardQuery.doc(addQuery.id).set({ cardId: addQuery.id }, { merge: true }); //add cardId into new card
+
 
         res.status(200).send({
             status: true,
