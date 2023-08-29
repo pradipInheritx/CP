@@ -164,9 +164,10 @@ export type BoxItems = {
   darkTheme?: boolean;
   Hide360Icon?: boolean;
   BigCard?: boolean;
+  MoveCard?: boolean;
   
 };
-const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl,Hide360Icon,BigCard }: BoxItems) => {
+const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl,Hide360Icon,BigCard ,MoveCard}: BoxItems) => {
 
 
 
@@ -187,7 +188,9 @@ console.log(MintedTime,"MintedTimecheck")
 
     <div
       onMouseEnter={() => {
-        if (Disable == "" || Disable == undefined && window.screen.width > 767) {
+        console.log("Hello i am first")  
+        if (Disable == "" || Disable == undefined && MoveCard && window.screen.width > 767) {
+          console.log(MoveCard,"MoveCard")
           setFlip(false);
           if (flipCard != true) {
             cardFlip()
@@ -195,12 +198,12 @@ console.log(MintedTime,"MintedTimecheck")
         }
       }}
       onMouseLeave={() => {
-        if (Disable == "" || Disable == undefined && window.screen.width > 767) {
+        if (Disable == "" || Disable == undefined && MoveCard  && window.screen.width > 767) {
           setFlip(true);
-          // cardFlip()
-          // if (flipCard != true) {            
-          //   cardFlip()
-          // }
+          cardFlip()
+          if (flipCard != true) {            
+            cardFlip()
+          }
         }
       }}
       // onFocus={() => {
@@ -257,31 +260,44 @@ console.log(MintedTime,"MintedTimecheck")
           backgroundColor: 'black !important',
           backgroundImage: (darkTheme ? 'none !important' : ''),
           color: (darkTheme ? "white" : ''),
+          position:"relative"
         }}>
-          <div>
+          <div
+            // style={{
+            //   width:"100%",
+            //   position: "absolute",
+            //   height:" 39px",
+            //   marginTop: "-10px",
+            // }}
+          
+          >
             {" "}
             <div className='d-flex justify-content-between'>
               <div className='opacity-1' style={{
                 fontSize: "12px",
-              width:"25%"
-              }}
-              
+                // marginTop:"10px",
+                width: "25%",                       
+              }}              
               >               
                 {!Hide360Icon ?
+                  <div>
                   <img
                     className=""
                   style={{
                     // position: "absolute",
                     // right: 15,
                     padding: "0px 0px 0px 10px",  
-                    cursor:"pointer"
+                    cursor: "pointer",
+                    
                   }}
                     width={"35px"}                    
-                  onClick={() => {
+                    onClick={(e) => {                    
                     setVideoshow(true)
                   }}
                     src={Showround}
-                />:
+                    />
+                    </div>
+                    :
                   <span className='px-2 opacity-0'>{cardNo}</span>}
               </div>
               <CenterText className={HeaderClass}
