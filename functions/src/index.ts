@@ -768,45 +768,45 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     );
   console.log('allVotes : ', allVotes);
 
-
-
-  const getAllVotesData = {
-    coins: {
-      votes: allVotes.coins.slice(start, end),
-      total: allVotes.coins.length,
-    },
-    pairs: {
-      votes: allVotes.pairs.slice(start, end),
-      total: allVotes.pairs.length,
-    },
-  };
-
-
   if (isOpenVote) {
+
     let filterVotes: any = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
+
     // for coins
-    if (getAllVotesData.coins.votes.length) {
-      let coinsVotes = getAllVotesData.coins.votes.filter((vote) => !vote.valueExpirationTime);
-      filterVotes.coins.total = coinsVotes.slice().length;
+    if (allVotes.coins.length) {
+      let coinsVotes = allVotes.coins.filter((vote) => !vote.valueExpirationTime);
+      filterVotes.coins.total = coinsVotes.length;
       console.log('getAllVotesData.coins.total is called : ', coinsVotes.length, coinsVotes);
       filterVotes.coins.votes = coinsVotes.slice(start, end)
       console.log("filterVotes.coins : ", filterVotes.coins);
-    }
+    };
 
     // For pairs
-    if (getAllVotesData.pairs.votes.length) {
-      let pairsVotes = getAllVotesData.pairs.votes.filter((vote) => !vote.valueExpirationTime);
+    if (allVotes.pairs.length) {
+      let pairsVotes = allVotes.pairs.filter((vote) => !vote.valueExpirationTime);
       filterVotes.pairs.total = pairsVotes.slice().length;
       console.log('getAllVotesData.pairs.total is called : ', pairsVotes.length, pairsVotes);
       filterVotes.pairs.votes = pairsVotes.slice(start, end)
       console.log("filterVotes.pairs : ", filterVotes.pairs);
-    }
+    };
     console.log("final filterVotes : ", filterVotes);
 
-
     return JSON.stringify(filterVotes);
+
   } else {
-    console.log('getAllVotesData called')
+
+    console.log('getAllVotesData called');
+    const getAllVotesData = {
+      coins: {
+        votes: allVotes.coins.slice(start, end),
+        total: allVotes.coins.length,
+      },
+      pairs: {
+        votes: allVotes.pairs.slice(start, end),
+        total: allVotes.pairs.length,
+      },
+    };
+
     return JSON.stringify(getAllVotesData);
   }
 };
