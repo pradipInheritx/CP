@@ -779,19 +779,18 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     },
   };
 
-  console.log('getAllVotesData : ', getAllVotesData);
-
-
 
   if (isOpenVote) {
     let filterVotes: any = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
     // for coins
     if (getAllVotesData.coins.votes.length) {
       let coinsVotes = getAllVotesData.coins.votes.filter((vote) => !vote.valueExpirationTime);
-      let total = coinsVotes.length;
-      console.log('getAllVotesData.coins.total is called : ', coinsVotes, total);
 
-      filterVotes.coins.votes = [...coinsVotes].slice(start, end)
+      let total = coinsVotes.slice().length;
+      console.log('getAllVotesData.coins.total is called : ', coinsVotes, total);
+      filterVotes.coins.votes = coinsVotes.slice(start, end)
+      console.log('coin total : ', total);
+
       filterVotes.coins.total = total
       console.log("filterVotes.coins : ", filterVotes);
     }
@@ -799,10 +798,11 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     // For pairs
     if (getAllVotesData.pairs.total) {
       let pairsVotes = getAllVotesData.pairs.votes.filter((vote) => !vote.valueExpirationTime);
-      let total = pairsVotes.length
+      let total = pairsVotes.slice().length
       console.log('getAllVotesData.pairs.total is called : ', pairsVotes, total);
 
-      filterVotes.pairs.votes = [...pairsVotes].slice(start, end)
+      filterVotes.pairs.votes = pairsVotes.slice(start, end)
+      console.log('pair total : ', total);
       filterVotes.pairs.total = total;
       console.log("filterVotes.pairs : ", filterVotes);
     }
