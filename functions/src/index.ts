@@ -788,16 +788,16 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     if (getAllVotesData.coins.votes.length) {
       let coinsVotes = getAllVotesData.coins.votes.filter((vote) => !vote.valueExpirationTime);
       filterVotes.coins.total = coinsVotes.slice().length;
-      console.log('getAllVotesData.coins.total is called : ', coinsVotes);
+      console.log('getAllVotesData.coins.total is called : ', coinsVotes.length, coinsVotes);
       filterVotes.coins.votes = coinsVotes.slice(start, end)
       console.log("filterVotes.coins : ", filterVotes.coins);
     }
 
     // For pairs
-    if (getAllVotesData.pairs.total) {
+    if (getAllVotesData.pairs.votes.length) {
       let pairsVotes = getAllVotesData.pairs.votes.filter((vote) => !vote.valueExpirationTime);
       filterVotes.pairs.total = pairsVotes.slice().length;
-      console.log('getAllVotesData.pairs.total is called : ', pairsVotes);
+      console.log('getAllVotesData.pairs.total is called : ', pairsVotes.length, pairsVotes);
       filterVotes.pairs.votes = pairsVotes.slice(start, end)
       console.log("filterVotes.pairs : ", filterVotes.pairs);
     }
