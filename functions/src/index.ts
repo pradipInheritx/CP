@@ -726,7 +726,9 @@ exports.checkValidUsername = functions.https.onCall(async (data) => {
 type GetVotesProps = { start: number; end: number; userId: string, isOpenVote: boolean };
 
 const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
-  console.log("voteCoinApi called isOpenVote", isOpenVote);
+  console.log("voteCoinApi called isOpenVote");
+  console.log("start, end, userId, isOpenVote : ", start, end, userId, isOpenVote);
+
 
   const [votes, coins, pairs] = await Promise.all([
     admin
