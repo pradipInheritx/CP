@@ -783,9 +783,10 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
 
   let filterVotes: any = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
 
-
   if (isOpenVote) {
     if (getAllVotesData.coins.total) {
+      console.log('getAllVotesData.coins.total is called');
+
       filterVotes = {
         coins: {
           votes: getAllVotesData.coins.votes.filter((vote) => !vote.valueExpirationTime),
@@ -796,6 +797,7 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
       console.log("filterVotes.coins : ", filterVotes);
     }
     if (getAllVotesData.pairs.total) {
+      console.log('getAllVotesData.pairs.total is called');
       filterVotes = {
         pairs: {
           votes: getAllVotesData.pairs.votes.filter((vote) => !vote.valueExpirationTime),
@@ -805,34 +807,12 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
       }
       console.log("filterVotes.pairs : ", filterVotes);
     }
+    console.log("final filterVotes : ", filterVotes);
+
+    return JSON.stringify(filterVotes);
   } else {
-    if (getAllVotesData.coins.total) {
-      filterVotes = {
-        coins: {
-          votes: getAllVotesData.coins.votes.filter((vote) => vote.valueExpirationTime),
-          total: getAllVotesData.coins.total,
-        },
-        ...filterVotes
-      }
-      console.log("filterVotes.coins : ", filterVotes);
-    }
-    if (getAllVotesData.pairs.total) {
-      filterVotes = {
-        pairs: {
-          votes: getAllVotesData.pairs.votes.filter((vote) => vote.valueExpirationTime),
-          total: getAllVotesData.pairs.total,
-        },
-        ...filterVotes
-      }
-      console.log("filterVotes.pairs : ", filterVotes);
-    }
-
-
+    return JSON.stringify(getAllVotesData);
   }
-  // console.info("getAllVotesData Coins", getAllVotesData.coins.votes);
-  // console.info("getAllVotesData Pairs", getAllVotesData.pairs.votes);
-  console.log("final filterVotes : ", filterVotes);
-  return JSON.stringify(filterVotes);
 };
 
 exports.getVotes = functions.https.onCall(async (data) => {
