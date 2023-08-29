@@ -70,7 +70,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVo
           </Nav>
         </Container>
         <div
-          className="d-flex justify-content-center align-items-center mt-2 d-none"
+          className="d-flex justify-content-center align-items-center mt-2"
         >
           <div className="d-flex justify-content-start align-items-center">
             <Form.Check
