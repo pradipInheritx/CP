@@ -482,13 +482,21 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
         {/* click */}
       </div>
       <MainDiv>
-        <div style={{
+        <div
+          style={{
           position: "relative",
         }}>        
           {/* @ts-ignore */}
-          <div className={classname} id="card-animation1"
-          
+          <div className={classname} id=""
+          style={{
+          position: "relative",
+        }}
           >
+            <div id="card-animation" style={{
+              height: "280px", width: "245px", position: "absolute",
+            top: "25px",                    
+            }} />
+            
             <div className={`${!showImg ? "d-none" : ""}`}>
               <div className="d-flex justify-content-around">
                 <div className={`${!fulldata ? "opacity-0":""}`}
@@ -535,7 +543,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
               }}
                 >
                   {/* @ts-ignore */}
-                {`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + (fulldata?.id)?.slice(0, 2)}`}
+                {`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + ((fulldata?.id)?.toUpperCase())?.slice(0, 2)}`}
               </span>
               </div>
               <span className='cardname'>

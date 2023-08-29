@@ -101,6 +101,7 @@ console.log(videoUrl,imgUrl,"allmidea")
                       userId={fulldata?.setId}  
                   MintedTime={MintedTime}  
                     BigCard={true}
+                    MoveCard={true}
                       />   
                   </div>    
         </Modal.Body>

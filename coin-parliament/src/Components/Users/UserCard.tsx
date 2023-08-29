@@ -222,7 +222,8 @@ const UserCard = ({
             {expanded && (
               <span className='mx-1'>
                 {/* {Number(Number(leader.pct * 100).toFixed(2))}&nbsp;Score */}
-                {leader?.score || 0}&nbsp;Score
+                {/* { leader?.score || 0}&nbsp;Score */}
+                {leader?.score === Math.floor(leader?.score) ? leader?.score  || 0 : (leader?.score).toFixed(2) || 0}&nbsp;Score
               </span>
             )}
             {!expanded && <span className='mx-1'></span>}
