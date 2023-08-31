@@ -549,9 +549,14 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
 
   const transactions = await transactionsBaseQuery
     .where("user", "==", id)
+    .orderBy('transactionTime', 'desc')
     .offset((pageNumber - 1) * pageSize)
     .limit(pageSize)
-  // .orderBy('transactionTime', 'desc')
+    .get();
+
+  transactions.forEach((doc) => {
+    tempTransactionData.push({ rewardId: doc.id, ...doc.data() })
+  })
 
   const transactionsForCount = await admin
     .firestore()
@@ -561,11 +566,8 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
   const rewardsTransactionTotalCount = (await transactionsForCount.get()).size;
   console.info("rewardsTransactionTotalCount", rewardsTransactionTotalCount)
   const tempTransactionData: any[] = [];
-  const querySnapshot = await transactions.get();
 
-  await querySnapshot.forEach((doc) => {
-    tempTransactionData.push({ rewardId: doc.id, ...doc.data() })
-  })
+
 
   console.info("tempTransactionData", tempTransactionData)
 
@@ -575,7 +577,7 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
   console.info("rewardTransactionData", rewardTransactionData)
 
   return {
-    totalCount: rewardsTransactionTotalCount, rewardsTransaction: rewardTransactionData
+    totalCount: rewardsTransactionTotalCount, rewardsTransaction: tempTransactionData
   };
 }
 
