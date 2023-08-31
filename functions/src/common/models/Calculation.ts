@@ -298,6 +298,7 @@ const getLeaders = async () => {
         subscribers: subscribers?.length || 0,
         leaders: leader?.length || 0,
         pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
+        successful: voteStatistics?.successful,
         total: voteStatistics?.total || 0,
       } as Leader;
     })
