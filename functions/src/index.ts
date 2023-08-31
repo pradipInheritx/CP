@@ -542,6 +542,7 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
 });
 
 async function getRewardTransactions(id: string, pageSize: any, pageNumber: any) {
+  const tempTransactionData: any[] = [];
 
   const transactionsBaseQuery = await admin
     .firestore()
@@ -562,7 +563,7 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
 
   const rewardsTransactionTotalCount = (await transactionsForCount.get()).size;
   console.info("rewardsTransactionTotalCount", rewardsTransactionTotalCount)
-  const tempTransactionData: any[] = [];
+
 
   console.info("tempTransactionData", tempTransactionData);
 
