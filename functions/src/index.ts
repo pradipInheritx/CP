@@ -567,17 +567,16 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
 
   console.info("tempTransactionData", tempTransactionData);
 
+
+  const rewardTransactionData = tempTransactionData.sort((a: any, b: any) => b.transactionTime._seconds - a.transactionTime._seconds);
   const startIndex = (pageNumber - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-
-  const rewardTransactionData = tempTransactionData
-    .sort((a: any, b: any) => b.transactionTime._seconds - a.transactionTime._seconds)
-    .slice(startIndex, endIndex);
+  const getTransactionDataAfterPagination: any = rewardTransactionData.slice(startIndex, endIndex)
 
   console.info("rewardTransactionData", rewardTransactionData)
 
   return {
-    totalCount: rewardsTransactionTotalCount, rewardsTransaction: tempTransactionData
+    totalCount: rewardsTransactionTotalCount, rewardsTransaction: getTransactionDataAfterPagination
   };
 }
 
