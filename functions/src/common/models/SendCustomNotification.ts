@@ -1,3 +1,4 @@
+import * as admin from "firebase-admin";
 import { firestore, messaging } from "firebase-admin";
 import { userConverter } from "./User";
 import { sendNotification } from "./Notification";
@@ -289,6 +290,7 @@ export const sendNotificationForTitleUpgrade = async (user: any, body: any, titl
         },
       },
     };
+    console.log("Notification Link from 24 hours : ", `${env.BASE_SITE_URL}/profile/mine`)
     await sendNotification({
       token,
       message,
@@ -368,6 +370,66 @@ export const sendNotificationForCpm = async (userId: any) => {
     title: "Wow",
     id: userId,
   });
+};
+
+// 24 hours no activity notification
+export const checkInActivityOfVotesAndSendNotification = async () => {
+  const currentDate = admin.firestore.Timestamp.now().toMillis();
+  console.log("Current date => ", currentDate);
+
+  const last24HoursMillis = 24 * 60 * 60 * 1000;
+  console.log("last24HoursMillis => ", last24HoursMillis);
+
+  const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
+  console.log("Last 24 hours date => ", last24HoursDate);
+
+  const getUsers = await admin.firestore().collection("users").get();
+  const getAllUsers: any = getUsers.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+    };
+  });
+
+  for (let user = 0; user < getAllUsers.length; user++) {
+    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).where("voteTime", "<", last24HoursDate).orderBy("voteTime", "desc").limit(1).get();
+    console.info("getLastUserVoteSnapshot", getLastUserVoteSnapshot);
+    const lastVotedData: any = [];
+    getLastUserVoteSnapshot.forEach((doc) => {
+      lastVotedData.push({ id: doc.id, ...doc.data() });
+      console.info(doc.id, "=>", doc.data());
+    });
+    if (lastVotedData && lastVotedData.length) {
+      const body = "VOTE NOW!";
+      const token = getAllUsers[user].token;
+
+      console.info("Token,", token);
+      const message: messaging.Message = {
+        token,
+        notification: {
+          title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
+          body,
+        },
+        webpush: {
+          headers: {
+            Urgency: "high",
+          },
+          fcmOptions: {
+            link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
+          },
+        },
+      };
+      console.info("Id,", getAllUsers[user].id);
+      await sendNotification({
+        token,
+        message,
+        body,
+        title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
+        id: getAllUsers[user].id,
+      });
+    }
+  }
 };
 
 // Error Function

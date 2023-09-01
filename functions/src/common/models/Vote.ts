@@ -104,64 +104,7 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
   return;
 };
 
-export const checkInActivityOfVotesAndSendNotification = async () => {
-  const currentDate = admin.firestore.Timestamp.now().toMillis();
-  console.log("Current date => ", currentDate);
 
-  const last24HoursMillis = 24 * 60 * 60 * 1000;
-  console.log("last24HoursMillis => ", last24HoursMillis);
-
-  const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
-  console.log("Last 24 hours date => ", last24HoursDate);
-
-  const getUsers = await admin.firestore().collection("users").get();
-  const getAllUsers: any = getUsers.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      ...data,
-    };
-  });
-
-  for (let user = 0; user < getAllUsers.length; user++) {
-    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).where("voteTime", "<", last24HoursDate).orderBy("voteTime", "desc").limit(1).get();
-    console.info("getLastUserVoteSnapshot", getLastUserVoteSnapshot);
-    const lastVotedData: any = [];
-    getLastUserVoteSnapshot.forEach((doc) => {
-      lastVotedData.push({ id: doc.id, ...doc.data() });
-      console.info(doc.id, "=>", doc.data());
-    });
-    if (lastVotedData && lastVotedData.length) {
-      const body = "VOTE NOW!";
-      const token = getAllUsers[user].token;
-
-      console.info("Token,", token);
-      const message: messaging.Message = {
-        token,
-        notification: {
-          title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
-          body,
-        },
-        webpush: {
-          headers: {
-            Urgency: "high",
-          },
-          fcmOptions: {
-            link: "#", // TODO: put link for deep linking
-          },
-        },
-      };
-      console.info("Id,", getAllUsers[user].id);
-      await sendNotification({
-        token,
-        message,
-        body,
-        title: "🗳 It's Time to Make Your Voice Heard Again! 🗳",
-        id: getAllUsers[user].id,
-      });
-    }
-  }
-};
 
 export const getOldAndCurrentPriceAndMakeCalculation = async (
   requestBody: any
