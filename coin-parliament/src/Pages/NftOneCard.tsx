@@ -10,6 +10,7 @@ import bkgnd2 from "../assets/images/bkgnd2.png";
 import bkgnd from "../assets/images/bkgnd.png";
 import Showround from "../assets/images/Showround.png";
 import TheEagle from "../assets/images/TheEagle1.png";
+import information from "../assets/svg/information.svg";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -117,7 +118,7 @@ const CardBack = styled.div<{ CardSize:any }>`
 
   & span {
     font-weight: 100;
-    opacity: 0.8;
+    // opacity: 0.8;
     font-size: ${props => props.CardSize ?"12px":"10px"};
     line-height: 10px;
     display: inline-block;
@@ -187,25 +188,27 @@ console.log(MintedTime,"MintedTimecheck")
   return (
 
     <div
-      onMouseEnter={() => {
-        console.log("Hello i am first")  
-        if (Disable == "" || Disable == undefined && MoveCard && window.screen.width > 767) {
-          console.log(MoveCard,"MoveCard")
-          setFlip(false);
-          if (flipCard != true) {
-            cardFlip()
-          }
-        }
-      }}
-      onMouseLeave={() => {
-        if (Disable == "" || Disable == undefined && MoveCard  && window.screen.width > 767) {
-          setFlip(true);
-          cardFlip()
-          if (flipCard != true) {            
-            cardFlip()
-          }
-        }
-      }}
+      // onMouseEnter={() => {
+      //   console.log("Hello i am first")
+      //   if (Disable == "" || Disable == undefined && MoveCard && window.screen.width > 767) {
+      //     console.log(flip,flipCard ,"Flip Flip")
+      //     console.log(MoveCard,"MoveCard")
+      //     setFlip(false);
+      //     if (flipCard != true) {
+      //       cardFlip()
+      //     }
+      //   }
+      // }}
+      // onMouseLeave={() => {
+      //   console.log(flip,flipCard ,"Flip Flip2")
+      //   if (Disable == "" || Disable == undefined && MoveCard  && window.screen.width > 767) {
+      //     setFlip(true);
+      //     cardFlip()
+      //     // if (flipCard != true) {            
+      //     //   cardFlip()
+      //     // }
+      //   }
+      // }}
       // onFocus={() => {
       //   if (Disable == "" || Disable == undefined) {          
       //     setFlip(!flip);
@@ -226,7 +229,7 @@ console.log(MintedTime,"MintedTimecheck")
       className={`card-container ${flipCard == true || flip != true ? "flipped" : ""
         }`}
       onClick={(e: any) => {
-        if (Disable == "" || Disable == undefined) {
+        if (Disable == "" || Disable == undefined && !MoveCard) {
           console.log('data', e.currentTarget.className?.includes('flipped'), flipCard)
           if (window.screen.width > 767) {
             if (!flip && !flipCard) {
@@ -280,7 +283,7 @@ console.log(MintedTime,"MintedTimecheck")
               }}              
               >               
                 {!Hide360Icon ?
-                  <div>
+                  <div>                    
                   <img
                     className=""
                   style={{
@@ -307,8 +310,16 @@ console.log(MintedTime,"MintedTimecheck")
               >
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
-              <div className='' style={{ fontSize: "12px",width:"25%",textAlign:"right" }}>
-                <span className='px-2 py-2'>{cardNo || ""}</span>
+              <div className='d-flex justify-content-end px-2' style={{ fontSize: "12px",width:"25%",}}>
+                {/* <span className='px-2 py-2'>{cardNo || "" }</span> */}
+                <div className={`${MoveCard ? "opacity-0":""}`}>
+
+                  <img src={information} alt="" 
+                    className="mt-1"
+                  width={"15px"}
+                  height={"15px"}
+                />
+                </div>
               </div>
             </div>
             <div>
@@ -323,7 +334,17 @@ console.log(MintedTime,"MintedTimecheck")
               </span>              
             </div>
             {/* <br /> */}
-            <div className='card-body'>
+            <div className='card-body'            
+            onMouseEnter={() => {        
+        if (Disable == "" || Disable == undefined  && !MoveCard &&  window.screen.width > 767) {
+          console.log(MoveCard,"MoveCard")
+          setFlip(false);
+          if (flipCard != true) {
+            cardFlip()
+          }
+        }
+      }}
+            >
               {VideoUrl && darkTheme ?
                 <Ratio
                   style={{
@@ -335,13 +356,33 @@ console.log(MintedTime,"MintedTimecheck")
                 :
                 <div
                   style={{
-                    width: "250px",
+                    width: "240px",
                     height: "220px",
                     // border:"1px solid red",
                     // overflow:"hidden"
+                    position:"relative",
                   }}
                   className="d-flex justify-content-center"
                 >
+                  <div
+                    className=""
+                  style={{
+                      position: "absolute",                      
+                      left: "-30px",
+                      bottom: "60px",
+                    transform: "rotate(-90deg)",
+                      width:"100px",
+                      color: "black",
+                      // alignItems:""
+                  }}
+                  >
+
+                  
+                  <p
+                    
+                    >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>
+                    
+                    </div>
                   <img
                     src={ImgUrl || TheEagle}
                     alt='the hgodler'
@@ -353,8 +394,8 @@ console.log(MintedTime,"MintedTimecheck")
 
                       // width: "255px",
                       // height: "255px",                      
-                      height: `${BigCard ?"355px":"245px"}`,
-                      width: `${BigCard ?"355px":"245px"}` ,
+                      height: `${BigCard ?"350px":"240px"}`,
+                      width: `${BigCard ?"350px":"240px"}` ,
                       margin: "auto",
                       display: "block",
                       marginTop: "-10px",
@@ -364,6 +405,16 @@ console.log(MintedTime,"MintedTimecheck")
                   // height={"100%"}
                   // width={"100%"}
                   />
+                  <p
+                  style={{
+                      position: "absolute",                      
+                      // left: "-20px",
+                      bottom: "-14PX",
+                      // transform: "rotate(-90deg)",
+                      color:"black",
+                      
+                  }}
+                  >{fulldata?.albumName?.toLocaleUpperCase()}</p>
                 </div>
               }
 
@@ -371,7 +422,29 @@ console.log(MintedTime,"MintedTimecheck")
           </div>
         </Card>
       </div>
-      <div className='back'>
+      <div className='back'
+      // onMouseEnter={() => {
+      //   console.log("Hello i am first")  
+      //   if (Disable == "" || Disable == undefined && window.screen.width > 767) {
+          
+      //     setFlip(false);
+      //     if (flipCard != true) {
+      //       cardFlip()
+      //     }
+      //   }
+      // }}
+        onMouseLeave={() => {
+        // console.log(flip,flipCard ,"Flip Flip")
+        if (Disable == "" || Disable == undefined && !MoveCard  && window.screen.width > 767) {
+          setFlip(true);              
+          cardFlip()
+          // if (flipCard != true) {            
+          //   cardFlip()
+          // }
+        }
+      }}
+      
+      >
         <CardBack CardSize={BigCard} className='shadow tex-center' style={{
           // minHeight: "318px",
           // minWidth: "250px",

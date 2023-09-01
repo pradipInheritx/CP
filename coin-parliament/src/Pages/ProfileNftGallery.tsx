@@ -586,6 +586,22 @@ const ProfileNftGallery = () => {
   console.log(myFilter, searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, 'allCardNew');
 
 
+  const getTotalSameCard =  (cardId: any) => {  
+    
+    const samevalue = 1;
+    // console.log(cardId,"data.length")
+     const getSameCard =  firebase
+      .firestore()
+       .collection("reward_transactions")
+       .where("user", "==", user?.uid)
+       .where("winData.firstRewardCardId", "==", cardId);
+    // console.info("getawait", getSameCard.get()).size
+    // return (await getSameCard.get()).size;
+    return samevalue
+}
+
+
+  // console.log(getTotalSameCard("G6f7w7QQRVS7M3maripx"),"getTotalSameCard")
 
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
@@ -744,7 +760,7 @@ const ProfileNftGallery = () => {
                           Serie={item?.setName || "Set" + index}
                           BackCardName={item?.cardName}
                           Rarity={item?.cardType}
-                          Quantity={item?.totalQuantity}
+                          Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
                           holderNo={item?.noOfCardHolders}
                           // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                           // cardNo={item?.sno[index]}
@@ -778,10 +794,11 @@ const ProfileNftGallery = () => {
                           Serie={item?.setName || "Set" + (index + 1)}
                           BackCardName={item?.cardName}
                           Rarity={item?.cardType}
-                          Quantity={item?.totalQuantity}
+                          // Quantity={item?.totalQuantity}
                           holderNo={item?.noOfCardHolders}
                           // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                           // cardNo={item?.sno[index]}
+                          Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
                           cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
                           // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                           MintedTime={getMintedTime(item?.cardId)}

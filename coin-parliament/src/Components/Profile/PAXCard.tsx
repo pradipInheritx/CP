@@ -105,7 +105,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
     if (inOutReward === 1 && !modalShow && !showCoinIncrement) {
       setShowCoinIncrement(1);
       setBackgrounHide(true)
-      // setSliverCoin(true)
+      // setSliverCoin(true)      
     }
   }, [inOutReward, modalShow]);
 
@@ -207,6 +207,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                           setPrevCountRef(PAX);
                           setSliverCoin(false)
                           setBackgrounHide(false)
+                          handleSoundWinCmp.play()
                           // setInOutReward((prev: number) => {
                           //   return 2;
                           //   // return prev == 1 ? 2 : prev;
@@ -273,6 +274,8 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                         setShowCoinIncrement(2);
                         setPrevCountRef(PAX);
                         setSliverCoin(false)
+                        // handleSoundWinCmp.play();
+                        handleSoundWinCmp.play()
                         // setInOutReward((prev: number) => {
                         //   return 2;
                         //   // return prev == 1 ? 2 : prev;
