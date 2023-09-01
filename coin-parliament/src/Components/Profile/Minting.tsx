@@ -203,7 +203,10 @@ const Minting = ({
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const [ClickedOption, setClickedOption] = React.useState(false);
   const handleClose = () => setModalShow(false);
-  const handleShow = () => setModalShow(true);
+  const handleShow = () => {
+    setModalShow(true)    
+    handleSoundWinCmp.play()
+  };
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleCmpPopupClose = () => {
     setCmpPopupShow(false);
@@ -257,6 +260,7 @@ const Minting = ({
       setLoading(true);
       const result = await claimReward({ uid: user?.uid }).then((data: any) => {
         handleShow()
+        // handleSoundWinCmp.play()
         return data;
       }).catch((error) => {
         showToast(error.message, ToastType.ERROR);

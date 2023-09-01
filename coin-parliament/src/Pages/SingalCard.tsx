@@ -267,7 +267,7 @@ const SingalCard = () => {
                 // navigate(-1);
                 setAlbumOpen(singalCardData?.albumName);
                 navigate('/nftAlbum')
-              }}>{translate("Veiw All Cards")}</Other>
+              }}>{translate("BACK TO COLLECTION")}</Other>
             </div>
           </div >
           <div>
