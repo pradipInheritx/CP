@@ -14,7 +14,7 @@ import {
   UserTypeProps,
 } from "./common/models/User";
 // import {generateAuthTokens} from "./common/models/Admin/Admin";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+import serviceAccount from "./serviceAccounts/sa.json";
 // import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -31,7 +31,6 @@ import {
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
-  checkInActivityOfVotesAndSendNotification,
 } from "./common/models/Vote";
 import {
   // fetchCoins,
@@ -76,7 +75,12 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
-import { sendNotificationForFollwersFollowings, sendCustomNotificationOnSpecificUsers, checkUserStatusIn24hrs } from "./common/models/SendCustomNotification";
+import {
+  sendNotificationForFollwersFollowings,
+  sendCustomNotificationOnSpecificUsers,
+  checkUserStatusIn24hrs,
+  checkInActivityOfVotesAndSendNotification
+} from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
 import subAdminRouter from "./routes/SubAdmin.routes";
@@ -467,6 +471,12 @@ exports.noActivityIn24Hours = functions.pubsub
     await checkInActivityOfVotesAndSendNotification();
     console.log("---End noActivityIn24Hours -------");
   });
+
+exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
+  console.log("---Start noActivityIn24Hours -------");
+  await checkInActivityOfVotesAndSendNotification();
+  console.log("---End noActivityIn24Hours -------");
+});
 
 exports.getCoinCurrentAndPastDataDifference = functions.pubsub
   .schedule("every 10 minutes")
