@@ -574,6 +574,7 @@ const Header = ({
 																		handleExtraVote.pause()																		
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
+																				handleSoundWinCmp.play()
 																				return 3
 																			});
 																			if (headerExtraVote != 0) {
@@ -770,6 +771,7 @@ const Header = ({
 																		handleExtraVote.pause()
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
+																			handleSoundWinCmp.play()
 																			return 3
 																		});
 																		if (headerExtraVote != 0) {

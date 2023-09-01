@@ -7,7 +7,7 @@ import "./style.css";
 import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
-import { handleSoundClickCard } from "../utils/SoundClick";
+import { handleSoundClickCard, handleSoundWinCmp } from "../utils/SoundClick";
 import scratchCArdImg from '../../assets/images/scratchCArd.jpg';
 import common from '../../assets/images/commonText.png';
 import epic from '../../assets/images/epicText.png';
@@ -15,6 +15,7 @@ import legendary from '../../assets/images/legendaryText.png';
 import rare from '../../assets/images/rareText.png';
 import uncommon from '../../assets/images/uncommonText.png';
 import Showround from '../../assets/images/Showround.png';
+import information from '../../assets/svg/information.svg';
 import firebase from "firebase/compat";
 
 import newcommon from '../../assets/images/newcommon.png';
@@ -353,6 +354,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       setRotateCard(true);
       setScratchShound(false)
       openpopup()      
+      handleSoundWinCmp.play()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
@@ -366,6 +368,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       setTimeout(function () {
         Animation.pause();
         // Animation.destroy();
+        handleSoundWinCmp.pause()
       }, 9000); // 5000 milliseconds = 5 seconds
     setScratchFinish(true)
     }
@@ -439,9 +442,11 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       setCressShow(true);
       setRotateCard(true);
       openpopup()
+      handleSoundWinCmp.play()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
+        
         container: document.querySelector("#card-animation"),
         animationData: confetti,
         renderer: "html", // "canvas", "html"
@@ -451,6 +456,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
 
       setTimeout(function () {
         Animation.pause();
+        handleSoundWinCmp.pause()
         // Animation.destroy();
       }, 9000); // 5000 milliseconds = 5 seconds
     setScratchFinish(true)
@@ -533,18 +539,36 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
                 >
                 &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
               </span>
-                <span className={`${!fulldata ? "opacity-0":""} px-2`}
+                <div className={`${!fulldata ? "opacity-0":""} px-2`}
                   style={{
                     fontSize: "12px",
                     width: "25%",
                     textAlign: "right",
                     fontWeight:"bold"
-                // width:"25%"
+                
               }}
                 >
-                  {/* @ts-ignore */}
+                  
+                <div>
+                  <img src={information} alt="" 
+                    className="mt-1"
+                  width={"15px"}
+                  height={"15px"}
+                />
+                </div>
+              </div>
+                {/* <span className={`${!fulldata ? "opacity-0":""} px-2`}
+                  style={{
+                    fontSize: "12px",
+                    width: "25%",
+                    textAlign: "right",
+                    fontWeight:"bold"
+                
+              }}
+                >
+                  
                 {`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + ((fulldata?.id)?.toUpperCase())?.slice(0, 2)}`}
-              </span>
+              </span> */}
               </div>
               <span className='cardname'>
                 <strong>{ rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>

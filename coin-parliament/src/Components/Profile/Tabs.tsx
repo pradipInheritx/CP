@@ -48,6 +48,7 @@ const Content = styled.div`
 `;
 
 const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVotes }: TabsProps) => {
+  console.log(tabs[0].title,"tabs[1].title")
   return (
     <>
       <Tab.Container
@@ -69,7 +70,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVo
             })}
           </Nav>
         </Container>
-        <div
+        {tabs[0].title=="Pair" && <div
           className="d-flex justify-content-center align-items-center mt-2"
         >
           <div className="d-flex justify-content-start align-items-center">
@@ -82,7 +83,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVo
             />
             <label htmlFor="default-checkbox" className="custom-control-label" style={{ color: "#6352e8" }}>Open vote</label>
           </div>
-        </div>
+        </div>}
         <div className="pb-1">
           <Tab.Content>
             <Content>

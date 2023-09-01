@@ -449,6 +449,47 @@ const FwProfileNftGallery = () => {
     })
     return seriaNo
   }
+// const getTotalSameCard = (cardId: any) => {  
+//     var samecount;
+//     // console.log(cardId,"data.length")
+//      const getSameCard = firebase
+//       .firestore()
+//        .collection("reward_transactions")
+//        .where("user", "==", user?.uid)
+//        .where("winData.firstRewardCardId", "==", cardId)      
+//           getSameCard.get()
+//       .then(async (snapshot) => {
+//         const data: any = []
+//         snapshot.forEach((doc) => {
+//           data.push({...doc.data() });
+//         });     
+//         let datalength = await  data.length;
+//         console.log(datalength, "data.length")
+//         samecount=  datalength
+//         // return samecount
+        
+//       }).catch((error) => {
+//         console.log(error, "error");
+//       });
+    
+//     console.log(samecount,"alldatacheck")
+//         return  samecount  ? samecount: 0  
+// }
+
+  const getTotalSameCard =  (cardId: any) => {  
+    
+    const samevalue = 1;
+    // console.log(cardId,"data.length")
+     const getSameCard =  firebase
+      .firestore()
+       .collection("reward_transactions")
+       .where("user", "==", user?.uid)
+       .where("winData.firstRewardCardId", "==", cardId);
+    // console.info("getawait", getSameCard.get()).size
+    // return (await getSameCard.get()).size;
+    return samevalue
+}
+
 
   console.log(allCardNew, "allCardNew", cardShow)
   return (
@@ -588,7 +629,8 @@ const FwProfileNftGallery = () => {
                       Serie={item?.setName || "Set" + (index + 1)}
                       BackCardName={item?.cardName}
                       Rarity={item?.cardType}
-                      Quantity={item?.totalQuantity}
+                      // Quantity={item?.totalQuantity}
+                      Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
                       holderNo={item?.noOfCardHolders}
                       // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                       // cardNo={item?.sno[index]}
