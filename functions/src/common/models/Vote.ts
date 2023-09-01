@@ -1,11 +1,9 @@
 import * as admin from "firebase-admin";
 import { UserTypeProps } from "./User";
-import { messaging } from "firebase-admin";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import Timestamp = admin.firestore.Timestamp;
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
-import { sendNotification } from "./Notification";
 
 export type VoteProps = {
   coin: string;
