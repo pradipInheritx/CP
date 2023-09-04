@@ -377,11 +377,11 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   const currentDate = admin.firestore.Timestamp.now().toMillis();
   console.log("Current date => ", currentDate);
 
-  const last24HoursMillis = 24 * 60 * 60 * 1000;
-  console.log("last24HoursMillis => ", last24HoursMillis);
+  // const last24HoursMillis = 24 * 60 * 60 * 1000;
+  // console.log("last24HoursMillis => ", last24HoursMillis);
 
-  const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
-  console.log("Last 24 hours date => ", last24HoursDate);
+  // const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
+  // console.log("Last 24 hours date => ", last24HoursDate);
 
   const getUsers = await admin.firestore().collection("users").get();
   const getAllUsers: any = getUsers.docs.map((doc) => {
@@ -393,7 +393,12 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   });
 
   for (let user = 0; user < getAllUsers.length; user++) {
-    const getLastUserVoteSnapshot = await admin.firestore().collection("votes").where("userId", "==", getAllUsers[user].id).where("voteTime", "<", last24HoursDate).orderBy("voteTime", "desc").limit(1).get();
+    const getLastUserVoteSnapshot = await admin.firestore().collection("votes")
+      // .where("userId", "==", getAllUsers[user].id)
+      // .where("voteTime", "<", last24HoursDate)
+      .orderBy("voteTime", "desc")
+      .limit(1)
+      .get();
     console.info("getLastUserVoteSnapshot", getLastUserVoteSnapshot);
     const lastVotedData: any = [];
     getLastUserVoteSnapshot.forEach((doc) => {
@@ -421,6 +426,7 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
         },
       };
       console.info("Id,", getAllUsers[user].id);
+      console.log("checkInActivityOfVotesAndSendNotification link : ", `${env.BASE_SITE_URL}`)
       await sendNotification({
         token,
         message,
