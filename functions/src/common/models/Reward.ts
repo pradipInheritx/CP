@@ -177,7 +177,7 @@ export const addRewardTransaction: (
   user: string,
   winData: winRewardData,
   winningTime: number
-) => Promise<object> = async (
+) => Promise<any> = async (
   user: string,
   winData: winRewardData,
   winningTime: number
@@ -258,7 +258,7 @@ export const claimReward: (uid: string, isVirtual: boolean
       };
 
       // add reward_transaction here
-      if (isVirtual == false && total - claimed > 0) {
+      if (isVirtual === false && total - claimed > 0) {
         const getVirtualRewardStatisticsQuery = await firestore().collection('virtualRewardStatistics').where('userId', '==', uid).get();
         const getVirtualRewardStatistics = getVirtualRewardStatisticsQuery.docs.map((reward) => reward.data());
         console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics)
