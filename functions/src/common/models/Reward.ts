@@ -274,7 +274,7 @@ export const claimReward: (uid: string, isVirtual: boolean
           .then(() => console.log(`${getVirtualRewardStatistic.rewardId} is deleted successfully`))
           .catch((error) => { console.error(`Error removing ${getVirtualRewardStatistic.rewardId} document: ${error}`); });
         console.log("isVirtual Result : ", result)
-        return result;
+        return getVirtualRewardStatistic.winData;
       }
 
 
