@@ -269,7 +269,7 @@ export const claimReward: (uid: string, isVirtual: boolean
         // add reward details into reward_transaction collection
         const result = await addRewardTransaction(uid, getVirtualRewardStatistic.winData, claimed + 1);
         await firestore().collection('virtualRewardStatistics')
-          .doc()
+          .doc(getVirtualRewardStatistic.rewardId)
           .delete()
           .then(() => console.log(`${getVirtualRewardStatistic.rewardId} is deleted successfully`))
           .catch((error) => { console.error(`Error removing ${getVirtualRewardStatistic.rewardId} document: ${error}`); });
