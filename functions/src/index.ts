@@ -596,8 +596,8 @@ exports.getRewardTransactions = functions.https.onCall(async (data) => {
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
-  const { uid } = data as { uid: string };
-  const reward = await claimReward(uid);
+  const { uid, isVirtual } = data as { uid: string, isVirtual: boolean };
+  const reward = await claimReward(uid, isVirtual);
   console.log("reward --->", reward);
   return reward;
 });
