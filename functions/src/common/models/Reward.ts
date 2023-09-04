@@ -177,7 +177,7 @@ export const addRewardTransaction: (
   user: string,
   winData: winRewardData,
   winningTime: number
-) => Promise<void> = async (
+) => Promise<object> = async (
   user: string,
   winData: winRewardData,
   winningTime: number
@@ -192,6 +192,7 @@ export const addRewardTransaction: (
     console.log("addRewardTransaction.......", obj);
     await firestore().collection("reward_transactions").doc().set(obj);
     console.log("Finished execution addRewardTransaction function");
+    return obj;
   };
 
 function cardQuantityOver() {
@@ -236,133 +237,168 @@ const pickRandomValueFromArray = (arr: string[]): string => {
   return randomElement;
 };
 
-export const claimReward: (uid: string) => { [key: string]: any } = async (
-  uid: string
+export const claimReward: (uid: string, isVirtual: boolean
+) => { [key: string]: any } = async (
+  uid: string,
+  isVirtual: boolean
 ) => {
-  try {
-    console.log("Beginning execution claimReward function");
-    const userRef = firestore()
-      .collection("users")
-      .doc(uid)
-      .withConverter(userConverter);
-
-    const userProps = await userRef.get();
-    const userData = userProps.data();
-
-    const { total, claimed } = userData?.rewardStatistics || {
-      total: 0,
-      claimed: 0,
-    };
-
-    if (total - claimed > 0) {
-      const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
-      const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
-      const pickedTierArray = await pickCardTierByPercentageArray(tierPickupArray);
-      console.log("pickedTierArray : ", tierPickupArray);
-
-      const firstRewardCardObj: any = await getPickRandomValueFromArrayFunc(pickedTierArray);
-      console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
-
-      if (firstRewardCardObj?.cardStatus?.toLowerCase() != "active") return firstRewardCardObj;
-
-      console.log("firstRewardCard.cardId --", firstRewardCardObj.cardId);
-
-      const secondRewardExtraVotes = getRandomNumber(
-        distribution[cmp].extraVotePickFromRange
-      );
-      const thirdRewardDiamonds = getRandomNumber(
-        distribution[cmp].diamondsPickFromRange
-      );
-      const rewardObj = userData?.rewardStatistics || {
-        total: 0,
-        claimed: 0,
-        cards: [],
-        extraVote: 0,
-        diamonds: 0,
-      };
-
-      console.log("rewardObj1......", rewardObj);
-
-      // get the selected card details
-      const getRewardCardDetails: any = await getCardDetails(firstRewardCardObj.cardId);
-
-      rewardObj.claimed += 1;
-      rewardObj?.cards?.length
-        ? rewardObj.cards.push(getRewardCardDetails.cardName)
-        : (rewardObj.cards = [getRewardCardDetails.cardName]);
-      rewardObj?.extraVote
-        ? (rewardObj.extraVote += secondRewardExtraVotes)
-        : (rewardObj.extraVote = secondRewardExtraVotes);
-      rewardObj?.diamonds
-        ? (rewardObj.diamonds += thirdRewardDiamonds)
-        : (rewardObj.diamonds = thirdRewardDiamonds);
-      console.log("rewardObj2......", rewardObj);
-
-      // update the reward in User data
-      await firestore()
+    try {
+      console.log("Beginning execution claimReward function");
+      const userRef = firestore()
         .collection("users")
         .doc(uid)
-        .set({ rewardStatistics: rewardObj }, { merge: true });
+        .withConverter(userConverter);
 
-      //Select random serial number from card
-      const firstRewardCardSerialNo = getRewardCardDetails.sno.length ? pickRandomValueFromArray(
-        getRewardCardDetails["sno"]
-      ) : ""; // Added this condition because somnetimes sno is blank
+      const userProps = await userRef.get();
+      const userData = userProps.data();
 
-      // remove the Serial number from the card
-      getRewardCardDetails.sno = getRewardCardDetails.sno.filter(
-        (item: any) => item != firstRewardCardSerialNo
-      );
-
-      // update the card quantity in card collection
-      getRewardCardDetails.quantity = getRewardCardDetails.sno.length;
-
-      const winData: winRewardData = {
-        firstRewardCardType: getRewardCardDetails.cardType,
-        firstRewardCardId: firstRewardCardObj.cardId,
-        firstRewardCard: getRewardCardDetails.cardName,
-        firstRewardCardCollection: getRewardCardDetails.albumName,
-        firstRewardCardSerialNo,
-        firstRewardCardImageUrl: getRewardCardDetails.cardImageUrl,
-        firstRewardCardVideoUrl: getRewardCardDetails.cardVideoUrl,
-        secondRewardExtraVotes,
-        thirdRewardDiamonds,
+      const { total, claimed } = userData?.rewardStatistics || {
+        total: 0,
+        claimed: 0,
       };
 
-      // add reward details into reward_transaction collection
-      await addRewardTransaction(uid, winData, claimed + 1);
+      // add reward_transaction here
+      if (isVirtual == false && total - claimed > 0) {
+        const getVirtualRewardStatisticsQuery = await firestore().collection('virtualRewardStatistics').where('userId', '==', uid).get();
+        const getVirtualRewardStatistics = getVirtualRewardStatisticsQuery.docs.map((reward) => reward.data());
+        console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics)
+        let getVirtualRewardStatistic = getVirtualRewardStatistics[0];
+        console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic)
+        // update the reward in User data
+        await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
+        // add reward details into reward_transaction collection
+        const result = await addRewardTransaction(uid, getVirtualRewardStatistic.winData, claimed + 1);
+        await firestore().collection('virtualRewardStatistics')
+          .doc()
+          .delete()
+          .then(() => console.log(`${getVirtualRewardStatistic.rewardId} is deleted successfully`))
+          .catch((error) => { console.error(`Error removing ${getVirtualRewardStatistic.rewardId} document: ${error}`); });
+        console.log("isVirtual Result : ", result)
+        return result;
+      }
 
-      // get the transaction details
-      const transData: any = await getRewardTransactionsByCardId(firstRewardCardObj.cardId);
-      console.log("TRANSDATA", transData);
 
-      const userIds = transData.map((item: any) => item.user);
-      if (userIds && userIds.length) {
-        getRewardCardDetails.noOfCardHolders = Array.from(new Set(userIds)).length;
-        await firestore()
-          .collection("cardsDetails")
-          .doc(firstRewardCardObj.cardId)
-          .set(getRewardCardDetails, { merge: true });
+      if (total - claimed > 0) {
+
+        // ----- Start preparing reward data -----
+        const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
+        const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
+        const pickedTierArray = await pickCardTierByPercentageArray(tierPickupArray);
+        console.log("pickedTierArray : ", tierPickupArray);
+
+        const firstRewardCardObj: any = await getPickRandomValueFromArrayFunc(pickedTierArray);
+        console.log("FIRST REWARD OBJ==>", firstRewardCardObj);
+
+        if (firstRewardCardObj?.cardStatus?.toLowerCase() != "active") return firstRewardCardObj;
+
+        console.log("firstRewardCard.cardId --", firstRewardCardObj.cardId);
+
+        const secondRewardExtraVotes = getRandomNumber(
+          distribution[cmp].extraVotePickFromRange
+        );
+        const thirdRewardDiamonds = getRandomNumber(
+          distribution[cmp].diamondsPickFromRange
+        );
+        // ----- End preparing reward data -----
+
+
+        // ----- Start manipulate reward data for update and set-----
+        const rewardObj = userData?.rewardStatistics || {
+          total: 0,
+          claimed: 0,
+          cards: [],
+          extraVote: 0,
+          diamonds: 0,
+        };
+
+        console.log("user rewardStatistics ......", rewardObj);
+
+        // get the selected card details
+        const getRewardCardDetails: any = await getCardDetails(firstRewardCardObj.cardId);
+
+        rewardObj.claimed += 1;
+        rewardObj?.cards?.length
+          ? rewardObj.cards.push(getRewardCardDetails.cardName)
+          : (rewardObj.cards = [getRewardCardDetails.cardName]);
+        rewardObj?.extraVote
+          ? (rewardObj.extraVote += secondRewardExtraVotes)
+          : (rewardObj.extraVote = secondRewardExtraVotes);
+        rewardObj?.diamonds
+          ? (rewardObj.diamonds += thirdRewardDiamonds)
+          : (rewardObj.diamonds = thirdRewardDiamonds);
+        console.log("rewardObj......", rewardObj);
+
+
+        //Select random serial number from card
+        const firstRewardCardSerialNo = getRewardCardDetails.sno.length ? pickRandomValueFromArray(
+          getRewardCardDetails["sno"]
+        ) : ""; // Added this condition because somnetimes sno is blank
+
+        // remove the Serial number from the card
+        getRewardCardDetails.sno = getRewardCardDetails.sno.filter(
+          (item: any) => item != firstRewardCardSerialNo
+        );
+
+        // update the card quantity in card collection
+        getRewardCardDetails.quantity = getRewardCardDetails.sno.length;
+
+        const winData: winRewardData = {
+          firstRewardCardType: getRewardCardDetails.cardType,
+          firstRewardCardId: firstRewardCardObj.cardId,
+          firstRewardCard: getRewardCardDetails.cardName,
+          firstRewardCardCollection: getRewardCardDetails.albumName,
+          firstRewardCardSerialNo,
+          firstRewardCardImageUrl: getRewardCardDetails.cardImageUrl,
+          firstRewardCardVideoUrl: getRewardCardDetails.cardVideoUrl,
+          secondRewardExtraVotes,
+          thirdRewardDiamonds,
+        };
+
+        // get the transaction details
+        const transData: any = await getRewardTransactionsByCardId(firstRewardCardObj.cardId);
+        console.log("TRANSDATA", transData);
+
+        const userIds = transData.map((item: any) => item.user);
+        // ----- End manipulate reward data for update and set-----
+
+
+        // ----- Start set and Update reward data into virtual collection-----
+
+        if (userIds && userIds.length) {
+          getRewardCardDetails.noOfCardHolders = Array.from(new Set(userIds)).length;
+          await firestore()
+            .collection("cardsDetails")
+            .doc(firstRewardCardObj.cardId)
+            .set(getRewardCardDetails, { merge: true });
+        }
+
+        // add data into virtual collection
+        const addQuery = await firestore().collection('virtualRewardStatistics').add({ userId: uid, rewardObj, winData });
+        console.log("addQuery ID  : ", addQuery.id);
+
+        await firestore().collection('virtualRewardStatistics').doc(addQuery.id).set({ rewardId: addQuery.id }, { merge: true });
+
         console.log("Finished execution claimReward function");
         return winData;
+        // ----- End set and Update reward data into virtual collection-----
+
+      } else {
+        console.log("Finished execution claimReward function");
+        return {
+          firstRewardCard: "",
+          secondRewardExtraVotes: 0,
+          thirdRewardDiamonds: 0,
+        };
       }
-    } else {
-      console.log("Finished execution claimReward function");
+    } catch (error) {
+      console.info("ERROR:", "claimReward", error)
       return {
         firstRewardCard: "",
         secondRewardExtraVotes: 0,
         thirdRewardDiamonds: 0,
       };
     }
-  } catch (error) {
-    console.info("ERROR:", "claimReward", error)
-    return {
-      firstRewardCard: "",
-      secondRewardExtraVotes: 0,
-      thirdRewardDiamonds: 0,
-    };
-  }
-};
+  };
 
 export enum CpmTransactionType {
   REWARD = "reward",
