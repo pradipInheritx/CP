@@ -261,7 +261,9 @@ export const claimReward: (uid: string, isVirtual: boolean
       if (isVirtual == false && total - claimed > 0) {
         const getVirtualRewardStatisticsQuery = await firestore().collection('virtualRewardStatistics').where('userId', '==', uid).get();
         const getVirtualRewardStatistics = getVirtualRewardStatisticsQuery.docs.map((reward) => reward.data());
+        console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics)
         let getVirtualRewardStatistic = getVirtualRewardStatistics[0];
+        console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic)
         // update the reward in User data
         await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
         // add reward details into reward_transaction collection
@@ -271,6 +273,7 @@ export const claimReward: (uid: string, isVirtual: boolean
           .delete()
           .then(() => console.log(`${getVirtualRewardStatistic.rewardId} is deleted successfully`))
           .catch((error) => { console.error(`Error removing ${getVirtualRewardStatistic.rewardId} document: ${error}`); });
+        console.log("isVirtual Result : ", result)
         return result;
       }
 
@@ -371,6 +374,8 @@ export const claimReward: (uid: string, isVirtual: boolean
 
         // add data into virtual collection
         const addQuery = await firestore().collection('virtualRewardStatistics').add({ userId: uid, rewardObj, winData });
+        console.log("addQuery ID  : ", addQuery.id);
+
         await firestore().collection('virtualRewardStatistics').doc(addQuery.id).set({ rewardId: addQuery.id }, { merge: true });
 
         console.log("Finished execution claimReward function");
