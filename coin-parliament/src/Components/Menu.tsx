@@ -37,6 +37,7 @@ export type MenuItem = {
 };
 
 const MenuContainer = styled(Offcanvas)`
+// zoom:3;
   & a {
     font: var(--font-style-normal) normal var(--font-weight-normal)
       var(--font-size-13) / 29px var(--font-family-poppins);

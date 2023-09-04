@@ -11,6 +11,7 @@ import bkgnd from "../assets/images/bkgnd.png";
 import Showround from "../assets/images/Showround.png";
 import TheEagle from "../assets/images/TheEagle1.png";
 import information from "../assets/svg/information.svg";
+import information2 from "../assets/svg/information2.svg";
 import backBg from "../assets/images/backBg.png";
 import { logo } from "../assets/svg/logo";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -106,7 +107,7 @@ const CenterText = styled.div`
 
 //  back Side Card
 
-const CardBack = styled.div<{ CardSize:any }>`
+const CardBack = styled.div<{ CardSize: any }>`
   overflow: hidden;
   border-radius: 8px 8px 8px 8px;
   text-transform: uppercase;
@@ -117,9 +118,9 @@ const CardBack = styled.div<{ CardSize:any }>`
   background-color: #7563f9;
 
   & span {
-    font-weight: 100;
+    font-weight: 300;
     // opacity: 0.8;
-    font-size: ${props => props.CardSize ?"12px":"10px"};
+    font-size: ${props => props.CardSize ? "12px" : "10px"};
     line-height: 10px;
     display: inline-block;
     width: 95%;
@@ -129,7 +130,7 @@ const CardBack = styled.div<{ CardSize:any }>`
     color: #fff;
     margin: 0px 5px;
     // padding: 23px 0px 5px 0px;
-    padding:${props => props.CardSize ? "22px 0px 5px 0px":"0px 0px 2px 0px"};
+    padding:${props => props.CardSize ? "22px 0px 5px 0px" : "0px 0px 2px 0px"};
 
   }
 `;
@@ -166,9 +167,9 @@ export type BoxItems = {
   Hide360Icon?: boolean;
   BigCard?: boolean;
   MoveCard?: boolean;
-  
+
 };
-const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl,Hide360Icon,BigCard ,MoveCard}: BoxItems) => {
+const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl, Hide360Icon, BigCard, MoveCard }: BoxItems) => {
 
 
 
@@ -179,12 +180,13 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
   const pathnameName = pathname.split("/")
   const navigate = useNavigate();
   const { singalCardData, setSingalCardData } = useContext(AppContext);
+  const [tooltipShow, setTooltipShow] = React.useState(false);
 
   let params = useParams();
   const { type } = params;
 
 
-console.log(MintedTime,"MintedTimecheck")
+  console.log(MintedTime, "MintedTimecheck")
   return (
 
     <div
@@ -250,105 +252,105 @@ console.log(MintedTime,"MintedTimecheck")
 
       }}
       style={{
-        minHeight: `${BigCard ?"430px":"330px"}`,
-        minWidth: `${BigCard ?"350px":"250px"}` ,
+        minHeight: `${BigCard ? "430px" : "330px"}`,
+        minWidth: `${BigCard ? "350px" : "250px"}`,
       }}
     >
       <div className='front'>
         <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
           // minHeight: "318px",
           // minWidth: "250px",
-          minHeight: `${BigCard ?"418px":"318px"}`,
-          minWidth: `${BigCard ?"350px":"250px"}` ,
+          minHeight: `${BigCard ? "418px" : "318px"}`,
+          minWidth: `${BigCard ? "350px" : "250px"}`,
           backgroundColor: 'black !important',
           backgroundImage: (darkTheme ? 'none !important' : ''),
           color: (darkTheme ? "white" : ''),
-          position:"relative"
+          position: "relative"
         }}>
           <div
-            // style={{
-            //   width:"100%",
-            //   position: "absolute",
-            //   height:" 39px",
-            //   marginTop: "-10px",
-            // }}
-          
+          // style={{
+          //   width:"100%",
+          //   position: "absolute",
+          //   height:" 39px",
+          //   marginTop: "-10px",
+          // }}
+
           >
             {" "}
             <div className='d-flex justify-content-between'>
               <div className='opacity-1' style={{
                 fontSize: "12px",
                 // marginTop:"10px",
-                width: "25%",                       
-              }}              
-              >               
+                width: "25%",
+              }}
+              >
                 {!Hide360Icon ?
-                  <div>                    
-                  <img
-                    className=""
-                  style={{
-                    // position: "absolute",
-                    // right: 15,
-                    padding: "0px 0px 0px 10px",  
-                    cursor: "pointer",
-                    
-                  }}
-                    width={"35px"}                    
-                    onClick={(e) => {                    
-                    setVideoshow(true)
-                  }}
-                    src={Showround}
+                  <div>
+                    <img
+                      className=""
+                      style={{
+                        // position: "absolute",
+                        // right: 15,
+                        padding: "0px 0px 0px 10px",
+                        cursor: "pointer",
+
+                      }}
+                      width={"35px"}
+                      onClick={(e) => {
+                        setVideoshow(true)
+                      }}
+                      src={Showround}
                     />
-                    </div>
-                    :
+                  </div>
+                  :
                   <span className='px-2 opacity-0'>{cardNo}</span>}
               </div>
               <CenterText className={HeaderClass}
                 style={{
-                width:"50%"
-              }}
+                  width: "50%"
+                }}
               >
                 &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
               </CenterText>{" "}
-              <div className='d-flex justify-content-end px-2' style={{ fontSize: "12px",width:"25%",}}>
+              <div className='d-flex justify-content-end px-2' style={{ fontSize: "12px", width: "25%", }}>
                 {/* <span className='px-2 py-2'>{cardNo || "" }</span> */}
-                <div className={`${MoveCard ? "opacity-0":""}`}>
+                <div className={`${MoveCard ? "opacity-0" : ""}`}>
 
-                  <img src={information} alt="" 
+                  <img src={information} alt=""
                     className="mt-1"
-                  width={"15px"}
-                  height={"15px"}
-                />
+                    width={"15px"}
+                    height={"15px"}
+                  />
                 </div>
               </div>
             </div>
             <div>
               {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
               <span className='cardname' style={{
-                color: (darkTheme ? "white" : ''),              
-              }}              
+                color: (darkTheme ? "white" : ''),
+              }}
               >
                 <strong> {cardHeader}</strong>
 
-                
-              </span>              
+
+              </span>
             </div>
             {/* <br /> */}
-            <div className='card-body'            
-            onMouseEnter={() => {        
-        if (Disable == "" || Disable == undefined  && !MoveCard &&  window.screen.width > 767) {
-          console.log(MoveCard,"MoveCard")
-          setFlip(false);
-          if (flipCard != true) {
-            cardFlip()
-          }
-        }
-      }}
+            <div className='card-body'
+              onMouseEnter={() => {
+                if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
+                  console.log(MoveCard, "MoveCard")
+                  setFlip(false);
+                  if (flipCard != true) {
+                    cardFlip()
+                  }
+                }
+              }}
             >
               {VideoUrl && darkTheme ?
                 <Ratio
                   style={{
-                    width:`${BigCard ?"400px":"300px"}`,          
+                    width: `${BigCard ? "400px" : "300px"}`,
                   }}
                 >
                   <embed type="" src={VideoUrl} />
@@ -360,29 +362,29 @@ console.log(MintedTime,"MintedTimecheck")
                     height: "220px",
                     // border:"1px solid red",
                     // overflow:"hidden"
-                    position:"relative",
+                    position: "relative",
                   }}
                   className="d-flex justify-content-center"
                 >
                   <div
                     className=""
-                  style={{
-                      position: "absolute",                      
+                    style={{
+                      position: "absolute",
                       left: "-30px",
                       bottom: "60px",
-                    transform: "rotate(-90deg)",
-                      width:"100px",
+                      transform: "rotate(-90deg)",
+                      width: "100px",
                       color: "black",
                       // alignItems:""
-                  }}
+                    }}
                   >
 
-                  
-                  <p
-                    
+
+                    <p
+
                     >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>
-                    
-                    </div>
+
+                  </div>
                   <img
                     src={ImgUrl || TheEagle}
                     alt='the hgodler'
@@ -394,8 +396,8 @@ console.log(MintedTime,"MintedTimecheck")
 
                       // width: "255px",
                       // height: "255px",                      
-                      height: `${BigCard ?"350px":"240px"}`,
-                      width: `${BigCard ?"350px":"240px"}` ,
+                      height: `${BigCard ? "350px" : "240px"}`,
+                      width: `${BigCard ? "350px" : "240px"}`,
                       margin: "auto",
                       display: "block",
                       marginTop: "-10px",
@@ -406,14 +408,14 @@ console.log(MintedTime,"MintedTimecheck")
                   // width={"100%"}
                   />
                   <p
-                  style={{
-                      position: "absolute",                      
+                    style={{
+                      position: "absolute",
                       // left: "-20px",
                       bottom: "-14PX",
                       // transform: "rotate(-90deg)",
-                      color:"black",
-                      
-                  }}
+                      color: "black",
+
+                    }}
                   >{fulldata?.albumName?.toLocaleUpperCase()}</p>
                 </div>
               }
@@ -423,38 +425,38 @@ console.log(MintedTime,"MintedTimecheck")
         </Card>
       </div>
       <div className='back'
-      // onMouseEnter={() => {
-      //   console.log("Hello i am first")  
-      //   if (Disable == "" || Disable == undefined && window.screen.width > 767) {
-          
-      //     setFlip(false);
-      //     if (flipCard != true) {
-      //       cardFlip()
-      //     }
-      //   }
-      // }}
+        // onMouseEnter={() => {
+        //   console.log("Hello i am first")  
+        //   if (Disable == "" || Disable == undefined && window.screen.width > 767) {
+
+        //     setFlip(false);
+        //     if (flipCard != true) {
+        //       cardFlip()
+        //     }
+        //   }
+        // }}
         onMouseLeave={() => {
-        // console.log(flip,flipCard ,"Flip Flip")
-        if (Disable == "" || Disable == undefined && !MoveCard  && window.screen.width > 767) {
-          setFlip(true);              
-          cardFlip()
-          // if (flipCard != true) {            
-          //   cardFlip()
-          // }
-        }
-      }}
-      
+          // console.log(flip,flipCard ,"Flip Flip")
+          if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
+            setFlip(true);
+            cardFlip()
+            // if (flipCard != true) {            
+            //   cardFlip()
+            // }
+          }
+        }}
+
       >
         <CardBack CardSize={BigCard} className='shadow tex-center' style={{
           // minHeight: "318px",
           // minWidth: "250px",
-          minHeight: `${BigCard ?"418px":"318px"}`,
-          minWidth: `${BigCard ?"350px":"250px"}` ,
+          minHeight: `${BigCard ? "418px" : "318px"}`,
+          minWidth: `${BigCard ? "350px" : "250px"}`,
         }}>
           <div className='d-flex justify-content-center mt-2'>
-            <img src={logo} alt='' width={`${BigCard ?"80px":"60px"}`} height={`${BigCard ?"80px":"60px"}`} />
+            <img src={logo} alt='' width={`${BigCard ? "80px" : "60px"}`} height={`${BigCard ? "80px" : "60px"}`} />
           </div>
-          <div className='mt-2 mb-3'>
+          <div className=''>
             <span>
               {["followerProfile", "profile"].includes(pathnameName[1])
                 ? `Serial No. : ${PrivateSerialNo || ""}`
@@ -464,19 +466,70 @@ console.log(MintedTime,"MintedTimecheck")
             <span>Set (Serie) : {Serie}</span>
             <span>Name : {BackCardName}</span>
             <span>Rarity : {Rarity}</span>
+            {
+              tooltipShow &&
+              <div
+                style={{
+                  display: "relative",
+                }}
+              >
+                <div className="newtooltip2"
+                  style={{
+                    width: "96%",
+                    marginTop: "-86%",
+                  }}
+                >
+                  {/* <p>Your CMP count</p> */}
+                  <p className="mt-1 text-end lh-base">
+                    As the original NFT holder, you get 50% of the royalties from the fee charged on NFT sale lifetime! This arrangement ensures you have a continuous and substantial income stream from your digital assets. only members who upgrade their account will have their cards converted to NFTs
+                  </p>
+                  {/* <p className="mt-3 text-end lh-base">
+                  Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones. 
+                </p> 
+                
+                  <p className="mt-3 text-end lh-base">
+                  As you climb through user levels, CMP reflects your dedication, making your experience in Coin Parliament uniquely rewarding and engaging.
+                  </p> */}
+
+                </div>
+              </div>
+            }
+            <span className="d-flex align-items-end mt-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setTooltipShow((prev) => !prev)
+              }}
+             >Royalty : {"50%"}&nbsp;&nbsp;
+              <img src={information2} alt=""
+                className="mt-1"
+                width={"10px"}
+                height={"10px"}
+               onMouseEnter={(e) => {
+                e.stopPropagation();
+                setTooltipShow(true)
+              }}
+              onMouseLeave={(e) => {
+                e.stopPropagation();
+                setTooltipShow(false);
+              }}
+              />
+            </span>
+
             <span>
               {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
             </span>
-            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline"
-            onClick={() => {
+            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ?
+              <span className="d-inline border-0"
+                onClick={() => {
                   navigate(`/singalCard/${CollectionType || type}/${id}`)
                   // setSingalCardData({ ...fulldata, myID: userId })
-                  localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))}}
-            >{holderNo}&nbsp;&nbsp;View All
-              {/* <u
+                  localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
+                }}
+              >{holderNo}&nbsp;&nbsp;View All
+                {/* <u
                 
                 }}>View All</u> */}
-                </span> : 0} </span>}
+              </span> : 0} </span>}
 
             {/* {["followerProfile", "profile"].includes(pathnameName[1]) &&
               <>
@@ -490,14 +543,14 @@ console.log(MintedTime,"MintedTimecheck")
         </CardBack>
       </div>
       {Videoshow && <VideoPopup
-        fulldata={fulldata}     
+        fulldata={fulldata}
         setVideoshow={setVideoshow}
-              Videoshow={Videoshow}
-              videoUrl={VideoUrl}
+        Videoshow={Videoshow}
+        videoUrl={VideoUrl}
         imgUrl={ImgUrl}
         MintedTime={MintedTime}
         PrivateSerialNo={PrivateSerialNo}
-              />}
+      />}
     </div >
   );
 };

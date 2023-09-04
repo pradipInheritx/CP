@@ -65,7 +65,7 @@ const Video = styled.video`
 `;
 
 const ProfileNftGallery = () => {
-  const { user } = useContext(UserContext);
+  const { user ,userInfo} = useContext(UserContext);
   const navigate = useNavigate();
   const [collectionType, setCollectionType] = useState<any>()
   const [allTypeofCard, setAllTypeofCard] = useState<any>([])
@@ -90,6 +90,7 @@ const ProfileNftGallery = () => {
   const [cardNameNew, setCardNameNew] = useState<any>([])
   const [allCardArrayNew, setAllCardArrayNew] = useState<any>([])
   const [allCardNew, setAllCardNew] = useState<any>([])
+  const [sameCards, setSameCards] = useState<any>({})
   // const [notFound,setNotFound]=useState<any>(0) 
   var notFound = false;
   const [allVideo, setAllVideo] = useState<any>({
@@ -123,6 +124,15 @@ const ProfileNftGallery = () => {
   //   }
   // }, [albumOpen])
 
+useEffect(() => {
+    var commonCard = {}
+    const allCards = userInfo?.rewardStatistics?.cards
+  allCards?.map((item: any, index: number) => {
+      // @ts-ignore
+      commonCard={...commonCard,[item]:(commonCard[item]?commonCard[item]+1:1)}
+    })
+  setSameCards(commonCard)
+}, [])
 
 
   const getNftCard = () => {
@@ -585,24 +595,6 @@ const ProfileNftGallery = () => {
   }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards]);
   console.log(myFilter, searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, 'allCardNew');
 
-
-  const getTotalSameCard =  (cardId: any) => {  
-    
-    const samevalue = 1;
-    // console.log(cardId,"data.length")
-     const getSameCard =  firebase
-      .firestore()
-       .collection("reward_transactions")
-       .where("user", "==", user?.uid)
-       .where("winData.firstRewardCardId", "==", cardId);
-    // console.info("getawait", getSameCard.get()).size
-    // return (await getSameCard.get()).size;
-    return samevalue
-}
-
-
-  // console.log(getTotalSameCard("G6f7w7QQRVS7M3maripx"),"getTotalSameCard")
-
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
       <div className='d-flex justify-content-center pt-5 flex-wrap'>
@@ -760,7 +752,8 @@ const ProfileNftGallery = () => {
                           Serie={item?.setName || "Set" + index}
                           BackCardName={item?.cardName}
                           Rarity={item?.cardType}
-                          Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
+                          // @ts-ignore
+                          Quantity={`${sameCards[item?.cardName]} / ${item?.totalQuantity}`}
                           holderNo={item?.noOfCardHolders}
                           // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                           // cardNo={item?.sno[index]}
@@ -798,7 +791,7 @@ const ProfileNftGallery = () => {
                           holderNo={item?.noOfCardHolders}
                           // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                           // cardNo={item?.sno[index]}
-                          Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
+                          Quantity={`${sameCards[item?.cardName]} / ${item?.totalQuantity}`}
                           cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
                           // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                           MintedTime={getMintedTime(item?.cardId)}

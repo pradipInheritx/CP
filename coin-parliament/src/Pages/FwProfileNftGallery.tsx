@@ -86,6 +86,7 @@ const FwProfileNftGallery = () => {
   const [cardNameNew, setCardNameNew] = useState<any>([])
   const [allCardArrayNew, setAllCardArrayNew] = useState<any>([])
   const [allCardNew, setAllCardNew] = useState<any>([])
+  const [sameCards, setSameCards] = useState<any>({})
   const [allVideo, setAllVideo] = useState<any>({
     Wildwest: Wildwest,
     Winter: Winter,
@@ -449,48 +450,37 @@ const FwProfileNftGallery = () => {
     })
     return seriaNo
   }
-// const getTotalSameCard = (cardId: any) => {  
-//     var samecount;
-//     // console.log(cardId,"data.length")
-//      const getSameCard = firebase
-//       .firestore()
-//        .collection("reward_transactions")
-//        .where("user", "==", user?.uid)
-//        .where("winData.firstRewardCardId", "==", cardId)      
-//           getSameCard.get()
-//       .then(async (snapshot) => {
-//         const data: any = []
-//         snapshot.forEach((doc) => {
-//           data.push({...doc.data() });
-//         });     
-//         let datalength = await  data.length;
-//         console.log(datalength, "data.length")
-//         samecount=  datalength
-//         // return samecount
-        
-//       }).catch((error) => {
-//         console.log(error, "error");
-//       });
-    
-//     console.log(samecount,"alldatacheck")
-//         return  samecount  ? samecount: 0  
-// }
 
-  const getTotalSameCard =  (cardId: any) => {  
-    
-    const samevalue = 1;
-    // console.log(cardId,"data.length")
-     const getSameCard =  firebase
+  useEffect(() => {    
+    firebase
       .firestore()
-       .collection("reward_transactions")
-       .where("user", "==", user?.uid)
-       .where("winData.firstRewardCardId", "==", cardId);
-    // console.info("getawait", getSameCard.get()).size
-    // return (await getSameCard.get()).size;
-    return samevalue
-}
+      .collection("users")
+      .where("uid", "==",followerUserId)
+    .get()
+      .then((snapshot) => {  
+        var data: any = []
+        snapshot.forEach((doc) => {
+          data.push({...doc.data() });
+        }); 
+        
+        getsamecard(data)
+      }).catch((error) => {
+        console.log(error, "error");
+      });    
+}, [])
 
-
+  const getsamecard = (data: any) => {
+    var commonCard = {}
+      // @ts-ignore
+    const allCards = data[0]?.rewardStatistics?.cards
+  allCards?.map((item: any, index: number) => {
+      // @ts-ignore
+      commonCard={...commonCard,[item]:(commonCard[item]?commonCard[item]+1:1)}
+  })
+    console.log(data,"commonCard")
+  setSameCards(commonCard)
+  }
+  
   console.log(allCardNew, "allCardNew", cardShow)
   return (
     <div className='' style={{ background: "white", minHeight: "80vh" }}>
@@ -630,7 +620,7 @@ const FwProfileNftGallery = () => {
                       BackCardName={item?.cardName}
                       Rarity={item?.cardType}
                       // Quantity={item?.totalQuantity}
-                      Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
+                      Quantity={`${sameCards[item?.cardName]} / ${item?.totalQuantity}`}
                       holderNo={item?.noOfCardHolders}
                       // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                       // cardNo={item?.sno[index]}

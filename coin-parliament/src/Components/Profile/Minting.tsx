@@ -258,7 +258,10 @@ const Minting = ({
     handleSoundClick()
     if (claim) {
       setLoading(true);
-      const result = await claimReward({ uid: user?.uid }).then((data: any) => {
+      const result = await claimReward(
+        // { uid: user?.uid }
+        {uid:user?.uid, isVirtual: true }
+      ).then((data: any) => {
         handleShow()
         // handleSoundWinCmp.play()
         return data;
@@ -452,7 +455,7 @@ console.log(animateButton,"setAnimateButton")
                   setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
                   // setRewardTimer(resultData); i commented here because i set this when i get result 
                 }, 1000);
-
+                handleSoundWinCmp.pause()
                 handleClose()
               }}>COLLECT YOUR COIN</Buttons.Primary>
               {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}

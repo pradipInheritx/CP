@@ -1260,7 +1260,8 @@ function App() {
   ) : (
     <BackDiv
       style={{
-        // border: "1px solid red",
+          // border: "1px solid red",
+        // transform: "scale(4.3)",
         // backgroundColor: "rgba(0,0,0,0.5)",
       }}
     >
@@ -1595,6 +1596,12 @@ function App() {
                                             // padding: `${pathname === "/" ? 120 : 84}px 0 109px`,
                                             padding: `${pathname === "/" ? 160 : 120
                                               }px 0 0`,
+                                            // transformStyle: "flat",
+                                            // transform: `${backgrounHide ? "scale(1.5)" : "scale(1)"}`,
+                                            
+                                            // transform: `${backgrounHide ? "scale(3)" : "scale(1)"}`,
+                                            
+                                            // transition: "all 3s",
                                           }}
                                         >
                                           <div className='pwaPopup' style={{ display: pwaPopUp }}>
