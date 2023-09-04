@@ -27,8 +27,8 @@ export const getUserWalletBalance = async (req: any, res: any) => {
 }
 
 export const makePayment = async (req: any, res: any) => {
-    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
-    console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes)
+    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
+    console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails)
     const headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
@@ -49,7 +49,7 @@ export const makePayment = async (req: any, res: any) => {
 
 
     if (getResponseAfterTransaction && getResponseAfterTransaction.status === 201) {
-        await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes }, getResponseAfterTransaction.data)
+        await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails }, getResponseAfterTransaction.data)
 
         res.status(200).json({
             status: true,
