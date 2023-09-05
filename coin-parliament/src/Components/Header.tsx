@@ -139,15 +139,16 @@ const ZoomCss = css`
   width: 100%;
   height: 150vh;
   z-index:2200;
-  // left: 50%;
-  // transform: translate(-50%, -20%);    
   transition: opacity .3s;
   background-color: rgba(0,0,0,0.8);
   display: flex;
   justify-content: center;
-transition:  all 1s ease;
-
-`;
+  transition:  all 3s ease;
+  `;
+//   transform: ${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"};
+//   transformOrigin:${window.screen.width > 767 ?"35% 50%" :"50% 90%"};
+  // left: 50%;
+  // transform: translate(-50%, -20%);    
 
 
 const ForZoom = styled.div`
@@ -506,14 +507,19 @@ const Header = ({
 			{!desktop && (
 				<div className='' style={{ width: "75%" }}>
 					<div className='d-flex w-100  '>
-						<ForZoom {...{ showReward, inOutReward }} className="w-100">
+						<ForZoom {...{ showReward, inOutReward }} className="w-100"							
+						>
 							{user?.uid && !login ? (
 								<div
 									className="d-flex"
 									style={{
 										position: "relative",
 										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
-										transition: `width 1s ease;`
+										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
+										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
+										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,						
+  							// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
+						
 									}}
 								>
 									<div className='' onClick={() => {
@@ -696,9 +702,22 @@ const Header = ({
 					}}
 				>
 					<div className='d-flex'>
-						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
+						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */
+							style={{
+								// transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
+								// transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
+								// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
+							}}
+						>
 							{(user?.uid && !login) && (
-								<div className='d-flex mx-auto w-auto ' style={{ position: "relative", height: "50px", }}>
+								<div className='d-flex mx-auto w-auto '
+									style={{
+										position: "relative",
+										height: "50px",
+										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
+										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
+										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,						
+									}}>
 									<div onClick={() => {
 										if (!showMenubar && !followerPage) navigate("/profile/mine")
 									}}
@@ -780,7 +799,7 @@ const Header = ({
 																			setShowReward((prev: number) => {
 																				return 3;
 																			});
-																		}
+																		} 
 																		// setHeaderExtraVote((prev: number) => {
 																		// 	if (prev != 0) {
 																		// 		setShowReward((prev: number) => {

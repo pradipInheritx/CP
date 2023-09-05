@@ -130,7 +130,7 @@ const Menu = ({
   // console.log("hello")
   const handleShow = () => {
     if (followerPage) {
-      navigate('/profile/followers')
+      navigate(-1)
     }
     else {
       setMenuOpen(true)
@@ -141,14 +141,14 @@ const Menu = ({
 
   const desktop = width && width > 979;
 
-  useEffect(() => {
-    if (backgrounHide) {
-      setShowCoinIncrement(1)
-    } else {
-      setShowCoinIncrement(0)
-    }
+  // useEffect(() => {
+  //   if (backgrounHide) {
+  //     setShowCoinIncrement(1)
+  //   } else {
+  //     setShowCoinIncrement(0)
+  //   }
 
-  }, [backgrounHide]);
+  // }, [backgrounHide]);
 
 
 
