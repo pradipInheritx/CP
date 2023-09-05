@@ -130,7 +130,7 @@ const Menu = ({
   // console.log("hello")
   const handleShow = () => {
     if (followerPage) {
-      navigate(-1)
+      navigate('/profile/followers')
     }
     else {
       setMenuOpen(true)
@@ -154,9 +154,9 @@ const Menu = ({
 
   return (
     <>
-      <CoinPopup {...{ showCoinIncrement }} className="">
+      {/* <CoinPopup {...{ showCoinIncrement }} className="">
 
-      </CoinPopup>
+      </CoinPopup> */}
       <NavContainer
         pathname={pathname}
         collapseOnSelect
