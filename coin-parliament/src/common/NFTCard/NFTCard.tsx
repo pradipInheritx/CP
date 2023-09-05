@@ -636,6 +636,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
           handleShareModleShow()
           handleCardClose()
           setCountShow(false)
+          handleSoundWinCmp.pause()
         }}
         style={{
           backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
@@ -651,6 +652,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
           setShowReward(0);
           setCountShow(false)
           navigate("/profile/Album")
+          handleSoundWinCmp.pause()
         }}
         style={{
           backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
