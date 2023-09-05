@@ -586,7 +586,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                         <React.Fragment key={index} >
                                             <div className='w-100 m-auto row pt-3' style={{ borderTop: ((index !== 0 && addAlbumSeparator !== albumName) ? '3px solid #bebac7' : '') }
                                             }>
-                                                <div className="col-sm-2 d-flex justify-content-center align-items-center" style={{ transform: window.screen.width > 674 ? 'rotate(270deg)' : '', color: '#5f4de4', fontSize: '4em', overflow: 'visible', wordWrap: 'normal', textTransform: 'capitalize' }} >
+                                                <div className="col-sm-2 d-flex justify-content-center align-items-center" style={{ transform: window.screen.width > 674 ? 'rotate(270deg)' : '', color: '#5f4de4', fontSize: '4em', overflow: 'visible', wordWrap: 'normal', textTransform: 'uppercase' }} >
                                                     {albumName}
                                                 </div>
                                                 <div className="col-sm-10" >

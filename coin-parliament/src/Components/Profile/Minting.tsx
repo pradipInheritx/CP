@@ -308,7 +308,7 @@ const Minting = ({
         zIndex: '9999',
         overflow: 'hidden',
         margin: 'auto',
-        width: '100%%',
+        width: '100%',
         alignItems: 'center'
       }}>
         <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', zIndex: "2220px", fontSize: '2em', }}>
