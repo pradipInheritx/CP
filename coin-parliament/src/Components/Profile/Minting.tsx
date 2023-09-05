@@ -252,30 +252,25 @@ const Minting = ({
 
   const [animateButton, setAnimateButton] = useState<boolean>(false);
 
-  const claimRewardHandler = async () => {
+  const claimRewardHandler = () => {
     setAnimateButton(true);
     setTimeout(() => setAnimateButton(false), 1000);
     handleSoundClick()
     if (claim) {
       setLoading(true);
-      const result = await claimReward(
-        // { uid: user?.uid }
-        {uid:user?.uid, isVirtual: true }
-      ).then((data: any) => {
-        handleShow()
-        // handleSoundWinCmp.play()
-        return data;
+      claimReward({ uid: user?.uid, isVirtual: false }).then((result: any) => {
+        handleShow();
+        setResultData(result);
+        setRewardTimer(result);
+        if (result?.data) {
+          // @ts-ignore
+          setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
+        }
+        // claimReward({ uid: user?.uid, isVirtual: true });
+        setLoading(false);
       }).catch((error) => {
         showToast(error.message, ToastType.ERROR);
       });
-      setResultData(result);
-      setRewardTimer(result);
-      if (result?.data) {
-        // @ts-ignore
-        setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
-      }
-
-      setLoading(false);
     } else {
       Swal.fire({
         title: '',
@@ -355,36 +350,8 @@ const Minting = ({
             className='box_title d-md-block text-white d-none mb-4'
             {...{ width }}
           >
-            {/* {translate("CP Minting")} */}
             {texts.CPMinting}
           </Title>
-
-          {/* <OverlayTrigger placement="top" overlay={(props:any) => {
-            return (
-              
-                  <Tooltip  {...props} className="mytooltip" id="tooltip-left"    
-                    style={{
-                      // width: "200px",
-                      // color: "red",                    
-                      // border: "1px solid red",
-                      marginLeft: "66%",
-                      // marginTop:"2.5%",
-                  }}
-              >
-                <p
-                  style={{
-                                        
-                }}
-                >
-                  Your CMP Count
-                </p>
-              </Tooltip>
-          
-            )
-          }}
-          
-          >    */}
-          {/* <I className='bi bi-info-circle'></I>             */}
           <I className='bi bi-info-circle ' style={{ paddingRight: width < 767 ? '8em' : '' }}
             onMouseDown={(e) => {
               setTooltipShow(false)
@@ -395,16 +362,9 @@ const Minting = ({
             onMouseEnter={() => setTooltipShow(true)}
             onMouseLeave={() => setTooltipShow(false)}
           ></I>
-          {/* </OverlayTrigger> */}
 
 
           <CircularProgress percentage={(score || 0)} />
-
-          {/* <PieChart
-            percentage={score || 50}
-            pax={0} // TODO: ask
-            width={width > 767 ? 194 : 154}
-          /> */}
         </div>
         {/* width > 767 &&  */(
           <div className="w-100" style={{ display: 'flex', alignContent: 'center', paddingLeft: (width < 767 ? '2em' : ''), paddingRight: (width < 767 ? '2em' : '') }} >
@@ -432,19 +392,7 @@ const Minting = ({
           show={
             modalShow
           } onHide={handleClose}
-          // backdrop="static"
-          // contentClassName={"modulebackground  ForBigDiv"}
-          // aria-labelledby="contained-modal-title-vcenter"
-          // centered
-          // style={{
-          //   backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200",
-          //   // padding: "0px",
-          //   // margin:"0px",
-          // }}
-          // className="d-flex justify-content-center align-items-center"
-
           backdrop="static"
-          // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
           contentClassName={"modulebackground ForBigDiv"}
           aria-labelledby="contained-modal-title-vcenter"
           centered

@@ -64,7 +64,7 @@ const Video = styled.video`
 
 const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isFollower = false }) => {
     const navigate = useNavigate();
-    const { user ,userInfo} = useContext(UserContext);
+    const { user, userInfo } = useContext(UserContext);
     const [collectionType, setCollectionType] = useState<any>()
     const [allTypeofCard, setAllTypeofCard] = useState<any>([])
     const [allCardArray, setAllCardArray] = useState<any>([])
@@ -392,42 +392,42 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     }
     let addAlbumSeparator = '';
 
-    useEffect(() => {    
-    if (isFollower) {
-     firebase
-      .firestore()
-      .collection("users")
-      .where("uid", "==",userId)
-    .get()
-      .then((snapshot) => {  
-        var data: any = []
-        snapshot.forEach((doc) => {
-          data.push({...doc.data() });
-        }); 
-        
-        getsamecard(data[0])
-      }).catch((error) => {
-        console.log(error, "error");
-      });     
-    }  
-    else {
-        getsamecard(userInfo)
-    }    
-}, [])
+    useEffect(() => {
+        if (isFollower) {
+            firebase
+                .firestore()
+                .collection("users")
+                .where("uid", "==", userId)
+                .get()
+                .then((snapshot) => {
+                    var data: any = []
+                    snapshot.forEach((doc) => {
+                        data.push({ ...doc.data() });
+                    });
 
-  const getsamecard = (data: any) => {
-    var commonCard = {}
-      // @ts-ignore
-    const allCards = data?.rewardStatistics?.cards
-  allCards?.map((item: any, index: number) => {
-      // @ts-ignore
-      commonCard={...commonCard,[item]:(commonCard[item]?commonCard[item]+1:1)}
-  })
-    console.log(data,"commonCard")
-  setSameCards(commonCard)
-  }
+                    getsamecard(data[0])
+                }).catch((error) => {
+                    console.log(error, "error");
+                });
+        }
+        else {
+            getsamecard(userInfo)
+        }
+    }, [])
 
-    
+    const getsamecard = (data: any) => {
+        var commonCard = {}
+        // @ts-ignore
+        const allCards = data?.rewardStatistics?.cards
+        allCards?.map((item: any, index: number) => {
+            // @ts-ignore
+            commonCard = { ...commonCard, [item]: (commonCard[item] ? commonCard[item] + 1 : 1) }
+        })
+        console.log(data, "commonCard")
+        setSameCards(commonCard)
+    }
+
+
     return (
         <div className='' style={{ background: "white", minHeight: "80vh" }}>
             <div className='d-flex justify-content-center pt-5 flex-wrap'>
