@@ -294,7 +294,7 @@ const Minting = ({
 
   return (
     <React.Fragment>
-      {true && <div style={{
+      {loading && <div style={{
         position: 'fixed',
         height: '100%',
         display: 'flex',
