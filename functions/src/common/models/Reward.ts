@@ -237,6 +237,13 @@ const pickRandomValueFromArray = (arr: string[]): string => {
   return randomElement;
 };
 
+const getVirtualRewardStatisticsByUserId = async (uid: string) => {
+  const getVirtualRewardStatisticsQuery = await firestore().collection('virtualRewardStatistics').where('userId', '==', uid).get();
+  const getVirtualRewardStatistics = getVirtualRewardStatisticsQuery.docs.map((reward) => reward.data());
+  console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics)
+  return getVirtualRewardStatistics[0];
+}
+
 export const claimReward: (uid: string, isVirtual: boolean
 ) => { [key: string]: any } = async (
   uid: string,
@@ -256,13 +263,13 @@ export const claimReward: (uid: string, isVirtual: boolean
         total: 0,
         claimed: 0,
       };
-
+      if (isVirtual === true) {
+        const checkUserDataExist = await getVirtualRewardStatisticsByUserId(uid);
+        if (checkUserDataExist) return checkUserDataExist;
+      }
       // add reward_transaction here
       if (isVirtual === false && total - claimed > 0) {
-        const getVirtualRewardStatisticsQuery = await firestore().collection('virtualRewardStatistics').where('userId', '==', uid).get();
-        const getVirtualRewardStatistics = getVirtualRewardStatisticsQuery.docs.map((reward) => reward.data());
-        console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics)
-        let getVirtualRewardStatistic = getVirtualRewardStatistics[0];
+        const getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
         console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic)
         // update the reward in User data
         await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
@@ -274,7 +281,7 @@ export const claimReward: (uid: string, isVirtual: boolean
           .then(() => console.log(`${getVirtualRewardStatistic.rewardId} is deleted successfully`))
           .catch((error) => { console.error(`Error removing ${getVirtualRewardStatistic.rewardId} document: ${error}`); });
         console.log("isVirtual Result : ", result)
-        return result;
+        return result.winData;
       }
 
 
