@@ -130,7 +130,7 @@ const Menu = ({
   // console.log("hello")
   const handleShow = () => {
     if (followerPage) {
-      navigate(-1)
+      navigate('/profile/followers')
     }
     else {
       setMenuOpen(true)
