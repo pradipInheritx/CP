@@ -171,6 +171,24 @@ const Menu = ({
           // boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
         }}
       >
+        {
+          backgrounHide &&
+          <div style={{
+          position: 'fixed',
+          height: '120px',
+          display: 'flex',          
+          borderRadius:" 0px 0px 80px 0px",
+          top: '0',
+          right: '0',
+          bottom: '0',
+          left: '0',
+          background: 'rgba(0, 0, 0, 0.8)',
+          zIndex: '1001',
+          overflow: 'hidden',
+          
+          width: '100%',
+          
+        }} />}
         <Container
           className='text-capitalize align-items-center px-2 justify-content-start'
           fluid={true}

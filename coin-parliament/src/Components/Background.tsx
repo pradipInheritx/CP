@@ -59,14 +59,14 @@ const Background = ({ pathname }: { pathname: string }) => {
       pathname={pathname}
       // width={width}
       scrollPosition={scrollPosition}
-      style={{
-        
+      style={{             
         transform: `${inOutReward == 2 && showReward == 2 ? `${window.screen.width > 767 ? "scale(1.5)" :"scale(1.3)"}` : ""}`,
-        transition: `${inOutReward == 2 && showReward == 2 ? "all 3s ease" : ""}`,
-      
+        transition: `${inOutReward == 2 && showReward == 2 ? "all 3s ease" : ""}`,        
       }}
     >
-      <div>
+     
+      
+      <div>        
         <BG
           pathname={pathname}
           scrollPosition={scrollPosition}

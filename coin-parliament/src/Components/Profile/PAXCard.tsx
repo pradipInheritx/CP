@@ -80,7 +80,7 @@ background-color: rgba(0,0,0,0.8);
   top:0;
   left:0;
   width:100%;
-  height: 100vh;
+  height: 100%;
   z-index:2500;
 `;
 const BoxSet2 = css`
@@ -301,18 +301,18 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                 {showCoinIncrement === 1 ?
                   <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
                     onEnd={() => {
-                      setTimeout(() => {
-                        handleShow();
-                        setShowCoinIncrement(2);
-                        setPrevCountRef(PAX);
-                        setSliverCoin(false)
-                        // handleSoundWinCmp.play();
-                        handleSoundWinCmp.play()
-                        // setInOutReward((prev: number) => {
-                        //   return 2;
-                        //   // return prev == 1 ? 2 : prev;
-                        // });
-                      }, 1000);
+                      // setTimeout(() => {
+                      //   handleShow();
+                      //   setShowCoinIncrement(2);
+                      //   setPrevCountRef(PAX);
+                      //   setSliverCoin(false)
+                      //   // handleSoundWinCmp.play();
+                      //   handleSoundWinCmp.play()
+                      //   // setInOutReward((prev: number) => {
+                      //   //   return 2;
+                      //   //   // return prev == 1 ? 2 : prev;
+                      //   // });
+                      // }, 1000);
                     }
                     }
                   /> :

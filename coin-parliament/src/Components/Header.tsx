@@ -137,7 +137,7 @@ const ZoomCss = css`
   right:0;
   bottom:0;
   width: 100%;
-  height: 150vh;
+  height: 100%;
   z-index:2200;
   transition: opacity .3s;
   background-color: rgba(0,0,0,0.8);
