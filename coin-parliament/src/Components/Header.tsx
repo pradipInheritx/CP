@@ -537,7 +537,7 @@ const Header = ({
 										/>
 									</div>
 									<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
-										<HeaderCenterMob className=''>
+										<HeaderCenterMob className='border'>
 											<div></div>
 											<div className='mt-1'>
 												{
@@ -686,17 +686,19 @@ const Header = ({
 			{/* {for center web size} */}
 
 			{logo ? (
-				<div
-
+				<div					
 					style={{
 						flexBasis: "100%",
-						textAlign: "center",
+						textAlign: "center",              						
+						// transform: `${inOutReward == 2 && showReward == 2 ?"scale(1.5)":""}`,
+						// transformOrigin: `${inOutReward == 2 && showReward == 2 ? "50% -10 %" : ""}`,				
+						// transition: `${backgrounHide ? "all 3s" : ""}`,      
 					}}
 				>
 					<div className='d-flex'>
 						<ForZoom  {...{ showReward, inOutReward }} className="flex-fill d-flex" /* className="w-100" */>
 							{(user?.uid && !login) && (
-								<div className='d-flex mx-auto w-auto' style={{ position: "relative", height: "50px", }}>
+								<div className='d-flex mx-auto w-auto ' style={{ position: "relative", height: "50px", }}>
 									<div onClick={() => {
 										if (!showMenubar && !followerPage) navigate("/profile/mine")
 									}}

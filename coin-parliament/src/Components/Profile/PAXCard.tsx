@@ -30,7 +30,7 @@ type ZoomProps = {
 
 const ZoomCss = css`
     // transform: scale(1.1);    
-    z-index:2000;
+    // z-index:2500 !impotent;
 //     animation: zoom-in-zoom-out 4s infinite ;
 //     @keyframes zoom-in-zoom-out {
 //   0% {
@@ -71,7 +71,8 @@ const ForZoom = styled.div`
 // const ForZoom2 = styled.div`
 //  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss2 : ""}`} `;
 const ForZoom2 = styled.div`
- z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
+//  z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
+//  isolation:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "isolate" : ""}`};  
  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1 && window.screen.width < 450) ? ZoomCss2 : ""}`} ;
 `;
 
@@ -111,10 +112,13 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
 
 
   return (
-    <ForZoom2 {...{ showCoinIncrement }} style={{ marginTop: "7px" }}>
+    <ForZoom2 {...{ showCoinIncrement }} style={{
+      marginTop: "7px",      
+    }}>
       <ForZoom className="cp_balance dark_prpl_bkgnd mx-auto mb-3 "
         {...{ showCoinIncrement }}
         style={{
+          zIndex: 2500,
           // @ts-ignore
           position: `${window.screen.width > 767 && showCoinIncrement == 1 ? "absolute" : ""}`,
           height: "160px",
