@@ -16,7 +16,7 @@ import { Col, Form, Row } from "react-bootstrap";
 import { texts } from "Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
 import { trim } from "lodash";
-import { divideArray } from "common/utils/helper";
+import { divideArray, divideArray1 } from "common/utils/helper";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -375,7 +375,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
             tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
         }
-        setMyFilter(divideArray(tempFilter, 4));
+        setMyFilter(divideArray1(tempFilter, 4));
+        divideArray1(tempFilter, 4);
     }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards]);
     //End 
 
@@ -429,8 +430,9 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
 
     return (
-        <div className='' style={{ background: "white", minHeight: "80vh" }}>
-            <div className='d-flex justify-content-center pt-5 flex-wrap'>
+        <div className='' style={{ background: "white", minHeight: "80vh" }
+        }>
+            <div className='d-flex justify-content-center pt-5 flex-wrap' >
                 <input
                     type='text'
                     onChange={e => {
@@ -457,10 +459,12 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             width: "140px"
                         }}
                     >
-                        <option value='none'>{texts.SelectCollection}</option>
-                        {collectionType?.map((data: any, index: number) => {
-                            return <option selected value={data?.albumName} key={index}>{data?.albumName}</option>
-                        })}
+                        <option value='none' > {texts.SelectCollection} </option>
+                        {
+                            collectionType?.map((data: any, index: number) => {
+                                return <option selected value={data?.albumName} key={index} > {data?.albumName} </option>
+                            })
+                        }
 
                     </select>
                     <select
@@ -475,12 +479,14 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             width: "140px"
                         }}
                     >
-                        <option value='none'>{texts.SelectSets}</option>
-                        {setsValue?.map((data: any, index: number) => {
-                            return <option selected value={data?.id} key={index}>{(data?.setName)?.toUpperCase()}</option>
-                        })}
+                        <option value='none' > {texts.SelectSets} </option>
+                        {
+                            setsValue?.map((data: any, index: number) => {
+                                return <option selected value={data?.id} key={index} > {(data?.setName)?.toUpperCase()
+                                }</option>
+                            })}
                     </select>
-                </div>
+                </div >
                 <div className={`${window.screen.width < 767 ? "" : ""}`}>
 
                     <select
@@ -495,13 +501,13 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             width: "140px"
                         }}
                     >
-                        {collectionValue != "none" ? <><option value='all' >{texts.SelectType}</option>
-                            <option value={`${texts.Legendary}`} >{texts.Legendary}</option>
-                            <option value={`${texts.Rare}`}>{texts.Rare}</option>
-                            <option value={`${texts.Epic}`}>{texts.Epic}</option>
-                            <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
-                            <option value={`${texts.Common}`}>{texts.Common}</option></> :
-                            <option value='all'>{texts.SelectType}</option>}
+                        {collectionValue != "none" ? <><option value='all' > {texts.SelectType} </option>
+                            <option value={`${texts.Legendary}`} > {texts.Legendary} </option>
+                            <option value={`${texts.Rare}`}> {texts.Rare} </option>
+                            <option value={`${texts.Epic}`}> {texts.Epic} </option>
+                            <option value={`${texts.UNCommon}`}> {texts.UNCommon} </option>
+                            <option value={`${texts.Common}`}> {texts.Common} </option></ > :
+                            <option value='all' > {texts.SelectType} </option>}
                     </select>
 
                     <select
@@ -515,144 +521,175 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             width: "140px"
                         }}
                     >
-                        <option value='none'>{texts.SelectName}</option>
-                        {collectionValue !== 'none' && cardNameNew?.map((data: any, index: number) => {
-                            return <option selected value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
-                        })}
+                        <option value='none' > {texts.SelectName} </option>
+                        {
+                            collectionValue !== 'none' && cardNameNew?.map((data: any, index: number) => {
+                                return <option selected value={data?.cardName} key={index} > {`${data?.cardName}`
+                                }</option>
+                            })}
                     </select>
                 </div>
-                {!isFollower && <div className="d-flex  justify-content-start align-items-center ">
+                {
+                    !isFollower && <div className="d-flex  justify-content-start align-items-center " >
 
-                    <Form.Check
-                        style={{ fontSize: "20px", marginRight: "10px" }}
-                        type="checkbox"
-                        id={`default-checkbox`}
-                        // label={`default checkbox`}
-                        // onClick={availableCard}
-                        onClick={(e) => {
-                            setDisplayMyCards(prev => !prev);
-                            setMyCards(!myCards)
-                        }}
-                    />
-                    <label htmlFor="default-checkbox">{texts.AvailableCards}</label>
-                </div>}
-            </div>
-            {(/* !myCards && !cardShow  */collectionValue === 'none' && !displayMyCards) ?
-
-
-                <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
-                    {
-                        collectionType?.map((data: any, index: number) => {
-                            return (
-                                <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }} key={index}
-                                    style={{
-                                        width: "380px",
-                                        overflow: "hidden",
-                                        height: "108px",
-                                        borderRadius: "10px",
-                                    }}
-                                >
-                                    {data?.albumVideoUrl ?
-                                        <img src={data?.albumVideoUrl} width={'100%'} height={'100%'} />
-                                        :
-                                        <p style={{ color: "white" }}>{data?.albumName}</p>
-                                    }
-                                    {/* <p>{data?.collectionName} COLLECTION</p> */}
-                                </div>
-                            )
-                        })
-                    }
-                </GalleryType>
-                :
-                myFilter?.length > 0 ?
-                    <SummerCard className="mt-4">
-                        {myFilter?.map((cardPart: any, ind: number) => {
-                            return <div className='w-100 m-auto d-flex pt-3' style={{ borderTop: ((ind !== 0 && cardPart.length > 0 && addAlbumSeparator !== cardPart[0].albumName) ? '3px solid #bebac7' : '') }} key={ind}>
-                                <div className="w-100">
-                                    <SwiperBar>
-                                        {cardPart?.map((item: any, index: number) => {
-                                            if (addAlbumSeparator !== item.albumName) {
-                                                console.log(item.albumName, 'adding');
-                                                addAlbumSeparator = item.albumName;
-                                            }
-                                            if (myCards) {
-                                                return (
-                                                    <NftOneCard
-                                                        key={index}
-                                                        DivClass={item?.cardType}
-                                                        HeaderText={item?.cardType}
-                                                        HeaderClass={`${item?.cardType}_text`}
-                                                        Serie={item?.setName || "Set" + index}
-                                                        BackCardName={item?.cardName}
-                                                        Rarity={item?.cardType}
-                                                        Quantity={`${sameCards[item?.cardName]} / ${item?.totalQuantity}`}
-                                                        holderNo={item?.noOfCardHolders}
-                                                        // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                                                        // cardNo={item?.sno[index]}
-                                                        // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                                                        cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
-                                                        // GeneralSerialNo={}                            
-                                                        CollectionType={item?.albumName || "LEGENDARY"}
-                                                        MintedTime={getMintedTime(item?.cardId)}
-                                                        PrivateSerialNo={getPriSerialNo(item?.cardId)}
-                                                        Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
-                                                        userId={item?.setId}
-                                                        // Disable={"CardDisebal"}                            
-                                                        cardHeader={`${item?.cardName}`}
-                                                        id={item?.cardId}
-                                                        BackSideCard={BackSideCard}
-                                                        fulldata={item}
-                                                        flipCard={backCards?.includes(item?.cardId)}
-                                                        ImgUrl={item?.cardImageUrl || ""}
-                                                        VideoUrl={item?.cardVideoUrl || ""}
-                                                    />
-                                                );
-                                            }
-                                            else {
-                                                return (
-                                                    <NftOneCard
-                                                        key={index}
-                                                        DivClass={item?.cardType}
-                                                        HeaderText={item?.cardType}
-                                                        HeaderClass={`${item?.cardType}_text`}
-                                                        Serie={item?.setName || "Set" + (index + 1)}
-                                                        BackCardName={item?.cardName}
-                                                        Rarity={item?.cardType}
-                                                        // Quantity={item?.totalQuantity}
-                                                        holderNo={item?.noOfCardHolders}
-                                                        // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                                                        // cardNo={item?.sno[index]}
-                                                        Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
-                                                        cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
-                                                        // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                                                        MintedTime={getMintedTime(item?.cardId)}
-                                                        PrivateSerialNo={getPriSerialNo(item?.cardId)}
-                                                        Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
-                                                        userId={item?.setId}
-                                                        // CollectionType={item?.collectionName}
-                                                        CollectionType={item?.albumName || "LEGENDARY"}
-                                                        // Disable={"CardDisebal"}                            
-                                                        cardHeader={`${item?.cardName}`}
-                                                        id={item?.cardId}
-                                                        BackSideCard={BackSideCard}
-                                                        fulldata={item}
-                                                        flipCard={backCards?.includes(item?.cardId)}
-                                                        ImgUrl={item?.cardImageUrl || ""}
-                                                        VideoUrl={item?.cardVideoUrl || ""}
-                                                    />
-                                                );
-                                            }
-                                        })}
-                                    </SwiperBar>
-                                </div>
-                            </div>
-                        })}
-                    </SummerCard> :
-                    <div className="d-flex justify-content-center mt-5">
-                        {<p style={{
-                            color: "black"
-                        }}>Data Not Found</p>}
+                        <Form.Check
+                            style={{ fontSize: "20px", marginRight: "10px" }}
+                            type="checkbox"
+                            id={`default-checkbox`
+                            }
+                            // label={`default checkbox`}
+                            // onClick={availableCard}
+                            onClick={(e) => {
+                                setDisplayMyCards(prev => !prev);
+                                setMyCards(!myCards)
+                            }}
+                        />
+                        <label htmlFor="default-checkbox" > {texts.AvailableCards} </label>
                     </div>}
+            </div>
+            {
+                (/* !myCards && !cardShow  */collectionValue === 'none' && !displayMyCards) ?
+
+
+                    <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
+                    } >
+                        {
+                            collectionType?.map((data: any, index: number) => {
+                                return (
+                                    <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }
+                                    } key={index}
+                                        style={{
+                                            width: "380px",
+                                            overflow: "hidden",
+                                            height: "108px",
+                                            borderRadius: "10px",
+                                        }}
+                                    >
+                                        {
+                                            data?.albumVideoUrl ?
+                                                <img src={data?.albumVideoUrl} width={'100%'} height={'100%'} />
+                                                :
+                                                <p style={{ color: "white" }}> {data?.albumName} </p>
+                                        }
+                                        {/* <p>{data?.collectionName} COLLECTION</p> */}
+                                    </div>
+                                )
+                            })
+                        }
+                    </GalleryType>
+                    :
+                    Object.keys(myFilter)?.length > 0 ?
+                        <SummerCard className="mt-4" >
+                            {
+                                Object.keys(myFilter).map((albumName, index) => {
+                                    return (
+                                        <React.Fragment key={index} >
+                                            <div className='w-100 m-auto row pt-3' style={{ borderTop: ((index !== 0 && addAlbumSeparator !== albumName) ? '3px solid #bebac7' : '') }
+                                            }>
+                                                <div className="col-sm-2 d-flex justify-content-center align-items-center" style={{ transform: window.screen.width > 674 ? 'rotate(270deg)' : '', color: '#5f4de4', fontSize: '4em', overflow: 'visible', wordWrap: 'normal', textTransform: 'capitalize' }} >
+                                                    {albumName}
+                                                </div>
+                                                <div className="col-sm-10" >
+                                                    {
+                                                        myFilter[albumName]?.map((cardPart: any, ind: number) => {
+                                                            return (
+
+                                                                <SwiperBar>
+                                                                    {cardPart?.map((item: any, index: number) => {
+                                                                        if (addAlbumSeparator !== item.albumName) {
+                                                                            console.log(item.albumName, 'adding');
+                                                                            addAlbumSeparator = item.albumName;
+                                                                        }
+                                                                        if (myCards) {
+                                                                            return (
+                                                                                <NftOneCard
+                                                                                    key={index}
+                                                                                    DivClass={item?.cardType}
+                                                                                    HeaderText={item?.cardType}
+                                                                                    HeaderClass={`${item?.cardType}_text`
+                                                                                    }
+                                                                                    Serie={item?.setName || "Set" + index
+                                                                                    }
+                                                                                    BackCardName={item?.cardName}
+                                                                                    Rarity={item?.cardType}
+                                                                                    Quantity={`${sameCards[item?.cardName]} / ${item?.totalQuantity}`
+                                                                                    }
+                                                                                    holderNo={item?.noOfCardHolders}
+                                                                                    // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                                                                    // cardNo={item?.sno[index]}
+                                                                                    // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                                                                    cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
+                                                                                    // GeneralSerialNo={}                            
+                                                                                    CollectionType={item?.albumName || "LEGENDARY"}
+                                                                                    MintedTime={getMintedTime(item?.cardId)}
+                                                                                    PrivateSerialNo={getPriSerialNo(item?.cardId)}
+                                                                                    Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
+                                                                                    userId={item?.setId}
+                                                                                    // Disable={"CardDisebal"}                            
+                                                                                    cardHeader={`${item?.cardName}`}
+                                                                                    id={item?.cardId}
+                                                                                    BackSideCard={BackSideCard}
+                                                                                    fulldata={item}
+                                                                                    flipCard={backCards?.includes(item?.cardId)}
+                                                                                    ImgUrl={item?.cardImageUrl || ""}
+                                                                                    VideoUrl={item?.cardVideoUrl || ""}
+                                                                                />
+                                                                            );
+                                                                        }
+                                                                        else {
+                                                                            return (
+                                                                                <NftOneCard
+                                                                                    key={index}
+                                                                                    DivClass={item?.cardType}
+                                                                                    HeaderText={item?.cardType}
+                                                                                    HeaderClass={`${item?.cardType}_text`
+                                                                                    }
+                                                                                    Serie={item?.setName || "Set" + (index + 1)}
+                                                                                    BackCardName={item?.cardName}
+                                                                                    Rarity={item?.cardType}
+                                                                                    // Quantity={item?.totalQuantity}
+                                                                                    holderNo={item?.noOfCardHolders}
+                                                                                    // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                                                                    // cardNo={item?.sno[index]}
+                                                                                    Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
+                                                                                    cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
+                                                                                    // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                                                                    MintedTime={getMintedTime(item?.cardId)}
+                                                                                    PrivateSerialNo={getPriSerialNo(item?.cardId)}
+                                                                                    Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
+                                                                                    userId={item?.setId}
+                                                                                    // CollectionType={item?.collectionName}
+                                                                                    CollectionType={item?.albumName || "LEGENDARY"}
+                                                                                    // Disable={"CardDisebal"}                            
+                                                                                    cardHeader={`${item?.cardName}`}
+                                                                                    id={item?.cardId}
+                                                                                    BackSideCard={BackSideCard}
+                                                                                    fulldata={item}
+                                                                                    flipCard={backCards?.includes(item?.cardId)}
+                                                                                    ImgUrl={item?.cardImageUrl || ""}
+                                                                                    VideoUrl={item?.cardVideoUrl || ""}
+                                                                                />
+                                                                            );
+                                                                        }
+                                                                    })}
+                                                                </SwiperBar>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                            </div>
+
+                                        </React.Fragment>
+                                    )
+                                })
+                            }
+                        </SummerCard> :
+                        <div className="d-flex justify-content-center mt-5" >
+                            {<p style={{
+                                color: "black"
+                            }}> Data Not Found </p>}
+                        </div>
+            }
         </div >
     );
 };
