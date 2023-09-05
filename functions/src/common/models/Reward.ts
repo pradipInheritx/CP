@@ -265,7 +265,7 @@ export const claimReward: (uid: string, isVirtual: boolean
       };
       if (isVirtual === true) {
         const checkUserDataExist = await getVirtualRewardStatisticsByUserId(uid);
-        if (checkUserDataExist) return checkUserDataExist;
+        if (checkUserDataExist) return checkUserDataExist.winData;
       }
       // add reward_transaction here
       if (isVirtual === false && total - claimed > 0) {
