@@ -310,7 +310,12 @@ export const claimReward: (uid: string, isVirtual: boolean
 
 
         // ----- Start manipulate reward data for update and set-----
-        const rewardObj = userData?.rewardStatistics || {
+        const rewardObj: any = userData?.rewardStatistics ? {
+          claimed: userData?.rewardStatistics.claimed,
+          cards: userData?.rewardStatistics.cards,
+          extraVote: userData?.rewardStatistics.extraVote,
+          diamonds: userData?.rewardStatistics.diamonds
+        } : {
           total: 0,
           claimed: 0,
           cards: [],
