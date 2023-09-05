@@ -186,300 +186,300 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
 
   console.log(MintedTime, "MintedTimecheck")
   return (
-    <>
-      <div
+
+    <div
+      // onMouseEnter={() => {
+      //   console.log("Hello i am first")
+      //   if (Disable == "" || Disable == undefined && MoveCard && window.screen.width > 767) {
+      //     console.log(flip,flipCard ,"Flip Flip")
+      //     console.log(MoveCard,"MoveCard")
+      //     setFlip(false);
+      //     if (flipCard != true) {
+      //       cardFlip()
+      //     }
+      //   }
+      // }}
+      // onMouseLeave={() => {
+      //   console.log(flip,flipCard ,"Flip Flip2")
+      //   if (Disable == "" || Disable == undefined && MoveCard  && window.screen.width > 767) {
+      //     setFlip(true);
+      //     cardFlip()
+      //     // if (flipCard != true) {            
+      //     //   cardFlip()
+      //     // }
+      //   }
+      // }}
+      // onFocus={() => {
+      //   if (Disable == "" || Disable == undefined) {          
+      //     setFlip(!flip);
+      //     cardFlip()
+      //   }
+      //   // setFlip(!flip);
+      // }}
+      // onFocusCapture={() => {
+      //   if (Disable == "" || Disable == undefined) {          
+      //     setFlip(!flip);
+      //     cardFlip()
+      //   }
+      //   // setFlip(!flip);
+      // }}
+      // @ts-ignore
+      // flipcard===id =true
+      // flag = false = flipclass
+      className={`card-container ${flipCard == true || flip != true ? "flipped" : ""
+        }`}
+      onClick={(e: any) => {
+        if (Disable == "" || Disable == undefined && !MoveCard) {
+          console.log('data', e.currentTarget.className?.includes('flipped'), flipCard)
+          if (window.screen.width > 767) {
+            if (!flip && !flipCard) {
+              setFlip(true)
+              cardFlip()
+              return
+            }
+
+
+            // setFlip(!flip);
+          }
+          // @ts-ignore
+          BackSideCard(id);
+          if (window.screen.width < 767) {
+            cardFlip()
+          }
+        }
+
+      }}
+      style={{
+        minHeight: `${BigCard ? "430px" : "330px"}`,
+        minWidth: `${BigCard ? "350px" : "250px"}`,
+      }}
+    >
+      <div className='front'>
+        <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+          // minHeight: "318px",
+          // minWidth: "250px",
+          minHeight: `${BigCard ? "418px" : "318px"}`,
+          minWidth: `${BigCard ? "350px" : "250px"}`,
+          backgroundColor: 'black !important',
+          backgroundImage: (darkTheme ? 'none !important' : ''),
+          color: (darkTheme ? "white" : ''),
+          position: "relative"
+        }}>
+          <div
+          // style={{
+          //   width:"100%",
+          //   position: "absolute",
+          //   height:" 39px",
+          //   marginTop: "-10px",
+          // }}
+
+          >
+            {" "}
+            <div className='d-flex justify-content-between'>
+              <div className='opacity-1' style={{
+                fontSize: "12px",
+                // marginTop:"10px",
+                width: "25%",
+              }}
+              >
+                {!Hide360Icon ?
+                  <div>
+                    <img
+                      className=""
+                      style={{
+                        // position: "absolute",
+                        // right: 15,
+                        padding: "0px 0px 0px 10px",
+                        cursor: "pointer",
+
+                      }}
+                      width={"35px"}
+                      onClick={(e) => {
+                        setVideoshow(true)
+                      }}
+                      src={Showround}
+                    />
+                  </div>
+                  :
+                  <span className='px-2 opacity-0'>{cardNo}</span>}
+              </div>
+              <CenterText className={HeaderClass}
+                style={{
+                  width: "50%"
+                }}
+              >
+                &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
+              </CenterText>{" "}
+              <div className='d-flex justify-content-end px-2' style={{ fontSize: "12px", width: "25%", }}>
+                {/* <span className='px-2 py-2'>{cardNo || "" }</span> */}
+                <div className={`${MoveCard ? "opacity-0" : ""}`}>
+
+                  <img src={information} alt=""
+                    className="mt-1"
+                    width={"15px"}
+                    height={"15px"}
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
+              <span className='cardname' style={{
+                color: (darkTheme ? "white" : ''),
+              }}
+              >
+                <strong> {cardHeader}</strong>
+
+
+              </span>
+            </div>
+            {/* <br /> */}
+            <div className='card-body'
+              onMouseEnter={() => {
+                if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
+                  console.log(MoveCard, "MoveCard")
+                  setFlip(false);
+                  if (flipCard != true) {
+                    cardFlip()
+                  }
+                }
+              }}
+            >
+              {VideoUrl && darkTheme ?
+                <Ratio
+                  style={{
+                    width: `${BigCard ? "400px" : "300px"}`,
+                  }}
+                >
+                  <embed type="" src={VideoUrl} />
+                </Ratio>
+                :
+                <div
+                  style={{
+                    width: "240px",
+                    height: "220px",
+                    // border:"1px solid red",
+                    // overflow:"hidden"
+                    position: "relative",
+                  }}
+                  className="d-flex justify-content-center"
+                >
+                  <div
+                    className=""
+                    style={{
+                      position: "absolute",
+                      left: "-30px",
+                      bottom: "60px",
+                      transform: "rotate(-90deg)",
+                      width: "100px",
+                      color: "black",
+                      // alignItems:""
+                    }}
+                  >
+
+
+                    <p
+
+                    >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>
+
+                  </div>
+                  <img
+                    src={ImgUrl || TheEagle}
+                    alt='the hgodler'
+                    className='image-fluid'
+                    style={{
+                      // border:"1px solid red",
+                      // zoom:"1.6",
+                      // backgroundPosition:" center",
+
+                      // width: "255px",
+                      // height: "255px",                      
+                      height: `${BigCard ? "350px" : "240px"}`,
+                      width: `${BigCard ? "350px" : "240px"}`,
+                      margin: "auto",
+                      display: "block",
+                      marginTop: "-10px",
+                    }}
+                  // width={"250px"}
+                  // width={"100%"}
+                  // height={"100%"}
+                  // width={"100%"}
+                  />
+                  <p
+                    style={{
+                      position: "absolute",
+                      // left: "-20px",
+                      bottom: "-14PX",
+                      // transform: "rotate(-90deg)",
+                      color: "black",
+
+                    }}
+                  >{fulldata?.albumName?.toLocaleUpperCase()}</p>
+                </div>
+              }
+
+            </div>
+          </div>
+        </Card>
+      </div>
+      <div className='back'
         // onMouseEnter={() => {
-        //   console.log("Hello i am first")
-        //   if (Disable == "" || Disable == undefined && MoveCard && window.screen.width > 767) {
-        //     console.log(flip,flipCard ,"Flip Flip")
-        //     console.log(MoveCard,"MoveCard")
+        //   console.log("Hello i am first")  
+        //   if (Disable == "" || Disable == undefined && window.screen.width > 767) {
+
         //     setFlip(false);
         //     if (flipCard != true) {
         //       cardFlip()
         //     }
         //   }
         // }}
-        // onMouseLeave={() => {
-        //   console.log(flip,flipCard ,"Flip Flip2")
-        //   if (Disable == "" || Disable == undefined && MoveCard  && window.screen.width > 767) {
-        //     setFlip(true);
-        //     cardFlip()
-        //     // if (flipCard != true) {            
-        //     //   cardFlip()
-        //     // }
-        //   }
-        // }}
-        // onFocus={() => {
-        //   if (Disable == "" || Disable == undefined) {          
-        //     setFlip(!flip);
-        //     cardFlip()
-        //   }
-        //   // setFlip(!flip);
-        // }}
-        // onFocusCapture={() => {
-        //   if (Disable == "" || Disable == undefined) {          
-        //     setFlip(!flip);
-        //     cardFlip()
-        //   }
-        //   // setFlip(!flip);
-        // }}
-        // @ts-ignore
-        // flipcard===id =true
-        // flag = false = flipclass
-        className={`card-container ${flipCard == true || flip != true ? "flipped" : ""}`}
-        onClick={(e: any) => {
-          if (Disable == "" || Disable == undefined && !MoveCard) {
-            console.log('data', e.currentTarget.className?.includes('flipped'), flipCard)
-            if (window.screen.width > 767) {
-              if (!flip && !flipCard) {
-                setFlip(true)
-                cardFlip()
-                return
-              }
-
-
-              // setFlip(!flip);
-            }
-            // @ts-ignore
-            BackSideCard(id);
-            if (window.screen.width < 767) {
-              cardFlip()
-            }
+        onMouseLeave={() => {
+          // console.log(flip,flipCard ,"Flip Flip")
+          if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
+            setFlip(true);
+            cardFlip()
+            // if (flipCard != true) {            
+            //   cardFlip()
+            // }
           }
+        }}
 
-        }}
-        style={{
-          minHeight: `${BigCard ? "430px" : "330px"}`,
-          minWidth: `${BigCard ? "350px" : "250px"}`,
-        }}
       >
-        <div className='front'>
-          <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
-            // minHeight: "318px",
-            // minWidth: "250px",
-            minHeight: `${BigCard ? "418px" : "318px"}`,
-            minWidth: `${BigCard ? "350px" : "250px"}`,
-            backgroundColor: 'black !important',
-            backgroundImage: (darkTheme ? 'none !important' : ''),
-            color: (darkTheme ? "white" : ''),
-            position: "relative"
-          }}>
-            <div
-            // style={{
-            //   width:"100%",
-            //   position: "absolute",
-            //   height:" 39px",
-            //   marginTop: "-10px",
-            // }}
-
-            >
-              {" "}
-              <div className='d-flex justify-content-between'>
-                <div className='opacity-1' style={{
-                  fontSize: "12px",
-                  // marginTop:"10px",
-                  width: "25%",
-                }}
-                >
-                  {!Hide360Icon ?
-                    <div>
-                      <img
-                        className=""
-                        style={{
-                          // position: "absolute",
-                          // right: 15,
-                          padding: "0px 0px 0px 10px",
-                          cursor: "pointer",
-
-                        }}
-                        width={"35px"}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setVideoshow(true)
-                        }}
-                        src={Showround}
-                      />
-                    </div>
-                    :
-                    <span className='px-2 opacity-0'>{cardNo}</span>}
-                </div>
-                <CenterText className={HeaderClass}
-                  style={{
-                    width: "50%"
-                  }}
-                >
-                  &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
-                </CenterText>{" "}
-                <div className='d-flex justify-content-end px-2' style={{ fontSize: "12px", width: "25%", }}>
-                  {/* <span className='px-2 py-2'>{cardNo || "" }</span> */}
-                  <div className={`${MoveCard ? "opacity-0" : ""}`}>
-
-                    <img src={information} alt=""
-                      className="mt-1"
-                      width={"15px"}
-                      height={"15px"}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div>
-                {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
-                <span className='cardname' style={{
-                  color: (darkTheme ? "white" : ''),
-                }}
-                >
-                  <strong> {cardHeader}</strong>
-
-
-                </span>
-              </div>
-              {/* <br /> */}
-              <div className='card-body'
-                onMouseEnter={() => {
-                  if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
-                    console.log(MoveCard, "MoveCard")
-                    setFlip(false);
-                    if (flipCard != true) {
-                      cardFlip()
-                    }
-                  }
-                }}
-              >
-                {VideoUrl && darkTheme ?
-                  <Ratio
-                    style={{
-                      width: `${BigCard ? "400px" : "300px"}`,
-                    }}
-                  >
-                    <embed type="" src={VideoUrl} />
-                  </Ratio>
-                  :
-                  <div
-                    style={{
-                      width: "240px",
-                      height: "220px",
-                      // border:"1px solid red",
-                      // overflow:"hidden"
-                      position: "relative",
-                    }}
-                    className="d-flex justify-content-center"
-                  >
-                    <div
-                      className=""
-                      style={{
-                        position: "absolute",
-                        left: "-30px",
-                        bottom: "60px",
-                        transform: "rotate(-90deg)",
-                        width: "100px",
-                        color: "black",
-                        // alignItems:""
-                      }}
-                    >
-
-
-                      <p
-
-                      >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>
-
-                    </div>
-                    <img
-                      src={ImgUrl || TheEagle}
-                      alt='the hgodler'
-                      className='image-fluid'
-                      style={{
-                        // border:"1px solid red",
-                        // zoom:"1.6",
-                        // backgroundPosition:" center",
-
-                        // width: "255px",
-                        // height: "255px",                      
-                        height: `${BigCard ? "350px" : "240px"}`,
-                        width: `${BigCard ? "350px" : "240px"}`,
-                        margin: "auto",
-                        display: "block",
-                        marginTop: "-10px",
-                      }}
-                    // width={"250px"}
-                    // width={"100%"}
-                    // height={"100%"}
-                    // width={"100%"}
-                    />
-                    <p
-                      style={{
-                        position: "absolute",
-                        // left: "-20px",
-                        bottom: "-14PX",
-                        // transform: "rotate(-90deg)",
-                        color: "black",
-
-                      }}
-                    >{fulldata?.albumName?.toLocaleUpperCase()}</p>
-                  </div>
-                }
-
-              </div>
-            </div>
-          </Card>
-        </div>
-        <div className='back'
-          // onMouseEnter={() => {
-          //   console.log("Hello i am first")  
-          //   if (Disable == "" || Disable == undefined && window.screen.width > 767) {
-
-          //     setFlip(false);
-          //     if (flipCard != true) {
-          //       cardFlip()
-          //     }
-          //   }
-          // }}
-          onMouseLeave={() => {
-            // console.log(flip,flipCard ,"Flip Flip")
-            if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
-              setFlip(true);
-              cardFlip()
-              // if (flipCard != true) {            
-              //   cardFlip()
-              // }
-            }
-          }}
-
-        >
-          <CardBack CardSize={BigCard} className='shadow tex-center' style={{
-            // minHeight: "318px",
-            // minWidth: "250px",
-            minHeight: `${BigCard ? "418px" : "318px"}`,
-            minWidth: `${BigCard ? "350px" : "250px"}`,
-          }}>
-            <div className='d-flex justify-content-center mt-2'>
-              <img src={logo} alt='' width={`${BigCard ? "80px" : "60px"}`} height={`${BigCard ? "80px" : "60px"}`} />
-            </div>
-            <div className='mt-2 mb-3'>
-              <span>
-                {["followerProfile", "profile"].includes(pathnameName[1])
-                  ? `Serial No. : ${PrivateSerialNo || ""}`
-                  : `Serial No. : ${GeneralSerialNo || ""}`}
-              </span>
-              <span>Collection : {CollectionType || type}</span>
-              <span>Set (Serie) : {Serie}</span>
-              <span>Name : {BackCardName}</span>
-              <span>Rarity : {Rarity}</span>
-              <span>
-                {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
-              </span>
-              {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline"
-                onClick={() => {
-                  navigate(`/singalCard/${CollectionType || type}/${id}`)
-                  // setSingalCardData({ ...fulldata, myID: userId })
-                  localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
-                }}
-              >{holderNo}&nbsp;&nbsp;View All
-                {/* <u
+        <CardBack CardSize={BigCard} className='shadow tex-center' style={{
+          // minHeight: "318px",
+          // minWidth: "250px",
+          minHeight: `${BigCard ? "418px" : "318px"}`,
+          minWidth: `${BigCard ? "350px" : "250px"}`,
+        }}>
+          <div className='d-flex justify-content-center mt-2'>
+            <img src={logo} alt='' width={`${BigCard ? "80px" : "60px"}`} height={`${BigCard ? "80px" : "60px"}`} />
+          </div>
+          <div className='mt-2 mb-3'>
+            <span>
+              {["followerProfile", "profile"].includes(pathnameName[1])
+                ? `Serial No. : ${PrivateSerialNo || ""}`
+                : `Serial No. : ${GeneralSerialNo || ""}`}
+            </span>
+            <span>Collection : {CollectionType || type}</span>
+            <span>Set (Serie) : {Serie}</span>
+            <span>Name : {BackCardName}</span>
+            <span>Rarity : {Rarity}</span>
+            <span>
+              {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
+            </span>
+            {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ? <span className="d-inline"
+              onClick={() => {
+                navigate(`/singalCard/${CollectionType || type}/${id}`)
+                // setSingalCardData({ ...fulldata, myID: userId })
+                localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId }))
+              }}
+            >{holderNo}&nbsp;&nbsp;View All
+              {/* <u
                 
                 }}>View All</u> */}
-              </span> : 0} </span>}
+            </span> : 0} </span>}
 
-              {/* {["followerProfile", "profile"].includes(pathnameName[1]) &&
+            {/* {["followerProfile", "profile"].includes(pathnameName[1]) &&
               <>
               <span>
                 Royalty : 0%
@@ -487,9 +487,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </>
               } */}
 
-            </div>
-          </CardBack>
-        </div>
+          </div>
+        </CardBack>
       </div>
       {Videoshow && <VideoPopup
         fulldata={fulldata}
@@ -500,8 +499,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
         MintedTime={MintedTime}
         PrivateSerialNo={PrivateSerialNo}
       />}
-    </>
-
+    </div >
   );
 };
 

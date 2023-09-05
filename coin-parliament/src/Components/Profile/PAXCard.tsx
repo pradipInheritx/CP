@@ -292,7 +292,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                 }
               </div>
 
-              {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>}
+              {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
               {/* <Modal.Footer> */}
 
             </Modal.Body>
@@ -374,6 +374,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
               {/* <Modal.Footer> */}
               <div className="d-flex justify-content-center ">
                 <Buttons.Primary className="mx-2" onClick={() => {
+                  handleSoundWinCmp.pause()
                   setCountShow(false)
                   setShowReward((prev: number) => {
                     return 2;
