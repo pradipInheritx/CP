@@ -16,6 +16,9 @@
     display: none;
     /* opacity: 1; */
 }
+.menuClass{
+    overflow: visible !important;
+}
 
 .HeaderText{
 animation: blinker 1s linear infinite;

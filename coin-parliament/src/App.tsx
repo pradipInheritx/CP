@@ -254,6 +254,7 @@ function App() {
   );
 
 
+
   useEffect(() => {
 
     if ('serviceWorker' in navigator) {
@@ -549,7 +550,14 @@ function App() {
     );
   }
 
-
+  // useEffect(() => {
+  //   if (backgrounHide) {
+  //     window.scrollTo({
+  //       top: 500,
+  //       behavior: 'smooth',
+  //     });
+  //   }
+  // }, [backgrounHide])
 
   useEffect(() => {
     getMessageToken();
@@ -1462,7 +1470,7 @@ function App() {
                             <AppContainer
                               fluid
                               pathname={pathname}
-                              login={login || firstTimeLogin ? "true" : "false"}
+                              login={login || firstTimeLogin ? "true" : "false"}                              
                             >
 
                               <Header
@@ -1487,7 +1495,7 @@ function App() {
                                   // ) : (
                                   <HomeContainer
                                     className='d-flex flex-column justify-content-center align-items-center p-0'
-                                    width={width}
+                                    width={width}                                    
                                   >
                                     <div
                                       className='mb-2 d-flex align-items-center'
@@ -1589,10 +1597,10 @@ function App() {
                                               }px 0 0`,
                                             // transformStyle: "flat",
                                             // transform: `${backgrounHide ? "scale(1.5)" : "scale(1)"}`,
-
-                                            // transform: `${backgrounHide ? "scale(3)" : "scale(1)"}`,
-
-                                            // transition: "all 3s",
+                                            transform: `${backgrounHide ? `${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"}` : "scale(1)"}`,
+                                            transformOrigin: `${backgrounHide ? `${window.screen.width > 767 ? "35% 50%" : "50% 90%"}` : ""}`,
+                                            transition: `${backgrounHide ? "all 3s" : ""}`,                                                                                        
+                                            
                                           }}
                                         >
                                           <div className='pwaPopup' style={{ display: pwaPopUp }}>

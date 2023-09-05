@@ -1,6 +1,6 @@
 /** @format */
 
-import React from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import { isHomeBg, Pathname } from "./App/App";
 import { Gradient1, Gradient2, Gradient3 } from "../styledMixins";
@@ -8,6 +8,7 @@ import { isCoinsPairs, isProfile } from "../common/utils/title";
 import { useWindowSize } from "../hooks/useWindowSize";
 import useScrollPosition from "../hooks/useScrollPosition";
 import { useParams } from "react-router-dom";
+import AppContext from "Contexts/AppContext";
 
 type Props = Pathname & { scrollPosition: number };
 
@@ -48,6 +49,7 @@ const BGContainer = styled.div`
 `;
 
 const Background = ({ pathname }: { pathname: string }) => {
+  const {showReward, inOutReward,} = useContext(AppContext);
   let params = useParams();
   const { width } = useWindowSize();
   const scrollPosition = useScrollPosition();
@@ -57,6 +59,9 @@ const Background = ({ pathname }: { pathname: string }) => {
       pathname={pathname}
       // width={width}
       scrollPosition={scrollPosition}
+      // style={{
+      //   transform: `${inOutReward == 2 && showReward == 2 ? "scale(1.7)" : ""}`,
+      // }}
     >
       <div>
         <BG
