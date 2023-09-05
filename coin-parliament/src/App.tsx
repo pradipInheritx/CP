@@ -1155,6 +1155,7 @@ function App() {
   });
   const latestVote = useRef<VoteContextType>();
   const latestCoinsPrice = useRef<VoteEndCoinPriceType>({});
+  const latestUserInfo = useRef<UserProps | undefined>();
   useEffect(() => {
     latestCoinsPrice.current = voteEndCoinPrice;
   }, [voteEndCoinPrice]);
@@ -1176,23 +1177,11 @@ function App() {
       // finding the difference in total seconds between two dates
 
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      // if (second_diff > 0) {
-      // setTimeout(() => {
-      //   if ("vibrate" in navigator) {
-      //     navigator.vibrate(99999999);
-      //   } else {
-      //     console.log('vibrate not working ');
-      //   }
-      // }, (((second_diff - 3 || 0) * 1000)))
       const timer = setTimeout(async () => {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-        // console.log(latestCoins.current, 'coinsname');
-        // console.log(formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', ''), 'test');
 
-        // let valueExpirationTimeOfCoin1 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin1.toUpperCase()]?.price, precision[coin1.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${!['BTC', 'ETH'].includes(coin1.toUpperCase()) ? latestCoins.current[coin1.toUpperCase()]?.randomDecimal : ''}`
-        // let valueExpirationTimeOfCoin2 = `${/* parseFloat( */formatCurrency(latestCoins.current[coin2.toUpperCase()]?.price, precision[coin2.toUpperCase()]).replaceAll('$', '').replaceAll(',', '')/* ) */}${(!['BTC', 'ETH'].includes(coin2.toUpperCase()) && latestCoins.current[coin2.toUpperCase()]) ? latestCoins.current[coin2.toUpperCase()]?.randomDecimal : ''}`
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1214,17 +1203,13 @@ function App() {
               :
               {}
           )
-        }).then((response) => {
-          // if ("vibrate" in navigator) {
-          //   navigator.vibrate([]);
-          // } else {
-          //   console.log('vibrate not working ');
+        }).then(async (response) => {
+          console.log(latestUserInfo.current, 'latestUserInfo.current');
 
+          // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
+          //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
           // }
           if (response?.data && Object.keys(response.data).length > 0) {
-            // setpopUpOpen(true);
-            // setModalData(response!.data);
-            // setLessTimeVote(undefined);
             const res: VoteResultProps = response!.data as VoteResultProps;
             // @ts-ignore
             if ((!!latestVote?.current?.activeVotes[`${res?.coin}_${res?.timeframe.seconds}`])) {
@@ -1235,8 +1220,8 @@ function App() {
                 ]
               });
             }
-            // setModalData(response!.data);
           }
+
         }).catch(err => {
           if (err && err.message) {
             console.log(err.message);
@@ -1250,9 +1235,10 @@ function App() {
   const claimReward = httpsCallable(functions, "claimReward");
   useEffect(() => {
     if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0)) {
-      claimReward({ uid: user?.uid, isVirtual: true });
+      claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
     }
-  }, [JSON.stringify(userInfo?.rewardStatistics?.claimed)]);
+    latestUserInfo.current = userInfo;
+  }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed)]);
   ///END vote result //
 
   return loader ? (

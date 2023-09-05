@@ -13,7 +13,7 @@ function SwiperBar({ children }: { children: React.ReactNode | string }) {
     infinite: false,
     centerMode: true,
     speed: 500,
-    slidesToShow: 5/* 4 */,
+    slidesToShow: 4,
     slidesToScroll: 4,
     initialSlide: 0,
     prevArrow: false,
@@ -42,7 +42,7 @@ function SwiperBar({ children }: { children: React.ReactNode | string }) {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          initialSlide: 2,
+          initialSlide: 1,
           infinite: true,
         }
       }
@@ -53,7 +53,7 @@ function SwiperBar({ children }: { children: React.ReactNode | string }) {
       style={{ overflow: "hidden" }}
     >
       {/* @ts-ignore */}
-      <Slider {...settings} /* className='w-100' */>
+      <Slider {...settings} className='w-100'>
         {/* @ts-ignore */}
         {children}
       </Slider>

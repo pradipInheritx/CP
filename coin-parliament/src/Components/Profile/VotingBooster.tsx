@@ -35,7 +35,7 @@ font-weight: 700;
 line-height: 45px;
 color: #FEFEFE;
 text-shadow: 0px 1px 3px 0px #5B03FF;
-font-size: ${window.screen.width > 767 ? "30px" :"20px"};
+font-size: ${window.screen.width > 767 ? "30px" : "20px"};
 font-family: Poppins;
 font-weight: 700;
 letter-spacing: 0.6px;
@@ -102,7 +102,7 @@ font-size:14px;
 
 const VotingBooster = () => {
   const translate = useTranslation();
-  const { user,userInfo } = useContext(UserContext);
+  const { user, userInfo } = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
@@ -112,13 +112,13 @@ const VotingBooster = () => {
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
-  let navigate = useNavigate();   
-  
-  const getExtraVote = (amount: any, extravote: any) => {    
-    let payvalue = [amount,"EXTRAVOTES",extravote]
+  let navigate = useNavigate();
+
+  const getExtraVote = (amount: any, extravote: any) => {
+    let payvalue = [amount, "EXTRAVOTES", extravote]
     let PayValuestring = JSON.stringify(payvalue)
-    localStorage.setItem("PayAmount", PayValuestring);  
-    navigate("/paymentList")   
+    localStorage.setItem("PayAmount", PayValuestring);
+    navigate("/paymentList")
   }
 
   return (
@@ -128,60 +128,61 @@ const VotingBooster = () => {
         style={{
           zIndex: 1,
           marginTop: "35px",
-          fontSize:"1.25rem",
+          fontSize: "1.25rem",
         }}
       >
-        {translate("BOOST YOUR VOTING POWER").toUpperCase()}
+        {/* @ts-ignore */}
+        {userInfo?.isUpgraded ? 'Boost your mining power' : translate("Boost your voting power").toUpperCase()}
       </H2>
       <div className="pt-5 pb-5 d-flex justify-content-center"
         style={{
           flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
-          overflow:"hidden",
-          
-      }}
+          overflow: "hidden",
+
+        }}
       >
         <div className="d-flex justify-content-center"
-        style={{
-          width:`${window.screen.width > 767? "49%" :"100%"}`
-        }}
+          style={{
+            width: `${window.screen.width > 767 ? "49%" : "100%"}`
+          }}
         >
-          <img src={votingbooster} alt=""  />
+          <img src={votingbooster} alt="" />
         </div>
         <div className=""
           style={{
-          width:`${window.screen.width > 767? "49%" :"100%"}`
-        }}
+            width: `${window.screen.width > 767 ? "49%" : "100%"}`
+          }}
         >
           <Row className="">
             <Col lg={5} sm={6} className="d-flex justify-content-center"
               style={{
-                cursor:"pointer",
+                cursor: "pointer",
               }}
               onClick={() => {
                 // @ts-ignore
-               getExtraVote(5,5)
-            }}
+                getExtraVote(5, 5)
+              }}
             >
-              <Prices style={{}} >   
-               <div style={{
+              <Prices style={{}} >
+                <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop:"-75px",
+                  marginTop: "-75px",
                   marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
                 }}>
-                  </div>  
+                </div>
                 <div
                   style={{
-                    position:"relative",
+                    position: "relative",
                     width: "95px",
                     height: "95px",
-                  }}                    
-                  >
+                  }}
+                >
                   {/* <CornerText style={{
                     color: '#FFF',
                     fontSize: '22px',
@@ -194,35 +195,35 @@ const VotingBooster = () => {
                   <ForOnly>For Only</ForOnly>
                   <Price>$5.00</Price>
                 </div>
-                
+
                 <ExtraText className="text-center">
                   <p>BUY 5 VOTES</p>
                 </ExtraText>
-                  
+
               </Prices>
             </Col>
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
               style={{
-                cursor:"pointer",
+                cursor: "pointer",
               }}
               onClick={() => {
-                getExtraVote(10,12)                                                
-            }}
+                getExtraVote(10, 12)
+              }}
             >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop:"-75px",
+                  marginTop: "-75px",
                   marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
-                }}                
+                }}
                 >
-                  </div>  
+                </div>
                 <Corner>
                   <CornerText style={{
                     color: '#FFF',
@@ -244,27 +245,27 @@ const VotingBooster = () => {
           </Row>
           <Row className="mt-5">
             <Col lg={5} sm={6} className="d-flex justify-content-center"
-            style={{
-                cursor:"pointer",
+              style={{
+                cursor: "pointer",
               }}
               onClick={() => {
                 // @ts-ignore
-                getExtraVote(15,20)
-            }}
+                getExtraVote(15, 20)
+              }}
             >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop:"-75px",
+                  marginTop: "-75px",
                   marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
                 }}>
-                  </div>  
+                </div>
                 <Corner>
                   <CornerText style={{
                     color: '#FFF',
@@ -285,25 +286,25 @@ const VotingBooster = () => {
             </Col>
             <Col lg={5} sm={6} className="d-flex justify-content-md-start justify-content-center"
               style={{
-                cursor:"pointer",
+                cursor: "pointer",
               }}
               onClick={() => {
-                getExtraVote(20,30)
-            }}
+                getExtraVote(20, 30)
+              }}
             >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
-                  position:"absolute",
+                  position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop:"-75px",
+                  marginTop: "-75px",
                   marginLeft: "-20px",
                   opacity: "0.2",
-                  zIndex:"1"
+                  zIndex: "1"
 
                 }}>
-                  </div>  
+                </div>
                 <Corner>
                   <CornerText style={{
                     color: '#FFF',
