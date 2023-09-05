@@ -308,7 +308,7 @@ const Minting = ({
         zIndex: '9999',
         overflow: 'hidden',
         margin: 'auto',
-        width: '100%%',
+        width: '100%',
         alignItems: 'center'
       }}>
         <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', zIndex: "2220px", fontSize: '2em', }}>
@@ -364,7 +364,7 @@ const Minting = ({
           ></I>
 
 
-          <CircularProgress percentage={(score || 0)} />
+          <CircularProgress percentage={(score.toFixed(2) || 0)} />
         </div>
         {/* width > 767 &&  */(
           <div className="w-100" style={{ display: 'flex', alignContent: 'center', paddingLeft: (width < 767 ? '2em' : ''), paddingRight: (width < 767 ? '2em' : '') }} >

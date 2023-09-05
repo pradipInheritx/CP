@@ -139,7 +139,7 @@ const ZoomCss = css`
   width: 100%;
   height: 100%;
   z-index:2200;
-  transition: opacity .3s;
+//   transition: opacity .3s;
   background-color: rgba(0,0,0,0.8);
   display: flex;
   justify-content: center;
