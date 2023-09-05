@@ -52,10 +52,10 @@ const
     return (
       <div className={classes.partnersMain}>
         <div className="d-flex justify-content-center">
-            <span className={classes.headerTitle}>We believe in Partnerships!</span>
-          </div>
+          <span className={classes.headerTitle}>We believe in Partnerships!</span>
+        </div>
         <PoolBox style={{ paddingTop: '5em' }}>
-          
+
           <div className={classes.stepContainer}>
             <div className={classes.tableCell}>
               <button className={classes.step}>
@@ -64,16 +64,13 @@ const
               {window.screen.width < 450 ?
                 <div className="mt-3"
                 >
-                  <a className={classes.buttonText}>SIGN UP &</a>
-                  <a className={classes.buttonText}>UPGRADE YOUR</a>
-                  <a className={classes.buttonText}>ACCOUNT</a>
+                  <a className={classes.buttonText}>SIGN UP</a>
                 </div>
                 :
-                <div                
+                <div
                   className="mt-3"
                 >
-                  <a className={classes.buttonText}>SIGN UP & UPGRADE YOUR</a>
-                  <a className={classes.buttonText}>ACCOUNT</a>
+                  <a className={classes.buttonText}>SIGN UP</a>
                 </div>
               }
               <div className={classes.stepConnecterNext}></div>
@@ -104,10 +101,10 @@ const
               {/* <a className={classes.buttonText}>ENJOY YOUR BENEFIT</a> */}
               <div className="mt-3">
                 <a className={classes.buttonText}>START EARNING</a>
-                </div>
+              </div>
               <div className={classes.stepConnecterPrev}></div>
             </div>
-          </div>          
+          </div>
           <div className="d-flex justify-content-center">
             <span className={classes.headerTitle}>50% Lifetime passive income</span>
           </div>
@@ -170,14 +167,14 @@ const
             </div>
             }
           </div>
-          <div className="d-flex justify-content-center align-items-center ">            
+          <div className="d-flex justify-content-center align-items-center ">
             <div className={`row mt-5`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
               <div className="col-md-7">
                 {/* <span className={classes.subHeaderText}>How does the Coin Parliament partners' program work?</span> */}
                 <span className={`${classes.subHeaderText} mb-3`}>How does it work?</span>
                 <div className={classes.description} style={{ fontWeight: 'bold', fontSize: '1.5em' }}>
                   <ol>
-                    <li>Sign up to become a member and upgrade your account to mining account.</li>
+                    <li>Sign up to become a member.</li>
                     <li>Invite your friends from any social media platform using your unique referral link.</li>
                     <li>
                       Start earning .
@@ -186,12 +183,12 @@ const
                         <li className={`${classes.textsomechange} mt-2`}>
                           <div
                             style={{
-                            lineHeight:"1.7"
-                          }}
+                              lineHeight: "1.7"
+                            }}
                           >
                             <span >Lifetime</span> passive income rev-share program, receive <span>50%</span> of all your friends' total purchases <span>directly</span> to your wallet.
                           </div>
-                        
+
                         </li>
                         {/* <li>Receive 50% of all your friends' total purchases directly to your wallet.</li> */}
                       </ul>
