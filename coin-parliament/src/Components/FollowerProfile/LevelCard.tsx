@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { UserTypeProps } from "../../common/models/UserType";
 import { UserProps } from "../../common/models/User";
 import { useTranslation } from "../../common/models/Dictionary";
-import  './Style.css';
+import './Style.css';
 
 type LevelCardProps = {
   userTypes: UserTypeProps[];
@@ -47,51 +47,51 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
   return (
     <div className=" cp_level dark_prpl_bkgnd mx-auto pb-4" style={{ position: 'relative' }}>
       {tooltipShow &&
-          <div
-            style={{
-            display:"relative"
+        <div
+          style={{
+            display: "relative"
           }}
+        >
+          <div className="newtooltip2"
+            style={{
+              // right: "0%",
+              // marginLeft: "16%",
+              // marginTop:"0%",
+              width: `${window.screen.width > 767 ? "150%" : "150%"}`,
+              marginLeft: `${window.screen.width > 767 ? "" : "-20%"}`,
+              marginTop: `${window.screen.width > 767 ? "15%" : "15%"}`,
+            }}
           >
-              <div className="newtooltip2"
-              style={{
-                // right: "0%",
-                // marginLeft: "16%",
-                // marginTop:"0%",
-                  width:`${window.screen.width > 767 ? "150%":"150%"}`,
-                marginLeft: `${window.screen.width > 767 ? "":"-20%"}`,
-                marginTop:`${window.screen.width > 767 ? "15%":"15%"}`,
-                }}
-              >
             {/* <p>Your CMP count</p> */}
-             <p className="mt-3 text-end lh-base">Your level reflects your recent voting activities. Regular participation helps maintain or elevate your level.</p>
-                  <p className="mt-3 text-end lh-base">Should your voting frequency decrease, you might move down the levels. </p>
-                  <p className="mt-3 text-end lh-base">The good news? You can always climb back up.</p>
-              </div>
-              </div>
-            }
+            <p className="mt-3 text-end lh-base">Your level reflects your recent voting activities. Regular participation helps maintain or elevate your level.</p>
+            <p className="mt-3 text-end lh-base">Should your voting frequency decrease, you might move down the levels. </p>
+            <p className="mt-3 text-end lh-base">The good news? You can always climb back up.</p>
+          </div>
+        </div>
+      }
       <I className="bi bi-info-circle"
-      onMouseDown={(e) => {
-             setTooltipShow(false)
-            }}
-            onMouseUp={(e) => {
-             setTooltipShow(true)
-            }}
-            onMouseEnter={() => setTooltipShow(true)}
-            onMouseLeave={() => setTooltipShow(false)}       
+        onMouseDown={(e) => {
+          setTooltipShow(false)
+        }}
+        onMouseUp={(e) => {
+          setTooltipShow(true)
+        }}
+        onMouseEnter={() => setTooltipShow(true)}
+        onMouseLeave={() => setTooltipShow(false)}
       ></I>
       <div className="d-flex justify-content-center align-items-center flex-column">
-        <h6 className="mt-1 box_title card-header mb-2" style={{fontSize:'12px'}}>
-          {translate("User Level")}
+        <h6 className="mt-1 box_title card-header mb-2" style={{ fontSize: '12px' }}>
+          {translate("User Level")}a
         </h6>
-        {userTypes.sort((a,b) => b.index - a.index).map((userType, i) => {
-            const opacity =
-              userInfo?.status?.name === userType.name ? "" : " opacity-50";
-            return (
-              <Badge className={"rounded-pill mt-1" + opacity} key={i}>
-                {userType.name}
-              </Badge>
-            );
-          })}
+        {userTypes.sort((a, b) => b.index - a.index).map((userType, i) => {
+          const opacity =
+            userInfo?.status?.name === userType.name ? "" : " opacity-50";
+          return (
+            <Badge className={"rounded-pill mt-1 w-50 d-flex justify-content-center" + opacity} key={i} >
+              {userType.name}
+            </Badge>
+          );
+        })}
         {/* <ul className="list-group mx-auto mb-3">
           {userTypes.sort((a,b) => b.index - a.index).map((userType, i) => {
             const opacity =
