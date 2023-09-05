@@ -219,7 +219,7 @@ const CoinsList = () => {
     }
   }
 
-  const payNow = () => {
+  const payNow = (detail:any) => {
     const headers = {
       'Content-Type': 'application/json',
       "accept": "application/json",
@@ -239,6 +239,7 @@ const CoinsList = () => {
       token: "ETH",
       transactionType: payType,
       numberOfVotes: extraVote,
+      paymentDetails:detail,
     }
 
     axios.post(`${ApiUrl}payment/makePayment`, data, {
@@ -282,7 +283,7 @@ const CoinsList = () => {
         const currentAmount = payamount || 99
         if (balance >= currentAmount) {
           setGetbalance(balance)
-          payNow()
+          // payNow()
         } else {
           // showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
           setPayButton(false)
@@ -326,7 +327,20 @@ const CoinsList = () => {
     console.log(obj, "alldata");
     (window as any).wldp.send_msg(obj).then((res: any) => {
       // @ts-ignore
-      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)          
+      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)                
+     document.addEventListener('wldp:trx', (e) => {
+  try {
+    // @ts-ignore
+    console.log(e?.detail.chainId, e?.detail.trx, "alldata231dsf");
+    setPayButton(false);
+    // @ts-ignore
+    // payNow(e?.detail)  
+  } catch (error) {
+
+    console.error("Error:", error);
+
+  }
+});
     }).catch((err: any) => {
       console.log(err, "allerr")
 

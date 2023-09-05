@@ -265,13 +265,13 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
     foregroundImage.onload = function () {
       context.drawImage(this, 0, 0);
       context.globalCompositeOperation = "destination-out";
-      context.lineWidth = 30;
+      context.lineWidth = 50;
     };
     foregroundImage.src = allColor[`${cardType.toLowerCase()}`].backgroundimg;    
     //   context.fillStyle = "#000";
     // context.font = "15px Helvetica";
     // context.fillText("Scratch", WIDTH /3 , 160);
-    context.lineWidth = window.screen.width < 768 ? 10 : 50;
+    // context.lineWidth = window.screen.width < 768 ? 60 : 55;
     context.lineJoin = "brush";    
     return () => {
       // second
