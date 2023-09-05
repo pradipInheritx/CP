@@ -154,9 +154,9 @@ const Menu = ({
 
   return (
     <>
-      <CoinPopup {...{ showCoinIncrement }} className="">
+      {/* <CoinPopup {...{ showCoinIncrement }} className="">
 
-      </CoinPopup>
+      </CoinPopup> */}
       <NavContainer
         pathname={pathname}
         collapseOnSelect
