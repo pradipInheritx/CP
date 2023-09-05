@@ -263,7 +263,10 @@ export const claimReward: (uid: string, isVirtual: boolean
         total: 0,
         claimed: 0,
       };
-
+      if (isVirtual === true) {
+        const checkUserDataExist = await getVirtualRewardStatisticsByUserId(uid);
+        if (checkUserDataExist) return checkUserDataExist;
+      }
       // add reward_transaction here
       if (isVirtual === false && total - claimed > 0) {
         const getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
@@ -283,8 +286,7 @@ export const claimReward: (uid: string, isVirtual: boolean
 
 
       if (total - claimed > 0) {
-        const checkUserDataExist = await getVirtualRewardStatisticsByUserId(uid);
-        if (checkUserDataExist) return checkUserDataExist;
+
         // ----- Start preparing reward data -----
         const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
         const tierPickupArray = createArrayByPercentageForPickingTier(cmp);
