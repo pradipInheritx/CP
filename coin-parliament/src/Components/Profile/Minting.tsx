@@ -204,7 +204,7 @@ const Minting = ({
   const [ClickedOption, setClickedOption] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
-    setModalShow(true)    
+    setModalShow(true)
     handleSoundWinCmp.play()
   };
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
@@ -288,20 +288,41 @@ const Minting = ({
           container: 'popupStyleContainer'
         }
       });
-    }    
+    }
   }
 
 
   // const tooltip = (props:any) => {
 
   // };
-console.log(animateButton,"setAnimateButton")
+  console.log(animateButton, "setAnimateButton")
 
   return (
     <React.Fragment>
+      {loading && <div style={{
+        position: 'fixed',
+        height: '100%',
+        display: 'flex',
+        textAlign: 'center',
+        justifyContent: 'center',
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        left: '0px',
+        background: 'rgba(0, 0, 0, 0.81)',
+        zIndex: '9999',
+        overflow: 'hidden',
+        margin: 'auto',
+        width: '100%%',
+        alignItems: 'center'
+      }}>
+        <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', zIndex: "2220px", fontSize: '2em', }}>
+          {texts.waitForIt}
+        </span>
+      </div>}
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
         {
-        tooltipShow &&
+          tooltipShow &&
           <div
             style={{
               display: "relative"
@@ -310,19 +331,19 @@ console.log(animateButton,"setAnimateButton")
             <div className="newtooltip"
               style={{
                 // right: "0%",
-                width:`${window.screen.width > 767 ? "25%":"78%"}`,
-                marginLeft: `${window.screen.width > 767 ? "16.50%":""}`,
-                marginTop:`${window.screen.width > 767 ? "1%":"10%"}`,
+                width: `${window.screen.width > 767 ? "25%" : "78%"}`,
+                marginLeft: `${window.screen.width > 767 ? "16.50%" : ""}`,
+                marginTop: `${window.screen.width > 767 ? "1%" : "10%"}`,
               }}
             >
               {/* <p>Your CMP count</p> */}
               <p className="mt-1 text-end lh-base">This dynamic system amplifies your rewards as you actively vote and impact the game. </p>
               <p className="mt-3 text-end lh-base">
-              Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones. 
+                Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones.
               </p>
               <p className="mt-3 text-end lh-base">
                 As you climb through user levels, CMP reflects your dedication, making your experience in Coin Parliament uniquely rewarding and engaging.
-                </p>
+              </p>
             </div>
           </div>
         }
@@ -431,7 +452,7 @@ console.log(animateButton,"setAnimateButton")
           id="popupid"
         >
 
-          
+
           <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
             style={{
               width: `${window.screen.width > 767 ? "500px" : "100%"}`,
@@ -483,16 +504,16 @@ console.log(animateButton,"setAnimateButton")
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
             <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>
-              <strong className="py-2" style={{ fontSize: "20px" ,textAlign:"center" }}>Well done, Champ!</strong>
-              <p className="py-2" style={{ fontSize: "20px" ,textAlign:"center" }}>You've reached your goal.</p>
-              <p className="py-2" style={{ fontSize: "14px" ,textAlign:"center" }}>Go ahead and claim your reward , You deserve it!</p>
+              <strong className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Well done, Champ!</strong>
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>You've reached your goal.</p>
+              <p className="py-2" style={{ fontSize: "14px", textAlign: "center" }}>Go ahead and claim your reward , You deserve it!</p>
             </div>
           </Modal.Body>
           <div className="d-flex justify-content-center pb-1 " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
                 claimRewardHandler();
-                handleCmpPopupClose();                
+                handleCmpPopupClose();
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>

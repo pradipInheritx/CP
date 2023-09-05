@@ -359,12 +359,10 @@ export default function SpeedTest(
         setPersentValue(50);
       } else if (vote?.direction == 0) {
         const temp = (tempNewValue - tempOldValue) / priceRange;
-        console.log(tempOldValue, tempNewValue, temp, 'pkkk');
         setPersentValue(50 + temp);
       }
       else {
         const temp = (tempOldValue - tempNewValue) / priceRange;
-        console.log(tempOldValue, tempNewValue, temp, 'pkkk');
         setPersentValue(50 + temp);
       }
     }

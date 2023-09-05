@@ -784,7 +784,7 @@ function App() {
               }
             }
           } catch (e) {
-            console.log("An error occurred while retrieving token. pkkkkkkkkk ", e);
+            console.log("An error occurred while retrieving token. ", e);
           }
         } else {
           await updateUser();
@@ -1045,7 +1045,6 @@ function App() {
         const newVotes = await getVotesFunc({
           userId: user?.uid,
         });
-        console.log('app pkkk');
 
         // @ts-ignore
         let result = JSON.parse(newVotes?.data)
@@ -1292,9 +1291,9 @@ function App() {
               }}
             >
               <AppContext.Provider
-                  value={{
-                    setBackgrounHide,
-                    backgrounHide,
+                value={{
+                  setBackgrounHide,
+                  backgrounHide,
                   voteNumberEnd,
                   setvoteNumberEnd,
                   albumOpen,
