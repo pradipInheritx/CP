@@ -1,3 +1,5 @@
+import { type } from "os";
+
 export type calculateDiffBetweenCoinsType = { firstCoin: string, secondCoin: string, difference: string };
 export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpirationTime: number[], direction: number) => {
 
@@ -46,12 +48,56 @@ export const scrollUp = () => {
     }, 2000);
 }
 
+export type cardDetailType = {
+    id: string;
+    cardName: string;
+    cardId: string;
+    quantity: number;
+    albumId: string;
+    cardStatus: string;
+    totalQuantity: number;
+    noOfCardHolders: number,
+    cardImageUrl: string;
+    cardVideoUrl: string;
+    albumName: string;
+    setId: string;
+    cardType: string;
+    setName: string;
+    sno: string[]
+}
+
 export const divideArray = (arr: any, partSize: any) => {
-    let res: any = [];
-    for (let i = 0; i < arr.length; i += partSize) {
-        const DivideEqual = arr.slice(i, i + partSize);
-        res = [...res, DivideEqual]
-    }
-    return res;
+
+    let divideByAlbum: { [key: string]: cardDetailType[] } = {};
+    arr.map((value: any) => {
+        divideByAlbum = { ...divideByAlbum, [value?.albumName]: (divideByAlbum[value?.albumName] ? [...divideByAlbum[value?.albumName], value] : [value]) }
+    });
+    let res1: cardDetailType[][] = [];
+    Object.keys(divideByAlbum).map((albumName: string) => {
+        let album = divideByAlbum[albumName];
+        for (let i = 0; i < album.length; i += partSize) {
+            res1 = [...res1, album.slice(i, i + partSize)];
+        }
+    });
+    return res1;
+
+}
+export const divideArray1 = (arr: any, partSize: any) => {
+
+    let divideByAlbum: { [key: string]: cardDetailType[] } = {};
+    arr.map((value: any) => {
+        divideByAlbum = { ...divideByAlbum, [value?.albumName]: (divideByAlbum[value?.albumName] ? [...divideByAlbum[value?.albumName], value] : [value]) }
+    });
+    let res1: { [key: string]: cardDetailType[][] } = {};
+    Object.keys(divideByAlbum).map((albumName: string) => {
+        let album = divideByAlbum[albumName];
+        let albumWithSlice: cardDetailType[][] = [];
+        for (let i = 0; i < album.length; i += partSize) {
+            albumWithSlice = [...albumWithSlice, album.slice(i, i + partSize)];
+        }
+        res1 = { ...res1, [albumName]: albumWithSlice };
+    });
+    console.log(res1, 'divideByAlbum');
+    return res1;
 
 }
