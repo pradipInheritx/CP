@@ -298,7 +298,7 @@ const Minting = ({
         show={loading}
         backdrop="static"
         centered
-        style={{ zIndex: "2200" }}
+        style={{ zIndex: "2200", backgroundColor: 'rgba(0, 0, 0, 0.80)' }}
         contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
       >
         <Modal.Body>
@@ -315,7 +315,7 @@ const Minting = ({
             overflow: 'hidden',
             width: '100%',
             alignItems: 'center',
-            backgroundColor: '#0000008a'
+
           }}>
             <span className="loading" style={{ color: "#7767f7", zIndex: "2220px", fontSize: '1.5em' }}>
               {texts.waitForIt}
