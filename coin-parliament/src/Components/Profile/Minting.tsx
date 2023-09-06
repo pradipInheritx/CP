@@ -294,27 +294,35 @@ const Minting = ({
 
   return (
     <React.Fragment>
-      {loading && <div style={{
-        position: 'fixed',
-        height: '100%',
-        display: 'flex',
-        textAlign: 'center',
-        justifyContent: 'center',
-        top: '0px',
-        right: '0px',
-        bottom: '0px',
-        left: '0px',
-        background: 'rgba(0, 0, 0, 0.81)',
-        zIndex: '9999',
-        overflow: 'hidden',
-        margin: 'auto',
-        width: '100%',
-        alignItems: 'center'
-      }}>
-        <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', zIndex: "2220px", fontSize: '2em', }}>
-          {texts.waitForIt}
-        </span>
-      </div>}
+      {loading && <Modal
+        show={loading}
+        backdrop="static"
+        centered
+        style={{ zIndex: "2200" }}
+        contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
+      >
+        <Modal.Body>
+          <div style={{
+            position: 'fixed',
+            height: '100%',
+            display: 'flex',
+            textAlign: 'center',
+            justifyContent: 'center',
+            top: '0px',
+            right: '0px',
+            bottom: '0px',
+            zIndex: '9999',
+            overflow: 'hidden',
+            width: '100%',
+            alignItems: 'center',
+            backgroundColor: '#0000008a'
+          }}>
+            <span className="loading" style={{ color: "#7767f7", zIndex: "2220px", fontSize: '1.5em' }}>
+              {texts.waitForIt}
+            </span>
+          </div>
+        </Modal.Body>
+      </Modal>}
       <Container {...{ width }} style={{ maxWidth: '257.9px', minHeight: width < 767 ? '210.9px' : '322.9px', }}>
         {
           tooltipShow &&
