@@ -66,7 +66,7 @@ text-transform: uppercase;
 const ForZoom = styled.div` 
  ${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? ZoomCss : ""}`} ;
  `;
- 
+
 const ForZoom2 = styled.div`
 //  z-index:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "2200" : ""}`};  
 //  isolation:${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? "isolate" : ""}`};  
@@ -138,7 +138,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
 
   return (
     <ForZoom2 {...{ showCoinIncrement }} style={{
-      marginTop: "7px",      
+      marginTop: "7px",
     }}>
       <CoinPopup {...{ showCoinIncrement }} className="">
 
@@ -158,64 +158,10 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
         }}>
           {texts.CoinParliamentBalance}
         </h6>
-        {/* <div className="d-flex justify-content-center align-items-center flex-column">
-          <div className="circle "
-            style={{
-              backgroundImage: `url(${coin_bgVET})`,
-              backgroundSize: "90px 87px",
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: '-8px -5px',
-            }}
-          >
-            <div
-              className="d-flex justify-content-center align-items-center flex-column coin_Bg"
-              style={{ height: 75, }}
-            >
-              <div>
-                <span className="cp_Value vstack coinText" style={{ paddingBottom: '2px', fontSize: `${inOutReward == 1 ? "24px" : "20px"} ` }}>
-
-                  {showCoinIncrement === 1 ?
-                    <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
-                      onStart={() => {
-                        handleExtraCoin.play();
-                      }}
-                      onEnd={() => {
-                        handleExtraCoin.pause();
-                        setTimeout(() => {
-                          handleShow();
-                          setShowCoinIncrement(2);
-                          setPrevCountRef(PAX);
-                          setSliverCoin(false)
-                          setBackgrounHide(false)
-                          // setInOutReward((prev: number) => {
-                          //   return 2;
-                          //   // return prev == 1 ? 2 : prev;
-                          // });
-                        }, 1000);
-                      }
-                      }
-                    /> :
-                    <>
-                      <span className="coinText">
-                        {prevCountRef || 0}
-                      </span>
-                    </>
-                  }
-
-                
-
-                </span>
-                
-              </div>
-            </div>
-          </div>
-          <p className="cp_wallet mt-3">{walletId}</p>
-        </div> */}
-
         <div
           style={{
-          cursor:"pointer"
-        }}
+            cursor: "pointer"
+          }}
         //   onClick={() => {
         //     setVideoShow(true)
         // }}
@@ -223,37 +169,37 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
           <img src={coin_bgVET} alt="" width="90px" />
         </div>
         <span
-        style={{fontSize:"15px"}}
+          style={{ fontSize: "15px" }}
         >
           {showCoinIncrement === 1 ?
             <>
-                    <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
-                      onStart={() => {
-                        handleExtraCoin.play();
-                      }}
-                      onEnd={() => {
-                        handleExtraCoin.pause();
-                        setTimeout(() => {
-                          handleShow();
-                          setShowCoinIncrement(2);
-                          setPrevCountRef(PAX);
-                          setSliverCoin(false)
-                          setBackgrounHide(false)
-                          handleSoundWinCmp.play()
-                          // setInOutReward((prev: number) => {
-                          //   return 2;
-                          //   // return prev == 1 ? 2 : prev;
-                          // });
-                        }, 1000);
-                      }
-                      }
-                    /> VTE </>:
-                    <>
-                      <span className="coinText">
-                        {prevCountRef || 0} VTE
-                      </span>
-                    </>
-                  }
+              <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
+                onStart={() => {
+                  // handleExtraCoin.play();
+                }}
+                onEnd={() => {
+                  // handleExtraCoin.pause();
+                  setTimeout(() => {
+                    handleShow();
+                    setShowCoinIncrement(2);
+                    setPrevCountRef(PAX);
+                    setSliverCoin(false)
+                    setBackgrounHide(false)
+                    handleSoundWinCmp.play()
+                    // setInOutReward((prev: number) => {
+                    //   return 2;
+                    //   // return prev == 1 ? 2 : prev;
+                    // });
+                  }, 1000);
+                }
+                }
+              /> VTE </> :
+            <>
+              <span className="coinText">
+                {prevCountRef || 0} VTE
+              </span>
+            </>
+          }
         </span>
         <div>
           {/* reward modal 3 */}
@@ -331,29 +277,29 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
             {/* </Modal.Footer>       */}
           </Modal>
         </div>
-<div>
-        <Modal        
-        show={videoShow}
+        <div>
+          <Modal
+            show={videoShow}
             onHide={() => (
-          setVideoShow(false)
-        )}
-        //   aria-labelledby="example-modal-sizes-title-sm"
-        backdrop="static"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        style={{ backgroundColor: "rgb(0 0 0 / 80%)", zIndex: "2200" }}
-          // @ts-ignore
-        contentClassName={"modulebackground ForBigNft"}
+              setVideoShow(false)
+            )}
+            //   aria-labelledby="example-modal-sizes-title-sm"
+            backdrop="static"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+            style={{ backgroundColor: "rgb(0 0 0 / 80%)", zIndex: "2200" }}
+            // @ts-ignore
+            contentClassName={"modulebackground ForBigNft"}
           >
-              <div className="d-flex justify-content-end">
+            <div className="d-flex justify-content-end">
               <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
                 setVideoShow(false)
-            }}          
-            >
+              }}
+              >
 
-            </button>
-          </div>        
-        <Modal.Body>
+              </button>
+            </div>
+            <Modal.Body>
               {/* <div>
                 <Ratio               
                   // style={{
@@ -365,12 +311,12 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                 </div> */}
               <p className="text-center"
                 style={{
-                color:"white"
-              }}
+                  color: "white"
+                }}
               >Coin Video Here</p>
-        </Modal.Body>
-      </Modal>
-    </div>
+            </Modal.Body>
+          </Modal>
+        </div>
 
 
 

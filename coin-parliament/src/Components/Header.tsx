@@ -147,8 +147,8 @@ const ZoomCss = css`
   `;
 //   transform: ${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"};
 //   transformOrigin:${window.screen.width > 767 ?"35% 50%" :"50% 90%"};
-  // left: 50%;
-  // transform: translate(-50%, -20%);    
+// left: 50%;
+// transform: translate(-50%, -20%);    
 
 
 const ForZoom = styled.div`
@@ -410,7 +410,7 @@ const Header = ({
 		<MenuContainer
 			pathname={pathname}
 			onSelect={onSelect}
-			
+
 			items={[
 				{
 					href: "/",
@@ -507,7 +507,7 @@ const Header = ({
 			{!desktop && (
 				<div className='' style={{ width: "75%" }}>
 					<div className='d-flex w-100  '>
-						<ForZoom {...{ showReward, inOutReward }} className="w-100"							
+						<ForZoom {...{ showReward, inOutReward }} className="w-100"
 						>
 							{user?.uid && !login ? (
 								<div
@@ -517,9 +517,9 @@ const Header = ({
 										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
 										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
 										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
-										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,						
-  							// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
-						
+										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
+										// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
+
 									}}
 								>
 									<div className='' onClick={() => {
@@ -574,10 +574,10 @@ const Header = ({
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
 																		onStart={() => {
-																		handleExtraVote.play()
-																	}}
-																	onEnd={() => {
-																		handleExtraVote.pause()																		
+																			// handleExtraVote.play()
+																		}}
+																		onEnd={() => {
+																			// handleExtraVote.pause()
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
 																				handleSoundWinCmp.play()
@@ -588,19 +588,9 @@ const Header = ({
 																					return 3;
 																				});
 																			}
-																			// setHeaderExtraVote((prev: number) => {
-																			// 	if (prev != 0) {
-																			// 		setShowReward((prev: number) => {
-																			// 			// return prev == 2 ? 3 : prev
-																			// 			return 3;
-																			// 		})
-																			// 	}
-																			// 	return prev
-																			// })
 																		}
 																		}
 																	/> :
-																	// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
 																	Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																}
 
@@ -692,10 +682,10 @@ const Header = ({
 			{/* {for center web size} */}
 
 			{logo ? (
-				<div					
+				<div
 					style={{
 						flexBasis: "100%",
-						textAlign: "center",              						
+						textAlign: "center",
 						// transform: `${inOutReward == 2 && showReward == 2 ?"scale(1.5)":""}`,
 						// transformOrigin: `${inOutReward == 2 && showReward == 2 ? "50% -10 %" : ""}`,				
 						// transition: `${backgrounHide ? "all 3s" : ""}`,      
@@ -716,7 +706,7 @@ const Header = ({
 										height: "50px",
 										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
 										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
-										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,						
+										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
 									}}>
 									<div onClick={() => {
 										if (!showMenubar && !followerPage) navigate("/profile/mine")
@@ -786,10 +776,10 @@ const Header = ({
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
 																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
 																	onStart={() => {
-																		handleExtraVote.play()
+																		// handleExtraVote.play()
 																	}}
 																	onEnd={() => {
-																		handleExtraVote.pause()
+																		// handleExtraVote.pause()
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
 																			handleSoundWinCmp.play()
@@ -799,16 +789,7 @@ const Header = ({
 																			setShowReward((prev: number) => {
 																				return 3;
 																			});
-																		} 
-																		// setHeaderExtraVote((prev: number) => {
-																		// 	if (prev != 0) {
-																		// 		setShowReward((prev: number) => {
-																		// 			// return prev == 2 ? 3 : prev
-																		// 			return 3;
-																		// 		})
-																		// 	}
-																		// 	return prev
-																		// })
+																		}
 
 																	}
 																	}
