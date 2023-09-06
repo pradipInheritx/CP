@@ -162,7 +162,7 @@ const CoinsList = () => {
   const handleAfterPayShow = () => setAfterPay(true);
 
 
-  const afterPayPopup = (type: any, msg: any) => {
+  const afterPayPopup = (type: any, msg?: any) => {
     if (type == "error") {
       Swal.fire({
         icon: 'error',
@@ -199,7 +199,7 @@ const CoinsList = () => {
       Swal.fire({
         icon: 'success',
         title: 'Payment Successfull',
-        text: msg,
+        text: msg || "Your payment has been confirmed",
         showCloseButton: false,
         confirmButtonColor: '#543cd6',
         confirmButtonText: 'Close',
@@ -246,64 +246,23 @@ const CoinsList = () => {
       headers: headers
     })
       .then(async (response) => {
-        // console.log(response.data ,"response")
-
-        // await showToast(response?.data?.message)    
-        setPayButton(false);
-        // setSelectPayment(0);
-        // setSelectCoin("none");
-        // await mybtn("disconnect", "true").then(() => {
-        //     setConnectOrNot(!connectOrNot)
-        //   })
-        handleAfterPayShow()
-        afterPayPopup("success", response?.data?.message)
+  
+        // setPayButton(false);
+        // handleAfterPayShow()
+        // if (detail?.trx?.transactionHash) {
+        //   afterPayPopup("success", "Payment Done")
+        // }
+        // else {
+        //   afterPayPopup("error", "Payment not Done");
+        // }
+        // afterPayPopup("success", response?.data?.message)
       })
       .catch((error) => {
-        // showToast(error.message, ToastType.ERROR)
-        console.log(error, "errorpayment");
-        setPayButton(false);
-        if (error?.message) {
-          afterPayPopup("error", error?.message);
-        }
-      })
-  }
-
-  const GetBalance = (accoutnId: any, token: any) => {
-    const headers = {
-      'Content-Type': 'application/json',
-      "accept": "application/json",
-      // @ts-ignore
-      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
-    }
-    axios.get(`${ApiUrl}payment/balance/${accoutnId}/ethereum/${token}`, {
-      headers: headers
-    })
-      .then((response) => {
-        const balance = response?.data?.data?.balance;
-        const currentAmount = payamount || 99
-        if (balance >= currentAmount) {
-          setGetbalance(balance)
-          // payNow()
-        } else {
-          // showToast(`Your account balance is : ${balance} , This is insufficient balance for this payment`, ToastType.ERROR)  
-          setPayButton(false)
-          // setSelectPayment(0);
-          // setSelectCoin("none");
-          handleAfterPayShow()
-          afterPayPopup("error", '')
-          // mybtn("disconnect", "true").then(() => {
-          //   setConnectOrNot(!connectOrNot)
-          // })
-
-        }
-      })
-      .catch((error) => {
-        // showToast(error.message,ToastType.ERROR)
-        console.log(error, "errorpayment");
-        setPayButton(false);
-        if (error?.message) {
-          afterPayPopup("error", error?.message);
-        }
+        // console.log(error, "errorpayment");
+        // setPayButton(false);
+        // if (error?.message) {
+        //   afterPayPopup("error", error?.message);
+        // }
       })
   }
 
@@ -314,7 +273,7 @@ const CoinsList = () => {
       params: {
         // @ts-ignore
         origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-        amount: 0.001,
+        amount: 0.01,
         // amount: payamount,
         // @ts-ignore
         // token:"ETH",
@@ -325,16 +284,31 @@ const CoinsList = () => {
       uid: `${sessionStorage.getItem("wldp_wsid")}`,
     };
     console.log(obj, "alldata");
-    (window as any).wldp.send_msg(obj).then((res: any) => {
-      // @ts-ignore
-      // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)                
-     document.addEventListener('wldp:trx', (e) => {
+    (window as any).wldp.send_msg(obj).then((res: any) => {                        
+      document.addEventListener('wldp:trx', (e) => {
   try {
     // @ts-ignore
-    console.log(e?.detail.chainId, e?.detail.trx, "alldata231dsf");
+    console.log(e, "alldata231dsf");
     setPayButton(false);
+
+    // @ts-ignore
+    if (e?.detail?.trx?.transactionHash) {
+      afterPayPopup("success")
+    }
+    // @ts-ignore
+    else if (e?.detail?.trx?.transactionStatus) {
+      // @ts-ignore
+      afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)      
+    }
+    // @ts-ignore
+    else if (typeof e?.detail?.trx == "string") {
+      // @ts-ignore
+      afterPayPopup("error", e?.detail?.trx)      
+    }
     // @ts-ignore
     // payNow(e?.detail)  
+    
+    // @ts-ignore    
   } catch (error) {
 
     console.error("Error:", error);

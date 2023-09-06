@@ -147,8 +147,8 @@ const ZoomCss = css`
   `;
 //   transform: ${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"};
 //   transformOrigin:${window.screen.width > 767 ?"35% 50%" :"50% 90%"};
-  // left: 50%;
-  // transform: translate(-50%, -20%);    
+// left: 50%;
+// transform: translate(-50%, -20%);    
 
 
 const ForZoom = styled.div`
@@ -196,7 +196,7 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
+	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd, rewardExtraVote } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
 	const followerUserId = localStorage.getItem("followerId")
 	const translate = useTranslation();
@@ -272,14 +272,6 @@ const Header = ({
 		}
 	}, [voteNumber, /* votingTimer, */ voteDetails])
 
-	// useEffect(() => {
-	// 	if (afterVotePopup) {
-	// 		setShow(true)
-	// 	} else {
-	// 		setShow(false)
-	// 	}
-
-	// }, [afterVotePopup])
 
 
 
@@ -295,16 +287,8 @@ const Header = ({
 	}, [pages]);
 
 	useEffect(() => {
-		// const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-		// @ts-ignore
-		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0));
-		// @ts-ignore
-		// console.log(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0), 'mye', headerExtraVote?.vote, userInfo?.rewardStatistics?.extraVote);
+		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote.collect == false ? headerExtraVote?.vote : 0));
 
-		// @ts-ignore
-		console.log(headerExtraVote?.collect || 0, "headerExtraVote")
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
@@ -314,6 +298,7 @@ const Header = ({
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
+	console.log(headerExtraVote.vote, voteNumber, "headerExtraVote")
 
 	const onSelect = (eventKey: string | null) => {
 
@@ -410,7 +395,7 @@ const Header = ({
 		<MenuContainer
 			pathname={pathname}
 			onSelect={onSelect}
-			
+
 			items={[
 				{
 					href: "/",
@@ -507,7 +492,7 @@ const Header = ({
 			{!desktop && (
 				<div className='' style={{ width: "75%" }}>
 					<div className='d-flex w-100  '>
-						<ForZoom {...{ showReward, inOutReward }} className="w-100"							
+						<ForZoom {...{ showReward, inOutReward }} className="w-100"
 						>
 							{user?.uid && !login ? (
 								<div
@@ -517,9 +502,9 @@ const Header = ({
 										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
 										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
 										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
-										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,						
-  							// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
-						
+										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
+										// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
+
 									}}
 								>
 									<div className='' onClick={() => {
@@ -572,12 +557,12 @@ const Header = ({
 															:
 															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
+																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={10} delay={2}
 																		onStart={() => {
-																		handleExtraVote.play()
-																	}}
-																	onEnd={() => {
-																		handleExtraVote.pause()																		
+																			// handleExtraVote.play()
+																		}}
+																		onEnd={() => {
+																			// handleExtraVote.pause()
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
 																				handleSoundWinCmp.play()
@@ -588,6 +573,10 @@ const Header = ({
 																					return 3;
 																				});
 																			}
+																			setHeaderExtraVote({
+																				vote: 0,
+																				collect: false
+																			});
 																			// setHeaderExtraVote((prev: number) => {
 																			// 	if (prev != 0) {
 																			// 		setShowReward((prev: number) => {
@@ -600,7 +589,6 @@ const Header = ({
 																		}
 																		}
 																	/> :
-																	// <CountUp start={prevCountRef.current} end={voteNumber && voteNumber} duration={3} />
 																	Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																}
 
@@ -692,10 +680,10 @@ const Header = ({
 			{/* {for center web size} */}
 
 			{logo ? (
-				<div					
+				<div
 					style={{
 						flexBasis: "100%",
-						textAlign: "center",              						
+						textAlign: "center",
 						// transform: `${inOutReward == 2 && showReward == 2 ?"scale(1.5)":""}`,
 						// transformOrigin: `${inOutReward == 2 && showReward == 2 ? "50% -10 %" : ""}`,				
 						// transition: `${backgrounHide ? "all 3s" : ""}`,      
@@ -716,7 +704,7 @@ const Header = ({
 										height: "50px",
 										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
 										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
-										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,						
+										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
 									}}>
 									<div onClick={() => {
 										if (!showMenubar && !followerPage) navigate("/profile/mine")
@@ -784,12 +772,12 @@ const Header = ({
 														>
 															{/* reward modal 4 */}
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
+																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={10} delay={2}
 																	onStart={() => {
-																		handleExtraVote.play()
+																		// handleExtraVote.play()
 																	}}
 																	onEnd={() => {
-																		handleExtraVote.pause()
+																		// handleExtraVote.pause()
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
 																			handleSoundWinCmp.play()
@@ -799,7 +787,13 @@ const Header = ({
 																			setShowReward((prev: number) => {
 																				return 3;
 																			});
-																		} 
+																		}
+
+																		setHeaderExtraVote({
+																			vote: 0,
+																			collect: false
+																		});
+
 																		// setHeaderExtraVote((prev: number) => {
 																		// 	if (prev != 0) {
 																		// 		setShowReward((prev: number) => {
