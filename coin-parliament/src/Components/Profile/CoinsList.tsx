@@ -273,7 +273,7 @@ const CoinsList = () => {
       params: {
         // @ts-ignore
         origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-        amount: 0.01,
+        amount: 0.000001,
         // amount: payamount,
         // @ts-ignore
         // token:"ETH",
@@ -289,12 +289,12 @@ const CoinsList = () => {
   try {
     console.log(e, "alldata231dsf");
     setPayButton(false);
-    // @ts-ignore
-    // payNow(e?.detail)
+    
     // @ts-ignore
     if (e?.detail?.trx?.transactionHash) {
       afterPayPopup("success")
-      
+      // @ts-ignore
+      payNow(e?.detail)  
     }
     // @ts-ignore
     else if (e?.detail?.trx?.transactionStatus) {
