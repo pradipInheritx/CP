@@ -79,7 +79,7 @@ const ScratchCard = styled.canvas`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow ,setBefornotShow ,befornotShow}: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow, setBefornotShow, befornotShow }: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)
@@ -91,47 +91,9 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const [Videoshow, setVideoshow] = useState(false)
   const [fulldata, setFulldata] = useState([])
   // const [befornotShow, setBefornotShow] = useState<any>(true)
-  const [allColor, setAllColor] = useState<any>({
-    epic: {
-      color:"white",
-      background:"#4938CD",
-      backgroundimg:epic,
-      // backgroundimg:newepic,
-      fill:"#4938CD"
-    },
-    common: {
-
-      color:"white",
-      background:"#C8C0F3",
-      // backgroundimg:newcommon,
-      backgroundimg:common,
-      fill:"#4938CD"
-    },
-    rare: {
-      color:"#292929",
-      background:"#9D9D9D",
-      fill: "#7E7E7E",
-      backgroundimg:rare,
-      // backgroundimg:newrare,
-    },
-    uncommon: {
-      color:"#6438C1",
-      background:"#A27CF9",
-      fill: "#6438C1",
-      backgroundimg:uncommon,
-      // backgroundimg:newuncommon,
-    },
-    legendary: {
-      color:"#292929",
-      background:"#DC9F26",
-      fill: "#A89120",
-      backgroundimg:legendary,
-      // backgroundimg:newlegendary,
-    },
-  })
 
   const { showReward, setShowReward } = useContext(AppContext);
-  const [ mintedTime, setMintedTime ] = useState("");
+  const [mintedTime, setMintedTime] = useState("");
   const { user } = useContext(UserContext);
 
 
@@ -149,7 +111,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
   const cardDiv = useRef()
   const forwidth = document.getElementById("card-animation")
 
-  console.log(forwidth,"forwidth")
+  console.log(forwidth, "forwidth")
   // const WIDTH =  window.screen.width > 767 ? 500 : window.screen.width - 10 ;
   // const HEIGHT = 460;
   const WIDTH = 252;
@@ -159,60 +121,60 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
 
   useEffect(() => {
-    
-console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
+
+    console.log(rewardTimer?.data?.firstRewardCardId, "rewardTimer")
     const getCardDetails = firebase
       .firestore()
-      
-.collection("cardsDetails")
-.where("cardId", "==", rewardTimer?.data?.firstRewardCardId)  
+
+      .collection("cardsDetails")
+      .where("cardId", "==", rewardTimer?.data?.firstRewardCardId)
     getCardDetails.get()
       .then((snapshot) => {
-         const data:any=[]
+        const data: any = []
         snapshot.forEach((doc) => {
-            let cardData=doc.data()
-            data.push({              
-                cardType:cardData?.cardType,
-                setName:cardData?.setName,
-                cardName:cardData?.cardName,
-                albumName:cardData?.albumName,
-                noOfCardHolders:cardData?.noOfCardHolders,
-                cardId:cardData?.cardId,
-                id:cardData?.cardId,
-                totalQuantity:cardData?.totalQuantity,
-                cardImageUrl:cardData?.cardImageUrl,
-                cardVideoUrl:cardData?.cardVideoUrl,
-                setId:cardData?.setId,
-            });
+          let cardData = doc.data()
+          data.push({
+            cardType: cardData?.cardType,
+            setName: cardData?.setName,
+            cardName: cardData?.cardName,
+            albumName: cardData?.albumName,
+            noOfCardHolders: cardData?.noOfCardHolders,
+            cardId: cardData?.cardId,
+            id: cardData?.cardId,
+            totalQuantity: cardData?.totalQuantity,
+            cardImageUrl: cardData?.cardImageUrl,
+            cardVideoUrl: cardData?.cardVideoUrl,
+            setId: cardData?.setId,
           });
+        });
         setFulldata(data[0])
-        console.log(data,"rewardcarddata")
+        console.log(data, "rewardcarddata")
         // setAllCardArrayNew(data)
-        console.log(data,"allcardData")
+        console.log(data, "allcardData")
       }).catch((error) => {
-        console.log(error,"error");
+        console.log(error, "error");
       });
-    
+
     const getTime = []
-    
+
     const getRewardTransactions = firebase
-     .firestore()
+      .firestore()
       .collection("reward_transactions")
-      .where("user", "==", user?.uid)      
-      getRewardTransactions.get()
+      .where("user", "==", user?.uid)
+    getRewardTransactions.get()
       .then((doc: any) => {
 
         doc.forEach((cards: any, index: number) => {
           // winCards.push(cards.data().)
-          if (cards.data()?.winData?.firstRewardCardSerialNo == rewardTimer?.data?.firstRewardCardSerialNo) {            
+          if (cards.data()?.winData?.firstRewardCardSerialNo == rewardTimer?.data?.firstRewardCardSerialNo) {
             const date = new Date(cards.data()?.transactionTime?.seconds * 1000);
             // console.log(cards.data()?.transactionTime?.seconds,"getMIntedTime")            
             var getMIntedTime = date.toLocaleString()
-           setMintedTime(getMIntedTime)           
+            setMintedTime(getMIntedTime)
             // getTime.push(
             //   { ...cards.data().winData, ...cards.data().transactionTime}
             // )
-            
+
           }
         })
 
@@ -224,12 +186,12 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
 
     // const userRef = doc(db, "cardsDetails", rewardTimer?.data?.firstRewardCardId);
     return () => {
-      
+
     };
   }, []);
 
 
-// console.log(mintedTime,"getMIntedTime")
+  // console.log(mintedTime,"getMIntedTime")
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {
@@ -267,18 +229,18 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       context.globalCompositeOperation = "destination-out";
       context.lineWidth = 50;
     };
-    foregroundImage.src = allColor[`${cardType.toLowerCase()}`].backgroundimg;    
+    foregroundImage.src = allColor[`${cardType.toLowerCase()}`].backgroundimg;
     //   context.fillStyle = "#000";
     // context.font = "15px Helvetica";
     // context.fillText("Scratch", WIDTH /3 , 160);
     // context.lineWidth = window.screen.width < 768 ? 60 : 55;
-    context.lineJoin = "brush";    
+    context.lineJoin = "brush";
     return () => {
       // second
     }
   }, [])
 
-  console.log(befornotShow,"befornotShow")
+  console.log(befornotShow, "befornotShow")
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {
@@ -305,9 +267,9 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
     setStartX(offsetX || layerX);
     setStartY(offsetY || layerY);
     setScratchShound(true)
-    setShowImg(true)    
+    setShowImg(true)
     setBefornotShow(false)
-    
+
   };
   const scratch = (e: any) => {
     console.log('PC continue');
@@ -353,7 +315,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       setCressShow(true);
       setRotateCard(true);
       setScratchShound(false)
-      openpopup()      
+      openpopup()
       handleSoundWinCmp.play()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
@@ -370,7 +332,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
         // Animation.destroy();
         handleSoundWinCmp.pause()
       }, 9000); // 5000 milliseconds = 5 seconds
-    setScratchFinish(true)
+      setScratchFinish(true)
     }
     setScratchShound(false)
     setisDrawing(false)
@@ -379,11 +341,11 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
   //for mobile
   const scratchStartMobile = (e: any) => {
     console.log('mobileStart', e);
-    const { clientX, clientY } = e.touches[0];    
+    const { clientX, clientY } = e.touches[0];
     // @ts-ignore
     const rect = cardDiv.current.getBoundingClientRect();
 
-    console.log(rect,"rect")
+    console.log(rect, "rect")
     const offsetX = clientX - rect.left;
     const offsetY = clientY - rect.top;
     setisDrawing(true);
@@ -392,9 +354,9 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
     // setScratchShound(true);
     handleSoundClickCard.play();
     setShowImg(true);
-    
-      setBefornotShow(false)
-    
+
+    setBefornotShow(false)
+
   };
 
   const scratchMobile = (e: any) => {
@@ -446,7 +408,7 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
-        
+
         container: document.querySelector("#card-animation"),
         animationData: confetti,
         renderer: "html", // "canvas", "html"
@@ -459,29 +421,29 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
         handleSoundWinCmp.pause()
         // Animation.destroy();
       }, 9000); // 5000 milliseconds = 5 seconds
-    setScratchFinish(true)
-    }    
+      setScratchFinish(true)
+    }
     setisDrawing(false);
     setScratchShound(false);
   };
 
-// const getMintedTime = () => {  
-//     // const date = new Date(winCard?.seconds * 1000);
-  
-//     const date = new Date(1691676648 * 1000);
-//   var getMIntedTime = date.toLocaleString()
-//    return  getMIntedTime
-  
-    
-//   }
+  // const getMintedTime = () => {  
+  //     // const date = new Date(winCard?.seconds * 1000);
+
+  //     const date = new Date(1691676648 * 1000);
+  //   var getMIntedTime = date.toLocaleString()
+  //    return  getMIntedTime
+
+
+  //   }
 
 
   return (
     <div className="d-flex justify-content-around align-items-center flex-column"
-      style={{        
-        height:"100%",
-    }}
-    >    
+      style={{
+        height: "100%",
+      }}
+    >
       <div
       // onClick={()=>setVideoshow(true)}
       >
@@ -490,39 +452,40 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
       <MainDiv>
         <div
           style={{
-          position: "relative",
-        }}>        
+            position: "relative",
+          }}>
           {/* @ts-ignore */}
           <div className={classname} id=""
-          style={{
-          position: "relative",
-        }}
+            style={{
+              position: "relative",
+              height: '335px'
+            }}
           >
             <div id="card-animation" style={{
               height: "280px", width: "245px", position: "absolute",
-            top: "25px",                    
+              top: "25px",
             }} />
-            
+
             <div className={`${!showImg ? "d-none" : ""}`}>
               <div className="d-flex justify-content-around">
-                <div className={`${!fulldata ? "opacity-0":""}`}
-                style={{
-                width:"25%"
-              }}
+                <div className={`${!fulldata ? "opacity-0" : ""}`}
+                  style={{
+                    width: "25%"
+                  }}
                 >
-                {/* {!Hide360Icon ? */}
+                  {/* {!Hide360Icon ? */}
                   <img
                     className=""
-                  style={{
-                    // position: "absolute",
-                    // right: 15,
-                    padding: "0px 0px 0px 10px",  
-                    cursor:"pointer"
-                  }}
-                    width={"35px"}                    
-                  onClick={() => {
-                    setVideoshow(true)
-                  }}
+                    style={{
+                      // position: "absolute",
+                      // right: 15,
+                      padding: "0px 0px 0px 10px",
+                      cursor: "pointer"
+                    }}
+                    width={"35px"}
+                    onClick={() => {
+                      setVideoshow(true)
+                    }}
                     src={Showround}
                   />
                   {/* :
@@ -531,65 +494,88 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
                       fontWeight:"bold"
                     }}
                     >123A</span>} */}
-              </div>
+                </div>
                 <span className={`${cardType.toLowerCase()}_text`}
-                style={{
-                width:"50%"
-              }}
+                  style={{
+                    width: "50%"
+                  }}
                 >
-                &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
-              </span>
-                <div className={`${!fulldata ? "opacity-0":""} px-2`}
+                  &nbsp; {cardType?.toUpperCase()} &nbsp;{" "}
+                </span>
+                <div className={`${!fulldata ? "opacity-0" : ""} px-2`}
                   style={{
                     fontSize: "12px",
                     width: "25%",
                     textAlign: "right",
-                    fontWeight:"bold"
-                
-              }}
+                    fontWeight: "bold"
+
+                  }}
                 >
-                  
-                <div>
-                  <img src={information} alt="" 
-                    className="mt-1"
-                  width={"15px"}
-                  height={"15px"}
-                />
+
+                  <div>
+                    <img src={information} alt=""
+                      className="mt-1"
+                      width={"15px"}
+                      height={"15px"}
+                    />
+                  </div>
                 </div>
               </div>
-                {/* <span className={`${!fulldata ? "opacity-0":""} px-2`}
-                  style={{
-                    fontSize: "12px",
-                    width: "25%",
-                    textAlign: "right",
-                    fontWeight:"bold"
-                
-              }}
-                >
-                  
-                {`${((fulldata?.cardName)?.toUpperCase())?.slice(0, 2) + ((fulldata?.id)?.toUpperCase())?.slice(0, 2)}`}
-              </span> */}
-              </div>
+
               <span className='cardname'>
-                <strong>{ rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
+                <strong>{rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
               </span>
               <div
-                className="d-flex justify-content-center">
+                className="d-flex justify-content-center" style={{
+                  // border:"1px solid red",
+                  // overflow:"hidden"
+
+                  position: "relative",
+                }}>
+                <div
+                  className=""
+                  style={{
+                    position: "absolute",
+                    left: "-30px",
+                    bottom: "60px",
+                    transform: "rotate(-90deg)",
+                    width: "110px",
+                    color: "black",
+                    // alignItems:""
+                  }}
+                >
+
+
+                  <p
+
+                  >{rewardTimer?.data?.firstRewardCardSerialNo || ''}</p>
+
+                </div>
                 <img src={rewardTimer?.data?.firstRewardCardImageUrl || TheEagle} alt='the hgodler'
                   // className='img-fluid'
                   style={{
-                   width: "245px",
-                  margin: "auto",
-                  display: "block",
-                  marginTop:"-7px",
-                }}
+                    width: "245px",
+                    margin: "auto",
+                    display: "block",
+                    marginTop: "-7px",
+                  }}
                 // width={"100%"}
-              />
+                />
+                <p
+                  style={{
+                    position: "absolute",
+                    // left: "-20px",
+                    bottom: "-14PX",
+                    // transform: "rotate(-90deg)",
+                    color: "black",
+                    paddingTop: '0.5em'
+                  }}
+                >{rewardTimer?.data?.firstRewardCardCollection?.toLocaleUpperCase()}</p>
               </div>
             </div>
           </div>
           {/* @ts-ignore */}
-          { !cressShow && <ScratchCard ref={cardDiv}
+          {!cressShow && <ScratchCard ref={cardDiv}
             onMouseDown={(e) => {
               e.stopPropagation()
               if (window.screen.width < 768) return
@@ -638,9 +624,9 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
           setCountShow(false)
           handleSoundWinCmp.pause()
         }}
-        style={{
-          backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
-          width:`${"120px"}`
+          style={{
+            backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
+            width: `${"120px"}`
           }}
         >
           {/* Share Card */}
@@ -654,16 +640,16 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
           navigate("/profile/Album")
           handleSoundWinCmp.pause()
         }}
-        style={{
-          backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
-          width:`${"120px"}`
+          style={{
+            backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
+            width: `${"120px"}`
           }}
         >
-        YOUR COLLECTION  {/* Check Win Card */}
+          YOUR COLLECTION  {/* Check Win Card */}
         </Buttons.Primary>
-      </div>      
+      </div>
       {Videoshow && <VideoPopup
-        fulldata={fulldata}     
+        fulldata={fulldata}
         setVideoshow={setVideoshow}
         Videoshow={Videoshow}
         // @ts-ignore
@@ -672,12 +658,51 @@ console.log(rewardTimer?.data?.firstRewardCardId,"rewardTimer")
         imgUrl={fulldata?.cardImageUrl}
         MintedTime={mintedTime}
         PrivateSerialNo={rewardTimer.data.firstRewardCardSerialNo}
-              />}
+      />}
     </div>
 
   );
 }
 
 export default NFTCard;
+
+export const allColor: { [key: string]: { [key: string]: any } } = {
+  epic: {
+    color: "white",
+    background: "#4938CD",
+    backgroundimg: epic,
+    // backgroundimg:newepic,
+    fill: "#4938CD"
+  },
+  common: {
+
+    color: "white",
+    background: "#C8C0F3",
+    // backgroundimg:newcommon,
+    backgroundimg: common,
+    fill: "#4938CD"
+  },
+  rare: {
+    color: "#292929",
+    background: "#9D9D9D",
+    fill: "#7E7E7E",
+    backgroundimg: rare,
+    // backgroundimg:newrare,
+  },
+  uncommon: {
+    color: "#6438C1",
+    background: "#A27CF9",
+    fill: "#6438C1",
+    backgroundimg: uncommon,
+    // backgroundimg:newuncommon,
+  },
+  legendary: {
+    color: "#292929",
+    background: "#DC9F26",
+    fill: "#A89120",
+    backgroundimg: legendary,
+    // backgroundimg:newlegendary,
+  },
+}
 
 

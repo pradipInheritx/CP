@@ -28,11 +28,11 @@ import { Other } from "../../Pages/SingleCoin";
 import { Buttons } from "../Atoms/Button/Button";
 import AnimationCard from "./Animation/AnimationCard";
 import { CurrentCMPContext } from "Contexts/CurrentCMP";
-import copy from "copy-to-clipboard";
 import Copy from "Components/icons/copyShare";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
 import Swal from "sweetalert2";
 import RewardHistory from "./rewardHistory";
+import ShareModal from "Components/shareModal";
 
 
 const MyBadge = styled(Badge)`
@@ -79,7 +79,7 @@ const Mine = () => {
   const [cardModalShow, setCardModalShow] = React.useState(false);
   const [paxValue, setPaxValue] = React.useState(userInfo?.rewardStatistics?.diamonds || 0);
   const [befornotShow, setBefornotShow] = useState<any>(true)
-  const [shareModleShow, setShareModleShow] = React.useState(false);
+  const [shareModalShow, setShareModalShow] = React.useState(false);
   const [countShow, setCountShow] = React.useState(false);
   const [modelText, setModelText] = React.useState(0);
 
@@ -98,8 +98,8 @@ const Mine = () => {
   const handleCardShow = () => setCardModalShow(true);
 
   const currentCMP = useContext(CurrentCMPContext);
-  const handleShareModleClose = () => setShareModleShow(false);
-  const handleShareModleShow = () => setShareModleShow(true);
+  const handleShareModleClose = () => setShareModalShow(false);
+  const handleShareModleShow = () => setShareModalShow(true);
 
 
   // @ts-ignore 
@@ -396,115 +396,9 @@ const Mine = () => {
         </Modal>
       </CardDiv>
 
-
-
       {/* Share Link */}
+      <ShareModal shareModalShow={shareModalShow} setShareModalShow={setShareModalShow} url={url} shareText={shareText} />
 
-
-      <CardDiv>
-        <Modal
-          className=""
-          show={
-            shareModleShow
-          } onHide={handleShareModleClose}
-          // fullscreen="sm-down"
-          backdrop="static"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
-          contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
-        >
-          <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
-              handleShareModleClose()
-            }}
-            // style={{color:"white" , border:"1px solid red"}}
-            >
-
-            </button>
-          </div>
-          <Modal.Body
-          >
-            {/* continue voting */}
-            {/* @ts-ignore */}
-            <div className="d-flex justify-content-center my-3">
-              <strong className="mx-4" style={{ fontSize: '14px', textAlign: 'center', color: "white" }}>SHARE YOUR CARD NOW</strong>
-            </div>
-            <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
-              <div className="mx-3">
-                <span
-                  onClick={() => {
-                    copy(url);
-                    showToast(
-                      'Your Card link is copied to the clipboard.',
-                      ToastType.SUCCESS
-                    );
-                  }}
-                  style={{ cursor: "pointer" }}
-                >
-                  <Copy />
-                </span>
-                {/* <I
-              className="bi bi-clipboard-check-fill"
-              
-              onClick={() =>
-              {
-                copy(url);
-                showToast(
-                  'Your Card link is copied to the clipboard.',
-                  ToastType.SUCCESS
-                );
-               }
-              }
-            />  */}
-
-              </div>
-
-              <div className="mx-3">
-                <I
-                  className="bi-whatsapp"
-
-                  onClick={() =>
-                    window.open(
-                      `https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url}`.replace(
-                        " ",
-                        "+"
-                      )}&app_absent=0`,
-                      "_blank"
-                    )
-                  }
-                />
-              </div>
-              <div className="mx-3">
-                <I
-                  className="bi-twitter"
-                  onClick={() =>
-                    window.open(
-                      `https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`,
-                      "_blank"
-                    )
-                  }
-                />
-              </div>
-              <div className="mx-3">
-                <I
-                  className="bi bi-facebook"
-                  onClick={() =>
-                    window.open(
-                      `https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`,
-                      "_blank"
-                    )
-                  }
-                />
-
-              </div>
-
-            </div>
-
-
-          </Modal.Body>
-        </Modal>
-      </CardDiv>
     </div >
   );
 };
