@@ -331,7 +331,7 @@ const CoinsList = () => {
      document.addEventListener('wldp:trx', (e) => {
   try {
     // @ts-ignore
-    console.log(e?.detail.chainId, e?.detail.trx, "alldata231dsf");
+    console.log(e, "alldata231dsf");
     setPayButton(false);
     // @ts-ignore
     // payNow(e?.detail)  
