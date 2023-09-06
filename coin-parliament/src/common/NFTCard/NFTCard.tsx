@@ -539,7 +539,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                     left: "-30px",
                     bottom: "60px",
                     transform: "rotate(-90deg)",
-                    width: "100px",
+                    width: "110px",
                     color: "black",
                     // alignItems:""
                   }}

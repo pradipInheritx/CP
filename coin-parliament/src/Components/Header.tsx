@@ -196,7 +196,7 @@ const Header = ({
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
-	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd } = useContext(AppContext);
+	const { voteRules, login, showReward, setShowReward, headerExtraVote, setHeaderExtraVote, inOutReward, setInOutReward, afterVotePopup, setAfterVotePopup, setvoteNumberEnd, rewardExtraVote } = useContext(AppContext);
 	// console.log(showReward,inOutReward,"inOutReward")
 	const followerUserId = localStorage.getItem("followerId")
 	const translate = useTranslation();
@@ -272,14 +272,6 @@ const Header = ({
 		}
 	}, [voteNumber, /* votingTimer, */ voteDetails])
 
-	// useEffect(() => {
-	// 	if (afterVotePopup) {
-	// 		setShow(true)
-	// 	} else {
-	// 		setShow(false)
-	// 	}
-
-	// }, [afterVotePopup])
 
 
 
@@ -295,16 +287,8 @@ const Header = ({
 	}, [pages]);
 
 	useEffect(() => {
-		// const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
-		// @ts-ignore
-		// setVoteNumber((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		// setvoteNumberEnd((Number(voteRules?.maxVotes || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - Number(voted) || 0) - (headerExtraVote?.vote || 0))
-		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0));
-		// @ts-ignore
-		// console.log(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote?.vote || 0), 'mye', headerExtraVote?.vote, userInfo?.rewardStatistics?.extraVote);
+		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote.collect == false ? headerExtraVote?.vote : 0));
 
-		// @ts-ignore
-		console.log(headerExtraVote?.collect || 0, "headerExtraVote")
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
@@ -314,6 +298,7 @@ const Header = ({
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
+	console.log(headerExtraVote.vote, voteNumber, "headerExtraVote")
 
 	const onSelect = (eventKey: string | null) => {
 
@@ -572,7 +557,7 @@ const Header = ({
 															:
 															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
+																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={10} delay={2}
 																		onStart={() => {
 																			// handleExtraVote.play()
 																		}}
@@ -588,6 +573,19 @@ const Header = ({
 																					return 3;
 																				});
 																			}
+																			setHeaderExtraVote({
+																				vote: 0,
+																				collect: false
+																			});
+																			// setHeaderExtraVote((prev: number) => {
+																			// 	if (prev != 0) {
+																			// 		setShowReward((prev: number) => {
+																			// 			// return prev == 2 ? 3 : prev
+																			// 			return 3;
+																			// 		})
+																			// 	}
+																			// 	return prev
+																			// })
 																		}
 																		}
 																	/> :
@@ -774,7 +772,7 @@ const Header = ({
 														>
 															{/* reward modal 4 */}
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)} duration={5}
+																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={10} delay={2}
 																	onStart={() => {
 																		// handleExtraVote.play()
 																	}}
@@ -790,6 +788,21 @@ const Header = ({
 																				return 3;
 																			});
 																		}
+
+																		setHeaderExtraVote({
+																			vote: 0,
+																			collect: false
+																		});
+
+																		// setHeaderExtraVote((prev: number) => {
+																		// 	if (prev != 0) {
+																		// 		setShowReward((prev: number) => {
+																		// 			// return prev == 2 ? 3 : prev
+																		// 			return 3;
+																		// 		})
+																		// 	}
+																		// 	return prev
+																		// })
 
 																	}
 																	}
