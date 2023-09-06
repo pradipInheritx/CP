@@ -273,7 +273,7 @@ const CoinsList = () => {
       params: {
         // @ts-ignore
         origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-        amount: 0.01,
+        amount: 0.000001,
         // amount: payamount,
         // @ts-ignore
         // token:"ETH",
@@ -287,28 +287,26 @@ const CoinsList = () => {
     (window as any).wldp.send_msg(obj).then((res: any) => {                        
       document.addEventListener('wldp:trx', (e) => {
   try {
-    // @ts-ignore
     console.log(e, "alldata231dsf");
     setPayButton(false);
-
+    
     // @ts-ignore
     if (e?.detail?.trx?.transactionHash) {
       afterPayPopup("success")
+      // @ts-ignore
+      payNow(e?.detail)  
     }
     // @ts-ignore
     else if (e?.detail?.trx?.transactionStatus) {
-      // @ts-ignore
+      // @ts-ignore      
       afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)      
+      
     }
     // @ts-ignore
     else if (typeof e?.detail?.trx == "string") {
-      // @ts-ignore
+      // @ts-ignore  
       afterPayPopup("error", e?.detail?.trx)      
-    }
-    // @ts-ignore
-    // payNow(e?.detail)  
-    
-    // @ts-ignore    
+    }     
   } catch (error) {
 
     console.error("Error:", error);
@@ -325,20 +323,12 @@ const CoinsList = () => {
     (window as any).wldp.isWalletConnected()
       .then((res: any) => {
         if (res === true) {
-          // send the API for payment
-          // console.log('Here we send the API call for payment')
-          // @ts-ignore
-          // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
           send()
         }
         else {
           (window as any).wldp.connectionWallet('connect', 'ethereum')
             .then((account: any) => {
-              if (account) {
-                // send the API for payment
-                //  console.log('Here we send the API call for payment')
-                // @ts-ignore
-                // GetBalance(`${sessionStorage.getItem("wldp_account")}`, `${coinInfo?.symbol.toUpperCase()}`)
+              if (account) {               
                 send()
               }
             })
