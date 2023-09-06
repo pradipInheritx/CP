@@ -227,7 +227,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
         >
           {showCoinIncrement === 1 ?
             <>
-                    <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
+              <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={10} delay={2}
                       onStart={() => {
                         handleExtraCoin.play();
                       }}
@@ -299,7 +299,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                 }}
               >
                 {showCoinIncrement === 1 ?
-                  <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={5}
+                  <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={10}
                     onEnd={() => {
                       // setTimeout(() => {
                       //   handleShow();
@@ -427,12 +427,12 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                       }
                     })
                   }, 2800)
-                  setTimeout(() => {
-                    setHeaderExtraVote({
-                      vote: 0,
-                      collect: false
-                    });
-                  }, 3000)
+                  // setTimeout(() => {
+                  //   setHeaderExtraVote({
+                  //     vote: 0,
+                  //     collect: false
+                  //   });
+                  // }, 3500)
                 }}>Collect your Vote</Buttons.Primary>
                 {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}
               </div>
