@@ -122,6 +122,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   const [videoShow, setVideoShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => setModalShow(true);
+  const [textBlink, setTextBlink] = useState<any>(false)
 
   const translate = useTranslation();
   const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); //1 =show 1>=hide
@@ -173,14 +174,19 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
         >
           {showCoinIncrement === 1 ?
             <>
-              <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={10} delay={2}
+              <CountUp className={`${textBlink ? "PaxText " : ""}coinText`} start={prevCountRef} end={PAX && PAX} duration={rewardTimer?.data?.thirdRewardDiamonds < 10 ? rewardTimer?.data?.thirdRewardDiamonds :10} delay={2} useEasing={false}
                 onStart={() => {
                   // handleExtraCoin.play();
+                  setTimeout(() => {
+                    setTextBlink(true)
+                  }, 2200);
                 }}
                 onEnd={() => {
+                  setTextBlink(false)
                   // handleExtraCoin.pause();
+                  handleShow();
                   setTimeout(() => {
-                    handleShow();
+                    // handleShow();
                     setShowCoinIncrement(2);
                     setPrevCountRef(PAX);
                     setSliverCoin(false)
