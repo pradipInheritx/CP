@@ -649,7 +649,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           YOUR COLLECTION  {/* Check Win Card */}
         </Buttons.Primary>
       </div>
-      <VideoPopup
+      {Videoshow  && <VideoPopup
         fulldata={fulldata}
         setVideoshow={setVideoshow}
         Videoshow={Videoshow}
@@ -659,7 +659,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
         imgUrl={fulldata?.cardImageUrl}
         MintedTime={mintedTime}
         PrivateSerialNo={rewardTimer.data.firstRewardCardSerialNo}
-      />
+      />}
     </div>
 
   );
