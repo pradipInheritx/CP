@@ -42,6 +42,8 @@ function VideoPopup({ fulldata, Videoshow, setVideoshow, videoUrl, imgUrl, Minte
   const [shareModalShow, setShareModalShow] = useState(false);
   const url = "https://coinparliament.com/";
   const shareText = "I won this unique card! Join the Parliament and win with me.";
+  console.log(smShow, shareModalShow, Videoshow, 'pkkkk');
+
   return (
     <div>
       <Modal
@@ -117,8 +119,8 @@ function VideoPopup({ fulldata, Videoshow, setVideoshow, videoUrl, imgUrl, Minte
                   marginTop: '10em'
                 }}
                 onClick={() => {
-                  setSmShow(false);
                   setShareModalShow(true);
+                  setSmShow(false);
                 }}
               >
                 BARG & WIN
@@ -127,7 +129,9 @@ function VideoPopup({ fulldata, Videoshow, setVideoshow, videoUrl, imgUrl, Minte
           </div>
         </Modal.Body>
       </Modal>
-      {location?.pathname.toLowerCase() === '/profile/album' && < ShareModal shareModalShow={shareModalShow} setShareModalShow={setShareModalShow} url={url} shareText={shareText} />}
+      {location?.pathname.toLowerCase() === '/profile/album' && <ShareModal closeAction={() => {
+        setVideoshow(false);
+      }} shareModalShow={shareModalShow} setShareModalShow={setShareModalShow} url={url} shareText={shareText} />}
     </div >
   )
 }

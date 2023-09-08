@@ -636,9 +636,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);
           setShowReward(0);
-          setCountShow(false)
-          navigate("/profile/Album")
-          handleSoundWinCmp.pause()
+          setCountShow(false);
+          localStorage.setItem('filterCollection', JSON.stringify({ name: rewardTimer?.data?.firstRewardCardCollection }));
+          navigate("/profile/Album");
+          handleSoundWinCmp.pause();
         }}
           style={{
             backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
@@ -648,7 +649,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           YOUR COLLECTION  {/* Check Win Card */}
         </Buttons.Primary>
       </div>
-      {Videoshow && <VideoPopup
+      <VideoPopup
         fulldata={fulldata}
         setVideoshow={setVideoshow}
         Videoshow={Videoshow}
@@ -658,7 +659,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
         imgUrl={fulldata?.cardImageUrl}
         MintedTime={mintedTime}
         PrivateSerialNo={rewardTimer.data.firstRewardCardSerialNo}
-      />}
+      />
     </div>
 
   );

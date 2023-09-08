@@ -285,10 +285,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     useEffect(() => {
         if (localStorage.getItem('filterCollection') && allCards.length > 0) {
             const filterCollection = JSON.parse(localStorage.getItem('filterCollection') || '');
-            setCollectionValue(filterCollection?.name);
-
-            setCollectionCardValue(filterCollection?.card);
-
+            setCollectionValue(filterCollection?.name || 'none');
+            setCollectionCardValue(filterCollection?.card || 'none');
             localStorage.removeItem("filterCollection");
         }
     }, [allCards]);
@@ -586,15 +584,15 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                         <React.Fragment key={index} >
                                             <div className='w-100 m-auto row pt-3' style={{ borderTop: ((index !== 0 && addAlbumSeparator !== albumName) ? '3px solid #bebac7' : '') }
                                             }>
-                                                <div className="col-sm-2 d-flex justify-content-center align-items-center" style={{ transform: window.screen.width > 674 ? 'rotate(270deg)' : '', color: '#5f4de4', fontSize: '4em', overflow: 'visible', wordWrap: 'normal', textTransform: 'uppercase' }} >
+                                                {collectionValue === 'none' && <div className="col-sm-2 d-flex justify-content-center align-items-center" style={{ transform: window.screen.width > 674 ? 'rotate(270deg)' : '', color: '#5f4de4', fontSize: '4em', overflow: 'visible', wordWrap: 'normal', textTransform: 'uppercase' }} >
                                                     {albumName}
-                                                </div>
-                                                <div className="col-sm-10" >
+                                                </div>}
+                                                <div className={collectionValue === 'none' ? "col-sm-10" : 'col-sm-12'}>
                                                     {
                                                         myFilter[albumName]?.map((cardPart: any, ind: number) => {
                                                             return (
 
-                                                                <SwiperBar>
+                                                                <SwiperBar slideSize={collectionValue === 'none' ? 4 : 5}>
                                                                     {cardPart?.map((item: any, index: number) => {
                                                                         if (addAlbumSeparator !== item.albumName) {
                                                                             console.log(item.albumName, 'adding');
