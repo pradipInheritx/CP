@@ -185,18 +185,23 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   setTextBlink(false)
                   // handleExtraCoin.pause();
                   handleShow();
-                  setTimeout(() => {
-                    // handleShow();
-                    setShowCoinIncrement(2);
-                    setPrevCountRef(PAX);
-                    setSliverCoin(false)
-                    setBackgrounHide(false)
-                    handleSoundWinCmp.play()
-                    // setInOutReward((prev: number) => {
-                    //   return 2;
-                    //   // return prev == 1 ? 2 : prev;
-                    // });
-                  }, 1000);
+                  setShowCoinIncrement(2);
+                  setPrevCountRef(PAX);
+                  setSliverCoin(false)
+                  setBackgrounHide(false)
+                  handleSoundWinCmp.play()
+                  // setTimeout(() => {
+                  //   // handleShow();
+                  //   setShowCoinIncrement(2);
+                  //   setPrevCountRef(PAX);
+                  //   setSliverCoin(false)
+                  //   setBackgrounHide(false)
+                  //   handleSoundWinCmp.play()
+                  //   // setInOutReward((prev: number) => {
+                  //   //   return 2;
+                  //   //   // return prev == 1 ? 2 : prev;
+                  //   // });
+                  // }, 1000);
                 }
                 }
               /> VTE </> :
