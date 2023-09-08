@@ -10,7 +10,7 @@ const I = styled.i`
   font-size:22px;
   color:#6352e9;
 `;
-const ShareModal: React.FC<{ shareModalShow: boolean, setShareModalShow: React.Dispatch<React.SetStateAction<boolean>>, url: string, shareText: string }> = ({ shareModalShow, setShareModalShow, url, shareText }) => {
+const ShareModal: React.FC<{ shareModalShow: boolean, setShareModalShow: React.Dispatch<React.SetStateAction<boolean>>, url: string, shareText: string, closeAction?: () => void }> = ({ shareModalShow, setShareModalShow, url, shareText, closeAction }) => {
     const { showModal, showToast } = useContext(NotificationContext);
     return (
         <div>
@@ -29,6 +29,9 @@ const ShareModal: React.FC<{ shareModalShow: boolean, setShareModalShow: React.D
                 <div className="d-flex justify-content-end">
                     <button type="button" className="btn-close btn-close-white" aria-label="Close" onClick={() => {
                         setShareModalShow(false);
+                        if (closeAction instanceof Function) {
+                            closeAction();
+                        }
                     }}
                     // style={{color:"white" , border:"1px solid red"}}
                     >
