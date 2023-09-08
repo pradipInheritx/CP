@@ -7,14 +7,14 @@ import "slick-carousel/slick/slick-theme.css";
 export type SliderItems = {
 
 };
-function SwiperBar({ children }: { children: React.ReactNode | string }) {
+function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | string, slideSize?: number }) {
   var settings = {
     dots: true,
     infinite: false,
     centerMode: true,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4,
+    slidesToShow: slideSize,
+    slidesToScroll: slideSize,
     initialSlide: 0,
     prevArrow: false,
     nextArrow: false,
