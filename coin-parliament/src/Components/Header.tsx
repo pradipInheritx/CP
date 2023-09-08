@@ -207,6 +207,7 @@ const Header = ({
 	const [followerInfo, setFollowerInfo] = useState<any>()
 	const [followUnfollow, setFollowUnfollow] = useState<any>(false)
 	const [scrollUp, setScrollUp] = useState<any>(false)
+	const [textBlink, setTextBlink] = useState<any>(false)
 	const [show, setShow] = useState(false);
 	const { leaders } = useContext(CoinsContext);
 
@@ -557,12 +558,16 @@ const Header = ({
 															:
 															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={10} delay={2}
+																	<CountUp useEasing={false} className={textBlink ? "HeaderText " : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																		onStart={() => {
 																			// handleExtraVote.play()
+																			setTimeout(() => {
+																				setTextBlink(true)
+																			}, 2500);
 																		}}
 																		onEnd={() => {
-																			// handleExtraVote.pause()
+																			setTextBlink(false)		
+																			handleExtraVote.pause()
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
 																				handleSoundWinCmp.play()
@@ -772,12 +777,16 @@ const Header = ({
 														>
 															{/* reward modal 4 */}
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																<CountUp className={inOutReward == 2 && showReward == 2 ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={10} delay={2}
+																<CountUp useEasing={false} className={textBlink ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ?rewardExtraVote :10} delay={2}
 																	onStart={() => {
 																		// handleExtraVote.play()
+																		setTimeout(() => {																			
+																			setTextBlink(true)
+																		}, 2500);
 																	}}
-																	onEnd={() => {
-																		// handleExtraVote.pause()
+																	onEnd={() => {																		
+																			setTextBlink(false)																		
+																		handleExtraVote.pause()
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
 																			handleSoundWinCmp.play()
