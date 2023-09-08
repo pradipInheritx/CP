@@ -536,10 +536,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                   className=""
                   style={{
                     position: "absolute",
-                    left: "-30px",
+                    left: "-40px",
                     bottom: "60px",
                     transform: "rotate(-90deg)",
-                    width: "110px",
+                    width: "125px",
                     color: "black",
                     // alignItems:""
                   }}
