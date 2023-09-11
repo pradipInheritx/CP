@@ -70,7 +70,6 @@ const addIsExtraVotePurchase = async (metaData: any) => {
 const addIsUpgradedValue = async (userId: string) => {
     await firestore().collection('users').doc(userId).set({ rewardStatistics: true }, { merge: true });
 }
-
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {
     try {
@@ -100,6 +99,38 @@ export const isUserUpgraded = async (req: any, res: any) => {
             result: error,
         });
     }
+}
+export const getTransactionHistory = async (req: any, res: any) => {
+    try {
+        const { userId } = req.params;
+        const transactionHistory: any = []
+        const getTransactionQuery = await firestore().collection('payments').where("userId", "==", userId).get();
+        const gettransactionData = getTransactionQuery.docs.map((snapshot: any) => {
+            let transaction = snapshot.data()
+            transactionHistory.push({
+                amount: transaction.amount,
+                numberOfVotes: transaction.numberOfVotes,
+                transaction_time: transaction.timestamp,
+                transactionType: transaction.transactionType,
+                transaction_id: transaction.transaction_id,
+                userId: transaction.userId,
+                walletType: transaction.wallet
+            });
+        });
+        res.status(200).send({
+            status: true,
+            message: "Payment transaction history fetched successfully",
+            data: gettransactionData
+        });
+    } catch (error) {
+        errorLogging("getTransactionHistory", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+
 }
 
 
