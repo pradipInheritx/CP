@@ -563,7 +563,7 @@ const Header = ({
 																			// handleExtraVote.play()
 																			setTimeout(() => {
 																				setTextBlink(true)
-																			}, 2500);
+																			}, 3000);
 																		}}
 																		onEnd={() => {
 																			setTextBlink(false)		
@@ -782,7 +782,7 @@ const Header = ({
 																		// handleExtraVote.play()
 																		setTimeout(() => {																			
 																			setTextBlink(true)
-																		}, 2500);
+																		}, 3000);
 																	}}
 																	onEnd={() => {																		
 																			setTextBlink(false)																		
