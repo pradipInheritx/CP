@@ -105,7 +105,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         const { userId } = req.params;
         const transactionHistory: any = []
         const getTransactionQuery = await firestore().collection('payments').where("userId", "==", userId).get();
-        const gettransactionData = getTransactionQuery.docs.map((snapshot: any) => {
+        getTransactionQuery.docs.map((snapshot: any) => {
             let transaction = snapshot.data()
             transactionHistory.push({
                 amount: transaction.amount,
@@ -120,7 +120,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         res.status(200).send({
             status: true,
             message: "Payment transaction history fetched successfully",
-            data: gettransactionData
+            data: transactionHistory
         });
     } catch (error) {
         errorLogging("getTransactionHistory", "ERROR", error);
