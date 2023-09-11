@@ -179,7 +179,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   // handleExtraCoin.play();
                   setTimeout(() => {
                     setTextBlink(true)
-                  }, 2200);
+                  }, 3000);
                 }}
                 onEnd={() => {
                   setTextBlink(false)

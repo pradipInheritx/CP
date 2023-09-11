@@ -159,8 +159,7 @@ const CoinsList = () => {
   //  for do payment 
 
   const handleAfterPayClose = () => setAfterPay(false);
-  const handleAfterPayShow = () => setAfterPay(true);
-
+  const handleAfterPayShow = () => setAfterPay(true);  
 
   const afterPayPopup = (type: any, msg?: any) => {
     if (type == "error") {
@@ -199,12 +198,16 @@ const CoinsList = () => {
       Swal.fire({
         icon: 'success',
         title: 'Payment Successfull',
-        text: msg || "Your payment has been confirmed",
-        showCloseButton: false,
+        // text: msg || "Your payment has been confirmed",
+        text: `${payType == "EXTRAVOTES" ? "🚀 Payment Successfully Processed! 🎉 You've unlocked additional voting power. Let's shape the future together with your impactful votes! 🗳️💪" : "🔥 Payment Successfully Processed! 🚀 Thank you for your support. Enjoy your upgraded account and enhanced benefits! Keep voting, keep earning! 🌟" }`,
+        showCloseButton: true,        
+        showCancelButton: true,
+        cancelButtonColor: '#543cd6',
+        cancelButtonText: 'Purchase Details',
         confirmButtonColor: '#543cd6',
-        confirmButtonText: 'Close',
+        confirmButtonText: 'Continue Voting',
         allowOutsideClick: false,
-        allowEscapeKey: false,
+        allowEscapeKey: false,        
         // footer: '<a href="">Why do I have this issue?</a>'
       }).then(async (result) => {
         if (result.isConfirmed) {
@@ -214,6 +217,16 @@ const CoinsList = () => {
           //     setConnectOrNot(!connectOrNot)
           //   })
           // send()
+        }
+        else if (result.isDismissed) {
+          // setSelectPayment(0);
+          setShowOptionList(false)
+          setSelectCoin("none");
+          // navigate("/profile/mine")
+          // localStorage.removeItem("PayAmount");
+          // await mybtn("disconnect", "true").then(() => {
+          //     setConnectOrNot(!connectOrNot)
+          //   })
         }
       })
     }
@@ -241,6 +254,8 @@ const CoinsList = () => {
       numberOfVotes: extraVote,
       paymentDetails:detail,
     }
+
+    console.log(data ,"getdataapi")
 
     axios.post(`${ApiUrl}payment/makePayment`, data, {
       headers: headers
@@ -294,7 +309,7 @@ const CoinsList = () => {
     if (e?.detail?.trx?.transactionHash) {
       afterPayPopup("success")
       // @ts-ignore
-      payNow(e?.detail)  
+      payNow(e?.detail)
     }
     // @ts-ignore
     else if (e?.detail?.trx?.transactionStatus) {

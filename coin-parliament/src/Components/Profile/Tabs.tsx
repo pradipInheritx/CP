@@ -48,7 +48,7 @@ const Content = styled.div`
 `;
 
 const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVotes }: TabsProps) => {
-  console.log(tabs[0].title,"tabs[1].title")
+
   return (
     <>
       <Tab.Container
@@ -70,7 +70,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVo
             })}
           </Nav>
         </Container>
-        {tabs[0].title=="Pair" && <div
+        {tabs[0]?.title=="Pair" && <div
           className="d-flex justify-content-center align-items-center mt-2"
         >
           <div className="d-flex justify-content-start align-items-center">
