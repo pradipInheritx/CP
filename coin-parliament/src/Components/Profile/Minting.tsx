@@ -14,7 +14,7 @@ import { functions } from "../../firebase";
 import { httpsCallable } from "@firebase/functions";
 import { divide, stubFalse } from "lodash";
 import { texts } from "../LoginComponent/texts";
-import { handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
+import { claimRewardSound, handleSoundClick, handleSoundWinCmp } from "../../common/utils/SoundClick";
 import AppContext from "../../Contexts/AppContext";
 import CircularProgress from "../circleProgressbar";
 import { Buttons } from "../Atoms/Button/Button";
@@ -205,7 +205,9 @@ const Minting = ({
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
     setModalShow(true)
-    handleSoundWinCmp.play()
+    claimRewardSound.play();
+    // handleSoundWinCmp.play()
+
   };
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleCmpPopupClose = () => {
@@ -432,7 +434,7 @@ const Minting = ({
                   setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
                   // setRewardTimer(resultData); i commented here because i set this when i get result 
                 }, 1000);
-                handleSoundWinCmp.pause()
+                claimRewardSound.pause()
                 handleClose()
               }}>COLLECT YOUR COIN</Buttons.Primary>
               {/* <Buttons.Default className="mx-2" onClick={handleClose}>No</Buttons.Default> */}

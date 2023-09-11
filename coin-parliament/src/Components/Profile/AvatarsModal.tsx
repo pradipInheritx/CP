@@ -6,11 +6,13 @@ import AvatarRadio from "./AvatarRadio";
 import NFT from "../../assets/avatars/NFT";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "../../Contexts/User";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;
   onClose: () => void;
+  setFirstTimeAvatarSelection: React.Dispatch<React.SetStateAction<boolean>>
+  setShowMenuBar: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const Title = styled.div`
@@ -54,14 +56,14 @@ color: var(--color-6352e8);
 font-size: var(--font-size-22);
 `
 
-const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
+const AvatarsModal = ({ onSubmit, onClose, setFirstTimeAvatarSelection, setShowMenuBar }: AvatarsModalProps) => {
   const translate = useTranslation();
   const { width } = useWindowSize();
   const { userInfo } = useContext(UserContext);
   const [selectedAvatar, setSelectedAvatar] = useState('')
   const location = useLocation();
   const pathname = location.pathname
-
+  const navigate = useNavigate();
   return (
     <Container className="position-relative">
       {/* <div className="position-absolute top-0" style={{ right: 0 }}>
@@ -75,7 +77,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
             <AvatarRadio
               key={i}
               type={type}
-              checked={type === userInfo?.avatar}
+              checked={type === (userInfo?.avatar || "Founder")}
               name={"avatars"}
               id={"avatar-" + type}
               onSubmit={() => onSubmit(type)}
@@ -87,6 +89,12 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
             />
           ))}
         </Flex></>)}
+      <div className="d-flex justify-content-center text-center mt-4">
+        <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
+          setFirstTimeAvatarSelection(false);
+          setShowMenuBar(false);
+        }}>Skip</span>
+      </div>
       {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
     </Container>
   );
