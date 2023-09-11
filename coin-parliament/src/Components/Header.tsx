@@ -32,7 +32,7 @@ import Following from "./icons/Following";
 import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
-import { handleExtraVote, handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
+import { claimRewardSound, handleExtraVote, handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
 import { VoteContext } from "Contexts/VoteProvider";
@@ -566,11 +566,11 @@ const Header = ({
 																			}, 3000);
 																		}}
 																		onEnd={() => {
-																			setTextBlink(false)		
+																			setTextBlink(false)
 																			handleExtraVote.pause()
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
-																				handleSoundWinCmp.play()
+																				claimRewardSound.play();
 																				return 3
 																			});
 																			if (headerExtraVote != 0) {
@@ -777,19 +777,20 @@ const Header = ({
 														>
 															{/* reward modal 4 */}
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																<CountUp useEasing={false} className={textBlink ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ?rewardExtraVote :10} delay={2}
+																<CountUp useEasing={false} className={textBlink ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																	onStart={() => {
 																		// handleExtraVote.play()
-																		setTimeout(() => {																			
+																		setTimeout(() => {
 																			setTextBlink(true)
 																		}, 3000);
 																	}}
-																	onEnd={() => {																		
-																			setTextBlink(false)																		
+																	onEnd={() => {
+																		setTextBlink(false)
 																		handleExtraVote.pause()
+
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
-																			handleSoundWinCmp.play()
+																			claimRewardSound.play();
 																			return 3
 																		});
 																		if (headerExtraVote != 0) {

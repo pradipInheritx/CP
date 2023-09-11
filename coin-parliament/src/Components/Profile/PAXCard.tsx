@@ -10,7 +10,7 @@ import coinBg from "../../assets/images/coin_bg.png";
 import coin_bgVET from "../../assets/images/coin_bgVET.png";
 import { ZoomCss as ZoomCss2 } from "../App/App";
 import CoinAnimation from "common/CoinAnimation/CoinAnimation";
-import { handleExtraCoin, handleSoundWinCmp } from "common/utils/SoundClick";
+import { claimRewardSound, handleExtraCoin, handleSoundWinCmp } from "common/utils/SoundClick";
 // @ts-ignore
 import Wildwest from '../../assets/avatars/videos/Winter.mp4';
 
@@ -174,7 +174,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
         >
           {showCoinIncrement === 1 ?
             <>
-              <CountUp className={`${textBlink ? "PaxText " : ""}coinText`} start={prevCountRef} end={PAX && PAX} duration={rewardTimer?.data?.thirdRewardDiamonds < 10 ? rewardTimer?.data?.thirdRewardDiamonds :10} delay={2} useEasing={false}
+              <CountUp className={`${textBlink ? "PaxText " : ""}coinText`} start={prevCountRef} end={PAX && PAX} duration={rewardTimer?.data?.thirdRewardDiamonds < 10 ? rewardTimer?.data?.thirdRewardDiamonds : 10} delay={2} useEasing={false}
                 onStart={() => {
                   // handleExtraCoin.play();
                   setTimeout(() => {
@@ -188,8 +188,9 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   setShowCoinIncrement(2);
                   setPrevCountRef(PAX);
                   setSliverCoin(false)
-                  setBackgrounHide(false)
-                  handleSoundWinCmp.play()
+                  setBackgrounHide(false);
+                  claimRewardSound.play();
+                  // handleSoundWinCmp.play()
                   // setTimeout(() => {
                   //   // handleShow();
                   //   setShowCoinIncrement(2);
