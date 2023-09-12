@@ -80,7 +80,7 @@ const Divbutton = styled.div`
 `;
 
 
-const CoinsList = () => {
+const CoinsList = ({ checkAndPay }:any) => {
 
 
   const [coinsList, setCoinsList] = useState([])
@@ -99,7 +99,7 @@ const CoinsList = () => {
   const [extraVote, setExtraVote] = useState(0);
   const [getbalance, setGetbalance] = useState(0);
   const [payButton, setPayButton] = useState(false);
-  const [showOptionList, setShowOptionList] = useState(false);
+  const [showOptionList, setShowOptionList] = useState(false);  
   const [afterPay, setAfterPay] = useState(false);
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
@@ -117,7 +117,7 @@ const CoinsList = () => {
     const getCoinList = firebase
       .firestore()
       .collection("settings").doc("coins")
-    getCoinList.get()
+        getCoinList.get()
       .then((snapshot) => {
         const allList = snapshot.data()?.coins;
         setCoinsList(allList && allList);
@@ -161,198 +161,17 @@ const CoinsList = () => {
   const handleAfterPayClose = () => setAfterPay(false);
   const handleAfterPayShow = () => setAfterPay(true);  
 
-  const afterPayPopup = (type: any, msg?: any) => {
-    if (type == "error") {
-      Swal.fire({
-        icon: 'error',
-        title: 'Payment Failed',
-        // text: 'Your account balance is : ${balance} , This is insufficient balance for this payment',
-        html: msg || "<span>Your account balance is : " + (getbalance) + " , This is insufficient balance for this payment</span>",
-        showCancelButton: true,
-        cancelButtonColor: '#d33',
-        cancelButtonText: 'Start Over Again',
-        confirmButtonColor: '#543cd6',
-        confirmButtonText: 'Try Again',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        // footer: '<a href="">Why do I have this issue?</a>'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          handleAfterPayClose()
-          // send()
-          checkAndPay()
-        } else if (result.isDismissed) {
-          // setSelectPayment(0);
-          setShowOptionList(false)
-          setSelectCoin("none");
-          // navigate("/profile/mine")
-          // localStorage.removeItem("PayAmount");
-          // await mybtn("disconnect", "true").then(() => {
-          //     setConnectOrNot(!connectOrNot)
-          //   })
-        }
-      })
-    }
 
-    if (type == "success") {
-      Swal.fire({
-        icon: 'success',
-        title: 'Payment Successfull',
-        // text: msg || "Your payment has been confirmed",
-        text: `${payType == "EXTRAVOTES" ? "🚀 Payment Successfully Processed! 🎉 You've unlocked additional voting power. Let's shape the future together with your impactful votes! 🗳️💪" : "🔥 Payment Successfully Processed! 🚀 Thank you for your support. Enjoy your upgraded account and enhanced benefits! Keep voting, keep earning! 🌟" }`,
-        showCloseButton: true,        
-        showCancelButton: true,
-        cancelButtonColor: '#543cd6',
-        cancelButtonText: 'Purchase Details',
-        confirmButtonColor: '#543cd6',
-        confirmButtonText: 'Continue Voting',
-        allowOutsideClick: false,
-        allowEscapeKey: false,        
-        // footer: '<a href="">Why do I have this issue?</a>'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          handleAfterPayClose()
-          navigate("/profile/mine")
-          // await mybtn("disconnect", "true").then(() => {
-          //     setConnectOrNot(!connectOrNot)
-          //   })
-          // send()
-        }
-        else if (result.isDismissed) {
-          // setSelectPayment(0);
-          setShowOptionList(false)
-          setSelectCoin("none");
-          // navigate("/profile/mine")
-          // localStorage.removeItem("PayAmount");
-          // await mybtn("disconnect", "true").then(() => {
-          //     setConnectOrNot(!connectOrNot)
-          //   })
-        }
-      })
-    }
-  }
-
-  const payNow = (detail:any) => {
-    const headers = {
-      'Content-Type': 'application/json',
-      "accept": "application/json",
-      // @ts-ignore
-      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
-    }
-
-    const data = {
-      userId: `${user?.uid}`,
-      userEmail: `${sessionStorage.getItem("wldp_user")}`,
-      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: payamount,
-      network: "11155111",
-
-      // @ts-ignore
-      origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-      token: "ETH",
-      transactionType: payType,
-      numberOfVotes: extraVote,
-      paymentDetails:detail,
-    }
-
-    console.log(data ,"getdataapi")
-
-    axios.post(`${ApiUrl}payment/makePayment`, data, {
-      headers: headers
-    })
-      .then(async (response) => {
-  
-        // setPayButton(false);
-        // handleAfterPayShow()
-        // if (detail?.trx?.transactionHash) {
-        //   afterPayPopup("success", "Payment Done")
-        // }
-        // else {
-        //   afterPayPopup("error", "Payment not Done");
-        // }
-        // afterPayPopup("success", response?.data?.message)
-      })
-      .catch((error) => {
-        // console.log(error, "errorpayment");
-        // setPayButton(false);
-        // if (error?.message) {
-        //   afterPayPopup("error", error?.message);
-        // }
-      })
-  }
-
-  const send = () => {
-    const obj = {
-      method: "getTransaction",
-      user: `${sessionStorage.getItem("wldp_user")}`,
-      params: {
-        // @ts-ignore
-        origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-        amount: 0.000001,
-        // amount: payamount,
-        // @ts-ignore
-        // token:"ETH",
-        token: `${coinInfo?.symbol.toUpperCase()}`,
-        network: "11155111"
-      },
-      application: "votetoearn",
-      uid: `${sessionStorage.getItem("wldp_wsid")}`,
-    };
-    console.log(obj, "alldata");
-    (window as any).wldp.send_msg(obj).then((res: any) => {                        
-      document.addEventListener('wldp:trx', (e) => {
-  try {
-    console.log(e, "alldata231dsf");
-    setPayButton(false);
-    
-    // @ts-ignore
-    if (e?.detail?.trx?.transactionHash) {
-      afterPayPopup("success")
-      // @ts-ignore
-      payNow(e?.detail)
-    }
-    // @ts-ignore
-    else if (e?.detail?.trx?.transactionStatus) {
-      // @ts-ignore      
-      afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)      
-      
-    }
-    // @ts-ignore
-    else if (typeof e?.detail?.trx == "string") {
-      // @ts-ignore  
-      afterPayPopup("error", e?.detail?.trx)      
-    }     
-  } catch (error) {
-
-    console.error("Error:", error);
-
-  }
-});
-    }).catch((err: any) => {
-      console.log(err, "allerr")
-
-    })
+  const handleClick = () => {
+    // Call the global function and pass the values as arguments
+    checkAndPay(
+      coinInfo,
+      setPayButton,  
+      setSelectCoin,
+      setShowOptionList,
+      setAfterPay,      
+    );
   };
-
-  const checkAndPay = () => {
-    (window as any).wldp.isWalletConnected()
-      .then((res: any) => {
-        if (res === true) {
-          send()
-        }
-        else {
-          (window as any).wldp.connectionWallet('connect', 'ethereum')
-            .then((account: any) => {
-              if (account) {               
-                send()
-              }
-            })
-        }
-      })
-
-  }
-
-
 
 
   console.log(walletName, "setWalletName")
@@ -445,33 +264,7 @@ const CoinsList = () => {
               style={{
                 fontSize: "20px"
               }}
-            >Pay {payamount}$ using {selectCoin}</p>
-            {/* {!walletName && 
-              <>
-              <p className="my-1"
-                style={{
-                fontSize:`${window.screen.width > 767 ?"13px" :"11px"}`,
-              }}
-              >
-                Your are not connected with any wallat !
-                  <span
-                    style={{
-                      color: "#3366CC",
-                    cursor: "pointer",
-                        fontSize:`${window.screen.width > 767 ?"13px" :"12px"}`,                      
-                      }}
-                  onClick={async () => {                  
-                    await mybtn("disconnect", "true")
-                    setConnectOrNot(true)
-                    await mybtn("connect").then((data: any) => {
-                      setConnectOrNot(false)
-                      // @ts-ignore
-                      setWalletName(localStorage.getItem("wldp-cache-provider"))
-                    })
-                  }}
-                >  &nbsp; Connect Now </span></p>
-              </>
-            }                            */}
+            >Pay {payamount}$ using {selectCoin}</p>           
           </div>
         </Paymentdiv>}
       </Boxdiv>
@@ -505,41 +298,12 @@ const CoinsList = () => {
             onClick={async () => {
               // send()
               setPayButton(true)
-              checkAndPay()
+              // checkAndPay()
+              handleClick()
             }}
           >Pay Now</button>
         </Divbutton>
       }
-
-      {/* <Modal
-          className=""
-          show={
-          afterPay
-          } onHide={handleAfterPayClose}
-          // fullscreen="sm-down"
-          backdrop="static"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-          style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
-        // contentClassName={"modulebackground"}
-        >
-          <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => {
-              handleAfterPayClose()
-            }}
-            // style={{color:"white" , border:"1px solid red"}}
-            >
-
-            </button>
-          </div>
-          <Modal.Body
-          >       
-               
-            <div>Hello i am popup</div>
-          </Modal.Body>
-        </Modal> */}
-
-
     </div>
   );
 };

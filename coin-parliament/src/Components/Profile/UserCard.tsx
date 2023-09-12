@@ -27,6 +27,7 @@ import Votesnew from "Components/icons/votesnew";
 import Gallerynew from "Components/icons/Gallerynew";
 import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
 import Notificationsnew from "Components/icons/notificationsnew";
+import PaymentHitory from "Components/icons/PaymentHitory";
 
 const OverlapGroup1 = styled.div`
   
@@ -98,6 +99,7 @@ export enum ProfileTabs {
   password = "password",
   wallet = "wallet",
   followers = "followers",
+  history = "history",
   mine = "mine",
   edit = "edit",
   votes = "votes",
@@ -147,6 +149,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
               ProfileTabs.wallet as string,
+              ProfileTabs.history as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -210,6 +213,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
               ProfileTabs.wallet as string,
+              ProfileTabs.history as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -243,6 +247,12 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         label: ProfileTabs.wallet,
                         icon: <Wallet/>,
                         eventKey: ProfileTabs.wallet,
+                      },
+                      {
+                        component: <></>,
+                        label: "Payment",
+                        icon: <PaymentHitory />,
+                        eventKey: ProfileTabs.history,
                       },
                     ],
                   }}

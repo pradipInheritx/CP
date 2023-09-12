@@ -145,7 +145,10 @@ import { setTimeout } from "timers";
 import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
-import CoinsList from "Components/Profile/CoinsList";
+import CoinsList from "Components/Profile/Payment/CoinsList";
+
+import PaymentFun from "Components/Profile/Payment/PaymentFun";
+import PaymentHistory from "Components/Profile/Payment/PaymentHistory";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
 import Complete100CMPModal from "Components/Complete100CMPModal";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
@@ -224,7 +227,7 @@ function App() {
     });
     console.log('scrollUp ');
     const urlpath = window.location.pathname
-    if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList")) {
+    if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList") && (urlpath != "/votepayment")) {
       console.log("yes i am working")
       localStorage.removeItem("PayAmount");
     }
@@ -1674,6 +1677,11 @@ function App() {
                                                 element={<PersonalInfo />}
                                               />
                                               <Route
+                                              path={ProfileTabs.history}
+
+                                                element={<PaymentHistory />}
+                                              />
+                                              <Route
                                                 path={ProfileTabs.password}
                                                 element={<Security />}
                                               />
@@ -1772,7 +1780,18 @@ function App() {
 
                                             <Route path='/paymentList'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
-                                              element={<CoinsList />}
+                                            element={
+                                              
+                                              <PaymentFun
+                                                isVotingPayment={false}
+                                              />
+                                            }
+                                            />                                          
+                                            <Route path='/VotePayment'
+                                              // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
+                                            element={<PaymentFun
+                                            isVotingPayment={true}
+                                            />}
                                             />
                                             <Route
                                               path='/votingbooster'

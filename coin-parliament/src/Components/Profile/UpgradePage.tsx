@@ -144,7 +144,7 @@ const UpgradePage = () => {
           }}
         >
           {/* @ts-ignore */}
-         {!userInfo?.isUpgraded && <H2
+         {!userInfo?.isUserUpgraded && <H2
             style={{
               fontSize: "1.25rem",
               marginTop: "0px",
@@ -156,7 +156,7 @@ const UpgradePage = () => {
             {translate("Become a miner")}
           </H2>}
           {/* @ts-ignore */}
-          {userInfo?.isUpgraded && <H2
+          {userInfo?.isUserUpgraded && <H2
             style={{
               fontSize: "1.25rem",
               marginTop: "0px",
@@ -168,7 +168,7 @@ const UpgradePage = () => {
             {translate("Congratulations")}
           </H2>}
 {/* @ts-ignore */}
-          {userInfo?.isUpgraded && <H2
+          {userInfo?.isUserUpgraded && <H2
             style={{
               fontSize: "1.25rem",
               marginTop: "0px",
@@ -181,14 +181,14 @@ const UpgradePage = () => {
           </H2>}
           
         {/* @ts-ignore */}
-         {!userInfo?.isUpgraded && <P
+         {!userInfo?.isUserUpgraded && <P
             style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
             className="px-3 pt-4  pb-3"
           >
             Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.
           </P>}
 {/* @ts-ignore */}
-          {userInfo?.isUpgraded && <P
+          {userInfo?.isUserUpgraded && <P
             style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
             className="px-3 pt-4  pb-3"
           >
@@ -299,7 +299,7 @@ const UpgradePage = () => {
             </div>
           </div>
             {/* @ts-ignore */}
-          {!userInfo?.isUpgraded && <H2
+          {!userInfo?.isUserUpgraded && <H2
             style={{
               fontSize: "1.25rem",
               marginTop: "0px",
@@ -326,7 +326,7 @@ const UpgradePage = () => {
             </BottomBox>
           </div>
           {/* @ts-ignore */}
-          {!userInfo?.isUpgraded &&
+          {!userInfo?.isUserUpgraded &&
             <div
               className='text-center mb-4'
               style={{

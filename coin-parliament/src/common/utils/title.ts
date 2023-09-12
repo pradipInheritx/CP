@@ -45,7 +45,7 @@ export const isAdmin = (pathname: string = "") => {
 };
 
 export const isCoinsPairs = (pathname: string = "") => {
-  return (pathname || "").includes("coins") || (pathname || "").includes("pairs") || (pathname || "").includes("votingbooster") || (pathname || "").includes("upgrade") || (pathname || "").includes("paymentList");
+  return (pathname || "").includes("coins") || (pathname || "").includes("pairs") || (pathname || "").includes("votingbooster") || (pathname || "").includes("upgrade") || (pathname || "").includes("paymentList") || (pathname || "").includes("votepayment") || (pathname || "").includes("paymenthistory");
 };
 
 export const isCommanPage = (pathname: string = "") => {
