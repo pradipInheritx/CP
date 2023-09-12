@@ -148,7 +148,6 @@ import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import CoinsList from "Components/Profile/CoinsList";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
 import Complete100CMPModal from "Components/Complete100CMPModal";
-import { Last5SecVoteSound } from "common/utils/SoundClick";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -1185,11 +1184,7 @@ function App() {
       // finding the difference in total seconds between two dates
 
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
-      setTimeout(() => {
-        Last5SecVoteSound.play();
-      }, (((second_diff || 0) * 1000) - 5000));
       const timer = setTimeout(async () => {
-        Last5SecVoteSound.pause();
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
@@ -1345,6 +1340,7 @@ function App() {
                   showMenubar,
                   setShowMenuBar,
                   firstTimeAvatarSlection,
+                  setFirstTimeAvatarSelection,
                   menuOpen,
                   setMenuOpen,
                   fcmToken,

@@ -49,8 +49,6 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, }: FirstT
         {...{
           onSubmit: onSubmitAvatar,
           onClose: () => console.log('click'),
-          setFirstTimeAvatarSelection: setFirstTimeAvatarSelection,
-          setShowMenuBar: setShowMenuBar,
         }}
       />
     </Stack>

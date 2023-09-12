@@ -16,7 +16,7 @@ import { isV1 } from "./App/App";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
-import Avatars, { AvatarType } from "../assets/avatars/Avatars";
+import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.png";
 import ManagersContext from "../Contexts/ManagersContext";
@@ -519,7 +519,7 @@ const Header = ({
 										}}
 									>
 										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : (userInfo?.avatar || 'Founder') as AvatarType}
+											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "45px",
 												// border: "1px solid #6352E8",
@@ -651,7 +651,7 @@ const Header = ({
 												(followerPage && followerInfo != "") ?
 													<></> :
 													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+														{`${(userInfo?.displayName && !userInfo.firstTimeLogin) ? userInfo?.displayName : ''}`}
 													</span>
 											}
 											{/* {(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
@@ -722,7 +722,7 @@ const Header = ({
 										}}
 									>
 										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : (userInfo?.avatar || "Founder") as AvatarType}
+											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "60px",
 												// @ts-ignore
@@ -877,7 +877,7 @@ const Header = ({
 													(followerPage && followerInfo != "") ?
 														<></> :
 														<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-															{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+															{`${(userInfo?.displayName && !userInfo?.firstTimeLogin) ? userInfo?.displayName : ''}`}
 														</span>
 												}
 												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
