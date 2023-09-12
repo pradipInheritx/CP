@@ -349,6 +349,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
     //filter
     useEffect(() => {
+
         let tempFilter = allCards;
 
         if (collectionValue !== 'none') {
@@ -373,9 +374,9 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
             tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
         }
+        console.log(collectionValue, displayMyCards, tempFilter, allCards, 'pkkkk');
         setMyFilter(divideArray1(tempFilter, 4));
-        divideArray1(tempFilter, 4);
-    }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards]);
+    }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards, winerCard]);
     //End 
 
     const getTotalSameCard = (cardId: any) => {
@@ -546,9 +547,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     </div>}
             </div>
             {
-                (/* !myCards && !cardShow  */collectionValue === 'none' && !displayMyCards) ?
-
-
+                (collectionValue === 'none' && !displayMyCards) ?
                     <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
                     } >
                         {
