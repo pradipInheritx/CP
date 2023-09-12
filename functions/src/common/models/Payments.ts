@@ -116,7 +116,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
                 transactionType: transaction.transactionType,
                 transaction_id: transaction.transaction_id,
                 userId: transaction.userId,
-                walletType: transaction.wallet
+                walletType: transaction.walletType
             });
         });
         res.status(200).send({
