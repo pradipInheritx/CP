@@ -85,6 +85,8 @@ export const isUserUpgraded = async (req: any, res: any) => {
             });
         }
 
+
+
         res.status(200).send({
             status: true,
             message: "Payment transaction fetched successfully",
@@ -116,7 +118,8 @@ export const getTransactionHistory = async (req: any, res: any) => {
                 transactionType: transaction.transactionType,
                 transaction_id: transaction.transaction_id,
                 userId: transaction.userId,
-                walletType: transaction.walletType
+                walletType: transaction.walletType,
+                paymentDetails: transaction.paymentDetails
             });
         });
         res.status(200).send({
