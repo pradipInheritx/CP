@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "../../common/models/Dictionary";
-import { AvatarType } from "../../assets/avatars/Avatars";
+import { AvatarType, defaultAvatar } from "../../assets/avatars/Avatars";
 import AvatarRadio from "./AvatarRadio";
 import NFT from "../../assets/avatars/NFT";
 import { useWindowSize } from "../../hooks/useWindowSize";
@@ -70,13 +70,14 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
           <CloseIcon aria-hidden="true">&times;</CloseIcon>
         </div>}
       </div> */}
-      {!selectedAvatar && (<>   <Title>{translate("Select Your Avatar")}</Title>
+      {!selectedAvatar && (<>
+        <Title>{translate("Select Your Avatar")}</Title>
         <Flex {...{ width }}>
           {Object.values(AvatarType).map((type, i) => (
             <AvatarRadio
               key={i}
               type={type}
-              checked={type === (userInfo?.avatar || "Founder")}
+              checked={type === (userInfo?.avatar || defaultAvatar)}
               name={"avatars"}
               id={"avatar-" + type}
               onSubmit={() => onSubmit(type)}
@@ -87,13 +88,18 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
 
             />
           ))}
-        </Flex></>)}
-      <div className="d-flex justify-content-center text-center mt-4">
-        <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
-          setFirstTimeAvatarSelection(false);
-          setShowMenuBar(false);
-        }}>Skip</span>
-      </div>
+        </Flex>
+
+        <div className="d-flex justify-content-center text-center mt-4">
+          <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
+            if (!userInfo?.avatar) {
+              onSubmit(defaultAvatar);
+            }
+            setFirstTimeAvatarSelection(false);
+            setShowMenuBar(false);
+          }}>Skip</span>
+        </div>
+      </>)}
       {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
     </Container>
   );
