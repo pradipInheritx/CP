@@ -486,7 +486,7 @@ const NFTGallery = () => {
       </div>
       {/* @ts-ignore */}
       <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
-        {!cardShow && collectionType?.map((data: any, index: number) => {
+        {(!cardShow && selectCollection === 'none') && collectionType?.map((data: any, index: number) => {
           return <div className="" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
             style={{
               width: "380px",
@@ -503,7 +503,7 @@ const NFTGallery = () => {
             {/* <p>{data?.collectionName} COLLECTION</p> */}
           </div>
         })}
-        {!cardShow && TypeWather?.map((data: any, index: number) => {
+        {(!cardShow && selectCollection === 'none' && collectionType) && TypeWather?.map((data: any, index: number) => {
           return <div
             // onClick={() => { setSelectCollection(data?.id) }} key={index}
             style={{
