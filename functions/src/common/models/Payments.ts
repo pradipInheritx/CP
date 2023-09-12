@@ -111,6 +111,8 @@ export const getTransactionHistory = async (req: any, res: any) => {
                 amount: transaction.amount,
                 numberOfVotes: transaction.numberOfVotes,
                 transaction_time: transaction.timestamp,
+                token: transaction.token,
+                origincurrency: transaction.origincurrency,
                 transactionType: transaction.transactionType,
                 transaction_id: transaction.transaction_id,
                 userId: transaction.userId,
