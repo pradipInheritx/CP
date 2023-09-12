@@ -1345,6 +1345,7 @@ function App() {
                   showMenubar,
                   setShowMenuBar,
                   firstTimeAvatarSlection,
+                  setFirstTimeAvatarSelection,
                   menuOpen,
                   setMenuOpen,
                   fcmToken,
