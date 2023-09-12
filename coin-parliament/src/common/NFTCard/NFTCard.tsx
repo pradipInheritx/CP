@@ -7,7 +7,7 @@ import "./style.css";
 import TheEagle from "../../assets/images/TheEagle.png";
 import styled from "styled-components";
 import AppContext from "../../Contexts/AppContext";
-import { handleSoundClickCard, handleSoundWinCmp } from "../utils/SoundClick";
+import { handleSoundClickCard, claimRewardSound } from "../utils/SoundClick";
 import scratchCArdImg from '../../assets/images/scratchCArd.jpg';
 import common from '../../assets/images/commonText.png';
 import epic from '../../assets/images/epicText.png';
@@ -316,7 +316,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       setRotateCard(true);
       setScratchShound(false)
       openpopup()
-      handleSoundWinCmp.play()
+      claimRewardSound.play()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
@@ -330,7 +330,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       setTimeout(function () {
         Animation.pause();
         // Animation.destroy();
-        handleSoundWinCmp.pause()
+        claimRewardSound.pause()
       }, 9000); // 5000 milliseconds = 5 seconds
       setScratchFinish(true)
     }
@@ -404,7 +404,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       setCressShow(true);
       setRotateCard(true);
       openpopup()
-      handleSoundWinCmp.play()
+      claimRewardSound.play()
       const Animation = lottie.loadAnimation({
         // @ts-ignore
         // container: document.querySelector("#card-animation"),
@@ -418,7 +418,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
       setTimeout(function () {
         Animation.pause();
-        handleSoundWinCmp.pause()
+        claimRewardSound.pause()
         // Animation.destroy();
       }, 9000); // 5000 milliseconds = 5 seconds
       setScratchFinish(true)
@@ -622,7 +622,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           handleShareModleShow()
           handleCardClose()
           setCountShow(false)
-          handleSoundWinCmp.pause()
+          claimRewardSound.pause()
         }}
           style={{
             backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
@@ -639,7 +639,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           setCountShow(false);
           localStorage.setItem('filterCollection', JSON.stringify({ name: rewardTimer?.data?.firstRewardCardCollection }));
           navigate("/profile/Album");
-          handleSoundWinCmp.pause();
+          claimRewardSound.pause();
         }}
           style={{
             backgroundColor: `${allColor[`${cardType.toLowerCase()}`].fill}`,
@@ -649,7 +649,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
           YOUR COLLECTION  {/* Check Win Card */}
         </Buttons.Primary>
       </div>
-      {Videoshow  && <VideoPopup
+      {Videoshow && <VideoPopup
         fulldata={fulldata}
         setVideoshow={setVideoshow}
         Videoshow={Videoshow}

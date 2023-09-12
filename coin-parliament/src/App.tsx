@@ -152,7 +152,6 @@ import PaymentHistory from "Components/Profile/Payment/PaymentHistory";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
 import Complete100CMPModal from "Components/Complete100CMPModal";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
-
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
 const sendPassword = httpsCallable(functions, "sendPassword");
@@ -1192,7 +1191,6 @@ function App() {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-
         await getPriceCalculation({
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1232,7 +1230,6 @@ function App() {
               });
             }
           }
-
         }).catch(err => {
           if (err && err.message) {
             console.log(err.message);
@@ -1346,6 +1343,7 @@ function App() {
                   showMenubar,
                   setShowMenuBar,
                   firstTimeAvatarSlection,
+                  setFirstTimeAvatarSelection,
                   menuOpen,
                   setMenuOpen,
                   fcmToken,
@@ -1473,7 +1471,7 @@ function App() {
                             <AppContainer
                               fluid
                               pathname={pathname}
-                              login={login || firstTimeLogin ? "true" : "false"}                              
+                              login={login || firstTimeLogin ? "true" : "false"}
                             >
 
                               <Header
@@ -1498,7 +1496,7 @@ function App() {
                                   // ) : (
                                   <HomeContainer
                                     className='d-flex flex-column justify-content-center align-items-center p-0'
-                                    width={width}                                    
+                                    width={width}
                                   >
                                     <div
                                       className='mb-2 d-flex align-items-center'
@@ -1602,8 +1600,8 @@ function App() {
                                             // transform: `${backgrounHide ? "scale(1.5)" : "scale(1)"}`,
                                             transform: `${backgrounHide ? `${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"}` : "scale(1)"}`,
                                             transformOrigin: `${backgrounHide ? `${window.screen.width > 767 ? "35% 50%" : "50% 90%"}` : ""}`,
-                                            transition: `${backgrounHide ? "all 3s" : ""}`,                                                                                        
-                                            
+                                            transition: `${backgrounHide ? "all 3s" : ""}`,
+
                                           }}
                                         >
                                           <div className='pwaPopup' style={{ display: pwaPopUp }}>

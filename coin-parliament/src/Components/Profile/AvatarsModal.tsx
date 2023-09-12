@@ -1,16 +1,19 @@
 import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "../../common/models/Dictionary";
-import { AvatarType } from "../../assets/avatars/Avatars";
+import { AvatarType, defaultAvatar } from "../../assets/avatars/Avatars";
 import AvatarRadio from "./AvatarRadio";
 import NFT from "../../assets/avatars/NFT";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "../../Contexts/User";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import AppContext from "Contexts/AppContext";
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;
   onClose: () => void;
+  setFirstTimeAvatarSelection?: React.Dispatch<React.SetStateAction<boolean>>
+  setShowMenuBar?: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const Title = styled.div`
@@ -55,13 +58,11 @@ font-size: var(--font-size-22);
 `
 
 const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
+  const { setFirstTimeAvatarSelection, setShowMenuBar } = useContext(AppContext);
   const translate = useTranslation();
   const { width } = useWindowSize();
   const { userInfo } = useContext(UserContext);
-  const [selectedAvatar, setSelectedAvatar] = useState('')
-  const location = useLocation();
-  const pathname = location.pathname
-
+  const [selectedAvatar, setSelectedAvatar] = useState('');
   return (
     <Container className="position-relative">
       {/* <div className="position-absolute top-0" style={{ right: 0 }}>
@@ -69,13 +70,14 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
           <CloseIcon aria-hidden="true">&times;</CloseIcon>
         </div>}
       </div> */}
-      {!selectedAvatar && (<>   <Title>{translate("Select Your Avatar")}</Title>
+      {!selectedAvatar && (<>
+        <Title>{translate("Select Your Avatar")}</Title>
         <Flex {...{ width }}>
           {Object.values(AvatarType).map((type, i) => (
             <AvatarRadio
               key={i}
               type={type}
-              checked={type === userInfo?.avatar}
+              checked={type === (userInfo?.avatar || defaultAvatar)}
               name={"avatars"}
               id={"avatar-" + type}
               onSubmit={() => onSubmit(type)}
@@ -86,7 +88,18 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
 
             />
           ))}
-        </Flex></>)}
+        </Flex>
+
+        <div className="d-flex justify-content-center text-center mt-4">
+          <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
+            if (!userInfo?.avatar) {
+              onSubmit(defaultAvatar);
+            }
+            setFirstTimeAvatarSelection(false);
+            setShowMenuBar(false);
+          }}>Skip</span>
+        </div>
+      </>)}
       {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
     </Container>
   );

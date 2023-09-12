@@ -389,24 +389,15 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     <img
                       src={ImgUrl || TheEagle}
                       alt='the hgodler'
-                      className='image-fluid'
+                      className='image-fluid pk'
                       style={{
-                        // border:"1px solid red",
-                        // zoom:"1.6",
-                        // backgroundPosition:" center",
 
-                        // width: "255px",
-                        // height: "255px",                      
-                        height: `${BigCard ? "350px" : "240px"}`,
-                        width: `${BigCard ? "350px" : "240px"}`,
-                        margin: "auto",
-                        display: "block",
-                        marginTop: "-10px",
+                        // height: `${BigCard ? "350px" : "240px"}`,
+                        // width: `${BigCard ? "350px" : "240px"}`,
+                        // margin: "auto",
+                        // display: "block",
+                        // marginTop: "-10px",
                       }}
-                    // width={"250px"}
-                    // width={"100%"}
-                    // height={"100%"}
-                    // width={"100%"}
                     />
                     <p
                       style={{

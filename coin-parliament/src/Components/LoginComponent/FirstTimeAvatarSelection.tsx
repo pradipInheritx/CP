@@ -34,7 +34,6 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, }: FirstT
         toast.dismiss();
         setFirstTimeAvatarSelection(false)
         setShowMenuBar(false)
-        setShowMenuBar(false)
       } catch (e) {
         showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }

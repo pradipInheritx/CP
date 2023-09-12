@@ -349,6 +349,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
     //filter
     useEffect(() => {
+
         let tempFilter = allCards;
 
         if (collectionValue !== 'none') {
@@ -373,9 +374,9 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
             tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
         }
+        console.log(collectionValue, displayMyCards, tempFilter, allCards, 'pkkkk');
         setMyFilter(divideArray1(tempFilter, 4));
-        divideArray1(tempFilter, 4);
-    }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards]);
+    }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards, winerCard]);
     //End 
 
     const getTotalSameCard = (cardId: any) => {
@@ -546,9 +547,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     </div>}
             </div>
             {
-                (/* !myCards && !cardShow  */collectionValue === 'none' && !displayMyCards) ?
-
-
+                (collectionValue === 'none' && !displayMyCards) ?
                     <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
                     } >
                         {
@@ -584,7 +583,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                         <React.Fragment key={index} >
                                             <div className='w-100 m-auto row pt-3' style={{ borderTop: ((index !== 0 && addAlbumSeparator !== albumName) ? '3px solid #bebac7' : '') }
                                             }>
-                                                {collectionValue === 'none' && <div className="col-sm-2 d-flex justify-content-center align-items-center" style={{ transform: window.screen.width > 674 ? 'rotate(270deg)' : '', color: '#5f4de4', fontSize: '4em', overflow: 'visible', wordWrap: 'normal', textTransform: 'uppercase' }} >
+                                                {collectionValue === 'none' && <div className="col-sm-2 d-flex justify-content-center align-items-center" style={{ transform: window.screen.width > 575 ? 'rotate(270deg)' : '', color: '#5f4de4', fontSize: (window.screen.width > 575 ? '4em' : '2em'), overflow: 'visible', wordWrap: 'normal', textTransform: 'uppercase' }} >
                                                     {albumName}
                                                 </div>}
                                                 <div className={collectionValue === 'none' ? "col-sm-10" : 'col-sm-12'}>

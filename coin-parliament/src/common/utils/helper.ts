@@ -5,10 +5,10 @@ export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpira
 
     const firstCoin = (((valueExpirationTime[0] - valueVotingTime[0]) * 100) / valueVotingTime[0]);
     const secondCoin = (((valueExpirationTime[1] - valueVotingTime[1]) * 100) / valueVotingTime[1]);
-    const difference = (direction === 0 ? (firstCoin) - (secondCoin) : (secondCoin) - (firstCoin)).toFixed(5);
+    const difference = (direction === 0 ? (firstCoin) - (secondCoin) : (secondCoin) - (firstCoin)).toFixed(4);
     return {
-        firstCoin: firstCoin.toFixed(5) || '0',
-        secondCoin: secondCoin.toFixed(5) || '0',
+        firstCoin: firstCoin.toFixed(4) || '0',
+        secondCoin: secondCoin.toFixed(4) || '0',
         difference: difference || '0'
     }
 }

@@ -12,6 +12,8 @@ const WinCmp = require("../../assets/sounds/WinCmp.mp3").default;
 const giveVote = require("../../assets/sounds/mail-sent.mp3").default;
 const getVote = require("../../assets/sounds/ExtraVote.m4a").default;
 const getCoin = require("../../assets/sounds/ExtraCoin.mp3").default;
+const voteLast5SecImport = require('assets/sounds/voteLast5Sec.mp3').default;
+const claimRewardImport = require('assets/sounds/claimReward.m4a').default;
 
 const audio = new Audio(buttonClick);
 const onFlipcard = new Audio(Flipcard);
@@ -26,6 +28,8 @@ const WinCmpSound = new Audio(WinCmp);
 const voteEnd = new Audio(voteResult);
 const ExtraVote = new Audio(getVote);
 const ExtraCoin = new Audio(getCoin);
+const voteLast5Sec = new Audio(voteLast5SecImport);
+const claimReward = new Audio(claimRewardImport);
 
 export const handleSoundClick = () => {
   // console.log('play sound')
@@ -112,3 +116,22 @@ export const VoteButton = (voteEndSound = false) => {
   }
 
 };
+
+export const Last5SecVoteSound = {
+  play: () => {
+    voteLast5Sec.play();
+  },
+  pause: () => {
+    voteLast5Sec.pause();
+    voteLast5Sec.currentTime = 0;
+  }
+}
+export const claimRewardSound = {
+  play: () => {
+    claimReward.play();
+  },
+  pause: () => {
+    claimReward.pause();
+    claimReward.currentTime = 0;
+  }
+}

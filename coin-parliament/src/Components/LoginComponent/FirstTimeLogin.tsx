@@ -96,7 +96,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
     }
   };
   useEffect(() => {
-    setFirstTimeAvatarSelection(true)
+    setFirstTimeAvatarSelection(true);
     return () => {
       setFirstTimeAvatarSelection(true)
     }
@@ -118,6 +118,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
                 e.preventDefault();
 
                 if (username?.length < 16 && username?.length > 7 && /^[a-zA-Z_]+$/g.test(username)) {
+                  setUserNameErr(false)
                   checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));
                 }
                 else {
@@ -149,7 +150,6 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
                 >
                   {capitalize(translate(texts.generate))}
                 </Generate>
-
               </Container>
               {userNameErr ? <Styles.p className="mb-2 text-danger">
                 {translate(texts.UserNameValidation)}

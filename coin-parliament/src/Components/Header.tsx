@@ -16,7 +16,7 @@ import { isV1 } from "./App/App";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
-import Avatars, { AvatarType } from "../assets/avatars/Avatars";
+import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.png";
 import ManagersContext from "../Contexts/ManagersContext";
@@ -32,7 +32,7 @@ import Following from "./icons/Following";
 import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
 import { toFollow } from "../common/models/User";
 import "./styles.css";
-import { handleExtraVote, handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
+import { claimRewardSound, handleExtraVote, handleSoundClick, handleSoundWinCmp } from "../common/utils/SoundClick";
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
 import { VoteContext } from "Contexts/VoteProvider";
@@ -519,7 +519,7 @@ const Header = ({
 										}}
 									>
 										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "45px",
 												// border: "1px solid #6352E8",
@@ -566,11 +566,11 @@ const Header = ({
 																			}, 3000);
 																		}}
 																		onEnd={() => {
-																			setTextBlink(false)		
+																			setTextBlink(false)
 																			handleExtraVote.pause()
 																			setInOutReward((prev: number) => {
 																				// return prev == 2 ? 3 : prev
-																				handleSoundWinCmp.play()
+																				claimRewardSound.play();
 																				return 3
 																			});
 																			if (headerExtraVote != 0) {
@@ -651,7 +651,7 @@ const Header = ({
 												(followerPage && followerInfo != "") ?
 													<></> :
 													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-														{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+														{`${(userInfo?.displayName && !userInfo.firstTimeLogin) ? userInfo?.displayName : ''}`}
 													</span>
 											}
 											{/* {(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
@@ -722,7 +722,7 @@ const Header = ({
 										}}
 									>
 										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "60px",
 												// @ts-ignore
@@ -777,19 +777,20 @@ const Header = ({
 														>
 															{/* reward modal 4 */}
 															{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																<CountUp useEasing={false} className={textBlink ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ?rewardExtraVote :10} delay={2}
+																<CountUp useEasing={false} className={textBlink ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																	onStart={() => {
 																		// handleExtraVote.play()
-																		setTimeout(() => {																			
+																		setTimeout(() => {
 																			setTextBlink(true)
 																		}, 3000);
 																	}}
-																	onEnd={() => {																		
-																			setTextBlink(false)																		
+																	onEnd={() => {
+																		setTextBlink(false)
 																		handleExtraVote.pause()
+
 																		setInOutReward((prev: number) => {
 																			// return prev == 2 ? 3 : prev
-																			handleSoundWinCmp.play()
+																			claimRewardSound.play();
 																			return 3
 																		});
 																		if (headerExtraVote != 0) {
@@ -876,7 +877,7 @@ const Header = ({
 													(followerPage && followerInfo != "") ?
 														<></> :
 														<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
-															{`${userInfo?.displayName ? userInfo?.displayName : ''}`}
+															{`${(userInfo?.displayName && !userInfo?.firstTimeLogin) ? userInfo?.displayName : ''}`}
 														</span>
 												}
 												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
