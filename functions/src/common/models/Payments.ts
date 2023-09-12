@@ -68,7 +68,7 @@ const addIsExtraVotePurchase = async (metaData: any) => {
 }
 
 const addIsUpgradedValue = async (userId: string) => {
-    await firestore().collection('users').doc(userId).set({ rewardStatistics: true }, { merge: true });
+    await firestore().collection('users').doc(userId).set({ isUserUpgraded: true }, { merge: true });
 }
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {
