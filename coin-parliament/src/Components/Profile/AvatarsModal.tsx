@@ -7,12 +7,13 @@ import NFT from "../../assets/avatars/NFT";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "../../Contexts/User";
 import { useLocation, useNavigate } from "react-router-dom";
+import AppContext from "Contexts/AppContext";
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;
   onClose: () => void;
-  setFirstTimeAvatarSelection: React.Dispatch<React.SetStateAction<boolean>>
-  setShowMenuBar: React.Dispatch<React.SetStateAction<boolean>>
+  setFirstTimeAvatarSelection?: React.Dispatch<React.SetStateAction<boolean>>
+  setShowMenuBar?: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const Title = styled.div`
@@ -56,14 +57,12 @@ color: var(--color-6352e8);
 font-size: var(--font-size-22);
 `
 
-const AvatarsModal = ({ onSubmit, onClose, setFirstTimeAvatarSelection, setShowMenuBar }: AvatarsModalProps) => {
+const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
+  const { setFirstTimeAvatarSelection, setShowMenuBar } = useContext(AppContext);
   const translate = useTranslation();
   const { width } = useWindowSize();
   const { userInfo } = useContext(UserContext);
-  const [selectedAvatar, setSelectedAvatar] = useState('')
-  const location = useLocation();
-  const pathname = location.pathname
-  const navigate = useNavigate();
+  const [selectedAvatar, setSelectedAvatar] = useState('');
   return (
     <Container className="position-relative">
       {/* <div className="position-absolute top-0" style={{ right: 0 }}>

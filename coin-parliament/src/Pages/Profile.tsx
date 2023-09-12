@@ -124,8 +124,7 @@ const Profile = () => {
 
 
   return (
-    <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className=""    
-    >
+    <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
         // <Container className="py-3" fluid>
         <AvatarsModal

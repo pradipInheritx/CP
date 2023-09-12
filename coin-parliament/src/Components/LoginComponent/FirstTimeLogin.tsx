@@ -96,7 +96,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
     }
   };
   useEffect(() => {
-    setFirstTimeAvatarSelection(true)
+    setFirstTimeAvatarSelection(true);
     return () => {
       setFirstTimeAvatarSelection(true)
     }
