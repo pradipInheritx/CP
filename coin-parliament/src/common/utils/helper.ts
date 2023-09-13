@@ -101,3 +101,8 @@ export const divideArray1 = (arr: any, partSize: any) => {
     return res1;
 
 }
+
+export const getPaginationData = (data: any[], pageIndex = 0, pageSize = 5) => {
+    // page index start from 0
+    return data.slice(pageSize * pageIndex, pageSize * (pageIndex + 1))
+}
