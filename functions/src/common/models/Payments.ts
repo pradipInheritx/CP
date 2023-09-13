@@ -103,6 +103,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
 export const getTransactionHistory = async (req: any, res: any) => {
     try {
         const { userId } = req.params;
+        const { pageNumber, pageSize } = req.body;
         const transactionHistory: any = []
         const getTransactionQuery = await firestore().collection('payments').where("userId", "==", userId).get();
         getTransactionQuery.docs.map((snapshot: any) => {
@@ -119,10 +120,17 @@ export const getTransactionHistory = async (req: any, res: any) => {
                 walletType: transaction.walletType
             });
         });
+
+        const transactionSorting = transactionHistory.sort((a: any, b: any) => b.transaction_time._seconds - a.transaction_time._seconds);
+        const startIndex = (pageNumber - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const transactionPagination = transactionSorting.slice(startIndex, endIndex);
+        console.log("transactionPagination : ", transactionPagination);
+
         res.status(200).send({
             status: true,
             message: "Payment transaction history fetched successfully",
-            data: transactionHistory
+            data: transactionPagination
         });
     } catch (error) {
         errorLogging("getTransactionHistory", "ERROR", error);
