@@ -119,7 +119,7 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width > 767 ? "60%" : "99%"};
+  width:${window.screen.width > 767 ? "30%" : "99%"};
   border-radius:10px;
   background-color:#1e0243;
   padding :30px;
@@ -423,9 +423,8 @@ const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.D
               justifyContent: "center"
             }}
           >
-            <Sidediv>
-              <div className="pay-custom-select-container"
-              >
+            <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="pay-custom-select-container" style={{ width: '18em' }} >
                 <div
                   className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
                   onClick={() => {
