@@ -14,6 +14,8 @@ import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import PaymentSuccess from "./PaymentSuccess";
+import PaymentFail from "./PaymentFail";
 
 const CoinList = styled.div`
   // border:1px solid red;
@@ -26,7 +28,7 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width > 767 ? "60%" : "99%"};
+  width:${window.screen.width > 767 ? "31%" : "99%"};
   border-radius:10px;
   background-color:#1e0243;
   padding :30px;
@@ -38,7 +40,7 @@ const Opctiondiv = styled.div`
   border:1px solid white;
   border-radius:10px;
   overflow:hidden;
-  width:${window.screen.width > 767 ? "33%" : "98%"};
+  width:${window.screen.width > 767 ? "50%" : "98%"};
   margin:${window.screen.width > 767 ? "" : "auto"};
   font-size:15px;
   & div{
@@ -65,11 +67,11 @@ margin-top:${window.screen.width > 767 ? "" : "30px"};
  margin-left:20px;
 `;
 const Divbutton = styled.div`
-  width:60%;
+  width:${window.screen.width > 767 ? "31%" : "98%"};
   border-radius:10px;
 
   display:flex;
-  justify-content: end;
+  justify-content: ${window.screen.width > 767 ? "end" : "center"};
   & button {
     width:150px;
     margin:20px 0px;
@@ -80,7 +82,7 @@ const Divbutton = styled.div`
 `;
 
 
-const CoinsList = ({ checkAndPay }:any) => {
+const CoinsList = ({ checkAndPay, setPaymentStatus, paymentStatus }: any) => {
 
 
   const [coinsList, setCoinsList] = useState([])
@@ -99,7 +101,7 @@ const CoinsList = ({ checkAndPay }:any) => {
   const [extraVote, setExtraVote] = useState(0);
   const [getbalance, setGetbalance] = useState(0);
   const [payButton, setPayButton] = useState(false);
-  const [showOptionList, setShowOptionList] = useState(false);  
+  const [showOptionList, setShowOptionList] = useState(false);
   const [afterPay, setAfterPay] = useState(false);
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
@@ -117,7 +119,7 @@ const CoinsList = ({ checkAndPay }:any) => {
     const getCoinList = firebase
       .firestore()
       .collection("settings").doc("coins")
-        getCoinList.get()
+    getCoinList.get()
       .then((snapshot) => {
         const allList = snapshot.data()?.coins;
         setCoinsList(allList && allList);
@@ -159,152 +161,169 @@ const CoinsList = ({ checkAndPay }:any) => {
   //  for do payment 
 
   const handleAfterPayClose = () => setAfterPay(false);
-  const handleAfterPayShow = () => setAfterPay(true);  
+  const handleAfterPayShow = () => setAfterPay(true);
 
 
   const handleClick = () => {
+    setPaymentStatus("");
+    setPayButton(true);
     // Call the global function and pass the values as arguments
     checkAndPay(
       coinInfo,
-      setPayButton,  
+      setPayButton,
       setSelectCoin,
       setShowOptionList,
-      setAfterPay,      
+      setAfterPay,
     );
   };
 
 
-  console.log(walletName, "setWalletName")
+  const startAgainAction = () => {
+    setShowOptionList(false)
+    setSelectCoin("none");
+    setPaymentStatus('');
+  }
+
+  const paymentSuccessAction = () => {
+    navigate("/profile/history")
+    setSelectCoin("none");
+  }
 
   return (
-    <div
-      style={{
-        width: "100%",
-      }}
-      className="d-flex justify-content-center flex-column align-items-center"
-    >
-      <div className="mt-3">
-        <h4>Select Payment Mode</h4>
-      </div>
-      <Boxdiv className={`${window.screen.width > 767 ? "mt-5" : "mt-3"}`}
+    <>
+      {!paymentStatus && <div
         style={{
-          justifyContent: `${selectPayment == 0 ? "center" : ""}`
+          width: "100%",
         }}
+        className="d-flex justify-content-center flex-column align-items-center"
       >
-        <Opctiondiv>
-          <div
-            style={{
-              cursor: "pointer",
-              borderBottom: "1px solid white",
-              background: `${selectPayment && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
-            }}
-            onClick={() => {
-              setSelectPayment(1)
-            }}
-          >
-            <i className="bi bi-coin"></i>
-            <p className="mx-2">Cryptocurrency</p>
-          </div>
-          <div
-            style={{
-              cursor: "not-allowed",
-            }}
-          >
-            <i className="bi bi-credit-card-fill "></i>
-            <p className="mx-2">Debit & Credit cards</p>
-          </div>
-        </Opctiondiv>
-        {selectPayment == 1 && selectCoin == "none" && <Sidediv>
-          <div className="pay-custom-select-container"
-          >
+        <div className="mt-3">
+          <h4>Select Payment Mode</h4>
+        </div>
+        <Boxdiv className={`${window.screen.width > 767 ? "mt-5" : "mt-3"}`}
+          style={{
+            justifyContent: `${selectPayment == 0 ? "center" : ""}`,
+
+          }}
+        >
+          <Opctiondiv>
             <div
-              className={showOptionList ? "pay-selected-text active" : "pay-selected-text"}
-              onClick={() => {
-                setShowOptionList(!showOptionList)
-              }
-              }
-            >
-              {selectCoin !== "none" ? selectCoin : "Select coin"}
-            </div>
-            {showOptionList && (
-              <ul className="pay-select-options"
-                style={{
-                  height: `${window.screen.width > 767 ? "300px" : "200px"}`
-                }}
-              >
-                {coinsList.map((option: any, index: number) => {
-                  return (
-                    <li
-                      className="pay-custom-select-option"
-                      data-name={option.name}
-                      key={option.id}
-                      onClick={async () => {
-                        setSelectCoin(option.name)
-                        setCoinInfo(option)
-                        // setShowOptionList(!showOptionList)
-                        // await mybtn("disconnect", "true").then(() => {
-                        //   setConnectOrNot(!connectOrNot)
-                        // })
-                      }}
-                    >
-                      {option.name}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-        </Sidediv>}
-
-
-        {selectCoin != "none" && <Paymentdiv>
-          <div className="d-flex flex-column justify-content-center align-items-center">
-            <p
-              className="my-1"
               style={{
-                fontSize: "20px"
+                cursor: "pointer",
+                borderBottom: "1px solid white",
+                background: `${selectPayment && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
               }}
-            >Pay {payamount}$ using {selectCoin}</p>           
-          </div>
-        </Paymentdiv>}
-      </Boxdiv>
-      {
-        selectCoin != "none" &&
-        // localStorage.getItem("wldp-cache-provider") &&
-        <Divbutton>
-          <button
-            style={{
-              marginRight: "20px",
-              border: "1px solid #543cd6",
-              color: "#543cd6",
-              background: "none",
-            }}
-            onClick={async () => {
-              setSelectCoin("none")
-              // mybtn("disconnect", "true")
-              setCoinInfo([])
-              //         await mybtn("disconnect", "true").then(() => {
-              //   setConnectOrNot(!connectOrNot)
-              // })
-            }}
-          >Cancel</button>
-          <button
-            style={{
-              background: "#543cd6",
-              color: "white",
-              opacity: `${payButton ? "0.6" : "1"}`
-            }}
-            disabled={payButton}
-            onClick={async () => {
-              // send()
-              setPayButton(true)
-              // checkAndPay()
-              handleClick()
-            }}
-          >Pay Now</button>
-        </Divbutton>
-      }
-    </div>
+              onClick={() => {
+                setSelectPayment(1)
+              }}
+            >
+              <i className="bi bi-coin"></i>
+              <p className="mx-2">Cryptocurrency</p>
+            </div>
+            <div
+              style={{
+                cursor: "not-allowed",
+              }}
+            >
+              <i className="bi bi-credit-card-fill "></i>
+              <p className="mx-2">Debit & Credit cards</p>
+            </div>
+          </Opctiondiv>
+          {selectPayment == 1 && selectCoin == "none" &&
+            <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="pay-custom-select-container" style={{ width: '18em' }}>
+                <div
+                  className={showOptionList ? "pay-selected-text active" : "pay-selected-text"}
+                  onClick={() => {
+                    setShowOptionList(!showOptionList)
+                  }
+                  }
+                >
+                  {selectCoin !== "none" ? selectCoin : "Select coin"}
+                </div>
+                {showOptionList && (
+                  <ul className="pay-select-options"
+                    style={{
+                      height: `${window.screen.width > 767 ? "300px" : "200px"}`
+                    }}
+                  >
+                    {coinsList.map((option: any, index: number) => {
+                      return (
+                        <li
+                          className="pay-custom-select-option"
+                          data-name={option.name}
+                          key={option.id}
+                          onClick={async () => {
+                            setSelectCoin(option.name)
+                            setCoinInfo(option)
+                            // setShowOptionList(!showOptionList)
+                            // await mybtn("disconnect", "true").then(() => {
+                            //   setConnectOrNot(!connectOrNot)
+                            // })
+                          }}
+                        >
+                          {option.name}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </Sidediv>}
+
+
+          {selectCoin != "none" && <Paymentdiv>
+            <div className="d-flex flex-column justify-content-center align-items-center">
+              <p
+                className="my-1"
+                style={{
+                  fontSize: "20px"
+                }}
+              >Pay {payamount}$ using {selectCoin}</p>
+            </div>
+          </Paymentdiv>}
+        </Boxdiv>
+        {
+          selectCoin != "none" &&
+          // localStorage.getItem("wldp-cache-provider") &&
+          <Divbutton>
+            <button
+              style={{
+                marginRight: "20px",
+                border: "1px solid #543cd6",
+                color: "#543cd6",
+                background: "none",
+              }}
+              onClick={async () => {
+                setSelectCoin("none")
+                // mybtn("disconnect", "true")
+                setCoinInfo([])
+                //         await mybtn("disconnect", "true").then(() => {
+                //   setConnectOrNot(!connectOrNot)
+                // })
+              }}
+            >Cancel</button>
+            <button
+              style={{
+                background: "#543cd6",
+                color: "white",
+                opacity: `${payButton ? "0.6" : "1"}`
+              }}
+              disabled={payButton}
+              onClick={async () => {
+                // send()
+                // checkAndPay()
+                handleClick()
+              }}
+            >Pay Now</button>
+          </Divbutton>
+        }
+      </div>}
+      <div className="pb-3">
+        {paymentStatus == 'success' && <PaymentSuccess paymentSuccessAction={paymentSuccessAction} />}
+        {paymentStatus == 'error' && <PaymentFail tryAgainAction={handleClick} startAgainAction={startAgainAction} />}
+      </div>
+    </>
   );
 };
 

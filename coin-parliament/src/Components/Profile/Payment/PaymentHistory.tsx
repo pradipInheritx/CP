@@ -30,29 +30,7 @@ function PaymentHistory() {
     "Order ID", "Date", "Item", "Amount", "Payment method"
   ]);
   const [pageIndex, setPageIndex] = useState(0);
-  const [rowData, setRowData] = useState<any>([
-    {
-      Order_ID: "1",
-      Date: "1",
-      Item: "1",
-      Amount: "1",
-      Payment_Method: "1",
-    },
-    {
-      Order_ID: "1",
-      Date: "1",
-      Item: "1",
-      Amount: "1",
-      Payment_Method: "1",
-    },
-    {
-      Order_ID: "1",
-      Date: "1",
-      Item: "1",
-      Amount: "1",
-      Payment_Method: "1",
-    },
-  ]);
+  const [rowData, setRowData] = useState<any>([]);
   const [paginationData, setPaginationData] = useState<any[]>([]);
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
   let navigate = useNavigate();

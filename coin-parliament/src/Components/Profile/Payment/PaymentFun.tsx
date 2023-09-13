@@ -10,29 +10,31 @@ import CoinsList from './CoinsList';
 export type paymentProps = {
   type: any;
   msg?: any;
-  coinInfo?:any;
-  setPayButton?:any;
-  extraVote?:any;
-  payType?:any;
-  payamount?:any;
-  setSelectCoin?:any;
-  setShowOptionList?:any;
-  setAfterPay?:any;
-  user?:any;
-  navigate?:any;
-  
+  coinInfo?: any;
+  setPayButton?: any;
+  extraVote?: any;
+  payType?: any;
+  payamount?: any;
+  setSelectCoin?: any;
+  setShowOptionList?: any;
+  setAfterPay?: any;
+  user?: any;
+  navigate?: any;
+
 };
 
-function PaymentFun({isVotingPayment}:any) {
+function PaymentFun({ isVotingPayment }: any) {
   const { user, userInfo } = useContext(UserContext);
   const [payamount, setPayamount] = useState();
   const [payType, setPayType] = useState();
   const [extraVote, setExtraVote] = useState(0);
   const [extraPer, setExtraPer] = useState(0);
   const [apiCalling, setApiCalling] = useState(true);
+  const [paymentStatus, setPaymentStatus] = useState<string>("");
+  const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState(false);
   let navigate = useNavigate();
 
-const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
+  const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
   useEffect(() => {
     (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
@@ -45,8 +47,10 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
     setExtraVote(AllInfo[2])
     setExtraPer(AllInfo[3])
   }, [localStorage.getItem("PayAmount")])
-  
+
   const afterPayPopup = (type?: any, msg?: any, coinInfo?: any, setPayButton?: any, setSelectCoin?: any, setShowOptionList?: any, setAfterPay?: any) => {
+    setPaymentStatus(type);
+    return;
     if (type == "error") {
       Swal.fire({
         icon: 'error',
@@ -68,13 +72,12 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
 
           checkAndPay(coinInfo)
         } else if (result.isDismissed) {
-          
+
           setShowOptionList(false)
-          setSelectCoin("none");          
+          setSelectCoin("none");
         }
       })
     }
-
     if (type == "success") {
       Swal.fire({
         icon: 'success',
@@ -92,15 +95,15 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
         // footer: '<a href="">Why do I have this issue?</a>'
       }).then(async (result) => {
         if (result.isConfirmed) {
-          
+
           setAfterPay(false)
           navigate("/profile/mine")
-          
+
         }
-        else if (result.isDismissed) {          
+        else if (result.isDismissed) {
           setShowOptionList(false)
           navigate("/profile/history")
-          setSelectCoin("none");          
+          setSelectCoin("none");
         }
       })
     }
@@ -136,7 +139,7 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
     })
       .then(async (response) => {
         setApiCalling(true)
-        
+
       })
       .catch((error) => {
         setApiCalling(true)
@@ -162,15 +165,20 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
     };
     console.log(obj, "alldata");
     (window as any).wldp.send_msg(obj).then((res: any) => {
+      if (isWLDPEventRegistered) {
+        return
+      } else {
+        setIsWLDPEventRegistered(true);
+      }
       document.addEventListener('wldp:trx', (e) => {
         try {
-          console.log(e, "alldata231dsf");
+
           setPayButton(false);
 
           // @ts-ignore
           if (e?.detail?.trx?.transactionHash) {
-            afterPayPopup("success","", coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
-            if (apiCalling) {              
+            afterPayPopup("success", "", coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
+            if (apiCalling) {
               // @ts-ignore
               payNow(e?.detail, coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
               setApiCalling(false)
@@ -178,6 +186,7 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
           }
           // @ts-ignore
           else if (e?.detail?.trx?.transactionStatus) {
+            console.log(e, "alldata231dsf");
             // @ts-ignore      
             afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message, coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
 
@@ -221,15 +230,10 @@ const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/a
 
   return (
     <>
-      {isVotingPayment ?
-        <VotingPayment
-      checkAndPay={checkAndPay}
-      />
-        :
-        <CoinsList
-          checkAndPay={checkAndPay}
-        />
-    }
+      {isVotingPayment
+        ? <VotingPayment checkAndPay={checkAndPay} paymentStatus={paymentStatus} setPaymentStatus={setPaymentStatus} />
+        : <CoinsList checkAndPay={checkAndPay} paymentStatus={paymentStatus} setPaymentStatus={setPaymentStatus} />
+      }
     </>
   )
 }
