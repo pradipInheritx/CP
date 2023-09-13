@@ -27,6 +27,8 @@ import firebase from "firebase/compat";
 import { auth } from "firebase";
 import Swal from "sweetalert2";
 import axios from "axios";
+import PaymentFail from "./PaymentFail";
+import PaymentSuccess from "./PaymentSuccess";
 
 
 const H2 = styled.h2`
@@ -180,7 +182,7 @@ const Divbutton = styled.div`
 `;
 
 
-const VotingPayment = ({checkAndPay}:any) => {
+const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.Dispatch<React.SetStateAction<string>>, paymentStatus: string }> = ({ checkAndPay, setPaymentStatus, paymentStatus }) => {
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
@@ -192,12 +194,12 @@ const VotingPayment = ({checkAndPay}:any) => {
 
   const [coinsList, setCoinsList] = useState([])
   const [selectPayment, setSelectPayment] = useState(0);
-  const [selectCoin, setSelectCoin] = useState("none");  
+  const [selectCoin, setSelectCoin] = useState("none");
   const [coinInfo, setCoinInfo] = useState([]);
 
   // const connectOrNot = localStorage.getItem("wldp_disconnect");
-  
-  const [payamount, setPayamount] = useState();  
+
+  const [payamount, setPayamount] = useState();
   const [payType, setPayType] = useState();
   const [extraVote, setExtraVote] = useState(0);
   const [extraPer, setExtraPer] = useState(0);
@@ -243,18 +245,29 @@ const VotingPayment = ({checkAndPay}:any) => {
   }, [])
 
 
-  const handleClick = () => {    
+  const handleClick = () => {
+    setPaymentStatus("");
+    setPayButton(true);
     // Call the global function and pass the values as arguments    
     checkAndPay(
       coinInfo,
-      setPayButton,      
+      setPayButton,
       setSelectCoin,
       setShowOptionList,
       setAfterPay,
     );
   };
 
+  const startAgainAction = () => {
+    setShowOptionList(false)
+    setSelectCoin("none");
+    setPaymentStatus('');
+  }
 
+  const paymentSuccessAction = () => {
+    navigate("/profile/history")
+    setSelectCoin("none");
+  }
 
   return (
     <>
@@ -292,17 +305,17 @@ const VotingPayment = ({checkAndPay}:any) => {
             style={{
               width: `${window.screen.width > 767 ? "" : "100%"}`,
               padding: `${window.screen.width > 767 ? "" : "0px"}`,
-            margin: `${window.screen.width > 767 ? "" : "0px"}`
+              margin: `${window.screen.width > 767 ? "" : "0px"}`
 
             }}
-          >            
+          >
             <Col lg={12} sm={12} className="d-flex justify-content-md-start justify-content-center"
               style={{
                 cursor: "pointer",
               }}
-              // onClick={() => {
-              //   // getExtraVote(10, 12)
-              // }}
+            // onClick={() => {
+            //   // getExtraVote(10, 12)
+            // }}
             >
               <Prices style={{}}>
                 <div style={{
@@ -321,15 +334,15 @@ const VotingPayment = ({checkAndPay}:any) => {
                 >
                 </div>
 
-                {extraPer > 0 ?                 
-                <Corner>
-                  <CornerText style={{
-                    color: '#FFF',
-                    fontSize: '22px',
-                    fontFamily: 'Poppins',
-                    fontWeight: '700',
+                {extraPer > 0 ?
+                  <Corner>
+                    <CornerText style={{
+                      color: '#FFF',
+                      fontSize: '22px',
+                      fontFamily: 'Poppins',
+                      fontWeight: '700',
 
-                  }}>{extraPer}% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
+                    }}>{extraPer}% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
                   </Corner>
                   :
                   <div
@@ -346,8 +359,8 @@ const VotingPayment = ({checkAndPay}:any) => {
                     fontWeight: '700',
                     
                   }}>20% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText> */}
-                  </div>    
-              }
+                  </div>
+                }
                 <div style={{
                   backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat',
                   marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em'
@@ -360,16 +373,11 @@ const VotingPayment = ({checkAndPay}:any) => {
                 </ExtraText>
               </Prices>
             </Col>
-          </Row> 
+          </Row>
 
-        </div >          
-      </div >      
-
-
-      {/* payment div  start from */}          
-
-
-      <div
+        </div >
+      </div>
+      {!paymentStatus && <div
         style={{
           width: "100%",
         }}
@@ -405,62 +413,62 @@ const VotingPayment = ({checkAndPay}:any) => {
               <i className="bi bi-credit-card-fill "></i>
               <p className="mx-2">Debit & Credit cards</p>
             </div>
-          </Opctiondiv>          
+          </Opctiondiv>
         </Boxdiv>
 
-        {selectPayment == 1  &&
+        {selectPayment == 1 &&
           <Boxdiv className="mt-4 mb-4"
             style={{
               display: "flex",
               justifyContent: "center"
-          }}
+            }}
           >
-          <Sidediv>
-            <div className="pay-custom-select-container"
-            >
-              <div
-                  className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
-                onClick={() => {
-                  setShowOptionList(!showOptionList)
-                }
-                  
-                }
+            <Sidediv>
+              <div className="pay-custom-select-container"
               >
-                {/* {selectCoin !== "none" ? selectCoin  : "Select coin"} */}
+                <div
+                  className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
+                  onClick={() => {
+                    setShowOptionList(!showOptionList)
+                  }
+
+                  }
+                >
+                  {/* {selectCoin !== "none" ? selectCoin  : "Select coin"} */}
                   {/* {selectCoin !== "none" ? selectCoin  : "Select coin"} */}
                   {!showOptionList && selectCoin != "none" ? `Pay ${payamount}$ using ${selectCoin}` : "Select coin"}
+                </div>
+                {showOptionList && (
+                  <ul className="pay-select-options"
+                    style={{
+                      height: `${window.screen.width > 767 ? "200px" : "200px"}`
+                    }}
+                  >
+                    {coinsList.map((option: any, index: number) => {
+                      return (
+                        <li
+                          className="pay-custom-select-option"
+                          data-name={option.name}
+                          key={option.id}
+                          onClick={async () => {
+                            setSelectCoin(option.name)
+                            setCoinInfo(option)
+                            setShowOptionList(!showOptionList)
+                            // await mybtn("disconnect", "true").then(() => {
+                            //   setConnectOrNot(!connectOrNot)
+                            // })
+                          }}
+                        >
+                          {option.name}
+
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </div>
-              {showOptionList && (
-                <ul className="pay-select-options"
-                  style={{
-                    height: `${window.screen.width > 767 ? "200px" : "200px"}`
-                  }}
-                >
-                  {coinsList.map((option: any, index: number) => {
-                    return (
-                      <li
-                        className="pay-custom-select-option"
-                        data-name={option.name}
-                        key={option.id}
-                        onClick={async () => {
-                          setSelectCoin(option.name)
-                          setCoinInfo(option)
-                          setShowOptionList(!showOptionList)
-                          // await mybtn("disconnect", "true").then(() => {
-                          //   setConnectOrNot(!connectOrNot)
-                          // })
-                        }}
-                      >                        
-                        {option.name}
-                        
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </div>
-          </Sidediv>
-          
+            </Sidediv>
+
             {
               selectCoin != "none" &&
               // localStorage.getItem("wldp-cache-provider") &&
@@ -486,7 +494,6 @@ const VotingPayment = ({checkAndPay}:any) => {
                   disabled={payButton}
                   onClick={async () => {
                     // send()
-                    setPayButton(true)
                     // checkAndPay({
                     //   coinInfo: coinInfo,
                     //   setPayButton: setPayButton,
@@ -497,15 +504,20 @@ const VotingPayment = ({checkAndPay}:any) => {
                     //   setShowOptionList: setShowOptionList,
                     //   setSelectCoin: setSelectCoin,
                     // })
-                    handleClick()    
+                    handleClick()
 
                   }}
-                >Pay Now</button>
+                >{payButton ? <span className="">Pay Now...</span> : 'Pay Now'}</button>
               </Divbutton>
             }
-        </Boxdiv>}
-        
+          </Boxdiv>}
 
+
+      </div>}
+
+      <div className="pb-3">
+        {paymentStatus == 'success' && <PaymentSuccess paymentSuccessAction={paymentSuccessAction} />}
+        {paymentStatus == 'error' && <PaymentFail tryAgainAction={handleClick} startAgainAction={startAgainAction} />}
       </div>
     </>
   );
