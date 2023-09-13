@@ -114,11 +114,11 @@ const VotingBooster = () => {
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
   let navigate = useNavigate();
 
-  const getExtraVote = (amount: any, extravote: any) => {
-    let payvalue = [amount, "EXTRAVOTES", extravote]
+  const getExtraVote = (amount: any, extravote: any,ExtraPer:any) => {
+    let payvalue = [amount, "EXTRAVOTES", extravote, ExtraPer]
     let PayValuestring = JSON.stringify(payvalue)
     localStorage.setItem("PayAmount", PayValuestring);
-    navigate("/paymentList")
+    navigate("/votepayment")
   }
 
   return (
@@ -132,7 +132,7 @@ const VotingBooster = () => {
         }}
       >
         {/* @ts-ignore */}
-        {userInfo?.isUpgraded ? 'Boost your mining power' : translate("Boost your voting power").toUpperCase()}
+        {userInfo?.isUserUpgraded ? 'Boost your mining power' : translate("Boost your voting power").toUpperCase()}
       </H2>
       <div className="pt-5 pb-5 d-flex justify-content-center"
         style={{
@@ -160,17 +160,18 @@ const VotingBooster = () => {
               }}
               onClick={() => {
                 // @ts-ignore
-                getExtraVote(5, 5)
+                getExtraVote(5, 5,0)
               }}
             >
               <Prices style={{}} >
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
                   position: "absolute",
                   width: "264px",
-                  height: "330px",
-                  marginTop: "-75px",
-                  marginLeft: "-20px",
+                  height: "330px",                  
+                  // marginLeft: "-20px",
                   opacity: "0.2",
                   zIndex: "1"
 
@@ -191,7 +192,7 @@ const VotingBooster = () => {
                     
                   }}>20% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText> */}
                 </div>
-                <div style={{ backgroundImage: `url(${Gift}) , url(${BGOBJECTS})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
+                <div style={{ backgroundImage: `url(${Gift}) `, width: '100%', height: '50%', backgroundRepeat: 'no-repeat', marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em' }}>
                   <ForOnly>For Only</ForOnly>
                   <Price>$5.00</Price>
                 </div>
@@ -207,17 +208,19 @@ const VotingBooster = () => {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getExtraVote(10, 12)
+                getExtraVote(10, 12,20)
               }}
             >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
                   position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop: "-75px",
-                  marginLeft: "-20px",
+                  // marginTop: "-75px",
+                  // marginLeft: "-20px",
                   opacity: "0.2",
                   zIndex: "1"
 
@@ -250,17 +253,19 @@ const VotingBooster = () => {
               }}
               onClick={() => {
                 // @ts-ignore
-                getExtraVote(15, 20)
+                getExtraVote(15, 20,25)
               }}
             >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
                   position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop: "-75px",
-                  marginLeft: "-20px",
+                  // marginTop: "-75px",
+                  // marginLeft: "-20px",
                   opacity: "0.2",
                   zIndex: "1"
 
@@ -289,17 +294,19 @@ const VotingBooster = () => {
                 cursor: "pointer",
               }}
               onClick={() => {
-                getExtraVote(20, 30)
+                getExtraVote(20, 30,33)
               }}
             >
               <Prices style={{}}>
                 <div style={{
                   backgroundImage: `url(${BGOBJECTS})`,
+                  backgroundRepeat: "no-repeat",
+                  marginTop: "30px",
                   position: "absolute",
                   width: "264px",
                   height: "330px",
-                  marginTop: "-75px",
-                  marginLeft: "-20px",
+                  // marginTop: "-75px",
+                  // marginLeft: "-20px",
                   opacity: "0.2",
                   zIndex: "1"
 
@@ -325,43 +332,7 @@ const VotingBooster = () => {
             </Col>
           </Row>
         </div >
-      </div >
-      {/* <div
-        className='p-0 m-0 w-100 d-flex justify-content-center'
-        style={{
-          background: "#160133",
-          // height: `${screenHeight()}`,
-        }}
-      >
-        <div
-          className=''
-          style={{
-            background: "#160133",
-            width: `${window.screen.width > 979 ? "730px" : "100%"}`,
-          }}
-        >
-          <div className='d-flex justify-content-around mt-4 text-center px-3 mb-4'>
-            <PriceCard>
-              <div>
-                <p className='my-1'>Buy extra 100 votes</p>
-                <span>For only <strong>$9.99</strong> </span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='my-1'>Buy extra 200 votes</p>
-                <span>For only <strong>$19.99</strong></span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='my-1'>Buy extra 300 votes</p>
-                <span>For only <strong>$29.99</strong></span>
-              </div>
-            </PriceCard>
-          </div>
-        </div>
-      </div> */}
+      </div >      
     </>
   );
 };

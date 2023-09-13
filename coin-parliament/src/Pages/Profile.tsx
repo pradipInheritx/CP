@@ -35,11 +35,13 @@ import Votesnew from "Components/icons/votesnew";
 import Gallerynew from "Components/icons/Gallerynew";
 import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
 import Notificationsnew from "Components/icons/notificationsnew";
+import PaymentHitory from "Components/icons/PaymentHitory";
 
 export enum ProfileTabs {
   profile = "profile",
   password = "password",
   followers = "followers",
+  history = "history",
   mine = "mine",
   edit = "edit",
   wallet = "wallet",
@@ -150,7 +152,7 @@ const Profile = () => {
                   }} style={{ cursor: "pointer" }} >
                     {/* {translate("upgrade your account")} */}
                     {/* @ts-ignore */}
-                    {userInfo?.isUpgraded ? ("your account is upgraded").toUpperCase() : texts.UpgradeYourAccount}
+                    {userInfo?.isUserUpgraded ? ("your account is upgraded").toUpperCase() : texts.UpgradeYourAccount}
                   </MyBadge>
                 </Row>
               )}
@@ -168,6 +170,7 @@ const Profile = () => {
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
                       ProfileTabs.wallet as string,
+                      ProfileTabs.history as string,                      
                     ].includes(pathname) && (
                         <ImageTabs
                           {...{
@@ -230,6 +233,7 @@ const Profile = () => {
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
                       ProfileTabs.wallet as string,
+                      ProfileTabs.history as string,
                     ].includes(pathname) &&
                       window.screen.width < 979 && (
                         <ImageTabs
@@ -263,6 +267,12 @@ const Profile = () => {
                                 label: ProfileTabs.wallet,
                                 icon: <Wallet />,
                                 eventKey: ProfileTabs.wallet,
+                              },
+                              {
+                                component: <></>,
+                                label: "Payment",
+                                icon: <PaymentHitory/>,
+                                eventKey: ProfileTabs.history,
                               },
                             ],
                           }}
