@@ -232,7 +232,7 @@ function PaymentFun({ isVotingPayment }: any) {
     <>
       {isVotingPayment
         ? <VotingPayment checkAndPay={checkAndPay} paymentStatus={paymentStatus} setPaymentStatus={setPaymentStatus} />
-        : <CoinsList checkAndPay={checkAndPay} paymentStatus={paymentStatus} setPaymentStatus={setPaymentStatus} />
+        : <VotingPayment checkAndPay={checkAndPay} paymentStatus={paymentStatus} setPaymentStatus={setPaymentStatus} />
       }
     </>
   )
