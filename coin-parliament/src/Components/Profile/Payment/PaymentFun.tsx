@@ -6,6 +6,7 @@ import UserContext from 'Contexts/User';
 import { useNavigate } from 'react-router-dom';
 import { auth } from "firebase";
 import CoinsList from './CoinsList';
+import AppContext from 'Contexts/AppContext';
 
 export type paymentProps = {
   type: any;
@@ -17,7 +18,6 @@ export type paymentProps = {
   payamount?: any;
   setSelectCoin?: any;
   setShowOptionList?: any;
-  setAfterPay?: any;
   user?: any;
   navigate?: any;
 
@@ -31,9 +31,15 @@ function PaymentFun({ isVotingPayment }: any) {
   const [extraPer, setExtraPer] = useState(0);
   const [apiCalling, setApiCalling] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<string>("");
-  const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState(false);
-  let navigate = useNavigate();
+  const { isWLDPEventRegistered, setIsWLDPEventRegistered } = useContext(AppContext);
 
+  const [coinInfo, setCoinInfo] = useState<{ [key: string]: any }>({});
+  const [payButton, setPayButton] = useState(false);
+  const [selectCoin, setSelectCoin] = useState("none");
+  const [showOptionList, setShowOptionList] = useState(false);
+  console.log(coinInfo, 'coinInfo1');
+
+  let navigate = useNavigate();
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
   useEffect(() => {
@@ -48,68 +54,12 @@ function PaymentFun({ isVotingPayment }: any) {
     setExtraPer(AllInfo[3])
   }, [localStorage.getItem("PayAmount")])
 
-  const afterPayPopup = (type?: any, msg?: any, coinInfo?: any, setPayButton?: any, setSelectCoin?: any, setShowOptionList?: any, setAfterPay?: any) => {
+  const afterPayPopup = (type?: any, msg?: any) => {
     setPaymentStatus(type);
     return;
-    if (type == "error") {
-      Swal.fire({
-        icon: 'error',
-        title: 'Payment Failed',
-        // text: 'Your account balance is : ${balance} , This is insufficient balance for this payment',
-        // html: msg || "<span>Your account balance is : " + (getbalance) + " , This is insufficient balance for this payment</span>",
-        html: msg,
-        showCancelButton: true,
-        cancelButtonColor: '#d33',
-        cancelButtonText: 'Start Over Again',
-        confirmButtonColor: '#543cd6',
-        confirmButtonText: 'Try Again',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          setAfterPay(false)
-
-          checkAndPay(coinInfo)
-        } else if (result.isDismissed) {
-
-          setShowOptionList(false)
-          setSelectCoin("none");
-        }
-      })
-    }
-    if (type == "success") {
-      Swal.fire({
-        icon: 'success',
-        title: 'Payment Successfull',
-        // text: msg || "Your payment has been confirmed",
-        text: `${payType == "EXTRAVOTES" ? "🚀 Payment Successfully Processed! 🎉 You've unlocked additional voting power. Let's shape the future together with your impactful votes! 🗳️💪" : "🔥 Payment Successfully Processed! 🚀 Thank you for your support. Enjoy your upgraded account and enhanced benefits! Keep voting, keep earning! 🌟"}`,
-        showCloseButton: true,
-        showCancelButton: true,
-        cancelButtonColor: '#543cd6',
-        cancelButtonText: 'Purchase Details',
-        confirmButtonColor: '#543cd6',
-        confirmButtonText: 'Continue Voting',
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        // footer: '<a href="">Why do I have this issue?</a>'
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-
-          setAfterPay(false)
-          navigate("/profile/mine")
-
-        }
-        else if (result.isDismissed) {
-          setShowOptionList(false)
-          navigate("/profile/history")
-          setSelectCoin("none");
-        }
-      })
-    }
   }
 
-  const payNow = (detail: any, coinInfo?: any, setPayButton?: any, setSelectCoin?: any, setShowOptionList?: any, setAfterPay?: any) => {
+  const payNow = (detail: any) => {
     const headers = {
       'Content-Type': 'application/json',
       "accept": "application/json",
@@ -146,7 +96,7 @@ function PaymentFun({ isVotingPayment }: any) {
       })
   }
 
-  const send = (coinInfo?: any, setPayButton?: any, setSelectCoin?: any, setShowOptionList?: any, setAfterPay?: any) => {
+  const send = () => {
     const obj = {
       method: "getTransaction",
       user: `${sessionStorage.getItem("wldp_user")}`,
@@ -170,49 +120,55 @@ function PaymentFun({ isVotingPayment }: any) {
       } else {
         setIsWLDPEventRegistered(true);
       }
-      document.addEventListener('wldp:trx', (e) => {
-        try {
-
-          setPayButton(false);
-
-          // @ts-ignore
-          if (e?.detail?.trx?.transactionHash) {
-            afterPayPopup("success", "", coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
-            if (apiCalling) {
-              // @ts-ignore
-              payNow(e?.detail, coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
-              setApiCalling(false)
-            }
-          }
-          // @ts-ignore
-          else if (e?.detail?.trx?.transactionStatus) {
-            console.log(e, "alldata231dsf");
-            // @ts-ignore      
-            afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message, coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
-
-          }
-          // @ts-ignore
-          else if (typeof e?.detail?.trx == "string") {
-            // @ts-ignore  
-            afterPayPopup("error", e?.detail?.trx, coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
-          }
-        } catch (error) {
-
-          console.error("Error:", error);
-
-        }
-      });
     }).catch((err: any) => {
       console.log(err, "allerr")
 
     })
   };
 
-  const checkAndPay = (coinInfo?: any, setPayButton?: any, setSelectCoin?: any, setShowOptionList?: any, setAfterPay?: any) => {
+  useEffect(() => {
+    const WLDPHandler = (e: any) => {
+      try {
+        console.log(e, "alldata231dsf");
+        setPayButton(false);
+
+        // @ts-ignore
+        if (e?.detail?.trx?.transactionHash) {
+          afterPayPopup("success", "",)
+          if (apiCalling) {
+            console.log(coinInfo, 'coinInfo pay');
+            // @ts-ignore
+            payNow(e?.detail)
+            setApiCalling(false)
+          }
+        }
+        // @ts-ignore
+        else if (e?.detail?.trx?.transactionStatus) {
+
+          // @ts-ignore      
+          afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message,)
+
+        }
+        // @ts-ignore
+        else if (typeof e?.detail?.trx == "string") {
+          // @ts-ignore  
+          afterPayPopup("error", e?.detail?.trx,)
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    document.addEventListener('wldp:trx', WLDPHandler);
+    return () => document.removeEventListener('wldp:trx', WLDPHandler);
+  }, [coinInfo]);
+
+
+
+  const checkAndPay = () => {
     (window as any).wldp.isWalletConnected()
       .then((res: any) => {
         if (res === true) {
-          send(coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
+          send()
           console.log("send call 1")
         }
         else {
@@ -220,20 +176,29 @@ function PaymentFun({ isVotingPayment }: any) {
             .then((account: any) => {
               if (account) {
                 console.log("send call 2")
-                send(coinInfo, setPayButton, setSelectCoin, setShowOptionList, setAfterPay)
+                send()
               }
             })
         }
       })
 
   }
-
   return (
     <>
-      {isVotingPayment
-        ? <VotingPayment checkAndPay={checkAndPay} paymentStatus={paymentStatus} setPaymentStatus={setPaymentStatus} />
-        : <CoinsList checkAndPay={checkAndPay} paymentStatus={paymentStatus} setPaymentStatus={setPaymentStatus} />
-      }
+      <VotingPayment
+        checkAndPay={checkAndPay}
+        paymentStatus={paymentStatus}
+        setPaymentStatus={setPaymentStatus}
+        coinInfo={coinInfo}
+        setCoinInfo={setCoinInfo}
+        payButton={payButton}
+        setPayButton={setPayButton}
+        showOptionList={showOptionList}
+        setShowOptionList={setShowOptionList}
+        selectCoin={selectCoin}
+        setSelectCoin={setSelectCoin}
+      />
+
     </>
   )
 }

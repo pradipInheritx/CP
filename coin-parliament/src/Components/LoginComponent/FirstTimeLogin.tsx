@@ -18,6 +18,7 @@ import firebase from "firebase/compat";
 import UserContext from "../../Contexts/User";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import { userInfo } from "os";
 const Generate = styled(Button)`
   width: auto;
   min-width: auto;
@@ -51,26 +52,12 @@ export type FirstTimeLoginProps = {
 };
 
 // const checkValidUsername = httpsCallable(functions, "checkValidUsername");
-const checkValidUsername = async (username: string) => {
-  console.log("firebasefun");
-  const users = await firebase
-    .firestore()
-    .collection("users")
-    // .withConverter(userConverter)
-    .get();
 
-  const usernames = users.docs.map((u) => u.data().displayName);
-  console.log("firebase", usernames);
-  return (
-    !usernames.includes(username) &&
-    username.length >= 8 &&
-    username.length <= "unique_username".length
-  );
-};
 const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }: FirstTimeLoginProps) => {
+
   const translate = useTranslation();
   const { setFirstTimeLogin } = useContext(AppContext);
-  const { user } = useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
   const { showToast } = useContext(NotificationContext);
   const title = texts.chooseUserName;
   const text = texts.chooseUserNameText;
@@ -80,6 +67,25 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
   const [userNameErr, setUserNameErr] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const checkValidUsername = async (username: string) => {
+    console.log("firebasefun");
+    const users = await firebase
+      .firestore()
+      .collection("users")
+      .get();
+    const usernames = users.docs.map((u) => u.data().displayName).filter(u => u !== (userInfo?.displayName || ''));
+    console.log("firebase", usernames);
+    return (
+      !usernames.includes(username)/*  &&
+      username.length >= 8 &&
+      username.length <= "unique_username".length */
+    );
+  };
+
+  useEffect(() => {
+    setUsername(userInfo?.displayName || '');
+  }, [JSON.stringify(userInfo?.displayName)]);
 
   const triggerSaveUsername = async () => {
     try {
@@ -117,7 +123,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
               onSubmit={async (e) => {
                 e.preventDefault();
 
-                if (username?.length < 16 && username?.length > 7 && /^[a-zA-Z_]+$/g.test(username)) {
+                if (username?.length > 1 && /^[a-zA-Z0-9\s_]+$/g.test(username)) {
                   setUserNameErr(false)
                   checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));
                 }
@@ -135,16 +141,16 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
                   required
                   value={username}
                   // @ts-ignore
-                  maxlength={10}
+                  // maxlength={10}
                   onChange={(e) => {
-                    setUsername(e.target.value.replace(" ", "_").toLowerCase());
+                    setUsername(e.target.value);
                     setUserNameErr(false)
                   }}
                 />
                 <Generate
                   onClick={(e) => {
                     e.preventDefault();
-                    setUsername(generate().replace(" ", "_").toLowerCase())
+                    setUsername(generate())
                   }
                   }
                 >
