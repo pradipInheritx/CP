@@ -359,8 +359,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                   :
                   <div
                     style={{
-                      width: "240px",
-                      height: "220px",
+                      // width: "240px",
+                      // height: "220px",
                       // border:"1px solid red",
                       // overflow:"hidden"
                       position: "relative",
@@ -391,7 +391,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                       alt='the hgodler'
                       className='image-fluid pk'
                       style={{
-
+                        height: 'auto',
+                        maxWidth: '100%',
                         // height: `${BigCard ? "350px" : "240px"}`,
                         // width: `${BigCard ? "350px" : "240px"}`,
                         // margin: "auto",

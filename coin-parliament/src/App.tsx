@@ -376,7 +376,8 @@ function App() {
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
   const [albumOpen, setAlbumOpen] = useState<any>("")
-  const localID = localStorage.getItem("userId") || false
+  const localID = localStorage.getItem("userId") || false;
+  const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
   // const [localID, setLocalID] = useState<any>(
 
   // )  
@@ -1355,6 +1356,8 @@ function App() {
                   languages,
                   setLanguages,
                   translations,
+                  isWLDPEventRegistered,
+                  setIsWLDPEventRegistered,
                   setTranslations: (newTranslations) => {
                     newTranslations = new Map(newTranslations);
                     translations.clear();
@@ -1675,7 +1678,7 @@ function App() {
                                                 element={<PersonalInfo />}
                                               />
                                               <Route
-                                              path={ProfileTabs.history}
+                                                path={ProfileTabs.history}
 
                                                 element={<PaymentHistory />}
                                               />
@@ -1778,18 +1781,18 @@ function App() {
 
                                             <Route path='/paymentList'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
-                                            element={
-                                              
-                                              <PaymentFun
-                                                isVotingPayment={false}
-                                              />
-                                            }
-                                            />                                          
+                                              element={
+
+                                                <PaymentFun
+                                                  isVotingPayment={false}
+                                                />
+                                              }
+                                            />
                                             <Route path='/VotePayment'
                                               // element={user && userInfo?.uid ? <CoinsList /> : <Navigate to="/" />}
-                                            element={<PaymentFun
-                                            isVotingPayment={true}
-                                            />}
+                                              element={<PaymentFun
+                                                isVotingPayment={true}
+                                              />}
                                             />
                                             <Route
                                               path='/votingbooster'
