@@ -352,7 +352,7 @@ const VotingPayment: React.FC<{
                   >
                   </div>
 
-                  {extraPer > 0 ?
+                  {extraPer > 0 &&
                     <Corner>
                       <CornerText style={{
                         color: '#FFF',
@@ -362,22 +362,6 @@ const VotingPayment: React.FC<{
 
                       }}>{extraPer}% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
                     </Corner>
-                    :
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "95px",
-                        height: "95px",
-                      }}
-                    >
-                      {/* <CornerText style={{
-                    color: '#FFF',
-                    fontSize: '22px',
-                    fontFamily: 'Poppins',
-                    fontWeight: '700',
-                    
-                  }}>20% <br /><span style={{ fontSize: '12px', marginLeft: '-6px' }}>EXTRA</span></CornerText> */}
-                    </div>
                   }
                   <div style={{
                     backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat',
@@ -460,9 +444,6 @@ const VotingPayment: React.FC<{
           }}
           className="d-flex justify-content-center flex-column align-items-center"
         >
-          {/* <div className="mt-3">
-          <h4>Select Payment Mode</h4>
-        </div> */}
           <Boxdiv className={`${window.screen.width > 767 ? "" : ""}`}
             style={{
               justifyContent: `${selectPayment == 0 ? "" : ""}`
@@ -507,7 +488,10 @@ const VotingPayment: React.FC<{
                   <div
                     className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
                     onClick={() => {
-                      setShowOptionList(!showOptionList)
+                      if (payButton) {
+                        return
+                      }
+                      setShowOptionList(prev => !prev)
                     }
 
                     }

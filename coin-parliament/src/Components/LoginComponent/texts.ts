@@ -23,7 +23,7 @@ export const texts = {
     "Other members of the community will identify you by your username.",
   FoundationSelect: 'For every vote you cast, Coin Parliament will match it and donate to one of The following foundations',
   ForgetPasswordText: `Don't remember your password ?`,
-  UserNameValidation: 'User name should be unique and between 8 to 10 characters.',
+  UserNameValidation: 'User name should be unique and characters or number.',
   Total100: 'total share must be 100%',
   UserInfoUpdate: "user info was updated",
   UserFailUpdate: "user failed to be updated",

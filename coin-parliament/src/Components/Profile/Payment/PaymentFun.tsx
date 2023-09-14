@@ -185,33 +185,20 @@ function PaymentFun({ isVotingPayment }: any) {
   }
   return (
     <>
-      {isVotingPayment
-        ? <VotingPayment
-          checkAndPay={checkAndPay}
-          paymentStatus={paymentStatus}
-          setPaymentStatus={setPaymentStatus}
-          coinInfo={coinInfo}
-          setCoinInfo={setCoinInfo}
-          payButton={payButton}
-          setPayButton={setPayButton}
-          showOptionList={showOptionList}
-          setShowOptionList={setShowOptionList}
-          selectCoin={selectCoin}
-          setSelectCoin={setSelectCoin}
-        />
-        : <CoinsList
-          checkAndPay={checkAndPay}
-          paymentStatus={paymentStatus}
-          setPaymentStatus={setPaymentStatus}
-          coinInfo={coinInfo}
-          setCoinInfo={setCoinInfo}
-          payButton={payButton}
-          setPayButton={setPayButton}
-          showOptionList={showOptionList}
-          setShowOptionList={setShowOptionList}
-          selectCoin={selectCoin}
-          setSelectCoin={setSelectCoin} />
-      }
+      <VotingPayment
+        checkAndPay={checkAndPay}
+        paymentStatus={paymentStatus}
+        setPaymentStatus={setPaymentStatus}
+        coinInfo={coinInfo}
+        setCoinInfo={setCoinInfo}
+        payButton={payButton}
+        setPayButton={setPayButton}
+        showOptionList={showOptionList}
+        setShowOptionList={setShowOptionList}
+        selectCoin={selectCoin}
+        setSelectCoin={setSelectCoin}
+      />
+
     </>
   )
 }
