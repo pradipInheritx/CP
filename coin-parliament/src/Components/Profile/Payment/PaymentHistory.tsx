@@ -28,36 +28,14 @@ function PaymentHistory() {
   const [tableHeader, setTableHerder] = useState<any>([
     "Order ID" , "Date" , "Item" ,  "Amount" , "Payment method"
   ]);
-  const [rowData, setRowData] = useState<any>([
-    {
-      Order_ID:"1",
-      Date:"1",
-      Item:"1",
-      Amount:"1",
-      Payment_Method:"1",
-    },
-    {
-      Order_ID: "1",
-      Date: "1",
-      Item: "1",
-      Amount: "1",
-      Payment_Method: "1",
-    },
-    {
-      Order_ID: "1",
-      Date: "1",
-      Item: "1",
-      Amount: "1",
-      Payment_Method: "1",
-    },
-  ]);
+  const [rowData, setRowData] = useState<any>([   ]);
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
   const [pageIndex, setPageIndex] = useState(1);
   let navigate = useNavigate();
 
   useEffect(() => {
-    // getPaymentList()
-  }, [])
+    getPaymentList()
+  }, [pageIndex])
 
   const getPaymentList = () => {
     const headers = {
@@ -66,18 +44,14 @@ function PaymentHistory() {
       // @ts-ignore
       "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
     }
-    const data = {      
-      pageNumber: 1,
-      pageSize: 3
-    }
-    axios.post(`${ApiUrl}payment/getTransactionHistory/${user?.uid}`,
-      data
-      , {
+    axios.get(`${ApiUrl}payment/getTransactionHistory/${user?.uid}?pageNumber=${pageIndex}&pageSize=${5}`,      
+       {
       headers: headers
       }
     )
       .then(async (response) => {
         setRowData(response.data.data)
+        setTotalData(response.data.total)
         console.log(response.data.data,"response.data")
       })
       .catch((error) => {
@@ -85,18 +59,6 @@ function PaymentHistory() {
       })
   }
   
-
-  // const rewardList = async (pageNumber: number = 1, pageSize: number = 5) => {
-  //   const result = await getRewardTransactions({ uid: userId ? userId : user?.uid, pageNumber, pageSize });
-  //   // @ts-ignore
-  //   setData(result?.data?.rewardsTransaction);
-  //   // @ts-ignore
-  //   setTotalData(result?.data?.totalCount);
-  // };
-  // useEffect(() => {
-  //   rewardList(pageIndex, 5);
-  // }, [rewardTimer, pageIndex]);
-
   return (
     <div
       style={{
@@ -208,7 +170,7 @@ function PaymentHistory() {
           <p className='solid' style={{ margin: "28px" }}></p>
         </>
       )}
-      {/* <ButtonGroup>
+      <ButtonGroup>
         <Button
           disabled={pageIndex === 1}
           onClick={() => setPageIndex(prev => prev - 1)}
@@ -222,7 +184,7 @@ function PaymentHistory() {
         >
           {texts.Next}
         </Button>
-      </ButtonGroup> */}
+      </ButtonGroup>
     </div>
   )
 }

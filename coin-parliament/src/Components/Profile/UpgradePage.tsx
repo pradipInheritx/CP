@@ -269,8 +269,8 @@ const UpgradePage = () => {
                   <div
                     style={{ width: "70%" }}
                   >
-                    <p>NFT converter</p>
-                    <span>Convert your cards collection to NFTs</span>
+                    <p>Card converter</p>
+                    <span>Convert your card to collectible cards</span>
                   </div>
 
                 </SideBox>

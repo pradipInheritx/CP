@@ -9,7 +9,7 @@ export const pages = [
   {
     title: "x",
     content:
-      '\n<h2>VOTE, MINT, EARN CRYPTO &amp; NFT</h2>\n\n\n\n<p style="font-size:17px">Make better investment decisions with the world’s first social indicator</p>\n',
+      '\n<h2>VOTE, MINT, EARN CRYPTO &amp; Collectible card</h2>\n\n\n\n<p style="font-size:17px">Make better investment decisions with the world’s first social indicator</p>\n',
     slug: "home",
   },
   {

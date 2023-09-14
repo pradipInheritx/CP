@@ -120,7 +120,7 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width > 1440 ? "30%" : window.screen.width > 767 ? "40%" : "99%"};
+  width:${window.screen.width > 1440 ? "30%" : window.screen.width > 767 ?"38%":"99%"};
   border-radius:10px;
   background-color:#1e0243;
   padding :30px;
@@ -305,9 +305,10 @@ const VotingPayment: React.FC<{
 
           }}
         >
-          <div className="d-flex justify-content-end "
+          <div className="d-flex"
             style={{
-              width: `${window.screen.width > 767 ? "49%" : "100%"}`
+              width: `${window.screen.width > 767 ? "49%" : "100%"}`,
+              justifyContent: `${window.screen.width > 767 ? "end" : "center"}`
             }}
           >
             {payType == "EXTRAVOTES" ? <img src={votingbooster} alt="" />
@@ -352,7 +353,7 @@ const VotingPayment: React.FC<{
                   >
                   </div>
 
-                  {extraPer > 0 &&
+                  {extraPer > 0 ?
                     <Corner>
                       <CornerText style={{
                         color: '#FFF',
@@ -362,6 +363,15 @@ const VotingPayment: React.FC<{
 
                       }}>{extraPer}% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
                     </Corner>
+                    :
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "95px",
+                        height: "95px",
+                      }}
+                    >                      
+                    </div>
                   }
                   <div style={{
                     backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat',
@@ -427,12 +437,23 @@ const VotingPayment: React.FC<{
                       Now you can<strong> enjoy the benefits</strong>  of being a miner.
                     </P>
                   </div> :
+                  <div
+                    className="d-flex"
+                    style={{
+                      justifyContent:`${window.screen.width>767?"start":"center"}`
+                    }}
+                  >                  
                   <p
-                    style={{ fontSize: "20px", fontWeight: "100", marginTop: "10px", lineHeight: 2 }}
-                    className="px-3 pt-4  pb-3 w-75"
+                    style={{
+                      fontSize: "20px", fontWeight: "100", marginTop: "10px", lineHeight: 2,
+                      // textAlign:"",
+                    width:`${window.screen.width > 767 ?"50%":"75%"}`,                    
+                    }}
+                    className="px-3 pt-4  pb-3"
                   >
                     Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.
-                  </p>
+                    </p>
+                  </div>
                 }
               </div>
             </>
@@ -483,7 +504,7 @@ const VotingPayment: React.FC<{
             >
               <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
                 <div className="pay-custom-select-container" style={{
-                  // width: '18em'
+                  width: '25em'
                 }} >
                   <div
                     className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
@@ -495,9 +516,7 @@ const VotingPayment: React.FC<{
                     }
 
                     }
-                  >
-                    {/* {selectCoin !== "none" ? selectCoin  : "Select coin"} */}
-                    {/* {selectCoin !== "none" ? selectCoin  : "Select coin"} */}
+                  >                    
                     {!showOptionList && selectCoin != "none" ? `Pay ${payamount}$ using ${selectCoin}` : "Select coin"}
                   </div>
                   {showOptionList && (

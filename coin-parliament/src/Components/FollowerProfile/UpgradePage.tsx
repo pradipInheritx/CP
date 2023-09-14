@@ -134,7 +134,7 @@ const UpgradePage = () => {
               }}
             >
               {translate(
-                "By upgrading your Voting pass you will be able to mint PAX token, Earn NFTs and power up the voting"
+                "By upgrading your Voting pass you will be able to mint PAX token, Collectible cards and power up the voting"
               )}
             </p>
           </TextContainer>
@@ -155,7 +155,7 @@ const UpgradePage = () => {
               style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
             >
               {translate(
-                "By upgrading your Voting pass you will be able to mint PAX token, Earn NFTs and power up the voting"
+                "By upgrading your Voting pass you will be able to mint PAX token, Earn Collectible cards and power up the voting"
               )}
             </P>
           )}
@@ -166,7 +166,7 @@ const UpgradePage = () => {
           >
             <BoxCard>
               <p className='text-end' style={{ color: "#160133" }}>
-                Get an exclusive Avatar NFT!
+                Get an exclusive Avatar Collectible card!
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
                 <img className='' src={upgrade1} alt='' />
