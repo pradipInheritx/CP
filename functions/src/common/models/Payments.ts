@@ -105,9 +105,11 @@ export const getTransactionHistory = async (req: any, res: any) => {
         const { userId } = req.params;
         const { pageNumber, pageSize } = req.body;
         const transactionHistory: any = []
+        console.log("hello")
         const getTransactionQuery = await firestore().collection('payments').where("userId", "==", userId).get();
-        getTransactionQuery.docs.map((snapshot: any) => {
+        getTransactionQuery.docs.forEach((snapshot: any) => {
             let transaction = snapshot.data()
+            console.log("Transaction data ", transaction)
             transactionHistory.push({
                 amount: transaction.amount,
                 numberOfVotes: transaction.numberOfVotes,
@@ -120,8 +122,9 @@ export const getTransactionHistory = async (req: any, res: any) => {
                 walletType: transaction.walletType
             });
         });
-
+        console.log("Transaction : ", transactionHistory)
         const transactionSorting = transactionHistory.sort((a: any, b: any) => b.transaction_time._seconds - a.transaction_time._seconds);
+        console.log("sorting  : ", transactionSorting)
         const startIndex = (pageNumber - 1) * pageSize;
         const endIndex = startIndex + pageSize;
         const transactionPagination = transactionSorting.slice(startIndex, endIndex);
