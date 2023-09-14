@@ -105,7 +105,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
 export const getTransactionHistory = async (req: any, res: any) => {
     try {
         const { userId } = req.params;
-        const { pageNumber, pageSize } = req.body;
+        const { pageNumber, pageSize } = req.query;
         const transactionHistory: any = []
         const getTransactionQuery = await firestore().collection('payments').where("userId", "==", userId).get();
         getTransactionQuery.docs.forEach((snapshot: any) => {
@@ -128,8 +128,9 @@ export const getTransactionHistory = async (req: any, res: any) => {
         const transactionSorting = transactionHistory.sort((a: any, b: any) => b.transaction_time._seconds - a.transaction_time._seconds);
         const startIndex = (pageNumber - 1) * pageSize;
         const endIndex = startIndex + pageSize;
+        console.info(transactionSorting, startIndex, endIndex);
         const transactionPagination = transactionSorting.slice(startIndex, endIndex);
-        console.log("transactionPagination : ", transactionPagination);
+        console.info("transactionPagination : ", transactionPagination);
 
         res.status(200).send({
             status: true,
