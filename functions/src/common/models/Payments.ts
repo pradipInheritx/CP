@@ -135,7 +135,8 @@ export const getTransactionHistory = async (req: any, res: any) => {
         res.status(200).send({
             status: true,
             message: "Payment transaction history fetched successfully",
-            data: transactionPagination
+            data: transactionPagination,
+            total: transactionHistory.length
         });
     } catch (error) {
         errorLogging("getTransactionHistory", "ERROR", error);
