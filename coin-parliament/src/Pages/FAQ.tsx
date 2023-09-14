@@ -1,6 +1,6 @@
 import React from "react";
 import { Accordion, Container } from "react-bootstrap";
-import { faq } from "../common/consts/contents";
+import { FrequentlyAskQus, faq } from "../common/consts/contents";
 import styled from "styled-components";
 
 const FQbox = styled.div`
@@ -28,20 +28,31 @@ const Body = styled(Accordion.Body)`
 const FAQ = () => {
   return (
     <FQbox>
+      <div className="pt-5 pb-4" style={{ textAlign: 'center', color: '#5f4de4', fontSize: '13px' }}>
+        <h5>
+          FAQs - Coin Parliament: Vote To Earn
+        </h5>
+      </div>
       <Accordion defaultActiveKey={["0"]} alwaysOpen>
-        {faq.map((f, i) => {
+        {FrequentlyAskQus.map((value, i) => {
           return (
             <Accordion.Item eventKey={i.toString()} key={i}>
               <Header>
-                <Container>{f.title}</Container>
+                <Container>{value.question}</Container>
               </Header>
               <Body>
-                <Container>{f.content}</Container>
+                <Container>{value.answer}</Container>
               </Body>
             </Accordion.Item>
           );
         })}
       </Accordion>
+      <div className="pt-3 pb-4" style={{ textAlign: 'justify', color: '#212529', fontSize: '1.3em' }}>
+        <p>
+          These revised FAQs should accurately reflect the details of Coin Parliament: Vote To Earn. If you have any more questions or need assistance, please feel free to reach out to our support team. Enjoy your gaming experience!
+        </p>
+      </div>
+
     </FQbox>
   );
 };
