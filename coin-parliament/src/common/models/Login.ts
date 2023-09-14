@@ -97,7 +97,7 @@ export const LoginAuthProvider = async (
     }
 
     if (isFirstLogin?.isNewUser) {
-      saveUsername(user.uid, '', '')
+      // saveUsername(user.uid, '', '')
 
       const firstTimeLogin: Boolean = true
 
