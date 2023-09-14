@@ -29,6 +29,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import PaymentFail from "./PaymentFail";
 import PaymentSuccess from "./PaymentSuccess";
+import upgrade from "../../../assets/images/upgrade_small.png";
 
 
 const H2 = styled.h2`
@@ -119,7 +120,7 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width > 767 ? "30%" : "99%"};
+  width:${window.screen.width > 1440 ? "30%" : window.screen.width > 767 ? "40%" : "99%"};
   border-radius:10px;
   background-color:#1e0243;
   padding :30px;
@@ -285,10 +286,8 @@ const VotingPayment: React.FC<{
       navigate("/profile/history")
       setSelectCoin("none");
     }
-
     return (
       <>
-
         <H2
           style={{
             zIndex: 1,
@@ -297,7 +296,7 @@ const VotingPayment: React.FC<{
           }}
         >
           {/* @ts-ignore */}
-          {userInfo?.isUserUpgraded ? 'Boost your mining power' : translate("Boost your voting power").toUpperCase()}
+          {payType == "EXTRAVOTES" ? translate("Boost your voting power").toUpperCase() : translate("upgrade your account").toUpperCase()}
         </H2>
         <div className="pt-5 pb-5 d-flex justify-content-center"
           style={{
@@ -311,9 +310,11 @@ const VotingPayment: React.FC<{
               width: `${window.screen.width > 767 ? "49%" : "100%"}`
             }}
           >
-            <img src={votingbooster} alt="" />
+            {payType == "EXTRAVOTES" ? <img src={votingbooster} alt="" />
+
+              : <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />}
           </div>
-          <div className="m-auto"
+          {payType == "EXTRAVOTES" ? <div className="m-auto"
             style={{
               width: `${window.screen.width > 767 ? "49%" : "100%"}`
             }}
@@ -392,7 +393,66 @@ const VotingPayment: React.FC<{
               </Col>
             </Row>
 
-          </div >
+          </div > :
+            <>
+              <div
+                className="m-auto "
+                style={{
+                  width: `${window.screen.width > 767 ? "49%" : "100%"}`
+                }}
+              >
+                {/* @ts-ignore */}
+                {userInfo?.isUserUpgraded ?
+                  <div className="w-50"
+                    style={{
+                      lineHeight: 5,
+                    }}
+                  >
+                    <H2
+                      style={{
+                        fontSize: "1.25rem",
+                        marginTop: "0px",
+                        paddingTop: "30px",
+                        fontWeight: "bold",
+                        textTransform: 'uppercase',
+                        // textAlign: "left"
+
+                      }}
+                    >
+                      {translate("Congratulations")}
+                    </H2>
+                    <H2
+                      style={{
+                        fontSize: "1.25rem",
+                        marginTop: "0px",
+                        paddingTop: "30px",
+                        fontWeight: "bold",
+                        textTransform: 'uppercase',
+                        // textAlign: "left"
+                      }}
+                    >
+                      {translate("YOU'RE NOW A MINER")}
+                    </H2>
+                    <P
+                      style={{
+                        fontSize: "15px", fontWeight: "100", marginTop: "10px",
+                        // textAlign: "left"
+                      }}
+                      className="px-3 pt-4  pb-3"
+                    >
+                      Now you can<strong> enjoy the benefits</strong>  of being a miner.
+                    </P>
+                  </div> :
+                  <p
+                    style={{ fontSize: "20px", fontWeight: "100", marginTop: "10px", lineHeight: 2 }}
+                    className="px-3 pt-4  pb-3 w-75"
+                  >
+                    Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.
+                  </p>
+                }
+              </div>
+            </>
+          }
         </div>
         {!paymentStatus && <div
           style={{
@@ -441,7 +501,9 @@ const VotingPayment: React.FC<{
               }}
             >
               <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-                <div className="pay-custom-select-container" style={{ width: '18em' }} >
+                <div className="pay-custom-select-container" style={{
+                  // width: '18em'
+                }} >
                   <div
                     className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
                     onClick={() => {
@@ -467,7 +529,7 @@ const VotingPayment: React.FC<{
                             data-name={option.name}
                             key={option.id}
                             onClick={async () => {
-                              setSelectCoin(option.name);
+                              setSelectCoin(option.name)
                               setCoinInfo(option)
                               setShowOptionList(!showOptionList)
                               // await mybtn("disconnect", "true").then(() => {
@@ -536,6 +598,7 @@ const VotingPayment: React.FC<{
           {paymentStatus == 'error' && <PaymentFail tryAgainAction={handleClick} startAgainAction={startAgainAction} />}
         </div>
       </>
+
     );
   };
 
