@@ -108,8 +108,9 @@ export const getTransactionHistory = async (req: any, res: any) => {
         const { pageNumber, pageSize } = req.body;
         const transactionHistory: any = []
         const getTransactionQuery = await firestore().collection('payments').where("userId", "==", userId).get();
-        getTransactionQuery.docs.map((snapshot: any) => {
+        getTransactionQuery.docs.forEach((snapshot: any) => {
             let transaction = snapshot.data()
+            console.log("Transaction data ", transaction)
             transactionHistory.push({
                 amount: transaction.amount,
                 numberOfVotes: transaction.numberOfVotes,
