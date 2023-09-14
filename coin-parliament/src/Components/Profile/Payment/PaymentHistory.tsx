@@ -56,7 +56,7 @@ function PaymentHistory() {
   let navigate = useNavigate();
 
   useEffect(() => {
-    getPaymentList()
+    // getPaymentList()
   }, [])
 
   const getPaymentList = () => {
@@ -66,7 +66,12 @@ function PaymentHistory() {
       // @ts-ignore
       "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
     }
-    axios.get(`${ApiUrl}payment/getTransactionHistory/${user?.uid}`
+    const data = {      
+      pageNumber: 1,
+      pageSize: 3
+    }
+    axios.post(`${ApiUrl}payment/getTransactionHistory/${user?.uid}`,
+      data
       , {
       headers: headers
       }
