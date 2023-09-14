@@ -30,7 +30,7 @@ const About = () => {
 
         <p>We're the most exciting web 3-based vote to earn game out there, and we're thrilled to offer you a unique opportunity to make your voice heard while earning rewards at the same time.</p>
         <p>When you join the Parliament, you'll gain access to our revolutionary social voting indicator, the SVI. This powerful tool aggregates voting profiles based on various factors, including volume, time frame, and success rate. It's the first of its kind in the world, and it's designed to help you make better investment decisions and stay ahead of the curve in the ever-changing world of cryptocurrency.</p>
-        <p>But that's not all - you can also mint and get rewards by voting and receiving unique collectible cards that can be converted into NFTs. Plus, you can earn from your friends' voting activity and follow top Parliament influencers with high voting impact records to stay informed and up-to-date on all the latest trends and developments.</p>
+          <p>But that's not all - you can also mint and get rewards by voting and receiving unique collectible cards that can be converted into Collectible cards. Plus, you can earn from your friends' voting activity and follow top Parliament influencers with high voting impact records to stay informed and up-to-date on all the latest trends and developments.</p>
         <p>At Coin Parliament, we're all about creating an immersive gaming experience that's both fun and rewarding. Our platform is designed to be user-friendly and accessible to everyone. </p>
         <p>So what are you waiting for? Join the Parliament today and start earning rewards while making your voice heard!</p>      
         </div>

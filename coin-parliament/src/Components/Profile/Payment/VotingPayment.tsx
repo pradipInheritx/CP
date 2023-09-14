@@ -120,7 +120,7 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width > 1440 ? "30%" : window.screen.width > 767 ?"40%":"99%"};
+  width:${window.screen.width > 1440 ? "30%" : window.screen.width > 767 ?"38%":"99%"};
   border-radius:10px;
   background-color:#1e0243;
   padding :30px;
@@ -272,7 +272,7 @@ const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.D
 
   return (
     <>
-
+      {payType == "EXTRAVOTES" &&
       <H2
         style={{
           zIndex: 1,
@@ -281,8 +281,8 @@ const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.D
         }}
       >
         {/* @ts-ignore */}
-        {payType == "EXTRAVOTES" ? translate("Boost your voting power").toUpperCase() : translate("upgrade your account").toUpperCase()}
-      </H2>
+        {translate("Boost your voting power").toUpperCase()}
+      </H2>}
       <div className="pt-5 pb-5 d-flex justify-content-center"
         style={{
           flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
@@ -290,12 +290,14 @@ const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.D
 
         }}
       >
-        <div className="d-flex justify-content-end "
+        <div className="d-flex "
           style={{
-            width: `${window.screen.width > 767 ? "49%" : "100%"}`
+            width: `${window.screen.width > 767 ? "49%" : "100%"}`,
+            justifyContent: `${window.screen.width > 767 ? "end" : "center"}`
           }}
         >
-          {payType == "EXTRAVOTES" ?<img src={votingbooster} alt="" />
+          {payType == "EXTRAVOTES" ?
+            <img src={votingbooster} alt="" />
 
           :<img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />}
         </div>
@@ -388,9 +390,10 @@ const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.D
             >                            
               {/* @ts-ignore */}
               {userInfo?.isUserUpgraded ?
-                <div className="w-50"
+                <div className=""
                   style={{
-                  lineHeight:5,
+                    lineHeight: 5,
+                    width: `${window.screen.width > 767 ? "60%" : "100%"}`,
                 }}
                 >              
              <H2
@@ -427,13 +430,23 @@ const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.D
               >
                 Now you can<strong> enjoy the benefits</strong>  of being a miner.
                 </P>
-              </div> :
+                </div> :
+                <div className="d-flex "
+                  style={{
+                    justifyContent: `${window.screen.width > 767 ? "start" : "center"}`,
+                    // width:"80%",
+                }}
+                >
                 <p
-                  style={{ fontSize: "20px", fontWeight: "100", marginTop: "10px", lineHeight: 2 }}
+                    style={{
+                      fontSize: "20px", fontWeight: "100", marginTop: "10px", lineHeight: 2,
+                    textAlign:"justify"
+                    }}
                   className="px-3 pt-4  pb-3 w-75"
                 >
                   Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.
-                </p>
+                  </p>
+                </div>
               }
             </div>
           </>
@@ -487,7 +500,7 @@ const VotingPayment: React.FC<{ checkAndPay: Function, setPaymentStatus: React.D
           >
             <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
               <div className="pay-custom-select-container" style={{
-                // width: '18em'
+                width: '25em'
               }} >
                 <div
                   className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}

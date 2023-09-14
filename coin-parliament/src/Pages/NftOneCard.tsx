@@ -473,7 +473,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                   >
                     {/* <p>Your CMP count</p> */}
                     <p className="mt-1 text-end lh-base">
-                      As the original NFT holder, you get 50% of the royalties from the fee charged on NFT sale lifetime! This arrangement ensures you have a continuous and substantial income stream from your digital assets. only members who upgrade their account will have their cards converted to NFTs
+                        As the original Collectible card holder, you get 50% of the royalties from the fee charged on Collectible card sale lifetime! This arrangement ensures you have a continuous and substantial income stream from your digital assets. only members who upgrade their account will have their cards converted to Collectible cards
                     </p>
                     {/* <p className="mt-3 text-end lh-base">
                   Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones. 
