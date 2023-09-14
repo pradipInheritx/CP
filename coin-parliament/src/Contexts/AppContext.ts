@@ -100,6 +100,8 @@ export type AppContextProps = {
   setPaxData: (s: PaxData) => void;
   setLoginRedirectMessage: (s: string) => void;
   loginRedirectMessage: string;
+  isWLDPEventRegistered: boolean,
+  setIsWLDPEventRegistered: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 const AppContext = React.createContext({} as AppContextProps);

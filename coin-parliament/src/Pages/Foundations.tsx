@@ -12,10 +12,6 @@ const
             <h1>
               {(`${texts.Foundations}`).toUpperCase()}:
             </h1>
-            <h1>Save the children</h1>
-            <h1>Salvation Army</h1>
-            <h1>United way</h1>
-            <h1>American Red Cross</h1>
           </div>
           <p style={{ textAlign: 'justify' }}>
             For every PAX token that is minted on Coin Parliament, you have the opportunity to choose one of these charitable foundations:
