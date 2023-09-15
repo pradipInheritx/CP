@@ -367,8 +367,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                   :
                   <div
                     style={{
-                      width: "240px",
-                      height: "220px",
+                      // width: "240px",
+                      // height: "220px",
                       // border:"1px solid red",
                       // overflow:"hidden"
                       position: "relative",
