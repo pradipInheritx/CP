@@ -327,14 +327,24 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </div>
               <div>
                 {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
-                <span className='cardname' style={{
+                <span className='cardname pb-2' style={{
                   color: (darkTheme ? "white" : ''),
+                  fontSize: '20px'
                 }}
                 >
                   <strong> {cardHeader}</strong>
 
 
                 </span>
+                <p
+                  style={{
+                    color: "black",
+                    textAlign: 'center',
+                    fontSize: '18px'
+                  }}
+                >
+                  {fulldata?.albumName?.toLocaleUpperCase()}
+                </p>
               </div>
               {/* <br /> */}
               <div className='card-body'
@@ -371,7 +381,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                       className=""
                       style={{
                         position: "absolute",
-                        left: "-30px",
+                        left: "-50px",
                         bottom: "60px",
                         transform: "rotate(-90deg)",
                         width: "100px",
@@ -400,16 +410,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                         // marginTop: "-10px",
                       }}
                     />
-                    <p
-                      style={{
-                        position: "absolute",
-                        // left: "-20px",
-                        bottom: "-14PX",
-                        // transform: "rotate(-90deg)",
-                        color: "black",
-
-                      }}
-                    >{fulldata?.albumName?.toLocaleUpperCase()}</p>
                   </div>
                 }
 
@@ -470,11 +470,12 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     style={{
                       width: "96%",
                       marginTop: "-86%",
+                      fontSize:"11px"
                     }}
                   >
                     {/* <p>Your CMP count</p> */}
                     <p className="mt-1 text-end lh-base">
-                        As the original Collectible card holder, you get 50% of the royalties from the fee charged on Collectible card sale lifetime! This arrangement ensures you have a continuous and substantial income stream from your digital assets. only members who upgrade their account will have their cards converted to Collectible cards
+                      As the original Collectible card holder, you get 50% of the royalties from the fee charged on Collectible card sale lifetime! This arrangement ensures you have a continuous and substantial income stream from your digital assets. only members who upgrade their account will have their cards converted to Collectible cards
                     </p>
                     {/* <p className="mt-3 text-end lh-base">
                   Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones. 
