@@ -526,13 +526,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
               <span className='cardname'>
                 <strong>{rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
               </span>
-              <p
-                style={{
-                  color: "black",
-                  fontSize: '14px',
-                  lineHeight: '14px'
-                }}
-              >{rewardTimer?.data?.firstRewardCardCollection?.toLocaleUpperCase()}</p>
               <div
                 className="d-flex justify-content-center" style={{
                   // border:"1px solid red",
@@ -569,6 +562,16 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                   }}
                 // width={"100%"}
                 />
+                <p
+                  style={{
+                    position: "absolute",
+                    // left: "-20px",
+                    bottom: "-14PX",
+                    // transform: "rotate(-90deg)",
+                    color: "black",
+                    paddingTop: '0.5em'
+                  }}
+                >{rewardTimer?.data?.firstRewardCardCollection?.toLocaleUpperCase()}</p>
 
               </div>
             </div>
