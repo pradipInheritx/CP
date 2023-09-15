@@ -110,7 +110,7 @@ const PersonalInfo = () => {
                   onChange: async (e) => {
                     setUserName(e.target.value)
                   },
-                  maxlength: 10,
+                  maxLength: 10,
                   edit: true,
                 }}
 

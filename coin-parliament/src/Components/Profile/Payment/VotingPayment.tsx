@@ -242,7 +242,12 @@ const VotingPayment: React.FC<{
 
     const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
-    useEffect(() => {
+  useEffect(() => {      
+      window.scrollTo({ top: 500, behavior: 'smooth' });        
+  }, [payType])
+  
+  
+  useEffect(() => {      
       (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
         console.log(data, "username")
       })
@@ -286,6 +291,9 @@ const VotingPayment: React.FC<{
       navigate("/profile/history")
       setSelectCoin("none");
     }
+  
+    
+  
     return (
       <>
         {payType == "EXTRAVOTES"  && <H2
