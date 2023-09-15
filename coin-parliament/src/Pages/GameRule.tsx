@@ -1,7 +1,7 @@
 import React from "react";
 import GeneralPage from "../GeneralPage";
 import { Accordion, Container } from "react-bootstrap";
-import { FrequentlyAskQus, faq, gameRules } from "../common/consts/contents";
+import { gameRules } from "../common/consts/contents";
 import styled from "styled-components";
 
 const Page = styled.div`
