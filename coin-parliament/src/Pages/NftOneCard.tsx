@@ -451,7 +451,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                 >
                   <div className="newtooltip2"
                     style={{
-                      width: "96%",
+                      width: "93%",
                       marginTop: "-86%",
                       fontSize: "11px"
                     }}
