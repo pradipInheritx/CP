@@ -470,10 +470,10 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
               <div className="d-flex justify-content-around">
                 <div className={`${!fulldata ? "opacity-0" : ""}`}
                   style={{
+                    fontSize: "12px",
                     width: "25%"
                   }}
                 >
-                  {/* {!Hide360Icon ? */}
                   <img
                     className=""
                     style={{
@@ -488,12 +488,6 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                     }}
                     src={Showround}
                   />
-                  {/* :
-                    <span className='px-2 opacity-0'
-                      style={{
-                      fontWeight:"bold"
-                    }}
-                    >123A</span>} */}
                 </div>
                 <span className={`${cardType.toLowerCase()}_text`}
                   style={{
@@ -523,21 +517,14 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                 </div>
               </div>
 
-              <span className='cardname'>
+              {/* <span className='cardname'>
                 <strong>{rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
-              </span>
-              <p
-                style={{
-                  color: "black",
-                  fontSize: '14px',
-                  lineHeight: '14px'
-                }}
-              >{rewardTimer?.data?.firstRewardCardCollection?.toLocaleUpperCase()}</p>
+              </span> */}
               <div
                 className="d-flex justify-content-center" style={{
                   // border:"1px solid red",
                   // overflow:"hidden"
-
+                  paddingTop: '1em',
                   position: "relative",
                 }}>
                 <div
@@ -554,9 +541,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                 >
 
 
-                  <p
-
-                  >{rewardTimer?.data?.firstRewardCardSerialNo || ''}</p>
+                  <p>{rewardTimer?.data?.firstRewardCardSerialNo || ''}</p>
 
                 </div>
                 <img src={rewardTimer?.data?.firstRewardCardImageUrl || TheEagle} alt='the hgodler'
@@ -569,7 +554,16 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                   }}
                 // width={"100%"}
                 />
-
+                <span style={{
+                  position: "absolute",
+                  // left: "-20px",
+                  bottom: "-14PX",
+                  // transform: "rotate(-90deg)",
+                  color: "black",
+                  paddingTop: '0.5em'
+                }} className='cardname'>
+                  <strong>{rewardTimer?.data?.firstRewardCard || "HODLER"}</strong>
+                </span>
               </div>
             </div>
           </div>
@@ -614,6 +608,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
       <div
         // className="w-100 d-flex justify-content-center mt-3"
         className={`${!cressShow ? "opacity-0" : ""} w-100 d-flex justify-content-center `}
+
       >
         <Buttons.Primary className="mx-2" onClick={() => {
           setRewardTimer(null);

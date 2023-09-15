@@ -325,27 +325,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                   </div>
                 </div>
               </div>
-              <div>
-                {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
-                <span className='cardname pb-2' style={{
-                  color: (darkTheme ? "white" : ''),
-                  fontSize: '20px'
-                }}
-                >
-                  <strong> {cardHeader}</strong>
-
-
-                </span>
-                <p
-                  style={{
-                    color: "black",
-                    textAlign: 'center',
-                    fontSize: '18px'
-                  }}
-                >
-                  {fulldata?.albumName?.toLocaleUpperCase()}
-                </p>
-              </div>
               {/* <br /> */}
               <div className='card-body'
                 onMouseEnter={() => {
@@ -381,7 +360,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                       className=""
                       style={{
                         position: "absolute",
-                        left: "-50px",
+                        left: "-40px",
                         bottom: "60px",
                         transform: "rotate(-90deg)",
                         width: "100px",
@@ -389,8 +368,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                         // alignItems:""
                       }}
                     >
-
-
                       <p
 
                       >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>
@@ -414,6 +391,12 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                 }
 
               </div>
+              <span className='cardname pb-2' style={{
+                color: (darkTheme ? "white" : ''),
+              }}
+              >
+                <strong> {cardHeader}</strong>
+              </span>
             </div>
           </Card>
         </div>
@@ -470,7 +453,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     style={{
                       width: "93%",
                       marginTop: "-86%",
-                      fontSize:"11px"
+                      fontSize: "11px"
                     }}
                   >
                     {/* <p>Your CMP count</p> */}
