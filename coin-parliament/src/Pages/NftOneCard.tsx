@@ -260,7 +260,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
           <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
             // minHeight: "318px",
             // minWidth: "250px",
-            minHeight: `${BigCard ? "418px" : "318px"}`,
+            minHeight: `${BigCard ? "418px" : "322px"}`,
             minWidth: `${BigCard ? "350px" : "250px"}`,
             backgroundColor: 'black !important',
             backgroundImage: (darkTheme ? 'none !important' : ''),
@@ -393,7 +393,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </div>
               <span className='cardname pb-2' style={{
                 color: (darkTheme ? "white" : ''),
-                fontSize: '20px'
               }}
               >
                 <strong> {cardHeader}</strong>
