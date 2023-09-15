@@ -56,6 +56,7 @@ const Title = styled.div`
   opacity: 1;
   font-weight: 500;
   margin-right: 2px;
+  line-height: 16px;  
   
 `;
 
@@ -70,7 +71,7 @@ const Body = styled.div`
   line-height: 16px;  
 `;
 
-const Notification = ({date, title, body}: NotificationProps) => {
+const Notification = ({ date, title, body }: NotificationProps) => {
   return (
     <Container className="mt-2">
       <Date>{date && moment(date).format("hh:mm DD.MM.YYYY")}</Date>
