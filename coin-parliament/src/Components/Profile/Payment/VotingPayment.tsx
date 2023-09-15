@@ -288,7 +288,7 @@ const VotingPayment: React.FC<{
     }
     return (
       <>
-        <H2
+        {payType == "EXTRAVOTES"  && <H2
           style={{
             zIndex: 1,
             marginTop: "35px",
@@ -296,8 +296,8 @@ const VotingPayment: React.FC<{
           }}
         >
           {/* @ts-ignore */}
-          {payType == "EXTRAVOTES" ? translate("Boost your voting power").toUpperCase() : translate("upgrade your account").toUpperCase()}
-        </H2>
+          {translate("Boost your voting power").toUpperCase()}
+        </H2>}
         <div className="pt-5 pb-5 d-flex justify-content-center"
           style={{
             flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
