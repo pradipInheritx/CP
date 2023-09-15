@@ -225,6 +225,10 @@ export const FrequentlyAskQus = [
     question: "Is Coin Parliament available in multiple languages?",
     answer: "Currently, Coin Parliament is available in English. We are actively exploring options for additional language support in the future.",
   },
+  {
+    question: "What are collectibles?",
+    answer: "Collectibles are unique, blockchain-based digital treasures created from your card collection. They come in different rarities (common, uncommon, rare, epic, legendary) and offer:<br/><br/>Ownership and Rarity: Proof of ownership recorded on the blockchain.<br/>Market Value: Potential for significant value and trading on blockchain marketplaces.<br/>Royalties: As the original owner, you earn 50% of future sales fees.<br/>Collectibles add depth and investment potential to your digital collection, blurring the line between digital and physical collecting.",
+  },
 ]
 
 export const gameRules = [

@@ -41,7 +41,9 @@ const FAQ = () => {
                 <Container>{value.question}</Container>
               </Header>
               <Body>
-                <Container>{value.answer}</Container>
+                <Container>
+                  <div style={{ textAlign: 'justify' }} dangerouslySetInnerHTML={{ __html: value.answer }} />
+                </Container>
               </Body>
             </Accordion.Item>
           );

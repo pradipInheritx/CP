@@ -262,7 +262,7 @@ const VotingPayment: React.FC<{
     useEffect(() => {
       const getCoinList = firebase
         .firestore()
-        .collection("settings").doc("coins")
+        .collection("settings").doc("paymentCoins")
       getCoinList.get()
         .then((snapshot) => {
           const allList = snapshot.data()?.coins;
@@ -512,7 +512,7 @@ const VotingPayment: React.FC<{
             >
               <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
                 <div className="pay-custom-select-container" style={{
-                  width: '25em'
+                  width: '23em'
                 }} >
                   <div
                     className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
