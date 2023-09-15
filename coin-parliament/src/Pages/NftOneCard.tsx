@@ -393,7 +393,6 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </div>
               <span className='cardname pb-2' style={{
                 color: (darkTheme ? "white" : ''),
-                fontSize: '20px'
               }}
               >
                 <strong> {cardHeader}</strong>
