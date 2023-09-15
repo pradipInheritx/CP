@@ -306,6 +306,17 @@ const VotingPayment: React.FC<{
           {/* @ts-ignore */}
           {translate("Boost your voting power").toUpperCase()}
         </H2>}
+        {/* @ts-ignore */}
+        {payType !== "EXTRAVOTES" && userInfo?.isUserUpgraded==false && <H2
+          style={{
+            zIndex: 1,
+            marginTop: "35px",
+            fontSize: "1.25rem",
+          }}
+        >
+          {/* @ts-ignore */}
+          {translate("Upgrade your account").toUpperCase()}
+        </H2>}
         <div className="pt-5 pb-5 d-flex justify-content-center"
           style={{
             flexDirection: `${window.screen.width > 767 ? "row" : "column"}`,
@@ -438,6 +449,7 @@ const VotingPayment: React.FC<{
                     <P
                       style={{
                         fontSize: "15px", fontWeight: "100", marginTop: "10px",
+                        lineHeight:"2"
                         // textAlign: "left"
                       }}
                       className="px-3 pt-4  pb-3"
