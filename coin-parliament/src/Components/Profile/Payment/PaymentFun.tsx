@@ -42,7 +42,7 @@ function PaymentFun({ isVotingPayment }: any) {
   let navigate = useNavigate();
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
-  useEffect(() => {
+  useEffect(() => {    
     (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
       console.log(data, "username")
     })

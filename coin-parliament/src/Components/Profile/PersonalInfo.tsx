@@ -41,6 +41,7 @@ const PersonalInfo = () => {
   const [show, setShow] = useState(false);
   let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
+
   useEffect(() => {
     setUserName(userInfo?.displayName || '')
     setFirstName(userInfo?.firstName || '')
@@ -69,7 +70,7 @@ const PersonalInfo = () => {
   useEffect(() => {
     if (!userInfo?.mfa) createPost(userInfo?.uid as string);
     // return () => setCopied(false);
-  }, [userInfo?.mfa]);
+  }, [userInfo?.mfa]);  
   const handleClose = () => {
     setShow(false)
   }
@@ -147,7 +148,7 @@ const PersonalInfo = () => {
                   onChange: async (e) => {
                     setUserName(e.target.value)
                   },
-                  maxlength: 10,
+                  maxLength: 10,
                   edit: true,
                 }}
 

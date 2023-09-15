@@ -470,6 +470,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     style={{
                       width: "96%",
                       marginTop: "-86%",
+                      fontSize:"11px"
                     }}
                   >
                     {/* <p>Your CMP count</p> */}

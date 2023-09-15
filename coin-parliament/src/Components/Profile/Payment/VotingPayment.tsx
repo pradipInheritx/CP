@@ -242,7 +242,12 @@ const VotingPayment: React.FC<{
 
     const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
-    useEffect(() => {
+  useEffect(() => {      
+      window.scrollTo({ top: 500, behavior: 'smooth' });        
+  }, [payType])
+  
+  
+  useEffect(() => {      
       (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
         console.log(data, "username")
       })
@@ -257,7 +262,7 @@ const VotingPayment: React.FC<{
     useEffect(() => {
       const getCoinList = firebase
         .firestore()
-        .collection("settings").doc("coins")
+        .collection("settings").doc("paymentCoins")
       getCoinList.get()
         .then((snapshot) => {
           const allList = snapshot.data()?.coins;
@@ -286,6 +291,9 @@ const VotingPayment: React.FC<{
       navigate("/profile/history")
       setSelectCoin("none");
     }
+  
+    
+  
     return (
       <>
         {payType == "EXTRAVOTES"  && <H2
@@ -504,7 +512,7 @@ const VotingPayment: React.FC<{
             >
               <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
                 <div className="pay-custom-select-container" style={{
-                  width: '25em'
+                  width: '23em'
                 }} >
                   <div
                     className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
