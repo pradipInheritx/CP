@@ -466,7 +466,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                 
                   <p className="mt-3 text-end lh-base">
                   As you climb through user levels, CMP reflects your dedication, making your experience in Coin Parliament uniquely rewarding and engaging.
-                  </p> */}
+                  </p> 
+                  */}
 
                   </div>
                 </div>
