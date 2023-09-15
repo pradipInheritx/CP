@@ -329,6 +329,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                 {/* <span className="epic_text">&nbsp; Epic &nbsp; </span><br /> */}
                 <span className='cardname pb-2' style={{
                   color: (darkTheme ? "white" : ''),
+                  fontSize: '20px'
                 }}
                 >
                   <strong> {cardHeader}</strong>
@@ -338,7 +339,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                 <p
                   style={{
                     color: "black",
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    fontSize: '18px'
                   }}
                 >
                   {fulldata?.albumName?.toLocaleUpperCase()}
