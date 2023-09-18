@@ -389,12 +389,12 @@ const SinglePair = () => {
                       {graphLoading ? <CalculatingVotes /> :
                         <>
                           {/* Temporary commented   */}
-                          {/* <Progress
+                          <Progress
                             totals={totals}
                             symbol1={symbol1}
                             symbol2={symbol2}
                             pct={pct}
-                          /> */}
+                          />
                         </>
                       }
                     </>

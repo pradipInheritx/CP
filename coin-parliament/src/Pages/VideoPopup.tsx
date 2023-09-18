@@ -40,10 +40,9 @@ function VideoPopup({ fulldata, Videoshow, setVideoshow, videoUrl, imgUrl, Minte
 
   // share
   const [shareModalShow, setShareModalShow] = useState(false);
-  const url = "https://coinparliament.com/";
+  // const url = window.location.host + "/profile/nftAlbum?cardImageUrl=" + fulldata?.cardImageUrl;
+  const url = `${document.location.protocol}//${document.location.host}/nftAlbum?cardImageUrl=${encodeURIComponent(fulldata?.cardImageUrl)}`;
   const shareText = "I won this unique card! Join the Parliament and win with me.";
-  console.log(smShow, shareModalShow, Videoshow, 'pkkkk');
-
   return (
     <div>
       <Modal

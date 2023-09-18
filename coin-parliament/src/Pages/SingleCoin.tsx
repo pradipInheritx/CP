@@ -515,13 +515,13 @@ const SingleCoin = () => {
                         graphLoading ? <CalculatingVotes /> :
                           <>
                             {/* Temporary commented   */}
-                            {/* <Progress
+                            <Progress
                               totals={totals}
                               progressData={totals[`${symbol1}`]}
                               symbol1={'BULL'}
                               symbol2={'BEAR'}
                               pct={cpviData[cpviData?.length - 1]?.value || 0}
-                            /> */}
+                            />
 
                             {/* <Graph
                               data={cpviData}
