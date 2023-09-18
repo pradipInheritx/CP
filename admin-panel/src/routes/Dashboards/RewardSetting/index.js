@@ -25,14 +25,14 @@ import IntlMessages from '@jumbo/utils/IntlMessages';
 import { NavLink } from 'react-router-dom';
 import { AllrequiredMessage } from '@jumbo/constants/ErrorMessages';
 
-import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
-import { useDebounce } from "../../../@jumbo/utils/commonHelper";
-import useStyles from "./index.style";
-import GridContainer from "@jumbo/components/GridContainer";
-import { Grid } from "react-virtualized";
-import AppTextInput from "@jumbo/components/Common/formElements/AppTextInput";
-import IntlMessages from "@jumbo/utils/IntlMessages";
-import { NavLink } from "react-router-dom";
+// import ConfirmDialog from "../../../@jumbo/components/Common/ConfirmDialog";
+// import { useDebounce } from "../../../@jumbo/utils/commonHelper";
+// import useStyles from "./index.style";
+// import GridContainer from "@jumbo/components/GridContainer";
+// import { Grid } from "react-virtualized";
+// import AppTextInput from "@jumbo/components/Common/formElements/AppTextInput";
+// import IntlMessages from "@jumbo/utils/IntlMessages";
+// import { NavLink } from "react-router-dom";
 import { requiredMessage } from "@jumbo/constants/ErrorMessages";
 
 const RewardSettingModule = () => {
