@@ -35,6 +35,7 @@ export type UserProps = {
   rewardStatistics?: RewardStatistics;
   uid?: string;
   voteValue?: string;
+  bio?: string;
 };
 
 class User implements UserProps {
