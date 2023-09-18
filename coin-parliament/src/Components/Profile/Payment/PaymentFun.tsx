@@ -127,6 +127,7 @@ function PaymentFun({ isVotingPayment }: any) {
   };
 
   useEffect(() => {
+    console.log("i am calling")
     const WLDPHandler = (e: any) => {
       try {
         console.log(e, "alldata231dsf");
