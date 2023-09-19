@@ -21,8 +21,6 @@ window.changeLanguage = (lang: string) => {
   }
 };
 const parameters = new URLSearchParams(window.location.search);
-console.log(parameters.get('cardImageUrl'), 'cardImageUrl');
-
 const cardImageUrl = parameters.get('cardImageUrl');
 ReactDOM.hydrate(
   <HelmetProvider>
