@@ -26,6 +26,46 @@ export const getUserWalletBalance = async (req: any, res: any) => {
     }
 }
 
+export const makePaymentToServer = async (req: any, res: any) => {
+    try {
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
+        } // Bearer token is static from WellDApp
+
+        const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
+
+        let requestBody = {
+            "callback_secret": "",
+            "callback_url": "",
+            "method": "getTransaction",
+            "params": {
+                "amount": amount,
+                "network": network,
+                "origincurrency": origincurrency,
+                "token": token
+            },
+            "user": userEmail
+        }
+
+        const getDataAfterWellDApp = await axios.post(`https://console.dev.welldapp.io/api/transactions`, requestBody, { headers: headers })
+
+        console.info("getDataAfterWellDApp", getDataAfterWellDApp, getDataAfterWellDApp.data)
+
+        console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails)
+
+        await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: getDataAfterWellDApp.data })
+
+        res.status(200).json({
+            status: true,
+            message: `Payment done successfully of amount ${amount}$ on the server`,
+            data: { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails }
+        })
+    } catch (error: any) {
+        console.info("Error while make payment to welld app server", error)
+    }
+}
+
 export const makePayment = async (req: any, res: any) => {
     const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
     console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails)
