@@ -288,8 +288,7 @@ const Header = ({
 	}, [pages]);
 
 	useEffect(() => {
-		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote.collect == false ? headerExtraVote?.vote : 0));
-
+		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote.collect == false ? headerExtraVote?.vote : 0));		
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
@@ -299,7 +298,7 @@ const Header = ({
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
-	console.log(headerExtraVote.vote, voteNumber, "headerExtraVote")
+	console.log(headerExtraVote, voteNumber, "headerExtraVote")
 
 	const onSelect = (eventKey: string | null) => {
 
@@ -594,7 +593,8 @@ const Header = ({
 																		}
 																		}
 																	/> :
-																	Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																	Number(voteNumber && voteNumber)
+																	// + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																}
 
 																{" "}
@@ -817,7 +817,8 @@ const Header = ({
 																	}
 																	}
 																/> :
-																Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																Number(voteNumber && voteNumber)
+																// + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 															}
 															{" "}
 															votes left
