@@ -551,6 +551,7 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
                     margin: "auto",
                     display: "block",
                     marginTop: "-7px",
+                    paddingBottom: '0.8em'
                   }}
                 // width={"100%"}
                 />

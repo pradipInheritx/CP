@@ -35,6 +35,7 @@ const PersonalInfo = () => {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
+  const [bio, setBio] = useState('');
   const [phone, setPhone] = useState<any>({ phone: "" })
   const [countryCode, setCountryCode] = useState('us');
   const [userCurrentCountryCode, setUserCurrentCountryCode] = useState('');
@@ -47,6 +48,7 @@ const PersonalInfo = () => {
     setFirstName(userInfo?.firstName || '')
     setLastName(userInfo?.lastName || '')
     setEmail(userInfo?.email || '')
+    setBio(userInfo?.bio || '');
     setPhone({ phone: userInfo?.phone })
   }, [userInfo]);
 
@@ -70,7 +72,7 @@ const PersonalInfo = () => {
   useEffect(() => {
     if (!userInfo?.mfa) createPost(userInfo?.uid as string);
     // return () => setCopied(false);
-  }, [userInfo?.mfa]);  
+  }, [userInfo?.mfa]);
   const handleClose = () => {
     setShow(false)
   }
@@ -92,7 +94,7 @@ const PersonalInfo = () => {
     }
 
   }
-// console.log(phone,"Phonenumber")
+  // console.log(phone,"Phonenumber")
   useEffect(() => {
     axios
       .get("https://ipapi.co/json/")
@@ -103,8 +105,7 @@ const PersonalInfo = () => {
         console.log(error);
       });
   }, [phone]);
-  console.log(userCurrentCountryCode,phone, "phonenumber");
-
+  console.log(userCurrentCountryCode, phone, "phonenumber");
   return (
     <>
 
@@ -116,6 +117,7 @@ const PersonalInfo = () => {
             firstName: firstName as string,
             lastName: lastName as string,
             email: email as string,
+            bio: bio as string,
             phone: countryCode + phone.phone as string,
           };
           if (email === user?.email) {
@@ -187,6 +189,20 @@ const PersonalInfo = () => {
                   value: email || "",
                   onChange: async (e) => {
                     setEmail(e.target.value);
+                  },
+                  edit: !edit,
+                  // edit: true,
+                }}
+              />
+              <TextField
+                {...{
+                  label: `${texts.BIO}`,
+                  name: "bio",
+                  type: "bio",
+                  placeholder: "Bio",
+                  value: bio || "",
+                  onChange: async (e) => {
+                    setBio(e.target.value);
                   },
                   edit: !edit,
                   // edit: true,
