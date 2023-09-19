@@ -59,7 +59,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
         res.status(200).json({
             status: true,
             message: `Payment done successfully of amount ${amount}$ on the server`,
-            data: { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails }
+            data: { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: getDataAfterWellDApp.data }
         })
     } catch (error: any) {
         console.info("Error while make payment to welld app server", error)
