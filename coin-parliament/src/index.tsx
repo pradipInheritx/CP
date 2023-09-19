@@ -11,6 +11,7 @@ import { CurrentCMPProvider } from "Contexts/CurrentCMP";
 import { CompletedVotesProvider } from "Contexts/CompletedVotesProvider";
 import { register } from "serviceWorkerRegistration";
 import { VoteEndCoinPriceProvider } from "Contexts/VoteEndCoinPrice";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
   const langDetector = document.getElementById("lang-detector");
@@ -19,19 +20,28 @@ window.changeLanguage = (lang: string) => {
     langDetector?.dispatchEvent(new CustomEvent("change"));
   }
 };
+const parameters = new URLSearchParams(window.location.search);
+console.log(parameters.get('cardImageUrl'), 'cardImageUrl');
 
-ReactDOM.render(
-  <BrowserRouter>
-    <VoteEndCoinPriceProvider>
-      <VoteProvider>
-        <CompletedVotesProvider>
-          <CurrentCMPProvider>
-            <App />
-          </CurrentCMPProvider>
-        </CompletedVotesProvider>
-      </VoteProvider>
-    </VoteEndCoinPriceProvider>
-  </BrowserRouter>
+const cardImageUrl = parameters.get('cardImageUrl');
+ReactDOM.hydrate(
+  <HelmetProvider>
+    <Helmet prioritizeSeoTags>
+      <meta property="og:image" content={cardImageUrl ? cardImageUrl : '/hpbanner_m2.png'} />
+      <meta property="twitter:image" content={cardImageUrl ? cardImageUrl : '/hpbanner_m2.png'} />
+    </Helmet>
+    <BrowserRouter>
+      <VoteEndCoinPriceProvider>
+        <VoteProvider>
+          <CompletedVotesProvider>
+            <CurrentCMPProvider>
+              <App />
+            </CurrentCMPProvider>
+          </CompletedVotesProvider>
+        </VoteProvider>
+      </VoteEndCoinPriceProvider>
+    </BrowserRouter>
+  </HelmetProvider>
   , document.getElementById("app")
 );
 //register service worker

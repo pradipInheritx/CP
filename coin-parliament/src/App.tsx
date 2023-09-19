@@ -222,11 +222,11 @@ function App() {
   useEffect(() => {
     const urlpath = window.location.pathname
     window.scrollTo({
-      top:0,
+      top: 0,
       behavior: 'smooth',
     });
     console.log('scrollUp ');
-    
+
     if ((urlpath != "/upgrade") && (urlpath != "/votingbooster") && (urlpath != "/paymentList") && (urlpath != "/votepayment")) {
       console.log("yes i am working")
       localStorage.removeItem("PayAmount");

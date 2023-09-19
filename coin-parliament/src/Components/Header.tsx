@@ -659,6 +659,7 @@ const Header = ({
 											</MemberText>} */}
 
 											{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+											<p>{(!!followerInfo?.bio && followerPage) && followerInfo?.bio}</p>
 											{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 
 										</div>
@@ -745,7 +746,6 @@ const Header = ({
 														{followerInfo?.displayName}
 													</span>
 												</>
-
 												:
 												(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 													// @ts-ignore
@@ -881,6 +881,7 @@ const Header = ({
 														</span>
 												}
 												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												<p>{(!!followerInfo?.bio && followerPage) && followerInfo?.bio}</p>
 												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 											</div>
 										}

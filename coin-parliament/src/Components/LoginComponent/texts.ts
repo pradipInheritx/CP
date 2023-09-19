@@ -90,6 +90,7 @@ export const texts = {
   // LASTNAME: "Last Name",
   LASTNAME: "Last Name".toUpperCase(),
   EMAIL: "Email".toUpperCase(),
+  BIO: 'BIO',
   PHONE: "Phone".toUpperCase(),
   OLDPASSWORD: "Old Password".toUpperCase(),
   NEWPASSWORD: "New Password".toUpperCase(),
