@@ -698,10 +698,7 @@ exports.getCPVIForVote = functions.https.onCall(async (data) => {
 
 exports.getResultAfterVote = functions.https.onCall(
   async (data) => {
-    const getDataAfterVoteWithScore = await getResultAfterVote(data);
-    return {
-      getDataAfterVoteWithScore
-    };
+    return await getResultAfterVote(data);
   }
 );
 
