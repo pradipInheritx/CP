@@ -201,7 +201,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
     const getVoteInstance = await getVoteRef.get();
     const getVoteData = getVoteInstance.data();
     console.info("getVoteData", getVoteData?.score);
-    if (getVoteData && getVoteData.score === 0) {
+    if ((getVoteData && getVoteData.score === 0) || getVoteData && getVoteData.score) {
       console.info("getVoteData", getVoteData);
       return { status: false, message: "Something went wrong in score" }
     } else {
