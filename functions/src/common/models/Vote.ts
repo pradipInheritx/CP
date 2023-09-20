@@ -203,6 +203,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
     console.info("getVoteData", getVoteData?.score);
     if ((getVoteData && getVoteData.score === 0) || getVoteData && getVoteData.score) {
       console.info("getVoteData", getVoteData);
+      return { status: false, message: "Something went wrong in score" }
     } else {
       const vote = {
         ...getVoteData,
@@ -218,11 +219,13 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         await calc.calc(getVoteRef);
+        return { status: true, message: "Success" }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         await calc.calc(getVoteRef);
+        return { status: true, message: "Success" }
       }
     }
   } catch (error) {
