@@ -8,7 +8,7 @@ import {
 import { Direction, voteConverter, VoteResultProps } from "./Vote";
 import { firestore } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
-import { voteExpireAndGetCpmNotification, poolMiningNotification } from "./SendCustomNotification"
+import { voteExpireAndGetCpmNotification, poolMiningNotification } from "./SendCustomNotification";
 
 
 export type Totals = {
@@ -54,7 +54,7 @@ export const returnValue: (
     CPMReturn =
       (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
   }
-  console.log("GIVEN CMP >>>>>>>>>", (Number(voteRules.givenCPM) || 1) * CPMReturn)
+  console.log("GIVEN CMP >>>>>>>>>", (Number(voteRules.givenCPM) || 1) * CPMReturn);
   return (Number(voteRules.givenCPM) || 1) * CPMReturn;
 };
 class Calculation {
@@ -86,8 +86,8 @@ class Calculation {
     ref: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>
   ): Promise<void> {
     console.log("calcValueExpirationTime");
-    this.calcValueExpirationTime();
-    console.log("calcSuccess");
+    await this.calcValueExpirationTime();
+    console.log("Calculate Success");
     this.calcSuccess();
     console.log("updateVote");
     await this.updateVote(ref);
@@ -97,6 +97,81 @@ class Calculation {
     await this.setTotals();
   }
 
+  async calcOnlySuccess(): Promise<void> {
+    const getCalSuccessValue = await this.calcOnlySuccessScore();
+    console.info("getCalSuccessValue", getCalSuccessValue);
+    return getCalSuccessValue;
+  }
+
+  async calcOnlySuccessScore(): Promise<void> {
+    const { voteResult } = this;
+    console.info("voteResult", voteResult);
+    console.info("this.price", this.price);
+    let successScoreValue: any;
+    // const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
+    const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
+    if (typeof this.price === "number") {
+      const startValue = voteResult.valueVotingTime;
+      const endValue: any = voteResult?.valueExpirationTime;
+
+      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue);
+
+      const downRange = Number(startValue) - Number(CPMRangeCurrentValue);
+
+      if (endValue && endValue < upRange && endValue > downRange) {
+        successScoreValue = 2;
+        return successScoreValue;
+      } else {
+        console.log("successValue Changed rand point not working");
+        const bear =
+          !!endValue &&
+          endValue <= startValue &&
+          voteResult.direction === Direction.BEAR;
+        const bull =
+          !!endValue &&
+          endValue > startValue &&
+          voteResult.direction === Direction.BULL;
+        successScoreValue = bull ? 1 : 0 || bear ? 1 : 0;
+      }
+      if ((this.status === 0) || this.status) {
+        console.info("IN 2 Iff");
+        successScoreValue = this.status;
+      }
+      console.info("IN Re Iff");
+      return successScoreValue;
+    } else {
+      if (
+        Array.isArray(voteResult.valueVotingTime) &&
+        Array.isArray(this.price)
+      ) {
+        const diff = [
+          this.price[0] - voteResult.valueVotingTime[0],
+          this.price[1] - voteResult.valueVotingTime[1],
+        ];
+
+        const winner = diff[0] < diff[1] ? 1 : 0;
+        const averageValue = Math.abs(diff[0] - diff[1]);
+        console.info(
+          "averageValue",
+          averageValue,
+          "CPMRangeCurrentValue",
+          CPMRangeCurrentValue
+        );
+
+        // This status is user from frontend
+        if (averageValue <= CPMRangeCurrentValue) {
+          successScoreValue = 2;
+        } else {
+          successScoreValue = voteResult.direction === winner ? 1 : 0;
+        }
+        if ((this.status === 0) || this.status) {
+          successScoreValue = this.status;
+        }
+        return successScoreValue;
+      }
+    }
+  }
+
   calcValueExpirationTime(): void {
     console.log("calcValueExpirationTime", this.price, typeof this.price);
     this.voteResult.valueExpirationTime = this.price;
@@ -104,16 +179,16 @@ class Calculation {
 
   calcSuccess(): void {
     const { voteResult } = this;
-    console.info("voteResult", voteResult)
-    //const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
-    let CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
+    console.info("voteResult", voteResult);
+    // const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
+    const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
       const endValue: any = voteResult?.valueExpirationTime;
 
-      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue)
+      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue);
 
-      const downRange = Number(startValue) - Number(CPMRangeCurrentValue)
+      const downRange = Number(startValue) - Number(CPMRangeCurrentValue);
 
       if (typeof startValue === "number" && typeof endValue === "number") {
         const trendChange = Number(
@@ -144,7 +219,6 @@ class Calculation {
         Array.isArray(voteResult.valueVotingTime) &&
         Array.isArray(voteResult.valueExpirationTime)
       ) {
-
         const diff = [
           voteResult.valueExpirationTime[0] - voteResult.valueVotingTime[0],
           voteResult.valueExpirationTime[1] - voteResult.valueVotingTime[1],
@@ -204,31 +278,31 @@ class Calculation {
 
       voteStatistics.score += score;
 
-      //Send Notification For CMP Change
+      // Send Notification For CMP Change
       // const getVotesQuery = await this.db
       //   .collection("votes")
       //   .doc(this.id)
       //   .get();
       // const getVote: any = getVotesQuery.data();
-      console.log("send Notification for CPM")
-      console.log("send Notification Details - - userId, score,this.voteResult.coin", userId, score, this.voteResult.coin)
-      await voteExpireAndGetCpmNotification(userId, voteStatistics, score, this.voteResult.coin)
+      console.log("send Notification for CPM");
+      console.log("send Notification Details - - userId, score,this.voteResult.coin", userId, score, this.voteResult.coin);
+      await voteExpireAndGetCpmNotification(userId, voteStatistics, score, this.voteResult.coin);
 
       // For Add Only Commission In Current User
       const { CPMSettings } = await Refer.getSettings();
       const { pctReferralActivity } = CPMSettings;
       const commission = Number(score * pctReferralActivity) / 100;
-      let refereeScrore: number = parseFloat(((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(3));
+      const refereeScrore: number = parseFloat(((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(3));
       await ref.set({ voteStatistics, refereeScrore: refereeScrore }, { merge: true });
-      console.log("user.parent -----", user.parent)
+      console.log("user.parent -----", user.parent);
       if (user.parent) {
         const refer = new Refer(user.parent, "");
         await refer.payParent(score);
         // send Notification
-        console.log("pool mining Notification is calling: -- ", user.parent, user.displayName || "", user.refereeScrore)
-        console.log("commission : ", commission)
-        console.log("score -- ", score)
-        await poolMiningNotification(user.parent, user.displayName || "", commission)
+        console.log("pool mining Notification is calling: -- ", user.parent, user.displayName || "", user.refereeScrore);
+        console.log("commission : ", commission);
+        console.log("score -- ", score);
+        await poolMiningNotification(user.parent, user.displayName || "", commission);
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);
@@ -259,7 +333,6 @@ class Calculation {
       .doc("totals")
       .set(totals, { merge: true });
   }
-
 } // end the calculation class
 
 const getLeaders = async () => {
@@ -307,7 +380,7 @@ const getLeaders = async () => {
 
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
-    let leaders = await getLeaders();
+    const leaders = await getLeaders();
     const userTypes = await firestore()
       .collection("settings")
       .doc("userTypes")
@@ -341,7 +414,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .doc(eachUser.userId)
             .set({ status: eachUserType }, { merge: true });
 
-          leaders.splice(leader, 1)
+          leaders.splice(leader, 1);
         }
       }
     }
@@ -474,16 +547,16 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
   //   .get();
 
   const queryPromises = userIds.map(async (user) => {
-    return await firestore().collection('users')
-      .where('uid', '==', user)
+    return await firestore().collection("users")
+      .where("uid", "==", user)
       .get();
   });
 
   const querySnapshots = await Promise.all(queryPromises);
   const leaders: any[] = [];
 
-  querySnapshots.forEach(querySnapshot => {
-    querySnapshot.docs.forEach(doc => {
+  querySnapshots.forEach((querySnapshot) => {
+    querySnapshot.docs.forEach((doc) => {
       const documentData = doc.data() as any;
       leaders.push(documentData);
     });

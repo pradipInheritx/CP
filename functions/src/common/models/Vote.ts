@@ -103,10 +103,80 @@ export const updateVotesTotalForSingleCoin = async (coin: any) => {
 };
 
 
+export const getResultAfterVote = async (requestBody: any) => {
+  try {
+    let price: any;
+    const {
+      coin1,
+      coin2,
+      voteId,
+      voteTime,
+      valueVotingTime,
+      valueExpirationTimeOfCoin1,
+      valueExpirationTimeOfCoin2,
+      expiration,
+      timestamp,
+      userId,
+      status,
+    } = requestBody;
 
-export const getOldAndCurrentPriceAndMakeCalculation = async (
-  requestBody: any
-) => {
+    console.info("status", status);
+
+    // Snapshot Get From ID
+    console.info("Vote ID", voteId, typeof voteId);
+    const getVoteRef = await admin.firestore().collection("votes").doc(voteId);
+    const getVoteInstance = await getVoteRef.get();
+    const getVoteData = getVoteInstance.data();
+    console.info("getVoteData", getVoteData?.score);
+    if ((getVoteData && getVoteData.score === 0) || getVoteData && getVoteData.score) {
+      console.info("getVoteData", getVoteData);
+      return { status: false, message: "Something went wrong in calculation in score" }
+    } else {
+      const vote = {
+        ...getVoteData,
+        expiration,
+        voteTime,
+        valueVotingTime,
+      } as unknown as VoteResultProps;
+      console.info("vote", getVoteData);
+      if (coin2) {
+        const priceOne = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
+        const priceTwo = valueExpirationTimeOfCoin2 ? valueExpirationTimeOfCoin2 : await getPriceOnParticularTime(coin2, timestamp);
+        price = [Number(priceOne), Number(priceTwo)];
+        console.info("Get Price", price);
+        const calc = new Calculation(vote, price, voteId, userId, status);
+        const getScore = await calc.calcOnlySuccess();
+        return {
+          voteId,
+          valueVotingTime,
+          voteTime,
+          "valueExpirationTime": price,
+          expiration,
+          success: getScore
+        }
+      } else {
+        price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
+        console.info("Get Price", price);
+        const calc = new Calculation(vote, Number(price), voteId, userId, status);
+        const getScore = await calc.calcOnlySuccess();
+        console.info("getScore", getScore);
+        return {
+          voteId,
+          valueVotingTime,
+          voteTime,
+          "valueExpirationTime": price,
+          expiration,
+          success: getScore
+        }
+      }
+    }
+  } catch (error) {
+    console.info("ERR:", error);
+    return { status: false, message: "Something went wrong in calculation", error }
+  }
+}
+
+export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) => {
   try {
     let price: any;
     const {
@@ -140,9 +210,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
         voteTime,
         valueVotingTime,
       } as unknown as VoteResultProps;
-
       console.info("vote", getVoteData);
-
       if (coin2) {
         const priceOne = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         const priceTwo = valueExpirationTimeOfCoin2 ? valueExpirationTimeOfCoin2 : await getPriceOnParticularTime(coin2, timestamp);
@@ -150,16 +218,14 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         await calc.calc(getVoteRef);
-
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         await calc.calc(getVoteRef);
       }
-
     }
   } catch (error) {
-    console.info("ERR:", error);
+
   }
-};
+}

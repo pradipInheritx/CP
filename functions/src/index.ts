@@ -31,6 +31,7 @@ import {
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
+  getResultAfterVote
 } from "./common/models/Vote";
 import {
   // fetchCoins,
@@ -695,6 +696,14 @@ exports.getCPVIForVote = functions.https.onCall(async (data) => {
 });
 
 
+exports.getResultAfterVote = functions.https.onCall(
+  async (data) => {
+    const getDataAfterVoteWithScore = await getResultAfterVote(data);
+    return {
+      ...getDataAfterVoteWithScore
+    };
+  }
+);
 
 
 exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
