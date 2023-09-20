@@ -226,6 +226,6 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
       }
     }
   } catch (error) {
-
+    return { status: false, message: "Something went wrong", error }
   }
 }
