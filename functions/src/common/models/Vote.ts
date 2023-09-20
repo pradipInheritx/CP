@@ -148,14 +148,15 @@ export const getResultAfterVote = async (requestBody: any) => {
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
-          voteId: `${coin1.toUpperCase()}-${coin2.toUpperCase()}-${voteId}`,
+          voteId: `${coin1.substring(0, 3).toUpperCase()}-${coin2.substring(0, 3).toUpperCase()}-${voteId}`,
           valueVotingTime,
           voteTime,
           "valueExpirationTime": price,
           expiration,
           userId,
+          direction: getVoteData?.direction,
           timeframe: getVoteData?.timeframe,
-          coin: `${coin1.toUpperCase()}-${coin2.toUpperCase()}`,
+          coin: `${coin1.substring(0, 3).toUpperCase()}-${coin2.substring(0, 3).toUpperCase()}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score
         }
@@ -166,13 +167,14 @@ export const getResultAfterVote = async (requestBody: any) => {
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
-          voteId: `${coin1.toUpperCase()}-${voteId}`,
+          voteId: `${coin1.substring(0, 3).toUpperCase()}-${voteId}`,
           valueVotingTime,
           voteTime,
           "valueExpirationTime": price,
           expiration,
+          direction: getVoteData?.direction,
           userId,
-          coin: `${coin1.toUpperCase()}`,
+          coin: `${coin1.substring(0, 3).toUpperCase()}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score
         }

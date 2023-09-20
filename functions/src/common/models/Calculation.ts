@@ -46,16 +46,16 @@ export const returnValue: (
   let CPMReturn: number;
   if (success === 1) {
     CPMReturn =
-      (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnSuccess);
+      (Number(status?.givenCPM) || 1) * Number(voteRules.CPMReturnSuccess);
   } else if (success === 2) {
     CPMReturn =
-      (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnInRange);
+      (Number(status?.givenCPM) || 1) * Number(voteRules.CPMReturnInRange);
   } else {
     CPMReturn =
-      (Number(status.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
+      (Number(status?.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
   }
   console.log("GIVEN CMP >>>>>>>>>", (Number(voteRules.givenCPM) || 1) * CPMReturn);
-  return (Number(voteRules.givenCPM) || 1) * CPMReturn;
+  return (Number(voteRules?.givenCPM) || 1) * CPMReturn;
 };
 class Calculation {
   private readonly voteResult: VoteResultProps;
@@ -144,6 +144,7 @@ class Calculation {
           !!endValue &&
           endValue > startValue &&
           voteResult.direction === Direction.BULL;
+        voteResult.direction;
         successScoreValue = bull ? 1 : 0 || bear ? 1 : 0;
       }
       if ((this.status === 0) || this.status) {
