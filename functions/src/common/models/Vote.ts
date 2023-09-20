@@ -174,6 +174,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           expiration,
           direction: getVoteData?.direction,
           userId,
+          timeframe: getVoteData?.timeframe,
           coin: `${coin1.substring(0, 3).toUpperCase()}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score
