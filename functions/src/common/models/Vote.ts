@@ -148,7 +148,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
-          voteId: `${coin1.substring(0, 3).toUpperCase()}-${coin2.substring(0, 3).toUpperCase()}-${voteId}`,
+          voteId: `${coin1.substring(0, 3).toUpperCase()}-${coin2.substring(0, 3).toUpperCase()}-${voteId.substring(0, 5)}${expiration}`,
           valueVotingTime,
           voteTime,
           "valueExpirationTime": price,
@@ -167,7 +167,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
-          voteId: `${coin1.substring(0, 3).toUpperCase()}-${voteId}`,
+          voteId: `${coin1.substring(0, 3).toUpperCase()}-${voteId.substring(0, 5)}${expiration}`,
           valueVotingTime,
           voteTime,
           "valueExpirationTime": price,
