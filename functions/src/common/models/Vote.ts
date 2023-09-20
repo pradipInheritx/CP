@@ -145,28 +145,36 @@ export const getResultAfterVote = async (requestBody: any) => {
         price = [Number(priceOne), Number(priceTwo)];
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
-        const getScore = await calc.calcOnlySuccess();
+        const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        console.info("getSuccessAndScore", getSuccessAndScore)
         return {
-          voteId,
+          voteId: `${coin1.toUpperCase()}-${coin2.toUpperCase()}-${voteId}`,
           valueVotingTime,
           voteTime,
           "valueExpirationTime": price,
           expiration,
-          success: getScore
+          userId,
+          timeframe: getVoteData?.timeframe,
+          coin: `${coin1.toUpperCase()}-${coin2.toUpperCase()}`,
+          success: getSuccessAndScore?.successScoreValue,
+          score: getSuccessAndScore?.score
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
-        const getScore = await calc.calcOnlySuccess();
-        console.info("getScore", getScore);
+        const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        console.info("getSuccessAndScore", getSuccessAndScore);
         return {
-          voteId,
+          voteId: `${coin1.toUpperCase()}-${voteId}`,
           valueVotingTime,
           voteTime,
           "valueExpirationTime": price,
           expiration,
-          success: getScore
+          userId,
+          coin: `${coin1.toUpperCase()}`,
+          success: getSuccessAndScore?.successScoreValue,
+          score: getSuccessAndScore?.score
         }
       }
     }

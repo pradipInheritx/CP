@@ -103,12 +103,19 @@ class Calculation {
     return getCalSuccessValue;
   }
 
-  async calcOnlySuccessScore(): Promise<void> {
-    const { voteResult } = this;
+  async calcOnlySuccessScore(): Promise<any> {
+    const { voteResult, userId } = this;
     console.info("voteResult", voteResult);
     console.info("this.price", this.price);
     let successScoreValue: any;
-    // const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
+
+    const settings = await firestore()
+      .collection("settings")
+      .doc("settings")
+      .get();
+    const ref = this.db.collection("users").doc(userId);
+    const user = (await ref.get()).data() as UserProps;
+
     const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
@@ -118,11 +125,17 @@ class Calculation {
 
       const downRange = Number(startValue) - Number(CPMRangeCurrentValue);
 
+
       if (endValue && endValue < upRange && endValue > downRange) {
         successScoreValue = 2;
-        return successScoreValue;
+        const score = returnValue(
+          successScoreValue || 0,
+          settings.data()?.voteRules,
+          user?.status
+        );
+        return { successScoreValue, score };
       } else {
-        console.log("successValue Changed rand point not working");
+        console.log("SuccessValue Changed rand point not working");
         const bear =
           !!endValue &&
           endValue <= startValue &&
@@ -134,11 +147,14 @@ class Calculation {
         successScoreValue = bull ? 1 : 0 || bear ? 1 : 0;
       }
       if ((this.status === 0) || this.status) {
-        console.info("IN 2 Iff");
         successScoreValue = this.status;
       }
-      console.info("IN Re Iff");
-      return successScoreValue;
+      const score = returnValue(
+        successScoreValue || 0,
+        settings.data()?.voteRules,
+        user.status
+      );
+      return { successScoreValue, score };
     } else {
       if (
         Array.isArray(voteResult.valueVotingTime) &&
@@ -167,7 +183,12 @@ class Calculation {
         if ((this.status === 0) || this.status) {
           successScoreValue = this.status;
         }
-        return successScoreValue;
+        const score = returnValue(
+          successScoreValue || 0,
+          settings.data()?.voteRules,
+          user?.status
+        );
+        return { successScoreValue, score };
       }
     }
   }

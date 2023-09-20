@@ -700,7 +700,7 @@ exports.getResultAfterVote = functions.https.onCall(
   async (data) => {
     const getDataAfterVoteWithScore = await getResultAfterVote(data);
     return {
-      ...getDataAfterVoteWithScore
+      getDataAfterVoteWithScore
     };
   }
 );
