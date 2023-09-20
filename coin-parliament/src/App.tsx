@@ -151,6 +151,7 @@ import PaymentFun from "Components/Profile/Payment/PaymentFun";
 import PaymentHistory from "Components/Profile/Payment/PaymentHistory";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
 import Complete100CMPModal from "Components/Complete100CMPModal";
+import { request } from "http";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -1121,6 +1122,7 @@ function App() {
   const setCompletedVotes = useContext(CompletedVotesDispatchContext);
 
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
+  const getResultAfterVote = httpsCallable(functions, "getResultAfterVote");
   const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
@@ -1171,6 +1173,7 @@ function App() {
   useEffect(() => {
     latestCoinsPrice.current = voteEndCoinPrice;
   }, [voteEndCoinPrice]);
+  console.log(voteDetails?.activeVotes, lessTimeVoteDetails, 'pkkk');
 
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
@@ -1193,7 +1196,7 @@ function App() {
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
-        await getPriceCalculation({
+        const request = {
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
             coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
@@ -1214,9 +1217,10 @@ function App() {
               :
               {}
           )
-        }).then(async (response) => {
+        }
+        await getResultAfterVote(request).then(async (response) => {
           console.log(latestUserInfo.current, 'latestUserInfo.current');
-
+          getPriceCalculation(request).then(() => { }).catch(() => { });
           // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
           //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
           // }
