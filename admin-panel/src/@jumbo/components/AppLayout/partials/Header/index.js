@@ -84,7 +84,16 @@ const Header = () => {
   return (
     <Toolbar className={classes.root}>
       <SidebarToggleHandler edge="start" color="inherit" aria-label="menu" />
-      <Logo ml={2} color="white" />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div
+          style={{ width: "5em", paddingLeft: "0.5em", paddingRight: "0.5em" }}
+        >
+          <Logo ml={2} color="white" />
+        </div>
+        <span style={{ color: "white", fontSize: "1.5em " }}>
+          Coin Parliament
+        </span>
+      </div>
       {/* <Box flex={1} />
       <Hidden smDown>
         <Box pr={3} className={classes.searchRoot}>

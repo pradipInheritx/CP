@@ -35,59 +35,67 @@ import {
   Widgets
 } from "@material-ui/icons";
 import React from "react";
-
+import PersonIcon from "@mui/icons-material/Person";
+import PollIcon from "@mui/icons-material/Poll";
+import BoltIcon from "@mui/icons-material/Bolt";
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
+import PaymentsIcon from "@mui/icons-material/Payments";
+import DatasetIcon from "@mui/icons-material/Dataset";
+import TypeSpecimenIcon from "@mui/icons-material/TypeSpecimen";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import CurrencyBitcoinIcon from "@mui/icons-material/CurrencyBitcoin";
+import SettingsIcon from "@mui/icons-material/Settings";
 const dashboardsMenus = [
   {
     name: <IntlMessages id={"sidebar.dashboard.subadmin"} />,
     icon: <Group />,
     type: "item",
     link: "/dashboard/subadmin"
-  },  
+  },
   {
     name: <IntlMessages id={"sidebar.dashboard.voteperuser"} />,
-    icon: <People />,
+    icon: <PollIcon />,
     type: "item",
     link: "/dashboard/voteperuser"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.votebooster"} />,
-    icon: <People />,
+    icon: <BoltIcon />,
     type: "item",
     link: "/dashboard/votebooster"
   },
-  
 
   {
     name: <IntlMessages id={"sidebar.dashboard.votingpass"} />,
-    icon: <People />,
+    icon: <ConfirmationNumberIcon />,
     type: "item",
     link: "/dashboard/votingpass"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.transactiontypes"} />,
-    icon: <People />,
+    icon: <PaymentsIcon />,
     type: "item",
     link: "/dashboard/transactiontypes"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.statustype"} />,
-    icon: <People />,
+    icon: <TypeSpecimenIcon />,
     type: "item",
     link: "/dashboard/statustype"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.paxgeneraldata"} />,
-    icon: <People />,
+    icon: <DatasetIcon />,
     type: "item",
     link: "/dashboard/paxgeneral"
-  }, 
-  
+  },
+
   {
     name: <IntlMessages id={"sidebar.dashboard.rewardnft"} />,
-    icon: <People />,
+    icon: <EmojiEventsIcon />,
     type: "item",
     link: "/dashboard/rewardnft"
-  },
+  }
   // {
   //   name: <IntlMessages id={"sidebar.dashboard.crypto"} />,
   //   icon: <MonetizationOn />,
@@ -968,100 +976,103 @@ const appsMenus = [
 const AllTransactions = [
   {
     name: <IntlMessages id={"sidebar.dashboard.rewardtransactions"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/rewardtransactions"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.paymenttransactions"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/paymenttransactions"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.cmptransactions"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/cmptransactions"
-  },
+  }
 ];
-const AllList = [  
+const AllList = [
   {
     name: <IntlMessages id={"sidebar.dashboard.coins"} />,
-    icon: <Group />,
+    icon: <CurrencyBitcoinIcon />,
     type: "item",
     link: "/dashboard/coins"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.pairs"} />,
-    icon: <Group />,
+    icon: <CurrencyBitcoinIcon />,
     type: "item",
     link: "/dashboard/pairs"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.users"} />,
-    icon: <People />,
+    icon: <PersonIcon />,
     type: "item",
     link: "/dashboard/users"
-  },
+  }
 ];
 const AllTables = [
   {
     name: <IntlMessages id={"sidebar.dashboard.followtable"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
-    link: "/dashboard/followtable"  || "/dashboard/followeruser" || "/dashboard/followinguser"
+    link:
+      "/dashboard/followtable" ||
+      "/dashboard/followeruser" ||
+      "/dashboard/followinguser"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.coinsvotestable"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/coinsvotestable"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.pairsvotestable"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/pairsvotestable"
-  },
+  }
 ];
 const AllSettings = [
   {
     name: <IntlMessages id={"sidebar.dashboard.usertypesetting"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/usertypesetting"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.timeframesetting"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/timeframesetting"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.cmpsettings"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/cmpsettings"
-  },  
+  },
   {
     name: <IntlMessages id={"sidebar.dashboard.votesettings"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/votesettings"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.rewardsettings"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/rewardsettings"
   },
   {
     name: <IntlMessages id={"sidebar.dashboard.returnsettings"} />,
-    icon: <People />,
+    // icon: <People />,
     type: "item",
     link: "/dashboard/returnsettings"
-  },
+  }
 ];
 
 const socialAppsMenus = [
@@ -1502,25 +1513,26 @@ export const sidebarNavs = [
     children: dashboardsMenus
   },
   {
-    name: "All Lists",
+    name: "Lists",
     type: "section",
     children: AllList
   },
   {
-    name: "All Tables",
+    name: "Tables",
     type: "section",
     children: AllTables
   },
   {
-    name: "All Settings",
+    icon: <SettingsIcon />,
+    name: "Settings",
     type: "section",
     children: AllSettings
   },
   {
-    name: "All Transactions",
+    name: "Transactions",
     type: "section",
     children: AllTransactions
-  },
+  }
   // {
   //   name: <IntlMessages id={"sidebar.components"} />,
   //   type: "section",
@@ -1536,7 +1548,7 @@ export const sidebarNavs = [
   //   type: "section",
   //   children: appsMenus
   // },
-  
+
   // {
   //   name: <IntlMessages id={"sidebar.social"} />,
   //   type: "section",

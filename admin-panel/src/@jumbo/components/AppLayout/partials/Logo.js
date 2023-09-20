@@ -1,12 +1,13 @@
-import React from 'react';
-import Hidden from '@material-ui/core/Hidden';
-import { Box } from '@material-ui/core';
-import { NavLink } from 'react-router-dom';
-import CmtImage from '../../../../@coremat/CmtImage';
+import React from "react";
+import Hidden from "@material-ui/core/Hidden";
+import { Box } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
+import CmtImage from "../../../../@coremat/CmtImage";
 
 const Logo = ({ color, ...props }) => {
-  const logoUrl = color === 'white' ? '/images/logo-white.png' : '/images/logo.png';
-  const logoSymbolUrl = color === 'white' ? '/images/logo-white-symbol.png' : '/images/logo-symbol.png';
+  const logoUrl = color === "white" ? "/images/logo.png" : "/images/logo.png";
+  const logoSymbolUrl =
+    color === "white" ? "/images/logo-symbol.png" : "/images/logo-symbol.png";
 
   return (
     <Box className="pointer" {...props}>
