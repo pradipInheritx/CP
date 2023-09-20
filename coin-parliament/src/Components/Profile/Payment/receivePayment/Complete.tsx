@@ -62,12 +62,30 @@ const ChildTableHeader: tableColumnType[] = [
     },
 ];
 const Complete: React.FC = () => {
-    const [data, setData] = useState([
+    const [data, setData] = useState<any[]>([
         {
             transactionId: 'transactionId',
             date: 'date',
             amount: 'amount',
-            paymentMethod: 'paymentMethod'
+            paymentMethod: 'paymentMethod',
+            children: [
+                {
+                    orderId: "orderId",
+                    date: "date",
+                    item: "item",
+                    amount: "amount",
+                    paymentMethod: "paymentMethod",
+                    childId: "childId",
+                },
+                {
+                    orderId: "orderId2",
+                    date: "date2",
+                    item: "item2",
+                    amount: "amount2",
+                    paymentMethod: "paymentMethod2",
+                    childId: "childId2",
+                }
+            ]
         }
     ]);
     const [pageIndex, setPageIndex] = useState(1);
@@ -100,45 +118,17 @@ const Complete: React.FC = () => {
                     })
                 }
             </div>
-            {data.map((item: any, index: number) => {
+            {data.map((value: any, index: number) => {
                 return (
-                    <>
-                        <div className='d-flex justify-content-around' style={{ textAlign: "center", }}>
-                            {
-                                tableHeader.map((item: tableColumnType, index: number) => {
-
-                                    return (
-                                        <>
-                                            {
-                                                data.map((value: any, key) => {
-                                                    return (
-                                                        <div style={{ width: "19%" }}>
-                                                            <RewardList>
-                                                                {value[item?.assessorName] || "NA"}
-                                                            </RewardList>
-                                                        </div>
-                                                    )
-                                                })
-                                            }
-                                        </>
-                                    )
-                                })
-                            }
-                        </div>
-                        <div>
-                            <Table data={data} headers={ChildTableHeader} pagination={false} />
-                        </div>
-                    </>
+                    <Column value={value} />
                 )
             })}
-
-
             {!data?.length && (
                 <div className='d-flex justify-content-around w-100 mt-4'>
                     {
                         tableHeader.map(() => {
                             return (
-                                <div className=''
+                                <div key={1}
                                     style={{
                                         width: `${(100 / tableHeader.length) - 1}`,
                                     }}
@@ -172,3 +162,28 @@ const Complete: React.FC = () => {
 }
 
 export default Complete;
+
+const Column: React.FC<{ value: any }> = ({ value }) => {
+    const [showChildren, setShowChildren] = useState<boolean>(false);
+    return (
+        <>
+            <div className='d-flex justify-content-around' style={{ textAlign: "center", }}>
+                {
+                    tableHeader.map((item: tableColumnType, index: number) => {
+                        return (
+                            <div style={{ width: "19%" }}>
+                                <RewardList onClick={() => setShowChildren(prev => !prev)}>
+                                    {value[item?.assessorName] || "NA"}
+                                </RewardList>
+                            </div>
+                        )
+                    })
+                }
+            </div>
+            {(showChildren && value?.children && value?.children?.length > 0) &&
+                <div style={{ paddingLeft: '10px', paddingRight: '10px' }}>
+                    <Table data={value?.children} headers={ChildTableHeader} pagination={false} />
+                </div>}
+        </>
+    );
+}

@@ -28,9 +28,7 @@ interface TableType<T> {
 const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
     const [pageIndex, setPageIndex] = useState(1);
     return (
-
         <>
-
             <div className='d-flex justify-content-around w-100 py-3' style={{ background: "#7456ff" }}>
                 {
                     headers.map((item: tableColumnType, index: number) => {
@@ -40,26 +38,17 @@ const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
                     })
                 }
             </div>
-            {data.map((item: any, index: number) => {
+            {data.map((value: any, index: number) => {
                 return (
-                    <div className='d-flex justify-content-around' style={{ textAlign: "center", }}>
+                    <div className='d-flex justify-content-around' key={index} style={{ textAlign: "center", }}>
                         {
-                            headers.map((item: tableColumnType, index: number) => {
-
+                            headers.map((item: tableColumnType, i: number) => {
                                 return (
-                                    <>
-                                        {
-                                            data.map((value: any, key) => {
-                                                return (
-                                                    <div style={{ width: "19%" }}>
-                                                        <RewardList>
-                                                            {value[item?.assessorName] || "NA"}
-                                                        </RewardList>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </>
+                                    <div style={{ width: "19%" }} key={i}>
+                                        <RewardList>
+                                            {value[item?.assessorName] || "NA"}
+                                        </RewardList>
+                                    </div>
                                 )
                             })
                         }

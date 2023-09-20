@@ -80,7 +80,6 @@ const Complete: React.FC = () => {
                     <div className='d-flex justify-content-around' style={{ textAlign: "center", }}>
                         {
                             tableHeader.map((item: tableColumnType, index: number) => {
-
                                 return (
                                     data.map((value, key) => {
                                         return (
@@ -97,8 +96,6 @@ const Complete: React.FC = () => {
                     </div>
                 )
             })}
-
-
             {!data?.length && (
                 <div className='d-flex justify-content-around w-100 mt-4'>
                     {
