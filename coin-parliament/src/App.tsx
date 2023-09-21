@@ -132,7 +132,7 @@ import FwVotes from "./Components/FollowerProfile/voteHistory/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
-import Wallet from "./Components/Profile/Wallet";
+import Wallet from "./Components/Profile/Wallet/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
@@ -514,7 +514,7 @@ function App() {
 
     // @ts-ignore
 
-    if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
+    if ((user && userInfo && userInfo?.displayName === "" && userUid ) || userInfo?.firstTimeLogin ) {
       setFirstTimeLogin(true);
       setShowMenuBar(true)
     }

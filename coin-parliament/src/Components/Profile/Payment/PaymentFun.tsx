@@ -59,7 +59,7 @@ function PaymentFun({ isVotingPayment }: any) {
     return;
   }
 
-  const payNow = (detail: any) => {
+  const payNow = (detail?: any) => {
     const headers = {
       'Content-Type': 'application/json',
       "accept": "application/json",
@@ -68,31 +68,46 @@ function PaymentFun({ isVotingPayment }: any) {
     }
 
     const data = {
+      // userId: `${user?.uid}`,
+      // userEmail: `${sessionStorage.getItem("wldp_user")}`,
+      // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+      // amount: payamount,
+      // network: "11155111",
+
+      // // @ts-ignore
+      // origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+      // token: "ETH",
+      // transactionType: payType,
+      // numberOfVotes: extraVote,
+      // paymentDetails: detail,
+    
       userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
-      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: payamount,
-      network: "11155111",
-
-      // @ts-ignore
-      origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+      walletType: "Metamask",
+      amount: 0.0001,
+      network: "5",
+      origincurrency: "eth",
       token: "ETH",
-      transactionType: payType,
-      numberOfVotes: extraVote,
-      paymentDetails: detail,
+      transactionType: "EXTRAVOTES",
+      numberOfVotes: 10,
+      paymentDetails: { }
+    
     }
 
-    console.log(data, "getdataapi")
-
-    axios.post(`${ApiUrl}payment/makePayment`, data, {
+    // axios.post(`${ApiUrl}payment/makePayment`, data, {
+    //   headers: headers
+    // })
+    axios.post(`${ApiUrl}payment/makePayment/toServer`, data, {
       headers: headers
     })
       .then(async (response) => {
-        setApiCalling(true)
+        setApiCalling(false)
+        // setApiCalling(true)
 
       })
       .catch((error) => {
-        setApiCalling(true)
+        setApiCalling(false)
+        // setApiCalling(true)
       })
   }
 
@@ -169,15 +184,17 @@ function PaymentFun({ isVotingPayment }: any) {
     (window as any).wldp.isWalletConnected()
       .then((res: any) => {
         if (res === true) {
-          send()
+          // send()
           console.log("send call 1")
+          payNow()
         }
         else {
           (window as any).wldp.connectionWallet('connect', 'ethereum')
             .then((account: any) => {
               if (account) {
                 console.log("send call 2")
-                send()
+                // send()
+                payNow()
               }
             })
         }

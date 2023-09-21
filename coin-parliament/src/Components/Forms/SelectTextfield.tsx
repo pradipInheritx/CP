@@ -61,7 +61,7 @@ const SelectTextfield = ({
   
 
   return (
-    <Form.Group className="mb-3 d-flex" controlId={name}>
+    <Form.Group className="mb-2 d-flex" controlId={name}>
       <Container>
         <Row style={{justifyContent:'center'}}>
           <Col style={{maxWidth:window.screen.width>979?'40%':''}}>

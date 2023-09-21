@@ -118,11 +118,12 @@ const Menu = ({
     useContext(AppContext);
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
-  var urlName = window.location.pathname.split('/');
+  var urlName = window.location.pathname.split('/');  
   const followerPage = urlName.includes("followerProfile")
   const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0);
   const { width } = useWindowSize();
   const { backgrounHide } = useContext(AppContext);
+  
   const handleClose = () => {
     setMenuOpen(false);
     // handleSoundClick()
@@ -150,7 +151,7 @@ const Menu = ({
 
   // }, [backgrounHide]);
 
-
+  
 
   return (
     <>
@@ -206,8 +207,6 @@ const Menu = ({
                 }}
                 className='position-relative'
                 style={{
-
-
 
                 }}
               >

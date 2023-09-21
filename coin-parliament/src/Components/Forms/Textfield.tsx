@@ -14,6 +14,8 @@ export type TextFieldProps = {
   max?: number;
   step?: number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onBluer?:any;
+  onFocus?: any;
   color?: string;
   edit?: boolean;
   maxlength?: string | number;
@@ -44,6 +46,8 @@ const TextField = ({
   placeholder,
   value,
   onChange,
+  onBluer,
+  onFocus,
   type,
   min,
   max,
@@ -58,6 +62,8 @@ const TextField = ({
       placeholder,
       value,
       onChange,
+    onBluer,
+    onFocus,
     };
 
   if (type === "textArea") {

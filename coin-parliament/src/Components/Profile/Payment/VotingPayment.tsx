@@ -248,8 +248,8 @@ const VotingPayment: React.FC<{
   
   
   useEffect(() => {      
-      (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
-        console.log(data, "username")
+      (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) =>  {
+        console.log(data, "senduid")
       })
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
