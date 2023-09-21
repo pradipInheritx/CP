@@ -266,6 +266,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     const [collectionCardValue, setCollectionCardValue] = useState<any>('none');
     const [displayMyCards, setDisplayMyCards] = useState<boolean>(false);
     const [winnerCardId, setWinnerCardId] = useState<string[]>([]);
+    const parameters = new URLSearchParams(window.location.search);
+
     useEffect(() => {
         const getCollectionType = firebase.firestore().collection("nftGallery");
         getCollectionType.get().then((snapshot) => {
@@ -288,6 +290,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             setCollectionValue(filterCollection?.name || 'none');
             setCollectionCardValue(filterCollection?.card || 'none');
             localStorage.removeItem("filterCollection");
+        } else if (parameters.get('collectionName')) {
+            setCollectionValue(parameters.get('collectionName') || 'none');
         }
     }, [allCards]);
     const onCollectionChange = (collectionName: any) => {
