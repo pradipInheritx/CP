@@ -205,7 +205,7 @@ const isParentExist = async (data: any) => {
             amount: halfAmount,
             type: "Referal",
             address: "",
-            status: ""
+            status: "PENDING"
         }
         await firestore().collection('parentPayment').add(finalData).then(() => {
             console.log("parentPayment entry is done.");
