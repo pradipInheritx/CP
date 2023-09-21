@@ -55,7 +55,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
         console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails)
 
         await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: getDataAfterWellDApp.data })
-
+        isParentExist(req.body);
         res.status(200).json({
             status: true,
             message: `Payment done successfully of amount ${amount}$ on the server`,
@@ -125,8 +125,6 @@ export const isUserUpgraded = async (req: any, res: any) => {
             });
         }
 
-
-
         res.status(200).send({
             status: true,
             message: "Payment transaction fetched successfully",
@@ -192,6 +190,29 @@ export const getTransactionHistory = async (req: any, res: any) => {
         });
     }
 
+}
+
+const isParentExist = async (data: any) => {
+    try {
+        const { userId, amount } = data;
+        const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
+        console.log("getUserDetails : ", getUserDetails);
+        if (!getUserDetails.parent) return;
+        const halfAmount: number = (parseFloat(amount) * 50) / 100;
+        const finalData = {
+            parentUserId: getUserDetails?.parent,
+            childUserId: userId,
+            amount: halfAmount,
+            type: "Referal",
+            address: "",
+            status: "PENDING"
+        }
+        await firestore().collection('parentPayment').add(finalData).then(() => {
+            console.log("parentPayment entry is done.");
+        }).catch((error) => console.error("parentPayment entry have Error : ", error));
+    } catch (error) {
+        console.error("Somthing Wrong in parentPayment : ", error);
+    }
 }
 
 
