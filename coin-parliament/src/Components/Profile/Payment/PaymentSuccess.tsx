@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PaymentFail: React.FC<{ paymentSuccessAction: () => void }> = ({ paymentSuccessAction }) => {
+const PaymentFail: React.FC<{ paymentSuccessAction: () => void, message?: string }> = ({ paymentSuccessAction, message = 'Your payment has been confirmed' }) => {
     return (
         <div className='w-100 d-flex justify-content-center'>
             <div style={{
@@ -41,7 +41,7 @@ const PaymentFail: React.FC<{ paymentSuccessAction: () => void }> = ({ paymentSu
                     margin: '1em 1.6em .3em',
                     padding: '0'
                 }}>
-                    Your payment has been confirmed
+                    {message}
                 </div>
                 <div className='d-flex justify-content-center'>
                     <button type="button"

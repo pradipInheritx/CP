@@ -9,6 +9,9 @@ import { useNavigate } from 'react-router-dom'
 import firebase from "firebase/compat";
 import styled from "styled-components";
 import axios from 'axios'
+import { auth, db } from 'firebase'
+import { doc, setDoc } from 'firebase/firestore'
+import CoinsList from '../Payment/CoinsList'
 
 const Errorsapn = styled.span`
   color:red;
@@ -16,11 +19,12 @@ const Errorsapn = styled.span`
 
 function WalletInfo() {
     const { userInfo } = useContext(UserContext);
-    const translate = useTranslation();
+    const [saveAddress, setSaveAddress] = useState(false)
+    const [savePaymentMethod, setSavePaymentMethod] = useState(false)
     const [walletDetails, setWalletDetails] = useState({
-        coin: "BTC",
-        walletAdderss: "0x0189705803Cb6819Ee80D209A9CCeAf56fD99E24",
-    })
+        coin: "",
+        walletAddress: "",
+    });
     const [errorValue, setErrorValue] = useState({
         coinError: "",
         walletError: ""
@@ -30,14 +34,24 @@ function WalletInfo() {
         amount: ""
     })
 
-
-    const [timeAmountError, setTimeAmountError] = useState("")
+    useEffect(() => {
+        setWalletDetails({
+            coin: userInfo?.wellDAddress?.coin || '',
+            walletAddress: userInfo?.wellDAddress?.address || '',
+        });
+        setTimeAmount({
+            amount: userInfo?.referalReceiveType?.amount || '',
+            time: userInfo?.referalReceiveType?.time || ''
+        });
+        setSelectRadio(userInfo?.referalReceiveType?.name || '');
+    }, [JSON.stringify(userInfo?.wellDAddress)]);
+    const [timeError, setTimeError] = useState("")
 
     const [sendAmount, setSendAmount] = useState("")
-    const [sendAmountError, setSendAmountError] = useState("")
+    const [amountError, setAmountError] = useState("")
     let navigate = useNavigate();
     const [coinList, setCoinsList] = useState([])
-    const [selectRadio, setSelectRadio] = useState(0)
+    const [selectRadio, setSelectRadio] = useState<string>('');
     const [regexList, setRegexList] = useState({
         bitcoin: "/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/",
         ethereum: "/^0x[a-fA-F0-9]{40}$/",
@@ -57,8 +71,7 @@ function WalletInfo() {
             });
     }, [])
 
-    const handalChangeValue = (e: any, type: string) => {
-        console.log(e.target, "getvalue")
+    const handleChangeValue = (e: any, type: string) => {
         let name = e.target.name;
         let value = e.target.value
         setWalletDetails({ ...walletDetails, [name]: value })
@@ -68,76 +81,88 @@ function WalletInfo() {
         })
     }
 
-    const updateAdderss = () => {
-        const coinName = coinList.filter((item: any) => {
-            if (walletDetails.coin == item.symbol) {
-                return item
-            }
-        })
-        // console.log(coinName[0]?.name,"coinName")
+    const updateAddress = async () => {
         if (!walletDetails.coin) {
             setErrorValue({ ...errorValue, coinError: "Please select coin" })
-        } else if (!walletDetails.walletAdderss) {
-            setErrorValue({ ...errorValue, walletError: "Please Enter Wallet Adderss" })
+        } else if (!walletDetails.walletAddress) {
+            setErrorValue({ ...errorValue, walletError: "Please Enter Wallet Address" })
         }
-        else if (walletDetails.walletAdderss) {
-            // @ts-ignore
-            // var valid = WAValidator.validate(`${walletDetails.walletAdderss}`, `${coinName[0]?.name}`, `${walletDetails.coin}`);
-            // if (valid)
-            //     alert('This is a valid address');
-            // else
-            //     setErrorValue({ ...errorValue, walletError: "Address INVALID" })
-            validateAddress(walletDetails.walletAdderss, walletDetails.coin)
+        else if (walletDetails.walletAddress) {
+            setSaveAddress(true);
+            const validate = await validateAddress(walletDetails.walletAddress, walletDetails.coin)
+            if (validate) {
+                setSaveAddress(false);
+                alert('ok');
+            } else {
+                setErrorValue({ ...errorValue, walletError: "Please Enter Valid Wallet Address " })
+                setSaveAddress(false);
+            }
         }
     }
 
-    const validateAddress = (inputAddress?: any, type?: any) => {
-        axios.get(
+    const validateAddress = async (inputAddress: string, type: string) => {
+        return axios.get(
             `https://api.blockcypher.com/v1/${type.toLowerCase()}/main/addrs/${inputAddress}`
-        ).then((response) => {
+        ).then(async (response) => {
             const { error } = response.data;
-
+            if (auth?.currentUser) {
+                const userRef = doc(db, "users", auth?.currentUser?.uid);
+                await setDoc(userRef, {
+                    wellDAddress: {
+                        address: inputAddress,
+                        coin: type,
+                    }
+                    // referalReceiveType: {
+                    //     amount: '',
+                    //     name: '',
+                    //     time: ''
+                    // },
+                }, { merge: true });
+            }
             if (error) {
-                setErrorValue({ ...errorValue, walletError: "Please Enter Valid Wallet Address " })
+                return false;
             } else {
-                // setIsValid(true);
-                alert("this is ok")
+                return true;
             }
         }).catch(() => {
-
-            setErrorValue({ ...errorValue, walletError: "Please Enter Valid Wallet Address " })
+            return false;
         })
     };
 
-    const selectSendType = () => {
-        setTimeAmountError("")
-        setSendAmountError("")
-
-        if (selectRadio == 1) {
-            console.log(selectRadio, "selectRadio")
+    const selectSendType = async () => {
+        setTimeError("");
+        setAmountError("");
+        let errorCount = 0;
+        if (selectRadio === 'LIMIT' && timeAmount.time == "") {
+            setTimeError("Please enter time.");
+            errorCount++;
         }
-        if (selectRadio == 2) {
-            if (timeAmount.time == "" || timeAmount.amount == "") {
-                setTimeAmountError("Please Add time and Amount Both ")
-            }
-            else {
-                console.log(timeAmount, selectRadio, "selectRadio")
-            }
+        if (['LIMIT', /* 'MANUALLY' */].includes(selectRadio) && (timeAmount.amount === "" || !/^\d{0,8}(\.\d{1,4})?$/.test(timeAmount.amount))) {
+            setAmountError("Please enter valid amount.");
+            errorCount++;
         }
-        if (selectRadio == 3) {
-            if (sendAmount == "") {
-                setSendAmountError("Please Add Amount")
+        if (!errorCount && auth?.currentUser) {
+            setSavePaymentMethod(true);
+            try {
+                const userRef = doc(db, "users", auth?.currentUser?.uid);
+                await setDoc(userRef, {
+                    referalReceiveType: {
+                        amount: timeAmount.amount,
+                        name: selectRadio,
+                        time: timeAmount.time
+                    }
+                }, { merge: true });
+            } catch (err) {
+                console.log(err);
             }
-            else {
-                console.log(sendAmount, selectRadio, "selectRadio")
-            }
+            setSavePaymentMethod(false);
         }
     }
 
     const hideError = () => {
-        setTimeAmountError("")
-        setSendAmountError("")
-        // setSelectRadio(0)
+        setTimeError("")
+        setAmountError("");
+        setTimeAmount({ time: '', amount: '' });
     }
 
     return (
@@ -157,7 +182,7 @@ function WalletInfo() {
                         }}
                         value={walletDetails?.coin || ""}
                         onChange={(e) => {
-                            handalChangeValue(e, "")
+                            handleChangeValue(e, "")
                         }}
                     >
                         <option value="">Select Coin</option>
@@ -170,7 +195,7 @@ function WalletInfo() {
 
                 <SelectTextfield
                     label={`${texts.WALLETADDRESS}`}
-                    name="walletAdderss"
+                    name="walletAddress"
                 >
                     <input
                         style={{
@@ -178,12 +203,12 @@ function WalletInfo() {
                             padding: "10px 0px 10px 20px",
                             borderRadius: "5px"
                         }}
-                        name="walletAdderss"
-                        type="walletAdderss"
+                        name="walletAddress"
+                        type="walletAddress"
                         placeholder="Wallet Address"
-                        value={walletDetails.walletAdderss || ""}
+                        value={walletDetails.walletAddress || ""}
                         onChange={(e) => {
-                            handalChangeValue(e, "")
+                            handleChangeValue(e, "")
                         }}
                     />
                     {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
@@ -193,9 +218,9 @@ function WalletInfo() {
                         width: `${window.screen.width > 767 ? "34%" : ""}`,
                         margin: "0px 0px 15px 0px",
                     }}>
-                        <Buttons.Primary style={{ maxWidth: '200px', }}
-                            onClick={() => { updateAdderss() }}
-                        >Update Adderss</Buttons.Primary>
+                        <Buttons.Primary type='button' disabled={saveAddress} style={{ maxWidth: '200px', }} onClick={() => { updateAddress() }}>
+                            {saveAddress ? <span className="loading">Update Address...</span> : 'Update Address'}
+                        </Buttons.Primary>
                     </div>
                 </div>
                 <SelectTextfield
@@ -204,115 +229,117 @@ function WalletInfo() {
                 >
                     <div className="w-100" >
                         <div className="d-flex  justify-content-start align-items-center ">
-
                             <Form.Check
                                 style={{ fontSize: "20px", marginRight: "10px" }}
                                 type="radio"
-                                //   name="group1"
-                                id={`default-checkbox`
-                                }
-                                checked={selectRadio == 1}
-
+                                id={`immediate`}
+                                checked={selectRadio === 'IMMEDIATE'}
                                 onClick={(e) => {
-                                    setSelectRadio(1)
+                                    hideError();
+                                    setSelectRadio('IMMEDIATE');
                                 }}
                             />
-                            <label htmlFor="default-checkbox" > Immedietely the collected referal amount. </label>
+                            <label htmlFor="immediate" > immediately the collected referal amount. </label>
 
                         </div>
 
                         <div className="mt-3 ">
-
-                            {/* <p className="" ></p> */}
                             <div className='d-flex align-items-center'>
-
-
                                 <Form.Check
                                     style={{ fontSize: "20px", marginRight: "10px" }}
                                     type="radio"
-                                    //   name="group1"
-                                    id={`default-checkbox`
-                                    }
-                                    checked={selectRadio == 2}
+                                    id={`limit`}
+                                    checked={selectRadio == 'LIMIT'}
                                     onClick={(e) => {
-                                        setSelectRadio(2)
+                                        hideError();
+                                        setSelectRadio('LIMIT')
                                     }}
                                 />
-                                <label htmlFor="default-checkbox" >Enter time limit or amount.</label>
+                                <label htmlFor="limit" >Enter time limit and amount.</label>
                             </div>
-                            {selectRadio == 2 && <div className="d-flex mt-2 justify-content-between ">
-                                <input
-                                    style={{
-                                        width: "45%",
-                                        padding: "10px 0px 10px 20px",
-                                        borderRadius: "5px"
-                                    }}
-                                    type="text" name="" id=""
-                                    value={timeAmount?.time}
-                                    placeholder="Enter Days"
-                                    onChange={(e) => {
-                                        const re = /^[0-9\b]+$/;
-                                        if (e.target.value === '' || re.test(e.target.value)) {
-                                            setTimeAmount({ ...timeAmount, time: e.target.value })
-                                        }
-                                        hideError()
-                                    }}
-                                />
-                                <input
-                                    style={{
-                                        width: "45%",
-                                        padding: "10px 0px 10px 20px",
-                                        borderRadius: "5px"
-                                    }}
-                                    type="text" name="" id=""
-                                    placeholder="Enter Amount"
-                                    value={timeAmount?.amount}
-                                    onChange={(e) => {
-                                        const re = /^[0-9\b]+$/;
-                                        if (e.target.value === '' || re.test(e.target.value)) {
-                                            setTimeAmount({ ...timeAmount, amount: e.target.value })
-                                        }
-                                        hideError()
-                                    }}
-                                />
+                            {selectRadio === 'LIMIT' && <div className="d-flex mt-2 justify-content-between ">
+                                <div className='d-flex flex-column w-100'>
+                                    <label htmlFor="time">Time(Days)</label>
+                                    <input
+                                        style={{
+                                            width: "80%",
+                                            padding: "10px 0px 10px 20px",
+                                            borderRadius: "5px"
+                                        }}
+                                        type="text" name="" id=""
+                                        value={timeAmount?.time}
+                                        placeholder="Enter Days"
+                                        onChange={(e) => {
+                                            setTimeError("");
+                                            const re = /^[0-9\b]+$/;
+                                            if (e.target.value === '' || re.test(e.target.value)) {
+                                                setTimeAmount({ ...timeAmount, time: e.target.value })
+                                            }
+                                        }}
+                                    />
+                                    {timeError && <Errorsapn>{timeError}</Errorsapn>}
+                                </div>
+                                <div className='d-flex flex-column w-100'>
+                                    <label htmlFor="time">Amount</label>
+                                    <input
+                                        style={{
+                                            width: "80%",
+                                            padding: "10px 0px 10px 20px",
+                                            borderRadius: "5px"
+                                        }}
+                                        type="text" name="" id=""
+                                        placeholder="Enter Amount"
+                                        value={timeAmount?.amount}
+                                        onChange={(e) => {
+                                            const re = /^[0-9\b.]+$/;
+                                            if (e.target.value === '' || re.test(e.target.value)) {
+                                                setAmountError("");
+                                                setTimeAmount({ ...timeAmount, amount: e.target.value })
+                                            }
+                                        }}
+                                    />
+                                    {amountError && <Errorsapn>{amountError}</Errorsapn>}
+                                </div>
                             </div>}
-                            {timeAmountError && <Errorsapn>{timeAmountError}</Errorsapn>}
+
                         </div>
                         <div className="mt-3">
                             <div className='d-flex align-items-center'>
-
-
                                 <Form.Check
                                     style={{ fontSize: "20px", marginRight: "10px" }}
                                     type="radio"
-                                    //   name="group1"
-                                    id={`default-checkbox`
-                                    }
-                                    checked={selectRadio == 3}
+                                    id={`manually`}
+                                    checked={selectRadio === 'IMMEDIATE_MANUAL'}
                                     onClick={(e) => {
-                                        setSelectRadio(3)
+                                        setSelectRadio('IMMEDIATE_MANUAL');
+                                        hideError();
                                     }}
                                 />
-                                <label htmlFor="default-checkbox" >Add Amount send to the parent account</label>
+                                <label htmlFor="manually" >Manually{/* Add Amount send to the parent account */}</label>
                             </div>
-                            {selectRadio == 3 && <input type="" name="" id=""
-                                style={{
-                                    width: "100%",
-                                    padding: "10px 0px 10px 20px",
-                                    borderRadius: "5px"
-                                }}
-                                value={sendAmount}
-                                placeholder="Enter amount send to the parent account"
-                                onChange={(e) => {
-                                    const re = /^[0-9\b]+$/;
-                                    if (e.target.value === '' || re.test(e.target.value)) {
-                                        setSendAmount(e.target.value)
-                                    }
-                                    hideError()
-                                }}
-                            />}
+                            {(selectRadio === 'IMMEDIATE_MANUAL' && false) &&
+                                <>
+                                    <input type="" name="" id=""
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px 0px 10px 20px",
+                                            borderRadius: "5px"
+                                        }}
+                                        value={sendAmount}
+                                        placeholder="Enter amount send to the parent account"
+                                        onChange={(e) => {
+                                            const re = /^[0-9\b.]+$/;
+                                            if (e.target.value === '' || re.test(e.target.value)) {
+                                                setTimeAmount({ time: '', amount: e.target.value })
+                                            }
+                                            hideError();
+                                        }}
+                                    />
+                                    {amountError && <Errorsapn>{amountError}</Errorsapn>}
+                                </>
+                            }
                         </div>
-                        {sendAmountError && <Errorsapn>{sendAmountError}</Errorsapn>}
+
                     </div>
                 </SelectTextfield>
                 <div className="d-flex justify-content-center">
@@ -320,9 +347,11 @@ function WalletInfo() {
                         width: `${window.screen.width > 767 ? "34%" : ""}`,
                         margin: "0px 0px 15px 0px",
                     }}>
-                        <Buttons.Primary style={{ maxWidth: '200px', }}
+                        <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{ maxWidth: '200px', }}
                             onClick={() => { selectSendType() }}
-                        >Update Amount</Buttons.Primary>
+                        >
+                            {savePaymentMethod ? <span className="loading">Update Amount...</span> : 'Update Amount'}
+                        </Buttons.Primary>
                     </div>
                 </div>
             </div>

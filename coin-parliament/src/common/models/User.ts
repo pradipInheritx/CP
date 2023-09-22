@@ -36,6 +36,15 @@ export type UserProps = {
   uid?: string;
   voteValue?: string;
   bio?: string;
+  wellDAddress?: {
+    coin: string;
+    address: string;
+  },
+  referalReceiveType?: {
+    amount: string;
+    name: string;
+    time: string;
+  }
 };
 
 class User implements UserProps {
