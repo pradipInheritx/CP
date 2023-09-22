@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { firestore } from "firebase-admin";
+import { log } from 'firebase-functions/logger';
 
 export const getUserWalletBalance = async (req: any, res: any) => {
     const { address, blockchain, token } = req.params;
@@ -194,22 +195,35 @@ export const getTransactionHistory = async (req: any, res: any) => {
 
 const isParentExist = async (data: any) => {
     try {
+        console.log("data : ", data);
         const { userId, amount } = data;
+        console.log("userId amount ", userId, amount)
         const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
-        console.log("getUserDetails : ", getUserDetails);
+        console.log("getUserDetails : ", getUserDetails.parent);
         if (!getUserDetails.parent) return;
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
-        const finalData = {
+        const parentData = {
             parentUserId: getUserDetails?.parent,
             childUserId: userId,
             amount: halfAmount,
             type: "Referal",
-            address: "",
+            address: "0",
             status: "PENDING"
         }
-        await firestore().collection('parentPayment').add(finalData).then(() => {
-            console.log("parentPayment entry is done.");
-        }).catch((error) => console.error("parentPayment entry have Error : ", error));
+        console.log("final Data ", parentData);
+
+        const addDataQuery = await firestore().collection('parentPayment').add(parentData);
+        console.log("doc id ", addDataQuery.id);
+        // addDataQuery.then((doc) => {
+        // }).catch((error) => {
+        //     console.error('Error adding document: ', error);
+        // });
+        log("PARENT PAYMENT : ",
+            (await firestore().collection('parentPayment').doc(addDataQuery.id).get()).data())
+        console.log(
+            "PARENT PAYMENT : ",
+            (await firestore().collection('parentPayment').doc(addDataQuery.id).get()).data()
+        )
     } catch (error) {
         console.error("Somthing Wrong in parentPayment : ", error);
     }
