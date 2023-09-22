@@ -55,7 +55,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
         console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails)
 
         await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: getDataAfterWellDApp.data })
-        isParentExist(req.body);
+        await isParentExistAndGetReferalAmount(req.body);
         res.status(200).json({
             status: true,
             message: `Payment done successfully of amount ${amount}$ on the server`,
@@ -94,7 +94,7 @@ const addIsExtraVotePurchase = async (metaData: any) => {
         .then(doc => {
             if (doc.exists) {
                 const data: any = doc.data();
-                const originalValue = data.rewardStatistics.extraVote;
+                const originalValue = data?.rewardStatistics?.extraVote;
                 const modifiedValue = originalValue + metaData.numberOfVotes;
                 data.rewardStatistics.extraVote = modifiedValue;
                 userDocumentRef.set(data);
@@ -192,26 +192,44 @@ export const getTransactionHistory = async (req: any, res: any) => {
 
 }
 
-const isParentExist = async (data: any) => {
+const isParentExistAndGetReferalAmount = async (data: any) => {
     try {
+
         const { userId, amount } = data;
         const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
         console.log("getUserDetails : ", getUserDetails);
-        if (!getUserDetails.parent) return;
+
+        if (!getUserDetails.parent) {
+            return {
+                status: false,
+                message: "Parent not available"
+            }
+        };
+
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
+
         const finalData = {
             parentUserId: getUserDetails?.parent,
             childUserId: userId,
             amount: halfAmount,
-            type: "Referal",
+            type: "REFERAL",
             address: "",
             status: "PENDING"
         }
         await firestore().collection('parentPayment').add(finalData).then(() => {
             console.log("parentPayment entry is done.");
         }).catch((error) => console.error("parentPayment entry have Error : ", error));
+
+        return {
+            status: true,
+            message: "Parent payment initiated successfully"
+        }
+
     } catch (error) {
-        console.error("Somthing Wrong in parentPayment : ", error);
+        return {
+            status: false,
+            message: "Something went wrong while getting the parent referal"
+        }
     }
 }
 
