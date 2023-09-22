@@ -44,8 +44,20 @@ export type UserProps = {
   refereeScrore?: number;
   googleAuthenticatorData?: any,
   voteValue?: number,
-
+  wellDAddress?: wellDAddressType,
+  referalReceiveType?: referalReceiveType
 };
+
+export type wellDAddressType = {
+  coin: string,
+  address: string
+}
+
+export type referalReceiveType = {
+  name: string,
+  amount: string,
+  time: string
+}
 
 export type RewardStatistics = {
   total: number;
