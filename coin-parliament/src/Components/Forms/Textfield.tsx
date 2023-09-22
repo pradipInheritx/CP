@@ -14,7 +14,7 @@ export type TextFieldProps = {
   max?: number;
   step?: number;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onBluer?:any;
+  onBluer?: any;
   onFocus?: any;
   color?: string;
   edit?: boolean;
@@ -57,14 +57,14 @@ const TextField = ({
   maxlength,
 }: TextFieldProps) => {
   let formControl: Partial<FormControlProps> & { name: string; rows?: number } =
-    {
-      name,
-      placeholder,
-      value,
-      onChange,
-    onBluer,
+  {
+    name,
+    placeholder,
+    value,
+    onChange,
+    // onBluer,
     onFocus,
-    };
+  };
 
   if (type === "textArea") {
     formControl = { ...formControl, as: "textarea", rows: 3 };
@@ -75,8 +75,8 @@ const TextField = ({
   return (
     <Form.Group className="mb-3 d-flex" controlId={name}>
       <Container>
-        <Row style={{justifyContent:'center'}}>
-          <Col style={{maxWidth:window.screen.width>979?'40%':''}}>
+        <Row style={{ justifyContent: 'center' }}>
+          <Col style={{ maxWidth: window.screen.width > 979 ? '40%' : '' }}>
             {label && (
               <Label sm="3" color={color}>
                 {label}
@@ -84,9 +84,9 @@ const TextField = ({
             )}
           </Col>
         </Row>
-        <Row style={{justifyContent:'center'}}>
-          <Col style={{maxWidth:window.screen.width>979?'40%':''}}>
-          {/* @ts-ignore */}
+        <Row style={{ justifyContent: 'center' }}>
+          <Col style={{ maxWidth: window.screen.width > 979 ? '40%' : '' }}>
+            {/* @ts-ignore */}
             <MyInput
               {...formControl}
               pattern={pattern}

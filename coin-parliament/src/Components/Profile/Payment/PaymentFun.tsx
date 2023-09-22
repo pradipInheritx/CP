@@ -30,7 +30,7 @@ function PaymentFun({ isVotingPayment }: any) {
   const [extraVote, setExtraVote] = useState(0);
   const [extraPer, setExtraPer] = useState(0);
   const [apiCalling, setApiCalling] = useState(true);
-  const [paymentStatus, setPaymentStatus] = useState<string>("");
+  const [paymentStatus, setPaymentStatus] = useState<{ type: string, message: string }>({ type: '', message: '' });
   const { isWLDPEventRegistered, setIsWLDPEventRegistered } = useContext(AppContext);
 
   const [coinInfo, setCoinInfo] = useState<{ [key: string]: any }>({});
@@ -42,7 +42,7 @@ function PaymentFun({ isVotingPayment }: any) {
   let navigate = useNavigate();
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
-  useEffect(() => {    
+  useEffect(() => {
     (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
       console.log(data, "username")
     })
@@ -55,7 +55,7 @@ function PaymentFun({ isVotingPayment }: any) {
   }, [localStorage.getItem("PayAmount")])
 
   const afterPayPopup = (type?: any, msg?: any) => {
-    setPaymentStatus(type);
+    setPaymentStatus({ type, message: msg });
     return;
   }
 
@@ -68,78 +68,67 @@ function PaymentFun({ isVotingPayment }: any) {
     }
 
     const data = {
-      // userId: `${user?.uid}`,
-      // userEmail: `${sessionStorage.getItem("wldp_user")}`,
-      // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      // amount: payamount,
-      // network: "11155111",
-
-      // // @ts-ignore
-      // origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-      // token: "ETH",
-      // transactionType: payType,
-      // numberOfVotes: extraVote,
-      // paymentDetails: detail,
-    
       userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
-      walletType: "Metamask",
-      amount: 0.0001,
-      network: "5",
-      origincurrency: "eth",
+      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+      amount: payamount,
+      network: "11155111",
+      // @ts-ignore
+      origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
       token: "ETH",
-      transactionType: "EXTRAVOTES",
-      numberOfVotes: 10,
-      paymentDetails: { }
-    
+      transactionType: payType,
+      numberOfVotes: extraVote,
+      paymentDetails: detail,
+
     }
 
-    // axios.post(`${ApiUrl}payment/makePayment`, data, {
-    //   headers: headers
-    // })
     axios.post(`${ApiUrl}payment/makePayment/toServer`, data, {
       headers: headers
     })
       .then(async (response) => {
         setApiCalling(false)
-        // setApiCalling(true)
+        if (response?.data?.status) {
+          // setPaymentStatus({ type: 'success', message: response?.data?.message });
+        } else {
+          // setPaymentStatus({ type: 'error', message: response?.data?.message });
 
+        }
       })
       .catch((error) => {
+        // setPaymentStatus({ type: 'error', message: '' });
         setApiCalling(false)
-        // setApiCalling(true)
       })
   }
 
-  const send = () => {
-    const obj = {
-      method: "getTransaction",
-      user: `${sessionStorage.getItem("wldp_user")}`,
-      params: {
-        // @ts-ignore
-        origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-        amount: 0.000001,
-        // amount: payamount,
-        // @ts-ignore
-        // token:"ETH",
-        token: `${coinInfo?.symbol.toUpperCase()}`,
-        network: "11155111"
-      },
-      application: "votetoearn",
-      uid: `${sessionStorage.getItem("wldp_wsid")}`,
-    };
-    console.log(obj, "alldata");
-    (window as any).wldp.send_msg(obj).then((res: any) => {
-      if (isWLDPEventRegistered) {
-        return
-      } else {
-        setIsWLDPEventRegistered(true);
-      }
-    }).catch((err: any) => {
-      console.log(err, "allerr")
+  // const send = () => {
+  //   const obj = {
+  //     method: "getTransaction",
+  //     user: `${sessionStorage.getItem("wldp_user")}`,
+  //     params: {
+  //       // @ts-ignore
+  //       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+  //       amount: 0.000001,
+  //       // amount: payamount,
+  //       // @ts-ignore
+  //       // token:"ETH",
+  //       token: `${coinInfo?.symbol.toUpperCase()}`,
+  //       network: "11155111"
+  //     },
+  //     application: "votetoearn",
+  //     uid: `${sessionStorage.getItem("wldp_wsid")}`,
+  //   };
+  //   console.log(obj, "alldata");
+  //   (window as any).wldp.send_msg(obj).then((res: any) => {
+  //     if (isWLDPEventRegistered) {
+  //       return
+  //     } else {
+  //       setIsWLDPEventRegistered(true);
+  //     }
+  //   }).catch((err: any) => {
+  //     console.log(err, "allerr")
 
-    })
-  };
+  //   })
+  // };
 
   useEffect(() => {
     console.log("i am calling")
@@ -184,7 +173,6 @@ function PaymentFun({ isVotingPayment }: any) {
     (window as any).wldp.isWalletConnected()
       .then((res: any) => {
         if (res === true) {
-          // send()
           console.log("send call 1")
           payNow()
         }
@@ -193,7 +181,6 @@ function PaymentFun({ isVotingPayment }: any) {
             .then((account: any) => {
               if (account) {
                 console.log("send call 2")
-                // send()
                 payNow()
               }
             })

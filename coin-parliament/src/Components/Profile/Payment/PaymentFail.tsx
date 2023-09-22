@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PaymentSuccess: React.FC<{ tryAgainAction: () => void, startAgainAction: () => void }> = ({ tryAgainAction, startAgainAction }) => {
+const PaymentSuccess: React.FC<{ tryAgainAction: () => void, startAgainAction: () => void, message?: string }> = ({ tryAgainAction, startAgainAction, message = 'Insufficient balance' }) => {
     return (
         <div className='w-100 d-flex justify-content-center'>
             <div style={{
@@ -41,7 +41,7 @@ const PaymentSuccess: React.FC<{ tryAgainAction: () => void, startAgainAction: (
                     margin: '1em 1.6em 1.3em',
                     padding: '0'
                 }}>
-                    Insufficient balance
+                    {message}
                 </div>
                 <div className='d-flex justify-content-center'>
                     <button type="button"

@@ -515,7 +515,7 @@ function App() {
 
     // @ts-ignore
 
-    if ((user && userInfo && userInfo?.displayName === "" && userUid ) || userInfo?.firstTimeLogin ) {
+    if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
       setShowMenuBar(true)
     }
@@ -1173,7 +1173,6 @@ function App() {
   useEffect(() => {
     latestCoinsPrice.current = voteEndCoinPrice;
   }, [voteEndCoinPrice]);
-  console.log(voteDetails?.activeVotes, lessTimeVoteDetails, 'pkkk');
 
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
