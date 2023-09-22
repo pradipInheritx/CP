@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { firestore } from "firebase-admin";
+import { log } from 'firebase-functions/logger';
 
 export const getUserWalletBalance = async (req: any, res: any) => {
     const { address, blockchain, token } = req.params;
@@ -140,6 +141,36 @@ export const isUserUpgraded = async (req: any, res: any) => {
         });
     }
 }
+
+export const getParentPayment = async (req: any, res: any) => {
+    try {
+        const getUserArray: any = [];
+        const { userId } = req.body;
+        const getParentPaymentQuery = await firestore()
+            .collection('parentPayment')
+            .where('childUserId', "==", userId)
+            .get();
+        getParentPaymentQuery.docs.forEach((snapshot: any) => {
+            let user = snapshot.data();
+            getUserArray.push(user);
+        });
+        log("getParentPayment : getUserArray => ", getUserArray);
+        res.status(200).send({
+            status: true,
+            message: "Parent payment history fetched successfully",
+            data: getUserArray
+        });
+
+    } catch (error) {
+        errorLogging("getParentPayment", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
+
 export const getTransactionHistory = async (req: any, res: any) => {
     try {
         const { userId } = req.params;
