@@ -95,8 +95,8 @@ const addIsExtraVotePurchase = async (metaData: any) => {
         .then(doc => {
             if (doc.exists) {
                 const data: any = doc.data();
-                const originalValue = data?.rewardStatistics?.extraVote;
-                const modifiedValue = originalValue + metaData.numberOfVotes;
+                const originalValue: number = parseFloat(data?.rewardStatistics?.extraVote);
+                const modifiedValue: number = originalValue + parseFloat(metaData.numberOfVotes);
                 data.rewardStatistics.extraVote = modifiedValue;
                 userDocumentRef.set(data);
             } else {
