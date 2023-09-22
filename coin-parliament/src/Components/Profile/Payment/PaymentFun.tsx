@@ -55,7 +55,7 @@ function PaymentFun({ isVotingPayment }: any) {
   }, [localStorage.getItem("PayAmount")])
 
   const afterPayPopup = (type?: any, msg?: any) => {
-    setPaymentStatus(type);
+    setPaymentStatus({ type, message: msg });
     return;
   }
 
@@ -88,14 +88,14 @@ function PaymentFun({ isVotingPayment }: any) {
       .then(async (response) => {
         setApiCalling(false)
         if (response?.data?.status) {
-          setPaymentStatus({ type: 'success', message: response?.data?.message });
+          // setPaymentStatus({ type: 'success', message: response?.data?.message });
         } else {
-          setPaymentStatus({ type: 'error', message: response?.data?.message });
+          // setPaymentStatus({ type: 'error', message: response?.data?.message });
 
         }
       })
       .catch((error) => {
-        setPaymentStatus({ type: 'error', message: '' });
+        // setPaymentStatus({ type: 'error', message: '' });
         setApiCalling(false)
       })
   }
@@ -130,42 +130,42 @@ function PaymentFun({ isVotingPayment }: any) {
   //   })
   // };
 
-  // useEffect(() => {
-  //   console.log("i am calling")
-  //   const WLDPHandler = (e: any) => {
-  //     try {
-  //       console.log(e, "alldata231dsf");
-  //       setPayButton(false);
+  useEffect(() => {
+    console.log("i am calling")
+    const WLDPHandler = (e: any) => {
+      try {
+        console.log(e, "alldata231dsf");
+        setPayButton(false);
 
-  //       // @ts-ignore
-  //       if (e?.detail?.trx?.transactionHash) {
-  //         afterPayPopup("success", "",)
-  //         if (apiCalling) {
-  //           console.log(coinInfo, 'coinInfo pay');
-  //           // @ts-ignore
-  //           payNow(e?.detail)
-  //           setApiCalling(false)
-  //         }
-  //       }
-  //       // @ts-ignore
-  //       else if (e?.detail?.trx?.transactionStatus) {
+        // @ts-ignore
+        if (e?.detail?.trx?.transactionHash) {
+          afterPayPopup("success", "",)
+          if (apiCalling) {
+            console.log(coinInfo, 'coinInfo pay');
+            // @ts-ignore
+            payNow(e?.detail)
+            setApiCalling(false)
+          }
+        }
+        // @ts-ignore
+        else if (e?.detail?.trx?.transactionStatus) {
 
-  //         // @ts-ignore      
-  //         afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message,)
+          // @ts-ignore      
+          afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message,)
 
-  //       }
-  //       // @ts-ignore
-  //       else if (typeof e?.detail?.trx == "string") {
-  //         // @ts-ignore  
-  //         afterPayPopup("error", e?.detail?.trx,)
-  //       }
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //     }
-  //   }
-  //   document.addEventListener('wldp:trx', WLDPHandler);
-  //   return () => document.removeEventListener('wldp:trx', WLDPHandler);
-  // }, [coinInfo]);
+        }
+        // @ts-ignore
+        else if (typeof e?.detail?.trx == "string") {
+          // @ts-ignore  
+          afterPayPopup("error", e?.detail?.trx,)
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+    document.addEventListener('wldp:trx', WLDPHandler);
+    return () => document.removeEventListener('wldp:trx', WLDPHandler);
+  }, [coinInfo]);
 
 
 
