@@ -145,7 +145,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
 export const getParentPayment = async (req: any, res: any) => {
     try {
         const getUserArray: any = [];
-        const { userId } = req.body;
+        const { userId } = req.params;
         const getParentPaymentQuery = await firestore()
             .collection('parentPayment')
             .where('childUserId', "==", userId)
