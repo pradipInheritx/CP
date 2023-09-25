@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
+import fetch from "node-fetch";
 
 export const renderPaymentPage = async (req: any, res: any) => {
     try {
@@ -123,60 +124,87 @@ export const makePaymentToServer = async (req: any, res: any) => {
         // } // Bearer token is static from WellDApp
 
         //const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
-        const { userEmail, amount, network, origincurrency, token } = req.body;
-        let requestBody = {
+
+        console.info("req.body", typeof req.body, req.body);
+        const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
+        console.info("Indivisual Data::", userEmail, amount, network, origincurrency, token)
+        // let requestBody = {
+        //     "method": "getTransaction",
+        //     "params": {
+        //         "amount": amount,
+        //         "network": network,
+        //         "origincurrency": origincurrency,
+        //         "token": token
+        //     },
+        //     "user": userEmail
+        // }
+
+        const requestBody = {
             "method": "getTransaction",
             "params": {
-                "amount": amount,
-                "network": network,
-                "origincurrency": origincurrency,
-                "token": token
+                "amount": parseFloat(amount),
+                "network": "11155111",
+                "origincurrency": "eth",
+                "token": "ETH"
             },
             "user": userEmail
         }
 
-        // fetch('https://console.dev.welldapp.io/api/transactions', {
-        //     method: 'POST',
-        //     headers: {
-        //         'content-type': 'application/json',
-        //         'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
-        //     },
-        //     body: JSON.stringify(requestBody)
-        // })
-        //     .then(res => {
-        //         if (res.ok)
-        //             return res.json()
-        //         else
-        //             throw Error(`code ${res.status}`)
-        //     })
-        //     .then(async data => {
-        //         await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: {} })
-        //         await isParentExistAndGetReferalAmount(req.body);
-        //         res.json(data)
-        //     })
-        //     .catch(err => {
-        //         console.error(err)
-        //         res.status(400).send(err)
-        //     })
-
-        axios.post('https://console.dev.welldapp.io/api/transactions', requestBody,
-            {
-                headers: {
-                    'content-type': 'application/json',
-                    'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
-                }
-            }
-        ).then((res: any) => {
-            if (res.ok)
-                return res.json()
-            else
-                throw Error(`code ${res.status}`)
-        }).then((data: any) => {
-            res.json(data)
-        }).catch((err: any) => {
-            console.error(err)
-            res.status(400).send(err)
+        fetch('https://console.dev.welldapp.io/api/transactions', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
+            },
+            body: JSON.stringify(requestBody)
         })
+            .then(res => {
+                if (res.ok)
+                    return res.json()
+                else
+                    throw Error(`code ${res.status}`)
+            })
+            .then(async data => {
+                await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: {} })
+                await isParentExistAndGetReferalAmount(req.body);
+                res.json(data)
+            })
+            .catch(err => {
+                console.error(err)
+                res.status(400).send(err)
+            })
+
+        // await axios.post('https://console.dev.welldapp.io/api/transactions',
+        //     {
+        //         "method": "getTransaction",
+        //         "params": {
+        //             "amount": 0.0001,
+        //             "network": "11155111",
+        //             "origincurrency": "eth",
+        //             "token": "ETH"
+        //         },
+        //         "user": "Mukut"
+        //     },
+        //     {
+        //         headers: {
+        //             'content-type': 'application/json',
+        //             'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
+        //         }
+        //     }
+        // ).then((res: any) => {
+        //     console.info("Response:::", res.status === 201)
+        //     if (res.status === 201) {
+        //         return res.data;
+        //     } else {
+        //         throw Error(`code ${res.status}`)
+        //     }
+        // }).then((data: any) => {
+        //     console.info("Res data", data);
+        //     res.json(data)
+        // }).catch((err: any) => {
+        //     console.error(err)
+        //     res.status(400).send(err)
+        // })
 
 
         //console.info("getDataAfterWellDApp", getDataAfterWellDApp, getDataAfterWellDApp.data)
@@ -349,46 +377,46 @@ export const getTransactionHistory = async (req: any, res: any) => {
     }
 }
 
-// const isParentExistAndGetReferalAmount = async (data: any) => {
-//     try {
-//         const { userId, amount } = data;
-//         console.log("userId amount ", userId, amount)
-//         const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
-//         console.log("getUserDetails : ", getUserDetails);
+const isParentExistAndGetReferalAmount = async (data: any) => {
+    try {
+        const { userId, amount } = data;
+        console.log("userId amount ", userId, amount)
+        const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
+        console.log("getUserDetails : ", getUserDetails);
 
-//         if (!getUserDetails.parent) {
-//             return {
-//                 status: false,
-//                 message: "Parent not available"
-//             }
-//         };
+        if (!getUserDetails.parent) {
+            return {
+                status: false,
+                message: "Parent not available"
+            }
+        };
 
-//         const halfAmount: number = (parseFloat(amount) * 50) / 100;
+        const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
-//         const finalData = {
-//             parentUserId: getUserDetails?.parent,
-//             childUserId: userId,
-//             amount: halfAmount,
-//             type: "REFERAL",
-//             address: "",
-//             status: "PENDING"
-//         }
-//         await firestore().collection('parentPayment').add(finalData).then(() => {
-//             console.log("parentPayment entry is done.");
-//         }).catch((error) => console.error("parentPayment entry have Error : ", error));
+        const finalData = {
+            parentUserId: getUserDetails?.parent,
+            childUserId: userId,
+            amount: halfAmount,
+            type: "REFERAL",
+            address: "",
+            status: "PENDING"
+        }
+        await firestore().collection('parentPayment').add(finalData).then(() => {
+            console.log("parentPayment entry is done.");
+        }).catch((error) => console.error("parentPayment entry have Error : ", error));
 
-//         return {
-//             status: true,
-//             message: "Parent payment initiated successfully"
-//         }
+        return {
+            status: true,
+            message: "Parent payment initiated successfully"
+        }
 
-//     } catch (error) {
-//         return {
-//             status: false,
-//             message: "Something went wrong while getting the parent referal"
-//         }
-//     }
-// }
+    } catch (error) {
+        return {
+            status: false,
+            message: "Something went wrong while getting the parent referal"
+        }
+    }
+}
 
 
 export const errorLogging = async (
