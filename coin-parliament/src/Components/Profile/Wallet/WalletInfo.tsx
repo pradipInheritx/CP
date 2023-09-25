@@ -41,6 +41,7 @@ function WalletInfo() {
             coin: userInfo?.wellDAddress?.coin || '',
             walletAddress: userInfo?.wellDAddress?.address || '',
         });
+        setSelectRadio(userInfo?.referalReceiveType?.name || '');
         setDefaultValue();
     }, [JSON.stringify(userInfo?.wellDAddress)]);
     const [timeError, setTimeError] = useState("")
@@ -267,13 +268,13 @@ function WalletInfo() {
                                     <div className='d-flex w-100'>
                                         <input
                                             style={{
-                                                width: '40%',
-                                                padding: "10px 0px 10px 20px",
+                                                width: '55%',
+                                                padding: "10px 0px 10px 9px",
                                                 borderRadius: "5px 0px 0px 5px"
                                             }}
                                             type="text" name="" id=""
                                             value={timeAmount?.time}
-                                            placeholder="Enter Days"
+                                            placeholder="Enter Time"
                                             onChange={(e) => {
                                                 setTimeError("");
                                                 const re = /^[0-9\b]+$/;
