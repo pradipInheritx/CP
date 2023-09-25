@@ -61,19 +61,21 @@ function PaymentFun({ isVotingPayment }: any) {
 
   const payNow = (detail?: any) => {
     const headers = {
-      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/json',
       "accept": "application/json",
       // @ts-ignore
       "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+      "content-type": "application/json"
     }
 
     const data = {
       userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: payamount,
+      // amount: payamount,
+      amount: 0.0001,
       network: "11155111",
-      // @ts-ignore
+      // // @ts-ignore
       origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
       token: "ETH",
       transactionType: payType,
@@ -81,15 +83,56 @@ function PaymentFun({ isVotingPayment }: any) {
       paymentDetails: detail,
 
     }
-    axios.post(`${ApiUrl}payment/makePayment/toServer`, data, {
+
+    axios.post(`${ApiUrl}payment/makePayment/toServer`, data,
+      {
       headers: headers
-    })
-      .then(async (response) => {
+    }).then(async (response) => {
         setApiCalling(false)
         if (response?.data?.status) {
           // setPaymentStatus({ type: 'success', message: response?.data?.message });
         } else {
           // setPaymentStatus({ type: 'error', message: response?.data?.message });
+
+        }
+      })
+      .catch((error) => {
+        // setPaymentStatus({ type: 'error', message: '' });
+        setApiCalling(false)
+      })
+  }
+
+  const afterPayment = (detail?: any) => {
+    const headers = {
+      // 'Content-Type': 'application/json',
+      "accept": "application/json",
+      // @ts-ignore
+      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+      "content-type": "application/json"
+    }
+
+    const data = {
+      userId: `${user?.uid}`,
+      userEmail: `${sessionStorage.getItem("wldp_user")}`,
+      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+      amount: 0.0001,
+      network: "11155111",
+      // @ts-ignore
+      origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+      token: "ETH",
+      transactionType: payType,
+      numberOfVotes: extraVote,
+      paymentDetails: detail,
+    }
+
+    axios.post(`${ApiUrl}payment/update/user/afterVote`, data,
+      {
+        headers: headers
+      }).then(async (response) => {
+        setApiCalling(false)
+        if (response?.data?.status) {
+          
+        } else {          
 
         }
       })
@@ -129,8 +172,7 @@ function PaymentFun({ isVotingPayment }: any) {
   //   })
   // };
 
-  useEffect(() => {
-    console.log("i am calling")
+  useEffect(() => {    
     const WLDPHandler = (e: any) => {
       try {
         console.log(e, "alldata231dsf");
@@ -142,7 +184,7 @@ function PaymentFun({ isVotingPayment }: any) {
           if (apiCalling) {
             console.log(coinInfo, 'coinInfo pay');
             // @ts-ignore
-            payNow(e?.detail)
+            afterPayment(e?.detail)
             setApiCalling(false)
           }
         }
@@ -168,7 +210,7 @@ function PaymentFun({ isVotingPayment }: any) {
 
 
 
-  const checkAndPay = () => {
+  const checkAndPay = () => {        
     (window as any).wldp.isWalletConnected()
       .then((res: any) => {
         if (res === true) {
@@ -185,7 +227,7 @@ function PaymentFun({ isVotingPayment }: any) {
             })
         }
       })
-
+    console.log("i am working now")
   }
   return (
     <>
