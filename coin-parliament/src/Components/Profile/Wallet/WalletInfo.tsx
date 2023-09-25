@@ -20,7 +20,9 @@ const Errorsapn = styled.span`
 function WalletInfo() {
     const { userInfo } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
-    const [savePaymentMethod, setSavePaymentMethod] = useState(false)
+    const [savePaymentMethod, setSavePaymentMethod] = useState(false);
+    const [timeType, setTimeType] = useState('DAY');
+
     const [walletDetails, setWalletDetails] = useState({
         coin: "",
         walletAddress: "",
@@ -39,11 +41,7 @@ function WalletInfo() {
             coin: userInfo?.wellDAddress?.coin || '',
             walletAddress: userInfo?.wellDAddress?.address || '',
         });
-        setTimeAmount({
-            amount: userInfo?.referalReceiveType?.amount || '',
-            time: userInfo?.referalReceiveType?.time || ''
-        });
-        setSelectRadio(userInfo?.referalReceiveType?.name || '');
+        setDefaultValue();
     }, [JSON.stringify(userInfo?.wellDAddress)]);
     const [timeError, setTimeError] = useState("")
 
@@ -149,7 +147,7 @@ function WalletInfo() {
                     referalReceiveType: {
                         amount: timeAmount.amount,
                         name: selectRadio,
-                        time: timeAmount.time
+                        time: timeAmount.time ? `${timeAmount.time} ${timeType}` : ''
                     }
                 }, { merge: true });
             } catch (err) {
@@ -164,7 +162,13 @@ function WalletInfo() {
         setAmountError("");
         setTimeAmount({ time: '', amount: '' });
     }
-
+    const setDefaultValue = () => {
+        setTimeAmount({
+            amount: userInfo?.referalReceiveType?.amount || '',
+            time: userInfo?.referalReceiveType?.time ? userInfo?.referalReceiveType?.time.replace(/[A-Z\s]/g, '') : ''
+        });
+        setTimeType(userInfo?.referalReceiveType?.time ? userInfo?.referalReceiveType?.time.replace(/[0-9\s]/g, '') : '');
+    }
     return (
         <>
             <div className="mt-4">
@@ -187,7 +191,7 @@ function WalletInfo() {
                     >
                         <option value="">Select Coin</option>
                         {coinList.map((item: any, index: number) => {
-                            return <option value={item.symbol} id={item.id}>{item.name}</option>
+                            return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
                         })}
                     </select>
                     {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
@@ -251,7 +255,7 @@ function WalletInfo() {
                                     id={`limit`}
                                     checked={selectRadio == 'LIMIT'}
                                     onClick={(e) => {
-                                        hideError();
+                                        setDefaultValue();
                                         setSelectRadio('LIMIT')
                                     }}
                                 />
@@ -259,24 +263,46 @@ function WalletInfo() {
                             </div>
                             {selectRadio === 'LIMIT' && <div className="d-flex mt-2 justify-content-between ">
                                 <div className='d-flex flex-column w-100'>
-                                    <label htmlFor="time">Time(Days)</label>
-                                    <input
-                                        style={{
-                                            width: "80%",
-                                            padding: "10px 0px 10px 20px",
-                                            borderRadius: "5px"
-                                        }}
-                                        type="text" name="" id=""
-                                        value={timeAmount?.time}
-                                        placeholder="Enter Days"
-                                        onChange={(e) => {
-                                            setTimeError("");
-                                            const re = /^[0-9\b]+$/;
-                                            if (e.target.value === '' || re.test(e.target.value)) {
-                                                setTimeAmount({ ...timeAmount, time: e.target.value })
-                                            }
-                                        }}
-                                    />
+                                    <label htmlFor="time">Time</label>
+                                    <div className='d-flex w-100'>
+                                        <input
+                                            style={{
+                                                width: '40%',
+                                                padding: "10px 0px 10px 20px",
+                                                borderRadius: "5px 0px 0px 5px"
+                                            }}
+                                            type="text" name="" id=""
+                                            value={timeAmount?.time}
+                                            placeholder="Enter Days"
+                                            onChange={(e) => {
+                                                setTimeError("");
+                                                const re = /^[0-9\b]+$/;
+                                                if (e.target.value === '' || re.test(e.target.value)) {
+                                                    setTimeAmount({ ...timeAmount, time: e.target.value })
+                                                }
+                                            }}
+                                        />
+                                        <select
+                                            className='color-back'
+                                            style={{
+                                                width: '40%',
+                                                color: 'black',
+                                                paddingLeft: '10px',
+                                                borderRadius: "0px 5px 5px 0px"
+                                            }}
+                                            defaultValue={timeType}
+                                            value={timeType}
+                                            onChange={e => {
+                                                setTimeType(e.target.value);
+                                            }}
+                                        >
+                                            <option value='DAY' >Day</option>
+                                            <option value='WEEK' >Week</option>
+                                            <option value='MONTH' >Month</option>
+
+
+                                        </select>
+                                    </div>
                                     {timeError && <Errorsapn>{timeError}</Errorsapn>}
                                 </div>
                                 <div className='d-flex flex-column w-100'>

@@ -81,7 +81,6 @@ function PaymentFun({ isVotingPayment }: any) {
       paymentDetails: detail,
 
     }
-
     axios.post(`${ApiUrl}payment/makePayment/toServer`, data, {
       headers: headers
     })
