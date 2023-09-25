@@ -76,8 +76,62 @@
   <script type="text/html" id="is_wp">wp</script>
   <div id="app">
   </div>
+
+  <!-- <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Step 1</h2>
+        <input type="text" id="account" placeholder="No wallet connected">
+        <button class="primary" onclick="connectionWallet()">connectionWallet</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Step 2</h2>
+        <input id="uid" type="text" placeholder="UserID">
+        <button class="primary" onclick="send_uid()">send_uid</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <h2>Step 3</h2>
+        <input type="number" value="0.0001" id="amount">
+        <button class="primary" onclick="getTransaction()">getTransaction</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function send_uid() {
+      const uid = document.getElementById("uid").value;
+      wldp.send_uid(uid);
+    }
+
+    function connectionWallet() {
+      wldp.connectionWallet('connect', 'ethereum');
+    }
+
+    function getTransaction() {
+      const obj = {
+        user: document.getElementById("uid").value,
+        ammount: document.getElementById("amount").value
+      }
+      fetch('http://localhost:8080/api/getTransaction', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(obj)
+      })
+    }
+
+    document.addEventListener('wldp:acountChange', e => {
+      document.getElementById('account').value = e.detail.account
+    })
+
+  </script> -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-<!-- <script src="wallet-address-validator.min.js"></script> -->
+  <!-- <script src="wallet-address-validator.min.js"></script> -->
   <script
     src='https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=votetoearn&init=true&autoconnect=false&visible=false'></script>
   <!-- <script  src='https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=votetoearn&init=true&autoconnect=true&visible=false'></script> -->
