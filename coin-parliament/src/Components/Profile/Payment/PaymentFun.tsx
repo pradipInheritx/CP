@@ -81,16 +81,6 @@ function PaymentFun({ isVotingPayment }: any) {
       paymentDetails: detail,
 
     }
-
-    fetch('http://localhost:8080/api/getTransaction', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        ammount: "0.0001",
-        user: "pradip.k@inheritx.com"
-      })
-    });
-    return;
     axios.post(`${ApiUrl}payment/makePayment/toServer`, data, {
       headers: headers
     })
