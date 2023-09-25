@@ -25,8 +25,11 @@ const cardImageUrl = parameters.get('cardImageUrl');
 ReactDOM.hydrate(
   <HelmetProvider>
     <Helmet prioritizeSeoTags>
-      <meta property="og:image" content={cardImageUrl ? cardImageUrl : '/hpbanner_m2.png'} />
-      <meta property="twitter:image" content={cardImageUrl ? cardImageUrl : '/hpbanner_m2.png'} />
+      {cardImageUrl && <>
+        <meta property="og:image" content={cardImageUrl} />
+        <meta property="twitter:image" content={cardImageUrl} />
+      </>}
+
     </Helmet>
     <BrowserRouter>
       <VoteEndCoinPriceProvider>

@@ -132,7 +132,7 @@ import FwVotes from "./Components/FollowerProfile/voteHistory/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
 import FwProfileNftGallery from "./Pages/FwProfileNftGallery";
 import FwProfileNftGalleryType from "./Pages/FwProfileNftGalleryType";
-import Wallet from "./Components/Profile/Wallet";
+import Wallet from "./Components/Profile/Wallet/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
@@ -1173,7 +1173,6 @@ function App() {
   useEffect(() => {
     latestCoinsPrice.current = voteEndCoinPrice;
   }, [voteEndCoinPrice]);
-  console.log(voteDetails?.activeVotes, lessTimeVoteDetails, 'pkkk');
 
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;

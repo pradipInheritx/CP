@@ -288,8 +288,7 @@ const Header = ({
 	}, [pages]);
 
 	useEffect(() => {
-		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote.collect == false ? headerExtraVote?.vote : 0));
-
+		setVoteNumber(Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0) - (headerExtraVote.collect == false ? headerExtraVote?.vote : 0));		
 		// @ts-ignore
 		setvoteNumberEnd(Number(userInfo?.voteValue));
 		// @ts-ignore
@@ -299,7 +298,7 @@ const Header = ({
 		// @ts-ignore
 	}, [userInfo?.voteValue, userInfo?.rewardStatistics?.extraVote, headerExtraVote?.vote]);
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
-	console.log(headerExtraVote.vote, voteNumber, "headerExtraVote")
+	console.log(headerExtraVote, voteNumber, "headerExtraVote")
 
 	const onSelect = (eventKey: string | null) => {
 
@@ -594,7 +593,8 @@ const Header = ({
 																		}
 																		}
 																	/> :
-																	Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																	Number(voteNumber && voteNumber)
+																	// + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 																}
 
 																{" "}
@@ -659,7 +659,6 @@ const Header = ({
 											</MemberText>} */}
 
 											{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
-											<p>{(!!followerInfo?.bio && followerPage) && followerInfo?.bio}</p>
 											{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 
 										</div>
@@ -746,6 +745,7 @@ const Header = ({
 														{followerInfo?.displayName}
 													</span>
 												</>
+
 												:
 												(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
 													// @ts-ignore
@@ -817,7 +817,8 @@ const Header = ({
 																	}
 																	}
 																/> :
-																Number(voteNumber && voteNumber) + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
+																Number(voteNumber && voteNumber)
+																// + (headerExtraVote?.collect ? headerExtraVote?.vote : 0)
 															}
 															{" "}
 															votes left
@@ -881,7 +882,6 @@ const Header = ({
 														</span>
 												}
 												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
-												<p>{(!!followerInfo?.bio && followerPage) && followerInfo?.bio}</p>
 												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 											</div>
 										}
