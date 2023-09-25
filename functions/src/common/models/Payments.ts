@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
+import * as schedule from "node-schedule";
 
 export const renderPaymentPage = async (req: any, res: any) => {
     try {
@@ -151,7 +152,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
         //     })
         //     .then(async data => {
         //         await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: {} })
-        //         await isParentExistAndGetReferalAmount(req.body);
+        await isParentExistAndGetReferalAmount(req.body);
         //         res.json(data)
         //     })
         //     .catch(err => {
@@ -349,47 +350,74 @@ export const getTransactionHistory = async (req: any, res: any) => {
     }
 }
 
-// const isParentExistAndGetReferalAmount = async (data: any) => {
-//     try {
-//         const { userId, amount } = data;
-//         console.log("userId amount ", userId, amount)
-//         const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
-//         console.log("getUserDetails : ", getUserDetails);
+const isParentExistAndGetReferalAmount = async (data: any) => {
+    try {
+        const { userEmail, amount } = data;
+        console.log("userId amount ", userEmail, amount)
+        const getUserDetails = await firestore().collection('users').where('email', "==", userEmail).get();
+        const userDetails: any = getUserDetails.docs.map((snapshot: any) => {
+            let data = snapshot.data();
+            return { childId: data.uid, parentId: data.parent }
+        });
+        console.log("getUserDetails : ", userDetails);
 
-//         if (!getUserDetails.parent) {
-//             return {
-//                 status: false,
-//                 message: "Parent not available"
-//             }
-//         };
+        if (!userDetails[0].parentId) {
+            return {
+                status: false,
+                message: "Parent not available"
+            }
+        };
 
-//         const halfAmount: number = (parseFloat(amount) * 50) / 100;
+        const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
-//         const finalData = {
-//             parentUserId: getUserDetails?.parent,
-//             childUserId: userId,
-//             amount: halfAmount,
-//             type: "REFERAL",
-//             address: "",
-//             status: "PENDING"
-//         }
-//         await firestore().collection('parentPayment').add(finalData).then(() => {
-//             console.log("parentPayment entry is done.");
-//         }).catch((error) => console.error("parentPayment entry have Error : ", error));
+        const finalData = {
+            parentUserId: userDetails[0]?.parentId,
+            childUserId: userDetails[0]?.childId,
+            amount: halfAmount,
+            type: "REFERAL",
+            address: "",
+            status: "PENDING"
+        }
+        await firestore().collection('parentPayment').add(finalData).then(() => {
+            console.log("parentPayment entry is done.");
+        }).catch((error) => console.error("parentPayment entry have Error : ", error));
 
-//         return {
-//             status: true,
-//             message: "Parent payment initiated successfully"
-//         }
+        await setPaymentSchedulingDate(userDetails[0].parentId)
+        return {
+            status: true,
+            message: "Parent payment initiated successfully"
+        }
+    } catch (error) {
+        return {
+            status: false,
+            message: "Something went wrong while getting the parent referal"
+        }
+    }
+}
 
-//     } catch (error) {
-//         return {
-//             status: false,
-//             message: "Something went wrong while getting the parent referal"
-//         }
-//     }
-// }
+export const setPaymentSchedulingDate = async (parentId: string) => {
+    const getParentDetails: any = (await firestore().collection('users').doc(parentId).get()).data();
+    const date = new Date();
+    const paymentDay: number = date.setDate(date.getDate()) + getParentDetails.referalReceiveType.time;
+    switch (getParentDetails.referalReceiveType) {
+        case "LIMIT":
+            schedule.scheduleJob(new Date(paymentDay), () => {
+                // Payment
+            })
+            break;
 
+        case "IMMEDIATE":
+            //payment 
+            break;
+
+        case "IMMEDIATE_MANUAL":
+            // Payment
+            break;
+
+        default:
+            break;
+    }
+}
 
 export const errorLogging = async (
     funcName: string,
