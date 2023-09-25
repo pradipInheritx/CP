@@ -90,8 +90,7 @@ function WalletInfo() {
             setSaveAddress(true);
             const validate = await validateAddress(walletDetails.walletAddress, walletDetails.coin)
             if (validate) {
-                setSaveAddress(false);
-                alert('ok');
+                setSaveAddress(false);                
             } else {
                 setErrorValue({ ...errorValue, walletError: "Please Enter Valid Wallet Address " })
                 setSaveAddress(false);
