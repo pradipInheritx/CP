@@ -222,8 +222,8 @@ const addIsExtraVotePurchase = async (metaData: any) => {
         .then(doc => {
             if (doc.exists) {
                 const data: any = doc.data();
-                const originalValue = data?.rewardStatistics?.extraVote;
-                const modifiedValue = originalValue + metaData.numberOfVotes;
+                const originalValue: number = parseFloat(data?.rewardStatistics?.extraVote);
+                const modifiedValue: number = originalValue + parseFloat(metaData.numberOfVotes);
                 data.rewardStatistics.extraVote = modifiedValue;
                 userDocumentRef.set(data);
             } else {
@@ -272,7 +272,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
 export const getParentPayment = async (req: any, res: any) => {
     try {
         const getUserArray: any = [];
-        const { userId } = req.body;
+        const { userId } = req.params;
         const getParentPaymentQuery = await firestore()
             .collection('parentPayment')
             .where('childUserId', "==", userId)
