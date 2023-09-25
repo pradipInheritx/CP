@@ -118,27 +118,8 @@ export const getUserWalletBalance = async (req: any, res: any) => {
 
 export const makePaymentToServer = async (req: any, res: any) => {
     try {
-        // const headers = {
-        //     'Content-Type': 'application/json',
-        //     'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
-        // } // Bearer token is static from WellDApp
-
-        //const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
-
         console.info("req.body", typeof req.body, req.body);
-        const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
-        console.info("Indivisual Data::", userEmail, amount, network, origincurrency, token)
-        // let requestBody = {
-        //     "method": "getTransaction",
-        //     "params": {
-        //         "amount": amount,
-        //         "network": network,
-        //         "origincurrency": origincurrency,
-        //         "token": token
-        //     },
-        //     "user": userEmail
-        // }
-
+        const { userEmail, amount } = req.body;
         const requestBody = {
             "method": "getTransaction",
             "params": {
@@ -165,61 +146,28 @@ export const makePaymentToServer = async (req: any, res: any) => {
                     throw Error(`code ${res.status}`)
             })
             .then(async data => {
-                await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: {} })
-                await isParentExistAndGetReferalAmount(req.body);
                 res.json(data)
             })
             .catch(err => {
                 console.error(err)
                 res.status(400).send(err)
             })
-
-        // await axios.post('https://console.dev.welldapp.io/api/transactions',
-        //     {
-        //         "method": "getTransaction",
-        //         "params": {
-        //             "amount": 0.0001,
-        //             "network": "11155111",
-        //             "origincurrency": "eth",
-        //             "token": "ETH"
-        //         },
-        //         "user": "Mukut"
-        //     },
-        //     {
-        //         headers: {
-        //             'content-type': 'application/json',
-        //             'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
-        //         }
-        //     }
-        // ).then((res: any) => {
-        //     console.info("Response:::", res.status === 201)
-        //     if (res.status === 201) {
-        //         return res.data;
-        //     } else {
-        //         throw Error(`code ${res.status}`)
-        //     }
-        // }).then((data: any) => {
-        //     console.info("Res data", data);
-        //     res.json(data)
-        // }).catch((err: any) => {
-        //     console.error(err)
-        //     res.status(400).send(err)
-        // })
-
-
-        //console.info("getDataAfterWellDApp", getDataAfterWellDApp, getDataAfterWellDApp.data)
-
-        //console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails)
-
-
-        // res.status(200).json({
-        //     status: true,
-        //     message: `Payment done successfully of amount ${amount}$ on the server`,
-        //     data: { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: getDataAfterWellDApp.data }
-        // })
     } catch (error: any) {
         console.info("Error while make payment to welld app server", error)
     }
+}
+
+
+export const updateUserAfterPayment = async (req: any, res: any) => {
+    const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
+    await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: {} })
+    await isParentExistAndGetReferalAmount(req.body);
+
+    res.status(200).send({
+        status: true,
+        message: "Payment transaction history fetched successfully",
+        data: {}
+    });
 }
 
 export const makePayment = async (req: any, res: any) => {

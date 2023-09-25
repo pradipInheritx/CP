@@ -7,13 +7,15 @@ import {
     getTransactionHistory,
     makePaymentToServer,
     getParentPayment,
-    renderPaymentPage
+    renderPaymentPage,
+    updateUserAfterPayment
 } from "../common/models/Payments";
 
 const PaymentRouter = Router();
 
 PaymentRouter.post("/makePayment", makePayment);
 PaymentRouter.post("/makePayment/toServer", makePaymentToServer);
+PaymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
 
 PaymentRouter.get("/balance/:address/:blockchain/:token", getUserWalletBalance);
 PaymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
