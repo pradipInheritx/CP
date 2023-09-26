@@ -34,49 +34,46 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
                     throw Error(`code ${res.status}`)
             })
             .then(async data => {
-                log("Payment response data : ", data)
-                return data
+                log("Payment After Response Data: ", data)
+                return { status: true, result: data }
             })
             .catch(err => {
                 console.error(err)
-                return err
+                return { status: false, result: err }
             })
         log('payment transaction : ', transaction)
-        return transaction
+        return { status: true, result: transaction }
     } catch (error) {
         console.error("ERROR paymentFunction : ", error);
         return { status: false, result: error }
-
     }
 }
 
 
-export const isParentExistAndGetReferalAmount = async (data: any): Promise<any> => {
+export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
-        const { userEmail, amount } = data;
-        console.log("userId amount ", userEmail, amount)
-        const getUserDetails = await firestore().collection('users').where('email', "==", userEmail).get();
-        const userDetails: any = getUserDetails.docs.map((snapshot: any) => {
+        const { userId, amount } = userData;
+        const getUserDetailsOnParentId = await firestore().collection('users').where('uid', "==", userId).get();
+        const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
             let data = snapshot.data();
             return { childId: data.uid, parentId: data.parent }
         });
-        console.log("Child details : ", userDetails);
+        console.log("Child details : ", parentUserDetails);
 
-        if (!userDetails[0].parentId) {
+        if (!parentUserDetails[0].parentId) {
             return {
                 status: false,
-                message: "Parent not available"
+                message: "Parent user data is not exist"
             }
         };
 
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
         const parentPaymentData = {
-            parentUserId: userDetails[0]?.parentId,
-            childUserId: userDetails[0]?.childId,
+            parentUserId: parentUserDetails[0]?.parentId,
+            childUserId: parentUserDetails[0]?.childId,
             amount: halfAmount,
-            type: "REFERAL",
-            status: "PENDING"
+            type: "REFERAL"
         }
 
         // set payment schedule accroding parent settings
@@ -104,82 +101,47 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         },
         "user": getParentDetails.email
     }
-    if (getParentSettings.name == "IMMEDIATE_MANUAL" || getParentSettings.name == "IMMEDIATE") {
+    if (getParentSettings.name === "MANUAL" || getParentSettings.name === "IMMEDIATE") {
+        await firestore().collection('parentPayment').add({ ...parentData, status: "SUCCESS", address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
         await paymentFunction(parentTransactionDetails);
     }
-    if (getParentSettings.name == "LIMIT") {
-        //add parent payment user
-        const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
-        // add transaction id in above user documnet
-        await firestore().collection('parentPayment').doc(addParentPaymentUser.id).set({ transactionId: addParentPaymentUser }, { merge: true });
-        console.log("transaction id : ", addParentPaymentUser.id);
-        log("transaction id : ", addParentPaymentUser.id);
-        const getAmount = await parentLimitCalculation(parentData, getParentSettings);
-        const transactionBody = {
-            "method": "getTransaction",
-            "params": {
-                "amount": getAmount?.amount || 0,
-                "network": "5",
-                "origincurrency": "eth",
-                "token": "ETH"
-            },
-            "user": getParentDetails.email
-        };
-        await paymentFunction(transactionBody)
-    }
-}
+    if (getParentSettings.name === "LIMIT") {
+        //getParentDetails.parentUserId
+        // Get all Pending records in DB
+        // const getParentPaymentQuery: any = await firestore()
+        //     .collection('parentPayment')
+        //     .where('parentUserId', '==', parentData.parentUserId)
+        //     .where('status', '==', 'PENDING')
+        //     .get();
+        // 
+        // const getParentPayment: any = getParentPaymentQuery.docs.map((snapshot: any) => snapshot.data());
+        // let pendingAmount = 0;
+        //for (let i = 0; i < getParentPayment.length; i++) {
+        // pendingAmount += getParentPayment[i].amount;
+        // }
+        // pendingAmount = pendingAmount + parentData.amount;
+        // if(getParentSettings.amount < pendingAmount ){
+        // const transactionBody = {
+        //     "method": "getTransaction",
+        //         "params": {
+        //         "amount": pendingAmount || 0,
+        //         "network": "5",
+        //         "origincurrency": "eth",
+        //         "token": "ETH"
+        //     },
+        //     "user": getParentDetails.email
+        // };
+        // await paymentFunction(transactionBody)
+        // Loop on getParentPayment and update status to SUCCESS
+        // await updateAllPendingStatusToSuccess()
+        //} else {
+        // const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
+        //}
 
-export const parentLimitCalculation = async (parentData: any, getParentSettings: any) => {
-    const getParentPaymentQuery: any = await firestore()
-        .collection('parentPayment')
-        .where('parentUserId', '==', parentData.parentUserId)
-        .where('status', '==', 'PENDING')
-        .get();
-    const getParentPayment: any = getParentPaymentQuery.docs.map((snapshot: any) => snapshot.data());
-    const getParentPaymentSorted: any = getParentPayment.sort((a: any, b: any) => a.timestamp._seconds - b.timestamp._seconds);
-    console.log("getParentPaymentSorted : ", getParentPaymentSorted);
-    log("getParentPaymentSorted : ", getParentPaymentSorted);
-    let payment_amount: number = 0;
-    const getAmount = {
-        result: false,
-        amount: 0,
-    };
-    const transactionId: any = [];
-    // count amount by amount of user's settings
-    for (let i = 0; i < getParentPaymentSorted.length; i++) {
-        payment_amount = payment_amount + parseFloat(getParentPaymentSorted[i]);
-        transactionId.push(getParentPaymentSorted[i].id);
-        if (payment_amount >= getParentSettings.amount) {
-            getAmount.result = true;
-            getAmount.amount = payment_amount
-            return
-        };
-        if (getParentPayment.length == getParentPayment[i]) {
-            transactionId.length = 0 // remove all elements from transactionId
-            return
-        };
-    };
-    console.log("after amount calculation : ", getAmount);
-    log("after amount calculation : ", getAmount);
-    // count amount by days of user's settings
-    if (getAmount.result === false) {
-        for (let i = 0; i < getParentPaymentSorted.length; i++) {
-            payment_amount = payment_amount + parseFloat(getParentPaymentSorted[i])
-            if (i === getParentSettings.days) {
-                getAmount.result = true;
-                getAmount.amount = payment_amount
-                return
-            }
-        }
-    };
-    console.log("after day calculation : ", getAmount);
-    log("after day calculation : ", getAmount);
-    if (transactionId.length) {
-        console.log("changes status start");
-        transactionId.forEach((transaction: any) => firestore().collection('parentPayment').doc(transactionId).set({ status: "SUCCESS" }, { merge: true }))
-        console.log("changes status end");
+        // Create cron Job every day 
+        // Get all pending status data 
+        // Group by parentUserId
+        // Get the setting on parentUserId check the setting if every day 
+        // Filter the data on the basis of transaction time. Only get the data on transaction time less than 1 day.
     }
-    console.log("final calculation : ", getAmount);
-    log("final calculation : ", getAmount);
-    return getAmount
 }

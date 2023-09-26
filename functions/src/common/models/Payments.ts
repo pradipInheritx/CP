@@ -1,120 +1,7 @@
-import axios from 'axios';
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
-import { paymentFunction, isParentExistAndGetReferalAmount } from './PaymentCalculation'
-
-export const renderPaymentPage = async (req: any, res: any) => {
-    try {
-        console.info("Come Here");
-        res.setHeader('Content-Type', 'text/html');
-        const htmlContent = `<!DOCTYPE html>
-            <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Vote2Earn demo</title>
-            <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-default.min.css">
-
-        </head>
-    <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
-                <h2>Step 1</h2>
-                <input type="text" id="account" placeholder="No wallet connected" disabled > 
-                <button class="primary" onclick="connectionWallet()">connectionWallet</button>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <h2>Step 2</h2>
-                <input id="uid" type="text" placeholder="UserID">
-                <button class="primary" onclick="send_uid()">send_uid</button>
-            </div>
-        </div>
-        
-        <div class="row">
-            <div class="col-sm-12">
-                <h2>Step 3</h2>
-                <input type="number" value="0.0001" id="amount">
-                <button class="primary" onclick="getTransaction()">getTransaction</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function send_uid(){
-            const uid = document.getElementById("uid").value;
-            wldp.send_uid(uid);
-        }
-
-        function connectionWallet(){
-            wldp.connectionWallet('connect','ethereum');
-        }
-
-        function getTransaction(){
-            const obj = {
-                "userId": "deGaSUcF5KYkQARHXLmQuHLjXyF3",
-                "userEmail": "mukut@inheritx.com",
-                "walletType": "Metamask",
-                "amount": 0.0001,
-                "network": "5",
-                "origincurrency": "eth",
-                "token": "ETH",
-                "transactionType": "EXTRAVOTES",
-                "numberOfVotes": 10,
-                "paymentDetails": {}
-            }
-            fetch('/coin-parliament-staging/us-central1/api/v1/payment/makePayment/toServer',{
-                method: 'POST',
-                headers: {'content-type':'application/json'},
-                body: JSON.stringify(obj)
-            })
-        }
-
-        document.addEventListener('wldp:acountChange', e => {
-           document.getElementById('account').value = e.detail.account
-        })
-
-    </script>
-
-    
-    <script  src='https://bridgeapp-dev.welldapp.com/widget/wldp-widget.js?application=app1.app&init=true&autoconnect=false&visible=true'></script>
-</body>
-</html>`;
-
-        // Send the HTML content as the response body
-        res.end(htmlContent);
-    } catch (error) {
-        console.info("error", error)
-    }
-}
-
-export const getUserWalletBalance = async (req: any, res: any) => {
-    const { address, blockchain, token } = req.params;
-    console.log(address, blockchain, token)
-    const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
-    } // Bearer token is static from WellDApp
-
-    const getUserWalletBalance = await axios.get(`https://console.dev.welldapp.io/api/web3/balance?address=${address}&blockchain=${blockchain}&token=${token}`, { headers: headers })
-
-    if (getUserWalletBalance) {
-        res.status(200).json({
-            status: true,
-            message: `User wallet amount fetch successfully`,
-            data: { balance: getUserWalletBalance.data }
-        })
-    } else {
-        res.status(400).json({
-            status: false,
-            message: "Something went wrong while fetch the balance",
-            data: {}
-        })
-    }
-}
+import { isParentExistAndGetReferalAmount } from './PaymentCalculation';
+import fetch from "node-fetch";
 
 export const makePaymentToServer = async (req: any, res: any) => {
     try {
@@ -131,10 +18,28 @@ export const makePaymentToServer = async (req: any, res: any) => {
             "user": userEmail
         }
 
-        const transaction = await paymentFunction(requestBody);
-        res.send(transaction);
-        console.log("parent payment starting")
-        await isParentExistAndGetReferalAmount(req.body)
+        fetch('https://console.dev.welldapp.io/api/transactions', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json()
+                else
+                    throw Error(`code ${res.status}`)
+            })
+            .then(async data => {
+                log("Payment response data : ", data)
+                res.json(data)
+            })
+            .catch(err => {
+                console.error(err)
+                res.status(400).send(err)
+            })
     } catch (error: any) {
         console.info("Error while make payment to welld app server", error)
     }
