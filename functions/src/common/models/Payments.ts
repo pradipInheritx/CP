@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
-import fetch from "node-fetch";
+import { paymentFunction, isParentExistAndGetReferalAmount } from './PaymentCalculation'
 
 export const renderPaymentPage = async (req: any, res: any) => {
     try {
@@ -131,32 +131,14 @@ export const makePaymentToServer = async (req: any, res: any) => {
             "user": userEmail
         }
 
-        fetch('https://console.dev.welldapp.io/api/transactions', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-                'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
-            },
-            body: JSON.stringify(requestBody)
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json()
-                else
-                    throw Error(`code ${res.status}`)
-            })
-            .then(async data => {
-                res.json(data)
-            })
-            .catch(err => {
-                console.error(err)
-                res.status(400).send(err)
-            })
+        const transaction = await paymentFunction(requestBody);
+        res.send(transaction);
+        console.log("parent payment starting")
+        await isParentExistAndGetReferalAmount(req.body)
     } catch (error: any) {
         console.info("Error while make payment to welld app server", error)
     }
 }
-
 
 export const updateUserAfterPayment = async (req: any, res: any) => {
     const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
@@ -324,48 +306,6 @@ export const getTransactionHistory = async (req: any, res: any) => {
         });
     }
 }
-
-const isParentExistAndGetReferalAmount = async (data: any) => {
-    try {
-        const { userId, amount } = data;
-        console.log("userId amount ", userId, amount)
-        const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
-        console.log("getUserDetails : ", getUserDetails);
-
-        if (!getUserDetails.parent) {
-            return {
-                status: false,
-                message: "Parent not available"
-            }
-        };
-
-        const halfAmount: number = (parseFloat(amount) * 50) / 100;
-
-        const finalData = {
-            parentUserId: getUserDetails?.parent,
-            childUserId: userId,
-            amount: halfAmount,
-            type: "REFERAL",
-            address: "",
-            status: "PENDING"
-        }
-        await firestore().collection('parentPayment').add(finalData).then(() => {
-            console.log("parentPayment entry is done.");
-        }).catch((error) => console.error("parentPayment entry have Error : ", error));
-
-        return {
-            status: true,
-            message: "Parent payment initiated successfully"
-        }
-
-    } catch (error) {
-        return {
-            status: false,
-            message: "Something went wrong while getting the parent referal"
-        }
-    }
-}
-
 
 export const errorLogging = async (
     funcName: string,
