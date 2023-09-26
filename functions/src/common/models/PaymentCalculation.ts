@@ -109,7 +109,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     }
     if (getParentSettings.name == "LIMIT") {
         //add parent payment user
-        const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, address: getParentDetails.wellDaddress.address })
+        const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
         // add transaction id in above user documnet
         await firestore().collection('parentPayment').doc(addParentPaymentUser.id).set({ transactionId: addParentPaymentUser }, { merge: true });
         console.log("transaction id : ", addParentPaymentUser.id);
