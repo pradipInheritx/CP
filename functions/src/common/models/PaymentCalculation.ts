@@ -53,14 +53,14 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
         const { userId, amount } = userData;
-        const getUserDetailsOnParentId = await firestore().collection('users').where('uid', "==", userId).get();
-        const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
-            let data = snapshot.data();
-            return { childId: data.uid, parentId: data.parent }
-        });
+        const parentUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
+        // const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
+        //     let data = snapshot.data();
+        //     return { childId: data.uid, parentId: data.parent }
+        // });
         console.log("Child details : ", parentUserDetails);
 
-        if (!parentUserDetails[0].parentId) {
+        if (!parentUserDetails.parent) {
             return {
                 status: false,
                 message: "Parent user data is not exist"
@@ -70,8 +70,8 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
         const parentPaymentData = {
-            parentUserId: parentUserDetails[0]?.parentId,
-            childUserId: parentUserDetails[0]?.childId,
+            parentUserId: parentUserDetails.parent,
+            childUserId: parentUserDetails.uid,
             amount: halfAmount,
             type: "REFERAL"
         }
@@ -106,37 +106,41 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         await paymentFunction(parentTransactionDetails);
     }
     if (getParentSettings.name === "LIMIT") {
+
         //getParentDetails.parentUserId
         // Get all Pending records in DB
-        // const getParentPaymentQuery: any = await firestore()
-        //     .collection('parentPayment')
-        //     .where('parentUserId', '==', parentData.parentUserId)
-        //     .where('status', '==', 'PENDING')
-        //     .get();
-        // 
-        // const getParentPayment: any = getParentPaymentQuery.docs.map((snapshot: any) => snapshot.data());
-        // let pendingAmount = 0;
-        //for (let i = 0; i < getParentPayment.length; i++) {
-        // pendingAmount += getParentPayment[i].amount;
-        // }
+        const getParentPaymentQuery: any = await firestore()
+            .collection('parentPayment')
+            .where('parentUserId', '==', parentData.parentUserId)
+            .where('status', '==', 'PENDING')
+            .get();
+        const getParentPayment: any = getParentPaymentQuery.docs.map((snapshot: any) => snapshot.data());
+        let pendingAmount = 0;
+        for (let i = 0; i < getParentPayment.length; i++) {
+            pendingAmount += getParentPayment[i].amount;
+        }
         // pendingAmount = pendingAmount + parentData.amount;
-        // if(getParentSettings.amount < pendingAmount ){
-        // const transactionBody = {
-        //     "method": "getTransaction",
-        //         "params": {
-        //         "amount": pendingAmount || 0,
-        //         "network": "5",
-        //         "origincurrency": "eth",
-        //         "token": "ETH"
-        //     },
-        //     "user": getParentDetails.email
-        // };
-        // await paymentFunction(transactionBody)
-        // Loop on getParentPayment and update status to SUCCESS
-        // await updateAllPendingStatusToSuccess()
-        //} else {
-        // const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
-        //}
+        if (getParentSettings.amount < pendingAmount) {
+            const transactionBody = {
+                "method": "getTransaction",
+                "params": {
+                    "amount": pendingAmount || 0,
+                    "network": "5",
+                    "origincurrency": "eth",
+                    "token": "ETH"
+                },
+                "user": getParentDetails.email
+            };
+            await paymentFunction(transactionBody)
+            // Loop on getParentPayment and update status to SUCCESS
+            getParentPayment.forEach((payment: any) => {
+                firestore().collection('parentPayment').doc(payment.transactionId).set({ status: "SUCCESS" }, { merge: true });
+            })
+            // await updateAllPendingStatusToSuccess()
+        } else {
+            const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
+            await firestore().collection('parentPayment').doc(addParentPaymentUser.id).set({ transactionId: addParentPaymentUser.id }, { merge: true });
+        }
 
         // Create cron Job every day 
         // Get all pending status data 
