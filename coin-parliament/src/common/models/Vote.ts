@@ -1,4 +1,4 @@
-import {WSnap} from "./Snapshot";
+import { WSnap } from "./Snapshot";
 import {
   collection,
   DocumentData,
@@ -10,8 +10,8 @@ import {
   where,
 } from "firebase/firestore";
 import isNumber from "lodash/isNumber";
-import {UserType, UserTypeProps} from "./UserType";
-import {useContext} from "react";
+import { UserType, UserTypeProps } from "./UserType";
+import { useContext } from "react";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 
@@ -25,12 +25,15 @@ export type VoteProps = {
 };
 
 export type VoteResultProps = VoteProps & {
+  id?: string;
   voteTime: number;
   expiration: number;
   valueExpirationTime?: number | number[];
   success?: boolean;
   score?: number;
   CPMRangePercentage?: number;
+  voteId?: string
+  voteType?: string
 };
 
 export type TimeFrame = {
@@ -71,8 +74,8 @@ class Vote implements VoteProps {
     this.valueVotingTime = valueVotingTime;
   }
 
-  static async getVote({ userId, coin,timeFrame }: { userId: string; coin: string; timeFrame?: number; }) {
-   
+  static async getVote({ userId, coin, timeFrame }: { userId: string; coin: string; timeFrame?: number; }) {
+
     const db = getFirestore();
     let q = query(
       collection(db, "votes"),
@@ -91,7 +94,7 @@ class Vote implements VoteProps {
       );
 
       const data = v?.data();
-      console.log('voteapicalled1', timeFrame,data)
+
       if (!data) {
         return;
       }
@@ -143,25 +146,29 @@ export default Vote;
 
 export const useCanVote: () => [boolean, string] = () => {
   const {
-    voteRules: { maxVotes,timeLimit },
+    voteRules: { maxVotes, timeLimit },
   } = useContext(AppContext);
-  const {userInfo}=useContext(UserContext)
+  const { userInfo } = useContext(UserContext)
   const { votesLast24Hours, user } = useContext(UserContext);
+  const updateExtravote = !!user && votesLast24Hours.length < Number(maxVotes);
+  const voted = Number(votesLast24Hours.length) < Number(maxVotes) ? Number(votesLast24Hours.length) : Number(maxVotes)
   // @ts-ignore
-  
-  const valid = !!user && votesLast24Hours.length < Number(maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0);
+
+  const valid = !!user && voted < Number(maxVotes) + Number(userInfo?.rewardStatistics?.extraVote || 0);
   // @ts-ignore
-console.log('extravote12',Math.min(...votesLast24Hours.map((v) => v.voteTime)))
+
   const timeReturn = new Date(
     Math.min(...votesLast24Hours.map((v) => v.voteTime)) + timeLimit * 1000
   );
 
-  const text = !user
-    ? "Attention! You must be signed-in to cast your vote!"
-    : `You have voted ${
-        votesLast24Hours.length
-      } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}`;
 
+
+  const text = !user
+    ? "Hey there, to make your voice heard, you've got to sign in and vote"
+    : `Well done, you've used up all your votes! time to grab a snack and come back in`;
+
+
+  // You have voted ${votesLast24Hours.length } times in the last ${timeLimit/3600} hours. ${maxVotes} time is given. please return ${timeReturn.toLocaleDateString()} at ${timeReturn.toLocaleTimeString()}
   return [valid, valid ? "" : text];
 };
 
@@ -180,10 +187,10 @@ export const getChosenTimeframe = (id: string) => {
     list &&
     (Array.isArray(list)
       ? ((
-          Array.from(list)?.find(
-            (t) => (t as HTMLInputElement).checked
-          ) as HTMLInputElement
-        )?.value as unknown as number)
+        Array.from(list)?.find(
+          (t) => (t as HTMLInputElement).checked
+        ) as HTMLInputElement
+      )?.value as unknown as number)
       : list.value)
   );
 };

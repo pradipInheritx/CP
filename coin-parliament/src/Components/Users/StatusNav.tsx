@@ -1,8 +1,9 @@
 import React from "react";
-import {Buttons} from "../Atoms/Button/Button";
-import styled, {css} from "styled-components";
-import {useTranslation} from "../../common/models/Dictionary";
-import {ButtonGroup, ButtonToolbar} from "react-bootstrap";
+import { Buttons } from "../Atoms/Button/Button";
+import styled, { css } from "styled-components";
+import { useTranslation } from "../../common/models/Dictionary";
+import { ButtonGroup, ButtonToolbar } from "react-bootstrap";
+import { texts } from "../LoginComponent/texts";
 
 export type StatusNavProps = {
   userTypes: string[];
@@ -50,32 +51,41 @@ const Toolbar = styled(ButtonToolbar)`
 const ButtonGroupMr1 = styled(ButtonGroup)`
   margin-right: 4px;
 `;
-const StatusNav = ({userTypes, setChosen, chosen}: StatusNavProps) => {
+const StatusNav = ({ userTypes, setChosen, chosen }: StatusNavProps) => {
   const translate = useTranslation();
   return (
-    <Toolbar>
-      {userTypes.includes(chosen || "") && (
+    <Toolbar
+      className={`${window.screen.width < 767 ? "" : "d-flex justify-content-center"}`}
+
+    >
+      {/* {userTypes.includes(chosen || "") && (
         <ButtonGroupMr1>
-          <UnChosen onClick={() => setChosen()}>{translate("view all")}</UnChosen>
+          <UnChosen onClick={() => setChosen()}>            
+            {texts.ViewAll}
+          </UnChosen>
         </ButtonGroupMr1>
       )}
       {!chosen && (
         <ButtonGroupMr1>
-          <Chosen onClick={() => setChosen()}>{translate(" view all")}</Chosen>
+          <Chosen onClick={() => setChosen()}>
+            
+            {texts.ViewAll}
+          </Chosen>
         </ButtonGroupMr1>
-      )}
+      )} */}
       {userTypes.map((u, i) => {
+
         if (chosen === u) {
           return (
             <ButtonGroupMr1 key={i}>
-              <Chosen onClick={() => setChosen(u)}>{translate(u + "s")}</Chosen>
+              <Chosen onClick={() => setChosen(u)}>{translate((u + "S"))}</Chosen>
             </ButtonGroupMr1>
           );
         } else {
           return (
-            <ButtonGroupMr1>
+            <ButtonGroupMr1 key={i}>
               <UnChosen onClick={() => setChosen(u)}>
-                {translate(u + "s")}
+                {translate(u + "S")}
               </UnChosen>
             </ButtonGroupMr1>
           );

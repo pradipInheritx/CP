@@ -13,6 +13,7 @@ import {Buttons} from "../Atoms/Button/Button";
 import {useTranslation} from "../../common/models/Dictionary";
 import {useNavigate} from "react-router-dom";
 import { getMaxWidth } from "../Coins/Coins";
+import { texts } from "../LoginComponent/texts";
 
 const Container = styled.div`
   display: flex;
@@ -99,7 +100,7 @@ const Item = ({userType}: { userType: UserTypeProps }) => {
   const {setChosenUserType}=useContext(AppContext)
   const translate = useTranslation();
   let navigate = useNavigate();
-console.log('leader',leaders)
+
   return (
     <ItemContainer className=" d-flex justify-content-center align-items-center ">
       <H2>TOP {userType.name.toUpperCase()}S</H2>
@@ -122,7 +123,8 @@ console.log('leader',leaders)
             setChosenUserType(userType.name)
           }}
         >
-          {upperCase(translate("view all"))}
+          {/* {upperCase(translate("view all"))} */}
+          {texts.ViewAll}
         </Button>
       </ButtonContainer>
     </ItemContainer>
@@ -142,8 +144,8 @@ const InfluencersCarousel = () => {
         cursorShow={true}
         >
           {userTypes?.map((userType, i) =>
-          <div  style={{minHeight:'272px',margin:'0.3rem'}}>
-            <Item userType={userType} key={i}/>
+          <div  style={{minHeight:'272px',margin:'0.3rem'}} key={i}>
+            <Item userType={userType} />
             </div>)}
           
         </MyCarousel>}

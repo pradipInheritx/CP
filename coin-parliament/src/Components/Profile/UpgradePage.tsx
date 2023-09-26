@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useContext } from "react";
+import React, { useContext ,useState,useEffect} from "react";
 import { Image } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Pairs from "../../Components/Pairs/Pairs";
@@ -22,6 +22,15 @@ import upgrade1 from "../../assets/svg/upgrade1.svg";
 import upgrade2 from "../../assets/svg/upgrade2.svg";
 import upgrade3 from "../../assets/svg/upgrade3.svg";
 import UpgradeCopy from "./UpgradeCopy";
+import { handleSoundClick } from "../../common/utils/SoundClick";
+import  upgrade from "../../assets/images/upgrade_small.png";
+import  Gift from "../../assets/images/Framegift.png";
+import  Frame from "../../assets/images/Frame.png";
+import NftFrame from "../../assets/images/NftFrame.png";
+
+import  XXCOIN from "../../assets/images/XXCOIN.png";
+import  XXVote from "../../assets/images/XXVote.png";
+import  VOUCHER from "../../assets/images/VOUCHER.png";
 
 const H2 = styled.h2`
   font-size: var(--font-size-xxl);
@@ -45,16 +54,24 @@ const UpgradePage = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-
-  const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
+const [clicked,setClicked]=useState(false)
+  const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
+useEffect(() => {
+  
+
+  return () => {
+    setClicked(false)
+  }
+}, [])
 
   const BoxCard = styled.div`
   width:${screenWidth()};
   paddinng-top:20px;
   background-color:#fff;
   border:3px solid #6352E8;
+  margin : 10px 0px 10px 0px;
   display:"flex"
   justify-content: ${flexType()};
    flex-wrap: wrap;
@@ -87,104 +104,201 @@ const UpgradePage = () => {
     
   }
 `;
+  
+  const SideBox = styled.div` 
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom:50px; 
+  padding:20px 10px;  
+  // border: 1px solid red; 
+  border-bottom:none;
+//  border-image-source: linear-gradient(180.99deg, #CAB7FF 2.33%, #4D1A4B 45.7%, rgba(24, 14, 52, 0) 99.15%);
+  background: linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%), linear-gradient(180.99deg, #CAB7FF 2.33%, #4D1A4B 45.7%, rgba(24, 14, 52, 0) 99.15%);
+
+  & p {
+    font-size:19px;
+    background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  }
+
+  & span {
+    font-size:12px;
+    line-height:15px;
+  }
+
+`;
+  
+  const BottomBox = styled.div` 
+  // border:1px solid red;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top:${window.screen.width >767 ? "50px" :"10px"};
+  margin-bottom:${window.screen.width >767 ? "50px" :"10px"};
+  flex-direction: column;
+  width:${window.screen.width >767 ? "30%" :"100%"};
+  height:${window.screen.width >767 ? "auto" :"130px"};
+  & p {
+    margin-top:5px;
+    font-size:14px;
+    text-align:center;
+   background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  }
+`;
   return (
-    <>
+    <>        
       <div
         className='p-0 m-0 w-100 d-flex justify-content-center'
         style={{
           background: "#160133",
-          height: `${screenHeight()}`,
+          // height: `${screenHeight()}`,
+          // width: `${window.screen.width > 979 ? "730px" : "100%"}`,
         }}
       >
         <div
           className=''
           style={{
             background: "#160133",
-            width: `${window.screen.width > 979 ? "60%" : "100%"}`,
+            width: `${window.screen.width > 979 ? "850px" : "100%"}`,
           }}
-        >
-          <TextContainer
-            className='d-xl-none '
-            style={
-              {
-                // textTransform: "none",
-              }
-            }
-          >
+        >                    
             <H2
               style={{
-                fontWeight: "bold",
-                position: "relative",
-                fontSize: "20px",
-                paddingTop: "45px",
-              }}
-            >
-              {translate("UPGRADE YOUR VOTING PASS!")}
-            </H2>
-            <p
-              className='fw-lighter'
-              style={{
-                // fontWeight: "100",
-                textAlign: "center",
-                marginTop: "20px",
-                fontSize: "15px",
-                padding: "0px 10px 0px 10px",
-              }}
-            >
-              {translate(
-                "By upgrading your Voting pass you will be able to mint PAX token, Earn NFTs and power up the voting"
-              )}
-            </p>
-          </TextContainer>
-          {window.screen.width > 979 && (
-            <H2
-              style={{
-                fontSize: "20px",
+                fontSize: "1.25rem",
                 marginTop: "0px",
                 paddingTop: "30px",
                 fontWeight: "bold",
+                textTransform:'uppercase'
               }}
             >
-              {translate("UPGRADE YOUR VOTING PASS!")}
-            </H2>
-          )}
-          {window.screen.width > 979 && (
-            <P
-              style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
+              {translate("Become a miner")}
+          </H2>
+          
+          <P
+            style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
+            className="px-3 pt-4  pb-3"
+            >              
+                Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.              
+          </P>  
+          <div className="d-flex justify-content-around align-items-center flex-wrap"
+            style={{
+            // display:`${window.screen.width > 767 ? "flex" :""}`
+          }}
+          >
+            <div className="d-flex justify-content-center "
+            style={{width:`${window.screen.width > 767 ?"50%" :"100%"}`}}
             >
-              {translate(
-                "By upgrading your Voting pass you will be able to mint PAX token, Earn NFTs and power up the voting"
-              )}
-            </P>
-          )}
+                <img src={upgrade} alt="" width={window.screen.width>767? "400px":"300px"}/>
+            </div>                                         
+            <div className=""
+            style={{width:`${window.screen.width > 767 ?"50%" :"100%"}`}}
+            >
+              <div>
+                <SideBox>
+                  
+                    <div
+                    style={{ width: "30%" }}
+                    className="d-flex justify-content-center align-items-center"
+                    >
+                  <img src={Frame} alt="" width={"60px"}/>
+                    </div>
+                    <div
+                    style={{width:"70%"}}
+                    >
+                      <p>Full mining machine</p>
+                      <span>Mine PAX BEP20 token</span>
+                  </div>
+              
+                </SideBox>
 
-          <div
-            className='d-flex justify-content-around px-3 text-center'
+
+                <SideBox >
+                  
+                    <div
+                    style={{ width: "30%" }}
+                    className="d-flex justify-content-center align-items-center"
+                    >
+
+                  <img src={NftFrame} alt="" width={"60px"}/>
+                    </div>
+                    <div
+                    style={{width:"70%"}}
+                    >
+                    <p>NFT converter</p>
+                    <span>Convert your cards collection to NFTs</span>
+                  </div>
+              
+                </SideBox>
+
+                
+
+                <SideBox >                                                    
+                    <div 
+                    style={{ width: "30%" }}
+                    className="d-flex justify-content-center align-items-center"
+                    >
+                    <img src={Gift} alt="Gift"  width={"60px"}/>
+                    </div>
+                      
+                    <div className=""
+                    style={{width:"70%"}}
+                    >
+                      <p>Purchases</p>
+                      <span>Use your parliament coin (V2E) to buy merchandise</span>
+                      </div>
+                  
+                
+                </SideBox>
+
+              </div>
+            </div>                                         
+          </div>
+
+          <H2
+              style={{
+                fontSize: "1.25rem",
+                marginTop: "0px",
+                paddingTop: "30px",
+                fontWeight: "bold",
+                // textTransform:'uppercase'
+              }}
+            >
+              {translate("In addition, you will receive the following gifts")}
+          </H2>
+          
+          {/* <div
+            className='d-flex justify-content-around px-3 text-center flex-wrap'
             style={{ marginTop: "47px" }}
           >
             <BoxCard>
-              <p className='text-end' style={{ color: "#160133" }}>
-                Get an exclusive Avatar NFT!
+              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
+                Get an exclusive Avatar NFT
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
                 <img className='' src={upgrade1} alt='' />
               </div>
             </BoxCard>
+            
             <BoxCard>
-              <p className='text-end' style={{ color: "#160133" }}>
-                Power up your voting
+              <p className='text-center' style={{ color: "#160133",height:'53px' }}>
+                Get extra votes
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
-                <button
+              
+              <button
                   type='button'
                   className='btn fw-bold'
                   style={{
                     background:
-                      " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" /* fallback for old browsers */,
-                    color: "#fff",
-                    // width: "340px",
-                    marginTop: "25px",
-                    // padding: "14px 44px",
+                      " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" ,
+                    color: "#fff",                    
+                    marginTop: "25px",                    
                     boxShadow: "0px 3px 6px #00000029",
                     fontSize: "10px",
                   }}
@@ -194,35 +308,23 @@ const UpgradePage = () => {
               </div>
             </BoxCard>
             <BoxCard>
-              <p className='text-end' style={{ color: "#160133" }}>
-                Cash Out Your Minted PAX tokens
+              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
+                Convert your cards collection to NFT
+              </p>
+              <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
+              <img className='' src={upgrade1} alt='' />
+              </div>
+            </BoxCard>
+            <BoxCard>
+              <p className='text-center' style={{ color: "#160133",height:'70px' }}>
+                Mine PAX BEP20 tokens
               </p>
               <div className='mt-3 mb-2 d-flex justify-content-center align-items-center'>
                 <img className='' src={upgrade2} alt='' />
               </div>
             </BoxCard>
-          </div>
-          <TextContainer
-            className='d-xl-none '
-            style={{
-              textTransform: "none",
-              fontWeight: "400",
-              // maxWidth: "280px",
-            }}
-          >
-            <H2
-              style={{
-                zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                marginTop: "15px",
-                fontSize: "26px",
-              }}
-            >
-              {translate("ONETIME PAYMENT OF $199")}
-            </H2>
-          </TextContainer>
-          {window.screen.width > 979 && (
+          </div>        
+          
             <H2
               style={{
                 zIndex: 1,
@@ -232,10 +334,25 @@ const UpgradePage = () => {
               }}
             >
               {translate("ONETIME PAYMENT OF $199")}
-            </H2>
-          )}
+            </H2>           */}
+          
+          <div className="d-flex justify-content-around my-4 flex-wrap">          
+            <BottomBox className="">
+              <img src={VOUCHER} alt="" width={"100px"} className="mt-3"/>
+              <p className="">Voucher for merchandise purchase</p>
+            </BottomBox>  
+            <BottomBox className=" ">
+              <img src={XXVote} alt="" width={"90px"}/>
+              <p className="mt-3">Extra votes</p>
+            </BottomBox>  
+            <BottomBox className=" ">
+              <img src={XXCOIN} alt="" width={"100px"}/>
+              <p className="mt-3">Parliament coins (V2E)</p>
+            </BottomBox>  
+          </div>
+          
           <div
-            className='text-center'
+            className='text-center mb-4'
             style={{
               zIndex: 1,
               fontWeight: "400",
@@ -246,74 +363,28 @@ const UpgradePage = () => {
             <button
               type='button'
               className='btn '
-              onClick={() => showModal(<UpgradeCopy />)}
+              onClick={() => {
+                if(clicked) return
+                setClicked(true)
+                
+                handleSoundClick()
+                showModal(<UpgradeCopy />)
+              }}
               style={{
                 background:
                   " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" /* fallback for old browsers */,
                 color: "#fff",
-                width: "340px",
+                width: "250px",
                 // margin: "20px",
-                padding: "14px 44px",
+                padding: "5px 0px",
                 boxShadow: "0px 3px 6px #00000029",
-                fontSize: "31px",
+                fontSize: "25px",
               }}
             >
-              BUY NOW
+              <p> UPGRADE NOW </p>
+              <span style={{ fontSize: "12px"}}>One time Payment of <del>$199</del> $99</span>
             </button>
-          </div>
-
-          <TextContainer
-            className=' d-xl-none'
-            style={{
-              textTransform: "none",
-              fontWeight: "400",
-              // maxWidth: "250px",
-            }}
-          >
-            <H2
-              style={{
-                zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                marginTop: "44px",
-                fontSize: "20px",
-              }}
-            >
-              {translate("Power up your voting")}
-            </H2>
-          </TextContainer>
-          {window.screen.width > 979 && (
-            <H2
-              style={{
-                zIndex: 1,
-                fontSize: "20px",
-                marginTop: "35px",
-                // paddingTop: "30px",
-              }}
-            >
-              {translate("Power up your voting")}
-            </H2>
-          )}
-          <div className='d-flex justify-content-around mt-4 text-center px-3'>
-            <PriceCard>
-              <div>
-                <p className='fw-bold'>100 VOTES </p>
-                <span>$9.99</span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='fw-bold'>250 VOTES </p>
-                <span>$19.99</span>
-              </div>
-            </PriceCard>
-            <PriceCard>
-              <div>
-                <p className='fw-bold'>500 VOTES </p>
-                <span>$34.99</span>
-              </div>
-            </PriceCard>
-          </div>
+          </div>        
         </div>
       </div>
     </>

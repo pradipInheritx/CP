@@ -1,24 +1,26 @@
-import React from 'react';
-import { Redirect, Route, Switch } from 'react-router';
-import Dashboards from './Dashboards';
-import Components from './Components';
-import Apps from './Apps';
-import Extensions from './Extensions';
-import Charts from './Charts';
-import Maps from './Maps';
-import Widgets from './Widgets';
-import Metrics from './Metrics';
-import Login from './Auth/Login';
-import Signup from './Auth/Register';
-import ForgotPassword from './Auth/ForgotPassword';
-import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-import ExtraPages from './ExtraPages';
-import TourGuide from './TourGuide';
-import CustomTimelines from './views/CustomTimelines';
-import MaterialTimelines from './views/MaterialTimelines';
-import Calendar from './modules/Calendar';
-import UsersModule from './modules/Users';
+import React from "react";
+import { Redirect, Route, Switch } from "react-router";
+import Dashboards from "./Dashboards";
+import Components from "./Components";
+import Apps from "./Apps";
+import Extensions from "./Extensions";
+import Charts from "./Charts";
+import Maps from "./Maps";
+import Widgets from "./Widgets";
+import Metrics from "./Metrics";
+import Login from "./Auth/Login";
+import Signup from "./Auth/Register";
+import ForgotPassword from "./Auth/ForgotPassword";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import ExtraPages from "./ExtraPages";
+import TourGuide from "./TourGuide";
+import CustomTimelines from "./views/CustomTimelines";
+import MaterialTimelines from "./views/MaterialTimelines";
+import Calendar from "./modules/Calendar";
+// import UsersModule from "./modules/Users";
+
+import ResetPassword from "./Auth/ResetPassword";
 // import LayoutBuilder from './LayoutBuilder';
 
 const RestrictedRoute = ({ component: Component, ...rest }) => {
@@ -32,8 +34,8 @@ const RestrictedRoute = ({ component: Component, ...rest }) => {
         ) : (
           <Redirect
             to={{
-              pathname: '/signin',
-              state: { from: props.location },
+              pathname: "/signin",
+              state: { from: props.location }
             }}
           />
         )
@@ -45,38 +47,52 @@ const RestrictedRoute = ({ component: Component, ...rest }) => {
 const Routes = () => {
   const { authUser } = useSelector(({ auth }) => auth);
   const location = useLocation();
+  console.log(authUser, "authUser");
 
-  if (location.pathname === '' || location.pathname === '/') {
-    return <Redirect to={'/dashboard'} />;
-  } else if (authUser && location.pathname === '/signin') {
-    return <Redirect to={'/dashboard'} />;
+  if (location.pathname === "" || location.pathname === "/") {
+    return <Redirect to={"/dashboard"} />;
+  } else if (authUser && location.pathname === "/signin") {
+    return <Redirect to={"/dashboard"} />;
+  } else if (
+    !authUser &&
+    location.pathname !== "/signin" &&
+    location.pathname !== "/signup" &&
+    location.pathname !== "/forgot-password" &&
+    location.pathname !== "/reset-password"
+  ) {
+    return <Redirect to={"/signin"} />;
   }
 
   return (
     <React.Fragment>
       <Switch>
-        <Route path="/dashboard" component={Dashboards} />
-        <Route path="/widgets" component={Widgets} />
-        <Route path="/metrics" component={Metrics} />
-        <Route path="/components" component={Components} />
-        <Route path="/extensions" component={Extensions} />
-        <Route path="/visualization/chart" component={Charts} />
-        <Route path="/visualization/map" component={Maps} />
-        <Route path="/extra-pages" component={ExtraPages} />
-        <Route path="/apps" component={Apps} />
-        <Route path="/custom-timeline" component={CustomTimelines} />
-        <Route path="/material-timeline" component={MaterialTimelines} />
-        <Route path="/calendar" component={Calendar} />
-        <Route path="/users" component={UsersModule} />
+        <RestrictedRoute path="/dashboard" component={Dashboards} />
+        <RestrictedRoute path="/widgets" component={Widgets} />
+        <RestrictedRoute path="/metrics" component={Metrics} />
+        <RestrictedRoute path="/components" component={Components} />
+        <RestrictedRoute path="/extensions" component={Extensions} />
+        <RestrictedRoute path="/visualization/chart" component={Charts} />
+        <RestrictedRoute path="/visualization/map" component={Maps} />
+        <RestrictedRoute path="/extra-pages" component={ExtraPages} />
+        <RestrictedRoute path="/apps" component={Apps} />
+        <RestrictedRoute path="/custom-timeline" component={CustomTimelines} />
+        <RestrictedRoute
+          path="/material-timeline"
+          component={MaterialTimelines}
+        />
+        <RestrictedRoute path="/calendar" component={Calendar} />
+        {/* <RestrictedRoute path="/users" component={UsersModule} /> */}
         <Route path="/signin" component={Login} />
         <Route path="/signup" component={Signup} />
         <Route path="/forgot-password" component={ForgotPassword} />
+        <Route path="/reset-password" component={ResetPassword} />
         {/*<Route path="/layout-builder" component={LayoutBuilder} />*/}
       </Switch>
 
-      {location.pathname !== '/signin' && location.pathname !== '/signup' && location.pathname !== '/forgot-password' && (
-        <TourGuide />
-      )}
+      {location.pathname !== "/signin" &&
+        location.pathname !== "/signup" &&
+        location.pathname !== "/forgot-password" &&
+        location.pathname !== "/reset-password" && <TourGuide />}
     </React.Fragment>
   );
 };

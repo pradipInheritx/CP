@@ -2,7 +2,7 @@
 
 import { Button, Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "../common/models/Dictionary";
 import { ContentPage } from "../Contexts/ContentContext";
 import AppContext from "../Contexts/AppContext";
@@ -12,6 +12,8 @@ import Hamburger from "./Atoms/Hamburger";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserContext from "../Contexts/User";
 import { isHomeBg } from "./App/App";
+import BackArrow from "./icons/BackArrow";
+import { handleSoundClick } from "../common/utils/SoundClick";
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
@@ -88,12 +90,26 @@ const Menu = ({
 }: MenuProps) => {
   const { menuOpen, setMenuOpen, login, firstTimeLogin } =
     useContext(AppContext);
-
+  const navigate = useNavigate();
   const { user } = useContext(UserContext);
+  var urlName = window.location.pathname.split('/');
+  const followerPage = urlName.includes("followerProfile")
   const { width } = useWindowSize();
-  const handleClose = () => setMenuOpen(false);
-  const handleShow = () => setMenuOpen(true);
+  const handleClose = () => {
+    setMenuOpen(false);
+    // handleSoundClick()
+  }
+  // console.log("hello")
+  const handleShow = () => {
+    if (followerPage) {
+      navigate(-1)
+    }
+    else {
+      setMenuOpen(true)
+    }
+  };
   const translate = useTranslation();
+
 
   const desktop = width && width > 979;
   return (
@@ -119,19 +135,23 @@ const Menu = ({
           {!desktop && (
             <div
               className='d-flex justify-content-start'
-              style={{ flexBasis: "20%" }}              
+              style={{ flexBasis: "20%" }}
             >
               <HamburgerBut
                 // variant='link'
-                onClick={handleShow}
+                onClick={() => {
+                  handleShow()
+                  // handleSoundClick()
+                }}
                 className='position-relative'
                 style={{
-                  
-                  
-                  
+
+
+
                 }}
               >
-                <Hamburger />
+
+                {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
               </HamburgerBut>
             </div>
@@ -143,7 +163,8 @@ const Menu = ({
                 onClick={handleShow}
                 className='position-relative'
               >
-                <Hamburger />
+                {/* <Hamburger /> */}
+                {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
               </HamburgerBut>
             </div>
@@ -176,7 +197,10 @@ const Menu = ({
                     key={i}
                     as={Link}
                     to={item.href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      setMenuOpen(false)
+                      // handleSoundClick()
+                    }}
                   >
                     {translate(item.label)}
                   </Nav.Link>

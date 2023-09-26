@@ -87,6 +87,7 @@ const Icon = styled.div`
 `;
 
 const GraphContainer = styled.div`
+
   background: transparent
     linear-gradient(
       180deg,
@@ -101,8 +102,8 @@ const GraphContainer = styled.div`
   border-radius: 6px;
   opacity: 1;
 `;
-var lineSeries:any;
-const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
+var lineSeries: any;
+const Graph = ({ data, totals, symbol, width = 274 }: GraphProps) => {
   const chartElement = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<IChartApi | null>(null);
   const [series, setSeries] = useState<ISeriesApi<"Line"> | null>(null);
@@ -179,17 +180,17 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
   }, []);
 
   const height = useMemo(() => 130, []);
-  const padding = useMemo(() => 21, []);
-  
+  const padding = useMemo(() => 30, []);
+
 
   useEffect(() => {
-    
+
     if (!chartElement.current) return;
-    const chart1 = createChart(chartElement.current, { width: width, height: height,...options });
-     lineSeries = chart1.addLineSeries({color:'#6352E8',lineWidth:1,...lineOptions,crosshairMarkerVisible: true,lastPriceAnimation:1,lastValueVisible:true});
+    const chart1 = createChart(chartElement.current, { width: width, height: height, ...options });
+    lineSeries = chart1.addLineSeries({ color: '#6352E8', lineWidth: 1, ...lineOptions, crosshairMarkerVisible: true, lastPriceAnimation: 1, lastValueVisible: true });
     lineSeries.setData(data);
-   
-    
+
+
     // setChart(
     //   createChart(chartElement.current, {
     //     width,
@@ -197,11 +198,11 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
     //     ...options,
     //   })
     // );
-    
-  
-  
+
+
+
   }, [width, chartElement, height, options]);
-// console.log('chart',lineOptions)
+
   useEffect(() => {
     if (!chart) return;
 
@@ -213,14 +214,16 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
   }, [chart, lineOptions]);
 
   useEffect(() => {
-    let updateData = data[data?.length-1]
-   
-    if (lineSeries) {
-      
-      lineSeries.update(updateData);}
+    let updateData = data[data?.length - 1]
+
+
+
+    if (lineSeries && updateData?.value != 0) {
+      // lineSeries.update(updateData);
+    }
     if (!series) return;
     series.setData(data);
-    
+
     const timeScale = chart?.timeScale();
     timeScale?.fitContent();
 
@@ -233,18 +236,16 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
       }
     });
   }, [series, chart, data]);
-
-
   return (
     <GraphContainer
       style={{
-       
-        width: width + padding * 2,
+        maxWidth: `${window.screen.width < 767 ? "345px" : "400px"}`,
+        // width: width + padding * 2,
         padding: `12px ${padding}px 22px`,
         margin: "0 auto",
       }}
     >
-      
+
       <div className="d-flex justify-content-between align-items-center mb-1">
         <CPVI>SVI</CPVI>
         <Total>{total} Votes</Total>
@@ -255,14 +256,19 @@ const Graph = ({ data, totals, symbol, width = 294 }: GraphProps) => {
       >
         <Legend>{legend}</Legend>
         <div ref={chartElement} />
-        <div  className="position-absolute top-0 w-100" style={{ left: 0 }}>
+        <div className="position-absolute top-0 w-100" style={{ left: 0 }}>
           <div
             className="position-relative w-100"
             style={{ height, zIndex: 0, width }}
           >
             <div
               className="position-absolute top-0 h-100"
-              style={{ zIndex: 1, width: padding, right: -5 }}
+              style={{
+                zIndex: 1,
+                // width: padding,
+                maxWidth: `${window.screen.width < 767 ? "345px" : "400px"}`,
+                right: -5
+              }}
             >
               <div className="position-relative h-100">
                 <TickRight {...{ padding }} className="bottom-0">

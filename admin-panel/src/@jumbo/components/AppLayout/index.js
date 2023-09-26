@@ -43,8 +43,10 @@ const AppLayout = ({ children }) => {
   const classes = useStyles();
   const location = useLocation();
   globalStyles();
+  
 
   useEffect(() => {
+    
     dispatch(AuhMethods[CurrentAuthMethod].getAuthUser());
     setLayoutLoader(false);
 
@@ -59,7 +61,7 @@ const AppLayout = ({ children }) => {
     );
   }
 
-  if (['/signin', '/signup', '/forgot-password'].includes(location.pathname)) {
+  if (['/signin', '/signup', '/forgot-password',"/reset-password"].includes(location.pathname)) {
     return <div style={{ minHeight: '100vh', width: '100%', display: 'flex' }}>{children}</div>;
   }
 

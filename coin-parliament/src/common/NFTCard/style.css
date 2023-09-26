@@ -96,10 +96,10 @@
   background-size: contain;
 }
 .card {
-  /* width: 332px; */
-  /* height: 472px; */
-  width: 100%;
-  height: auto;
+  width: 252px;
+  height: 320px;
+  /* width: 100%;
+  height: auto; */
   text-align: center;
 }
 
@@ -165,4 +165,7 @@
 .img-fluid {
   max-width: 100%;
   height: auto;
+}
+.rotateY360 {
+  animation: spin 2s linear infinite;
 }

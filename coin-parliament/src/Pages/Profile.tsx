@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Badge, Col, Container, Row } from "react-bootstrap";
 import UserContext from "../Contexts/User";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import UserCard from "../Components/Profile/UserCard";
@@ -9,10 +9,10 @@ import styled from "styled-components";
 import { Gradient2 } from "../styledMixins";
 import { isV1, PageContainer } from "../Components/App/App";
 import ImageTabs from "../Components/Profile/ImageTabs";
-import Votes from "../Components/icons/votes";
+import Votes from "../Components/icons/votes2";
 import Mine from "../Components/icons/mine";
 import Share from "../Components/icons/share";
-import Following from "../Components/icons/Following1";
+import ProfileFollowing from "../Components/icons/ProfileFollowing";
 import Gallery from "../Components/icons/Gallery";
 import Notifications from "../Components/icons/notifications";
 import NotificationContext, { ToastType } from "../Contexts/Notification";
@@ -27,26 +27,28 @@ import UserIcon from "../Components/icons/userIcon";
 import SecurityIcon from "../Components/icons/securityIcon";
 import ProfileNftGallery from "./ProfileNftGallery";
 import Wallet from "../Components/icons/Wallet";
+import { texts } from "../Components/LoginComponent/texts";
+import { handleSoundClick } from "../common/utils/SoundClick";
 
 export enum ProfileTabs {
   profile = "profile",
-  password = "password",
-  wallet = "wallet",
+  password = "password",  
   followers = "followers",
   mine = "mine",
   edit = "edit",
+  wallet = "wallet",
   votes = "votes",
   notifications = "notifications",
   ProfileNftGallery = "Album",
-  ProfileNftGalleryType = "Album/:name",
+  ProfileNftGalleryType = "Album/:type",
   share = "share",
 }
 
 export const CardContainer = styled.div`
-
+overflow:hidden;
 &.BigScreen{
 background:#d4d0f3;
-  height: 127px;
+  height: 140px;
   padding: 0;
   
   border-radius: 0 0 0 0;
@@ -57,8 +59,20 @@ background:#d4d0f3;
 export const OuterContainer = styled.div`
   background: ${window.screen.width < 979 ? "var(--color-d4d0f3)" : ""};
   position: relative;
+  // border:3px solid red; 
   z-index: 0;
 
+`;
+const MyBadge = styled(Badge)`
+  background-color: var(--color-6352e8);
+  box-shadow: 0 3px 6px #00000029;
+  // border-radius: 0 0 6px 6px;
+  font-size: 14px;
+  opacity: 1;
+  width: auto;
+  color: var(--white);
+  padding:13px;
+  margin-top:10px;
 `;
 
 const Profile = () => {
@@ -92,16 +106,17 @@ const Profile = () => {
       const userRef = doc(db, "users", user?.uid);
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
-        showToast(translate("user info was updated"));
+        showToast(translate(texts.UserInfoUpdate));
+        
         toast.dismiss();
       } catch (e) {
-        showToast(translate("user failed to be updated"), ToastType.ERROR);
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }
     }
   };
 
   
-  return user ? (
+  return  (
     <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
         // <Container className="py-3" fluid>
@@ -115,8 +130,22 @@ const Profile = () => {
       )}
       {!avatarMode && (
         <OuterContainer>
-          <CardContainer className={`${window.screen.width > 979? "BigScreen":""}`}>
+          
+          <CardContainer className={`${window.screen.width > 979 ? "BigScreen" : ""}`}>
             <>
+              {!userInfo?.paid && (
+          <Row
+            className='d-flex justify-content-center'                      
+          >
+                  <MyBadge bg='-' onClick={() => {
+                    handleSoundClick()
+                    navigate("/upgrade")
+                  }} style={{ cursor: "pointer" }} >
+                    {/* {translate("upgrade your account")} */}
+                    {texts.UpgradeYourAccount}
+                  </MyBadge>
+          </Row>
+        )}
               <UserCard user={userInfo} onClick={() => setAvatarMode(true)}>
                 {window.screen.width < 979 && (
                   <Container
@@ -130,6 +159,7 @@ const Profile = () => {
                     {![
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
+                      ProfileTabs.wallet as string,
                     ].includes(pathname) && (
                       <ImageTabs
                         {...{
@@ -137,7 +167,7 @@ const Profile = () => {
                           handleSelect: (eventKey: string | null) => {
                             if (isV1() && eventKey === ProfileTabs.mine) {
                               showToast(
-                                translate("Feature will be available soon"),
+                                translate(texts.FeatureAvailableSoon),
                                 ToastType.INFO
                               );
                               return;
@@ -174,7 +204,7 @@ const Profile = () => {
                             {
                               component: <></>,
                               label: ProfileTabs.followers,
-                              icon: <Following />,
+                              icon: <ProfileFollowing />,
                               eventKey: ProfileTabs.followers,
                             },
                             {
@@ -191,6 +221,7 @@ const Profile = () => {
                     {[
                       ProfileTabs.edit as string,
                       ProfileTabs.password as string,
+                      ProfileTabs.wallet as string,
                     ].includes(pathname) &&
                       window.screen.width < 979 && (
                         <ImageTabs
@@ -199,7 +230,7 @@ const Profile = () => {
                             handleSelect: (eventKey: string | null) => {
                               if (isV1() && eventKey === ProfileTabs.mine) {
                                 showToast(
-                                  translate("Feature will be available soon"),
+                                  translate(texts.FeatureAvailableSoon),
                                   ToastType.INFO
                                 );
                                 return;
@@ -209,13 +240,13 @@ const Profile = () => {
                             tabs: [
                               {
                                 component: <></>,
-                                label: ProfileTabs.edit,
+                                label: 'Info',
                                 icon: <UserIcon />,
                                 eventKey: ProfileTabs.edit,
                               },
                               {
                                 component: <></>,
-                                label: ProfileTabs.password,
+                                label: 'Security',
                                 icon: <SecurityIcon />,
                                 eventKey: ProfileTabs.password,
                               },
@@ -248,14 +279,15 @@ const Profile = () => {
         </div>
       </div>
     </PageContainer>
-  ) : (
-    <div
-      className='d-flex justify-content-center align-items-center'
-      style={{ height: "100vh", width: "100vw" }}
-    >
-      <Spinner />
-    </div>
-  );
+  ) 
+  // : (
+  //   <div
+  //     className='d-flex justify-content-center align-items-center'
+  //     style={{ height: "100vh", width: "100vw" }}
+  //   >
+  //     <Spinner />
+  //   </div>
+  // );
 };
 
 export default Profile;

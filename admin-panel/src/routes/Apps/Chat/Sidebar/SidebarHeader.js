@@ -10,6 +10,7 @@ import ProfileDetail from './ProfileDetail';
 const SidebarHeader = ({ searchText, setSearchText }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [userStatus, setUserStatus] = React.useState('Online');
+  
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);

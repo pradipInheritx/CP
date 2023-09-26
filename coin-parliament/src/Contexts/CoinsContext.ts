@@ -36,21 +36,25 @@ export type Leader = {
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
 
 export const follow = async (leader: Leader, you: User, add: boolean) => {
+  
+  
+  const subscribe = httpsCallable(functions, "subscribe");
+  await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps);
+
   if (add) {
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
-      { leader: firebase.firestore.FieldValue.arrayUnion(leader.userId) },
+      { leader: firebase.firestore.FieldValue.arrayUnion(leader?.userId) },
       { merge: true }
     );
   } else {
+    console.log("yes i am working")
     await setDoc(
       doc(db, "users", you.uid).withConverter(userConverter),
-      { leader: firebase.firestore.FieldValue.arrayRemove(leader.userId) },
+      { leader: firebase.firestore.FieldValue.arrayRemove(leader?.userId) },
       { merge: true }
     );
-  }
-  const subscribe = httpsCallable(functions, "subscribe");
-  await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps);
+  } 
 };
 
 export const totalsConverter = {
@@ -93,6 +97,11 @@ export const coinDataConverter = {
 };
 
 export type CoinContextProps = {
+  allCoinsSetting:any;
+  changePrice: any;
+  setChangePrice: any;
+  myCoins: any;
+  setMyCoins: any;
   coins: { [symbol: string]: Coin };
   setCoins: (coins: { [symbol: string]: Coin }) => void;
   totals: { [key: string]: Totals };
@@ -101,6 +110,7 @@ export type CoinContextProps = {
   setLeaders: (leaders: Leader[]) => void;
   rest: ICryptoClient;
   ws: WebSocket;
+  socket:WebSocket;
   allCoins: string[];
   allPairs: Array<string[]>;
 };

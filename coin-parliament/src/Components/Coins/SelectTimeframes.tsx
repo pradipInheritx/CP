@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Col, Container, Row} from "react-bootstrap";
-import {getNumTimeframes, TimeFrame} from "../../common/models/Vote";
+import { Col, Container, Row } from "react-bootstrap";
+import { getNumTimeframes, TimeFrame, VoteResultProps } from "../../common/models/Vote";
 import Icon from "../Atoms/Checkbox/Icon";
-import {Buttons} from "../Atoms/Button/Button";
-import {Title} from "../../Pages/SingleCoin";
+import { Buttons } from "../Atoms/Button/Button";
+import { Title } from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import AppContext from "../../Contexts/AppContext";
+import { handleSoundClick } from "../../common/utils/SoundClick";
 
 
 export type SelectTimeframesProps = {
@@ -13,11 +14,16 @@ export type SelectTimeframesProps = {
   selectTimeframe: (c: TimeFrame) => void;
   selected?: number;
   title?: string;
+  votedTitle?: string;
   voted?: boolean;
   selectedTimeFrameArray?: any;
   cssDegree?: any;
   votePrice?: any;
   votedDetails?: any;
+  setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
+  setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  vote: VoteResultProps,
+  disableVoteButton?: boolean
 };
 
 const SelectTimeframes = ({
@@ -25,25 +31,33 @@ const SelectTimeframes = ({
   timeframes,
   selectTimeframe,
   title,
+  votedTitle,
   voted,
   selectedTimeFrameArray,
   cssDegree,
   votePrice,
   votedDetails,
+  setHideButton,
+  setpopUpOpen,
+  vote,
+  disableVoteButton
 }: SelectTimeframesProps) => {
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
+
   const num = getNumTimeframes(timeframes);
-   const [buttonDetails, setButtonDetails] = useState<any>();
-  const { allButtonTime } = useContext(AppContext);
-  
+  const [buttonDetails, setButtonDetails] = useState<any>();
+  const [pariButtonDetails, setPariButtonDetails] = useState<any>();
+  const { allButtonTime, allPariButtonTime } = useContext(AppContext);
+
   useEffect(() => {
     setButtonDetails(allButtonTime)
   }, [allButtonTime])
-  
-  console.log(timeframes, "timeframevoted", voted, selected);
-  // console.log(votePrice,"votePricevotePrice");
-  
+
+  useEffect(() => {
+    setPariButtonDetails(allPariButtonTime);
+  }, [allPariButtonTime]);
+
 
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
@@ -57,19 +71,14 @@ const SelectTimeframes = ({
             value={timeframes.filter((t) => t.chosen)[0].index}
           />
         )}
-        {num > 1 && title && (
-          <div className='mb-3'>
-            <Title>{title}</Title>
-          </div>
-        )}
       </Row>
       <Row
         className={
           voted
             ? "row gx-5"
             : selected === undefined
-            ? "row gx-5 glow"
-            : "row gx-5"
+              ? "row gx-5 glow"
+              : "row gx-5"
         }
         id='test'
         style={{ minWidth: "310px" }}
@@ -81,8 +90,13 @@ const SelectTimeframes = ({
                 <Icon
                   inline='d-flex justify-content-center'
                   checked={timeframe.index === selected}
+
                   setChecked={() => {
+                    //if user click on vote then all button disabled until response does not come for that vote
+                    if (disableVoteButton)
+                      return;
                     selectTimeframe(timeframe);
+                    handleSoundClick()
                   }}
                   name='timeframe'
                   type='radio'
@@ -96,6 +110,11 @@ const SelectTimeframes = ({
                       // votePrice={votePrice?.length > 0 ? votePrice[k] : 0}
                       votedDetails={votedDetails?.length > 0 ? votedDetails[k] : 0}
                       buttonDetails={buttonDetails && buttonDetails[k]}
+                      PariButtonDetails={pariButtonDetails && pariButtonDetails[k]}
+                      buttonIndex={k}
+                      setHideButton={setHideButton}
+                      setpopUpOpen={setpopUpOpen}
+                      vote={vote}
                     >
                       {timeframe.name}
                     </Buttons.TimeframeButton>
@@ -108,8 +127,10 @@ const SelectTimeframes = ({
                         ),
                         cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
                         // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
-                        votedDetails:votedDetails?.length > 0 ?votedDetails[k] : 0,
-                        buttonDetails:buttonDetails && buttonDetails[k],
+                        votedDetails: votedDetails?.length > 0 ? votedDetails[k] : 0,
+                        buttonDetails: buttonDetails && buttonDetails[k],
+                        PariButtonDetails: pariButtonDetails && pariButtonDetails[k],
+                        vote
                       }}
                       showTimer={true}
                     >
@@ -121,8 +142,8 @@ const SelectTimeframes = ({
             );
           })}
       </Row>
-      
-    {/* </Container> */}
+
+      {/* </Container> */}
     </div>
   );
 };

@@ -117,7 +117,12 @@ export default function MultipleSelect() {
           ))}
         </Select>
       </FormControl>
-      <FormControl className={classes.formControl}>
+      <FormControl className={classes.formControl}
+      variant="variant"
+      // size={size}
+      // fullWidth
+      // required="required"
+      >
         <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
@@ -126,13 +131,13 @@ export default function MultipleSelect() {
           value={personName}
           onChange={handleChange}
           input={<Input id="select-multiple-chip" />}
-          renderValue={selected => (
-            <div className={classes.chips}>
-              {selected.map(value => (
-                <Chip key={value} label={value} className={classes.chip} />
-              ))}
-            </div>
-          )}
+          // renderValue={selected => (
+          //   <div className={classes.chips}>
+          //     {selected.map(value => (
+          //       <Chip key={value} label={value} className={classes.chip} />
+          //     ))}
+          //   </div>
+          // )}
           MenuProps={MenuProps}>
           {names.map(name => (
             <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>

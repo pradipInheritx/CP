@@ -13,13 +13,14 @@ import UserIcon from "../icons/userIcon";
 import SecurityIcon from "../icons/securityIcon";
 import { useLocation, useNavigate } from "react-router-dom";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
-import Votes from "../icons/votes";
+import Votes from "../icons/votes2";
+import ProfileFollowing from "../icons/ProfileFollowing";
 import Mine from "../icons/mine";
 import Share from "../icons/share";
-import Following from "../icons/Following";
 import Gallery from "../icons/Gallery";
 import Notifications from "../icons/notifications";
 import Wallet from "../icons/Wallet";
+import { texts } from "../LoginComponent/texts";
 
 const OverlapGroup1 = styled.div`
   
@@ -135,10 +136,11 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               <Minister>{translate(user?.status?.name || "")}</Minister>
             </Group4092>
           </FlexCol> */}
-          <div className='mt-4'>
+          <div className=''>
             {![
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
+              ProfileTabs.wallet as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -147,7 +149,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                     handleSelect: (eventKey: string | null) => {
                       if (isV1() && eventKey === ProfileTabs.mine) {
                         showToast(
-                          translate("Feature will be available soon"),
+                          translate(texts.FeatureAvailableSoon),
                           ToastType.INFO
                         );
                         return;
@@ -184,7 +186,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                       {
                         component: <></>,
                         label: ProfileTabs.followers,
-                        icon: <Following />,
+                        icon: <ProfileFollowing />,
                         eventKey: ProfileTabs.followers,
                       },
                       {
@@ -201,6 +203,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
             {[
               ProfileTabs.edit as string,
               ProfileTabs.password as string,
+              ProfileTabs.wallet as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -209,7 +212,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                     handleSelect: (eventKey: string | null) => {
                       if (isV1() && eventKey === ProfileTabs.mine) {
                         showToast(
-                          translate("Feature will be available soon"),
+                          translate(texts.FeatureAvailableSoon),
                           ToastType.INFO
                         );
                         return;

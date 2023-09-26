@@ -19,6 +19,7 @@ export enum Colors {
 }
 
 export type UserProps = {
+  uid?: string;
   paid?: boolean;
   displayName?: string;
   address?: string;
@@ -39,7 +40,24 @@ export type UserProps = {
   token?: string;
   wallet?: string;
   rewardStatistics?: RewardStatistics;
+  firstTimeLogin?: boolean;
+  refereeScrore?: number;
+  googleAuthenticatorData?: any,
+  voteValue?: number,
+  wellDAddress?: wellDAddressType,
+  referalReceiveType?: referalReceiveType
 };
+
+export type wellDAddressType = {
+  coin: string,
+  address: string
+}
+
+export type referalReceiveType = {
+  name: string,
+  amount: string,
+  time: string
+}
 
 export type RewardStatistics = {
   total: number;

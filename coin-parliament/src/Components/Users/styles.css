@@ -1,0 +1,81 @@
+.rengeInput{
+   -webkit-appearance: none;
+  /* margin-right: 15px; */
+  width:100%;
+  height: 7px; 
+  /* background-image: linear-gradient(to right, #dfc3f4, #d9b2f6, #d2a1f8, #cb90f9, #c47efa, #be72fb, #b866fb, #b15afc, #aa52fc, #a349fd, #9c40fd, #9437fe); */
+  /* background: transparent linear-gradient(180deg, #6352E8 0%, #3712B3 100%) 0% 0% no-repeat padding-box; */
+background: rgb(212,208,243);
+background: linear-gradient(90deg, rgba(212,208,243,1) 0%, rgba(99,82,232,1) 41%, rgba(59,23,183,1) 82%);
+ 
+}
+.rengeInput123{
+   -webkit-appearance: none;
+  /* margin-right: 15px; */
+  width:100%;
+  height: 7px; 
+  /* background-image: linear-gradient(to right, #dfc3f4, #d9b2f6, #d2a1f8, #cb90f9, #c47efa, #be72fb, #b866fb, #b15afc, #aa52fc, #a349fd, #9c40fd, #9437fe); */
+  /* background: transparent linear-gradient(180deg, #6352E8 0%, #3712B3 100%) 0% 0% no-repeat padding-box; */
+background: rgb(212,208,243);
+background: linear-gradient(90deg, rgba(212,208,243,1) 0%, rgba(99,82,232,1) 41%, rgba(59,23,183,1) 82%);
+ 
+}
+
+.rengeInput::-webkit-slider-thumb {
+   -webkit-appearance: none;
+   /* border-top: 2px dashed #ffcc00;
+        border-right: 2px dashed #ffcc00;
+        border-left: 2px dashed #000000;
+        border-bottom: 2px dashed #000000; */
+  border-radius: 50px;
+  width: 25px;
+  height: 25px;
+  background-image: url("../../assets/images/ReangDot2.gif");
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  padding: 10px;
+  background-position: center;  
+}
+/* shadow button hint for reward */
+
+
+.rengeInput123::-webkit-slider-thumb {
+   -webkit-appearance: none;   
+  border-radius: 50px;
+  width: 35px;
+  height: 35px;
+  background-image: url("../../assets/images/ReangDot5.gif");
+  background-repeat: no-repeat;
+  background-size: 35px 35px;
+  padding: 10px;
+  background-position: center;  
+}
+
+
+.rengeInput::-moz-range-thumb {   
+  appearance: none;   
+  border-radius: 50px;
+  width: 25px;
+  height: 25px;
+  background-image: url("../../assets/images/ReangDot2.gif");
+  background-repeat: no-repeat;
+  background-size: 25px 25px;
+  padding: 10px;
+  background-position: center;  
+  
+}
+
+.rengeInput123::-moz-range-thumb {
+  appearance: none;
+  border-radius: 50px;
+  width: 35px;
+  height: 35px;
+  background-image: url("../../assets/images/ReangDot5.gif");
+  background-repeat: no-repeat;
+  background-size: 35px 35px;
+  padding: 10px;
+  background-position: center;  
+}
+.fill-gray-700{
+  color: black;
+}

@@ -26,6 +26,31 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+
+  setvoteNumberEnd?: any,
+  albumOpen?: any,
+  setAlbumOpen?: any,
+  afterVotePopup?: any,
+  setAfterVotePopup?: any,
+  inOutReward?: any,
+  setInOutReward?: any,
+  rewardExtraVote?:any,
+  setRewardExtraVote?:any,
+  showReward?: any,
+  setShowReward?: any,
+  headerExtraVote?:any,
+  setHeaderExtraVote?:any,
+  showBack?:any;
+  setShowBack?:any;
+  followerUserId?:string;
+  setFollowerUserId?:(lang: string) => void;
+  remainingTimer?:any;
+  nftAlbumData?: any;
+  singalCardData?:any,
+  setSingalCardData?:any,
+  setNftAlbumData: any;
+  allPariButtonTime: any;
+  setAllPariButtonTime: any;
   allButtonTime:any;
   setForRun?:any;
   forRun?:any;

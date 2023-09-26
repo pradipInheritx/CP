@@ -12,9 +12,9 @@ const Pool = () => {
   const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
   const [children, setChildren] = useState<Leader[]>([]);
   const childrenActivity = Number(
-    Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
+    Number(userInfo?.voteStatistics?.commission || 0).toFixed(3) || 0
   );
-console.log('referal user',children)
+
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
   }, [userInfo?.children]);
@@ -26,7 +26,7 @@ console.log('referal user',children)
           <Share
             url={referralUrl}
             text={"share & earn"}
-            shareText={"coin parliament"}
+            shareText={`Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`}
           />
         </div>
         <div className="mb-3">
@@ -35,10 +35,10 @@ console.log('referal user',children)
             cpm={childrenActivity || 0}
           />
         </div>
-        <div>
+        <div className='pb-2'>
           {children.map((child) => {
             return (
-              <div className="mb-2">
+              <div className="mb-2" key={child?.userId}>
                 <PoolMiningCard user={child} />
               </div>
             );

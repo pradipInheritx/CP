@@ -72,7 +72,10 @@ const getHeight = (props: Pathname) => {
     props.pathname.replace("/","").toLowerCase()=="about"  ||
     props.pathname.replace("/", "").toLowerCase() == "privacy" ||
     props.pathname.replace("/","").toLowerCase()=="contact" ||
-    props.pathname.replace("/","").toLowerCase()=="faq" 
+    props.pathname.replace("/","").toLowerCase()=="faq" ||
+    props.pathname.replace("/", "").toLowerCase() == "terms-and-condition" ||
+    props.pathname.replace("/", "").toLowerCase() == "partners" ||
+    props.pathname.replace("/", "").toLowerCase() == "foundations" 
   ) {
     return "auto";
   }
@@ -80,7 +83,7 @@ const getHeight = (props: Pathname) => {
 };
 
 export const isHomeBg = (pathname: string) =>
-  ["/", "/influencers", "/nftGallery"].includes(pathname);
+  ["/", "/influencers","/coins","/pairs","/nftAlbum"].includes(pathname);
 
 export const AppContainer = styled(Container)`
   ${(props: Pathname) =>
@@ -93,8 +96,7 @@ export const AppContainer = styled(Container)`
       : css`
   background: rgb(99, 82, 232);
   background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;
-  background:${window.screen.width < 767 ?"#d4d0f3":"#d4d0f3"};
-  
+  background:${window.screen.width < 767 ?"#d4d0f3":"#d4d0f3"};  
 `};
   ${PoppinsMediumWhite12px};
   opacity: 1;
@@ -174,6 +176,28 @@ export const PageContainer = styled(Container)`
     `0 0 ${props.radius || 0}px 0`};
   opacity: 1;
   padding: 0;
+  z-index:20000;
+`;
+
+export const ZoomCss = css`
+  opacity: 1;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width: 100%;
+  height: 150vh;
+  left: 50%;
+  transform: translate(-50%, -20%);    
+  transition: opacity .2s;
+  background-color: rgba(0,0,0,0.8);  
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;   
+  transition:  opacity 1s;   
+  
 `;
 
 export const CardContainer = styled.div`

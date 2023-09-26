@@ -24,14 +24,21 @@ const InfluencersComponent = ({
   userInfo,
   setChecked,
 }: InfluencersComponentProps) => {
-  console.log("userType", userTypes);
+
   return (
     <React.Fragment>
       <div className='mb-4'>
+        <div className="d-flex justify-content-center my-2 px-2 text-center">
+          <h5 className="">
+            {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+            <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>Who doesn’t want to be heard?</strong>
+          </h5>
+        </div>
         <StatusNav
+
           userTypes={userTypes
             .sort((a, b) => a.index - b.index)
-            .map((u) => u.name)}
+            .map((u) => u.name.toUpperCase())}
           setChosen={setChosen}
           chosen={chosen}
         />

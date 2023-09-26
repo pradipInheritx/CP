@@ -2,6 +2,7 @@ import React, {useContext} from "react";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
+import { texts } from "./LoginComponent/texts";
 
 const FooterContainer = styled.footer`
   bottom: 0;
@@ -107,15 +108,20 @@ const Footer = () => {
           to="/influencers">Influencers</Link>.
       </p> */}
       
-      <p>PAX BEP20 Total supply 21M | Block number 0 | Next halving 0  </p><p> Minted Quantity 0 | Current block reward 50 | PAX Value 0.04$  </p>
+      <p> PAX BEP20 Total supply : 21M | Minted quantity : 0   </p><p> Current block number : 0 | Next halving : in 210,000 blocks  </p>
+      <p>Current block reward 50 | Current value 8.28$</p>
+     
+
+
       <p style={{marginTop:'10px',marginBottom:'5px'}}>
        
        <span><Link
-         to="/privacy">Privacy {' '} </Link>
+         to="/privacy">Privacy Policy</Link>
     </span>
+    {' '}| {' '}
     <span>
     <Link
-         to="/privacy">Terms & Conditions</Link>
+         to="/terms-and-condition">Terms & Conditions</Link>
          </span>
      </p>
  

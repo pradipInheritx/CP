@@ -1,0 +1,27 @@
+/* .modal-backdrop.show {
+    opacity: 0;
+} */
+/* .modal {
+    border:1px solid red;
+} */
+.modal-content{
+    
+    border-radius: 100px 0px 100px 100px !important;
+}
+.modal-backdrop.fade{
+    opacity: 0;
+}
+
+.modal-backdrop{
+    display: none;
+    /* opacity: 1; */
+}
+
+.HeaderText{
+animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

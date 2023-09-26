@@ -1,12 +1,14 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import { texts } from "../Components/LoginComponent/texts";
 import GeneralPage from "../GeneralPage";
 
-const GameRule = () => {
+const
+  GameRule = () => {
   return (
     <GeneralPage>
       <div >
-      <h1>Game RuleCoin Parliament</h1>
+      <h1> {(`${texts.GAMERULECOINPARLIAMENT}`).toUpperCase()}</h1>
       <p>Coin Parliament Coin Parliament aims to provide a community environment where all of our users can share their
         opinions and vote freely and learn from each other. Everyone is welcome to come to our platform and provide
         insightful, delightful and informative thoughts, but we also hope to provide a space where everyone respects

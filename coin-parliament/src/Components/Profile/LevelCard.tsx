@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { UserTypeProps } from "../../common/models/UserType";
 import { UserProps } from "../../common/models/User";
 import { useTranslation } from "../../common/models/Dictionary";
+import { texts } from "../LoginComponent/texts";
 
 type LevelCardProps = {
   userTypes: UserTypeProps[];
@@ -43,21 +44,22 @@ const I = styled.i`
 const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
   const translate = useTranslation();
   return (
-    <div className=" cp_level dark_prpl_bkgnd mx-auto pb-4" style={{position:'relative'}}>
+    <div className=" cp_level dark_prpl_bkgnd mx-auto pb-4" style={{ position: 'relative' }}>
       <I className="bi bi-info-circle" ></I>
       <div className="d-flex justify-content-center align-items-center flex-column">
-        <h6 className="mt-1 box_title card-header mb-2" style={{fontSize:'12px'}}>
-          {translate("Your Level")}
+        <h6 className="mt-1 box_title card-header mb-2" style={{ fontSize: '12px' }}>
+          {/* {translate("Your Level")} */}
+          {texts.YourLevel}
         </h6>
-        {userTypes.sort((a,b) => b.index - a.index).map((userType, i) => {
-            const opacity =
-              userInfo?.status?.name === userType.name ? "" : " opacity-50";
-            return (
-              <Badge className={"rounded-pill mt-1" + opacity}>
-                {userType.name}
-              </Badge>
-            );
-          })}
+        {userTypes.sort((a, b) => b.index - a.index).map((userType, i) => {
+          const opacity =
+            userInfo?.status?.name === userType.name ? "" : " opacity-50";
+          return (
+            <Badge className={"rounded-pill mt-1 w-50 d-flex justify-content-center" + opacity} key={i} >
+              {userType.name}
+            </Badge>
+          );
+        })}
         {/* <ul className="list-group mx-auto mb-3">
           {userTypes.sort((a,b) => b.index - a.index).map((userType, i) => {
             const opacity =

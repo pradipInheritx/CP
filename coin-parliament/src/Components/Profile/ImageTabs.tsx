@@ -38,14 +38,14 @@ const Label = styled.div`
   letter-spacing: var(--character-spacing-0);
   color: var(--color-6352e8);
   text-align: center;
-  font-size:${window.screen.width>767?"11px":"9px"};
+  font-size:${window.screen.width > 767 ? "11px" : "9px"};
   opacity: 1;
 
   &:first-letter {
     text-transform: capitalize;
   }
 `;
-type Props =  { iconName?: any };
+type Props = { iconName?: any };
 const NavLink = styled(Nav.Link)`
   &.active {
     & button {
@@ -58,11 +58,10 @@ const NavLink = styled(Nav.Link)`
 
     * {
     fill: ${(props: Props) =>
-      `${
-        props.iconName !== "Album"
-          ? 'white'
-            : ''
-      }`};
+    `${props.iconName !== "Album"
+      ? 'white'
+      : ''
+    }`};
       
     }
   }
@@ -73,17 +72,17 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
 
   const [activeValue, setActiveValue] = useState("");
 
-   useEffect(() => {
-     activeTab(tabs, chosenByDefault);
-   }, [chosenByDefault]);
-   
-  
+  useEffect(() => {
+    activeTab(tabs, chosenByDefault);
+  }, [chosenByDefault]);
+
+
   const activeTab = (tabs: any, chosenByDefault: any) => {
     tabs.map((tab: any, index: number) => {
       if (chosenByDefault?.includes(tab.eventKey)) {
-        console.log(tabs[index].eventKey, "eventKey");
+        // console.log(tabs[index].eventKey, "eventKey");
         setActiveValue(tabs[index].eventKey);
-      } 
+      }
     });
   };
 
@@ -97,7 +96,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
       // }
       activeKey={activeValue}
     >
-      <div className='d-flex'>
+      <div className='d-flex '>
         <Nav
           variant='pills'
           className='flex-row m-auto align-items-center justify-content-center'
@@ -110,13 +109,15 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
                   eventKey={tab.eventKey}
                   style={{ padding: "10px 2px" }}
                   iconName={tab.label}
+                  className="d-flex flex-column align-items-center"
                 >
                   <Circle
+                    className="border"
                     disabled={isV1() && tab.eventKey === ProfileTabs.mine}
                   >
                     {tab.icon}
                   </Circle>
-                  {tab.label && <Label>{tab.label}</Label>}
+                  {tab.label && <Label>{tab.label.toUpperCase()}</Label>}
                 </NavLink>
               </Nav.Item>
             );

@@ -1,11 +1,14 @@
-import {DocumentData, QueryDocumentSnapshot, SnapshotOptions} from "firebase/firestore";
-import {UserTypeProps} from "./UserType";
-import {useContext} from "react";
+import { DocumentData, QueryDocumentSnapshot, SnapshotOptions } from "firebase/firestore";
+import { UserTypeProps } from "./UserType";
+import { useContext } from "react";
 import UserContext from "../../Contexts/User";
-import {follow, Leader} from "../../Contexts/CoinsContext";
-import {User as AuthUser} from "firebase/auth";
+import { follow, Leader } from "../../Contexts/CoinsContext";
+import { User as AuthUser } from "firebase/auth";
 import firebase from "../../firebase";
-import {AvatarType, importFile} from "../../assets/avatars/Avatars";
+import { AvatarType, importFile } from "../../assets/avatars/Avatars";
+import { toast } from "react-toastify";
+import { ToastType } from "Contexts/Notification";
+import { showToast } from "App";
 
 export type UserProps = {
   paid?: boolean;
@@ -28,6 +31,9 @@ export type UserProps = {
   lang?: string;
   token?: string;
   wallet?: string;
+  rewardStatistics?: RewardStatistics;
+  uid?: string;
+  voteValue?: string;
 };
 
 class User implements UserProps {
@@ -47,9 +53,10 @@ class User implements UserProps {
   private readonly _status: UserTypeProps | undefined;
   private readonly _subscribers: string[];
   private readonly _voteStatistics: VoteStatistics | undefined;
+  private readonly _rewardStatistics: RewardStatistics | undefined;
   private readonly _favorites: string[];
 
-  constructor({user}: { user: UserProps }) {
+  constructor({ user }: { user: UserProps }) {
     this._parent = user.parent;
     this._address = user.address;
     this._avatar = user.avatar;
@@ -65,6 +72,7 @@ class User implements UserProps {
     this._status = user.status;
     this._subscribers = user.subscribers;
     this._voteStatistics = user.voteStatistics;
+    this._rewardStatistics = user.rewardStatistics;
     this._favorites = user.favorites;
   }
 
@@ -131,6 +139,9 @@ class User implements UserProps {
   get voteStatistics(): VoteStatistics | undefined {
     return this._voteStatistics;
   }
+  get rewardStatistics(): RewardStatistics | undefined {
+    return this._rewardStatistics;
+  }
 
   get admin(): boolean | undefined {
     return this._admin;
@@ -144,6 +155,13 @@ export type VoteStatistics = {
   rank: number;
   commission: number;
   pax: number;
+};
+export type RewardStatistics = {
+  total: number;
+  diamonds: number;
+  extraVote: number;
+  cards: string[];
+  claimed: number;
 };
 
 export const userConverter = {
@@ -162,7 +180,7 @@ export const userConverter = {
 export default User;
 
 export const useAdmin = () => {
-  const {admin} = useContext(UserContext);
+  const { admin } = useContext(UserContext);
   return admin;
 };
 
@@ -178,14 +196,16 @@ export const getAvatar = (userInfo: HasAvatar) => {
 export const toFollow = (leaders: string[], id: string) =>
   !leaders?.includes(id);
 
-export const setChecked =
-  (leaders: Leader[], user?: AuthUser) =>
-    async (userId: string, check: boolean) => {
-      const ll = leaders.find((l) => l.userId === userId);
-      if (user && ll) {
-        await follow(ll, user, check);
-      }
-    };
+export const setChecked = (leaders: Leader[], user?: AuthUser) =>
+  async (userId: string, check: boolean) => {
+    const ll = leaders.find((l) => l.userId === userId);
+    if (user && ll) {
+      console.log('user follower', ll, user, check)
+      await follow(ll, user, check);
+    } else {
+      // showToast("Please login in order to follow influencer.", ToastType.ERROR)
+    }
+  };
 
 export type NotificationProps = {
   user: string;

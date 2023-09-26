@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "../../common/models/Dictionary";
+import { texts } from "../LoginComponent/texts";
 
 const Box = styled.div`
   width: 322px;
@@ -28,7 +29,8 @@ const Info = ({ friends, cpm }: InfoProps) => {
           {friends}
         </PurpleText>
         <div className="d-inline-block text-uppercase" style={{fontWeight:'400'}}>
-          {translate("friends")}
+          {/* {translate("friends")} */}
+          {texts.friends}
         </div>
       </div>
       <div>

@@ -22,6 +22,7 @@ import { functions } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 
+
 const Login = styled.div`
   margin-left:5px;
   margin-right:7px;
@@ -71,16 +72,17 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   const [agree, setAgree] = useState(true);
   const { user, userInfo } = useContext(UserContext);
   const[smsVerification,setSmsVerification]=useState('')
+  const [signupLoading,setSignupLoading]=useState(false)
   let navigate = useNavigate();
   const search = useLocation().search;
   const refer = new URLSearchParams(search).get("refer");
   
   const strings = {
     email: capitalize(translate(texts.email)),
-    confirmPassword: capitalize(translate(texts.confirmPassword)),
-    password: capitalize(translate(texts.password)),
-    continue: capitalize(translate(texts.continue)),
-    agree: capitalize(translate(texts.agree)),
+    confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
+    password: capitalize(translate(texts.password.toUpperCase())),
+    continue: capitalize(translate(texts.continue.toUpperCase())),
+    agree: capitalize(translate(texts.agree.toUpperCase())),
   };
   // const assignReferrer =  (params: User) => {
   //   const assign = httpsCallable(functions, "assignReferrer");
@@ -98,7 +100,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
               provider={provider}
               onClick={() =>
                 // @ts-ignore
-                {agree? refer?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,refer):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast('You must agree to t&c', ToastType.ERROR)}
+                {agree? refer?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,refer):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast(texts.AgreetNc, ToastType.ERROR)}
               }
             />
           </div>
@@ -127,23 +129,30 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
       </Form.Group>
       <div className="my-1">
         <Buttons.Primary fullWidth={true} type="submit"  >
-          {strings.continue}
+          {strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
-      <Form.Group className="mb-2 mt-3" controlId="agree">
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
-          {translate(strings.agree)
+      <Form.Group className="mb-2 mt-3 text-center" controlId="agree" >
+        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} >
+       <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
+                    {translate('terms & conditions')}
+                  </Link>  and 
+                  </p>
+                  <p><Link to={'/privacy'} style={{color: 'var(--blue-violet)'}}>
+                    privacy policy
+                  </Link> of the site</p>
+          {/* {translate(strings.agree)
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
-                {t}{" "}
+                {t.toUpperCase()}{" "}
                 {!i && (
                   <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
+                    {translate(texts.termsConditions.toUpperCase())}
                   </Link>
                 )}
               </React.Fragment>
-            ))}
+            ))} */}
         </Checkbox>
       </Form.Group>
       </Form> 
@@ -153,6 +162,8 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
       
       :
       <SignupForm
+      signupLoading={signupLoading}
+      setSignupLoading={setSignupLoading}
       emailValue={email}
         signup={signup}
         callback={{
@@ -161,15 +172,16 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
             if(refer)  await assign({parent: refer, child: params.uid});
             setSignup(false)
             setLogin(true)
-            
+            setSignupLoading(false)
           },
             
-          errorFunc: (e) => showToast(e.message, ToastType.ERROR),
+          errorFunc: (e) => {showToast(e.message, ToastType.ERROR)
+            setSignupLoading(false)},
         }}
       />}
        <div className='d-flex'>
-      <HaveAccountText className="mr-5"> {`${capitalize(translate(texts.haveAccount))} `}</HaveAccountText>
-      <Login  onClick={() => setSignup(false)}>{`${capitalize(translate(texts.login))}`}</Login>
+      <HaveAccountText className="mr-5"> {`${translate(texts.haveAccount)} `}</HaveAccountText>
+      <Login  onClick={() => setSignup(false)}>{`${translate(texts.login)}`}</Login>
       </div>
     </>
   );

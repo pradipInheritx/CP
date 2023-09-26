@@ -1,11 +1,13 @@
 /** @format */
 
-import React from "react";
+import React, { useContext } from "react";
 import { Leader } from "../Contexts/CoinsContext";
 import { toFollow, UserProps } from "../common/models/User";
 import UserCard from "./Users/UserCard";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
+import AppContext from "Contexts/AppContext";
+import UserContext from "Contexts/User";
 
 const LeaderItem = styled.div``;
 
@@ -32,17 +34,20 @@ const Leaderboard = ({
 }) => {
   const location = useLocation();
   const pathname = location.pathname;
+  const { setLoginRedirectMessage, setLogin } = useContext(AppContext);
+  const { user } = useContext(UserContext);
+
   return (
     <div>
       <LeadersContainer>
-        {leaders.map((leader) => {
-          const checked = !toFollow(userInfo?.leader || [], leader.userId);
+        {leaders?.map((leader) => {
+          const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (
             <LeaderItem
               style={{
                 width:
                   window.screen.width < 979 &&
-                  pathname?.includes("/influencers")
+                    pathname?.includes("/influencers")
                     ? "321px"
                     : "100%",
                 padding: "0 0 12px 0",
@@ -53,7 +58,14 @@ const Leaderboard = ({
                 expanded={expanded}
                 leader={leader}
                 checked={checked}
-                setChecked={() => setChecked(leader.userId, !checked)}
+                setChecked={() => {
+                  if (!user) {
+                    setLoginRedirectMessage('follow influencer');
+                    setLogin(true);
+                  } else {
+                    setChecked(leader.userId, !checked);
+                  }
+                }}
                 viewAllLink={viewAllLink}
               />
             </LeaderItem>

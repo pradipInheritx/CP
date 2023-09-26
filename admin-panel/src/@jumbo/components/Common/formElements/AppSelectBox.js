@@ -49,7 +49,8 @@ const AppSelectBox = props => {
       size={size}
       fullWidth={fullWidth}
       required={required}
-      className={clsx(classes.formControlRoot, 'form-control')}>
+      className={clsx(classes.formControlRoot, 'form-control')}
+    >
       {label && <InputLabel id={'label-' + id || name}>{label}</InputLabel>}
       <Select
         {...rest}

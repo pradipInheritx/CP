@@ -16,10 +16,14 @@ import { upperCase } from "lodash";
 import { useTranslation } from "../../common/models/Dictionary";
 import { Heart } from "../Atoms/Checkbox/Icon";
 import { Buttons } from "../Atoms/Button/Button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import { Input } from "../Atoms/styles";
+import CoinsContext from "../../Contexts/CoinsContext";
+import { texts } from "../LoginComponent/texts";
+import { ButtonToolbar } from "react-bootstrap";
+import AppContext from "Contexts/AppContext";
 
 const Container = styled.div`
   display: grid;
@@ -31,6 +35,18 @@ const Container = styled.div`
   width: 100%;
   max-width: ${(props: { width: number }) =>
     props.width > 979 ? "759px" : "312px"};
+`;
+const Toolbar = styled(ButtonToolbar)`
+  flex-wrap: nowrap;
+  overflow: scroll;
+  background: #6352E8;
+  padding: 12px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const getMaxWidth = (width?: number) =>
@@ -51,6 +67,7 @@ const Coins = ({
   const translate = useTranslation();
   let navigate = useNavigate();
   const { coins, totals, allCoins } = useContext(CoinContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
   const { userInfo, user } = useContext(UserContext);
   const [index, setIndex] = useState(0);
   const [data, setData] = useState<BearVsBullRow[]>(
@@ -63,11 +80,13 @@ const Coins = ({
     [expanded, width]
   );
   const favorites = useMemo(() => userInfo?.favorites || [], [userInfo]);
-
+  // const { changePrice, setChangePrice } = useContext(CoinsContext);
+  const location = useLocation();
+  const pathname = location.pathname;
   useEffect(() => {
     setData(getFilteredData(filter, coins, totals, allCoins));
   }, [filter, coins, totals, allCoins]);
-  console.table(coins);
+
   useEffect(() => {
     if (filterByFav) {
       setFilter("");
@@ -84,99 +103,100 @@ const Coins = ({
   const maxWidth = useMemo(() => getMaxWidth(width), [width]);
 
   return (
-    <div className='d-flex flex-column justify-content-center align-items-center py-3 '>
-      {expanded && (
-        <Container
-          {...{ width }}
-          style={{ margin: width > 979 ? "20px 0 50px 0" : '"0 -15px' }}
-        >
-          {width > 979 ? (
-            <div
-              style={{
-                fontSize: "20px",
-                fontWeight: "400",
-                marginLeft: "20px",
-              }}
-            >
-              What's Your Coin Vote ?
-            </div>
-          ) : (
-            <div />
-          )}
+    <>
+      {pathname == "/coins"
+        ?
+        <>
+          <h5 className="my-2 text-center">
+            {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+            <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>{
+              // texts.WhatYourPairVote
+              "GET IN THE RING"
+            }</strong>
+          </h5>
+          <Toolbar className="d-flex justify-content-center">
+            {expanded && (
+              <div className="d-flex justify-content-center align-items-center">
+                <div className='px-1' >
+                  <Input
+                    style={{
+                      background: "transparent",
+                      color: "var(--white)",
+                      width: `${window.screen.width > 767 ? "300px" : "200px"}`
+                    }}
+                    value={filter}
+                    onChange={(e: { target: { value: string } }) => {
+                      setFilter(e.target.value || ""); // Set undefined to remove the filter entirely
+                    }}
+                    name='filter'
+                    required
+                  />
+                </div>
 
-          <div className='px-1' style={{ position: "relative" }}>
-            <i
-              className='bi bi-search'
-              style={{
-                position: "absolute",
-                top: "9px",
-                right: "20px",
-                fontSize: "18px",
-              }}
-            ></i>
-            <Input
-              style={{
-                background: "transparent",
-                color: "var(--white)",
-              }}
-              value={filter}
-              onChange={(e: { target: { value: string } }) => {
-                setFilter(e.target.value || ""); // Set undefined to remove the filter entirely
-              }}
-              name='filter'
-              required
-            />
-          </div>
+                <div style={{ marginLeft: "10px" }}>
+                  <Heart
+                    checked={filterByFav}
+                    setChecked={() => {
 
-          <div style={{ marginLeft: "10px" }}>
-            <Heart
-              checked={filterByFav}
-              setChecked={() => {
-                setFilterByFav(!filterByFav);
-              }}
-              // color="var(--white)"
-              id='filterByFav'
-              name='filterByFav'
-              size={24}
-            />
-          </div>
-        </Container>
-      )}
-      <div className='px-0 m-auto w-100' style={{ maxWidth }}>
-        <Carousel
-          {...{
-            expanded,
-            id: "BearVsBull",
-            index,
-            setIndex: (i: number) => {
-              setIndex(i);
-              // sound.current?.play().then(void 0);
-            },
-            numRows,
-            cols: getNumCards(width, expanded),
-            gap: 9,
-            coins,
-            totals,
-            user,
-            userInfo,
-            data,
-            onFavClick,
-            navigate: (url) => navigate(url, { replace: true }),
-          }}
-        >
-          {!expanded && (
-            <Buttons.ClickableText
-              onClick={() => {
-                navigate("/coins");
-              }}
-              style={{ color: "var(--white)", fontWeight: "400" }}
-            >
-              {upperCase(translate("view all"))}
-            </Buttons.ClickableText>
-          )}
-        </Carousel>
+                      if (!user?.uid) {
+                        setLoginRedirectMessage('add coin to favorites')
+                        setLogin(true)
+                      }
+                      if (user?.uid) {
+                        setFilterByFav(!filterByFav);
+                      }
+
+                    }}
+                    // color="var(--white)"
+                    id='filterByFav'
+                    name='filterByFav'
+                    size={24}
+                    color="var(--white)"
+                  />
+                </div>
+              </div>
+            )}
+          </Toolbar>
+        </> : ""
+      }
+      <div className={pathname == '/coins' ? 'd-flex flex-column justify-content-center align-items-center py-3 px-2' : 'd-flex flex-column justify-content-center align-items-center'}>
+        <div className='px-0 m-auto w-100' style={{ maxWidth }}>
+          <Carousel
+            {...{
+              expanded,
+              id: "BearVsBull",
+              index,
+              setIndex: (i: number) => {
+                setIndex(i);
+                // sound.current?.play().then(void 0);
+              },
+              numRows,
+              cols: getNumCards(width, expanded),
+              gap: 9,
+              coins,
+              totals,
+              user,
+              userInfo,
+              data,
+              onFavClick,
+              navigate: (url) => navigate(url, { replace: true }),
+            }}
+          >
+            {!expanded && (
+              <Buttons.ClickableText
+                onClick={() => {
+                  navigate("/coins");
+                }}
+                style={{ color: "var(--white)", fontWeight: "400" }}
+              >
+                {/* {upperCase(translate("view all"))} */}
+                {texts.ViewAll}
+              </Buttons.ClickableText>
+            )}
+          </Carousel>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

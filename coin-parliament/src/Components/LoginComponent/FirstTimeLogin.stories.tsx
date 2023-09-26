@@ -6,6 +6,7 @@ import { action } from "@storybook/addon-actions";
 import { toast, ToastContainer } from "react-toastify";
 import { generateUsername } from "../../common/utils/strings";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
+import { texts } from "./texts";
 
 const SimulateFirstTimeLogin = ({ fail }: { fail: boolean }) => {
   const { showToast } = useContext(NotificationContext);
@@ -15,10 +16,10 @@ const SimulateFirstTimeLogin = ({ fail }: { fail: boolean }) => {
       setFirstTimeAvatarSelection=''
         saveUsername={async () => {
           if (fail) {
-            showToast("failed", ToastType.ERROR);
+            showToast(texts.failed, ToastType.ERROR);
           } else {
             action("saveUsername")("saved");
-            showToast("success");
+            showToast(texts.success);
           }
         }}
         generate={generateUsername}

@@ -1,15 +1,20 @@
 /** @format */
 
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
 import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
+import AppContext from "../Contexts/AppContext";
 import NftOneCard from "./NftOneCard";
-
+import { db } from "../firebase";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import firebase from "firebase/compat";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
+import { Other } from "./SingleCoin";
+import { texts } from "../Components/LoginComponent/texts";
 
 const MenuBar = styled.div`
   background-color: #6352e8;
@@ -78,229 +83,282 @@ const SummerCard = styled.div`
 `;
 
 const NFTGalleryType = () => {
-  const [cards, setCards] = useState([
-    [
-      {
-        id: 1,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 2,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 3,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 4,
-        cardType: "Common",
-        cardNo: "CP244",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 6,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 7,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 8,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 9,
-        cardType: "UNCommon",
-        cardNo: "CP245",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 11,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 12,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 13,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 14,
-        cardType: "Epic",
-        cardNo: "CP246",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-    [
-      {
-        id: 16,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 17,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 18,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 19,
-        cardType: "Rare",
-        cardNo: "CE248",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },    
-    ],
-
-    [
-      {
-        id: 21,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 22,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 23,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "SUMMER",
-      },
-      {
-        id: 24,
-        cardType: "Legendary",
-        cardNo: "CP120",
-        cardHeader: "INVESTOR",
-        type: "WINTER",
-      },      
-    ],
-  ]);
-  const [menuItem, setMenuItem] = useState([
-    { name: "View All" },
-    { name: "Common" },
-    { name: "UnCommon" },
-    { name: "Epic" },
-    { name: "Rare" },
-    { name: "Legendary" },
-  ]);
-
+//     const { nftAlbumData,setNftAlbumData} = useContext(AppContext);
+  
+  const [allCard, setAllCard] = useState<any>([])
+  const [searchedCard, setSearchedCard] = useState<any>([])
+  const [searchTerm, setSearchTerm] = useState<any>('')
+  const [cardType,setCardType]=useState<any>('all')
+  const [allCardArray,setAllCardArray]=useState<any>([])
+    const [nftAlbumData,setNftAlbumData] = useState<any>();
   const [CardValue, setCardValue] = useState([]);
-  const [backCards, setBackCards] = useState("");
-  const [checkCard, setcheckCard] = useState([
-    { cardType: "Legendary" },
-    { cardType: "Legendary" },
-    { cardType: "Legendary" },
-    { cardType: "Legendary" },
-    { cardType: "Legendary" },
-  ]);
-  const [filterIndex, setfilterIndex] = useState(0);
-
-  useEffect(() => {
-    HandleFilter(filterIndex);
-  }, [filterIndex]);
-
-  const HandleFilter = (filterIndex?: number | string | undefined) => {
-    var allCard: any = cards;
-    if (filterIndex && filterIndex > 0) {
-      allCard.filter((item: any, ind: number) => {
-        if (ind + 1 == filterIndex) {
-          var cardItem: any = [item];
-          setCardValue(cardItem);
-        }
-      });
-    } else {
-      setCardValue(allCard);
-    }
-  };
+  const [equalPart, setEqualPart] = useState<any>([]);
+  const [backCards, setBackCards] = useState<any>([]);
+  const [cardShow, setCardShow] = useState<any>(false);
+  const [setsCardId, setSetsCardId] = useState<any>('none')
+  const [setsValue, setSetsValue] = useState<any>([])
+  const [setsCardName, setSetsCardName] = useState<any>('none')
+  const [cardName, setCardName] = useState<any>([])
+  
   const BackSideCard = (value: string | number) => {
-    // @ts-ignore
-    setBackCards(backCards == value ? "" : value);
-    // backCards.length > 0  ? backCards.map((items, index) => {
-    //   if (items == value) {
-    //     // @ts-ignore
-    //     backCards.splice(index,1)
-    //   }
-    //   else {
-    //     // @ts-ignore
-    //     // backCards.push(value)
-    //     setBackCards([...backCards,value])
-    //   }
-    //   // @ts-ignore
-    // }) : setBackCards([...backCards,value]);
-  };
-
-  const HandleFilterByInput = (value: string | number) => {
-    // var allCard: any = cards;
-    // var cardItem = allCard.map((item:any, index:number) => {
-    //     item.map((subItme:any) => {
-    //       Object.keys(subItme).filter((keyItem, index) => {
-    //         if (subItme[keyItem].includes('CP')) {
-    //           return subItme
-    //         }
-    //       });
-    //     });
-    //       });
-    // console.log(cardItem,"cardItem")
-    // setCardValue(allCard)
-  };
+    if (backCards.includes(value)) {       
+        let allBackCard = [...backCards];
+        allBackCard.splice(backCards.indexOf(value), 1);
+        setBackCards(allBackCard)
+    }
+    else {
+      setBackCards([...backCards, value])
+    };
+   };
+  
+  // console.log(backCards,"i am backCards")
+  
   let params = useParams();
-  const { name } = params;
+  const { type } = params;
+
+
+  //  const getNftCard = () => {
+  // const getCards = firebase
+  //           .firestore()
+  //           .collection("nft_gallery")
+  //   getCards.get()
+  //     .then((snapshot) => {        
+  
+  //      let allcollection= snapshot.docs.map((doc) => doc.data())
+  //         // setCollectionType(allcollection)
+  
+  //       allcollection?.map((card) => {
+
+  //         if (card?.collectionName==type) {
+  //           setNftAlbumData(card?.setDetails)
+  //         }          
+  //       })
+  //     }).catch((error) => {
+  //       console.log(error,"error");
+  //     })
+  //     ;    
+  //  }
+  
+const onCollectionChange=()=>{ 
+  
+  const getCollectionType = firebase
+  .firestore()
+  .collection("nft_gallery")
+  .where("collectionName", "==", type)
+getCollectionType.get()
+.then((snapshot) => {        
+
+const data:any=[]
+snapshot.forEach((doc) => {
+data.push({id: doc.id, ...doc.data()});
+});
+setAllCardArray(data)
+  const cards: any = [];
+  const idSets: any = [];
+  const getCardName: any = [];
+  data.forEach((element: any) => {
+    
+    const collectionId = element.collectionId;
+    const collectionName = element.collectionName;
+    const collectionDocId = element.id;
+
+    element.setDetails.forEach((setDetail: any) => {
+      const setId = setDetail.id;
+      const setName = setDetail?.name;
+        idSets.push({setId,setName})
+      setDetail.cards.forEach((cardDetail: any) => {
+        getCardName.push({name:cardDetail.name})
+        cards.push({collectionId, collectionName, collectionDocId, setId,setName, ...cardDetail});
+      });
+    });
+  });
+  setAllCard(cards)
+  setSetsValue(idSets)
+    setCardName(getCardName)
+
+}).catch((error) => {
+console.log(error,"error");
+});    
+  
+}
+//   const onSearch = (searchTerm: any) => {
+//     if (searchTerm?.length) {
+//     setCardShow(true)
+//   }
+//   else {
+//     setCardShow(false)
+//   }
+//   setSearchTerm(searchTerm)
+//   if(cardType==='all') setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+//   else setSearchedCard(allCard.filter((card:any)=>card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) && card.type==cardType.toUpperCase()))
+// }
+
+    const onSearch = (searchTerm: any) => {    
+    if (searchTerm?.length) {
+    setCardShow(true)
+  }
+  else {
+    setCardShow(false)
+  }
+  
+  setSearchTerm(searchTerm)
+    if (cardType === 'all'&& setsCardId === "none") {
+      // setSearchedCard(allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+      const serchresult = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      setSearchedCard((pev:any)=>serchresult)
+    }
+    else {
+    
+      const serchValue = allCard.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+     const serchCard = serchValue.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+     const serchresult = serchCard.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase() )
+    
+     setSearchedCard(serchresult)
+    }
+}
+ 
+  
+  
+  
+
+  
+  
+  //   const onSelectType=(cardType:any)=>{
+  // setCardType(cardType)
+  //   if (searchedCard?.length) {
+  //   setCardShow(true)
+  // }
+  // else {
+  //   setCardShow(false)
+  // }
+  //   if (cardType === 'all') {
+  //      const typeCard = allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+  //   setSearchedCard(typeCard.filter((card:any)=>setsCardId != "none" ?card?.setId ==setsCardId:card.setId !==setsCardId))
+      
+  //   }
+  // else {
+  //   setCardShow(true)
+  //   const typeCard = allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+  //   setSearchedCard(typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId))
+  //   }
+  //   }
+  
+const onSelectType=(cardType:any)=>{
+  setCardType(cardType)
+  
+  if (cardType === 'all') { 
+    const typeCard = allCard.filter((card: any) => card.type != cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    const forcardName=typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    setSearchedCard(typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId))
+    setCardName(forcardName?.map((card: any) => {      
+      return  {name:card?.name}
+    }))
+    setSetsCardName("none")
+  }
+  else {    
+    setCardShow(true)
+    const typeCard = allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
+    const forcardName=typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    setSearchedCard(typeCard.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId))    
+    setCardName(forcardName?.map((card: any) => {
+      
+      return  {name:card?.name}
+    }))
+    setSetsCardName("none")
+  }
+}
+  
+
+//   const onSelectSets=(cardId:any)=>{
+//   setSetsCardId(cardId)
+//   if (cardId === 'none') {
+//     const cardWithId=allCard.filter((card: any) => card.setId !== cardId )
+//     setSearchedCard(cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );    
+//   }
+//   else {    
+//     setCardShow(true);
+//     // setSearchedCard((prev: any) => allCard.filter((card: any) => card.type === cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())))
+//      const cardWithId=allCard.filter((card: any) => card.setId == cardId )
+//     setSearchedCard(cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type== cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );        
+//   }
+// }
+  
+   const onSelectSets=(cardId:any)=>{
+  setSetsCardId(cardId)
+  if (cardId === 'none') {    
+    const cardWithId = allCard.filter((card: any) => card.setId !== cardId)
+    const forcardName=cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) 
+    setSearchedCard(cardWithId.filter((card: any) =>cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())) );
+    setCardName(forcardName?.map((card: any) => {
+      
+      return  {name:card?.name}
+    }))
+    setSetsCardName("none")
+  }
+  else {    
+    setCardShow(true);        
+    const cardWithId = allCard.filter((card: any) => card.setId == cardId)
+    const forcardName=cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    setSearchedCard(cardWithId.filter((card: any) => cardType == "all" ? card.type !== cardType.toUpperCase() : card.type == cardType.toUpperCase() && card.name?.toLowerCase()?.includes(searchTerm.toLowerCase())));        
+    setCardName(forcardName?.map((card: any) => {      
+      return  {name:card?.name}
+    }))
+      setSetsCardName("none")
+  }
+  }
+  
+   const onSelectName=(mycardName:any)=>{
+  setSetsCardName(mycardName)
+  if (mycardName === 'none')
+   {          
+    const cardWithName = allCard.filter((card: any) => card.name !== mycardName)
+    const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())    
+    const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    //  console.log(serchresult,"serchresult")
+    
+     setSearchedCard((pev:any)=>finalValue)
+      }
+   else {
+     const cardWithName = allCard.filter((card: any) => card.name == mycardName)
+    const cardNameId = cardWithName.filter((card: any) => setsCardId != "none" ? card?.setId == setsCardId : card.setId !== setsCardId)
+    const cardNameType = cardNameId.filter((card: any) => cardType != "all" ? card.type == cardType.toUpperCase() : card.type != cardType.toUpperCase())    
+    const finalValue = cardNameType.filter((card: any) => card.name?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+    //  console.log(serchresult,"serchresult")
+     setSearchedCard((pev:any)=>finalValue)
+   }     
+}
+
+  
+useEffect(() => {  
+  onCollectionChange()  
+}, [])
+useEffect(() => {
+  // getNftCard()
+  // onCollectionChange(type)
+  onSearch(searchTerm)
+  onSelectType(cardType)
+  onSelectSets(setsCardId)
+  onSelectName(setsCardName)
+}, [allCard])
+  
+  function sliceDived(arr: any, partSize: any) {
+    const res = [];
+    for (let i = 0; i < arr.length; i += partSize) {
+        const DivideEqual = arr.slice(i, i + partSize);
+        res.push(DivideEqual);
+    }  
+  setEqualPart(res)
+  
+}
+  
+useEffect(() => {
+    if (searchedCard?.length > 0) {      
+      sliceDived(searchedCard, 4)
+}
+  },[searchedCard])
+  
+
 
   return (
     <div className=''>
@@ -324,114 +382,113 @@ const NFTGalleryType = () => {
       </MenuBar> */}
 
         <CenterItem>
-          <div className='d-flex justify-content-center mt-5 flex-wrap '>
+          {/* <div className="d-flex justify-content-center align-items-center  pt-4">
+                <Link to="/nftAlbum" style={{textDecoration:'none'}}>
+                  <Other>{"Back to all Card"}</Other>
+                </Link>
+              </div> */}
+          <div className='d-flex justify-content-center pt-5 flex-wrap '>
             <input
               type='text'
-              onChange={(e) => {
-                HandleFilterByInput(e.target.value);
-              }}
+              name="hello"
+              onChange={e =>onSearch(e.target.value)}
+              // onChange={(e)=>{HandelonchangeFilter(e)}}
               placeholder='Search...'
-              className='py-2 mx-3 rounded border'
+              className='py-2 mx-2 rounded border'
+              // style={{ width: "200px" }}              
             />
-            <div className={`${window.screen.width < 767 ? "py-3" : ""}`}>
-              <select
+            <div className={`${window.screen.width < 767 ? "py-2" : ""}`}> 
+                 <select
                 name='cars'
                 id='cars'
-                className='bg-white border rounded py-2'
+                className='bg-white border rounded py-2 '
+                // onChange={e=>onCollectionChange(e.target.value)}
+                onChange={e=>onSelectSets(e.target.value)}
               >
-                <option value='volvo'>Select Collection</option>
-                <option value='SUMMER'>SUMMER</option>
-                <option value='saab'>WINTER</option>
-              </select>
+            <option value='none'>{texts.SelectSets}</option>            
+            {setsValue?.map((data:any ,index:number ) => {
+              return  <option value={ data?.setId} key={index}>{`${((data?.setName)?.toUpperCase())?.slice(0, 3) + data?.setId}`}</option>        
+            })}            
+              </select>  
               <select
-                name='cars'
-                id='cars'
+                name='type'
+                id='type'
                 className='bg-white border rounded mx-2 py-2'
+                onChange={(e)=>{onSelectType(e.target.value)}}
               >
-                <option value='volvo'>Select Type</option>
-                <option value='Legendary'>Legendary</option>
-                <option value='Rare'>Rare</option>
-                <option value='Epic'>Epic</option>
-                <option value='UNCommon'>UNCommon</option>
-                <option value='Common'>Common</option>
+                <option value='all'>{texts.SelectType}</option>
+                <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
+                <option value={`${texts.Rare}`}>{texts.Rare}</option>
+                <option value={`${texts.Epic}`}>{texts.Epic}</option>
+                <option value={`${texts.UNCommon}`}>{texts.UNCommon}</option>
+                <option value={`${texts.Common}`}>{texts.Common}</option>
               </select>
-              <select
+
+              <select                
+                className='bg-white border rounded py-2 mx-1'
+                // onChange={e=>onCollectionChange(e.target.value)}
+                onChange={e=>onSelectName(e.target.value)}
+              >
+            <option value='none'>{texts.SelectName}</option>       
+            {cardName?.map((data:any ,index:number ) => {
+              return  <option value={ data?.name} key={index}>{`${data?.name}`}</option>        
+            })}            
+          </select>
+              {/* <select
                 name='cars'
                 id='cars'
                 className='bg-white border rounded py-2'
               >
                 <option value='volvo'>Select Sets</option>
-                <option value='volvo'>Card Type</option>
+                
                 <option value='saab'>Card NO.</option>
                 <option value='mercedes'>Card Name</option>
-                <option value='audi'>Collection</option>
-              </select>
+                
+              </select> */}
             </div>
           </div>
           <div>
-            <p>{`${name}`} COLLECTION</p>
-          </div>
-
-          <SummerCard>
-            {CardValue.map((items, index) => {
-              return (
-                <div className='w-100 m-auto mb-4 '>
-                  {/* @ts-ignore */}
-                  <SwiperBar>
-                    {/* @ts-ignore */}
-                    {items.map((item: any) => {
-                      return (
-                        <>
-                          <NftOneCard
-                            DivClass={item.cardType}
-                            HeaderText={item.cardType}
-                            HeaderClass={`${item.cardType}_text`}
-                            Disable={""} // When you pass CardDisebal this name then card is Disable
-                            cardHeader={`${item.cardHeader}`}
-                            cardNo={`${item.cardNo}`}
-                            id={item.id}
-                            BackSideCard={BackSideCard}
-                            flipCard={backCards == item.id ? true : false}
-                          />
-                        </>
-                      );
-                    })}
-                  </SwiperBar>
-                </div>
-              );
+            <p>{`${type}`} COLLECTION</p>
+          </div>        
+          {searchedCard?.length > 0 ? <SummerCard className="">
+            {equalPart?.map((cardPart: any ,ind:number) => {
+              return <div className='w-100 m-auto mb-4' key={ind}>
+                <SwiperBar>
+                  {cardPart?.map((item: any ,index:number) => {
+                    return (
+                      <NftOneCard
+                        key={index}
+                        DivClass={item?.type}
+                        HeaderText={item?.type}
+                        HeaderClass={`${item?.type}_text`}
+                        Serie={item?.setName}
+                        BackCardName={item?.name}
+                        Rarity={item?.type}
+                        Quantity={item?.quantity}
+                        holderNo={item?.noOfCardHolders}
+                        cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                        GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                        userId={item?.setId}
+                        CollectionType={item?.collectionName}
+                        // Disable={"CardDisebal"}                            
+                        cardHeader={`${item?.name}`}
+                        id={item?.cardId}
+                        BackSideCard={BackSideCard}
+                        fulldata={item}
+                        flipCard={backCards?.includes(item?.cardId)}
+                      />
+                    );
+                  })}
+                </SwiperBar>
+              </div>
             })}
-          </SummerCard>
-          {/* <div>
-            <p>WINTER COLLECTION</p>
-          </div>
-          <SummerCard>
-            {CardValue.map((items, index) => {
-              return (
-                <div className='w-100 m-auto mb-4'>
-                  <SwiperBar>
-                    
-                    {items.map((item: any) => {
-                      return (
-                        <>
-                          <NftOneCard
-                            DivClass={item.cardType}
-                            HeaderText={item.cardType}
-                            HeaderClass={`${item.cardType}_text`}
-                            Disable={""} 
-                            cardHeader={`${item.cardHeader}`}
-                            cardNo={`${item.cardNo}`}
-                            id={item.id}
-                            BackSideCard={BackSideCard}
-                            flipCard={backCards == item.id ? true : false}
-                          />
-                        </>
-                      );
-                    })}
-                  </SwiperBar>
-                </div>
-              );
-            })}
-          </SummerCard> */}
+          </SummerCard> :
+            <div className="d-flex justify-content-center">
+              {cardShow == true ? <p style={{
+                color: "black",
+                fontSize:"14px"
+              }}>Data Not Found</p> : ""}
+            </div>}
         </CenterItem>
       </div>
     </div>

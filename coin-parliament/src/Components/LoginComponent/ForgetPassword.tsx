@@ -14,6 +14,7 @@ import InputField from "../Atoms/Input/InputField";
 import { Buttons } from "../Atoms/Button/Button";
 
 
+
 const SignUp = styled.div`
 margin-left:5px;
 margin-right:7px;
@@ -26,7 +27,7 @@ const DontHaveAccountText = styled.div`
  color:black;
 `;
 export type ForgetPasswordProps = {
-  setForgetPassword:(s:boolean)=>void;
+  setForgetPassword: (s: boolean) => void;
   setUser: (user?: User | undefined) => void;
   setSignup: (s: boolean) => void;
   authProvider: (
@@ -44,63 +45,65 @@ export type ForgetPasswordProps = {
   ) => Promise<void>;
 };
 
-const ForgetPassword = ({ setForgetPassword,setUser, setSignup, authProvider, login }: ForgetPasswordProps) => {
+const ForgetPassword = ({ setForgetPassword, setUser, setSignup, authProvider, login }: ForgetPasswordProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const [email,setEmail]=useState('')
+  const [email, setEmail] = useState('')
   const strings = {
     email: capitalize(translate(texts.email)),
     password: capitalize(translate(texts.password)),
   };
-  const onForgetPasswordClick=()=>{
+  const onForgetPasswordClick = () => {
     const auth = getAuth();
-     
-sendPasswordResetEmail(auth, email)
-  .then(() => {
-   
-    showToast('Password reset link has been sent to your email.', ToastType.SUCCESS)
-    setForgetPassword(false)
-    // Password reset email sent!
-    // ..
-  })
-  .catch((error) => {
-    console.log(error.message)
-    showToast(error.message, ToastType.ERROR)
-    // ..
-  });
+    var actionCodeSettings = {
+      url: 'https://coin-parliament-staging.firebaseapp.com/resetpassword?email=user@example.com',
+    };
+    sendPasswordResetEmail(auth, email, actionCodeSettings)
+      .then(() => {
 
-   
+        showToast(texts.PasswordResetLinkSent, ToastType.SUCCESS)
+        setForgetPassword(false)
+        // Password reset email sent!
+        // ..
+      })
+      .catch((error) => {
+        console.log(error.message)
+        showToast(error.message, ToastType.ERROR)
+        // ..
+      });
+
+
   }
   return (
     <>
       <div className="mb-3 w-100">
-      <Form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        onForgetPasswordClick()
-      }}
-    >
-      <Form.Group className="mb-3 w-100" controlId="login-email">
-        <InputField
-        style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
-          fullWidth={true}
-          type="email"
-          placeholder={strings.email}
-          name="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </Form.Group>
+        <Form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            onForgetPasswordClick()
+          }}
+        >
+          <Form.Group className="mb-3 w-100" controlId="login-email">
+            <InputField
+              style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+              fullWidth={true}
+              type="email"
+              placeholder={strings.email}
+              name="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Form.Group>
 
-      <Buttons.Primary  fullWidth={true} type="submit">
-      continue
-      </Buttons.Primary>
-    </Form>
+          <Buttons.Primary fullWidth={true} type="submit">
+            {"continue".toUpperCase()}
+          </Buttons.Primary>
+        </Form>
       </div>
       <div className='d-flex'>
-      <DontHaveAccountText className="mr-5"> {`${capitalize(translate('Go back to login page?'))} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setForgetPassword(false)}>{`${capitalize(translate('Click here.'))}`}</SignUp>
+        <DontHaveAccountText className="mr-5"> {`${translate('Go back to login page?')} `}</DontHaveAccountText>
+        <SignUp onClick={() => setForgetPassword(false)}>{`${translate('Click here.'.toUpperCase())}`}</SignUp>
       </div>
     </>
   );

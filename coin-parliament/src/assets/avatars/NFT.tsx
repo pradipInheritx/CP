@@ -85,6 +85,8 @@ const Title = styled.div`
   text-transform: uppercase;
   text-align: left;
   font-weight:600;
+  margin-top:10px;
+  margin-bottom:10px;
 `;
 
 const Video = styled.video`
@@ -96,10 +98,11 @@ const Video = styled.video`
 `;
 
 const Body = styled(Card.Body)`
+flex-direction:column;
   font-size: 14px;
   line-height: 18px;
   color: #fff;
-  margin: 0 20px;
+  // margin: 0 20px;
   padding-top:0;
 `;
 
@@ -127,18 +130,19 @@ const CloseButton = styled.span`
   font-size:22px;
   font-weight:400;
 cursor:pointer;
+position:absolute;
 `;
 const Paragraph=styled.p`
 font-weight:300;`
 const NFT = ({ setSelectedAvatar,id }: NFTProps) => {
   return (
-    <Container>
+    <Container style={{marginTop:'15px', maxWidth:'350px'}}>
      
           <CloseButton aria-hidden="true" onClick={()=>setSelectedAvatar('')}>&times;</CloseButton>
         
       <Body>
         <Title>{title(id)}</Title>
-        <Video width="300" height="300" autoPlay={true} loop={true}>
+        <Video width="300" height="300" autoPlay={true} loop={true}  playsInline>
           <source
             src={`${
               importFile(`./videos/${images[id as AvatarType]}`, "mp4")

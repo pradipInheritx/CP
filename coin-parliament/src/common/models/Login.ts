@@ -23,7 +23,12 @@ import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import { saveUsername } from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "../../firebase";
+import { userConverter, UserProps } from "./User";
+import { useNavigate } from "react-router-dom";
 const sendEmail = httpsCallable(functions, "sendEmail");
+
 export enum LoginModes {
   LOGIN,
   SIGNUP,
@@ -42,10 +47,14 @@ export const providers = {
 };
 
 export const Logout = (setUser: () => void) => {
+  const navigate = useNavigate();
   const auth = getAuth();
   signOut(auth)
     .then(() => {
       setUser();
+      window.localStorage.setItem('mfa_passed', 'false')
+      navigate("/")
+      console.log("i am logout working")
     })
     .catch((error) => {
       const errorMessage = error.message;
@@ -71,23 +80,44 @@ export const LoginAuthProvider = async (
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     const isFirstLogin = getAdditionalUserInfo(result)
-    
+    const userRef = doc(db, "users", user.uid);
+      const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
+      const info = userinfo.data();
     // await sendEmail().then(()=>console.log('welcome mail')).catch(err=>console.log('welcome error',err))
     if(callback){
       
-      console.log('callback called for refeer',user)
-      callback({parent: refer, child: user.uid})}
-
+      // console.log('callback called for refeer',user)
+      callback({parent: refer, child: user.uid})
+    }
+      
     if (isFirstLogin?.isNewUser) {
       saveUsername(user.uid,'','')
+
+      const firstTimeLogin:Boolean=true
+     
+      await setDoc(userRef, { firstTimeLogin }, { merge: true });
+      console.log('firsttimelogin success')
+      
     setTimeout(() => {
+      
       setUser(user);
     }, 100);
     }else{
-    setUser(user);
+   
+      console.log('user',info)
+      // @ts-ignore
+      if(info?.mfa) {
+        
+        console.log('datacalled')
+        // @ts-ignore
+        setSmsVerification(true)}
+    // setUser(user);
+
     }
   } catch (e) {
+    console.log(e, "check this error 2")
     // @ts-ignore
+
     if (e?.code == 'auth/multi-factor-auth-required') {
       // The user is a multi-factor user. Second factor challenge is required.
       // @ts-ignore
@@ -97,7 +127,7 @@ export const LoginAuthProvider = async (
         multiFactorHint: resolver?.hints[0],
         session: resolver?.session
     };
-    console.log('phonebook',phoneInfoOptions)
+    // console.log('phonebook',phoneInfoOptions)
     const phoneAuthProvider = new PhoneAuthProvider(auth);
     const recaptchaVerifier = new RecaptchaVerifier(
       "loginId",
@@ -112,7 +142,7 @@ export const LoginAuthProvider = async (
       },
       auth
     );
-    console.log('captcha',recaptchaVerifier)
+    // console.log('captcha',recaptchaVerifier)
 phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
     .then(function (verificationId) {
        // @ts-ignore
@@ -124,7 +154,8 @@ phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
   }
   else{
     const errorMessage = (e as Error).message;
-    showToast(errorMessage, ToastType.ERROR);
+    console.log('error message',errorMessage)
+    showToast(errorMessage=='Firebase: Error (auth/popup-closed-by-user).' || errorMessage=='Error (auth/cancelled-popup-request).'?'Authentication popup was closed by the user':errorMessage, ToastType.ERROR);
   }
   }
 };
@@ -143,18 +174,24 @@ export const LoginRegular = async (
   const auth = getAuth();
   const email = getValue(e, "email");
   const password = getValue(e, "password");
-
+  var showErroe = false;
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
+    console.log(userCredential,"userCredential")
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-
+// console.log('firsttimelogin',isFirstLogin)    
     if(auth?.currentUser?.emailVerified){
       if (isFirstLogin?.isNewUser) {
         saveUsername(userCredential?.user?.uid,'','')
+
+        const firstTimeLogin:Boolean=true
+        const userRef = doc(db, "users", userCredential?.user?.uid);
+        await setDoc(userRef, { firstTimeLogin }, { merge: true });
+        console.log(isFirstLogin,'firsttimelogin success')
         // await sendEmail();
       setTimeout(() => {
         callback.successFunc(userCredential.user) 
@@ -162,10 +199,40 @@ export const LoginRegular = async (
       }else{
         callback.successFunc(userCredential.user) 
       }
-     }
+    }    
     else  callback.errorFunc({message:'Please verify your email first.'} as Error);
-  } catch (e) {
-    callback.errorFunc(e as Error);
+  } catch (err) {
+
+    
+    // @ts-ignore
+    console.log(err.message,"allcode")
+    // @ts-ignore
+    switch (err.code) {
+      case 'auth/wrong-password':
+        
+        callback.errorFunc({ message: 'Your password is invalid.'} as Error);
+        break;
+      case 'auth/user-not-found':
+        
+        callback.errorFunc({ message: 'This user not found'} as Error);
+        break;
+      case 'auth/too-many-requests': 
+        callback.errorFunc({ message: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later .'} as Error);
+        break;
+      case 'auth/invalid-email':        
+        callback.errorFunc({ message: 'This Email is not Valid.'} as Error);
+        break;
+      // @ts-ignore      
+      default: showErroe = true;
+    }    
+
+    // @ts-ignore    
+    const matches = err.code.replace("auth/","");
+    const lastmatches = matches.replace(/\b(?:-)\b/gi," ");
+    if (showErroe) {
+      callback.errorFunc({ message: lastmatches } as Error);
+      showErroe=false
+    }
   }
 };
 
@@ -199,7 +266,7 @@ export const SignupRegular = async (
   const auth = getAuth();
   try {
     validateSignup(payload);
-
+console.log("this function call")
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       payload.email,
@@ -208,13 +275,29 @@ export const SignupRegular = async (
     
 // @ts-ignore
     await sendEmailVerification(auth?.currentUser);
+    const firstTimeLogin:Boolean=true
+    // @ts-ignore
+
+    const userRef = doc(db, "users", auth?.currentUser?.uid);
+    await setDoc(userRef, { firstTimeLogin }, { merge: true })
+    console.log('firsttimelogin success')
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid,'','')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))
     
     callback.successFunc(userCredential.user);
   } catch (e) {
-    callback.errorFunc(e as Error);
+    // callback.errorFunc(e as Error);
+
+    // @ts-ignore
+    const matches = e.code.replace("auth/", "");
+    const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
+      callback.errorFunc({ message: lastmatches } as Error);
+    
+    
+
+    console.log(e , "check this error")
+    
   }
 };
 

@@ -1,0 +1,21 @@
+[
+    { "name": "btcusdt", "symbol": "BTC" },
+    { "name": "ethusdt", "symbol": "ETH" },
+    { "name": "bnbusdt", "symbol": "BNB" },
+    { "name": "adausdt", "symbol": "ADA" },
+    { "name": "solusdt", "symbol": "SOL" },
+    { "name": "xrpusdt", "symbol": "XRP" },
+    { "name": "dogeusdt", "symbol": "DOGE" },
+    { "name": "dotusdt", "symbol": "DOT" },
+    { "name": "shibusdt", "symbol": "SHIB" },
+    { "name": "maticusdt", "symbol": "MATIC" },
+    { "name": "ltcusdt", "symbol": "LTC" },
+    { "name": "linkusdt", "symbol": "LINK" },
+    { "name": "uniusdt", "symbol": "UNI" },
+    { "name": "trxusdt", "symbol": "TRX" },
+    { "name": "xlmusdt", "symbol": "XLM" },
+    { "name": "manausdt", "symbol": "MANA" },
+    { "name": "hbarusdt", "symbol": "HBAR" },
+    { "name": "vetusdt", "symbol": "VET" },
+    { "name": "sandusdt", "symbol": "SAND" }
+]

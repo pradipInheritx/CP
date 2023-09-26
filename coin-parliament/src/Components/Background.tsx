@@ -20,21 +20,20 @@ const BG = styled.div`
     isHomeBg(props.pathname)
       ? Gradient1
       : isCoinsPairs(props.pathname)
-      ? Gradient3
-      : Gradient2};
+        ? Gradient3
+        : Gradient2};
 `;
 
 const BGContainer = styled.div`
   position: fixed;
   height: ${(props: Props) =>
-    `${
-      props.pathname === "/"
-        ? props.width && props.width > 979
-          ? 120
-          : props.scrollPosition < positionBreakpoint
+    `${props.pathname === "/"
+      ? props.width && props.width > 979
+        ? 120
+        : props.scrollPosition < positionBreakpoint
           ? 120
           : 120
-        : 120
+      : 120
     }px`};
   width: 100%;
   background:#160133;
@@ -42,17 +41,17 @@ const BGContainer = styled.div`
     isProfile(props.pathname)
       ? "border-radius: 0px 0px 80px 0px"
       : "border-radius: 0px 0px 0px 0px"
-      };
+  };
   
   overflow: hidden;
-  z-index: 1;
+  z-index: 1000;
 `;
 
 const Background = ({ pathname }: { pathname: string }) => {
   let params = useParams();
   const { width } = useWindowSize();
   const scrollPosition = useScrollPosition();
-  console.log("data", isCoinsPairs(pathname), pathname, params);
+
   return (
     <BGContainer
       pathname={pathname}
@@ -68,7 +67,7 @@ const Background = ({ pathname }: { pathname: string }) => {
             // border: "5px solid red",
             background:
               (isCoinsPairs(pathname) && pathname?.includes("coins/")) ||
-              (isCoinsPairs(pathname) && pathname?.includes("pairs/"))
+                (isCoinsPairs(pathname) && pathname?.includes("pairs/"))
                 ? "#160133"
                 : "",
           }}

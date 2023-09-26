@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import {Heart} from "../Atoms/Checkbox/Icon";
 import {Image} from "react-bootstrap";
@@ -10,10 +10,12 @@ import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
 import { useLocation } from "react-router-dom";
 import arrow from '../../assets/svg/arrow-right.svg'
+import { texts } from "../LoginComponent/texts";
 const LighCart1 = styled.div`
   //width: 100%;
-  max-width: ${(props: { pathname: string,single: boolean }) =>
+  max-width: ${(props: { pathname: string, single: boolean }) =>
   props.pathname?.includes('/pairs') ? "236px" : ''};
+  cursor: pointer;
   width:  ${(props: { pathname: string,single: boolean }) =>
   props.pathname?.includes('/pairs') ? "236px" : ''};
   position: relative;
@@ -46,7 +48,7 @@ export type LogoProps = {
   width?: number;
 };
 
-export const Logo = ({ symbol, width = 35 }: LogoProps) => {
+export const Logo = ({ symbol, width = 40 }: LogoProps) => {
   return (
     <Image
       src={process.env.PUBLIC_URL + `/images/logos/${symbol.toUpperCase()}.svg`}
@@ -64,8 +66,7 @@ const CoinNameXYZ = styled.div`
   flex: 1;
   font-family: var(--font-family-poppins);
   color: var(--ebony);
-  font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-12)"};
+  font-size: ${(props: { single: boolean }) => props.single ? "var(--font-size-18)" : "var(--font-size-14)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 1.1;
@@ -78,6 +79,7 @@ const Span0 = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-overflow: 'ellipsis'
 `;
 
 const HeartContainer = styled.div`
@@ -187,7 +189,7 @@ const Price = styled.div`
   color: ${(props: { single: boolean }) =>
           props.single ? "var(--white)" : "#23036a"};
   font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
+          props.single ? "var(--font-size-18)" : "var(--font-size-15)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 16px;
@@ -195,21 +197,41 @@ const Price = styled.div`
 `;
 
 const CoinCard = ({
+  color,
   coin,
   onClick,
   single,
   coins,
-}: { coin: Coin; onClick: () => void; single: boolean, coins: { [symbol: string]: Coin }; }) => (
-  <LogoContainer>
+}: { color: string; coin: Coin; onClick: () => void; single: boolean, coins: { [symbol: string]: Coin }; }) => (
+
+
+
+  <LogoContainer className="">
     <Buttons.ClickableText onClick={onClick} style={{cursor: single ? "default" : undefined}}>
       <LogoImgContainer {...{single}}>
-        <Logo {...{symbol: coin.symbol, width: single ? 40 : 35}} />
+        <Logo {...{symbol: coin.symbol, width: single ? 45 : 40}} />
       </LogoImgContainer>
     </Buttons.ClickableText>
     <div className="my-2">
       <CoinNameXYZ {...{single}}>
-        {single && <div className="fw-bolder"> {coin.name}</div>}
-        {!single && <Span0><Buttons.ClickableText onClick={onClick} className="fw-bolder">
+        {single && <div className="fw-bolder"
+          style={{
+    boxSizing:"border-box",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  overflow: 'hidden',
+  wordWrap: "normal"
+        }}
+        > {coin.name}</div>}
+        {!single && <Span0
+                style={{
+    boxSizing:"border-box",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+  overflow: 'hidden',
+  wordWrap: "normal"
+        }}
+        ><Buttons.ClickableText onClick={onClick} className="fw-bolder">
           {coin.name}
         </Buttons.ClickableText></Span0>}
         {single && <div>{coin.symbol}</div>}
@@ -220,7 +242,9 @@ const CoinCard = ({
     </div>
     {single && <div className="my-2">
       <Group3991>
-        <Price {...{single}}>{formatCurrency(coins[coin.symbol]?.price, precision[coin.symbol])}</Price>
+        <Price
+          style={{color:`${color}`}}
+          {...{ single }}>{formatCurrency(coins[coin.symbol]?.price, precision[coin.symbol])}{ (coin.symbol!='BTC' && coin.symbol!='ETH') && coins[coin.symbol]?.randomDecimal}</Price>
       </Group3991>
     </div>}
   </LogoContainer>
@@ -240,14 +264,70 @@ const Card = ({
   const location = useLocation();
   const pathname = location.pathname;
   const {user} = useContext(UserContext);
-  const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
+  const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
+  const [colorFirst, setColorFirst] = useState<string>("black");
+  const [colorSec, setColorSec] = useState<string>("black");
+  const [priceFist, setPriceFist] = useState<any>(0)
+  const [priceSec, setPriceSec] = useState<any>(0)
+const [zoom, setZoom] = useState(false)
+  const prevFirstRef = useRef(priceFist)
+  const prevSecRef = useRef(priceSec)
 
+
+const firstColor= ()=>{
+  if (coins[coin1?.symbol]?.price == prevFirstRef.current) {   
+      setColorFirst("black")
+      }
+    else if (coins[coin1?.symbol]?.price > prevFirstRef.current) {
+      setColorFirst("Green")            
+      }
+      else if (coins[coin1?.symbol]?.price < prevFirstRef.current) {
+      setColorFirst("Red")            
+      }      
+    // },5000);
+    setPriceFist(coins[coin1?.symbol]?.price)
+}
+
+const secColor= ()=>{
+  if (coins[coin2?.symbol]?.price == prevSecRef.current) {   
+      setColorSec("black")
+      }
+    else if (coins[coin2?.symbol]?.price > prevSecRef.current) {
+      setColorSec("Green")            
+      }
+      else if (coins[coin2?.symbol]?.price < prevSecRef.current) {
+      setColorSec("Red")            
+      }      
+    // },5000);
+    setPriceSec(coins[coin2?.symbol]?.price)
+}
+
+  useEffect(() => {
+    prevFirstRef.current = priceFist;
+    firstColor()
+  }, [
+    coins[coin1?.symbol]?.price
+  ])
+  useEffect(() => {
+    prevSecRef.current = priceSec;
+    secColor()
+  }, [
+    coins[coin2?.symbol]?.price
+  ])
+
+
+  
   return (
-    <LighCart1 {...{ single,pathname }} className="">
+    <LighCart1 {...{ single, pathname }} className=""
+      style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.05)" : "scale(1)"}` }}
+    onMouseEnter={()=>setZoom(true)}
+      onMouseLeave={() => setZoom(false)}  
+      onClick={onClick}
+    >
       <HeartContainer {...{ single }} onClick={
         ()=>{
           if(!user?.uid){
-            setLoginRedirectMessage('add pairs to favorites.')
+            setLoginRedirectMessage('add pairs to favorites')
             setLogin(true)
           }
         }}>
@@ -260,17 +340,17 @@ const Card = ({
           name={name}
         />
       </HeartContainer>
-      <CardsContainer>
-        <CoinCard coin={coin1} onClick={onClick} single={single} coins={coins}/>
+      <CardsContainer  className="">
+        <CoinCard color={colorFirst} coin={coin1} onClick={onClick} single={single} coins={coins}/>
         <OverlapGroup>
           <VS {...{single}}>VS</VS>
         </OverlapGroup>
-        <CoinCard coin={coin2} onClick={onClick} single={single} coins={coins}/>
+        <CoinCard color={colorSec} coin={coin2} onClick={onClick} single={single} coins={coins}/>
       </CardsContainer>
       {!single && (
         <Component127371>
           <Buttons.ClickableText onClick={onClick} className=" p-2" style={{margin: "-0.5rem"}}>
-            <VOTE>VOTE</VOTE>
+            <VOTE>{texts.ToVote}</VOTE>
             <img
               width="6"
               height="10"

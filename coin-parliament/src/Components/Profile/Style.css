@@ -1,0 +1,33 @@
+.card-content{    
+    /* Width:100%; */
+    height: 460px;
+}
+.card-contentMob{    
+    Width:100% !important;
+    height: 460px;
+}
+.PaxText{
+animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+.popupStyle {
+  border-radius:100px 0px 100px 100px
+}
+
+.modulebackground{
+  background-color:transparent !important;
+  border: none !important;
+}
+.btn-close{
+  color: white !important;
+}
+/* #d4d0f3 */
+/* #6352e8 */
+
+/* .coin_Bg{
+ background-image: url(../../assets/images/coin_bg.png);
+} */

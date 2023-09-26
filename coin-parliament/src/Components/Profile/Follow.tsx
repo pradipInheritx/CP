@@ -8,6 +8,7 @@ import { capitalize } from "lodash";
 import { follow, Leader } from "../../Contexts/CoinsContext";
 import UserCard from "../Users/UserCard";
 import { toFollow } from "../../common/models/User";
+import { texts } from "../LoginComponent/texts";
 
 export type Follower = {
   username: string;
@@ -26,9 +27,9 @@ export const getUsers = ({
   users?: string[];
   setUsers: (newUsers: Leader[]) => void;
 }) => {
-  try {
-    users?.length &&
+  try {    
       getLeaderUsersByIds({ userIds: users }).then((u) => {
+        console.log(u.data,"checkdata")
         setUsers(u.data);
       });
   } catch (e) {
@@ -42,11 +43,19 @@ const Follow = () => {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
 
+console.log(userInfo,"userInfo")
+
   useEffect(() => {
     getUsers({ users: userInfo?.leader, setUsers: setLeaders });
+    // getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
+  }, [userInfo?.leader]);
+  useEffect(() => {
+    // getUsers({ users: userInfo?.leader, setUsers: setLeaders });
     getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers });
-  }, [userInfo?.leader, userInfo?.subscribers]);
-console.log('leaders',leaders,userInfo)
+  }, [userInfo?.subscribers]);
+
+
+console.log(leaders,"allleaders")
   return (
     <Tabs
       defaultActiveKey="following"
@@ -55,10 +64,10 @@ console.log('leaders',leaders,userInfo)
       tabs={[
         {
           eventKey: "following",
-          title: capitalize(translate("following")),
+          title: capitalize(translate(`${texts.Following}`)),
           pane: (
             <div>
-              {(leaders || []).map((u, i) => {
+              {leaders && leaders.map((u, i) => {
                 return (
                   <div className="mb-2" style={{maxWidth:'85vw', margin:'auto'}}>
                     <UserCard
@@ -82,7 +91,7 @@ console.log('leaders',leaders,userInfo)
         },
         {
           eventKey: "followers",
-          title: capitalize(translate("followers")),
+          title: capitalize(translate(`${texts.Followers}`)),
           pane: (
             <>
               {(subscribers || []).map((s, i) => {

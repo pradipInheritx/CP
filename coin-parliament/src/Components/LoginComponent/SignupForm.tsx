@@ -11,19 +11,27 @@ import { Buttons } from "../Atoms/Button/Button";
 import { capitalize } from "lodash";
 import { User as AuthUser } from "@firebase/auth";
 import { Link } from "react-router-dom";
+import { validatePassword } from "Components/Profile/utils";
+import { passwordValidation } from "Components/Profile/utils";
+import { showToast } from "App";
+import { ToastType } from "Contexts/Notification";
 
 const SignupForm = ({
   emailValue,
   callback,
-  signup
+  signup,
+  signupLoading,
+  setSignupLoading,
 }: {
-  emailValue:string;
+  emailValue: string;
   callback: Callback<User>;
+  signupLoading?: any;
+  setSignupLoading?: (k: boolean) => void;
   signup: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
   ) => Promise<void>;
-  
+
 }) => {
   const translate = useTranslation();
   const [email, setEmail] = useState("");
@@ -31,21 +39,29 @@ const SignupForm = ({
   const [password2, setPassword2] = useState("");
 
   const [agree, setAgree] = useState(true);
-useEffect(() => {
-  setEmail(emailValue)
-}, [])
+  useEffect(() => {
+    setEmail(emailValue)
+  }, [])
   const strings = {
     email: capitalize(translate(texts.email)),
-    confirmPassword: capitalize(translate(texts.confirmPassword)),
-    password: capitalize(translate(texts.password)),
-    continue: capitalize(translate(texts.continue)),
-    agree: capitalize(translate(texts.agree)),
+    confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
+    password: capitalize(translate(texts.password.toUpperCase())),
+    continue: capitalize(translate(texts.continue.toUpperCase())),
+    agree: capitalize(translate(texts.agree.toUpperCase())),
   };
 
   return (
     <Form
       onSubmit={async (e) => {
         e.preventDefault();
+        const validatePassword = passwordValidation(password, password2);
+        if (validatePassword !== true) {
+          showToast(validatePassword, ToastType.ERROR);
+          return;
+        }
+        if (signupLoading) return
+        // @ts-ignore
+        setSignupLoading(true)
         await signup(
           {
             email,
@@ -60,7 +76,7 @@ useEffect(() => {
     >
       <Form.Group className="mb-3" controlId="email">
         <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           placeholder={translate(strings.email)}
           name="email"
           required
@@ -70,7 +86,7 @@ useEffect(() => {
       </Form.Group>
       <Form.Group className="mb-3" controlId="password">
         <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           placeholder={translate(strings.password)}
           type="password"
           name="password"
@@ -81,7 +97,7 @@ useEffect(() => {
       </Form.Group>
       <Form.Group controlId="passwordConfirm">
         <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           placeholder={translate(strings.confirmPassword)}
           type="password"
           name="passwordConfirm"
@@ -93,24 +109,31 @@ useEffect(() => {
 
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" >
-          {strings.continue}
+          {signupLoading ? 'Wait...' : strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
 
-      <Form.Group className="mb-2" controlId="agree">
+      <Form.Group className="mb-2  text-center" controlId="agree">
         <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
-          {translate(strings.agree)
+          <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
+            {translate('terms & conditions')}
+          </Link>  and
+          </p>
+          <p><Link to={'/privacy'} style={{ color: 'var(--blue-violet)' }}>
+            privacy policy
+          </Link> of the site</p>
+          {/* {translate(strings.agree)
             .split("{terms & conditions}")
             .map((t, i) => (
               <React.Fragment key={i}>
-                {t}{" "}
+                {t.toUpperCase()}{" "}
                 {!i && (
                   <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
+                    {translate(texts.termsConditions.toUpperCase())}
                   </Link>
                 )}
               </React.Fragment>
-            ))}
+            ))} */}
         </Checkbox>
       </Form.Group>
     </Form>

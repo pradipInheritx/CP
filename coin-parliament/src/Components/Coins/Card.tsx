@@ -1,18 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import styled from "styled-components";
 import {Heart} from "../Atoms/Checkbox/Icon";
 import {BearVsBullRow, getVotes} from "../../common/models/CoinTable";
 import {Image} from "react-bootstrap";
 import {Coin, formatCurrency, precision} from "../../common/models/Coin";
-import {Totals} from "../../Contexts/CoinsContext";
+import CoinsContext, {Totals} from "../../Contexts/CoinsContext";
 import {Buttons} from "../Atoms/Button/Button";
 import Trend from "../Atoms/utils/Trend";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import arrow from '../../assets/svg/arrow-right.svg'
+import { texts } from "../LoginComponent/texts";
 const LighCart1 = styled.div`
-
+  cursor: pointer;
   max-width: 350px;
   position: relative;
   display: flex;
@@ -49,8 +50,8 @@ const Logo = ({symbol, single}: BearVsBullRow & { single: boolean }) => {
       src={process.env.PUBLIC_URL + `/images/logos/${symbol?.toUpperCase()}.svg`}
       style={{
         margin: "0 auto",
-        width: single ? 50 : 35,
-        height: single ? 50 : 35,
+        width: single ? 70 : 50,
+        height: single ? 70 : 50,
       }}
       onError={(e) =>
         ((e.target as HTMLImageElement).src = "/images/no_logo.png")
@@ -63,8 +64,7 @@ const CoinNameXYZ = styled.div`
   flex: 1;
   font-family: var(--font-family-poppins);
   color: var(--ebony);
-  font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-18)" : "var(--font-size-12)"};
+  // font-size: ${(props: { single: boolean }) => props.single ? "var(--font-size-18)" : "var(--font-size-12)"};
   line-height: 1.1;
   text-align: center;
   letter-spacing: 0;
@@ -86,10 +86,11 @@ const Price = styled.div`
   min-width: 56px;
   font-family: var(--font-family-poppins);
   font-weight: 400;
-  color: ${(props: { single: boolean }) =>
-          props.single ? "var(--white)" : "#23036a"};
+  color: ${(props: { single: boolean }) => props.single ? "var(--white)" : "#23036a"};
+          
+
   font-size: ${(props: { single: boolean }) =>
-          props.single ? "var(--font-size-16)" : "var(--font-size-13)"};
+          props.single ? "var(--font-size-18)" : "var(--font-size-16)"};
   text-align: center;
   letter-spacing: 0;
   line-height: 16px;
@@ -186,16 +187,49 @@ const Card = ({
 }: CoinCardProps) => {
   const {user} = useContext(UserContext);
   const {setLoginRedirectMessage,loginRedirectMessage,setLogin} = useContext(AppContext );
+  const [changeColor, setChangeColor] = useState<string>("black");
+  const [currentPrice, setCurrentPrice] = useState<any>(0)
+  const [zoom, setZoom] = useState(false)  
+  const prevCountRef = useRef(currentPrice)
+
+// console.log('reference',coins[symbol]?.randomDecimal)
+  const OnlyCheckColor = () => {          
+    // setInterval(() => {            
+    if (coins[symbol]?.price == prevCountRef.current) {   
+      setChangeColor("black")
+      }
+    else if (coins[symbol]?.price > prevCountRef.current) {
+      setChangeColor("Green")            
+      }
+      else if (coins[symbol]?.price < prevCountRef.current) {
+      setChangeColor("Red")            
+      }      
+    // },5000);
+    setCurrentPrice(coins[symbol]?.price)
+  }
+  useEffect(() => {
+    prevCountRef.current = currentPrice;    
+    OnlyCheckColor()        
+  }, [
+    coins[symbol]?.price
+  ])
+  
+  
+
   let params = useParams();
-  console.log('params',params)
+  
   return (
     <LighCart1
       {...{ single }}
+    style={{ transition: "transform .5s", transform: `${zoom ? "scale(1.07)" : "scale(1)"}` }}
+    onMouseEnter={()=>setZoom(true)}
+      onMouseLeave={() => setZoom(false)}  
+    onClick={onClick}
     >
-      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-180px'}} onClick={
+      <HeartContainer {...{ single }} style={{marginTop:Object.keys(params).length !== 0?'':'-142px'}} onClick={
         ()=>{
           if(!user?.uid){
-            setLoginRedirectMessage('add coin to favorites.')
+            setLoginRedirectMessage('add coin to favorites')
             setLogin(true)
           }
         }
@@ -215,9 +249,9 @@ const Card = ({
         </LogoImgContainer>
         <div className="my-2">
           <CoinNameXYZ {...{single}}>
-            <Span0>
+            <Span0 style={{fontSize:"20px" }}>
               {single && (
-                <span className="fw-bolder">{coins[symbol]?.name}</span>
+                <span className="fw-bolder" >{coins[symbol]?.name}</span>
               )}
               {!single && (
                 <Buttons.ClickableText onClick={onClick}>
@@ -225,7 +259,7 @@ const Card = ({
                 </Buttons.ClickableText>
               )}
             </Span0>
-            <Span1>
+            <Span1 style={{fontSize:"20px" }}>
               {single && <span>{coins[symbol]?.symbol}</span>}
               {!single && (
                 <Buttons.ClickableText onClick={onClick}>
@@ -237,17 +271,21 @@ const Card = ({
         </div>
       </LogoContainer>
       <Group3991>
-        <Price {...{single}}>{formatCurrency(coins[symbol]?.price, precision[symbol])}</Price>
-        <Trend1 {...{single}}>
+        <Price {...{ single }}
+        style={{color:`${changeColor}`}}
+        
+        >{formatCurrency(coins[symbol]?.price, precision[symbol])}{ (symbol!='BTC' && symbol!='ETH') && coins[symbol]?.randomDecimal}</Price>
+        {/* <Trend1 {...{single}}>
           <Trend num={coins[symbol]?.trend || 0}/>
-        </Trend1>
+        </Trend1> */}
       </Group3991>
-      {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>}
+      {/* {!single && <Votes>{getVotes(symbol, totals)} Votes</Votes>} */}
+      
       {!single && (
         <Component127371>
           {/* <Buttons.ClickableText onClick={onClick} className="shine2 p-2"> */}
           <Buttons.ClickableText onClick={onClick} className="p-2">
-            <VOTE>VOTE</VOTE>
+            <VOTE>{texts.ToVote}</VOTE>
             <img
               width="6"
               height="10"

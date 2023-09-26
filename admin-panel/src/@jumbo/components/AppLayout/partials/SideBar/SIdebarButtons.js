@@ -121,7 +121,7 @@ const SidebarButtons = () => {
   const classes = useStyles({ sidebarTheme });
   return (
     <List className={classes.list} disablePadding>
-      {buttons.map((button, index) => (
+      {/* {buttons.map((button, index) => (
         <ListItem
           key={index}
           alignItems="flex-start"
@@ -143,7 +143,7 @@ const SidebarButtons = () => {
             }}
           />
         </ListItem>
-      ))}
+      ))} */}
     </List>
   );
 };

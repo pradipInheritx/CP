@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
 const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapperVariant = 'default' }) => {
   const { send_forget_password_email } = useSelector(({ auth }) => auth);
   const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = useState('demo@example.com');
+  const [email, setEmail] = useState('');
   const dispatch = useDispatch();
   const classes = useStyles({ variant });
   const history = useHistory();
@@ -83,7 +83,7 @@ const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapp
   }, [send_forget_password_email]);
 
   const onSubmit = () => {
-    dispatch(AuhMethods[method].onForgotPassword({ email }));
+    dispatch(AuhMethods[method].onForgotPassword(email));
   };
 
   return (
@@ -137,7 +137,7 @@ const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapp
             </Button>
           </div>
 
-          <div>
+          {/* <div>
             <Typography>
               Don't remember your email?
               <span className={'ml-2'}>
@@ -146,7 +146,7 @@ const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapp
                 </Link>
               </span>
             </Typography>
-          </div>
+          </div> */}
         </form>
         <ContentLoader />
       </div>

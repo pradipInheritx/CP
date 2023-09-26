@@ -6,6 +6,13 @@
     "coinparliament-51ae1": {
       "hosting": {
         "qa": [
+          "staging"
+        ]
+      }
+    },
+    "742294999580": {
+      "hosting": {
+        "qa": [
           "coinparliamentstaging"
         ]
       }
