@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Totals } from "../../Contexts/CoinsContext";
 import { ProgressBar } from "react-bootstrap";
 import styled from "styled-components";
@@ -15,6 +15,7 @@ export type ProgressProps = {
   symbol2?: string;
   pct?: number;
   compare?: boolean;
+  isSingleCoinVote?: boolean;
 };
 
 const Container = styled.div`
@@ -100,18 +101,49 @@ const VSContainer = styled.div`
   margin-bottom: -13px;
 `;
 
-const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true }: ProgressProps) => {
+const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true, isSingleCoinVote = false }: ProgressProps) => {
 
   const { success, total } = progressData || totals[`${symbol1}-${symbol2}`] ||
     totals[`${symbol2}-${symbol1}`] ||
     totals[`${symbol1}`] ||
     ({} as Totals);
   // const pct = (100 * (success || 0)) / (total || 1);
-
+  const [showTooltip, setShowTooltip] = useState(false);
   return (
     <Container>
+      {
+        showTooltip &&
+        <div
+          style={{
+            display: "relative",
+          }}
+        >
+          <div className="newtooltip2"
+            style={{
+              maxWidth: `${window.screen.width > 767 ? "26%" : "90%"}`,
+              marginTop: `${window.screen.width > 767 ? "1.5em" : "1.5em"}`,
+              textAlign: 'justify',
+              marginRight: '4em'
+            }}
+          >
+            {isSingleCoinVote ?
+              <p>
+                The SVI aggregates voting profiles using a weighted algorithm that considers factors like volume, time frame, and success rate. It represents this data as a line graph ranging from 0 to 100. An SVI reading above 50 suggests that more users are optimistic about the coin's potential to increase in value (BULL). Conversely, a reading below 50 indicates a more pessimistic sentiment (BEAR).
+              </p> :
+              <p>
+                Similarly, the SVI for pairs uses the same algorithm to aggregate voting profiles. The line graph ranges from 0 to 100. Here, an SVI reading above 50 implies that more users believe one coin in the pair will outperform the other. It doesn't specify whether it's bullish or bearish but focuses on relative performance.
+              </p>}
+          </div>
+        </div>
+      }
       <div className="justify-content-between align-content-between d-flex mb-3">
-        <CPVI>SVI</CPVI>
+        <CPVI style={{ cursor: 'pointer' }}
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+          onClick={() => setShowTooltip((prev) => !prev)}
+        >
+          SVI (i)
+        </CPVI>
         <Votes>{abbrNum(total || 0)} votes</Votes>
       </div>
       <div>
@@ -151,6 +183,7 @@ const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true 
           {symbol2 && <Symbol2>{symbol2}</Symbol2>}
         </div>
       </div>
+
     </Container>
   );
 };
