@@ -10,6 +10,7 @@ import { Col, Container, Form, FormControl, Row } from 'react-bootstrap'
 
 const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAction<boolean>>, }> = ({ setMfaLogin, }) => {
     const [textData, setTextData] = useState<string>('');
+    const [buttonShow, setButtonShow] = useState<boolean>(false);
     const { userInfo } = useContext(UserContext);
     const url = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`
     const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`
@@ -17,6 +18,7 @@ const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAct
 
 
     const verifyOtp = async (token: string) => {
+
         try {
             const response = await axios.post(otpurl, {
                 "userId": userInfo?.uid,
@@ -25,10 +27,12 @@ const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAct
             });
             window.localStorage.setItem('mfa_passed', 'false')
             setMfaLogin(true)
+            setButtonShow(false)
         } catch (error: any) {
             showToast(
                 error.response.data.message, ToastType.ERROR
             );
+            setButtonShow(false)
             console.error(error.response, "checkresponse");
         }
     };
@@ -63,16 +67,32 @@ const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAct
                                                     <Col>
                                                         <Container className="p-0">
 
-                                                            <Row className="mb-5">
-                                                                <div className='d-flex' style={{ marginTop: '30px' }}>
+                                                            <div className="mb-5 "
+                                                                style={{
+                                                                    width:`${window.screen.width >767 ?"620px":"100%"}`
+                                                                }}
+                                                            >
+                                                                <div className='d-flex justify-content-between'
+                                                                    style={{ marginTop: '30px' }}
+                                                                >
                                                                     <FormControl
-
+                                                                        className=''
+                                                                        style={{
+                                                                            width:"80%"
+                                                                        }}
                                                                         value={textData}
                                                                         onChange={(e) => setTextData(e.target.value)}
-
-                                                                    />  <Buttons.Primary onClick={(e) => verifyOtp(textData)}>Verify</Buttons.Primary>
+                                                                    />
+                                                                    <Buttons.Primary className='border'
+                                                                        disabled={textData=="" || buttonShow}
+                                                                        onClick={(e) => {
+                                                                        verifyOtp(textData)
+                                                                        setButtonShow(true)
+                                                                    }}>{!buttonShow ?
+                                                                            "Verify" :"Verify..."
+                                                                        }</Buttons.Primary>
                                                                 </div>
-                                                            </Row>
+                                                            </div>
                                                         </Container>
                                                     </Col>
                                                 </Row>

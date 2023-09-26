@@ -118,7 +118,7 @@ function PaymentHistory() {
                         }}
                       >
                         <RewardList>
-                          {item?.paymentDetails?.trx?.transactionHash || "NA"}
+                          {item?.paymentDetails?.transaction_id || "NA"}
                         </RewardList>
                       </div>
                       <div

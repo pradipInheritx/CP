@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  transactionId?: any,
+  setTransactionId?: any,
   setBackgrounHide?: any,
   backgrounHide?: any,
   voteNumberEnd: any,
