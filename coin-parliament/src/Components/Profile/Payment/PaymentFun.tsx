@@ -224,7 +224,7 @@ function PaymentFun({ isVotingPayment }: any) {
         show={showForWait}
         backdrop="static"
         centered
-        style={{ zIndex: "2200", backgroundColor: 'rgba(0, 0, 0, 0.70)' }}
+        style={{ zIndex: "2200", backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
         contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
       >
         <Modal.Body>
