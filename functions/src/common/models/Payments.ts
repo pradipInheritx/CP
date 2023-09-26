@@ -463,7 +463,7 @@ const parentLimitCalculation = async (parentData: any, getParentSettings: any) =
         .get();
     const getParentPayment: any = getParentPaymentQuery.docs.map((snapshot: any) => snapshot.data())
 
-    for (let data = 0; data < getParentPayment.length;)
+    for (let data = 0; data < getParentPayment.length)
     // return {amount}
 }
 
