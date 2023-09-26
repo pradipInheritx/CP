@@ -1,7 +1,20 @@
 import axios from 'axios';
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
-import * as schedule from "node-schedule";
+// import * as schedule from "node-schedule";
+
+
+interface Params {
+    "amount": number,
+    "network": string,
+    "origincurrency": string,
+    "token": string
+}
+interface PaymenBody {
+    method: string,
+    params: Params,
+    user: string
+}
 
 export const renderPaymentPage = async (req: any, res: any) => {
     try {
@@ -116,6 +129,37 @@ export const getUserWalletBalance = async (req: any, res: any) => {
     }
 }
 
+async function paymentFunction(transactionBody: PaymenBody): Promise<{
+    status: boolean,
+    result: any
+} | undefined> {
+    try {
+        const transaction = axios.post('https://console.dev.welldapp.io/api/transactions', transactionBody,
+            {
+                headers: {
+                    'content-type': 'application/json',
+                    'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
+                }
+            }
+        ).then((res: any) => {
+            if (res.ok)
+                return res.json()
+            else
+                throw Error(`code ${res.status}`)
+        }).then((data: any) => {
+            return { status: true, result: data }
+        }).catch((err: any) => {
+            console.error(err)
+            return { status: false, result: err }
+        })
+        return transaction
+    } catch (error) {
+        console.error("ERROR paymentFunction : ", error);
+        return { status: false, result: error }
+
+    }
+}
+
 export const makePaymentToServer = async (req: any, res: any) => {
     try {
         // const headers = {
@@ -135,6 +179,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
             },
             "user": userEmail
         }
+        const transction = await paymentFunction(requestBody)
 
         // fetch('https://console.dev.welldapp.io/api/transactions', {
         //     method: 'POST',
@@ -160,24 +205,24 @@ export const makePaymentToServer = async (req: any, res: any) => {
         //         res.status(400).send(err)
         //     })
 
-        axios.post('https://console.dev.welldapp.io/api/transactions', requestBody,
-            {
-                headers: {
-                    'content-type': 'application/json',
-                    'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
-                }
-            }
-        ).then((res: any) => {
-            if (res.ok)
-                return res.json()
-            else
-                throw Error(`code ${res.status}`)
-        }).then((data: any) => {
-            res.json(data)
-        }).catch((err: any) => {
-            console.error(err)
-            res.status(400).send(err)
-        })
+        // axios.post('https://console.dev.welldapp.io/api/transactions', requestBody,
+        //     {
+        //         headers: {
+        //             'content-type': 'application/json',
+        //             'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
+        //         }
+        //     }
+        // ).then((res: any) => {
+        //     if (res.ok)
+        //         return res.json()
+        //     else
+        //         throw Error(`code ${res.status}`)
+        // }).then((data: any) => {
+        //     res.json(data)
+        // }).catch((err: any) => {
+        //     console.error(err)
+        //     res.status(400).send(err)
+        // })
 
 
         //console.info("getDataAfterWellDApp", getDataAfterWellDApp, getDataAfterWellDApp.data)
@@ -190,6 +235,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
         //     message: `Payment done successfully of amount ${amount}$ on the server`,
         //     data: { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: getDataAfterWellDApp.data }
         // })
+        res.send(transction)
     } catch (error: any) {
         console.info("Error while make payment to welld app server", error)
     }
@@ -370,7 +416,7 @@ const isParentExistAndGetReferalAmount = async (data: any) => {
 
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
-        const finalData = {
+        const parentPaymentData = {
             parentUserId: userDetails[0]?.parentId,
             childUserId: userDetails[0]?.childId,
             amount: halfAmount,
@@ -378,15 +424,10 @@ const isParentExistAndGetReferalAmount = async (data: any) => {
             address: "",
             status: "PENDING"
         }
-        await firestore().collection('parentPayment').add(finalData).then(() => {
-            console.log("parentPayment entry is done.");
-        }).catch((error) => console.error("parentPayment entry have Error : ", error));
 
-        await setPaymentSchedulingDate(userDetails[0].parentId)
-        return {
-            status: true,
-            message: "Parent payment initiated successfully"
-        }
+        // set payment schedule accroding parent settings
+        await setPaymentSchedulingDate(parentPaymentData)
+
     } catch (error) {
         return {
             status: false,
@@ -394,29 +435,36 @@ const isParentExistAndGetReferalAmount = async (data: any) => {
         }
     }
 }
-
-export const setPaymentSchedulingDate = async (parentId: string) => {
-    const getParentDetails: any = (await firestore().collection('users').doc(parentId).get()).data();
-    const date = new Date();
-    const paymentDay: number = date.setDate(date.getDate()) + getParentDetails.referalReceiveType.time;
-    switch (getParentDetails.referalReceiveType) {
-        case "LIMIT":
-            schedule.scheduleJob(new Date(paymentDay), () => {
-                // Payment
-            })
-            break;
-
-        case "IMMEDIATE":
-            //payment 
-            break;
-
-        case "IMMEDIATE_MANUAL":
-            // Payment
-            break;
-
-        default:
-            break;
+const setPaymentSchedulingDate = async (parentData: any) => {
+    const getParentDetails: any = (await firestore().collection('users').doc(parentData.parentUserId).get()).data();
+    const getParentSettings = getParentDetails.referalReceiveType;
+    const parentTransactionDetails = {
+        "method": "",
+        "params": {
+            "amount": parentData.amount,
+            "network": "",
+            "origincurrency": "",
+            "token": ""
+        },
+        "user": getParentDetails.email
     }
+    if (getParentSettings.name == "IMMEDIATE_MANUAL" || getParentSettings.name == "IMMEDIATE") {
+        await paymentFunction(parentTransactionDetails);
+    }
+    if (getParentSettings.name == "LIMIT") {
+        await parentLimitCalculation(parentData, getParentSettings);
+    }
+}
+const parentLimitCalculation = async (parentData: any, getParentSettings: any) => {
+    const getParentPaymentQuery: any = await firestore()
+        .collection('parentPayment')
+        .where('parentUserId', '==', parentData.parentUserId)
+        .where('status', '==', 'PENDING')
+        .get();
+    const getParentPayment: any = getParentPaymentQuery.docs.map((snapshot: any) => snapshot.data())
+
+    for (let data = 0; data < getParentPayment.length;)
+    // return {amount}
 }
 
 export const errorLogging = async (
