@@ -521,6 +521,7 @@ const SingleCoin = () => {
                               symbol1={'BULL'}
                               symbol2={'BEAR'}
                               pct={cpviData[cpviData?.length - 1]?.value || 0}
+                              isSingleCoinVote={true}
                             />
 
                             {/* <Graph
