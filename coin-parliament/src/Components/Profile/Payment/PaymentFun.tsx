@@ -151,6 +151,10 @@ function PaymentFun({ isVotingPayment }: any) {
         console.log(e, "alldata231dsf");
         setPayButton(false);
         setShowForWait(false)
+        window.scrollTo({
+          top: 400,
+          behavior: 'smooth',
+        });
         // @ts-ignore
         if (e?.detail?.trx?.transactionHash) {
           afterPayPopup("success", "",)
@@ -220,7 +224,7 @@ function PaymentFun({ isVotingPayment }: any) {
         show={showForWait}
         backdrop="static"
         centered
-        style={{ zIndex: "2200", backgroundColor: 'rgba(0, 0, 0, 0.60)' }}
+        style={{ zIndex: "2200", backgroundColor: 'rgba(0, 0, 0, 0.70)' }}
         contentClassName={window.screen.width > 767 ? "card-content modulebackground" : "card-contentMob modulebackground"}
       >
         <Modal.Body>
@@ -239,7 +243,7 @@ function PaymentFun({ isVotingPayment }: any) {
             alignItems: 'center',
 
           }}>
-            <span className="loading" style={{ color: "#7767f7", zIndex: "2220px", fontSize: '1.5em' }}>
+            <span className="loading" style={{ color: "white", zIndex: "2220px", fontSize: '1.5em' }}>
               {texts.waitForIt}
             </span>
           </div>
