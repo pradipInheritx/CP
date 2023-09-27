@@ -146,7 +146,7 @@ export const getParentPayment = async (req: any, res: any) => {
             let user = snapshot.data();
             getUserArray.push(user);
         });
-        const paymentsSorting = getUserArray.sort((a: any, b: any) => b.timestamp._seconds - a.timestamp._seconds);
+        const paymentsSorting = getUserArray.sort((a: any, b: any) => a.timestamp._seconds - b.timestamp._seconds);
         const startIndex: number = (pageNumber - 1) * pageSize;
         const endIndex: number = startIndex + pageSize;
         const paymentPagination = paymentsSorting.slice(startIndex, endIndex);
