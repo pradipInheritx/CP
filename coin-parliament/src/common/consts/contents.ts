@@ -229,6 +229,18 @@ export const FrequentlyAskQus = [
     question: "What are collectibles?",
     answer: "Collectibles are unique, blockchain-based digital treasures created from your card collection. They come in different rarities (common, uncommon, rare, epic, legendary) and offer:<br/><br/>Ownership and Rarity: Proof of ownership recorded on the blockchain.<br/>Market Value: Potential for significant value and trading on blockchain marketplaces.<br/>Royalties: As the original owner, you earn 50% of future sales fees.<br/>Collectibles add depth and investment potential to your digital collection, blurring the line between digital and physical collecting.",
   },
+  {
+    question: "What is SVI for Coin?",
+    answer: 'SVI for Coin is a proprietary indicator that compiles voting data based on factors like volume, time frame, and voter success rates. It provides a visual representation of community sentiment for a specific cryptocurrency. A reading above 50 suggests that more people have voted "BULL," indicating optimism about the coin\'s potential for growth. Conversely, a reading below 50 signifies more "BEAR" votes, indicating a belief that the coin may decrease in value.',
+  },
+  {
+    question: "How does SVI for Pairs work?",
+    answer: "SVI for Pairs is also a proprietary indicator, but it assesses the voting profiles for cryptocurrency pairs. It uses a similar algorithm as SVI for Coin to determine sentiment. A reading above 50 suggests that more voters believe one coin in the pair will outperform the other. This can help traders make more informed decisions when trading cryptocurrency pairs.",
+  },
+  {
+    question: "Is it 100% safe to use SVI for trading decisions?",
+    answer: "No, it's not recommended to solely rely on SVI or any single indicator for trading decisions. Cryptocurrency markets are inherently volatile, and trading involves risks. While SVI provides valuable insights into community sentiment, it should be used as one tool among many. Always conduct your research, develop a sound trading strategy, and manage risks wisely. Never invest more than you can afford to lose in the cryptocurrency market.",
+  },
 ]
 
 export const gameRules = [

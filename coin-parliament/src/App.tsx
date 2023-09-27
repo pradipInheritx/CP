@@ -181,45 +181,7 @@ function App() {
   const { width } = useWindowSize();
   const [voteNumberEnd, setvoteNumberEnd] = useState<any>(0)
   // const scrollPosition = useScrollPosition();
-  const [modalOpen, setModalOpen] = useState(false);
-  //   const [displayFullscreen,setDisplayFullscreen]=useState('none')
-  // // fullscreen mode
-  // useEffect(() => {
-  // window.addEventListener('load', () => {
-  //   setDisplayFullscreen('block')
-  // });
-  // }, [])
-  // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  // // @ts-ignore
-  // const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
-
-  // const handleClick=()=>{
-  //   setDisplayFullscreen('none')
-  //   if (isMobile && fullscreenEnabled) {
-  //     const elem = document.documentElement;
-  //     if (elem.requestFullscreen) {
-  //       elem.requestFullscreen();
-  //     }
-  //     // @ts-ignore
-  //     else if (elem?.webkitRequestFullscreen) {
-  //        // @ts-ignore
-  //       elem?.webkitRequestFullscreen();
-  //     }
-  //      // @ts-ignore
-  //     else if (elem?.mozRequestFullScreen) {
-  //        // @ts-ignore
-  //       elem?.mozRequestFullScreen();
-  //     }
-  //      // @ts-ignore
-  //      else if (elem?.msRequestFullscreen) {
-  //         // @ts-ignore
-  //       elem?.msRequestFullscreen();
-  //     }
-  //   }
-  // }
-
-
-
+  const [modalOpen, setModalOpen] = useState(false);  
   useEffect(() => {
     const urlpath = window.location.pathname
     window.scrollTo({
@@ -328,7 +290,8 @@ function App() {
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   const [socketConnect, setSocketConnect] = useState<any>(false)
-  const [backgrounHide, setBackgrounHide] = useState<any>(false)
+  const [backgrounHide, setBackgrounHide] = useState<any>(false)  
+  const [transactionId, setTransactionId] = useState({});
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
@@ -1296,7 +1259,9 @@ function App() {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                    transactionId,
+                    setTransactionId,
                   setBackgrounHide,
                   backgrounHide,
                   voteNumberEnd,
