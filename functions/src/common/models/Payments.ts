@@ -142,13 +142,13 @@ export const getParentPayment = async (req: any, res: any) => {
             .where('parentUserId', "==", userId);
         const getParentPaymentQuery: any = !status ? await getQuery.get() : await getQuery.where("status", "==", status).get();
         getParentPaymentQuery.docs.forEach((snapshot: any) => {
-            let user = snapshot.data();
-            console.log("user : ", user)
-            getUserArray.push(user);
+            let payment = snapshot.data();
+            console.log("payment: ", payment)
+            getUserArray.push(payment);
         });
         console.log(getUserArray);
 
-        const paymentsSorting = getUserArray.sort((a: any, b: any) => b.timestamp._seconds - a.timestamp._seconds);
+        const paymentsSorting = getUserArray.sort((a: any, b: any) => b.timestamp - a.timestamp);
         console.log("paymentsSorting", paymentsSorting);
 
         const startIndex: number = (pageNumber - 1) * pageSize;
