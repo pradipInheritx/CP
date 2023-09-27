@@ -53,14 +53,15 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
         const { userId, amount } = userData;
-        const parentUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
+        console.log("userId,amount : ", userId, amount);
+        const childUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
         // const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
         //     let data = snapshot.data();
         //     return { childId: data.uid, parentId: data.parent }
         // });
-        console.log("Child details : ", parentUserDetails);
+        console.log("Child details : ", childUserDetails);
 
-        if (!parentUserDetails.parent) {
+        if (!childUserDetails.parent) {
             return {
                 status: false,
                 message: "Parent user data is not exist"
@@ -70,11 +71,14 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
         const parentPaymentData = {
-            parentUserId: parentUserDetails.parent,
-            childUserId: parentUserDetails.uid,
+            parentUserId: childUserDetails.parent,
+            childUserId: childUserDetails.uid,
             amount: halfAmount,
             type: "REFERAL"
         }
+
+        console.log("parentPaymentData : ", parentPaymentData);
+
 
         // set payment schedule accroding parent settings
         await setPaymentSchedulingDate(parentPaymentData)
@@ -120,7 +124,9 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
             pendingAmount += getParentPayment[i].amount;
         }
         // pendingAmount = pendingAmount + parentData.amount;
-        if (getParentSettings.amount < pendingAmount) {
+        console.log("getParentSettings.amount , pendingAmount : ", getParentSettings.amount, pendingAmount)
+        if (getParentSettings.amount <= pendingAmount && getParentSettings.amount, pendingAmount != 0) {
+            console.log("id part")
             const transactionBody = {
                 "method": "getTransaction",
                 "params": {
@@ -138,7 +144,14 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
             })
             // await updateAllPendingStatusToSuccess()
         } else {
-            const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
+            let data = {
+                ...parentData,
+                status: "PENDING",
+                address: getParentDetails.wellDaddress.address,
+                timestamp: firestore.FieldValue.serverTimestamp()
+            }
+            const addParentPaymentUser = await firestore().collection('parentPayment').add(data);
+            console.log("addParentPaymentUser.id :", addParentPaymentUser.id)
             await firestore().collection('parentPayment').doc(addParentPaymentUser.id).set({ transactionId: addParentPaymentUser.id }, { merge: true });
         }
 
