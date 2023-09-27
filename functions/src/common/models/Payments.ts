@@ -46,8 +46,8 @@ export const makePaymentToServer = async (req: any, res: any) => {
 }
 
 export const updateUserAfterPayment = async (req: any, res: any) => {
-    const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes } = req.body;
-    await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails: {} })
+    const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
+    await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails })
     await isParentExistAndGetReferalAmount(req.body);
 
     res.status(200).send({
