@@ -131,7 +131,7 @@ function PaymentFun({ isVotingPayment }: any) {
       numberOfVotes: extraVote,
       paymentDetails: { ...detail, ...transactionId.current},      
       
-    }  
+    }
     axios.post(`${ApiUrl}payment/update/user/afterVote`, data,
       {
         headers: headers

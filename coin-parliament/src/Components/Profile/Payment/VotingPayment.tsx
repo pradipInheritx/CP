@@ -120,7 +120,7 @@ const CoinList = styled.div`
 `;
 
 const Boxdiv = styled.div`
-  width:${window.screen.width > 1440 ? "30%" : window.screen.width > 767 ? "38%" : "99%"};
+  width:${window.screen.width > 767 ? "40%" : "99%"};
   border-radius:10px;
   background-color:#1e0243;
   padding :30px;
