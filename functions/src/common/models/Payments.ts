@@ -136,19 +136,26 @@ export const getParentPayment = async (req: any, res: any) => {
     try {
         const getUserArray: any = [];
         const { userId } = req.params;
+        const { status, pageNumber, pageSize } = req.query;
         const getParentPaymentQuery = await firestore()
             .collection('parentPayment')
             .where('parentUserId', "==", userId)
+            .where('status', "==", status)
             .get();
         getParentPaymentQuery.docs.forEach((snapshot: any) => {
             let user = snapshot.data();
             getUserArray.push(user);
         });
-        log("getParentPayment : getUserArray => ", getUserArray);
+        const paymentsSorting = getUserArray.sort((a: any, b: any) => b.timestamp._seconds - a.timestamp._seconds);
+        const startIndex: number = (pageNumber - 1) * pageSize;
+        const endIndex: number = startIndex + pageSize;
+        const paymentPagination = paymentsSorting.slice(startIndex, endIndex);
+
+        log("getParentPayment : paymentPagination => ", paymentPagination);
         res.status(200).send({
             status: true,
             message: "Parent payment history fetched successfully",
-            data: getUserArray
+            data: paymentPagination
         });
 
     } catch (error) {
