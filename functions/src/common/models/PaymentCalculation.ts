@@ -61,10 +61,8 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         console.log("Child details : ", parentUserDetails);
 
         if (!parentUserDetails.parent) {
-            return {
-                status: false,
-                message: "Parent user data is not exist"
-            }
+            console.log("Parent Not Found: ", "Parent user data is not exist");
+            return null;
         };
 
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
@@ -89,8 +87,6 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 export const setPaymentSchedulingDate = async (parentData: any) => {
     const getParentDetails: any = (await firestore().collection('users').doc(parentData.parentUserId).get()).data();
     const getParentSettings = getParentDetails.referalReceiveType;
-    console.log('Parent Details : ', getParentDetails)
-    log('Parent Details : ', getParentDetails)
     const parentTransactionDetails = {
         "method": "getTransaction",
         "params": {
@@ -102,7 +98,8 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         "user": getParentDetails.email
     }
     if (getParentSettings.name === "MANUAL" || getParentSettings.name === "IMMEDIATE") {
-        await firestore().collection('parentPayment').add({ ...parentData, status: "SUCCESS", address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
+        const storeInParentData = { ...parentData, status: "SUCCESS", address: getParentDetails.wellDAddress.address, timestamp: firestore.FieldValue.serverTimestamp() }
+        await firestore().collection('parentPayment').add(storeInParentData)
         await paymentFunction(parentTransactionDetails);
     }
     if (getParentSettings.name === "LIMIT") {

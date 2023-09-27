@@ -52,8 +52,8 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
 
     res.status(200).send({
         status: true,
-        message: "Payment transaction history fetched successfully",
-        data: {}
+        message: "Parent referal payment initiated successfully",
+        data: req.body
     });
 }
 
@@ -85,7 +85,8 @@ const addIsExtraVotePurchase = async (metaData: any) => {
         .then(doc => {
             if (doc.exists) {
                 const data: any = doc.data();
-                const originalValue: number = parseFloat(data?.rewardStatistics?.extraVote);
+                console.info("data", data)
+                const originalValue: number = data?.rewardStatistics && data?.rewardStatistics?.extraVote ? parseFloat(data?.rewardStatistics?.extraVote) : 0;
                 const modifiedValue: number = originalValue + parseFloat(metaData.numberOfVotes);
                 data.rewardStatistics.extraVote = modifiedValue;
                 userDocumentRef.set(data);
