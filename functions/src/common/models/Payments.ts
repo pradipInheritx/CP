@@ -137,11 +137,10 @@ export const getParentPayment = async (req: any, res: any) => {
         const getUserArray: any = [];
         const { userId } = req.params;
         const { status, pageNumber, pageSize } = req.query;
-        const getParentPaymentQuery = await firestore()
+        const getQuery = firestore()
             .collection('parentPayment')
-            .where('parentUserId', "==", userId)
-            .where('status', "==", status)
-            .get();
+            .where('parentUserId', "==", userId);
+        const getParentPaymentQuery: any = status ? await getQuery.get() : await getQuery.where("status", "==", status).get();
         getParentPaymentQuery.docs.forEach((snapshot: any) => {
             let user = snapshot.data();
             getUserArray.push(user);
