@@ -140,14 +140,20 @@ export const getParentPayment = async (req: any, res: any) => {
         const getQuery = firestore()
             .collection('parentPayment')
             .where('parentUserId', "==", userId);
-        const getParentPaymentQuery: any = status ? await getQuery.get() : await getQuery.where("status", "==", status).get();
+        const getParentPaymentQuery: any = !status ? await getQuery.get() : await getQuery.where("status", "==", status).get();
         getParentPaymentQuery.docs.forEach((snapshot: any) => {
             let user = snapshot.data();
+            console.log("user : ", user)
             getUserArray.push(user);
         });
-        const paymentsSorting = getUserArray.sort((a: any, b: any) => a.timestamp._seconds - b.timestamp._seconds);
+        console.log(getUserArray);
+
+        const paymentsSorting = getUserArray.sort((a: any, b: any) => b.timestamp._seconds - a.timestamp._seconds);
+        console.log("paymentsSorting", paymentsSorting);
+
         const startIndex: number = (pageNumber - 1) * pageSize;
         const endIndex: number = startIndex + pageSize;
+
         const paymentPagination = paymentsSorting.slice(startIndex, endIndex);
 
         log("getParentPayment : paymentPagination => ", paymentPagination);
