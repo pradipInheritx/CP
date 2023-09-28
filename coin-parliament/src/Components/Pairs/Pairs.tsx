@@ -113,7 +113,7 @@ const Pairs = ({
     <div id="PairsForm">
       {pathname == "/pairs" ? <>
         <h5 className="my-2 text-center">
-          {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+        
           <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>{
             // texts.WhatYourPairVote
             "GET IN THE RING"

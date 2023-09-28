@@ -122,7 +122,7 @@ import UpgradePage from "./Components/Profile/UpgradePage";
 import VotingBooster from "./Components/Profile/VotingBooster";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
-import Partners from "./Pages/partners/Partners";
+import Ambassador from "./Pages/Ambassador/Ambassador";
 import Foundations from "./Pages/Foundations";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
@@ -1783,8 +1783,8 @@ function App() {
                                               element={<GameRule />}
                                             />
                                             <Route
-                                              path='partners'
-                                              element={<Partners />}
+                                            path='Ambassador'
+                                              element={<Ambassador />}
                                             />
                                             <Route
                                               path='foundations'
