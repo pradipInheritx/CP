@@ -127,10 +127,14 @@ const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true,
             }}
           >
             {isSingleCoinVote ?
-              <p>
-                The SVI aggregates voting profiles using a weighted algorithm that considers factors like volume, time frame, and success rate. It represents this data as a line graph ranging from 0 to 100. An SVI reading above 50 suggests that more users are optimistic about the coin's potential to increase in value (BULL). Conversely, a reading below 50 indicates a more pessimistic sentiment (BEAR).
+                <p style={{
+                lineHeight:"2"
+              }}>
+                The SVI aggregates voting profiles using a weighted algorithm that considers factors like volume, time frame, and success rate. It represents this data as a line graph ranging from 0 to 100. An SVI reading above 50 suggests that more users are optimistic about the coin's potential to increase in value (BULL). Conversely, a reading below 50 indicates a more pessimistic sentiment 🧸.
               </p> :
-              <p>
+                <p style={{
+                  lineHeight: "2"
+                }}>
                 Similarly, the SVI for pairs uses the same algorithm to aggregate voting profiles. The line graph ranges from 0 to 100. Here, an SVI reading above 50 implies that more users believe one coin in the pair will outperform the other. It doesn't specify whether it's bullish or bearish but focuses on relative performance.
               </p>}
           </div>
