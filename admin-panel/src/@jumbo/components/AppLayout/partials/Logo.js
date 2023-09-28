@@ -12,7 +12,7 @@ const Logo = ({ color, ...props }) => {
     <Box className="pointer" {...props}>
       <Hidden xsDown>
         <NavLink to="/">
-          <CmtImage src={logoUrl} alt="logo" />
+          {/* <CmtImage src={logoUrl} alt="logo" /> */}
         </NavLink>
       </Hidden>
       <Hidden smUp>

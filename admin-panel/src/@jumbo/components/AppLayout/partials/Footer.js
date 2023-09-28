@@ -27,15 +27,15 @@ const Footer = props => {
   return (
     <Box className={classes.root} {...props}>
       <Box display="flex" alignItems="center">
-        <Hidden xsDown>
+        {/* <Hidden xsDown>
           <FooterLogo mr={5} color={themeType === THEME_TYPES.DARK ? 'white' : ''} />
-        </Hidden>
+        </Hidden> */}
         <Box fontSize={{ xs: 12, sm: 14 }} component="p" color="text.disabled">
-          Copyright Company Name © {date.getFullYear()}
+          Copyright Coin Parliament © {date.getFullYear()}
         </Box>
       </Box>
       <Box display="flex" alignItems="center">
-        <Hidden xsDown>
+        {/* <Hidden xsDown>
           <Box component="span" fontSize={16} fontWeight={700} color="primary.main" mr={5}>
             $24 Only
           </Box>
@@ -47,7 +47,7 @@ const Footer = props => {
           href="https://themeforest.net/item/react-material-bootstrap-4-admin-template/20978545"
           target="_blank">
           Buy Now
-        </Button>
+        </Button> */}
       </Box>
     </Box>
   );

@@ -46,6 +46,11 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 14,
     color: theme.palette.text.primary,
   },
+  heading: {
+    marginBottom: 14,
+    fontWeight:600,
+    color:"#3f51b5",
+  },
   textFieldRoot: {
     '& .MuiOutlinedInput-notchedOutline': {
       borderColor: alpha(theme.palette.common.dark, 0.12),
@@ -94,9 +99,10 @@ const ForgotPassword = ({ method = CurrentAuthMethod, variant = 'default', wrapp
         </div>
       ) : null}
       <div className={classes.authContent}>
-        <div className={'mb-7'}>
+        {/* <div className={'mb-7'}>
           <CmtImage src={'/images/logo.png'} />
-        </div>
+          
+        </div> */}
         <Typography component="div" variant="h1" className={classes.titleRoot}>
           ForgotPassword
         </Typography>

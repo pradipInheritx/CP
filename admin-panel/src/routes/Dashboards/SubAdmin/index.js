@@ -57,9 +57,10 @@ const UsersModule = () => {
         })
       );
     },
-    [ dispatch, filterOptions, debouncedSearchTerm ]
+    [dispatch, filterOptions,page,rowsPerPage,orderBy,order]
+    // debouncedSearchTerm
   );
-  console.log(subAdminList,"subAdminList")
+  // console.log(subAdminList,"subAdminList")
   const handleCloseUserDialog = () => {
     setOpenUserDialog(false);
     dispatch(setCurrentSubAdmin(null));
@@ -96,7 +97,6 @@ const UsersModule = () => {
         selected.slice(selectedIndex + 1)
       );
     }
-
     setSelected(newSelected);
   };
 

@@ -39,9 +39,18 @@ const useStyles = makeStyles(theme => ({
       padding: 50,
     },
   },
+  textCenter: {
+    display: "flex",
+    justifyContent:"center"
+  },
   titleRoot: {
     marginBottom: 14,
     color: theme.palette.text.primary,
+  },
+  heading: {
+    marginBottom: 14,    
+    fontSize:"25px",    
+    color: "#3f51b5",
   },
   textFieldRoot: {
     '& .MuiOutlinedInput-notchedOutline': {
@@ -75,8 +84,9 @@ const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
         </Box>
       ) : null}
       <Box className={classes.authContent}>
-        <Box mb={7}>
-          <CmtImage src={'/images/logo.png'} />
+        <Box mb={7} className={classes.textCenter}>
+          {/* <CmtImage src={'/images/logo.png'} /> */}
+          <strong className={classes.heading}>Coin Parliament</strong>
         </Box>
         <Typography component="div" variant="h1" className={classes.titleRoot}>
           Login

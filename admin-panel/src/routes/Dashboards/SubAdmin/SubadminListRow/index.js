@@ -93,7 +93,7 @@ const SubadminListRow = ({
   return (
     <TableRow
       hover
-      onClick={event => onRowClick(event, row?.id)}
+      // onClick={event => onRowClick(event, row?.id)}
       role="checkbox"
       aria-checked={isItemSelected}
       tabIndex={-1}
