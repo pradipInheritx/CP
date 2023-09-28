@@ -15,7 +15,7 @@ const RewardList = styled.p`
 export type tableColumnType = {
     title: string;
     assessorName: string;
-    row?: React.ReactNode;
+    Row?: React.FC<{ value: any, data?: any }>;
 }
 
 
@@ -46,7 +46,9 @@ const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
                                 return (
                                     <div style={{ width: "19%" }} key={i}>
                                         <RewardList>
-                                            {value[item?.assessorName] || "NA"}
+                                            {item?.Row ?
+                                                <item.Row value={value[item?.assessorName]} />
+                                                : (value[item?.assessorName] || "NA")}
                                         </RewardList>
                                     </div>
                                 )

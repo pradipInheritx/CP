@@ -130,7 +130,7 @@ const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true,
                 <p style={{
                 lineHeight:"2"
               }}>
-                The SVI aggregates voting profiles using a weighted algorithm that considers factors like volume, time frame, and success rate. It represents this data as a line graph ranging from 0 to 100. An SVI reading above 50 suggests that more users are optimistic about the coin's potential to increase in value (BULL). Conversely, a reading below 50 indicates a more pessimistic sentiment 🧸.
+                  The SVI aggregates voting profiles using a weighted algorithm that considers factors like volume, time frame, and success rate. It represents this data as a line graph ranging from 0 to 100. An SVI reading above 50 suggests that more users are optimistic about the coin's potential to increase in value (BULL). Conversely, a reading below 50 indicates a more pessimistic sentiment <span>{"(BEAR)"}</span>.
               </p> :
                 <p style={{
                   lineHeight: "2"

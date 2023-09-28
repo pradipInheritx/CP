@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { ButtonGroup } from "react-bootstrap";
 import Button from "Components/Atoms/Button/Button";
 import moment from 'moment';
+import axios from 'axios';
+import UserContext from 'Contexts/User';
 
 const RewardList = styled.p`
   font-size: 10px;
@@ -44,9 +46,20 @@ const tableHeader: tableColumnType[] = [
     },
 ];
 const Complete: React.FC = () => {
+    const { userInfo } = useContext(UserContext)
     const [data, setData] = useState([]);
     const [pageIndex, setPageIndex] = useState(1);
+    useEffect(() => {
+        if (userInfo?.uid) {
+            axios.get(`/payment/getParentPayment/${userInfo?.uid}?status=PENDING&pageNumber=${pageIndex}&pageSize=5`).then((response) => {
+                console.log(response, 'pkkk');
+                setData(response?.data?.data)
 
+            }).catch((error) => {
+
+            })
+        }
+    }, [JSON.stringify(userInfo?.uid), pageIndex]);
     return (
 
         <div

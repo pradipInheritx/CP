@@ -12,6 +12,10 @@ import { CompletedVotesProvider } from "Contexts/CompletedVotesProvider";
 import { register } from "serviceWorkerRegistration";
 import { VoteEndCoinPriceProvider } from "Contexts/VoteEndCoinPrice";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import axios from "axios";
+
+
+axios.defaults.baseURL = process.env.REACT_APP_API;
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
   const langDetector = document.getElementById("lang-detector");
