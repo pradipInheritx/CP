@@ -1,6 +1,6 @@
+import axios from "axios";
 import { firestore } from "firebase-admin";
-import { log } from "firebase-functions/logger";
-import fetch from "node-fetch";
+//import { log } from "firebase-functions/logger";
 
 interface PaymentParams {
     "amount": number,
@@ -19,30 +19,19 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
     result: any
 } | undefined> => {
     try {
-        const transaction = fetch('https://console.dev.welldapp.io/api/transactions', {
-            method: 'POST',
+        console.info("transactionBody", transactionBody);
+        const options = {
             headers: {
-                'content-type': 'application/json',
-                'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
-            },
-            body: JSON.stringify(transactionBody)
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json()
-                else
-                    throw Error(`code ${res.status}`)
-            })
-            .then(async data => {
-                log("Payment After Response Data: ", data)
-                return { status: true, result: data }
-            })
-            .catch(err => {
-                console.error(err)
-                return { status: false, result: err }
-            })
-        log('payment transaction : ', transaction)
-        return { status: true, result: transaction }
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
+            }
+        };
+
+        const transaction = await axios.post('https://console.dev.welldapp.io/api/transactions', transactionBody, options);
+
+        console.info('payment transaction : ', transaction.data);
+
+        return { status: true, result: transaction.data }
     } catch (error) {
         console.error("ERROR paymentFunction : ", error);
         return { status: false, result: error }
@@ -86,63 +75,80 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 }
 export const setPaymentSchedulingDate = async (parentData: any) => {
     const getParentDetails: any = (await firestore().collection('users').doc(parentData.parentUserId).get()).data();
-    const getParentSettings = getParentDetails.referalReceiveType;
+    const getParentSettings = getParentDetails.referalReceiveType ? getParentDetails.referalReceiveType : {};
     const parentTransactionDetails = {
         "method": "getTransaction",
         "params": {
             "amount": parentData.amount,
-            "network": "5",
+            "network": "11155111",
             "origincurrency": "eth",
             "token": "ETH"
         },
-        "user": getParentDetails.email
+        "user": "Test"
     }
-    if (getParentSettings.name === "MANUAL" || getParentSettings.name === "IMMEDIATE") {
-        const storeInParentData = { ...parentData, status: "SUCCESS", address: getParentDetails.wellDAddress.address, timestamp: firestore.FieldValue.serverTimestamp() }
-        await firestore().collection('parentPayment').add(storeInParentData)
-        await paymentFunction(parentTransactionDetails);
-    }
-    if (getParentSettings.name === "LIMIT") {
-
-        //getParentDetails.parentUserId
-        // Get all Pending records in DB
-        const getParentPaymentQuery: any = await firestore()
-            .collection('parentPayment')
-            .where('parentUserId', '==', parentData.parentUserId)
-            .where('status', '==', 'PENDING')
-            .get();
-        const getParentPayment: any = getParentPaymentQuery.docs.map((snapshot: any) => snapshot.data());
-        let pendingAmount = 0;
-        for (let i = 0; i < getParentPayment.length; i++) {
-            pendingAmount += getParentPayment[i].amount;
+    try {
+        if (getParentSettings.name === "MANUAL" || getParentSettings.name === "IMMEDIATE") {
+            const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
+            const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
+            const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
+            await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: "SUCCESS", parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
         }
-        // pendingAmount = pendingAmount + parentData.amount;
-        if (getParentSettings.amount < pendingAmount) {
-            const transactionBody = {
-                "method": "getTransaction",
-                "params": {
-                    "amount": pendingAmount || 0,
-                    "network": "5",
-                    "origincurrency": "eth",
-                    "token": "ETH"
-                },
-                "user": getParentDetails.email
-            };
-            await paymentFunction(transactionBody)
-            // Loop on getParentPayment and update status to SUCCESS
-            getParentPayment.forEach((payment: any) => {
-                firestore().collection('parentPayment').doc(payment.transactionId).set({ status: "SUCCESS" }, { merge: true });
-            })
-            // await updateAllPendingStatusToSuccess()
-        } else {
-            const addParentPaymentUser = await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", address: getParentDetails.wellDaddress.address, timestamp: firestore.FieldValue.serverTimestamp() })
-            await firestore().collection('parentPayment').doc(addParentPaymentUser.id).set({ transactionId: addParentPaymentUser.id }, { merge: true });
-        }
+        if (getParentSettings.name === "LIMIT") {
+            const getParentPayment: any = [];
 
-        // Create cron Job every day 
-        // Get all pending status data 
-        // Group by parentUserId
-        // Get the setting on parentUserId check the setting if every day 
-        // Filter the data on the basis of transaction time. Only get the data on transaction time less than 1 day.
+            const getParentPaymentQuery: any = await firestore()
+                .collection('parentPayment')
+                .where('parentUserId', '==', parentData.parentUserId)
+                .where('status', '==', 'PENDING')
+                .get();
+
+            getParentPaymentQuery.forEach((doc: any) => {
+                getParentPayment.push({ docId: doc.id, ...doc.data() })
+            });
+
+            console.info("getParentPayment", getParentPayment)
+
+            if (getParentPayment.length) {
+                let pendingAmount = 0;
+                for (let i = 0; i < getParentPayment.length; i++) {
+                    pendingAmount += getParentPayment[i].amount;
+                }
+
+                pendingAmount = pendingAmount + parentData.amount; // Added current amount as well
+
+                if (pendingAmount > parseFloat(getParentSettings.amount)) {
+                    const transactionBody = {
+                        "method": "getTransaction",
+                        "params": {
+                            "amount": pendingAmount || 0,
+                            "network": "11155111",
+                            "origincurrency": "eth",
+                            "token": "ETH"
+                        },
+                        "user": "Test"
+                    };
+                    parentData.amount = pendingAmount; // Override All Pending Amount With Current One
+
+                    const getPaymentAfterTransfer = await paymentFunction(transactionBody);
+
+                    console.info("getPaymentAfterTransfer", getPaymentAfterTransfer?.result?.transaction_id);
+                    // Loop on getParentPayment and update status to SUCCESS
+                    const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: "SUCCESS", parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                    console.info("getParentPendingPaymentReference", getParentPendingPaymentReference?.id);
+
+                    getParentPayment.forEach(async (payment: any) => {
+                        await firestore().collection('parentPayment').doc(payment.docId).set({ status: "SUCCESS", parentPendingPaymentId: getParentPendingPaymentReference?.id, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+                    })
+                } else {
+                    console.info("Come Here In Else")
+                    await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                }
+            } else {
+                console.info("Come Here In Else")
+                await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+            }
+        }
+    } catch (error) {
+        console.info("Error while make referal payment", error)
     }
 }

@@ -135,7 +135,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
 
 export const getParentPayment = async (req: any, res: any) => {
     try {
-        const getUserArray: any = [];
+        const getAllPaymentArray: any = [];
         const { userId } = req.params;
         const { status, pageNumber, pageSize } = req.query;
         const getQuery = firestore()
@@ -144,12 +144,26 @@ export const getParentPayment = async (req: any, res: any) => {
         const getParentPaymentQuery: any = !status ? await getQuery.get() : await getQuery.where("status", "==", status).get();
         getParentPaymentQuery.docs.forEach((snapshot: any) => {
             let payment = snapshot.data();
-            console.log("payment: ", payment)
-            getUserArray.push(payment);
+            let id = snapshot?.id;
+            console.log("payment: ", payment, "Parent Payment", payment.parentPendingPaymentId, "TypeOf", typeof payment.parentPendingPaymentId)
+            if (payment.parentPendingPaymentId === null) {
+                getAllPaymentArray.push({ ...payment, docId: id, childPayment: [] });
+            }
         });
-        console.log(getUserArray);
+        getParentPaymentQuery.docs.forEach((snapshot: any) => {
+            let payment = snapshot.data();
+            console.log("payment: ", payment)
+            const getParentPaymentIndex = getAllPaymentArray.findIndex((item: any) => item.docId === payment.parentPendingPaymentId);
+            //console.info("getAllPaymentArray", getAllPaymentArray[getParentPaymentIndex], getAllPaymentArray[getParentPaymentIndex].childPayment)
+            console.info("getParentPaymentIndex", getParentPaymentIndex)
+            if (getAllPaymentArray[getParentPaymentIndex] && getAllPaymentArray[getParentPaymentIndex].childPayment) {
+                getAllPaymentArray[getParentPaymentIndex].childPayment.push({ ...payment })
+            }
+        });
 
-        const paymentsSorting = getUserArray.sort((a: any, b: any) => b.timestamp - a.timestamp);
+        console.log("getAllPaymentArray:::", getAllPaymentArray);
+
+        const paymentsSorting = getAllPaymentArray.sort((a: any, b: any) => b.timestamp - a.timestamp);
         console.log("paymentsSorting", paymentsSorting);
 
         const startIndex: number = (pageNumber - 1) * pageSize;
