@@ -5,6 +5,8 @@ import { ButtonGroup } from "react-bootstrap";
 import Button from "Components/Atoms/Button/Button";
 import moment from 'moment';
 import Table from "Components/table"
+import axios from 'axios';
+import UserContext from 'Contexts/User';
 const RewardList = styled.p`
   font-size: 10px;
   color: white;
@@ -15,7 +17,7 @@ const RewardList = styled.p`
 type tableColumnType = {
     title: string;
     assessorName: string;
-    row?: React.ReactNode;
+    Row?: React.FC<{ value: any, data?: any }>;
 }
 const tableHeader: tableColumnType[] = [
     {
@@ -24,7 +26,15 @@ const tableHeader: tableColumnType[] = [
     },
     {
         title: 'Date',
-        assessorName: 'date'
+        assessorName: 'timestamp',
+        Row: ({ value, data }) => {
+            return (
+                <span>
+                    {value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}
+                </span>
+            );
+
+        }
     },
     {
         title: 'Amount',
@@ -62,33 +72,21 @@ const ChildTableHeader: tableColumnType[] = [
     },
 ];
 const Complete: React.FC = () => {
-    const [data, setData] = useState<any[]>([
-        {
-            transactionId: 'transactionId',
-            date: 'date',
-            amount: 'amount',
-            paymentMethod: 'paymentMethod',
-            children: [
-                {
-                    orderId: "orderId",
-                    date: "date",
-                    item: "item",
-                    amount: "amount",
-                    paymentMethod: "paymentMethod",
-                    childId: "childId",
-                },
-                {
-                    orderId: "orderId2",
-                    date: "date2",
-                    item: "item2",
-                    amount: "amount2",
-                    paymentMethod: "paymentMethod2",
-                    childId: "childId2",
-                }
-            ]
-        }
-    ]);
+    const { userInfo } = useContext(UserContext)
+    const [data, setData] = useState<any[]>([]);
     const [pageIndex, setPageIndex] = useState(1);
+
+    useEffect(() => {
+        if (userInfo?.uid) {
+            axios.get(`/payment/getParentPayment/${userInfo?.uid}?status=SUCCESS&pageNumber=${pageIndex}&pageSize=5`).then((response) => {
+                console.log(response, 'pkkk');
+                setData(response?.data?.data)
+
+            }).catch((error) => {
+
+            })
+        }
+    }, [JSON.stringify(userInfo?.uid), pageIndex]);
 
     return (
 
@@ -173,7 +171,9 @@ const Column: React.FC<{ value: any }> = ({ value }) => {
                         return (
                             <div style={{ width: "19%" }}>
                                 <RewardList onClick={() => setShowChildren(prev => !prev)}>
-                                    {value[item?.assessorName] || "NA"}
+                                    {item?.Row ?
+                                        <item.Row value={value[item?.assessorName]} />
+                                        : (value[item?.assessorName] || "NA")}
                                 </RewardList>
                             </div>
                         )
