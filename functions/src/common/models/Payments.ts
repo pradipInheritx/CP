@@ -175,7 +175,8 @@ export const getParentPayment = async (req: any, res: any) => {
         res.status(200).send({
             status: true,
             message: "Parent payment history fetched successfully",
-            data: paymentPagination
+            data: paymentPagination,
+            total: getAllPaymentArray.length
         });
 
     } catch (error) {
