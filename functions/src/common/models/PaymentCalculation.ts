@@ -41,7 +41,7 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
 
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
-        const { userId, amount } = userData;
+        const { userId, amount, transactionType, numberOfVotes, token } = userData;
         const parentUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
         // const parentUserDetails: any = await getUserDetailsOnParentId.docs.map((snapshot: any) => {
         //     let data = snapshot.data();
@@ -60,7 +60,10 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
             parentUserId: parentUserDetails.parent,
             childUserId: parentUserDetails.uid,
             amount: halfAmount,
-            type: "REFERAL"
+            type: "REFERAL",
+            transactionType,
+            numberOfVotes,
+            token
         }
 
         // set payment schedule accroding parent settings

@@ -152,12 +152,13 @@ export const getParentPayment = async (req: any, res: any) => {
         });
         getParentPaymentQuery.docs.forEach((snapshot: any) => {
             let payment = snapshot.data();
+            let id = snapshot?.id;
             console.log("payment: ", payment)
             const getParentPaymentIndex = getAllPaymentArray.findIndex((item: any) => item.docId === payment.parentPendingPaymentId);
             //console.info("getAllPaymentArray", getAllPaymentArray[getParentPaymentIndex], getAllPaymentArray[getParentPaymentIndex].childPayment)
             console.info("getParentPaymentIndex", getParentPaymentIndex)
             if (getAllPaymentArray[getParentPaymentIndex] && getAllPaymentArray[getParentPaymentIndex].childPayment) {
-                getAllPaymentArray[getParentPaymentIndex].childPayment.push({ ...payment })
+                getAllPaymentArray[getParentPaymentIndex].childPayment.push({ ...payment, docId: id })
             }
         });
 
