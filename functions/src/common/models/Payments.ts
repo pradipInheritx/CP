@@ -168,8 +168,8 @@ export const getParentPayment = async (req: any, res: any) => {
         console.log("paymentsSorting", paymentsSorting);
 
         const startIndex: number = (pageNumber - 1) * pageSize;
-        const endIndex: number = startIndex + pageSize;
-
+        const endIndex: number = startIndex + parseInt(pageSize);
+        console.info("paymentsSorting", paymentsSorting.length, "startIndex", startIndex, "endIndex", endIndex)
         const paymentPagination = paymentsSorting.slice(startIndex, endIndex);
 
         log("getParentPayment : paymentPagination => ", paymentPagination);
