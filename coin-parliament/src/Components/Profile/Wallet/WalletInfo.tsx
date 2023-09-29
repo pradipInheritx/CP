@@ -90,7 +90,7 @@ function WalletInfo() {
             setSaveAddress(true);
             const validate = await validateAddress(walletDetails.walletAddress, walletDetails.coin)
             if (validate) {
-                setSaveAddress(false);                
+                setSaveAddress(false);
             } else {
                 setErrorValue({ ...errorValue, walletError: "Please Enter Valid Wallet Address " })
                 setSaveAddress(false);
@@ -135,7 +135,7 @@ function WalletInfo() {
             setTimeError("Please enter time.");
             errorCount++;
         }
-        if (['LIMIT', /* 'MANUALLY' */].includes(selectRadio) && (timeAmount.amount === "" || !/^\d{0,8}(\.\d{1,4})?$/.test(timeAmount.amount))) {
+        if (['LIMIT', /* 'MANUALLY' */].includes(selectRadio) && (timeAmount.amount === "" || !/^\d{0,8}(\.\d+)?$/.test(timeAmount.amount))) {
             setAmountError("Please enter valid amount.");
             errorCount++;
         }
@@ -335,15 +335,15 @@ function WalletInfo() {
                                     style={{ fontSize: "20px", marginRight: "10px" }}
                                     type="radio"
                                     id={`manually`}
-                                    checked={selectRadio === 'IMMEDIATE_MANUAL'}
+                                    checked={selectRadio === 'MANUAL'}
                                     onClick={(e) => {
-                                        setSelectRadio('IMMEDIATE_MANUAL');
+                                        setSelectRadio('MANUAL');
                                         hideError();
                                     }}
                                 />
                                 <label htmlFor="manually" >Manually{/* Add Amount send to the parent account */}</label>
                             </div>
-                            {(selectRadio === 'IMMEDIATE_MANUAL' && false) &&
+                            {(selectRadio === 'MANUAL' && false) &&
                                 <>
                                     <input type="" name="" id=""
                                         style={{
