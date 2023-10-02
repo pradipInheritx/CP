@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import SignupForm from "./SignupForm";
 import { texts, urls } from "./texts";
-import {  useTranslation } from "../../common/models/Dictionary";
+import { useTranslation } from "../../common/models/Dictionary";
 import { AuthProvider, User } from "firebase/auth";
 import { LoginProviders, providers, SignupPayload } from "../../common/models/Login";
 import { Callback } from "../../common/models/utils";
@@ -51,7 +51,7 @@ export type SignupProps = {
   signup: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   authProvider: (
     setUser: (user: AuthUser) => void,
     provider: AuthProvider,
@@ -63,20 +63,20 @@ export type SignupProps = {
   ) => Promise<void>;
 };
 const assign = httpsCallable(functions, "assignReferrer");
-const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
+const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const {setLogin} = useContext(AppContext );
-  const [signupWithProviders,setSignupWithProviders]=useState(true)
-  const [email,setEmail]=useState('')
+  const { setLogin } = useContext(AppContext);
+  const [signupWithProviders, setSignupWithProviders] = useState(true)
+  const [email, setEmail] = useState('')
   const [agree, setAgree] = useState(true);
   const { user, userInfo } = useContext(UserContext);
-  const[smsVerification,setSmsVerification]=useState('')
-  const [signupLoading,setSignupLoading]=useState(false)
+  const [smsVerification, setSmsVerification] = useState('')
+  const [signupLoading, setSignupLoading] = useState(false)
   let navigate = useNavigate();
   const search = useLocation().search;
   const refer = new URLSearchParams(search).get("refer");
-  
+
   const strings = {
     email: capitalize(translate(texts.email)),
     confirmPassword: capitalize(translate(texts.confirmPassword)),
@@ -92,93 +92,94 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   // };
   // https://us-central1-coinparliament-51ae1.cloudfunctions.net/assignReferrer
   return (
-    <> 
-     {signupWithProviders? <>{Object.values(LoginProviders).map((provider, i) => {
+    <>
+      {signupWithProviders ? <>{Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100">
             <LoginWith
               provider={provider}
               onClick={() =>
-                // @ts-ignore
-                {agree? refer?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,refer):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast(texts.AgreetNc, ToastType.ERROR)}
+              // @ts-ignore
+              { agree ? refer ? authProvider(setUser, providers[provider], showToast, setSmsVerification, assign, refer) : authProvider(setUser, providers[provider], showToast, setSmsVerification) : showToast(texts.AgreetNc, ToastType.ERROR) }
               }
             />
           </div>
         );
       })}
-      <div className="my-3 align-self-center">
-        <OR className="mx-auto">{translate("or")}</OR>
-      </div>
+        <div className="my-3 align-self-center">
+          <OR className="mx-auto">{translate("or")}</OR>
+        </div>
         <Form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setEmail(((e.target as HTMLFormElement).elements.namedItem('email') as HTMLInputElement).value)
-      setSignupWithProviders(false)
-      }}
-      className="w-100"
-    >
-        <Form.Group className="mb-3 w-100" controlId="login-email">
-        <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
-          fullWidth={true}
-          type="email"
-          placeholder={strings.email}
-          name="email"
-          required
-        />
-      </Form.Group>
-      <div className="my-1">
-        <Buttons.Primary fullWidth={true} type="submit"  >
-          {strings.continue}
-        </Buttons.Primary>
-      </div>
-      <Form.Group className="mb-2 mt-3" controlId="agree">
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
-          {translate(strings.agree)
-            .split("{terms & conditions}")
-            .map((t, i) => (
-              <React.Fragment key={i}>
-                {t}{" "}
-                {!i && (
-                  <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
-                    {translate(texts.termsConditions)}
-                  </Link>
-                )}
-              </React.Fragment>
-            ))}
-        </Checkbox>
-      </Form.Group>
-      </Form> 
-     
-      </>
-      
-      
-      :
-      <SignupForm
-      signupLoading={signupLoading}
-      setSignupLoading={setSignupLoading}
-      emailValue={email}
-        signup={signup}
-        callback={{
-          successFunc:async (params) => {
-            console.log('params',params.uid)
-            if(refer)  await assign({parent: refer, child: params.uid});
-            setSignup(false)
-            setLogin(true)
-            setSignupLoading(false)
-          },
-            
-          errorFunc: (e) => {
-            let message = e.message=='Firebase: Error (auth/email-already-in-use).'?'Email already in use':e.message
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setEmail(((e.target as HTMLFormElement).elements.namedItem('email') as HTMLInputElement).value)
+            setSignupWithProviders(false)
+          }}
+          className="w-100"
+        >
+          <Form.Group className="mb-3 w-100" controlId="login-email">
+            <InputField
+              style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+              fullWidth={true}
+              type="email"
+              placeholder={strings.email}
+              name="email"
+              required
+            />
+          </Form.Group>
+          <div className="my-1">
+            <Buttons.Primary fullWidth={true} type="submit"  >
+              {strings.continue}
+            </Buttons.Primary>
+          </div>
+          <Form.Group className="mb-2 mt-3" controlId="agree">
+            <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
+              {translate(strings.agree)
+                .split("{terms & conditions}")
+                .map((t, i) => (
+                  <React.Fragment key={i}>
+                    {t}{" "}
+                    {!i && (
+                      <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
+                        {translate(texts.termsConditions)}
+                      </Link>
+                    )}
+                  </React.Fragment>
+                ))}
+            </Checkbox>
+          </Form.Group>
+        </Form>
 
-            showToast(message, ToastType.ERROR)
-            
-            setSignupLoading(false)},
-        }}
-      />}
-       <div className='d-flex'>
-      <HaveAccountText className="mr-5"> {`${capitalize(translate(texts.haveAccount))} `}</HaveAccountText>
-      <Login  onClick={() => setSignup(false)}>{`${capitalize(translate(texts.login))}`}</Login>
+      </>
+
+
+        :
+        <SignupForm
+          signupLoading={signupLoading}
+          setSignupLoading={setSignupLoading}
+          emailValue={email}
+          signup={signup}
+          callback={{
+            successFunc: async (params) => {
+              console.log('params', params.uid)
+              if (refer) await assign({ parent: refer, child: params.uid });
+              setSignup(false)
+              setLogin(true)
+              setSignupLoading(false)
+            },
+
+            errorFunc: (e) => {
+              let message = e.message == 'Firebase: Error (auth/email-already-in-use).' ? 'Email already in use' : e.message
+
+              showToast(message, ToastType.ERROR)
+
+              setSignupLoading(false)
+            },
+          }}
+        />}
+      <div className='d-flex'>
+        <HaveAccountText className="mr-5"> {`${capitalize(translate(texts.haveAccount))} `}</HaveAccountText>
+        <Login onClick={() => setSignup(false)}>{`${capitalize(translate(texts.login))}`}</Login>
       </div>
     </>
   );

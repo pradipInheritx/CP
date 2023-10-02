@@ -26,33 +26,17 @@ const LoginForm = ({
     login: upperCase(translate(texts.login)),
     password: capitalize(translate(texts.password)),
   };
-const getValue = (e: FormEvent<HTMLFormElement>, name: string) => {
-  return (
-    (e.target as HTMLFormElement).elements.namedItem(name) as HTMLInputElement
-  ).value;
-};
-
-  const loginNow = (e:any) => {
-  const email = getValue(e, "email");
-  const password = getValue(e, "password");
-  
-    if (email == "sportparliamentadmin@gmail.com" && password == "sportparliament@123") {
-      console.log("i am working")
-    }
-    
-}
 
   return (
     <Form
       onSubmit={async (e) => {
         e.preventDefault();
-        // await login(e, callback);
-        loginNow(e)
+        await login(e, callback);
       }}
     >
       <Form.Group className="mb-3 w-100" controlId="login-email">
         <InputField
-        style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           fullWidth={true}
           type="email"
           placeholder={strings.email}
@@ -64,14 +48,14 @@ const getValue = (e: FormEvent<HTMLFormElement>, name: string) => {
       <Form.Group className="mb-3 w-100" controlId="login-password">
         <InputField
           fullWidth={true}
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           type="password"
           placeholder={strings.password}
           name="password"
           required
         />
       </Form.Group>
-      <Buttons.Primary  fullWidth={true} type="submit">
+      <Buttons.Primary fullWidth={true} type="submit">
         {strings.login}
       </Buttons.Primary>
     </Form>

@@ -42,7 +42,7 @@ export type LoginAndSignupProps = {
   signupAction: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 };
 
 const LoginAndSignup = ({
@@ -63,7 +63,7 @@ const LoginAndSignup = ({
     <Stack
       gap={2}
       className=' justify-content-center'
-      style={{ height: "100vh", background: "var(--light-purple)" }}
+      style={{ minHeight: "75vh", paddingBottom: '1em', background: "var(--light-purple)" }}
     >
       <div className='container-center-horizontal'>
         <div className='login-signin screen'>
