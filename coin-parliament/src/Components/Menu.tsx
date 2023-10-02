@@ -150,15 +150,15 @@ const navigate = useNavigate();
           )}
           {desktop && (
             <div className='d-flex justify-content-start check'>
-              {/* <HamburgerBut
+              <HamburgerBut
                 // variant='link'
                 onClick={handleShow}
                 className='position-relative'
-              > */}
+              >
                 {/* <Hamburger /> */}
-                {/* {followerPage ? <BackArrow/> : <Hamburger />} */}
+                {followerPage ? <BackArrow/> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              {/* </HamburgerBut> */}
+              </HamburgerBut>
             </div>
           )}
           {children}

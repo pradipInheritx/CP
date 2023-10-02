@@ -123,7 +123,8 @@ import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
-import Wallet from "./Components/Profile/Wallet";
+// import Wallet from "./Components/Profile/Wallet";
+import Wallet from './Components/Profile/ Wallet/Wallet';
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
@@ -1300,19 +1301,21 @@ console.log('fmctoken',fcmToken)
                                         </Route> 
                                         */}
                                         
-                                          {/* <Route
+                                        <Route
                                           path={ProfileTabs.profile}
                                           element={<Profile />}
+
                                         >
-                                         
                                           <Route
-                                              path={ProfileTabs.share}
-                                              element={<Pool />}
-                                          />
-                                           <Route
                                             path={ProfileTabs.edit}
+
                                             element={<PersonalInfo />}
                                           />
+                                          {/* <Route
+                                            path={ProfileTabs.history}
+
+                                            element={<PaymentHistory />}
+                                          /> */}
                                           <Route
                                             path={ProfileTabs.password}
                                             element={<Security />}
@@ -1322,8 +1325,46 @@ console.log('fmctoken',fcmToken)
                                               ProfileTabs.wallet
                                             }
                                             element={<Wallet />}
-                                          /> 
-                                        </Route> */}
+                                          />
+
+
+                                          {!isV1() && (
+                                            <Route
+                                              path={ProfileTabs.mine}
+                                              element={<Mine />}
+                                            />
+                                          )}
+                                          <Route
+                                            path={ProfileTabs.followers}
+                                            element={<Follow />}
+                                          />
+                                          <Route
+                                            path={ProfileTabs.votes}
+                                            element={<Votes />}
+                                          />
+                                          <Route
+                                            path={ProfileTabs.share}
+                                            element={<Pool />}
+                                          />
+                                          <Route
+                                            path={ProfileTabs.notifications}
+                                            element={<Notifications />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGallery
+                                            }
+                                            element={<ProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<ProfileNftGalleryType />}
+                                          />
+
+                                        </Route>
+
                                         {/* Fowller component  start*/}
                                         {/* <Route
                                           path={FollowerProfileTabs.FollowerProfile}
@@ -1455,3 +1496,30 @@ console.log('fmctoken',fcmToken)
 }
 
 export default App;
+export const showToast = (
+  content: ToastContent,
+  type?: ToastType,
+  options: ToastOptions | undefined = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    containerId: "toast",
+  }
+) => {
+  toast.dismiss();
+  toast.clearWaitingQueue();
+  switch (type) {
+    case ToastType.ERROR:
+      toast.error(content, options);
+      break;
+    case ToastType.INFO:
+      toast.info(content, options);
+      break;
+    default:
+      toast.success(content, options);
+  }
+};
