@@ -2,32 +2,28 @@ import { Form } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { Callback } from "../../common/models/utils";
-import { SignupPayload } from "../../common/models/Login";
+import { genericLogin } from "common/models/Login";
 import InputField from "../Atoms/Input/InputField";
-import { texts, urls } from "./texts";
+import { texts, urls } from "Components/LoginComponent/texts";
 import Checkbox from "../Atoms/Checkbox/Checkbox";
 import { useTranslation } from "../../common/models/Dictionary";
 import { Buttons } from "../Atoms/Button/Button";
 import { capitalize } from "lodash";
-import { User as AuthUser } from "@firebase/auth";
 import { Link } from "react-router-dom";
+import { passwordValidation } from "Components/Profile/utils";
+import { showToast } from "App";
+import { ToastType } from "Contexts/Notification";
 
 const SignupForm = ({
   emailValue,
-  callback,
-  signup,
   signupLoading,
+  callback,
   setSignupLoading,
 }: {
   emailValue: string;
   callback: Callback<User>;
   signupLoading?: any;
   setSignupLoading?: (k: boolean) => void;
-  signup: (
-    payload: SignupPayload,
-    callback: Callback<AuthUser>
-  ) => Promise<boolean>;
-
 }) => {
   const translate = useTranslation();
   const [email, setEmail] = useState("");
@@ -40,29 +36,35 @@ const SignupForm = ({
   }, [])
   const strings = {
     email: capitalize(translate(texts.email)),
-    confirmPassword: capitalize(translate(texts.confirmPassword)),
-    password: capitalize(translate(texts.password)),
-    continue: capitalize(translate(texts.continue)),
-    agree: capitalize(translate(texts.agree)),
+    confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
+    password: capitalize(translate(texts.password.toUpperCase())),
+    continue: capitalize(translate(texts.continue.toUpperCase())),
+    agree: capitalize(translate(texts.agree.toUpperCase())),
   };
+
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const validatePassword = passwordValidation(password, password2);
+    if (validatePassword !== true) {
+      showToast(validatePassword, ToastType.ERROR);
+      return;
+    }
+    // @ts-ignore
+    setSignupLoading(true)
+    await genericLogin(
+      {
+        email,
+        password,
+        passwordConfirm: password2,
+        agree,
+      },
+      callback
+    );
+  }
 
   return (
     <Form
-      onSubmit={async (e) => {
-        if (signupLoading) return
-        e.preventDefault();
-        // @ts-ignore
-        setSignupLoading(true)
-        await signup(
-          {
-            email,
-            password,
-            passwordConfirm: password2,
-            agree,
-          },
-          callback
-        );
-      }}
+      onSubmit={submit}
       className="w-100"
     >
       <Form.Group className="mb-3" controlId="email">
@@ -99,25 +101,20 @@ const SignupForm = ({
       </Form.Group>
 
       <div className="mt-4 mb-3">
-        <Buttons.Primary fullWidth={true} type="submit" >
-          {signupLoading ? 'Wait...' : strings.continue}
+        <Buttons.Primary fullWidth={true} type="submit" disabled={signupLoading} >
+          {signupLoading ? 'Wait...' : strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
 
-      <Form.Group className="mb-2" controlId="agree">
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
-          {translate(strings.agree)
-            .split("{terms & conditions}")
-            .map((t, i) => (
-              <React.Fragment key={i}>
-                {t}{" "}
-                {!i && (
-                  <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
-                    {translate(texts.termsConditions)}
-                  </Link>
-                )}
-              </React.Fragment>
-            ))}
+      <Form.Group className="mb-2  text-center" controlId="agree">
+        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} required={true}>
+          <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
+            {translate('terms & conditions')}
+          </Link>  and
+          </p>
+          <p><Link to={'/privacy'} style={{ color: 'var(--blue-violet)' }}>
+            privacy policy
+          </Link> of the site</p>
         </Checkbox>
       </Form.Group>
     </Form>
