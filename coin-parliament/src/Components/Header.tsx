@@ -11,12 +11,11 @@ import ContentContext from "../Contexts/ContentContext";
 import Menu, { convertPageToMenuItem } from "./Menu";
 import { ProfileTabs } from "../Pages/Profile";
 import Logo, { Size } from "./Atoms/Logo";
-import styled from "styled-components";
 import { isV1 } from "./App/App";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
-import Avatars, { AvatarType } from "../assets/avatars/Avatars";
+import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
@@ -30,7 +29,7 @@ import firebase from "firebase/compat";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
 import { follow } from "../Contexts/CoinsContext";
-import { toFollow } from "../common/models/User";
+import styled, { css } from "styled-components";
 
 enum EventKeys {
   LOGIN = "login",
@@ -45,7 +44,7 @@ enum EventKeys {
   POOL_MINING = "pool",
   SHARE = "share",
   FOLLOWERS = "followers",
-  Gallery='Album'
+  Gallery = 'Album'
 }
 
 export const Title = styled.div`
@@ -65,7 +64,7 @@ export const Title = styled.div`
 export const HeaderCenter = styled.div`
   background: white;
   color: #3712B3;
-  width: 55%;
+  width: 58%;
   height: 35px;
   margin: auto;
   margin-top: 10px;
@@ -99,9 +98,9 @@ export const MemberText = styled.span`
 `;
 
 export const PlusButton = styled.div`
-  // width: 27px;
-  // height: 27px;
-  // background: #6352e8;
+  width: 27px;
+  height: 27px;
+  background: #6352e8;
   color: white;
   border-radius: 50px;
   padding-top: 3px;
@@ -109,15 +108,45 @@ export const PlusButton = styled.div`
   cursor: pointer;
 `;
 export const PlusButtonMob = styled.div`
-  // width: 27px;
-  // height: 27px;
-  // background: #6352e8;
-  // color: white;
-  // border-radius: 50px;
-  // padding: 3px 8px;
-  // margin-top:1px;
-  // font-size: 15px;
-  // cursor: pointer;
+  width: 27px;
+  height: 27px;
+  background: #6352e8;
+  color: white;
+  border-radius: 50px;
+  padding: 3px 8px;
+  margin-top:1px;
+  font-size: 15px;
+  cursor: pointer;
+`;
+
+type ZoomProps = {
+  showReward?: number,
+  inOutReward?: number,
+};
+const ZoomCss = css`
+  opacity: 1;
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  width: 100%;
+  height: 100%;
+  z-index:2200;
+//   transition: opacity .3s;
+  background-color: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  transition:  all 3s ease;
+  `;
+//   transform: ${window.screen.width > 767 ? "scale(3)" : "scale(1.5)"};
+//   transformOrigin:${window.screen.width > 767 ?"35% 50%" :"50% 90%"};
+// left: 50%;
+// transform: translate(-50%, -20%);    
+
+
+const ForZoom = styled.div`
+ ${(props: ZoomProps) => `${props.showReward == 2 && props.inOutReward == 2 ? ZoomCss : ""}`} 
 `;
 
 export const OuterContainer = styled.div`
@@ -135,7 +164,9 @@ export const OuterContainer = styled.div`
 //   border-radius: 0 0 87px 0;
 // `;
 
-const MenuContainer = styled(Menu)``;
+const MenuContainer = styled(Menu)`
+border:1px solid red;
+`;
 
 const Header = ({
   title,
@@ -146,7 +177,7 @@ const Header = ({
   title?: React.ReactNode;
   logo?: boolean;
   pathname: string;
-  remainingTimer:number;
+  remainingTimer: number;
 }) => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
@@ -154,60 +185,60 @@ const Header = ({
   const { width } = useWindowSize();
   const desktop = width && width > 979;
 
-  
- 
-  const { languages, setLang, setLogin, setSignup, setMenuOpen } =
+
+
+  const { languages, login, setLang, setLogin, setSignup, setMenuOpen } =
     useContext(AppContext);
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules,followerUserId } = useContext(AppContext);
+  const { voteRules, followerUserId } = useContext(AppContext);
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
-  const[followerInfo,setFollowerInfo]=useState<any>()
-  const[followUnfollow,setFollowUnfollow]=useState<any>(false)
+  const [followerInfo, setFollowerInfo] = useState<any>()
+  const [followUnfollow, setFollowUnfollow] = useState<any>(false)
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
   // const urlname = location.pathname;
 
-  
-  const getFollowerData =()=>{
-  
-// e4EgEKB7pMSU3sIBuoXb6k9pJfR2  
+
+  const getFollowerData = () => {
+
+    // e4EgEKB7pMSU3sIBuoXb6k9pJfR2  
     // const DocumentType = firebase
     //   .firestore()
     //   .collection("votes")
     //   .doc('01Z9rbB0WNk8njwDGowp').delete().then((res)=>console.log('deleted'));
-      const getCollectionType = firebase
-          .firestore()
-          .collection("users")
-          .where("uid", "==", followerUserId)
-        getCollectionType.get()
-        .then((snapshot) => {        
+    const getCollectionType = firebase
+      .firestore()
+      .collection("users")
+      .where("uid", "==", followerUserId)
+    getCollectionType.get()
+      .then((snapshot) => {
         // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
-        snapshot.docs?.map(doc=>setFollowerInfo(doc.data()))
+        snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
         // console.log('snapshot',snapshot.docs)
-        }).catch((error) => {
-        console.log(error,"error");
-        });    
+      }).catch((error) => {
+        console.log(error, "error");
+      });
   }
-  
+
   useEffect(() => {
-  getFollowerData()  
+    getFollowerData()
   }, [followerUserId])
-  
-// setTimeout(() => {
-//     getFollowerData()  
-//   }, 2000);
 
-// console.log(followerInfo,"followerInfo")
+  // setTimeout(() => {
+  //     getFollowerData()  
+  //   }, 2000);
+
+  // console.log(followerInfo,"followerInfo")
 
   useEffect(() => {
-  
-  setVotingTimer(remainingTimer,)
- 
-}, [remainingTimer])
+
+    setVotingTimer(remainingTimer,)
+
+  }, [remainingTimer])
   useEffect(() => {
     if (pages) {
       setMounted(true);
@@ -215,13 +246,13 @@ const Header = ({
   }, [pages]);
 
   useEffect(() => {
-    const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
+    const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
     // @ts-ignore
     // console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
     // @ts-ignore
-  }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
+  }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
   const onSelect = (eventKey: string | null) => {
     const auth = getAuth();
@@ -271,7 +302,7 @@ const Header = ({
           replace: true,
         });
         break;
-        case EventKeys.Gallery:
+      case EventKeys.Gallery:
         navigate(ProfileTabs.profile + "/" + ProfileTabs.ProfileNftGallery, {
           replace: true,
         });
@@ -294,350 +325,220 @@ const Header = ({
 
     setMenuOpen(false);
   };
-  // @ts-ignore
-  // console.log(
-  //   Number(voteRules?.maxVotes) +
-  //     // @ts-ignore
-  //     Number(userInfo?.rewardStatistics?.extraVote) -
-  //     Number(votesLast24Hours.length),
-  //   "userInfo"
-  // );
-  // console.log(followerPage, followerInfo != "" ? true : false, " checkbothcon")
-  // const checkFollow = !toFollow(userInfo?.leader || [], followerInfo?.uid);
-
-
-
-  // console.log(followerInfo,"followerInfouseid")
   return (
-    <div>
-      <div className='' style={{ background: "none !important" }}>
-        <MenuContainer
-          pathname={pathname}
-          onSelect={onSelect}
-          items={[
-            {
-              href: "/",
-              label: "Home",
-            },
-            // {
-            //   href: "/coins",
-            //   label: "Coin Vote",
-            // },
-            // {
-            //   href: "/pairs",
-            //   label: "Pairs Vote",
-            // },
-            // {
-            //   href: "/influencers",
-            //   label: "Top Influencers",
-            // },
-            // {
-            //   href: "/nftAlbum",
-            //   label: "Album",
-            // },
-            // {
-            //   label: "",
-            // },
-            // user && {
-            //   eventKey: EventKeys.VOTES,
-            //   label: "Votes",
-            // },
-            // !isV1() &&
-            //   user && {
-            //     eventKey: EventKeys.POOL_MINING,
-            //     label: "Pool Mining",
-            //   },
-            user && {
-              eventKey: EventKeys.SHARE,
-              label: "My Account",
-            },
-            // user && {
-            //   eventKey: EventKeys.FOLLOWERS,
-            //   label: "Followers",
-            // },
-            user && {
-              eventKey: EventKeys.EDIT,
-              label: "My Profile",
-            },
-            // user && {
-            //   eventKey: EventKeys.Gallery,
-            //   label: "My Album",
-            // },
-            // user && {
-            //   eventKey: EventKeys.NOTIFICATIONS,
-            //   label: "Notifications",
-            // },
-            // user && {
-            //   eventKey: EventKeys.PASSWORD,
-            //   label: "Password",
-            // },
-            // user && {
-            //   eventKey: EventKeys.EDIT,
-            //   label: "My Profile",
-            // },
-            // {
-            //   label: "",
-            // },
-            // {
-            //   label: "",
-            // },
-            // ...(pages || []).map(convertPageToMenuItem),
-            {
-              label: "-",
-            },
-            !user && {
-              eventKey: EventKeys.LOGIN,
-              label: "Login",
-            },
-            user && {
-              eventKey: EventKeys.LOGOUT,
-              label: "Logout",
-            },
-            !user && {
-              eventKey: EventKeys.SIGNUP,
-              label: "Become a member",
-            },
-          ].map((i) => (i ? i : undefined))}
-        >
-          {/* {!desktop && (
-        <Title style={{ width: pathname === "/" ? "50%" : "50%" }}>
-          {mounted ? title : ""}
-        </Title>
-      )} */}
 
-          {/* {for center modile size} */}
+    <MenuContainer
+      pathname={pathname}
+      onSelect={onSelect}
 
-          {!desktop && (
-            <div className='' style={{ width: "75%" }}>
-              <div className='d-flex w-100 '>
-                {user?.uid  ? (
-                  <div
-                    className='d-flex w-100'
-                    style={{ position: "relative" }}
-                  >
-                    <div
-                      className=''
-                      // onClick={() => navigate("/profile/mine")}
-                      style={{
-                        position: "absolute",
-                        // marginLeft: "15px",
-                        marginTop: "7px",
-                        
-                        cursor:"pointer"
-                      }}
-                    >
-                      {userInfo?.avatar && (
-                        <Avatars
-                          type={followerPage && followerInfo != "" ?  followerInfo?.avatar || "Founder" as AvatarType  : userInfo?.avatar as AvatarType}
-                          style={{
-                            width: "45px",
-                            boxShadow: "1px 0px 5px #6352E8",
-                            // border: "1px solid #6352E8",
-                            backgroundColor: "#6352E8",
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
-                     {userInfo?.displayName&& <HeaderCenterMob className=''>
-                        <div></div>
-                        <div className='mt-1'>
-                         
-                          {/* @ts-ignore */}
-                          
-                          {/* // @ts-ignore */}
-                          {/* {hours < 10 ? `0${hours}` : hours}: */}
+      items={[
+        {
+          href: "/",
+          label: "Home",
+        },
+        {
+          href: "/pairs",
+          label: "Pairs Vote",
+        },
+        {
+          href: "/coins",
+          label: "Coin Vote",
+        },
+        // {
+        //   href: "/pairs",
+        //   label: "Pairs Vote",
+        // },
+        {
+          href: "/influencers",
+          label: "Top Influencers",
+        },
+        {
+          href: "/nftAlbum",
+          label: "Wall Of Fame",
+        },
+        {
+          label: "",
+        },
+        // user && {
+        //   eventKey: EventKeys.VOTES,
+        //   label: "Votes",
+        // },
+        // !isV1() &&
+        //   user && {
+        //     eventKey: EventKeys.POOL_MINING,
+        //     label: "Pool Mining",
+        //   },
+        user && {
+          eventKey: EventKeys.POOL_MINING,
+          label: "My Account",
+        },
+        // user && {
+        //   eventKey: EventKeys.FOLLOWERS,
+        //   label: "Followers",
+        // },
+        user && {
+          eventKey: EventKeys.EDIT,
+          label: "My Profile",
+        },
+        user && {
+          eventKey: EventKeys.Gallery,
+          label: "My Album",
+        },
+        user && {
+          eventKey: EventKeys.NOTIFICATIONS,
+          label: "Notifications",
+        },
+        // user && {
+        //   eventKey: EventKeys.PASSWORD,
+        //   label: "Password",
+        // },
+        // user && {
+        //   eventKey: EventKeys.EDIT,
+        //   label: "My Profile",
+        // },
+        {
+          label: "",
+        },
+        {
+          label: "",
+        },
+        ...(pages || []).map(convertPageToMenuItem),
+        {
+          label: "-",
+        },
+        !user && {
+          eventKey: EventKeys.LOGIN,
+          label: "Login",
+        },
+        user && {
+          eventKey: EventKeys.LOGOUT,
+          label: "Logout",
 
+        },
+        !user && {
+          eventKey: EventKeys.SIGNUP,
+          label: "Join the parliament",
+        },
+      ].map((i) => (i ? i : undefined))}
 
-                          {
-                            followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
-                            // @ts-ignore */
-                                <span > {userInfo?.displayName}</span>
-                                :
-                                <>
-                                  <span
-                                    style={{
-                                      color: "#6352E8",
-                                    }}
-                                  >
-                            
-                            {userInfo?.displayName}
-                                  </span>
-                                </>}
-                        </div>
-                        
-                        {followerPage && followerInfo != "" ?
-                        <Form.Check.Label
-                              style={{ cursor: "pointer" }}
-                              // htmlFor={id || name}
-                              className="mt-1"
-                            bsPrefix="label"
-                            onClick={ async () =>
-                            {
-                              setFollowUnfollow(!followUnfollow)
-                              // @ts-ignore
-                            //  await follow(followerInfo , user, checkFollow )
-                            }
-                            
-                            }
-                            >
-                              {/* {checked && iconOn}
-                              {!checked && iconOff} */}
-                            {followUnfollow == true ?  <Following/> :  <AddFollower/>}
-                        </Form.Check.Label>
-                          :
-                        <PlusButtonMob >
-                          <span></span>
-                        </PlusButtonMob> 
+    >
 
-                        }
-                      </HeaderCenterMob>}
-                      <div
-                        className='w-25'
-                        style={{ marginLeft: "45px", marginTop: "5px" }}
-                      >
-                        {/* <p>{"unique_Username"}</p> */}
-
-                        
-                        {/* <br /> */}
-                      {userInfo?.displayName&&  <MemberText>
-                          {/* {translate(followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || "")} */}
-                          {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
-                        </MemberText>}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className='w-100'></div>
-                )}
-                <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "" : "" }}>
-                    {/* {mounted ? title : ""} */}
-                  </Title>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* {for center web size} */}
-
-          {logo ? (
-            <div
-              style={{
-                flexBasis: "100%",
-                textAlign: "center",
-                // width: desktop ? "25%" : (pathname === "/" ? "75%" : "25%"),
-                // textAlign: desktop ? undefined : "center",
-              }}
+      {!desktop && (
+        <div className='' style={{ width: "75%" }}>
+          <div className='d-flex w-100  '>
+            <ForZoom className="w-100"
             >
-              <div className='d-flex '>
-                {user?.uid ? (
-                  <div
-                    className='d-flex   w-25 mx-auto '
-                    style={{ position: "relative", height: "50px" }}
+              {user?.uid && !login ? (
+                <div
+                  className="d-flex"
+                  style={{
+                    position: "relative",
+
+
+                  }}
+                >
+                  <div className=''
+                    style={{
+                      position: "absolute",
+                      marginTop: "7px",
+                      cursor: "pointer"
+                    }}
                   >
-                    <div
-                      className=''
-                      // onClick={() => navigate("/profile/mine")}
+                    <Avatars
+                      type={(userInfo?.avatar || defaultAvatar) as AvatarType}
                       style={{
-                        position: "absolute",
-                        marginLeft: "90px",
-                        // marginTop: "px",
-                        cursor:"pointer"
+                        width: "45px",
+                        boxShadow: `${"1px 0px 5px #6352E8"}`, backgroundColor: `${"#6352E8"}`,
+
                       }}
-                    >
-                      {userInfo?.avatar && (
-                        <Avatars
-                          // type={userInfo?.avatar as AvatarType}
-                          type={ followerPage && followerInfo != ""?  followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
-                          style={{
-                            width: "60px",
-                            boxShadow: "1px 0px 5px #6352E8",
-                            backgroundColor: "#6352E8",
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div className='w-100 '>
-                     { userInfo?.displayName&&<HeaderCenter className=''>
-                        <div></div>
-                        <p className='ml-5'>
-                       { followerPage && followerInfo != "" ? followerInfo?.displayName :!voteNumber && votingTimer ?
-                          // @ts-ignore
-                         <span > {userInfo?.displayName}</span>
-                        :
-                        <> 
-                          <span
-                            style={{
-                              color: "#6352E8",
-                            }}
-                          >
-                            {/* {Number(voteRules?.maxVotes) ||
-                              0 +
-                                // @ts-ignore
-                                Number(userInfo?.rewardStatistics?.extraVote) ||
-                              0 - Number(votesLast24Hours.length) ||
-                              0} */}
-                           {userInfo?.displayName}
-                          </span></>}
-                        </p>
-                        {followerPage && followerInfo != "" ?
-                        <Form.Check.Label
-                        className=""
-                              style={{ cursor: "pointer" }}
-                              // htmlFor={id || name}
-                              // className={className}
-                            bsPrefix="label"
-                            onClick={()=>{setFollowUnfollow(!followUnfollow)}}
-                            >
-                              {/* {checked && iconOn}
-                              {!checked && iconOff} */}
-                            {followUnfollow == true ?  <Following/> :  <AddFollower/>}
-                        </Form.Check.Label>
-                          :
-                        <PlusButton onClick={() => navigate("/votingbooster")}>
-                          <span>+</span>
-                        </PlusButton> 
-
-                        }
-                      </HeaderCenter>}
-                      <div
-                        className=''
-                        style={{
-                          width: "50%",
-                          marginLeft: "150px",
-                          marginTop: "5px",
-                          textAlign: "left",
-                          fontWeight: "100px",
-                        }}
-                      >
-                        {/* <span className='mb-1' style={{ fontSize: "16px" }}>{`${
-                         followerPage && followerInfo != ""?  followerInfo?.displayName : userInfo?.displayName && userInfo?.displayName
-                        }`}</span>
-                        <br /> */}
-
-                       
-                      {userInfo?.displayName&&  <MemberText>
-                          {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
-                        </MemberText>}
-                      </div>
-                    </div>
+                    />
                   </div>
-                ) : (
-                  <div className='w-100'></div>
-                )}
-                {/* <Navbar.Brand as={Link} to='/'>
-                  <img src={BigLogo} alt='' />
-                </Navbar.Brand> */}
-              </div>
-            </div>
-          ) : (
-            <div style={{ width: "25%" }}>&nbsp;</div>
-          )}
-          {/* {desktop && <Title style={{flexBasis: "50%", textAlign: "center"}}>{mounted ? title : ""}</Title>} */}
-        </MenuContainer>
-      </div>
-    </div>
+                  <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
+                    <HeaderCenterMob className='border'>
+                      <div></div>
+                      <div className='mt-1'>
+                        <span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
+                          {`${(userInfo?.displayName) ? userInfo?.displayName : ''}`}
+                        </span>
+                      </div>
+                    </HeaderCenterMob>
+
+                  </div>
+                </div>
+              ) : (
+                <div className='w-100'></div>
+              )}
+            </ForZoom>
+
+          </div>
+        </div>
+      )}
+
+      {/* {for center web size} */}
+
+      {logo ? (
+        <div
+          style={{
+            flexBasis: "100%",
+            textAlign: "center",
+          }}
+        >
+          <div className='d-flex'>
+            <ForZoom className="flex-fill d-flex"
+
+            >
+              {(user?.uid && !login) && (
+                <div className='d-flex mx-auto w-auto '
+                  style={{
+                    position: "relative",
+                    height: "50px",
+
+                  }}>
+                  <div
+
+                    style={{
+                      position: "absolute",
+                      marginLeft: "90px",
+                      cursor: "pointer"
+                    }}
+                  >
+                    <Avatars
+                      type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
+                      style={{
+                        width: "60px",
+                        boxShadow: `${"1px 0px 5px #6352E8"}`, backgroundColor: `${"#6352E8"}`,
+                      }}
+                    />
+                  </div>
+                  <div className='w-100'>
+                    <HeaderCenter className='d-flex justify-content-between' style={{ width: '16em' }}>
+                      <p className='' style={{ marginRight: '1em' }}>
+                        <span
+                          style={{
+                            color: "#6352E8",
+                            marginLeft: "40px",
+                            fontSize: window.screen.width <= 340 ? '0.7889em' : '12px'
+                          }}
+                        >
+                          {`${(userInfo?.displayName) ? userInfo?.displayName : ''}`}
+                        </span>
+                      </p>
+                    </HeaderCenter>
+
+
+                  </div>
+                </div>
+              )}
+            </ForZoom>
+
+          </div>
+        </div>
+      ) : (
+        <div style={{ width: "25%" }}>&nbsp;</div>
+      )}
+
+    </MenuContainer >
+
   );
 };
 

@@ -9,6 +9,7 @@ import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
   Link,
+  Navigate,
   Route,
   Routes,
   useLocation,
@@ -533,7 +534,6 @@ function App() {
   //   }
   // }, [user]);
 
-  console.log(userInfo, user, loader, 'pkkkk');
   useEffect(() => {
 
     // @ts-ignore
@@ -574,11 +574,6 @@ function App() {
     );
   }
 
-  useEffect(() => {
-    // getToken(messaging, {
-    //   vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
-    // }).then((token) => setFcmToken(token));
-  }, []);
   console.log('fmctoken', fcmToken)
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
@@ -597,128 +592,6 @@ function App() {
     }
   }, [lang, user?.uid]);
 
-  // const isAdmin = useCallback(async (uid?: string) => {
-  //   if (uid) {
-  //     const func = httpsCallable(functions, "isAdmin");
-  //     return !!(await func({ user: uid })).data;
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
-  // }, [user?.uid, isAdmin]);
-
-  // useEffect(() => {
-  //   onSnapshot(doc(db, "stats", "leaders"), (doc) => {
-  //     setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
-
-  //   });
-
-  //   onSnapshot(
-  //     query(
-  //       collection(db, "notifications"),
-  //       where("user", "==", user?.uid || "")
-  //     ),
-  //     (querySnapshot) => {
-  //       setNotifications(
-  //         querySnapshot.docs.map((doc) => {
-  //           return doc.data() as NotificationProps;
-  //         })
-  //       );
-  //     }
-  //   );
-
-  //   onSnapshot(doc(db, "stats", "totals"), (doc) => {
-  //     setTotals((doc.data() || {}) as { [key: string]: Totals });
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "timeframes"), (doc) => {
-  //     setTimeframes(
-  //       ((doc.data() as { timeframes: TimeFrame[] }) || {}).timeframes || []
-  //     );
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "userTypes"), (doc) => {
-  //     const u = (
-  //       (doc.data() || {
-  //         userTypes: [defaultUserType],
-  //       }) as { userTypes: UserTypeProps[] }
-  //     ).userTypes;
-
-  //     setUserTypes(u);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "settings"), (doc) => {
-  //     setVoteRules(
-  //       ((doc.data() || {}) as { voteRules: VoteRules }).voteRules || {}
-  //     );
-  //     setCPMSettings(
-  //       ((doc.data() || {}) as { CPMSettings: CPMSettings }).CPMSettings || {}
-  //     );
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "languages"), (doc) => {
-  //     const u = (
-  //       (doc.data() || {
-  //         languages: [ENGLISH],
-  //       }) as { languages: string[] }
-  //     ).languages;
-
-  //     setLanguages(u);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "rtl"), (doc) => {
-  //     const r = (
-  //       (doc.data() || {
-  //         rtl: [],
-  //       }) as { rtl: string[] }
-  //     ).rtl;
-
-  //     setRtl(r);
-  //   });
-
-  //   onSnapshot(collection(db, "translations"), (querySnapshot) => {
-  //     querySnapshot.docs.forEach((doc) => {
-  //       translations.set(doc.id, doc.data());
-  //     });
-  //   });
-
-  //   onSnapshot(doc(db, "stats", "coins"), (doc) => {
-
-  //     const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-  //     setCoins(newAllCoins);
-  //     // saveCoins(newAllCoins);
-  //   });
-
-  //   onSnapshot(doc(db, "stats", "app"), (doc) => {
-  //     setAppStats(doc.data() as AppStats);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "paxData"), (doc) => {
-  //     setPaxData(doc.data() as PaxData);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "coins"), (doc) => {
-  //     const newAllCoins = (
-  //       ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
-  //     )
-  //       .sort((a, b) => Number(a.id) - Number(b.id))
-  //       .map((c) => c.symbol);
-
-  //     saveAllCoins(newAllCoins);
-  //     setAllCoins(newAllCoins);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "pairs"), (doc) => {
-  //     setAllPairs(
-  //       (((doc.data() as { pairs: DBPair[] }) || {}).pairs || [])
-  //         .sort((a, b) => Number(a.id) - Number(b.id))
-  //         .map((p) => {
-  //           return [p.symbol1, p.symbol2];
-  //         })
-  //     );
-  //   });
-  // }, [user?.uid]);
 
   useEffect(() => {
     const auth = getAuth();
@@ -832,22 +705,11 @@ function App() {
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
-
-  // useEffect(() => {
-  //   async function removeData() {
-  //     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
-  //     const batch = firebase.firestore().batch();
-  //     voteData.forEach(doc => {
-  //       batch.delete(doc.ref);
-  //     });
-  //     await batch.commit();
-
-  //     console.log("User vote data deleted");
-  //   }
-  //   removeData()
-  // }, [])
-
-
+  useEffect(() => {
+    if (pathname.toLowerCase().includes('login')) {
+      setLogin(true);
+    }
+  }, [pathname]);
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -880,6 +742,8 @@ function App() {
           >
             <AppContext.Provider
               value={{
+                firstTimeAvatarSlection,
+                setFirstTimeAvatarSelection,
                 followerUserId,
                 setFollowerUserId,
                 singalCardData,
@@ -1087,17 +951,6 @@ function App() {
                                         size={Size.XSMALL}
                                       />} */}
                                     </Link>
-                                    {
-                                      // ((scrollPosition < positionBreakpoint) && (width && width < 979)) && <H1
-                                      //   desktop={
-                                      //     width && width > 979 ? "true" : "false"
-                                      //   }
-                                      //   className="mt-2"
-                                      //   onClick={() => navigate("/", {replace: true})}
-                                      // >
-                                      //   {/* {!login && !firstTimeFoundationSelection && !firstTimeLogin &&!firstTimeAvatarSlection? capitalize(translate("coin parliament", lang)): null} */}
-                                      // </H1>
-                                    }
                                   </div>
                                 </HomeContainer>
                               }
@@ -1128,15 +981,6 @@ function App() {
                                 }
                               />
                             )}
-                            {!firstTimeAvatarSlection &&
-                              firstTimeFoundationSelection && (
-                                <FirstTimeFoundationSelection
-                                  user={user}
-                                  setFirstTimeFoundationSelection={
-                                    setFirstTimeFoundationSelection
-                                  }
-                                />
-                              )}
                             {!firstTimeLogin && (
                               <>
                                 {!user && login && !mfaLogin && (
@@ -1202,14 +1046,16 @@ function App() {
                                             path='CardShow/:id'
                                             element={<CardShow />}
                                           />
-                                          <Route path='/login' element={<LoginAndSignup
-                                            {...{
-                                              authProvider: LoginAuthProvider,
-                                              loginAction: LoginRegular,
-                                              signupAction: SignupRegular,
-                                            }}
-                                          />} />
-                                          <Route path='/sign-up' element={<GenericLoginSignup />} />
+                                          <Route path='/login' element={!user && !mfaLogin ?
+                                            <LoginAndSignup
+                                              {...{
+                                                authProvider: LoginAuthProvider,
+                                                loginAction: LoginRegular,
+                                                signupAction: SignupRegular,
+                                              }}
+                                            /> : <Navigate to="/" />
+                                          } />
+                                          <Route path='/sign-up' element={!user && !mfaLogin ? <GenericLoginSignup /> : <Navigate to="/" />} />
                                         </Routes>
                                       </Container>
                                       <Footer />

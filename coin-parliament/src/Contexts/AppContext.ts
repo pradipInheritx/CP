@@ -1,14 +1,14 @@
 import React from "react";
-import {TimeFrame} from "../common/models/Vote";
-import {UserTypeProps} from "../common/models/UserType";
-import {ProfileTabs} from "../Pages/Profile";
+import { TimeFrame } from "../common/models/Vote";
+import { UserTypeProps } from "../common/models/UserType";
+import { ProfileTabs } from "../Pages/Profile";
 
 export type VoteRules = {
   maxVotes: number;
   givenCPM: number;
   CPMReturnSuccess: number;
   CPMReturnFailure: number;
-  timeLimit:number;
+  timeLimit: number;
 };
 
 export type CPMSettings = {
@@ -26,21 +26,23 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
-  followerUserId?:string;
-  setFollowerUserId?:(lang: string) => void;
-  remainingTimer?:any;
+  followerUserId?: string;
+  setFollowerUserId?: (lang: string) => void;
+  remainingTimer?: any;
   nftAlbumData?: any;
-  singalCardData?:any,
-  setSingalCardData?:any,
+  singalCardData?: any,
+  setSingalCardData?: any,
   setNftAlbumData: any;
+  firstTimeAvatarSlection: any,
+  setFirstTimeAvatarSelection: React.Dispatch<React.SetStateAction<boolean>>,
   allPariButtonTime: any;
   setAllPariButtonTime: any;
-  allButtonTime:any;
-  setForRun?:any;
-  forRun?:any;
-  setAllButtonTime:any;
-  chosenUserType:string;
-  setChosenUserType:(lang: string) => void;
+  allButtonTime: any;
+  setForRun?: any;
+  forRun?: any;
+  setAllButtonTime: any;
+  chosenUserType: string;
+  setChosenUserType: (lang: string) => void;
   authStateChanged: boolean;
   timeframes: TimeFrame[];
   setTimeframes: (timeframes: TimeFrame[]) => void;
@@ -76,8 +78,8 @@ export type AppContextProps = {
   setAppStats: (s: AppStats) => void;
   paxData: PaxData;
   setPaxData: (s: PaxData) => void;
-  setLoginRedirectMessage:(s: string) => void;
-                loginRedirectMessage:string;
+  setLoginRedirectMessage: (s: string) => void;
+  loginRedirectMessage: string;
 };
 
 const AppContext = React.createContext({} as AppContextProps);
