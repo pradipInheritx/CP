@@ -1,5 +1,5 @@
 import React from "react";
-import {NotificationProps, userConverter, UserProps} from "../common/models/User";
+import { NotificationProps, userConverter, UserProps } from "../common/models/User";
 import { User as AuthUser } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db, functions } from "../firebase";
@@ -41,9 +41,9 @@ export const getUserInfo: (user?: AuthUser) => Promise<UserProps> = async (
   return {} as UserProps;
 };
 
-export const saveUsername = async (uid: string, displayName: string,avatar:string) => {
+export const saveUsername = async (uid: string, displayName: string, avatar: string) => {
   const userRef = doc(db, "users", uid);
-  await setDoc(userRef, { displayName, avatar }, { merge: true });
+  await setDoc(userRef, { displayName/* , avatar */ }, { merge: true });
 };
 
 export const saveFoundation = async (uid: string, foundationName: string) => {
