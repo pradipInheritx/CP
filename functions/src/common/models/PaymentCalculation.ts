@@ -89,6 +89,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         },
         "user": "Test"
     }
+
     try {
         if (getParentSettings.name === "MANUAL" || getParentSettings.name === "IMMEDIATE") {
             const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
@@ -155,3 +156,28 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         console.info("Error while make referal payment", error)
     }
 }
+
+export const setPaymentSchedulingByCronJob = async (parentData: any) => {
+    const startTime = new Date('2023-01-01T00:00:00Z'); // Replace with your start timestamp
+    const endTime = new Date('2023-12-31T23:59:59Z');   // Replace with your end timestamp
+
+    // Query Firestore for documents within the timestamp range
+    const getPendingParentDetails: any = await firestore().collection('users') // Replace with your collection name
+        .where('timestampField', '>=', startTime)
+        .where('timestampField', '<=', endTime);
+
+    const snapshot = await getPendingParentDetails.get();
+
+    const filteredPendingPaymentData: any = [];
+
+    snapshot.forEach((doc: any) => {
+        const data = doc.data();
+        filteredPendingPaymentData.push(data);
+    });
+
+    console.info("filteredPendingPaymentData", filteredPendingPaymentData)
+}
+
+
+
+
