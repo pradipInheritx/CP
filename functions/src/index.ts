@@ -302,6 +302,11 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
+
+exports.pendingPaymentSettlement = functions.pubsub.schedule("every 5 minutes").onRun((context) => {
+  console.log("pendingPaymentSettlement come to know");
+});
+
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
   const { auth } = context;
