@@ -53,8 +53,8 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
 
     res.status(200).send({
         status: true,
-        message: "Payment transaction history fetched successfully",
-        data: {}
+        message: "Parent referal payment initiated successfully",
+        data: req.body
     });
 }
 
@@ -86,7 +86,8 @@ const addIsExtraVotePurchase = async (metaData: any) => {
         .then(doc => {
             if (doc.exists) {
                 const data: any = doc.data();
-                const originalValue: number = parseFloat(data?.rewardStatistics?.extraVote);
+                console.info("data", data)
+                const originalValue: number = data?.rewardStatistics && data?.rewardStatistics?.extraVote ? parseFloat(data?.rewardStatistics?.extraVote) : 0;
                 const modifiedValue: number = originalValue + parseFloat(metaData.numberOfVotes);
                 console.log("originalValue,modifiedValue : ", originalValue, modifiedValue)
                 data.rewardStatistics.extraVote = modifiedValue;
@@ -136,7 +137,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
 
 export const getParentPayment = async (req: any, res: any) => {
     try {
-        const getUserArray: any = [];
+        const getAllPaymentArray: any = [];
         const { userId } = req.params;
         const { status, pageNumber, pageSize } = req.query;
         const getQuery = firestore()
@@ -144,18 +145,33 @@ export const getParentPayment = async (req: any, res: any) => {
             .where('parentUserId', "==", userId);
         const getParentPaymentQuery: any = !status ? await getQuery.get() : await getQuery.where("status", "==", status).get();
         getParentPaymentQuery.docs.forEach((snapshot: any) => {
-            let user = snapshot.data();
-            console.log("user : ", user)
-            getUserArray.push(user);
+            let payment = snapshot.data();
+            let id = snapshot?.id;
+            console.log("payment: ", payment, "Parent Payment", payment.parentPendingPaymentId, "TypeOf", typeof payment.parentPendingPaymentId)
+            if (payment.parentPendingPaymentId === null) {
+                getAllPaymentArray.push({ ...payment, docId: id, childPayment: [] });
+            }
         });
-        console.log(getUserArray);
+        getParentPaymentQuery.docs.forEach((snapshot: any) => {
+            let payment = snapshot.data();
+            let id = snapshot?.id;
+            console.log("payment: ", payment)
+            const getParentPaymentIndex = getAllPaymentArray.findIndex((item: any) => item.docId === payment.parentPendingPaymentId);
+            //console.info("getAllPaymentArray", getAllPaymentArray[getParentPaymentIndex], getAllPaymentArray[getParentPaymentIndex].childPayment)
+            console.info("getParentPaymentIndex", getParentPaymentIndex)
+            if (getAllPaymentArray[getParentPaymentIndex] && getAllPaymentArray[getParentPaymentIndex].childPayment) {
+                getAllPaymentArray[getParentPaymentIndex].childPayment.push({ ...payment, docId: id })
+            }
+        });
 
-        const paymentsSorting = getUserArray.sort((a: any, b: any) => b.timestamp._seconds - a.timestamp._seconds);
+        console.log("getAllPaymentArray:::", getAllPaymentArray);
+
+        const paymentsSorting = getAllPaymentArray.sort((a: any, b: any) => b.timestamp - a.timestamp);
         console.log("paymentsSorting", paymentsSorting);
 
         const startIndex: number = (pageNumber - 1) * pageSize;
-        const endIndex: number = startIndex + pageSize;
-
+        const endIndex: number = startIndex + parseInt(pageSize);
+        console.info("paymentsSorting", paymentsSorting.length, "startIndex", startIndex, "endIndex", endIndex)
         const paymentPagination = paymentsSorting.slice(startIndex, endIndex);
 
         log("getParentPayment : paymentPagination => ", paymentPagination);
@@ -163,7 +179,7 @@ export const getParentPayment = async (req: any, res: any) => {
             status: true,
             message: "Parent payment history fetched successfully",
             data: paymentPagination,
-            total: paymentsSorting.total
+            total: getAllPaymentArray.length
         });
 
     } catch (error) {

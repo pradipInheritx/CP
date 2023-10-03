@@ -100,6 +100,7 @@ import PaymentRouter from "./routes/Payments.routes";
 import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
+import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // initialize express server
 const app = express();
@@ -300,6 +301,12 @@ exports.sendMessage = functions.https.onCall(async (data) => {
 
 exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
+});
+
+
+exports.pendingPaymentSettlement = functions.pubsub.schedule("every 5 minutes").onRun(async (requestBody) => {
+  console.log("pendingPaymentSettlement Coming");
+  await setPaymentSchedulingByCronJob(requestBody)
 });
 
 exports.observeTopics = functions.https.onCall(async (data, context) => {
