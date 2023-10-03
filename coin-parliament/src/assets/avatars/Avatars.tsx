@@ -47,7 +47,7 @@ const Avatars = ({
   const src = (type && !type.includes('http')) ? importFile(`./The${type && avatarArray?.includes(type) ? type : defaultAvatar}`).default : type;
   // console.log(src, 'importFile');
 
-  return <Image src={src} alt="Profile" roundedCircle={true} style={style} />;
+  return <Image src={src} alt="Profile" width={width} roundedCircle={true} style={style} />;
 };
 
 export default Avatars;
