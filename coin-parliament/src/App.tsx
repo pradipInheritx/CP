@@ -67,7 +67,6 @@ import CardShow from "./Components/Pairs/CardShow";
 import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
 import { getKeyByLang, getLangByKey } from "./common/consts/languages";
-import { getToken } from "firebase/messaging";
 import { Form } from "react-bootstrap";
 import { rest, ws } from "./common/models/Socket";
 import { httpsCallable } from "firebase/functions";
@@ -109,27 +108,11 @@ import Background from "./Components/Background";
 import Spinner from "./Components/Spinner";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
-// import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
-import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
-import PrivacyPolicy from "./Pages/PrivacyPolicy";
-import UpgradePage from "./Components/Profile/UpgradePage";
-import VotingBooster from "./Components/Profile/VotingBooster";
-import ProfileNftGallery from "./Pages/ProfileNftGallery";
-import GameRule from "./Pages/GameRule";
-import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
-import SingalCard from "./Pages/SingalCard";
-import FwMine from "./Components/FollowerProfile/FwMine";
-import FwFollow from "./Components/FollowerProfile/FwFollow";
-import FwVotes from "./Components/FollowerProfile/FwVotes";
-import FwPool from "./Components/FollowerProfile/FwPool";
-import Wallet from "./Components/Profile/Wallet";
+
 import { pwaInstallHandler } from 'pwa-install-handler'
-// import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
-// import { handleSoundClick } from "./common/utils/SoundClick";
-// import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
 

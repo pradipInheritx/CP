@@ -50,7 +50,7 @@
     "eslint-plugin-testing-library": "^3.9.2",
     "eslint-webpack-plugin": "^2.5.2",
     "file-loader": "6.1.1",
-    "firebase": "^9.17.1",
+    "firebase": "^9.23.0",
     "firebaseui": "^6.0.0",
     "formik": "^2.2.9",
     "framer-motion": "4.1.12",
