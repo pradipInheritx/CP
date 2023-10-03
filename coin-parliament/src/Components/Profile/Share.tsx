@@ -57,7 +57,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
         <span className={classes.shareSubHeaderText} style={{ color: '#FEFEFE' }}>Invite your friends to become </span>
       </div>
       <div className="d-flex justify-content-center text-center">
-        <span className={classes.shareSubHeaderText} style={{ color: '#684dc9', background: "linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%)", WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Coin Parliament</span>
+        <span className={classes.shareSubHeaderText} style={{ color: '#684dc9', background: "linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%)", WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Vote to Earn</span>
       </div>
       <div className="d-flex justify-content-center text-center">
         <span className={classes.shareSubHeaderText} style={{ color: '#FEFEFE' }}>members and enjoy the benefits of being our Ambassador.</span>
