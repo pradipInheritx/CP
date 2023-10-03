@@ -3,22 +3,23 @@ import { Link } from "react-router-dom";
 // import { texts } from "Components/LoginComponent/texts";
 // import GeneralPage from "GeneralPage";
 import styled from "styled-components";
-import earn from "assets/images/earn.png";
+
 // import { useTranslation } from "common/models/Dictionary";
 // import Button, { Buttons } from "Components/Atoms/Button/Button";
 import copy from "copy-to-clipboard";
+import earn from '../../assets/images/earn.png';
 // import NotificationContext, { ToastType } from "Contexts/Notification";
 // import UserContext from "Contexts/User";
 // import AppContext from "Contexts/AppContext";
 // import Copy from "Components/icons/copy";
-import classes from "./Ambassador.module.css"
-import signUpImage from "assets/images/signup.svg"
-import inviteUser from "assets/images/inviteUser.svg"
-import Gift from "assets/images/Gift.svg"
-import whatsApp from "assets/images/whatsapp.svg"
-import twitter from "assets/images/twitter.png"
-import facebook from "assets/images/facebook.svg"
-import XTwitter from "assets/images/x-twitter.svg"
+import classes from "Ambassador.module.css"
+import signUpImage from "../../assets/images/signup.svg"
+import inviteUser from "../../assets/images/inviteUser.svg"
+import Gift from "../../assets/images/Gift.svg"
+import whatsApp from "../../assets/images/whatsapp.svg"
+import twitter from "../../assets/images/twitter.png"
+import facebook from "../../assets/images/facebook.svg"
+import XTwitter from "../../assets/images/x-twitter.svg"
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";

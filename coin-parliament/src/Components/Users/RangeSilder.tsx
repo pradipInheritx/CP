@@ -372,15 +372,15 @@ export default function SpeedTest(
   //   getBorderColor()
   // }, [coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime, coins[symbol1]?.randomDecimal, coins[symbol1]?.randomDecimal])
   useEffect(() => {
-    
+
     // let timer1  = setTimeout(() => setValue(Math.floor((Math.random()*100)+1)), 1000)
-   return () => {
-        // clearTimeout(timer1);
-      };
-    
+    return () => {
+      // clearTimeout(timer1);
+    };
+
   }, [value])
 
-console.log(value,"checkvalue")
+  console.log(value, "checkvalue")
 
   // useEffect(() => {
   //   if (!symbol1) return

@@ -13,7 +13,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/sa.json";
+import serviceAccount from "./serviceAccounts/sportparliament.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -37,9 +37,9 @@ import {
   Leader,
   prepareCPVI,
   fetchAskBidCoin,
-  getUpdatedDataFromWebsocket,
-  getAllUpdated24HourRecords,
-  removeTheBefore24HoursData,
+  // getUpdatedDataFromWebsocket,
+  // getAllUpdated24HourRecords,
+  // removeTheBefore24HoursData,
 } from "./common/models/Coin";
 import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
@@ -74,6 +74,7 @@ import {
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
+import userRouter from "./routes/genericSignUp.routes";
 // import {ws} from "./common/models/Ajax";
 
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
@@ -102,6 +103,7 @@ const main = express();
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
+app.use("/user", userRouter); // Added Sign Up For Sport Parliament Using Global API
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -539,18 +541,18 @@ exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
   });
 });
 
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 2 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
+// exports.getUpdatedDataFromWebsocket = functions.pubsub
+//   .schedule("every 2 minutes")
+//   .onRun(async () => {
+//     await getUpdatedDataFromWebsocket();
+//   });
 
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 5 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
+// exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+//   .schedule("every 5 minutes")
+//   .onRun(async () => {
+//     await getAllUpdated24HourRecords();
+//     await removeTheBefore24HoursData();
+//   });
 
 exports.prepareEveryFiveMinuteCPVI = functions.pubsub
   .schedule("*/3 * * * *")

@@ -9,12 +9,10 @@
 }
 
 .first-time-login {
-    align-items: flex-start;
+    align-items: center;
     background-color: var(--light-purple);
     display: flex;
     flex-direction: column;
-    height: 812px;
-    padding: 157px 63px;
-    width: 390px;
+    width: 260px;
 }
 

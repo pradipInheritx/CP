@@ -1400,3 +1400,30 @@ html[dir="rtl"] .accordion-button {
         transform: rotate(2deg);
     }
 }
+
+/* //modal */
+.modal-content{
+    
+    border-radius: 100px 0px 100px 100px !important;
+}
+.modal-backdrop.fade{
+    opacity: 0;
+}
+
+.modal-backdrop{
+    display: none;
+    /* opacity: 1; */
+}
+.menuClass{
+    overflow: visible !important;
+}
+
+.HeaderText{
+animation: blinker 1s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+/* end modal */
