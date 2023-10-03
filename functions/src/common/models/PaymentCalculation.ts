@@ -159,25 +159,82 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     }
 }
 
-export const setPaymentSchedulingByCronJob = async (parentData: any) => {
-    const startTime = new Date('2023-01-01T00:00:00Z'); // Replace with your start timestamp
-    const endTime = new Date('2023-12-31T23:59:59Z');   // Replace with your end timestamp
+export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
+    const userDetails: any = [];
+    const getPendingParentDetails: any = await firestore()
+        .collection('parentPayment')
+        .where("status", "==", "PENDING")
+        .get();
+    const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => snapshot.data());
 
-    // Query Firestore for documents within the timestamp range
-    const getPendingParentDetails: any = await firestore().collection('users') // Replace with your collection name
-        .where('timestampField', '>=', startTime)
-        .where('timestampField', '<=', endTime);
+    for (let i = 0; i < filteredPendingPaymentData.length; i++) {
+        const user: any = (await firestore().collection('users').doc(filteredPendingPaymentData[i].parentUserId).get()).data()
+        const setting = user.referalReceiveType
+        const userPendingPaymentDetails: any = filteredPendingPaymentData[i]
+        const data: any = {
+            id: user.uid,
+            email: user.email,
+            settings: user.referalReceiveType,
+            ...userPendingPaymentDetails
+        }
+        if (setting.name == "LIMIT") {
+            userDetails.push(data)
+        }
+    }
 
-    const snapshot = await getPendingParentDetails.get();
+    // loop for Payment
+    for (let user of userDetails) {
+        const parentTimeStamp = user.timestamp._seconds
+        const differnceBetweenTimes = Math.round((parentTimeStamp - currentTime) / (1000 * 60 * 60 * 24))
 
-    const filteredPendingPaymentData: any = [];
+        // for 1 day
+        if (differnceBetweenTimes >= 1 && user.settings.day == "1 day") {
+            const transaction: PaymentBody = {
+                "method": "getTransaction",
+                "params": {
+                    "amount": user.amount,
+                    "network": "11155111",
+                    "origincurrency": "eth",
+                    "token": "ETH"
+                },
+                "user": user.email
+            }
+            await paymentFunction(transaction)
+            await firestore().collection('parentPayment').doc(user.id).set({ status: "SUCCESS" }, { merge: true });
+        }
+        // for 1 week
+        else if (differnceBetweenTimes >= 7 && user.settings.day == "1 week") {
+            const transaction: PaymentBody = {
+                "method": "getTransaction",
+                "params": {
+                    "amount": user.amount,
+                    "network": "11155111",
+                    "origincurrency": "eth",
+                    "token": "ETH"
+                },
+                "user": user.email
+            }
+            await paymentFunction(transaction);
+            await firestore().collection('parentPayment').doc(user.id).set({ status: "SUCCESS" }, { merge: true });
+        }
+        // for 1 month
+        else if (differnceBetweenTimes >= 30 && user.settings.day == "1 month") {
+            const transaction: PaymentBody = {
+                "method": "getTransaction",
+                "params": {
+                    "amount": user.amount,
+                    "network": "11155111",
+                    "origincurrency": "eth",
+                    "token": "ETH"
+                },
+                "user": user.email
+            }
+            await paymentFunction(transaction);
+            await firestore().collection('parentPayment').doc(user.id).set({ status: "SUCCESS" }, { merge: true });
+        }
+        else { throw "Somthing wrong in setPaymentSchedulingByCronJob" }
+    };
 
-    snapshot.forEach((doc: any) => {
-        const data = doc.data();
-        filteredPendingPaymentData.push(data);
-    });
-
-    console.info("filteredPendingPaymentData", filteredPendingPaymentData)
 }
 
 
