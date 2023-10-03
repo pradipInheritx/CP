@@ -6,13 +6,13 @@ import { Stack } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Styles from "./styles";
 import Signup from "./Signup";
-import { texts } from "Components/LoginComponent/texts";
+import { texts } from "../../Components/LoginComponent/texts";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { PoppinsBoldBlueViolet14px, PoppinsMediumBlack12px } from "../../styledMixins";
-import AppContext from "Contexts/AppContext";
-import { LoginProviders } from "common/models/Login";
-import LoginWith from "Components/LoginComponent/LoginWith";
+import AppContext from "../../Contexts/AppContext";
+import { LoginProviders } from "../../common/models/Login";
+import LoginWith from "../../Components/LoginComponent/LoginWith";
 
 const Login = styled.div`
   margin-left:5px;

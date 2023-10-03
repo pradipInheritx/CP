@@ -7,7 +7,7 @@ import NFT from "../../assets/avatars/NFT";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "../../Contexts/User";
 import { useLocation, useNavigate } from "react-router-dom";
-import AppContext from "Contexts/AppContext";
+import AppContext from "../../Contexts/AppContext";
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;

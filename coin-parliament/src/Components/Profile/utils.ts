@@ -1,4 +1,4 @@
-import { texts } from "Components/LoginComponent/texts";
+import { texts } from "../../Components/LoginComponent/texts";
 
 export const validatePassword = (newPassword: string, username: string, confirmPassword: string) => {
   const check1 = new RegExp(

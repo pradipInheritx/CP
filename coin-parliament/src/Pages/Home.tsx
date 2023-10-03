@@ -51,7 +51,7 @@ const Home = () => {
       <div className='p-0 w-100' style={{ background: "#160133" }}>
         <div style={{ background: "#160133" }}>
           <HomeContainer width={width} className='mb-4 p-0 '>
-            {!(login || firstTimeLogin) && (
+            {true && (
               <>
                 <Image
                   src={src}
@@ -92,7 +92,7 @@ const Home = () => {
               maxWidth: "250px",
             }}
           >
-             {/* <h2
+            {/* <h2
                     style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
                     className=' d-block text-center mb-2'
                   >
@@ -103,10 +103,10 @@ const Home = () => {
                       {translate("Vote to Earn")}
                     </strong>
                   </h2> */}
-                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+            {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
-                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+            {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
             <H2
               style={{
                 zIndex: 0,
@@ -134,12 +134,12 @@ const Home = () => {
                {translate("Vote to Earn")}
              </strong>
            </h2> */}
-             {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+              {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
            <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
          </TextContainer> */}
-             {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-            <H2
-              style={{
+              {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+              <H2
+                style={{
                   // zIndex: 1,
                   fontWeight: "400",
                   position: "relative",
@@ -148,11 +148,11 @@ const Home = () => {
                   marginTop: window?.screen?.width < 768 ? '100px' : "222px",
                 }}
 
-              className="mb-4"
-            >
-              {texts.HereYourChance}
-              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
-            </H2>
+                className="mb-4"
+              >
+                {texts.HereYourChance}
+                {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
+              </H2>
             </>
           )}
           {/* <Pairs
@@ -176,15 +176,15 @@ const Home = () => {
             }}
           /> */}
           <PairsCopy
-              onFavClick={async (...args) => {
-                  if (user) {
-                    await calcFavorites(...args);
-                  } else {
-                    showModal(<NotLoggedInPopup />);
-                  }
-                }}
+            onFavClick={async (...args) => {
+              if (user) {
+                await calcFavorites(...args);
+              } else {
+                showModal(<NotLoggedInPopup />);
+              }
+            }}
           />
-            
+
 
 
 
