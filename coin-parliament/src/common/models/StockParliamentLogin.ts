@@ -1,5 +1,5 @@
 import { SignupPayload, validateSignup } from "./Login";
-import firebaseStockParliament, { db } from "firebaseStockParliament"
+import firebaseStockParliament, { db } from "../../firebaseSportParliament"
 
 import { Callback } from "./utils";
 import { User, sendEmailVerification } from "firebase/auth";

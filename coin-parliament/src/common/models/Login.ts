@@ -30,7 +30,7 @@ import { useNavigate } from "react-router-dom";
 import { SignupRegularForSportParliament } from "./SportParliamentLogin";
 import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { toast } from "react-toastify";
-import { showToast } from "App";
+import { showToast } from "../../App";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 const sendEmail = httpsCallable(functions, "sendEmail");
 

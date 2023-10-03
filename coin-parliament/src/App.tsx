@@ -124,7 +124,8 @@ import FwMine from "./Components/FollowerProfile/FwMine";
 import FwFollow from "./Components/FollowerProfile/FwFollow";
 import FwVotes from "./Components/FollowerProfile/FwVotes";
 import FwPool from "./Components/FollowerProfile/FwPool";
-import Wallet from "./Components/Profile/Wallet";
+// import Wallet from "./Components/Profile/Wallet";
+import Wallet from './Components/Profile/ Wallet/Wallet';
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
@@ -1045,27 +1046,203 @@ function App() {
                                           <Route
                                             path='CardShow/:id'
                                             element={<CardShow />}
+                                        />
+                                        <Route path='/login' element={!user && !mfaLogin ?
+                                          <LoginAndSignup
+                                            {...{
+                                              authProvider: LoginAuthProvider,
+                                              loginAction: LoginRegular,
+                                              signupAction: SignupRegular,
+                                            }}
+                                          /> : <Navigate to="/" />
+                                        } />
+                                        <Route path='/sign-up' element={!user && !mfaLogin ? <GenericLoginSignup /> : <Navigate to="/" />} />
+
+                                          {/* <Route
+                                            path={ProfileTabs.votes}
+                                            element={<Votes />}
                                           />
-                                          <Route path='/login' element={!user && !mfaLogin ?
-                                            <LoginAndSignup
-                                              {...{
-                                                authProvider: LoginAuthProvider,
-                                                loginAction: LoginRegular,
-                                                signupAction: SignupRegular,
-                                              }}
-                                            /> : <Navigate to="/" />
-                                          } />
-                                          <Route path='/sign-up' element={!user && !mfaLogin ? <GenericLoginSignup /> : <Navigate to="/" />} />
-                                        </Routes>
-                                      </Container>
-                                      <Footer />
-                                    </>
-                                  )}
-                              </>
-                            )}
-                          </AppContainer>
-                        </>
-                      )}
+                                          <Route
+                                              path={ProfileTabs.share}
+                                              element={<Pool />}
+                                          />
+                                    
+
+                                          <Route
+                                            path={ProfileTabs.notifications}
+                                            element={<Notifications />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGallery
+                                            }
+                                            element={<ProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<ProfileNftGalleryType />}
+                                          />
+                                        </Route>  */}
+                                        
+                                        
+                                        <Route
+                                          path={ProfileTabs.profile}
+                                          element={<Profile />}
+
+                                        >
+                                          <Route
+                                            path={ProfileTabs.edit}
+
+                                            element={<PersonalInfo />}
+                                          />
+                                          {/* <Route
+                                            path={ProfileTabs.history}
+
+                                            element={<PaymentHistory />}
+                                          /> */}
+                                          <Route
+                                            path={ProfileTabs.password}
+                                            element={<Security />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.wallet
+                                            }
+                                            element={<Wallet />}
+                                          />
+
+
+                                          {/* {!isV1() && (
+                                            <Route
+                                              path={ProfileTabs.mine}
+                                              element={<Mine />}
+                                            />
+                                          )}
+                                          <Route
+                                            path={ProfileTabs.followers}
+                                            element={<Follow />}
+                                          />
+                                          <Route
+                                            path={ProfileTabs.votes}
+                                            element={<Votes />}
+                                          /> */}
+                                          <Route
+                                            path={ProfileTabs.share}
+                                            element={<Pool />}
+                                          />
+                                          {/* <Route
+                                            path={ProfileTabs.notifications}
+                                            element={<Notifications />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGallery
+                                            }
+                                            element={<ProfileNftGallery />}
+                                          />
+                                          <Route
+                                            path={
+                                              ProfileTabs.ProfileNftGalleryType
+                                            }
+                                            element={<ProfileNftGalleryType />}
+                                          /> */}
+
+                                        </Route>
+
+                                        {/* Fowller component  start*/}
+                                        {/* <Route
+                                          path={FollowerProfileTabs.FollowerProfile}
+                                          element={<FollowerProfile />}
+                                        >
+                                          {!isV1() && (
+                                            <Route
+                                              path={FollowerProfileTabs.mine}
+                                              element={<FwMine />}
+                                            />
+                                          )}
+                                          
+                                           <Route
+                                            path={FollowerProfileTabs.followers}
+                                            element={<FwFollow />}
+                                          />
+                                          <Route
+                                            path={FollowerProfileTabs.votes}
+                                            element={<FwVotes />}
+                                          />
+                                          <Route
+                                              path={FollowerProfileTabs.share}
+                                              element={<FwPool />}
+                                          />
+                                          </Route> */}
+                                          
+                                        {/* Fowller component  end*/}
+                                        {/* <Route
+                                          path='/upgrade'
+                                          element={<UpgradePage />}
+                                        />
+                                        <Route
+                                          path='/votingbooster'
+                                          element={<VotingBooster />}
+                                        />
+                                        <Route
+                                          path='influencers'
+                                          element={<Influencers />}
+                                        /> */}
+
+                                        {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
+                                        {/* <Route path='faq' element={<FAQ />} />
+                                        <Route
+                                          path='about'
+                                          element={<About />}
+                                        />
+                                        <Route
+                                          path='gamerule'
+                                          element={<GameRule />}
+                                        />
+                                        <Route
+                                          path='contact'
+                                          element={<Contact />}
+                                        />
+                                        <Route
+                                          path='privacy'
+                                          element={<PrivacyPolicy />}
+                                        /> */}
+                                         {/* <Route
+                                          path='privacy'
+                                          element={<PrivacyPolicy />}
+                                        /> 
+                                         <Route
+                                          path='/terms-and-condition'
+                                          element={<TermsAndConditions />}
+                                        />
+                                        {localhost && user && (
+                                          <Route
+                                            path='admin'
+                                            element={<Admin />}
+                                          />
+                                        )}
+                                        {pages
+                                          ?.filter((p) => p.title !== "x")
+                                          .map((page, u) => (
+                                            <Route
+                                              key={u}
+                                              path={page.slug}
+                                              element={<Content />}
+                                            />
+                                          ))}
+                                        <Route path='*' element={<Content />} /> */}
+                                      </Routes>
+                                    </Container>
+                                    <Footer />
+                                  </>
+                                )}
+                            </>
+                          )}
+                        </AppContainer>
+                      </>
+                    )}
                     <ToastContainer enableMultiContainer containerId='toast' />
                     <ToastContainer enableMultiContainer containerId='modal' />
                     {modalOpen && <div className='fade modal-backdrop show' />}

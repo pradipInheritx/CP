@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import SignupForm from "./SignupForm";
-import { texts, urls } from "Components/LoginComponent/texts";
+import { texts, urls } from "../../Components/LoginComponent/texts";
 import { useTranslation } from "../../common/models/Dictionary";
 import { AuthProvider, User } from "firebase/auth";
 import { LoginProviders, providers, SignupPayload } from "../../common/models/Login";

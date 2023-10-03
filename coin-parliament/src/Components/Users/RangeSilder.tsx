@@ -243,19 +243,19 @@ function Speed(props: SpeedProps) {
 }
 
 export default function SpeedTest(
-  // {
-  //   // lastTenSec,
-  //   vote,
-  //   coins,
-  //   symbol1,
-  //   symbol2
-  // }: {
-  //   // lastTenSec?: any
-  //   vote: VoteResultProps;
-  //   coins: { [symbol: string]: Coin };
-  //   symbol1: string;
-  //   symbol2: string;
-  // }
+  {
+    // lastTenSec,
+    vote,
+    coins,
+    symbol1,
+    symbol2
+  }: {
+    // lastTenSec?: any
+    vote?: VoteResultProps;
+    coins?: { [symbol: string]: Coin };
+    symbol1?: string;
+    symbol2?: string;
+  }
 ) {
   // const { value } = useSpeedTest();
   // const value = 10;

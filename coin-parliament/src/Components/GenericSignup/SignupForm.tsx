@@ -2,17 +2,18 @@ import { Form } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { Callback } from "../../common/models/utils";
-import { genericLogin } from "common/models/Login";
+
 import InputField from "../Atoms/Input/InputField";
-import { texts, urls } from "Components/LoginComponent/texts";
+import { texts, urls } from "../../Components/LoginComponent/texts";
 import Checkbox from "../Atoms/Checkbox/Checkbox";
 import { useTranslation } from "../../common/models/Dictionary";
 import { Buttons } from "../Atoms/Button/Button";
 import { capitalize } from "lodash";
 import { Link } from "react-router-dom";
-import { passwordValidation } from "Components/Profile/utils";
-import { showToast } from "App";
-import { ToastType } from "Contexts/Notification";
+import { passwordValidation } from "../../Components/Profile/utils";
+import { showToast } from "../../App";
+import { ToastType } from "../../Contexts/Notification";
+import { genericLogin } from "../../common/models/Login";
 
 const SignupForm = ({
   emailValue,
