@@ -114,6 +114,7 @@ import { pwaInstallHandler } from 'pwa-install-handler'
 import Login2fa from "./Components/LoginComponent/Login2fa";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
+import ProtectedRoutes from "routes/ProtectedRoutes";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -425,15 +426,15 @@ function App() {
     return () => window.removeEventListener("transitionend", handler);
   }, []);
   // @ts-ignore
-  useEffect(() => {
-    const isMFAPassed = window.localStorage.getItem('mfa_passed')
-    if (isMFAPassed == 'true' && !login) {
+  // useEffect(() => {
+  //   const isMFAPassed = window.localStorage.getItem('mfa_passed')
+  //   if (isMFAPassed == 'true' && !login) {
 
-      console.log('2faCalled')
-      // @ts-ignore
-      Logout(setUser)
-    }
-  }, [])
+  //     console.log('2faCalled')
+  //     // @ts-ignore
+  //     Logout(setUser)
+  //   }
+  // }, [])
 
 
   const onClick = (evt: any) => {
@@ -636,12 +637,7 @@ function App() {
 
 
   return loader ? (
-    <div
-      className='d-flex justify-content-center align-items-center'
-      style={{ height: "100vh", width: "100vw", color: "white" }}
-    >
-      <Spinner />
-    </div>
+    <Spinner />
   ) : (
     <div>
       {enabled && (
@@ -853,18 +849,7 @@ function App() {
                               </HomeContainer>
                             }
                           />
-
-
-                          {!user && login && !mfaLogin && (
-                            <LoginAndSignup
-                              {...{
-                                authProvider: LoginAuthProvider,
-                                loginAction: LoginRegular,
-                                signupAction: SignupRegular,
-                              }}
-                            />
-                          )}
-                          {(user || userInfo?.uid) && login && (
+                          {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
                             <Login2fa
                               setLogin={setLogin}
                               setMfaLogin={setMfaLogin}
@@ -900,31 +885,14 @@ function App() {
                                 /> : <Navigate to="/" />
                               } />
                               <Route path='/sign-up' element={!user && !mfaLogin ? <GenericLoginSignup /> : <Navigate to="/" />} />
-                              <Route
-                                path={ProfileTabs.profile}
-                                element={<Profile />}
-
-                              >
-                                <Route
-                                  path={ProfileTabs.edit}
-
-                                  element={<PersonalInfo />}
-                                />
-                                <Route
-                                  path={ProfileTabs.password}
-                                  element={<Security />}
-                                />
-                                <Route
-                                  path={
-                                    ProfileTabs.wallet
-                                  }
-                                  element={<Wallet />}
-                                />
-                                <Route
-                                  path={ProfileTabs.share}
-                                  element={<Pool />}
-                                />
-
+                              <Route path="/" element={<ProtectedRoutes />}>
+                                <Route path={'profile/share'} element={<Pool />} />
+                                <Route path={ProfileTabs.profile} element={<Profile />} >
+                                  <Route path={'/profile'} element={<Navigate to={'/profile/edit'} />} />
+                                  <Route path={ProfileTabs.edit} element={<PersonalInfo />} />
+                                  <Route path={ProfileTabs.password} element={<Security />} />
+                                  <Route path={ProfileTabs.wallet} element={<Wallet />} />
+                                </Route>
                               </Route>
                             </Routes>
                           </Container>
@@ -932,7 +900,7 @@ function App() {
                         </AppContainer>
                       </>
                     )}
-                  <ToastContainer enableMultiContainer containerId='toast' />
+                  <ToastContainer enableMultiContainer containerId='toast' limit={1} />
                   <ToastContainer enableMultiContainer containerId='modal' />
                   {modalOpen && <div className='fade modal-backdrop show' />}
                 </UserContext.Provider>
@@ -940,32 +908,35 @@ function App() {
             </AppContext.Provider>
           </ManagersContext.Provider>
         </NotificationContext.Provider>
-      )}
-      {!enabled && (
-        <Container>
-          <Form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const resp = await sendPassword({ password });
-              console.log(resp.data);
-              if (resp.data === true) {
-                enable(true);
-              }
-            }}
-          >
-            <Form.Group className='mb-3' controlId='formBasicPassword'>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type='password'
-                placeholder='Password'
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Button type='submit'>Submit</Button>
-          </Form>
-        </Container>
-      )}
-    </div>
+      )
+      }
+      {
+        !enabled && (
+          <Container>
+            <Form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const resp = await sendPassword({ password });
+                console.log(resp.data);
+                if (resp.data === true) {
+                  enable(true);
+                }
+              }}
+            >
+              <Form.Group className='mb-3' controlId='formBasicPassword'>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type='password'
+                  placeholder='Password'
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Form.Group>
+              <Button type='submit'>Submit</Button>
+            </Form>
+          </Container>
+        )
+      }
+    </div >
   );
 }
 
