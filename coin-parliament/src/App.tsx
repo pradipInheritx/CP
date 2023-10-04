@@ -595,7 +595,7 @@ function App() {
 
   useEffect(() => {
     const auth = getAuth();
-
+    console.log(auth.currentUser, 'fcm');
     if (!firstTimeLogin) {
       onAuthStateChanged(auth, async (user: User | null) => {
         setAuthStateChanged(true);
@@ -611,28 +611,27 @@ function App() {
             setDisplayName((doc.data() as UserProps).displayName + "");
           });
 
-          try {
-            if (fcmToken) {
-              try {
-                await setDoc(
-                  doc(db, "users", user.uid),
-                  { token: fcmToken },
-                  { merge: true }
-                );
-                console.log("push enabled");
-              } catch (e) {
-                console.log(e);
-              }
-            }
-          } catch (e) {
-            console.log("An error occurred while retrieving token. ", e);
-          }
         } else {
           await updateUser();
         }
       });
     }
   }, [user, fcmToken, coins]);
+
+  useEffect(() => {
+
+    // let token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL2lkZW50aXR5dG9vbGtpdC5nb29nbGVhcGlzLmNvbS9nb29nbGUuaWRlbnRpdHkuaWRlbnRpdHl0b29sa2l0LnYxLklkZW50aXR5VG9vbGtpdCIsImlhdCI6MTY5NjM5NzgzNSwiZXhwIjoxNjk2NDAxNDM1LCJpc3MiOiJmaXJlYmFzZS1hZG1pbnNkay1jOTBlaEBjb2luLXBhcmxpYW1lbnQtc3RhZ2luZy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsInN1YiI6ImZpcmViYXNlLWFkbWluc2RrLWM5MGVoQGNvaW4tcGFybGlhbWVudC1zdGFnaW5nLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwidWlkIjoidjBIdjgwYUNtOFNOMW1qNUJYOEFBRWhrZTc5MyJ9.b6yLneSj29L7dKoEOF8fQFyzT6lQFB4LfDTKdnmXan97-wEIbhw7bJN8Ae2D5ds9pG_fNJhM2vNOXvV7auON5nQPWBKMwa9-_ujj1kjUmSvkOra97DbJQadIMcHMeMT-RUvOCEpPC13pmB_D0wN5vKkuj-WbgtvsefBoZT82gJjrY5KwSmxRUknfxGZnUEnTrc1OUqbD-Yc0MUI8qrX5J10NhxftU0fp6H4xZAvGN60iJbzbF3nWdIrBlUl3hykjgnVc_ofk7fwYDGHJRbts42WgfzNE2BYNwFIUyVOayw4VV1iY9v0OuB2W7NnKW4ULlPTCPRtywuvX_maQt-Htgw";
+    // firebase.auth().signInWithCustomToken(token)
+    //   .then((userCredential) => {
+    //     // User is signed in
+    //     const user = userCredential.user;
+    //     console.log('User authenticated:', user);
+    //   })
+    //   .catch((error) => {
+    //     // Handle sign-in errors
+    //     console.error('Custom token sign-in error: authenticated', error);
+    //   });
+  }, []);
 
   // useEffect(() => {
 

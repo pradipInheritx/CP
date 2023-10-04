@@ -103,6 +103,9 @@ const Login2fa = ({
   // };
 
   const verifyOtp = async (token: string) => {
+    window.localStorage.setItem('mfa_passed', 'false')
+    setLogin(false)
+    setMfaLogin(false)
     try {
       const response = await axios.post(otpurl, {
         "userId": userInfo?.uid,
