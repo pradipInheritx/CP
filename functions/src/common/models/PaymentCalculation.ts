@@ -190,12 +190,13 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     // loop for Payment
     for (let parent of parentPaymentDetails) {
         const parentTimeStamp = parent.timestamp._seconds;
-        const differnceBetweenTimes = Math.round((parentTimeStamp - currentTime) / (1000 * 60 * 60 * 24));
-        log("parentTimeStamp , differnceBetweenTimes : ", parentTimeStamp, differnceBetweenTimes);
+        const differnceBetweenTimes = Math.round((currentTime - parentTimeStamp) / (1000 * 60 * 60 * 24));
+        log("parentTimeStamp , differnceBetweenTimes : ", parentTimeStamp, currentTime, differnceBetweenTimes);
 
 
         // For 1 Day, 1 Week and 1 Month
         if (differnceBetweenTimes >= 1 && parent.settings.days == "1 day") {
+            log("1 day is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
@@ -209,6 +210,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             await paymentFunction(transaction)
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         } else if (differnceBetweenTimes >= 7 && parent.settings.days == "1 week") {
+            log("1 week is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
@@ -222,6 +224,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         } else if (differnceBetweenTimes >= 30 && parent.settings.days == "1 month") {
+            log("1 month is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {

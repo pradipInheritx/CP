@@ -304,8 +304,8 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
 });
 
 // every day // 5 minutes
-exports.pendingPaymentSettlement = functions.pubsub.schedule("*/5 * * * *").onRun(async (requestBody) => {
-  console.log("pendingPaymentSettlement Coming");
+exports.pendingPaymentSettlement = functions.pubsub.schedule("*/5 * * * *").onRun(async () => {
+  console.log("pendingPaymentSettlement start");
   const currentTimeStamp = (Date.now()) / 1000; //convert milliseconds into seconds
   await setPaymentSchedulingByCronJob(currentTimeStamp)
 });
