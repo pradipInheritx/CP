@@ -92,7 +92,6 @@ const LoginAndSignup = ({
           )}
           {mode === LoginModes.SIGNUP && (
             <>
-              {/* {refer && (<Refer />)} */}
               {
                 <Signup
                   setUser={setUser}
