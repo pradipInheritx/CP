@@ -1,5 +1,6 @@
 import axios from "axios";
 import { firestore } from "firebase-admin";
+import { log } from "firebase-functions/logger";
 //import { log } from "firebase-functions/logger";
 
 interface PaymentParams {
@@ -166,11 +167,12 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         .where("status", "==", "PENDING")
         .get();
     const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => snapshot.data());
+    log("filteredPendingPaymentData : ", filteredPendingPaymentData)
 
     for (let parent = 0; parent < filteredPendingPaymentData.length; parent++) {
         const parentDetails: any = (await firestore().collection('users').doc(filteredPendingPaymentData[parent].parentUserId).get()).data();
         const setting = parentDetails.referalReceiveType;
-        console.log("parent Details :", parentDetails);
+        log("parent Details :", parentDetails);
 
         const userPendingPaymentDetails: any = filteredPendingPaymentData[parent]
         const data: any = {
@@ -179,7 +181,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             settings: parentDetails.referalReceiveType,
             ...userPendingPaymentDetails
         };
-        console.log("data : ", data)
+        log("data : ", data)
         if (setting.name == "LIMIT") {
             parentPaymentDetails.push(data);
         };
@@ -189,7 +191,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     for (let parent of parentPaymentDetails) {
         const parentTimeStamp = parent.timestamp._seconds;
         const differnceBetweenTimes = Math.round((parentTimeStamp - currentTime) / (1000 * 60 * 60 * 24));
-        console.log("differnceBetweenTimes : ", differnceBetweenTimes);
+        log("parentTimeStamp , differnceBetweenTimes : ", parentTimeStamp, differnceBetweenTimes);
 
 
         // For 1 Day, 1 Week and 1 Month
