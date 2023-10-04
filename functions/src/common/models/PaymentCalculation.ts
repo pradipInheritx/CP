@@ -238,7 +238,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         } else {
-            console.info("Somthing wrong in setPaymentSchedulingByCronJob")
+            console.info("there are no payments for todays")
         }
     };
 
