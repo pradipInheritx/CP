@@ -303,10 +303,11 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
-
-exports.pendingPaymentSettlement = functions.pubsub.schedule("every 5 minutes").onRun(async (requestBody) => {
+// every day
+exports.pendingPaymentSettlement = functions.pubsub.schedule("0 0 * * *").onRun(async (requestBody) => {
   console.log("pendingPaymentSettlement Coming");
-  await setPaymentSchedulingByCronJob(requestBody)
+  const currentTimeStamp = Date.now();
+  await setPaymentSchedulingByCronJob(currentTimeStamp)
 });
 
 exports.observeTopics = functions.https.onCall(async (data, context) => {
