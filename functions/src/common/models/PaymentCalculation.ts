@@ -187,7 +187,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         const parentTimeStamp = parent.timestamp._seconds
         const differnceBetweenTimes = Math.round((parentTimeStamp - currentTime) / (1000 * 60 * 60 * 24))
 
-        // for 1 day
+        // For 1 Day, 1 Week and 1 Month
         if (differnceBetweenTimes >= 1 && parent.settings.day == "1 day") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
@@ -201,9 +201,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             }
             await paymentFunction(transaction)
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        }
-        // for 1 week
-        else if (differnceBetweenTimes >= 7 && parent.settings.day == "1 week") {
+        } else if (differnceBetweenTimes >= 7 && parent.settings.day == "1 week") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
@@ -216,9 +214,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        }
-        // for 1 month
-        else if (differnceBetweenTimes >= 30 && parent.settings.day == "1 month") {
+        } else if (differnceBetweenTimes >= 30 && parent.settings.day == "1 month") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
@@ -231,8 +227,9 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
+        } else {
+            console.info("Somthing wrong in setPaymentSchedulingByCronJob")
         }
-        else { throw "Somthing wrong in setPaymentSchedulingByCronJob" }
     };
 
 }
