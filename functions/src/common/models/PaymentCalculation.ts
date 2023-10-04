@@ -167,28 +167,33 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         .get();
     const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => snapshot.data());
 
-    for (let i = 0; i < filteredPendingPaymentData.length; i++) {
-        const user: any = (await firestore().collection('users').doc(filteredPendingPaymentData[i].parentUserId).get()).data()
-        const setting = user.referalReceiveType
-        const userPendingPaymentDetails: any = filteredPendingPaymentData[i]
+    for (let parent = 0; parent < filteredPendingPaymentData.length; parent++) {
+        const parentDetails: any = (await firestore().collection('users').doc(filteredPendingPaymentData[parent].parentUserId).get()).data();
+        const setting = parentDetails.referalReceiveType;
+        console.log("parent Details :", parentDetails);
+
+        const userPendingPaymentDetails: any = filteredPendingPaymentData[parent]
         const data: any = {
-            id: user.uid,
-            email: user.email,
-            settings: user.referalReceiveType,
+            id: parentDetails.uid,
+            email: parentDetails.email,
+            settings: parentDetails.referalReceiveType,
             ...userPendingPaymentDetails
-        }
+        };
+        console.log("data : ", data)
         if (setting.name == "LIMIT") {
-            parentPaymentDetails.push(data)
-        }
-    }
+            parentPaymentDetails.push(data);
+        };
+    };
 
     // loop for Payment
     for (let parent of parentPaymentDetails) {
-        const parentTimeStamp = parent.timestamp._seconds
-        const differnceBetweenTimes = Math.round((parentTimeStamp - currentTime) / (1000 * 60 * 60 * 24))
+        const parentTimeStamp = parent.timestamp._seconds;
+        const differnceBetweenTimes = Math.round((parentTimeStamp - currentTime) / (1000 * 60 * 60 * 24));
+        console.log("differnceBetweenTimes : ", differnceBetweenTimes);
+
 
         // For 1 Day, 1 Week and 1 Month
-        if (differnceBetweenTimes >= 1 && parent.settings.day == "1 day") {
+        if (differnceBetweenTimes >= 1 && parent.settings.days == "1 day") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
@@ -201,7 +206,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             }
             await paymentFunction(transaction)
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        } else if (differnceBetweenTimes >= 7 && parent.settings.day == "1 week") {
+        } else if (differnceBetweenTimes >= 7 && parent.settings.days == "1 week") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
@@ -214,7 +219,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        } else if (differnceBetweenTimes >= 30 && parent.settings.day == "1 month") {
+        } else if (differnceBetweenTimes >= 30 && parent.settings.days == "1 month") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
