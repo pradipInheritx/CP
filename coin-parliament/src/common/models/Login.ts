@@ -89,6 +89,13 @@ export const LoginAuthProvider = async (
     const userRef = doc(db, "users", user.uid);
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
     const info = userinfo.data();
+    console.log(info, 'mfa');
+
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
     // await sendEmail().then(()=>console.log('welcome mail')).catch(err=>console.log('welcome error',err))
     if (callback) {
 
@@ -102,8 +109,6 @@ export const LoginAuthProvider = async (
       const firstTimeLogin: Boolean = true
 
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
-      console.log('firsttimelogin success')
-
       setTimeout(() => {
 
         setUser(user);
@@ -191,6 +196,11 @@ export const LoginRegular = async (
     );
     console.log(userCredential, "userCredential")
     const isFirstLogin = getAdditionalUserInfo(userCredential);
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
     // console.log('firsttimelogin',isFirstLogin)    
     if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
@@ -201,6 +211,7 @@ export const LoginRegular = async (
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
         console.log(isFirstLogin, 'firsttimelogin success')
         // await sendEmail();
+
         setTimeout(() => {
           callback.successFunc(userCredential.user)
         }, 100);
