@@ -195,7 +195,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
 
 
         // For 1 Day, 1 Week and 1 Month
-        if (differnceBetweenTimes >= 1 && parent.settings.days == "1 day") {
+        if (differnceBetweenTimes >= 1 && parent.settings.days == "1 DAY") {
             log("1 day is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": "getTransaction",
@@ -209,7 +209,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             }
             await paymentFunction(transaction)
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        } else if (differnceBetweenTimes >= 7 && parent.settings.days == "1 week") {
+        } else if (differnceBetweenTimes >= 7 && parent.settings.days == "1 WEEK") {
             log("1 week is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": "getTransaction",
@@ -223,7 +223,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        } else if (differnceBetweenTimes >= 30 && parent.settings.days == "1 month") {
+        } else if (differnceBetweenTimes >= 30 && parent.settings.days == "1 MONTH") {
             log("1 month is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": "getTransaction",
