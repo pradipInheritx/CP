@@ -160,7 +160,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
 }
 
 export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
-    const userDetails: any = [];
+    const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()
         .collection('parentPayment')
         .where("status", "==", "PENDING")
@@ -178,59 +178,59 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             ...userPendingPaymentDetails
         }
         if (setting.name == "LIMIT") {
-            userDetails.push(data)
+            parentPaymentDetails.push(data)
         }
     }
 
     // loop for Payment
-    for (let user of userDetails) {
-        const parentTimeStamp = user.timestamp._seconds
+    for (let parent of parentPaymentDetails) {
+        const parentTimeStamp = parent.timestamp._seconds
         const differnceBetweenTimes = Math.round((parentTimeStamp - currentTime) / (1000 * 60 * 60 * 24))
 
         // for 1 day
-        if (differnceBetweenTimes >= 1 && user.settings.day == "1 day") {
+        if (differnceBetweenTimes >= 1 && parent.settings.day == "1 day") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
-                    "amount": user.amount,
+                    "amount": parent.amount,
                     "network": "11155111",
                     "origincurrency": "eth",
                     "token": "ETH"
                 },
-                "user": user.email
+                "user": parent.email
             }
             await paymentFunction(transaction)
-            await firestore().collection('parentPayment').doc(user.id).set({ status: "SUCCESS" }, { merge: true });
+            await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         }
         // for 1 week
-        else if (differnceBetweenTimes >= 7 && user.settings.day == "1 week") {
+        else if (differnceBetweenTimes >= 7 && parent.settings.day == "1 week") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
-                    "amount": user.amount,
+                    "amount": parent.amount,
                     "network": "11155111",
                     "origincurrency": "eth",
                     "token": "ETH"
                 },
-                "user": user.email
+                "user": parent.email
             }
             await paymentFunction(transaction);
-            await firestore().collection('parentPayment').doc(user.id).set({ status: "SUCCESS" }, { merge: true });
+            await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         }
         // for 1 month
-        else if (differnceBetweenTimes >= 30 && user.settings.day == "1 month") {
+        else if (differnceBetweenTimes >= 30 && parent.settings.day == "1 month") {
             const transaction: PaymentBody = {
                 "method": "getTransaction",
                 "params": {
-                    "amount": user.amount,
+                    "amount": parent.amount,
                     "network": "11155111",
                     "origincurrency": "eth",
                     "token": "ETH"
                 },
-                "user": user.email
+                "user": parent.email
             }
             await paymentFunction(transaction);
-            await firestore().collection('parentPayment').doc(user.id).set({ status: "SUCCESS" }, { merge: true });
+            await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         }
         else { throw "Somthing wrong in setPaymentSchedulingByCronJob" }
     };
