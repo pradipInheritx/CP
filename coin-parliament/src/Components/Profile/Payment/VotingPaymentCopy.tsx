@@ -22,7 +22,7 @@ import votingbooster from "../../../assets/images/votingbooster_small.png";
 import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import firebase from "firebase/compat";
 import { auth } from "firebase";
 import Swal from "sweetalert2";
@@ -183,7 +183,7 @@ const Divbutton = styled.div`
 `;
 
 
-const VotingPayment: React.FC<{
+const VotingPaymentCopy: React.FC<{
   checkAndPay: Function,
   setPaymentStatus: React.Dispatch<React.SetStateAction<{ type: string, message: string }>>,
   paymentStatus: { type: string, message: string },
@@ -215,6 +215,8 @@ const VotingPayment: React.FC<{
     const { showModal } = useContext(NotificationContext);
     const { quotes } = useContext(ContentContext);
     const { width } = useWindowSize();
+
+
     const [coinsList, setCoinsList] = useState([])
     const [selectPayment, setSelectPayment] = useState(0);
     // const [selectCoin, setSelectCoin] = useState("none");
@@ -594,4 +596,4 @@ const VotingPayment: React.FC<{
     );
   };
 
-export default VotingPayment;
+export default VotingPaymentCopy;
