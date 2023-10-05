@@ -1,13 +1,14 @@
 import { SignupPayload, validateSignup } from "./Login";
-import firebaseSportParliament, { db } from "../../firebaseSportParliament"
+import firebaseSportParliament, { auth, db } from "firebaseSportParliament"
 
 import { Callback } from "./utils";
-import { User, sendEmailVerification } from "firebase/auth";
+import { User, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { saveUsername } from "../../Contexts/User";
+import { saveUserData, saveUsername } from "../../Contexts/User";
 export const SignupRegularForSportParliament = async (
     payload: SignupPayload,
-    callback: Callback<User>
+    callback: Callback<User>,
+    userData?: { [key: string]: string }
 ) => {
     try {
         console.log('sport');
@@ -21,13 +22,7 @@ export const SignupRegularForSportParliament = async (
             await sendEmailVerification(auth?.currentUser);
 
             const userRef = doc(db, "users", auth?.currentUser?.uid);
-            await setDoc(userRef, { firstTimeLogin: true }, { merge: true });
-            // const documentRef = firebaseSportParliament.firestore().collection('users').doc(auth?.currentUser?.uid);
-            // await documentRef.update({ firstTimeLogin: true });
-            // console.log('sport', documentRef, auth?.currentUser?.uid);
-            if (auth?.currentUser?.uid) {
-                saveUsername(auth?.currentUser?.uid, '', '')
-            }
+            await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
             console.log('sport', auth);
         }
@@ -47,3 +42,8 @@ export const SignupRegularForSportParliament = async (
         return false;
     }
 };
+
+export const SignupUsingThirdParty = ({ displayName, email, photoURL }: { displayName: string, email: string, photoURL: string }) => {
+
+
+}

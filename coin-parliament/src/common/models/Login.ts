@@ -27,11 +27,12 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
-import { SignupRegularForSportParliament } from "./SportParliamentLogin";
+import { SignupRegularForSportParliament, SignupUsingThirdParty } from "./SportParliamentLogin";
 import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { toast } from "react-toastify";
 import { showToast } from "../../App";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
+import { auth } from "firebaseSportParliament";
 const sendEmail = httpsCallable(functions, "sendEmail");
 
 export enum LoginModes {
@@ -81,10 +82,30 @@ export const LoginAuthProvider = async (
   callback?: (s: any) => void,
   refer?: any,
 ) => {
-  const auth = getAuth();
+  // const auth = getAuth();
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+    console.log(auth);
+
+    if (auth.currentUser) {
+      SignupRegularForSportParliament(
+        {
+          email: (auth.currentUser?.email || ''),
+          password: '!@#$%^&*#!#%^DF',
+          passwordConfirm: '!@#$%^&*#!#%^DF',
+          agree: true,
+        }, {
+        successFunc: () => { },
+        errorFunc: () => { }
+      },
+        {
+          displayName: (auth.currentUser?.displayName || ''),
+          avatar: (auth.currentUser?.photoURL || ''),
+        }
+      )
+    }
+
     const isFirstLogin = getAdditionalUserInfo(result)
     const userRef = doc(db, "users", user.uid);
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
