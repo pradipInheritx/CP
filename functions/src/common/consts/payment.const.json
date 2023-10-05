@@ -5,10 +5,19 @@
     "PAYMENT_NETWORK": "11155111",
     "PAYMENT_ORIGIN_CURRENCY": "eth",
     "PAYMENT_TOKEN": "ETH",
+    "PAYMENT_TYPE_REFERAL" : "REFERAL",
     "MESSAGE_FETCHED": "Payment transaction fetched successfully",
     "MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS": "Parent referal payment initiated successfully",
     "MESSAGE_GET_PAYMENT" :"Payment transaction fetched successfully",
     "MESSAGE_GET_PARENT_PAYMENT_HISTORY_SUCCESS": "Parent payment history fetched successfully",
     "MESSAGE_NO_PARENT_PAYMENTS" : "there are no payments for todays",
-    "MESSAGE_SOMETHINGS_WRONG" : "Something went wrong in server"
+    "MESSAGE_SOMETHINGS_WRONG" : "Something went wrong in server",
+    "PAYMENT_SETTING_NAME_LIMIT" : "LIMIT",
+    "PAYMENT_SETTING_NAME_MANUAL": "MANUAL",
+    "PAYMENT_SETTING_NAME_IMMEDIATE" : "IMMEDIATE",
+    "PAMENT_STATUS_PENDING" :"PENDING",
+    "PAYMENT_STATUS_SUCCESS" : "SUCCESS",
+    "PAYMENT_SETTING_DAYS_1DAY" : "1 DAY",
+    "PAYMENT_SETTING_DAYS_1WEEK": "1 WEEK",
+    "PAYMENT_SETTING_DAYS_1MONTH": "1 MONTH"
 }

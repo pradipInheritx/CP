@@ -61,7 +61,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
             parentUserId: parentUserDetails.parent,
             childUserId: parentUserDetails.uid,
             amount: halfAmount,
-            type: "REFERAL",
+            type: parentConst.PAYMENT_TYPE_REFERAL,
             transactionType,
             numberOfVotes,
             token
@@ -96,20 +96,20 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     console.info("parentTransactionDetails", parentTransactionDetails)
     try {
         console.info("getParentSettings", getParentSettings)
-        if (getParentSettings.name === "MANUAL" || getParentSettings.name === "IMMEDIATE") {
+        if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_MANUAL || getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_IMMEDIATE) {
             const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
             console.info("storeInParentData", storeInParentData)
             const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
             const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
             await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: "SUCCESS", parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
         }
-        if (getParentSettings.name === "LIMIT") {
+        if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT) {
             const getParentPayment: any = [];
 
             const getParentPaymentQuery: any = await firestore()
                 .collection('parentPayment')
                 .where('parentUserId', '==', parentData.parentUserId)
-                .where('status', '==', 'PENDING')
+                .where('status', '==', parentConst.PAMENT_STATUS_PENDING)
                 .get();
 
             getParentPaymentQuery.forEach((doc: any) => {
@@ -143,19 +143,19 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
 
                     console.info("getPaymentAfterTransfer", getPaymentAfterTransfer?.result?.transaction_id);
                     // Loop on getParentPayment and update status to SUCCESS
-                    const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: "SUCCESS", parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                    const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                     console.info("getParentPendingPaymentReference", getParentPendingPaymentReference?.id);
 
                     getParentPayment.forEach(async (payment: any) => {
-                        await firestore().collection('parentPayment').doc(payment.docId).set({ status: "SUCCESS", parentPendingPaymentId: getParentPendingPaymentReference?.id, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+                        await firestore().collection('parentPayment').doc(payment.docId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: getParentPendingPaymentReference?.id, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
                     })
                 } else {
                     console.info("Come Here In Else")
-                    await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                    await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                 }
             } else {
                 console.info("Come Here In Else")
-                await firestore().collection('parentPayment').add({ ...parentData, status: "PENDING", transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
             }
         }
     } catch (error) {
@@ -167,7 +167,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()
         .collection('parentPayment')
-        .where("status", "==", "PENDING")
+        .where("status", "==", parentConst.PAMENT_STATUS_PENDING)
         .get();
     const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => snapshot.data());
     log("filteredPendingPaymentData : ", filteredPendingPaymentData)
@@ -185,7 +185,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             ...userPendingPaymentDetails
         };
         log("data : ", data)
-        if (setting.name == "LIMIT") {
+        if (setting.name == parentConst.PAYMENT_SETTING_NAME_LIMIT) {
             parentPaymentDetails.push(data);
         };
     };
@@ -198,7 +198,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
 
 
         // For 1 Day, 1 Week and 1 Month
-        if (differnceBetweenTimes >= 1 && parent.settings.days == "1 DAY") {
+        if (differnceBetweenTimes >= 1 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1DAY) {
             log("1 day is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": parentConst.PAYMENT_METHOD,
@@ -211,8 +211,8 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "user": parent.email
             }
             await paymentFunction(transaction)
-            await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        } else if (differnceBetweenTimes >= 7 && parent.settings.days == "1 WEEK") {
+            await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
+        } else if (differnceBetweenTimes >= 7 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1WEEK) {
             log("1 week is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": parentConst.PAYMENT_METHOD,
@@ -225,8 +225,8 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "user": parent.email
             }
             await paymentFunction(transaction);
-            await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
-        } else if (differnceBetweenTimes >= 30 && parent.settings.days == "1 MONTH") {
+            await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
+        } else if (differnceBetweenTimes >= 30 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1MONTH) {
             log("1 month is calling parent is :", parent.id);
             const transaction: PaymentBody = {
                 "method": parentConst.PAYMENT_METHOD,
@@ -239,7 +239,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "user": parent.email
             }
             await paymentFunction(transaction);
-            await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
+            await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
         } else {
             console.info(parentConst.MESSAGE_NO_PARENT_PAYMENTS)
         }
