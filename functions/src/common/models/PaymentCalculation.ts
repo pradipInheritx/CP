@@ -189,8 +189,8 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
 
     // loop for Payment
     for (let parent of parentPaymentDetails) {
-        const parentTimeStamp = parent.timestamp._seconds;
-        const differnceBetweenTimes = Math.round((currentTime - parentTimeStamp) / (1000 * 60 * 60 * 24));
+        const parentTimeStamp = parent.timestamp._seconds * 1000;
+        const differnceBetweenTimes = Math.round(Math.abs(currentTime - parentTimeStamp) / (1000 * 60 * 60 * 24));
         log("parentTimeStamp , differnceBetweenTimes : ", parentTimeStamp, currentTime, differnceBetweenTimes);
 
 
