@@ -1,6 +1,7 @@
 import axios from "axios";
 import { firestore } from "firebase-admin";
 import { log } from "firebase-functions/logger";
+import * as parentConst from "../consts/payment.const.json";
 //import { log } from "firebase-functions/logger";
 
 interface PaymentParams {
@@ -83,12 +84,12 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     const getParentDetails: any = (await firestore().collection('users').doc(parentData.parentUserId).get()).data();
     const getParentSettings = getParentDetails.referalReceiveType ? getParentDetails.referalReceiveType : {};
     const parentTransactionDetails = {
-        "method": "getTransaction",
+        "method": parentConst.PAYMENT_METHOD,
         "params": {
             "amount": parentData.amount,
-            "network": "11155111",
-            "origincurrency": "eth",
-            "token": "ETH"
+            "network": parentConst.PAYMENT_NETWORK,
+            "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+            "token": parentConst.PAYMENT_TOKEN,
         },
         "user": "Test"
     }
@@ -125,12 +126,12 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
 
                 if (pendingAmount > parseFloat(getParentSettings.amount)) {
                     const transactionBody = {
-                        "method": "getTransaction",
+                        "method": parentConst.PAYMENT_METHOD,
                         "params": {
                             "amount": pendingAmount || 0,
-                            "network": "11155111",
-                            "origincurrency": "eth",
-                            "token": "ETH"
+                            "network": parentConst.PAYMENT_NETWORK,
+                            "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                            "token": parentConst.PAYMENT_TOKEN,
                         },
                         "user": "Test"
                     };
@@ -189,8 +190,8 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
 
     // loop for Payment
     for (let parent of parentPaymentDetails) {
-        const parentTimeStamp = parent.timestamp._seconds;
-        const differnceBetweenTimes = Math.round((currentTime - parentTimeStamp) / (1000 * 60 * 60 * 24));
+        const parentTimeStamp = parent.timestamp._seconds * 1000;
+        const differnceBetweenTimes = Math.round(Math.abs(currentTime - parentTimeStamp) / (1000 * 60 * 60 * 24));
         log("parentTimeStamp , differnceBetweenTimes : ", parentTimeStamp, currentTime, differnceBetweenTimes);
 
 
@@ -198,12 +199,12 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         if (differnceBetweenTimes >= 1 && parent.settings.days == "1 DAY") {
             log("1 day is calling parent is :", parent.id);
             const transaction: PaymentBody = {
-                "method": "getTransaction",
+                "method": parentConst.PAYMENT_METHOD,
                 "params": {
                     "amount": parent.amount,
-                    "network": "11155111",
-                    "origincurrency": "eth",
-                    "token": "ETH"
+                    "network": parentConst.PAYMENT_NETWORK,
+                    "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                    "token": parentConst.PAYMENT_TOKEN,
                 },
                 "user": parent.email
             }
@@ -212,12 +213,12 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         } else if (differnceBetweenTimes >= 7 && parent.settings.days == "1 WEEK") {
             log("1 week is calling parent is :", parent.id);
             const transaction: PaymentBody = {
-                "method": "getTransaction",
+                "method": parentConst.PAYMENT_METHOD,
                 "params": {
                     "amount": parent.amount,
-                    "network": "11155111",
-                    "origincurrency": "eth",
-                    "token": "ETH"
+                    "network": parentConst.PAYMENT_NETWORK,
+                    "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                    "token": parentConst.PAYMENT_TOKEN,
                 },
                 "user": parent.email
             }
@@ -226,19 +227,19 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         } else if (differnceBetweenTimes >= 30 && parent.settings.days == "1 MONTH") {
             log("1 month is calling parent is :", parent.id);
             const transaction: PaymentBody = {
-                "method": "getTransaction",
+                "method": parentConst.PAYMENT_METHOD,
                 "params": {
                     "amount": parent.amount,
-                    "network": "11155111",
-                    "origincurrency": "eth",
-                    "token": "ETH"
+                    "network": parentConst.PAYMENT_NETWORK,
+                    "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                    "token": parentConst.PAYMENT_TOKEN,
                 },
                 "user": parent.email
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         } else {
-            console.info("there are no payments for todays")
+            console.info(parentConst.MESSAGE_NO_PARENT_PAYMENTS)
         }
     };
 

@@ -1,9 +1,14 @@
 {
-    "transactionTypeUpgrade": "UPGRADE",
-    "transactionTypeExtraVotes": "EXTRAVOTES",
-    "paymentmethod": "getTransaction",
-    "paymentnetwork": "11155111",
-    "paymentorigincurrency": "eth",
-    "paymenttoken": "ETH",
-    "messagefetched": "Payment transaction fetched successfully"
+    "TRANSACTION_TYPE_UPGRADE": "UPGRADE",
+    "TRANSACTION_TYPE_EXTRA_VOTES": "EXTRAVOTES",
+    "PAYMENT_METHOD": "getTransaction",
+    "PAYMENT_NETWORK": "11155111",
+    "PAYMENT_ORIGIN_CURRENCY": "eth",
+    "PAYMENT_TOKEN": "ETH",
+    "MESSAGE_FETCHED": "Payment transaction fetched successfully",
+    "MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS": "Parent referal payment initiated successfully",
+    "MESSAGE_GET_PAYMENT" :"Payment transaction fetched successfully",
+    "MESSAGE_GET_PARENT_PAYMENT_HISTORY_SUCCESS": "Parent payment history fetched successfully",
+    "MESSAGE_NO_PARENT_PAYMENTS" : "there are no payments for todays",
+    "MESSAGE_SOMETHINGS_WRONG" : "Something went wrong in server"
 }
