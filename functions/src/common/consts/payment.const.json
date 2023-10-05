@@ -1,0 +1,9 @@
+{
+    "transactionTypeUpgrade": "UPGRADE",
+    "transactionTypeExtraVotes": "EXTRAVOTES",
+    "paymentmethod": "getTransaction",
+    "paymentnetwork": "11155111",
+    "paymentorigincurrency": "eth",
+    "paymenttoken": "ETH",
+    "messagefetched": "Payment transaction fetched successfully"
+}
