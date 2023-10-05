@@ -131,11 +131,11 @@ function WalletInfo() {
         setTimeError("");
         setAmountError("");
         let errorCount = 0;
-        if (selectRadio === 'LIMIT' && timeAmount.time == "") {
-            setTimeError("Please enter time.");
+        if (selectRadio === 'LIMIT' && timeAmount.time === "" && timeAmount.amount === "") {
+            setTimeError("Please select limit.");
             errorCount++;
         }
-        if (['LIMIT'].includes(selectRadio) && timeType === 'amount' && (timeAmount.amount === "" || !/^\d{0,8}(\.\d+)?$/.test(timeAmount.amount) || parseFloat(timeAmount.amount) <= 0)) {
+        if (['LIMIT'].includes(selectRadio) && timeAmount.amount !== "" &&/* timeType === 'amount' && */ (!/^\d{0,10}(\d+)?$/.test(timeAmount.amount) || parseFloat(timeAmount.amount) <= 0)) {
             setAmountError("Please enter valid amount.");
             errorCount++;
         }
@@ -145,9 +145,9 @@ function WalletInfo() {
                 const userRef = doc(db, "users", auth?.currentUser?.uid);
                 await setDoc(userRef, {
                     referalReceiveType: {
-                        time: timeType === 'time' ? `${timeAmount.time}` : '',
+                        time: `${timeAmount.time}`,
                         name: selectRadio,
-                        amount: timeType === 'amount' ? `${timeAmount.amount}` : '',
+                        amount: `${timeAmount.amount}`,
                     }
                 }, { merge: true });
             } catch (err) {
@@ -160,12 +160,12 @@ function WalletInfo() {
     const hideError = () => {
         setTimeError("")
         setAmountError("");
-        setTimeAmount({ time: '1 DAY', amount: '' });
+        setTimeAmount({ time: '', amount: '' });
     }
     const setDefaultValue = () => {
         setTimeAmount({
             amount: userInfo?.referalReceiveType?.amount || '',
-            time: userInfo?.referalReceiveType?.time ? userInfo?.referalReceiveType?.time : '1 DAY'
+            time: userInfo?.referalReceiveType?.time ? userInfo?.referalReceiveType?.time : ''
         });
         setTimeType(userInfo?.referalReceiveType?.amount ? 'amount' : 'time');
     }
@@ -243,7 +243,7 @@ function WalletInfo() {
                                     setSelectRadio('IMMEDIATE');
                                 }}
                             />
-                            <label htmlFor="immediate" > immediately the collected referal amount. </label>
+                            <label htmlFor="immediate" >IMMEDIATE</label>
 
                         </div>
 
@@ -259,50 +259,12 @@ function WalletInfo() {
                                         setSelectRadio('LIMIT')
                                     }}
                                 />
-                                <label htmlFor="limit" >Enter time limit and amount.</label>
+                                <label htmlFor="limit" >LIMIT</label>
 
                             </div>
                             {selectRadio === 'LIMIT' &&
-                                <div style={{ marginLeft: '2em' }}>
-                                    <select
-                                        className='color-back'
-                                        style={{
-                                            width: '15em',
-                                            height: '40px',
-                                            color: 'black',
-                                            paddingLeft: '10px',
-                                            borderRadius: "0px 5px 5px 0px",
-                                        }}
-                                        defaultValue={timeType}
-                                        value={timeType}
-                                        onChange={e => {
-                                            setAmountError("");
-                                            setTimeType(e.target.value);
-                                        }}
-                                    >
-                                        <option value={'time'}>Time</option>
-                                        <option value={'amount'}>Amount</option>
-
-                                    </select>
-                                    {timeType === 'amount' ?
-                                        <input
-                                            style={{
-                                                width: '15em',
-                                                padding: "10px 0px 10px 20px",
-                                                borderRadius: "5px",
-                                                paddingLeft: '10px',
-                                            }}
-                                            type="text" name="" id=""
-                                            placeholder="Enter Amount"
-                                            value={timeAmount?.amount}
-                                            onChange={(e) => {
-                                                const re = /^[0-9\b.]+$/;
-                                                if (e.target.value === '' || re.test(e.target.value)) {
-                                                    setAmountError("");
-                                                    setTimeAmount({ ...timeAmount, amount: e.target.value })
-                                                }
-                                            }}
-                                        /> :
+                                <>
+                                    <div className={`${window.screen.width > 350 ? 'd-flex ' : ''}`} style={{ marginLeft: '2em' }}>
                                         <select
                                             className='color-back'
                                             style={{
@@ -316,21 +278,42 @@ function WalletInfo() {
                                             value={timeAmount?.time}
                                             onChange={e => {
                                                 setTimeAmount({ ...timeAmount, time: e.target.value })
-                                                // setTimeType(e.target.value);
                                             }}
                                         >
 
+                                            <option value=''>Please Select</option>
                                             <option value='1 DAY'>1 Day</option>
                                             <option value='1 WEEK'>1 Week</option>
                                             <option value='1 MONTH'>1 Month</option>
+                                        </select>
+                                        <div style={{ width: (window.screen.width < 350 ? '15em' : 'auto'), padding: '1em', textAlign: 'center' }}>OR</div>
+                                        <input
+                                            style={{
+                                                width: '15em',
+                                                padding: "10px 0px 10px 20px",
+                                                borderRadius: "5px",
+                                                paddingLeft: '10px',
+                                            }}
+                                            maxLength={10}
+                                            type="text" name="" id=""
+                                            placeholder="Enter Amount"
+                                            value={timeAmount?.amount}
+                                            onChange={(e) => {
+                                                const re = /^[0-9\b]+$/;
+                                                if (e.target.value === '' || re.test(e.target.value)) {
+                                                    setAmountError("");
+                                                    setTimeError("");
+                                                    setTimeAmount({ ...timeAmount, amount: e.target.value })
+                                                }
+                                            }}
+                                        />
 
-
-                                        </select>}
-                                    <div className="d-flex mt-2 justify-content-between">
+                                    </div>
+                                    <div className="d-flex mt-2 justify-content-between" style={{ marginLeft: '2em' }}>
                                         {timeError && <Errorsapn>{timeError}</Errorsapn>}
                                         {amountError && <Errorsapn>{amountError}</Errorsapn>}
                                     </div>
-                                </div>
+                                </>
                             }
 
                         </div>
@@ -346,7 +329,7 @@ function WalletInfo() {
                                         hideError();
                                     }}
                                 />
-                                <label htmlFor="manually" >Manually{/* Add Amount send to the parent account */}</label>
+                                <label htmlFor="manually" >MANUAL</label>
                             </div>
                             {(selectRadio === 'MANUAL' && false) &&
                                 <>
