@@ -1,6 +1,7 @@
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
 import { isParentExistAndGetReferalAmount } from './PaymentCalculation';
+import * as parentConst from "../consts/payment.const.json";
 import fetch from "node-fetch";
 
 export const makePaymentToServer = async (req: any, res: any) => {
@@ -11,9 +12,9 @@ export const makePaymentToServer = async (req: any, res: any) => {
             "method": "getTransaction",
             "params": {
                 "amount": parseFloat(amount),
-                "network": "11155111",
-                "origincurrency": "eth",
-                "token": "ETH"
+                "network": parentConst.PAYMENT_NETWORK,
+                "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                "token": parentConst.PAYMENT_TOKEN,
             },
             "user": userEmail
         }
@@ -53,7 +54,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
 
     res.status(200).send({
         status: true,
-        message: "Parent referal payment initiated successfully",
+        message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
         data: req.body
     });
 }
@@ -71,10 +72,10 @@ export const makePayment = async (req: any, res: any) => {
 }
 
 export const storeInDBOfPayment = async (metaData: any) => {
-    if (metaData.transactionType === "UPGRADE" && metaData?.userId) {
+    if (metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE && metaData?.userId) {
         await addIsUpgradedValue(metaData.userId)
     }
-    if (metaData.transactionType === "EXTRAVOTES") {
+    if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
         await addIsExtraVotePurchase(metaData)
     }
     await firestore().collection("payments").add({ ...metaData, timestamp: firestore.FieldValue.serverTimestamp() })
@@ -121,7 +122,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
 
         res.status(200).send({
             status: true,
-            message: "Payment transaction fetched successfully",
+            message: parentConst.MESSAGE_GET_PAYMENT,
             data: getPaymentData
         });
 
@@ -129,7 +130,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
         errorLogging("isUserUpgraded", "ERROR", error);
         res.status(500).send({
             status: false,
-            message: "Something went wrong in server",
+            message: parentConst.MESSAGE_SOMETHINGS_WRONG,
             result: error,
         });
     }
@@ -177,7 +178,7 @@ export const getParentPayment = async (req: any, res: any) => {
         log("getParentPayment : paymentPagination => ", paymentPagination);
         res.status(200).send({
             status: true,
-            message: "Parent payment history fetched successfully",
+            message: parentConst.MESSAGE_GET_PARENT_PAYMENT_HISTORY_SUCCESS,
             data: paymentPagination,
             total: getAllPaymentArray.length
         });
@@ -186,7 +187,7 @@ export const getParentPayment = async (req: any, res: any) => {
         errorLogging("getParentPayment", "ERROR", error);
         res.status(500).send({
             status: false,
-            message: "Something went wrong in server",
+            message: parentConst.MESSAGE_SOMETHINGS_WRONG,
             result: error,
         });
     }
@@ -229,7 +230,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
 
         res.status(200).send({
             status: true,
-            message: "Payment transaction history fetched successfully",
+            message: parentConst.MESSAGE_GET_PARENT_PAYMENT_HISTORY_SUCCESS,
             data: transactionPagination,
             total: transactionHistory.length
         });
@@ -237,7 +238,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         errorLogging("getTransactionHistory", "ERROR", error);
         res.status(500).send({
             status: false,
-            message: "Something went wrong in server",
+            message: parentConst.MESSAGE_SOMETHINGS_WRONG,
             result: error,
         });
     }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { firestore } from "firebase-admin";
 import { log } from "firebase-functions/logger";
+import * as parentConst from "../consts/payment.const.json";
 //import { log } from "firebase-functions/logger";
 
 interface PaymentParams {
@@ -86,9 +87,9 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         "method": "getTransaction",
         "params": {
             "amount": parentData.amount,
-            "network": "11155111",
-            "origincurrency": "eth",
-            "token": "ETH"
+            "network": parentConst.PAYMENT_NETWORK,
+            "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+            "token": parentConst.PAYMENT_TOKEN,
         },
         "user": "Test"
     }
@@ -128,9 +129,9 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                         "method": "getTransaction",
                         "params": {
                             "amount": pendingAmount || 0,
-                            "network": "11155111",
-                            "origincurrency": "eth",
-                            "token": "ETH"
+                            "network": parentConst.PAYMENT_NETWORK,
+                            "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                            "token": parentConst.PAYMENT_TOKEN,
                         },
                         "user": "Test"
                     };
@@ -201,9 +202,9 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "method": "getTransaction",
                 "params": {
                     "amount": parent.amount,
-                    "network": "11155111",
-                    "origincurrency": "eth",
-                    "token": "ETH"
+                    "network": parentConst.PAYMENT_NETWORK,
+                    "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                    "token": parentConst.PAYMENT_TOKEN,
                 },
                 "user": parent.email
             }
@@ -215,9 +216,9 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "method": "getTransaction",
                 "params": {
                     "amount": parent.amount,
-                    "network": "11155111",
-                    "origincurrency": "eth",
-                    "token": "ETH"
+                    "network": parentConst.PAYMENT_NETWORK,
+                    "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                    "token": parentConst.PAYMENT_TOKEN,
                 },
                 "user": parent.email
             }
@@ -229,16 +230,16 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "method": "getTransaction",
                 "params": {
                     "amount": parent.amount,
-                    "network": "11155111",
-                    "origincurrency": "eth",
-                    "token": "ETH"
+                    "network": parentConst.PAYMENT_NETWORK,
+                    "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                    "token": parentConst.PAYMENT_TOKEN,
                 },
                 "user": parent.email
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: "SUCCESS" }, { merge: true });
         } else {
-            console.info("there are no payments for todays")
+            console.info(parentConst.MESSAGE_NO_PARENT_PAYMENTS)
         }
     };
 
