@@ -58,8 +58,8 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
         const parentPaymentData = {
-            // parentUserId: childUserDetails.parent,
-            // childUserId: childUserDetails.uid,
+            parentUserId: parentUserDetails.parent,
+            childUserId: parentUserDetails.uid,
             amount: halfAmount,
             type: "REFERAL",
             transactionType,
@@ -93,10 +93,12 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         },
         "user": "Test"
     }
-
+    console.info("parentTransactionDetails", parentTransactionDetails)
     try {
+        console.info("getParentSettings", getParentSettings)
         if (getParentSettings.name === "MANUAL" || getParentSettings.name === "IMMEDIATE") {
             const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
+            console.info("storeInParentData", storeInParentData)
             const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
             const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
             await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: "SUCCESS", parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
