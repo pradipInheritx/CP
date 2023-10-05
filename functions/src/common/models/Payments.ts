@@ -9,7 +9,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
         console.info("req.body", typeof req.body, req.body);
         const { userEmail, amount } = req.body;
         const requestBody = {
-            "method": "getTransaction",
+            "method": parentConst.PAYMENT_METHOD,
             "params": {
                 "amount": parseFloat(amount),
                 "network": parentConst.PAYMENT_NETWORK,

@@ -84,7 +84,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     const getParentDetails: any = (await firestore().collection('users').doc(parentData.parentUserId).get()).data();
     const getParentSettings = getParentDetails.referalReceiveType ? getParentDetails.referalReceiveType : {};
     const parentTransactionDetails = {
-        "method": "getTransaction",
+        "method": parentConst.PAYMENT_METHOD,
         "params": {
             "amount": parentData.amount,
             "network": parentConst.PAYMENT_NETWORK,
@@ -126,7 +126,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
 
                 if (pendingAmount > parseFloat(getParentSettings.amount)) {
                     const transactionBody = {
-                        "method": "getTransaction",
+                        "method": parentConst.PAYMENT_METHOD,
                         "params": {
                             "amount": pendingAmount || 0,
                             "network": parentConst.PAYMENT_NETWORK,
@@ -199,7 +199,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         if (differnceBetweenTimes >= 1 && parent.settings.days == "1 DAY") {
             log("1 day is calling parent is :", parent.id);
             const transaction: PaymentBody = {
-                "method": "getTransaction",
+                "method": parentConst.PAYMENT_METHOD,
                 "params": {
                     "amount": parent.amount,
                     "network": parentConst.PAYMENT_NETWORK,
@@ -213,7 +213,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         } else if (differnceBetweenTimes >= 7 && parent.settings.days == "1 WEEK") {
             log("1 week is calling parent is :", parent.id);
             const transaction: PaymentBody = {
-                "method": "getTransaction",
+                "method": parentConst.PAYMENT_METHOD,
                 "params": {
                     "amount": parent.amount,
                     "network": parentConst.PAYMENT_NETWORK,
@@ -227,7 +227,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         } else if (differnceBetweenTimes >= 30 && parent.settings.days == "1 MONTH") {
             log("1 month is calling parent is :", parent.id);
             const transaction: PaymentBody = {
-                "method": "getTransaction",
+                "method": parentConst.PAYMENT_METHOD,
                 "params": {
                     "amount": parent.amount,
                     "network": parentConst.PAYMENT_NETWORK,
