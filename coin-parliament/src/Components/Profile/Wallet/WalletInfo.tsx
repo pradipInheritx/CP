@@ -21,7 +21,7 @@ function WalletInfo() {
     const { userInfo } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
     const [savePaymentMethod, setSavePaymentMethod] = useState(false);
-    const [timeType, setTimeType] = useState('DAY');
+    const [timeType, setTimeType] = useState<string>('time');
 
     const [walletDetails, setWalletDetails] = useState({
         coin: "",
@@ -32,7 +32,7 @@ function WalletInfo() {
         walletError: ""
     })
     const [timeAmount, setTimeAmount] = useState({
-        time: "",
+        time: "1 DAY",
         amount: ""
     })
 
@@ -135,7 +135,7 @@ function WalletInfo() {
             setTimeError("Please enter time.");
             errorCount++;
         }
-        if (['LIMIT', /* 'MANUALLY' */].includes(selectRadio) && (timeAmount.amount === "" || !/^\d{0,8}(\.\d+)?$/.test(timeAmount.amount))) {
+        if (['LIMIT'].includes(selectRadio) && timeType === 'amount' && (timeAmount.amount === "" || !/^\d{0,8}(\.\d+)?$/.test(timeAmount.amount) || parseFloat(timeAmount.amount) <= 0)) {
             setAmountError("Please enter valid amount.");
             errorCount++;
         }
@@ -145,9 +145,9 @@ function WalletInfo() {
                 const userRef = doc(db, "users", auth?.currentUser?.uid);
                 await setDoc(userRef, {
                     referalReceiveType: {
-                        amount: timeAmount.amount,
+                        time: timeType === 'time' ? `${timeAmount.time}` : '',
                         name: selectRadio,
-                        time: timeAmount.time ? `${timeAmount.time} ${timeType}` : ''
+                        amount: timeType === 'amount' ? `${timeAmount.amount}` : '',
                     }
                 }, { merge: true });
             } catch (err) {
@@ -160,14 +160,14 @@ function WalletInfo() {
     const hideError = () => {
         setTimeError("")
         setAmountError("");
-        setTimeAmount({ time: '', amount: '' });
+        setTimeAmount({ time: '1 DAY', amount: '' });
     }
     const setDefaultValue = () => {
         setTimeAmount({
             amount: userInfo?.referalReceiveType?.amount || '',
-            time: userInfo?.referalReceiveType?.time ? userInfo?.referalReceiveType?.time.replace(/[A-Z\s]/g, '') : ''
+            time: userInfo?.referalReceiveType?.time ? userInfo?.referalReceiveType?.time : '1 DAY'
         });
-        setTimeType(userInfo?.referalReceiveType?.time ? userInfo?.referalReceiveType?.time.replace(/[0-9\s]/g, '') : '');
+        setTimeType(userInfo?.referalReceiveType?.amount ? 'amount' : 'time');
     }
     return (
         <>
@@ -260,73 +260,78 @@ function WalletInfo() {
                                     }}
                                 />
                                 <label htmlFor="limit" >Enter time limit and amount.</label>
+
                             </div>
-                            {selectRadio === 'LIMIT' && <div className="d-flex mt-2 justify-content-between ">
-                                <div className='d-flex flex-column w-100'>
-                                    <label htmlFor="time">Time</label>
-                                    <div className='d-flex w-100'>
+                            {selectRadio === 'LIMIT' &&
+                                <div style={{ marginLeft: '2em' }}>
+                                    <select
+                                        className='color-back'
+                                        style={{
+                                            width: '15em',
+                                            height: '40px',
+                                            color: 'black',
+                                            paddingLeft: '10px',
+                                            borderRadius: "0px 5px 5px 0px",
+                                        }}
+                                        defaultValue={timeType}
+                                        value={timeType}
+                                        onChange={e => {
+                                            setAmountError("");
+                                            setTimeType(e.target.value);
+                                        }}
+                                    >
+                                        <option value={'time'}>Time</option>
+                                        <option value={'amount'}>Amount</option>
+
+                                    </select>
+                                    {timeType === 'amount' ?
                                         <input
                                             style={{
-                                                width: '55%',
-                                                padding: "10px 0px 10px 9px",
-                                                borderRadius: "5px 0px 0px 5px"
+                                                width: '15em',
+                                                padding: "10px 0px 10px 20px",
+                                                borderRadius: "5px",
+                                                paddingLeft: '10px',
                                             }}
                                             type="text" name="" id=""
-                                            value={timeAmount?.time}
-                                            placeholder="Enter Time"
+                                            placeholder="Enter Amount"
+                                            value={timeAmount?.amount}
                                             onChange={(e) => {
-                                                setTimeError("");
-                                                const re = /^[0-9\b]+$/;
+                                                const re = /^[0-9\b.]+$/;
                                                 if (e.target.value === '' || re.test(e.target.value)) {
-                                                    setTimeAmount({ ...timeAmount, time: e.target.value })
+                                                    setAmountError("");
+                                                    setTimeAmount({ ...timeAmount, amount: e.target.value })
                                                 }
                                             }}
-                                        />
+                                        /> :
                                         <select
                                             className='color-back'
                                             style={{
-                                                width: '40%',
+                                                width: '15em',
+                                                height: '40px',
                                                 color: 'black',
                                                 paddingLeft: '10px',
-                                                borderRadius: "0px 5px 5px 0px"
+                                                borderRadius: "0px 5px 5px 0px",
                                             }}
                                             defaultValue={timeType}
-                                            value={timeType}
+                                            value={timeAmount?.time}
                                             onChange={e => {
-                                                setTimeType(e.target.value);
+                                                setTimeAmount({ ...timeAmount, time: e.target.value })
+                                                // setTimeType(e.target.value);
                                             }}
                                         >
-                                            <option value='DAY' >Day</option>
-                                            <option value='WEEK' >Week</option>
-                                            <option value='MONTH' >Month</option>
+
+                                            <option value='1 DAY'>1 Day</option>
+                                            <option value='1 WEEK'>1 Week</option>
+                                            <option value='1 MONTH'>1 Month</option>
 
 
-                                        </select>
+                                        </select>}
+                                    <div className="d-flex mt-2 justify-content-between">
+                                        {timeError && <Errorsapn>{timeError}</Errorsapn>}
+                                        {amountError && <Errorsapn>{amountError}</Errorsapn>}
                                     </div>
-                                    {timeError && <Errorsapn>{timeError}</Errorsapn>}
                                 </div>
-                                <div className='d-flex flex-column w-100'>
-                                    <label htmlFor="time">Amount</label>
-                                    <input
-                                        style={{
-                                            width: "80%",
-                                            padding: "10px 0px 10px 20px",
-                                            borderRadius: "5px"
-                                        }}
-                                        type="text" name="" id=""
-                                        placeholder="Enter Amount"
-                                        value={timeAmount?.amount}
-                                        onChange={(e) => {
-                                            const re = /^[0-9\b.]+$/;
-                                            if (e.target.value === '' || re.test(e.target.value)) {
-                                                setAmountError("");
-                                                setTimeAmount({ ...timeAmount, amount: e.target.value })
-                                            }
-                                        }}
-                                    />
-                                    {amountError && <Errorsapn>{amountError}</Errorsapn>}
-                                </div>
-                            </div>}
+                            }
 
                         </div>
                         <div className="mt-3">
