@@ -81,88 +81,95 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
     }
 }
 export const setPaymentSchedulingDate = async (parentData: any) => {
+    console.info("parentData", parentData)
     const getParentDetails: any = (await firestore().collection('users').doc(parentData.parentUserId).get()).data();
-    const getParentSettings = getParentDetails.referalReceiveType ? getParentDetails.referalReceiveType : {};
-    const parentTransactionDetails = {
-        "method": parentConst.PAYMENT_METHOD,
-        "params": {
-            "amount": parentData.amount,
-            "network": parentConst.PAYMENT_NETWORK,
-            "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
-            "token": parentConst.PAYMENT_TOKEN,
-        },
-        "user": "Test"
-    }
-    console.info("parentTransactionDetails", parentTransactionDetails)
-    try {
-        console.info("getParentSettings", getParentSettings)
-        if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_MANUAL || getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_IMMEDIATE) {
-            const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
-            console.info("storeInParentData", storeInParentData)
-            const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
-            const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
-            await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: "SUCCESS", parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+    const getAllParentAddress = getParentDetails.wellDAddress;
+    console.info("getAllParentAddress", getAllParentAddress)
+    const getMatchedCoinAddress = getAllParentAddress.find((address: any) => address.coin.toUpperCase() === parentData.token.toUpperCase());
+    console.info("getMatchedCoinAddress", getMatchedCoinAddress)
+    if (getMatchedCoinAddress) {
+        const getParentSettings = getParentDetails.referalReceiveType ? getParentDetails.referalReceiveType : {};
+        const parentTransactionDetails = {
+            "method": parentConst.PAYMENT_METHOD,
+            "params": {
+                "amount": parentData.amount,
+                "network": parentConst.PAYMENT_NETWORK,
+                "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                "token": parentConst.PAYMENT_TOKEN,
+            },
+            "user": "Test"
         }
-        if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT) {
-            const getParentPayment: any = [];
+        console.info("parentTransactionDetails", parentTransactionDetails)
+        try {
+            if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_IMMEDIATE) {
+                const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
+                console.info("storeInParentData", storeInParentData)
+                const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
+                const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
+                await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+            }
+            console.info("getParentSettings", getParentSettings)
+            if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_AMOUNT || getParentSettings.limitType === "ANYOFTHEM")) {
+                const getParentPayment: any = [];
+                const getParentPaymentQuery: any = await firestore()
+                    .collection('parentPayment')
+                    .where('parentUserId', '==', parentData.parentUserId)
+                    .where('status', '==', parentConst.PAMENT_STATUS_PENDING)
+                    .get();
 
-            const getParentPaymentQuery: any = await firestore()
-                .collection('parentPayment')
-                .where('parentUserId', '==', parentData.parentUserId)
-                .where('status', '==', parentConst.PAMENT_STATUS_PENDING)
-                .get();
+                getParentPaymentQuery.forEach((doc: any) => {
+                    getParentPayment.push({ docId: doc.id, ...doc.data() })
+                });
 
-            getParentPaymentQuery.forEach((doc: any) => {
-                getParentPayment.push({ docId: doc.id, ...doc.data() })
-            });
+                console.info("getParentPayment", getParentPayment)
 
-            console.info("getParentPayment", getParentPayment)
+                if (getParentPayment.length) {
+                    let pendingAmount = 0;
+                    for (let i = 0; i < getParentPayment.length; i++) {
+                        pendingAmount += getParentPayment[i].amount;
+                    }
 
-            if (getParentPayment.length) {
-                let pendingAmount = 0;
-                for (let i = 0; i < getParentPayment.length; i++) {
-                    pendingAmount += getParentPayment[i].amount;
-                }
+                    pendingAmount = pendingAmount + parentData.amount; // Added current amount as well
 
-                pendingAmount = pendingAmount + parentData.amount; // Added current amount as well
+                    if (pendingAmount > parseFloat(getParentSettings.amount)) {
+                        const transactionBody = {
+                            "method": parentConst.PAYMENT_METHOD,
+                            "params": {
+                                "amount": pendingAmount || 0,
+                                "network": parentConst.PAYMENT_NETWORK,
+                                "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                                "token": parentConst.PAYMENT_TOKEN,
+                            },
+                            "user": "Test"
+                        };
+                        parentData.amount = pendingAmount; // Override All Pending Amount With Current One
 
-                if (pendingAmount > parseFloat(getParentSettings.amount)) {
-                    const transactionBody = {
-                        "method": parentConst.PAYMENT_METHOD,
-                        "params": {
-                            "amount": pendingAmount || 0,
-                            "network": parentConst.PAYMENT_NETWORK,
-                            "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
-                            "token": parentConst.PAYMENT_TOKEN,
-                        },
-                        "user": "Test"
-                    };
-                    parentData.amount = pendingAmount; // Override All Pending Amount With Current One
+                        const getPaymentAfterTransfer = await paymentFunction(transactionBody);
 
-                    const getPaymentAfterTransfer = await paymentFunction(transactionBody);
+                        console.info("getPaymentAfterTransfer", getPaymentAfterTransfer?.result?.transaction_id);
+                        // Loop on getParentPayment and update status to SUCCESS
+                        const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                        console.info("getParentPendingPaymentReference", getParentPendingPaymentReference?.id);
 
-                    console.info("getPaymentAfterTransfer", getPaymentAfterTransfer?.result?.transaction_id);
-                    // Loop on getParentPayment and update status to SUCCESS
-                    const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
-                    console.info("getParentPendingPaymentReference", getParentPendingPaymentReference?.id);
-
-                    getParentPayment.forEach(async (payment: any) => {
-                        await firestore().collection('parentPayment').doc(payment.docId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: getParentPendingPaymentReference?.id, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
-                    })
+                        getParentPayment.forEach(async (payment: any) => {
+                            await firestore().collection('parentPayment').doc(payment.docId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: getParentPendingPaymentReference?.id, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+                        })
+                    } else {
+                        console.info("Come Here In Else")
+                        await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                    }
                 } else {
                     console.info("Come Here In Else")
-                    await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                    await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                 }
-            } else {
-                console.info("Come Here In Else")
-                await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getParentDetails.wellDAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
             }
+        } catch (error) {
+            console.info("Error while make referal payment", error)
         }
-    } catch (error) {
-        console.info("Error while make referal payment", error)
+    } else {
+        await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() })
     }
 }
-
 export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()
@@ -185,7 +192,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             ...userPendingPaymentDetails
         };
         log("data : ", data)
-        if (setting.name == parentConst.PAYMENT_SETTING_NAME_LIMIT) {
+        if (setting.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (setting.limitType === "DAYS" || setting.limitType === "ANYOFTHEM")) {
             parentPaymentDetails.push(data);
         };
     };

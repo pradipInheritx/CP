@@ -6,7 +6,8 @@ import {
     getTransactionHistory,
     makePaymentToServer,
     getParentPayment,
-    updateUserAfterPayment
+    updateUserAfterPayment,
+    getInstantReferalAmount
 } from "../common/models/Payments";
 
 const PaymentRouter = Router();
@@ -18,5 +19,5 @@ PaymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
 PaymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
 PaymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
 PaymentRouter.get("/getParentPayment/:userId", getParentPayment);
-
+PaymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
 export default PaymentRouter;
