@@ -176,7 +176,7 @@ const TimeframeButton = ({
   buttonIndex?: number;
   setHideButton?: React.Dispatch<React.SetStateAction<number[]>>;
   setpopUpOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-  vote: VoteResultProps
+  vote?: VoteResultProps
 }) => {
   const [borderColor, setborderColor] = useState<string>("white");
   const [borderDeg, setBorderDeg] = useState<number>(0);
