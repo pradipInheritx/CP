@@ -27,14 +27,13 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
-import { SignupRegularForSportParliament, SignupUsingThirdParty } from "./SportParliamentLogin";
+import { SignupRegularForSportParliament } from "./SportParliamentLogin";
 import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { toast } from "react-toastify";
 import { showToast } from "../../App";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 import { auth } from "firebaseSportParliament";
 const sendEmail = httpsCallable(functions, "sendEmail");
-
 export enum LoginModes {
   LOGIN,
   SIGNUP,
@@ -89,21 +88,11 @@ export const LoginAuthProvider = async (
     console.log(auth);
 
     if (auth.currentUser) {
-      SignupRegularForSportParliament(
-        {
-          email: (auth.currentUser?.email || ''),
-          password: '!@#$%^&*#!#%^DF',
-          passwordConfirm: '!@#$%^&*#!#%^DF',
-          agree: true,
-        }, {
-        successFunc: () => { },
-        errorFunc: () => { }
-      },
-        {
-          displayName: (auth.currentUser?.displayName || ''),
-          avatar: (auth.currentUser?.photoURL || ''),
-        }
-      )
+      genericThirdPartyLogin({
+        payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF', passwordConfirm: '!@#$%^&*#!#%^DF', agree: true, },
+        callback: { successFunc: () => { }, errorFunc: () => { } },
+        userData: { displayName: (auth.currentUser?.displayName || ''), avatar: (auth.currentUser?.photoURL || ''), }
+      });
     }
 
     const isFirstLogin = getAdditionalUserInfo(result)
@@ -351,6 +340,17 @@ export const genericLogin = async (payload: SignupPayload, callback: Callback<Au
 
   });
 }
+export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
+  payload: SignupPayload,
+  callback: Callback<AuthUser>,
+  userData?: { [key: string]: string }
+}) => {
+  await SignupRegularForSportParliament(payload, callback, userData);
+  await SignupRegularForStockParliament(payload, callback, userData);
+  await SignupRegularForVotingParliament(payload, callback, userData);
+}
+
+
 
 export type SignupPayload = {
   email: string;

@@ -42,8 +42,3 @@ export const SignupRegularForSportParliament = async (
         return false;
     }
 };
-
-export const SignupUsingThirdParty = ({ displayName, email, photoURL }: { displayName: string, email: string, photoURL: string }) => {
-
-
-}

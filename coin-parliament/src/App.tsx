@@ -19,7 +19,7 @@ import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
 import Profile, { ProfileTabs } from "./Pages/Profile";
 import FollowerProfile, { FollowerProfileTabs } from "./Pages/FollowerProfile";
-import Header from "./Components/Header";
+import Header from "./Components/Header/Header";
 import NotificationContext, { ToastType } from "./Contexts/Notification";
 import CoinsContext, { Leader, Totals } from "./Contexts/CoinsContext";
 import SingleCoin from "./Pages/SingleCoin";
@@ -799,7 +799,7 @@ function App() {
                     (getSubdomain() === "admin" && !user)) && (
                       <>
 
-                        <Background pathname={pathname} />
+                        {/* <Background pathname={pathname} /> */}
                         <AppContainer
                           fluid
                           pathname={pathname}
@@ -807,48 +807,7 @@ function App() {
                         // width={width}
                         >
 
-                          <Header
-                            remainingTimer={remainingTimer}
-                            logo={
-                              (login && window.screen.width > 979) ||
-                              window.screen.width > 979
-                            }
-                            pathname={pathname}
-                            title={
-                              <HomeContainer
-                                className='d-flex flex-column justify-content-center align-items-center p-0'
-                                width={width}
-                              >
-                                <div
-                                  className='mb-2 d-flex align-items-center'
-                                  style={{
-                                    flexFlow:
-                                      width && width > 979 ? "row" : "column",
-                                    justifyContent:
-                                      width && width > 979
-                                        ? "center"
-                                        : "center",
-                                    width: width && width > 979 ? 233 : "auto",
-                                  }}
-                                >
-                                  <Link to={"/"}>
-                                    {window.screen.width < 979 && (
-                                      <Logo
-                                        size={
-                                          width && width > 979
-                                            ? Size.XSMALL
-                                            : Size.XSMALL
-                                        }
-                                      />
-                                    )}
-                                    {/* {scrollPosition >= positionBreakpoint && window.screen.width<979 &&<Logo
-                                        size={Size.XSMALL}
-                                      />} */}
-                                  </Link>
-                                </div>
-                              </HomeContainer>
-                            }
-                          />
+
                           {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
                             <Login2fa
                               setLogin={setLogin}
@@ -859,22 +818,15 @@ function App() {
                           <Container
                             fluid
                             style={{
-                              background:
-                                pathname == "/" ? "#160133" : "",
+                              background: "#160133",
                               whiteSpace: "normal",
                               wordWrap: "break-word",
-                              minHeight:
-                                window.screen.width < 979
-                                  ? "89vh"
-                                  : "92vh",
-                              // padding: `${pathname === "/" ? 120 : 84}px 0 109px`,
-                              padding: `${pathname === "/" ? 160 : 120
-                                }px 0 0`,
+                              padding: '0',
+                              flexGrow: 1
                             }}
                           >
-
+                            <Header />
                             <Routes>
-                              <Route path='/' element={<Home />} />
                               <Route path='/login' element={!user && !mfaLogin ?
                                 <LoginAndSignup
                                   {...{
@@ -886,6 +838,7 @@ function App() {
                               } />
                               <Route path='/sign-up' element={!user && !mfaLogin ? <GenericLoginSignup /> : <Navigate to="/" />} />
                               <Route path="/" element={<ProtectedRoutes />}>
+                                <Route path='/' element={<Home />} />
                                 <Route path={'profile/share'} element={<Pool />} />
                                 <Route path={ProfileTabs.profile} element={<Profile />} >
                                   <Route path={'/profile'} element={<Navigate to={'/profile/edit'} />} />

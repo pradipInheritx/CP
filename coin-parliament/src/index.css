@@ -1427,3 +1427,7 @@ animation: blinker 1s linear infinite;
   }
 }
 /* end modal */
+.navColor{
+    background-color: #210c56 !important;
+    color:white
+}

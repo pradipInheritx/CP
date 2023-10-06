@@ -1,13 +1,13 @@
 import { SignupPayload, validateSignup } from "./Login";
-import firebaseVotingParliament, { db } from "../../firebaseSportParliament"
+import firebaseVotingParliament, { auth, db } from "firebaseVotingParliament"
 
 import { Callback } from "./utils";
-import { User, sendEmailVerification, updateCurrentUser, updateProfile } from "firebase/auth";
+import { User, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { saveUsername } from "../../Contexts/User";
 export const SignupRegularForVotingParliament = async (
     payload: SignupPayload,
-    callback: Callback<User>
+    callback: Callback<User>,
+    userData?: { [key: string]: string }
 ) => {
     try {
         console.log('voting');
@@ -20,14 +20,7 @@ export const SignupRegularForVotingParliament = async (
         if (auth?.currentUser) {
             await sendEmailVerification(auth?.currentUser);
             const userRef = doc(db, "users", auth?.currentUser?.uid);
-            await setDoc(userRef, { firstTimeLogin: true }, { merge: true });
-
-            // const documentRef = firebaseSportParliament.firestore().collection('users').doc(auth?.currentUser?.uid);
-            // await documentRef.update({ firstTimeLogin: true });
-            // console.log('sport', documentRef, auth?.currentUser?.uid);
-            if (auth?.currentUser?.uid) {
-                saveUsername(auth?.currentUser?.uid, '', '')
-            }
+            await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
             console.log('voting', auth);
         }
@@ -41,7 +34,7 @@ export const SignupRegularForVotingParliament = async (
             // @ts-ignore
             const matches = e.code.replace("auth/", "");
             const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
-            callback.errorFunc({ message: '' /* lastmatches */ } as Error);
+            // callback.errorFunc({ message: '' /* lastmatches */ } as Error);
         }
         return false;
     }
