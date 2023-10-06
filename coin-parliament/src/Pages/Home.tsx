@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext } from "react";
-import {  Image } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
 import Pairs from "../Components/Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -35,24 +35,24 @@ const TextContainer = styled.div`
 const Home = () => {
   const translate = useTranslation();
   const { user } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,  
+  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage,
     setSignup } =
     useContext(AppContext);
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-  const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
+  const src = `/hpbanner${width && width > 979 ? "" : ""}.webp`;
 
-  
+
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
         <div style={{ background: "#160133" }}>
-          
+
           <HomeContainer width={width} className='mb-4 p-0'>
             {!(login || firstTimeLogin) && (
               <>
-              
+
                 <Image
                   src={src}
                   style={{
@@ -61,7 +61,7 @@ const Home = () => {
                       width && width > 969
                         ? "auto"
                         : 'auto',
-                     marginTop: width && width > 969 ? -50 :65,
+                    marginTop: width && width > 969 ? -50 : 65,
                     // marginTop:'120px',
                     position: "absolute",
                   }}
@@ -99,19 +99,19 @@ const Home = () => {
                     </strong>
                   </h2>}
                 </div> */}
-                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
+                {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
                   <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
                 </TextContainer> */}
-                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
+                {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
 
-                  {/* <TextContainer className="mt-2" >
+                {/* <TextContainer className="mt-2" >
                   <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
                 </TextContainer> */}
               </>
             )}
           </HomeContainer>
         </div>
-       <div className='pb-4 mx-0'>
+        <div className='pb-4 mx-0'>
           <TextContainer
             className='mt-2 d-xl-none'
             style={{
@@ -125,7 +125,7 @@ const Home = () => {
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-                marginTop: window.screen.width > 767 ?"260px":"120px",
+                marginTop: window.screen.width > 767 ? "260px" : "120px",
               }}
             >
               {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
@@ -138,7 +138,7 @@ const Home = () => {
                 fontWeight: "400",
                 position: "relative",
                 // marginTop: "200px",
-                marginTop: window.screen.width > 767 ?"260px":"120px",
+                marginTop: window.screen.width > 767 ? "260px" : "120px",
                 fontSize: "30px",
               }}
             >
@@ -146,7 +146,7 @@ const Home = () => {
             </H2>
           )}
 
-         
+
           {/* <Coins
             onFavClick={async (...args) => {
               if (user) {
@@ -158,11 +158,11 @@ const Home = () => {
               }
             }}
           /> */}
-        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>COMING SOON</H2>}
+          {window.screen.width > 979 && <H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '2.5rem' }}>COMING SOON</H2>}
 
 
 
-          {window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>COMING SOON</H2>}
+          {window.screen.width < 979 && <H2 className='mt-3' style={{ margin: 'auto', textAlign: 'center', fontSize: '1.5rem' }}>COMING SOON</H2>}
         </div>
         {/* <div className='mb-4 mx-0'>
           <H2
