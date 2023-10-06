@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Col, Container, Row} from "react-bootstrap";
-import {getNumTimeframes, TimeFrame} from "../../common/models/Vote";
+import { Col, Container, Row } from "react-bootstrap";
+import { getNumTimeframes, TimeFrame } from "../../common/models/Vote";
 import Icon from "../Atoms/Checkbox/Icon";
-import {Buttons} from "../Atoms/Button/Button";
-import {Title} from "../../Pages/SingleCoin";
+import { Buttons } from "../Atoms/Button/Button";
+import { Title } from "../../Pages/SingleCoin";
 import { useParams } from "react-router-dom";
 import AppContext from "../../Contexts/AppContext";
 
@@ -34,10 +34,10 @@ const SelectTimeframes = ({
   let params = useParams();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const num = getNumTimeframes(timeframes);
-   const [buttonDetails, setButtonDetails] = useState<any>();
-   const [pariButtonDetails, setPariButtonDetails] = useState<any>();
+  const [buttonDetails, setButtonDetails] = useState<any>();
+  const [pariButtonDetails, setPariButtonDetails] = useState<any>();
   const { allButtonTime, allPariButtonTime } = useContext(AppContext);
-  
+
   useEffect(() => {
     setButtonDetails(allButtonTime)
   }, [allButtonTime])
@@ -45,9 +45,9 @@ const SelectTimeframes = ({
   useEffect(() => {
     setPariButtonDetails(allPariButtonTime);
   }, [allPariButtonTime]);
-  
-  
-  
+
+
+
 
   return (
     // <Container className='timeframAnimation'style={{maxWidth: 386, margin: "0 auto"}}>
@@ -72,8 +72,8 @@ const SelectTimeframes = ({
           voted
             ? "row gx-5"
             : selected === undefined
-            ? "row gx-5 glow"
-            : "row gx-5"
+              ? "row gx-5 glow"
+              : "row gx-5"
         }
         id='test'
         style={{ minWidth: "310px" }}
@@ -113,9 +113,9 @@ const SelectTimeframes = ({
                         ),
                         cssDegree: cssDegree?.length > 0 ? cssDegree[k] : 0,
                         // votePrice: votePrice?.length > 0 ? votePrice[k] : 0,
-                        votedDetails:votedDetails?.length > 0 ?votedDetails[k] : 0,
+                        votedDetails: votedDetails?.length > 0 ? votedDetails[k] : 0,
                         buttonDetails: buttonDetails && buttonDetails[k],
-                        PariButtonDetails:pariButtonDetails && pariButtonDetails[k]
+                        PariButtonDetails: pariButtonDetails && pariButtonDetails[k]
                       }}
                       showTimer={true}
                     >
@@ -127,8 +127,8 @@ const SelectTimeframes = ({
             );
           })}
       </Row>
-      
-    {/* </Container> */}
+
+      {/* </Container> */}
     </div>
   );
 };

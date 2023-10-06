@@ -1,13 +1,13 @@
 import { SignupPayload, validateSignup } from "./Login";
-import firebaseStockParliament, { db } from "../../firebaseSportParliament"
+import firebaseStockParliament, { db } from "firebaseStockParliament"
 
 import { Callback } from "./utils";
 import { User, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { saveUsername } from "../../Contexts/User";
 export const SignupRegularForStockParliament = async (
     payload: SignupPayload,
-    callback: Callback<User>
+    callback: Callback<User>,
+    userData?: { [key: string]: string }
 ) => {
     try {
         console.log('stock');
@@ -20,14 +20,7 @@ export const SignupRegularForStockParliament = async (
         if (auth?.currentUser) {
             await sendEmailVerification(auth?.currentUser);
             const userRef = doc(db, "users", auth?.currentUser?.uid);
-            await setDoc(userRef, { firstTimeLogin: true }, { merge: true });
-            // const documentRef = firebaseSportParliament.firestore().collection('users').doc(auth?.currentUser?.uid);
-            // await documentRef.update({ firstTimeLogin: true });
-            // console.log('sport', documentRef, auth?.currentUser?.uid);
-
-            if (auth?.currentUser?.uid) {
-                saveUsername(auth?.currentUser?.uid, '', '')
-            }
+            await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
             console.log('stock', auth);
         }
@@ -35,7 +28,8 @@ export const SignupRegularForStockParliament = async (
         callback.successFunc(userCredential.user);
         return true;
     } catch (e) {
-        console.log('stock error');
+        // @ts-ignore
+        console.log('stock error', e.code);
         // @ts-ignore
         if (e?.code) {
             // @ts-ignore

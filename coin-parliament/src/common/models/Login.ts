@@ -32,8 +32,8 @@ import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { toast } from "react-toastify";
 import { showToast } from "../../App";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
+import { auth } from "firebaseSportParliament";
 const sendEmail = httpsCallable(functions, "sendEmail");
-
 export enum LoginModes {
   LOGIN,
   SIGNUP,
@@ -81,10 +81,20 @@ export const LoginAuthProvider = async (
   callback?: (s: any) => void,
   refer?: any,
 ) => {
-  const auth = getAuth();
+  // const auth = getAuth();
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+    console.log(auth);
+
+    if (auth.currentUser) {
+      genericThirdPartyLogin({
+        payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF', passwordConfirm: '!@#$%^&*#!#%^DF', agree: true, },
+        callback: { successFunc: () => { }, errorFunc: () => { } },
+        userData: { displayName: (auth.currentUser?.displayName || ''), avatar: (auth.currentUser?.photoURL || ''), }
+      });
+    }
+
     const isFirstLogin = getAdditionalUserInfo(result)
     const userRef = doc(db, "users", user.uid);
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
@@ -330,6 +340,17 @@ export const genericLogin = async (payload: SignupPayload, callback: Callback<Au
 
   });
 }
+export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
+  payload: SignupPayload,
+  callback: Callback<AuthUser>,
+  userData?: { [key: string]: string }
+}) => {
+  await SignupRegularForSportParliament(payload, callback, userData);
+  await SignupRegularForStockParliament(payload, callback, userData);
+  await SignupRegularForVotingParliament(payload, callback, userData);
+}
+
+
 
 export type SignupPayload = {
   email: string;

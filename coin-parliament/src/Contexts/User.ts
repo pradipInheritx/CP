@@ -51,6 +51,19 @@ export const saveFoundation = async (uid: string, foundationName: string) => {
   await setDoc(userRef, { foundationName }, { merge: true });
 };
 
+export const saveUserData = async (uid: string, data: { [key: string]: any }) => {
+
+  let userData: { [key: string]: string } = {};
+  Object.keys(data).map((value) => {
+    if (data[value]) {
+      userData = { ...userData, [value]: data[value] }
+    }
+  });
+  console.log(userData, 'sport');
+  const userRef = doc(db, "users", uid);
+  await setDoc(userRef, userData, { merge: true });
+};
+
 export default UserContext;
 
 UserContext.displayName = "User";
