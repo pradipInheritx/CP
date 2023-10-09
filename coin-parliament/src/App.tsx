@@ -119,7 +119,8 @@ import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvata
 // import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
-import VotingBooster from "./Components/Profile/VotingBooster";
+import UpgradePageCopy from "./Components/Profile/UpgradePageCopy";
+import VotingBoosterCopy from "./Components/Profile/VotingBoosterCopy";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
 import Ambassador from "./Pages/Ambassador/Ambassador";
@@ -152,6 +153,7 @@ import PaymentHistory from "Components/Profile/Payment/PaymentHistory";
 import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndCoinPrice";
 import Complete100CMPModal from "Components/Complete100CMPModal";
 import { request } from "http";
+import VotingBooster from "Components/Profile/VotingBooster";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -876,22 +878,6 @@ function App() {
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
-
-  // useEffect(() => {
-  //   async function removeData() {
-  //     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
-  //     const batch = firebase.firestore().batch();
-  //     voteData.forEach(doc => {
-  //       batch.delete(doc.ref);
-  //     });
-  //     await batch.commit();
-
-  //     console.log("User vote data deleted");
-  //   }
-  //   removeData()
-  // }, [])
-
-
 
   function connect() {
     if (Object.keys(coins).length === 0) return
@@ -1740,8 +1726,8 @@ function App() {
                                             {/* Fowller component  end*/}
                                             <Route
                                               path='/upgrade'
-                                              // element={user && userInfo?.uid ? <UpgradePage /> : <Navigate to="/" />}
-                                              element={<UpgradePage />}
+                                              
+                                            element={<UpgradePage />}
                                             />
                                             {/* <Route
                                               path='/paymentList'
@@ -1765,7 +1751,7 @@ function App() {
                                             />
                                             <Route
                                               path='/votingbooster'
-                                              element={<VotingBooster />}
+                                            element={<VotingBoosterCopy />}
                                             />
                                             <Route
                                               path='influencers'

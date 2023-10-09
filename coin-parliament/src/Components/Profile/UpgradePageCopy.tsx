@@ -3,20 +3,20 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Image } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
-import Pairs from "../../Components/Pairs/Pairs";
+import Pairs from "../Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
 import UserContext from "../../Contexts/User";
-import Coins from "../../Components/Coins/Coins";
+import Coins from "../Coins/Coins";
 import { calcFavorites } from "../../common/utils/coins";
 import AppContext from "../../Contexts/AppContext";
-import { HomeContainer } from "../../Components/App/App";
+import { HomeContainer } from "../App/App";
 import NotificationContext from "../../Contexts/Notification";
-import NotLoggedInPopup from "../../Components/App/NotLoggedInPopup";
-import Quotes from "../../Components/Quotes";
+import NotLoggedInPopup from "../App/NotLoggedInPopup";
+import Quotes from "../Quotes";
 import ContentContext from "../../Contexts/ContentContext";
 import { useWindowSize } from "../../hooks/useWindowSize";
-import InfluencersCarousel from "../../Components/Users/InfluencersCarousel";
+import InfluencersCarousel from "../Users/InfluencersCarousel";
 import { BorderRadius4px } from "../../styledMixins";
 import upgrade1 from "../../assets/svg/upgrade1.svg";
 import upgrade2 from "../../assets/svg/upgrade2.svg";
@@ -36,8 +36,14 @@ import VOUCHER from "../../assets/images/VOUCHER.png";
 import { useNavigate } from "react-router-dom";
 
 const H2 = styled.h2`
-  font-size: var(--font-size-xxl);
-  text-align: center;
+color: #e6d348;
+  -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: #e6d348;
+  text-transform: uppercase;
+  font-size: 4rem;
+  text-shadow: 0px 1px 3px 0px #5B03FF;
+  font-family: 'Lilita One';
 `;
 const P = styled.p`
   font-size: var(--font-size-l);
@@ -98,7 +104,7 @@ const BottomBox = styled.div`
   }
 `;
 
-const UpgradePage = () => {
+const UpgradePageCopy = () => {
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
@@ -146,10 +152,11 @@ const UpgradePage = () => {
           {/* @ts-ignore */}
          {!userInfo?.isUserUpgraded && <H2
             style={{
-              fontSize: "1.25rem",
-              marginTop: "0px",
-              paddingTop: "30px",
-              fontWeight: "bold",
+              textAlign:"center",
+              // fontSize: "1.25rem",
+              // marginTop: "0px",
+              // paddingTop: "30px",
+              // fontWeight: "bold",
               textTransform: 'uppercase'
             }}
           >
@@ -375,4 +382,4 @@ const UpgradePage = () => {
   );
 };
 
-export default UpgradePage;
+export default UpgradePageCopy;
