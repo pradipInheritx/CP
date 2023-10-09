@@ -22,7 +22,7 @@ import votingbooster from "../../../assets/images/votingbooster_small.png";
 import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import firebase from "firebase/compat";
 import { auth } from "firebase";
 import Swal from "sweetalert2";
@@ -30,7 +30,10 @@ import axios from "axios";
 import PaymentFail from "./PaymentFail";
 import PaymentSuccess from "./PaymentSuccess";
 import upgrade from "../../../assets/images/upgrade_small.png";
-
+import VoteBg from '../../../assets/images/VoteBg.png';
+import votebgMob from '../../../assets/images/votebgMob.png';
+import VoteStar from '../../../assets/images/VoteStar.png';
+import VoteToP from '../../../assets/images/VoteTop.png';
 
 const H2 = styled.h2`
 width: 100%;
@@ -108,6 +111,136 @@ font-size:14px;
   -webkit-text-fill-color: transparent;
 `;
 
+const NumberText = styled.strong`
+// border:1px solid red;
+font-family:"Lilita One";
+color :#e2cc4d;
+text-shadow: 1.5px 1.3px #daa636;
+`;
+
+const VotText = styled.p`
+color: #fff;
+font-family:"Lilita One";
+font-family: Rounded Mplus 1c;
+font-size: 35px;
+font-style: normal;
+font-weight: 900;
+text-shadow: 1.2px 1.3px #c7ccf9;
+
+`;
+
+const TopDiv = styled.div`
+position :absolute;
+top:-47px;
+z-index:10;
+`;
+
+const ButttonDiv = styled.div`
+width:200px;
+border:3px solid white;
+ display: flex;
+justify-content: center;
+border-radius:50px;
+background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+  animation: zoom-in-zoom-out 1s infinite ;
+transition: background 1s;
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+    color: #B869FC;
+  }
+  100% {
+   background: linear-gradient(180deg, rgba(212,176,92,1) 0%, rgba(243,236,60,1) 100%);
+   color:#DAA636;
+  }  
+}
+
+  button {
+    background:white;
+    border:1px solid white;
+    border-radius:50px;
+    padding:5px;    
+    margin:7px 0px;
+    font-size:20px;
+    color: red;
+    width:180px;
+    color: #B869FC;
+font-family:"Lilita One";
+font-family: Rounded Mplus 1c;
+font-size: 20px;
+transition: color 1s;
+
+animation: colorText 1s infinite ;
+
+    @keyframes colorText {
+  0% {    
+    color: #B869FC;
+  }
+  100% {
+   
+   color:#DAA636;
+  }  
+}
+
+  }
+
+
+`;
+
+const ButttonDivMob = styled.div`
+width:150px;
+border:3px solid white;
+ display: flex;
+justify-content: center;
+border-radius:50px;
+background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+  animation: zoom-in-zoom-out 1s infinite ;
+transition: background 1s;
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+    color: #B869FC;
+  }
+  100% {
+   background: linear-gradient(180deg, rgba(212,176,92,1) 0%, rgba(243,236,60,1) 100%);
+   color:#DAA636;
+  }  
+}
+
+  button {
+    background:white;
+    border:1px solid white;
+    border-radius:50px;
+    padding:0px;    
+    margin:6px 0px;    
+    color: red;
+    width:135px;
+    color: #B869FC;
+font-family:"Lilita One";
+font-family: Rounded Mplus 1c;
+font-size: 20px;
+transition: color 1s;
+font-size:15px;
+
+animation: colorText 1s infinite ;
+
+    @keyframes colorText {
+  0% {    
+    color: #B869FC;
+  }
+  100% {
+   
+   color:#DAA636;
+  }  
+}
+
+  }
+
+
+`;
+
 
 const CoinList = styled.div`
   // border:1px solid red;
@@ -183,7 +316,7 @@ const Divbutton = styled.div`
 `;
 
 
-const VotingPayment: React.FC<{
+const VotingPaymentCopy: React.FC<{
   checkAndPay: Function,
   setPaymentStatus: React.Dispatch<React.SetStateAction<{ type: string, message: string }>>,
   paymentStatus: { type: string, message: string },
@@ -215,6 +348,8 @@ const VotingPayment: React.FC<{
     const { showModal } = useContext(NotificationContext);
     const { quotes } = useContext(ContentContext);
     const { width } = useWindowSize();
+
+
     const [coinsList, setCoinsList] = useState([])
     const [selectPayment, setSelectPayment] = useState(0);
     // const [selectCoin, setSelectCoin] = useState("none");
@@ -336,69 +471,90 @@ const VotingPayment: React.FC<{
             style={{
               width: `${window.screen.width > 767 ? "49%" : "100%"}`
             }}
-          >
-            <Row className=""
-              style={{
-                width: `${window.screen.width > 767 ? "" : "100%"}`,
-                padding: `${window.screen.width > 767 ? "" : "0px"}`,
-                margin: `${window.screen.width > 767 ? "" : "0px"}`
-
-              }}
+          >            
+            <div
+              className={`${window.screen.width > 767 ? "justify-content-start" :"justify-content-center mt-5 mb-3"} d-flex`} 
             >
-              <Col lg={12} sm={12} className="d-flex justify-content-md-start justify-content-center"
+              <div
+                className="d-flex justify-content-center"
                 style={{
-                  cursor: "pointer",
-                }}              
+                  position: "relative",
+                  height: "350px",
+                }}
               >
-                <Prices style={{}}>
-                  <div style={{
-                    backgroundImage: `url(${BGOBJECTS})`,
+                {extraPer > 0 && <TopDiv >
+                  <img src={VoteToP} alt="" width={"80px"} />
+                  <div
+                    className="text-center w-100"
+                    style={{
+                      position: "absolute",
+                      top: "20px",
+                      fontSize: "15px",
+                      lineHeight: 0.9,
+                    }}
+                  >
+                    <p className=""><strong
+                      style={{
+                        fontSize: "25px"
+                      }}
+                    >{extraPer}</strong>%</p>
+                    <p>Extra</p>
+                  </div>
+                </TopDiv>}
+                <div className="d-flex align-items-center flex-column"
+                  style={{
+                    width: "250px",
+                    backgroundImage: `url(${VoteBg})`,
                     backgroundRepeat: "no-repeat",
-                    marginTop: "30px",
-                    position: "absolute",
-                    width: "264px",
-                    height: "330px",
-                    opacity: "0.2",
-                    zIndex: "1"
+                    backgroundPosition: "center",
+                    height: "400px"
 
                   }}
+                >
+                  <p className="mt-4 "
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: "initial"
+                    }}
+                  >FOR ONLY</p>
+                  <NumberText
+                    className=""
+                    style={{
+                      fontSize: "40px",
+                      lineHeight: 1.1
+                    }}
+                  >$ {payamount}.00</NumberText>
+                  <div className="d-flex mt-3">
+                    {/* @ts-ignore */}
+                    {Array(extraPer == 0 ? 3 : extraPer == 20 ? 3 : extraPer == 25 ? 4 : 5).fill().map(() => {
+                      return <img src={VoteStar} alt="" width={"50px"} className="" />
+                    })}
+                  </div>
+                  <div
+                    className="d-flex align-items-center flex-column"
+                    style={{
+                      lineHeight: 0.9
+                    }}
                   >
-                  </div>
 
-                  {extraPer > 0 ?
-                    <Corner>
-                      <CornerText style={{
-                        color: '#FFF',
-                        fontSize: '22px',
-                        fontFamily: 'Poppins',
-                        fontWeight: '700',
 
-                      }}>{extraPer}% <br /><span style={{ fontSize: '12px', }}>EXTRA</span></CornerText>
-                    </Corner>
-                    :
-                    <div
+                    <VotText>BUY</VotText>
+                    <NumberText
+                      className=""
                       style={{
-                        position: "relative",
-                        width: "95px",
-                        height: "95px",
+                        fontSize: "100px"
                       }}
-                    >
-                    </div>
-                  }
-                  <div style={{
-                    backgroundImage: `url(${Gift})`, width: '100%', height: '50%', backgroundRepeat: 'no-repeat',
-                    marginLeft: '4em', marginTop: '-2em', paddingTop: '1.5em', paddingLeft: '5em'
-                  }}>
-                    <ForOnly>For Only</ForOnly>
-                    <Price>${payamount}.00</Price>
-                  </div>
-                  <ExtraText className="text-center">
-                    <p>BUY {extraVote} VOTES</p>
-                  </ExtraText>
-                </Prices>
-              </Col>
-            </Row>
+                    >{extraVote}</NumberText>
 
+                    <VotText>votes</VotText>
+                  </div>
+                  <ButttonDiv className="mt-1">
+                    <button
+                    >BUY NOW !</button>
+                  </ButttonDiv>
+                </div>
+              </div>
+            </div >              
           </div > :
             <>
               <div
@@ -594,4 +750,4 @@ const VotingPayment: React.FC<{
     );
   };
 
-export default VotingPayment;
+export default VotingPaymentCopy;

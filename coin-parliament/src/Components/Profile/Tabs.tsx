@@ -5,7 +5,7 @@ import styled from "styled-components";
 type TabsProps = {
   defaultActiveKey: string;
   id: string;
-  onSelect: () => void;
+  onSelect: any;
   tabs: { eventKey: string; title: string; pane: React.ReactNode }[];
   setRunVote?: any;
   runVote?: any;
@@ -70,7 +70,7 @@ const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote, getVo
             })}
           </Nav>
         </Container>
-        {tabs[0]?.title=="Pair" && <div
+        {tabs[0]?.title == "Pair" && <div
           className="d-flex justify-content-center align-items-center mt-2"
         >
           <div className="d-flex justify-content-start align-items-center">

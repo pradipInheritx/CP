@@ -15,7 +15,7 @@ const RewardList = styled.p`
 export type tableColumnType = {
     title: string;
     assessorName: string;
-    row?: React.ReactNode;
+    Row?: React.FC<{ value: any, data?: any }>;
 }
 
 
@@ -23,22 +23,25 @@ export type tableColumnType = {
 interface TableType<T> {
     data: T[];
     headers: tableColumnType[];
-    pagination?: boolean;
+    totalRecord?: number;
+    loading?: boolean;
+    pageSize?: number;
+    pageIndex?: number;
+    setPageIndex?: React.Dispatch<React.SetStateAction<number>>;
 }
-const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
-    const [pageIndex, setPageIndex] = useState(1);
+const Index = <T,>({ data, headers, totalRecord = 0, loading = false, pageSize, pageIndex, setPageIndex }: TableType<T>) => {
     return (
         <>
             <div className='d-flex justify-content-around w-100 py-3' style={{ background: "#7456ff" }}>
                 {
                     headers.map((item: tableColumnType, index: number) => {
-                        return (<div style={{ width: `19%` }}>
+                        return (<div style={{ width: `19%` }} key={index}>
                             <strong>{item?.title}</strong>
                         </div>)
                     })
                 }
             </div>
-            {data.map((value: any, index: number) => {
+            {!loading && data.map((value: any, index: number) => {
                 return (
                     <div className='d-flex justify-content-around' key={index} style={{ textAlign: "center", }}>
                         {
@@ -46,7 +49,9 @@ const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
                                 return (
                                     <div style={{ width: "19%" }} key={i}>
                                         <RewardList>
-                                            {value[item?.assessorName] || "NA"}
+                                            {item?.Row ?
+                                                <item.Row value={value[item?.assessorName] || 'NA'} data={value} />
+                                                : (value[item?.assessorName] || "NA")}
                                         </RewardList>
                                     </div>
                                 )
@@ -55,13 +60,17 @@ const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
                     </div>
                 )
             })}
-
-            {!data?.length && (
+            {loading &&
+                <div className='d-flex justify-content-around w-100 mt-4 mb-4'>
+                    <span className='loading'>Loading...</span>
+                </div>
+            }
+            {(!loading && !data?.length) && (
                 <div className='d-flex justify-content-around w-100 mt-4'>
                     {
-                        headers.map(() => {
+                        headers.map((val, index) => {
                             return (
-                                <div className=''
+                                <div key={index} className=''
                                     style={{
                                         width: `${(100 / headers.length) - 1}`,
                                     }}
@@ -72,7 +81,7 @@ const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
                     }
                 </div>
             )}
-            {pagination && <>
+            {(!!totalRecord && pageSize && setPageIndex && pageIndex) && <>
                 <ButtonGroup>
                     <Button
                         disabled={pageIndex === 1}
@@ -82,10 +91,7 @@ const Index = <T,>({ data, headers, pagination = true }: TableType<T>) => {
                         {texts.Prev}
                     </Button>
                     <Button
-                        disabled={
-                            true
-                            // pageIndex * 5 >= totalData
-                        }
+                        disabled={pageIndex * pageSize >= totalRecord}
                         onClick={() => setPageIndex(prev => prev + 1)}
                     >
                         {texts.Next}

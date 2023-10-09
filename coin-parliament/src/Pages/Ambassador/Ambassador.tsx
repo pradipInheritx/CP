@@ -11,7 +11,7 @@ import NotificationContext, { ToastType } from "Contexts/Notification";
 import UserContext from "Contexts/User";
 import AppContext from "Contexts/AppContext";
 import Copy from "Components/icons/copy";
-import classes from "./partners.module.css"
+import classes from "./Ambassador.module.css"
 import signUpImage from "assets/images/signup.svg"
 import inviteUser from "assets/images/inviteUser.svg"
 import Gift from "assets/images/Gift.svg"
@@ -40,7 +40,7 @@ const I = styled.i`
   font-size:22px;
 `;
 const
-  Partners = () => {
+  Ambassador = () => {
     const translate = useTranslation();
     const { showToast } = useContext(NotificationContext);
     const { user } = useContext(UserContext);
@@ -50,9 +50,9 @@ const
     const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
     const [showShare, setShowShare] = useState(false);
     return (
-      <div className={classes.partnersMain}>
+      <div className={classes.AmbassadorMain}>
         <div className="d-flex justify-content-center">
-          <span className={classes.headerTitle}>We believe in Partnerships!</span>
+          <span className={classes.headerTitle}>We believe in Ambassadorships!</span>
         </div>
         <PoolBox style={{ paddingTop: '5em' }}>
 
@@ -169,8 +169,7 @@ const
           </div>
           <div className="d-flex justify-content-center align-items-center ">
             <div className={`row mt-5`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
-              <div className="col-md-7">
-                {/* <span className={classes.subHeaderText}>How does the Coin Parliament partners' program work?</span> */}
+              <div className="col-md-7">                
                 <span className={`${classes.subHeaderText} mb-3`}>How does it work?</span>
                 <div className={classes.description} style={{ fontWeight: 'bold', fontSize: '1.5em' }}>
                   <ol>
@@ -274,4 +273,4 @@ const
     );
   };
 
-export default Partners;
+export default Ambassador;

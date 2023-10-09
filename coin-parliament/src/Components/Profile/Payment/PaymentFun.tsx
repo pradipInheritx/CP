@@ -9,6 +9,7 @@ import CoinsList from './CoinsList';
 import AppContext from 'Contexts/AppContext';
 import { texts } from 'Components/LoginComponent/texts';
 import { Modal } from 'react-bootstrap';
+import VotingPaymentCopy from './VotingPaymentCopy';
 
 export type paymentProps = {
   type: any;
@@ -131,7 +132,7 @@ function PaymentFun({ isVotingPayment }: any) {
       numberOfVotes: extraVote,
       paymentDetails: { ...detail, ...transactionId.current},      
       
-    }  
+    }
     axios.post(`${ApiUrl}payment/update/user/afterVote`, data,
       {
         headers: headers
@@ -207,7 +208,7 @@ function PaymentFun({ isVotingPayment }: any) {
   }
   return (
     <>
-      <VotingPayment
+      <VotingPaymentCopy
         checkAndPay={checkAndPay}
         paymentStatus={paymentStatus}
         setPaymentStatus={setPaymentStatus}
