@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import { ButtonGroup } from "react-bootstrap";
 import Button from "Components/Atoms/Button/Button";
 import moment from 'moment';
+import axios from 'axios';
+import UserContext from 'Contexts/User';
+import Table, { tableColumnType } from "Components/table"
 
 const RewardList = styled.p`
   font-size: 10px;
@@ -11,42 +14,76 @@ const RewardList = styled.p`
   cursor: pointer;   
    padding:15px;   
 `;
-// const tableHeader = ["Transaction id", "Date", "Item", "Amount", "Payment method"];
-type tableColumnType = {
-    title: string;
-    assessorName: string;
-    row?: React.ReactNode;
-}
+
 const tableHeader: tableColumnType[] = [
     {
         title: 'Order Id',
-        assessorName: 'orderId'
+        assessorName: 'docId'
     },
     {
         title: 'Date',
-        assessorName: 'date'
+        assessorName: 'timestamp',
+        Row: ({ value, data }) => {
+            return (
+                <span>
+                    {value?._seconds ? moment(new Date(value?._seconds * 1000)).format("DD/MM/YYYY HH:mm") : '-'}
+                </span>
+            );
+
+        }
     },
     {
         title: 'Item',
-        assessorName: 'item'
+        assessorName: 'item',
+        Row: ({ value, data }) => {
+            return (
+                <span>
+                    {data?.transactionType == "EXTRAVOTES" ? data?.numberOfVotes + " " + "Extra Votes" : data?.transactionType || "-"}
+                </span>
+            )
+        }
     },
     {
         title: 'Amount',
-        assessorName: 'amount'
+        assessorName: 'amount',
+        Row: ({ value, data }) => {
+            return (
+                <span>
+                    ${value}
+                </span>
+            );
+
+        }
     },
     {
         title: 'Payment Method ',
-        assessorName: 'paymentMethod'
+        assessorName: 'token',
     },
     {
         title: 'Child Id',
-        assessorName: 'childId'
+        assessorName: 'childUserId'
     },
 ];
 const Complete: React.FC = () => {
+    const { userInfo } = useContext(UserContext)
     const [data, setData] = useState([]);
-    const [pageIndex, setPageIndex] = useState(1);
+    const [totalRecord, setTotalRecord] = useState(0);
+    const [pageIndex, setPageIndex] = useState<number>(1);
+    const [loading, setLoading] = useState(false);
+    const [pageSize] = useState(5);
 
+    useEffect(() => {
+        if (userInfo?.uid) {
+            setLoading(true);
+            axios.get(`/payment/getParentPayment/${userInfo?.uid}?status=PENDING&pageNumber=${pageIndex}&pageSize=${pageSize}`).then((response) => {
+                setData(response?.data?.data);
+                setTotalRecord(response.data?.total)
+                setLoading(false);
+            }).catch((error) => {
+                setLoading(false);
+            })
+        }
+    }, [JSON.stringify(userInfo?.uid), pageIndex]);
     return (
 
         <div
@@ -61,75 +98,7 @@ const Complete: React.FC = () => {
                 width: `${window.screen.width > 767 ? "730px" : "100%"}`,
                 margin: "auto",
             }}>
-
-            <div className='d-flex justify-content-around w-100 py-3'
-                style={{
-                    background: "#7456ff"
-                }}
-            >
-                {
-                    tableHeader.map((item: tableColumnType, index: number) => {
-                        return (<div style={{ width: `19%` }}>
-                            <strong>{item?.title}</strong>
-                        </div>)
-                    })
-                }
-            </div>
-            {data.map((item: any, index: number) => {
-                return (
-                    <div className='d-flex justify-content-around' style={{ textAlign: "center", }}>
-                        {
-                            tableHeader.map((item: tableColumnType, index: number) => {
-                                return (
-                                    data.map((value, key) => {
-                                        return (
-                                            <div style={{ width: "19%" }}>
-                                                <RewardList>
-                                                    {value[item?.assessorName] || "NA"}
-                                                </RewardList>
-                                            </div>
-                                        )
-                                    })
-                                )
-                            })
-                        }
-                    </div>
-                )
-            })}
-            {!data?.length && (
-                <div className='d-flex justify-content-around w-100 mt-4'>
-                    {
-                        tableHeader.map(() => {
-                            return (
-                                <div className=''
-                                    style={{
-                                        width: `${(100 / tableHeader.length) - 1}`,
-                                    }}
-                                >
-                                    <RewardList>-</RewardList>
-                                </div>)
-                        })
-                    }
-                </div>
-            )}
-            <ButtonGroup>
-                <Button
-                    disabled={pageIndex === 1}
-                    onClick={() => setPageIndex(prev => prev - 1)}
-                    style={{ marginRight: '1em' }}
-                >
-                    {texts.Prev}
-                </Button>
-                <Button
-                    disabled={
-                        true
-                        // pageIndex * 5 >= totalData
-                    }
-                    onClick={() => setPageIndex(prev => prev + 1)}
-                >
-                    {texts.Next}
-                </Button>
-            </ButtonGroup>
+            <Table data={data} headers={tableHeader} totalRecord={totalRecord} loading={loading} pageSize={pageSize} pageIndex={pageIndex} setPageIndex={setPageIndex} />
         </div>
     )
 }

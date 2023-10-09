@@ -72,7 +72,7 @@ export const texts = {
   CoinParliamentBalance: "PARLIAMENT COIN".toUpperCase(),
   CLAIMINGREWARDS: "CLAIMING REWARDS...",
   CLAIMYOURREWARDS: "CLAIM YOUR REWARDS",
-  WEBELIEVEINPARTNERSHIPS: "WE BELIEVE IN PARTNERSHIPS!",
+  
   friends: "friends".toUpperCase(),
   LoadingText: "loading...".toUpperCase(),
   Calculatingvoteresult: "Calculating vote result...".toUpperCase(),
@@ -104,8 +104,7 @@ export const texts = {
   parliamentcoin: "parliament coin".toUpperCase(),
   Card: "Card".toUpperCase(),
   ForgetPassword: "Forget password",
-  Foundations: "Foundations",
-  Partners: "Partners",
+  Foundations: "Foundations",  
   passwordValidation1: 'Password must be at least 8 characters.',
   passwordValidation2: 'Password must contain 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character',
   passwordValidation3: 'It must not contain more than 2 identical consecutive characters (AAA, iiii, ...).',

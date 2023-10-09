@@ -85,7 +85,7 @@ const GameRule = () => {
             Members can showcase, trade, or sell their Collectibles.
             Being the first owner of a Collectible card earns you lifetime royalties of 50% from its sales, providing a continuous income stream.
             Additionally, you can earn Parliament coins (VTE), extra votes, and discounts on Vote To Earn merchandise.
-            The Partners Program allows you to refer friends and earn commissions from their purchases, adding to your income potential.
+            The Ambassador Program allows you to refer friends and earn commissions from their purchases, adding to your income potential.
             In summary, Coin Parliament: Vote To Earn is a game where you progress by voting, collecting cards, upgrading to Mining for Collectibles, and enjoying the benefits within the crypto ecosystem, including lifetime royalties from the sale of your Collectible cards.
           </p>
         </div>

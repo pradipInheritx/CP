@@ -119,10 +119,11 @@ import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvata
 // import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
 import PrivacyPolicy from "./Pages/PrivacyPolicy";
 import UpgradePage from "./Components/Profile/UpgradePage";
+import UpgradePageCopy from "./Components/Profile/UpgradePageCopy";
 import VotingBoosterCopy from "./Components/Profile/VotingBoosterCopy";
 import ProfileNftGallery from "./Pages/ProfileNftGallery";
 import GameRule from "./Pages/GameRule";
-import Partners from "./Pages/partners/Partners";
+import Ambassador from "./Pages/Ambassador/Ambassador";
 import Foundations from "./Pages/Foundations";
 import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
 import SingalCard from "./Pages/SingalCard";
@@ -1725,8 +1726,8 @@ function App() {
                                             {/* Fowller component  end*/}
                                             <Route
                                               path='/upgrade'
-                                              // element={user && userInfo?.uid ? <UpgradePage /> : <Navigate to="/" />}
-                                              element={<UpgradePage />}
+                                              
+                                            element={<UpgradePage />}
                                             />
                                             {/* <Route
                                               path='/paymentList'
@@ -1750,7 +1751,7 @@ function App() {
                                             />
                                             <Route
                                               path='/votingbooster'
-                                              element={<VotingBooster />}
+                                            element={<VotingBoosterCopy />}
                                             />
                                             <Route
                                               path='influencers'
@@ -1768,8 +1769,8 @@ function App() {
                                               element={<GameRule />}
                                             />
                                             <Route
-                                              path='partners'
-                                              element={<Partners />}
+                                            path='Ambassador'
+                                              element={<Ambassador />}
                                             />
                                             <Route
                                               path='foundations'

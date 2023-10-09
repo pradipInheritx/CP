@@ -17,12 +17,12 @@ const Index: React.FC = () => {
                 <div className="d-flex justify-content-sm-end justify-content-center align-items-center">
                     <Form.Check
                         className="boxCheck"
-                        style={{ fontSize: "20px", marginRight: "10px", outline: 0 }}
+                        style={{ fontSize: "20px", marginRight: "10px", outline: 0, cursor: 'pointer' }}
                         type="checkbox"
                         id={`default-checkbox`}
                         onClick={() => setShowPendingPayment(prev => !prev)}
                     />
-                    <label htmlFor="default-checkbox" className="custom-control-label" style={{ color: "#6352e8" }}>Show Pending Payments</label>
+                    <label htmlFor="default-checkbox" className="custom-control-label" style={{ color: "#6352e8", cursor: 'pointer' }}>Show Pending Payments</label>
                 </div>
             </div >
             {showPendingPayment ? <PaymentPending /> : <PaymentComplete />}

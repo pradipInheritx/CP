@@ -31,6 +31,8 @@ import VotesText from '../../assets/images/VotesText.png';
 import VoteButton from '../../assets/images/VoteButton.png';
 import VoteButton2 from '../../assets/images/VoteButton2.png';
 import VoteTop from '../../assets/images/VoteTop.png';
+import VBG from '../../assets/images/VBG.png';
+import VBGM from '../../assets/images/VBGM.png';
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -181,7 +183,7 @@ animation: colorText 1s infinite ;
 
 `;
 
-const VotingBooster = () => {
+const VotingBoosterCopy = () => {
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
@@ -230,7 +232,14 @@ const VotingBooster = () => {
   }
 
   return (
-    <>
+    <div
+      style={{
+        backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})` }`,        
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "100%",
+    }}
+    >
 
       <H2
         style={{
@@ -364,7 +373,8 @@ const VotingBooster = () => {
               style={{
                 position: "relative",
                 height: "350px",
-            }}
+                
+              }}                                          
             >
               {item.Extra  > 0 &&<TopDiv >
                 <img src={VoteTop} alt="" width={"80px"}
@@ -465,8 +475,8 @@ const VotingBooster = () => {
       {window.screen.width < 767 && <div>
         <img src={votingbooster} alt="" className=""  width={"100px"}/>
       </div>}
-    </>
+    </div>
   );
 };
 
-export default VotingBooster;
+export default VotingBoosterCopy;

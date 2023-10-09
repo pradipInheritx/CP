@@ -67,7 +67,7 @@ function PaymentHistory() {
       <Tabs
         defaultActiveKey="Payment History"
         id="Payment"
-        onSelect={() => setIndex(0)}
+        onSelect={(k?: number) => setIndex((k || 0))}
         tabs={[
           {
             eventKey: "Payment History",
@@ -204,7 +204,7 @@ function PaymentHistory() {
           {
             eventKey: "Receive Payment",
             title: "Receive Payment",
-            pane: <ReceivePayment />,
+            pane: index ? <ReceivePayment /> : <></>,
           }
         ]}
       />

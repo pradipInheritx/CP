@@ -397,8 +397,7 @@ const NFTGallery = () => {
     <div className=''
     // style={{ minHeight: "auto" }}
     >
-      <h5 className="mt-4 text-center ">
-        {/* {texts.WEBELIEVEINPARTNERSHIPS} */}
+      <h5 className="mt-4 text-center ">        
         <strong style={{ textTransform: 'uppercase', fontSize: "1.26rem" }}>Wall of fame</strong>
       </h5>
       <div className='d-flex justify-content-center mt-2  flex-wrap w-100 py-2'
