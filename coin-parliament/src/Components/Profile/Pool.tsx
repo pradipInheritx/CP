@@ -9,7 +9,7 @@ import PoolMiningCard from "./PoolMiningCard";
 
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
-  const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
+  const referralUrl = `${document.location.protocol}//${document.location.host}/sign-up?refer=${user?.email}`;
   const [children, setChildren] = useState<Leader[]>([]);
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
