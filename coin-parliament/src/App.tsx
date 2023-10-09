@@ -40,7 +40,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { auth, db, functions, messaging } from "./firebase";
+import { auth, coinParliament, db, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -450,7 +450,7 @@ function App() {
     console.log('not supported')
   }
   useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined && !login) {
+    if (user?.email && userInfo?.displayName === undefined) {
       setLoader(true);
     } else {
       // setTimeout(() => {
@@ -458,32 +458,27 @@ function App() {
       // }, 2000);
     }
   }, [user, userInfo]);
+
+
   const updateUser = useCallback(async (user?: User) => {
     setUser(user);
 
     const info = await getUserInfo(user);
-    setUserInfo(info);
+
+    try {
+      const documentRef = coinParliament.firestore().collection('users').doc(user?.uid);
+      const doc = await documentRef.get();
+      if (doc.exists) {
+        // @ts-ignore
+        setUserInfo(doc.data());
+      }
+    } catch (error) { }
+    // setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
 
 
-  // const FollowerData = async(id:any) => {     
-  //   const Followerinfo =  await getFollowerInfo(id);
-  //   return Followerinfo
-  // }
 
-  // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
-
-
-  useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined && !login) {
-      setLoader(true);
-    } else {
-      setTimeout(() => {
-        setLoader(false);
-      }, 2000);
-    }
-  }, [user, userInfo]);
   useEffect(() => {
     // const buttons = document.getElementsByTagName('button');
     // console.log('buttondata',buttons);
@@ -587,7 +582,9 @@ function App() {
         user?.providerData[0]?.providerId === "facebook.com"
       ) {
         setLoginRedirectMessage("");
-        await updateUser(user);
+
+
+        // await updateUser(user);
         setUserUid(user?.uid);
         onSnapshot(doc(db, "users", user.uid), async (doc) => {
           await setUserInfo(doc.data() as UserProps);
@@ -611,11 +608,12 @@ function App() {
           console.log("An error occurred while retrieving token. ", e);
         }
       } else {
-        await updateUser();
+        // await updateUser();
       }
     });
     // }
-  }, [user, fcmToken, coins]);
+  }, [user, fcmToken, coins, JSON.stringify(auth?.currentUser)]);
+
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
     const key = getKeyByLang(lang);

@@ -4,7 +4,8 @@ import firebaseSportParliament, { auth, db } from "firebaseSportParliament"
 import { Callback } from "./utils";
 import { User, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { saveUserData, saveUsername } from "../../Contexts/User";
+import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
+import sportParliament from "firebaseSportParliament";
 export const SignupRegularForSportParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -20,14 +21,15 @@ export const SignupRegularForSportParliament = async (
         );
         if (auth?.currentUser) {
             await sendEmailVerification(auth?.currentUser);
-
-            const userRef = doc(db, "users", auth?.currentUser?.uid);
-            await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
+            const referUser = await getReferUser(sportParliament.firestore());
+            await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, ...userData, parent: referUser?.uid });
+            // const userRef = doc(db, "users", auth?.currentUser?.uid);
+            // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
             console.log('sport', auth);
         }
         //@ts-ignore
-        callback.successFunc(userCredential.user);
+        // callback.successFunc(userCredential.user);
         return true;
     } catch (e) {
         // @ts-ignore

@@ -4,6 +4,8 @@ import firebaseVotingParliament, { auth, db } from "firebaseVotingParliament"
 import { Callback } from "./utils";
 import { User, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { getReferUser, saveUserData } from "Contexts/User";
+import votingParliament from "firebaseVotingParliament";
 export const SignupRegularForVotingParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -19,8 +21,10 @@ export const SignupRegularForVotingParliament = async (
         );
         if (auth?.currentUser) {
             await sendEmailVerification(auth?.currentUser);
-            const userRef = doc(db, "users", auth?.currentUser?.uid);
-            await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
+            const referUser = await getReferUser(votingParliament.firestore());
+            await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, ...userData, parent: referUser?.uid });
+            // const userRef = doc(db, "users", auth?.currentUser?.uid);
+            // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
             console.log('voting', auth);
         }
@@ -34,7 +38,7 @@ export const SignupRegularForVotingParliament = async (
             // @ts-ignore
             const matches = e.code.replace("auth/", "");
             const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
-            // callback.errorFunc({ message: '' /* lastmatches */ } as Error);
+            callback.errorFunc({ message: lastmatches } as Error);
         }
         return false;
     }
