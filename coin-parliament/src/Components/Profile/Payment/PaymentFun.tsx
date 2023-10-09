@@ -153,7 +153,7 @@ function PaymentFun({ isVotingPayment }: any) {
         setPayButton(false);
         setShowForWait(false)
         window.scrollTo({
-          top: 400,
+          top: 500,
           behavior: 'smooth',
         });
         // @ts-ignore
