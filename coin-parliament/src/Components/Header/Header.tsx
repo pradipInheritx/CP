@@ -1,4 +1,5 @@
 import UserContext from 'Contexts/User';
+import Avatars from 'assets/avatars/Avatars';
 import { useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -13,15 +14,14 @@ const Header = () => {
             <img src="/VTE logo.webp" alt="Vote to Earn" />{window.screen.width > 350 ? 'Vote to Earn' : ''}
           </Navbar.Brand>
           <Navbar.Collapse className="justify-content-center" style={{ color: 'white', cursor: 'pointer' }}>
-            <div style={{ marginLeft: '-16em' }}>
-              {userInfo?.avatar ?
-                // @ts-ignore
-                <img style={{ height: '35px', width: '35px', borderRadius: '50px' }} src={userInfo?.avatar} alt="Logo" referrerpolicy="no-referrer" /> :
+            {userInfo && (
+              userInfo?.avatar ?
+                <Avatars type={userInfo?.avatar} /> :
                 <span className="material-symbols-outlined d-flex align-items-center">
                   account_circle
-                </span>}
-              <span className='ps-2'>{userInfo?.displayName || userInfo?.email}</span>
-            </div>
+                </span>
+            )}
+            <span className='ps-2' style={{ marginRight: '19em' }}>{userInfo?.displayName || userInfo?.email}</span>
           </Navbar.Collapse>
         </Container>
       </Navbar>

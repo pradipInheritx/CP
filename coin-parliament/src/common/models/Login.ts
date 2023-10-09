@@ -20,9 +20,9 @@ import { FormEvent } from "react";
 import { Callback } from "./utils";
 import { ToastType } from "../../Contexts/Notification";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
-import { saveUsername } from "../../Contexts/User";
+import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../firebase";
+import coinParliament, { functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
@@ -214,7 +214,7 @@ export const LoginRegular = async (
     // console.log('firsttimelogin',isFirstLogin)    
     if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
-        saveUsername(userCredential?.user?.uid, '', '')
+        // saveUsername(userCredential?.user?.uid, '', '')
 
         const firstTimeLogin: Boolean = true
         const userRef = doc(db, "users", userCredential?.user?.uid);
@@ -306,17 +306,15 @@ export const SignupRegular = async (
     await sendEmailVerification(auth?.currentUser).then((data) => {
       showToast("Successfully sent  verification link on your mail");
     });
-    const firstTimeLogin: Boolean = true
-    // @ts-ignore
 
-    const userRef = doc(db, "users", auth?.currentUser?.uid);
-    await setDoc(userRef, { firstTimeLogin }, { merge: true })
-    console.log('firsttimelogin success')
-    // @ts-ignore
-    saveUsername(auth?.currentUser?.uid, '', '')
+    const referUser = await getReferUser(coinParliament.firestore());
+    saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
+    // const userRef = doc(db, "users", auth?.currentUser?.uid);
+    // await setDoc(userRef, { firstTimeLogin }, { merge: true })
+
     showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
-    callback.successFunc(auth?.currentUser)
+    // callback.successFunc(auth?.currentUser)
     return true;
   } catch (e) {
     // callback.errorFunc(e as Error);
@@ -324,18 +322,16 @@ export const SignupRegular = async (
     // @ts-ignore
     const matches = e.code.replace("auth/", "");
     const lastmatches = matches.replace(/\b(?:-)\b/gi, " ");
-    callback.errorFunc({ message: lastmatches } as Error);
+    // callback.errorFunc({ message: lastmatches } as Error);
     return false;
   }
 };
 
 export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
   SignupRegular(payload, callback).then(async (res) => {
-    if (res) {
-      await SignupRegularForSportParliament(payload, callback);
-      await SignupRegularForStockParliament(payload, callback);
-      await SignupRegularForVotingParliament(payload, callback);
-    }
+    await SignupRegularForSportParliament(payload, callback);
+    await SignupRegularForStockParliament(payload, callback);
+    await SignupRegularForVotingParliament(payload, callback);
   }).catch(() => {
 
   });

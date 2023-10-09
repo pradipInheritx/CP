@@ -1,11 +1,11 @@
 import React from "react";
 import { NotificationProps, userConverter, UserProps } from "../common/models/User";
 import { User as AuthUser } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, Firestore, getDoc, setDoc } from "firebase/firestore";
 import { db, functions } from "../firebase";
 import { VoteResultProps } from "../common/models/Vote";
 import { httpsCallable } from "firebase/functions";
-
+import firebase from 'firebase/app';
 export type UserContextProps = {
   userInfo?: UserProps;
   user?: AuthUser;
@@ -32,6 +32,7 @@ export const getUserInfo: (user?: AuthUser) => Promise<UserProps> = async (
     const ref = doc(db, "users", user?.uid).withConverter(userConverter);
     const userinfo = await getDoc<UserProps>(ref);
     const info = userinfo.data();
+
     if (info?.leader) {
       observeTopics({ leaders: info.leader }).then(() => void 0);
     }
@@ -51,18 +52,32 @@ export const saveFoundation = async (uid: string, foundationName: string) => {
   await setDoc(userRef, { foundationName }, { merge: true });
 };
 
-export const saveUserData = async (uid: string, data: { [key: string]: any }) => {
-
+export const saveUserData = async (uid: string, database: Firestore, data: { [key: string]: any }) => {
   let userData: { [key: string]: string } = {};
   Object.keys(data).map((value) => {
     if (data[value]) {
       userData = { ...userData, [value]: data[value] }
     }
   });
-  console.log(userData, 'sport');
-  const userRef = doc(db, "users", uid);
+  console.log(userData, 'userData');
+  const userRef = doc(database, "users", uid);
   await setDoc(userRef, userData, { merge: true });
 };
+
+export const getReferUser = async (database: any) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const email = urlParams.get('refer');
+  let user = { uid: '' };
+  if (email) {
+    const referUser = await database.collection('users').where('email', '==', email).get();
+    if (!referUser.empty) {
+      referUser.forEach((doc: any) => {
+        user = doc.data();
+      });
+    }
+  }
+  return user;
+}
 
 export default UserContext;
 
