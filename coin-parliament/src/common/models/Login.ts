@@ -292,7 +292,7 @@ export const SignupRegular = async (
     await setDoc(userRef, { firstTimeLogin }, { merge: true })
     console.log('firsttimelogin success')
     // @ts-ignore
-    saveUsername(auth?.currentUser?.uid, '', '')
+    // saveUsername(auth?.currentUser?.uid, '', '')
     showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
     callback.successFunc(auth?.currentUser)
