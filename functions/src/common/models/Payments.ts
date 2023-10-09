@@ -194,26 +194,21 @@ export const getParentPayment = async (req: any, res: any) => {
     }
 }
 
-
 export const getInstantReferalAmount = async (req: any, res: any) => {
-
     const { userId } = req.params;
     const getParentUser = await firestore().collection('users').doc(userId).get();
     const getParentUserData: any = getParentUser.data();
     const getUserPendingReferalAmount = await firestore().collection('parentPayment').where('parentUserId', '==', userId).where("status", "==", parentConst.PAMENT_STATUS_PENDING).get();
-    const getUserPendingReferalAmountData = getUserPendingReferalAmount.docs.map((payment) => { return payment.data() });
+    const getUserPendingReferalAmountData: any = getUserPendingReferalAmount.docs.map((payment) => {
+        const id = payment.id;
+        return { id, ...payment.data() };
+    });
 
     if (getUserPendingReferalAmountData.length) {
         for (let pending = 0; pending < getUserPendingReferalAmountData.length; pending++) {
             const getPaymentAddress = getParentUserData.wellDAddress.find((address: any) => address.coin === getUserPendingReferalAmountData[pending].token);
             if (getPaymentAddress) {
-
-
                 console.info("getPaymentAddress", getPaymentAddress)
-                getUserPendingReferalAmountData[pending].status = "SUCCESS"
-                const storeInParentData = { ...getUserPendingReferalAmountData[pending], parentPendingPaymentId: null, address: getPaymentAddress.address, receiveType: getParentUserData.referalReceiveType.name, timestamp: firestore.FieldValue.serverTimestamp() }
-                console.info("storeInParentData", storeInParentData)
-                const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
                 const transactionBody = {
                     "method": parentConst.PAYMENT_METHOD,
                     "params": {
@@ -225,7 +220,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
                     "user": "Test"
                 };
                 const getPaymentAfterTransfer = await paymentFunction(transactionBody);
-                await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+                await firestore().collection('parentPayment').doc(getUserPendingReferalAmountData[pending]?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, address: getPaymentAddress.address, receiveType: getParentUserData.referalReceiveType.name, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
             } else {
                 getUserPendingReferalAmountData[pending].status = parentConst.PAYMENT_STATUS_NO_COIN_FOUND
                 const storeInParentData = { ...getUserPendingReferalAmountData[pending], parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: getParentUserData.referalReceiveType.name, timestamp: firestore.FieldValue.serverTimestamp() }
