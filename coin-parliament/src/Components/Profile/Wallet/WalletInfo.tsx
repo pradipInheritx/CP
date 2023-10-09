@@ -537,9 +537,9 @@ function WalletInfo() {
                                             style={{ fontSize: "20px", marginRight: "10px" }}
                                             type="checkbox"
                                             id={`AnyofThem`}    
-                                            checked={limitType == 'ANY_OF_THEM'}
+                                            checked={limitType == 'ANYOFTHEM'}
                                             onChange={() => {
-                                                setLimitType("ANY_OF_THEM")
+                                                setLimitType("ANYOFTHEM")
                                                 setTimeError("")
                                             }}
                                         />
@@ -602,7 +602,7 @@ function WalletInfo() {
                                     </>
                                     }
 
-                                {limitType == "ANY_OF_THEM" &&                                                                      
+                                {limitType == "ANYOFTHEM" &&                                                                      
                                     <>
                                     <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} mt-2`} style={{ marginLeft: '2em' }}>
                                         <select
