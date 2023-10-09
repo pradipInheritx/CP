@@ -219,8 +219,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     refereeScrore: 0,
     googleAuthenticatorData: {},
     voteValue: await getMaxVotes(),
-    wellDAddress: { coin: "", address: "" },
-    referalReceiveType: { name: "", amount: "", time: "" }
+    wellDAddress: [],
+    referalReceiveType: { name: "", amount: "", time: "", limitType: "" }
   };
   try {
     console.log("new user >>>", userData, user.uid);

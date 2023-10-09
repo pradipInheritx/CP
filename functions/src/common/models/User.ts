@@ -48,15 +48,13 @@ export type UserProps = {
   referalReceiveType?: referalReceiveType
 };
 
-export type wellDAddressType = {
-  coin: string,
-  address: string
-}
+export type wellDAddressType = []
 
 export type referalReceiveType = {
   name: string,
   amount: string,
-  time: string
+  time: string,
+  limitType: string
 }
 
 export type RewardStatistics = {
