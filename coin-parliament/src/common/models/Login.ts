@@ -88,6 +88,7 @@ export const LoginAuthProvider = async (
     console.log(auth);
 
     if (auth.currentUser) {
+
       genericThirdPartyLogin({
         payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF', passwordConfirm: '!@#$%^&*#!#%^DF', agree: true, },
         callback: { successFunc: () => { }, errorFunc: () => { } },
@@ -100,6 +101,10 @@ export const LoginAuthProvider = async (
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
     const info = userinfo.data();
     console.log(info, 'mfa');
+    if (isFirstLogin?.isNewUser) {
+      const referUser = await getReferUser(coinParliament.firestore());
+      saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
+    }
 
     if (auth?.currentUser?.photoURL === 'mfa') {
       localStorage.setItem('mfa_passed', 'true');
@@ -116,9 +121,7 @@ export const LoginAuthProvider = async (
     if (isFirstLogin?.isNewUser) {
       // saveUsername(user.uid, '', '')
 
-      const firstTimeLogin: Boolean = true
 
-      await setDoc(userRef, { firstTimeLogin }, { merge: true });
       setTimeout(() => {
 
         setUser(user);

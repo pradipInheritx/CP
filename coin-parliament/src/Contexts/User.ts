@@ -66,7 +66,7 @@ export const saveUserData = async (uid: string, database: Firestore, data: { [ke
 
 export const getReferUser = async (database: any) => {
   const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('refer');
+  const email = localStorage.getItem('parentEmail');
   let user = { uid: '' };
   if (email) {
     const referUser = await database.collection('users').where('email', '==', email).get();

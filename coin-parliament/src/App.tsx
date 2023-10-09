@@ -14,6 +14,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useSearchParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -632,7 +633,15 @@ function App() {
       setLogin(true);
     }
   }, [pathname]);
-
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    let refer = searchParams.get('refer');
+    if (refer) {
+      localStorage.setItem('parentEmail', refer);
+    } else {
+      localStorage.removeItem('parentEmail');
+    }
+  }, []);
 
   return loader ? (
     <Spinner />
@@ -820,12 +829,13 @@ function App() {
                               whiteSpace: "normal",
                               wordWrap: "break-word",
                               padding: '0',
-                              flexGrow: 1
+                              flexGrow: 1,
+                              marginBottom: '120px'
                             }}
                           >
                             <Header />
                             <Routes>
-                              <Route path='/login' element={!user && !mfaLogin ?
+                              <Route path='/login' element={!auth?.currentUser ?
                                 <LoginAndSignup
                                   {...{
                                     authProvider: LoginAuthProvider,
@@ -834,7 +844,7 @@ function App() {
                                   }}
                                 /> : <Navigate to="/" />
                               } />
-                              <Route path='/sign-up' element={!user && !mfaLogin ? <GenericLoginSignup /> : <Navigate to="/" />} />
+                              <Route path='/sign-up' element={!auth?.currentUser ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} />
                               <Route path="/" element={<ProtectedRoutes />}>
                                 <Route path='/' element={<Home />} />
                                 <Route path={'profile/share'} element={<Pool />} />
