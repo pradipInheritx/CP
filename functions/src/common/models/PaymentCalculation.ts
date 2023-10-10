@@ -163,6 +163,9 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                     await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                 }
             }
+            if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_DAYS || getParentSettings.limitType === "ANYOFTHEM")) {
+                await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+            }
         } catch (error) {
             console.info("Error while make referal payment", error)
         }
@@ -170,6 +173,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() })
     }
 }
+
 export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()

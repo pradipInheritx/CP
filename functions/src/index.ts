@@ -303,8 +303,8 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
-// every day // 5 minutes
-exports.pendingPaymentSettlement = functions.pubsub.schedule("*/5 * * * *").onRun(async () => {
+// 15 minutes cron job
+exports.pendingPaymentSettlement = functions.pubsub.schedule("*/15 * * * *").onRun(async () => {
   console.log("pendingPaymentSettlement start");
   const currentTimeStamp = Date.now();
   await setPaymentSchedulingByCronJob(currentTimeStamp)
