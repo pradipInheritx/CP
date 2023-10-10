@@ -40,6 +40,7 @@ const ContinueWith = styled.div`
 const logos = {
   [LoginProviders.GOOGLE]: process.env.PUBLIC_URL + '/images/icons/google.webp',
   [LoginProviders.FACEBOOK]: process.env.PUBLIC_URL + '/images/icons/facebook.png',
+
   // [LoginProviders.TWITTER]: "https://coin-parliament.com/images/twitter.png",
 };
 const LoginWith = ({
