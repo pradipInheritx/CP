@@ -192,7 +192,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             ...userPendingPaymentDetails
         };
         log("data : ", data)
-        if (setting.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (setting.limitType === "DAYS" || setting.limitType === "ANYOFTHEM")) {
+        if (setting.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (setting.limitType === parentConst.PAYMENT_LIMIT_TYPE_DAYS || setting.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
             parentPaymentDetails.push(data);
         };
     };

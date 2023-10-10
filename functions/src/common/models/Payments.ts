@@ -203,7 +203,6 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
         const id = payment.id;
         return { id, ...payment.data() };
     });
-
     if (getUserPendingReferalAmountData.length) {
         for (let pending = 0; pending < getUserPendingReferalAmountData.length; pending++) {
             const getPaymentAddress = getParentUserData.wellDAddress.find((address: any) => address.coin === getUserPendingReferalAmountData[pending].token);
