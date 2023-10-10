@@ -180,7 +180,9 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
         .collection('parentPayment')
         .where("status", "==", parentConst.PAMENT_STATUS_PENDING)
         .get();
-    const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => snapshot.data());
+    const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => {
+        return { parentPaymentId: snapshot.id, ...snapshot.data() }
+    });
     log("filteredPendingPaymentData : ", filteredPendingPaymentData)
 
     for (let parent = 0; parent < filteredPendingPaymentData.length; parent++) {
@@ -222,7 +224,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "user": "Test"
             }
             await paymentFunction(transaction)
-            await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
+            await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
         } else if (differnceBetweenTimes >= 7 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1WEEK) {
             log("1 week is calling parent is :", parent.id);
             const transaction: PaymentBody = {
@@ -236,9 +238,9 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "user": "Test"
             }
             await paymentFunction(transaction);
-            await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
+            await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
         } else if (differnceBetweenTimes >= 30 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1MONTH) {
-            log("1 month is calling parent is :", parent.id);
+            log("1 month is calling parent is :", parent.parentPaymentId);
             const transaction: PaymentBody = {
                 "method": parentConst.PAYMENT_METHOD,
                 "params": {
@@ -250,7 +252,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                 "user": "Test"
             }
             await paymentFunction(transaction);
-            await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
+            await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
         } else {
             console.info(parentConst.MESSAGE_NO_PARENT_PAYMENTS)
         }
