@@ -240,6 +240,33 @@ exports.sendPassword = functions.https.onCall(async (data) => {
   return password === "CPVI2022!";
 });
 
+exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
+  const { email } = data as { email: string };
+  const getUserQuery: any = await admin.firestore().collection("users").where('email', "==", email).get();
+  const getUser = getUserQuery.docs.map((user: any) => user.data());
+  if (!getUser.length) return { messsage: "User is not found", token: null }
+  const customToken = await admin
+    .auth()
+    .createCustomToken(getUser[0].uid)
+    .then((customToken) => {
+      // Send the custom token to the client
+      console.log('Custom Token:', customToken);
+      return customToken
+    })
+    .catch((error) => {
+      console.error('Error creating custom token:', error);
+      return {
+        messsage: "Something Wrong in isLoggedInFromVoteToEarn",
+        error
+      }
+    });
+  // console.log("TOKEN ___ : ", customToken)
+  return {
+    messsage: "Token generated successfully",
+    token: customToken
+  }
+});
+
 exports.setLeadersOnce = functions.https.onCall(async () => {
   await setLeaders();
 });
