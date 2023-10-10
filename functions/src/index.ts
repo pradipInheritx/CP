@@ -245,13 +245,13 @@ exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
   const getUserQuery: any = await admin.firestore().collection("users").where('uid', "==", userId).where('email', "==", email).get();
   const getUser = getUserQuery.docs.map((user: any) => user.data());
   if (!getUser.length) return { messsage: "User is not found", token: null }
-  const customToken = await admin
+  const tokenForLogin = await admin
     .auth()
     .createCustomToken(getUser[0].uid)
-    .then((customToken) => {
+    .then((token) => {
       // Send the custom token to the client
-      console.log('Custom Token:', customToken);
-      return customToken
+      console.log('Custom Token:', token);
+      return token
     })
     .catch((error) => {
       console.error('Error creating custom token:', error);
@@ -263,7 +263,7 @@ exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
   // console.log("TOKEN ___ : ", customToken)
   return {
     messsage: "Token generated successfully",
-    token: customToken
+    token: tokenForLogin
   }
 });
 
