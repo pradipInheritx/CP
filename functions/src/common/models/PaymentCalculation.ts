@@ -109,7 +109,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                 await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
             }
             console.info("getParentSettings", getParentSettings)
-            if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_AMOUNT || getParentSettings.limitType === "ANYOFTHEM")) {
+            if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_AMOUNT || getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
                 const getParentPayment: any = [];
                 const getParentPaymentQuery: any = await firestore()
                     .collection('parentPayment')
@@ -163,7 +163,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                     await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                 }
             }
-            if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_DAYS || getParentSettings.limitType === "ANYOFTHEM")) {
+            if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_DAYS || getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
                 await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
             }
         } catch (error) {
@@ -219,7 +219,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                     "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
                     "token": parentConst.PAYMENT_TOKEN,
                 },
-                "user": parent.email
+                "user": "Test"
             }
             await paymentFunction(transaction)
             await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
@@ -233,7 +233,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                     "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
                     "token": parentConst.PAYMENT_TOKEN,
                 },
-                "user": parent.email
+                "user": "Test"
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
@@ -247,7 +247,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
                     "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
                     "token": parentConst.PAYMENT_TOKEN,
                 },
-                "user": parent.email
+                "user": "Test"
             }
             await paymentFunction(transaction);
             await firestore().collection('parentPayment').doc(parent.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
