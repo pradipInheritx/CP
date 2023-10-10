@@ -63,7 +63,7 @@ const LoginAndSignup = ({
     <Stack
       gap={2}
       className='flex justify-content-center align-items-center'
-      style={{ background: "var(--light-purple)", height: "100%" }}
+      style={{ background: "var(--light-purple)", height: "80vh" }}
     >
       <div className='container-center-horizontal'>
         <div className='login-signin screen'>

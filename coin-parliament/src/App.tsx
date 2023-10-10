@@ -828,9 +828,8 @@ function App() {
                               background: "#160133",
                               whiteSpace: "normal",
                               wordWrap: "break-word",
-                              padding: '0',
                               flexGrow: 1,
-                              marginBottom: '120px'
+                              padding: '0px 0px 120px 0px'
                             }}
                           >
                             <Header />

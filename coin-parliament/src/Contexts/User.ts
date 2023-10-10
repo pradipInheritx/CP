@@ -2,10 +2,13 @@ import React from "react";
 import { NotificationProps, userConverter, UserProps } from "../common/models/User";
 import { User as AuthUser } from "firebase/auth";
 import { doc, Firestore, getDoc, setDoc } from "firebase/firestore";
-import { db, functions } from "../firebase";
+import { coinParliament, db, functions } from "../firebase";
 import { VoteResultProps } from "../common/models/Vote";
 import { httpsCallable } from "firebase/functions";
 import firebase from 'firebase/app';
+import sportParliament from "firebaseSportParliament";
+import stockParliament from "firebaseStockParliament";
+import votingParliament from "firebaseVotingParliament";
 export type UserContextProps = {
   userInfo?: UserProps;
   user?: AuthUser;
@@ -59,25 +62,38 @@ export const saveUserData = async (uid: string, database: Firestore, data: { [ke
       userData = { ...userData, [value]: data[value] }
     }
   });
-  console.log(userData, 'userData');
-  const userRef = doc(database, "users", uid);
-  await setDoc(userRef, userData, { merge: true });
+  if (uid) {
+    const userRef = doc(database, "users", uid);
+    await setDoc(userRef, userData, { merge: true });
+  }
 };
 
-export const getReferUser = async (database: any) => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = localStorage.getItem('parentEmail');
+export const getReferUser = async (database: any, emailArg?: string) => {
+  const email = emailArg ? emailArg : localStorage.getItem('parentEmail');
   let user = { uid: '' };
   if (email) {
-    const referUser = await database.collection('users').where('email', '==', email).get();
-    if (!referUser.empty) {
-      referUser.forEach((doc: any) => {
-        user = doc.data();
-      });
+    try {
+      const referUser = await database.collection('users').where('email', '==', email).get();
+      if (!referUser.empty) {
+        referUser.forEach((doc: any) => {
+          user = doc.data();
+        });
+      }
+    } catch (err) {
+      console.log(emailArg, err, 'email');
+
     }
   }
   return user;
 }
+export const storeAllPlatFormUserId = async (email: string) => {
+  const coinUser = await getReferUser(coinParliament.firestore(), email);
+  const sportUser = await getReferUser(sportParliament.firestore(), email);
+  const stockUser = await getReferUser(stockParliament.firestore(), email);
+  const votingUser = await getReferUser(votingParliament.firestore(), email);
+  localStorage.setItem("userId", JSON.stringify({ coin: coinUser.uid, sport: sportUser.uid, stock: stockUser.uid, voting: votingUser.uid }));
+}
+
 
 export default UserContext;
 
