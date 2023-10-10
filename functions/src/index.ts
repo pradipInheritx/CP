@@ -241,8 +241,8 @@ exports.sendPassword = functions.https.onCall(async (data) => {
 });
 
 exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
-  const { email } = data as { email: string };
-  const getUserQuery: any = await admin.firestore().collection("users").where('email', "==", email).get();
+  const { userId, email } = data as { userId: string, email: string };
+  const getUserQuery: any = await admin.firestore().collection("users").where('uid', "==", userId).where('email', "==", email).get();
   const getUser = getUserQuery.docs.map((user: any) => user.data());
   if (!getUser.length) return { messsage: "User is not found", token: null }
   const customToken = await admin
