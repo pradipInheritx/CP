@@ -35,7 +35,7 @@ const Sites = [
     img: COINPARLIAMENT,
     des: 'Coin Parliament is a web 3-based vote to earn game where you can make better investment decisions, mint NFTs, and earn rewards by voting and following top influencers.',
     title: 'COIN PARLIAMENT',
-    redirect: 'http://localhost:3001/',
+    redirect: 'https://coinparliamentstaging.firebaseapp.com/',
     domain: process.env.REACT_APP_COIN_API,
     name: 'coin',
   },
