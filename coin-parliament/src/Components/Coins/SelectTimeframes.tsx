@@ -70,7 +70,7 @@ const SelectTimeframes = ({
             value={timeframes.filter((t) => t.chosen)[0].index}
           />
         )}
-      </Row>
+      </Row>      
       <Row
         className={
           voted
@@ -140,8 +140,7 @@ const SelectTimeframes = ({
               </Col>
             );
           })}
-      </Row>
-
+      </Row>      
       {/* </Container> */}
     </div>
   );

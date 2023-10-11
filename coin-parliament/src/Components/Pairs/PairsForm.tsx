@@ -163,7 +163,7 @@ const PairsForm = ({
 
   const [disableVoteButton, setDisableVoteButton] = useState(false);
   return (
-    <Container className="">
+    <Container className="">      
       {/* @ts-ignore */}
       <VoteForm
         {...{
