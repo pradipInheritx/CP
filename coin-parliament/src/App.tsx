@@ -11,7 +11,6 @@ import {
   Link,
   Navigate,
   Route,
-  Routes,
   useLocation,
   useNavigate,
   useSearchParams,
@@ -116,6 +115,8 @@ import Login2fa from "./Components/LoginComponent/Login2fa";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
 import ProtectedRoutes from "routes/ProtectedRoutes";
+import PageNotFound from "Pages/PageNotFound";
+import Routes from "routes/Routes";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -280,34 +281,7 @@ function App() {
     classes.forEach((c) => body.classList.add(c.toLowerCase()));
   }, [pathname]);
   // const [allCoins, setAllCoins] = useState<string[]>(getAllCoins());
-  const [allCoins, setAllCoins] = useState<string[]>(
-    [
-      "BTC",
-      "ETH",
-      "BNB",
-      "ADA",
-      "SOL",
-      "XRP",
-      "LUNA",
-      "DOGE",
-      "DOT",
-      "SHIB",
-      "MATIC",
-      "CRO",
-      "LTC",
-      "LINK",
-      "UNI",
-      "TRX",
-      "XLM",
-      "MANA",
-      "HBAR",
-      "VET",
-      "SAND",
-      "EOS",
-      "CAKE"
-    ]
-  );
-  const [changePrice, setChangePrice] = useState<any>(0);
+
   // const [allPairs, setAllPairs] = useState<Array<string[]>>([]);
   const [allPairs, setAllPairs] = useState<Array<string[]>>([["BTC", "ETH"], ["BTC", "ETH"], ["BTC", "ETH"],]);
   const [appStats, setAppStats] = useState<AppStats>({} as AppStats);

@@ -42,6 +42,9 @@ const Header = () => {
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
                 Profile
               </NavDropdown.Item>
+              <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile/share')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
+                Share
+              </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item style={{ textAlign: 'start' }} onClick={() => logOutHandler()}>Log out</NavDropdown.Item>
             </NavDropdown>

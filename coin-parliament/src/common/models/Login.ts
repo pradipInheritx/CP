@@ -51,11 +51,13 @@ export const providers = {
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
 
-export const Logout = async (setUser: () => void) => {
+export const Logout = async (setUser?: () => void) => {
   const auth = getAuth();
   return signOut(auth)
     .then(() => {
-      setUser();
+      if (setUser) {
+        setUser();
+      }
       localStorage.clear();
       window.localStorage.setItem('mfa_passed', 'false');
       return true;
@@ -86,8 +88,13 @@ export const LoginAuthProvider = async (
     const user = result.user;
     console.log(auth);
 
-    if (auth.currentUser) {
 
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
+    if (auth.currentUser) {
       genericThirdPartyLogin({
         payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF', passwordConfirm: '!@#$%^&*#!#%^DF', agree: true, },
         callback: { successFunc: () => { }, errorFunc: () => { } },
@@ -207,7 +214,6 @@ export const LoginRegular = async (
       email,
       password
     );
-    console.log(userCredential, "userCredential")
     const isFirstLogin = getAdditionalUserInfo(userCredential);
     if (auth?.currentUser?.photoURL === 'mfa') {
       localStorage.setItem('mfa_passed', 'true');
@@ -221,13 +227,10 @@ export const LoginRegular = async (
 
     if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
-        // saveUsername(userCredential?.user?.uid, '', '')
-
         const firstTimeLogin: Boolean = true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
         console.log(isFirstLogin, 'firsttimelogin success')
-        // await sendEmail();
 
         setTimeout(() => {
           callback.successFunc(userCredential.user)
@@ -236,7 +239,10 @@ export const LoginRegular = async (
         callback.successFunc(userCredential.user)
       }
     }
-    else callback.errorFunc({ message: 'Please verify your email first.' } as Error);
+    else {
+      Logout();
+      callback.errorFunc({ message: 'Please verify your email address.' } as Error)
+    };
   } catch (err) {
 
 

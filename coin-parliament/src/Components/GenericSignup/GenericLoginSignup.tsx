@@ -62,7 +62,7 @@ const GenericLoginSignup = ({ authProvider }:
     <Stack
       gap={2}
       className='justify-content-center'
-      style={{ minHeight: "70vh", background: "var(--light-purple)", paddingBottom: '1em' }}
+      style={{ minHeight: "80vh", background: "var(--light-purple)", paddingBottom: '1em' }}
     >
 
       <div className='container-center-horizontal'>

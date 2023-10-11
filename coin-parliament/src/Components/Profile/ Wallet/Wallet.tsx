@@ -13,7 +13,7 @@ import UserContext from "../../../Contexts/User";
 import { useNavigate } from "react-router-dom";
 import WalletValidation from "./WalletValidation";
 import WalletInfo from "./WalletInfo";
-
+import comingSoon from 'assets/images/comingSoon.jpg'
 // var WAValidator = require('wallet-address-validator');
 
 const Errorsapn = styled.span`
@@ -42,6 +42,12 @@ const Wallet = () => {
     }, [])
 
     console.log(mfaLogin, "mfaLogin")
+
+    return (
+        <div className="d-flex justify-content-center align-items-center">
+            <img src={comingSoon} alt="" width={window.screen.width < 400 ? '50%' : ''} />
+        </div>
+    )
 
     return (
         <>

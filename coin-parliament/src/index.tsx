@@ -6,6 +6,9 @@ import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "./index.css";
+import axios from "axios";
+
+
 
 // @ts-ignore
 window.changeLanguage = (lang: string) => {
@@ -31,10 +34,10 @@ ReactDOM.render(
 reportWebVitals();
 // registerServiceWorker();
 
-const sw ="../firebase-messaging-sw.js";
-  // process.env.NODE_ENV === "production"
-  //   ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
-  //   : "../firebase-messaging-sw.js";
+const sw = "../firebase-messaging-sw.js";
+// process.env.NODE_ENV === "production"
+//   ? `${process.env.REACT_APP_SITE_URL}wp-content/plugins/coin-parliament/public/firebase-messaging-sw.js`
+//   : "../firebase-messaging-sw.js";
 // console.log(sw)
 if ("serviceWorker" in navigator) {
   navigator?.serviceWorker
