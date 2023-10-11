@@ -117,7 +117,7 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+    "https://sportparliament-1f167-default-rtdb.firebaseio.com",
 });
 
 exports.getAccessToken = () =>
@@ -192,6 +192,34 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+
+exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
+  const { userId, email } = data as { userId: string, email: string };
+  const getUserQuery: any = await admin.firestore().collection("users").where('uid', "==", userId).where('email', "==", email).get();
+  const getUser = getUserQuery.docs.map((user: any) => user.data());
+  if (!getUser.length) return { messsage: "User is not found", token: null }
+  const tokenForLogin = await admin
+    .auth()
+    .createCustomToken(getUser[0].uid)
+    .then((token) => {
+      // Send the custom token to the client
+      console.log('Custom Token:', token);
+      return token
+    })
+    .catch((error) => {
+      console.error('Error creating custom token:', error);
+      return {
+        messsage: "Something Wrong in isLoggedInFromVoteToEarn",
+        error
+      }
+    });
+  // console.log("TOKEN ___ : ", customToken)
+  return {
+    messsage: "Token generated successfully",
+    token: tokenForLogin
+  }
+});
+
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
