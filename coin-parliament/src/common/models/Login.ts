@@ -20,7 +20,7 @@ import { FormEvent } from "react";
 import { Callback } from "./utils";
 import { ToastType } from "../../Contexts/Notification";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
-import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
+import { getReferUser, saveUserData, saveUsername, storeAllPlatFormUserId } from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
 import coinParliament, { functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -51,20 +51,21 @@ export const providers = {
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
 
-export const Logout = (setUser: () => void) => {
-  const navigate = useNavigate();
+export const Logout = async (setUser?: () => void) => {
   const auth = getAuth();
-  signOut(auth)
+  return signOut(auth)
     .then(() => {
-      setUser();
-      window.localStorage.setItem('mfa_passed', 'false')
-      navigate("/")
-      console.log("i am logout working")
+      if (setUser) {
+        setUser();
+      }
+      localStorage.clear();
+      window.localStorage.setItem('mfa_passed', 'false');
+      return true;
     })
     .catch((error) => {
       const errorMessage = error.message;
-      navigate("/")
       console.log(errorMessage);
+      return false;
     });
 };
 
@@ -87,8 +88,13 @@ export const LoginAuthProvider = async (
     const user = result.user;
     console.log(auth);
 
-    if (auth.currentUser) {
 
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
+    if (auth.currentUser) {
       genericThirdPartyLogin({
         payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF', passwordConfirm: '!@#$%^&*#!#%^DF', agree: true, },
         callback: { successFunc: () => { }, errorFunc: () => { } },
@@ -100,12 +106,13 @@ export const LoginAuthProvider = async (
     const userRef = doc(db, "users", user.uid);
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
     const info = userinfo.data();
-    console.log(info, 'mfa');
     if (isFirstLogin?.isNewUser) {
       const referUser = await getReferUser(coinParliament.firestore());
-      saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
+      await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
     }
-
+    if (auth?.currentUser?.email) {
+      await storeAllPlatFormUserId(auth?.currentUser?.email);
+    }
     if (auth?.currentUser?.photoURL === 'mfa') {
       localStorage.setItem('mfa_passed', 'true');
     } else {
@@ -207,23 +214,23 @@ export const LoginRegular = async (
       email,
       password
     );
-    console.log(userCredential, "userCredential")
     const isFirstLogin = getAdditionalUserInfo(userCredential);
     if (auth?.currentUser?.photoURL === 'mfa') {
       localStorage.setItem('mfa_passed', 'true');
     } else {
       localStorage.setItem('mfa_passed', 'false');
     }
-    // console.log('firsttimelogin',isFirstLogin)    
+
+    if (auth?.currentUser?.email) {
+      await storeAllPlatFormUserId(auth?.currentUser?.email);
+    }
+
     if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
-        // saveUsername(userCredential?.user?.uid, '', '')
-
         const firstTimeLogin: Boolean = true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
         console.log(isFirstLogin, 'firsttimelogin success')
-        // await sendEmail();
 
         setTimeout(() => {
           callback.successFunc(userCredential.user)
@@ -232,7 +239,10 @@ export const LoginRegular = async (
         callback.successFunc(userCredential.user)
       }
     }
-    else callback.errorFunc({ message: 'Please verify your email first.' } as Error);
+    else {
+      Logout();
+      callback.errorFunc({ message: 'Please verify your email address.' } as Error)
+    };
   } catch (err) {
 
 
@@ -311,9 +321,10 @@ export const SignupRegular = async (
     });
 
     const referUser = await getReferUser(coinParliament.firestore());
-    saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
-    // const userRef = doc(db, "users", auth?.currentUser?.uid);
-    // await setDoc(userRef, { firstTimeLogin }, { merge: true })
+    await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
+    if (auth?.currentUser?.email) {
+      await storeAllPlatFormUserId(auth?.currentUser?.email);
+    }
 
     showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore

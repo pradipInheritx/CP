@@ -47,7 +47,7 @@ const Avatars = ({
   const src = (type && !type.includes('http')) ? importFile(`./The${type && avatarArray?.includes(type) ? type : defaultAvatar}`).default : type;
   // console.log(src, 'importFile');
   // @ts-ignore
-  return <img style={{ height: '35px', width: '35px', borderRadius: '50px' }} src={src} alt="Logo" referrerpolicy="no-referrer" />;
+  return <img style={{ height: '35px', width: '35px', borderRadius: '50px' }} src={src} alt="Logo" referrerPolicy="no-referrer" />;
 };
 
 export default Avatars;

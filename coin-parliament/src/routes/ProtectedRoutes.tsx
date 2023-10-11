@@ -10,7 +10,6 @@ const ProtectedRoutes = () => {
     const [checkAuth, setCheckAuth] = useState<boolean | string>('none');
     const [loading, setLoading] = useState(true);
     const { setUser, userInfo } = useContext(UserContext);
-    console.log(auth.currentUser, 'pkk');
 
     useEffect(() => {
         auth.onAuthStateChanged(function (user) {
