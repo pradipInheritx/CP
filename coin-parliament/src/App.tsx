@@ -1727,7 +1727,7 @@ function App() {
                                             <Route
                                               path='/upgrade'
                                               
-                                            element={<UpgradePage />}
+                                            element={<UpgradePageCopy />}
                                             />
                                             {/* <Route
                                               path='/paymentList'

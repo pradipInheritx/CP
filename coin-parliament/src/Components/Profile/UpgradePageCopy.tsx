@@ -25,18 +25,23 @@ import UpgradeCopy from "./Comingsoon";
 import PaymentPop from "./PaymentPop";
 import { handleSoundClick } from "../../common/utils/SoundClick";
 import upgrade from "../../assets/images/upgrade_small.png";
-import Gift from "../../assets/images/Framegift.png";
-import Frame from "../../assets/images/Frame.png";
-import Framemoney from "../../assets/images/Framemoney.png";
-import NftFrame from "../../assets/images/NftFrame.png";
+import MoneyUG from "../../assets/images/MoneyUG.png";
+import UGBG from "../../assets/images/UGBG.png";
+import UGBGM from "../../assets/images/UGBGM.png";
+import CardUG from "../../assets/images/CardUG.png";
+import GiftUG from "../../assets/images/GiftUG.png";
+import MiniUG from "../../assets/images/MiniUG.png";
 
 import XXCOIN from "../../assets/images/XXCOIN.png";
+import GiftUg2 from "../../assets/images/GiftUg2.png";
+import VoteUg from "../../assets/images/VoteUg.png";
 import XXVote from "../../assets/images/XXVote.png";
 import VOUCHER from "../../assets/images/VOUCHER.png";
 import { useNavigate } from "react-router-dom";
 
 const H2 = styled.h2`
 color: #e6d348;
+letter-spacing:3px;
   -webkit-text-fill-color: white; /* Will override color (regardless of order) */
   -webkit-text-stroke-width: 3px;
   -webkit-text-stroke-color: #e6d348;
@@ -46,62 +51,109 @@ color: #e6d348;
   font-family: 'Lilita One';
 `;
 const P = styled.p`
-  font-size: var(--font-size-l);
-  text-align: center;
+  color: #FFF;
+// font-family: 'Lilita One';
+font-size: 54px;
+font-style: normal;
+font-weight: 900;
+line-height: normal;
+text-align:center;
 `;
 
-const TextContainer = styled.div`
-  max-width: 350px;
-  margin: 0 auto;
+const RoundBox = styled.div` 
+border:2px solid #fff,#F4F6FA;
+height:${window.screen.width >767 ? "140px" :"190px"};
+border-radius:30px;
+border: 4px solid var(--White-Gradient, #F4F6FA);
+background: linear-gradient(180deg, rgba(82, 99, 184, 0.60) 0%, rgba(178, 102, 245, 0.60) 100%);
+display:flex;
+flex-wrap:wrap;
+& p{
+  padding:${window.screen.width > 767 ? " 10px" : "10px 0px 5px 0px"};
+font-size: ${window.screen.width > 767 ? " 16.701px" :"12px"};
+font-style: normal;
+font-weight: 800;
+line-height: normal;
+text-transform: uppercase;
+background: linear-gradient(180deg, #FED167 0%, #F9F6A8 100%);
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-align: ${window.screen.width > 767 ? "" : "center"};
+}
+
+& span {
+  padding:${window.screen.width > 767 ? "10px" : "5px 0px 10px 0px"};
+  color: #FFF;
+font-size: ${window.screen.width > 767 ? " 16px" : "12px"};
+font-style: normal;
+font-weight: 200;
+line-height: normal;
+text-transform: lowercase;
+display:inline-block;
+text-align: ${window.screen.width > 767 ? "" : "center"};
+}
 `;
 
-const SideBox = styled.div` 
-  display:flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom:50px; 
-  padding:20px 10px;  
-  // border: 1px solid red; 
-  border-bottom:none;
-  background: linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%), linear-gradient(180.99deg, #CAB7FF 2.33%, #4D1A4B 45.7%, rgba(24, 14, 52, 0) 99.15%);
+const ButttonDiv = styled.div`
 
-  & p {
-    font-size:15px;    
-    background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+width:290px;
+border:4px solid white;
+ display: flex;
+justify-content: center;
+border-radius:50px;
+background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+  animation: zoom-in-zoom-out 1s infinite ;
+transition: background 1s;
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+    color: #B869FC;
+  }
+  100% {
+   background: linear-gradient(180deg, rgba(212,176,92,1) 0%, rgba(243,236,60,1) 100%);
+   color:#DAA636;
+  }  
+}
+
+
+
+  button {
+    background:white;
+    border:1px solid white;
+    border-radius:50px;
+    padding:10px;    
+    margin:10px 0px;    
+    width:260px;
+    color: #daa636;
+    box-shadow: 0px 3px 10px #1c1c1c57;
+& span {
+  background: var(--Violet-Gradient, linear-gradient(180deg, #5263B8 0%, #B266F5 100%));
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-size: 15px;
+// font-style: normal;
+font-weight: 500;
+line-height: 101.5%;
+}
+& u {
+     -webkit-text-decoration-line: line-through; /* Safari */
+   text-decoration-line: line-through; 
+   color:black;
+   font-weight: 100;
+   font-size: 20px;
+}
+& p {
+   font-family:"Lilita One";  
+  font-size: 30px;
+  font-weight: 500;
+line-height: 101.5%;
+}
   }
 
-  & span {
-    font-size:11px;
-    line-height:15px;
-  }
 
-`;
-
-
-
-
-const BottomBox = styled.div` 
-  // border:1px solid red;
-  display:flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top:${window.screen.width > 767 ? "50px" : "10px"};
-  margin-bottom:${window.screen.width > 767 ? "50px" : "10px"};
-  flex-direction: column;
-  width:${window.screen.width > 767 ? "30%" : "100%"};
-  height:${window.screen.width > 767 ? "auto" : "130px"};
-  & p {
-    margin-top:5px;
-    font-size:14px;
-    text-align:center;
-   background: -webkit-linear-gradient(270deg, #FEFEFE 35.94%, #3C1ABA 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  }
 `;
 
 const UpgradePageCopy = () => {
@@ -133,30 +185,33 @@ const UpgradePageCopy = () => {
   
 
   return (
-    <>
+    <>            
       <div
         className='p-0 m-0 w-100 d-flex justify-content-center'
+        
         style={{
-          background: "#160133",
-          // height: `${screenHeight()}`,
-          // width: `${window.screen.width > 979 ? "730px" : "100%"}`,
+          backgroundImage: `${window.screen.width > 767 ? `url(${UGBG})` : `url(${UGBGM})`}`,
+          backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}` ,
+          backgroundPosition: "0 0",
+          backgroundSize: "100%",
+          // backgroundSize: "cover",
+          backgroundAttachment: "fixed",   
+          // height: "75vh",
+          // overflow:"scroll"
         }}
+       
       >
         <div
           className=''
           style={{
-            background: "#160133",
-            width: `${window.screen.width > 979 ? "850px" : "100%"}`,
+            // background: "#160133",
+            width: `${window.screen.width > 979 ? "1000px" : "100%"}`,
           }}
         >
           {/* @ts-ignore */}
          {!userInfo?.isUserUpgraded && <H2
             style={{
               textAlign:"center",
-              // fontSize: "1.25rem",
-              // marginTop: "0px",
-              // paddingTop: "30px",
-              // fontWeight: "bold",
               textTransform: 'uppercase'
             }}
           >
@@ -165,10 +220,7 @@ const UpgradePageCopy = () => {
           {/* @ts-ignore */}
           {userInfo?.isUserUpgraded && <H2
             style={{
-              fontSize: "1.25rem",
-              marginTop: "0px",
-              paddingTop: "30px",
-              fontWeight: "bold",
+              textAlign: "center",
               textTransform: 'uppercase'
             }}
           >
@@ -177,10 +229,7 @@ const UpgradePageCopy = () => {
 {/* @ts-ignore */}
           {userInfo?.isUserUpgraded && <H2
             style={{
-              fontSize: "1.25rem",
-              marginTop: "0px",
-              paddingTop: "30px",
-              fontWeight: "bold",
+              textAlign: "center",
               textTransform: 'uppercase'
             }}
           >
@@ -189,178 +238,141 @@ const UpgradePageCopy = () => {
           
         {/* @ts-ignore */}
          {!userInfo?.isUserUpgraded && <P
-            style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
+            style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
             className="px-3 pt-4  pb-3"
           >
-            Upgrade your account to a full mining account and <strong>enjoy the benefits</strong> of being a miner.
+            Upgrade your account to a full mining account and enjoy the benefits of being a miner.
           </P>}
 {/* @ts-ignore */}
           {userInfo?.isUserUpgraded && <P
-            style={{ fontSize: "15px", fontWeight: "100", marginTop: "10px" }}
+            style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
             className="px-3 pt-4  pb-3"
           >
             Now you can<strong> enjoy the benefits</strong>  of being a miner.
           </P>}
-          <div className="d-flex justify-content-around align-items-center flex-wrap"
-            style={{
-              // display:`${window.screen.width > 767 ? "flex" :""}`
-            }}
-          >
-            <div className="d-flex justify-content-center "
-              style={{ width: `${window.screen.width > 767 ? "50%" : "100%"}` }}
-            >
-              <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />
+
+          <div className={`${window.screen.width > 767 ? "" : "justify-content-around "} d-flex w-100 mt-5`}>
+
+            <div style={{
+              width:`${window.screen.width >767 ? "35%" :"45%"} `,
+            }}>
+              <RoundBox>
+                <div
+                  // className="d-flex justify-content-center align-items-center ml-1 flex-warp"
+                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" :"justify-content-center" } d-flex ml-1`}
+                  style={{
+                    height: `${window.screen.width > 767 ? "" : "85px"} `,
+                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                    
+                }}
+                >
+                <img src={MoneyUG} alt="" width={"90px"} />
+                </div>
+                <div className="d-flex justify-content-center flex-column"
+                  style={{
+                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                  }}
+                >                  
+                <p>Lifetime passive income rev-share program</p>
+                <span>Receive 50% of all your friend's total purchases.</span>
+                </div>
+              </RoundBox>
+
+              <RoundBox className={`${window.screen.width > 767 ? "mt-5" :"mt-3"}`}>
+                <div
+                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+                  style={{
+                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                  }}
+                >
+                <img src={CardUG} alt="" width={"90px"} />
+                </div>
+                <div className="d-flex justify-content-center flex-column"
+                  style={{
+                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                  }}
+                >                    
+                  <p>Card converter</p>
+                  <span>Convert your card to collectible cards</span>
+                </div>
+              </RoundBox>
+              
             </div>
-            <div className=""
-              style={{ width: `${window.screen.width > 767 ? "50%" : "100%"}` }}
-            >
-              <div>
-                <SideBox>
-
-                  <div
-                    style={{ width: "30%" }}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-                    <img src={Framemoney} alt="" width={"70px"} />
-                  </div>
-                  <div
-                    style={{ width: "70%" }}
-                  >
-                    {window.screen.width < 450 ?                      
-                      <>
-                      <p>Lifetime passive income </p>
-                      <p>rev-share program</p>
-                      </>
-                      :
-                      <>
-                      <p>Lifetime passive income rev-share</p>
-                      <p>program</p>
-                      </>
-                    }
-                    {/* {window.screen.width < 450 && <p>rev-share program</p>}
-                    {window.screen.width < 450 && <p>rev-share program</p>} */}
-                    {/* <span>Earn 50% lifetime commission of all your referral friends' total purchases.</span> */}
-                    {/* <span>Lifetime passive income rev-share program Receive 50% of all your friend's total purchases.</span> */}
-                    <span>Receive 50% of all your friend's total purchases.</span>
-                  </div>
-
-                </SideBox>
-
-                <SideBox>
-
-                  <div
-                    style={{ width: "30%" }}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-                    <img src={Frame} alt="" width={"60px"} />
-                  </div>
-                  <div
-                    style={{ width: "70%" }}
-                  >
-                    <p>Full mining machine</p>
-                    <span>Mine PAX BEP20 token</span>
-                  </div>
-
-                </SideBox>
-
-
-                <SideBox >
-
-                  <div
-                    style={{ width: "30%" }}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-
-                    <img src={NftFrame} alt="" width={"60px"} />
-                  </div>
-                  <div
-                    style={{ width: "70%" }}
-                  >
-                    <p>Card converter</p>
-                    <span>Convert your card to collectible cards</span>
-                  </div>
-
-                </SideBox>
-
-
-
-                <SideBox >
-                  <div
-                    style={{ width: "30%" }}
-                    className="d-flex justify-content-center align-items-center"
-                  >
-                    <img src={Gift} alt="Gift" width={"60px"} />
-                  </div>
-
-                  <div className=""
-                    style={{ width: "70%" }}
-                  >
-                    <p>Purchases</p>
-                    <span>Use your parliament coin (V2E) to buy merchandise</span>
-                  </div>
-
-
-                </SideBox>
-
-              </div>
-            </div>
-          </div>
-            {/* @ts-ignore */}
-          {!userInfo?.isUserUpgraded && <H2
-            style={{
-              fontSize: "1.25rem",
-              marginTop: "0px",
-              paddingTop: "30px",
-              fontWeight: "bold",
-              // textTransform:'uppercase'
-            }}
-          >
-            {translate("In addition, you will receive the following gifts")}
-          </H2>}
-
-          <div className="d-flex justify-content-around my-4 flex-wrap">
-            <BottomBox className="">
-              <img src={VOUCHER} alt="" width={"100px"} className="mt-3" />
-              <p className="">Voucher for merchandise purchase</p>
-            </BottomBox>
-            <BottomBox className=" ">
-              <img src={XXVote} alt="" width={"90px"} />
-              <p className="mt-3">Extra votes</p>
-            </BottomBox>
-            <BottomBox className=" ">
-              <img src={XXCOIN} alt="" width={"100px"} />
-              <p className="mt-3">Parliament coins (V2E)</p>
-            </BottomBox>
-          </div>
-          {/* @ts-ignore */}
-          {!userInfo?.isUserUpgraded &&
-            <div
-              className='text-center mb-4'
+            {window.screen.width > 767 && <div
+              
+              className="d-flex justify-content-around align-items-center"
               style={{
-                zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                marginTop: "20px",
+                width: "30%",
+            }}
+            >
+              <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"}
+                style={{
+                marginLeft:"35px"
               }}
+              />
+            </div>}
+            <div style={{
+              width: `${window.screen.width > 767 ? "35%" : "45%"} `,
+            }}>
+              <RoundBox>
+                <div
+                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+                  style={{
+                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                    height: `${window.screen.width > 767 ? "" : "85px"} `,
+                  }}
+                  
+                >
+                <img src={GiftUG} alt="" width={"90px"} />
+                </div>
+                <div className="d-flex justify-content-center flex-column"
+                  style={{
+                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                  }}
+                >                   
+                  <p>Purchases</p>
+                  <span>Use your parliament coin (V2E) to buy merchandise.</span>
+                </div>
+              </RoundBox>
+
+              <RoundBox className={`${window.screen.width > 767 ? "mt-5" : "mt-3"}`}>
+                <div
+                  className={`${window.screen.width > 767 ? "justify-content-center align-items-center" : "justify-content-center"} d-flex ml-1`}
+                  style={{
+                    width: `${window.screen.width > 767 ? "30%" : "100%"} `,
+                  }}
+                >
+                <img src={MiniUG} alt="" width={"90px"} />
+                </div>
+                <div className="d-flex justify-content-center flex-column"
+                  style={{
+                    width: `${window.screen.width > 767 ? "70%" : "100%"} `,
+                  }}
+                >                     
+                  <p>Full mining machine</p>
+                  <span>Mine PAX BEP20 token.</span>
+                </div>
+              </RoundBox>
+              
+            </div>
+            
+          </div>
+                               
+          {/* @ts-ignore */}
+          {/* {!userInfo?.isUserUpgraded &&
+            <div
+              className='text-center mb-4'              
             >
               <button
                 type='button'
                 className='btn '
-                onClick={() => {
-                  // if(clicked) return
-                  // setClicked(true)   
-
-                  // localStorage.setItem("PayAmount", "99"); 
-                  // navigate("/paymentList")             
-                  // handleSoundClick()     
+                onClick={() => {    
                   upgradeProfile(99, 0)
                 }}
                 style={{
-                  background:
-                    " linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" /* fallback for old browsers */,
+                  background:" linear-gradient(to bottom, #6352E8 0%, #3712B3 100%)" ,
                   color: "#fff",
-                  width: "250px",
-                  // margin: "20px",
+                  width: "250px",                  
                   padding: "5px 0px",
                   boxShadow: "0px 3px 6px #00000029",
                   fontSize: "25px",
@@ -369,7 +381,156 @@ const UpgradePageCopy = () => {
                 <p> UPGRADE NOW </p>
                 <span style={{ fontSize: "12px" }}>One time Payment of <del>$199</del> $99</span>
               </button>
-            </div>}
+            </div>} */}
+          {/* @ts-ignore */}
+          {!userInfo?.isUserUpgraded &&
+            <>
+            <div
+              className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+            >
+              <ButttonDiv className="mt-1">
+                <button
+                  onClick={() => {
+                    upgradeProfile(99, 0)
+                  }}
+                >
+                  <div className='d-flex justify-content-around' >
+                    <div
+                    
+                    >
+
+                      <span                      
+                        style={{
+                          letterSpacing: "4px",
+                          // display:"inline-block",
+                        }}
+                    >LIMITED                    
+                      </span>
+                      <br />
+                      <span>TIME OFFER</span>
+                    </div>
+                    <u>$199</u>
+                    <p>$99</p>
+                  </div>
+
+
+                </button>
+              </ButttonDiv>
+            </div>
+            <div
+              className="text-center mb-4"
+              style={{
+                
+            fontSize: `${window.screen.width >767? "30px" :"20px"}`,
+            fontStyle: "normal",
+            fontWeight: "800",
+                lineHeight: "normal",
+                color:"#dfc650"
+              }}
+            >
+              <p>
+              ONE TIME PAYMENT
+            </p></div>
+          </>
+          }
+          
+          {window.screen.width < 767 && <div
+
+            className="d-flex justify-content-center align-items-center"
+            style={{
+              width: "100%",
+            }}
+          >
+            <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "400px"}
+              // style={{
+              //   marginLeft: "35px"
+              // }}
+            />
+          </div>}
+          <div
+            style={{
+              width: `${window.screen.width > 767 ? "800px" : "100%"}`,
+              border: `${window.screen.width > 767 ?"3px solid #f3f6fa" :"2.5px solid #d4b05c"}`,
+              borderRadius: `${window.screen.width > 767 ? "55px":"10px"}`,
+              padding: "15px 5px 15px 5px",
+              margin: "auto",
+              background:`${ window.screen.width > 767 && "linear-gradient(180deg,rgba(82, 99, 184, 0.30) 0%,rgba(178, 102, 245, 0.30) 100%)"}`,
+            }}
+            className="mb-4"
+          >
+            <p
+              style={{
+                textAlign: "center",
+                color: "#dbbd54",
+                fontFamily: 'Lilita One',
+            fontSize: "25px",
+            fontStyle: "normal",
+            fontWeight: "900",
+            lineHeight: "normal",
+              // textTransform: `${window.screen.width < 767 ? "uppercase":""}`,
+            letterSpacing:"2px"
+            }}
+            >
+              In addition, you will
+              receive the following gifts
+            </p>
+            <div className="d-flex justify-content-around mt-4 mb-3">
+              <div
+                style={{
+                  background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
+                  width: `${window.screen.width > 767 ? "19%" : "28%"}`,
+                  borderRadius: "25px",                  
+                }}
+                className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+              >
+                <img src={GiftUg2} alt="" width={"40px"} />
+                <p className="text-center mt-2"
+                  style={{
+                    fontSize: "14px",
+                  }}>
+                  
+                  Merchandise Voucher</p>
+              </div>
+              <div
+              style={{                
+                  background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
+                  width: `${window.screen.width > 767 ? "19%" : "28%"}`,
+                  borderRadius: "25px",
+                  
+
+                }}   
+                className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+              >
+                <img src={VoteUg} alt="" width={"70px"} />
+                <p className="text-center mt-2"
+                  style={{
+                    fontSize: "14px",
+                  }}>
+                  
+                  Special Offer
+                  *Get Extra*</p>
+              </div>
+              <div
+                style={{
+                  
+                  background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
+                  width: `${window.screen.width > 767 ? "19%" : "28%"}`,
+                  borderRadius: "25px",
+                  
+                }}
+                className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+              >
+              
+                <img src={XXCOIN} alt="" width={"80px"}/>
+                <p className="text-center mt-2"
+                  style={{
+                    fontSize: "14px",
+                }}
+                >Parliament
+                  coins (V2E)</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       {/* {clicked &&
@@ -378,6 +539,22 @@ const UpgradePageCopy = () => {
         setClicked={setClicked}
       />
       } */}
+      {/* <div
+        style={{
+          backgroundImage: `${window.screen.width > 767 ? `url(${UGBG})` : `url(${UGBGM})`}`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "0 0",
+          backgroundSize: "100% 100%",
+          backgroundAttachment: "fixed",
+          position: "fixed",
+          top:120,
+          width: "100%",
+          height: "800px",
+          zIndex: -1
+        }}
+      >
+
+      </div> */}
     </>
   );
 };
