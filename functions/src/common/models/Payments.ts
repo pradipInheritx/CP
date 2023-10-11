@@ -45,7 +45,6 @@ export const makePaymentToServer = async (req: any, res: any) => {
         console.info("Error while make payment to welld app server", error)
     }
 }
-
 export const updateUserAfterPayment = async (req: any, res: any) => {
     const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
     await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails })
@@ -58,7 +57,6 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
         data: req.body
     });
 }
-
 export const makePayment = async (req: any, res: any) => {
     const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
     console.log(userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails)
@@ -70,7 +68,6 @@ export const makePayment = async (req: any, res: any) => {
         data: { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails }
     })
 }
-
 export const storeInDBOfPayment = async (metaData: any) => {
     if (metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE && metaData?.userId) {
         await addIsUpgradedValue(metaData.userId)
@@ -80,7 +77,6 @@ export const storeInDBOfPayment = async (metaData: any) => {
     }
     await firestore().collection("payments").add({ ...metaData, timestamp: firestore.FieldValue.serverTimestamp() })
 }
-
 const addIsExtraVotePurchase = async (metaData: any) => {
     const userDocumentRef = firestore().collection('users').doc(metaData.userId);
     userDocumentRef.get()
@@ -101,7 +97,6 @@ const addIsExtraVotePurchase = async (metaData: any) => {
             errorLogging("isUserExtraVote", "ERROR", error);
         });
 }
-
 const addIsUpgradedValue = async (userId: string) => {
     await firestore().collection('users').doc(userId).set({ isUserUpgraded: true }, { merge: true });
 }
@@ -135,8 +130,6 @@ export const isUserUpgraded = async (req: any, res: any) => {
         });
     }
 }
-
-
 export const getParentPayment = async (req: any, res: any) => {
     try {
         const getAllPaymentArray: any = [];
@@ -229,13 +222,13 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
         }
         return res.status(200).send({
             status: false,
-            message: "Parent Pending Payment Amount",
+            message: parentConst.MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT,
             data: getUserPendingReferalAmountData
         });
     } else {
         return res.status(404).send({
             status: false,
-            message: "Parent Pending Payment Amount Not Found",
+            message: parentConst.MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT_NOT_FOUND,
             data: []
         });
     }
@@ -290,7 +283,6 @@ export const getTransactionHistory = async (req: any, res: any) => {
         });
     }
 }
-
 export const errorLogging = async (
     funcName: string,
     type: string,

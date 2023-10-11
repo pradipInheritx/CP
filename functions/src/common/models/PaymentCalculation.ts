@@ -15,7 +15,6 @@ interface PaymentBody {
     params: PaymentParams,
     user: string
 }
-
 export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
     status: boolean,
     result: any
@@ -39,8 +38,6 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
         return { status: false, result: error }
     }
 }
-
-
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
         const { userId, amount, transactionType, numberOfVotes, token } = userData;
@@ -173,7 +170,6 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() })
     }
 }
-
 export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()
