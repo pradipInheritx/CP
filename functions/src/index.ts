@@ -443,6 +443,7 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
     .where("coin", "==", symbol)
     .get();
 
+
   const users = uniq(votes.docs.map((v) => v.data().userId)) as string[];
 
   return users.reduce(
@@ -466,6 +467,34 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
     }[]
   );
 });
+
+exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
+  const { userId, email } = data as { userId: string, email: string };
+  const getUserQuery: any = await admin.firestore().collection("users").where('uid', "==", userId).where('email', "==", email).get();
+  const getUser = getUserQuery.docs.map((user: any) => user.data());
+  if (!getUser.length) return { messsage: "User is not found", token: null }
+  const tokenForLogin = await admin
+    .auth()
+    .createCustomToken(getUser[0].uid)
+    .then((token) => {
+      // Send the custom token to the client
+      console.log('Custom Token:', token);
+      return token
+    })
+    .catch((error) => {
+      console.error('Error creating custom token:', error);
+      return {
+        messsage: "Something Wrong in isLoggedInFromVoteToEarn",
+        error
+      }
+    });
+  // console.log("TOKEN ___ : ", customToken)
+  return {
+    messsage: "Token generated successfully",
+    token: tokenForLogin
+  }
+});
+
 
 async function getRewardTransactions(id: string) {
   const transactions = await admin
