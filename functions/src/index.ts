@@ -220,7 +220,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     googleAuthenticatorData: {},
     voteValue: await getMaxVotes(),
     wellDAddress: [],
-    referalReceiveType: { name: "", amount: "", time: "", limitType: "" }
+    referalReceiveType: { name: "", amount: "", days: "", limitType: "" }
   };
   try {
     console.log("new user >>>", userData, user.uid);

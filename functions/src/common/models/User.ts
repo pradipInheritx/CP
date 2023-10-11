@@ -53,7 +53,7 @@ export type wellDAddressType = []
 export type referalReceiveType = {
   name: string,
   amount: string,
-  time: string,
+  days: string,
   limitType: string
 }
 
