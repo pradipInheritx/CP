@@ -322,6 +322,7 @@ function CardShow() {
                 position:"relative"
               }}
               >
+                {/* @ts-ignore */}
                 <Countdown date={Date.now() + 15000}
                       renderer={({ hours, minutes, seconds, completed }) => {
                         return (
