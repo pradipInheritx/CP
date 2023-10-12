@@ -46,8 +46,8 @@ const getValue = (e: FormEvent<HTMLFormElement>, name: string) => {
     <Form
       onSubmit={async (e) => {
         e.preventDefault();
-        // await login(e, callback);
-        loginNow(e)
+        await login(e, callback);
+        // loginNow(e)
       }}
     >
       <Form.Group className="mb-3 w-100" controlId="login-email">

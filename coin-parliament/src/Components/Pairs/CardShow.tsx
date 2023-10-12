@@ -90,6 +90,7 @@ const VoteButton = styled.div`
 cursor:pointer;
 display:flex;
 justify-content: center;
+overflow:hidden;
 `;
 
 const VoteDiv = styled.div`
@@ -349,7 +350,7 @@ function CardShow() {
               <ModalForResult   
             // @ts-ignore 
                 showPopUp={showPopUp}
-                // setShowPopUp={setShowPopUp}
+                setShowPopUp={setShowPopUp}
               />
             </>
             : ""
