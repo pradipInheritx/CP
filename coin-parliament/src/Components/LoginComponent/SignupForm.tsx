@@ -19,15 +19,15 @@ const SignupForm = ({
   signupLoading,
   setSignupLoading,
 }: {
-  emailValue:string;
+  emailValue: string;
   callback: Callback<User>;
-  signupLoading?:any;
-  setSignupLoading?:(k: boolean) => void;
+  signupLoading?: any;
+  setSignupLoading?: (k: boolean) => void;
   signup: (
     payload: SignupPayload,
     callback: Callback<AuthUser>
-  ) => Promise<void>;
-  
+  ) => Promise<boolean>;
+
 }) => {
   const translate = useTranslation();
   const [email, setEmail] = useState("");
@@ -35,9 +35,9 @@ const SignupForm = ({
   const [password2, setPassword2] = useState("");
 
   const [agree, setAgree] = useState(true);
-useEffect(() => {
-  setEmail(emailValue)
-}, [])
+  useEffect(() => {
+    setEmail(emailValue)
+  }, [])
   const strings = {
     email: capitalize(translate(texts.email)),
     confirmPassword: capitalize(translate(texts.confirmPassword)),
@@ -49,7 +49,7 @@ useEffect(() => {
   return (
     <Form
       onSubmit={async (e) => {
-        if(signupLoading)return
+        if (signupLoading) return
         e.preventDefault();
         // @ts-ignore
         setSignupLoading(true)
@@ -67,7 +67,7 @@ useEffect(() => {
     >
       <Form.Group className="mb-3" controlId="email">
         <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           placeholder={translate(strings.email)}
           name="email"
           required
@@ -77,7 +77,7 @@ useEffect(() => {
       </Form.Group>
       <Form.Group className="mb-3" controlId="password">
         <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           placeholder={translate(strings.password)}
           type="password"
           name="password"
@@ -88,7 +88,7 @@ useEffect(() => {
       </Form.Group>
       <Form.Group controlId="passwordConfirm">
         <InputField
-          style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+          style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           placeholder={translate(strings.confirmPassword)}
           type="password"
           name="passwordConfirm"
@@ -100,7 +100,7 @@ useEffect(() => {
 
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" >
-          {signupLoading?'Wait...':strings.continue}
+          {signupLoading ? 'Wait...' : strings.continue}
         </Buttons.Primary>
       </div>
 
@@ -112,7 +112,7 @@ useEffect(() => {
               <React.Fragment key={i}>
                 {t}{" "}
                 {!i && (
-                  <Link to={urls.termsConditions} style={{color: 'var(--blue-violet)'}}>
+                  <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
                     {translate(texts.termsConditions)}
                   </Link>
                 )}

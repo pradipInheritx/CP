@@ -26,9 +26,8 @@ const OR = styled.div`
   white-space: nowrap;
   text-transform: uppercase;
 `;
-const SignUp = styled.div`
-margin-left:5px;
-margin-right:7px;
+const SignUp = styled.span`
+margin-left:0.5em;
 cursor:pointer;
 font-weight:600 !important;
 // text-decoration:underline;
@@ -45,21 +44,23 @@ ${PoppinsBoldBlueViolet14px};
 const DontHaveAccountText = styled.div`
  color:black;
 `;
-const H1= styled.div`
+const H1 = styled.div`
 margin-bottom:10px;
 background: var(--color-160133) 0 0% no-repeat padding-box;
 border: 2px solid var(--color-6352e8);
 box-shadow: 0 3px 6px #00000029;
 border-radius: 0 20px 20px 20px;
 opacity: 1;
-font: var(--font-style-normal) normal var(--font-weight-normal) var(--font-size-11)/var(--line-spacing-13) var(--font-family-poppins);
+font: var(--font-style-normal) normal var(--font-weight-normal) var(--font-size-12)/var(--line-spacing-13) var(--font-family-poppins);
 letter-spacing: var(--character-spacing-0);
 color: var(--color-ffffff);
-text-align: left;
+text-align: center;
+padding:15px;
+// font-size:13px;
 }
 `
 export type LoginProps = {
-  setForgetPassword:(s:boolean)=>void;
+  setForgetPassword: (s: boolean) => void;
   setUser: (user?: User | undefined) => void;
   setSignup: (s: boolean) => void;
   authProvider: (
@@ -77,26 +78,29 @@ export type LoginProps = {
   ) => Promise<void>;
 };
 
-const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: LoginProps) => {
+const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const {setLoginRedirectMessage,loginRedirectMessage} = useContext(AppContext);
-  const[smsVerification,setSmsVerification]=useState('')
+  const { setLoginRedirectMessage, loginRedirectMessage } = useContext(AppContext);
+  const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   console.log(smsVerification)
   useEffect(() => {
-    
+
     return () => {
       setLoginRedirectMessage('')
     }
   }, [])
   const handleClose = () => {
     setSmsVerification('')
-    
+
   };
   return (
-    <>
-    {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
+    <div
+      className="text-center"
+      style={{ width: "300px" }}
+    >
+      {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
       {Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100" id='login'>
@@ -122,47 +126,50 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
           login={login}
         />
       </div>
-      <div className='d-flex'>
-       <ForgetPasswordText  onClick={() => setForgetPassword(true)}>{`${capitalize(translate('Forget password?'))}`}</ForgetPasswordText>
+      <div className='d-flex justify-content-center'>
+        <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
       </div>
-      <div className='d-flex  mt-2'>
-      <DontHaveAccountText className="mr-5"> {`${capitalize(translate(texts.noAccount))} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setSignup(true)}>{`${capitalize(translate(texts.signUp))}`}</SignUp>
+      <div className='d-flex justify-content-center mt-2'>
+        <DontHaveAccountText className="">
+          {translate(texts.noAccount)}
+          <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
+        </DontHaveAccountText>
+
       </div>
       <div id="loginId"></div>
-      <Modal show={smsVerification?true:false} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
+      <Modal show={smsVerification ? true : false} onHide={handleClose} style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' }}>
         <Modal.Header >
           <Modal.Title>2FA</Modal.Title>
         </Modal.Header>
-          <Modal.Body>
-            <p>Please enter verification code which is sent to your number.</p>
-            <FormControl
-              className="mt-2"
-              type="number"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-            />
-          </Modal.Body>
-        
+        <Modal.Body>
+          <p>Please enter verification code which is sent to your number.</p>
+          <FormControl
+            className="mt-2"
+            type="number"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+          />
+        </Modal.Body>
+
         <Modal.Footer>
           <Buttons.Default onClick={handleClose}>Close</Buttons.Default>
           <Buttons.Primary
             // disabled={!valid}
             onClick={async () => {
               // @ts-ignore
-              const cred = PhoneAuthProvider.credential( smsVerification?.verificationId, verificationCode);
-            const multiFactorAssertion =
+              const cred = PhoneAuthProvider.credential(smsVerification?.verificationId, verificationCode);
+              const multiFactorAssertion =
                 PhoneMultiFactorGenerator.assertion(cred);
-            // Complete sign-in.
-            // @ts-ignore
-            return smsVerification?.resolver.resolveSignIn(multiFactorAssertion)
+              // Complete sign-in.
+              // @ts-ignore
+              return smsVerification?.resolver.resolveSignIn(multiFactorAssertion)
             }}
           >
             CONTINUE
           </Buttons.Primary>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
   );
 };
 

@@ -3,22 +3,21 @@
 import React, { useContext } from "react";
 import { Image } from "react-bootstrap";
 import { useTranslation } from "../common/models/Dictionary";
-import Pairs from "../Components/Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
-import UserContext from "../Contexts/User";
-import Coins from "../Components/Coins/Coins";
-import { calcFavorites } from "../common/utils/coins";
 import AppContext from "../Contexts/AppContext";
 import { HomeContainer } from "../Components/App/App";
-import NotificationContext from "../Contexts/Notification";
-import NotLoggedInPopup from "../Components/App/NotLoggedInPopup";
 import Quotes from "../Components/Quotes";
 import ContentContext from "../Contexts/ContentContext";
 import { useWindowSize } from "../hooks/useWindowSize";
-import InfluencersCarousel from "../Components/Users/InfluencersCarousel";
 import { texts } from "../Components/LoginComponent/texts";
 import { Buttons } from "../Components/Atoms/Button/Button";
+import Pairs from "Components/Admin/Pairs";
+import PairsCopy from "Components/Pairs/PairsCopy";
+import NotLoggedInPopup from "Components/App/NotLoggedInPopup";
+import { calcFavorites } from "common/utils/coins";
+import UserContext from "Contexts/User";
+import NotificationContext from "Contexts/Notification";
 
 
 const H2 = styled.h2`
@@ -36,16 +35,13 @@ const TextContainer = styled.div`
 `;
 const Home = () => {
   const translate = useTranslation();
-  const { user } = useContext(UserContext);
-  const { login, firstTimeLogin, setLogin, setLoginRedirectMessage, setSignup } =
-    useContext(AppContext);
-  const { showModal } = useContext(NotificationContext);
+  const { login, firstTimeLogin, } = useContext(AppContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-  // const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
   const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
-
+  const { user } = useContext(UserContext);
+  const { showModal } = useContext(NotificationContext);
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
@@ -73,11 +69,6 @@ const Home = () => {
                     marginTop: window.screen.width > 979 ? "150px" : "-48px",
                   }}
                 >
-
-
-                  {/* <TextContainer className="mt-2" >
-                  <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
-                </TextContainer> */}
                 </div>
               </>
             )}
@@ -92,21 +83,6 @@ const Home = () => {
               maxWidth: "250px",
             }}
           >
-            {/* <h2
-                    style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
-                    className=' d-block text-center mb-2'
-                  >
-                    <strong
-                      className='text-uppercase text-center'
-                      style={{ fontSize: "24px", fontWeight: "700" }}
-                    >
-                      {translate("Vote to Earn")}
-                    </strong>
-                  </h2> */}
-            {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
-                  <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
-                </TextContainer> */}
-            {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
             <H2
               style={{
                 zIndex: 0,
@@ -118,26 +94,10 @@ const Home = () => {
               className="mb-4"
             >
               {texts.HereYourChance}
-              {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
           </TextContainer>
           {window.screen.width > 979 && (
             <>
-              {/* <h2
-             style={{ zIndex: 0, position: "relative",marginTop:window?.screen?.width<768?'90px': "200px" }}
-             className=' d-block text-center mb-2'
-           >
-             <strong
-               className='text-uppercase text-center'
-               style={{ fontSize: "44px", fontWeight: "700" }}
-             >
-               {translate("Vote to Earn")}
-             </strong>
-           </h2> */}
-              {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
-           <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
-         </TextContainer> */}
-              {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
               <H2
                 style={{
                   // zIndex: 1,
@@ -155,7 +115,17 @@ const Home = () => {
               </H2>
             </>
           )}
-
+          <div className="mt-5">
+            <PairsCopy
+              onFavClick={async (...args) => {
+                if (user) {
+                  await calcFavorites(...args);
+                } else {
+                  showModal(<NotLoggedInPopup />);
+                }
+              }}
+            />
+          </div>
         </div>
         <div className='mb-5 mt-5  mx-0'>
           <div className='mb-4'>

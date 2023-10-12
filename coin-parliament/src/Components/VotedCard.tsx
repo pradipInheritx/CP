@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import {Direction, VoteResultProps} from "../common/models/Vote";
+import { Direction, VoteResultProps } from "../common/models/Vote";
 import Countdown from "react-countdown";
-import {Coin} from "../common/models/Coin";
-import {useTranslation} from "../common/models/Dictionary";
+import { Coin } from "../common/models/Coin";
+import { useTranslation } from "../common/models/Dictionary";
 import styled from "styled-components";
 import {
   Border1pxBlueViolet,
@@ -11,7 +11,7 @@ import {
   PoppinsNormalGunsmoke9px,
 } from "../styledMixins";
 import moment from "moment";
-import {isEmpty} from "lodash";
+import { isEmpty } from "lodash";
 import SelectTimeframes from "./Coins/SelectTimeframes";
 import AppContext from "../Contexts/AppContext";
 import RangeSilder from "./Users/RangeSilder";
@@ -95,76 +95,76 @@ const VotedCard = ({
   selectedTimeFrameArray,
   cssDegree,
   votePrice,
-  
+
 }: {
   vote: VoteResultProps;
   coins: { [symbol: string]: Coin };
   symbol1: string;
   symbol2: string;
   voteId: string;
-  selectedTimeFrame?:number;
-  setSelectedTimeFrame?: (n: number) => void;  
+  selectedTimeFrame?: number;
+  setSelectedTimeFrame?: (n: number) => void;
   selectedTimeFrameArray?: any;
-  cssDegree?:any;
-  votePrice?:any;
-  
-  }) => {
-  
-  
-  const [borderColor, setBorderColor] = useState<any>("#6352e8");const getBorderColor = () => {
+  cssDegree?: any;
+  votePrice?: any;
+
+}) => {
+
+
+  const [borderColor, setBorderColor] = useState<any>("#6352e8"); const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
-     if (symbol2 !== undefined) {
-         let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
-        // @ts-ignore
+    if (symbol2 !== undefined) {
+      let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+      // @ts-ignore
       let bothCurrentPrice = [...vote?.valueVotingTime];
-    //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
-    let diff = [
+      //   let bothCurrentPrice = [vote?.valueVotingTime[0],vote?.valueVotingTime[1],];
+      let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
-    ];
-     console.log(diff,"bothCurrentPrice")     
+      ];
+      console.log(diff, "bothCurrentPrice")
       let winner = diff[0] < diff[1] ? 1 : 0;
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      if ((averageValue == averageValue)) {        
-        setBorderColor("#6352e8") 
+      if ((averageValue == averageValue)) {
+        setBorderColor("#6352e8")
       } else {
         if (vote?.direction == 1) {
-            winner == vote?.direction
-                ?
-                  setBorderColor("#d4d0f3")              
-                :             
-                  setBorderColor("#3b17b7") 
-             
+          winner == vote?.direction
+            ?
+            setBorderColor("#d4d0f3")
+            :
+            setBorderColor("#3b17b7")
+
         } else if (vote?.direction == 0) {
           winner != vote?.direction
-            ?            
-            setBorderColor("#d4d0f3") 
+            ?
+            setBorderColor("#d4d0f3")
             :
-            setBorderColor("#3b17b7") 
+            setBorderColor("#3b17b7")
 
         }
-      }       
-     } else if (symbol2 == undefined) {    
-       let livePrice =coins[symbol1]?.price
-       let votePrice =Number(vote?.valueVotingTime)
-       let PricePer = livePrice;
-       if(livePrice < PricePer + 10 &&
-         livePrice > PricePer - 10) { 
-          setBorderColor(50);
+      }
+    } else if (symbol2 == undefined) {
+      let livePrice = coins[symbol1]?.price
+      let votePrice = Number(vote?.valueVotingTime)
+      let PricePer = livePrice;
+      if (livePrice < PricePer + 10 &&
+        livePrice > PricePer - 10) {
+        setBorderColor(50);
+      }
+      else {
+        if (vote?.direction == 1) {
+          livePrice < votePrice ? setBorderColor("#3b17b7") : setBorderColor("#d4d0f3");
+        } else if (vote?.direction == 0) {
+          livePrice > votePrice ? setBorderColor("#d4d0f3") : setBorderColor("#3b17b7");
         }
-        else{
-          if(vote?.direction == 1){
-            livePrice < votePrice ?setBorderColor("#3b17b7"):setBorderColor("#d4d0f3");
-          }else if(vote?.direction == 0){
-            livePrice > votePrice ? setBorderColor("#d4d0f3"):setBorderColor("#3b17b7");
-          }
-        }     
+      }
     }
-};
-  
- useEffect(() => {
+  };
+
+  useEffect(() => {
     getBorderColor()
-  }, [coins[symbol1]?.price ,coins[symbol2]?.price])
+  }, [coins[symbol1]?.price, coins[symbol2]?.price])
 
 
 
@@ -174,7 +174,7 @@ const VotedCard = ({
     coins[symbol2] || undefined,
   ];
   const { timeframes } = useContext(AppContext);
-  const translate = useTranslation();  
+  const translate = useTranslation();
   if (!coin1) {
     return <></>;
   }
@@ -185,8 +185,8 @@ const VotedCard = ({
   const votedCoin = coin2 ? coins[voted] : coins[symbol1];
 
 
-  
-  
+
+
   let row1 = "",
     row2 = "";
   if (!isEmpty(vote)) {
@@ -201,17 +201,17 @@ const VotedCard = ({
     row1 = coin2
       ? `${votedCoin.symbol} - `
       : `${votedCoin.symbol}`;
-      
+
     row2 = coin2
       ? `${vote.timeframe.name} ${valueVotingTime}`
       : `${voted} - ${vote.timeframe.name} $${valueVotingTime || 'loading'}`;
   }
-//   console.log(vote,"CheckvalueVotingTime") 
-// console.log(vote,"voteCheck")
-  
+  //   console.log(vote,"CheckvalueVotingTime") 
+  // console.log(vote,"voteCheck")
+
   return (
     <>
-     <div className="mt-4" style={{paddingLeft:symbol2?'':'24px',paddingRight:symbol2?'':'24px',maxWidth:'450px', margin:'0 auto'}}>
+      <div className="mt-4" style={{ paddingLeft: symbol2 ? '' : '24px', paddingRight: symbol2 ? '' : '24px', maxWidth: '450px', margin: '0 auto' }}>
         <SelectTimeframes
           {...{
             selected: selectedTimeFrame,
@@ -221,10 +221,10 @@ const VotedCard = ({
               setSelectedTimeFrame(timeframe.index);
             },
             title: translate("Select voting time frame"),
-            voted:true,
+            voted: true,
             selectedTimeFrameArray: selectedTimeFrameArray,
-            cssDegree:cssDegree,
-            votePrice:votePrice,
+            cssDegree: cssDegree,
+            votePrice: votePrice,
           }}
         />
       </div>
@@ -233,31 +233,31 @@ const VotedCard = ({
       </div>
       {/* @ts-ignore */}
       {/* <Rectangle2620 className="" style={{border:coin2===undefined? (vote.direction?(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime <coin1.price?'1px solid #07501a':'1px solid ##7afd67')):(vote.valueVotingTime <Number(vote.valueVotingTime) + (Number(vote.valueVotingTime) * 1 / 100) && vote.valueVotingTime >Number(vote.valueVotingTime) - (Number(vote.valueVotingTime) * 1 / 100) && !vote.score?'1px solid #218b17':(vote.valueVotingTime >coin1.price?'1px solid #07501a':'1px solid ##7afd67'))):(vote.direction?(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) > (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')):(Math.abs((coin1.price / vote?.valueVotingTime[0]) - (coin2.price / vote?.valueVotingTime[1]))  <= 1 && !vote?.score?'1px solid #218b17':((coin1.price / vote?.valueVotingTime[0]) < (coin2.price / vote?.valueVotingTime[1])  &&!vote?.score?'1px solid #07501a':'1px solid ##7afd67')))}}>     */}
-      <Rectangle2620 className="" style={{border:`1px solid ${borderColor}`}}>    
+      <Rectangle2620 className="" style={{ border: `1px solid ${borderColor}` }}>
         <div className="d-flex justify-content-center w-100 ">
           <div className="w-100 px-3">
             <BitcoinBTCBULL24H3864490
               className={`${coin2 ? "flex-row" : "flex-row"} d-flex justify-content-center`}
             >
-              <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for { row1}</Row1>
-              <Row2 className="poppins-normal-blue-violet-14px-2">{row2}</Row2>              
+              <Row1 className="poppins-normal-blackcurrant-14px mx-2"> You voted for {row1}</Row1>
+              <Row2 className="poppins-normal-blue-violet-14px-2">{row2}</Row2>
             </BitcoinBTCBULL24H3864490>
             <div className="my-2">
               <MyCountdown expirationTime={expirationTime} />
             </div>
             <div className="my-2">
-            <YourVote>YOUR VOTE IMPACT</YourVote> 
-             
+              <YourVote>YOUR VOTE IMPACT</YourVote>
+
             </div>
             <div>
               <RangeSilder
-              vote={vote}
-              coins={coins}
-              symbol1={symbol1}
-              symbol2={symbol2}
+              // vote={vote}
+              // coins={coins}
+              // symbol1={symbol1}
+              // symbol2={symbol2}
               />
             </div>
-            
+
             {/* <div className="d-flex align-items-center justify-content-center w-100">
                
                 <Text2 >
@@ -284,8 +284,8 @@ const VotedCard = ({
               {voteId} - {moment(vote.voteTime).format("MM.DD.YYYY HH:mm")}
             </ID13020221942>
           </div>
-          
-          
+
+
         </div>
       </Rectangle2620>
     </>
@@ -295,7 +295,7 @@ const VotedCard = ({
 export default VotedCard;
 
 export const MyCountdown = ({ expirationTime }: { expirationTime: number }) => {
-  
+
   return (
     // @ts-ignore
     <Countdown
@@ -305,8 +305,8 @@ export const MyCountdown = ({ expirationTime }: { expirationTime: number }) => {
           return <span>loading...</span>;
         } else {
           return (
-            <span className="" style={{color:'#6352e8',fontSize:'17px',fontWeight:400,marginLeft:"10px"}}>
-              {hours < 10 ? `0${hours}` :hours}:
+            <span className="" style={{ color: '#6352e8', fontSize: '17px', fontWeight: 400, marginLeft: "10px" }}>
+              {hours < 10 ? `0${hours}` : hours}:
               {minutes < 10 ? `0${minutes}` : minutes}:
               {seconds < 10 ? `0${seconds}` : seconds}
             </span>

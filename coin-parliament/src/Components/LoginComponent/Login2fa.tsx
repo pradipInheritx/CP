@@ -55,8 +55,8 @@ const title = {
 };
 
 export type Login2faProps = {
-  setLogin: any;
-  setMfaLogin: any;
+  setLogin?: any;
+  setMfaLogin?: any;
 };
 
 const Login2fa = ({
@@ -66,8 +66,8 @@ const Login2fa = ({
   const translate = useTranslation();
   const location = useLocation();
   const search = location.search;
-  const { setUser } = useContext(UserContext);
-  const { signup, setSignup } = useContext(AppContext);
+  const { setUser, } = useContext(UserContext);
+  const { signup, setSignup, setShowMenuBar } = useContext(AppContext);
   const [forgetPassword, setForgetPassword] = useState(false);
   const mode = signup ? LoginModes.SIGNUP : LoginModes.LOGIN;
   const refer = new URLSearchParams(search).get("refer");
@@ -117,6 +117,7 @@ const Login2fa = ({
       window.localStorage.setItem('mfa_passed', 'false')
       setLogin(false)
       setMfaLogin(false)
+      setShowMenuBar(false)
     } catch (error: any) {
       showToast(
         error.response.data.message, ToastType.ERROR
@@ -136,6 +137,7 @@ const Login2fa = ({
     }
     else { setMfaLogin(true) }
     window.localStorage.setItem('mfa_passed', 'true')
+    setShowMenuBar(true)
     // createPost(u?.uid as string)
     return () => setCopied(false)
   }, [])
