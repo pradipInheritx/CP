@@ -301,6 +301,7 @@ html[dir="rtl"] .offcanvas-start.show {
 
   .modal-backdrop.show{
     opacity: 0;
+    z-index: 1;
   }
   
   /* Modal Content */

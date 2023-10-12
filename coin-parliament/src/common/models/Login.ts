@@ -166,12 +166,15 @@ export const LoginRegular = async (
   const email = getValue(e, "email");
   const password = getValue(e, "password");
 
+
+  console.log(auth, "checkauth")
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
+    
     const isFirstLogin = getAdditionalUserInfo(userCredential)
 console.log('firsttimelogin',isFirstLogin)
     if(auth?.currentUser?.emailVerified){

@@ -83,6 +83,7 @@ const GoogleAuthenticator = () => {
       // @ts-ignore
       QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url).then(
         (dataUrl: string) => {
+          console.log(dataUrl,"dataUrl")
           setQrCodeDataUrl(dataUrl);
         }
       );

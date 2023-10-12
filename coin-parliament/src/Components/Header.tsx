@@ -240,10 +240,12 @@ const Header = ({
           .then((res) => {
             // console.log("logout", res);
             Logout(setUser);
+            setLogin(true);
           })
           .catch((error) => {
             const errorMessage = error.message;
             console.log(errorMessage);
+            setLogin(true);
           });
         break;
       case EventKeys.EDIT:
@@ -511,7 +513,7 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "" : "" }}>
+                  <Title style={{ width: pathname === "/" ? "40px" : "" }}>
                     {/* {mounted ? title : ""} */}
                   </Title>
                 </div>
@@ -629,6 +631,13 @@ const Header = ({
                 {/* <Navbar.Brand as={Link} to='/'>
                   <img src={BigLogo} alt='' />
                 </Navbar.Brand> */}
+                <Navbar.Brand
+                  style={{
+                    height: "90px",
+                    width:"50px"
+                }}
+                >
+                </Navbar.Brand>
               </div>
             </div>
           ) : (

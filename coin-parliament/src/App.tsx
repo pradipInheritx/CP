@@ -13,6 +13,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useSearchParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -39,7 +40,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { db, functions, messaging } from "./firebase";
+import { auth, db, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -722,62 +723,62 @@ console.log('fmctoken',fcmToken)
   //   });
   // }, [user?.uid]);
   
-  // useEffect(() => {
-  //   const auth = getAuth();
+  useEffect(() => {
+    const auth = getAuth();
 
-  //   if (!firstTimeLogin) {
-  //     onAuthStateChanged(auth, async (user: User | null) => {
-  //       setAuthStateChanged(true);
-  //       if (
-  //         user?.emailVerified ||
-  //         user?.providerData[0]?.providerId === "facebook.com"
-  //       ) {
-  //         // setLogin(false);
-  //         // setSignup(false);
-  //         setLoginRedirectMessage("");
-  //         await updateUser(user);
-  //         setUserUid(user?.uid);
-  //         onSnapshot(doc(db, "users", user.uid), async (doc) => {
-  //           await setUserInfo(doc.data() as UserProps);
-  //           setDisplayName((doc.data() as UserProps).displayName + "");
-  //         });
-  //         // const votesLast24HoursRef = firebase
-  //         //   .firestore()
-  //         //   .collection("votes")
-  //         //   .where("userId", "==", user.uid)
-  //         //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
-  //         //   .where("voteTime", "<=", Date.now());
-  //         //   console.log('extravote11',votesLast24HoursRef)
-  //         //   await votesLast24HoursRef.onSnapshot((snapshot) => {
-  //         //     console.log('extravote1')
-  //         //     setVotesLast24Hours(
-  //         //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
-  //         //     );
-  //         //   });
+    if (!firstTimeLogin) {
+      onAuthStateChanged(auth, async (user: User | null) => {
+        setAuthStateChanged(true);
+        if (
+          user?.emailVerified ||
+          user?.providerData[0]?.providerId === "facebook.com"
+        ) {
+          // setLogin(false);
+          // setSignup(false);
+          setLoginRedirectMessage("");
+          await updateUser(user);
+          setUserUid(user?.uid);
+          onSnapshot(doc(db, "users", user.uid), async (doc) => {
+            await setUserInfo(doc.data() as UserProps);
+            setDisplayName((doc.data() as UserProps).displayName + "");
+          });
+          // const votesLast24HoursRef = firebase
+          //   .firestore()
+          //   .collection("votes")
+          //   .where("userId", "==", user.uid)
+          //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
+          //   .where("voteTime", "<=", Date.now());
+          //   console.log('extravote11',votesLast24HoursRef)
+          //   await votesLast24HoursRef.onSnapshot((snapshot) => {
+          //     console.log('extravote1')
+          //     setVotesLast24Hours(
+          //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
+          //     );
+          //   });
          
 
-  //         try {
-  //           if (fcmToken) {
-  //             try {
-  //               await setDoc(
-  //                 doc(db, "users", user.uid),
-  //                 { token: fcmToken },
-  //                 { merge: true }
-  //               );
-  //               console.log("push enabled");
-  //             } catch (e) {
-  //               console.log(e);
-  //             }
-  //           }
-  //         } catch (e) {
-  //           console.log("An error occurred while retrieving token. ", e);
-  //         }
-  //       } else {
-  //         await updateUser();
-  //       }
-  //     });
-  //   }
-  // }, [user, fcmToken, coins]);
+          try {
+            if (fcmToken) {
+              try {
+                await setDoc(
+                  doc(db, "users", user.uid),
+                  { token: fcmToken },
+                  { merge: true }
+                );
+                console.log("push enabled");
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          } catch (e) {
+            console.log("An error occurred while retrieving token. ", e);
+          }
+        } else {
+          await updateUser();
+        }
+      });
+    }
+  }, [user, fcmToken, coins]);
   
 // useEffect(() => {
   
@@ -864,6 +865,33 @@ console.log('fmctoken',fcmToken)
 //   }
 //   removeData()
 // }, [])
+
+  // login user using token
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    let token = searchParams.get('token');
+    if (token) {
+      firebase.auth().signInWithCustomToken(token)
+        .then((userCredential) => {
+          // User is signed in
+          const user = userCredential.user;
+          console.log('Custom token sign-in success: authenticated', user?.emailVerified);
+          navigate('/');
+        })
+        .catch((error) => {
+          // Handle sign-in errors
+          console.error('Custom token sign-in error: authenticated', error);
+        });
+    }
+  }, [searchParams]);
+  
+  useEffect(() => {
+    if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
+      auth.signOut();
+      showToast("Please verify your email address.", ToastType.ERROR);
+    }
+  }, [JSON.stringify(auth?.currentUser)]);
+
 
 
   return loader ? (
@@ -1221,6 +1249,8 @@ console.log('fmctoken',fcmToken)
                                           path='CardShow/:id'
                                           element={<CardShow />}
                                         />
+                                       
+
                                         {/* <Route
                                           path='coins'
                                           element={<CoinMain />}
@@ -1300,7 +1330,7 @@ console.log('fmctoken',fcmToken)
                                         </Route> 
                                         */}
                                         
-                                          {/* <Route
+                                          <Route
                                           path={ProfileTabs.profile}
                                           element={<Profile />}
                                         >
@@ -1323,7 +1353,7 @@ console.log('fmctoken',fcmToken)
                                             }
                                             element={<Wallet />}
                                           /> 
-                                        </Route> */}
+                                        </Route>
                                         {/* Fowller component  start*/}
                                         {/* <Route
                                           path={FollowerProfileTabs.FollowerProfile}
@@ -1365,7 +1395,7 @@ console.log('fmctoken',fcmToken)
                                         /> */}
 
                                         {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
-                                        {/* <Route path='faq' element={<FAQ />} />
+                                        <Route path='faq' element={<FAQ />} />
                                         <Route
                                           path='about'
                                           element={<About />}
@@ -1381,8 +1411,8 @@ console.log('fmctoken',fcmToken)
                                         <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
-                                        /> */}
-                                         {/* <Route
+                                        />
+                                         <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> 
@@ -1405,7 +1435,7 @@ console.log('fmctoken',fcmToken)
                                               element={<Content />}
                                             />
                                           ))}
-                                        <Route path='*' element={<Content />} /> */}
+                                        <Route path='*' element={<Content />} />
                                       </Routes>
                                     </Container>
                                     <Footer />
