@@ -14,7 +14,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/votingparliament.json";
+import serviceAccount from "./serviceAccounts/votetoearn.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
