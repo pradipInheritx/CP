@@ -172,6 +172,7 @@ export const LoginRegular = async (
       email,
       password
     );
+    console.log("yes i am working ")
     const isFirstLogin = getAdditionalUserInfo(userCredential)
 console.log('firsttimelogin',isFirstLogin)
     if(auth?.currentUser?.emailVerified){
