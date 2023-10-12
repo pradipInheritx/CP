@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
 import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
-import {texts} from './Components/LoginComponent/texts'
+import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
@@ -13,6 +13,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useSearchParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -39,7 +40,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { db, functions, messaging } from "./firebase";
+import { auth, db, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -107,28 +108,16 @@ import Background from "./Components/Background";
 import Spinner from "./Components/Spinner";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
-// import useScrollPosition from "./hooks/useScrollPosition";
 import Button from "./Components/Atoms/Button/Button";
 import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvatarSelection";
-import FirstTimeFoundationSelection from "./Components/LoginComponent/FirstTimeFoundationSelection";
-import PrivacyPolicy from "./Pages/PrivacyPolicy";
-import UpgradePage from "./Components/Profile/UpgradePage";
-import VotingBooster from "./Components/Profile/VotingBooster";
-import ProfileNftGallery from "./Pages/ProfileNftGallery";
-import GameRule from "./Pages/GameRule";
-import ProfileNftGalleryType from "./Pages/ProfileNftGalleryType";
-import SingalCard from "./Pages/SingalCard";
-import FwMine from "./Components/FollowerProfile/FwMine";
-import FwFollow from "./Components/FollowerProfile/FwFollow";
-import FwVotes from "./Components/FollowerProfile/FwVotes";
-import FwPool from "./Components/FollowerProfile/FwPool";
-import Wallet from "./Components/Profile/Wallet";
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
 // import { handleSoundClick } from "./common/utils/SoundClick";
 // import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
+import Wallet from "Components/Profile/Wallet";
+import CardShow from "Components/Pairs/CardShow";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -139,14 +128,14 @@ const localhost = window.location.hostname === "localhost";
 // };
 // request.onsuccess = (event) => {
 // //  @ts-ignore
- 
+
 //   const db = event?.target?.result
 //   db
 //   .transaction("firebaseLocalStorage")
 //   .objectStore("firebaseLocalStorage").getAll().onsuccess = (event:any) => {
 //     userData=event.target.result[0]?.value?.uid
 //     console.log('Got all customers:', event.target.result[0]?.value?.uid);
-   
+
 //   }
 // //   .get("444-44-4444").onsuccess = (event) => {
 // //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
@@ -162,51 +151,51 @@ function App() {
   const { width } = useWindowSize();
   // const scrollPosition = useScrollPosition();
   const [modalOpen, setModalOpen] = useState(false);
-  const [displayFullscreen,setDisplayFullscreen]=useState('none')
-  
-// fullscreen mode
-useEffect(() => {
-  const modal = document.getElementById("fullscreen-modal");
-window.addEventListener('load', () => {
-  setDisplayFullscreen('block')
-});
-}, [])
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-// @ts-ignore
-const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
+  const [displayFullscreen, setDisplayFullscreen] = useState('none')
 
-const handleClick=()=>{
-  
-  setDisplayFullscreen('none')
-  if (isMobile && fullscreenEnabled) {
-    const elem = document.documentElement;
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } 
-    // @ts-ignore
-    else if (elem?.webkitRequestFullscreen) {
-       // @ts-ignore
-      elem?.webkitRequestFullscreen();
-    }
-     // @ts-ignore 
-    else if (elem?.mozRequestFullScreen) {
-       // @ts-ignore
-      elem?.mozRequestFullScreen();
-    }
-     // @ts-ignore
-     else if (elem?.msRequestFullscreen) {
+  // fullscreen mode
+  useEffect(() => {
+    const modal = document.getElementById("fullscreen-modal");
+    window.addEventListener('load', () => {
+      setDisplayFullscreen('block')
+    });
+  }, [])
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // @ts-ignore
+  const fullscreenEnabled = document.fullscreenEnabled || document?.webkitFullscreenEnabled || document?.mozFullScreenEnabled || document?.msFullscreenEnabled;
+
+  const handleClick = () => {
+
+    setDisplayFullscreen('none')
+    if (isMobile && fullscreenEnabled) {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      }
+      // @ts-ignore
+      else if (elem?.webkitRequestFullscreen) {
         // @ts-ignore
-      elem?.msRequestFullscreen();
+        elem?.webkitRequestFullscreen();
+      }
+      // @ts-ignore 
+      else if (elem?.mozRequestFullScreen) {
+        // @ts-ignore
+        elem?.mozRequestFullScreen();
+      }
+      // @ts-ignore
+      else if (elem?.msRequestFullscreen) {
+        // @ts-ignore
+        elem?.msRequestFullscreen();
+      }
     }
   }
-}
   useEffect(() => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
     });
-      // console.log("scrollTo");
-}, [pathname])
+    // console.log("scrollTo");
+  }, [pathname])
 
   const showToast = useCallback(
     (
@@ -260,22 +249,22 @@ const handleClick=()=>{
   );
 
   useEffect(() => {
-    if('serviceWorker' in navigator) {
-    navigator?.serviceWorker?.addEventListener("message", (message) => {
-      const {
-        notification: { body, title },
-      } = message.data["firebase-messaging-msg-data"] as {
-        notification: { body: string; title: string };
-      };
-      
-      // showToast(
-      //   <div>
-      //     <h5>{title}</h5>
-      //     <p>{body}</p>
-      //   </div>
-      // );
-    });
-  }
+    if ('serviceWorker' in navigator) {
+      navigator?.serviceWorker?.addEventListener("message", (message) => {
+        const {
+          notification: { body, title },
+        } = message.data["firebase-messaging-msg-data"] as {
+          notification: { body: string; title: string };
+        };
+
+        // showToast(
+        //   <div>
+        //     <h5>{title}</h5>
+        //     <p>{body}</p>
+        //   </div>
+        // );
+      });
+    }
   });
   useEffect(() => {
     const body = document.querySelector("body") as HTMLBodyElement;
@@ -337,23 +326,22 @@ const handleClick=()=>{
   const [languages, setLanguages] = useState<string[]>([ENGLISH]);
   const [rtl, setRtl] = useState<string[]>([]);
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
-  const [remainingTimer,setRemainingTimer]=useState(0)
-  const [followerUserId,setFollowerUserId]=useState<string>('')
+  const [remainingTimer, setRemainingTimer] = useState(0)
+  const [followerUserId, setFollowerUserId] = useState<string>('')
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
-  const [votesLast24Hours, setVotesLast24Hours] = useState<VoteResultProps[]>(
-    []
-  );
+  const [votesLast24Hours, setVotesLast24Hours] = useState<VoteResultProps[]>([]);
+  const [showMenubar, setShowMenuBar] = useState(false);
   const [userTypes, setUserTypes] = useState<UserTypeProps[]>([
     defaultUserType,
   ] as UserTypeProps[]);
   const [supportsPWA, setSupportsPWA] = useState(false);
   const [promptInstall, setPromptInstall] = useState(null);
-const [pwaPopUp,setPwaPopUp]=useState('block')
-const[mfaLogin,setMfaLogin]=useState(false)
+  const [pwaPopUp, setPwaPopUp] = useState('block')
+  const [mfaLogin, setMfaLogin] = useState(false)
   useEffect(() => {
-    const handler = (e:any) => {
+    const handler = (e: any) => {
       e.preventDefault();
       console.log("we are being triggered :D");
       setSupportsPWA(true);
@@ -364,19 +352,21 @@ const[mfaLogin,setMfaLogin]=useState(false)
     return () => window.removeEventListener("transitionend", handler);
   }, []);
   // @ts-ignore
-  useEffect(() => {
-    const isMFAPassed =  window.localStorage.getItem('mfa_passed')
-    if (isMFAPassed=='true' && !login ) {
-    
-      console.log('2faCalled')
-      // @ts-ignore
-      Logout(setUser)}
-  }, [])
-  
+  // 2fa problem solve
+  // useEffect(() => {
+  //   const isMFAPassed = window.localStorage.getItem('mfa_passed')
+  //   if (isMFAPassed == 'true' && !login) {
 
-  const onClick = (evt:any) => {
+  //     console.log('2faCalled')
+  //     // @ts-ignore
+  //     Logout(setUser)
+  //   }
+  // }, [])
+
+
+  const onClick = (evt: any) => {
     // evt.preventDefault();
-    console.log('not supported',promptInstall)
+    console.log('not supported', promptInstall)
     if (!promptInstall) {
       return;
     }
@@ -387,35 +377,35 @@ const[mfaLogin,setMfaLogin]=useState(false)
     console.log('not supported')
   }
   useEffect(() => {
-    if ( user?.email && userInfo?.displayName === undefined && !login) {
+    if (user?.email && userInfo?.displayName === undefined && !login) {
       setLoader(true);
-//   .get("444-44-4444").onsuccess = (event) => {
-//   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
-// };
+      //   .get("444-44-4444").onsuccess = (event) => {
+      //   console.log(`Name for SSN 444-44-4444 is ${event.target.result.name}`);
+      // };
 
       // setLoader(true);
     } else {
       // setTimeout(() => {
-        setLoader(false);
+      setLoader(false);
       // }, 2000);
     }
   }, [user, userInfo]);
-  const updateUser = useCallback(async (user?: User) => {    
+  const updateUser = useCallback(async (user?: User) => {
     setUser(user);
-    
     const info = await getUserInfo(user);
+    console.log("i am working")
     setUserInfo(info);
     setDisplayName(info.displayName + "");
   }, []);
 
-  
+
   // const FollowerData = async(id:any) => {     
   //   const Followerinfo =  await getFollowerInfo(id);
   //   return Followerinfo
   // }
 
   // console.log(FollowerData("gK7iyJ8ysrSXQGKO4vch89WHPKh2"), "Followerinfo");
-  
+
 
   useEffect(() => {
     if (user?.email && userInfo?.displayName === undefined && !login) {
@@ -432,19 +422,19 @@ const[mfaLogin,setMfaLogin]=useState(false)
     // for (let i = 0; i < buttons.length; i++) {
     //   buttons[i].addEventListener('click', handleSoundClick);
     // }
-    
+
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
       setLogin(false);
       setSignup(false);
     } else {
-      const isMFAPassed =  window.localStorage.getItem('mfa_passed')
-      if(!user && isMFAPassed!=='true' ){
+      const isMFAPassed = window.localStorage.getItem('mfa_passed')
+      if (!user && isMFAPassed !== 'true') {
         console.log('2faCalled3')
         setLogin(false);
         setSignup(false);
-    }
-     
+      }
+
     }
     // return () => {
     //   for (let i = 0; i < buttons.length; i++) {
@@ -460,19 +450,19 @@ const[mfaLogin,setMfaLogin]=useState(false)
   // }, [user]);
 
   useEffect(() => {
-   
+
     // @ts-ignore
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
     }
-    
-  }, [userInfo]);
-useEffect(() => {
-  pwaInstallHandler.addListener((canInstall) => {
-    canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
-   })
 
-}, [])
+  }, [userInfo]);
+  useEffect(() => {
+    pwaInstallHandler.addListener((canInstall) => {
+      canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
+    })
+
+  }, [])
 
   useEffect(() => {
     setMounted(true);
@@ -504,7 +494,7 @@ useEffect(() => {
     //   vapidKey: process.env.REACT_APP_FIREBASE_MESSAGING_VAPID_KEY,
     // }).then((token) => setFcmToken(token));
   }, []);
-console.log('fmctoken',fcmToken)
+  console.log('fmctoken', fcmToken)
   useEffect(() => {
     const localStorageLang = localStorage.getItem("lang");
     if (localStorageLang && languages.includes(localStorageLang)) {
@@ -533,231 +523,55 @@ console.log('fmctoken',fcmToken)
   //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
   // }, [user?.uid, isAdmin]);
 
-  // useEffect(() => {
-  //   onSnapshot(doc(db, "stats", "leaders"), (doc) => {
-  //     setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
-      
-  //   });
 
-  //   onSnapshot(
-  //     query(
-  //       collection(db, "notifications"),
-  //       where("user", "==", user?.uid || "")
-  //     ),
-  //     (querySnapshot) => {
-  //       setNotifications(
-  //         querySnapshot.docs.map((doc) => {
-  //           return doc.data() as NotificationProps;
-  //         })
-  //       );
-  //     }
-  //   );
 
-  //   onSnapshot(doc(db, "stats", "totals"), (doc) => {
-  //     setTotals((doc.data() || {}) as { [key: string]: Totals });
-  //   });
+  useEffect(() => {
+    const auth = getAuth();
+    if (!firstTimeLogin) {
 
-  //   onSnapshot(doc(db, "settings", "timeframes"), (doc) => {
-  //     setTimeframes(
-  //       ((doc.data() as { timeframes: TimeFrame[] }) || {}).timeframes || []
-  //     );
-  //   });
+      onAuthStateChanged(auth, async (user: User | null) => {
+        setAuthStateChanged(true);
+        console.log('provider', user?.providerData[0]?.providerId)
+        if (
+          user?.emailVerified ||
+          user?.providerData[0]?.providerId === "facebook.com"
+        ) {
+          setLoginRedirectMessage("");
+          await updateUser(user);
+          setUserUid(user?.uid);
 
-  //   onSnapshot(doc(db, "settings", "userTypes"), (doc) => {
-  //     const u = (
-  //       (doc.data() || {
-  //         userTypes: [defaultUserType],
-  //       }) as { userTypes: UserTypeProps[] }
-  //     ).userTypes;
+          localStorage.setItem("userId", user.uid)
 
-  //     setUserTypes(u);
-  //   });
+          onSnapshot(doc(db, "users", user.uid), async (doc) => {
+            await setUserInfo(doc.data() as UserProps);
+            setDisplayName((doc.data() as UserProps).displayName + "");
+          });
 
-  //   onSnapshot(doc(db, "settings", "settings"), (doc) => {
-  //     setVoteRules(
-  //       ((doc.data() || {}) as { voteRules: VoteRules }).voteRules || {}
-  //     );
-  //     setCPMSettings(
-  //       ((doc.data() || {}) as { CPMSettings: CPMSettings }).CPMSettings || {}
-  //     );
-  //   });
 
-  //   onSnapshot(doc(db, "settings", "languages"), (doc) => {
-  //     const u = (
-  //       (doc.data() || {
-  //         languages: [ENGLISH],
-  //       }) as { languages: string[] }
-  //     ).languages;
+          console.log(auth, "getauth", fcmToken)
+          try {
+            if (fcmToken) {
+              try {
+                await setDoc(
+                  doc(db, "users", user.uid),
+                  { token: fcmToken },
+                  { merge: true }
+                );
+              } catch (e) {
+                console.log(e);
+              }
+            }
+          } catch (e) {
+            console.log("An error occurred while retrieving token. ", e);
+          }
+        } else {
+          await updateUser();
 
-  //     setLanguages(u);
-  //   });
+        }
+      });
+    }
+  }, [user, fcmToken]);
 
-  //   onSnapshot(doc(db, "settings", "rtl"), (doc) => {
-  //     const r = (
-  //       (doc.data() || {
-  //         rtl: [],
-  //       }) as { rtl: string[] }
-  //     ).rtl;
-
-  //     setRtl(r);
-  //   });
-
-  //   onSnapshot(collection(db, "translations"), (querySnapshot) => {
-  //     querySnapshot.docs.forEach((doc) => {
-  //       translations.set(doc.id, doc.data());
-  //     });
-  //   });
-
-  //   onSnapshot(doc(db, "stats", "coins"), (doc) => {
-     
-  //     const newAllCoins = (doc.data() as { [key: string]: Coin }) || {};
-  //     setCoins(newAllCoins);
-  //     // saveCoins(newAllCoins);
-  //   });
-
-  //   onSnapshot(doc(db, "stats", "app"), (doc) => {
-  //     setAppStats(doc.data() as AppStats);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "paxData"), (doc) => {
-  //     setPaxData(doc.data() as PaxData);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "coins"), (doc) => {
-  //     const newAllCoins = (
-  //       ((doc.data() as { coins: DBCoin[] }) || {}).coins || []
-  //     )
-  //       .sort((a, b) => Number(a.id) - Number(b.id))
-  //       .map((c) => c.symbol);
-      
-  //     saveAllCoins(newAllCoins);
-  //     setAllCoins(newAllCoins);
-  //   });
-
-  //   onSnapshot(doc(db, "settings", "pairs"), (doc) => {
-  //     setAllPairs(
-  //       (((doc.data() as { pairs: DBPair[] }) || {}).pairs || [])
-  //         .sort((a, b) => Number(a.id) - Number(b.id))
-  //         .map((p) => {
-  //           return [p.symbol1, p.symbol2];
-  //         })
-  //     );
-  //   });
-  // }, [user?.uid]);
-  
-  // useEffect(() => {
-  //   const auth = getAuth();
-
-  //   if (!firstTimeLogin) {
-  //     onAuthStateChanged(auth, async (user: User | null) => {
-  //       setAuthStateChanged(true);
-  //       if (
-  //         user?.emailVerified ||
-  //         user?.providerData[0]?.providerId === "facebook.com"
-  //       ) {
-  //         // setLogin(false);
-  //         // setSignup(false);
-  //         setLoginRedirectMessage("");
-  //         await updateUser(user);
-  //         setUserUid(user?.uid);
-  //         onSnapshot(doc(db, "users", user.uid), async (doc) => {
-  //           await setUserInfo(doc.data() as UserProps);
-  //           setDisplayName((doc.data() as UserProps).displayName + "");
-  //         });
-  //         // const votesLast24HoursRef = firebase
-  //         //   .firestore()
-  //         //   .collection("votes")
-  //         //   .where("userId", "==", user.uid)
-  //         //   .where("voteTime", ">=", Date.now() - 24 * 60 * 60 * 1000)
-  //         //   .where("voteTime", "<=", Date.now());
-  //         //   console.log('extravote11',votesLast24HoursRef)
-  //         //   await votesLast24HoursRef.onSnapshot((snapshot) => {
-  //         //     console.log('extravote1')
-  //         //     setVotesLast24Hours(
-  //         //       snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps),
-  //         //     );
-  //         //   });
-         
-
-  //         try {
-  //           if (fcmToken) {
-  //             try {
-  //               await setDoc(
-  //                 doc(db, "users", user.uid),
-  //                 { token: fcmToken },
-  //                 { merge: true }
-  //               );
-  //               console.log("push enabled");
-  //             } catch (e) {
-  //               console.log(e);
-  //             }
-  //           }
-  //         } catch (e) {
-  //           console.log("An error occurred while retrieving token. ", e);
-  //         }
-  //       } else {
-  //         await updateUser();
-  //       }
-  //     });
-  //   }
-  // }, [user, fcmToken, coins]);
-  
-// useEffect(() => {
-  
-//   if(user?.uid){
-   
-//   const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-// // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-// const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-// const votesLast24HoursRef = firebase
-//             .firestore()
-//             .collection("votes")
-//             .where("userId", "==", user?.uid)
-//             .where("voteTime", ">=", last24Hour)
-//             .where("voteTime", "<=", Date.now());
-// // console.log('extravote11',votesLast24HoursRef)
-// votesLast24HoursRef.get()
-//     .then((snapshot) => {
-//         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-      
-//         const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-//       let remaining= (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) -  Date.now();
-  
-//   setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-  
-//   setTimeout(() => {
-//     if(user?.uid){
-    
-//       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-//     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-//     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-   
-//     const votesLast24HoursRef = firebase
-//                 .firestore()
-//                 .collection("votes")
-//                 .where("userId", "==", user?.uid)
-//                 .where("voteTime", ">=", last24Hour)
-//                 .where("voteTime", "<=", Date.now());
-//     // console.log('extravote11',votesLast24HoursRef)
-//     votesLast24HoursRef.get()
-//         .then((snapshot) => {
-//             setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-           
-//         })
-//         .catch((error) => {
-//             // console.log('extravoteError',error);
-//         });
-//       }
-//   }, remaining);
-//     })
-//     .catch((error) => {
-//         // console.log('extravoteError',error);
-//     });
-//   }
-  
- 
-// }, [userInfo?.voteStatistics?.total])
 
 
   useEffect(() => {
@@ -773,22 +587,33 @@ console.log('fmctoken',fcmToken)
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
-  
-// useEffect(() => {
-//   async function removeData() {
-//     const voteData = await firebase.firestore().collection('votes').where("userId", "==", "gK7iyJ8ysrSXQGKO4vch89WHPKh2").get();
-//     const batch = firebase.firestore().batch();
-//     voteData.forEach(doc => {
-//       batch.delete(doc.ref);
-//     });
-//     await batch.commit();
-  
-//     console.log("User vote data deleted");
-//   }
-//   removeData()
-// }, [])
 
+  // login user using token
 
+  useEffect(() => {
+    if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
+      auth.signOut();
+      showToast("Please verify your email address.", ToastType.ERROR);
+    }
+  }, [JSON.stringify(auth?.currentUser)]);
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    let token = searchParams.get('token');
+    if (token) {
+      firebase.auth().signInWithCustomToken(token)
+        .then((userCredential) => {
+          // User is signed in
+          const user = userCredential.user;
+          console.log('Custom token sign-in success: authenticated', user?.emailVerified);
+          navigate('/');
+        })
+        .catch((error) => {
+          // Handle sign-in errors
+          console.error('Custom token sign-in error: authenticated', error);
+        });
+    }
+  }, [searchParams]);
+  //end
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -820,19 +645,24 @@ console.log('fmctoken',fcmToken)
             }}
           >
             <AppContext.Provider
-                value={{
-                  followerUserId,
-                  setFollowerUserId,
-                  singalCardData,
-                  setSingalCardData,
-                  remainingTimer,
-                  setNftAlbumData,
-                  nftAlbumData,
-                  setAllPariButtonTime,
-                  allPariButtonTime,
-                  allButtonTime,
-                  forRun,
-                  setForRun,
+              value={{
+                showMenubar,
+                setShowMenuBar,
+                firstTimeAvatarSlection,
+                setFirstTimeAvatarSelection,
+
+                followerUserId,
+                setFollowerUserId,
+                singalCardData,
+                setSingalCardData,
+                remainingTimer,
+                setNftAlbumData,
+                nftAlbumData,
+                setAllPariButtonTime,
+                allPariButtonTime,
+                allButtonTime,
+                forRun,
+                setForRun,
                 setAllButtonTime,
                 chosenUserType,
                 setChosenUserType,
@@ -934,8 +764,8 @@ console.log('fmctoken',fcmToken)
                 }}
               >
                 <CoinsContext.Provider
-                    value={{
-                      changePrice,
+                  value={{
+                    changePrice,
                     setChangePrice,
                     ws,
                     rest,
@@ -968,180 +798,177 @@ console.log('fmctoken',fcmToken)
                     {getSubdomain() === "admin" && user && <Admin />}
                     {(getSubdomain() !== "admin" ||
                       (getSubdomain() === "admin" && !user)) && (
-                      <>
-                     
-                        <Background pathname={pathname} />
-                        <AppContainer
-                          fluid
-                          pathname={pathname}
-                          login={login || firstTimeLogin ? "true" : "false"}
+                        <>
+
+                          <Background pathname={pathname} />
+                          <AppContainer
+                            fluid
+                            pathname={pathname}
+                            login={login || firstTimeLogin ? "true" : "false"}
                           // width={width}
                           >
-                            
-                          <Header
-                          remainingTimer={remainingTimer}
-                            logo={
-                              (login && window.screen.width > 979) ||
-                              window.screen.width > 979
-                            }
-                            pathname={pathname}
-                            title={
-                              // pathname !== "/" && !login ? (
-                              //   <H1 style={{color: "var(--white)"}}>
-                              //     {pathname !== "/login" && pathname !== "/signup" && fixTitle(
-                              //       getTitle(
-                              //         pages?.find((p) => p.slug === pathname.slice(1))
-                              //           ?.title || pathname.slice(1),
-                              //         lang,
-                              //       ),
-                              //       pathname,
-                              //     )}
-                              //   </H1>
-                              // ) : (
-                              <HomeContainer
-                                className='d-flex flex-column justify-content-center align-items-center p-0'
-                                width={width}
-                              >
-                                <div
-                                  className='mb-2 d-flex align-items-center'
-                                  style={{
-                                    flexFlow:
-                                      width && width > 979 ? "row" : "column",
-                                    justifyContent:
-                                      width && width > 979
-                                        ? "center"
-                                        : "center",
-                                    width: width && width > 979 ? 233 : "auto",
-                                  }}
+
+                            <Header
+                              remainingTimer={remainingTimer}
+                              logo={
+                                (login && window.screen.width > 979) ||
+                                window.screen.width > 979
+                              }
+                              pathname={pathname}
+                              title={
+                                // pathname !== "/" && !login ? (
+                                //   <H1 style={{color: "var(--white)"}}>
+                                //     {pathname !== "/login" && pathname !== "/signup" && fixTitle(
+                                //       getTitle(
+                                //         pages?.find((p) => p.slug === pathname.slice(1))
+                                //           ?.title || pathname.slice(1),
+                                //         lang,
+                                //       ),
+                                //       pathname,
+                                //     )}
+                                //   </H1>
+                                // ) : (
+                                <HomeContainer
+                                  className='d-flex flex-column justify-content-center align-items-center p-0'
+                                  width={width}
                                 >
-                                  <Link to={"/"}>
-                                    {window.screen.width < 979 && (
-                                      <Logo
-                                        size={
-                                          width && width > 979
-                                            ? Size.XSMALL
-                                            : Size.XSMALL
-                                        }
-                                      />
-                                    )}
-                                    {/* {scrollPosition >= positionBreakpoint && window.screen.width<979 &&<Logo
+                                  <div
+                                    className='mb-2 d-flex align-items-center'
+                                    style={{
+                                      flexFlow:
+                                        width && width > 979 ? "row" : "column",
+                                      justifyContent:
+                                        width && width > 979
+                                          ? "center"
+                                          : "center",
+                                      width: width && width > 979 ? 233 : "auto",
+                                    }}
+                                  >
+                                    <Link to={"/"}>
+                                      {window.screen.width < 979 && (
+                                        <Logo
+                                          size={
+                                            width && width > 979
+                                              ? Size.XSMALL
+                                              : Size.XSMALL
+                                          }
+                                        />
+                                      )}
+                                      {/* {scrollPosition >= positionBreakpoint && window.screen.width<979 &&<Logo
                                         size={Size.XSMALL}
                                       />} */}
-                                  </Link>
-                                  {
-                                    // ((scrollPosition < positionBreakpoint) && (width && width < 979)) && <H1
-                                    //   desktop={
-                                    //     width && width > 979 ? "true" : "false"
-                                    //   }
-                                    //   className="mt-2"
-                                    //   onClick={() => navigate("/", {replace: true})}
-                                    // >
-                                    //   {/* {!login && !firstTimeFoundationSelection && !firstTimeLogin &&!firstTimeAvatarSlection? capitalize(translate("coin parliament", lang)): null} */}
-                                    // </H1>
-                                  }
-                                </div>
-                              </HomeContainer>
-                            }
-                          />
-                       
-                          {user && firstTimeLogin && (
-                            <FirstTimeLogin
-                              setFirstTimeAvatarSelection={
-                                setFirstTimeAvatarSelection
+                                    </Link>
+                                    {
+                                      // ((scrollPosition < positionBreakpoint) && (width && width < 979)) && <H1
+                                      //   desktop={
+                                      //     width && width > 979 ? "true" : "false"
+                                      //   }
+                                      //   className="mt-2"
+                                      //   onClick={() => navigate("/", {replace: true})}
+                                      // >
+                                      //   {/* {!login && !firstTimeFoundationSelection && !firstTimeLogin &&!firstTimeAvatarSlection? capitalize(translate("coin parliament", lang)): null} */}
+                                      // </H1>
+                                    }
+                                  </div>
+                                </HomeContainer>
                               }
-                              generate={generateUsername}
-                              saveUsername={async (username) => {
-                                if (user?.uid) {
-                                  await saveUsername(user?.uid, username, "");
-                                  setFirstTimeAvatarSelection(true);
-                                  // setFirstTimeFoundationSelection(true);
-                                  setFirstTimeLogin(false);
-                                }
-                              }}
                             />
-                          )}
 
-                          {!firstTimeLogin && firstTimeAvatarSlection && (
-                            <FirstTimeAvatarSelection
-                              user={user}
-                              setFirstTimeAvatarSelection={
-                                setFirstTimeAvatarSelection
-                              }
-                            />
-                          )}
-                          {/* {!firstTimeAvatarSlection &&
-                            firstTimeFoundationSelection && (
-                              <FirstTimeFoundationSelection
+                            {user && firstTimeLogin && (
+                              <FirstTimeLogin
+                                setFirstTimeAvatarSelection={
+                                  setFirstTimeAvatarSelection
+                                }
+                                generate={generateUsername}
+                                saveUsername={async (username) => {
+                                  if (user?.uid) {
+                                    await saveUsername(user?.uid, username, "");
+                                    setFirstTimeAvatarSelection(true);
+                                    // setFirstTimeFoundationSelection(true);
+                                    setFirstTimeLogin(false);
+                                  }
+                                }}
+                              />
+                            )}
+
+                            {!firstTimeLogin && firstTimeAvatarSlection && (
+                              <FirstTimeAvatarSelection
                                 user={user}
-                                setFirstTimeFoundationSelection={
-                                  setFirstTimeFoundationSelection
+                                setFirstTimeAvatarSelection={
+                                  setFirstTimeAvatarSelection
                                 }
                               />
-                            )} */}
-                          {!firstTimeLogin && (
-                            <>
-                              {!user && login && !mfaLogin && (
-                                <LoginAndSignup
-                                  {...{
-                                    authProvider: LoginAuthProvider,
-                                    loginAction: LoginRegular,
-                                    signupAction: SignupRegular,
-                                  }}
-                                />
-                              )}
-                              {(user || userInfo?.uid) && login && (
-                                <Login2fa
-                                  setLogin={setLogin}
-                                  setMfaLogin={setMfaLogin}
-                                />
-                              )}
-                              {!login &&
-                                !firstTimeAvatarSlection &&
-                                !firstTimeFoundationSelection && (
-                                  <>
-                                    <Container
-                                      fluid
-                                      style={{
-                                        background:
-                                          pathname == "/" ? "#160133" : "",
-                                        whiteSpace: "normal",
-                                        wordWrap: "break-word",
-                                        minHeight:
-                                          window.screen.width < 979
-                                            ? "89vh"
-                                            : "92vh",
-                                        // padding: `${pathname === "/" ? 120 : 84}px 0 109px`,
-                                        padding: `${
-                                          pathname === "/" ? 160 : 120
-                                        }px 0 0`,
-                                      }}
-                                    >
-                                    <div className='pwaPopup'  style={{display:pwaPopUp}}>
-                                        <span>{texts.InstallCoinParliament}</span>
-                                    <button
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={onClick}
-      style={{zIndex:99999}}
-    >
-      Install
-    </button>
-    <span
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={e=>setPwaPopUp('none')}
-                                          style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}
-    >
-      x
-    </span>
-                                      </div>
-                                      <Routes>
-                                        <Route path='/' element={<Home />} />
-                                        {/* <Route
+                            )}
+                            {!firstTimeLogin && (
+                              <>
+                                {!user && login && !mfaLogin && (
+                                  <LoginAndSignup
+                                    {...{
+                                      authProvider: LoginAuthProvider,
+                                      loginAction: LoginRegular,
+                                      signupAction: SignupRegular,
+                                    }}
+                                  />
+                                )}
+                                {(user || userInfo?.uid) && login && (
+                                  <Login2fa
+                                    setLogin={setLogin}
+                                    setMfaLogin={setMfaLogin}
+                                  />
+                                )}
+                                {!login &&
+                                  !firstTimeAvatarSlection &&
+                                  !firstTimeFoundationSelection && (
+                                    <>
+                                      <Container
+                                        fluid
+                                        style={{
+                                          background:
+                                            pathname == "/" ? "#160133" : "",
+                                          whiteSpace: "normal",
+                                          wordWrap: "break-word",
+                                          minHeight:
+                                            window.screen.width < 979
+                                              ? "89vh"
+                                              : "92vh",
+                                          // padding: `${pathname === "/" ? 120 : 84}px 0 109px`,
+                                          padding: `${pathname === "/" ? 160 : 120
+                                            }px 0 0`,
+                                        }}
+                                      >
+                                        <div className='pwaPopup' style={{ display: pwaPopUp }}>
+                                          <span>{texts.InstallCoinParliament}</span>
+                                          <button
+                                            className="link-button"
+                                            id="setup_button"
+                                            aria-label="Install app"
+                                            title="Install app"
+                                            onClick={onClick}
+                                            style={{ zIndex: 99999 }}
+                                          >
+                                            Install
+                                          </button>
+                                          <span
+                                            className="link-button"
+                                            id="setup_button"
+                                            aria-label="Install app"
+                                            title="Install app"
+                                            onClick={e => setPwaPopUp('none')}
+                                            style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
+                                          >
+                                            x
+                                          </span>
+                                        </div>
+                                        <Routes>
+                                          <Route path='/' element={<Home />} />
+                                          <Route path={ProfileTabs.profile} element={<Profile />}>
+                                            <Route path={ProfileTabs.share} element={<Pool />} />
+                                            <Route path={ProfileTabs.edit} element={<PersonalInfo />} />
+                                            <Route path={ProfileTabs.password} element={<Security />} />
+                                            <Route path={ProfileTabs.wallet} element={<Wallet />} />
+                                          </Route>
+                                          <Route path='CardShow/:id' element={<CardShow />} />
+                                          {/* <Route
                                           path='coins'
                                           element={<CoinMain />}
                                         />
@@ -1219,33 +1046,10 @@ console.log('fmctoken',fcmToken)
                                           />
                                         </Route> 
                                         */}
-                                        
+
+
+                                          {/* Fowller component  start*/}
                                           {/* <Route
-                                          path={ProfileTabs.profile}
-                                          element={<Profile />}
-                                        >
-                                         
-                                          <Route
-                                              path={ProfileTabs.share}
-                                              element={<Pool />}
-                                          />
-                                           <Route
-                                            path={ProfileTabs.edit}
-                                            element={<PersonalInfo />}
-                                          />
-                                          <Route
-                                            path={ProfileTabs.password}
-                                            element={<Security />}
-                                          />
-                                          <Route
-                                            path={
-                                              ProfileTabs.wallet
-                                            }
-                                            element={<Wallet />}
-                                          /> 
-                                        </Route> */}
-                                        {/* Fowller component  start*/}
-                                        {/* <Route
                                           path={FollowerProfileTabs.FollowerProfile}
                                           element={<FollowerProfile />}
                                         >
@@ -1269,9 +1073,9 @@ console.log('fmctoken',fcmToken)
                                               element={<FwPool />}
                                           />
                                           </Route> */}
-                                          
-                                        {/* Fowller component  end*/}
-                                        {/* <Route
+
+                                          {/* Fowller component  end*/}
+                                          {/* <Route
                                           path='/upgrade'
                                           element={<UpgradePage />}
                                         />
@@ -1284,8 +1088,8 @@ console.log('fmctoken',fcmToken)
                                           element={<Influencers />}
                                         /> */}
 
-                                        {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
-                                        {/* <Route path='faq' element={<FAQ />} />
+                                          {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
+                                          {/* <Route path='faq' element={<FAQ />} />
                                         <Route
                                           path='about'
                                           element={<About />}
@@ -1302,7 +1106,7 @@ console.log('fmctoken',fcmToken)
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> */}
-                                         {/* <Route
+                                          {/* <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         /> 
@@ -1326,17 +1130,17 @@ console.log('fmctoken',fcmToken)
                                             />
                                           ))}
                                         <Route path='*' element={<Content />} /> */}
-                                      </Routes>
-                                    </Container>
-                                    <Footer />
-                                  </>
-                                )}
-                            </>
-                          )}
-                        </AppContainer>
-                      </>
-                    )}
-                    <ToastContainer enableMultiContainer containerId='toast' />
+                                        </Routes>
+                                      </Container>
+                                      <Footer />
+                                    </>
+                                  )}
+                              </>
+                            )}
+                          </AppContainer>
+                        </>
+                      )}
+                    <ToastContainer enableMultiContainer containerId='toast' limit={1} />
                     <ToastContainer enableMultiContainer containerId='modal' />
                     {modalOpen && <div className='fade modal-backdrop show' />}
                   </UserContext.Provider>
@@ -1375,3 +1179,31 @@ console.log('fmctoken',fcmToken)
 }
 
 export default App;
+
+export const showToast = (
+  content: ToastContent,
+  type?: ToastType,
+  options: ToastOptions | undefined = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    containerId: "toast",
+  }
+) => {
+  toast.dismiss();
+  toast.clearWaitingQueue();
+  switch (type) {
+    case ToastType.ERROR:
+      toast.error(content, options);
+      break;
+    case ToastType.INFO:
+      toast.info(content, options);
+      break;
+    default:
+      toast.success(content, options);
+  }
+};

@@ -1,5 +1,5 @@
-import {Coin} from "../../common/models/Coin";
-import {flatMap, throttle} from "lodash";
+import { Coin } from "../../common/models/Coin";
+import { flatMap, throttle } from "lodash";
 
 export const symbolCombination = (coins: string[]) =>
   coins.length === 2 ? `${coins[0]}-${coins[1]}` : "";
@@ -45,7 +45,7 @@ export const getChosenPairs = (allPairs: string[][], filter: string) => {
   });
 };
 
-export const voteProcedure = ({vote, sound, setConfetti}: {
+export const voteProcedure = ({ vote, sound, setConfetti }: {
   vote: () => Promise<void>; sound: React.RefObject<HTMLAudioElement>; setConfetti: (bool: boolean) => void;
 }) => throttle(async () => {
   await vote();
@@ -55,3 +55,29 @@ export const voteProcedure = ({vote, sound, setConfetti}: {
   //   setConfetti(false);
   // }, 6000);
 }, 1000);
+export const listData = [
+  {
+    name1: "EVE",
+    name2: "LYON",
+    price1: "123.002",
+    price2: "232.003",
+    img1: 'EVE',
+    img2: 'LYON',
+  },
+  // {
+  //   name1: "CIN",
+  //   name2: "DOR",
+  //   price1: "213.001",
+  //   price2: "423.001",
+  //   img1: CIN,
+  //   img2: DOR,
+  // },
+  // {
+  //   name1: "BMG",
+  //   name2: "PSG",
+  //   price1: "324.012",
+  //   price2: "132.103",
+  //   img1: BMG,
+  //   img2: PSG,
+  // }
+]

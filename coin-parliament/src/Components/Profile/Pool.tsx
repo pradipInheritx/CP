@@ -12,21 +12,21 @@ const Pool = () => {
   const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
   const [children, setChildren] = useState<Leader[]>([]);
   const childrenActivity = Number(
-    Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
+    Number(userInfo?.voteStatistics?.commission || 0).toFixed(3) || 0
   );
-// console.log('referal user',children)
+
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
   }, [userInfo?.children]);
 
   return (
     <>
-      <div className={`${window.screen.width>767?"pt-4":""}`}>
-        <div className="mb-3">
+      <div className={`${window.screen.width > 767 ? "pt-4" : ""}`} style={{ backgroundColor: '#160133' }}>
+        <div>
           <Share
             url={referralUrl}
             text={"share & earn"}
-            shareText={`Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`}
+            shareText={`Hey,%0ajoin me on Voting Parliament and earn rewards for your opinion!%0aLet's vote together!`}
           />
         </div>
         <div className="mb-3">
