@@ -2,13 +2,14 @@ import React from "react";
 import { NotificationProps, userConverter, UserProps } from "../common/models/User";
 import { User as AuthUser } from "firebase/auth";
 import { doc, Firestore, getDoc, setDoc } from "firebase/firestore";
-import { coinParliament, db, functions } from "../firebase";
+import { V2EParliament, db, functions } from "../firebase";
 import { VoteResultProps } from "../common/models/Vote";
 import { httpsCallable } from "firebase/functions";
 import firebase from 'firebase/app';
 import sportParliament from "firebaseSportParliament";
 import stockParliament from "firebaseStockParliament";
 import votingParliament from "firebaseVotingParliament";
+import coinParliament from "firebaseCoinParliament";
 export type UserContextProps = {
   userInfo?: UserProps;
   user?: AuthUser;
@@ -87,6 +88,7 @@ export const getReferUser = async (database: any, emailArg?: string) => {
   return user;
 }
 export const storeAllPlatFormUserId = async (email: string) => {
+  // const V2E = await getReferUser(V2EParliament.firestore(), email);
   const coinUser = await getReferUser(coinParliament.firestore(), email);
   const sportUser = await getReferUser(sportParliament.firestore(), email);
   const stockUser = await getReferUser(stockParliament.firestore(), email);

@@ -27,12 +27,13 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
-import { SignupRegularForSportParliament } from "./SportParliamentLogin";
-import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { toast } from "react-toastify";
 import { showToast } from "../../App";
-import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 import { auth } from "firebaseSportParliament";
+import { SignupRegularForSportParliament } from "./SportParliamentLogin";
+import { SignupRegularForStockParliament } from "./StockParliamentLogin";
+import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
+import { SignupRegularForCoinParliament } from "./CoinParliamentLogin";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -343,6 +344,7 @@ export const SignupRegular = async (
 
 export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
   SignupRegular(payload, callback).then(async (res) => {
+    await SignupRegularForCoinParliament(payload, callback);
     await SignupRegularForSportParliament(payload, callback);
     await SignupRegularForStockParliament(payload, callback);
     await SignupRegularForVotingParliament(payload, callback);
@@ -355,6 +357,7 @@ export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
   callback: Callback<AuthUser>,
   userData?: { [key: string]: string }
 }) => {
+  await SignupRegularForCoinParliament(payload, callback, userData);
   await SignupRegularForSportParliament(payload, callback, userData);
   await SignupRegularForStockParliament(payload, callback, userData);
   await SignupRegularForVotingParliament(payload, callback, userData);

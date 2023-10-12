@@ -27,7 +27,7 @@ const Header = () => {
         <Container>
           <Navbar.Brand style={{ color: 'white' }}>
             <Link to={'/'} style={{ textDecoration: 'none', color: 'white' }}>
-              <img src="/VTE logo.webp" alt="Vote to Earn" className='pe-3' />{window.screen.width > 350 ? 'Vote to Earn' : ''}
+              <img src="/VTE logo.png" alt="Vote to Earn" className='pe-3' height={50} />{window.screen.width > 350 ? 'Vote to Earn' : ''}
             </Link>
           </Navbar.Brand>
           {userInfo && (<Navbar.Collapse className="justify-content-end" style={{ color: 'white', cursor: 'pointer' }}>
