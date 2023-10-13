@@ -1,5 +1,5 @@
 
-import React, {  useContext } from "react";
+import React, { useContext } from "react";
 import "./Login.css";
 import { Stack } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
@@ -13,7 +13,7 @@ import { texts } from "./texts";
 import styled from "styled-components";
 import { Buttons } from "../Atoms/Button/Button";
 
-const FoundationArray=['Foundation One','Foundation Two','Foundation Three','Foundation Four','Foundation Five'
+const FoundationArray = ['Foundation One', 'Foundation Two', 'Foundation Three', 'Foundation Four', 'Foundation Five'
 ]
 const Title = styled.div`
   font: var(--font-style-normal) normal medium 22px/11px
@@ -34,31 +34,31 @@ align-self:center;
 `;
 
 export type FirstTimeFoundationSelectionProps = {
-    user: any;
-    setFirstTimeFoundationSelection:any
-  };
-const FirstTimeFoundationSelection = ({ user ,setFirstTimeFoundationSelection}: FirstTimeFoundationSelectionProps) => {
+  user: any;
+  setFirstTimeFoundationSelection: any
+};
+const FirstTimeFoundationSelection = ({ user, setFirstTimeFoundationSelection }: FirstTimeFoundationSelectionProps) => {
   const translate = useTranslation();
-  const {showToast} = useContext(NotificationContext);
-   const saveFoundation = async (uid: string, foundationName: string) => {
+  const { showToast } = useContext(NotificationContext);
+  const saveFoundation = async (uid: string, foundationName: string) => {
     const userRef = doc(db, "users", uid);
     await setDoc(userRef, { foundationName }, { merge: true });
     setFirstTimeFoundationSelection(false)
   };
-  
+
   return (
     <Stack
       gap={2}
       className=" justify-content-center"
-      style={{ minHeight: "100vh", background:'var(--light-purple)' }}
+      style={{ minHeight: "100vh", background: 'var(--light-purple)' }}
     >
-            <Title>{translate(texts.FoundationSelect)}</Title>  
-            <div style={{width:window.screen.width>979?'25%':'75%', alignSelf:'center'}}>
-              {FoundationArray?.map(item=> <Buttons.Primary style={{fontSize:'17px',fontWeight:300, padding:'10px', width:'10%',margin:'10px 0px'}} fullWidth={true} onClick={()=>saveFoundation(user?.uid,item)}>
-         {item}
-      </Buttons.Primary> )}
+      <Title>{translate(texts.FoundationSelect)}</Title>
+      <div style={{ width: window.screen.width > 979 ? '25%' : '75%', alignSelf: 'center' }}>
+        {FoundationArray?.map(item => <Buttons.Primary style={{ fontSize: '17px', fontWeight: 300, padding: '10px', width: '10%', margin: '10px 0px' }} fullWidth={true} onClick={() => saveFoundation(user?.uid, item)}>
+          {item}
+        </Buttons.Primary>)}
       </div>
-      {/* <Skip onClick={()=>saveFoundation(user?.uid,'Foundation One')}>Skip</Skip> */}
+      <Skip onClick={() => saveFoundation(user?.uid, 'Foundation One')}>Skip</Skip>
     </Stack>
   );
 };
