@@ -95,18 +95,16 @@ const PairsCopy = ({
   const { width = 0 } = useWindowSize();
   let navigate = useNavigate();
   
-  const { user} = useContext(UserContext);
+  
 
   return (
     <MainDiv  className="">
       <MidDiv>
         {listData && listData.map((items:any,index:number) => {
           return <ChildDiv
-          
+className={`${window.screen.width > 767 ? "mx-1":"mt-3"}`}          
             onClick={() => {
-              if (user?.uid) {                
-                navigate(`/CardShow/${index}`);
-              }
+              navigate(`/CardShow/${index}`);
               // console.log(`/pairs/${index}`,"url")
           }}
           >

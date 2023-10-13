@@ -215,7 +215,7 @@ function CardShow() {
           </div>          
         </CoinsShow>
       
-        <ButtonDiv className=''>
+        {/* <ButtonDiv className=''>
           {allBUtton.map((item:any,index:number) => {
             return (<TimeButton
               style={{
@@ -232,19 +232,18 @@ function CardShow() {
               >{item.time}</p>
             </TimeButton>)
           })}
-        </ButtonDiv>
+        </ButtonDiv> */}
         {ShowSpdometer == false ? 
           <>
             
-            <div className='text-center'
-              style={{
-                color: "#6352e8",
-                marginBottom:"20px"
-            }}
-            >
-              <p>Who gets your vote?</p>
+            <div className='text-center mt-5'>
+              <p
+                style={{ color:"#6352e8"}}
+              >
+                Who gets your vote?
+              </p>
             </div>
-            <VoteButton className=''
+            <VoteButton className='mt-3'
               
             >
               <VoteDiv className='confetti-button svg-button animate'
@@ -296,7 +295,7 @@ function CardShow() {
 
           </> :
           <div
-            className='d-flex justify-content-center ml-3'
+            className='d-flex justify-content-center ml-3 mt-5'
             style={{
             
           }}

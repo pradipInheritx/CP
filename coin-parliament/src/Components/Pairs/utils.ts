@@ -1,8 +1,9 @@
-import { Coin } from "../../common/models/Coin";
+import {Coin} from "../../common/models/Coin";
 import { flatMap, throttle } from "lodash";
 
 import EVE from "../../assets/logos/EVE.png";
 import LYON from "../../assets/logos/LYON.png";
+import EXTRA from "../../assets/images/EXTRA.png";
 import CIN from "../../assets/logos/CIN.png";
 import DOR from "../../assets/logos/DOR.png";
 import BMG from "../../assets/logos/BMG.png";
@@ -52,7 +53,7 @@ export const getChosenPairs = (allPairs: string[][], filter: string) => {
   });
 };
 
-export const voteProcedure = ({ vote, sound, setConfetti }: {
+export const voteProcedure = ({vote, sound, setConfetti}: {
   vote: () => Promise<void>; sound: React.RefObject<HTMLAudioElement>; setConfetti: (bool: boolean) => void;
 }) => throttle(async () => {
   await vote();
@@ -66,27 +67,27 @@ export const voteProcedure = ({ vote, sound, setConfetti }: {
 
 export const listData = [
   {
-    name1: "EVE",
-    name2: "LYON",
+    name1: "ABC",
+    name2: "BCA",
     price1: "123.002",
     price2: "232.003",
-    img1: EVE,
-    img2: LYON,
+    img1: EXTRA,
+    img2: EXTRA,
   },
-  // {
-  //   name1: "CIN",
-  //   name2: "DOR",
-  //   price1: "213.001",
-  //   price2: "423.001",
-  //   img1: CIN,
-  //   img2: DOR,
-  // },
-  // {
-  //   name1: "BMG",
-  //   name2: "PSG",
-  //   price1: "324.012",
-  //   price2: "132.103",
-  //   img1: BMG,
-  //   img2: PSG,
-  // }
+  {
+    name1: "XYZ",
+    name2: "ZYX",
+    price1: "213.001",
+    price2: "423.001",
+    img1: EXTRA,
+    img2: EXTRA,
+  },
+  {
+    name1: "DEF",
+    name2: "FDE",
+    price1: "324.012",
+    price2: "132.103",
+    img1: EXTRA,
+    img2: EXTRA,
+  }
 ]

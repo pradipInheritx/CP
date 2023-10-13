@@ -7,12 +7,13 @@ import CoinsContext from '../Contexts/CoinsContext';
 import { formatCurrency } from '../common/models/Coin';
 import moment from "moment";
 import Line from '../Components/icons/line';
-import { timeframeInitials } from '../Components/Atoms/Button/Button';
+import { Buttons, timeframeInitials } from '../Components/Atoms/Button/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Other } from './SingleCoin';
 import AppContext from '../Contexts/AppContext';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { listData } from '../Components/Pairs/utils';
+import UserContext from '../Contexts/User';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -50,7 +51,8 @@ interface ChildComponentProps {
 
 const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp}) => {
 // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
-
+  const { user } = useContext(UserContext);
+  const { setLogin } = useContext(AppContext);
   const navigate = useNavigate();
 //   const setVoteDetails = useContext(VoteDispatchContext);
 //   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
@@ -192,7 +194,7 @@ useEffect(() => {
                   <CoinVoteTimer>
                     {/* {vote?.valueExpirationTime && vote?.score && ( */}
                       <>
-                        <strong>You progressed - {2.5}</strong> <span>CMP</span>
+                        {/* <strong>You progressed - {2.5}</strong> <span>CMP</span> */}
                       </>
 
                     {/* )} */}
@@ -213,7 +215,17 @@ useEffect(() => {
                     ).format("HH:mm")}`}</span>
                 </Col>
 
-          </div>             
+            
+          </div>  
+          {!user?.uid && <div className='d-flex justify-content-center mt-2'>
+            <Buttons.Primary
+              onClick={() => {
+                setLogin(true)
+            }}
+            >
+            login
+          </Buttons.Primary>
+          </div>}
         </Modal.Body>      
       </Modal>
     </div>
