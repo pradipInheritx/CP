@@ -776,12 +776,7 @@ function App() {
   // useEffect(() => {
   //   auth.signOut();
   // }, []);
-  useEffect(() => {
-    if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
-      auth.signOut();
-      showToast("Please verify your email address.", ToastType.ERROR);
-    }
-  }, [JSON.stringify(auth?.currentUser)]);
+
 
   useEffect(() => {
 
@@ -1213,6 +1208,7 @@ function App() {
     }
     latestUserInfo.current = userInfo;
   }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed)]);
+
   ///END vote result //
 
 
@@ -1225,7 +1221,11 @@ function App() {
         .then((userCredential) => {
           // User is signed in
           const user = userCredential.user;
-          console.log('Custom token sign-in success: authenticated', user?.emailVerified);
+          if (user && !user?.emailVerified) {
+            auth.signOut();
+            showToast("Please verify your email address.", ToastType.ERROR);
+          }
+          console.log('Custom token sign-in success: authenticated', user);
           navigate('/');
         })
         .catch((error) => {
