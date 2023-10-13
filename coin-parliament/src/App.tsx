@@ -1414,3 +1414,31 @@ console.log('fmctoken',fcmToken)
 }
 
 export default App;
+
+export const showToast = (
+  content: ToastContent,
+  type?: ToastType,
+  options: ToastOptions | undefined = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    containerId: "toast",
+  }
+) => {
+  toast.dismiss();
+  toast.clearWaitingQueue();
+  switch (type) {
+    case ToastType.ERROR:
+      toast.error(content, options);
+      break;
+    case ToastType.INFO:
+      toast.info(content, options);
+      break;
+    default:
+      toast.success(content, options);
+  }
+};
