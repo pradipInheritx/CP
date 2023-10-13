@@ -90,7 +90,7 @@ const VoteForm = function <
         submit();
       }}
       style={{ maxWidth: '450px', margin: '0 auto' }}
-    >
+    >      
       <div className="mt-4" style={{ marginLeft: symbol2 ? '' : '24px', marginRight: symbol2 ? '' : '24px' }}>
         <SelectTimeframes
           {...{
@@ -112,12 +112,19 @@ const VoteForm = function <
           }}
         />
 
-      </div>
+      </div>      
       <div className='mt-4 pt-2'>
         {/* @ts-ignore */}
+        <div 
+          className="text-center"
+          style={{
+            color: "#6352e9",
+            fontSize:"13px"
+          }}
+        ><p>Who gets your vote?</p> </div>
         <div className='mb-3'>
           {/* <Title>{texts.yourVote}</Title> */}
-        </div>
+        </div>        
         <div className="">
           <CPVote
             {...{

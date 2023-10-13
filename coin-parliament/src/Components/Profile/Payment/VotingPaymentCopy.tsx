@@ -314,6 +314,66 @@ const Divbutton = styled.div`
     border-radius:5px;
   }
 `;
+const ButttonDivSec = styled.div`
+
+width:290px;
+border:4px solid white;
+ display: flex;
+justify-content: center;
+border-radius:50px;
+background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+  animation: zoom-in-zoom-out 1s infinite ;
+transition: background 1s;
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
+    color: #B869FC;
+  }
+  100% {
+   background: linear-gradient(180deg, rgba(212,176,92,1) 0%, rgba(243,236,60,1) 100%);
+   color:#DAA636;
+  }  
+}
+
+
+
+  button {
+    background:white;
+    border:1px solid white;
+    border-radius:50px;
+    padding:10px;    
+    margin:10px 0px;    
+    width:260px;
+    color: #daa636;
+    box-shadow: 0px 3px 10px #1c1c1c57;
+& span {
+  background: var(--Violet-Gradient, linear-gradient(180deg, #5263B8 0%, #B266F5 100%));
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-size: 15px;
+// font-style: normal;
+font-weight: 500;
+line-height: 101.5%;
+}
+& u {
+     -webkit-text-decoration-line: line-through; /* Safari */
+   text-decoration-line: line-through; 
+   color:black;
+   font-weight: 100;
+   font-size: 20px;
+}
+& p {
+   font-family:"Lilita One";  
+  font-size: 30px;
+  font-weight: 500;
+line-height: 101.5%;
+}
+  }
+
+
+`;
 
 
 const VotingPaymentCopy: React.FC<{
@@ -376,8 +436,10 @@ const VotingPaymentCopy: React.FC<{
     const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
     useEffect(() => {
-      window.scrollTo({ top: 500, behavior: 'smooth' });
-    }, [payType])
+      // window.scrollTo({ top: 500, behavior: 'smooth' });
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      console.log("i am working onclick")
+    }, [payType, selectPayment, coinInfo])
 
 
     useEffect(() => {
@@ -460,102 +522,17 @@ const VotingPaymentCopy: React.FC<{
           <div className="d-flex"
             style={{
               width: `${window.screen.width > 767 ? "49%" : "100%"}`,
-              justifyContent: `${window.screen.width > 767 ? "end" : "center"}`
+              justifyContent: `${window.screen.width < 767 ? "center" : payType == "EXTRAVOTES" ? "center" :"end"}`
             }}
           >
-            {payType == "EXTRAVOTES" ? <img src={votingbooster} alt="" />
+            {payType == "EXTRAVOTES" ? <img src={votingbooster} alt=""  className=""/>
 
               : <img src={upgrade} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />}
           </div>
-          {payType == "EXTRAVOTES" ? <div className="m-auto"
-            style={{
-              width: `${window.screen.width > 767 ? "49%" : "100%"}`
-            }}
-          >            
-            <div
-              className={`${window.screen.width > 767 ? "justify-content-start" :"justify-content-center mt-5 mb-3"} d-flex`} 
-            >
-              <div
-                className="d-flex justify-content-center"
-                style={{
-                  position: "relative",
-                  height: "350px",
-                }}
-              >
-                {extraPer > 0 && <TopDiv >
-                  <img src={VoteToP} alt="" width={"80px"} />
-                  <div
-                    className="text-center w-100"
-                    style={{
-                      position: "absolute",
-                      top: "20px",
-                      fontSize: "15px",
-                      lineHeight: 0.9,
-                    }}
-                  >
-                    <p className=""><strong
-                      style={{
-                        fontSize: "25px"
-                      }}
-                    >{extraPer}</strong>%</p>
-                    <p>Extra</p>
-                  </div>
-                </TopDiv>}
-                <div className="d-flex align-items-center flex-column"
-                  style={{
-                    width: "250px",
-                    backgroundImage: `url(${VoteBg})`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center",
-                    height: "400px"
-
-                  }}
-                >
-                  <p className="mt-4 "
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "initial"
-                    }}
-                  >FOR ONLY</p>
-                  <NumberText
-                    className=""
-                    style={{
-                      fontSize: "40px",
-                      lineHeight: 1.1
-                    }}
-                  >$ {payamount}.00</NumberText>
-                  <div className="d-flex mt-3">
-                    {/* @ts-ignore */}
-                    {Array(extraPer == 0 ? 3 : extraPer == 20 ? 3 : extraPer == 25 ? 4 : 5).fill().map(() => {
-                      return <img src={VoteStar} alt="" width={"50px"} className="" />
-                    })}
-                  </div>
-                  <div
-                    className="d-flex align-items-center flex-column"
-                    style={{
-                      lineHeight: 0.9
-                    }}
-                  >
-
-
-                    <VotText>BUY</VotText>
-                    <NumberText
-                      className=""
-                      style={{
-                        fontSize: "100px"
-                      }}
-                    >{extraVote}</NumberText>
-
-                    <VotText>votes</VotText>
-                  </div>
-                  <ButttonDiv className="mt-1">
-                    <button
-                    >BUY NOW !</button>
-                  </ButttonDiv>
-                </div>
-              </div>
-            </div >              
-          </div > :
+          {payType == "EXTRAVOTES" ?
+            <>
+            </>
+             :
             <>
               <div
                 className="m-auto "
@@ -649,6 +626,7 @@ const VotingPaymentCopy: React.FC<{
                   }}
                   onClick={() => {
                     setSelectPayment(1)
+                    
                   }}
                 >
                   <i className="bi bi-coin"></i>
@@ -669,12 +647,13 @@ const VotingPaymentCopy: React.FC<{
               <Boxdiv className="mt-4 mb-4"
                 style={{
                   display: "flex",
-                  justifyContent: "center"
+                  justifyContent: "center",                  
                 }}
               >
                 <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div className="pay-custom-select-container" style={{
-                    width: '23em'
+                  <div className="pay-custom-select-container mb-3" style={{
+                    width: '23em',
+                    zIndex: 4,                    
                   }} >
                     <div
                       className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
@@ -705,6 +684,8 @@ const VotingPaymentCopy: React.FC<{
                                 setSelectCoin(option.name)
                                 setCoinInfo(option)
                                 setShowOptionList(!showOptionList)
+                                
+                                // window.scrollTo({ top: 1000, behavior: 'smooth' });
                                 // await mybtn("disconnect", "true").then(() => {
                                 //   setConnectOrNot(!connectOrNot)
                                 // })
@@ -720,7 +701,7 @@ const VotingPaymentCopy: React.FC<{
                   </div>
                 </Sidediv>
 
-                {
+                {/* {
                   selectCoin != "none" &&
                   <Divbutton>
                     <button
@@ -735,6 +716,147 @@ const VotingPaymentCopy: React.FC<{
                       }}
                     >{payButton ? <span className="">Pay Now...</span> : 'Pay Now'}</button>
                   </Divbutton>
+                } */}
+                
+                {
+                  payType == "EXTRAVOTES" && selectCoin != "none" && 
+
+                  <div className="m-auto mb-5 mt-5"
+                    style={{                      
+                      width: `${window.screen.width > 767 ? "49%" : "100%"}`,
+                      zIndex: 2
+                    }}
+                  >
+                    <div
+                      className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center mt-5 mb-3"} d-flex`}
+                    >
+                      <div
+                        className="d-flex justify-content-center"
+                        style={{
+                          position: "relative",
+                          height: "350px",
+                        }}
+                      >
+                        {extraPer > 0 && <TopDiv >
+                          <img src={VoteToP} alt="" width={"80px"} />
+                          <div
+                            className="text-center w-100"
+                            style={{
+                              position: "absolute",
+                              top: "20px",
+                              fontSize: "15px",
+                              lineHeight: 0.9,
+                            }}
+                          >
+                            <p className=""><strong
+                              style={{
+                                fontSize: "25px"
+                              }}
+                            >{extraPer}</strong>%</p>
+                            <p>Extra</p>
+                          </div>
+                        </TopDiv>}
+                        <div className="d-flex align-items-center flex-column"
+                          style={{
+                            width: "250px",
+                            backgroundImage: `url(${VoteBg})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            height: "400px"
+
+                          }}
+                        >
+                          <p className="mt-4 "
+                            style={{
+                              fontSize: "20px",
+                              fontWeight: "initial"
+                            }}
+                          >FOR ONLY</p>
+                          <NumberText
+                            className=""
+                            style={{
+                              fontSize: "40px",
+                              lineHeight: 1.1
+                            }}
+                          >$ {payamount}.00</NumberText>
+                            <div className="d-flex mt-3">     
+                              {/* @ts-ignore */}
+                            {Array(extraPer == 0 ? 3 : extraPer == 20 ? 3 : extraPer == 25 ? 4 : 5).fill().map(() => {
+                              return <img src={VoteStar} alt="" width={"50px"} className="" />
+                            })}
+                          </div>
+                          <div
+                            className="d-flex align-items-center flex-column"
+                            style={{
+                              lineHeight: 0.9
+                            }}
+                          >
+
+
+                            <VotText>BUY</VotText>
+                            <NumberText
+                              className=""
+                              style={{
+                                fontSize: "100px"
+                              }}
+                            >{extraVote}</NumberText>
+
+                            <VotText>votes</VotText>
+                          </div>
+                          <ButttonDiv className="mt-1">
+                              <button
+                                disabled={payButton}
+                                style={{
+                                  // opacity: `${payButton ? "0.6" : "1"}`
+                                }}
+                                onClick={() => {
+                                  handleClick()
+                                }}
+                              >
+                                
+                                {payButton ? "PAY NOW..." : 'PAY NOW !'}
+                              </button>
+                          </ButttonDiv>
+                        </div>
+                      </div>
+                    </div >
+                  </div >
+                }
+
+                {payType !== "EXTRAVOTES" && selectCoin != "none" && 
+                  <>
+                  <div
+                    className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                  >
+                    <ButttonDivSec className="mt-1">
+                      <button
+                        onClick={() => {
+                          // upgradeProfile(99, 0)
+                          handleClick()
+                        }}
+                      >
+                        <div className='d-flex justify-content-around' >
+                          <div
+                          >
+                            <span
+                              style={{
+                                letterSpacing: "4px",
+                                // display:"inline-block",
+                              }}
+                            >LIMITED
+                            </span>
+                            <br />
+                            <span>TIME OFFER</span>
+                          </div>
+                          <u>$199</u>
+                          <p>$99</p>
+                        </div>
+
+
+                      </button>
+                    </ButttonDivSec>
+                  </div>
+                  </>
                 }
               </Boxdiv>}
 
@@ -751,3 +873,4 @@ const VotingPaymentCopy: React.FC<{
   };
 
 export default VotingPaymentCopy;
+

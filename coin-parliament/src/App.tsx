@@ -15,6 +15,7 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useSearchParams,
 } from "react-router-dom";
 import { toast, ToastContainer, Zoom } from "react-toastify";
 import Home from "./Pages/Home";
@@ -43,7 +44,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { db, functions, messaging } from "./firebase";
+import { auth, db, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { GetVotesResponse, TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -183,7 +184,7 @@ function App() {
   const { width } = useWindowSize();
   const [voteNumberEnd, setvoteNumberEnd] = useState<any>(0)
   // const scrollPosition = useScrollPosition();
-  const [modalOpen, setModalOpen] = useState(false);  
+  const [modalOpen, setModalOpen] = useState(false);
   useEffect(() => {
     const urlpath = window.location.pathname
     window.scrollTo({
@@ -292,7 +293,7 @@ function App() {
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   const [socketConnect, setSocketConnect] = useState<any>(false)
-  const [backgrounHide, setBackgrounHide] = useState<any>(false)  
+  const [backgrounHide, setBackgrounHide] = useState<any>(false)
   const [transactionId, setTransactionId] = useState({});
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
@@ -766,10 +767,16 @@ function App() {
           }
         } else {
           await updateUser();
+
         }
       });
     }
   }, [user, fcmToken, coins]);
+  console.log(auth?.currentUser, 'hello');
+  // useEffect(() => {
+  //   auth.signOut();
+  // }, []);
+
 
   useEffect(() => {
 
@@ -1201,7 +1208,32 @@ function App() {
     }
     latestUserInfo.current = userInfo;
   }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed)]);
+
   ///END vote result //
+
+
+  // login user using token
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    let token = searchParams.get('token');
+    if (token) {
+      firebase.auth().signInWithCustomToken(token)
+        .then((userCredential) => {
+          // User is signed in
+          const user = userCredential.user;
+          if (user && !user?.emailVerified) {
+            auth.signOut();
+            showToast("Please verify your email address.", ToastType.ERROR);
+          }
+          console.log('Custom token sign-in success: authenticated', user);
+          navigate('/');
+        })
+        .catch((error) => {
+          // Handle sign-in errors
+          console.error('Custom token sign-in error: authenticated', error);
+        });
+    }
+  }, [searchParams]);
 
   return loader ? (
     <div
@@ -1245,9 +1277,9 @@ function App() {
               }}
             >
               <AppContext.Provider
-                  value={{
-                    transactionId,
-                    setTransactionId,
+                value={{
+                  transactionId,
+                  setTransactionId,
                   setBackgrounHide,
                   backgrounHide,
                   voteNumberEnd,
@@ -1726,8 +1758,8 @@ function App() {
                                             {/* Fowller component  end*/}
                                             <Route
                                               path='/upgrade'
-                                              
-                                            element={<UpgradePage />}
+
+                                              element={<UpgradePageCopy />}
                                             />
                                             {/* <Route
                                               path='/paymentList'
@@ -1751,7 +1783,7 @@ function App() {
                                             />
                                             <Route
                                               path='/votingbooster'
-                                            element={<VotingBoosterCopy />}
+                                              element={<VotingBoosterCopy />}
                                             />
                                             <Route
                                               path='influencers'
@@ -1769,7 +1801,7 @@ function App() {
                                               element={<GameRule />}
                                             />
                                             <Route
-                                            path='Ambassador'
+                                              path='Ambassador'
                                               element={<Ambassador />}
                                             />
                                             <Route

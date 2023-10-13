@@ -353,7 +353,7 @@ const SinglePair = () => {
                 />
               </CardContainer>
               <Container>
-                <div>
+                <div>                  
                   {canVote && (
                     <>
                       {loading ? (
@@ -374,7 +374,7 @@ const SinglePair = () => {
                       )}
                     </>
                   )}
-                </div>
+                </div>                
                 <div className="text-center">
                   {/* @ts-ignore */}
                   {!graphLoading && !canVote && user && voteId && (
@@ -415,7 +415,7 @@ const SinglePair = () => {
                     //   setVoteDetails={setPairVoteDetails}
                     // />
                   }
-                  <div className="d-flex justify-content-center align-items-center mt-5 ">
+                  <div className="d-flex justify-content-center align-items-center mt-5 ">                    
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
                         {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() && false ?
