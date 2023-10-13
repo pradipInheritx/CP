@@ -158,6 +158,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     firstName: "",
     lastName: "",
     mfa: false,
+    firstTimeLogin: true,
     displayName: user.displayName,
     phone: user.phoneNumber,
     subscribers: [],
