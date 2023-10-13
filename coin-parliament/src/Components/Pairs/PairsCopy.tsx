@@ -94,10 +94,7 @@ const PairsCopy = ({
   ) => void;
 }) => {
   const { width = 0 } = useWindowSize();
-  let navigate = useNavigate();
-  const { user} = useContext(UserContext);
-  const {  setLogin} =
-    useContext(AppContext);
+  let navigate = useNavigate();  
   
 
   return (
@@ -105,14 +102,9 @@ const PairsCopy = ({
       <MidDiv>
         {listData && listData.map((items:any,index:number) => {
           return <ChildDiv
-          
+          className={`${window.screen.width >767 ? "mx-1":"mt-3"}`}
             onClick={() => {
-              if (user?.uid) {                
-                navigate(`/CardShow/${index}`);
-              }
-              else {
-                setLogin(true);
-              }
+              navigate(`/CardShow/${index}`);              
               // console.log(`/pairs/${index}`,"url")
           }}
           >

@@ -215,7 +215,7 @@ function CardShow() {
           </div>          
         </CoinsShow>
       
-        <ButtonDiv className=''>
+        {/* <ButtonDiv className=''>
           {allBUtton.map((item:any,index:number) => {
             return (<TimeButton
               style={{
@@ -232,11 +232,11 @@ function CardShow() {
               >{item.time}</p>
             </TimeButton>)
           })}
-        </ButtonDiv>
+        </ButtonDiv> */}
         {ShowSpdometer == false ? 
           <>
             
-            <div className='text-center'>
+            <div className='text-center mt-5'>
               <p
                 style={{ color:"#6352e8"}}
               >
@@ -295,7 +295,7 @@ function CardShow() {
 
           </> :
           <div
-            className='d-flex justify-content-center ml-3'
+            className='d-flex justify-content-center ml-3 mt-5'
             style={{
             
           }}
