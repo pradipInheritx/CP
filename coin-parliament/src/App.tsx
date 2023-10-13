@@ -810,13 +810,14 @@ console.log('fmctoken',fcmToken)
     }
   }, [searchParams]);
 
-  useEffect(() => {
-    if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
-      auth.signOut();
-      showToast("Please verify your email address.", ToastType.ERROR);
-    }
-  }, [JSON.stringify(auth?.currentUser)]);
-
+  // useEffect(() => {
+  //   if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
+  //     auth.signOut();
+  //     showToast("Please verify your email address.", ToastType.ERROR);
+  //   }    
+  // }, [JSON.stringify(auth?.currentUser)]);
+  // console.log(auth?.currentUser,"checkauth")
+  
 
   
 

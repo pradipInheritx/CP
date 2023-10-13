@@ -397,7 +397,7 @@ const Header = ({
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Become a member",
+              label: "JOIN THE PARLIAMENT",
             },
           ].map((i) => (i ? i : undefined))}
         >

@@ -178,7 +178,7 @@ const
                                 <span className={`${classes.subHeaderText} mb-3`}>How does it work?</span>
                                 <div className={classes.description} style={{ fontWeight: 'bold', fontSize: '1.5em' }}>
                                     <ol>
-                                        <li>Sign up to become a member.</li>
+                                        <li>Sign up to JOIN THE PARLIAMENT.</li>
                                         <li>Invite your friends from any social media platform using your unique referral link.</li>
                                         <li>
                                             Start earning .
