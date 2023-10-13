@@ -235,7 +235,15 @@ function CardShow() {
         </ButtonDiv>
         {ShowSpdometer == false ? 
           <>
-            <VoteButton className=''
+            
+            <div className='text-center'>
+              <p
+                style={{ color:"#6352e8"}}
+              >
+                Who gets your vote?
+              </p>
+            </div>
+            <VoteButton className='mt-3'
               
             >
               <VoteDiv className='confetti-button svg-button animate'
