@@ -240,10 +240,12 @@ const Header = ({
           .then((res) => {
             // console.log("logout", res);
             Logout(setUser);
+            setLogin(true);
           })
           .catch((error) => {
             const errorMessage = error.message;
             console.log(errorMessage);
+            setLogin(true);
           });
         break;
       case EventKeys.EDIT:
@@ -395,7 +397,7 @@ const Header = ({
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Become a member",
+              label: "JOIN THE PARLIAMENT",
             },
           ].map((i) => (i ? i : undefined))}
         >
@@ -511,7 +513,9 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "" : "" }}>
+                  <Title style={{ width: pathname === "/" ? "50px" : "" }}
+                                    
+                  >
                     {/* {mounted ? title : ""} */}
                   </Title>
                 </div>
@@ -626,9 +630,14 @@ const Header = ({
                 ) : (
                   <div className='w-100'></div>
                 )}
-                {/* <Navbar.Brand as={Link} to='/'>
-                  <img src={BigLogo} alt='' />
-                </Navbar.Brand> */}
+                <Navbar.Brand as={Link} to='/'
+                  style={{
+                    height: "90px",
+                    width:"50px"
+                }}
+                >
+                  {/* <img src={BigLogo} alt='' /> */}
+                </Navbar.Brand>
               </div>
             </div>
           ) : (

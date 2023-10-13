@@ -21,12 +21,17 @@ const Pool = () => {
 
   return (
     <>
-      <div className={`${window.screen.width>767?"pt-4":""}`}>
+      <div className={`${window.screen.width > 767 ? "pt-4" : ""}`}
+        style={{
+          backgroundColor: "rgb(22, 1, 51)",
+        }}
+
+      >
         <div className="mb-3">
           <Share
             url={referralUrl}
             text={"share & earn"}
-            shareText={`Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`}
+            shareText={`Hey,%0ajoin me on Stock Parliament and earn rewards for your opinion!%0aLet's vote together!`}
           />
         </div>
         <div className="mb-3">
