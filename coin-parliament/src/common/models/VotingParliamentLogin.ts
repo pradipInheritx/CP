@@ -4,12 +4,14 @@ import firebaseVotingParliament, { auth, db } from "firebaseVotingParliament"
 import { Callback } from "./utils";
 import { User, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { getReferUser, saveUserData } from "Contexts/User";
+import { getReferUser, saveUserData, storeAllPlatFormUserId } from "Contexts/User";
 import votingParliament from "firebaseVotingParliament";
+import { showToast } from "App";
+import { ToastType } from "Contexts/Notification";
 export const SignupRegularForVotingParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
-    userData?: { [key: string]: string }
+    userData?: { [key: string]: any }
 ) => {
     try {
         console.log('voting');
@@ -20,14 +22,25 @@ export const SignupRegularForVotingParliament = async (
             payload.password,
         );
         if (auth?.currentUser) {
-            await sendEmailVerification(auth?.currentUser);
+            await sendEmailVerification(auth?.currentUser).then((data) => {
+                showToast("Successfully sent  verification link on your mail");
+            });;
             const referUser = await getReferUser(votingParliament.firestore());
-            await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, ...userData, parent: referUser?.uid });
+            await saveUserData((auth?.currentUser?.uid || ''), db, {
+                ...userData,
+                firstTimeLogin: true,
+                parent: referUser?.uid,
+                uid: auth?.currentUser?.uid
+            });
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
             console.log('voting', auth);
         }
+        if (auth?.currentUser?.email) {
+            await storeAllPlatFormUserId(auth?.currentUser?.email);
+        }
+        showToast("User register successfully.", ToastType.SUCCESS);
         //@ts-ignore
         callback.successFunc(userCredential.user);
         return true;

@@ -1,4 +1,4 @@
-import {ContentPage} from "../../Contexts/ContentContext";
+import { ContentPage } from "../../Contexts/ContentContext";
 // import GameRule from "../../Pages/GameRule";
 
 const headers = [
@@ -50,7 +50,7 @@ export const privacy = `<p><strong>I. Privacy Policy </strong><br />&nbsp;<br />
 const GameRule = ``;
 const Foundations = ``;
 const Partners = ``;
-export const TermsAndCondition =`<p> <strong> I.  General </strong> <br /><br />1. We provide online and mobile financial games to you subject to the following terms<br />and conditions contained within these terms and conditions (the&quot;Terms and<br />Conditions&quot;), which should be read carefully by you in its entirety prior to your use of the<br />Services. Please note that these terms and conditions constitute a legally binding<br />agreement between you and us.<br /><br />2. In addition to these terms and conditions, please check our Privacy Policy, as well as<br />the game's rules, regulations, terms, and conditions, and the risk disclaimer - all of<br />which are included herein by reference, as well as any other policies that we may notify<br />you of from time to time.</p>
+export const TermsAndCondition = `<p> <strong> I.  General </strong> <br /><br />1. We provide online and mobile financial games to you subject to the following terms<br />and conditions contained within these terms and conditions (the&quot;Terms and<br />Conditions&quot;), which should be read carefully by you in its entirety prior to your use of the<br />Services. Please note that these terms and conditions constitute a legally binding<br />agreement between you and us.<br /><br />2. In addition to these terms and conditions, please check our Privacy Policy, as well as<br />the game's rules, regulations, terms, and conditions, and the risk disclaimer - all of<br />which are included herein by reference, as well as any other policies that we may notify<br />you of from time to time.</p>
 <p>&nbsp;<br />&nbsp;<strong> II.  Definitions </strong> <br /><br />3. In these terms and conditions, the following words and phrases shall (unless the<br />context otherwise requires) have the meanings set out beside them:&quot;Account&quot; shall<br />mean a personal account opened by an individual solely for that individual to enable<br />that individual to wager at the Site.&quot;Game&quot; shall mean the game of voting on different<br />events, in accordance with the Rules.&quot;Illegal Actions&quot; shall mean illegal, unlawful,<br />abusive, manipulative, fraudulent, money laundering, or other improper activities,<br />including, but not limited to, (i) the use of devices and software such as robots or other<br />high-speed systems; (ii) sale, transfer, and/or acquiring accounts from other players; (iii)<br />transfer of funds amongst players' accounts; (iv) acting in concert with others, (v)<br />holding long and short positions at the same time; (vi) influencing the exchange rate of<br />the assets and/or the outcome of any wager; (vii) using any artificial intelligence<br />software, or (vii) or breaking into the Site, as well as any attempt to do the same.<br />&quot;Player&quot; shall mean anyone who registers via the site and opens an account.<br />&quot;Restricted Territories&quot; shall mean any jurisdictions determined by Us at Our sole<br />discretion for the purpose of blocking persons from those jurisdiction Site ns from<br />playing the Game.&quot;Rules&quot; shall mean the rules of the game posted on the site.<br />&quot;Services&quot; shall mean the Games and any other services and activities offered on the<br />Site.&quot;Site&quot; shall mean any website and/or mobile site and/or mobile application owned,<br />operated, or hosted by us.&quot;We&quot;,&quot;Our&quot; or&quot;Us&quot; shall mean the operator of the Site<br />and/or any subsidiaries, affiliates, employees, directors, officers, agents, suppliers,<br />consultants, and contractors.&quot;You&quot; or&quot;you're&quot; shall mean any user of the site.<br /><br />&nbsp;<strong> III.  Subordination to the Terms and Conditions and the Binding Effect Thereof. </strong> <br />&nbsp;<br />&nbsp;4. Anyone registered at the Site, in accordance with the procedure specified hereafter,<br />or participating in one of the Site's proposed activities, or using the information<br />published on the Site, accepts upon himself/herself, in free will and consent, the Terms<br />and Conditions' authority, agrees to be bound by the Terms and Conditions, undertakes<br />to act pursuant to the Terms and Conditions' stipulations and to the Rules, as they will<br />be updated from time to time, without any reservation.<br /><br />5. We are entitled to amend these terms and conditions at any time and do so according<br />to our absolute and exclusive discretion. Your only remedy in the case in which you do<br />not wish to be bound by such an amendment is to stop using our site and services and<br />to close your account.<br /><br />6. These Terms and Conditions and the other terms and conditions referred to herein or<br />incorporated by reference hereto, as may be updated or amended from time to time by<br />Us, constitute the entire and whole agreement between You and Us. You confirm that, in<br />agreeing to accept these terms and conditions, you have not relied on any<br />representation except for any express representation made by us in these terms and<br />conditions.<br /></p>
 <p>&nbsp;<strong> IV. Who is Entitled to Participate? </strong> <br /><br />7. Using the services is permitted solely if you comply with all of the following:<br />A. &nbsp; On the participation date, you are eighteen (18) years old or of legal age, as<br />determined by the laws of the country where you live (whichever is higher);<br />and&nbsp;<br />B. You do not violate any law or regulation due to using the services. In this context, it<br />will be stressed that if you reside or are present in any jurisdiction that prohibits using<br />the services offered at the Site (including without limitation any of the Restricted<br />Territories), you shall not participate in the prohibited activity.<br /><br />8. The services are intended only for users who are not prohibited by the laws of any<br />applicable jurisdiction from playing the game on the internet and/or mobile devices. We<br />do not intend to enable You to contravene applicable law. You represent, warrant, and<br />agree to ensure that your use of the site and/or the services will comply with all<br />applicable laws, statutes, and regulations. The offering or availability of the Services<br />shall not be deemed or interpreted as an offer or invitation by Us to use the Services if<br />You reside in a place in which such use is forbidden by law (including without limitation<br />the Restricted Territories), or where We, in Our sole discretion, elect not to offer<br />Services. You shall be solely responsible for determining whether Your use of the Site<br />and/or Services is legal in the place where You live and/or use the Site and/or Services.<br />We make no representations or warranties, expressed or implied, concerning the<br />legality of the Services and/or of the Site and/or of any person's participation in the<br />Services through this Site, and shall not be responsible for any illegal use of the Site by<br />you. It is your responsibility to ensure that you comply with any and all laws applicable<br />to you before registering or participating in any of the services through this site. You<br />should consult with legal counsel in the applicable jurisdiction about the legality of your<br />use of the site and/or the services.<br />&nbsp;<br />9. We reserve the right at any time to request from You evidence of Your residence,<br />location, and/or age and reserve the right to suspend or cancel Your Account and<br />exclude You, temporarily or permanently, from using the Services if satisfactory proof is<br />not provided or if We suspect that You are underage and/or reside and/or located in any<br />Restricted Territory and such satisfactory proof is not provided by You within three (3)<br />days of Us requesting such proof. In any such case, we reserve the right to close your<br />account, and the balance in your account will be dealt with in accordance with our<br />decision.<br />&nbsp;<br />10. Our employees, directors, and officers, as well as members of their families,<br />affiliates, or subsidiaries, and all other persons connected, directly or indirectly, to the<br />computer systems or the security systems employed by us, as well as any person<br />involved in the operation of this site and the establishment thereof, including, but not<br />limited to advertising, promotion, and fulfillment agencies, insurers and legal advisers,<br />webmasters and web suppliers, and family members thereof, are not entitled to<br />participate in any of the services. For the sake of good order, it is clarified that any<br />person who is not entitled to participate as aforesaid - as well as any other person who</p>
 <p>substitutes for such excluded person - is also not entitled to any winnings from wagering<br />via the Site, and we reserve the right to shut down his/her account and seize any funds<br />held in such account.<br /><br />11. Harassment, vulgar, or abusive language, in any form, is absolutely forbidden on<br />any of our channels. A player who uses profane language will be warned and then<br />permanently removed from the game.<br />&nbsp;<br />&nbsp;<strong> V. Account Registration </strong><br /><br />12. Anyone interested in participating in the services is obliged to register and open an<br />account on the site.<br />&nbsp;<br />13. For the purpose of registration, you must provide an email address (which will be<br />your username) and a password (the&quot;Identification Details&quot;).<br />&nbsp;<br />14. You shall be fully and solely responsible to reserve in confidentiality Your<br />Identification Details and not transfer them to another. The full responsibility for<br />unauthorized use of your identification details lies solely with you, and you will bear all<br />responsibility derived from the unauthorized use of your identification details. We have<br />no obligation to maintain your identification details. If you misplace, forget or lose your<br />identification details because of anything other than our error, we shall not be liable for<br />any direct or indirect loss associated with such an occurrence.<br /><br />15. We may require additional personal identification details upon any special<br />circumstances including, but not limited to, suspected fraud or any other abusive<br />activities, abnormal activity, and Your jurisdiction.<br />&nbsp;<br />16. You hereby represent that the registration of your account is done personally by you<br />and not by any third party.<br />&nbsp;<br />17. By opening an account, you hereby represent, warrant, acknowledge and undertake<br />that (A) Your account is for your personal use only and not on behalf of any third party,<br />and that you May only open a single account at the site, (B) Any funds you Will deposit<br />in the account May and Will be used by you solely for playing the game, (C) We are not<br />a financial institution and any funds in your account shall not accrue any linkage<br />differentials and/Or interest, (D) You are of sound mind and you are capable of taking<br />responsibility for your own actions, (E) You have read, comprehended and fully<br />understand the rules, (F) You have read, comprehended and understood the disclaimer<br />posted on the site, (G) You Will cooperate with us and provide us with all requested<br />documentation in a full, complete and truthful manner, (H) You have verified and<br />determined that your use of the services does not violate any laws or regulations of any<br />jurisdiction that applies to you, (I) You are solely responsible for recording, paying and<br />accounting to any relevant governmental, taxation or other authority for any tax or other<br />levy that May be payable due to your use of the site (J) You will use the services in good<br />faith towards us and others using the services (K) You shall be solely responsible for</p>
@@ -65,12 +65,12 @@ export const myPages: ContentPage[] = [
     title: "About",
     content: about,
     slug: "about",
-  },  
+  },
   {
     title: "Game Rules",
     content: GameRule,
     slug: "gamerule",
-  },    
+  },
   {
     title: "FAQ",
     content: privacy,
@@ -127,6 +127,50 @@ export const quotes: Quote[] = [
 ];
 
 export const social = {};
+
+export const userDefaultData = {
+  address: '',
+  // avatar: '',
+  children: [],
+  country: '',
+  // displayName: '',
+  // email: '',
+  favorites: [],
+  firstName: "",
+  firstTimeLogin: true,
+  lastName: "",
+  mfa: false,
+  phone: "",
+  refereeScrore: 0,
+  rewardStatistics: {
+    cards: {
+      claimed: 0,
+      diamonds: 0,
+      extraVote: 0,
+      total: 0
+    }
+  },
+  status: {
+    color: "Platinum",
+    givenCPM: 0,
+    index: 7,
+    minVote: 0,
+    name: "Member",
+    share: 0,
+    weight: 1
+  },
+  subscribers: [],
+  // uid: '',
+  voteStatistics: {
+    commission: 0,
+    pax: 50,
+    rank: 0,
+    score: 0,
+    successful: 0,
+    total: 0,
+  },
+  voteValue: 15
+}
 
 
 // <strong></strong>

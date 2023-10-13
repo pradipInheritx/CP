@@ -9,7 +9,7 @@ import stockParliament from "firebaseStockParliament";
 export const SignupRegularForStockParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
-    userData?: { [key: string]: string }
+    userData?: { [key: string]: any }
 ) => {
     try {
         console.log('stock');
@@ -22,7 +22,12 @@ export const SignupRegularForStockParliament = async (
         if (auth?.currentUser) {
             await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(stockParliament.firestore());
-            await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, ...userData, parent: referUser?.uid });
+            await saveUserData((auth?.currentUser?.uid || ''), db, {
+                ...userData,
+                firstTimeLogin: true,
+                parent: referUser?.uid,
+                uid: auth?.currentUser?.uid
+            });
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {

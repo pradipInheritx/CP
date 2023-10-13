@@ -40,7 +40,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { auth, coinParliament, db, functions, messaging } from "./firebase";
+import { auth, V2EParliament, db, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -441,7 +441,7 @@ function App() {
     const info = await getUserInfo(user);
 
     try {
-      const documentRef = coinParliament.firestore().collection('users').doc(user?.uid);
+      const documentRef = V2EParliament.firestore().collection('users').doc(user?.uid);
       const doc = await documentRef.get();
       if (doc.exists) {
         // @ts-ignore
@@ -616,6 +616,7 @@ function App() {
       localStorage.removeItem('parentEmail');
     }
   }, []);
+  // console.log(auth?.currentUser, userInfo, loader, 'pkk');
 
   return loader ? (
     <Spinner />
