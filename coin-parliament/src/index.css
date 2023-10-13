@@ -142,6 +142,9 @@ html[dir="rtl"] .offcanvas-start.show {
   strong {
     font-weight: bold;
 }
+.modal-backdrop.show{
+    z-index: 0;
+}
 .pwaPopup{
     z-index: 99999;
     position: fixed;
@@ -1396,7 +1399,7 @@ html[dir="rtl"] .accordion-button {
 }
 .modal-content{
     
-    border-radius: 100px 0px 100px 100px !important;
+    border-radius: 15px 15px 15px 15px !important;
 }
 .modal-backdrop.fade{
     opacity: 0;

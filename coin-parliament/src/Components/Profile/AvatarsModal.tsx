@@ -90,7 +90,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
           ))}
         </Flex>
 
-        <div className="d-flex justify-content-center text-center mt-4">
+        {/* <div className="d-flex justify-content-center text-center mt-4">
           <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
             if (!userInfo?.avatar) {
               onSubmit(defaultAvatar);
@@ -98,7 +98,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
             setFirstTimeAvatarSelection(false);
             setShowMenuBar(false);
           }}>Skip</span>
-        </div>
+        </div> */}
       </>)}
       {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
     </Container>

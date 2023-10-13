@@ -127,7 +127,7 @@ const Home = () => {
             />
           </div>
         </div>
-        <div className='mb-5 mt-5  mx-0'>
+        {/* <div className='mb-5 mt-5  mx-0'>
           <div className='mb-4'>
             <H2 style={{ zIndex: 1, fontWeight: "400", position: "relative" }}>
               {translate("")}
@@ -136,7 +136,7 @@ const Home = () => {
           <div>
             <Quotes quotes={quotes} />
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
