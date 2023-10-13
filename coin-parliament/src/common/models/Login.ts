@@ -44,11 +44,13 @@ export const providers = {
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
 
-export const Logout = (setUser: () => void) => {
+export const Logout = (setUser?: () => void) => {
   const auth = getAuth();
   signOut(auth)
     .then(() => {
-      setUser();
+      if (setUser) {        
+        setUser();
+      }
     })
     .catch((error) => {
       const errorMessage = error.message;
@@ -172,6 +174,7 @@ export const LoginRegular = async (
       email,
       password
     );
+    console.log("yes i am working ")
     const isFirstLogin = getAdditionalUserInfo(userCredential)
 console.log('firsttimelogin',isFirstLogin)
     if(auth?.currentUser?.emailVerified){
@@ -244,7 +247,7 @@ export const SignupRegular = async (
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid,'','')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))
-    
+    Logout()
     callback.successFunc(userCredential.user);
   } catch (e) {
     callback.errorFunc(e as Error);
