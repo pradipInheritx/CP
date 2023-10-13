@@ -26,6 +26,7 @@ import { functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
+import { showToast } from "../../App";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -34,12 +35,12 @@ export enum LoginModes {
 
 export enum LoginProviders {
   GOOGLE = "google",
-  FACEBOOK = "facebook",
+  // FACEBOOK = "facebook",
   // TWITTER = "twitter",
 }
 
 export const providers = {
-  [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
+  // [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
   [LoginProviders.GOOGLE]: new GoogleAuthProvider(),
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
@@ -237,7 +238,10 @@ export const SignupRegular = async (
     );
     
 // @ts-ignore
-    await sendEmailVerification(auth?.currentUser);
+    await sendEmailVerification(auth?.currentUser).then((data) => {
+      showToast("Successfully sent  verification link on your mail");
+    });
+;
     const firstTimeLogin:Boolean=true
     // @ts-ignore
 
