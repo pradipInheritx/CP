@@ -9,10 +9,10 @@ import sportParliament from "firebaseSportParliament";
 export const SignupRegularForSportParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
-    userData?: { [key: string]: string }
+    userData?: { [key: string]: any }
 ) => {
     try {
-        console.log('sport');
+
         validateSignup(payload);
         const auth = firebaseSportParliament.auth();
         const userCredential = await auth.createUserWithEmailAndPassword(
@@ -20,9 +20,15 @@ export const SignupRegularForSportParliament = async (
             payload.password
         );
         if (auth?.currentUser) {
+            console.log('sport', auth?.currentUser);
             await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(sportParliament.firestore());
-            await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, ...userData, parent: referUser?.uid });
+            await saveUserData((auth?.currentUser?.uid || ''), db, {
+                ...userData,
+                firstTimeLogin: true,
+                parent: referUser?.uid,
+                uid: auth?.currentUser?.uid
+            });
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {

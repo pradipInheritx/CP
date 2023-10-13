@@ -22,7 +22,7 @@ import { ToastType } from "../../Contexts/Notification";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import { getReferUser, saveUserData, saveUsername, storeAllPlatFormUserId } from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
-import coinParliament, { functions } from "../../firebase";
+import { V2EParliament, functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
@@ -34,6 +34,7 @@ import { SignupRegularForSportParliament } from "./SportParliamentLogin";
 import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 import { SignupRegularForCoinParliament } from "./CoinParliamentLogin";
+import { userDefaultData } from "common/consts/contents";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -42,12 +43,12 @@ export enum LoginModes {
 
 export enum LoginProviders {
   GOOGLE = "google",
-  FACEBOOK = "facebook",
+  // FACEBOOK = "facebook",
   // TWITTER = "twitter",
 }
 
 export const providers = {
-  [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
+  // [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
   [LoginProviders.GOOGLE]: new GoogleAuthProvider(),
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
@@ -59,7 +60,11 @@ export const Logout = async (setUser?: () => void) => {
       if (setUser) {
         setUser();
       }
-      localStorage.clear();
+      // const parentEmail = localStorage.getItem("parentEmail");
+      // localStorage.clear();
+      // if (parentEmail) {
+      //   localStorage.setItem("parentEmail", parentEmail);
+      // }
       window.localStorage.setItem('mfa_passed', 'false');
       return true;
     })
@@ -96,10 +101,14 @@ export const LoginAuthProvider = async (
       localStorage.setItem('mfa_passed', 'false');
     }
     if (auth.currentUser) {
-      genericThirdPartyLogin({
-        payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF', passwordConfirm: '!@#$%^&*#!#%^DF', agree: true, },
+      await genericThirdPartyLogin({
+        payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF1', passwordConfirm: '!@#$%^&*#!#%^DF1', agree: true, },
         callback: { successFunc: () => { }, errorFunc: () => { } },
-        userData: { displayName: (auth.currentUser?.displayName || ''), avatar: (auth.currentUser?.photoURL || ''), }
+        userData: {
+          ...userDefaultData,
+          displayName: (auth.currentUser?.displayName || ''),
+          avatar: (auth.currentUser?.photoURL || ''),
+        }
       });
     }
 
@@ -108,8 +117,16 @@ export const LoginAuthProvider = async (
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
     const info = userinfo.data();
     if (isFirstLogin?.isNewUser) {
-      const referUser = await getReferUser(coinParliament.firestore());
-      await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
+      const referUser = await getReferUser(V2EParliament.firestore());
+      console.log(referUser, 'referUser');
+
+      await saveUserData((auth?.currentUser?.uid || ''), db, {
+        ...userDefaultData,
+        parent: referUser?.uid,
+        email: auth?.currentUser?.email,
+        displayName: (auth.currentUser?.displayName || ''),
+        avatar: (auth.currentUser?.photoURL || ''),
+      });
     }
     if (auth?.currentUser?.email) {
       await storeAllPlatFormUserId(auth?.currentUser?.email);
@@ -239,8 +256,7 @@ export const LoginRegular = async (
       } else {
         callback.successFunc(userCredential.user)
       }
-    }
-    else {
+    } else {
       Logout();
       callback.errorFunc({ message: 'Please verify your email address.' } as Error)
     };
@@ -317,19 +333,24 @@ export const SignupRegular = async (
     );
 
     // @ts-ignore
-    await sendEmailVerification(auth?.currentUser).then((data) => {
+    await sendEmailVerification(auth?.currentUser)/* .then((data) => {
       showToast("Successfully sent  verification link on your mail");
+    }); */
+
+    const referUser = await getReferUser(V2EParliament.firestore());
+    await saveUserData((auth?.currentUser?.uid || ''), db, {
+      /* firstTimeLogin: true, */
+      ...userDefaultData,
+      parent: referUser?.uid,
+      email: auth?.currentUser?.email,
+      displayName: (auth.currentUser?.displayName || ''),
+      avatar: (auth.currentUser?.photoURL || ''),
+      uid: auth?.currentUser?.uid,
     });
-
-    const referUser = await getReferUser(coinParliament.firestore());
-    await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, parent: referUser?.uid });
-    if (auth?.currentUser?.email) {
-      await storeAllPlatFormUserId(auth?.currentUser?.email);
-    }
-
-    showToast("User register successfully.", ToastType.SUCCESS);
+    // showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
     // callback.successFunc(auth?.currentUser)
+    Logout();
     return true;
   } catch (e) {
     // callback.errorFunc(e as Error);
@@ -344,10 +365,10 @@ export const SignupRegular = async (
 
 export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
   SignupRegular(payload, callback).then(async (res) => {
-    await SignupRegularForCoinParliament(payload, callback);
-    await SignupRegularForSportParliament(payload, callback);
-    await SignupRegularForStockParliament(payload, callback);
-    await SignupRegularForVotingParliament(payload, callback);
+    await SignupRegularForCoinParliament(payload, callback, userDefaultData);
+    await SignupRegularForSportParliament(payload, callback, userDefaultData);
+    await SignupRegularForStockParliament(payload, callback, userDefaultData);
+    await SignupRegularForVotingParliament(payload, callback, userDefaultData);
   }).catch(() => {
 
   });
@@ -355,8 +376,10 @@ export const genericLogin = async (payload: SignupPayload, callback: Callback<Au
 export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
   payload: SignupPayload,
   callback: Callback<AuthUser>,
-  userData?: { [key: string]: string }
+  userData?: { [key: string]: any }
 }) => {
+  console.log(userData, 'pkkk');
+
   await SignupRegularForCoinParliament(payload, callback, userData);
   await SignupRegularForSportParliament(payload, callback, userData);
   await SignupRegularForStockParliament(payload, callback, userData);

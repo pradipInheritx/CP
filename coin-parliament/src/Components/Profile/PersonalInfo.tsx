@@ -4,7 +4,7 @@ import UserContext, { saveUserData } from "../../Contexts/User";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import User, { UserProps } from "../../common/models/User";
 import { doc, updateDoc } from "firebase/firestore";
-import { db as coinDB } from "../../firebase";
+import { db as V2EDB } from "../../firebase";
 import TextField from "../Forms/Textfield";
 import { Buttons } from "../Atoms/Button/Button";
 import { getAuth, sendEmailVerification, signOut, updateEmail } from "firebase/auth";
@@ -17,6 +17,7 @@ import { Input } from "../Atoms/styles";
 import { texts } from "../LoginComponent/texts";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import { db as coinDB } from "firebaseCoinParliament";
 import { db as sportDB } from "firebaseSportParliament";
 import { db as stockDB } from "firebaseStockParliament";
 import { db as votingDB } from "firebaseVotingParliament";
@@ -58,6 +59,7 @@ const PersonalInfo = () => {
   const onSubmit = async (newUserInfo: { firstName: string, lastName: string, email: string, phone: string }) => {
     const userIds = JSON.parse((localStorage.getItem('userId') || "{}"));
     setLoading(true);
+    await saveUserData(userIds.V2E, V2EDB, newUserInfo);
     await saveUserData(userIds.coin, coinDB, newUserInfo);
     await saveUserData(userIds.sport, sportDB, newUserInfo);
     await saveUserData(userIds.stock, stockDB, newUserInfo);

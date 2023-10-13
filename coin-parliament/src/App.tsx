@@ -616,6 +616,7 @@ function App() {
       localStorage.removeItem('parentEmail');
     }
   }, []);
+  // console.log(auth?.currentUser, userInfo, loader, 'pkk');
 
   return loader ? (
     <Spinner />

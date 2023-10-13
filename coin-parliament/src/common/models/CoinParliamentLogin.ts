@@ -5,11 +5,11 @@ import { Callback } from "./utils";
 import { User, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
-import sportParliament from "firebaseCoinParliament";
+import coinParliament from "firebaseCoinParliament";
 export const SignupRegularForCoinParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
-    userData?: { [key: string]: string }
+    userData?: { [key: string]: any }
 ) => {
     try {
         console.log('coin');
@@ -21,8 +21,13 @@ export const SignupRegularForCoinParliament = async (
         );
         if (auth?.currentUser) {
             await sendEmailVerification(auth?.currentUser);
-            const referUser = await getReferUser(sportParliament.firestore());
-            await saveUserData((auth?.currentUser?.uid || ''), db, { firstTimeLogin: true, ...userData, parent: referUser?.uid });
+            const referUser = await getReferUser(coinParliament.firestore());
+            await saveUserData((auth?.currentUser?.uid || ''), db, {
+                ...userData,
+                firstTimeLogin: true,
+                parent: referUser?.uid,
+                uid: auth?.currentUser?.uid
+            });
         } else {
             console.log('coin', auth);
         }
