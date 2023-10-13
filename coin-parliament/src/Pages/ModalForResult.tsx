@@ -24,9 +24,9 @@ const CoinContainer = styled.div`
 
 const CoinVoteTimer = styled.span`
   // font-size: 14px;
-  // line-height: 14px;
   color: #6352e8;
-`;
+  `;
+  // line-height: 14px;
 
 const LineImg = styled.div`
   // height: 60px;
