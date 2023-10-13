@@ -28,7 +28,7 @@ import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { showToast } from "App";
+import { showToast } from "../../App";
 const sendEmail = httpsCallable(functions, "sendEmail");
 
 export enum LoginModes {
@@ -38,12 +38,12 @@ export enum LoginModes {
 
 export enum LoginProviders {
   GOOGLE = "google",
-  FACEBOOK = "facebook",
+  // FACEBOOK = "facebook",
   // TWITTER = "twitter",
 }
 
 export const providers = {
-  [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
+  // [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
   [LoginProviders.GOOGLE]: new GoogleAuthProvider(),
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };

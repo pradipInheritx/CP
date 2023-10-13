@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { listData } from './utils';
 import { count } from 'console';
 import RangeSilder from '../Users/RangeSilder';
-import ModalForResult from 'Pages/ModalForResult';
+import ModalForResult from '../../Pages/ModalForResult';
 import Countdown from 'react-countdown';
 
 const MainDiv = styled.div`
@@ -90,6 +90,7 @@ const VoteButton = styled.div`
 cursor:pointer;
 display:flex;
 justify-content: center;
+overflow:hidden;
 `;
 
 const VoteDiv = styled.div`
@@ -234,7 +235,16 @@ function CardShow() {
       </ButtonDiv>
       {ShowSpdometer == false ?
         <>
-          <VoteButton className=''
+          
+          <div className='text-center'>
+            <p
+              style={{ color: "#6352e8" }}
+            >
+              Who gets your vote?
+            </p>
+          </div>
+
+          <VoteButton className='mt-3'
 
           >
             <VoteDiv className='confetti-button svg-button animate'
@@ -349,7 +359,7 @@ function CardShow() {
             <ModalForResult
               // @ts-ignore 
               showPopUp={showPopUp}
-            // setShowPopUp={setShowPopUp}
+              setShowPopUp={setShowPopUp}
             />
           </>
           : ""

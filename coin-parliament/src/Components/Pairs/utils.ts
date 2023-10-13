@@ -1,5 +1,8 @@
 import { Coin } from "../../common/models/Coin";
 import { flatMap, throttle } from "lodash";
+import EVE from "../../assets/images/EVE.png";
+import LYON from "../../assets/images/LYON.png";
+
 
 export const symbolCombination = (coins: string[]) =>
   coins.length === 2 ? `${coins[0]}-${coins[1]}` : "";
@@ -61,8 +64,8 @@ export const listData = [
     name2: "LYON",
     price1: "123.002",
     price2: "232.003",
-    img1: 'EVE',
-    img2: 'LYON',
+    img1: EVE,
+    img2: LYON,
   },
   // {
   //   name1: "CIN",

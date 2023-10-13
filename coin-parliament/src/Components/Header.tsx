@@ -16,9 +16,10 @@ import { isV1 } from "./App/App";
 import { useWindowSize } from "../hooks/useWindowSize";
 import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
-import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
+import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
-import BigLogo from "../assets/svg/logoiconx2.svg";
+import BigLogo from "../assets/svg/vporange.svg";
+// import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
@@ -240,10 +241,12 @@ const Header = ({
           .then((res) => {
             // console.log("logout", res);
             Logout(setUser);
+            setLogin(true);
           })
           .catch((error) => {
             const errorMessage = error.message;
             console.log(errorMessage);
+            setLogin(true);
           });
         break;
       case EventKeys.EDIT:
@@ -319,15 +322,69 @@ const Header = ({
               href: "/",
               label: "Home",
             },
+            // {
+            //   href: "/coins",
+            //   label: "Coin Vote",
+            // },
+            // {
+            //   href: "/pairs",
+            //   label: "Pairs Vote",
+            // },
+            // {
+            //   href: "/influencers",
+            //   label: "Top Influencers",
+            // },
+            // {
+            //   href: "/nftAlbum",
+            //   label: "Album",
+            // },
+            // {
+            //   label: "",
+            // },
+            // user && {
+            //   eventKey: EventKeys.VOTES,
+            //   label: "Votes",
+            // },
+            // !isV1() &&
+            //   user && {
+            //     eventKey: EventKeys.POOL_MINING,
+            //     label: "Pool Mining",
+            //   },
             user && {
               eventKey: EventKeys.SHARE,
               label: "My Account",
             },
-
+            // user && {
+            //   eventKey: EventKeys.FOLLOWERS,
+            //   label: "Followers",
+            // },
             user && {
               eventKey: EventKeys.EDIT,
               label: "My Profile",
             },
+            // user && {
+            //   eventKey: EventKeys.Gallery,
+            //   label: "My Album",
+            // },
+            // user && {
+            //   eventKey: EventKeys.NOTIFICATIONS,
+            //   label: "Notifications",
+            // },
+            // user && {
+            //   eventKey: EventKeys.PASSWORD,
+            //   label: "Password",
+            // },
+            // user && {
+            //   eventKey: EventKeys.EDIT,
+            //   label: "My Profile",
+            // },
+            // {
+            //   label: "",
+            // },
+            // {
+            //   label: "",
+            // },
+            // ...(pages || []).map(convertPageToMenuItem),
             {
               label: "-",
             },
@@ -341,10 +398,17 @@ const Header = ({
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Join the parliament",
+              label: "JOIN THE PARLIAMENT",
             },
           ].map((i) => (i ? i : undefined))}
         >
+          {/* {!desktop && (
+        <Title style={{ width: pathname === "/" ? "50%" : "50%" }}>
+          {mounted ? title : ""}
+        </Title>
+      )} */}
+
+          {/* {for center modile size} */}
 
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
@@ -365,16 +429,17 @@ const Header = ({
                         cursor: "pointer"
                       }}
                     >
-
-                      <Avatars
-                        type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar : (userInfo?.avatar || defaultAvatar) as AvatarType}
-                        style={{
-                          width: "45px",
-                          boxShadow: "1px 0px 5px #6352E8",
-                          // border: "1px solid #6352E8",
-                          backgroundColor: "#6352E8",
-                        }}
-                      />
+                      {userInfo?.avatar && (
+                        <Avatars
+                          type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+                          style={{
+                            width: "45px",
+                            boxShadow: "1px 0px 5px #6352E8",
+                            // border: "1px solid #6352E8",
+                            backgroundColor: "#6352E8",
+                          }}
+                        />
+                      )}
                     </div>
                     <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
                       {userInfo?.displayName && <HeaderCenterMob className=''>
@@ -449,7 +514,7 @@ const Header = ({
                 )}
                 <div className='mt-2'>
                   <Title style={{ width: pathname === "/" ? "" : "" }}>
-                    {/* {mounted ? title : ""} */}
+                    {mounted ? title : ""}
                   </Title>
                 </div>
               </div>
@@ -470,7 +535,7 @@ const Header = ({
               <div className='d-flex '>
                 {user?.uid ? (
                   <div
-                    className='d-flex w-25 mx-auto '
+                    className='d-flex   w-25 mx-auto '
                     style={{ position: "relative", height: "50px" }}
                   >
                     <div
@@ -483,15 +548,17 @@ const Header = ({
                         cursor: "pointer"
                       }}
                     >
-                      <Avatars
-                        // type={userInfo?.avatar as AvatarType}
-                        type={followerPage && followerInfo != "" ? (followerInfo?.avatar || defaultAvatar) as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
-                        style={{
-                          width: "60px",
-                          boxShadow: "1px 0px 5px #6352E8",
-                          backgroundColor: "#6352E8",
-                        }}
-                      />
+                      {userInfo?.avatar && (
+                        <Avatars
+                          // type={userInfo?.avatar as AvatarType}
+                          type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+                          style={{
+                            width: "60px",
+                            boxShadow: "1px 0px 5px #6352E8",
+                            backgroundColor: "#6352E8",
+                          }}
+                        />
+                      )}
                     </div>
                     <div className='w-100 '>
                       {userInfo?.displayName && <HeaderCenter className=''>
@@ -507,6 +574,12 @@ const Header = ({
                                   color: "#6352E8",
                                 }}
                               >
+                                {/* {Number(voteRules?.maxVotes) ||
+                              0 +
+                                // @ts-ignore
+                                Number(userInfo?.rewardStatistics?.extraVote) ||
+                              0 - Number(votesLast24Hours.length) ||
+                              0} */}
                                 {userInfo?.displayName}
                               </span></>}
                         </p>
@@ -514,6 +587,8 @@ const Header = ({
                           <Form.Check.Label
                             className=""
                             style={{ cursor: "pointer" }}
+                            // htmlFor={id || name}
+                            // className={className}
                             bsPrefix="label"
                             onClick={() => { setFollowUnfollow(!followUnfollow) }}
                           >
@@ -554,8 +629,15 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <Navbar.Brand as={Link} to='/'>
-                  <img src={BigLogo} alt='' className="invisible" />
+                  <img src={BigLogo} alt='' />
                 </Navbar.Brand>
+                {/* <Navbar.Brand
+                  style={{
+                    height: "90px",
+                    width: "50px"
+                  }}
+                >
+                </Navbar.Brand> */}
               </div>
             </div>
           ) : (

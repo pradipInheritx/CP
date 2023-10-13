@@ -42,7 +42,14 @@ const PairsVoteVs = styled.span`
   font-size: ${window.screen.width > 676 ? "14px" : "10px"};
   color: #6352e8;
 `;
-function ModalForResult(showPopUp?: any, setShowPopUp?: any) {
+
+interface ChildComponentProps {
+  showPopUp?: any;
+  setShowPopUp?: any;
+}
+
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp }) => {
+  // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
 
   const navigate = useNavigate();
   //   const setVoteDetails = useContext(VoteDispatchContext);
@@ -53,12 +60,11 @@ function ModalForResult(showPopUp?: any, setShowPopUp?: any) {
     }
   }, [showPopUp])
 
-
   const [show, setShow] = useState(false);
   // const setVoteDetails = useContext(VoteDispatchContext);
-
   const handleShow = () => setShow(true);
   const handleClose = () => {
+    // console.log("i am clickable")
     setShowPopUp(false)
     setShow(false);
   };
@@ -85,9 +91,16 @@ function ModalForResult(showPopUp?: any, setShowPopUp?: any) {
           }}>
             {/* {type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""} */}
           </div>
-          <div className="d-flex justify-content-end">
-            <button type="button" className="btn-close " aria-label="Close" onClick={handleClose}></button>
-          </div>
+          {/* <div className="d-flex justify-content-end" > */}
+          <button className="btn-close " aria-label="Close"
+            style={{
+              cursor: "pointer"
+            }}
+            onClick={() => {
+              handleClose()
+            }}
+          ></button>
+          {/* </div> */}
         </div>
         <Modal.Body>
 
@@ -108,7 +121,8 @@ function ModalForResult(showPopUp?: any, setShowPopUp?: any) {
                       <img src={cardData.img1} alt="" width="50px" />
                     </div>
                     <div className="" style={{ lineHeight: '20px' }}>
-                      <div>
+                      <div
+                      >
                         {/* @ts-ignore */}
                         <strong>{cardData.name1}</strong>
                       </div>

@@ -58,7 +58,7 @@ const FirstTimeFoundationSelection = ({ user ,setFirstTimeFoundationSelection}: 
          {item}
       </Buttons.Primary> )}
       </div>
-      <Skip onClick={()=>saveFoundation(user?.uid,'Foundation One')}>Skip</Skip>
+      {/* <Skip onClick={()=>saveFoundation(user?.uid,'Foundation One')}>Skip</Skip> */}
     </Stack>
   );
 };

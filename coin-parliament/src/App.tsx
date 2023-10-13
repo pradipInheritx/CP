@@ -588,14 +588,8 @@ function App() {
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
 
-  // login user using token
+ 
 
-  useEffect(() => {
-    if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
-      auth.signOut();
-      showToast("Please verify your email address.", ToastType.ERROR);
-    }
-  }, [JSON.stringify(auth?.currentUser)]);
   const [searchParams] = useSearchParams();
   useEffect(() => {
     let token = searchParams.get('token');
@@ -604,7 +598,11 @@ function App() {
         .then((userCredential) => {
           // User is signed in
           const user = userCredential.user;
-          console.log('Custom token sign-in success: authenticated', user?.emailVerified);
+          if (user && !user?.emailVerified) {
+            auth.signOut();
+            showToast("Please verify your email address.", ToastType.ERROR);
+          }
+          console.log('Custom token sign-in success: authenticated', user);
           navigate('/');
         })
         .catch((error) => {
@@ -613,6 +611,9 @@ function App() {
         });
     }
   }, [searchParams]);
+
+
+
   //end
   return loader ? (
     <div
@@ -1109,12 +1110,12 @@ function App() {
                                           {/* <Route
                                           path='privacy'
                                           element={<PrivacyPolicy />}
-                                        /> 
+                                        />  */}
                                          <Route
                                           path='/terms-and-condition'
                                           element={<TermsAndConditions />}
                                         />
-                                        {localhost && user && (
+                                        {/* {localhost && user && (
                                           <Route
                                             path='admin'
                                             element={<Admin />}
