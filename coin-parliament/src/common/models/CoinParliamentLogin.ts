@@ -1,45 +1,42 @@
 import { SignupPayload, validateSignup } from "./Login";
-import firebaseSportParliament, { auth, db } from "firebaseSportParliament"
+import firebaseCoinParliament, { auth, db } from "firebaseCoinParliament"
 
 import { Callback } from "./utils";
 import { User, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
-import sportParliament from "firebaseSportParliament";
-export const SignupRegularForSportParliament = async (
+import coinParliament from "firebaseCoinParliament";
+export const SignupRegularForCoinParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
     userData?: { [key: string]: any }
 ) => {
     try {
-
+        console.log('coin');
         validateSignup(payload);
-        const auth = firebaseSportParliament.auth();
+        const auth = firebaseCoinParliament.auth();
         const userCredential = await auth.createUserWithEmailAndPassword(
             payload.email,
             payload.password
         );
         if (auth?.currentUser) {
-            console.log('sport', auth?.currentUser);
             await sendEmailVerification(auth?.currentUser);
-            const referUser = await getReferUser(sportParliament.firestore());
+            const referUser = await getReferUser(coinParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
                 ...userData,
                 firstTimeLogin: true,
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
-            // const userRef = doc(db, "users", auth?.currentUser?.uid);
-            // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
-            console.log('sport', auth);
+            console.log('coin', auth);
         }
         //@ts-ignore
         // callback.successFunc(userCredential.user);
         return true;
     } catch (e) {
         // @ts-ignore
-        console.log('sport error', e.code);
+        console.log('coin error', e.code);
         // @ts-ignore
         if (e?.code) {
             // @ts-ignore

@@ -17,7 +17,7 @@ const firebaseConfig = {
   measurementId: `G-${process.env.REACT_APP_FIREBASE_MEASUREMENT_ID}`,
 };
 
-export const coinParliament = firebase.initializeApp(firebaseConfig);
+export const V2EParliament = firebase.initializeApp(firebaseConfig);
 
 export const messaging = (async () => {
   try {
