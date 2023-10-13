@@ -52,7 +52,7 @@ const
         const { setLogin } = useContext(AppContext)
         const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
         const url = referralUrl
-        const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
+        const shareText = `Hey,%0ajoin me on Sport Parliament and earn rewards for your opinion!%0aLet's vote together!`
         const [showShare, setShowShare] = useState(false);
         return (
             <div className={classes.AmbassadorMain}>
@@ -178,7 +178,7 @@ const
                                 <span className={`${classes.subHeaderText} mb-3`}>How does it work?</span>
                                 <div className={classes.description} style={{ fontWeight: 'bold', fontSize: '1.5em' }}>
                                     <ol>
-                                        <li>Sign up to become a member.</li>
+                                        <li>Sign up to JOIN THE PARLIAMENT.</li>
                                         <li>Invite your friends from any social media platform using your unique referral link.</li>
                                         <li>
                                             Start earning .

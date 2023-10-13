@@ -94,6 +94,7 @@ const PairsCopy = ({
 }) => {
   const { width = 0 } = useWindowSize();
   let navigate = useNavigate();
+  const { user} = useContext(UserContext);
   
   
 
@@ -104,7 +105,9 @@ const PairsCopy = ({
           return <ChildDiv
           
             onClick={() => {
-              navigate(`/CardShow/${index}`);
+              if (user?.uid) {                
+                navigate(`/CardShow/${index}`);
+              }
               // console.log(`/pairs/${index}`,"url")
           }}
           >
