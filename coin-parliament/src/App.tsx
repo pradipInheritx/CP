@@ -588,15 +588,7 @@ function App() {
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
 
-  // login user using token
-
-  // useEffect(() => {
-  //   if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
-  //     auth.signOut();
-  //     showToast("Please verify your email address.", ToastType.ERROR);
-  //   }
-  // }, [JSON.stringify(auth?.currentUser)]);
-
+ 
 
   const [searchParams] = useSearchParams();
   useEffect(() => {
@@ -606,7 +598,11 @@ function App() {
         .then((userCredential) => {
           // User is signed in
           const user = userCredential.user;
-          console.log('Custom token sign-in success: authenticated', user?.emailVerified);
+          if (user && !user?.emailVerified) {
+            auth.signOut();
+            showToast("Please verify your email address.", ToastType.ERROR);
+          }
+          console.log('Custom token sign-in success: authenticated', user);
           navigate('/');
         })
         .catch((error) => {

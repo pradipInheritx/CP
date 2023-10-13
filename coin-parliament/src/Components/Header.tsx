@@ -18,7 +18,8 @@ import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
-import BigLogo from "../assets/svg/logoiconx2.svg";
+import BigLogo from "../assets/svg/vporange.svg";
+// import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
@@ -512,8 +513,8 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <div className='mt-2'>
-                  <Title style={{ width: pathname === "/" ? "40px" : "" }}>
-                    {/* {mounted ? title : ""} */}
+                  <Title style={{ width: pathname === "/" ? "" : "" }}>
+                    {mounted ? title : ""}
                   </Title>
                 </div>
               </div>

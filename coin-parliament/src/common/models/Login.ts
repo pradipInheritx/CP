@@ -28,7 +28,7 @@ import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { showToast } from "App";
+import { showToast } from "../../App";
 const sendEmail = httpsCallable(functions, "sendEmail");
 
 export enum LoginModes {
