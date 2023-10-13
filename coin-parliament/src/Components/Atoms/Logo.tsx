@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import {logo} from "../../assets/svg/logo";
+import logo  from "../../assets/svg/spblue.svg";
+// import {logo} from "../../assets/svg/logo";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import useScrollPosition from "../../hooks/useScrollPosition";
 import {positionBreakpoint} from "../Background";

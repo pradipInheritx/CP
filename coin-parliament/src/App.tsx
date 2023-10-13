@@ -875,7 +875,11 @@ console.log('fmctoken',fcmToken)
         .then((userCredential) => {
           // User is signed in
           const user = userCredential.user;
-          console.log('Custom token sign-in success: authenticated', user?.emailVerified);
+          if (user && !user?.emailVerified) {
+            auth.signOut();
+            showToast("Please verify your email address.", ToastType.ERROR);
+          }
+          console.log('Custom token sign-in success: authenticated', user);
           navigate('/');
         })
         .catch((error) => {
@@ -885,15 +889,7 @@ console.log('fmctoken',fcmToken)
     }
   }, [searchParams]);
   
-  // useEffect(() => {
-  //   if (auth?.currentUser && !auth?.currentUser?.emailVerified) {
-  //     auth.signOut();
-  //     showToast("Please verify your email address.", ToastType.ERROR);
-  //   }
-  // }, [JSON.stringify(auth?.currentUser)]);
-
-
-
+  
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -1485,3 +1481,32 @@ console.log('fmctoken',fcmToken)
 }
 
 export default App;
+
+
+export const showToast = (
+  content: ToastContent,
+  type?: ToastType,
+  options: ToastOptions | undefined = {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    containerId: "toast",
+  }
+) => {
+  toast.dismiss();
+  toast.clearWaitingQueue();
+  switch (type) {
+    case ToastType.ERROR:
+      toast.error(content, options);
+      break;
+    case ToastType.INFO:
+      toast.info(content, options);
+      break;
+    default:
+      toast.success(content, options);
+  }
+};

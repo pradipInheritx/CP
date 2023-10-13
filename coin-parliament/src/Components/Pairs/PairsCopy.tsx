@@ -29,6 +29,7 @@ import Carousel from "./Carousel";
 import styled from "styled-components";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import {getMaxWidth} from "../Coins/Coins";
+import AppContext from "../../Contexts/AppContext";
 
 const MainDiv = styled.div`
   // border:1px solid red;  
@@ -95,7 +96,8 @@ const PairsCopy = ({
   const { width = 0 } = useWindowSize();
   let navigate = useNavigate();
   const { user} = useContext(UserContext);
-  
+  const {  setLogin} =
+    useContext(AppContext);
   
 
   return (
@@ -107,6 +109,9 @@ const PairsCopy = ({
             onClick={() => {
               if (user?.uid) {                
                 navigate(`/CardShow/${index}`);
+              }
+              else {
+                setLogin(true);
               }
               // console.log(`/pairs/${index}`,"url")
           }}
