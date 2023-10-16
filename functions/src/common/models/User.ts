@@ -33,7 +33,6 @@ export type UserProps = {
   status?: UserTypeProps;
   parent?: string;
   mfa: boolean;
-  firstTimeLogin?: boolean;
   voteStatistics?: VoteStatistics;
   leader?: string[];
   subscribers?: string[];
@@ -41,7 +40,23 @@ export type UserProps = {
   token?: string;
   wallet?: string;
   rewardStatistics?: RewardStatistics;
+  firstTimeLogin?: boolean;
+  refereeScrore?: number;
+  googleAuthenticatorData?: any,
+  voteValue?: number,
+  wellDAddress?: wellDAddressType,
+  referalReceiveType?: referalReceiveType
 };
+
+export type wellDAddressType = []
+
+export type referalReceiveType = {
+  name: string,
+  amount: string,
+  days: string,
+  limitType: string
+}
+
 
 export type RewardStatistics = {
   total: number;

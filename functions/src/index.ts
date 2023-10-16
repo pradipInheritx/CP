@@ -149,6 +149,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     share: 0,
     color: Colors.PLATINUM,
   };
+
   const userData: UserProps = {
     uid: user.uid,
     address: "",
@@ -158,7 +159,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     firstName: "",
     lastName: "",
     mfa: false,
-    firstTimeLogin: true,
     displayName: user.displayName,
     phone: user.phoneNumber,
     subscribers: [],
@@ -180,6 +180,12 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    firstTimeLogin: true,
+    refereeScrore: 0,
+    googleAuthenticatorData: {},
+    voteValue: await getMaxVotes(),
+    wellDAddress: [],
+    referalReceiveType: { name: "", amount: "", days: "", limitType: "" }
   };
 
   try {
@@ -192,6 +198,13 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+
+const getMaxVotes = async () => {
+  const getVoteAndReturnQuery = await admin.firestore().collection("settings").doc("settings").get();
+  const getVoteAndReturnData: any = getVoteAndReturnQuery.data();
+  return getVoteAndReturnData?.voteRules.maxVotes
+}
+
 
 exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
   const { userId, email } = data as { userId: string, email: string };
