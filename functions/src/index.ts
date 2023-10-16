@@ -158,7 +158,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     firstName: "",
     lastName: "",
     mfa: false,
-    firstTimeLogin: true,
     displayName: user.displayName,
     phone: user.phoneNumber,
     subscribers: [],
@@ -180,8 +179,13 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     },
     favorites: [],
     status,
+    firstTimeLogin: true,
+    refereeScrore: 0,
+    googleAuthenticatorData: {},
+    voteValue: await getMaxVotes(),
+    wellDAddress: [],
+    referalReceiveType: { name: "", amount: "", days: "", limitType: "" }
   };
-
   try {
     return await admin
       .firestore()
@@ -192,6 +196,13 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+
+const getMaxVotes = async () => {
+  const getVoteAndReturnQuery = await admin.firestore().collection("settings").doc("settings").get();
+  const getVoteAndReturnData: any = getVoteAndReturnQuery.data();
+  return getVoteAndReturnData?.voteRules.maxVotes
+}
+
 
 exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
   try {

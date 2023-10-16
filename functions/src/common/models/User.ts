@@ -39,9 +39,24 @@ export type UserProps = {
   favorites: string[];
   token?: string;
   wallet?: string;
-  firstTimeLogin?: boolean;
   rewardStatistics?: RewardStatistics;
+  firstTimeLogin?: boolean;
+  refereeScrore?: number;
+  googleAuthenticatorData?: any,
+  voteValue?: number,
+  wellDAddress?: wellDAddressType,
+  referalReceiveType?: referalReceiveType
 };
+
+export type wellDAddressType = []
+
+export type referalReceiveType = {
+  name: string,
+  amount: string,
+  days: string,
+  limitType: string
+}
+
 
 export type RewardStatistics = {
   total: number;
