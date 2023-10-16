@@ -26,6 +26,7 @@ import { functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userConverter, UserProps } from "./User";
+import { showToast } from "../../App";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -34,21 +35,23 @@ export enum LoginModes {
 
 export enum LoginProviders {
   GOOGLE = "google",
-  FACEBOOK = "facebook",
+  // FACEBOOK = "facebook",
   // TWITTER = "twitter",
 }
 
 export const providers = {
-  [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
+  // [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
   [LoginProviders.GOOGLE]: new GoogleAuthProvider(),
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
 
-export const Logout = (setUser: () => void) => {
+export const Logout = (setUser?: () => void) => {
   const auth = getAuth();
   signOut(auth)
     .then(() => {
-      setUser();
+      if (setUser) {        
+        setUser();
+      }
     })
     .catch((error) => {
       const errorMessage = error.message;
@@ -172,6 +175,7 @@ export const LoginRegular = async (
       email,
       password
     );
+    console.log("yes i am working ")
     const isFirstLogin = getAdditionalUserInfo(userCredential)
 console.log('firsttimelogin',isFirstLogin)
     if(auth?.currentUser?.emailVerified){
@@ -234,7 +238,10 @@ export const SignupRegular = async (
     );
     
 // @ts-ignore
-    await sendEmailVerification(auth?.currentUser);
+    await sendEmailVerification(auth?.currentUser).then((data) => {
+      showToast("Successfully sent  verification link on your mail");
+    });
+;
     const firstTimeLogin:Boolean=true
     // @ts-ignore
 
@@ -244,7 +251,7 @@ export const SignupRegular = async (
     // @ts-ignore
     saveUsername(auth?.currentUser?.uid,'','')
     // console.log('signup', await sendEmailVerification(auth?.currentUser))
-    
+    Logout()
     callback.successFunc(userCredential.user);
   } catch (e) {
     callback.errorFunc(e as Error);

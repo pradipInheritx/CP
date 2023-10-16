@@ -14,7 +14,7 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/votingparliament.json";
+import serviceAccount from "./serviceAccounts/stockparliament.json";
 import { getPrice } from "./common/models/Rate";
 // import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
@@ -32,12 +32,12 @@ import {
   getOldAndCurrentPriceAndMakeCalculation,
 } from "./common/models/Vote";
 import {
-  fetchCoins,
+  //fetchCoins,
   getAllCoins,
   getAllPairs,
   Leader,
   prepareCPVI,
-  fetchAskBidCoin,
+  // fetchAskBidCoin,
   // getUpdatedDataFromWebsocket,
   // getAllUpdated24HourRecords,
   // removeTheBefore24HoursData,
@@ -116,7 +116,7 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL:
-    "https://votingparliament-default-rtdb.firebaseio.com",
+    "https://stockparliament-default-rtdb.firebaseio.com",
 });
 
 exports.getAccessToken = () =>
@@ -191,6 +191,48 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   } catch (e) {
     return false;
   }
+});
+
+exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
+  const { userId, email } = data as { userId: string, email: string };
+  const getUserQuery: any = await admin.firestore().collection("users").where('uid', "==", userId).where('email', "==", email).get();
+  const getUser = getUserQuery.docs.map((user: any) => user.data());
+  if (!getUser.length) return { messsage: "User is not found", token: null }
+  const tokenForLogin = await admin
+    .auth()
+    .createCustomToken(getUser[0].uid)
+    .then((token) => {
+      // Send the custom token to the client
+      console.log('Custom Token:', token);
+      return token
+    })
+    .catch((error) => {
+      console.error('Error creating custom token:', error);
+      return {
+        messsage: "Something Wrong in isLoggedInFromVoteToEarn",
+        error
+      }
+    });
+  // console.log("TOKEN ___ : ", customToken)
+  return {
+    messsage: "Token generated successfully",
+    token: tokenForLogin
+  }
+});
+
+
+exports.sendPassword = functions.https.onCall(async (data) => {
+  const { password } = data as { password: string };
+  return password === "CPVI2022!";
+});
+
+exports.setLeadersOnce = functions.https.onCall(async () => {
+  await setLeaders();
+});
+
+exports.isAdmin = functions.https.onCall(async (data) => {
+  const { user } = data as { user: string };
+  return await isAdmin(user);
 });
 
 exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
@@ -356,20 +398,6 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
       result: error,
     };
   }
-});
-
-exports.sendPassword = functions.https.onCall(async (data) => {
-  const { password } = data as { password: string };
-  return password === "CPVI2022!";
-});
-
-exports.setLeadersOnce = functions.https.onCall(async () => {
-  await setLeaders();
-});
-
-exports.isAdmin = functions.https.onCall(async (data) => {
-  const { user } = data as { user: string };
-  return await isAdmin(user);
 });
 
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
@@ -729,11 +757,11 @@ exports.onCreatePaxTransaction = functions.firestore
     }
   });
 
-exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-  [0, 60].forEach((i) => {
-    setTimeout(async () => await fetchCoins(), i * 1000);
-  });
-});
+// exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
+//   [0, 60].forEach((i) => {
+//     setTimeout(async () => await fetchCoins(), i * 1000);
+//   });
+// });
 
 // exports.getUpdatedDataFromWebsocket = functions.pubsub
 //   .schedule("every 2 minutes")
@@ -748,17 +776,17 @@ exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
 //     await removeTheBefore24HoursData();
 //   });
 
-exports.prepareEveryFiveMinuteCPVI = functions.pubsub
-  .schedule("*/3 * * * *")
-  .onRun(async () => {
-    await Promise.all([await fetchAskBidCoin()]);
-  });
+// exports.prepareEveryFiveMinuteCPVI = functions.pubsub
+//   .schedule("*/3 * * * *")
+//   .onRun(async () => {
+//     await Promise.all([await fetchAskBidCoin()]);
+//   });
 
-exports.prepareHourlyCPVI = functions.pubsub
-  .schedule("0 * * * *")
-  .onRun(async () => {
-    await prepareCPVI(1, "hourly");
-  });
+// exports.prepareHourlyCPVI = functions.pubsub
+//   .schedule("0 * * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(1, "hourly");
+//   });
 
 exports.prepare4HourlyCPVI = functions.pubsub
   .schedule("0 */4 * * *")
