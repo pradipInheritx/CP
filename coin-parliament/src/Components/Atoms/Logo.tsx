@@ -23,7 +23,8 @@ export type ImgProps = {
 };
 
 const Image = styled.img`
-  box-shadow: 0 3px 6px #00000029;
+  // box-shadow: 0 3px 6px #00000029;
+  
   opacity: 1;
   width: ${(props: ImgProps) => `${isWideLogo(props)|| window.screen.width>979 ? 233 : (width[props.size || Size.XSMALL])}px`};
   border-radius: ${(props: ImgProps) => `${isWideLogo(props)|| window.screen.width>979  ? "" : "100%"}`};
