@@ -60,21 +60,21 @@ const Security = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [show, setShow] = useState(false);
   const [phone, setPhone] = useState("");
-  const [countryCode,setCountryCode]= useState('972')
+  const [countryCode, setCountryCode] = useState('972')
   const [verificationCodeSent, setVerifiactionCodeSent] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationIdData, setVerificationIdData] = useState("");
-  const [tabsArray,setTabsArray]=useState<any>([])
+  const [tabsArray, setTabsArray] = useState<any>([])
   const auth = getAuth();
-  console.log('auth',u?.providerData[0]?.providerId=='password' )
-  const authProvider=u?.providerData[0]?.providerId=='password'? true :false
+  console.log('auth', u?.providerData[0]?.providerId == 'password')
+  const authProvider = u?.providerData[0]?.providerId == 'password' ? true : false
   useEffect(() => {
-    setTabsArray(authProvider?[
+    setTabsArray(authProvider ? [
       {
         eventKey: "password",
         title: "Password",
         pane: (
-         <ChangePassword/>
+          <ChangePassword />
         ),
       },
       {
@@ -82,22 +82,22 @@ const Security = () => {
         title: "2FA",
         pane: (
           <>
-          <GoogleAuthenticator/>
+            <GoogleAuthenticator />
           </>
-        // 
+          // 
         ),
       },
-    ]:[
+    ] : [
       {
         eventKey: "2fa",
         title: "2FA",
         pane: (
-          <GoogleAuthenticator/>
+          <GoogleAuthenticator />
         ),
       },
     ])
     setPhone(user?.phone || '')
-    
+
   }, [])
   const handleClose = () => {
     setShow(false);
@@ -114,8 +114,8 @@ const Security = () => {
       }
     }
   };
-  
-  
+
+
   const authMFA = () => {
     const recaptchaVerifier = new RecaptchaVerifier(
       "recaptcha-container-id",
@@ -125,7 +125,7 @@ const Security = () => {
           // reCAPTCHA solved, you can proceed with
           // phoneAuthProvider.verifyPhoneNumber(...).
           // onSolvedRecaptcha();
-         
+
         },
       },
       auth
@@ -141,7 +141,7 @@ const Security = () => {
         };
 
         const phoneAuthProvider = new PhoneAuthProvider(auth);
-        
+
         // Send SMS verification code.
         return phoneAuthProvider.verifyPhoneNumber(
           phoneInfoOptions,
@@ -149,7 +149,7 @@ const Security = () => {
         );
       })
       .then(function (verificationId) {
-        
+
         // Ask user for the verification code. Then:
         setVerificationIdData(verificationId);
         setVerifiactionCodeSent(true);
@@ -169,75 +169,14 @@ const Security = () => {
   };
   return (
     <>
-                      
+
       <Tabs
-      defaultActiveKey={authProvider?"password":'2fa'}
-      id="profile-follow"
-      onSelect={() => {}}
-      tabs={tabsArray}
-                            />
-    
-      {/* <Modal show={show} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
-        <Modal.Header >
-          <Modal.Title>2FA</Modal.Title>
-        </Modal.Header>
-        {verificationCodeSent ? (
-          <Modal.Body>
-            <p>Please enter verification code which is sent to +{countryCode}{phone}.</p>
-            <FormControl
-              className="mt-2"
-              type="number"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-            />
-          </Modal.Body>
-        ) : (
-          <Modal.Body>
-            <p>Please enter your phone number for 2FA.</p>
-            <div className='d-flex mt-3 pl-5' style={{marginLeft:'20px'}}>
-              <p className='mr-2'>+</p>
-              <FormControl
-              style={{marginLeft:'5px',marginRight:'5px',maxWidth:'60px'}}
-              className="w-25 mr-2"
-              type="tel"
-              value={countryCode}
-              onChange={(e) => setCountryCode(e.target.value)}
-            />
-            <FormControl
-              className="ml-2 w-50"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-            </div>
-          </Modal.Body>
-        )}
-        <Modal.Footer>
-          <Buttons.Default onClick={handleClose}>Close</Buttons.Default>
-          <Buttons.Primary
-            // disabled={!valid}
-            onClick={async () => {
-              if (verificationCodeSent) {
-                verifyCode().then(res=>{
-                  const newUserInfo = {
-                    ...(userInfo as UserProps),
-                    mfa: true,
-                    phone:phone,
-                  };
-                  setUserInfo(newUserInfo);
-                   onSubmit(newUserInfo);
-                  showToast(texts.FASecurityAdded)}).catch(err=>showToast(texts.WrongCode, ToastType.ERROR));
-                handleClose();
-              } else {
-                authMFA();
-              }
-              // await triggerSaveUsername();
-            }}
-          >
-            CONTINUE
-          </Buttons.Primary>
-        </Modal.Footer>
-      </Modal> */}
+        defaultActiveKey={authProvider ? "password" : '2fa'}
+        id="profile-follow"
+        onSelect={() => { }}
+        tabs={tabsArray}
+      />
+
     </>
   );
 };

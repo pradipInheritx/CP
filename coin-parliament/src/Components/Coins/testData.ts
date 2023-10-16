@@ -20,7 +20,7 @@ export const pages = [
   {
     title: "-",
     content:
-      '\n<p>Coin Parliament © 2022 | Block 98, 1PAX = 10USD</p>\n\n\n\n<p>Total vote = 10,000 </p>\n\n\n\n<p><a href="https://coin-parliament.com/about/" data-type="page" data-id="6">About</a>. <a href="https://coin-parliament.com/faq/" data-type="page" data-id="54">FAQ</a>. <a href="https://coin-parliament.com/contact/" data-type="page" data-id="56">Contact</a>. <a href="https://coin-parliament.com/privacy/" data-type="page" data-id="3">Privacy</a>.</p>\n',
+      '\n<p>Voting Parliament © 2022 | Block 98, 1PAX = 10USD</p>\n\n\n\n<p>Total vote = 10,000 </p>\n\n\n\n<p><a href="https://coin-parliament.com/about/" data-type="page" data-id="6">About</a>. <a href="https://coin-parliament.com/faq/" data-type="page" data-id="54">FAQ</a>. <a href="https://coin-parliament.com/contact/" data-type="page" data-id="56">Contact</a>. <a href="https://coin-parliament.com/privacy/" data-type="page" data-id="3">Privacy</a>.</p>\n',
     slug: "footer",
   },
   {

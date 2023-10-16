@@ -1,12 +1,12 @@
 /** @format */
 
 import { Button, Container, Nav, Navbar, Offcanvas } from "react-bootstrap";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "../common/models/Dictionary";
 import { ContentPage } from "../Contexts/ContentContext";
 import AppContext from "../Contexts/AppContext";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Gradient2 } from "../styledMixins";
 import Hamburger from "./Atoms/Hamburger";
 import { useWindowSize } from "../hooks/useWindowSize";
@@ -36,6 +36,7 @@ export type MenuItem = {
 };
 
 const MenuContainer = styled(Offcanvas)`
+// zoom:3;
   & a {
     font: var(--font-style-normal) normal var(--font-weight-normal)
       var(--font-size-13) / 29px var(--font-family-poppins);
@@ -61,6 +62,31 @@ const NavContainer = styled(Navbar)`
   overflow: hidden;
   width: 100%;
   z-index: 1000;
+  // border:1px solid red;  
+`;
+type ZoomProps = {
+  inOutReward?: number,
+  coinIncrement?: boolean,
+  showCoinIncrement: number,
+};
+
+const BoxSet = css`
+background-color: rgba(0,0,0,0.8);
+  position: fixed;
+  width:100%;
+  height: 100vh;
+  z-index:2000;
+`;
+const BoxSet2 = css`
+background-color:none;
+  // position: fixed;
+  // width:100%;
+  // height: 100vh;
+  // z-index:2000;
+`;
+
+const CoinPopup = styled.div`
+${(props: ZoomProps) => `${(props.showCoinIncrement === 1) ? BoxSet : BoxSet2}`};   
 `;
 const HamburgerBut = styled.button`
 background:none;
@@ -87,16 +113,20 @@ const Menu = ({
   title,
   pathname,
 }: MenuProps) => {
-  const { menuOpen, setMenuOpen, login, firstTimeLogin } =
-    useContext(AppContext);
-const navigate = useNavigate();
+  const { menuOpen, setMenuOpen, login, showMenubar } = useContext(AppContext);
+  const navigate = useNavigate();
   const { user } = useContext(UserContext);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
+  const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0);
   const { width } = useWindowSize();
-  const handleClose = () => setMenuOpen(false);
+  // const { backgrounHide } = useContext(AppContext);
+
+  const handleClose = () => {
+    setMenuOpen(false);
+  }
   const handleShow = () => {
-    if (followerPage) {      
+    if (followerPage) {
       navigate(-1)
     }
     else {
@@ -104,11 +134,17 @@ const navigate = useNavigate();
     }
   };
   const translate = useTranslation();
-  
+
 
   const desktop = width && width > 979;
+
+
+
   return (
     <>
+      {/* <CoinPopup {...{ showCoinIncrement }} className="">
+
+      </CoinPopup> */}
       <NavContainer
         pathname={pathname}
         collapseOnSelect
@@ -116,13 +152,26 @@ const navigate = useNavigate();
         style={{
           paddingRight: window.screen.width > 979 ? "20px" : "",
           paddingLeft: window.screen.width > 979 ? "20px" : "",
-          // background:
-          //   login || firstTimeLogin || (width && width > 979)
-          //     ? "linear-gradient(180deg, rgba(93,70,224,1) 40%, rgba(99,82,232,1) 80%)"
-          //     : undefined,
-          // boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
         }}
       >
+        {/* {
+          backgrounHide &&
+          <div style={{
+            position: 'fixed',
+            height: '120px',
+            display: 'flex',
+            borderRadius: " 0px 0px 80px 0px",
+            top: '0',
+            right: '0',
+            bottom: '0',
+            left: '0',
+            background: 'rgba(0, 0, 0, 0.8)',
+            zIndex: '1001',
+            overflow: 'hidden',
+
+            width: '100%',
+
+          }} />} */}
         <Container
           className='text-capitalize align-items-center px-2 justify-content-start'
           fluid={true}
@@ -130,35 +179,36 @@ const navigate = useNavigate();
           {!desktop && (
             <div
               className='d-flex justify-content-start'
-              style={{ flexBasis: "20%" }}              
+              style={{ flexBasis: "20%" }}
             >
-              {/* <HamburgerBut
+              {!showMenubar && <HamburgerBut
                 // variant='link'
-                onClick={handleShow}
+                onClick={() => {
+                  handleShow()
+                  // handleSoundClick()
+                }}
                 className='position-relative'
                 style={{
-                  
-                  
-                  
+
                 }}
-              > */}
-                
-                {/* {followerPage ? <BackArrow /> :<Hamburger />} */}
+              >
+
+                {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              {/* </HamburgerBut> */}
+              </HamburgerBut>}
             </div>
           )}
           {desktop && (
             <div className='d-flex justify-content-start check'>
-              {/* <HamburgerBut
+              {!showMenubar && <HamburgerBut
                 // variant='link'
                 onClick={handleShow}
                 className='position-relative'
-              > */}
+              >
                 {/* <Hamburger /> */}
-                {/* {followerPage ? <BackArrow/> : <Hamburger />} */}
+                {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              {/* </HamburgerBut> */}
+              </HamburgerBut>}
             </div>
           )}
           {children}
@@ -189,7 +239,10 @@ const navigate = useNavigate();
                     key={i}
                     as={Link}
                     to={item.href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      setMenuOpen(false)
+                      // handleSoundClick()
+                    }}
                   >
                     {translate(item.label)}
                   </Nav.Link>
@@ -202,6 +255,7 @@ const navigate = useNavigate();
           </Nav>
         </Offcanvas.Body>
       </MenuContainer>
+
     </>
   );
 };

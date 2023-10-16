@@ -18,7 +18,8 @@ import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
-import BigLogo from "../assets/svg/logoiconx2.svg";
+import BigLogo from "../assets/svg/vporange.svg";
+// import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
@@ -45,7 +46,7 @@ enum EventKeys {
   POOL_MINING = "pool",
   SHARE = "share",
   FOLLOWERS = "followers",
-  Gallery='Album'
+  Gallery = 'Album'
 }
 
 export const Title = styled.div`
@@ -146,7 +147,7 @@ const Header = ({
   title?: React.ReactNode;
   logo?: boolean;
   pathname: string;
-  remainingTimer:number;
+  remainingTimer: number;
 }) => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
@@ -154,60 +155,60 @@ const Header = ({
   const { width } = useWindowSize();
   const desktop = width && width > 979;
 
-  
- 
+
+
   const { languages, setLang, setLogin, setSignup, setMenuOpen } =
     useContext(AppContext);
   const { pages } = useContext(ContentContext);
   const { votesLast24Hours, userInfo } = useContext(UserContext);
   const { VoteRulesMng } = useContext(ManagersContext);
-  const { voteRules,followerUserId } = useContext(AppContext);
+  const { voteRules, followerUserId } = useContext(AppContext);
   const translate = useTranslation();
   const [voteNumber, setVoteNumber] = useState(0)
   const [votingTimer, setVotingTimer] = useState(0)
-  const[followerInfo,setFollowerInfo]=useState<any>()
-  const[followUnfollow,setFollowUnfollow]=useState<any>(false)
+  const [followerInfo, setFollowerInfo] = useState<any>()
+  const [followUnfollow, setFollowUnfollow] = useState<any>(false)
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
   // const urlname = location.pathname;
 
-  
-  const getFollowerData =()=>{
-  
-// e4EgEKB7pMSU3sIBuoXb6k9pJfR2  
+
+  const getFollowerData = () => {
+
+    // e4EgEKB7pMSU3sIBuoXb6k9pJfR2  
     // const DocumentType = firebase
     //   .firestore()
     //   .collection("votes")
     //   .doc('01Z9rbB0WNk8njwDGowp').delete().then((res)=>console.log('deleted'));
-      const getCollectionType = firebase
-          .firestore()
-          .collection("users")
-          .where("uid", "==", followerUserId)
-        getCollectionType.get()
-        .then((snapshot) => {        
+    const getCollectionType = firebase
+      .firestore()
+      .collection("users")
+      .where("uid", "==", followerUserId)
+    getCollectionType.get()
+      .then((snapshot) => {
         // console.log("snapshot.docs",snapshot.docs.map((doc) => doc.data()));
-        snapshot.docs?.map(doc=>setFollowerInfo(doc.data()))
+        snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
         // console.log('snapshot',snapshot.docs)
-        }).catch((error) => {
-        console.log(error,"error");
-        });    
+      }).catch((error) => {
+        console.log(error, "error");
+      });
   }
-  
+
   useEffect(() => {
-  getFollowerData()  
+    getFollowerData()
   }, [followerUserId])
-  
-// setTimeout(() => {
-//     getFollowerData()  
-//   }, 2000);
 
-// console.log(followerInfo,"followerInfo")
+  // setTimeout(() => {
+  //     getFollowerData()  
+  //   }, 2000);
+
+  // console.log(followerInfo,"followerInfo")
 
   useEffect(() => {
-  
-  setVotingTimer(remainingTimer,)
- 
-}, [remainingTimer])
+
+    setVotingTimer(remainingTimer,)
+
+  }, [remainingTimer])
   useEffect(() => {
     if (pages) {
       setMounted(true);
@@ -215,13 +216,13 @@ const Header = ({
   }, [pages]);
 
   useEffect(() => {
-    const voted=Number(votesLast24Hours.length) <Number(voteRules?.maxVotes)? Number(votesLast24Hours.length):Number(voteRules?.maxVotes)
+    const voted = Number(votesLast24Hours.length) < Number(voteRules?.maxVotes) ? Number(votesLast24Hours.length) : Number(voteRules?.maxVotes)
     // @ts-ignore
-    setVoteNumber(Number(voteRules?.maxVotes)  + Number(userInfo?.rewardStatistics?.extraVote)  - Number(voted) || 0)
+    setVoteNumber(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(voted) || 0)
     // @ts-ignore
     // console.log(Number(voteRules?.maxVotes) + Number(userInfo?.rewardStatistics?.extraVote) - Number(votesLast24Hours.length), "extraVote")
     // @ts-ignore
-  }, [voteRules?.maxVotes ,userInfo?.rewardStatistics?.extraVote,votesLast24Hours.length]);
+  }, [voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours.length]);
 
   const onSelect = (eventKey: string | null) => {
     const auth = getAuth();
@@ -240,10 +241,12 @@ const Header = ({
           .then((res) => {
             // console.log("logout", res);
             Logout(setUser);
+            setLogin(true);
           })
           .catch((error) => {
             const errorMessage = error.message;
             console.log(errorMessage);
+            setLogin(true);
           });
         break;
       case EventKeys.EDIT:
@@ -271,7 +274,7 @@ const Header = ({
           replace: true,
         });
         break;
-        case EventKeys.Gallery:
+      case EventKeys.Gallery:
         navigate(ProfileTabs.profile + "/" + ProfileTabs.ProfileNftGallery, {
           replace: true,
         });
@@ -395,7 +398,7 @@ const Header = ({
             },
             !user && {
               eventKey: EventKeys.SIGNUP,
-              label: "Become a member",
+              label: "JOIN THE PARLIAMENT",
             },
           ].map((i) => (i ? i : undefined))}
         >
@@ -410,7 +413,7 @@ const Header = ({
           {!desktop && (
             <div className='' style={{ width: "75%" }}>
               <div className='d-flex w-100 '>
-                {user?.uid  ? (
+                {user?.uid ? (
                   <div
                     className='d-flex w-100'
                     style={{ position: "relative" }}
@@ -422,13 +425,13 @@ const Header = ({
                         position: "absolute",
                         // marginLeft: "15px",
                         marginTop: "7px",
-                        
-                        cursor:"pointer"
+
+                        cursor: "pointer"
                       }}
                     >
                       {userInfo?.avatar && (
                         <Avatars
-                          type={followerPage && followerInfo != "" ?  followerInfo?.avatar || "Founder" as AvatarType  : userInfo?.avatar as AvatarType}
+                          type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
                           style={{
                             width: "45px",
                             boxShadow: "1px 0px 5px #6352E8",
@@ -439,56 +442,55 @@ const Header = ({
                       )}
                     </div>
                     <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
-                     {userInfo?.displayName&& <HeaderCenterMob className=''>
+                      {userInfo?.displayName && <HeaderCenterMob className=''>
                         <div></div>
                         <div className='mt-1'>
-                         
+
                           {/* @ts-ignore */}
-                          
+
                           {/* // @ts-ignore */}
                           {/* {hours < 10 ? `0${hours}` : hours}: */}
 
 
                           {
                             followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
-                            // @ts-ignore */
-                                <span > {userInfo?.displayName}</span>
-                                :
-                                <>
-                                  <span
-                                    style={{
-                                      color: "#6352E8",
-                                    }}
-                                  >
-                            
-                            {userInfo?.displayName}
-                                  </span>
-                                </>}
+                              // @ts-ignore */
+                              <span > {userInfo?.displayName}</span>
+                              :
+                              <>
+                                <span
+                                  style={{
+                                    color: "#6352E8",
+                                  }}
+                                >
+
+                                  {userInfo?.displayName}
+                                </span>
+                              </>}
                         </div>
-                        
+
                         {followerPage && followerInfo != "" ?
-                        <Form.Check.Label
-                              style={{ cursor: "pointer" }}
-                              // htmlFor={id || name}
-                              className="mt-1"
+                          <Form.Check.Label
+                            style={{ cursor: "pointer" }}
+                            // htmlFor={id || name}
+                            className="mt-1"
                             bsPrefix="label"
-                            onClick={ async () =>
-                            {
+                            onClick={async () => {
                               setFollowUnfollow(!followUnfollow)
                               // @ts-ignore
-                            //  await follow(followerInfo , user, checkFollow )
+                              //  await follow(followerInfo , user, checkFollow )
                             }
-                            
+
                             }
-                            >
-                              {/* {checked && iconOn}
+                          >
+                            {/* {checked && iconOn}
                               {!checked && iconOff} */}
-                            {followUnfollow == true ?  <Following/> :  <AddFollower/>}
-                        </Form.Check.Label>
+                            {followUnfollow == true ? <Following /> : <AddFollower />}
+                          </Form.Check.Label>
                           :
-                        <PlusButtonMob >
-                          <span></span>
-                        </PlusButtonMob> 
+                          <PlusButtonMob >
+                            <span></span>
+                          </PlusButtonMob>
 
                         }
                       </HeaderCenterMob>}
@@ -498,11 +500,11 @@ const Header = ({
                       >
                         {/* <p>{"unique_Username"}</p> */}
 
-                        
+
                         {/* <br /> */}
-                      {userInfo?.displayName&&  <MemberText>
+                        {userInfo?.displayName && <MemberText>
                           {/* {translate(followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || "")} */}
-                          {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
+                          {followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
                         </MemberText>}
                       </div>
                     </div>
@@ -512,7 +514,7 @@ const Header = ({
                 )}
                 <div className='mt-2'>
                   <Title style={{ width: pathname === "/" ? "" : "" }}>
-                    {/* {mounted ? title : ""} */}
+                    {mounted ? title : ""}
                   </Title>
                 </div>
               </div>
@@ -543,13 +545,13 @@ const Header = ({
                         position: "absolute",
                         marginLeft: "90px",
                         // marginTop: "px",
-                        cursor:"pointer"
+                        cursor: "pointer"
                       }}
                     >
                       {userInfo?.avatar && (
                         <Avatars
                           // type={userInfo?.avatar as AvatarType}
-                          type={ followerPage && followerInfo != ""?  followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
+                          type={followerPage && followerInfo != "" ? followerInfo?.avatar || "Founder" as AvatarType : userInfo?.avatar as AvatarType}
                           style={{
                             width: "60px",
                             boxShadow: "1px 0px 5px #6352E8",
@@ -559,45 +561,45 @@ const Header = ({
                       )}
                     </div>
                     <div className='w-100 '>
-                     { userInfo?.displayName&&<HeaderCenter className=''>
+                      {userInfo?.displayName && <HeaderCenter className=''>
                         <div></div>
                         <p className='ml-5'>
-                       { followerPage && followerInfo != "" ? followerInfo?.displayName :!voteNumber && votingTimer ?
-                          // @ts-ignore
-                         <span > {userInfo?.displayName}</span>
-                        :
-                        <> 
-                          <span
-                            style={{
-                              color: "#6352E8",
-                            }}
-                          >
-                            {/* {Number(voteRules?.maxVotes) ||
+                          {followerPage && followerInfo != "" ? followerInfo?.displayName : !voteNumber && votingTimer ?
+                            // @ts-ignore
+                            <span > {userInfo?.displayName}</span>
+                            :
+                            <>
+                              <span
+                                style={{
+                                  color: "#6352E8",
+                                }}
+                              >
+                                {/* {Number(voteRules?.maxVotes) ||
                               0 +
                                 // @ts-ignore
                                 Number(userInfo?.rewardStatistics?.extraVote) ||
                               0 - Number(votesLast24Hours.length) ||
                               0} */}
-                           {userInfo?.displayName}
-                          </span></>}
+                                {userInfo?.displayName}
+                              </span></>}
                         </p>
                         {followerPage && followerInfo != "" ?
-                        <Form.Check.Label
-                        className=""
-                              style={{ cursor: "pointer" }}
-                              // htmlFor={id || name}
-                              // className={className}
+                          <Form.Check.Label
+                            className=""
+                            style={{ cursor: "pointer" }}
+                            // htmlFor={id || name}
+                            // className={className}
                             bsPrefix="label"
-                            onClick={()=>{setFollowUnfollow(!followUnfollow)}}
-                            >
-                              {/* {checked && iconOn}
+                            onClick={() => { setFollowUnfollow(!followUnfollow) }}
+                          >
+                            {/* {checked && iconOn}
                               {!checked && iconOff} */}
-                            {followUnfollow == true ?  <Following/> :  <AddFollower/>}
-                        </Form.Check.Label>
+                            {followUnfollow == true ? <Following /> : <AddFollower />}
+                          </Form.Check.Label>
                           :
-                        <PlusButton onClick={() => navigate("/votingbooster")}>
-                          <span>+</span>
-                        </PlusButton> 
+                          <PlusButton onClick={() => navigate("/votingbooster")}>
+                            <span>+</span>
+                          </PlusButton>
 
                         }
                       </HeaderCenter>}
@@ -616,9 +618,9 @@ const Header = ({
                         }`}</span>
                         <br /> */}
 
-                       
-                      {userInfo?.displayName&&  <MemberText>
-                          {followerPage && followerInfo != ""? followerInfo?.status?.name :userInfo?.status?.name || ""}
+
+                        {userInfo?.displayName && <MemberText>
+                          {followerPage && followerInfo != "" ? followerInfo?.status?.name : userInfo?.status?.name || ""}
                         </MemberText>}
                       </div>
                     </div>
@@ -626,8 +628,15 @@ const Header = ({
                 ) : (
                   <div className='w-100'></div>
                 )}
-                {/* <Navbar.Brand as={Link} to='/'>
+                <Navbar.Brand as={Link} to='/'>
                   <img src={BigLogo} alt='' />
+                </Navbar.Brand>
+                {/* <Navbar.Brand
+                  style={{
+                    height: "90px",
+                    width: "50px"
+                  }}
+                >
                 </Navbar.Brand> */}
               </div>
             </div>
