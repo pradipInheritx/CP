@@ -28,18 +28,18 @@ export type paymentProps = {
 
 function PaymentFun({ isVotingPayment }: any) {
   const { user, userInfo } = useContext(UserContext);
-  
+
   const [payamount, setPayamount] = useState();
   const [payType, setPayType] = useState();
   const [extraVote, setExtraVote] = useState(0);
   const [extraPer, setExtraPer] = useState(0);
   const [apiCalling, setApiCalling] = useState(true);
-  
+
   const [paymentStatus, setPaymentStatus] = useState<{ type: string, message: string }>({ type: '', message: '' });
   const { isWLDPEventRegistered, setIsWLDPEventRegistered,
     // setTransactionId, transactionId
   } = useContext(AppContext);
-  
+
   const [coinInfo, setCoinInfo] = useState<{ [key: string]: any }>({});
   const [payButton, setPayButton] = useState(false);
   const [selectCoin, setSelectCoin] = useState("none");
@@ -95,13 +95,13 @@ function PaymentFun({ isVotingPayment }: any) {
 
     axios.post(`${ApiUrl}payment/makePayment/toServer`, data,
       {
-      headers: headers
-    }).then(async (response) => {
-      setApiCalling(false)
-      // console.log(,"response.data.data")
-      console.log(response.data,"response.data")
-      transactionId.current=response.data
-      setShowForWait(true)
+        headers: headers
+      }).then(async (response) => {
+        setApiCalling(false)
+        // console.log(,"response.data.data")
+        console.log(response.data, "response.data")
+        transactionId.current = response.data
+        setShowForWait(true)
       })
       .catch((error) => {
         // setPaymentStatus({ type: 'error', message: '' });
@@ -118,7 +118,7 @@ function PaymentFun({ isVotingPayment }: any) {
       // @ts-ignore
       "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
       "content-type": "application/json"
-    }    
+    }
     const data = {
       userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
@@ -130,23 +130,23 @@ function PaymentFun({ isVotingPayment }: any) {
       token: "ETH",
       transactionType: payType,
       numberOfVotes: extraVote,
-      paymentDetails: { ...detail, ...transactionId.current},      
-      
+      paymentDetails: { ...detail, ...transactionId.current },
+
     }
     axios.post(`${ApiUrl}payment/update/user/afterVote`, data,
       {
         headers: headers
       }).then(async (response) => {
-        setApiCalling(false)       
+        setApiCalling(false)
       })
       .catch((error) => {
         // setPaymentStatus({ type: 'error', message: '' });
         setApiCalling(false)
       })
-    
-    
+
+
   }
-  useEffect(() => {  
+  useEffect(() => {
     const WLDPHandler = (e: any) => {
       try {
         console.log(e, "alldata231dsf");
@@ -179,32 +179,33 @@ function PaymentFun({ isVotingPayment }: any) {
         }
       } catch (error) {
         console.error("Error:", error);
+        setShowForWait(false);
       }
     }
     document.addEventListener('wldp:trx', WLDPHandler);
     return () => document.removeEventListener('wldp:trx', WLDPHandler);
   }, [coinInfo]);
 
-  const checkAndPay = () => {        
+  const checkAndPay = () => {
     (window as any).wldp.isWalletConnected()
       .then((res: any) => {
         if (res === true) {
           console.log("send call 1")
           payNow()
         }
-        else {          
+        else {
           window.scrollTo({
             top: 0,
             behavior: 'smooth',
           });
           (window as any).wldp.connectionWallet('connect', 'ethereum')
             .then((account: any) => {
-              if (account) {                
+              if (account) {
                 payNow()
               }
             })
         }
-      }) 
+      })
   }
   return (
     <>
