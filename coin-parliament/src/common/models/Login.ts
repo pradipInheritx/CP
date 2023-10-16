@@ -100,17 +100,7 @@ export const LoginAuthProvider = async (
     } else {
       localStorage.setItem('mfa_passed', 'false');
     }
-    if (auth.currentUser) {
-      await genericThirdPartyLogin({
-        payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF1', passwordConfirm: '!@#$%^&*#!#%^DF1', agree: true, },
-        callback: { successFunc: () => { }, errorFunc: () => { } },
-        userData: {
-          ...userDefaultData,
-          displayName: (auth.currentUser?.displayName || ''),
-          avatar: (auth.currentUser?.photoURL || ''),
-        }
-      });
-    }
+
 
     const isFirstLogin = getAdditionalUserInfo(result)
     const userRef = doc(db, "users", user.uid);
