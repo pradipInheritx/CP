@@ -391,7 +391,7 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
     const getUserData: any = adminUserData.data();
 
     const verified = speakeasy.totp.verify({
-      secret: getUserData.googleAuthenticatorData.otp_base32!,
+      secret: getUserData.googleAuthenticatorData.otp_base32,
       encoding: "base32",
       token,
     });
