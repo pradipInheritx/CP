@@ -45,7 +45,7 @@ export type SignupProps = {
 };
 const assign = httpsCallable(functions, "assignReferrer");
 const Signup = () => {
-
+  const { setUser } = useContext(UserContext);
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
   const { setLogin } = useContext(AppContext);
@@ -118,6 +118,7 @@ const Signup = () => {
               // if (refer && params?.uid) await assign({ parent: refer, child: params.uid });
               // setLogin(true);
               setSignupLoading(false);
+              setUser();
               navigate('/');
             },
             errorFunc: (e) => {
