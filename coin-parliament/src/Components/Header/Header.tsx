@@ -21,6 +21,8 @@ const Header = () => {
       showToast("Unable to log out please try again.");
     }
   }
+  console.log('pkkkk', userInfo)
+
   return (
     <header>
       <Navbar className='navColor' data-bs-theme="light" >
