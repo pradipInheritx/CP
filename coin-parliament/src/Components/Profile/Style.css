@@ -199,9 +199,9 @@ content: "" !important;
 }
 
 .pay-custom-select-container ul {
-  border: 1px solid #cab7ff;
-  border-radius: 0px 0px 8px 8px ;
-  border-top: none;
+  /* border: 1px solid #cab7ff; */
+  /* border-radius: 0px 0px 8px 8px ;
+  border-top: none; */
   margin: 0;
   padding: 0 0px;
   text-align: center;
@@ -209,7 +209,7 @@ content: "" !important;
 
 .pay-select-options {
   position: absolute;
-  width: 100%;  
+  width: 100%;    
   overflow: scroll
 }
 
