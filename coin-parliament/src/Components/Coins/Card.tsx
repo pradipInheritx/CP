@@ -220,7 +220,7 @@ const Card = ({
   const OnlyCheckColor = () => {
     // setInterval(() => {            
     if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` == prevCountRef.current) {
-      setChangeColor("black")
+      setChangeColor("white")
     }
     else if (`${coins[symbol]?.price}${coins[symbol]?.randomDecimal}` > prevCountRef.current) {
       setChangeColor("Green")

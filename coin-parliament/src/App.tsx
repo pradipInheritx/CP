@@ -155,6 +155,8 @@ import { VoteEndCoinPriceContext, VoteEndCoinPriceType } from "Contexts/VoteEndC
 import Complete100CMPModal from "Components/Complete100CMPModal";
 import { request } from "http";
 import VotingBooster from "Components/Profile/VotingBooster";
+import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
+import Swal from "sweetalert2";
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -772,7 +774,6 @@ function App() {
       });
     }
   }, [user, fcmToken, coins]);
-  console.log(auth?.currentUser, 'hello');
   // useEffect(() => {
   //   auth.signOut();
   // }, []);
@@ -1079,16 +1080,19 @@ function App() {
 
   const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
   const getResultAfterVote = httpsCallable(functions, "getResultAfterVote");
-  const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
+  // const [lessTimeVoteDetails, setLessTimeVoteDetails] = useState<VoteResultProps | undefined>();
+  const lessTimeVoteDetails = useContext(LessTimeVoteDetailContext);
+  const setLessTimeVoteDetails = useContext(LessTimeVoteDetailDispatchContext);
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
 
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
-      if (!pathname.toLowerCase().includes(`profile/mine`)) {
-        localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
-      }
+      // if (!pathname.toLowerCase().includes(`profile/mine`)) {
+      // localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
+      // }
+      // Swal.close();
       setVoteDetails((prev: VoteContextType) => {
         return {
           ...prev,
@@ -1096,11 +1100,14 @@ function App() {
           openResultModal: true
         }
       });
-      setCurrentCMP((completedVotes[0]?.score || 0) /* + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0') */)
-      setCompletedVoteCMP((completedVotes[0]?.score || 0));
+      console.log(localStorage.getItem(`${user?.uid}_newScores`), '_newScores');
 
+      // setCurrentCMP((completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
+      setCurrentCMP(prev => (completedVotes[0]?.score || 0));
+      setCompletedVoteCMP((completedVotes[0]?.score || 0));
     }
   }, [completedVotes, voteDetails.openResultModal]);
+  console.log(completedVotes, voteDetails, lessTimeVoteDetails, 'hello');
 
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
@@ -1115,7 +1122,7 @@ function App() {
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
     }
-  }, [voteDetails?.activeVotes]);
+  }, [JSON.stringify(voteDetails?.activeVotes)]);
   const voteImpact = useRef<{
     timeFrame: number,
     impact: null | number
@@ -1173,12 +1180,16 @@ function App() {
               {}
           )
         }
+        console.log('called');
+
         await getResultAfterVote(request).then(async (response) => {
           console.log(latestUserInfo.current, 'latestUserInfo.current');
           getPriceCalculation(request).then(() => { }).catch(() => { });
           // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
           //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
           // }
+          console.log(response.data, latestVote?.current, 'pkk res');
+
           if (response?.data && Object.keys(response.data).length > 0) {
             const res: VoteResultProps = response!.data as VoteResultProps;
             // @ts-ignore
@@ -1860,7 +1871,7 @@ function App() {
                       {modalOpen && <div className='fade modal-backdrop show' />}
                       {/* //vote result modal */}
                       {/* @ts-ignore */}
-                      {voteDetails?.lessTimeVote && user && <ModalForResult
+                      {voteDetails?.lessTimeVote && !pathname.toLowerCase().includes(`profile/mine`) && user && <ModalForResult
                         popUpOpen={voteDetails.openResultModal}
                         vote={voteDetails?.lessTimeVote}
                         type={voteDetails?.lessTimeVote?.voteType || 'coin'}
