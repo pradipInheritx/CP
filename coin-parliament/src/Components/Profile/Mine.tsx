@@ -33,6 +33,7 @@ import CoinAnimation from "common/CoinAnimation/CoinAnimation";
 import Swal from "sweetalert2";
 import RewardHistory from "./rewardHistory";
 import ShareModal from "Components/shareModal";
+import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
 
 
 const MyBadge = styled(Badge)`
@@ -100,7 +101,8 @@ const Mine = () => {
   const currentCMP = useContext(CurrentCMPContext);
   const handleShareModleClose = () => setShareModalShow(false);
   const handleShareModleShow = () => setShareModalShow(true);
-
+  const voteDetails = useContext(VoteContext);
+  const setVoteDetails = useContext(VoteDispatchContext);
 
   // @ts-ignore 
   const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
@@ -113,7 +115,7 @@ const Mine = () => {
   var urlName = window.location.pathname.split('/');
   const ProfileUrl = urlName.includes("profile")
 
-  // console.log(userInfo?.voteStatistics?.score, currentCMPDiff, prevCMPDiff, currentCMP, score, remainingCMP, 'pkkkk');
+  console.log(userInfo?.voteStatistics?.score, 'user score', currentCMPDiff, 'currentCMPDiff ', prevCMPDiff, 'prevCMPDiff', currentCMP, score, 'score', remainingCMP, 'pkkkk');
 
   useEffect(() => {
     // @ts-ignore
@@ -142,19 +144,17 @@ const Mine = () => {
   }, [inOutReward, showReward, rewardTimer]);
 
   useEffect(() => {
-    if (showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
+    if (!voteDetails.openResultModal && showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
       setTimeout(() => {
         setModelText(1)
         // handleShow();
         if (ProfileUrl && score != 100) {
           Cmppopup();
         }
-
         setShowBack(false)
       }, 15000);
     }
-
-  }, []);
+  }, [JSON.stringify(voteDetails?.openResultModal)]);
 
   const Cmppopup = () => {
     var urlName = window.location.pathname.split('/');
@@ -165,7 +165,7 @@ const Mine = () => {
         html:
           // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
           "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
-          "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMP) + " CMP to reach your goal</p>" +
+          "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMP).toFixed(2) + " CMP to reach your goal</p>" +
           "",
         color: 'black',
         showConfirmButton: ((userInfo?.rewardStatistics?.extraVote || 0) + parseInt(userInfo?.voteValue || '0') > 0),
@@ -177,6 +177,7 @@ const Mine = () => {
           htmlContainer: 'pt-3'
         }
       }).then((result) => {
+
         if (result.isConfirmed) {
           let continueVotingUrl = localStorage.getItem('continueVotingUrl');
           if (continueVotingUrl) {
@@ -195,13 +196,11 @@ const Mine = () => {
     if (showBack) {
       setTimeout(() => {
         setModelText(2)
-        console.log(showBack, "viewshow")
         // handleShow()
         setShowBack(false)
         handleCardClose()
         setRewardTimer(null);
         setShowReward(0);
-        console.log("Openpopup")
       }, 10000);
     }
   }

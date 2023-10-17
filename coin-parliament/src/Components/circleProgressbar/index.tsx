@@ -75,7 +75,7 @@ const CircularProgress = ({ percentage }) => {
                                                 trailColor: (w > 767 ? "transparent" : '#160133')
                                             })}
                                         >
-                                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{roundedValue}/100</span>
+                                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{roundedValue.toFixed(2)}/100</span>
                                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                                         </CircularProgressbarWithChildren>
