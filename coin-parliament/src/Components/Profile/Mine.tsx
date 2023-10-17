@@ -98,7 +98,7 @@ const Mine = () => {
   };
   const handleCardShow = () => setCardModalShow(true);
 
-  const currentCMP = useContext(CurrentCMPContext);
+  const currentCMP = parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')/* useContext(CurrentCMPContext) */;
   const handleShareModleClose = () => setShareModalShow(false);
   const handleShareModleShow = () => setShareModalShow(true);
   const voteDetails = useContext(VoteContext);

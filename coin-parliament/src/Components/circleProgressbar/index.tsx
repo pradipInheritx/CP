@@ -15,13 +15,14 @@ import { easeQuadInOut, easeQuadIn } from "d3-ease";
 import AnimatedProgressProvider from "./AnimatedProgressProvider";
 import { useWindowSize } from "../../hooks/useWindowSize";
 import UserContext from "Contexts/User";
+import { CurrentCMPContext } from "Contexts/CurrentCMP";
 const CircularProgress = ({ percentage }) => {
     const { width: w = 0 } = useWindowSize();
     const [progressBarValue, setProgressBarValue] = useState(0);
     const [startValue, setStartValue] = useState(false);
     const { user, userInfo } = useContext(UserContext);
-    console.log(startValue, percentage, 'startValue');
-
+    const currentCMP = useContext(CurrentCMPContext);
+    console.log(percentage, currentCMP, 'startValue');
     useEffect(() => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue && newScore != '0') {
@@ -32,7 +33,9 @@ const CircularProgress = ({ percentage }) => {
             }, [4000]);
         }
     }, [progressBarValue]);
-
+    useEffect(() => {
+        setProgressBarValue(prev => prev - currentCMP);
+    }, [currentCMP])
     useEffect(() => {
         setProgressBarValue(0);
         const time = setTimeout(() => {
@@ -94,7 +97,7 @@ const CircularProgress = ({ percentage }) => {
                                 trailColor: (w > 767 ? "transparent" : '#160133')
                             })}
                         >
-                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - localStorage.getItem(`${user?.uid}_newScores`))}/100</span>
+                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - localStorage.getItem(`${user?.uid}_newScores`)).toFixed(2)}/100</span>
                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                         </CircularProgressbarWithChildren>

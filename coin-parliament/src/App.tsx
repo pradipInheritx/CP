@@ -1090,7 +1090,7 @@ function App() {
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
       // if (!pathname.toLowerCase().includes(`profile/mine`)) {
-      localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
+      // localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
       // }
       // Swal.close();
       setVoteDetails((prev: VoteContextType) => {
@@ -1102,7 +1102,8 @@ function App() {
       });
       console.log(localStorage.getItem(`${user?.uid}_newScores`), '_newScores');
 
-      setCurrentCMP(/* (completedVotes[0]?.score || 0) +*/  parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
+      setCurrentCMP((completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
+      // setCurrentCMP(/* (completedVotes[0]?.score || 0) +*/  parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
       setCompletedVoteCMP((completedVotes[0]?.score || 0));
     }
   }, [completedVotes, voteDetails.openResultModal]);
