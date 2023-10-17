@@ -1,4 +1,4 @@
-import {firestore} from "firebase-admin";
+import { firestore } from "firebase-admin";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
 // import {DictionaryKeys} from "./Dictionary";
 
@@ -40,7 +40,23 @@ export type UserProps = {
   token?: string;
   wallet?: string;
   rewardStatistics?: RewardStatistics;
+  firstTimeLogin?: boolean;
+  refereeScrore?: number;
+  googleAuthenticatorData?: any,
+  voteValue?: number,
+  wellDAddress?: wellDAddressType,
+  referalReceiveType?: referalReceiveType
 };
+
+export type wellDAddressType = []
+
+export type referalReceiveType = {
+  name: string,
+  amount: string,
+  days: string,
+  limitType: string
+}
+
 
 export type RewardStatistics = {
   total: number;
@@ -97,7 +113,7 @@ export const defaultUserType = {};
 // };
 
 export const isAdmin: (user: string) => Promise<boolean> = async (
-    user: string
+  user: string
 ) => {
   try {
     const admins = await firestore().collection("settings").doc("admins").get();

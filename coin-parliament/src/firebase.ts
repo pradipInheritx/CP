@@ -7,12 +7,12 @@ import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { getMessaging } from "firebase/messaging";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDLKqQ1J-m6YPVLhLYTd_OZFLHUoWu6qSU",
-  authDomain: "stockparliament.firebaseapp.com",
-  projectId: "stockparliament",
-  storageBucket: "stockparliament.appspot.com",
-  messagingSenderId: "1057846249810",
-  appId: "1:1057846249810:web:86084888813a2ef3c9128b"
+  apiKey: "AIzaSyCue00Wo85m496pIcl6uJJUi0cRgJMk6pw",
+  authDomain: "votingparliament.firebaseapp.com",
+  projectId: "votingparliament",
+  storageBucket: "votingparliament.appspot.com",
+  messagingSenderId: "839366544010",
+  appId: "1:839366544010:web:17ac42a8b2638683037b73"
   // apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   // authDomain: 'coinparliament.com',
   // databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,

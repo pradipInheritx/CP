@@ -15,7 +15,11 @@
       "purpose": "any maskable"
     },
     {
+<<<<<<< HEAD
+      "src": "logo192.png",
+=======
       "src": "logo512.png",
+>>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
