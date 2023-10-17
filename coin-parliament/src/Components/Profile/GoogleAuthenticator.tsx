@@ -94,7 +94,7 @@ const GoogleAuthenticator = () => {
       userType: "USER",
     };
     try {
-      const response = await axios.post(generateGoogle2faUrl, data);
+      const response = await axios.post(generateGoogle2faUrl, {data:data});
       console.log(response.data);
       setSecretKey(response.data.result.base32);
       QRCode.toDataURL(response.data.result.otpauth_url, { color: { dark: "#7565f7", light: "#ffffff" } }
@@ -112,10 +112,11 @@ const GoogleAuthenticator = () => {
   const verifyOtp = async (token: string) => {
     try {
       const response = await axios.post(otpurl, {
+        data: {
         userId: userInfo?.uid,
         token: token,
         userType: "USER",
-      });
+      }});
       console.log(response.data);
       const newUserInfo = {
         ...(userInfo as UserProps),

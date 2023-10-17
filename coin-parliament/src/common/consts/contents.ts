@@ -131,5 +131,9 @@ export const social = {};
 
 // <strong></strong>
 
-export const generateGoogle2faUrl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`;
-export const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`;
+export const generateGoogle2faUrl = `https://us-central1-votingparliament.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`;
+
+export const otpurl = `https://us-central1-votingparliament.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`;
+
+// export const generateGoogle2faUrl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`;
+// export const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`;
