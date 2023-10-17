@@ -1,4 +1,8 @@
+import { VoteContextType } from "Contexts/VoteProvider";
+import { UserProps } from "common/models/User";
+import { VoteResultProps } from "common/models/Vote";
 import { type } from "os";
+import React from "react";
 
 export type calculateDiffBetweenCoinsType = { firstCoin: string, secondCoin: string, difference: string };
 export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpirationTime: number[], direction: number) => {
@@ -105,4 +109,34 @@ export const divideArray1 = (arr: any, partSize: any) => {
 export const getPaginationData = (data: any[], pageIndex = 0, pageSize = 5) => {
     // page index start from 0
     return data.slice(pageSize * pageIndex, pageSize * (pageIndex + 1))
+}
+
+export const removeVote = (
+    voteDetails: VoteContextType,
+    setVoteDetails: React.Dispatch<React.SetStateAction<VoteContextType>>,
+    setAfterVotePopup: any,
+    setCompletedVotes: React.Dispatch<React.SetStateAction<VoteResultProps[]>>,
+    setLessTimeVoteDetails: React.Dispatch<React.SetStateAction<VoteResultProps | undefined>>,
+    userInfo: UserProps | undefined,
+) => {
+    let temp = {};
+    setCompletedVotes(prev => prev.filter(value => value.voteId != voteDetails?.lessTimeVote?.voteId));
+    setVoteDetails((prev) => {
+        Object.keys(prev?.activeVotes).map((key: string) => {
+            if (voteDetails?.lessTimeVote?.voteId !== prev?.activeVotes[key].voteId) {
+                temp = { ...temp, [`${prev?.activeVotes[key].coin}_${prev?.activeVotes[key]?.timeframe?.seconds}`]: prev?.activeVotes[key] }
+            }
+        });
+        return {
+            ...prev,
+            lessTimeVote: undefined,
+            activeVotes: temp,
+            openResultModal: false,
+        };
+    });
+    if (Object.keys(temp)?.length <= 0 && (Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0)) <= 0) {
+        setAfterVotePopup(true);
+    }
+
+    setLessTimeVoteDetails(undefined);
 }

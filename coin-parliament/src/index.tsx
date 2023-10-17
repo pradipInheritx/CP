@@ -13,6 +13,7 @@ import { register } from "serviceWorkerRegistration";
 import { VoteEndCoinPriceProvider } from "Contexts/VoteEndCoinPrice";
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import axios from "axios";
+import { LessTimeVoteDetailProvider } from "Contexts/LessTimeVoteDetails";
 
 
 axios.defaults.baseURL = process.env.REACT_APP_API;
@@ -36,15 +37,17 @@ ReactDOM.hydrate(
 
     </Helmet>
     <BrowserRouter>
-      <VoteEndCoinPriceProvider>
-        <VoteProvider>
-          <CompletedVotesProvider>
-            <CurrentCMPProvider>
-              <App />
-            </CurrentCMPProvider>
-          </CompletedVotesProvider>
-        </VoteProvider>
-      </VoteEndCoinPriceProvider>
+      <LessTimeVoteDetailProvider>
+        <VoteEndCoinPriceProvider>
+          <VoteProvider>
+            <CompletedVotesProvider>
+              <CurrentCMPProvider>
+                <App />
+              </CurrentCMPProvider>
+            </CompletedVotesProvider>
+          </VoteProvider>
+        </VoteEndCoinPriceProvider>
+      </LessTimeVoteDetailProvider>
     </BrowserRouter>
   </HelmetProvider>
   , document.getElementById("app")

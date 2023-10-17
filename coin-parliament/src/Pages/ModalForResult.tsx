@@ -119,7 +119,7 @@ function ModalForResult({
   const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
   const remainingCMP = ((currentCMP > 0 && currentCMPDiff > prevCMPDiff && (userInfo?.voteStatistics?.score || 0) > 0) ? 100 : score);
   /// show 100 CMP complete modal
-
+  const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleShow = () => setShow(true);
   const handleClose = () => {
     removeVote();
@@ -148,6 +148,8 @@ function ModalForResult({
     }
     setCompletedVotes(prev => prev.filter(value => value.voteId != vote.voteId));
     setLessTimeVoteDetails(undefined);
+    localStorage.setItem(`${userInfo?.uid}_newScores`, `${(vote?.score || 0) + parseFloat(localStorage.getItem(`${userInfo?.uid}_newScores`) || '0')}`);
+    setCurrentCMP(prev => prev + vote?.score)
     // setLessTimeVoteDetails({
     //   lessTimeVote: undefined,
     //   openResultModal: false
