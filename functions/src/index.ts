@@ -139,7 +139,7 @@ exports.getAccessToken = () =>
   });
 
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
-  console.log("create user");
+  console.log("create user", user);
   const status: UserTypeProps = {
     name: "Member",
     weight: 1,
