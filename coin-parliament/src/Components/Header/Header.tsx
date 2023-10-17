@@ -9,6 +9,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link, useNavigate } from 'react-router-dom';
 import classes from './header.module.css'
+import { auth } from 'firebase';
 const Header = () => {
   const { userInfo, setUserInfo, setUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -21,7 +22,6 @@ const Header = () => {
       showToast("Unable to log out please try again.");
     }
   }
-  console.log('pkkkk', userInfo)
 
   return (
     <header>
@@ -32,7 +32,7 @@ const Header = () => {
               <img src="/VTE logo.png" alt="Vote to Earn" className='pe-3' height={50} />{window.screen.width > 350 ? 'Vote to Earn' : ''}
             </Link>
           </Navbar.Brand>
-          {userInfo && (<Navbar.Collapse className="justify-content-end" style={{ color: 'white', cursor: 'pointer' }}>
+          {auth.currentUser && (<Navbar.Collapse className="justify-content-end" style={{ color: 'white', cursor: 'pointer' }}>
 
             {userInfo?.avatar ?
               <Avatars type={userInfo?.avatar} /> :

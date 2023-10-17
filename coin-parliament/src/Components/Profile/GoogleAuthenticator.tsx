@@ -72,10 +72,7 @@ const GoogleAuthenticator = () => {
   const [secretKey, setSecretKey] = useState<string>("");
   const auth = getAuth();
   const [copied, setCopied] = useState(false);
-
-  console.log(userInfo, 'pkkkk');
-
-  const createPost = async (id: string) => {
+  useEffect(() => {
     // @ts-ignore
     if (userInfo?.googleAuthenticatorData?.otp_auth_url) {
       // @ts-ignore
@@ -88,6 +85,9 @@ const GoogleAuthenticator = () => {
       );
       return
     }
+  }, [JSON.stringify(userInfo)]);
+
+  const createPost = async (id: string) => {
     const data = {
       userId: id,
       userType: "USER",
