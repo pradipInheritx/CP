@@ -1102,8 +1102,8 @@ function App() {
       });
       console.log(localStorage.getItem(`${user?.uid}_newScores`), '_newScores');
 
-      setCurrentCMP((completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
-      // setCurrentCMP(/* (completedVotes[0]?.score || 0) +*/  parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
+      // setCurrentCMP((completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
+      setCurrentCMP(prev => (completedVotes[0]?.score || 0));
       setCompletedVoteCMP((completedVotes[0]?.score || 0));
     }
   }, [completedVotes, voteDetails.openResultModal]);
