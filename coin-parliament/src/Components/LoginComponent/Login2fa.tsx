@@ -79,10 +79,9 @@ const Login2fa = ({
   const [secretKey,setSecretKey]=useState<string>('')
   const auth = getAuth();
   const [copied,setCopied]=useState(false)
-  
-  
-  const url =`https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/generateGoogleAuthOTP`
-  const otpurl=`https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/api/v1/admin/auth/verifyGoogleAuthOTP`
+    
+  const url =`https://us-central1-sportparliament-1f167.cloudfunctions.net/generateGoogleAuthOTP`
+  const otpurl =`https://us-central1-sportparliament-1f167.cloudfunctions.net/verifyGoogleAuthOTP`
   
   // const createPost = async (id:string) => {
   //   const data ={
