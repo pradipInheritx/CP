@@ -127,6 +127,10 @@ export const quotes: Quote[] = [
 ];
 
 export const social = {};
+export const generateGoogle2faUrl = `https://us-central1-stockparliament.cloudfunctions.net/generateGoogleAuthOTP`;
+export const otpurl = `https://us-central1-stockparliament.cloudfunctions.net/verifyGoogleAuthOTP`;
 
+// export const generateGoogle2faUrl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/generateGoogleAuthOTP`;
+// export const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/verifyGoogleAuthOTP`;
 
 // <strong></strong>
