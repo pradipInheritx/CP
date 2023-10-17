@@ -187,15 +187,16 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     wellDAddress: [],
     referalReceiveType: { name: "", amount: "", days: "", limitType: "" }
   };
-
   try {
-    return await admin
+    console.info("User Data", userData)
+    const updatedUser = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
-  } catch (e) {
-    return false;
+    console.info("updatedUser", updatedUser)
+  } catch (error: any) {
+    console.log("Error while create user in stock", error);
   }
 });
 
