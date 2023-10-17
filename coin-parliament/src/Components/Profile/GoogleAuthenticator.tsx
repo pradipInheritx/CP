@@ -74,14 +74,14 @@ const GoogleAuthenticator = () => {
   const auth = getAuth();
   const [copied, setCopied] = useState(false);
 
-
+  console.log(qrCodeDataUrl,"qrCodeDataUrl")
   const createPost = async (id: string) => {
     // @ts-ignore
     if (userInfo?.googleAuthenticatorData?.otp_auth_url) {
       // @ts-ignore
       setSecretKey(userInfo?.googleAuthenticatorData?.otp_base32);
       // @ts-ignore
-      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url, { color: { dark: "#7565f7", light: "#ffffff" } }).then(
+      QRCode.toDataURL(userInfo?.googleAuthenticatorData?.otp_auth_url, { color: { dark: "#e4a842", light: "#ffffff" } }).then(
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
         }
