@@ -78,6 +78,9 @@ export const myPages: ContentPage[] = [
   },
 ];
 
+export const generateGoogle2faUrl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/generateGoogleAuthOTP`;
+export const otpurl = `https://us-central1-${process.env.REACT_APP_FIREBASE_PROJECT_ID}.cloudfunctions.net/verifyGoogleAuthOTP`;
+
 export type Quote = { text: string; source: string }
 export const quotes: Quote[] = [
   {

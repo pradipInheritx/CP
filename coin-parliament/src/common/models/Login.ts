@@ -107,15 +107,27 @@ export const LoginAuthProvider = async (
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
     const info = userinfo.data();
     if (isFirstLogin?.isNewUser) {
+      if (auth.currentUser) {
+        await genericThirdPartyLogin({
+          payload: { email: (auth.currentUser?.email || ''), password: '!@#$%^&*#!#%^DF1', passwordConfirm: '!@#$%^&*#!#%^DF1', agree: true, },
+          callback: { successFunc: () => { }, errorFunc: () => { } },
+          userData: {
+            // ...userDefaultData,
+            firstTimeLogin: true,
+            displayName: (auth.currentUser?.displayName || ''),
+            avatar: (auth.currentUser?.photoURL || ''),
+          }
+        });
+      }
       const referUser = await getReferUser(V2EParliament.firestore());
-      console.log(referUser, 'referUser');
 
       await saveUserData((auth?.currentUser?.uid || ''), db, {
-        ...userDefaultData,
+        // ...userDefaultData,
+        firstTimeLogin: true,
         parent: referUser?.uid,
-        email: auth?.currentUser?.email,
-        displayName: (auth.currentUser?.displayName || ''),
-        avatar: (auth.currentUser?.photoURL || ''),
+        // email: auth?.currentUser?.email,
+        // displayName: (auth.currentUser?.displayName || ''),
+        // avatar: (auth.currentUser?.photoURL || ''),
       });
     }
     if (auth?.currentUser?.email) {
@@ -329,13 +341,13 @@ export const SignupRegular = async (
 
     const referUser = await getReferUser(V2EParliament.firestore());
     await saveUserData((auth?.currentUser?.uid || ''), db, {
-      /* firstTimeLogin: true, */
-      ...userDefaultData,
+      // ...userDefaultData,
+      firstTimeLogin: true,
       parent: referUser?.uid,
-      email: auth?.currentUser?.email,
-      displayName: (auth.currentUser?.displayName || ''),
-      avatar: (auth.currentUser?.photoURL || ''),
-      uid: auth?.currentUser?.uid,
+      // email: auth?.currentUser?.email,
+      // displayName: (auth.currentUser?.displayName || ''),
+      // avatar: (auth.currentUser?.photoURL || ''),
+      // uid: auth?.currentUser?.uid,
     });
     // showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
@@ -355,10 +367,10 @@ export const SignupRegular = async (
 
 export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
   SignupRegular(payload, callback).then(async (res) => {
-    await SignupRegularForCoinParliament(payload, callback, userDefaultData);
-    await SignupRegularForSportParliament(payload, callback, userDefaultData);
-    await SignupRegularForStockParliament(payload, callback, userDefaultData);
-    await SignupRegularForVotingParliament(payload, callback, userDefaultData);
+    await SignupRegularForCoinParliament(payload, callback, /* userDefaultData */);
+    await SignupRegularForSportParliament(payload, callback, /* userDefaultData */);
+    await SignupRegularForStockParliament(payload, callback, /* userDefaultData */);
+    await SignupRegularForVotingParliament(payload, callback, /* userDefaultData */);
   }).catch(() => {
 
   });
@@ -368,7 +380,6 @@ export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
   callback: Callback<AuthUser>,
   userData?: { [key: string]: any }
 }) => {
-  console.log(userData, 'pkkk');
 
   await SignupRegularForCoinParliament(payload, callback, userData);
   await SignupRegularForSportParliament(payload, callback, userData);
