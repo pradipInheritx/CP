@@ -105,19 +105,23 @@ const Login2fa = ({
   const verifyOtp = async (token: string) => {
     try {
       const response = await axios.post(otpurl, {
-        "userId": userInfo?.uid,
-        "token": token,
-        "userType": "USER"
-      });
-      // console.log(response.data);
-      // const newUserInfo = {
-      //   ...(userInfo as UserProps),
-      //   mfa: true as boolean,
-      // };
-      window.localStorage.setItem('mfa_passed', 'false')
-      setLogin(false)
-      setMfaLogin(false)
-      setShowMenuBar(false)
+        data: {          
+          "userId": userInfo?.uid,
+          "token": token,
+          "userType": "USER"
+        }
+      }).then((data) => {
+          console.log(data.data.result, "dataresult");
+          if (data.data.result.status) {
+            window.localStorage.setItem('mfa_passed', 'false')
+            setLogin(false)
+            setMfaLogin(false)
+            setShowMenuBar(false)
+          }
+          else {
+            showToast(data.data.result.message, ToastType.ERROR);
+          }
+        });      
     } catch (error: any) {
       showToast(
         error.response.data.message, ToastType.ERROR
