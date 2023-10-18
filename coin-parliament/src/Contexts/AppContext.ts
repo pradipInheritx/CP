@@ -80,6 +80,7 @@ export type AppContextProps = {
   setPaxData: (s: PaxData) => void;
   setLoginRedirectMessage: (s: string) => void;
   loginRedirectMessage: string;
+  setLoader?: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const AppContext = React.createContext({} as AppContextProps);

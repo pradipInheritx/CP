@@ -81,7 +81,7 @@ export type LoginProps = {
 const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const { setLoginRedirectMessage, loginRedirectMessage } = useContext(AppContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, setLoader } = useContext(AppContext);
   const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   const navigate = useNavigate();
@@ -102,10 +102,17 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           <div key={i} className="mb-2 w-100" id='login'>
             <LoginWith
               provider={provider}
-              onClick={() =>
+              onClick={() => {
+                if (setLoader) {
+                  setLoader(true);
+                }
                 // @ts-ignore
-                authProvider(setUser, providers[provider], showToast, setSmsVerification)
-              }
+                authProvider(setUser, providers[provider], showToast, setSmsVerification, () => {
+                  if (setLoader) {
+                    setLoader(false);
+                  }
+                })
+              }}
             />
           </div>
         );

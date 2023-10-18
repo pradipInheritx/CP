@@ -645,6 +645,7 @@ function App() {
           >
             <AppContext.Provider
               value={{
+                setLoader,
                 firstTimeAvatarSlection,
                 setFirstTimeAvatarSelection,
                 followerUserId,
