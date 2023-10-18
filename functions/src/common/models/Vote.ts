@@ -156,7 +156,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           userId,
           direction: getVoteData?.direction,
           timeframe: getVoteData?.timeframe,
-          coin: `${returnShortCoinValue(coin1.substring(0, 3).toUpperCase())}-${returnShortCoinValue(coin2.substring(0, 3).toUpperCase())}`,
+          coin: `${await returnShortCoinValue(coin1.toUpperCase())}-${await returnShortCoinValue(coin2.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score
         }
@@ -175,7 +175,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           direction: getVoteData?.direction,
           userId,
           timeframe: getVoteData?.timeframe,
-          coin: `${returnShortCoinValue(coin1.substring(0, 3).toUpperCase())}`,
+          coin: `${await returnShortCoinValue(coin1.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score
         }
@@ -187,24 +187,25 @@ export const getResultAfterVote = async (requestBody: any) => {
   }
 }
 
-export const returnShortCoinValue = async (getCoin: any) => {
-  const coinValueFor3Slice = ["BTC", "ETH", "SOL", "BNB", "UNI", "XRP", "LTC", "CRO", "TRX", "DOT", "CLM", "VET", "EOS"];
-  const getIndexFrom3Slice = coinValueFor3Slice.findIndex((item: any) => item === getCoin);
-  if (getIndexFrom3Slice != -1) {
-    return coinValueFor3Slice[getIndexFrom3Slice]
+export const
+  returnShortCoinValue = async (getCoin: any) => {
+    const coinValueFor3Slice = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT", "UNIUSDT", "XRPUSDT", "LTCUSDT", "CROUSDT", "TRXUSDT", "DOTUSDT", "CLMUSDT", "VETUSDT", "EOSUSDT"];
+    const getIndexFrom3Slice = coinValueFor3Slice.findIndex((item: any) => item === getCoin);
+    if (getIndexFrom3Slice != -1) {
+      return coinValueFor3Slice[getIndexFrom3Slice].substring(0, 3);
+    }
+    const coinValueFor4Slice = ["DOGEUSDT", "SHIBUSDT", "CAKEUSDT", "SANDUSDT", "MANAUSDT", "LINKUSDT"];
+    const getIndexFrom4Slice = coinValueFor4Slice.findIndex((item: any) => item === getCoin);
+    if (getIndexFrom4Slice != -1) {
+      return coinValueFor4Slice[getIndexFrom4Slice].substring(0, 4);
+    }
+    const coinValueFor5Slice = ["MATICUSDT", "HBARAUSDT"];
+    const getIndexFrom5Slice = coinValueFor5Slice.findIndex((item: any) => item === getCoin);
+    if (getIndexFrom5Slice != -1) {
+      return coinValueFor5Slice[getIndexFrom5Slice].substring(0, 5);
+    }
+    return getCoin;
   }
-  const coinValueFor4Slice = ["DOGE", "SHIB", "CAKE", "SAND", "MANA", "LINK"];
-  const getIndexFrom4Slice = coinValueFor4Slice.findIndex((item: any) => item === getCoin);
-  if (getIndexFrom4Slice != -1) {
-    return coinValueFor4Slice[getIndexFrom4Slice]
-  }
-  const coinValueFor5Slice = ["MATIC", "HBARA"];
-  const getIndexFrom5Slice = coinValueFor5Slice.findIndex((item: any) => item === getCoin);
-  if (getIndexFrom5Slice != -1) {
-    return coinValueFor5Slice[getIndexFrom5Slice]
-  }
-  return getCoin;
-}
 
 export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) => {
   try {
