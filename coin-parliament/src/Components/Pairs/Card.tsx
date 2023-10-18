@@ -264,8 +264,8 @@ const Card = ({
   const pathname = location.pathname;
   const { user } = useContext(UserContext);
   const { setLoginRedirectMessage, loginRedirectMessage, setLogin } = useContext(AppContext);
-  const [colorFirst, setColorFirst] = useState<string>("black");
-  const [colorSec, setColorSec] = useState<string>("black");
+  const [colorFirst, setColorFirst] = useState<string>("white");
+  const [colorSec, setColorSec] = useState<string>("white");
   const [priceFist, setPriceFist] = useState<any>(0)
   const [priceSec, setPriceSec] = useState<any>(0)
   const [zoom, setZoom] = useState(false)
@@ -274,45 +274,44 @@ const Card = ({
 
 
   const firstColor = () => {
-    if (coins[coin1?.symbol]?.price == prevFirstRef.current) {
-      setColorFirst("black")
+    let price = `${formatCurrency(coins[coin1.symbol]?.price, precision[coin1.symbol])}${(coin1.symbol != 'BTC' && coin1.symbol != 'ETH') && coins[coin1.symbol]?.randomDecimal}`.replaceAll('$', '').replaceAll(',', '').replaceAll('undefined', '');
+
+    if (price == prevFirstRef.current) {
+      setColorFirst("white")
     }
-    else if (coins[coin1?.symbol]?.price > prevFirstRef.current) {
+    else if (price > prevFirstRef.current) {
       setColorFirst("Green")
     }
-    else if (coins[coin1?.symbol]?.price < prevFirstRef.current) {
+    else if (price < prevFirstRef.current) {
       setColorFirst("Red")
     }
     // },5000);
-    setPriceFist(coins[coin1?.symbol]?.price)
+    setPriceFist(price)
   }
 
   const secColor = () => {
-    if (coins[coin2?.symbol]?.price == prevSecRef.current) {
-      setColorSec("black")
+    let price = `${formatCurrency(coins[coin2.symbol]?.price, precision[coin2.symbol])}${(coin2.symbol != 'BTC' && coin2.symbol != 'ETH') && coins[coin2.symbol]?.randomDecimal}`.replaceAll('$', '').replaceAll(',', '').replaceAll('undefined', '');
+    if (price == prevSecRef.current) {
+      setColorSec("white")
     }
-    else if (coins[coin2?.symbol]?.price > prevSecRef.current) {
+    else if (price > prevSecRef.current) {
       setColorSec("Green")
     }
-    else if (coins[coin2?.symbol]?.price < prevSecRef.current) {
+    else if (price < prevSecRef.current) {
       setColorSec("Red")
     }
     // },5000);
-    setPriceSec(coins[coin2?.symbol]?.price)
+    setPriceSec(price)
   }
 
   useEffect(() => {
     prevFirstRef.current = priceFist;
     firstColor()
-  }, [
-    coins[coin1?.symbol]?.price
-  ])
+  }, [coins[coin1.symbol]?.randomDecimal])
   useEffect(() => {
     prevSecRef.current = priceSec;
     secColor()
-  }, [
-    coins[coin2?.symbol]?.price
-  ])
+  }, [coins[coin2.symbol]?.randomDecimal])
 
 
 

@@ -63,6 +63,7 @@ const TextContainer = styled.div`
   max-width: 350px;
   margin: 0 auto;
 `;
+
 const Prices = styled.div`
 box-sizing: border-box;
 width: 264px;
@@ -417,15 +418,13 @@ const VotingPaymentCopy: React.FC<{
 
     // const connectOrNot = localStorage.getItem("wldp_disconnect");
 
-    const [payamount, setPayamount] = useState();
+    const [payamount, setPayamount] = useState("");
     const [payType, setPayType] = useState();
     const [extraVote, setExtraVote] = useState(0);
     const [extraPer, setExtraPer] = useState(0);
     // const [payButton, setPayButton] = useState(false);
     // const [showOptionList, setShowOptionList] = useState(false);
     // const [afterPay, setAfterPay] = useState(false);
-
-
 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
@@ -437,9 +436,19 @@ const VotingPaymentCopy: React.FC<{
 
     useEffect(() => {
       // window.scrollTo({ top: 500, behavior: 'smooth' });
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      console.log("i am working onclick")
-    }, [payType, selectPayment, coinInfo])
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });      
+    }, [payType, selectPayment,])
+    useEffect(() => {
+      // window.scrollTo({ top: 500, behavior: 'smooth' });
+      if (coinInfo) {        
+        if (window.screen.width > 767) {          
+          window.scrollTo({ top: extraPer > 0 ? 700 :650, behavior: 'smooth' });      
+        }
+        else {
+          window.scrollTo({ top: extraPer > 0 ? 630 : 600, behavior: 'smooth' });                
+        }
+      }
+    }, [coinInfo])
 
 
     useEffect(() => {
@@ -656,7 +665,7 @@ const VotingPaymentCopy: React.FC<{
                     zIndex: 4,                    
                   }} >
                     <div
-                      className={showOptionList ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
+                      className={showOptionList && selectCoin !== "none" ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
                       onClick={() => {
                         if (payButton) {
                           return
@@ -671,20 +680,27 @@ const VotingPaymentCopy: React.FC<{
                     {showOptionList && (
                       <ul className="pay-select-options"
                         style={{
-                          height: `${window.screen.width > 767 ? "200px" : "200px"}`
+                          height: "200px",
+                          // top: `${!payamount? -200 : ""}` 
+                          top: `${selectCoin == "none" ? "-200px" : ""}`,
+                          borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
+                          borderTop: "none",
+                          border: " 1px solid #cab7ff",
                         }}
                       >
                         {coinsList.map((option: any, index: number) => {
                           return (
                             <li
+                              style={{
+                              
+                              }}
                               className="pay-custom-select-option"
                               data-name={option.name}
                               key={option.id}
                               onClick={async () => {
                                 setSelectCoin(option.name)
                                 setCoinInfo(option)
-                                setShowOptionList(!showOptionList)
-                                
+                                setShowOptionList(!showOptionList)                                  
                                 // window.scrollTo({ top: 1000, behavior: 'smooth' });
                                 // await mybtn("disconnect", "true").then(() => {
                                 //   setConnectOrNot(!connectOrNot)
@@ -721,14 +737,16 @@ const VotingPaymentCopy: React.FC<{
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" && 
 
-                  <div className="m-auto mb-5 mt-5"
+                  <div className={`${extraPer > 0 ? "mt-5" : "mt-2"} m-auto mb-5 `}
+                      
                     style={{                      
                       width: `${window.screen.width > 767 ? "49%" : "100%"}`,
-                      zIndex: 2
+                      zIndex: 2,
+                      
                     }}
                   >
                     <div
-                      className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center mt-5 mb-3"} d-flex`}
+                      className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center  mb-3"} d-flex`}
                     >
                       <div
                         className="d-flex justify-content-center"
