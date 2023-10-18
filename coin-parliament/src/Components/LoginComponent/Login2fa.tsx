@@ -109,15 +109,23 @@ const Login2fa = ({
           "token": token,
           "userType": "USER"
         }
-    });
+      }).then((data) => {
+        console.log(data.data.result, "dataresult");
+        if (data.data.result.status) {
+          window.localStorage.setItem('mfa_passed', 'false')
+          setLogin(false)
+          setMfaLogin(false)
+        }
+        else {
+          showToast(data.data.result.message, ToastType.ERROR);
+        }
+      });
+        
       // console.log(response.data);
       // const newUserInfo = {
       //   ...(userInfo as UserProps),
       //   mfa: true as boolean,
-      // };
-      window.localStorage.setItem('mfa_passed','false')
-    setLogin(false)
-    setMfaLogin(false)
+      // };    
     } catch (error:any) {
       showToast(
         error.response.data.message,ToastType.ERROR

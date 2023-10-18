@@ -116,14 +116,22 @@ const GoogleAuthenticator = () => {
           token: token,
           userType: "USER",
         }
+      }).then((data) => {
+        console.log(data.data.result,"dataresult");
+        if (data.data.result.status)
+        {
+          const newUserInfo = {
+            ...(userInfo as UserProps),
+            mfa: true as boolean,
+          };
+          onSubmit(newUserInfo);
+          showToast("2FA enabled successfully.", ToastType.SUCCESS);
+        }
+        else {
+          showToast(data.data.result.message, ToastType.ERROR);    
+        }
       });
-      console.log(response.data);
-      const newUserInfo = {
-        ...(userInfo as UserProps),
-        mfa: true as boolean,
-      };
-      onSubmit(newUserInfo);
-      showToast("2FA enabled successfully.", ToastType.SUCCESS);
+      
     } catch (error: any) {
       showToast(error.response.data.message, ToastType.ERROR);
       console.error(error.response);
