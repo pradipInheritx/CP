@@ -104,9 +104,11 @@ const Login2fa = ({
   const verifyOtp = async (token:string) => {
     try {
       const response = await axios.post(otpurl, {
-        "userId": userInfo?.uid,
-        "token": token,
-        "userType": "USER"
+        data: {
+          "userId": userInfo?.uid,
+          "token": token,
+          "userType": "USER"
+        }
     });
       // console.log(response.data);
       // const newUserInfo = {
