@@ -25,7 +25,7 @@ import { httpsCallable } from "firebase/functions";
 import { V2EParliament, functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { userConverter, UserProps } from "./User";
+import User, { userConverter, UserProps } from "./User";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { showToast } from "../../App";
@@ -333,21 +333,14 @@ export const SignupRegular = async (
       payload.email,
       payload.password
     );
-
     // @ts-ignore
-    await sendEmailVerification(auth?.currentUser)/* .then((data) => {
+    await sendEmailVerification(auth?.currentUser).then((data) => {
       showToast("Successfully sent  verification link on your mail");
-    }); */
-
+    });
     const referUser = await getReferUser(V2EParliament.firestore());
     await saveUserData((auth?.currentUser?.uid || ''), db, {
-      // ...userDefaultData,
       firstTimeLogin: true,
       parent: referUser?.uid,
-      // email: auth?.currentUser?.email,
-      // displayName: (auth.currentUser?.displayName || ''),
-      // avatar: (auth.currentUser?.photoURL || ''),
-      // uid: auth?.currentUser?.uid,
     });
     // showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
@@ -367,14 +360,15 @@ export const SignupRegular = async (
 
 export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
   SignupRegular(payload, callback).then(async (res) => {
-    await SignupRegularForCoinParliament(payload, callback, /* userDefaultData */);
-    await SignupRegularForSportParliament(payload, callback, /* userDefaultData */);
-    await SignupRegularForStockParliament(payload, callback, /* userDefaultData */);
-    await SignupRegularForVotingParliament(payload, callback, /* userDefaultData */);
+    await SignupRegularForCoinParliament(payload, callback);
+    await SignupRegularForSportParliament(payload, callback);
+    await SignupRegularForStockParliament(payload, callback);
+    await SignupRegularForVotingParliament(payload, callback);
   }).catch(() => {
 
   });
 }
+
 export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
   payload: SignupPayload,
   callback: Callback<AuthUser>,

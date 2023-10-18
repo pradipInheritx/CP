@@ -14,7 +14,6 @@ const ProtectedRoutes = () => {
     useEffect(() => {
         auth.onAuthStateChanged(function (user) {
             if (user) {
-                console.log(user, 'auth pk');
 
                 setCheckAuth(true);
                 setUser(user);
