@@ -42,7 +42,7 @@ export const SignupRegularForVotingParliament = async (
         }
         // showToast("User register successfully.", ToastType.SUCCESS);
         //@ts-ignore
-        callback.successFunc(userCredential.user);
+        // callback.successFunc(userCredential.user);
         return true;
     } catch (e) {
         console.log('voting error');
