@@ -130,7 +130,10 @@ export const social = {};
 
 
 export const generateGoogle2faUrl = `https://us-central1-sportparliament-1f167.cloudfunctions.net/generateGoogleAuthOTP`;
+// export const generateGoogle2faUrl = `https://us-central1-sportparliament-1f167.cloudfunctions.net/generateGoogleAuthOTP`;
 export const otpurl = `https://us-central1-sportparliament-1f167.cloudfunctions.net/verifyGoogleAuthOTP`;
+
+
 
 
 
