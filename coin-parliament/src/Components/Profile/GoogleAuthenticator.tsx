@@ -13,7 +13,6 @@ import { getAuth, updateProfile } from "firebase/auth";
 import infobtn from '../../assets/images/info-btn.png'
 import AppStore from '../../assets/images/AppStore.png'
 import GooglePlay from '../../assets/images/GooglePlay.png'
-// import BigLogo from "../../assets/svg/logoiconx2.png";
 import {
   multiFactor,
   PhoneAuthProvider,
@@ -23,7 +22,7 @@ import {
 import { texts } from "../LoginComponent/texts";
 import axios from "axios";
 import QRCode from "qrcode";
-import BigLogo from "../../assets/svg/spblue.svg";
+import BigLogo from "../../assets/svg/spblue.png";
 import { generateGoogle2faUrl, otpurl } from "../../common/consts/contents";
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
@@ -73,9 +72,7 @@ const GoogleAuthenticator = () => {
   const [secretKey, setSecretKey] = useState<string>("");
   const auth = getAuth();
   const [copied, setCopied] = useState(false);
-
-
-  const createPost = async (id: string) => {
+  useEffect(() => {
     // @ts-ignore
     if (userInfo?.googleAuthenticatorData?.otp_auth_url) {
       // @ts-ignore
@@ -88,14 +85,15 @@ const GoogleAuthenticator = () => {
       );
       return
     }
-    const AllData = {
+  }, [JSON.stringify(userInfo)]);
+
+  const createPost = async (id: string) => {
+    const data = {
       userId: id,
       userType: "USER",
     };
-
-
     try {
-      const response = await axios.post(generateGoogle2faUrl, { data: AllData });
+      const response = await axios.post(generateGoogle2faUrl, { data: data });
       console.log(response.data);
       setSecretKey(response.data.result.base32);
       QRCode.toDataURL(response.data.result.otpauth_url, { color: { dark: "#7565f7", light: "#ffffff" } }
@@ -118,14 +116,22 @@ const GoogleAuthenticator = () => {
           token: token,
           userType: "USER",
         }
+      }).then((data) => {
+        console.log(data.data.result,"dataresult");
+        if (data.data.result.status)
+        {
+          const newUserInfo = {
+            ...(userInfo as UserProps),
+            mfa: true as boolean,
+          };
+          onSubmit(newUserInfo);
+          showToast("2FA enabled successfully.", ToastType.SUCCESS);
+        }
+        else {
+          showToast(data.data.result.message, ToastType.ERROR);    
+        }
       });
-      console.log(response.data);
-      const newUserInfo = {
-        ...(userInfo as UserProps),
-        mfa: true as boolean,
-      };
-      onSubmit(newUserInfo);
-      showToast("2FA enabled successfully.", ToastType.SUCCESS);
+      
     } catch (error: any) {
       showToast(error.response.data.message, ToastType.ERROR);
       console.error(error.response);
@@ -133,7 +139,6 @@ const GoogleAuthenticator = () => {
   };
 
   // console.log('user',userInfo,u)
-  console.log(userInfo, "!userInfo?.mfa")
   useEffect(() => {
     if (!userInfo?.mfa) createPost(userInfo?.uid as string);
     return () => setCopied(false);
@@ -284,7 +289,7 @@ const GoogleAuthenticator = () => {
                               <li>Scan the QR code or type in the code manually on your mobile device</li>
                               <li>Write down or save the secret code in case you loss your device.</li>
                               <li>Do not ever share your secret code with anyone. We will never ask for your secret code.</li>
-                              {/* <li>Do not post or share your password or send your password to others by email.</li> */}
+                               
                             </ul>
                           </div>
                         </div>
@@ -322,7 +327,7 @@ const GoogleAuthenticator = () => {
                             >
 
                               <img
-                                src={BigLogo}
+                                  src={BigLogo}
                                 alt="QR code for Google Authenticator"
                                 style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
                               />
