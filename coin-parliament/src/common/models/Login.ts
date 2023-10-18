@@ -280,7 +280,6 @@ export const SignupRegular = async (
       payload.email,
       payload.password
     );
-
     // @ts-ignore
     await sendEmailVerification(auth?.currentUser).then((data) => {
       showToast("Successfully sent  verification link on your mail");

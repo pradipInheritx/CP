@@ -34,6 +34,7 @@ import Swal from "sweetalert2";
 import RewardHistory from "./rewardHistory";
 import ShareModal from "Components/shareModal";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
+import { LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
 
 
 const MyBadge = styled(Badge)`
@@ -98,12 +99,13 @@ const Mine = () => {
   };
   const handleCardShow = () => setCardModalShow(true);
 
-  const currentCMP = parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')/* useContext(CurrentCMPContext) */;
-  const handleShareModleClose = () => setShareModalShow(false);
+  const currentCMP = useContext(CurrentCMPContext);
   const handleShareModleShow = () => setShareModalShow(true);
   const voteDetails = useContext(VoteContext);
-  const setVoteDetails = useContext(VoteDispatchContext);
-
+  const setLessTimeVoteDetails = useContext(LessTimeVoteDetailDispatchContext);
+  useEffect(() => {
+    setLessTimeVoteDetails(undefined); // we don't need to called vote API when user is in profile page
+  }, []);
   // @ts-ignore 
   const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
@@ -115,7 +117,7 @@ const Mine = () => {
   var urlName = window.location.pathname.split('/');
   const ProfileUrl = urlName.includes("profile")
 
-  console.log(userInfo?.voteStatistics?.score, 'user score', currentCMPDiff, 'currentCMPDiff ', prevCMPDiff, 'prevCMPDiff', currentCMP, score, 'score', remainingCMP, 'pkkkk');
+  console.log(currentCMP, 'hello');
 
   useEffect(() => {
     // @ts-ignore
