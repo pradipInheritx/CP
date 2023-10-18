@@ -23,7 +23,7 @@ export const SignupRegularForVotingParliament = async (
         );
         if (auth?.currentUser) {
             await sendEmailVerification(auth?.currentUser).then((data) => {
-                showToast("Successfully sent  verification link on your mail");
+                // showToast("Successfully sent  verification link on your mail");
             });;
             const referUser = await getReferUser(votingParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
@@ -40,7 +40,7 @@ export const SignupRegularForVotingParliament = async (
         if (auth?.currentUser?.email) {
             await storeAllPlatFormUserId(auth?.currentUser?.email);
         }
-        showToast("User register successfully.", ToastType.SUCCESS);
+        // showToast("User register successfully.", ToastType.SUCCESS);
         //@ts-ignore
         callback.successFunc(userCredential.user);
         return true;
