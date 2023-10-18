@@ -81,8 +81,8 @@ const Login2fa = ({
   const [copied, setCopied] = useState(false)
 
 
-  const url = ` https://us-central1-votingparliament.cloudfunctions.net/generateGoogleAuthOTP`
-  const otpurl = ` https://us-central1-votingparliament.cloudfunctions.net/verifyGoogleAuthOTP`
+  const url = `https://us-central1-votingparliament.cloudfunctions.net/generateGoogleAuthOTP`
+  const otpurl = `https://us-central1-votingparliament.cloudfunctions.net/verifyGoogleAuthOTP`
 
   // const createPost = async (id:string) => {
   //   const data ={

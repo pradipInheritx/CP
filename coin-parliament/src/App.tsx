@@ -6,7 +6,7 @@ import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, sendEmailVerification, User } from "firebase/auth";
 import {
   Link,
   Route,
@@ -189,6 +189,7 @@ function App() {
       }
     }
   }
+  
   useEffect(() => {
     window.scrollTo({
       top: 0,
