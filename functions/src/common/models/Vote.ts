@@ -156,7 +156,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           userId,
           direction: getVoteData?.direction,
           timeframe: getVoteData?.timeframe,
-          coin: `${coin1.substring(0, 3).toUpperCase()}-${coin2.substring(0, 3).toUpperCase()}`,
+          coin: `${returnShortCoinValue(coin1.substring(0, 3).toUpperCase())}-${returnShortCoinValue(coin2.substring(0, 3).toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score
         }
@@ -175,7 +175,7 @@ export const getResultAfterVote = async (requestBody: any) => {
           direction: getVoteData?.direction,
           userId,
           timeframe: getVoteData?.timeframe,
-          coin: `${coin1.substring(0, 3).toUpperCase()}`,
+          coin: `${returnShortCoinValue(coin1.substring(0, 3).toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
           score: getSuccessAndScore?.score
         }
@@ -185,6 +185,25 @@ export const getResultAfterVote = async (requestBody: any) => {
     console.info("ERR:", error);
     return { status: false, message: "Something went wrong in calculation", error }
   }
+}
+
+export const returnShortCoinValue = async (getCoin: any) => {
+  const coinValueFor3Slice = ["BTC", "ETH", "SOL", "BNB", "UNI", "XRP", "LTC", "CRO", "TRX", "DOT", "CLM", "VET", "EOS"];
+  const getIndexFrom3Slice = coinValueFor3Slice.findIndex((item: any) => item === getCoin);
+  if (getIndexFrom3Slice != -1) {
+    return coinValueFor3Slice[getIndexFrom3Slice]
+  }
+  const coinValueFor4Slice = ["DOGE", "SHIB", "CAKE", "SAND", "MANA", "LINK"];
+  const getIndexFrom4Slice = coinValueFor4Slice.findIndex((item: any) => item === getCoin);
+  if (getIndexFrom4Slice != -1) {
+    return coinValueFor4Slice[getIndexFrom4Slice]
+  }
+  const coinValueFor5Slice = ["MATIC", "HBARA"];
+  const getIndexFrom5Slice = coinValueFor5Slice.findIndex((item: any) => item === getCoin);
+  if (getIndexFrom5Slice != -1) {
+    return coinValueFor5Slice[getIndexFrom5Slice]
+  }
+  return getCoin;
 }
 
 export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) => {
