@@ -358,6 +358,44 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
   }
 });
 
+exports.verifyUserEmail = functions.https.onCall(async (data) => {
+  try {
+    const { uid, email } = data;
+    if (!uid || !email) {
+      return {
+        status: false,
+        message: "UserId and email must be required.",
+        result: null,
+      }
+    }
+
+    const userDataUpdate = await admin.auth().updateUser(uid, {
+      emailVerified: true,
+    }).then((userRecord) => {
+      return userRecord.toJSON()
+    }).catch((error) => {
+      return {
+        status: false,
+        message: "Error while verify the email API ",
+        result: error,
+      };
+    });
+
+    return {
+      status: true,
+      message: "User email verified successfully",
+      result: userDataUpdate,
+    };
+
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error while verify the email API ",
+      result: error,
+    };
+  }
+});
+
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
   return password === "CPVI2022!";
