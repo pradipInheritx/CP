@@ -1111,72 +1111,6 @@ function App() {
                                 }
                               />
                             )} */}
-<<<<<<< HEAD
-                          {!firstTimeLogin && (
-                            <>
-                              {!user && login && !mfaLogin && (
-                                <LoginAndSignup
-                                  {...{
-                                    authProvider: LoginAuthProvider,
-                                    loginAction: LoginRegular,
-                                    signupAction: SignupRegular,
-                                  }}
-                                />
-                              )}
-                              {(user || userInfo?.uid) && login && (
-                                <Login2fa
-                                  setLogin={setLogin}
-                                  setMfaLogin={setMfaLogin}
-                                />
-                              )}
-                              {!login &&
-                                !firstTimeAvatarSlection &&
-                                !firstTimeFoundationSelection && (
-                                  <>
-                                    <Container
-                                      fluid
-                                      style={{
-                                        background:
-                                          pathname == "/" ? "#160133" : "",
-                                        whiteSpace: "normal",
-                                        wordWrap: "break-word",
-                                        minHeight:
-                                          window.screen.width < 979
-                                            ? "89vh"
-                                            : "92vh",
-                                        // padding: `${pathname === "/" ? 120 : 84}px 0 109px`,
-                                        padding: `${
-                                          pathname === "/" ? 160 : 120
-                                        }px 0 0`,
-                                      }}
-                                    >
-                                    <div className='pwaPopup'  style={{display:pwaPopUp}}>
-                                        <span>{texts.InstallCoinParliament}</span>
-                                    <button
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={onClick}
-      style={{zIndex:99999}}
-    >
-      Install
-    </button>
-    <span
-      className="link-button"
-      id="setup_button"
-      aria-label="Install app"
-      title="Install app"
-      onClick={e=>setPwaPopUp('none')}
-                                          style={{zIndex:99999,position:'absolute', top:'5px',right:'10px',fontSize:'18px',cursor: "pointer"}}
-    >
-      x
-    </span>
-                                      </div>
-                                      <Routes>
-                                        <Route path='/' element={<Home />} />
-                                        {/* <Route
-=======
                             {!firstTimeLogin && (
                               <>
                                 {!user && login && !mfaLogin && (
@@ -1247,7 +1181,6 @@ function App() {
                                           />
 
                                           {/* <Route
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
                                           path='coins'
                                           element={<CoinMain />}
                                         />

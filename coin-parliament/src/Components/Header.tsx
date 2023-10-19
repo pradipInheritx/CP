@@ -515,7 +515,7 @@ const Header = ({
                 )}
                 <div className='mt-2'>
                   <Title style={{ width: pathname === "/" ? "" : "" }}>
-                    {/* {mounted ? title : ""} */}
+                    {mounted ? title : ""}
                   </Title>
                 </div>
               </div>
@@ -629,10 +629,8 @@ const Header = ({
                 ) : (
                   <div className='w-100'></div>
                 )}
-                {/* <Navbar.Brand as={Link} to='/'>
+                <Navbar.Brand as={Link} to='/'>
                   <img src={BigLogo} alt='' />
-<<<<<<< HEAD
-=======
                 </Navbar.Brand>
                 {/* <Navbar.Brand
                   style={{
@@ -640,7 +638,6 @@ const Header = ({
                     width: "50px"
                   }}
                 >
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
                 </Navbar.Brand> */}
               </div>
             </div>

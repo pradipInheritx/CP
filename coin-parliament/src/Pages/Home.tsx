@@ -53,50 +53,13 @@ const Home = () => {
           <HomeContainer width={width} className='mb-4 p-0 '>
             {!(login || firstTimeLogin) && (
               <>
-<<<<<<< HEAD
-                <div
-                  style={{
-                    width: width && width > 969 ? "100%" : "100%",
-                    height:
-                      width && width > 969
-                        ? "550px"
-                        : '450px',
-                     marginTop: width && width > 969 ? -50 :65,
-                    // marginTop:'120px',
-                    position: "absolute",
-                }}
-                >
-                {/* <Image
-=======
                 <Image
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
                   src={src}
                   style={{
                     width: width && width > 969 ? "100%" : "100%",
                     height:
                       width && width > 969
                         ? "auto"
-<<<<<<< HEAD
-                        : 'auto',
-                     marginTop: width && width > 969 ? -50 :65,
-                    // marginTop:'120px',
-                    position: "absolute",
-                  }}
-                  /> */}
-                  </div>
-                {/* {window.screen.width>768 && <h2
-                    style={{ zIndex: 0, position: "absolute",top:'130px' }}
-                    className=' d-block'
-                  >
-                    <strong
-                      className='text-uppercase'
-                      style={{ fontSize: "45px", fontWeight: "700" }}
-                    >
-                      {translate("Vote to Earn")}
-                    </strong>
-                    
-                  </h2>}
-=======
                         : "auto",
                     marginTop: width && width > 969 ? "0" : "80px",
                     // marginTop:'120px',
@@ -104,45 +67,23 @@ const Home = () => {
                   }}
                 />
 
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
                 <div
                   className='w-100 '
                   style={{
                     marginTop: window.screen.width > 979 ? "150px" : "-48px",
                   }}
                 >
-<<<<<<< HEAD
-                  
-                  
 
-                 {window.screen.width <768 && <h2
-                    style={{ zIndex: 0, position: "relative" }}
-                    className='d-xl-none d-block'
-                  >
-                    <strong
-                      className='text-uppercase'
-                      style={{ fontSize: "24px", fontWeight: "700" }}
-                    >
-                      {translate("Vote to Earn")}
-                    </strong>
-                  </h2>}
-                </div> */}
-                    {/* <TextContainer className="mt-2" style={{textTransform:'none',fontWeight:'400'}}>
-                  <p>{translate("Make better investment decisions with the world’s first social indicator")}</p>
-                </TextContainer> */}
-                    {/* <span className="ms-xl-2">{translate("Crypto & NFT")}</span> */}
-=======
-
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
 
                   {/* <TextContainer className="mt-2" >
                   <p>{translate("Make better investment decisions with the world’s first social voting indicator")}</p>
                 </TextContainer> */}
+                </div>
               </>
             )}
           </HomeContainer>
         </div>
-       <div className='pb-4 mx-0'>
+        <div className='mb-4 mx-0'>
           <TextContainer
             className='mt-2 d-xl-none'
             style={{
@@ -171,36 +112,11 @@ const Home = () => {
                 zIndex: 0,
                 fontWeight: "400",
                 position: "relative",
-<<<<<<< HEAD
-                marginTop: window.screen.width > 767 ?"260px":"120px",
-=======
                 marginTop: "130px",
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
               }}
 
               className="mb-4"
             >
-<<<<<<< HEAD
-              {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
-            </H2>
-          </TextContainer>
-          {window.screen.width > 979 && (
-            <H2
-              style={{
-                // zIndex: 1,
-                fontWeight: "400",
-                position: "relative",
-                // marginTop: "200px",
-                marginTop: window.screen.width > 767 ?"260px":"120px",
-                fontSize: "30px",
-              }}
-            >
-              {translate("HERE'S YOUR CHANCE TO VOTE, IMPACT & EARN! ")}
-            </H2>
-          )}
-
-         
-=======
               {texts.HereYourChance}
               {/* {translate("Here's your chance to VOTE, IMPACT & EARN! ")} */}
             </H2>
@@ -248,7 +164,6 @@ const Home = () => {
               }
             }}
           /> */}
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
           {/* <Coins
             onFavClick={async (...args) => {
               if (user) {
@@ -260,28 +175,7 @@ const Home = () => {
               }
             }}
           /> */}
-<<<<<<< HEAD
-        { window.screen.width > 979 &&<H2 className='mt-3'style={{margin:'auto',textAlign:'center', fontSize:'2.5rem'}}>COMING SOON</H2>}
-
-
-
-          {window.screen.width < 979&&<H2 className='mt-3' style={{margin:'auto',textAlign:'center',fontSize:'1.5rem'}}>COMING SOON</H2>}
-        </div>
-        {/* <div className='mb-4 mx-0'>
-          <H2
-            style={{
-              zIndex: 1,
-              fontWeight: "400",
-              position: "relative",
-              marginBottom: "20px",
-            }}
-          >
-            {translate("")}
-          </H2>
-          <Pairs
-=======
           <PairsCopy
->>>>>>> 714adc03f54b44e65218d6d6a70ca611d653c470
             onFavClick={async (...args) => {
               if (user) {
                 await calcFavorites(...args);
