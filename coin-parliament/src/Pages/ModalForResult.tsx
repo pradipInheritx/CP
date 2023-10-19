@@ -14,6 +14,7 @@ import AppContext from '../Contexts/AppContext';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { listData } from '../Components/Pairs/utils';
 import UserContext from '../Contexts/User';
+import { VoteButton } from '../common/utils/SoundClick';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -24,9 +25,9 @@ const CoinContainer = styled.div`
 
 const CoinVoteTimer = styled.span`
   // font-size: 14px;
-  // line-height: 14px;
   color: #6352e8;
-`;
+  `;
+// line-height: 14px;
 
 const LineImg = styled.div`
   // height: 60px;
@@ -49,33 +50,34 @@ interface ChildComponentProps {
   setShowPopUp?: any;
 }
 
-const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp}) => {
-// function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp }) => {
+  // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
   const { user } = useContext(UserContext);
-  const { setLogin } = useContext(AppContext);
+  const { setLogin, } = useContext(AppContext);
   const navigate = useNavigate();
-//   const setVoteDetails = useContext(VoteDispatchContext);
-//   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
-useEffect(() => {
+  //   const setVoteDetails = useContext(VoteDispatchContext);
+  //   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
+  useEffect(() => {
     if (showPopUp) {
-      handleShow();    
+      handleShow();
     }
-}, [showPopUp])
+    VoteButton(true)
+  }, [showPopUp])
 
   const [show, setShow] = useState(false);
   // const setVoteDetails = useContext(VoteDispatchContext);
   const handleShow = () => setShow(true);
   const handleClose = () => {
     // console.log("i am clickable")
-  setShowPopUp(false)
+    setShowPopUp(false)
     setShow(false);
   };
   let params = useParams();
-  const {id} = params;
-// @ts-ignore
+  const { id } = params;
+  // @ts-ignore
   const cardData = { ...listData[id] }
   return (
-    <div>      
+    <div>
       <Modal show={show} onHide={handleClose}
         backdrop="static"
         size="lg"
@@ -94,115 +96,114 @@ useEffect(() => {
             {/* {type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""} */}
           </div>
           {/* <div className="d-flex justify-content-end" > */}
-            <button className="btn-close " aria-label="Close" 
-              style={{
-              cursor:"pointer"
-              }}
-            onClick={() => {
-              handleClose()            
+          <button className="btn-close " aria-label="Close"
+            style={{
+              cursor: "pointer"
             }}
-            ></button>
+            onClick={() => {
+              handleClose()
+            }}
+          ></button>
           {/* </div> */}
         </div>
-        <Modal.Body>          
-          
-              <div className=' w-100 '
-              // style={{boxShadow:" rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}
-              >
-                <div
-                  // className={`${window.screen.width < 767 ? "" : ""}`}
-                  className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}
+        <Modal.Body>
 
-                >
-                  <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
+          <div className=' w-100 '
+          // style={{boxShadow:" rgba(100, 100, 111, 0.2) 0px 7px 29px 0px"}}
+          >
+            <div
+              // className={`${window.screen.width < 767 ? "" : ""}`}
+              className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}
+
+            >
+              <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
                   winner={true}>
-                      <div className=" ">
-                        <div className='p-2'>
-                          {/* @ts-ignore */}                                          
-                          <img src={cardData.img1} alt="" width="50px" />
-                        </div>
-                        <div className="" style={{ lineHeight: '20px' }}>
-                      <div                        
-                      >             
+                  <div className=" ">
+                    <div className='p-2'>
+                      {/* @ts-ignore */}
+                      <img src={cardData.img1} alt="" width="50px" />
+                    </div>
+                    <div className="" style={{ lineHeight: '20px' }}>
+                      <div
+                      >
                         {/* @ts-ignore */}
-                            <strong>{cardData.name1}</strong>
-                      </div>  
+                        <strong>{cardData.name1}</strong>
+                      </div>
                       <div>
-                            {/* @ts-ignore */}
-                            <strong>{cardData.price1}</strong>
-                          </div>
-                        </div>
+                        {/* @ts-ignore */}
+                        {/* <strong>{cardData.price1}</strong> */}
                       </div>
-                    </CoinContainer>
+                    </div>
                   </div>
+                </CoinContainer>
+              </div>
 
 
-                  <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
-                    <Col className="">
-                      <div className="">
-                        <LineImg>
-                          <Line />
-                        </LineImg>
-                      </div>                      
-                      <div className="">
-                        <div className='d-flex  justify-content-center'>                      
-                        </div>
-                        <div style={{ minHeight: "100%" }}>
-                          <PairsVoteVs>                            
-
-                          </PairsVoteVs>
-                        </div>
-
-                      </div>
-                    </Col>
+              <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
+                <Col className="">
+                  <div className="">
+                    <LineImg>
+                      <Line />
+                    </LineImg>
                   </div>
+                  <div className="">
+                    <div className='d-flex  justify-content-center'>
+                    </div>
+                    <div style={{ minHeight: "100%" }}>
+                      <PairsVoteVs>
 
-                  <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
+                      </PairsVoteVs>
+                    </div>
+
+                  </div>
+                </Col>
+              </div>
+
+              <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
-                  winner={false}                    
+                  winner={false}
                 >
-                      <div className="">
-                        <div className='p-2'>                          
-                            <img src={cardData.img2} alt="" width="50px" />
-                        </div>
-                        <div className="" style={{ lineHeight: '20px' }}>
-                          <div>
-                            {/* @ts-ignore */}
-                            <strong>{cardData.name2}</strong>
-                          </div>
-                          <div>
-                            {/* @ts-ignore */}
-                            <strong>{cardData.price2}</strong>
-                          </div>
-                        </div>
+                  <div className="">
+                    <div className='p-2'>
+                      <img src={cardData.img2} alt="" width="50px" />
+                    </div>
+                    <div className="" style={{ lineHeight: '20px' }}>
+                      <div>
+                        {/* @ts-ignore */}
+                        <strong>{cardData.name2}</strong>
                       </div>
-                    </CoinContainer>
+                      <div>
+                        {/* @ts-ignore */}
+                        {/* <strong>{cardData.price2}</strong> */}
+                      </div>
+                    </div>
                   </div>
-            </div>    
+                </CoinContainer>
+              </div>
+            </div>
             <div style={{ minHeight: "100%" }} className=" text-center">
-                  <div className=''
-                    style={{ fontSize: "12px" }}
-                  >
-                    <p>VOTE RESULT</p>
-                    <p>
-                      {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
-                      {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
-                    </p>
-                    <p>Vote impact : LOW </p>
-                  </div>
-                  <CoinVoteTimer>
-                    {/* {vote?.valueExpirationTime && vote?.score && ( */}
-                      <>
-                        {/* <strong>You progressed - {2.5}</strong> <span>CMP</span> */}
-                      </>
+              <div className=''
+                style={{ fontSize: "12px" }}
+              >
+                <p>VOTE RESULT</p>
+                <p>
+                  {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
+                  {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
+                </p>
+                <p>Vote impact : HIGH </p>
+              </div>
+              <CoinVoteTimer>
+                {/* {vote?.valueExpirationTime && vote?.score && ( */}
+                <>
+                  {/* <strong>You progressed - {2.5}</strong> <span>CMP</span> */}
+                </>
 
-                    {/* )} */}
-                  </CoinVoteTimer>
-                </div>
+                {/* )} */}
+              </CoinVoteTimer>
+            </div>
 
-            <Col className="text-center">
-                  {/* ${vote?.id} - */}
+            {/* <Col className="text-center">                  
                   <span className="sm_txt">
                     {"123213498ASKDJ"} {' '}
                     {window.screen.width < 768 && <br />}
@@ -213,20 +214,20 @@ useEffect(() => {
                      ${moment(
                       new Date()
                     ).format("HH:mm")}`}</span>
-                </Col>
+                </Col> */}
 
-            
-          </div>  
+
+          </div>
           {!user?.uid && <div className='d-flex justify-content-center mt-2'>
             <Buttons.Primary
               onClick={() => {
                 setLogin(true)
-            }}
+              }}
             >
-            login
-          </Buttons.Primary>
+              Join The Parliament
+            </Buttons.Primary>
           </div>}
-        </Modal.Body>      
+        </Modal.Body>
       </Modal>
     </div>
 
