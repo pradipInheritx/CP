@@ -128,9 +128,9 @@ import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
 // import { handleSoundClick } from "./common/utils/SoundClick";
-// import createFastContext from "./hooks/createFastContext";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import CardShow from "./Components/Pairs/CardShow";
+// import createFastContext from "./hooks/createFastContext";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
