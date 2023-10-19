@@ -81,7 +81,8 @@ import {
   sendNotificationForFollwersFollowings,
   sendCustomNotificationOnSpecificUsers,
   checkUserStatusIn24hrs,
-  checkInActivityOfVotesAndSendNotification
+  checkInActivityOfVotesAndSendNotification,
+  TitleUpgradeNotificationLogic_Testing
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
@@ -702,6 +703,34 @@ exports.checkTitleUpgrade24Hour = functions.pubsub
       const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
       await checkUserStatusIn24hrs(nowTime, yesterdayTime)
       await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
+      console.log("---End checkTitleUpgrade24Hour -------");
+    }
+  );
+
+
+exports.checkTitleUpgrade24Hour = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(
+    async () => {
+      console.log("---Start checkTitleUpgrade24Hour -------");
+      const date = new Date();
+      const nowTime = date.getTime();
+      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+      await checkUserStatusIn24hrs(nowTime, yesterdayTime)
+      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
+      console.log("---End checkTitleUpgrade24Hour -------");
+    }
+  );
+
+exports.checkTitleUpgrade24Hour = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(
+    async () => {
+      console.log("---Start checkTitleUpgrade24Hour -------");
+      const date = new Date();
+      const nowTime = date.getTime();
+      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+      TitleUpgradeNotificationLogic_Testing(nowTime, yesterdayTime);
       console.log("---End checkTitleUpgrade24Hour -------");
     }
   );
