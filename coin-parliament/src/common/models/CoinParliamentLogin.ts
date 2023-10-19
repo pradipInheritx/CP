@@ -1,4 +1,4 @@
-import { SignupPayload, validateSignup } from "./Login";
+import { SignupPayload, validateSignup, verifySportEmail } from "./Login";
 import firebaseCoinParliament, { auth, db } from "firebaseCoinParliament"
 
 import { Callback } from "./utils";
@@ -6,6 +6,7 @@ import { User, createUserWithEmailAndPassword, sendEmailVerification } from "fir
 import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
 import coinParliament from "firebaseCoinParliament";
+import axios from "axios";
 export const SignupRegularForCoinParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -20,7 +21,7 @@ export const SignupRegularForCoinParliament = async (
             payload.password
         );
         if (auth?.currentUser) {
-            await sendEmailVerification(auth?.currentUser);
+            // await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(coinParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
                 ...userData,
@@ -28,6 +29,7 @@ export const SignupRegularForCoinParliament = async (
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
+            await verifySportEmail(auth?.currentUser?.uid, (auth?.currentUser?.email || ''), (process.env.REACT_APP_COIN_API || ''));
         } else {
             console.log('coin', auth);
         }

@@ -161,7 +161,7 @@ function Home() {
                       <p className="card-text">{sites[key].des}</p>
                       <div className='d-flex mt-4 align-items-center'>
                         <h6 style={{ marginRight: '1em' }}>{sites[key].title}</h6>
-                        <Button  /* disabled={loading === sites[key]?.name} */ onClick={() => window.location.replace(`${sites[key].redirect}`)} >
+                        <Button href={sites[key].redirect} target='_blank' /* disabled={loading === sites[key]?.name} */ /* onClick={() => window.location.replace(`${sites[key].redirect}`)} */ >
                           {(loading === sites[key]?.name) ? <span className='loading'>wait...</span> : 'Visit site'}
                         </Button>
                       </div>

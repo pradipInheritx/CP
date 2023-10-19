@@ -35,6 +35,7 @@ import { SignupRegularForStockParliament } from "./StockParliamentLogin";
 import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 import { SignupRegularForCoinParliament } from "./CoinParliamentLogin";
 import { userDefaultData } from "common/consts/contents";
+import axios from "axios";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -381,6 +382,22 @@ export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
   await SignupRegularForVotingParliament(payload, callback, userData);
 }
 
+export const verifySportEmail = async (uid: string, email: string, domain: string) => {
+  if (uid) {
+    await axios.post(domain + `/verifyUserEmail`, {
+      data: {
+        uid,
+        email
+      }
+    }).then(() => {
+      console.log(domain + ' email verified');
+      return true;
+    }).catch(() => {
+      console.log(domain + ' email verified failed');
+      return false;
+    });
+  }
+}
 
 
 export type SignupPayload = {
