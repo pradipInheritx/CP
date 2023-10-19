@@ -14,6 +14,7 @@ import AppContext from '../Contexts/AppContext';
 import { Prev } from 'react-bootstrap/esm/PageItem';
 import { listData } from '../Components/Pairs/utils';
 import UserContext from '../Contexts/User';
+import { VoteButton } from '../common/utils/SoundClick';
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -52,7 +53,7 @@ interface ChildComponentProps {
 const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp}) => {
 // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
   const { user } = useContext(UserContext);
-  const { setLogin } = useContext(AppContext);
+  const { setLogin, } = useContext(AppContext);
   const navigate = useNavigate();
 //   const setVoteDetails = useContext(VoteDispatchContext);
 //   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
@@ -60,6 +61,7 @@ useEffect(() => {
     if (showPopUp) {
       handleShow();    
     }
+  VoteButton(true)
 }, [showPopUp])
 
   const [show, setShow] = useState(false);
@@ -130,7 +132,7 @@ useEffect(() => {
                       </div>  
                       <div>
                             {/* @ts-ignore */}
-                            <strong>{cardData.price1}</strong>
+                            {/* <strong>{cardData.price1}</strong> */}
                           </div>
                         </div>
                       </div>
@@ -173,7 +175,7 @@ useEffect(() => {
                           </div>
                           <div>
                             {/* @ts-ignore */}
-                            <strong>{cardData.price2}</strong>
+                            {/* <strong>{cardData.price2}</strong> */}
                           </div>
                         </div>
                       </div>
@@ -189,7 +191,7 @@ useEffect(() => {
                       {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
                       {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
                     </p>
-                    <p>Vote impact : LOW </p>
+                    <p>Vote impact : HIGH </p>
                   </div>
                   <CoinVoteTimer>
                     {/* {vote?.valueExpirationTime && vote?.score && ( */}
@@ -201,8 +203,7 @@ useEffect(() => {
                   </CoinVoteTimer>
                 </div>
 
-            <Col className="text-center">
-                  {/* ${vote?.id} - */}
+            {/* <Col className="text-center">                  
                   <span className="sm_txt">
                     {"123213498ASKDJ"} {' '}
                     {window.screen.width < 768 && <br />}
@@ -213,7 +214,7 @@ useEffect(() => {
                      ${moment(
                       new Date()
                     ).format("HH:mm")}`}</span>
-                </Col>
+                </Col> */}
 
             
           </div>  
@@ -223,7 +224,7 @@ useEffect(() => {
                 setLogin(true)
             }}
             >
-            login
+            Join The Parliament
           </Buttons.Primary>
           </div>}
         </Modal.Body>      

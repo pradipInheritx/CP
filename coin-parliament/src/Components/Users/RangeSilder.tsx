@@ -262,6 +262,24 @@ export default function SpeedTest(
 
   const [value, setValue] = useState(50)
 
+  useEffect(() => {
+    const generateRandomNumber = () => {
+      const min = 1;
+      const max = 100;
+      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+      setValue(randomNum);
+    };
+
+    // Generate a random number every second
+    const intervalId = setInterval(generateRandomNumber, 1000);
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+
   const [persentValue, setPersentValue] = useReducer((state: number, action: number) => {
     if (action > 100) {
       return 100;

@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { listData } from './utils';
 import { count } from 'console';
 import RangeSilder from '../Users/RangeSilder';
@@ -86,34 +86,56 @@ cursor:pointer;
 
 
 const VoteButton = styled.div`
-// padding:50px 0px;
+padding: ${window.screen.width > 767 ? "30px 0px" :"30px 15px"} ;
+// border:1px solid red;
+width:100%;
 cursor:pointer;
 display:flex;
 justify-content: center;
 overflow:hidden;
 `;
 
-const VoteDiv = styled.div`
-  max-width: 200px;
-  height: 76px;
-  border:1px solid #6352e8;
-  color:#6352e8;
-  background:"#160133";
+const Option = css`
+  border: ${(props: { borderColor: string; selected: boolean }) =>
+    `1px solid ${props.borderColor}`};
   flex-grow: 1;
   flex-basis: 0;
-  // min-width: 0;
-  box-shadow: 0 3px 6px #00000029;
-  display:flex;
+  min-width: 0;
+  // box-shadow: 0 3px 6px #00000029;
+  box-shadow: rgb(67 47 229) 0px 4px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  transition: all .2s ease;
+
+  `;
+  // & svg g path {
+  //   stroke: ${(props: { borderColor: string; selected: boolean }) =>
+  //   props.selected ? colors[1] : colors[0]};
+  // }
+const VoteDiv = styled.div`
+  ${Option};
+    text-align:center;
+    display:flex;
   flex-direction: column;
   justify-content: center;
-  padding:25px 0px;
-  text-align:center;
-  // & span {
-  //   color:red;
-  // }
-  // & p {
-  //   color:red;
-  // }
+    max-width: 200px;
+  height: 76px;
+    color:#6352e8;
+  flex-direction: column;
+  &:active{
+    position: relative;
+top: 2px;
+  box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
+  }
+  &:disabled {
+    pointer-events: none;  
+    cursor:pointer;
+  }
+  &:not([disabled]) {
+    animation: bull_shake_left 2s ease 2s 3 alternate forwards;    
+  }
+  &:hover {
+  background:#6352E8;
+  color:white;
+ box-shadow: rgb(67 47 229) 0px 4px 1px, rgb(170 164 220) 0px 8px 6px;
 `;
 
 
@@ -125,6 +147,8 @@ function CardShow() {
   const cardData = { ...listData[id] }
   const [ShowSpdometer, setShowSpdometer] = useState(false) 
   const [showPopUp, setShowPopUp] = useState<any>(false) 
+  const [clickedOption1, setClickedOption1] = useState(false);
+  const [clickedOption0, setClickedOption0] = useState(false);
   const [allBUtton, setAllBUtton] = useState<any>([
     {
     time: "15 Sec",
@@ -151,7 +175,7 @@ function CardShow() {
     alldata[index].Active = !active
     setAllBUtton(alldata)
   }
-
+// @ts-ignore
     return (
       <MainDiv className=''
       >
@@ -173,7 +197,7 @@ function CardShow() {
            <ImgName>
             <img src={cardData.img1} alt=""  width={"75px"}/>
              <CoinText>{cardData.name1}</CoinText>
-             <CoinPrice>{cardData.price1}</CoinPrice>
+             {/* <CoinPrice>{cardData.price1}</CoinPrice> */}
           </ImgName>
            <div className="w-25 d-flex flex-column  justify-content-center align-items-center"
               >
@@ -197,7 +221,7 @@ function CardShow() {
            <ImgName>
              <img src={cardData.img2} alt=""  width={"75px"}/>
                 <CoinText>{cardData.name2}</CoinText>
-                <CoinPrice>{cardData.price2}</CoinPrice>
+                {/* <CoinPrice>{cardData.price2}</CoinPrice> */}
               </ImgName>  
               
               <div className='' style={{
@@ -246,16 +270,22 @@ function CardShow() {
             <VoteButton className='mt-3'
               
             >
-              <VoteDiv className='confetti-button svg-button animate'
+              {/* @ts-ignore */}
+              <VoteDiv              
+                className={`${clickedOption1 ? "animate" : ""} confetti-button svg-button`}
               style={{
                borderRadius:"60px 0px 60px 60px"
               }}
                 onClick={() => {                  
-                  setShowSpdometer(true)
+                  setClickedOption1(true);
+                  setTimeout(() => {
+                    setShowSpdometer(true)
+                    setClickedOption1(false)
+                  }, 600);
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false)
-                  }, 15000);
+                  }, 7700);
                 }
                 }
               >
@@ -272,17 +302,27 @@ function CardShow() {
 
                 </div>
               </div>
-              <VoteDiv className='confetti-button svg-button animate'
-              style={{
+              {/* @ts-ignore */}
+              <VoteDiv
+                className={`${clickedOption0 ? "animate" : ""} confetti-button svg-button`}
+                
+                style={{
+                  animation: "bull_shake_right 2s ease 2s 3 alternate forwards",
                  borderRadius:"0px 60px 60px 60px"
               }}
                  onClick={() => {                  
-                  setShowSpdometer(true)
+                  //  setShowSpdometer(true)
+                   setClickedOption0(true);
+                   setTimeout(() => {
+                     setClickedOption0(false)
+                     setShowSpdometer(true)
+                   }, 600
+                   );
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false)
                     console.log("i am working")
-                  }, 15000);
+                  }, 7700);
                 }
                 }
               >
@@ -331,7 +371,7 @@ function CardShow() {
                 position:"relative"
               }}
               >
-                <Countdown date={Date.now() + 15000}
+                <Countdown date={Date.now() + 7000}
                       renderer={({ hours, minutes, seconds, completed }) => {
                         return (
                           <span className="text-uppercase" style={{
