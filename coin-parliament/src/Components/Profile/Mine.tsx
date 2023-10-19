@@ -117,7 +117,7 @@ const Mine = () => {
   var urlName = window.location.pathname.split('/');
   const ProfileUrl = urlName.includes("profile")
 
-  console.log(currentCMP, 'hello');
+  console.log(currentCMPDiff, prevCMPDiff, currentCMP, remainingCMP, 'hello');
 
   useEffect(() => {
     // @ts-ignore
@@ -144,7 +144,10 @@ const Mine = () => {
       handleCardShow();
     }
   }, [inOutReward, showReward, rewardTimer]);
-
+  const remainingRewardRef = useRef<number>(0);
+  useEffect(() => {
+    remainingRewardRef.current = remainingReward;
+  }, [remainingReward]);
   useEffect(() => {
     if (!voteDetails.openResultModal && showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
       setTimeout(() => {
@@ -162,7 +165,7 @@ const Mine = () => {
     var urlName = window.location.pathname.split('/');
 
     const UrlCheck = urlName.includes("profile")
-    if (UrlCheck) {
+    if (UrlCheck && remainingRewardRef.current < 1) {
       Swal.fire({
         html:
           // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
