@@ -29,6 +29,7 @@ import Carousel from "./Carousel";
 import styled from "styled-components";
 import {useWindowSize} from "../../hooks/useWindowSize";
 import {getMaxWidth} from "../Coins/Coins";
+import AppContext from "../../Contexts/AppContext";
 
 const MainDiv = styled.div`
   // border:1px solid red;  
@@ -49,9 +50,8 @@ const MidDiv = styled.div`
     
 `;
 const ChildDiv = styled.div`
-background-color:white;
+
   // border:1px solid green;
-  border-radius:10px;
   width:${window.screen.width<767 ?"70%":"32%"};
   display:flex;
   
@@ -78,7 +78,7 @@ text-align:center;
 `;
 
 const ImgName = styled.div`
-padding:30px 25px 20px 25px;
+padding:30px 25px 10px 25px;
 `;
 
 const PairsCopy = ({
@@ -93,24 +93,36 @@ const PairsCopy = ({
   ) => void;
 }) => {
   const { width = 0 } = useWindowSize();
-  let navigate = useNavigate();
-  
+  let navigate = useNavigate();  
   
 
   return (
     <MainDiv  className="">
-      <MidDiv>
+      <MidDiv >
         {listData && listData.map((items:any,index:number) => {
           return <ChildDiv
-className={`${window.screen.width > 767 ? "mx-1":"mt-3"}`}          
+            
+            className={`${window.screen.width > 767 ? "mx-1" : "mt-3"} d-flex flex-column`}
+            style={{
+              // width:`${window.screen.width < 767 ? "100%" : "32%"}`
+              backgroundColor:"white",
+        borderRadius:"10px"
+            }}
+          >
+            <div
+              className="d-flex justify-content-between"  
+              // style={{
+              //   width:`${window.screen.width < 767 ? "100%" : "32%"}`
+              // }}
             onClick={() => {
-              navigate(`/CardShow/${index}`);
+              navigate(`/CardShow/${index}`);              
               // console.log(`/pairs/${index}`,"url")
           }}
           >
             <div style={{
-              position:"absolute"
-            }}>
+              position: "absolute"              
+            }}            
+            >
             <span className="bi bi-heart" style={{
               color: "#6352e8",
               // padding: "20px",
@@ -124,7 +136,7 @@ className={`${window.screen.width > 767 ? "mx-1":"mt-3"}`}
             <img src={items.img1} alt=""  width={"50px"}/>
              <CoinText>{ items.name1}</CoinText>
           </ImgName>
-           <div className="w-25 d-flex flex-column align-items-center"
+           <div className="w-25 d-flex flex-column align-items-center "
            >
              <div className=""
                style={{
@@ -145,25 +157,24 @@ className={`${window.screen.width > 767 ? "mx-1":"mt-3"}`}
            <ImgName>
              <img src={items.img2} alt="" width={"50px"} />
              <CoinText>{ items.name2}</CoinText>
-          </ImgName>
-        </ChildDiv>
+            </ImgName>                        
+            </div>
+            <div style={{
+              color: "#6352e8"
+            }}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <p>TO VOTE</p>
+              <span
+                className="mx-1"
+                style={{
+                  fontSize: "20px"
+                }}
+              >{">"}</span>
+            </div>
+          </ChildDiv>
         })}
-        {/* <ChildDiv>
-          <div>
-            <img src="" alt="" />
-            <p>Name</p>
-          </div>
-          <div></div>
-          <div></div>
-        </ChildDiv>
-        <ChildDiv>
-          <div>
-            <img src="" alt="" />
-            <p>Name</p>
-          </div>
-          <div></div>
-          <div></div>
-        </ChildDiv> */}
+        
       </MidDiv>
     </MainDiv>
   );

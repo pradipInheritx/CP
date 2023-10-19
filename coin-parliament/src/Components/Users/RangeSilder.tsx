@@ -262,6 +262,24 @@ export default function SpeedTest(
 
   const [value, setValue] = useState(50)
 
+  useEffect(() => {
+    const generateRandomNumber = () => {
+      const min = 1;
+      const max = 100;
+      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+      setValue(randomNum);
+    };
+
+    // Generate a random number every second
+    const intervalId = setInterval(generateRandomNumber, 1000);
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+
   const [persentValue, setPersentValue] = useReducer((state: number, action: number) => {
     if (action > 100) {
       return 100;
@@ -372,15 +390,15 @@ export default function SpeedTest(
   //   getBorderColor()
   // }, [coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime, coins[symbol1]?.randomDecimal, coins[symbol1]?.randomDecimal])
   useEffect(() => {
-
+    
     // let timer1  = setTimeout(() => setValue(Math.floor((Math.random()*100)+1)), 1000)
-    return () => {
-      // clearTimeout(timer1);
-    };
-
+   return () => {
+        // clearTimeout(timer1);
+      };
+    
   }, [value])
 
-  console.log(value, "checkvalue")
+console.log(value,"checkvalue")
 
   // useEffect(() => {
   //   if (!symbol1) return
