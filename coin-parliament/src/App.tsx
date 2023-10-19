@@ -113,8 +113,8 @@ import FirstTimeAvatarSelection from "./Components/LoginComponent/FirstTimeAvata
 import { pwaInstallHandler } from 'pwa-install-handler'
 // import GoogleAuthenticator from "./Components/Profile/GoogleAuthenticator";
 import Login2fa from "./Components/LoginComponent/Login2fa";
-// import { handleSoundClick } from "./common/utils/SoundClick";
 // import createFastContext from "./hooks/createFastContext";
+// import { handleSoundClick } from "./common/utils/SoundClick";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import Wallet from "Components/Profile/Wallet";
 import CardShow from "Components/Pairs/CardShow";
