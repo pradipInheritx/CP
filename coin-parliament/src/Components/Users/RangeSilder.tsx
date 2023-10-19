@@ -3,6 +3,14 @@ import React, { useEffect, useState, useContext, useRef, useReducer } from "reac
 // import cc from "classcat";
 import { useGauge } from "use-gauge";
 import { motion, MotionConfig } from "framer-motion";
+import { Coin } from "../../common/models/Coin";
+import { VoteResultProps } from "../../common/models/Vote";
+import CoinsContext from "../../Contexts/CoinsContext";
+import { decimal } from "../Profile/utils";
+// import { VoteDispatchContext } from "Contexts/VoteProvider";
+// import * as Motion from 'framer-motion';
+// const { motion, MotionConfig }= Motion
+
 
 
 interface SpeedProps {
@@ -162,7 +170,7 @@ function Speed(props: SpeedProps) {
               />
             </g>
             <g id="ticks">
-              {gauge.ticks.map((angle: any) => {
+              {gauge.ticks.map((angle) => {
                 const asValue = gauge.angleToValue(angle);
                 const showText = asValue === 40 || asValue === 60;
 
@@ -235,24 +243,42 @@ function Speed(props: SpeedProps) {
 }
 
 export default function SpeedTest(
-  // {
-  //   // lastTenSec,
-  //   vote,
-  //   coins,
-  //   symbol1,
-  //   symbol2
-  // }: {
-  //   // lastTenSec?: any
-  //   vote: VoteResultProps;
-  //   coins: { [symbol: string]: Coin };
-  //   symbol1: string;
-  //   symbol2: string;
-  // }
+  {
+    // lastTenSec,
+    vote,
+    coins,
+    symbol1,
+    symbol2
+  }: {
+    // lastTenSec?: any
+    vote?: VoteResultProps;
+    coins?: { [symbol: string]: Coin };
+    symbol1?: string;
+    symbol2?: string;
+  }
 ) {
   // const { value } = useSpeedTest();
   // const value = 10;
 
   const [value, setValue] = useState(50)
+
+  useEffect(() => {
+    const generateRandomNumber = () => {
+      const min = 1;
+      const max = 100;
+      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+      setValue(randomNum);
+    };
+
+    // Generate a random number every second
+    const intervalId = setInterval(generateRandomNumber, 1000);
+
+    // Clean up the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
 
   const [persentValue, setPersentValue] = useReducer((state: number, action: number) => {
     if (action > 100) {
