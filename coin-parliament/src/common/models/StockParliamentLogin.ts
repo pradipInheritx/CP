@@ -1,4 +1,4 @@
-import { SignupPayload, validateSignup } from "./Login";
+import { SignupPayload, validateSignup, verifySportEmail } from "./Login";
 import firebaseStockParliament, { db } from "firebaseStockParliament"
 
 import { Callback } from "./utils";
@@ -20,7 +20,7 @@ export const SignupRegularForStockParliament = async (
             payload.password
         );
         if (auth?.currentUser) {
-            await sendEmailVerification(auth?.currentUser);
+            // await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(stockParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
                 ...userData,
@@ -28,6 +28,7 @@ export const SignupRegularForStockParliament = async (
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
+            await verifySportEmail(auth?.currentUser?.uid, (auth?.currentUser?.email || ''), (process.env.REACT_APP_STOCK_API || ''));
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {

@@ -1,4 +1,4 @@
-import { SignupPayload, validateSignup } from "./Login";
+import { SignupPayload, validateSignup, verifySportEmail } from "./Login";
 import firebaseSportParliament, { auth, db } from "firebaseSportParliament"
 
 import { Callback } from "./utils";
@@ -6,6 +6,7 @@ import { User, createUserWithEmailAndPassword, sendEmailVerification } from "fir
 import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
 import sportParliament from "firebaseSportParliament";
+import axios from "axios";
 export const SignupRegularForSportParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -21,7 +22,7 @@ export const SignupRegularForSportParliament = async (
         );
         if (auth?.currentUser) {
             console.log('sport', auth?.currentUser);
-            await sendEmailVerification(auth?.currentUser);
+            // await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(sportParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
                 ...userData,
@@ -29,6 +30,7 @@ export const SignupRegularForSportParliament = async (
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
+            await verifySportEmail(auth?.currentUser?.uid, (auth?.currentUser?.email || ''), (process.env.REACT_APP_SPORT_API || ''));
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {

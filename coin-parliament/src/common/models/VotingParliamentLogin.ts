@@ -1,4 +1,4 @@
-import { SignupPayload, validateSignup } from "./Login";
+import { SignupPayload, validateSignup, verifySportEmail } from "./Login";
 import firebaseVotingParliament, { auth, db } from "firebaseVotingParliament"
 
 import { Callback } from "./utils";
@@ -22,9 +22,9 @@ export const SignupRegularForVotingParliament = async (
             payload.password,
         );
         if (auth?.currentUser) {
-            await sendEmailVerification(auth?.currentUser).then((data) => {
-                // showToast("Successfully sent  verification link on your mail");
-            });;
+            // await sendEmailVerification(auth?.currentUser).then((data) => {
+            //     // showToast("Successfully sent  verification link on your mail");
+            // });
             const referUser = await getReferUser(votingParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
                 ...userData,
@@ -32,6 +32,7 @@ export const SignupRegularForVotingParliament = async (
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
+            await verifySportEmail(auth?.currentUser?.uid, (auth?.currentUser?.email || ''), (process.env.REACT_APP_VOTING_API || ''));
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });
         } else {
@@ -42,7 +43,7 @@ export const SignupRegularForVotingParliament = async (
         }
         // showToast("User register successfully.", ToastType.SUCCESS);
         //@ts-ignore
-        // callback.successFunc(userCredential.user);
+        callback.successFunc(userCredential.user);
         return true;
     } catch (e) {
         console.log('voting error');
