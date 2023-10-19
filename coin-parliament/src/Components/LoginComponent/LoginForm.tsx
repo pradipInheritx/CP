@@ -1,5 +1,5 @@
 import { Form } from "react-bootstrap";
-import React, { FormEvent } from "react";
+import React, { FormEvent, useContext } from "react";
 import { User } from "firebase/auth";
 import { Callback } from "../../common/models/utils";
 import { useTranslation } from "../../common/models/Dictionary";
@@ -8,6 +8,7 @@ import { capitalize, upperCase } from "lodash";
 import InputField from "../Atoms/Input/InputField";
 import { Buttons } from "../Atoms/Button/Button";
 import { User as AuthUser } from "@firebase/auth";
+import AppContext from "Contexts/AppContext";
 
 const LoginForm = ({
   callback,
@@ -20,7 +21,7 @@ const LoginForm = ({
   ) => Promise<void>;
 }) => {
   const translate = useTranslation();
-
+  const { setLoader } = useContext(AppContext);
   const strings = {
     email: capitalize(translate(texts.email)),
     login: upperCase(translate(texts.login)),
@@ -31,7 +32,15 @@ const LoginForm = ({
     <Form
       onSubmit={async (e) => {
         e.preventDefault();
+        if (setLoader) {
+          setLoader(true);
+        }
+        // @ts-ignore
         await login(e, callback);
+        if (setLoader) {
+          setLoader(false);
+        }
+
       }}
     >
       <Form.Group className="mb-3 w-100" controlId="login-email">

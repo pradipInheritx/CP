@@ -424,15 +424,15 @@ function App() {
   if (!supportsPWA) {
     console.log('not supported')
   }
-  useEffect(() => {
-    if (user?.email && userInfo?.displayName === undefined) {
-      setLoader(true);
-    } else {
-      // setTimeout(() => {
-      setLoader(false);
-      // }, 2000);
-    }
-  }, [user, userInfo]);
+  // useEffect(() => {
+  //   if (user?.email && userInfo?.displayName === undefined) {
+  //     setLoader(true);
+  //   } else {
+  //     // setTimeout(() => {
+  //     setLoader(false);
+  //     // }, 2000);
+  //   }
+  // }, [user, userInfo]);
 
 
   const updateUser = useCallback(async (user?: User) => {
