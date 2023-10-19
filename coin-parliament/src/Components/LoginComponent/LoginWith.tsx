@@ -9,8 +9,8 @@ import { PoppinsNormalBlueViolet12px } from "../../styledMixins";
 export type LoginWithProps = {
   provider: LoginProviders;
   onClick?:
-    | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
-    | undefined;
+  | ((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void)
+  | undefined;
 };
 
 const Image = styled.img`
@@ -38,8 +38,8 @@ const ContinueWith = styled.div`
 `;
 
 const logos = {
-  [LoginProviders.GOOGLE]:  process.env.PUBLIC_URL + '/images/icons/google.png',
-  [LoginProviders.FACEBOOK]: process.env.PUBLIC_URL + '/images/icons/facebook.png',
+  [LoginProviders.GOOGLE]: process.env.PUBLIC_URL + '/images/icons/google.png',
+  // [LoginProviders.FACEBOOK]: process.env.PUBLIC_URL + '/images/icons/facebook.png',
   // [LoginProviders.TWITTER]: "https://coin-parliament.com/images/twitter.png",
 };
 const LoginWith = ({
@@ -52,7 +52,7 @@ const LoginWith = ({
     `${translate(texts.continueWith)} ${translate(provider.toUpperCase())}`;
 
   return (
-    <LoginButton {...{ onClick }}  style={{boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}>
+    <LoginButton {...{ onClick }} style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}>
       <Image {...{ src: logos[provider] }} />
       <ContinueWith>{continueWith(provider)}</ContinueWith>
     </LoginButton>

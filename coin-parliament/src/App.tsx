@@ -146,7 +146,7 @@ import { vote } from "common/models/canVote.test";
 import { setTimeout } from "timers";
 import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
-import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
+import { CurrentCMPContext, CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import CoinsList from "Components/Profile/Payment/CoinsList";
 
 import PaymentFun from "Components/Profile/Payment/PaymentFun";
@@ -1084,15 +1084,13 @@ function App() {
   const lessTimeVoteDetails = useContext(LessTimeVoteDetailContext);
   const setLessTimeVoteDetails = useContext(LessTimeVoteDetailDispatchContext);
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
+  const currentCMP = useContext(CurrentCMPContext);
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
-
+  console.log(voteDetails, lessTimeVoteDetails, 'pkkkk');
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
-      // if (!pathname.toLowerCase().includes(`profile/mine`)) {
-      // localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
-      // }
-      // Swal.close();
+      Swal.close();
       setVoteDetails((prev: VoteContextType) => {
         return {
           ...prev,
@@ -1100,14 +1098,13 @@ function App() {
           openResultModal: true
         }
       });
-      console.log(localStorage.getItem(`${user?.uid}_newScores`), '_newScores');
-
-      // setCurrentCMP((completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'))
-      setCurrentCMP(prev => (completedVotes[0]?.score || 0));
+      setCurrentCMP((completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0'));
+      if (!pathname.toLowerCase().includes(`profile/mine`)) {
+        localStorage.setItem(`${user?.uid}_newScores`, `${(completedVotes[0]?.score || 0) + parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')}`);
+      }
       setCompletedVoteCMP((completedVotes[0]?.score || 0));
     }
   }, [completedVotes, voteDetails.openResultModal]);
-  console.log(completedVotes, voteDetails, lessTimeVoteDetails, 'hello');
 
   useEffect(() => {
     let tempTessTimeVote: VoteResultProps | undefined;
@@ -1117,12 +1114,12 @@ function App() {
       }
       return {};
     });
-    if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId /* calculateVote */) {
+    if (tempTessTimeVote && lessTimeVoteDetails?.voteId !== tempTessTimeVote.voteId && !pathname.includes('profile/mine')) {
       setLessTimeVoteDetails(tempTessTimeVote);
       timeEndCalculation(tempTessTimeVote);
       // setCalculateVote(false);
     }
-  }, [JSON.stringify(voteDetails?.activeVotes)]);
+  }, [JSON.stringify(voteDetails?.activeVotes), pathname]);
   const voteImpact = useRef<{
     timeFrame: number,
     impact: null | number
@@ -1133,10 +1130,13 @@ function App() {
   const latestVote = useRef<VoteContextType>();
   const latestCoinsPrice = useRef<VoteEndCoinPriceType>({});
   const latestUserInfo = useRef<UserProps | undefined>();
+  const pathNameRef = useRef<string>();
+  useEffect(() => {
+    pathNameRef.current = pathname;
+  }, [pathname])
   useEffect(() => {
     latestCoinsPrice.current = voteEndCoinPrice;
   }, [voteEndCoinPrice]);
-
   useEffect(() => {
     voteImpact.current = voteDetails.voteImpact;
     latestVote.current = voteDetails;
@@ -1155,6 +1155,10 @@ function App() {
 
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       const timer = setTimeout(async () => {
+        console.log(pathNameRef.current, 'pathname');
+        if (pathNameRef.current?.includes('profile/mine')) {
+          return
+        }
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
@@ -1180,7 +1184,6 @@ function App() {
               {}
           )
         }
-        console.log('called');
 
         await getResultAfterVote(request).then(async (response) => {
           console.log(latestUserInfo.current, 'latestUserInfo.current');

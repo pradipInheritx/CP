@@ -34,6 +34,7 @@ import Swal from "sweetalert2";
 import RewardHistory from "./rewardHistory";
 import ShareModal from "Components/shareModal";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
+import { LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
 
 
 const MyBadge = styled(Badge)`
@@ -98,12 +99,13 @@ const Mine = () => {
   };
   const handleCardShow = () => setCardModalShow(true);
 
-  const currentCMP = parseFloat(localStorage.getItem(`${user?.uid}_newScores`) || '0')/* useContext(CurrentCMPContext) */;
-  const handleShareModleClose = () => setShareModalShow(false);
+  const currentCMP = useContext(CurrentCMPContext);
   const handleShareModleShow = () => setShareModalShow(true);
   const voteDetails = useContext(VoteContext);
-  const setVoteDetails = useContext(VoteDispatchContext);
-
+  const setLessTimeVoteDetails = useContext(LessTimeVoteDetailDispatchContext);
+  useEffect(() => {
+    setLessTimeVoteDetails(undefined); // we don't need to called vote API when user is in profile page
+  }, []);
   // @ts-ignore 
   const currentCMPDiff = Math.floor((userInfo?.voteStatistics?.score || 0) / 100);
   const prevCMPDiff = Math.floor(((userInfo?.voteStatistics?.score || 0) - currentCMP) / 100);
@@ -115,7 +117,7 @@ const Mine = () => {
   var urlName = window.location.pathname.split('/');
   const ProfileUrl = urlName.includes("profile")
 
-  console.log(userInfo?.voteStatistics?.score, 'user score', currentCMPDiff, 'currentCMPDiff ', prevCMPDiff, 'prevCMPDiff', currentCMP, score, 'score', remainingCMP, 'pkkkk');
+  console.log(currentCMPDiff, prevCMPDiff, currentCMP, remainingCMP, 'hello');
 
   useEffect(() => {
     // @ts-ignore
@@ -142,7 +144,10 @@ const Mine = () => {
       handleCardShow();
     }
   }, [inOutReward, showReward, rewardTimer]);
-
+  const remainingRewardRef = useRef<number>(0);
+  useEffect(() => {
+    remainingRewardRef.current = remainingReward;
+  }, [remainingReward]);
   useEffect(() => {
     if (!voteDetails.openResultModal && showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
       setTimeout(() => {
@@ -160,7 +165,7 @@ const Mine = () => {
     var urlName = window.location.pathname.split('/');
 
     const UrlCheck = urlName.includes("profile")
-    if (UrlCheck) {
+    if (UrlCheck && remainingRewardRef.current < 1) {
       Swal.fire({
         html:
           // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +

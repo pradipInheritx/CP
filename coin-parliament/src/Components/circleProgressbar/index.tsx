@@ -36,9 +36,6 @@ const CircularProgress = ({ percentage }) => {
         }
     }, [progressBarValue]);
     useEffect(() => {
-        setProgressBarValue(prev => prev - currentCMP);
-    }, [currentCMP])
-    useEffect(() => {
         setProgressBarValue(0);
         const time = setTimeout(() => {
             setProgressBarValue(percentage);
@@ -90,7 +87,7 @@ const CircularProgress = ({ percentage }) => {
                         }}
                     </AnimatedProgressProvider> : <div>
                         <CircularProgressbarWithChildren
-                            value={(percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */)}
+                            value={(percentage - localStorage.getItem(`${user?.uid}_newScores`))}
                             strokeWidth={w > 767 ? 11 : 13}
                             styles={buildStyles({
                                 pathColor: "#6352e8",
