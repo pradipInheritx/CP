@@ -154,7 +154,7 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
           }}
           >
             <Image src={logo} alt="" width={"25px"} className="pl-3"/>
-          <ContinueWith>Login With Voting Parliament</ContinueWith>
+          <ContinueWith>Login With Sport Parliament</ContinueWith>
           </div>}
 
           {!withLoginV2e && <div className="d-flex py-2 px-2"
