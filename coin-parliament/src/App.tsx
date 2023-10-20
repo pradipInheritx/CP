@@ -473,6 +473,8 @@ function App() {
   }, [userInfo]);
   useEffect(() => {
     pwaInstallHandler.addListener((canInstall) => {
+
+      console.log(canInstall,"canInstall")
       canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
     })
 
