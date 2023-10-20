@@ -341,6 +341,7 @@ function App() {
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [remainingTimer, setRemainingTimer] = useState(0)
   const [followerUserId, setFollowerUserId] = useState<string>('')
+  const [withLoginV2e, setWithLoginV2e] = useState(false)
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -855,7 +856,9 @@ function App() {
             }}
           >
             <AppContext.Provider
-              value={{
+                value={{
+                  withLoginV2e,
+                  setWithLoginV2e,
                 followerUserId,
                 setFollowerUserId,
                 singalCardData,
