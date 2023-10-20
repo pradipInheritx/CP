@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  withLoginV2e?:any,
+  setWithLoginV2e?:any,
   transactionId?: any,
   setTransactionId?: any,
   setBackgrounHide?: any,
