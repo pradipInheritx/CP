@@ -208,25 +208,33 @@ const PersonalInfo = () => {
                   // edit: true,
                 }}
               />
-              <SelectTextfield
-                label={`${texts.PHONE}`}
-                name="Phone"
-              >
-                <PhoneInput
-                  inputStyle={{ width: "100%", padding: "20px 0px 20px 50px" }}
-                  placeholder=""
-                  inputProps={{
-                    name: 'phone',
-                    required: true,
-                    disabled: !edit
-                  }}
-                  disableDropdown={!edit}
-                  country={(phone?.phone === undefined || phone?.phone === 'null') ? userCurrentCountryCode : ''}
-                  // country={""}
-                  value={phone?.phone && phone?.phone}
-                  onChange={handleOnChange}
-                />
-              </SelectTextfield>
+              <div className="mb-5">
+                <SelectTextfield
+                  label={`${texts.PHONE}`}
+                  name="Phone"
+
+                >
+                  <PhoneInput
+                    inputStyle={{
+                      width: "100%", padding: "20px 0px 20px 50px",
+                    }}
+                    dropdownStyle={{
+                      maxHeight: "150px"
+                    }}
+                    placeholder=""
+                    inputProps={{
+                      name: 'phone',
+                      required: true,
+                      disabled: !edit
+                    }}
+                    disableDropdown={!edit}
+                    country={phone?.phone == undefined ? userCurrentCountryCode : ''}
+                    // country={""}
+                    value={phone?.phone && phone?.phone}
+                    onChange={handleOnChange}
+                  />
+                </SelectTextfield>
+              </div>
             </Col>
 
           </Row>
