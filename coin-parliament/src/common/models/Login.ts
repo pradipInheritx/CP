@@ -41,12 +41,12 @@ export enum LoginModes {
 
 export enum LoginProviders {
   GOOGLE = "google",
-  FACEBOOK = "facebook",
+  // FACEBOOK = "facebook",
   // TWITTER = "twitter",
 }
 
 export const providers = {
-  [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
+  // [LoginProviders.FACEBOOK]: new FacebookAuthProvider(),
   [LoginProviders.GOOGLE]: new GoogleAuthProvider(),
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
@@ -280,7 +280,6 @@ export const SignupRegular = async (
       payload.email,
       payload.password
     );
-
     // @ts-ignore
     await sendEmailVerification(auth?.currentUser).then((data) => {
       showToast("Successfully sent  verification link on your mail");
