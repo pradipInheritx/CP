@@ -460,7 +460,7 @@ export const TitleUpgradeNotificationLogic_Testing = async function (todayTimeFr
 
   const getAllUserDetails: any = []
   for (let userId in userVoteGroupObj) {
-    if (userVoteGroupObj.hasOwnProperty(userId)) {
+    if (userVoteGroupObj[userId]) {
       let currentStatus = userVoteGroupObj[userId][0];
       let yesterdayStatus = userVoteGroupObj[userId][(userVoteGroupObj[userId].length) - 1]
 
