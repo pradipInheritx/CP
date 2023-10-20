@@ -297,6 +297,7 @@ function App() {
   const [socketConnect, setSocketConnect] = useState<any>(false)
   const [backgrounHide, setBackgrounHide] = useState<any>(false)
   const [transactionId, setTransactionId] = useState({});
+  const [withLoginV2e, setWithLoginV2e] = useState(false)
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
@@ -1291,7 +1292,9 @@ function App() {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                    withLoginV2e,
+                    setWithLoginV2e,
                   transactionId,
                   setTransactionId,
                   setBackgrounHide,
