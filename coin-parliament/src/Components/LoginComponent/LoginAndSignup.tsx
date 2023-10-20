@@ -54,7 +54,7 @@ const LoginAndSignup = ({
   const location = useLocation();
   const search = location.search;
   const { setUser } = useContext(UserContext);
-  const { signup, setSignup } = useContext(AppContext);
+  const { signup, setSignup, withLoginV2e } = useContext(AppContext);
   const [forgetPassword, setForgetPassword] = useState(false);
   const mode = signup ? LoginModes.SIGNUP : LoginModes.LOGIN;
   const refer = new URLSearchParams(search).get("refer");
@@ -68,11 +68,19 @@ const LoginAndSignup = ({
       <div className='container-center-horizontal'
       >
         <div className='login-signin screen'>
-          {!forgetPassword ? (
+          {/* {!forgetPassword ? (
             <Styles.Title>{translate(title[mode])}</Styles.Title>
           ) : (
             <Styles.Title>{translate("Forget Password".toUpperCase())}</Styles.Title>
-          )}
+          )} */}
+          {!withLoginV2e ? <div>
+            {!forgetPassword ? (
+              <Styles.Title>{translate(title[mode])}</Styles.Title>
+            ) : (
+              <Styles.Title>{translate("Forget Password")}</Styles.Title>
+            )}
+          </div> : forgetPassword ? <Styles.Title>{translate("Forget Password")}</Styles.Title> : signup ? <Styles.Title>{translate(title[mode])}</Styles.Title> : <Styles.Title>{translate("Login with VoteToEarn")}</Styles.Title>}
+
           {mode === LoginModes.LOGIN && !forgetPassword && (
             <Login
               setForgetPassword={setForgetPassword}
