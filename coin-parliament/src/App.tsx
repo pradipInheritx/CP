@@ -810,7 +810,7 @@ function App() {
                           >
                             <Header />
                             <Routes>
-                              <Route path='/login' element={!auth?.currentUser ?
+                              <Route path='/login' element={!userInfo ?
                                 <LoginAndSignup
                                   {...{
                                     authProvider: LoginAuthProvider,
@@ -819,7 +819,7 @@ function App() {
                                   }}
                                 /> : <Navigate to="/" />
                               } />
-                              <Route path='/sign-up' element={!auth?.currentUser ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} />
+                              <Route path='/sign-up' element={!userInfo ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} />
                               <Route path="/" element={<ProtectedRoutes />}>
                                 <Route path='/' element={<Home />} />
                                 <Route path={'profile/share'} element={<Pool />} />
