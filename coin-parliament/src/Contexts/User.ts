@@ -64,6 +64,8 @@ export const saveUserData = async (uid: string, database: Firestore, data: { [ke
     }
   });
   if (uid) {
+    console.log(userData, 'saveUserData');
+
     const userRef = doc(database, "users", uid);
     await setDoc(userRef, userData, { merge: true });
   }

@@ -1,11 +1,11 @@
-import {DocumentData, QueryDocumentSnapshot, SnapshotOptions} from "firebase/firestore";
-import {UserTypeProps} from "./UserType";
-import {useContext} from "react";
+import { DocumentData, QueryDocumentSnapshot, SnapshotOptions } from "firebase/firestore";
+import { UserTypeProps } from "./UserType";
+import { useContext } from "react";
 import UserContext from "../../Contexts/User";
-import {follow, Leader} from "../../Contexts/CoinsContext";
-import {User as AuthUser} from "firebase/auth";
+import { follow, Leader } from "../../Contexts/CoinsContext";
+import { User as AuthUser } from "firebase/auth";
 import firebase from "../../firebase";
-import {AvatarType, importFile} from "../../assets/avatars/Avatars";
+import { AvatarType, importFile } from "../../assets/avatars/Avatars";
 
 export type UserProps = {
   paid?: boolean;
@@ -28,8 +28,9 @@ export type UserProps = {
   lang?: string;
   token?: string;
   wallet?: string;
-  rewardStatistics?:RewardStatistics;
-  uid?:string;
+  rewardStatistics?: RewardStatistics;
+  uid?: string;
+  bio?: string;
 };
 
 class User implements UserProps {
@@ -52,7 +53,7 @@ class User implements UserProps {
   private readonly _rewardStatistics: RewardStatistics | undefined;
   private readonly _favorites: string[];
 
-  constructor({user}: { user: UserProps }) {
+  constructor({ user }: { user: UserProps }) {
     this._parent = user.parent;
     this._address = user.address;
     this._avatar = user.avatar;
@@ -176,7 +177,7 @@ export const userConverter = {
 export default User;
 
 export const useAdmin = () => {
-  const {admin} = useContext(UserContext);
+  const { admin } = useContext(UserContext);
   return admin;
 };
 
