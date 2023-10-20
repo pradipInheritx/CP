@@ -149,8 +149,9 @@ const Mine = () => {
     remainingRewardRef.current = remainingReward;
   }, [remainingReward]);
   useEffect(() => {
+    let timerPopup: any = null;
     if (!voteDetails.openResultModal && showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
-      setTimeout(() => {
+      timerPopup = setTimeout(() => {
         setModelText(1)
         // handleShow();
         if (ProfileUrl && score != 100) {
@@ -159,7 +160,12 @@ const Mine = () => {
         setShowBack(false)
       }, 15000);
     }
-  }, [JSON.stringify(voteDetails?.openResultModal)]);
+    return () => {
+      if (timerPopup) {
+        clearTimeout(timerPopup);
+      }
+    }
+  }, []);
 
   const Cmppopup = () => {
     var urlName = window.location.pathname.split('/');
