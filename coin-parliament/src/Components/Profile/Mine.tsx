@@ -29,7 +29,6 @@ import { Buttons } from "../Atoms/Button/Button";
 import AnimationCard from "./Animation/AnimationCard";
 import { CurrentCMPContext } from "Contexts/CurrentCMP";
 import Copy from "Components/icons/copyShare";
-import CoinAnimation from "common/CoinAnimation/CoinAnimation";
 import Swal from "sweetalert2";
 import RewardHistory from "./rewardHistory";
 import ShareModal from "Components/shareModal";
@@ -145,9 +144,11 @@ const Mine = () => {
     }
   }, [inOutReward, showReward, rewardTimer]);
   const remainingRewardRef = useRef<number>(0);
+  const remainingCMPRef = useRef<number>(0);
   useEffect(() => {
     remainingRewardRef.current = remainingReward;
-  }, [remainingReward]);
+    remainingCMPRef.current = remainingCMP;
+  }, [remainingReward, remainingCMP]);
   useEffect(() => {
     let timerPopup: any = null;
     if (!voteDetails.openResultModal && showBack && ProfileUrl && !modalShow && ((userInfo?.voteStatistics?.score || 0) % 100) < 100 && remainingReward < 1) { //remainingReward < 1 &&   userInfo?.voteStatistics?.score < 100are same
@@ -176,7 +177,7 @@ const Mine = () => {
         html:
           // "<div className='' style='text-align: center !important;display:flex;flex-direction: column !important;  margin-top: 2em;' >" +
           "<strong style='font-size:20px; margin-bottom:1em !important; '>Stay in the game</strong>" +
-          "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMP).toFixed(2) + " CMP to reach your goal</p>" +
+          "<p style='font-size:20px; margin-top:10px !important;'>Only " + (100 - remainingCMPRef.current).toFixed(2) + " CMP to reach your goal</p>" +
           "",
         color: 'black',
         showConfirmButton: ((userInfo?.rewardStatistics?.extraVote || 0) + parseInt(userInfo?.voteValue || '0') > 0),
