@@ -7,7 +7,7 @@ import { useTranslation } from "../../common/models/Dictionary";
 import { AuthProvider, PhoneAuthProvider, PhoneMultiFactorGenerator, User } from "firebase/auth";
 import LoginWith from "./LoginWith";
 import styled from "styled-components";
-import { PoppinsBoldBlueViolet14px, PoppinsMediumBlack12px } from "../../styledMixins";
+import { PoppinsBoldBlueViolet14px, PoppinsMediumBlack12px, PoppinsNormalBlueViolet12px } from "../../styledMixins";
 import { User as AuthUser } from "@firebase/auth";
 import { Callback } from "../../common/models/utils";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
@@ -16,6 +16,8 @@ import { capitalize } from "lodash";
 import { FormControl, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import AppContext from "../../Contexts/AppContext";
 import { Buttons } from "../Atoms/Button/Button";
+import logo from "../../assets/svg/vporange.png";
+import v2elogo from "../../assets/svg/VTElogo.png";
 
 const OR = styled.div`
   ${PoppinsMediumBlack12px};
@@ -59,6 +61,36 @@ padding:15px;
 // font-size:13px;
 }
 `
+
+const Image = styled.img`
+  // display: inline;
+`;
+
+const LoginButton = styled.div`
+border:none;
+border-radius:5px;
+  background: var(--white);
+  color: var(--black);
+  width: 100%;
+  align-items: center;
+  justify-content: start;
+  cursor: pointer;
+  &:hover{
+    color: #fff;
+    background-color: #d4d0f3;
+    border-color: #d4d0f3;
+  }
+`;
+const ContinueWith = styled.div`
+  ${PoppinsNormalBlueViolet12px};
+  min-height: 19px;
+  align-self: flex-end;
+  margin-left: 32px;
+  min-width: 131px;
+  letter-spacing: 0;
+  white-space: nowrap;
+`;
+
 export type LoginProps = {
   setForgetPassword: (s: boolean) => void;
   setUser: (user?: User | undefined) => void;
@@ -81,7 +113,7 @@ export type LoginProps = {
 const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const { setLoginRedirectMessage, loginRedirectMessage } = useContext(AppContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, withLoginV2e, setWithLoginV2e } = useContext(AppContext);
   const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   console.log(smsVerification)
@@ -98,7 +130,7 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
   return (
     <div
       className="text-center"
-      style={{ width: "300px" }}
+      // style={{ width: "280px" }}
     >
       {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
       {Object.values(LoginProviders).map((provider, i) => {
@@ -114,6 +146,32 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           </div>
         );
       })}
+      <div className="mb-2 w-100">
+        <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+          onClick={() => {
+            setWithLoginV2e(!withLoginV2e)
+          }}
+        >
+          {/* <Image {...{ src: logos[provider] }} /> */}
+          {withLoginV2e && <div className="d-flex py-2 "
+            style={{
+              marginLeft: "25px"
+            }}
+          >
+            <Image src={logo} alt="" width={"25px"} className="pl-3" />
+            <ContinueWith>Login With Sport Parliament</ContinueWith>
+          </div>}
+
+          {!withLoginV2e && <div className="d-flex py-2 "
+            style={{
+              marginLeft: "25px"
+            }}
+          >
+            <Image src={v2elogo} alt="" width={"25px"} className="pl-3" />
+            <ContinueWith>Login with VoteToEarn</ContinueWith>
+          </div>}
+        </LoginButton>
+      </div>
       <div className="my-3 align-self-center">
         <OR className="mx-auto">{translate("or")}</OR>
       </div>

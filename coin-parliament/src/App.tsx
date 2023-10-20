@@ -295,6 +295,7 @@ function App() {
   const [forRun, setForRun] = useState<any>(0);
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
+  const [withLoginV2e, setWithLoginV2e] = useState(false)
   const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
     getCoins() as { [symbol: string]: Coin }
   );
@@ -647,7 +648,9 @@ function App() {
             }}
           >
             <AppContext.Provider
-              value={{
+                value={{
+                  withLoginV2e,
+                  setWithLoginV2e,
                 showMenubar,
                 setShowMenuBar,
                 firstTimeAvatarSlection,
