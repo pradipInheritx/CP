@@ -28,7 +28,7 @@ const CircularProgress = ({ percentage }) => {
         let newScore = localStorage.getItem(`${user?.uid}_newScores`) || '0'
         if (progressBarValue && newScore != '0') {
             let prevScore = (userInfo?.voteStatistics?.score - newScore) % 100
-            setStartValue(prevScore);
+            setStartValue((prevScore <= 0 ? 0 : prevScore));
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
                 setCurrentCMP(0);
