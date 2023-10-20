@@ -148,8 +148,8 @@ function ModalForResult({
     }
     setCompletedVotes(prev => prev.filter(value => value.voteId != vote.voteId));
     setLessTimeVoteDetails(undefined);
-    localStorage.setItem(`${userInfo?.uid}_newScores`, `${(vote?.score || 0) + parseFloat(localStorage.getItem(`${userInfo?.uid}_newScores`) || '0')}`);
-    setCurrentCMP(prev => prev + vote?.score)
+    // localStorage.setItem(`${userInfo?.uid}_newScores`, `${(vote?.score || 0) + parseFloat(localStorage.getItem(`${userInfo?.uid}_newScores`) || '0')}`);
+    // setCurrentCMP(parseFloat(`${(vote?.score || 0) + parseFloat(localStorage.getItem(`${userInfo?.uid}_newScores`) || '0')}`))
     // setLessTimeVoteDetails({
     //   lessTimeVote: undefined,
     //   openResultModal: false
