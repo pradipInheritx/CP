@@ -221,7 +221,7 @@ const PersonalInfo = () => {
                     disabled: !edit
                   }}
                   disableDropdown={!edit}
-                  country={phone?.phone == undefined ? userCurrentCountryCode : ''}
+                  country={(phone?.phone === undefined || phone?.phone === 'null') ? userCurrentCountryCode : ''}
                   // country={""}
                   value={phone?.phone && phone?.phone}
                   onChange={handleOnChange}
