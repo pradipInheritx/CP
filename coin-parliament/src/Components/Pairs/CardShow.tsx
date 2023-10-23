@@ -320,8 +320,7 @@ function CardShow() {
                    );
                   setTimeout(() => {
                     setShowPopUp(true)
-                    setShowSpdometer(false)
-                    console.log("i am working")
+                    setShowSpdometer(false)                    
                   }, 7700);
                 }
                 }
