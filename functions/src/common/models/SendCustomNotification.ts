@@ -459,28 +459,30 @@ export const TitleUpgradeNotificationLogic_Testing = async function (todayTimeFr
   }, {});
 
   const getAllUserDetails: any = []
-  for (let userId in userVoteGroupObj) {
-    if (userId && userVoteGroupObj[userId]) {
-      let currentStatus = userVoteGroupObj[userId][0];
-      let yesterdayStatus = userVoteGroupObj[userId][(userVoteGroupObj[userId].length) - 1]
+  if (userVoteGroupObj) {
+    for (const userId in userVoteGroupObj) {
+      if (userId && userVoteGroupObj[userId]) {
+        const currentStatus = userVoteGroupObj[userId][0];
+        const yesterdayStatus = userVoteGroupObj[userId][(userVoteGroupObj[userId].length) - 1];
 
-      let status = currentStatus.index > yesterdayStatus.index ? 'Upgrade' : 'Downgrade';
+        const status = currentStatus.index > yesterdayStatus.index ? "Upgrade" : "Downgrade";
 
-      if (status === 'Upgrade') {
-        getAllUserDetails.push({
-          userId,
-          title: upgradeMessage[currentStatus.name],
-          message: `Vote to earn more!`
-        })
-      } else if (status === 'Downgrade') {
-        getAllUserDetails.push({
-          userId,
-          title: downGradeMessage[currentStatus.name],
-          message: `Keep Voting to Rise Again!`
-        })
+        if (status === "Upgrade") {
+          getAllUserDetails.push({
+            userId,
+            title: upgradeMessage[currentStatus.name],
+            message: "Vote to earn more!",
+          });
+        } else if (status === "Downgrade") {
+          getAllUserDetails.push({
+            userId,
+            title: downGradeMessage[currentStatus.name],
+            message: "Keep Voting to Rise Again!",
+          });
+        }
       }
+      console.log("call sendNotificationForTitleUpgrade function");
     }
-    console.log("call sendNotificationForTitleUpgrade function")
   }
   console.log("getAllUserDetails : ", getAllUserDetails);
 
