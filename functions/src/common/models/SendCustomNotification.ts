@@ -459,27 +459,25 @@ export const TitleUpgradeNotificationLogic_Testing = async function (todayTimeFr
   }, {});
 
   const getAllUserDetails: any = []
-  if (userVoteGroupObj) {
-    for (const userId in userVoteGroupObj) {
-      if (userId && userVoteGroupObj[userId]) {
-        const currentStatus = userVoteGroupObj[userId][0];
-        const yesterdayStatus = userVoteGroupObj[userId][(userVoteGroupObj[userId].length) - 1];
+  for (const userId in userVoteGroupObj) {
+    if (userId && userVoteGroupObj[userId]) {
+      const currentStatus = userVoteGroupObj[userId][0];
+      const yesterdayStatus = userVoteGroupObj[userId][(userVoteGroupObj[userId].length) - 1];
 
-        const status = currentStatus.index > yesterdayStatus.index ? "Upgrade" : "Downgrade";
+      const status = currentStatus.index > yesterdayStatus.index ? "Upgrade" : "Downgrade";
 
-        if (status === "Upgrade") {
-          getAllUserDetails.push({
-            userId,
-            title: upgradeMessage[currentStatus.name],
-            message: "Vote to earn more!",
-          });
-        } else if (status === "Downgrade") {
-          getAllUserDetails.push({
-            userId,
-            title: downGradeMessage[currentStatus.name],
-            message: "Keep Voting to Rise Again!",
-          });
-        }
+      if (status === "Upgrade") {
+        getAllUserDetails.push({
+          userId,
+          title: upgradeMessage[currentStatus.name],
+          message: "Vote to earn more!",
+        });
+      } else if (status === "Downgrade") {
+        getAllUserDetails.push({
+          userId,
+          title: downGradeMessage[currentStatus.name],
+          message: "Keep Voting to Rise Again!",
+        });
       }
       console.log("call sendNotificationForTitleUpgrade function");
     }
@@ -488,6 +486,7 @@ export const TitleUpgradeNotificationLogic_Testing = async function (todayTimeFr
 
   await sendNotificationForTitleUpgrade_test(getAllUserDetails)
 }
+
 export const sendNotificationForTitleUpgrade_test = async (getAllUserDetails: any) => {
   for (let user = 0; user < getAllUserDetails.length; user++) {
     const getUserData: any = (await (firestore().collection('users').doc(getAllUserDetails[user].userId).get())).data();
