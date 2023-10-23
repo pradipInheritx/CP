@@ -160,9 +160,13 @@ const PairsCopy = ({
             </ImgName>                        
             </div>
             <div style={{
-              color: "#6352e8"
+              color: "#6352e8",
+              cursor:"pointer"
             }}
               className="d-flex justify-content-center align-items-center"
+              onClick={() => {
+                navigate(`/CardShow/${index}`);                
+              }}
             >
               <p>TO VOTE</p>
               <span
