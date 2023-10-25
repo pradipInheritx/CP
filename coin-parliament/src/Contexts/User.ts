@@ -94,12 +94,29 @@ export const getReferUser = async (database: any, emailArg?: string, storeRefer?
 }
 export const storeAllPlatFormUserId = async (email: string) => {
   try {
-    const V2E = await getReferUser(V2EParliament.firestore(), email);
-    const coinUser = await getReferUser(coinParliament.firestore(), email);
-    const sportUser = await getReferUser(sportParliament.firestore(), email);
-    const stockUser = await getReferUser(stockParliament.firestore(), email);
-    const votingUser = await getReferUser(votingParliament.firestore(), email);
-    localStorage.setItem("userId", JSON.stringify({ V2E: V2E?.uid, coin: coinUser?.uid, sport: sportUser?.uid, stock: stockUser?.uid, voting: votingUser?.uid }));
+    await Promise.all([
+      getReferUser(V2EParliament.firestore(), email),
+      getReferUser(coinParliament.firestore(), email),
+      getReferUser(sportParliament.firestore(), email),
+      getReferUser(stockParliament.firestore(), email),
+      getReferUser(votingParliament.firestore(), email)
+    ]).then((data) => {
+      console.log(data, 'hello');
+
+      const V2E = data[0];
+      const coinUser = data[1];
+      const sportUser = data[2];
+      const stockUser = data[3];
+      const votingUser = data[4];
+      localStorage.setItem("userId", JSON.stringify({ V2E: (V2E?.uid || ''), coin: (coinUser?.uid || ''), sport: (sportUser?.uid || ''), stock: (stockUser?.uid || ''), voting: (votingUser?.uid || '') }));
+    }).catch(() => {
+
+    })
+    // const V2E = await getReferUser(V2EParliament.firestore(), email);
+    // const coinUser = await getReferUser(coinParliament.firestore(), email);
+    // const sportUser = await getReferUser(sportParliament.firestore(), email);
+    // const stockUser = await getReferUser(stockParliament.firestore(), email);
+    // const votingUser = await getReferUser(votingParliament.firestore(), email);
   } catch (error) {
 
   }
