@@ -316,16 +316,18 @@ const GoogleAuthenticator = () => {
                               }}
                             >
 
-                              <img
-                                src={BigLogo}
-                                alt="QR code for Google Authenticator"
-                                style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
-                              />
-                              <img
-                                src={qrCodeDataUrl}
-                                alt="QR code for Google Authenticator"
-                                style={{ maxWidth: "300px" }}
-                              />
+                              {qrCodeDataUrl && <>
+                                <img
+                                  src={BigLogo}
+                                  alt="QR code for Google Authenticator"
+                                  style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
+                                />
+                                <img
+                                  src={qrCodeDataUrl}
+                                  alt="QR code for Google Authenticator"
+                                  style={{ maxWidth: "300px" }}
+                                />
+                              </>}
 
                               {/* <div className='mt-2'
                                   style={{

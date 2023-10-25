@@ -51,15 +51,16 @@ export const providers = {
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
 
-export const Logout = (setUser: () => void) => {
+export const Logout = (setUser?: () => void) => {
   const navigate = useNavigate();
   const auth = getAuth();
   signOut(auth)
     .then(() => {
-      setUser();
-      window.localStorage.setItem('mfa_passed', 'false')
-      navigate("/")
-      console.log("i am logout working")
+      window.localStorage.setItem('mfa_passed', 'false');
+      if (setUser) {
+        setUser();
+        navigate("/")
+      }
     })
     .catch((error) => {
       const errorMessage = error.message;
@@ -85,6 +86,12 @@ export const LoginAuthProvider = async (
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
     const isFirstLogin = getAdditionalUserInfo(result)
     const userRef = doc(db, "users", user.uid);
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
@@ -189,7 +196,12 @@ export const LoginRegular = async (
       email,
       password
     );
-    console.log(userCredential, "userCredential")
+    console.log(userCredential, "userCredential");
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
     const isFirstLogin = getAdditionalUserInfo(userCredential)
     // console.log('firsttimelogin',isFirstLogin)    
     if (auth?.currentUser?.emailVerified) {
@@ -293,8 +305,10 @@ export const SignupRegular = async (
     // @ts-ignore
     // saveUsername(auth?.currentUser?.uid, '', '')
     showToast("User register successfully.", ToastType.SUCCESS);
+    // Logout(); 
     // @ts-ignore
-    callback.successFunc(auth?.currentUser)
+    callback.successFunc(auth?.currentUser);
+
     return true;
   } catch (e) {
     // callback.errorFunc(e as Error);
