@@ -805,7 +805,7 @@ function App() {
                               whiteSpace: "normal",
                               wordWrap: "break-word",
                               flexGrow: 1,
-                              padding: '0px 0px 120px 0px'
+                              padding: '0px 0px 0px 0px'
                             }}
                           >
                             <Header />
@@ -832,7 +832,7 @@ function App() {
                               </Route>
                             </Routes>
                           </Container>
-                          <Footer />
+                          {/* <Footer /> */}
                         </AppContainer>
                       </>
                     )}
