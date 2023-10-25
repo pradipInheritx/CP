@@ -359,15 +359,24 @@ export const SignupRegular = async (
   }
 };
 
-export const genericLogin = async (payload: SignupPayload, callback: Callback<AuthUser>) => {
-  SignupRegular(payload, callback).then(async (res) => {
-    await SignupRegularForCoinParliament(payload, callback);
-    await SignupRegularForSportParliament(payload, callback);
-    await SignupRegularForStockParliament(payload, callback);
-    await SignupRegularForVotingParliament(payload, callback);
-  }).catch(() => {
+export const genericLogin = async (payload: SignupPayload, callback: Callback<any>) => {
+  Promise.all([
+    SignupRegular(payload, callback),
+    SignupRegularForCoinParliament(payload, callback),
+    SignupRegularForSportParliament(payload, callback),
+    SignupRegularForStockParliament(payload, callback),
+    SignupRegularForVotingParliament(payload, callback)
+  ]).then(() => {
+    // callback.successFunc({});
+  }).catch(() => { })
+  // SignupRegular(payload, callback).then(async (res) => {
+  //   await SignupRegularForCoinParliament(payload, callback);
+  //   await SignupRegularForSportParliament(payload, callback);
+  //   await SignupRegularForStockParliament(payload, callback);
+  //   await SignupRegularForVotingParliament(payload, callback);
+  // }).catch(() => {
 
-  });
+  // });
 }
 
 export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
