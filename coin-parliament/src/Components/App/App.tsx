@@ -84,7 +84,19 @@ export const isHomeBg = (pathname: string) =>
   ["/", "/influencers", "/nftGallery"].includes(pathname);
 
 export const AppContainer = styled(Container)`
-  // already remove some back ground
+  ${(props: Pathname) =>
+    isHomeBg(props.pathname)
+      ? Gradient1 //remove back ground
+      : isCoinsPairs(props.pathname)
+        ? Gradient3
+        : isCommanPage(props.pathname) ?
+          css`background: white`
+          : css`
+  background: rgb(99, 82, 232);
+  background: transparent linear-gradient(180deg, var(--color-6352e8) 0%, #3712b3 100%) 0% 0% no-repeat padding-box;
+  background:${window.screen.width < 767 ? "#d4d0f3" : "#d4d0f3"};
+  
+`};
   ${PoppinsMediumWhite12px};
   opacity: 1;
   min-height: ${(props: Pathname) =>

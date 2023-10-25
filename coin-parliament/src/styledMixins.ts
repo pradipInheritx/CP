@@ -258,18 +258,18 @@ export const Border1pxPixiePowder = css`
 `;
 
 export const Gradient1 = css`
-  background:rgb(55, 18, 179);
-  background: transparent
-    linear-gradient(
-      180deg,
-      #3712b3 0%,
-      #5d46e0 33%,
-      var(--color-6352e8) 49%,
-      #3712b3 100%,
-      #130331 100%
-    )
-    0% 0% no-repeat padding-box;
-  background: linear-gradient(180deg, #16013f 0%, #6352e8ba 50%, #130331 100%);
+  // background:rgb(55, 18, 179);
+  // background: transparent
+  //   linear-gradient(
+  //     180deg,
+  //     #3712b3 0%,
+  //     #5d46e0 33%,
+  //     var(--color-6352e8) 49%,
+  //     #3712b3 100%,
+  //     #130331 100%
+  //   )
+  //   0% 0% no-repeat padding-box;
+  // background: linear-gradient(180deg, #16013f 0%, #6352e8ba 50%, #130331 100%);
 `;
 
 export const Gradient2 = css`
