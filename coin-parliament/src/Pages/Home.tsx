@@ -145,7 +145,7 @@ function Home() {
   }, []);
 
   return (
-    <div className='d-flex flex-column justify-content-center align-items-center p-5'>
+    <div className='d-flex flex-column justify-content-center align-items-center p-5 h-100'>
       <h1 className='pb-4'>TOP VTE PLATFORMS</h1>
       <div className='row'>
         {
@@ -153,11 +153,11 @@ function Home() {
             return (
               <div key={index} className="card mb-3 col-sm-6" style={{ background: '#160133', color: 'white', textAlign: 'justify' }}>
                 <div className="row no-gutters">
-                  <div className="col-md-6 p-0">
+                  <div className="col-lg-6 p-0">
                     <img src={sites[key].img} className="card-img pt-3" alt="img" />
                   </div>
-                  <div className="col-md-6">
-                    <div className="card-body">
+                  <div className="col-lg-6 p-0 d-flex">
+                    <div className="card-body d-flex flex-column justify-content-center">
                       <p className="card-text">{sites[key].des}</p>
                       <div className='d-flex mt-4 align-items-center'>
                         <h6 style={{ marginRight: '1em' }}>{sites[key].title}</h6>
