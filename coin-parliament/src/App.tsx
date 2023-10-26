@@ -1584,9 +1584,9 @@ function App() {
                                       setMfaLogin={setMfaLogin}
                                     />
                                   )} */}
-                                  {!login &&
+                                  {(!login &&
                                     !firstTimeAvatarSlection &&
-                                    !firstTimeFoundationSelection && (
+                                    !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>
                                         <Container
                                           fluid
