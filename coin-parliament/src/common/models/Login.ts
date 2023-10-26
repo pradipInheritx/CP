@@ -82,6 +82,12 @@ export const LoginAuthProvider = async (
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
+
     const isFirstLogin = getAdditionalUserInfo(result)
     const userRef = doc(db, "users", user.uid);
     const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
@@ -188,6 +194,12 @@ export const LoginRegular = async (
     );
     const isFirstLogin = getAdditionalUserInfo(userCredential)
     console.log(isFirstLogin?.isNewUser, "userCredential")
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
+
     // console.log('firsttimelogin',isFirstLogin)    
     if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {

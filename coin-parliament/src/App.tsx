@@ -189,7 +189,7 @@ function App() {
       }
     }
   }
-  
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -438,12 +438,16 @@ function App() {
       }
 
     }
+    if (auth?.currentUser) {
+      setLogin(false);
+    }
+
     // return () => {
     //   for (let i = 0; i < buttons.length; i++) {
     //     buttons[i].removeEventListener('click', handleSoundClick);
     //   }
     // }
-  }, [location, search]);
+  }, [location, search, JSON.stringify(auth?.currentUser)]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -590,7 +594,7 @@ function App() {
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
 
- 
+
 
   const [searchParams] = useSearchParams();
   useEffect(() => {
@@ -648,9 +652,9 @@ function App() {
             }}
           >
             <AppContext.Provider
-                value={{
-                  withLoginV2e,
-                  setWithLoginV2e,
+              value={{
+                withLoginV2e,
+                setWithLoginV2e,
                 showMenubar,
                 setShowMenuBar,
                 firstTimeAvatarSlection,
@@ -812,6 +816,12 @@ function App() {
                             login={login || firstTimeLogin ? "true" : "false"}
                           // width={width}
                           >
+                            {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                              <Login2fa
+                                setLogin={setLogin}
+                                setMfaLogin={setMfaLogin}
+                              />
+                            )}
 
                             <Header
                               remainingTimer={remainingTimer}
@@ -915,15 +925,15 @@ function App() {
                                     }}
                                   />
                                 )}
-                                {(user || userInfo?.uid) && login && (
+                                {/* {(user || userInfo?.uid) && login && (
                                   <Login2fa
                                     setLogin={setLogin}
                                     setMfaLogin={setMfaLogin}
                                   />
-                                )}
-                                {!login &&
+                                )} */}
+                                {(!login &&
                                   !firstTimeAvatarSlection &&
-                                  !firstTimeFoundationSelection && (
+                                  !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') !== 'true') && (
                                     <>
                                       <Container
                                         fluid
@@ -1115,11 +1125,11 @@ function App() {
                                           path='privacy'
                                           element={<PrivacyPolicy />}
                                         />  */}
-                                         <Route
-                                          path='/terms-and-condition'
-                                          element={<TermsAndConditions />}
-                                        />
-                                        {/* {localhost && user && (
+                                          <Route
+                                            path='/terms-and-condition'
+                                            element={<TermsAndConditions />}
+                                          />
+                                          {/* {localhost && user && (
                                           <Route
                                             path='admin'
                                             element={<Admin />}
