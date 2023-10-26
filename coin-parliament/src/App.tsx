@@ -367,15 +367,15 @@ function App() {
     return () => window.removeEventListener("transitionend", handler);
   }, []);
   // @ts-ignore
-  useEffect(() => {
-    const isMFAPassed = window.localStorage.getItem('mfa_passed')
-    if (isMFAPassed == 'true' && !login) {
+  // useEffect(() => {
+  //   const isMFAPassed = window.localStorage.getItem('mfa_passed')
+  //   if (isMFAPassed == 'true' && !login) {
 
-      console.log('2faCalled')
-      // @ts-ignore
-      Logout(setUser)
-    }
-  }, [])
+  //     console.log('2faCalled')
+  //     // @ts-ignore
+  //     Logout(setUser)
+  //   }
+  // }, [])
 
 
   const onClick = (evt: any) => {
@@ -450,12 +450,10 @@ function App() {
       }
 
     }
-    // return () => {
-    //   for (let i = 0; i < buttons.length; i++) {
-    //     buttons[i].removeEventListener('click', handleSoundClick);
-    //   }
-    // }
-  }, [location, search]);
+    if (auth?.currentUser) {
+      setLogin(false);
+    }
+  }, [location, search, JSON.stringify(auth?.currentUser)]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -475,7 +473,7 @@ function App() {
   useEffect(() => {
     pwaInstallHandler.addListener((canInstall) => {
 
-      console.log(canInstall,"canInstall")
+      console.log(canInstall, "canInstall")
       canInstall ? setPwaPopUp('block') : setPwaPopUp('none')
     })
 
@@ -856,9 +854,9 @@ function App() {
             }}
           >
             <AppContext.Provider
-                value={{
-                  withLoginV2e,
-                  setWithLoginV2e,
+              value={{
+                withLoginV2e,
+                setWithLoginV2e,
                 followerUserId,
                 setFollowerUserId,
                 singalCardData,
@@ -1127,15 +1125,15 @@ function App() {
                                     }}
                                   />
                                 )}
-                                {(user || userInfo?.uid) && login && (
+                                {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
                                   <Login2fa
                                     setLogin={setLogin}
                                     setMfaLogin={setMfaLogin}
                                   />
                                 )}
-                                {!login &&
+                                {(!login &&
                                   !firstTimeAvatarSlection &&
-                                  !firstTimeFoundationSelection && (
+                                  !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') !== 'true') && (
                                     <>
                                       <Container
                                         fluid

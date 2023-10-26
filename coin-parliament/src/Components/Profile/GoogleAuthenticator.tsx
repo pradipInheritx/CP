@@ -129,7 +129,7 @@ const GoogleAuthenticator = () => {
         else {
           showToast(data.data.result.message, ToastType.ERROR);
         }
-      });      
+      });
     } catch (error: any) {
       showToast(error.response.data.message, ToastType.ERROR);
       console.error(error.response);
@@ -286,7 +286,7 @@ const GoogleAuthenticator = () => {
                               <li>Install an Authenticator App on your mobile device.</li>
                               <li>Scan the QR code or type in the code manually on your mobile device</li>
                               <li>Write down or save the secret code in case you loss your device.</li>
-                              <li>Do not ever share your secret code with anyone. We will never ask for your secret code.</li>                            
+                              <li>Do not ever share your secret code with anyone. We will never ask for your secret code.</li>
                             </ul>
                           </div>
                         </div>
@@ -322,17 +322,18 @@ const GoogleAuthenticator = () => {
                                 position: "relative",
                               }}
                             >
-
-                              <img
+                              {qrCodeDataUrl && <>
+                                <img
                                   src={BigLogo}
-                                alt="QR code for Google Authenticator"
-                                style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
-                              />
-                              <img
-                                src={qrCodeDataUrl}
-                                alt="QR code for Google Authenticator"
-                                style={{ maxWidth: "300px" }}
-                              />
+                                  alt="QR code for Google Authenticator"
+                                  style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
+                                />
+                                <img
+                                  src={qrCodeDataUrl}
+                                  alt="QR code for Google Authenticator"
+                                  style={{ maxWidth: "300px" }}
+                                />
+                              </>}
 
                               {/* <div className='mt-2'
                                   style={{

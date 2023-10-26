@@ -242,6 +242,7 @@ const Header = ({
           .then((res) => {
             // console.log("logout", res);
             Logout(setUser);
+            navigate('/')
             setLogin(true);
           })
           .catch((error) => {
