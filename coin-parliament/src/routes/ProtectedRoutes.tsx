@@ -25,7 +25,7 @@ const ProtectedRoutes = () => {
         });
 
     }, [JSON.stringify(auth.currentUser)]);
-    return !loading ? (checkAuth ? <Outlet /> : <Navigate to={'/login'} />) : <></>;
+    return (!loading && localStorage.getItem('mfa_passed') !== 'true') ? (checkAuth ? <Outlet /> : <Navigate to={'/login'} />) : <></>;
 }
 
 export default ProtectedRoutes;

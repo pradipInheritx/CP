@@ -791,12 +791,6 @@ function App() {
                         >
 
 
-                          {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
-                            <Login2fa
-                              setLogin={setLogin}
-                              setMfaLogin={setMfaLogin}
-                            />
-                          )}
 
                           <Container
                             fluid
@@ -809,6 +803,13 @@ function App() {
                             }}
                           >
                             <Header />
+                            {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                              <Login2fa
+                                setLogin={setLogin}
+                                setMfaLogin={setMfaLogin}
+                              />
+                            )}
+
                             <Routes>
                               <Route path='/login' element={!userInfo ?
                                 <LoginAndSignup
