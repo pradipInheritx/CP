@@ -384,15 +384,16 @@ function App() {
     return () => window.removeEventListener("transitionend", handler);
   }, []);
   // @ts-ignore
-  useEffect(() => {
-    const isMFAPassed = window.localStorage.getItem('mfa_passed')
-    if (isMFAPassed == 'true' && !login) {
+  // 2fa problem solve
+  // useEffect(() => {
+  //   const isMFAPassed = localStorage.getItem('mfa_passed')
+  //   if (isMFAPassed == 'true' && !login) {
 
-      console.log('2faCalled')
-      // @ts-ignore
-      Logout(setUser)
-    }
-  }, [])
+  //     console.log('2faCalled')
+  //     // @ts-ignore
+  //     Logout(setUser)
+  //   }
+  // }, [])
 
   const onClick = (evt: any) => {
     // evt.preventDefault();
@@ -448,12 +449,6 @@ function App() {
     }
   }, [user, userInfo]);
   useEffect(() => {
-    // const buttons = document.getElementsByTagName('button');
-    // console.log('buttondata',buttons);
-    // for (let i = 0; i < buttons.length; i++) {
-    //   buttons[i].addEventListener('click', handleSoundClick);
-    // }
-
     const refer = new URLSearchParams(search).get("refer");
     if (refer && !user) {
       setLogin(false);
@@ -465,14 +460,11 @@ function App() {
         setLogin(false);
         setSignup(false);
       }
-
     }
-    // return () => {
-    //   for (let i = 0; i < buttons.length; i++) {
-    //     buttons[i].removeEventListener('click', handleSoundClick);
-    //   }
-    // }
-  }, [location, search]);
+    if (auth?.currentUser) {
+      setLogin(false);
+    }
+  }, [location, search, JSON.stringify(auth?.currentUser)]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -1292,9 +1284,9 @@ function App() {
               }}
             >
               <AppContext.Provider
-                  value={{
-                    withLoginV2e,
-                    setWithLoginV2e,
+                value={{
+                  withLoginV2e,
+                  setWithLoginV2e,
                   transactionId,
                   setTransactionId,
                   setBackgrounHide,
@@ -1480,7 +1472,14 @@ function App() {
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
                             >
+                              {console.log((user || userInfo?.uid), localStorage.getItem('mfa_passed'), login, 'hello')}
 
+                              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                                <Login2fa
+                                  setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
+                                />
+                              )}
                               <Header
                                 remainingTimer={remainingTimer}
                                 logo={
@@ -1579,15 +1578,15 @@ function App() {
                                       }}
                                     />
                                   )}
-                                  {(user || userInfo?.uid) && login && (
+                                  {/* {(user || userInfo?.uid) && login && (
                                     <Login2fa
                                       setLogin={setLogin}
                                       setMfaLogin={setMfaLogin}
                                     />
-                                  )}
-                                  {!login &&
+                                  )} */}
+                                  {(!login &&
                                     !firstTimeAvatarSlection &&
-                                    !firstTimeFoundationSelection && (
+                                    !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>
                                         <Container
                                           fluid
