@@ -149,7 +149,7 @@ const Login2fa = ({
     <Stack
       gap={2}
       className=' justify-content-center'
-      style={{ height: "100vh", background: "var(--light-purple)" }}
+      style={{ height: "91.5vh", background: "var(--light-purple)" }}
     >
       <div className=''>
         <div className=''>
