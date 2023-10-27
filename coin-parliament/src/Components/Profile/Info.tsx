@@ -32,7 +32,11 @@ type InfoProps = {
 const Info = ({ friends, cpm }: InfoProps) => {
   const translate = useTranslation();
   return (
-    <Box className="mx-auto d-flex justify-content-around text-white" style={{ width: window.screen.width < 979 ? '322px' : '40%', backgroundColor: "rgba(84, 60, 214, 0.40)" }}>
+    <Box className="mx-auto d-flex justify-content-around text-white"
+      style={{
+        width: window.screen.width < 979 ? '322px' : '40%',
+        backgroundColor: "rgba(84, 60, 214, 0.40)"
+      }}>
       <div>
         <PurpleText className="d-inline-block fw-bold me-1">
           {friends}
