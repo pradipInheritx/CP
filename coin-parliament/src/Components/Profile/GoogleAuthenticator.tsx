@@ -72,6 +72,7 @@ const GoogleAuthenticator = () => {
   const [secretKey, setSecretKey] = useState<string>("");
   const auth = getAuth();
   const [copied, setCopied] = useState(false);
+
   useEffect(() => {
     // @ts-ignore
     if (userInfo?.googleAuthenticatorData?.otp_auth_url) {
@@ -117,9 +118,8 @@ const GoogleAuthenticator = () => {
           userType: "USER",
         }
       }).then((data) => {
-        console.log(data.data.result,"dataresult");
-        if (data.data.result.status)
-        {
+        console.log(data.data.result, "dataresult");
+        if (data.data.result.status) {
           const newUserInfo = {
             ...(userInfo as UserProps),
             mfa: true as boolean,
@@ -128,10 +128,10 @@ const GoogleAuthenticator = () => {
           showToast("2FA enabled successfully.", ToastType.SUCCESS);
         }
         else {
-          showToast(data.data.result.message, ToastType.ERROR);    
+          showToast(data.data.result.message, ToastType.ERROR);
         }
       });
-      
+
     } catch (error: any) {
       showToast(error.response.data.message, ToastType.ERROR);
       console.error(error.response);
@@ -289,7 +289,7 @@ const GoogleAuthenticator = () => {
                               <li>Scan the QR code or type in the code manually on your mobile device</li>
                               <li>Write down or save the secret code in case you loss your device.</li>
                               <li>Do not ever share your secret code with anyone. We will never ask for your secret code.</li>
-                               
+
                             </ul>
                           </div>
                         </div>
@@ -327,7 +327,7 @@ const GoogleAuthenticator = () => {
                             >
 
                               <img
-                                  src={BigLogo}
+                                src={BigLogo}
                                 alt="QR code for Google Authenticator"
                                 style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
                               />

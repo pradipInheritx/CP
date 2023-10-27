@@ -20,7 +20,7 @@ import { FormEvent } from "react";
 import { Callback } from "./utils";
 import { ToastType } from "../../Contexts/Notification";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
-import {  saveUsername } from "../../Contexts/User";
+import { saveUsername } from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -49,7 +49,8 @@ export const Logout = (setUser?: () => void) => {
   const auth = getAuth();
   signOut(auth)
     .then(() => {
-      if (setUser){        
+      if (setUser) {
+        window.localStorage.setItem('mfa_passed', 'false');
         setUser();
       }
     })
@@ -66,49 +67,55 @@ export const LoginAuthProvider = async (
     content: ToastContent,
     type?: ToastType,
     options?: ToastOptions | undefined,
-   
+
   ) => void,
-  setSmsVerification?:(s:string)=>void,
-  callback?:(s:any)=>void,
-  refer?:any,
+  setSmsVerification?: (s: string) => void,
+  callback?: (s: any) => void,
+  refer?: any,
 ) => {
   const auth = getAuth();
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
     const isFirstLogin = getAdditionalUserInfo(result)
     const userRef = doc(db, "users", user.uid);
-      const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
-      const info = userinfo.data();
+    const userinfo = await getDoc<UserProps>(userRef.withConverter(userConverter));
+    const info = userinfo.data();
     // await sendEmail().then(()=>console.log('welcome mail')).catch(err=>console.log('welcome error',err))
-    if(callback){
-      
+    if (callback) {
+
       // console.log('callback called for refeer',user)
-      callback({parent: refer, child: user.uid})
+      callback({ parent: refer, child: user.uid })
     }
 
     if (isFirstLogin?.isNewUser) {
-      saveUsername(user.uid,'','') 
+      saveUsername(user.uid, '', '')
 
-      const firstTimeLogin:Boolean=true
-     
+      const firstTimeLogin: Boolean = true
+
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
       console.log('firsttimelogin success')
-    
-    setTimeout(() => {
-      
-      setUser(user);
-    }, 100);
-    }else{
-   
-      console.log('user',info)
+
+      setTimeout(() => {
+
+        setUser(user);
+      }, 100);
+    } else {
+
+      console.log('user', info)
       // @ts-ignore
-      if(info?.mfa) {
-        
+      if (info?.mfa) {
+
         console.log('datacalled')
         // @ts-ignore
-        setSmsVerification(true)}
-    // setUser(user);
+        setSmsVerification(true)
+      }
+      // setUser(user);
 
     }
   } catch (e) {
@@ -117,40 +124,40 @@ export const LoginAuthProvider = async (
       // The user is a multi-factor user. Second factor challenge is required.
       // @ts-ignore
       const resolver = getMultiFactorResolver(auth, e);
-      
+
       const phoneInfoOptions = {
         multiFactorHint: resolver?.hints[0],
         session: resolver?.session
-    };
-    // console.log('phonebook',phoneInfoOptions)
-    const phoneAuthProvider = new PhoneAuthProvider(auth);
-    const recaptchaVerifier = new RecaptchaVerifier(
-      "loginId",
-      {
-        size: "invisible",
-        callback: function () {
-          // reCAPTCHA solved, you can proceed with
-          // phoneAuthProvider.verifyPhoneNumber(...).
-          // onSolvedRecaptcha();
-         
+      };
+      // console.log('phonebook',phoneInfoOptions)
+      const phoneAuthProvider = new PhoneAuthProvider(auth);
+      const recaptchaVerifier = new RecaptchaVerifier(
+        "loginId",
+        {
+          size: "invisible",
+          callback: function () {
+            // reCAPTCHA solved, you can proceed with
+            // phoneAuthProvider.verifyPhoneNumber(...).
+            // onSolvedRecaptcha();
+
+          },
         },
-      },
-      auth
-    );
-    // console.log('captcha',recaptchaVerifier)
-phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
-    .then(function (verificationId) {
-       // @ts-ignore
-      setSmsVerification({verificationId,resolver})
-      
-        // verificationId will be needed for sign-in completion.
-    }).catch(err=>console.log('captcha',err));
-    //   ...
-  }
-  else{
-    const errorMessage = (e as Error).message;
-    showToast(errorMessage, ToastType.ERROR);
-  }
+        auth
+      );
+      // console.log('captcha',recaptchaVerifier)
+      phoneAuthProvider.verifyPhoneNumber(phoneInfoOptions, recaptchaVerifier)
+        .then(function (verificationId) {
+          // @ts-ignore
+          setSmsVerification({ verificationId, resolver })
+
+          // verificationId will be needed for sign-in completion.
+        }).catch(err => console.log('captcha', err));
+      //   ...
+    }
+    else {
+      const errorMessage = (e as Error).message;
+      showToast(errorMessage, ToastType.ERROR);
+    }
   }
 };
 
@@ -177,26 +184,30 @@ export const LoginRegular = async (
       email,
       password
     );
-    
+    if (auth?.currentUser?.photoURL === 'mfa') {
+      localStorage.setItem('mfa_passed', 'true');
+    } else {
+      localStorage.setItem('mfa_passed', 'false');
+    }
     const isFirstLogin = getAdditionalUserInfo(userCredential)
-console.log('firsttimelogin',isFirstLogin)
-    if(auth?.currentUser?.emailVerified){
+    console.log('firsttimelogin', isFirstLogin)
+    if (auth?.currentUser?.emailVerified) {
       if (isFirstLogin?.isNewUser) {
-        saveUsername(userCredential?.user?.uid,'','')
+        saveUsername(userCredential?.user?.uid, '', '')
 
-        const firstTimeLogin:Boolean=true
+        const firstTimeLogin: Boolean = true
         const userRef = doc(db, "users", userCredential?.user?.uid);
         await setDoc(userRef, { firstTimeLogin }, { merge: true });
         console.log('firsttimelogin success')
         // await sendEmail();
-      setTimeout(() => {
-        callback.successFunc(userCredential.user) 
-      }, 100);
-      }else{
-        callback.successFunc(userCredential.user) 
+        setTimeout(() => {
+          callback.successFunc(userCredential.user)
+        }, 100);
+      } else {
+        callback.successFunc(userCredential.user)
       }
-     }
-    else  callback.errorFunc({message:'Please verify your email first.'} as Error);
+    }
+    else callback.errorFunc({ message: 'Please verify your email first.' } as Error);
   } catch (e) {
     callback.errorFunc(e as Error);
   }
@@ -240,9 +251,9 @@ export const SignupRegular = async (
     );
 
     // @ts-ignore
-        await sendEmailVerification(auth?.currentUser).then((data) => {
-          showToast("Successfully sent  verification link on your mail");
-        });
+    await sendEmailVerification(auth?.currentUser).then((data) => {
+      showToast("Successfully sent  verification link on your mail");
+    });
     const firstTimeLogin: Boolean = true
     // @ts-ignore
 
