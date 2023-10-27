@@ -879,7 +879,6 @@ function App() {
 
   const [enabled, enable] = useState(true);
   const [password, setPassword] = useState("");
-
   function connect() {
     if (Object.keys(coins).length === 0) return
     console.log('Browser window called')
@@ -887,6 +886,7 @@ function App() {
     console.log('websocket connected first time')
     const coinTikerList = Object.keys(coins).map(item => `${item.toLowerCase()}usdt@ticker`)
     ws.onopen = () => {
+      console.log('WebSocket Open');
       setSocketConnect(true)
       ws.send(JSON.stringify({
         method: 'SUBSCRIBE',
@@ -894,22 +894,10 @@ function App() {
         id: 1
       }));
     };
-
-    socket = new WebSocket('wss://stream.crypto.com/v2/market');
-
-    socket.onopen = () => {
-      const req = {
-        id: 1,
-        method: 'subscribe',
-        params: {
-          channels: ['ticker.CRO_USDT'],
-        },
-      };
-      socket.send(JSON.stringify(req));
-    };
     ws.onclose = (event: any) => {
-      if (!login) window.location.reload()
-      console.log('WebSocket connection closed');
+      setSocketConnect(false);
+      // if (!login) window.location.reload()
+      console.log('WebSocket connection closed', event);
       if (event.code !== 1000) {
         console.log('WebSocket Attempting to reconnect in 5 seconds...');
         setTimeout(() => {
@@ -922,22 +910,50 @@ function App() {
       if (!login) window.location.reload()
       console.log('WebSocket connection occurred');
     };
+
+    socket = new WebSocket('wss://stream.crypto.com/v2/market');
+    socket.onopen = () => {
+      console.log('WebSocket Open');
+      const req = {
+        id: 1,
+        method: 'subscribe',
+        params: {
+          channels: ['ticker.CRO_USDT'],
+        },
+      };
+      socket.send(JSON.stringify(req));
+    };
+    socket.onclose = (event: any) => {
+      // if (!login) window.location.reload()
+      console.log('WebSocket connection closed crypto', event);
+      if (event.code !== 1000) {
+        console.log('WebSocket Attempting to reconnect in 5 seconds... crypto');
+        setTimeout(() => {
+          connect();
+        }, 5000);
+      }
+    };
+
+    socket.onerror = () => {
+      if (!login) window.location.reload()
+      console.log('WebSocket connection occurred crypto');
+    };
+
     const timeout = 30000; // 30 seconds
     let timeoutId: any;
     const checkConnection = () => {
-      if (ws.readyState !== WebSocket.OPEN) {
+      if (ws.readyState !== WebSocket.OPEN || socket.readyState !== WebSocket.OPEN) {
         console.log('WebSocket connection timed out');
         clearInterval(timeoutId);
         connect();
       }
     };
     timeoutId = setInterval(checkConnection, timeout);
-  }
 
+  }
   useEffect(() => {
 
     connect();
-
     return () => {
       if (ws) ws.close();
       if (socket) socket.close();
@@ -951,30 +967,30 @@ function App() {
 
   //   }
   // }, [])
-  // useEffect(() => {
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   return () => {
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //   }
-  // }, []);
+  useEffect(() => {
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }
+  }, []);
 
-  // const handleVisibilityChange = () => {
-  //   const isIPhone = /iPhone/i.test(navigator.userAgent);
+  const handleVisibilityChange = () => {
+    const isIPhone = /iPhone/i.test(navigator.userAgent);
 
-  //   if (isIPhone) {
-  //     console.log('This is an iPhone');
-  //   } else {
-  //     console.log('This is not an iPhone');
-  //   }
-  //   if (document.hidden) {
-  //     console.log("Browser window is minimized");
-  //     ws.close();
-  //     socket.close();
-  //   } else {
-  //     connect();
-  //     console.log("Browser window is not minimized");
-  //   }
-  // }
+    if (isIPhone) {
+      console.log('This is an iPhone');
+    } else {
+      console.log('This is not an iPhone');
+    }
+    if (document.hidden) {
+      console.log("Browser window is minimized");
+      ws.close();
+      socket.close();
+    } else {
+      connect();
+      console.log("Browser window is not minimized");
+    }
+  }
   const checkprice = async (vote: any) => {
     console.log(vote, "checkAllvote")
     const voteCoins = vote?.coin.split("-");
@@ -1432,6 +1448,7 @@ function App() {
                       setChangePrice,
                       ws,
                       socket,
+                      socketConnect,
                       rest,
                       coins,
                       setCoins,
@@ -1472,7 +1489,6 @@ function App() {
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
                             >
-                              {console.log((user || userInfo?.uid), localStorage.getItem('mfa_passed'), login, 'hello')}
 
                               {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
                                 <Login2fa

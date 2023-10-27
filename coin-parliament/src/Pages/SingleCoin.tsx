@@ -70,7 +70,7 @@ const SingleCoin = () => {
   const translate = useTranslation();
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const { user, userInfo, votesLast24Hours } = useContext(UserContext);
-  const { coins, setCoins, myCoins, setMyCoins, totals, ws, socket } = useContext(CoinContext);
+  const { coins, setCoins, myCoins, setMyCoins, totals, ws, socket, socketConnect } = useContext(CoinContext);
   const { showModal } = useContext(NotificationContext);
   const [vote, setVote] = useState<VoteResultProps>({} as VoteResultProps);
   const [voteId, setVoteId] = useState<string>();
@@ -172,7 +172,7 @@ const SingleCoin = () => {
     };
 
 
-  }, [ws])
+  }, [ws, socketConnect])
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
@@ -190,7 +190,7 @@ const SingleCoin = () => {
       }
     };
 
-  }, [socket])
+  }, [socket, socketConnect])
   const getCpviData = useCallback(async () => {
 
     if (voteId) {
