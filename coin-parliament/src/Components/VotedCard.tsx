@@ -528,7 +528,7 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
             <div
               style={{
                 // border: "1px solid red",
-                padding: `0em 0em 4em 0em`,
+                padding: `0em 0em 3em 0em`,
                 height: "1.4em",
                 paddingTop: '1em'
               }}
