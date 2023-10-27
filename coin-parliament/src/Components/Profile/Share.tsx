@@ -296,7 +296,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
           style={{
             fontSize: `${window.screen.width > 767 ? "4rem" : "3.5rem"}`,
         }}
-        >We believe in Ambassadorships!</H2>
+        >BECOME AMBASSADOR</H2>
           </div>
           <div className="pt-5 text-center">
         <span
