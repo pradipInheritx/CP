@@ -36,6 +36,21 @@ const I = styled.i`
   cursor: pointer;
   font-size:22px;
 `;
+
+const H2 = styled.h2`
+color: #e6d348;
+letter-spacing:5px;
+  -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+  // -webkit-text-stroke-width: 3px;
+  background: -webkit-linear-gradient(180deg, rgba(243,236,60,1) 0%, rgba(212,176,92,1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 5px transparent;
+  text-transform: uppercase;  
+  text-shadow: 0px 1px 3px 0px #5B03FF;
+  font-family: 'Lilita One';
+  text-align: center;
+`;
+
 type ShareAndEarnProps = {
   url: string;
   text: string;
@@ -51,7 +66,9 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
   return (
     <PoolBox>
       <div className="d-flex justify-content-center">
-        <span className={classes.headerTitle}>We believe in Ambassadorships!</span>
+        <H2
+          // className={classes.headerTitle}        
+        >We believe in Ambassadorships!</H2>
       </div>
       <div className="d-flex justify-content-center pt-5 text-center">
         <span className={classes.shareSubHeaderText} style={{ color: '#FEFEFE' }}>Invite your friends to become </span>
