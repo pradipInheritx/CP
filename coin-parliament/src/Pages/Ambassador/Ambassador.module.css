@@ -1,6 +1,9 @@
 .AmbassadorMain{
     background-color: #160133;
 }
+.AmbassadorMainNew{
+    background-color: #160133;
+}
 
 @media(max-width: 750px) {
     .stepContainer{
@@ -79,7 +82,8 @@
 }
 .textsomechange span{
     font-size: 1.2em;
-    color:#5e4be2;
+    color:#ffd02c;
+    font-weight: 700;
 }
 
 .headerTitle{
@@ -93,8 +97,10 @@
     line-height: normal;
     letter-spacing: 0.0375rem;
     text-transform: uppercase;
-    margin-top:2.6em;
+    margin-top:0.5em;
 }
+
+
 
 .subHeaderText{
     background: linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%);
@@ -119,6 +125,7 @@
     line-height: 2;
 }
 .footerText{
+    
     text-align:center;
     color: #FEFEFE;
     text-shadow: 0px 1px 3px #5B03FF;
@@ -129,6 +136,21 @@
     line-height: normal;
     letter-spacing: 0.0375rem;
     margin-top:2.6em;
+}
+
+.footerAmb{
+    color: #e6d348;
+letter-spacing:2px;
+
+  -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+  background: -webkit-linear-gradient(180deg, rgba(243,236,60,1) 0%, rgba(212,176,92,1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 3px transparent;
+  /* text-transform: uppercase;   */
+  text-shadow: 0px 1px 3px 0px #5B03FF;
+  font-family: 'Lilita One';
+  text-align: center;
+  font-size: 1.2rem;
 }
 .foreverText{
     color: #FEFEFE;

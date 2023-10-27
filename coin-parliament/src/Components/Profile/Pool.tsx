@@ -6,6 +6,8 @@ import Info from "./Info";
 import { getUsers } from "./Follow";
 import { Leader } from "../../Contexts/CoinsContext";
 import PoolMiningCard from "./PoolMiningCard";
+import VBG from "../../assets/images/VBG.png"
+import VBGM from "../../assets/images/VBGM.png"
 
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
@@ -22,10 +24,18 @@ const Pool = () => {
   return (
     <>
       <div className={`${window.screen.width > 767 ? "pt-4" : ""}`}
-        style={{
-          backgroundColor: "rgb(22, 1, 51)",
-        }}
-
+        // style={{
+        //   backgroundColor: "rgb(22, 1, 51)",
+        // }}
+      style={{
+        // backgroundColor: '#160133'
+        backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})`}`,
+        backgroundRepeat: `${window.screen.width > 767 ? "repeat" : "repeat"}`,
+        backgroundPosition: "0 0 0 0",
+        backgroundSize: "100%",
+        // backgroundSize: "cover",
+        // backgroundAttachment: "fixed",
+      }}
       >
         <div className="mb-3">
           <Share
