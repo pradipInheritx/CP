@@ -162,7 +162,7 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
               marginLeft: "16px"
             }}
           >
-            <Image src={v2elogo} alt=""  width={"25px"} className="pl-3"/>
+            <Image src={v2elogo} alt=""  width={"25px"} height={"25px"} className="pl-3"/>
             <ContinueWith>Login with VoteToEarn</ContinueWith>
           </div>}
         </LoginButton>
