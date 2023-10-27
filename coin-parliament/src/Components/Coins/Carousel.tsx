@@ -210,7 +210,7 @@ const Carousel = ({
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       const symbol = message?.s?.slice(0, -4)
-      // console.log(message, 'socket');
+      console.log(message, 'socket');
       if (symbol) {
 
         // @ts-ignore
