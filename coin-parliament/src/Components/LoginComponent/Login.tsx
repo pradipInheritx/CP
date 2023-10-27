@@ -153,7 +153,7 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
               marginLeft: "16px"
             }}
           >
-            <Image src={logo} alt="" width={"25px"} className="pl-3" />
+            <Image src={logo} alt="" width={"25px"} height={"25px"} className="pl-3" />
             <ContinueWith>Login With Stock Parliament</ContinueWith>
           </div>}
 
