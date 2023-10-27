@@ -32,6 +32,7 @@ const Pool = () => {
           backgroundSize: "100%",
           // backgroundSize: "cover",
           backgroundAttachment: "fixed",
+          
         }}
       
       >
