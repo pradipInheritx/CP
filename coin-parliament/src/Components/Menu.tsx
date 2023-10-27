@@ -105,6 +105,7 @@ const navigate = useNavigate();
   };
   const translate = useTranslation();
   
+  
 
   const desktop = width && width > 979;
   return (
