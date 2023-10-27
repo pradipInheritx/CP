@@ -34,7 +34,7 @@ const SinglePair = () => {
 
   console.log(params, "myParams")
   const translate = useTranslation();
-  const { coins, setCoins, setMyCoins, totals, ws, socket, myCoins } = useContext(CoinContext);
+  const { coins, setCoins, setMyCoins, totals, ws, socket, myCoins, socketConnect } = useContext(CoinContext);
   const [symbol1, symbol2] = (params?.id || "").split("-");
   const [coin1, coin2] = [coins[symbol1], coins[symbol2]];
   const { user, userInfo, votesLast24Hours } = useContext(UserContext);
@@ -135,7 +135,7 @@ const SinglePair = () => {
     };
 
 
-  }, [ws])
+  }, [ws, socketConnect])
   useEffect(() => {
     if (!socket) return
     socket.onmessage = (event) => {
@@ -153,7 +153,7 @@ const SinglePair = () => {
       }
     };
 
-  }, [socket])
+  }, [socket, socketConnect])
   useEffect(() => {
     if (vote.timeframe) {
       getCpviData().then((data) => data && setPct(Number(data.data)));
@@ -353,7 +353,7 @@ const SinglePair = () => {
                 />
               </CardContainer>
               <Container>
-                <div>                  
+                <div>
                   {canVote && (
                     <>
                       {loading ? (
@@ -374,7 +374,7 @@ const SinglePair = () => {
                       )}
                     </>
                   )}
-                </div>                
+                </div>
                 <div className="text-center">
                   {/* @ts-ignore */}
                   {!graphLoading && !canVote && user && voteId && (
@@ -415,7 +415,7 @@ const SinglePair = () => {
                     //   setVoteDetails={setPairVoteDetails}
                     // />
                   }
-                  <div className="d-flex justify-content-center align-items-center mt-5 ">                    
+                  <div className="d-flex justify-content-center align-items-center mt-5 ">
                     <Link to="" style={{ textDecoration: 'none' }}>
                       <Other>
                         {user && !voteNumber && votingTimer && !!new Date(votingTimer).getDate() && false ?

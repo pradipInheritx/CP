@@ -528,11 +528,12 @@ export const MyCountdown = ({ expirationTime, vote, voteId, coins, symbol1, symb
             <div
               style={{
                 // border: "1px solid red",
-                padding: "0em 0em 4em 0em",
-                height: "1.4em"
+                padding: `0em 0em 4em 0em`,
+                height: "1.4em",
+                paddingTop: '1em'
               }}
             >
-              <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '1em', paddingLeft: '10px', zIndex: "2220px", fontSize: '1.5em' }}>
+              <span className="loading" style={{ color: "#7767f7", wordBreak: 'break-all', paddingTop: '3px', paddingLeft: '10px', zIndex: "2220px", fontSize: '1.6em' }}>
                 {texts.waitForIt}
               </span>
             </div>
