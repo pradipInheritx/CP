@@ -13,9 +13,8 @@
 
 
 /* .slick-slider{
-  
-  
-  
+  display: flex; 
+  justify-content: center;
 } */
 /* .slick-list{
   border:1px solid red;
@@ -68,12 +67,47 @@
   .front {
     width: 100%;
       z-index: 2;
-      transform: rotateY(0deg);              
+      transform: rotateY(0deg); 
+      margin: 0px 10px;  
+       border-radius:0px 0px 10px 10px;     
+      box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.22),
+1px 0px 0px 0px rgba(0,0,0,0.22),
+1px 2px 0px 0px rgba(0,0,0,0.22),
+2px 1px 0px 0px rgba(0,0,0,0.22),
+2px 3px 0px 0px rgba(0,0,0,0.22),
+3px 2px 0px 0px rgba(0,0,0,0.22),
+3px 4px 0px 0px rgba(0,0,0,0.22),
+4px 3px 0px 0px rgba(0,0,0,0.22),
+4px 5px 0px 0px rgba(0,0,0,0.22),
+5px 4px 0px 0px rgba(0,0,0,0.22),
+5px 6px 0px 0px rgba(0,0,0,0.22),
+6px 5px 0px 0px rgba(0,0,0,0.22),
+6px 7px 0px 0px rgba(0,0,0,0.22),
+7px 6px 0px 0px rgba(0,0,0,0.22),
+7px 8px 0px 0px rgba(0,0,0,0.22),
+8px 7px 0px 0px rgba(0,0,0,0.22) !important;
     }
 .back {
   width: 100%;
     transform: rotateY(-180deg);   
     font-size: 20px;
+    border-radius:0px 10px 10px 10px;     
+      box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.22),
+1px 0px 0px 0px rgba(0,0,0,0.22),
+1px 2px 0px 0px rgba(0,0,0,0.22),
+2px 1px 0px 0px rgba(0,0,0,0.22),
+2px 3px 0px 0px rgba(0,0,0,0.22),
+3px 2px 0px 0px rgba(0,0,0,0.22),
+3px 4px 0px 0px rgba(0,0,0,0.22),
+4px 3px 0px 0px rgba(0,0,0,0.22),
+4px 5px 0px 0px rgba(0,0,0,0.22),
+5px 4px 0px 0px rgba(0,0,0,0.22),
+5px 6px 0px 0px rgba(0,0,0,0.22),
+6px 5px 0px 0px rgba(0,0,0,0.22),
+6px 7px 0px 0px rgba(0,0,0,0.22),
+7px 6px 0px 0px rgba(0,0,0,0.22),
+7px 8px 0px 0px rgba(0,0,0,0.22),
+8px 7px 0px 0px rgba(0,0,0,0.22) !important;
 }
 .card-body{
   width: 100%;
