@@ -254,6 +254,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
         style={{
           minHeight: `${BigCard ? "430px" : "330px"}`,
           minWidth: `${BigCard ? "350px" : "250px"}`,
+          cursor: 'pointer',
         }}
       >
         <div className='front'>
@@ -327,15 +328,15 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </div>
               {/* <br /> */}
               <div className='card-body'
-                onMouseEnter={() => {
-                  if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
-                    console.log(MoveCard, "MoveCard")
-                    setFlip(false);
-                    if (flipCard != true) {
-                      cardFlip()
-                    }
-                  }
-                }}
+              // onMouseEnter={() => {
+              //   if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
+              //     console.log(MoveCard, "MoveCard")
+              //     setFlip(false);
+              //     if (flipCard != true) {
+              //       cardFlip()
+              //     }
+              //   }
+              // }}
               >
                 {VideoUrl && darkTheme ?
                   <Ratio
