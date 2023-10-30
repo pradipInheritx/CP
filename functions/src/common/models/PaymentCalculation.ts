@@ -38,6 +38,30 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
         return { status: false, result: error }
     }
 }
+export const callSmartContractPaymentFunction = async (transactionBody : PaymentBody):Promise<{
+    status :boolean,
+    result : any
+} | undefined>=>{
+try {
+    console.log("Start smart contract payment function");
+    
+    console.log("transactionBody : ",transactionBody);
+    const options = {
+        headers : {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
+        }
+    };
+    const transaction = await axios.post('https://console.dev.welldapp.io/api/callSmartContract', transactionBody, options);
+    
+    console.log("End smart contract payment function");
+    return {status : true, result : transaction.data}
+} catch (error) {
+    console.error("ERROR callSmartContractPaymentFunction : ", error);
+    console.log("End smart contract payment function");
+    return { status: false, result: error }
+}
+}
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
         const { userId, amount, transactionType, numberOfVotes, token } = userData;
@@ -102,7 +126,8 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                 const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
                 console.info("storeInParentData", storeInParentData)
                 const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
-                const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
+                // const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
+                const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
                 await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
             }
             console.info("getParentSettings", getParentSettings)
