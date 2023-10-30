@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import {Quote} from "../common/consts/contents";
+import { Quote } from "../common/consts/contents";
 import styled from "styled-components";
 import MyCarousel from "./Carousel/Carousel";
 import { useWindowSize } from "../hooks/useWindowSize";
@@ -15,7 +15,7 @@ const Container = styled.div`
 `;
 
 const Blockquote = styled.blockquote`
-  width: 220px;
+  width: ${window.screen.width > 767 ?"420px" :"220px"};
   margin: 0 auto;
   position: relative;
 `;
@@ -44,7 +44,7 @@ const ItemContainer = styled(Container)`
 `;
 
 const Text = styled.p`
-font-family: 'Kaushan Script', cursive;
+// font-family: 'Kaushan Script', cursive;
 font-size:17px;
 `;
 
@@ -57,11 +57,11 @@ const Source = styled.p`
 const Avatar = styled(Image)`
   border: 3px solid var(--blue-violet);
 `;
-const Item = ({quote}: { quote: Quote }) => {
+const Item = ({ quote }: { quote: Quote }) => {
   // const {width} = useWindowSize();
   return (
-    <ItemContainer className="h-100 d-flex justify-content-center align-items-center" style={{width:'330px'}}>
-        {/* <Avatar
+    <ItemContainer className="h-100 d-flex justify-content-center align-items-center" style={{ width: `${window.screen.width > 767 ?"530px":"330px"}` }}>
+      {/* <Avatar
             roundedCircle={true}
             src={importFile("./mystery", "png").default}
             alt="avatar"
@@ -75,15 +75,15 @@ const Item = ({quote}: { quote: Quote }) => {
   );
 };
 
-const Quotes = ({quotes}: { quotes?: Quote[] }) => {
-  const {width} = useWindowSize();
+const Quotes = ({ quotes }: { quotes?: Quote[] }) => {
+  const { width } = useWindowSize();
   const maxWidth = useMemo(() => getMaxWidth(window.screen.width), [window.screen.width]);
   return (
     <React.Fragment>
-      <CarouselContainer className="table-responsive m-auto overflow-hidden" style={{maxWidth}}>
-        {quotes && <MyCarousel  centerMode={false} items={1} quotes={true}>
+      <CarouselContainer className="table-responsive m-auto overflow-hidden" style={{ maxWidth }}>
+        {quotes && <MyCarousel centerMode={false} items={1} quotes={true} transitionDuration={10000}>
           {quotes?.map((quote, i) =>
-            <Item quote={quote} key={i}/>)}
+            <Item quote={quote} key={i} />)}
         </MyCarousel>}</CarouselContainer>
     </React.Fragment>
   )

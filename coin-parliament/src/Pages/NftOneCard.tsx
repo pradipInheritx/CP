@@ -22,17 +22,18 @@ import VideoPopup from "./VideoPopup";
 
 
 const Card = styled.div<{ darkTheme: boolean }>`
-
   border-radius: 0px 0px 8px 8px;
   text-transform: uppercase;
   font-size: 14px;
   line-height: 14px;
-
+  
   &.LEGENDARY {
     background-image: url(${props => !props.darkTheme && bkgnd4}) !important;
     color: #160133;
     border: #f5e7b5 solid 8px;
+    box-shadow: 0 0 20px 7px #f5e7b5;
     background-color: black;
+    
   }
   
 
@@ -40,18 +41,22 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd5}) !important;
     color: #160133;
     border: #d2d2d2 solid 8px;
-    background-color: black;
+    box-shadow: 0 0 20px 7px #d2d2d2;
+    background-color: black;    
+    
   }  
   &.EPIC {
     background-image: url(${props => !props.darkTheme && bkgnd3}) !important;
     color: #d4d0f3;
     border: #6352e8 solid 8px;
+    box-shadow: 0 0 20px 7px #6352e8;
     background-color: black;
   }
   &.UNCOMMON {
     background-image: url(${props => !props.darkTheme && bkgnd2}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
+    box-shadow: 0 0 20px 7px #d4d0f3;
     border-radius: 0px 0px 8px 8px;
     background-color: black;
   }
@@ -59,6 +64,7 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
+    box-shadow: 0 0 20px 7px #d4d0f3;
     border-radius: 0px 0px 8px 8px;
     background-color: black;
     
@@ -188,7 +194,10 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
 
   console.log(MintedTime, "MintedTimecheck")
   return (
-    <>
+    <div
+      className="d-flex justify-content-center"
+      
+    >
       <div
         // onMouseEnter={() => {
         //   console.log("Hello i am first")
@@ -254,10 +263,13 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
         style={{
           minHeight: `${BigCard ? "430px" : "330px"}`,
           minWidth: `${BigCard ? "350px" : "250px"}`,
+          cursor: 'pointer',          
         }}
       >
-        <div className='front'>
-          <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `} style={{
+        <div className='front'          
+        >
+          <Card darkTheme={darkTheme && !!VideoUrl} className={`shadow tex-center ${DivClass} ${Disable} `}
+            style={{
             // minHeight: "318px",
             // minWidth: "250px",
             minHeight: `${BigCard ? "418px" : "318px"}`,
@@ -265,7 +277,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
             backgroundColor: 'black !important',
             backgroundImage: (darkTheme ? 'none !important' : ''),
             color: (darkTheme ? "white" : ''),
-            position: "relative"
+            position: "relative",              
           }}>
             <div
             // style={{
@@ -274,7 +286,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
             //   height:" 39px",
             //   marginTop: "-10px",
             // }}
-
+              
             >
               {" "}
               <div className='d-flex justify-content-between'>
@@ -327,15 +339,15 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </div>
               {/* <br /> */}
               <div className='card-body'
-                onMouseEnter={() => {
-                  if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
-                    console.log(MoveCard, "MoveCard")
-                    setFlip(false);
-                    if (flipCard != true) {
-                      cardFlip()
-                    }
-                  }
-                }}
+              // onMouseEnter={() => {
+              //   if (Disable == "" || Disable == undefined && !MoveCard && window.screen.width > 767) {
+              //     console.log(MoveCard, "MoveCard")
+              //     setFlip(false);
+              //     if (flipCard != true) {
+              //       cardFlip()
+              //     }
+              //   }
+              // }}
               >
                 {VideoUrl && darkTheme ?
                   <Ratio
@@ -530,7 +542,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
         MintedTime={MintedTime}
         PrivateSerialNo={PrivateSerialNo}
       />}
-    </>
+    </div>
 
   );
 };
