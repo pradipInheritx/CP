@@ -39,8 +39,8 @@
   transform-style: preserve-3d;
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
-  margin: 10px;
+  justify-content: center;
+  margin: 10px 15px;
 }
 .flipped > .front {
       transform: rotateY(180deg);
@@ -70,7 +70,7 @@
       transform: rotateY(0deg); 
       margin: 0px 10px;  
        border-radius:0px 0px 10px 10px;     
-      box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.22),
+      /* box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.22),
 1px 0px 0px 0px rgba(0,0,0,0.22),
 1px 2px 0px 0px rgba(0,0,0,0.22),
 2px 1px 0px 0px rgba(0,0,0,0.22),
@@ -85,14 +85,15 @@
 6px 7px 0px 0px rgba(0,0,0,0.22),
 7px 6px 0px 0px rgba(0,0,0,0.22),
 7px 8px 0px 0px rgba(0,0,0,0.22),
-8px 7px 0px 0px rgba(0,0,0,0.22) !important;
+8px 7px 0px 0px rgba(0,0,0,0.22) !important; */
+box-shadow: 0px 5px 10px 5px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1) !important;
     }
 .back {
   width: 100%;
     transform: rotateY(-180deg);   
     font-size: 20px;
     border-radius:0px 10px 10px 10px;     
-      box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.22),
+      /* box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.22),
 1px 0px 0px 0px rgba(0,0,0,0.22),
 1px 2px 0px 0px rgba(0,0,0,0.22),
 2px 1px 0px 0px rgba(0,0,0,0.22),
@@ -107,7 +108,8 @@
 6px 7px 0px 0px rgba(0,0,0,0.22),
 7px 6px 0px 0px rgba(0,0,0,0.22),
 7px 8px 0px 0px rgba(0,0,0,0.22),
-8px 7px 0px 0px rgba(0,0,0,0.22) !important;
+8px 7px 0px 0px rgba(0,0,0,0.22) !important; */
+/* box-shadow: 0px 5px 10px 5px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1),0px 10px 15px -3px rgba(0,0,0,0.1) !important; */
 }
 .card-body{
   width: 100%;
