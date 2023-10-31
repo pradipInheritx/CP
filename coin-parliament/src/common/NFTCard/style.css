@@ -8,7 +8,7 @@
 }
 .card.common {
   /* border: #d4d0f3 solid 8px; */
-  border-image: linear-gradient(180deg, #B2B2B2 0.05%, #FFF 51.39%, #B2B2B2 99.94%) 30;     
+  border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;     
     border-width: 8px;
     border-style: solid;    
 }
@@ -26,7 +26,7 @@
 }
 .card.uncommon {
   /* border: #d4d0f3 solid 8px; */
-  border-image: linear-gradient(180deg, #B2B2B2 0.05%, #FFF 51.39%, #B2B2B2 99.94%) 30;     
+  border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;         
     border-width: 8px;
     border-style: solid;    
 }
