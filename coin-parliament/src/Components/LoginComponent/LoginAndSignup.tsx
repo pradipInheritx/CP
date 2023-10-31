@@ -19,7 +19,7 @@ import { ToastType } from "../../Contexts/Notification";
 import { useLocation } from "react-router-dom";
 import Refer from "../../Pages/Refer";
 import ForgetPassword from "./ForgetPassword";
-
+import { Buttons } from "../Atoms/Button/Button";
 const title = {
   [LoginModes.LOGIN]: texts.login,
   [LoginModes.SIGNUP]: texts.signUp,
@@ -79,7 +79,12 @@ const LoginAndSignup = ({
             ) : (
               <Styles.Title>{translate("Forget Password")}</Styles.Title>
             )}
-          </div> : forgetPassword ? <Styles.Title>{translate("Forget Password")}</Styles.Title> : signup ? <Styles.Title>{translate(title[mode])}</Styles.Title> : <Styles.Title>{translate("Login with VoteToEarn")}</Styles.Title>}
+          </div> : forgetPassword ? <Styles.Title>{translate("Forget Password")}</Styles.Title> : signup ? <Styles.Title>{translate(title[mode])}</Styles.Title> :
+            <div className="d-flex flex-column justify-content-center align-items-end">
+              <span className="material-icons-outlined" style={{ color: '#6352e8' }}>close</span>
+              <Styles.Title style={{ marginTop: '1em' }}>{translate("CONTINUE WITH VoteToEarn")}</Styles.Title>
+            </div>
+          }
 
           {mode === LoginModes.LOGIN && !forgetPassword && (
             <Login
@@ -90,6 +95,7 @@ const LoginAndSignup = ({
               login={loginAction}
             />
           )}
+
           {mode === LoginModes.LOGIN && forgetPassword && (
             <ForgetPassword
               setForgetPassword={setForgetPassword}
