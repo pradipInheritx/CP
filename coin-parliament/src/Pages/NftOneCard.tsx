@@ -57,16 +57,18 @@ const Card = styled.div<{ darkTheme: boolean }>`
   &.UNCOMMON {
     background-image: url(${props => !props.darkTheme && bkgnd2}) !important;
     color: #160133;        
-    border-image: linear-gradient(180deg, #B2B2B2 0.05%, #FFF 51.39%, #B2B2B2 99.94%) 30;     
+    border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;     
     border-width: 8px;
     border-style: solid;    
+    border-color: #D4D1F2;
+
     border-radius: 0px 0px 8px 8px;
     background-color: black;
   }
   &.COMMON {
     background-image: url(${props => !props.darkTheme && bkgnd}) !important;
     color: #160133;
-    border-image: linear-gradient(180deg, #B2B2B2 0.05%, #FFF 51.39%, #B2B2B2 99.94%) 30;     
+    border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;        
     border-width: 8px;
     border-style: solid;    
     border-radius: 0px 0px 8px 8px;
