@@ -31,9 +31,8 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd4}) !important;
     color: #160133;
     border: #f5e7b5 solid 8px;
-    box-shadow: 0 0 20px 7px #f5e7b5;
-    background-color: black;
-    
+    box-shadow: 0 0 10px #f5e7b5;
+    background-color: black;   
   }
   
 
@@ -41,22 +40,21 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd5}) !important;
     color: #160133;
     border: #d2d2d2 solid 8px;
-    box-shadow: 0 0 20px 7px #d2d2d2;
+    box-shadow: 0 0 10px #d2d2d2;
     background-color: black;    
-    
   }  
   &.EPIC {
     background-image: url(${props => !props.darkTheme && bkgnd3}) !important;
     color: #d4d0f3;
     border: #6352e8 solid 8px;
-    box-shadow: 0 0 20px 7px #6352e8;
+    box-shadow: 0 0 10px #6352e8;
     background-color: black;
   }
   &.UNCOMMON {
     background-image: url(${props => !props.darkTheme && bkgnd2}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
-    box-shadow: 0 0 20px 7px #d4d0f3;
+    box-shadow: 0 0 10px #d4d0f3;
     border-radius: 0px 0px 8px 8px;
     background-color: black;
   }
@@ -64,7 +62,7 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd}) !important;
     color: #160133;
     border: #d4d0f3 solid 8px;
-    box-shadow: 0 0 20px 7px #d4d0f3;
+    box-shadow: 0 0 10px #d4d0f3;
     border-radius: 0px 0px 8px 8px;
     background-color: black;
     
