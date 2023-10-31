@@ -15,7 +15,7 @@ const Container = styled.div`
 `;
 
 const Blockquote = styled.blockquote`
-  width: 220px;
+  width: ${window.screen.width > 767 ?"420px" :"220px"};
   margin: 0 auto;
   position: relative;
 `;
@@ -60,7 +60,7 @@ const Avatar = styled(Image)`
 const Item = ({ quote }: { quote: Quote }) => {
   // const {width} = useWindowSize();
   return (
-    <ItemContainer className="h-100 d-flex justify-content-center align-items-center" style={{ width: '330px' }}>
+    <ItemContainer className="h-100 d-flex justify-content-center align-items-center" style={{ width: `${window.screen.width > 767 ?"530px":"330px"}` }}>
       {/* <Avatar
             roundedCircle={true}
             src={importFile("./mystery", "png").default}

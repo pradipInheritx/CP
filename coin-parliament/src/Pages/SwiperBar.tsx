@@ -40,6 +40,7 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
       {
         breakpoint: 480,
         settings: {
+          centerMode: true,
           slidesToShow: 1,
           slidesToScroll: 1,
           initialSlide: 1,

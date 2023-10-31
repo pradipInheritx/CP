@@ -675,7 +675,7 @@ const VotingPaymentCopy: React.FC<{
 
                       }
                     >
-                      {!showOptionList && selectCoin != "none" ? `Pay ${payamount}$ using ${selectCoin}` : "Select coin"}
+                      {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"}
                     </div>
                     {showOptionList && (
                       <ul className="pay-select-options"
