@@ -1602,7 +1602,8 @@ function App() {
                                       setMfaLogin={setMfaLogin}
                                     />
                                   )} */}
-                                  {(!login &&
+                                  {console.log(!login, !firstTimeAvatarSlection, !firstTimeFoundationSelection, localStorage.getItem('mfa_passed'), 'hello')}
+                                  {(/* !login && */
                                     !firstTimeAvatarSlection &&
                                     !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>
