@@ -986,8 +986,8 @@ function App() {
     }
     if (document.hidden) {
       console.log("Browser window is minimized");
-      ws.close();
-      socket.close();
+      // ws.close();
+      // socket.close();
     } else {
       connect();
       console.log("Browser window is not minimized");
@@ -1602,7 +1602,7 @@ function App() {
                                       setMfaLogin={setMfaLogin}
                                     />
                                   )} */}
-                                  {(!login &&
+                                  {(/* !login && */
                                     !firstTimeAvatarSlection &&
                                     !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>
