@@ -109,6 +109,10 @@ const Dashboards = ({match}) => {
           component={lazy(() => import("./VoteSettings"))}
         />
         <Route
+          path={`${requestedUrl}/WalletDetails`}
+          component={lazy(() => import("./WalletDetails"))}
+        />
+        <Route
           path={`${requestedUrl}/returnsettings`}
           component={lazy(() => import("./ReturnSetting"))}
         />

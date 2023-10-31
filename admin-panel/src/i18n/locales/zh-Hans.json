@@ -703,6 +703,7 @@
   "sidebar.dashboard.votingpass": "Voting Pass",
   "sidebar.dashboard.rewardtransactions": "Reward Transactions",
   "sidebar.dashboard.paymenttransactions": "Payment Transactions",
+  "sidebar.dashboard.walletdetails": "Wallet Details",
   "sidebar.dashboard.cmptransactions": "CMP Transactions",
   "sidebar.dashboard.transactiontypes": "Transaction Types",
   "sidebar.dashboard.statustype": "Status Type",

@@ -703,6 +703,7 @@
   "sidebar.dashboard.rewardtransactions": "Reward Transactions",
   "sidebar.dashboard.paymenttransactions": "Payment Transactions",  
   "sidebar.dashboard.cmptransactions": "CMP Transactions",
+  "sidebar.dashboard.walletdetails": "Wallet Details",
   "sidebar.dashboard.transactiontypes": "Transaction Types",
   "sidebar.dashboard.statustype": "Status Type",
   "sidebar.dashboard.paxgeneraldata": "PAX General Data",

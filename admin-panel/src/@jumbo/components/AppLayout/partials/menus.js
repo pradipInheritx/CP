@@ -984,6 +984,12 @@ const AllTransactions = [
     type: "item",
     link: "/dashboard/cmptransactions"
   },
+  {
+    name: <IntlMessages id={"sidebar.dashboard.walletdetails"} />,
+    icon: <People />,
+    type: "item",
+    link: "/dashboard/WalletDetails"
+  },
 ];
 const AllList = [  
   {
