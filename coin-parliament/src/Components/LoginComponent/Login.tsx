@@ -130,10 +130,10 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
   return (
     <div
       className="text-center"
-      // style={{ width: "280px" }}
+    // style={{ width: "280px" }}
     >
       {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
-      {Object.values(LoginProviders).map((provider, i) => {
+      {!withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100" id='login'>
             <LoginWith
@@ -146,54 +146,58 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           </div>
         );
       })}
-      <div className="mb-2 w-100">
-        <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
-          onClick={() => {
-            setWithLoginV2e(!withLoginV2e)
-          }}
-        >
-          {/* <Image {...{ src: logos[provider] }} /> */}
-          {withLoginV2e && <div className="d-flex py-2 "
-            style={{
-              marginLeft: "25px"
+      {!withLoginV2e && <>
+        <div className="mb-2 w-100">
+          <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+            onClick={() => {
+              setWithLoginV2e(!withLoginV2e)
             }}
           >
-            <Image src={logo} alt="" width={"25px"} className="pl-3" />
-            <ContinueWith>Login With Voting Parliament</ContinueWith>
-          </div>}
 
-          {!withLoginV2e && <div className="d-flex py-2 "
-            style={{
-              marginLeft: "25px"
-            }}
-          >
-            <Image src={v2elogo} alt="" width={"25px"} className="pl-3" />
-            <ContinueWith>Login with VoteToEarn</ContinueWith>
-          </div>}
-        </LoginButton>
-      </div>
-      <div className="my-3 align-self-center">
-        <OR className="mx-auto">{translate("or")}</OR>
-      </div>
+            <div className="d-flex py-2 "
+              style={{
+                marginLeft: "25px"
+              }}
+            >
+              <Image src={v2elogo} alt="" width={"25px"} className="pl-3" />
+              <ContinueWith>Login with VoteToEarn</ContinueWith>
+            </div>
+          </LoginButton>
+        </div>
+        <div className="my-3 align-self-center">
+          <OR className="mx-auto">{translate("or")}</OR>
+        </div>
+      </>
+      }
+
       <div className="mb-3 w-100">
         <LoginForm
           callback={{
-            successFunc: (params) => setUser(params),
+            successFunc: (params) => {
+              setUser(params);
+              setWithLoginV2e(false);
+            },
             errorFunc: (e) => showToast(e.message, ToastType.ERROR),
           }}
           login={login}
         />
       </div>
-      <div className='d-flex justify-content-center'>
-        <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
-      </div>
-      <div className='d-flex justify-content-center mt-2'>
-        <DontHaveAccountText className="">
-          {translate(texts.noAccount)}
-          <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
-        </DontHaveAccountText>
-
-      </div>
+      {withLoginV2e ?
+        <ForgetPasswordText className="d-flex justify-content-center align-items-center cursor-pointer" onClick={() => setWithLoginV2e(false)}>
+          <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>arrow_back</span>Go back
+        </ForgetPasswordText>
+        :
+        <>
+          <div className='d-flex justify-content-center'>
+            <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
+          </div>
+          <div className='d-flex justify-content-center mt-2'>
+            <DontHaveAccountText className="">
+              {translate(texts.noAccount)}
+              <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
+            </DontHaveAccountText>
+          </div>
+        </>}
       <div id="loginId"></div>
       <Modal show={smsVerification ? true : false} onHide={handleClose} style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' }}>
         <Modal.Header >
