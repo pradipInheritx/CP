@@ -1,65 +1,69 @@
-import React, { useState } from 'react';
-import TextField from '@material-ui/core/TextField';
-import IntlMessages from '../../../utils/IntlMessages';
-import { useDispatch } from 'react-redux';
-import Button from '@material-ui/core/Button';
-import { Box } from '@material-ui/core';
-import { AuhMethods } from '../../../../services/auth';
-import ContentLoader from '../../ContentLoader';
-import { alpha, makeStyles } from '@material-ui/core/styles';
-import CmtImage from '../../../../@coremat/CmtImage';
-import Typography from '@material-ui/core/Typography';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import { CurrentAuthMethod } from '../../../constants/AppConstants';
-import { NavLink } from 'react-router-dom';
-import AuthWrapper from './AuthWrapper';
+import React, { useState } from "react";
+import TextField from "@material-ui/core/TextField";
+import IntlMessages from "../../../utils/IntlMessages";
+import { useDispatch } from "react-redux";
+import Button from "@material-ui/core/Button";
+import { Box } from "@material-ui/core";
+import { AuhMethods } from "../../../../services/auth";
+import ContentLoader from "../../ContentLoader";
+import { alpha, makeStyles } from "@material-ui/core/styles";
+import CmtImage from "../../../../@coremat/CmtImage";
+import Typography from "@material-ui/core/Typography";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import { CurrentAuthMethod } from "../../../constants/AppConstants";
+import { NavLink } from "react-router-dom";
+import AuthWrapper from "./AuthWrapper";
 
 const useStyles = makeStyles(theme => ({
   authThumb: {
     backgroundColor: alpha(theme.palette.primary.main, 0.12),
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '50%',
-      order: 2,
-    },
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "50%",
+      order: 2
+    }
   },
   authContent: {
     padding: 30,
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: props => (props.variant === 'default' ? '50%' : '100%'),
-      order: 1,
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: props => (props.variant === "default" ? "50%" : "100%"),
+      order: 1
     },
-    [theme.breakpoints.up('xl')]: {
-      padding: 50,
-    },
+    [theme.breakpoints.up("xl")]: {
+      padding: 50
+    }
   },
   titleRoot: {
     marginBottom: 14,
-    color: theme.palette.text.primary,
+    color: theme.palette.text.primary
   },
   textFieldRoot: {
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: alpha(theme.palette.common.dark, 0.12),
-    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: alpha(theme.palette.common.dark, 0.12)
+    }
   },
   formcontrolLabelRoot: {
-    '& .MuiFormControlLabel-label': {
-      [theme.breakpoints.down('xs')]: {
-        fontSize: 12,
-      },
-    },
-  },
+    "& .MuiFormControlLabel-label": {
+      [theme.breakpoints.down("xs")]: {
+        fontSize: 12
+      }
+    }
+  }
 }));
 //variant = 'default', 'standard'
-const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVariant = 'default' }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const SignIn = ({
+  method = CurrentAuthMethod,
+  variant = "default",
+  wrapperVariant = "default"
+}) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const classes = useStyles({ variant });
 
@@ -69,14 +73,28 @@ const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
 
   return (
     <AuthWrapper variant={wrapperVariant}>
-      {variant === 'default' ? (
+      {variant === "default" ? (
         <Box className={classes.authThumb}>
-          <CmtImage src={'/images/auth/login-img.png'} />
+          <div className="flex">
+            <CmtImage src={"/logo192.png"} />
+            Coin Parliament
+          </div>
         </Box>
       ) : null}
       <Box className={classes.authContent}>
         <Box mb={7}>
-          <CmtImage src={'/images/logo.png'} />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <CmtImage src={"/logo192.png"} />
+            <span
+              style={{
+                marginLeft: "0.5em",
+                fontSize: "2em",
+                color: "rgb(55, 25, 211)"
+              }}
+            >
+              Coin Parliament
+            </span>
+          </div>
         </Box>
         <Typography component="div" variant="h1" className={classes.titleRoot}>
           Login
@@ -105,7 +123,12 @@ const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
               className={classes.textFieldRoot}
             />
           </Box>
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={5}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={5}
+          >
             <FormControlLabel
               className={classes.formcontrolLabelRoot}
               control={<Checkbox name="checkedA" />}
@@ -118,16 +141,21 @@ const SignIn = ({ method = CurrentAuthMethod, variant = 'default', wrapperVarian
             </Box>
           </Box>
 
-          <Box display="flex" alignItems="center" justifyContent="space-between" mb={5}>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={5}
+          >
             <Button onClick={onSubmit} variant="contained" color="primary">
               <IntlMessages id="appModule.signIn" />
             </Button>
 
-            <Box component="p" fontSize={{ xs: 12, sm: 16 }}>
+            {/* <Box component="p" fontSize={{ xs: 12, sm: 16 }}>
               <NavLink to="/signup">
                 <IntlMessages id="signIn.signUp" />
               </NavLink>
-            </Box>
+            </Box> */}
           </Box>
         </form>
 
