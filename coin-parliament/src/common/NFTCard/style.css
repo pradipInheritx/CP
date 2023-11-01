@@ -1,19 +1,34 @@
 /** @format */
 
 .card.legendary {
-  border: #f5e7b5 solid 8px;
+  /* border: #f5e7b5 solid 8px; */
+  border-image: linear-gradient(180deg, #FFD25A 0.05%, #F89E18 51.39%, #FFD25A 99.94%) 30; 
+    border-width: 8px;
+    border-style: solid;     
 }
 .card.common {
-  border: #d4d0f3 solid 8px;
+  /* border: #d4d0f3 solid 8px; */
+  border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;     
+    border-width: 8px;
+    border-style: solid;    
 }
 .card.epic {
-  border: #6352e8 solid 8px;
+  /* border: #6352e8 solid 8px; */
+  border-image:linear-gradient(180deg, #6250EE 0.05%, #D5ABFF 51.39%, #6250EE 99.94%) 30;     
+    border-width: 8px;
+    border-style: solid;   
 }
 .card.rare {
-  border: #d2d2d2 solid 8px;
+  /* border: #d2d2d2 solid 8px; */
+  border-image: linear-gradient(180deg, #B0B0B0 0.05%, #FFF 51.39%, #B0B0B0 99.94%) 30;     
+    border-width: 8px;
+    border-style: solid;        
 }
 .card.uncommon {
-  border: #d4d0f3 solid 8px;
+  /* border: #d4d0f3 solid 8px; */
+  border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;         
+    border-width: 8px;
+    border-style: solid;    
 }
 /* .legendary_text {
   border: #f5e7b5 solid 6px;

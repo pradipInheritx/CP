@@ -29,42 +29,48 @@ const Card = styled.div<{ darkTheme: boolean }>`
   
   &.LEGENDARY {
     background-image: url(${props => !props.darkTheme && bkgnd4}) !important;
-    color: #160133;
-    border: #f5e7b5 solid 8px;
-    box-shadow: 0 0 20px 7px #f5e7b5;
-    background-color: black;
-    
+    color: #160133;    
+    border-image: linear-gradient(180deg, #FFD25A 0.05%, #F89E18 51.39%, #FFD25A 99.94%) 30; 
+    border-width: 8px;
+    border-style: solid;        
+    background-color: black;   
   }
   
 
   &.RARE {
     background-image: url(${props => !props.darkTheme && bkgnd5}) !important;
     color: #160133;
-    border: #d2d2d2 solid 8px;
-    box-shadow: 0 0 20px 7px #d2d2d2;
+    border-image: linear-gradient(180deg, #B0B0B0 0.05%, #FFF 51.39%, #B0B0B0 99.94%) 30;     
+    border-width: 8px;
+    border-style: solid;        
     background-color: black;    
-    
   }  
-  &.EPIC {
+  &.EPIC {    
     background-image: url(${props => !props.darkTheme && bkgnd3}) !important;
-    color: #d4d0f3;
-    border: #6352e8 solid 8px;
-    box-shadow: 0 0 20px 7px #6352e8;
-    background-color: black;
+    color: #d4d0f3;    
+    border-image:linear-gradient(180deg, #6250EE 0.05%, #D5ABFF 51.39%, #6250EE 99.94%) 30;     
+    border-width: 8px;
+    border-style: solid;    
+    border-radius: 0px 0px 8px 8px;    
+    background-color: black;    
   }
   &.UNCOMMON {
     background-image: url(${props => !props.darkTheme && bkgnd2}) !important;
-    color: #160133;
-    border: #d4d0f3 solid 8px;
-    box-shadow: 0 0 20px 7px #d4d0f3;
+    color: #160133;        
+    border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;     
+    border-width: 8px;
+    border-style: solid;    
+    border-color: #D4D1F2;
+
     border-radius: 0px 0px 8px 8px;
     background-color: black;
   }
   &.COMMON {
     background-image: url(${props => !props.darkTheme && bkgnd}) !important;
     color: #160133;
-    border: #d4d0f3 solid 8px;
-    box-shadow: 0 0 20px 7px #d4d0f3;
+    border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;        
+    border-width: 8px;
+    border-style: solid;    
     border-radius: 0px 0px 8px 8px;
     background-color: black;
     

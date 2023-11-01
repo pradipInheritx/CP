@@ -133,7 +133,7 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
       style={{ width: "300px" }}
     >
       {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
-      {Object.values(LoginProviders).map((provider, i) => {
+      {!withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100" id='login'>
             <LoginWith
@@ -153,14 +153,14 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           }}
         >
           {/* <Image {...{ src: logos[provider] }} /> */}
-          {withLoginV2e && <div className="d-flex py-2 "
+          {/* {withLoginV2e && <div className="d-flex py-2 "
             style={{
               marginLeft: "25px"
             }}
           >
             <Image src={logo} alt="" width={"25px"} className="pl-3" />
-            <ContinueWith>Login With Coin Parliament</ContinueWith>
-          </div>}
+            <ContinueWith>CONTINUE WITH Coin Parliament</ContinueWith>
+          </div>} */}
 
           {!withLoginV2e && <div className="d-flex py-2 "
             style={{
@@ -168,14 +168,14 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
             }}
           >
             <Image src={v2elogo} alt="" width={"25px"} height={"25px"} className="pl-3" />
-            <ContinueWith>Login with VoteToEarn</ContinueWith>
+            <ContinueWith>CONTINUE WITH VoteToEarn</ContinueWith>
           </div>}
         </LoginButton>
       </div>
 
-      <div className="my-3 align-self-center">
+      {!withLoginV2e && <div className="my-3 align-self-center">
         <OR className="mx-auto">{translate("or")}</OR>
-      </div>
+      </div>}
       <div className="mb-3 w-100">
         <LoginForm
           callback={{
@@ -185,13 +185,20 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           login={login}
         />
       </div>
-      <div className='d-flex justify-content-center'>
-        <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
-      </div>
-      <div className='d-flex justify-content-center mt-2'>
-        <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText>
-        <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
-      </div>
+
+      {withLoginV2e ?
+        <ForgetPasswordText className="d-flex justify-content-center align-items-center cursor-pointer" onClick={() => setWithLoginV2e(false)}>
+          <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>arrow_back</span>Go back
+        </ForgetPasswordText>
+        : <>
+          <div className='d-flex justify-content-center'>
+            <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
+          </div>
+          <div className='d-flex justify-content-center mt-2'>
+            <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText>
+            <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
+          </div>
+        </>}
       <div id="loginId"></div>
       <Modal show={smsVerification ? true : false} onHide={handleClose} style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' }}>
         <Modal.Header >
