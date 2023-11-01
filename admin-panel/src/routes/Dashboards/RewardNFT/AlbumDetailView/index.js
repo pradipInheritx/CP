@@ -19,9 +19,10 @@ import { CardMedia, Tooltip } from '@material-ui/core';
 
 const AlbumDetailView = ({ selectType, open, onCloseDialog }) => {
   const classes = useStyles();
-  const { currentAlbum ,currentCard } = useSelector(({ RewardNFT }) => RewardNFT);
+  const { currentAlbum, currentCard } = useSelector(({ RewardNFT }) => RewardNFT);
 
   // const { name, email, status, phones, company, designation, profile_pic, starred } = currentUser;
+  console.log(currentAlbum?.albumVideoUrl, "currentAlbum?.albumVideoUrl")
 
   return (
     <Dialog open={open} onClose={onCloseDialog} className={classes.dialogRoot}>
@@ -33,18 +34,18 @@ const AlbumDetailView = ({ selectType, open, onCloseDialog }) => {
 
           <Box mt={-2}>
             <Box display="flex" alignItems="center">
-              <Typography className={classes.titleRoot}>{currentAlbum?.albumName}</Typography>              
-            </Box>           
+              <Typography className={classes.titleRoot}>{currentAlbum?.albumName}</Typography>
+            </Box>
           </Box>
         </Box>
         <Box ml="auto" mt={-2} display="flex" alignItems="center">
           <Box ml={1}>
-            {selectType=="album" && <Tooltip title={currentAlbum?.status}>
+            {selectType == "album" && <Tooltip title={currentAlbum?.status}>
               <IconButton aria-label="filter list">
                 {/* {currentAlbum?.status === 'suspended' && <Block color="primary" />}
                 {currentAlbum?.status === 'active' && <CheckCircleOutline color="primary" />} */}
               </IconButton>
-            </Tooltip>}            
+            </Tooltip>}
           </Box>
           <Box ml={1}>
             <IconButton onClick={onCloseDialog}>
@@ -53,7 +54,7 @@ const AlbumDetailView = ({ selectType, open, onCloseDialog }) => {
           </Box>
         </Box>
       </Box>
-      {selectType =="album" && <Box px={6} py={5}>
+      {selectType == "album" && <Box px={6} py={5}>
         <Box mb={5} component="p" color="common.dark">
           Album Detail
         </Box>
@@ -97,7 +98,7 @@ const AlbumDetailView = ({ selectType, open, onCloseDialog }) => {
           <Box ml={5} color="primary.main" component="p" className="pointer">
             {currentAlbum?.email}
           </Box>
-        </Box>        
+        </Box>
         <Box display="flex" alignItems="center" mb={{ xs: 4, sm: 5 }}>
           Sets Name :
           {/* <Box ml={5}>
@@ -114,29 +115,24 @@ const AlbumDetailView = ({ selectType, open, onCloseDialog }) => {
             />
           </Box> */}
           <Box ml={5} display="flex">
-            {currentAlbum?.setDetails.map((item, index) => {              
-              return (<Box key={index}>                                  
-                  {item?.setName} {currentAlbum?.setDetails.lenght-1 !== index ? " , " :""}              
-                </Box>)
+            {currentAlbum?.setDetails.map((item, index) => {
+              return (<Box key={index}>
+                {item?.setName} {currentAlbum?.setDetails.lenght - 1 !== index ? " , " : ""}
+              </Box>)
             })}
           </Box>
         </Box>
 
-        <Box display="flex"  mb={{ xs: 4, sm: 7 }}>
+        <Box className={classes.videoBox} display="" mb={{ xs: 4, sm: 7 }}>
           Album Video :
-          <Box ml={5} color="primary.main" component="p" className="pointer">
-            {/* {currentAlbum?.email} */}
-            <CardMedia
-            component='video'
-            className={classes.media}
-            // image={"path/to/file/video.webm"}
-            src={currentAlbum?.albumVideoUrl}
-            autoPlay
-          />
+          <Box ml={5} color="primary.main" component="div" className="pointer">
+            <CardMedia className={classes.IframVideo} component="iframe" src={currentAlbum?.albumVideoUrl} allow="autoplay"
+              width={"250px"}
+            />
           </Box>
         </Box>
       </Box>}
-      
+
     </Dialog>
   );
 };

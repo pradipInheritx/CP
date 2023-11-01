@@ -44,6 +44,14 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 4,
     textTransform: 'capitalize',
   },
+  videoBox: {
+    border: "none",
+  },
+  IframVideo: {
+    border: "none",
+    width: "100%",
+    height: "auto",
+  },
 }));
 
 export default useStyles;
