@@ -15,6 +15,10 @@ interface PaymentBody {
     params: PaymentParams,
     user: string
 }
+
+interface SmartContractBody{
+    amount : number,address:string,network : string
+}
 export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
     status: boolean,
     result: any
@@ -24,7 +28,7 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
         const options = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
             }
         };
 
@@ -38,10 +42,11 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
         return { status: false, result: error }
     }
 }
-export const callSmartContractPaymentFunction = async (transactionBody : PaymentBody):Promise<{
+export const callSmartContractPaymentFunction = async (transactionBody : SmartContractBody):Promise<{
     status :boolean,
     result : any
 } | undefined>=>{
+
 try {
     console.log("Start smart contract payment function");
     
@@ -52,7 +57,46 @@ try {
             'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
         }
     };
-    const transaction = await axios.post('https://console.dev.welldapp.io/api/callSmartContract', transactionBody, options);
+    let transactionBodyForSmartContract = {
+        "abi": [
+            {
+                "inputs": [
+                    {
+                        "internalType": "address payable",
+                        "name": "_to",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_gas",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "sendTokenTo",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ],
+        "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
+        "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+        "method": parentConst.SMART_CONTRACT_METHOD,
+        "network": transactionBody.network,
+        "params": [
+            {
+                "_to": transactionBody.address,
+                "_amount": transactionBody.amount,
+                "_gas": parentConst.SMART_CONTRACT__GAS
+            }
+        ]
+    }
+
+    const transaction = await axios.post('https://console.dev.welldapp.io/api/callSmartContract', transactionBodyForSmartContract, options);
     
     console.log("End smart contract payment function");
     return {status : true, result : transaction.data}
@@ -110,25 +154,41 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     console.info("getMatchedCoinAddress", getMatchedCoinAddress)
     if (getMatchedCoinAddress) {
         const getParentSettings = getParentDetails.referalReceiveType ? getParentDetails.referalReceiveType : {};
-        const parentTransactionDetails = {
-            "method": parentConst.PAYMENT_METHOD,
-            "params": {
-                "amount": parentData.amount,
-                "network": parentConst.PAYMENT_NETWORK,
-                "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
-                "token": parentConst.PAYMENT_TOKEN,
-            },
-            "user": "Test"
-        }
-        console.info("parentTransactionDetails", parentTransactionDetails)
+        // const parentTransactionDetails = {
+        //     "method": parentConst.PAYMENT_METHOD,
+        //     "params": {
+        //         "amount": parentData.amount,
+        //         "network": parentConst.PAYMENT_NETWORK,
+        //         "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+        //         "token": parentConst.PAYMENT_TOKEN,
+        //     },
+        //     "user": "Test"
+        // }
+        // console.info("parentTransactionDetails amount,address, network", {
+        //     amount: parentData.amount,
+        //     address: getMatchedCoinAddress.address,
+        //     network : ""
+        // })
         try {
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_IMMEDIATE) {
-                const storeInParentData = { ...parentData, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings.name, timestamp: firestore.FieldValue.serverTimestamp() }
+                const storeInParentData = { ...parentData, parentPendingPaymentId: null,
+                     address: getMatchedCoinAddress.address, 
+                     receiveType: getParentSettings.name,
+                      timestamp: firestore.FieldValue.serverTimestamp() }
+
                 console.info("storeInParentData", storeInParentData)
                 const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
                 // const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
+                const parentTransactionDetails = {
+                    amount: parentData.amount,
+                    address: getMatchedCoinAddress.address,
+                    network : "ethereum"
+                }
                 const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
-                await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+                const getHash = getPaymentAfterTransfer?.result?.return_value[0].hash;
+                console.log("get Hash from response(getPaymentAfterTransfer) ",getHash);
+                
+                await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getHash}, { merge: true });
             }
             console.info("getParentSettings", getParentSettings)
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_AMOUNT || getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
