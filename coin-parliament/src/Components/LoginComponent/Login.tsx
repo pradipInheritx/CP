@@ -16,8 +16,8 @@ import { capitalize } from "lodash";
 import { Button, FormControl, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import AppContext from "../../Contexts/AppContext";
 import { Buttons } from "../Atoms/Button/Button";
-import logo  from "../../assets/svg/spblue.png";
-import v2elogo  from "../../assets/svg/VTElogo.png";
+import logo from "../../assets/svg/spblue.png";
+import v2elogo from "../../assets/svg/VTElogo.png";
 
 const OR = styled.div`
   ${PoppinsMediumBlack12px};
@@ -47,7 +47,7 @@ ${PoppinsBoldBlueViolet14px};
 const DontHaveAccountText = styled.div`
  color:black;
 `;
-const H1= styled.div`
+const H1 = styled.div`
 margin-bottom:10px;
 background: var(--color-160133) 0 0% no-repeat padding-box;
 border: 2px solid var(--color-6352e8);
@@ -90,7 +90,7 @@ const ContinueWith = styled.div`
 `;
 
 export type LoginProps = {
-  setForgetPassword:(s:boolean)=>void;
+  setForgetPassword: (s: boolean) => void;
   setUser: (user?: User | undefined) => void;
   setSignup: (s: boolean) => void;
   authProvider: (
@@ -108,68 +108,62 @@ export type LoginProps = {
   ) => Promise<void>;
 };
 
-const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: LoginProps) => {
+const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const { setLoginRedirectMessage, loginRedirectMessage,withLoginV2e,setWithLoginV2e} = useContext(AppContext);
-  const[smsVerification,setSmsVerification]=useState('')
+  const { setLoginRedirectMessage, loginRedirectMessage, withLoginV2e, setWithLoginV2e } = useContext(AppContext);
+  const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   console.log(smsVerification)
   useEffect(() => {
-    
+
     return () => {
       setLoginRedirectMessage('')
     }
   }, [])
   const handleClose = () => {
     setSmsVerification('')
-    
+
   };
   return (
     <>
-    {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
-      {Object.values(LoginProviders).map((provider, i) => {
-        return (
-          <div key={i} className="mb-2 w-100" id='login'>
-            <LoginWith
-              provider={provider}
-              onClick={() =>
-                // @ts-ignore
-                authProvider(setUser, providers[provider], showToast, setSmsVerification)
-              }
-            />
+      {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
+      {!withLoginV2e &&
+        <>
+          {Object.values(LoginProviders).map((provider, i) => {
+            return (
+              <div key={i} className="mb-2 w-100" id='login'>
+                <LoginWith
+                  provider={provider}
+                  onClick={() =>
+                    // @ts-ignore
+                    authProvider(setUser, providers[provider], showToast, setSmsVerification)
+                  }
+                />
+              </div>
+            );
+          })}
+          <div className="mb-2 w-100">
+            <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+              onClick={() => {
+                setWithLoginV2e(!withLoginV2e)
+              }}
+            >
+              <div className="d-flex py-2 px-2"
+                style={{
+                  marginLeft: "16px"
+                }}
+              >
+                <Image src={v2elogo} alt="" width={"25px"} height={"25px"} className="pl-3" />
+                <ContinueWith>Login with VoteToEarn</ContinueWith>
+              </div>
+            </LoginButton>
           </div>
-        );
-      })}
-      <div  className="mb-2 w-100">
-        <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
-          onClick={() => {
-            setWithLoginV2e(!withLoginV2e)
-        }}
-        >
-          {/* <Image {...{ src: logos[provider] }} /> */}
-          {withLoginV2e && <div className="d-flex py-2 px-2"
-            style={{
-            marginLeft:"16px"
-          }}
-          >
-            <Image src={logo} alt="" width={"25px"} height={"25px"} className="pl-3"/>
-          <ContinueWith>Login With Sport Parliament</ContinueWith>
-          </div>}
-
-          {!withLoginV2e && <div className="d-flex py-2 px-2"
-            style={{
-              marginLeft: "16px"
-            }}
-          >
-            <Image src={v2elogo} alt=""  width={"25px"} height={"25px"} className="pl-3"/>
-            <ContinueWith>Login with VoteToEarn</ContinueWith>
-          </div>}
-        </LoginButton>
-      </div>
-      <div className="my-3 align-self-center">
-        <OR className="mx-auto">{translate("or")}</OR>
-      </div>
+          <div className="my-3 align-self-center">
+            <OR className="mx-auto">{translate("or")}</OR>
+          </div>
+        </>
+      }
       <div className="mb-3 w-100">
         <LoginForm
           callback={{
@@ -179,40 +173,46 @@ const Login = ({ setForgetPassword,setUser, setSignup, authProvider, login }: Lo
           login={login}
         />
       </div>
-      <div className='d-flex'>
-       <ForgetPasswordText  onClick={() => setForgetPassword(true)}>{`${capitalize(translate('Forget password?'))}`}</ForgetPasswordText>
-      </div>
-      <div className='d-flex  mt-2'>
-      <DontHaveAccountText className="mr-5"> {`${capitalize(translate(texts.noAccount))} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setSignup(true)}>{`${capitalize(translate(texts.signUp))}`}</SignUp>
-      </div>
+      {withLoginV2e ?
+        <ForgetPasswordText className="d-flex justify-content-center align-items-center cursor-pointer" onClick={() => setWithLoginV2e(false)}>
+          <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>arrow_back</span>Go back
+        </ForgetPasswordText>
+        : <>
+          <div className='d-flex'>
+            <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${capitalize(translate('Forget password?'))}`}</ForgetPasswordText>
+          </div>
+          <div className='d-flex  mt-2'>
+            <DontHaveAccountText className="mr-5"> {`${capitalize(translate(texts.noAccount))} `}</DontHaveAccountText>
+            <SignUp onClick={() => setSignup(true)}>{`${capitalize(translate(texts.signUp))}`}</SignUp>
+          </div>
+        </>}
       <div id="loginId"></div>
-      <Modal show={smsVerification?true:false} onHide={handleClose} style={{top:'25%',maxWidth:window.screen.width<979?'100vw':''}}>
+      <Modal show={smsVerification ? true : false} onHide={handleClose} style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' }}>
         <Modal.Header >
           <Modal.Title>2FA</Modal.Title>
         </Modal.Header>
-          <Modal.Body>
-            <p>Please enter verification code which is sent to your number.</p>
-            <FormControl
-              className="mt-2"
-              type="number"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-            />
-          </Modal.Body>
-        
+        <Modal.Body>
+          <p>Please enter verification code which is sent to your number.</p>
+          <FormControl
+            className="mt-2"
+            type="number"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+          />
+        </Modal.Body>
+
         <Modal.Footer>
           <Buttons.Default onClick={handleClose}>Close</Buttons.Default>
           <Buttons.Primary
             // disabled={!valid}
             onClick={async () => {
               // @ts-ignore
-              const cred = PhoneAuthProvider.credential( smsVerification?.verificationId, verificationCode);
-            const multiFactorAssertion =
+              const cred = PhoneAuthProvider.credential(smsVerification?.verificationId, verificationCode);
+              const multiFactorAssertion =
                 PhoneMultiFactorGenerator.assertion(cred);
-            // Complete sign-in.
-            // @ts-ignore
-            return smsVerification?.resolver.resolveSignIn(multiFactorAssertion)
+              // Complete sign-in.
+              // @ts-ignore
+              return smsVerification?.resolver.resolveSignIn(multiFactorAssertion)
             }}
           >
             CONTINUE
