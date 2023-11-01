@@ -46,11 +46,12 @@ export const makePaymentToServer = async (req: any, res: any) => {
     }
 }
 export const updateUserAfterPayment = async (req: any, res: any) => {
+    console.info("get request body", req.body)
     const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
     await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails })
     console.log("start parent payment");
-    await isParentExistAndGetReferalAmount(req.body);
-
+    const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(req.body);
+    console.info("getResponseAfterParentPayment", getResponseAfterParentPayment)
     res.status(200).send({
         status: true,
         message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
