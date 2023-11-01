@@ -186,13 +186,19 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
         />
       </div>
 
-      <div className='d-flex justify-content-center'>
-        <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
-      </div>
-      <div className='d-flex justify-content-center mt-2'>
-        <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText>
-        <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
-      </div>
+      {withLoginV2e ?
+        <ForgetPasswordText className="d-flex justify-content-center align-items-center cursor-pointer" onClick={() => setWithLoginV2e(false)}>
+          <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>arrow_back</span>Go back
+        </ForgetPasswordText>
+        : <>
+          <div className='d-flex justify-content-center'>
+            <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${translate(texts.ForgetPassword.toUpperCase())}`}</ForgetPasswordText>
+          </div>
+          <div className='d-flex justify-content-center mt-2'>
+            <DontHaveAccountText className="mr-5"> {`${translate(texts.noAccount)} `}</DontHaveAccountText>
+            <SignUp onClick={() => setSignup(true)}>{`${translate(texts.signUp.toUpperCase())}`}</SignUp>
+          </div>
+        </>}
       <div id="loginId"></div>
       <Modal show={smsVerification ? true : false} onHide={handleClose} style={{ top: '25%', maxWidth: window.screen.width < 979 ? '100vw' : '' }}>
         <Modal.Header >
