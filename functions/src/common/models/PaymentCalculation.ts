@@ -16,8 +16,8 @@ interface PaymentBody {
     user: string
 }
 
-interface SmartContractBody{
-    amount : number,address:string,network : string
+interface SmartContractBody {
+    amount: number, address: string, network: string
 }
 export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
     status: boolean,
@@ -28,7 +28,7 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
         const options = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
             }
         };
 
@@ -42,69 +42,69 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
         return { status: false, result: error }
     }
 }
-export const callSmartContractPaymentFunction = async (transactionBody : SmartContractBody):Promise<{
-    status :boolean,
-    result : any
-} | undefined>=>{
+export const callSmartContractPaymentFunction = async (transactionBody: SmartContractBody): Promise<{
+    status: boolean,
+    result: any
+} | undefined> => {
 
-try {
-    console.log("Start smart contract payment function");
-    
-    console.log("transactionBody : ",transactionBody);
-    const options = {
-        headers : {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
+    try {
+        console.log("Start smart contract payment function");
+
+        console.log("transactionBody : ", transactionBody);
+        const options = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
+            }
+        };
+        let transactionBodyForSmartContract = {
+            "abi": [
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address payable",
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_amount",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "_gas",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "sendTokenTo",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                }
+            ],
+            "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
+            "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+            "method": parentConst.SMART_CONTRACT_METHOD,
+            "network": transactionBody.network,
+            "params": [
+                {
+                    "_to": transactionBody.address,
+                    "_amount": transactionBody.amount,
+                    "_gas": parentConst.SMART_CONTRACT__GAS
+                }
+            ]
         }
-    };
-    let transactionBodyForSmartContract = {
-        "abi": [
-            {
-                "inputs": [
-                    {
-                        "internalType": "address payable",
-                        "name": "_to",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_gas",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "sendTokenTo",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }
-        ],
-        "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
-        "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
-        "method": parentConst.SMART_CONTRACT_METHOD,
-        "network": transactionBody.network,
-        "params": [
-            {
-                "_to": transactionBody.address,
-                "_amount": transactionBody.amount,
-                "_gas": parentConst.SMART_CONTRACT__GAS
-            }
-        ]
-    }
 
-    const transaction = await axios.post('https://console.dev.welldapp.io/api/callSmartContract', transactionBodyForSmartContract, options);
-    
-    console.log("End smart contract payment function");
-    return {status : true, result : transaction.data}
-} catch (error) {
-    console.error("ERROR callSmartContractPaymentFunction : ", error);
-    console.log("End smart contract payment function");
-    return { status: false, result: error }
-}
+        const transaction = await axios.post('https://console.dev.welldapp.io/api/callSmartContract', transactionBodyForSmartContract, options);
+
+        console.log("End smart contract payment function");
+        return { status: true, result: transaction.data }
+    } catch (error) {
+        console.error("ERROR callSmartContractPaymentFunction : ", error);
+        console.log("End smart contract payment function");
+        return { status: false, result: error }
+    }
 }
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
@@ -171,10 +171,12 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         // })
         try {
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_IMMEDIATE) {
-                const storeInParentData = { ...parentData, parentPendingPaymentId: null,
-                     address: getMatchedCoinAddress.address, 
-                     receiveType: getParentSettings.name,
-                      timestamp: firestore.FieldValue.serverTimestamp() }
+                const storeInParentData = {
+                    ...parentData, parentPendingPaymentId: null,
+                    address: getMatchedCoinAddress.address,
+                    receiveType: getParentSettings.name,
+                    timestamp: firestore.FieldValue.serverTimestamp()
+                }
 
                 console.info("storeInParentData", storeInParentData)
                 const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
@@ -182,13 +184,13 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                 const parentTransactionDetails = {
                     amount: parentData.amount,
                     address: getMatchedCoinAddress.address,
-                    network : "ethereum"
+                    network: "ethereum"
                 }
                 const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
                 const getHash = getPaymentAfterTransfer?.result?.return_value[0].hash;
-                console.log("get Hash from response(getPaymentAfterTransfer) ",getHash);
-                
-                await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getHash}, { merge: true });
+                console.log("get Hash from response(getPaymentAfterTransfer) ", getHash);
+
+                await firestore().collection('parentPayment').doc(getParentPendingPaymentReference?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getHash }, { merge: true });
             }
             console.info("getParentSettings", getParentSettings)
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_AMOUNT || getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
