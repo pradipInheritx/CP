@@ -30,7 +30,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
             .then(res => {
 
                 if (res.ok) {
-                    console.info(res.ok, "Response After WellDApp", res.json())
+                    console.info(res.ok, "Response After WellDApp", res)
                     return res.json()
                 } else {
                     throw Error(`code ${res.status}`)
