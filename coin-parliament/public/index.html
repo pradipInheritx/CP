@@ -20,14 +20,14 @@
   <meta property="og:title" content="Coin Parliament | The official Vote To Earn social game (V2E) WEB.3 app" />
   <meta property="og:description"
     content="Coin Parliament is an official Vote To Earn social gamer (V2E) WEB.3 app. Here's your chance to vote, impact, and earn. Vote To Earn apps are mining machines" />
-  <meta name="msapplication-TileImage" content="%PUBLIC_URL%/hpbanner_m2.png" />
-  <meta property="og:image" content="%PUBLIC_URL%/hpbanner_m2.png" />
+  <meta name="msapplication-TileImage" id="Img1"  />
+  <meta property="og:image" id="Img2" />
 
   <!-- Google / Search Engine Tags -->
   <meta itemprop="name" content="Coin Parliament | The official Vote To Earn social game (V2E) WEB.3 app">
   <meta itemprop="description"
     content="Coin Parliament is an official Vote To Earn social gamer (V2E) WEB.3 app. Here's your chance to vote, impact, and earn. Vote To Earn apps are mining machines">
-  <meta itemprop="image" content="%PUBLIC_URL%/hpbanner_m2.png">
+  <meta itemprop="image" id="Img3">
 
   <!-- Facebook Meta Tags -->
   <meta property="og:url" content="https://coinparliament.com">
@@ -35,14 +35,14 @@
   <meta property="og:title" content="Coin Parliament | The official Vote To Earn social game (V2E) WEB.3 app">
   <meta property="og:description"
     content="Coin Parliament is an official Vote To Earn social gamer (V2E) WEB.3 app. Here's your chance to vote, impact, and earn. Vote To Earn apps are mining machines">
-  <meta property="og:image" content="%PUBLIC_URL%/hpbanner_m2.png">
+  <meta property="og:image" id="Img4">
 
   <!-- Twitter Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Coin Parliament | The official Vote To Earn social game (V2E) WEB.3 app">
   <meta name="twitter:description"
     content="Coin Parliament is an official Vote To Earn social gamer (V2E) WEB.3 app. Here's your chance to vote, impact, and earn. Vote To Earn apps are mining machines">
-  <meta name="twitter:image" content="%PUBLIC_URL%/hpbanner_m2.png">
+  <meta name="twitter:image" id="Img5">
 <link href='https://fonts.googleapis.com/css?family=Lilita One' rel='stylesheet'/>
 
   <!-- <link href="%PUBLIC_URL%/logo192.png" rel="apple-touch-icon"/> -->
@@ -130,6 +130,32 @@
     })
 
   </script> -->
+
+  <script>
+  const getTag1 =  document.getElementById("Img1")
+  const getTag2 =  document.getElementById("Img2")
+  const getTag3 =  document.getElementById("Img3")
+  const getTag4 =  document.getElementById("Img4")
+  const getTag5 =  document.getElementById("Img5")
+  const urlParams = new URLSearchParams(window.location.search);
+  const cardImageUrl = urlParams.get('cardImageUrl');  
+    if(cardImageUrl){
+      console.log(" working if")
+      getTag1.setAttribute("content", cardImageUrl);
+      getTag2.setAttribute("content", cardImageUrl);
+      getTag3.setAttribute("content", cardImageUrl);
+      getTag4.setAttribute("content", cardImageUrl);
+      getTag5.setAttribute("content", cardImageUrl);
+    }else{
+      console.log("working else")
+      getTag1.setAttribute("content", "/hpbanner_m2.png");
+      getTag2.setAttribute("content", "/hpbanner_m2.png");
+      getTag3.setAttribute("content", "/hpbanner_m2.png");
+      getTag4.setAttribute("content", "/hpbanner_m2.png");
+      getTag5.setAttribute("content", "/hpbanner_m2.png");
+
+    }
+</script>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <!-- <script src="wallet-address-validator.min.js"></script> -->
   <script
