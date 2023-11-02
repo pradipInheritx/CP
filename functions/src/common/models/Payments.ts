@@ -28,11 +28,13 @@ export const makePaymentToServer = async (req: any, res: any) => {
             body: JSON.stringify(requestBody)
         })
             .then(res => {
-                console.info("Response After WellDApp", requestBody)
-                if (res.ok)
+
+                if (res.ok) {
+                    console.info(res.ok, "Response After WellDApp", res.json())
                     return res.json()
-                else
+                } else {
                     throw Error(`code ${res.status}`)
+                }
             })
             .then(async data => {
                 log("Payment response data : ", data)
