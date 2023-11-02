@@ -7,16 +7,27 @@ import fetch from "node-fetch";
 export const makePaymentToServer = async (req: any, res: any) => {
     try {
         console.info("req.body", typeof req.body, req.body);
-        const { userEmail, amount } = req.body;
+        //const { userEmail, amount } = req.body;
+        // const requestBody = {
+        //     "method": parentConst.PAYMENT_METHOD,
+        //     "params": {
+        //         "amount": parseFloat(amount),
+        //         "network": parentConst.PAYMENT_NETWORK,
+        //         "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+        //         "token": parentConst.PAYMENT_TOKEN,
+        //     },
+        //     "user": userEmail
+        // }
+
         const requestBody = {
-            "method": parentConst.PAYMENT_METHOD,
+            "method": "getTransaction",
             "params": {
-                "amount": parseFloat(amount),
-                "network": parentConst.PAYMENT_NETWORK,
-                "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
-                "token": parentConst.PAYMENT_TOKEN,
+                "amount": parseFloat("0.0001"),
+                "network": "11155111",
+                "origincurrency": "eth",
+                "token": "ETH"
             },
-            "user": userEmail
+            "user": "Test"
         }
 
         fetch('https://console.dev.welldapp.io/api/transactions', {
@@ -28,6 +39,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
             body: JSON.stringify(requestBody)
         })
             .then(res => {
+                console.info("Res", res)
                 if (res.ok)
                     return res.json()
                 else
