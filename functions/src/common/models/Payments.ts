@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
-import { isParentExistAndGetReferalAmount, paymentFunction } from './PaymentCalculation';
+import { isParentExistAndGetReferalAmount, callSmartContractPaymentFunction } from './PaymentCalculation';
 import * as parentConst from "../consts/payment.const.json";
 import fetch from "node-fetch";
 
@@ -204,19 +204,30 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
         for (let pending = 0; pending < getUserPendingReferalAmountData.length; pending++) {
             const getPaymentAddress = getParentUserData.wellDAddress.find((address: any) => address.coin === getUserPendingReferalAmountData[pending].token);
             if (getPaymentAddress) {
-                console.info("getPaymentAddress", getPaymentAddress)
-                const transactionBody = {
-                    "method": parentConst.PAYMENT_METHOD,
-                    "params": {
-                        "amount": getUserPendingReferalAmountData[pending].amount || 0,
-                        "network": parentConst.PAYMENT_NETWORK,
-                        "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
-                        "token": parentConst.PAYMENT_TOKEN,
-                    },
-                    "user": "Test"
-                };
-                const getPaymentAfterTransfer = await paymentFunction(transactionBody);
-                await firestore().collection('parentPayment').doc(getUserPendingReferalAmountData[pending]?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, address: getPaymentAddress.address, receiveType: getParentUserData.referalReceiveType.name, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+                console.info("getPaymentAddress", getPaymentAddress.address)
+                // const transactionBody = {
+                //     "method": parentConst.PAYMENT_METHOD,
+                //     "params": {
+                //         "amount": getUserPendingReferalAmountData[pending].amount || 0,
+                //         "network": parentConst.PAYMENT_NETWORK,
+                //         "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                //         "token": parentConst.PAYMENT_TOKEN,
+                //     },
+                //     "user": "Test"
+                // };
+
+
+                const parentTransactionDetails = {
+                    amount: parseFloat("0.0001"), //parseFloat(getUserPendingReferalAmountData[pending].amount) || 0,
+                    address: getPaymentAddress.address,
+                    network: "ethereum"
+                }
+                const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
+                const getHash = getPaymentAfterTransfer?.result?.return_value[0].hash;
+                console.log("Get Hash In Call Smart API In Instant", getHash);
+                console.info("getUserPendingReferalAmountData[pending]?.id", getUserPendingReferalAmountData[pending]?.id)
+                //const getPaymentAfterTransfer = await paymentFunction(transactionBody);
+                await firestore().collection('parentPayment').doc(getUserPendingReferalAmountData[pending]?.id).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, address: getPaymentAddress.address, receiveType: getParentUserData.referalReceiveType.name, transactionId: getHash }, { merge: true });
             } else {
                 getUserPendingReferalAmountData[pending].status = parentConst.PAYMENT_STATUS_NO_COIN_FOUND
                 const storeInParentData = { ...getUserPendingReferalAmountData[pending], parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: getParentUserData.referalReceiveType.name, timestamp: firestore.FieldValue.serverTimestamp() }

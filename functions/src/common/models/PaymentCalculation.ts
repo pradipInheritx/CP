@@ -72,7 +72,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
 
         const transaction = await axios.post('https://console.dev.welldapp.io/api/callSmartContract', transactionBodyForSmartContract, options);
 
-        console.log("End smart contract payment function");
+        console.log("End smart contract payment function", transaction);
         return { status: true, result: transaction.data }
     } catch (error) {
         console.error("ERROR callSmartContractPaymentFunction : ", error);
@@ -242,7 +242,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     for (let parent = 0; parent < filteredPendingPaymentData.length; parent++) {
         const parentDetails: any = (await firestore().collection('users').doc(filteredPendingPaymentData[parent].parentUserId).get()).data();
         const setting = parentDetails.referalReceiveType;
-        
+
         log("parent Details :", parentDetails);
 
         const userPendingPaymentDetails: any = filteredPendingPaymentData[parent]
@@ -284,37 +284,37 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             // }
             // await paymentFunction(transaction)
 
-            const parentTransactionDetails : SmartContractBody = {
+            const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
                 address: getMatchedCoinAddress.address,
                 network: "ethereum"
             }
             const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
-            console.log("getPaymentAfterTransfer",getPaymentAfterTransfer)
+            console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
             await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
 
         } else if (differnceBetweenTimes >= 7 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1WEEK) {
             log("1 week is calling parent is :", parent.id);
-            const parentTransactionDetails : SmartContractBody = {
+            const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
                 address: getMatchedCoinAddress.address,
                 network: "ethereum"
             }
             const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
-            console.log("getPaymentAfterTransfer",getPaymentAfterTransfer)
+            console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
             await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
 
         } else if (differnceBetweenTimes >= 30 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1MONTH) {
             log("1 month is calling parent is :", parent.parentPaymentId);
-            const parentTransactionDetails : SmartContractBody = {
+            const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
                 address: getMatchedCoinAddress.address,
                 network: "ethereum"
             }
             const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
-            console.log("getPaymentAfterTransfer",getPaymentAfterTransfer)
+            console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
             await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
-            
+
         } else {
             console.info(parentConst.MESSAGE_NO_PARENT_PAYMENTS)
         }
