@@ -81,7 +81,7 @@ const LoginAndSignup = ({
             )}
           </div> : forgetPassword ? <Styles.Title>{translate("Forget Password")}</Styles.Title> : signup ? <Styles.Title>{translate(title[mode])}</Styles.Title> :
             <div className="d-flex flex-column justify-content-center align-items-end">
-              <Styles.Title style={{ marginTop: '1em' }}>{translate("CONTINUE WITH VoteToEarn")}</Styles.Title>
+              <Styles.Title style={{ marginTop: '1em' }}>{translate("Login With your VoteToEarn account")}</Styles.Title>
             </div>
           }
 
