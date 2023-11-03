@@ -52,7 +52,7 @@ function PaymentFun({ isVotingPayment }: any) {
   const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
 
   useEffect(() => {
-    (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
+    (window as any)?.wldp?.send_uid(`Test`).then((data: any) => {
       console.log(data, "username")
     })
     // @ts-ignore
@@ -77,27 +77,27 @@ function PaymentFun({ isVotingPayment }: any) {
       "content-type": "application/json"
     }
 
-    const data = {
-      userId: `${user?.uid}`,
-      userEmail: `${sessionStorage.getItem("wldp_user")}`,
-      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      // amount: payamount,
-      amount: 0.0001,
-      network: "11155111",
-      // // @ts-ignore
-      origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-      token: "ETH",
-      transactionType: payType,
-      numberOfVotes: extraVote,
-      paymentDetails: detail,
+    // const data = {
+    //   userId: `${user?.uid}`,
+    //   userEmail: `${sessionStorage.getItem("wldp_user")}`,
+    //   walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+    //   // amount: payamount,
+    //   amount: 0.0001,
+    //   network: "11155111",
+    //   // // @ts-ignore
+    //   origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
+    //   token: "ETH",
+    //   transactionType: payType,
+    //   numberOfVotes: extraVote,
+    //   paymentDetails: detail,
 
-    }
-
-    // const data = 
-    // {
-    //   userEmail: "Test",
-    //   amount: 0.0001
     // }
+
+    const data = 
+    {
+      userEmail: "Test",
+      amount: 0.0001
+    }
 
 
 

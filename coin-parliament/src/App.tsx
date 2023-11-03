@@ -157,6 +157,7 @@ import { request } from "http";
 import VotingBooster from "Components/Profile/VotingBooster";
 import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
 import Swal from "sweetalert2";
+
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
 const getPriceCalculation = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -1274,7 +1275,7 @@ function App() {
         // transform: "scale(4.3)",
         // backgroundColor: "rgba(0,0,0,0.5)",
       }}
-    >
+      >        
       <div>
         {enabled && (
           <NotificationContext.Provider
