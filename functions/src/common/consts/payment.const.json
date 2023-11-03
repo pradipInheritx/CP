@@ -31,5 +31,30 @@
     "SMART_CONTRACT_GAS_LIMIT":"21712",
     "SMART_CONTRACT_METHOD":"sendTokenTo",
     "SMART_CONTRACT__GAS":"2400",
-    "SMART_CONTRACT_ADMIN_ADRESS" : "0x0401f866C4B2ae5dc30c9D4BDb6d73398fAFb7A7"
+    "SMART_CONTRACT_ADMIN_ADRESS" : "0x0401f866C4B2ae5dc30c9D4BDb6d73398fAFb7A7",
+    "SMART_CONTRACT_ABI_ARRAY": [
+        {
+            "inputs": [
+                {
+                    "internalType": "address payable",
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_amount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_gas",
+                    "type": "uint256"
+                }
+            ],
+            "name": "sendTokenTo",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ]
 }

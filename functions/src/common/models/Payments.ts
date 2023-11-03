@@ -18,20 +18,23 @@ export const makePaymentToServer = async (req: any, res: any) => {
             },
             "user": userEmail
         }
-
+        console.info("RequestBody", requestBody)
         fetch('https://console.dev.welldapp.io/api/transactions', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json',
-                'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
+                'authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ'
             },
             body: JSON.stringify(requestBody)
         })
             .then(res => {
-                if (res.ok)
+
+                if (res.ok) {
+                    console.info(res.ok, "Response After WellDApp", res)
                     return res.json()
-                else
+                } else {
                     throw Error(`code ${res.status}`)
+                }
             })
             .then(async data => {
                 log("Payment response data : ", data)

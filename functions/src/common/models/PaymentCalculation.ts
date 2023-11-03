@@ -30,7 +30,7 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M'
             }
-        };
+        }; // This token is from Yaniv Account Side
 
         const transaction = await axios.post('https://console.dev.welldapp.io/api/transactions', transactionBody, options);
 
@@ -46,10 +46,8 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
     status: boolean,
     result: any
 } | undefined> => {
-
     try {
         console.log("Start smart contract payment function");
-
         console.log("transactionBody : ", transactionBody);
         const options = {
             headers: {
@@ -58,31 +56,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
             }
         };
         let transactionBodyForSmartContract = {
-            "abi": [
-                {
-                    "inputs": [
-                        {
-                            "internalType": "address payable",
-                            "name": "_to",
-                            "type": "address"
-                        },
-                        {
-                            "internalType": "uint256",
-                            "name": "_amount",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "uint256",
-                            "name": "_gas",
-                            "type": "uint256"
-                        }
-                    ],
-                    "name": "sendTokenTo",
-                    "outputs": [],
-                    "stateMutability": "nonpayable",
-                    "type": "function"
-                }
-            ],
+            "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
             "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
             "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
             "method": parentConst.SMART_CONTRACT_METHOD,
@@ -154,25 +128,11 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     console.info("getMatchedCoinAddress", getMatchedCoinAddress)
     if (getMatchedCoinAddress) {
         const getParentSettings = getParentDetails.referalReceiveType ? getParentDetails.referalReceiveType : {};
-        // const parentTransactionDetails = {
-        //     "method": parentConst.PAYMENT_METHOD,
-        //     "params": {
-        //         "amount": parentData.amount,
-        //         "network": parentConst.PAYMENT_NETWORK,
-        //         "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
-        //         "token": parentConst.PAYMENT_TOKEN,
-        //     },
-        //     "user": "Test"
-        // }
-        // console.info("parentTransactionDetails amount,address, network", {
-        //     amount: parentData.amount,
-        //     address: getMatchedCoinAddress.address,
-        //     network : ""
-        // })
         try {
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_IMMEDIATE) {
                 const storeInParentData = {
-                    ...parentData, parentPendingPaymentId: null,
+                    ...parentData,
+                    parentPendingPaymentId: null,
                     address: getMatchedCoinAddress.address,
                     receiveType: getParentSettings.name,
                     timestamp: firestore.FieldValue.serverTimestamp()
@@ -180,7 +140,9 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
 
                 console.info("storeInParentData", storeInParentData)
                 const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
-                // const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails);
+
+                // const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails); // Previous Code
+
                 const parentTransactionDetails = {
                     amount: parentData.amount,
                     address: getMatchedCoinAddress.address,
@@ -216,23 +178,31 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                     pendingAmount = pendingAmount + parentData.amount; // Added current amount as well
 
                     if (pendingAmount > parseFloat(getParentSettings.amount)) {
-                        const transactionBody = {
-                            "method": parentConst.PAYMENT_METHOD,
-                            "params": {
-                                "amount": pendingAmount || 0,
-                                "network": parentConst.PAYMENT_NETWORK,
-                                "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
-                                "token": parentConst.PAYMENT_TOKEN,
-                            },
-                            "user": "Test"
-                        };
+                        // const transactionBody = {
+                        //     "method": parentConst.PAYMENT_METHOD,
+                        //     "params": {
+                        //         "amount": pendingAmount || 0,
+                        //         "network": parentConst.PAYMENT_NETWORK,
+                        //         "origincurrency": parentConst.PAYMENT_ORIGIN_CURRENCY,
+                        //         "token": parentConst.PAYMENT_TOKEN,
+                        //     },
+                        //     "user": "Test"
+                        // };
                         parentData.amount = pendingAmount; // Override All Pending Amount With Current One
 
-                        const getPaymentAfterTransfer = await paymentFunction(transactionBody);
+
+                        const parentTransactionDetails = {
+                            amount: parentData.amount,
+                            address: getMatchedCoinAddress.address,
+                            network: "ethereum"
+                        }
+                        const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
+                        const getHash = getPaymentAfterTransfer?.result?.return_value[0].hash;
+                        //const getPaymentAfterTransfer = await paymentFunction(transactionBody);
 
                         console.info("getPaymentAfterTransfer", getPaymentAfterTransfer?.result?.transaction_id);
                         // Loop on getParentPayment and update status to SUCCESS
-                        const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getPaymentAfterTransfer?.result?.transaction_id, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                        const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getHash, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                         console.info("getParentPendingPaymentReference", getParentPendingPaymentReference?.id);
 
                         getParentPayment.forEach(async (payment: any) => {
@@ -257,6 +227,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
         await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() })
     }
 }
+
 export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()
