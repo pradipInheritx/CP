@@ -25,6 +25,7 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
           slidesToShow: 3,
           slidesToScroll: 3,
           infinite: true,
+          
           dots: true
         }
       },
@@ -44,6 +45,17 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
           slidesToShow: 1,
           slidesToScroll: 1,
           initialSlide: 1,
+          infinite: true,
+        }
+      },
+      {
+        breakpoint: 390,
+        settings: {
+          centerMode: true,
+          slidesToShow: 0.5,
+          slidesToScroll: 1,
+          initialSlide: 1,
+          variableWidth: true,
           infinite: true,
         }
       }

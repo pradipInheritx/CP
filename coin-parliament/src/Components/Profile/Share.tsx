@@ -294,7 +294,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
            <div className="pt-3">
         <H2
           style={{
-            fontSize: `${window.screen.width > 767 ? "4rem" : "3.5rem"}`,
+            fontSize: `${window.screen.width > 767 ? "4rem" : window.screen.width > 390 ? "3.5rem":"2.8rem"}`,
         }}
         >BECOME AMBASSADOR</H2>
           </div>

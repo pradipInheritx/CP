@@ -233,10 +233,10 @@ const VotingBoosterCopy = () => {
 
   return (
     <div
-      style={{
-        backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})` }`,        
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
+      style={{        
+        backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})`}`,
+        backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
+        backgroundPosition: "0 0",
         backgroundSize: "100%",
     }}
     >

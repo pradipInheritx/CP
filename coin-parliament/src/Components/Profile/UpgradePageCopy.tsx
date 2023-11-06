@@ -198,6 +198,7 @@ const UpgradePageCopy = () => {
           backgroundAttachment: "fixed",   
           // height: "75vh",
           // overflow:"scroll"
+          overflow:"hidden"
         }}
        
       >
