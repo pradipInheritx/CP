@@ -1,6 +1,6 @@
 import { firestore } from "firebase-admin";
 import { log } from 'firebase-functions/logger';
-import { isParentExistAndGetReferalAmount, callSmartContractPaymentFunction } from './PaymentCalculation';
+import { isParentExistAndGetReferralAmount, callSmartContractPaymentFunction } from './PaymentCalculation';
 import * as parentConst from "../consts/payment.const.json";
 import fetch from "node-fetch";
 
@@ -53,11 +53,11 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     const { userId, walletType, userEmail, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails } = req.body;
     await storeInDBOfPayment({ userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, paymentDetails })
     console.log("start parent payment");
-    const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(req.body);
+    const getResponseAfterParentPayment = await isParentExistAndGetReferralAmount(req.body);
     console.info("getResponseAfterParentPayment", getResponseAfterParentPayment)
     res.status(200).send({
         status: true,
-        message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
+        message: parentConst.MESSAGE_REFERRAL_PAYMENT_INIT_SUCCESS,
         data: req.body
     });
 }
@@ -195,7 +195,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
     const { userId } = req.params;
     const getParentUser = await firestore().collection('users').doc(userId).get();
     const getParentUserData: any = getParentUser.data();
-    const getUserPendingReferalAmount = await firestore().collection('parentPayment').where('parentUserId', '==', userId).where("status", "==", parentConst.PAMENT_STATUS_PENDING).get();
+    const getUserPendingReferalAmount = await firestore().collection('parentPayment').where('parentUserId', '==', userId).where("status", "==", parentConst.PAYMENT_STATUS_PENDING).get();
     const getUserPendingReferalAmountData: any = getUserPendingReferalAmount.docs.map((payment) => {
         const id = payment.id;
         return { id, ...payment.data() };

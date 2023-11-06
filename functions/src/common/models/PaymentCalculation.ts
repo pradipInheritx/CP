@@ -57,7 +57,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
         };
         let transactionBodyForSmartContract = {
             "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
-            "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
+            "address": parentConst.SMART_CONTRACT_ADMIN_ADDRESS,
             "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
             "method": parentConst.SMART_CONTRACT_METHOD,
             "network": transactionBody.network,
@@ -80,7 +80,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
         return { status: false, result: error }
     }
 }
-export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
+export const isParentExistAndGetReferralAmount = async (userData: any): Promise<any> => {
     try {
         const { userId, amount, transactionType, numberOfVotes, token } = userData;
         const parentUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
@@ -160,7 +160,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                 const getParentPaymentQuery: any = await firestore()
                     .collection('parentPayment')
                     .where('parentUserId', '==', parentData.parentUserId)
-                    .where('status', '==', parentConst.PAMENT_STATUS_PENDING)
+                    .where('status', '==', parentConst.PAYMENT_STATUS_PENDING)
                     .get();
 
                 getParentPaymentQuery.forEach((doc: any) => {
@@ -210,21 +210,21 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                         })
                     } else {
                         console.info("Come Here In Else")
-                        await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                        await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                     }
                 } else {
                     console.info("Come Here In Else")
-                    await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                    await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                 }
             }
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_DAYS || getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
-                await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
+                await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
             }
         } catch (error) {
-            console.info("Error while make referal payment", error)
+            console.info("Error while make referral payment", error)
         }
     } else {
-        await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() })
+        await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECEIVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() })
     }
 }
 
@@ -232,7 +232,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()
         .collection('parentPayment')
-        .where("status", "==", parentConst.PAMENT_STATUS_PENDING)
+        .where("status", "==", parentConst.PAYMENT_STATUS_PENDING)
         .get();
     const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => {
         return { parentPaymentId: snapshot.id, ...snapshot.data() }
@@ -262,15 +262,16 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     for (let parent of parentPaymentDetails) {
         const getAllParentAddress = parent.wellDAddress;
         console.info("getAllParentAddress", getAllParentAddress)
+        //     const getMatchedCoinAddress = getAllParentAddress.find((address: any) => address.coin.toUpperCase() === parentData.token.toUpperCase()); //references from immediate payment
         const getMatchedCoinAddress = getAllParentAddress.find((address: any) => address.coin.toUpperCase() === parent.token.toUpperCase()); // check parentDetails.token.toUpperCase()
         console.info("getMatchedCoinAddress", getMatchedCoinAddress)
         const parentTimeStamp = parent.timestamp._seconds * 1000;
-        const differnceBetweenTimes = Math.round(Math.abs(currentTime - parentTimeStamp) / (1000 * 60 * 60 * 24));
-        log("parentTimeStamp , differnceBetweenTimes : ", parentTimeStamp, currentTime, differnceBetweenTimes);
+        const differenceBetweenTimes = Math.round(Math.abs(currentTime - parentTimeStamp) / (1000 * 60 * 60 * 24));
+        log("parentTimeStamp , differenceBetweenTimes : ", parentTimeStamp, currentTime, differenceBetweenTimes);
 
 
         // For 1 Day, 1 Week and 1 Month
-        if (differnceBetweenTimes >= 1 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1DAY) {
+        if (differenceBetweenTimes >= 1 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1DAY) {
             log("1 day is calling parent is :", parent.id);
             // const transaction: PaymentBody = {
             //     "method": parentConst.PAYMENT_METHOD,
@@ -293,7 +294,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
             await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
 
-        } else if (differnceBetweenTimes >= 7 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1WEEK) {
+        } else if (differenceBetweenTimes >= 7 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1WEEK) {
             log("1 week is calling parent is :", parent.id);
             const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
@@ -304,7 +305,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
             await firestore().collection('parentPayment').doc(parent.parentPaymentId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS }, { merge: true });
 
-        } else if (differnceBetweenTimes >= 30 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1MONTH) {
+        } else if (differenceBetweenTimes >= 30 && parent.settings.days == parentConst.PAYMENT_SETTING_DAYS_1MONTH) {
             log("1 month is calling parent is :", parent.parentPaymentId);
             const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
