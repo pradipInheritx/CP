@@ -99,11 +99,6 @@ function PaymentFun({ isVotingPayment }: any) {
     //   amount: 0.0001
     // }
 
-
-
-
-    
-
     axios.post(`${ApiUrl}payment/makePayment/toServer`, data,
       {
         headers: headers
