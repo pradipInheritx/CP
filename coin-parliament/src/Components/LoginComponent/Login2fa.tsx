@@ -66,7 +66,7 @@ const Login2fa = ({
   const translate = useTranslation();
   const location = useLocation();
   const search = location.search;
-  const { setUser,  } = useContext(UserContext);
+  const { setUser, } = useContext(UserContext);
   const { signup, setSignup, setShowMenuBar } = useContext(AppContext);
   const [forgetPassword, setForgetPassword] = useState(false);
   const mode = signup ? LoginModes.SIGNUP : LoginModes.LOGIN;
@@ -105,7 +105,7 @@ const Login2fa = ({
   const verifyOtp = async (token: string) => {
     try {
       const response = await axios.post(otpurl, {
-        "userId": userInfo?.uid,
+        "userId": auth?.currentUser?.uid,
         "token": token,
         "userType": "USER"
       });
