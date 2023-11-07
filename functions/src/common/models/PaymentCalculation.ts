@@ -88,7 +88,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         //     let data = snapshot.data();
         //     return { childId: data.uid, parentId: data.parent }
         // });
-
+        console.info("parentUserDetails", parentUserDetails)
         if (!parentUserDetails.parent) {
             console.log("Parent Not Found: ", "Parent user data is not exist");
             return null;
