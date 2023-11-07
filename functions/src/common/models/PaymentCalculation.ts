@@ -192,28 +192,28 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
 
 
                         const parentTransactionDetails = {
-                            amount: parentData.amount,
+                            amount: parseFloat("0.0001"), //parentData.amount
                             address: getMatchedCoinAddress.address,
                             network: "ethereum"
                         }
                         const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
+
+                        console.info("getPaymentAfterTransfer After Smart Contract", getPaymentAfterTransfer)
                         const getHash = getPaymentAfterTransfer?.result?.return_value[0].hash;
                         //const getPaymentAfterTransfer = await paymentFunction(transactionBody);
-
-                        console.info("getPaymentAfterTransfer", getPaymentAfterTransfer?.result?.transaction_id);
                         // Loop on getParentPayment and update status to SUCCESS
                         const getParentPendingPaymentReference = await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: null, transactionId: getHash, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                         console.info("getParentPendingPaymentReference", getParentPendingPaymentReference?.id);
 
                         getParentPayment.forEach(async (payment: any) => {
-                            await firestore().collection('parentPayment').doc(payment.docId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: getParentPendingPaymentReference?.id, transactionId: getPaymentAfterTransfer?.result?.transaction_id }, { merge: true });
+                            await firestore().collection('parentPayment').doc(payment.docId).set({ status: parentConst.PAYMENT_STATUS_SUCCESS, parentPendingPaymentId: getParentPendingPaymentReference?.id, transactionId: getHash }, { merge: true });
                         })
                     } else {
-                        console.info("Come Here In Else")
+                        console.info("Come Here In Else 1")
                         await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                     }
                 } else {
-                    console.info("Come Here In Else")
+                    console.info("Come Here In Else ")
                     await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() })
                 }
             }
