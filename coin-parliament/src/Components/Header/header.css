@@ -1,0 +1,7 @@
+
+.SmallDiv >.dropdown-menu.show{
+  margin-left: -160px !important;
+}
+.BigDiv >.dropdown-menu.show{
+  margin-left: -20px !important;
+}
