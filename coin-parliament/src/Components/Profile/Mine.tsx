@@ -76,6 +76,7 @@ const Mine = () => {
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
+  const [albumName, setAlbumName] = useState("");
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
   const [paxValue, setPaxValue] = React.useState(userInfo?.rewardStatistics?.diamonds || 0);
@@ -231,9 +232,10 @@ const Mine = () => {
   const goBack = () => {
     navigate(-1);
   }
-
-  const url = "https://coinparliament.com/"
-  const shareText = "I won this unique card! Join the Parliament and win with me."
+// @ts-ignore
+  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${albumName}`;
+  // const url = "https://coinparliament.com/"
+  const shareText = "I won this unique card! Join the Parliament and win with me."  
 
   // console.log('userInfo',userInfo?.rewardStatistics?.total , userInfo?.rewardStatistics?.claimed)
 
@@ -402,7 +404,7 @@ const Mine = () => {
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} setAlbumName={setAlbumName} />
           </Modal.Body>
         </Modal>
       </CardDiv>
