@@ -11,7 +11,6 @@ import { CurrentCMPProvider } from "Contexts/CurrentCMP";
 import { CompletedVotesProvider } from "Contexts/CompletedVotesProvider";
 import { register } from "serviceWorkerRegistration";
 import { VoteEndCoinPriceProvider } from "Contexts/VoteEndCoinPrice";
-import { Helmet, HelmetProvider } from 'react-helmet-async';
 import axios from "axios";
 import { LessTimeVoteDetailProvider } from "Contexts/LessTimeVoteDetails";
 
@@ -25,17 +24,10 @@ window.changeLanguage = (lang: string) => {
     langDetector?.dispatchEvent(new CustomEvent("change"));
   }
 };
-const parameters = new URLSearchParams(window.location.search);
-const cardImageUrl = parameters.get('cardImageUrl');
+// const parameters = new URLSearchParams(window.location.search);
+// const cardImageUrl = parameters.get('cardImageUrl');
 ReactDOM.hydrate(
-  <HelmetProvider>
-    <Helmet prioritizeSeoTags>
-      {cardImageUrl && <>
-        <meta property="og:image" content={cardImageUrl} />
-        <meta property="twitter:image" content={cardImageUrl} />
-      </>}
-
-    </Helmet>
+  <>
     <BrowserRouter>
       <LessTimeVoteDetailProvider>
         <VoteEndCoinPriceProvider>
@@ -49,7 +41,7 @@ ReactDOM.hydrate(
         </VoteEndCoinPriceProvider>
       </LessTimeVoteDetailProvider>
     </BrowserRouter>
-  </HelmetProvider>
+  </>
   , document.getElementById("app")
 );
 //register service worker

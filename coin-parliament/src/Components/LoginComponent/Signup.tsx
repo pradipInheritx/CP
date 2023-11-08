@@ -75,7 +75,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   const [signupLoading, setSignupLoading] = useState(false)
   let navigate = useNavigate();
   const search = useLocation().search;
-  const refer = new URLSearchParams(search).get("refer");
+  const refer = new URLSearchParams(search).get("refer") || "4RwDKIgF3FMe6KodVGXmZXhv1AE3";
 
   const strings = {
     email: capitalize(translate(texts.email)),

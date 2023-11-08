@@ -201,9 +201,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
   console.log(MintedTime, "MintedTimecheck")
   return (
     <div
-      className="d-flex justify-content-center"
-      
-    >
+      className="d-flex justify-content-center"      
+    >      
       <div
         // onMouseEnter={() => {
         //   console.log("Hello i am first")
@@ -284,7 +283,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
             backgroundImage: (darkTheme ? 'none !important' : ''),
             color: (darkTheme ? "white" : ''),
             position: "relative",              
-          }}>
+            }}>
+            
             <div
             // style={{
             //   width:"100%",
@@ -293,8 +293,8 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
             //   marginTop: "-10px",
             // }}
               
-            >
-              {" "}
+            >              
+
               <div className='d-flex justify-content-between'>
                 <div className='opacity-1' style={{
                   fontSize: "12px",
