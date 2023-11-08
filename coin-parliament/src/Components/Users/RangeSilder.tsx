@@ -320,7 +320,7 @@ export default function SpeedTest(
           return
         }
         setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
-      } else {
+      } else {        
         if (vote?.direction == 1) {
           winner == vote?.direction
             ?
