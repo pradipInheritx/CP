@@ -370,7 +370,7 @@ export const getCoinCurrentAndPastDataDifference = async () => {
         console.log("sent notification on down");
         await getAllUsersAndSendNotification(
           coin.coinName,
-          `Coin ${coin.coinName} value drop! Make your vote now! ⏬`
+          `${coin.coinName} value drop! Make your vote now! ⏬`
         );
       }
       if (coin.differnceInPercentag > 5) {
@@ -378,7 +378,7 @@ export const getCoinCurrentAndPastDataDifference = async () => {
         console.log("sent notification on up");
         await getAllUsersAndSendNotification(
           coin.coinName,
-          `Coin ${coin.coinName} is on fire! Make your vote now! ⏫`
+          `${coin.coinName} is on fire! Make your vote now! ⏫`
         );
       }
     });
