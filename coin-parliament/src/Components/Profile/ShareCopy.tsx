@@ -137,6 +137,7 @@ animation: colorText 1s infinite ;
   100% {
    
    color:#DAA636;
+  //  color:#DAA636;
   }  
 }
 
