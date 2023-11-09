@@ -12,12 +12,21 @@ import VBGM from "../../assets/images/VBGM.png"
 
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
-  const referralUrl = `${document.location.protocol}//${document.location.host}/sign-up?refer=${user?.email}`;
+  
   const [children, setChildren] = useState<Leader[]>([]);
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
   );
   // console.log('referal user',children)
+
+  const referralUrl = (value: any, url?: any) => {
+    if (url=="") {      
+      return `${document.location.protocol}//${document.location.host}/sign-up?refer=${value}`
+    }
+    else {      
+      return `${document.location.protocol}//${url}/?refer=${value}`
+    }
+  };  
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
   }, [userInfo?.children]);
