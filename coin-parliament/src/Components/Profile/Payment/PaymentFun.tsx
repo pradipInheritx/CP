@@ -81,8 +81,8 @@ function PaymentFun({ isVotingPayment }: any) {
       // userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      // amount: payamount,
-      amount: 0.0001,
+      amount: payamount,
+      // amount: 0.0001,
       // network: "11155111",
       // // @ts-ignore
       // origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
