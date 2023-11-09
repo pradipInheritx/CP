@@ -227,7 +227,7 @@ const Minting = ({
     if (score === 100) {
       setTimeout(() => {
         handleCmpPopupShow();
-      }, 5100);
+      }, 8100);
     }
   }, [score]);
   useEffect(() => {

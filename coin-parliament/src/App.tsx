@@ -1228,6 +1228,7 @@ function App() {
     }
   }
   const claimReward = httpsCallable(functions, "claimReward");
+
   useEffect(() => {
     if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0)) {
       claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
@@ -1603,7 +1604,8 @@ function App() {
                                       setMfaLogin={setMfaLogin}
                                     />
                                   )} */}
-                                  {(/* !login && */
+                                  {(
+                                    !login &&
                                     !firstTimeAvatarSlection &&
                                     !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>

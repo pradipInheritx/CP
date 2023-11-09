@@ -4,6 +4,7 @@ import copy from "copy-to-clipboard";
 import NotificationContext, { ToastType } from 'Contexts/Notification';
 import Copy from "Components/icons/copyShare";
 import styled, { css } from "styled-components";
+import Xtwitter from '../../assets/images/x-twitterBlue.svg';
 
 const I = styled.i`
   cursor: pointer;
@@ -77,8 +78,8 @@ const ShareModal: React.FC<{ shareModalShow: boolean, setShareModalShow: React.D
                             />
                         </div>
                         <div className="mx-3">
-                            <I
-                                className="bi-twitter"
+                            {/* <I className="bi-twitter-x" /> */}
+                            <img src={Xtwitter} alt="" width={"22px"}
                                 onClick={() =>
                                     window.open(
                                         `https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`,
