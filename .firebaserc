@@ -1,6 +1,7 @@
 {
   "projects": {
-    "staging": "coinparliament-51ae1"
+    "staging": "coinparliament-51ae1",
+    "production": "coinparliament-51ae1"
   },
   "targets": {
     "coinparliament-51ae1": {
