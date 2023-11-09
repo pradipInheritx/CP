@@ -260,18 +260,22 @@ export default function SpeedTest(
   // const { value } = useSpeedTest();
   // const value = 10;
 
-  const [value, setValue] = useState(50)
+  const [value, setValue] = useState(1);
 
   useEffect(() => {
     const generateRandomNumber = () => {
       const min = 1;
       const max = 100;
       const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-      setValue(randomNum);
+      // setValue(randomNum);
+      if (100>value) {
+      setValue(prev=>prev+1);
+        
+      }
     };
 
     // Generate a random number every second
-    const intervalId = setInterval(generateRandomNumber, 1000);
+    const intervalId = setInterval(generateRandomNumber, 80);
 
     // Clean up the interval when the component unmounts
     return () => {
