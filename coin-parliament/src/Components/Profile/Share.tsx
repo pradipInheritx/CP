@@ -188,97 +188,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
 
     // Step 5: Clear the interval when the component unmounts
     return () => clearInterval(interval);
-  }, [currentImageIndex]);
-
-  // return (
-  //   <PoolBox>
-  //     <div className="d-flex justify-content-center">
-  //       <H2
-  //         // className={classes.headerTitle}        
-  //       >We believe in Ambassadorships!</H2>
-  //     </div>
-  //     <div className="d-flex justify-content-center pt-5 text-center">
-  //       <span className={classes.shareSubHeaderText} style={{ color: '#FEFEFE' }}>Invite your friends to become </span>
-  //     </div>
-  //     <div className="d-flex justify-content-center text-center">
-  //       <span className={classes.shareSubHeaderText} style={{ color: '#684dc9', background: "linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%)", WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Coin Parliament</span>
-  //     </div>
-  //     <div className="d-flex justify-content-center text-center">
-  //       <span className={classes.shareSubHeaderText} style={{ color: '#FEFEFE' }}>members and enjoy the benefits of being our Ambassador.</span>
-  //     </div>
-
-  //     <div className="d-flex justify-content-center align-items-center">
-  //       <div className={`row mt-3`} style={{ width: (window.screen.width >= 1200 ? '60%' : '') }}>
-  //         <div className="col-md-6 d-flex  align-items-center">
-  //           <div className={classes.description} style={{ fontSize: '1.5em', fontWeight: 'bold' }}>
-  //             <ul>
-  //               <li>Accelerating your mining progress.</li>
-  //               <li> Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
-  //             </ul>
-  //           </div>
-  //         </div>
-  //         <div className="col-md-5 text-center">
-  //           <img src={earn} alt="" width={window.screen.width > 767 ? "400px" : "300px"} />
-  //         </div>
-  //       </div>
-  //     </div>
-  //     <p className={`${classes.footerText} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>
-  //     <div className="d-flex justify-content-center" style={{ position: 'relative' }}>
-  //       <button
-  //         id="my-tooltip-click"
-  //         className={classes.inviteButton}
-  //         style={{ fontSize: window.screen.width <= 425 ? '1em' : '' }}
-  //         onClick={() => {
-  //           if (!user?.uid) {
-  //             setLogin(true)
-  //             return
-  //           } else {
-  //             setShowShare(prev => !prev);
-  //           }
-  //           return;
-  //         }}
-  //       >
-  //         <span>SHARE NOW TO START EARNING!</span>{window.screen.width < 300 && <br />}
-  //         <span className="material-icons-outlined me-2">share</span>
-  //         <span className="material-symbols-outlined">arrow_drop_down</span>
-  //       </button>
-  //       {showShare && <div className={classes.shareBox} style={window.screen.width < 300 ? {
-  //         marginLeft: '2em',
-  //         top: '5em',
-  //       } : (window.screen.width <= 425 ? {
-  //         marginLeft: '13em',
-  //         top: '4em',
-  //       } : {
-  //         marginLeft: '16em',
-  //         top: '4em',
-  //       })}>
-  //         <span className="material-symbols-outlined text-secondary me-2"
-  //           onClick={() => {
-  //             copy(url);
-  //             showToast(
-  //               'Your referral link is copied to the clipboard.',
-  //               ToastType.SUCCESS
-  //             );
-  //           }}>
-  //           content_copy
-  //         </span>
-  //         <a href={`https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url}`.replace(" ", "+")}&app_absent=0`} target="_blank" onClick={() => setShowShare(false)}>
-  //           <img src={whatsApp} className="me-2" />
-  //         </a>
-  //         <a href={`https://twitter.com/intent/tweet?url=${url}?check_suite_focus=true&text=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
-  //           <img src={XTwitter} width={'25px'} height={'25px'} className="me-2" />
-  //         </a>
-  //         <a href={`https://www.facebook.com/sharer/sharer.php?u=${url}&t=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
-  //           <img src={facebook} className="me-2" />
-  //         </a>
-  //       </div>
-  //       }
-  //     </div>
-  //     <div className="d-flex  mt-3 mb-5 m-auto d-flex justify-content-center ">
-  //     </div>
-  //   </PoolBox>
-  // );  
-
+  }, [currentImageIndex]);    
   return (
     <div
       style={{
@@ -300,21 +210,23 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
           </div>
           <div className="pt-5 text-center">
         <span
-          // className={classes.shareSubHeaderText}
-          className={`${classes.footerAmb} text-center`}
+          className={classes.shareSubHeaderText}
+          // className={`${classes.footerAmb} text-center`}
           style={{ color: '#FEFEFE' }}>Invite your friends to become </span>
           </div>
-          <div className="text-center">
+      <div className="text-center">
+
         <span
-          // className={classes.shareSubHeaderText}
-          className={`${classes.footerAmb} text-center`}
-          // style={{ color: '#684dc9', background: "linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%)", WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
+          className={classes.shareSubHeaderText}
+          style={{color:"white"}}
+        // className={`${classes.footerAmb} text-center`}
+        // style={{ color: '#684dc9', background: "linear-gradient(180deg, #FEFEFE 35.94%, #3C1ABA 100%)", WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
         >Coin Parliament</span>
-          </div>
+      </div>
           <div className="text-center">
         <span
-          // className={classes.shareSubHeaderText}
-          className={`${classes.footerAmb} text-center`}
+          className={classes.shareSubHeaderText}
+          // className={`${classes.footerAmb} text-center`}
           style={{ color: '#FEFEFE' }}>members and enjoy the benefits of being our Ambassador.</span>
           </div>
 
