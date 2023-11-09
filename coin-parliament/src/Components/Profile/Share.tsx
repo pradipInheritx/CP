@@ -95,10 +95,10 @@ border:3px solid white;
 justify-content: center;
 border-radius:50px;
 background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
-  animation: zoom-in-zoom-out 1s infinite ;
+  animation: color_change 1s infinite ;
 transition: background 1s;
 
-@keyframes zoom-in-zoom-out {
+@keyframes color_change {
   0% {
     background: linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%);
     color: #B869FC;
