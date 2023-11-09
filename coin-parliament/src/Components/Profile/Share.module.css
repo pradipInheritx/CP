@@ -46,10 +46,26 @@ letter-spacing:2px;
     display:flex;
     justify-content:center;
     align-items:center;
-    width: 11.9rem;
-    height: 3.76856rem;
+    width: 15.9rem;
+    /* height: 5rem; */
     flex-shrink: 0;
-    background-image: url("../../assets/images/tooltip.svg");
+    background-image: url("../../assets/images/tooltip.svg");      
+background-repeat: no-repeat;
+    /* background-color: white; */
+}
+.shareBox2{
+    padding-top:1em;
+    position:absolute;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width: 15.9rem;
+    
+    /* height: 10rem;  */
+    flex-shrink: 0;
+    background-image: url("../../assets/images/tooltipTop.svg");      
+background-repeat: no-repeat;
+    /* background-color: white; */
 }
 .shareBox img,span{
     cursor:pointer;
