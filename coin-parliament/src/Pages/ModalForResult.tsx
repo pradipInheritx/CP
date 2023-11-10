@@ -222,6 +222,7 @@ useEffect(() => {
             <Buttons.Primary
               onClick={() => {
                 setLogin(true)
+                handleClose()
             }}
             >
             Join The Parliament
