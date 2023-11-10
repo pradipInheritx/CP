@@ -63,7 +63,7 @@ text-align:center;
 const RoundBox = styled.div` 
 border:2px solid #fff,#F4F6FA;
 height:${window.screen.width >767 ? "140px" :"190px"};
-border-radius:30px;
+border-radius:${window.screen.width > 767 ? "30px" : "0px"};
 border: 4px solid var(--White-Gradient, #F4F6FA);
 background: linear-gradient(180deg, rgba(82, 99, 184, 0.60) 0%, rgba(178, 102, 245, 0.60) 100%);
 display:flex;
@@ -89,7 +89,7 @@ font-size: ${window.screen.width > 767 ? " 16px" : "12px"};
 font-style: normal;
 font-weight: 200;
 line-height: normal;
-text-transform: lowercase;
+// text-transform: lowercase;
 display:inline-block;
 text-align: ${window.screen.width > 767 ? "" : "center"};
 }
@@ -274,8 +274,8 @@ const UpgradePageCopy = () => {
                     width: `${window.screen.width > 767 ? "70%" : "100%"} `,
                   }}
                 >                  
-                <p>Lifetime passive income rev-share program</p>
-                <span>Receive 50% of all your friend's total purchases.</span>
+                  <p>Collectibles Market</p>
+                  <span>Use your VTE to for  collectibles trading</span>
                 </div>
               </RoundBox>
 
@@ -332,7 +332,7 @@ const UpgradePageCopy = () => {
                   }}
                 >                   
                   <p>Purchases</p>
-                  <span>Use your parliament coin (V2E) to buy merchandise.</span>
+                  <span>Use your parliament coin (VTE) to buy merchandise.</span>
                 </div>
               </RoundBox>
 
@@ -351,7 +351,7 @@ const UpgradePageCopy = () => {
                   }}
                 >                     
                   <p>Full mining machine</p>
-                  <span>Mine PAX BEP20 token.</span>
+                  <span>Mine PAX BEP20 token to your external wallet.</span>
                 </div>
               </RoundBox>
               
@@ -506,10 +506,10 @@ const UpgradePageCopy = () => {
                 <p className="text-center mt-2"
                   style={{
                     fontSize: "14px",
+                    padding:"1px"
                   }}>
                   
-                  Special Offer
-                  *Get Extra*</p>
+                  50 Extra Votes</p>
               </div>
               <div
                 style={{
@@ -527,8 +527,7 @@ const UpgradePageCopy = () => {
                   style={{
                     fontSize: "14px",
                 }}
-                >Parliament
-                  coins (V2E)</p>
+                >500 Parliament Coins (VTE)</p>
               </div>
             </div>
           </div>
