@@ -7,6 +7,7 @@ import RangeSilder from '../Users/RangeSilder';
 import ModalForResult from '../../Pages/ModalForResult';
 import Countdown from 'react-countdown';
 
+
 const MainDiv = styled.div`
   height:100vh;
   background:white;
@@ -142,6 +143,7 @@ top: 2px;
 
 function CardShow() {
     let params = useParams();
+    const [voteDirection, setVoteDirection] = useState(0);
   const {id} = params;
 // @ts-ignore
   const cardData = { ...listData[id] }
@@ -276,7 +278,8 @@ function CardShow() {
               style={{
                borderRadius:"60px 0px 60px 60px"
               }}
-                onClick={() => {                  
+                onClick={() => {   
+                  setVoteDirection(1)               
                   setClickedOption1(true);
                   setTimeout(() => {
                     setShowSpdometer(true)
@@ -312,6 +315,7 @@ function CardShow() {
               }}
                  onClick={() => {                  
                   //  setShowSpdometer(true)
+                  setVoteDirection(2)  
                    setClickedOption0(true);
                    setTimeout(() => {
                      setClickedOption0(false)
@@ -395,7 +399,8 @@ function CardShow() {
         {
           showPopUp == true ?
             <>
-              <ModalForResult   
+              <ModalForResult
+              voteDirection = {voteDirection }    
             // @ts-ignore 
                 showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}
