@@ -222,6 +222,7 @@ const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp
             <Buttons.Primary
               onClick={() => {
                 setLogin(true)
+                handleClose()
               }}
             >
               Join The Parliament
