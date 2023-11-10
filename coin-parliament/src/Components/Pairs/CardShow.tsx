@@ -142,6 +142,7 @@ top: 2px;
 
 function CardShow() {
     let params = useParams();
+    const [voteDirection, setvoteDirection] = useState(0)
   const {id} = params;
 // @ts-ignore
   const cardData = { ...listData[id] }
@@ -276,7 +277,8 @@ function CardShow() {
               style={{
                borderRadius:"60px 0px 60px 60px"
               }}
-                onClick={() => {                  
+                onClick={() => {   
+                  setvoteDirection(1)               
                   setClickedOption1(true);
                   setTimeout(() => {
                     setShowSpdometer(true)
@@ -312,6 +314,7 @@ function CardShow() {
               }}
                  onClick={() => {                  
                   //  setShowSpdometer(true)
+                  setvoteDirection(2)
                    setClickedOption0(true);
                    setTimeout(() => {
                      setClickedOption0(false)
@@ -349,6 +352,7 @@ function CardShow() {
                 borderRadius: "10px",
                 // display: "flex",
 
+                
                 // justifyContent: "center",
           boxShadow: "0 3px 6px #00000029"
               }}> 
@@ -397,6 +401,7 @@ function CardShow() {
             <>
               <ModalForResult   
             // @ts-ignore 
+                voteDirection = {voteDirection}
                 showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}
               />

@@ -48,9 +48,10 @@ const PairsVoteVs = styled.span`
 interface ChildComponentProps {
   showPopUp?: any;
   setShowPopUp?: any;
+  voteDirection?: number;
 }
 
-const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp }) => {
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp ,voteDirection}) => {
   // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
   const { user } = useContext(UserContext);
   const { setLogin, } = useContext(AppContext);
@@ -118,7 +119,7 @@ const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp
             >
               <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
-                  winner={true}>
+                  winner={voteDirection === 1}>
                   <div className=" ">
                     <div className='p-2'>
                       {/* @ts-ignore */}
@@ -162,7 +163,7 @@ const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp
 
               <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
-                  winner={false}
+                  winner={voteDirection === 2}
                 >
                   <div className="">
                     <div className='p-2'>
@@ -191,6 +192,7 @@ const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp
                   {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
                   {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
                 </p>
+               <p>YOUR VOTE FOR : {cardData[`name${voteDirection}`]} </p>
                 <p>Vote impact : HIGH </p>
               </div>
               <CoinVoteTimer>
