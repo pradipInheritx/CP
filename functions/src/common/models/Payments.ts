@@ -102,7 +102,13 @@ const addIsExtraVotePurchase = async (metaData: any) => {
         });
 }
 const addIsUpgradedValue = async (userId: string) => {
-    await firestore().collection('users').doc(userId).set({ isUserUpgraded: true }, { merge: true });
+    const getUserDetails: any = (await firestore().collection('users').doc(userId).get()).data();
+
+    const rewardStatistics : any= getUserDetails.rewardStatistics;
+    rewardStatistics.extraVote = parentConst.UPGRADE_USER_VOTE + rewardStatistics.extraVote;
+    rewardStatistics.diamonds = parentConst.UPGRADE_USER_COIN + rewardStatistics.diamonds;
+
+    await firestore().collection('users').doc(userId).set({ isUserUpgraded: true ,rewardStatistics }, { merge: true });
 }
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {
@@ -190,7 +196,6 @@ export const getParentPayment = async (req: any, res: any) => {
         });
     }
 }
-
 export const getInstantReferalAmount = async (req: any, res: any) => {
     const { userId } = req.params;
     const getParentUser = await firestore().collection('users').doc(userId).get();
