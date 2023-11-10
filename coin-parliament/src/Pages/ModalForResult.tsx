@@ -95,6 +95,7 @@ useEffect(() => {
             marginLeft: `${window.screen.width < 767 ? "10%" : ""}`
           }}>
             {/* {type == "pair" && vote ? <p> {timeframeInitials(vote?.timeframe?.name)} VOTE</p> : ""} */}
+            
           </div>
           {/* <div className="d-flex justify-content-end" > */}
             <button className="btn-close " aria-label="Close" 
