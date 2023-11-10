@@ -352,6 +352,7 @@ function CardShow() {
                 borderRadius: "10px",
                 // display: "flex",
 
+                
                 // justifyContent: "center",
           boxShadow: "0 3px 6px #00000029"
               }}> 
