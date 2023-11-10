@@ -149,6 +149,7 @@ function CardShow() {
   const [showPopUp, setShowPopUp] = useState<any>(false) 
   const [clickedOption1, setClickedOption1] = useState(false);
   const [clickedOption0, setClickedOption0] = useState(false);
+  const [voteDirection, setVoteDirection] = useState(0);
   const [allBUtton, setAllBUtton] = useState<any>([
     {
     time: "15 Sec",
@@ -279,6 +280,7 @@ function CardShow() {
                 onClick={() => {                  
                   setClickedOption1(true);
                   setTimeout(() => {
+                    setVoteDirection(1)  
                     setShowSpdometer(true)
                     setClickedOption1(false)
                   }, 600);
@@ -312,6 +314,7 @@ function CardShow() {
               }}
                  onClick={() => {                  
                   //  setShowSpdometer(true)
+                  setVoteDirection(2)  
                    setClickedOption0(true);
                    setTimeout(() => {
                      setClickedOption0(false)
@@ -395,6 +398,7 @@ function CardShow() {
           showPopUp == true ?
             <>
               <ModalForResult   
+              voteDirection = {voteDirection }   
             // @ts-ignore 
                 showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}
