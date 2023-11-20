@@ -56,5 +56,7 @@
             "stateMutability": "nonpayable",
             "type": "function"
         }
-    ]
+    ],
+    "UPGRADE_USER_VOTE": 50,
+    "UPGRADE_USER_COIN": 500
 }
