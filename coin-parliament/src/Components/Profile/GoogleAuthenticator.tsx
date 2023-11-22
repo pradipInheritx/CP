@@ -91,20 +91,23 @@ const GoogleAuthenticator = () => {
     const data = {
       userId: id,
       userType: "USER",
-    };
-    try {
-      const response = await axios.post(generateGoogle2faUrl, data);
-      console.log(response.data);
-      setSecretKey(response.data.result.base32);
-      QRCode.toDataURL(response.data.result.otpauth_url, { color: { dark: "#7565f7", light: "#ffffff" } }
-      ).then(
-        (dataUrl: string) => {
-          setQrCodeDataUrl(dataUrl);
-          console.log('qrcode', dataUrl)
-        }
-      );
-    } catch (error) {
-      console.error(error);
+    };    
+    // @ts-ignore
+    if (userInfo?.googleAuthenticatorData?.otp_auth_url) {      
+      try {
+        const response = await axios.post(generateGoogle2faUrl, data);
+        console.log(response.data);
+        setSecretKey(response.data.result.base32);
+        QRCode.toDataURL(response.data.result.otpauth_url, { color: { dark: "#7565f7", light: "#ffffff" } }
+        ).then(
+          (dataUrl: string) => {
+            setQrCodeDataUrl(dataUrl);
+            console.log('qrcode', dataUrl)
+          }
+        );
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -128,9 +131,12 @@ const GoogleAuthenticator = () => {
     }
   };
 
-  // console.log('user',userInfo,u)
+  // console.log('user',userInfo,u)  
   useEffect(() => {
-    if (!userInfo?.mfa) createPost(userInfo?.uid as string);
+    if (!userInfo?.mfa) {
+      createPost(userInfo?.uid as string)
+      console.log(userInfo?.uid,"i am runing again")
+    };
     return () => setCopied(false);
   }, [userInfo?.mfa]);
 

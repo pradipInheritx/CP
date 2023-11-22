@@ -412,6 +412,16 @@ const VotingPaymentCopy: React.FC<{
 
 
     const [coinsList, setCoinsList] = useState([])
+  // const [coinsList, setCoinsList] = useState([{
+  //     name:"a"
+  // },
+  //   {
+  //     name: "a"
+  //   },
+  //   {
+  //     name: "a"
+  //   },    
+  // ])
     const [selectPayment, setSelectPayment] = useState(0);
     // const [selectCoin, setSelectCoin] = useState("none");
     // const [coinInfo, setCoinInfo] = useState([]);
@@ -442,11 +452,13 @@ const VotingPaymentCopy: React.FC<{
       // window.scrollTo({ top: 500, behavior: 'smooth' });
       if (coinInfo) {        
         if (window.screen.width > 767) {          
-          window.scrollTo({ top: extraPer > 0 ? 700 :650, behavior: 'smooth' });      
+          window.scrollTo({ top: extraPer > 0 ? 700 : 650, behavior: 'smooth' });                        
         }
+
         else {
-          window.scrollTo({ top: extraPer > 0 ? 630 : 600, behavior: 'smooth' });                
+          window.scrollTo({ top: extraPer > 0 ? 860 : 630, behavior: 'smooth' });          
         }
+        
       }
     }, [coinInfo])
 
@@ -680,9 +692,10 @@ const VotingPaymentCopy: React.FC<{
                     {showOptionList && (
                       <ul className="pay-select-options"
                         style={{
-                          height: "200px",
+
+                          maxHeight: "200px",
                           // top: `${!payamount? -200 : ""}` 
-                          top: `${selectCoin == "none" ? "-200px" : ""}`,
+                          top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : coinsList.length*42}` : ""}`,
                           borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
                           borderTop: "none",
                           border: " 1px solid #cab7ff",
