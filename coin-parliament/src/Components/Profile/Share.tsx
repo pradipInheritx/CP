@@ -332,11 +332,12 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
                 }}
               >How does it work?</span>
               <div className={classes.description} style={{ fontSize: '1.2em' }}>
-                <ol>
+                <ul>
                   <div className="d-flex ">
-                    <div>
-                      <li className={`${classes.textsomechange}`} ><span> Sign  up</span>  to become a member.</li>
-                      <li className={`${classes.textsomechange}`}><span>Invite your friends </span> from any social media platform using your unique referral link.</li>
+                    <div>                      
+                      <li className={`${classes.textsomechange}`} >Invite your friends to become Sport Parliament members and enjoy the benefits of being our partner.
+                        Accelerating your mining progress</li>                      
+                      <li className={`${classes.textsomechange}`}>Lifetime passive income rev-share program, receive 50% of all your friends' total purchases directly to your wallet.</li>
                     </div>
                     {window.screen.width > 767 && <div>
                       <img src={earn} alt="" width={window.screen.width > 767 ? "200px" : "300px"}
@@ -363,7 +364,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
                     </ul>
                   </li>
 
-                </ol>
+                </ul>
               </div>
             </div>
             {window.screen.width < 767 && <img src={earn} alt="" width={window.screen.width > 767 ? "200px" : "300px"} />}
@@ -371,7 +372,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
 
         </div>
         {window.screen.width > 767 && <p className={`${classes.footerAmb} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>}
-
+        {window.screen.width > 767 && <p className={`${classes.footerAmb} text-center`}>SHARE NOW TO START EARNING!</p>}
         <div className="d-flex justify-content-center mt-3 mb-5" style={{ position: 'relative' }}>
           <ButttonDiv className="mt-1 m-auto">
             <button
