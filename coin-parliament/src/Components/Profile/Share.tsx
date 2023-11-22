@@ -348,24 +348,7 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
                         }}
                       />
                     </div>}
-                  </div>
-                  <li className={`${classes.textsomechange}`}>
-                    <span> Start earning !</span>
-                    <ul style={{ listStyleType: 'disc', padding: '0px', paddingLeft: '1em' }}>
-                      <li className={`${classes.textsomechange} mt-2`}>Accelerating your mining progress. Every referred vote will contribute to your CMP progress. Upon completion of <span> 100 CMP (closing block)</span>, you will be eligible for rewards.</li>
-                      <li className={`${classes.textsomechange} mt-2`}>
-                        <div
-                          style={{
-                            lineHeight: "1.7"
-                          }}
-                        >
-                          <span >Lifetime</span> passive income rev-share program, receive <span>50% of all your friends' total purchases </span> directly to your wallet.
-                        </div>
-
-                      </li>
-                    </ul>
-                  </li>
-
+                  </div>                  
                 </ul>
               </div>
             </div>
@@ -373,8 +356,8 @@ const Share = ({ url, text, shareText }: ShareAndEarnProps) => {
           </div>
 
         </div>
-        {window.screen.width > 767 && <p className={`${classes.footerAmb} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>}
-        {window.screen.width > 767 && <p className={`${classes.footerAmb} text-center`}>SHARE NOW TO START EARNING!</p>}
+        <p className={`${classes.footerAmb2} text-center`}>Your friends will be an integral part of your progress and income <span className={classes.foreverText}>FOREVER!</span></p>
+        <p className={`${classes.footerAmb2} text-center`}>SHARE NOW TO START EARNING!</p>
         <div className="d-flex justify-content-center mt-3 mb-5" style={{ position: 'relative' }}>
           <ButttonDiv className="mt-1 m-auto">
             <button

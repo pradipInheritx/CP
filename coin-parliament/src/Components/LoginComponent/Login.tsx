@@ -130,7 +130,7 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
   return (
     <div
       className="text-center"
-    // style={{ width: "280px" }}
+    style={{ width: "300px" }}
     >
       {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
       {!withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
