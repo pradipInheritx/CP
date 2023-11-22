@@ -174,44 +174,44 @@ const Profile = () => {
                               navigate("./" + eventKey, { replace: true });
                             },
                             tabs: [
-                              {
-                                component: <></>,
-                                label: "Mining",
-                                icon: <Minenew />,
-                                eventKey: ProfileTabs.mine,
-                              },
+                              // {
+                              //   component: <></>,
+                              //   label: "Mining",
+                              //   icon: <Minenew />,
+                              //   eventKey: ProfileTabs.mine,
+                              // },
                               {
                                 component: <></>,
                                 label: "Pool Mining",
                                 icon: <Sharenew />,
                                 eventKey: ProfileTabs.share,
                               },
-                              {
-                                component: <></>,
-                                label: ProfileTabs.votes,
-                                icon: <Votesnew />,
-                                eventKey: ProfileTabs.votes,
-                              },
-                              {
-                                component: <></>,
-                                label: ProfileTabs.ProfileNftGallery,
-                                icon: <Gallerynew />,
-                                eventKey: ProfileTabs.ProfileNftGallery,
-                              },
+                              // {
+                              //   component: <></>,
+                              //   label: ProfileTabs.votes,
+                              //   icon: <Votesnew />,
+                              //   eventKey: ProfileTabs.votes,
+                              // },
+                              // {
+                              //   component: <></>,
+                              //   label: ProfileTabs.ProfileNftGallery,
+                              //   icon: <Gallerynew />,
+                              //   eventKey: ProfileTabs.ProfileNftGallery,
+                              // },
 
 
-                              {
-                                component: <></>,
-                                label: ProfileTabs.followers,
-                                icon: <ProfileFollowingnew />,
-                                eventKey: ProfileTabs.followers,
-                              },
-                              {
-                                component: <></>,
-                                label: ProfileTabs.notifications,
-                                icon: <Notificationsnew />,
-                                eventKey: ProfileTabs.notifications,
-                              },
+                              // {
+                              //   component: <></>,
+                              //   label: ProfileTabs.followers,
+                              //   icon: <ProfileFollowingnew />,
+                              //   eventKey: ProfileTabs.followers,
+                              // },
+                              // {
+                              //   component: <></>,
+                              //   label: ProfileTabs.notifications,
+                              //   icon: <Notificationsnew />,
+                              //   eventKey: ProfileTabs.notifications,
+                              // },
 
                             ],
                           }}
@@ -256,12 +256,12 @@ const Profile = () => {
                                 icon: <Wallet />,
                                 eventKey: ProfileTabs.wallet,
                               },
-                              {
-                                component: <></>,
-                                label: "Payment",
-                                icon: <PaymentHitory />,
-                                eventKey: ProfileTabs.history,
-                              },
+                              // {
+                              //   component: <></>,
+                              //   label: "Payment",
+                              //   icon: <PaymentHitory />,
+                              //   eventKey: ProfileTabs.history,
+                              // },
                             ],
                           }}
                         />
