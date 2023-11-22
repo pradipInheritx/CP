@@ -229,7 +229,8 @@ function ModalForResult({
                       fontSize: "14px",
                     }}>
                       {/* {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} */}
-                      {vote?.direction == 0 ? "BULL" : "BEAR"}
+                      {/* {vote?.direction == 0 ? "BULL" : "BEAR"} */}
+                      {vote?.valueExpirationTime > vote?.valueVotingTime ? 'BULL' : 'BEAR'} {' '}
                       <span style={{
                         color: getSingleCoinPriceColor(parseFloat(vote?.valueVotingTime || 0.00), parseFloat(vote.valueExpirationTime || 0.00), vote?.direction)
                       }}>
