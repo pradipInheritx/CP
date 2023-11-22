@@ -289,7 +289,7 @@ const UpgradePage = () => {
                     style={{ width: "70%" }}
                   >
                     <p>Purchases</p>
-                    <span>Use your parliament coin (V2E) to buy merchandise</span>
+                    <span>Use your parliament coin (VTE) to buy merchandise</span>
                   </div>
 
 

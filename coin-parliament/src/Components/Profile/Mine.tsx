@@ -123,7 +123,7 @@ const Mine = () => {
     // @ts-ignore
     setPaxValue(userInfo?.rewardStatistics?.diamonds)
   }, [userInfo?.rewardStatistics?.diamonds])
-
+  
 
   const prevPAXValue = useRef(paxValue)
 
@@ -183,8 +183,11 @@ const Mine = () => {
         color: 'black',
         showConfirmButton: ((userInfo?.rewardStatistics?.extraVote || 0) + parseInt(userInfo?.voteValue || '0') > 0),
         confirmButtonText: 'Continue Voting',
-        confirmButtonColor: '#6352e8',
-        showCloseButton: false,
+        confirmButtonColor: '#6352e8',        
+        // showCloseButton: false,
+        showCancelButton: ((userInfo?.rewardStatistics?.extraVote || 0) + parseInt(userInfo?.voteValue || '0') == 0),        
+        cancelButtonText: "Buy more votes Now",
+        cancelButtonColor: '#6352e8',
         customClass: {
           popup: 'stayInGamePopupStyle',
           htmlContainer: 'pt-3'
@@ -197,6 +200,9 @@ const Mine = () => {
             localStorage.removeItem('continueVotingUrl');
             navigate(continueVotingUrl);
           }
+        }
+        if (result.dismiss === Swal.DismissReason.cancel) {
+          navigate("/votingbooster")
         }
       });
     }
