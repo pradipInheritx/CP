@@ -12,7 +12,6 @@ import {
   voteExpireAndGetCpmNotification,
   poolMiningNotification,
 } from "./SendCustomNotification";
-import { log } from "console";
 
 export type Totals = {
   total: number;
@@ -436,7 +435,7 @@ const getLeaders = async () => {
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
     const leaders = await getLeaders();
-    log("Leaders : ", leaders)
+    console.log("Leaders : ", leaders)
     const userTypes = await firestore()
       .collection("settings")
       .doc("userTypes")
@@ -459,19 +458,19 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         (leaders.length * Number(eachUserType.share)) / 100
       );
       
-      log("eachUserType : ", eachUserType);
-      log("leader.length - eachUserType.share : ", leaders.length," - ",eachUserType.share)
-      log("userLengthForThisUserType : ", userLengthForThisUserType);
+      console.log("eachUserType : ", eachUserType);
+      console.log("leader.length - eachUserType.share : ", leaders.length," - ",eachUserType.share)
+      console.log("userLengthForThisUserType : ", userLengthForThisUserType);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        log("eachUser : ", eachUser)
+        console.log("eachUser : ", eachUser)
         if (
           eachUser.total >= eachUserType.minVote &&
           leader <= userLengthForThisUserType
         ) {
           eachUser.status = eachUserType.name;
           leaderStatus.push(eachUser);
-          log("eachUser.status = eachUserType.name", eachUser.status, eachUserType.name)
+          console.log("eachUser.status = eachUserType.name", eachUser.status, eachUserType.name)
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
@@ -482,7 +481,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       }
     }
 
-    log("leaderStatus : ",leaderStatus)
+    console.log("leaderStatus : ",leaderStatus)
     return await firestore()
       .collection("stats")
       .doc("leaders")
