@@ -12,6 +12,7 @@ import {
   voteExpireAndGetCpmNotification,
   poolMiningNotification,
 } from "./SendCustomNotification";
+import { logger } from "firebase-functions/v1";
 
 export type Totals = {
   total: number;
@@ -435,7 +436,7 @@ const getLeaders = async () => {
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
     const leaders = await getLeaders();
-    console.log("Leaders : ", leaders)
+    // console.log("Leaders : ", leaders)
     const userTypes = await firestore()
       .collection("settings")
       .doc("userTypes")
@@ -457,20 +458,20 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       const userLengthForThisUserType = Math.round(
         (leaders.length * Number(eachUserType.share)) / 100
       );
-      
-      console.log("eachUserType : ", eachUserType);
-      console.log("leader.length - eachUserType.share : ", leaders.length," - ",eachUserType.share)
-      console.log("userLengthForThisUserType : ", userLengthForThisUserType);
+      logger.warn("Start userType ")
+      logger.log("eachUserType : ", eachUserType);
+      logger.log("leader.length - eachUserType.share : ", leaders.length," - ",eachUserType.share)
+      logger.log("userLengthForThisUserType : ", userLengthForThisUserType);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        console.log("eachUser : ", eachUser)
+        logger.warn("eachUser : ",eachUser?.userId)
         if (
           eachUser.total >= eachUserType.minVote &&
           leader <= userLengthForThisUserType
         ) {
           eachUser.status = eachUserType.name;
           leaderStatus.push(eachUser);
-          console.log("eachUser.status = eachUserType.name", eachUser.status, eachUserType.name)
+          logger.log("eachUser.status = eachUserType.name", eachUser.status, eachUserType.name)
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
@@ -481,7 +482,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       }
     }
 
-    console.log("leaderStatus : ",leaderStatus)
+    // console.log("leaderStatus : ",leaderStatus)
     return await firestore()
       .collection("stats")
       .doc("leaders")
