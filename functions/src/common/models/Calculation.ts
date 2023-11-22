@@ -464,7 +464,6 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       logger.log("userLengthForThisUserType : ", userLengthForThisUserType);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        logger.warn("eachUser : ",eachUser?.userId)
         if (
           eachUser.total >= eachUserType.minVote &&
           leader <= userLengthForThisUserType
@@ -478,6 +477,15 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .set({ status: eachUserType }, { merge: true });
 
           leaders.splice(leader, 1);
+        }else{
+          logger.warn("----------------------------------------------------------------");
+          logger.warn("---------------else Part---------------------");
+          logger.warn("eachUser.userId : ",eachUser.userId);
+          logger.warn("Leaders length : ",leaders.length);
+          logger.warn("eachUser.total >= eachUserType.minVote : ",eachUser.total," => ",eachUserType.minVote);
+          logger.warn("leader <= userLengthForThisUserType : ", leader," <= ",eachUserType.minVote);
+          logger.warn("----------------------------------------------------------------");
+
         }
       }
     }
