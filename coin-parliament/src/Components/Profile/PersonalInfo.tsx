@@ -56,6 +56,7 @@ const PersonalInfo = () => {
     setPhone({ phone: userInfo?.phone })
   }, [userInfo]);
 
+  console.log(phone,"phone")
   const createPost = async (id: string) => {
     if (!id) return
     // @ts-ignore
@@ -226,25 +227,32 @@ const PersonalInfo = () => {
                   // edit: true,
                 }}
               />
+              <div style={{
+                marginBottom:`${edit && "160px"}`
+              }}>
               <SelectTextfield
                 label={`${texts.PHONE}`}
-                name="Phone"
+                name="Phone"                
               >
                 <PhoneInput
                   inputStyle={{ width: "100%", padding: "20px 0px 20px 50px" }}
                   placeholder=""
+                  dropdownStyle={{
+                    maxHeight: "150px"
+                  }}
                   inputProps={{
                     name: 'phone',
                     required: true,
                     disabled: !edit
                   }}
                   disableDropdown={!edit}
-                  country={(phone?.phone === undefined || phone?.phone === 'null') ? userCurrentCountryCode : ''}
+                  country={phone?.phone == undefined || null? userCurrentCountryCode : ''}
                   // country={""}
                   value={phone?.phone && phone?.phone}
                   onChange={handleOnChange}
-                />
-              </SelectTextfield>
+                  />                  
+                </SelectTextfield>
+              </div>
             </Col>
 
           </Row>
