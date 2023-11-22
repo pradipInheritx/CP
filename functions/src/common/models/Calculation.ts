@@ -8,8 +8,11 @@ import {
 import { Direction, voteConverter, VoteResultProps } from "./Vote";
 import { firestore } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
-import { voteExpireAndGetCpmNotification, poolMiningNotification } from "./SendCustomNotification";
-
+import {
+  voteExpireAndGetCpmNotification,
+  poolMiningNotification,
+} from "./SendCustomNotification";
+import { log } from "console";
 
 export type Totals = {
   total: number;
@@ -54,7 +57,10 @@ export const returnValue: (
     CPMReturn =
       (Number(status?.givenCPM) || 1) * Number(voteRules.CPMReturnFailure);
   }
-  console.log("GIVEN CMP >>>>>>>>>", (Number(voteRules.givenCPM) || 1) * CPMReturn);
+  console.log(
+    "GIVEN CMP >>>>>>>>>",
+    (Number(voteRules.givenCPM) || 1) * CPMReturn
+  );
   return (Number(voteRules?.givenCPM) || 1) * CPMReturn;
 };
 class Calculation {
@@ -116,7 +122,9 @@ class Calculation {
     const ref = this.db.collection("users").doc(userId);
     const user = (await ref.get()).data() as UserProps;
 
-    const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
+    const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue
+      ? voteResult?.CPMRangeCurrentValue
+      : 0;
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
       const endValue: any = voteResult?.valueExpirationTime;
@@ -124,7 +132,6 @@ class Calculation {
       const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue);
 
       const downRange = Number(startValue) - Number(CPMRangeCurrentValue);
-
 
       if (endValue && endValue < upRange && endValue > downRange) {
         successScoreValue = 2;
@@ -147,7 +154,7 @@ class Calculation {
         voteResult.direction;
         successScoreValue = bull ? 1 : 0 || bear ? 1 : 0;
       }
-      if ((this.status === 0) || this.status) {
+      if (this.status === 0 || this.status) {
         successScoreValue = this.status;
       }
       const score = returnValue(
@@ -181,7 +188,7 @@ class Calculation {
         } else {
           successScoreValue = voteResult.direction === winner ? 1 : 0;
         }
-        if ((this.status === 0) || this.status) {
+        if (this.status === 0 || this.status) {
           successScoreValue = this.status;
         }
         const score = returnValue(
@@ -203,7 +210,9 @@ class Calculation {
     const { voteResult } = this;
     console.info("voteResult", voteResult);
     // const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
-    const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue ? voteResult?.CPMRangeCurrentValue : 0;
+    const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue
+      ? voteResult?.CPMRangeCurrentValue
+      : 0;
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
       const endValue: any = voteResult?.valueExpirationTime;
@@ -233,7 +242,7 @@ class Calculation {
           voteResult.direction === Direction.BULL;
         this.voteResult.success = bull ? 1 : 0 || bear ? 1 : 0;
       }
-      if ((this.status === 0) || this.status) {
+      if (this.status === 0 || this.status) {
         this.voteResult.success = this.status;
       }
     } else {
@@ -261,7 +270,7 @@ class Calculation {
         } else {
           this.voteResult.success = voteResult.direction === winner ? 1 : 0;
         }
-        if ((this.status === 0) || this.status) {
+        if (this.status === 0 || this.status) {
           this.voteResult.success = this.status;
         }
       }
@@ -307,24 +316,48 @@ class Calculation {
       //   .get();
       // const getVote: any = getVotesQuery.data();
       console.log("send Notification for CPM");
-      console.log("send Notification Details - - userId, score,this.voteResult.coin", userId, score, this.voteResult.coin);
-      await voteExpireAndGetCpmNotification(userId, voteStatistics, score, this.voteResult.coin);
+      console.log(
+        "send Notification Details - - userId, score,this.voteResult.coin",
+        userId,
+        score,
+        this.voteResult.coin
+      );
+      await voteExpireAndGetCpmNotification(
+        userId,
+        voteStatistics,
+        score,
+        this.voteResult.coin
+      );
 
       // For Add Only Commission In Current User
       const { CPMSettings } = await Refer.getSettings();
       const { pctReferralActivity } = CPMSettings;
       const commission = Number(score * pctReferralActivity) / 100;
-      const refereeScrore: number = parseFloat(((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(3));
-      await ref.set({ voteStatistics, refereeScrore: refereeScrore }, { merge: true });
+      const refereeScrore: number = parseFloat(
+        ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(3)
+      );
+      await ref.set(
+        { voteStatistics, refereeScrore: refereeScrore },
+        { merge: true }
+      );
       console.log("user.parent -----", user.parent);
       if (user.parent) {
         const refer = new Refer(user.parent, "");
         await refer.payParent(score);
         // send Notification
-        console.log("pool mining Notification is calling: -- ", user.parent, user.displayName || "", user.refereeScrore);
+        console.log(
+          "pool mining Notification is calling: -- ",
+          user.parent,
+          user.displayName || "",
+          user.refereeScrore
+        );
         console.log("commission : ", commission);
         console.log("score -- ", score);
-        await poolMiningNotification(user.parent, user.displayName || "", commission);
+        await poolMiningNotification(
+          user.parent,
+          user.displayName || "",
+          commission
+        );
       }
     } catch (error) {
       errorLogging("giveAway", "ERROR", error);
@@ -403,6 +436,7 @@ const getLeaders = async () => {
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
     const leaders = await getLeaders();
+    log("Leaders : ", leaders)
     const userTypes = await firestore()
       .collection("settings")
       .doc("userTypes")
@@ -424,13 +458,20 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       const userLengthForThisUserType = Math.round(
         (leaders.length * Number(eachUserType.share)) / 100
       );
-
+      
+      log("eachUserType : ", eachUserType);
+      log("leader.length - eachUserType.share : ", leaders.length," - ",eachUserType.share)
+      log("userLengthForThisUserType : ", userLengthForThisUserType);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if (eachUser.total >= eachUserType.minVote && leader <= userLengthForThisUserType) {
+        log("eachUser : ", eachUser)
+        if (
+          eachUser.total >= eachUserType.minVote &&
+          leader <= userLengthForThisUserType
+        ) {
           eachUser.status = eachUserType.name;
           leaderStatus.push(eachUser);
-
+          log("eachUser.status = eachUserType.name", eachUser.status, eachUserType.name)
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
@@ -441,12 +482,12 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       }
     }
 
+    log("leaderStatus : ",leaderStatus)
     return await firestore()
       .collection("stats")
       .doc("leaders")
       .set({ leaders: leaderStatus }, { merge: true });
   };
-
 
 export const calculateStatus: (
   pct: number,
@@ -498,12 +539,12 @@ export const getStatus: (
   currentUserType: UserTypeProps,
   prevUserType?: UserTypeProps
 ) => {
-    return [
-      percentage >= (prevUserType?.share || 0) &&
+  return [
+    percentage >= (prevUserType?.share || 0) &&
       percentage < currentUserType.share + (prevUserType?.share || 0),
-      currentUserType,
-    ];
-  };
+    currentUserType,
+  ];
+};
 
 export default Calculation;
 
@@ -537,24 +578,24 @@ export const getLeaderUsers = async (userId: string) => {
   const allLeaders = await getLeaders();
 
   return {
-    leaders: leaders ?
-      leaders.docs
-        .map((leader) => {
-          const { status } = leader.data();
-          const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-          return leaderObj ? { ...leaderObj, status } : undefined;
-        })
-        .filter((l) => l) :
-      undefined,
-    subscribers: subscribers ?
-      subscribers.docs
-        .map((leader) => {
-          const { status } = leader.data();
-          const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-          return leaderObj ? { ...leaderObj, status } : undefined;
-        })
-        .filter((l) => l) :
-      undefined,
+    leaders: leaders
+      ? leaders.docs
+          .map((leader) => {
+            const { status } = leader.data();
+            const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+            return leaderObj ? { ...leaderObj, status } : undefined;
+          })
+          .filter((l) => l)
+      : undefined,
+    subscribers: subscribers
+      ? subscribers.docs
+          .map((leader) => {
+            const { status } = leader.data();
+            const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+            return leaderObj ? { ...leaderObj, status } : undefined;
+          })
+          .filter((l) => l)
+      : undefined,
   } as {
     leaders?: Leader[];
     subscribers?: Leader[];
@@ -569,9 +610,7 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
   //   .get();
 
   const queryPromises = userIds.map(async (user) => {
-    return await firestore().collection("users")
-      .where("uid", "==", user)
-      .get();
+    return await firestore().collection("users").where("uid", "==", user).get();
   });
 
   const querySnapshots = await Promise.all(queryPromises);
@@ -586,13 +625,14 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
 
   console.log("leaders =>", leaders);
 
-
   const allLeaders = await getLeaders();
 
   return leaders
     .map((leader) => {
       const { status } = leader;
-      const leaderObj = allLeaders.find((leaderData) => leaderData.userId === leader.uid);
+      const leaderObj = allLeaders.find(
+        (leaderData) => leaderData.userId === leader.uid
+      );
       return leaderObj ? { ...leaderObj, status: status?.name } : undefined;
     })
     .filter((leaderData) => leaderData);
@@ -605,4 +645,3 @@ export const errorLogging = async (
 ) => {
   console.log(funcName, type, error); // We will modify later
 };
-
