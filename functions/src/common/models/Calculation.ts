@@ -482,7 +482,14 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       }
     }
 
-    // console.log("leaderStatus : ",leaderStatus)
+    // testing purpose start
+    logger.warn("leaderStatus before sort: ")
+    logger.log(leaderStatus)
+    leaderStatus.sort((a, b) => Number(b.score) - Number(a.score));
+    logger.warn("leaderStatus after sort : ",leaderStatus)
+    logger.log(leaderStatus)
+    // testing purpose end 
+
     return await firestore()
       .collection("stats")
       .doc("leaders")
