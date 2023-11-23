@@ -109,53 +109,70 @@ export const avatarUploadFunction = async (req: any, res: any) => {
     const busboy = Busboy({ headers: req.headers });
     const bucket = admin.storage().bucket(env.STORAGE_BUCKET_URL);
 
-    logger.info("Start uploading new file-------")
-    busboy.on("avatar", (fieldname: any, file: any, fileMeta: any) => {
-        logger.log("File Meta : ", fileMeta)
-        logger.log("File :",file)
-        logger.log("fieldname : ",fieldname)
-      const fileUpload = bucket.file(`UsersAvatar/${newFileName}`);
-      const fileStream = file.pipe(
-        fileUpload.createWriteStream({
-          metadata: {
-            contentType: fileMeta.mimeType,
-          },
-        })
-      );
-      fileUpload
-        .getSignedUrl({
-          action: "read",
-          expires: "03-09-2491",
-        })
-        .then(async (signedUrls) => {
-          console.log("Public Url ------\n", signedUrls[0]);
+    logger.info("Start uploading new file-------");
 
-          await admin
-            .firestore()
-            .collection("users")
-            .doc(userId)
-            .set({ bio, avatar: signedUrls[0] }, { merge: true });
+    busboy.on(
+      "file",
+      (
+        fieldname: any,
+        file: any,
+        fileMeta: any,
+        encoding: any,
+        mimetype: any
+      ) => {
+        logger.log("File Meta : ", fileMeta);
+        logger.log("File :", file);
+        logger.log("fieldname : ", fieldname);
 
-          const result = (
-            await admin.firestore().collection("users").doc(userId).get()
-          ).data();
-          return res.status(200).send({
+        if (mimetype !== "image/png") {
+          return res.status(400).json({ error: "Wrong file type submitted" });
+        }
+
+        const fileUpload =
+          bucket.file(`UsersAvatar/${fileMeta.filename}`) ||
+          bucket.file(`UsersAvatar/${newFileName}.png`);
+        const fileStream = file.pipe(
+          fileUpload.createWriteStream({
+            metadata: {
+              contentType: fileMeta.mimeType,
+            },
+          })
+        );
+        fileUpload
+          .getSignedUrl({
+            action: "read",
+            expires: "03-09-2491",
+          })
+          .then(async (signedUrls) => {
+            console.log("Public Url ------\n", signedUrls[0]);
+
+            await admin
+              .firestore()
+              .collection("users")
+              .doc(userId)
+              .set({ bio, avatar: signedUrls[0] }, { merge: true });
+
+            const result = (
+              await admin.firestore().collection("users").doc(userId).get()
+            ).data();
+            return res.status(200).send({
+              status: true,
+              message: "update avatar and bio successfully",
+              result: { result },
+            });
+          });
+
+        //On Error Event
+        fileStream.on("error", (error: any) => {
+          console.error("File Upload Error Event:", error);
+          return res.status(500).send({
             status: true,
-            message: "update avatar and bio successfully",
-            result: { result },
+            message: "Unable to upload file",
+            result: null,
           });
         });
-
-      //On Error Event
-      fileStream.on("error", (error: any) => {
-        console.error("File Upload Error Event:", error);
-        return res.status(500).send({
-          status: true,
-          message: "Unable to upload file",
-          result: null,
-        });
-      });
-    });
+      }
+    );
 
     busboy.on("finish", async () => {
       // const downloadURL = await bucket
