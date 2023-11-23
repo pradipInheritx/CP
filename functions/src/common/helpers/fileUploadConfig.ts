@@ -75,7 +75,9 @@ export const imageUploadFunction = async (req: any, res: any) => {
         });
 
         // On Finish Event
-        busboy.on("finish", async () => { });
+        busboy.on("finish", async () => {
+            console.info("On Finish Event Called")
+        });
         busboy.end(req.rawBody);
     } catch (error) {
         errorLogging("uploadFiles", "ERROR", error);
