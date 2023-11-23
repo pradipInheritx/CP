@@ -178,12 +178,14 @@ const Header = ({
 	title,
 	logo = true,
 	pathname,
-	remainingTimer
+	remainingTimer,
+	setMfaLogin 
 }: {
 	title?: React.ReactNode;
 	logo?: boolean;
 	pathname: string;
-	remainingTimer: number;
+		remainingTimer: number;
+	setMfaLogin:any,
 }) => {
 	const navigate = useNavigate();
 	const { user, setUser } = useContext(UserContext);
@@ -393,6 +395,7 @@ const Header = ({
 	return (
 
 		<MenuContainer
+			setMfaLogin={setMfaLogin}
 			pathname={pathname}
 			onSelect={onSelect}
 
@@ -683,11 +686,11 @@ const Header = ({
 			)}
 
 			{/* {for center web size} */}
-
+			{console.log(window.screen.width,"window.screen.width")}
 			{logo ? (
 				<div
 					style={{
-						flexBasis: "100%",
+						flexBasis: `${window.screen.width < 979 ?"80%":"100%"}`,
 						textAlign: "center",
 						// transform: `${inOutReward == 2 && showReward == 2 ?"scale(1.5)":""}`,
 						// transformOrigin: `${inOutReward == 2 && showReward == 2 ? "50% -10 %" : ""}`,				

@@ -1493,15 +1493,10 @@ function App() {
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
                             >
-
-                              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
-                                <Login2fa
-                                  setLogin={setLogin}
-                                  setMfaLogin={setMfaLogin}
-                                />
-                              )}
+                              
                               <Header
                                 remainingTimer={remainingTimer}
+                                setMfaLogin={setMfaLogin}
                                 logo={
                                   (login && window.screen.width > 979) ||
                                   window.screen.width > 979
@@ -1604,6 +1599,12 @@ function App() {
                                       setMfaLogin={setMfaLogin}
                                     />
                                   )} */}
+                                  {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                                    <Login2fa
+                                      setLogin={setLogin}
+                                      setMfaLogin={setMfaLogin}
+                                    />
+                                  )}
                                   {(
                                     !login &&
                                     !firstTimeAvatarSlection &&

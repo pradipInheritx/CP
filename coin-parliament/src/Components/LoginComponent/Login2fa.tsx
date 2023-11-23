@@ -68,6 +68,7 @@ const Login2fa = ({
   const search = location.search;
   const { setUser, } = useContext(UserContext);
   const { signup, setSignup, setShowMenuBar } = useContext(AppContext);
+  const [buttonShow, setButtonShow] = useState<boolean>(false);
   const [forgetPassword, setForgetPassword] = useState(false);
   const mode = signup ? LoginModes.SIGNUP : LoginModes.LOGIN;
   const refer = new URLSearchParams(search).get("refer");
@@ -184,7 +185,15 @@ const Login2fa = ({
                                   value={textData}
                                   onChange={(e) => setTextData(e.target.value)}
 
-                                />  <Buttons.Primary onClick={(e) => verifyOtp(textData)}>Verify</Buttons.Primary>
+                                />
+                                <Buttons.Primary className='mx-2'
+                                  disabled={textData == "" || buttonShow}
+                                  onClick={(e) => {
+                                    verifyOtp(textData)
+                                    setButtonShow(true)
+                                  }}>{!buttonShow ?
+                                    "Verify" : "Verify..."
+                                  }</Buttons.Primary>
                                 {/* <input type="text" value={secretKey} />
       <button onClick={(e) => navigator.clipboard.writeText(secretKey)}>Copy</button> */}
                               </div>
