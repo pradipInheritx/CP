@@ -98,77 +98,69 @@ export const avatarUploadFunction = async (req: any, res: any) => {
   const { bio } = req.body;
 
   try {
+    if (bio)
+      await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .set({ bio }, { merge: true });
+
     // upload the user's avatar
     const getUserDetails = (
       await admin.firestore().collection("users").doc(userId).get()
     ).data();
     const newFileName = getUserDetails?.displayName + userId;
-    logger.warn("user details : ", getUserDetails);
-    logger.warn("new file name : ", newFileName);
+    console.warn("user details : ", getUserDetails);
+    console.warn("new file name : ", newFileName);
 
     const busboy = Busboy({ headers: req.headers });
     const bucket = admin.storage().bucket(env.STORAGE_BUCKET_URL);
 
     logger.info("Start uploading new file-------");
 
-    busboy.on(
-      "file",
-      (
-        fieldname: any,
-        file: any,
-        fileMeta: any,
-      ) => {
-        logger.log("File Meta : ", fileMeta);
-        logger.log("File :", file);
-        logger.log("fieldname : ", fieldname);
+    busboy.on("file", (fieldname: any, file: any, fileMeta: any) => {
+      console.log("File Meta : ", fileMeta);
+      console.log("File :", file);
+      console.log("fieldname : ", fieldname);
 
-      
+      const fileUpload =
+        bucket.file(`UsersAvatar/${fileMeta.filename}`) ||
+        bucket.file(`UsersAvatar/${newFileName}.png`);
+      const fileStream = file.pipe(
+        fileUpload.createWriteStream({
+          metadata: {
+            contentType: fileMeta.mimeType,
+          },
+        })
+      );
+      fileUpload
+        .getSignedUrl({
+          action: "read",
+          expires: "03-09-2491",
+        })
+        .then(async (signedUrls) => {
+          console.warn("Public Url ------\n", signedUrls[0]);
 
-        const fileUpload =
-          bucket.file(`UsersAvatar/${fileMeta.filename}`) ||
-          bucket.file(`UsersAvatar/${newFileName}.png`);
-        const fileStream = file.pipe(
-          fileUpload.createWriteStream({
-            metadata: {
-              contentType: fileMeta.mimeType,
-            },
-          })
-        );
-        fileUpload
-          .getSignedUrl({
-            action: "read",
-            expires: "03-09-2491",
-          })
-          .then(async (signedUrls) => {
-            console.log("Public Url ------\n", signedUrls[0]);
 
-            await admin
-              .firestore()
-              .collection("users")
-              .doc(userId)
-              .set({ bio, avatar: signedUrls[0] }, { merge: true });
-
-            const result = (
-              await admin.firestore().collection("users").doc(userId).get()
-            ).data();
-            return res.status(200).send({
-              status: true,
-              message: "update avatar and bio successfully",
-              result: { result },
-            });
-          });
-
-        //On Error Event
-        fileStream.on("error", (error: any) => {
-          console.error("File Upload Error Event:", error);
-          return res.status(500).send({
-            status: true,
-            message: "Unable to upload file",
-            result: null,
-          });
+          await admin
+            .firestore()
+            .collection("users")
+            .doc(userId)
+            .set({ avatar: signedUrls[0] }, { merge: true });
+        }).catch((err:any)=>{
+            console.error("Error from catch block : ", err);
         });
-      }
-    );
+
+      //On Error Event
+      fileStream.on("error", (error: any) => {
+        console.error("File Upload Error Event:", error);
+        return res.status(500).send({
+          status: true,
+          message: "Unable to upload file",
+          result: null,
+        });
+      });
+    });
 
     busboy.on("finish", async () => {
       // const downloadURL = await bucket
@@ -180,6 +172,14 @@ export const avatarUploadFunction = async (req: any, res: any) => {
       //     message: "Image uploaded and card image url updated successfully",
       //     result: { imageUrl: downloadURL },
       // });
+      const result: any = (
+        await admin.firestore().collection("users").doc(userId).get()
+      ).data();
+      return res.status(200).send({
+        status: true,
+        message: "update avatar and bio successfully",
+        result: { result },
+      });
     });
     busboy.end(req.rawBody);
   } catch (error) {
