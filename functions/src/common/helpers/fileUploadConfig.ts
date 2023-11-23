@@ -98,12 +98,14 @@ export const avatarUploadFunction = async (req: any, res: any) => {
   const { bio } = req.body;
 
   try {
+    console.log("Bio : ", bio);
     if (bio)
       await admin
         .firestore()
         .collection("users")
         .doc(userId)
         .set({ bio }, { merge: true });
+        else console.warn("Bio is not available", bio)
 
     // upload the user's avatar
     const getUserDetails = (
@@ -123,9 +125,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
       console.log("File :", file);
       console.log("fieldname : ", fieldname);
 
-      const fileUpload =
-        bucket.file(`UsersAvatar/${fileMeta.filename}`) ||
-        bucket.file(`UsersAvatar/${newFileName}.png`);
+      const fileUpload = bucket.file(`UsersAvatar/${newFileName}.png`);
       const fileStream = file.pipe(
         fileUpload.createWriteStream({
           metadata: {
@@ -141,14 +141,14 @@ export const avatarUploadFunction = async (req: any, res: any) => {
         .then(async (signedUrls) => {
           console.warn("Public Url ------\n", signedUrls[0]);
 
-
           await admin
             .firestore()
             .collection("users")
             .doc(userId)
             .set({ avatar: signedUrls[0] }, { merge: true });
-        }).catch((err:any)=>{
-            console.error("Error from catch block : ", err);
+        })
+        .catch((err: any) => {
+          console.error("Error from catch block : ", err);
         });
 
       //On Error Event
