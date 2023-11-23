@@ -193,10 +193,12 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
   const navigate = useNavigate();
   const { singalCardData, setSingalCardData } = useContext(AppContext);
   const [tooltipShow, setTooltipShow] = React.useState(false);
-
+  const [imageLoaded, setImageLoaded] = useState(false);
   let params = useParams();
   const { type } = params;
-
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
 
   console.log(MintedTime, "MintedTimecheck")
   return (
@@ -386,9 +388,9 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                         // alignItems:""
                       }}
                     >
-                      <p
+                     {imageLoaded && <p
 
-                      >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>
+                      >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>}
 
                     </div>
                     <img
@@ -404,6 +406,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                         // display: "block",
                         // marginTop: "-10px",
                       }}
+                      onLoad={handleImageLoad}
                     />
                   </div>
                 }
