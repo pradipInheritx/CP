@@ -95,31 +95,21 @@ export const imageUploadFunction = async (req: any, res: any) => {
 
 export const avatarUploadFunction = async (req: any, res: any) => {
   const { userId } = req.params;
-  const { bio } = req.body;
+  //   const { bio } = req.body;
 
   try {
-    console.log("Bio : ", bio);
-    if (bio)
-      await admin
-        .firestore()
-        .collection("users")
-        .doc(userId)
-        .set({ bio }, { merge: true });
-        else console.warn("Bio is not available", bio)
-
     // upload the user's avatar
     const getUserDetails = (
       await admin.firestore().collection("users").doc(userId).get()
     ).data();
     const newFileName = getUserDetails?.displayName + userId;
-    console.warn("user details : ", getUserDetails);
-    console.warn("new file name : ", newFileName);
 
     const busboy = Busboy({ headers: req.headers });
     const bucket = admin.storage().bucket(env.STORAGE_BUCKET_URL);
 
     logger.info("Start uploading new file-------");
 
+    // upload user's Avater
     busboy.on("file", (fieldname: any, file: any, fileMeta: any) => {
       console.log("File Meta : ", fileMeta);
       console.log("File :", file);
@@ -160,6 +150,28 @@ export const avatarUploadFunction = async (req: any, res: any) => {
           result: null,
         });
       });
+    });
+
+    // update user's Bio
+    busboy.on("bio", (fieldname, value) => {
+      console.log("fieldname : ", fieldname);
+      console.log("value : ", value);
+      try {
+        if (value)
+          admin
+            .firestore()
+            .collection("users")
+            .doc(userId)
+            .set({ bio: value }, { merge: true });
+        else console.warn("Bio is not available");
+      } catch (error) {
+        errorLogging("uploadFiles", "ERROR", error);
+        res.status(500).send({
+          status: false,
+          message: "Bio is not updated",
+          result: error,
+        });
+      }
     });
 
     busboy.on("finish", async () => {
