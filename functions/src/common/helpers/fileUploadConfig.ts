@@ -97,6 +97,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
 
 
     try {
+        console.info("To do for avatar ")
 
     } catch (error) {
         errorLogging("uploadFiles", "ERROR", error);
