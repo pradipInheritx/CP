@@ -112,7 +112,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
       .storage()
       .bucket(env.STORAGE_BUCKET_URL);
 
-    busboy.on("file", (fieldname: any, file: any, fileMeta: any) => {
+    busboy.on("avatar", (fieldname: any, file: any, fileMeta: any) => {
       const fileUpload = bucket.file(`UsersAvatar/${newFileName}`);
       const fileStream = file.pipe(
         fileUpload.createWriteStream({
