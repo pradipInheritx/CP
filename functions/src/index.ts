@@ -311,7 +311,7 @@ exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
     console.info("getUserData", getUserData);
     const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
       issuer: "inheritx.com",
-      name: getUserData.firstName,
+      name: "Coin Parliament",//getUserData.firstName,
       length: 15,
     });
 
