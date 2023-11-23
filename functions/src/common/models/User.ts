@@ -26,6 +26,7 @@ export type UserProps = {
   firstName?: string;
   lastName?: string;
   email?: string;
+  bio?: string;
   avatar?: string;
   phone?: string;
   country?: string;

@@ -99,7 +99,7 @@ import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.r
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
 import PaymentRouter from "./routes/Payments.routes";
-import { imageUploadFunction } from "./common/helpers/fileUploadConfig";
+import { imageUploadFunction, avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
@@ -135,6 +135,8 @@ app.use("/admin/FollowTable", FollowTableRouter);
 app.use("/payment", PaymentRouter);
 
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
+
+app.post("/generic/user/uploadAvatarAndBio/:userId", auth, avatarUploadFunction);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {

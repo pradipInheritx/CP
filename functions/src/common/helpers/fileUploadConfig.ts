@@ -89,3 +89,21 @@ export const imageUploadFunction = async (req: any, res: any) => {
         });
     }
 }
+
+export const avatarUploadFunction = async (req: any, res: any) => {
+
+    //const { userId } = req.params;
+    //const { bio } = req.body;
+
+
+    try {
+
+    } catch (error) {
+        errorLogging("uploadFiles", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: "Something went wrong in server",
+            result: error,
+        });
+    }
+}
