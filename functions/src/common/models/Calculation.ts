@@ -208,24 +208,31 @@ class Calculation {
 
   calcSuccess(): void {
     const { voteResult } = this;
-    console.info("voteResult", voteResult);
+    logger.info("voteResult", voteResult);
     // const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
     const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue
       ? voteResult?.CPMRangeCurrentValue
       : 0;
+      logger.log("CPMRangeCurrentValue : ",CPMRangeCurrentValue)
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
       const endValue: any = voteResult?.valueExpirationTime;
 
-      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue);
+      logger.log("startValue : ",startValue)
+      logger.log("endValue : ",endValue)
 
+      const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue);
       const downRange = Number(startValue) - Number(CPMRangeCurrentValue);
+
+      logger.log("upRange : ",upRange);
+      logger.log("downRange : ",downRange);
 
       if (typeof startValue === "number" && typeof endValue === "number") {
         const trendChange = Number(
           Number(((endValue || 0) / (startValue || 1) - 1) * 100).toFixed(3)
         );
         voteResult.trendChange = trendChange;
+        logger.log("trendChange : ",trendChange)
       }
 
       if (endValue && endValue < upRange && endValue > downRange) {
@@ -241,6 +248,11 @@ class Calculation {
           endValue > startValue &&
           voteResult.direction === Direction.BULL;
         this.voteResult.success = bull ? 1 : 0 || bear ? 1 : 0;
+
+
+        logger.log("bear : ",bear)
+        logger.log("bull : ",bull)
+
       }
       if (this.status === 0 || this.status) {
         this.voteResult.success = this.status;
@@ -267,12 +279,14 @@ class Calculation {
         // This status is user from frontend
         if (averageValue <= CPMRangeCurrentValue) {
           this.voteResult.success = 2;
+
         } else {
           this.voteResult.success = voteResult.direction === winner ? 1 : 0;
         }
         if (this.status === 0 || this.status) {
           this.voteResult.success = this.status;
         }
+        logger.log("this.voteResult.success : ",this.voteResult.success)
       }
     }
   }
@@ -458,10 +472,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       const userLengthForThisUserType = Math.round(
         (leaders.length * Number(eachUserType.share)) / 100
       );
-      logger.warn("Start userType ")
-      logger.log("eachUserType : ", eachUserType);
-      logger.log("leader.length - eachUserType.share : ", leaders.length," - ",eachUserType.share)
-      logger.log("userLengthForThisUserType : ", userLengthForThisUserType);
+     
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
         if (
@@ -477,15 +488,6 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
             .set({ status: eachUserType }, { merge: true });
 
           leaders.splice(leader, 1);
-        }else{
-          logger.warn("----------------------------------------------------------------");
-          logger.warn("---------------else Part---------------------");
-          logger.warn("eachUser.userId : ",eachUser.userId);
-          logger.warn("Leaders length : ",leaders.length);
-          logger.warn("eachUser.total >= eachUserType.minVote : ",eachUser.total," => ",eachUserType.minVote);
-          logger.warn("leader <= userLengthForThisUserType : ", leader," <= ",eachUserType.minVote);
-          logger.warn("----------------------------------------------------------------");
-
         }
       }
     }
