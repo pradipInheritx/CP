@@ -191,7 +191,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   const userData: UserProps = {
     uid: user.uid,
     address: "",
-    avatar: user.photoURL,
+    avatar: "",
+    bio: "",
     // foundationName: user.foundationName,
     country: "",
     email: user.email,
