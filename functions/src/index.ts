@@ -136,7 +136,7 @@ app.use("/payment", PaymentRouter);
 
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
 
-app.post("/generic/user/uploadAvatarAndBio/:userId", auth, avatarUploadFunction);
+app.post("/generic/user/uploadAvatarAndBio/:userId", avatarUploadFunction);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => {
