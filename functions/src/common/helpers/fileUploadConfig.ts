@@ -117,16 +117,12 @@ export const avatarUploadFunction = async (req: any, res: any) => {
         fieldname: any,
         file: any,
         fileMeta: any,
-        encoding: any,
-        mimetype: any
       ) => {
         logger.log("File Meta : ", fileMeta);
         logger.log("File :", file);
         logger.log("fieldname : ", fieldname);
 
-        if (mimetype !== "image/png") {
-          return res.status(400).json({ error: "Wrong file type submitted" });
-        }
+      
 
         const fileUpload =
           bucket.file(`UsersAvatar/${fileMeta.filename}`) ||
