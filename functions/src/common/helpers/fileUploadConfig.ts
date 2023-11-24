@@ -148,16 +148,17 @@ export const avatarUploadFunction = async (req: any, res: any) => {
                 });
             });
         });
-
         busboy.on("finish", async () => {
-            const result: any = (
-                await admin.firestore().collection("users").doc(userId).get()
-            ).data();
-            return res.status(200).send({
-                status: true,
-                message: "update avatar and bio successfully",
-                result: { result },
-            });
+            await setTimeout(async () => {
+                const result: any = (
+                    await admin.firestore().collection("users").doc(userId).get()
+                ).data();
+                return res.status(200).send({
+                    status: true,
+                    message: "Update avatar successfully",
+                    result: { result },
+                });
+            }, 3000);
         });
 
         busboy.end(req.rawBody);
