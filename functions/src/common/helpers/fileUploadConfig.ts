@@ -129,7 +129,6 @@ export const avatarUploadFunction = async (req: any, res: any) => {
                 })
                 .then(async (signedUrls) => {
                     console.warn("Public Url ------\n", signedUrls[0]);
-
                     await admin
                         .firestore()
                         .collection("users")
@@ -139,7 +138,6 @@ export const avatarUploadFunction = async (req: any, res: any) => {
                 .catch((err: any) => {
                     console.error("Error from catch block : ", err);
                 });
-
             //On Error Event
             fileStream.on("error", (error: any) => {
                 console.error("File Upload Error Event:", error);
@@ -151,40 +149,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
             });
         });
 
-        // update user's Bio
-        busboy.on("bio", async (fieldname, value) => {
-            console.log("fieldname : ", fieldname);
-            console.log("value : ", value);
-            try {
-                if (value) {
-                    await admin
-                        .firestore()
-                        .collection("users")
-                        .doc(userId)
-                        .set({ bio: value }, { merge: true });
-                } else {
-                    console.warn("Bio is not available");
-                }
-            } catch (error) {
-                errorLogging("uploadFiles", "ERROR", error);
-                res.status(500).send({
-                    status: false,
-                    message: "Bio is not updated",
-                    result: error,
-                });
-            }
-        });
-
         busboy.on("finish", async () => {
-            // const downloadURL = await bucket
-            //     .file(fileToBeUploaded.file)
-            //     .publicUrl()
-            // console.info("File Url", downloadURL);
-            // return res.status(200).send({
-            //     status: true,
-            //     message: "Image uploaded and card image url updated successfully",
-            //     result: { imageUrl: downloadURL },
-            // });
             const result: any = (
                 await admin.firestore().collection("users").doc(userId).get()
             ).data();
@@ -194,6 +159,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
                 result: { result },
             });
         });
+
         busboy.end(req.rawBody);
     } catch (error) {
         errorLogging("uploadFiles", "ERROR", error);
