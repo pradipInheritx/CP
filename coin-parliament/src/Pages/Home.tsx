@@ -154,15 +154,15 @@ function Home() {
               <div key={index} className="card mb-3 col-sm-6" style={{ background: '#160133', color: 'white', textAlign: 'justify' }}>
                 <div className="row no-gutters">
                   <div className="col-lg-6 p-0">
-                    <img src={sites[key].img} className="card-img pt-3" alt="img" />
+                    <img src={sites[key].img} className="card-img pt-4  " alt="img" style={{height:"92%"}} />
                   </div>
                   <div className="col-lg-6 p-0 d-flex">
                     <div className="card-body d-flex flex-column justify-content-center">
-                      <p className="card-text">{sites[key].des}</p>
-                      <div className='d-flex mt-4 align-items-center'>
-                        <h6 style={{ marginRight: '1em' }}>{sites[key].title}</h6>
-                        <Button href={sites[key].redirect} /* target='_blank' */ /* disabled={loading === sites[key]?.name} */ /* onClick={() => window.location.replace(`${sites[key].redirect}`)} */ >
-                          {(loading === sites[key]?.name) ? <span className='loading'>wait...</span> : 'Visit site'}
+                        <h6 style={{ marginRight: '1em', textAlign:"center" }}>{sites[key].title}</h6>
+                      <p className="card-text" style={{marginTop:"5px"}} >{sites[key].des}</p>
+                      <div className='d-flex mt-2 align-items-center ' >
+                        <Button href={sites[key].redirect} style={{fontWeight:"bold", marginLeft:"20px"}}/* target='_blank' */ /* disabled={loading === sites[key]?.name} */ /* onClick={() => window.location.replace(`${sites[key].redirect}`)} */ >
+                          {(loading === sites[key]?.name) ? <span className='loading'>wait...</span> : 'VOTE NOW !'}
                         </Button>
                       </div>
                     </div>
