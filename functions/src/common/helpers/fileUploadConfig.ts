@@ -97,12 +97,6 @@ export const avatarUploadFunction = async (req: any, res: any) => {
     const { userId } = req.params;
 
     try {
-        // upload the user's avatar
-        const getUserDetails = (
-            await admin.firestore().collection("users").doc(userId).get()
-        ).data();
-        const newFileName = getUserDetails?.displayName + userId;
-
         const busboy = Busboy({ headers: req.headers });
         const bucket = admin.storage().bucket(env.STORAGE_BUCKET_URL);
 
@@ -114,7 +108,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
             console.log("File :", file);
             console.log("fieldname : ", fieldname);
 
-            const fileUpload = bucket.file(`UsersAvatar/${newFileName}.png`);
+            const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.png`);
             const fileStream = file.pipe(
                 fileUpload.createWriteStream({
                     metadata: {
