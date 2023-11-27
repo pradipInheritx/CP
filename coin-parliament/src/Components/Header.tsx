@@ -302,9 +302,7 @@ const Header = ({
 	// console.log(voteRules?.maxVotes, userInfo?.rewardStatistics?.extraVote, votesLast24Hours, headerExtraVote ,"allvotetype")
 	console.log(headerExtraVote, voteNumber, "headerExtraVote")
 
-	const onSelect = (eventKey: string | null) => {
-
-		console.log(eventKey, "checkeventKey")
+	const onSelect = (eventKey: string | null) => {		
 		// handleSoundClick()
 		const auth = getAuth();
 
