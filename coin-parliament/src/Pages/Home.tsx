@@ -11,6 +11,13 @@ import { auth } from "firebase";
 import AppContext from "../Contexts/AppContext";
 import ShareBlue from "../assets/svg/ShareBlue.svg";
 import ShareGold from "../assets/svg/ShareGold.svg";
+import { ToastType } from "Contexts/Notification";
+import { showToast } from "App";
+import copy from "copy-to-clipboard";
+import whatsApp from "../assets/images/whatsapp.svg"
+import facebook from "../assets/images/facebook.svg"
+import XTwitter from "../assets/images/x-twitter.svg"
+import './styles.css';
 
 // const Button = styled.a`
 //   flex-direction: column;
@@ -33,7 +40,7 @@ import ShareGold from "../assets/svg/ShareGold.svg";
 const ButttonDiv = styled.div`
   
   width: 130px;
-  height: 50px
+  height: 50px;
   border: 3px solid white;
   display: flex;
   justify-content: center;
@@ -43,10 +50,10 @@ const ButttonDiv = styled.div`
     rgba(82, 99, 184, 1) 0%,
     rgba(178, 102, 245, 1) 100%
   );
-  animation: color-change 1s infinite;
+  animation: home-image 1s infinite;
   transition: background 1s;
 
-  @keyframes color-change {
+  @keyframes home-image {
     0% {
       background: linear-gradient(
         180deg,
@@ -72,10 +79,10 @@ const ButttonDiv = styled.div`
     border-radius: 50px;
     padding: 0px;
     margin: 4px 0px;
-    font-size: 20px;
+    font-size: 14px !important;
     color: red;
-    width: 120px;
-    height:30px
+    width: 118px;
+    height:36px;
     color: #b869fc;
     font-family: "Lilita One";
     font-family: Rounded Mplus 1c;
@@ -229,6 +236,32 @@ function Home() {
     ShareBlue,
     // Add more image sources as needed
   ];
+  // @ts-ignore
+  const getAllId = JSON.parse(localStorage.getItem("userId"))
+
+  const [shareIcon, setshareIcon] = useState({
+
+    coin:{
+      name: "/cplog.png",
+      id: getAllId?.coin,
+      url: "coinparliament.com"
+    },
+   sport: {
+      name: "/SPlogo.png",
+      id: getAllId?.sport,
+      url: "sportparliament.com"
+    },
+    voting:{
+      name: "/vplogo.png",
+      id: getAllId?.voting,
+      url: "votingparliament.com"
+    },
+    stock:{
+      name: "/sptlogo.png",
+      id: getAllId?.stock,
+      url: "stockparliament.com"
+    }
+  })  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -242,11 +275,18 @@ function Home() {
     return () => clearInterval(interval);
   }, [currentImageIndex]);
 
+  const referralUrl = (value: any, url?: any) => {
+    if (url == "") {    
+      return `${document.location.protocol}//${url}/?refer=${value}`
+    }
+  };  
+const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
+
   return (
     <div className="d-flex flex-column justify-content-center align-items-center p-5 h-100">
       <h1 className="pb-4">TOP VTE PLATFORMS</h1>
       <div className="row">
-        {Object.keys(sites).map((key: string, index) => {
+        {Object.keys(sites).map((key: string, index) => {          
           return (
             <div
               key={index}
@@ -280,7 +320,8 @@ function Home() {
                       style={{ gap: "4px" }}
                     >
                       <ButttonDiv className="mt-1 m-auto">
-                        <button style={{ height: "27px" }}>
+                        <button
+                          >
                           <a
                             href={sites[key].redirect}
                             target="_blank"
@@ -305,7 +346,7 @@ function Home() {
                               setShowShare((prev) => !prev);
                             }
                           }}
-                          style={{ height: "27px" }}
+                          
                         >
                           EARN NOW !
                           <img
@@ -316,6 +357,51 @@ function Home() {
                           />
                         </button>
                       </ButttonDiv>
+
+                      {showShare && <div className={"HomeshareBox"} style={window.screen.width < 300 ? {
+                        marginLeft: '2em',
+                        top: '26.5em',                        
+                        zIndex : 1000,
+                      } : (window.screen.width <= 425 ? {
+                        marginLeft: '8em',
+                          top: '26.5em',
+                          zIndex: 1000,
+                      } : {
+                        marginLeft: '10em',
+                            top: '14.5em',                        
+                            zIndex: 1000,
+                      })}>
+                        <div className="d-flex flex-column pt-3">                          
+                          <div className="d-flex py-2" key={index}>
+                            {/* @ts-ignore */}
+                            {/* <img src={shareIcon[`${key}`].name} alt="" width={"25px"} /> */}
+                              <span className="material-symbols-outlined text-secondary me-2"
+                              onClick={() => {
+                                {/* @ts-ignore */ }
+                                copy(referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url));
+                                  showToast(
+                                    'Your referral link is copied to the clipboard.',
+                                    ToastType.SUCCESS
+                                  );
+                                }}>
+                                content_copy
+                            </span>
+                            {/* @ts-ignore */}
+                            <a href={`https://api.whatsapp.com/send/?phone&text=${`${shareText} ${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url)}`.replace(" ", "+")}&app_absent=0`} target="_blank" onClick={() => setShowShare(false)}>
+                                <img src={whatsApp} className="me-2" />
+                            </a>
+                            {/* @ts-ignore */}
+                            <a href={`https://twitter.com/intent/tweet?url=${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url)}?check_suite_focus=true&text=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
+                                <img src={XTwitter} width={'25px'} height={'25px'} className="me-2" />
+                            </a>
+                            {/* @ts-ignore */}
+                            <a href={`https://www.facebook.com/sharer/sharer.php?u=${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url)}&t=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
+                                <img src={facebook} className="me-2" />
+                              </a>
+                            </div>                          
+                        </div>
+                      </div>
+                      }
                     </div>
                   </div>
                 </div>
