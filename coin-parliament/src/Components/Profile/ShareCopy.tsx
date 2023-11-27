@@ -169,29 +169,28 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
       url:""
       
     },
-    {
-    name: "/cplog.png" ,
-    id: getAllId?.coin ,
-      url:"coinparliament.com"
-    },
-    {
-      name: "/SPlogo.png" ,
-      id: getAllId?.sport,
-      url:"sportparliament.com"
-    },
-    {
-      name: "/vplogo.png" ,
-      id: getAllId?.voting,
-      url:"votingparliament.com"
-    },
-    {
-      name: "/sptlogo.png" ,
-      id: getAllId?.stock  ,
-      url:"stockparliament.com"
-    }
+    // {
+    // name: "/cplog.png" ,
+    // id: getAllId?.coin ,
+    //   url:"coinparliament.com"
+    // },
+    // {
+    //   name: "/SPlogo.png" ,
+    //   id: getAllId?.sport,
+    //   url:"sportparliament.com"
+    // },
+    // {
+    //   name: "/vplogo.png" ,
+    //   id: getAllId?.voting,
+    //   url:"votingparliament.com"
+    // },
+    // {
+    //   name: "/sptlogo.png" ,
+    //   id: getAllId?.stock  ,
+    //   url:"stockparliament.com"
+    // }
   ])
   
-
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const imageSources = [
     ShareGold, ShareBlue,
@@ -332,7 +331,7 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
             <div className="d-flex flex-column pt-3">
               {shareIcon.map((item, index) => {
                 return <div className="d-flex py-2" key={index}>
-                  <img src={item.name} alt="" width={"25px"} />
+                  {/* <img src={item.name} alt="" width={"25px"} /> */}
                   <span className="material-symbols-outlined text-secondary me-2"
                     onClick={() => {
                       copy(url(item.id,item.url));
@@ -414,15 +413,14 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
             </button>
           </ButttonDiv>
           {showShare2 && <div className={classes.shareBox2} style={window.screen.width < 300 ? {
-            
             marginLeft: '2em',
-            top: '-16em',
+            top: '5em',
           } : (window.screen.width <= 425 ? {
             marginLeft: '8em',
-              top: '-18em',
+            top: '4em',
           } : {
-            marginLeft: '8em',
-            top: '-18em',
+            marginLeft: '10em',
+            top: '4em',
           })}>
             <div className="d-flex flex-column "
               style={{
@@ -430,8 +428,8 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
             }}
             >
               {shareIcon.map((item,index) => {
-                return <div className={`${index == shareIcon.length - 1 ?"pb-5 pt-2" :"py-2"} d-flex px-3`} key={index}>
-                  <img src={item.name} alt="" width={"25px"} />
+                return <div className={`${index == shareIcon.length - 1 ?"pb-5 pt-4" :"py-2"} d-flex px-3`} key={index}>
+                  {/* <img src={item.name} alt="" width={"25px"} /> */}
                   <span className="material-symbols-outlined text-secondary me-2"
                     onClick={() => {
                       copy(url(item.id, item.url));

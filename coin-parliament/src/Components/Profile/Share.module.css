@@ -51,6 +51,7 @@ letter-spacing:2px;
     flex-shrink: 0;
     background-image: url("../../assets/images/tooltip.svg");      
 background-repeat: no-repeat;
+background-size: 246px 160px;
     /* background-color: white; */
 }
 .shareBox2{
@@ -63,8 +64,9 @@ background-repeat: no-repeat;
     
     /* height: 10rem;  */
     flex-shrink: 0;
-    background-image: url("../../assets/images/tooltipTop.svg");      
+    background-image: url("../../assets/images/tooltip.svg");      
 background-repeat: no-repeat;
+background-size: 246px 160px;
     /* background-color: white; */
 }
 .shareBox img,span{
