@@ -18,6 +18,7 @@ import firebase from "firebase/compat";
 import { Ratio } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
+import SetsScreen from "./SetsScreen";
 
 
 const GalleryType = styled.div`
@@ -88,6 +89,7 @@ const NFTGallery = () => {
   const [setsCardName, setSetsCardName] = useState<any>('none')
   const [cardName, setCardName] = useState<any>([])
   const [cardNameNew, setCardNameNew] = useState<any>([])
+  const [isLoading, setIsLoading] = useState(false);
   const [allVideo, setAllVideo] = useState<any>({
     Wildwest: Wildwest,
     Winter: Winter,
@@ -105,7 +107,7 @@ const NFTGallery = () => {
 
 
   useEffect(() => {
-    if (albumOpen != "") {
+    if (albumOpen != "") {      
       const getCollectionType = firebase
         .firestore()
         .collection("nftGallery")
@@ -142,6 +144,7 @@ const NFTGallery = () => {
           data.push({ id: doc.id, ...doc.data() });
         });
         setAllCardArrayNew(data)
+        setIsLoading(false)
         console.log(data, "allcardData")
       }).catch((error) => {
         console.log(error, "error");
@@ -323,6 +326,7 @@ const NFTGallery = () => {
 
   useEffect(() => {
     getNftCardNew()
+    setIsLoading(true)
   }, [])
   useEffect(() => {
     onCollectionChange(selectCollection)
@@ -483,7 +487,28 @@ const NFTGallery = () => {
           </select>
         </div>
       </div>
-      {/* @ts-ignore */}
+      {/* @ts-ignore */}      
+      {isLoading && <div style={{
+        position: 'fixed',
+        height: '100%',
+        display: 'flex',
+        textAlign: 'center',
+        justifyContent: 'center',
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        zIndex: '9999',
+        overflow: 'hidden',
+        width: '100%',
+        alignItems: 'center',
+
+      }}>
+        <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em' ,marginTop:"50px"}}>
+          {texts.waitForIt}
+        </span>
+      </div>}
+
+      
       <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
         {(!cardShow && selectCollection === 'none') && collectionType?.map((data: any, index: number) => {
           return <div className="" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
@@ -530,7 +555,7 @@ const NFTGallery = () => {
 
         })}
       </GalleryType>
-
+      
       {/* <GalleryType2 className='' style={{
         width: `${window.screen.width > 787 ? "800px" : "100%"}`,
         margin: "40px auto",
