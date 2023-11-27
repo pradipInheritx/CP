@@ -97,7 +97,9 @@ export const avatarUploadFunction = async (req: any, res: any) => {
     const { userId } = req.params;
 
     try {
-        const busboy = Busboy({ headers: req.headers });
+        const fileSizeLimit = 2; //mb
+        const busboy = Busboy({ headers: req.headers, limits: { fileSize: fileSizeLimit * 1024 * 1024 } });
+        console.log("BUSBOY  :  ", busboy);
         const bucket = admin.storage().bucket(env.STORAGE_BUCKET_URL);
 
         logger.info("Start uploading new file-------");
@@ -107,6 +109,22 @@ export const avatarUploadFunction = async (req: any, res: any) => {
             console.log("File Meta : ", fileMeta);
             console.log("File :", file);
             console.log("fieldname : ", fieldname);
+
+            const imageTypeValidation = /image*/g;
+            console.log("File validation TYPE : ", (fileMeta.mimeType).match(imageTypeValidation))
+            if (!(fileMeta.mimeType).match(imageTypeValidation)) {
+                return res.status(400).send({
+                    status: true,
+                    message: "Only allow image to upload",
+                    result: null,
+                });
+            }
+
+
+            // const array_of_allowed_file_types = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+            // if (!array_of_allowed_file_types.includes(fileMeta.mimeType)) {
+            //     throw Error('Invalid file');
+            // }
 
             const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.png`);
             const fileStream = file.pipe(
