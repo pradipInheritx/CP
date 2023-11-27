@@ -522,6 +522,7 @@ const Header = ({
 											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "45px",
+												height: "45px",
 												// border: "1px solid #6352E8",
 												// @ts-ignore
 												boxShadow: `${(userInfo?.isUserUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUserUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
@@ -726,6 +727,7 @@ const Header = ({
 											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "60px",
+												height: "60px",
 												// @ts-ignore
 												boxShadow: `${(userInfo?.isUserUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUserUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
 												// boxShadow: "1px 0px 5px #6352E8",
