@@ -444,10 +444,7 @@ function WalletInfo() {
                     
                     {
                         walletDetailsObj.length < 1 && tooltipShow &&
-                        <div
-                            style={{
-                                display: "relative"
-                            }}
+                        <div                            
                         >
                             <div className="newtooltip"
                                 style={{
@@ -465,7 +462,8 @@ function WalletInfo() {
                             </div>
                         </div>
                     }
-                    {walletDetailsObj.length < 1 && <div className=''>                    
+                    {walletDetailsObj.length < 1 && <div className=''                        
+                    >                    
                     <I className='bi bi-info-circle'
                         onMouseDown={(e) => {
                             setTooltipShow(false)
@@ -477,7 +475,7 @@ function WalletInfo() {
                         onMouseLeave={() => setTooltipShow(false)}
                     ></I> 
                     </div>  }                 
-                    <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} w-100`}  >
+                    <div className={`${window.screen.width > 350 ? 'd-flex mt-2' : ''} w-100`}  >
                         <select
                             name="coin"
                                 id="coin"
