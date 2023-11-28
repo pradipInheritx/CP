@@ -208,27 +208,27 @@ class Calculation {
 
   calcSuccess(): void {
     const { voteResult } = this;
-    logger.info("voteResult : ", voteResult);
+    console.log("voteResult : ", voteResult);
     // const CPMReturnRangePercentage = voteResult?.CPMRangePercentage || 10;
     const CPMRangeCurrentValue = voteResult?.CPMRangeCurrentValue
       ? voteResult?.CPMRangeCurrentValue
       : 0;
-      
-    logger.log("CPMRangeCurrentValue : ", CPMRangeCurrentValue);
+
+    console.log("CPMRangeCurrentValue : ", CPMRangeCurrentValue);
     if (typeof this.price === "number") {
       const startValue = voteResult.valueVotingTime;
       const endValue: any = voteResult?.valueExpirationTime;
 
-      logger.log("startValue : ", startValue);
-      logger.log("endValue : ", endValue);
+      console.log("startValue : ", startValue);
+      console.log("endValue : ", endValue);
 
       const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue);
       const downRange = Number(startValue) - Number(CPMRangeCurrentValue);
 
-      logger.log("upRange : ", upRange);
-      logger.log("downRange : ", downRange);
+      console.log("upRange : ", upRange);
+      console.log("downRange : ", downRange);
 
-      logger.log(
+      console.log(
         "typeof startValue === 'number' && typeof endValue === 'number' : ",
         typeof startValue === "number" && typeof endValue === "number"
       );
@@ -238,10 +238,10 @@ class Calculation {
           Number(((endValue || 0) / (startValue || 1) - 1) * 100).toFixed(3)
         );
         voteResult.trendChange = trendChange;
-        logger.log("trendChange : ", trendChange);
+        console.log("trendChange : ", trendChange);
       }
 
-      logger.log(
+      console.log(
         "endValue && endValue < upRange && endValue > downRange : ",
         endValue && endValue < upRange && endValue > downRange
       );
@@ -260,8 +260,8 @@ class Calculation {
           voteResult.direction === Direction.BULL;
         this.voteResult.success = bull ? 1 : 0 || bear ? 1 : 0;
 
-        logger.log("bear : ", bear);
-        logger.log("bull : ", bull);
+        console.log("bear : ", bear);
+        console.log("bull : ", bull);
       }
       if (this.status === 0 || this.status) {
         this.voteResult.success = this.status;
@@ -305,7 +305,7 @@ class Calculation {
         if (this.status === 0 || this.status) {
           this.voteResult.success = this.status;
         }
-        logger.log("this.voteResult.success : ", this.voteResult.success);
+        console.log("this.voteResult.success : ", this.voteResult.success);
       }
     }
   }
@@ -500,7 +500,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         ) {
           eachUser.status = eachUserType.name;
           leaderStatus.push(eachUser);
-          logger.log(
+          console.log(
             "eachUser.status = eachUserType.name",
             eachUser.status,
             eachUserType.name
@@ -517,10 +517,10 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
 
     // testing purpose start
     logger.warn("leaderStatus before sort: ");
-    logger.log(leaderStatus);
+    console.log(leaderStatus);
     leaderStatus.sort((a, b) => Number(b.score) - Number(a.score));
     logger.warn("leaderStatus after sort : ", leaderStatus);
-    logger.log(leaderStatus);
+    console.log(leaderStatus);
     // testing purpose end
 
     return await firestore()
