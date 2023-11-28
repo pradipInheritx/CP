@@ -119,10 +119,12 @@ const Login2fa = ({
       setLogin(false)
       setMfaLogin(false)
       setShowMenuBar(false)
+      setButtonShow(false)
     } catch (error: any) {
       showToast(
         error.response.data.message, ToastType.ERROR
       );
+      setButtonShow(false)
       console.error(error.response);
     }
   };

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from "styled-components";
+import NftOneCard from './NftOneCard';
 
 const SetBox = styled.div`
   
@@ -29,8 +30,18 @@ export default function SetsScreen() {
           }}>
               Set Name
           </HeadingBox>
-          <div>
+          <div className='d-flex '>
               
+              <div style={{
+                  width:"100px",
+                  height:"100px"
+              }}
+              className='border'
+              >                  
+              <NftOneCard
+              
+              />
+              </div>
           </div>
     </SetBox>
   )

@@ -155,6 +155,20 @@ const ForZoom = styled.div`
  ${(props: ZoomProps) => `${props.showReward == 2 && props.inOutReward == 2 ? ZoomCss : ""}`} 
 `;
 
+const I = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+position: absolute;
+  font-weight: 300;
+//   top:-27px;
+//   left:180px;
+//   color: #6352e8;
+  color: white;
+//   width: 16px;
+//   height: 16px;
+  text-align: center;
+`;
+
 export const OuterContainer = styled.div`
   background: ${window.screen.width < 979 ? "var(--color-d4d0f3)" : ""};
   position: relative;
@@ -217,7 +231,7 @@ const Header = ({
 	const followerPage = urlName.includes("followerProfile")
 	const votingboosterPage = urlName.includes("votingbooster")
 	const pageTrue = urlName.includes("pairs") || urlName.includes("coins")
-
+	const [tooltipShow, setTooltipShow] = React.useState(false);
 	const MyPath = window.location.pathname;
 	const score = (userInfo?.voteStatistics?.score || 0) - ((userInfo?.rewardStatistics?.total || 0) * 100);
 
@@ -248,7 +262,7 @@ const Header = ({
 			}).catch((error) => {
 				console.log(error, "error");
 			});
-	}
+	}	
 
 	useEffect(() => {
 		getFollowerData()
@@ -655,12 +669,50 @@ const Header = ({
 													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
 														{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
 													</span>
-											}
-											{/* {(!!followerInfo?.status?.name || !!userInfo?.status?.name) && <MemberText>
-												{!!followerInfo?.status?.name ? followerInfo?.status?.name : userInfo?.status?.name || ""}
-											</MemberText>} */}
-
-											{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+											}											
+											{!!followerInfo && <div className="d-flex"
+											>
+												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{
+													(!!followerInfo?.bio && followerPage) && <>
+														<div className='mx-2 '>
+															<I className='bi bi-info-circle'
+																onMouseDown={(e) => {
+																	setTooltipShow(false)
+																}}
+																onMouseUp={(e) => {
+																	setTooltipShow(true)
+																}}
+																onMouseEnter={() => setTooltipShow(true)}
+																onMouseLeave={() => setTooltipShow(false)}
+															></I>
+														</div>
+														{
+															tooltipShow &&
+															<div
+																style={{
+																	position: 'fixed',
+																}}
+															>
+																<div className="newtooltip"
+																	style={{
+																		// right: "0%",
+																		width: "270px",
+																		top: "25px",
+																		left:"-70px"
+																		// marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+																		// marginTop: `${window.screen.width > 767 ? "10%" : "1%"}`,
+																		// zIndex:3000
+																	}}
+																>
+																	{/* <p>Your CMP count</p> */}
+																		<p className="mt-1 text-end lh-base">{followerInfo?.bio}</p>																	
+																</div>
+															</div>
+														}
+													</>
+												}
+											</div>}
 											{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 
 										</div>
@@ -690,7 +742,7 @@ const Header = ({
 				<div
 					style={{
 						flexBasis: `${window.screen.width < 979 ?"80%":"100%"}`,
-						textAlign: "center",
+						textAlign: "center",						
 						// transform: `${inOutReward == 2 && showReward == 2 ?"scale(1.5)":""}`,
 						// transformOrigin: `${inOutReward == 2 && showReward == 2 ? "50% -10 %" : ""}`,				
 						// transition: `${backgrounHide ? "all 3s" : ""}`,      
@@ -701,7 +753,7 @@ const Header = ({
 							style={{
 								// transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.5)" : ""}`,
 								// transformOrigin: `${showReward == 2 && inOutReward == 2 ? "55% 0%" : ""}`,
-								// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,
+								// transformOrigin: `${window.screen.width > 767 ? "60% 0%" : "40% 0%"}`,								
 							}}
 						>
 							{(user?.uid && !login) && (
@@ -870,7 +922,7 @@ const Header = ({
 											// !(followerPage && followerInfo != "") &&
 											<div
 												className=''
-												style={{ width: "50%", marginLeft: "150px", marginTop: "5px", textAlign: "left", fontWeight: "100px", }}
+												style={{ width: "50%", marginLeft: "150px", marginTop: "5px", textAlign: "left", fontWeight: "100px", }}												
 											>
 												{/* {userInfo?.displayName &&
 													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
@@ -884,7 +936,49 @@ const Header = ({
 															{`${(userInfo?.displayName /* && !userInfo?.firstTimeLogin */) ? userInfo?.displayName : ''}`}
 														</span>
 												}
-												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{!!followerInfo && <div className="d-flex"													
+												>												
+													{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+													{
+														(!!followerInfo?.bio && followerPage) && <>
+															<div className='mx-2 '>
+																<I className='bi bi-info-circle'
+																	onMouseDown={(e) => {
+																		setTooltipShow(false)
+																	}}
+																	onMouseUp={(e) => {
+																		setTooltipShow(true)
+																	}}
+																	onMouseEnter={() => setTooltipShow(true)}
+																	onMouseLeave={() => setTooltipShow(false)}
+																></I>
+															</div>
+															{
+																tooltipShow &&
+																<div
+																	style={{
+																			position: 'fixed',
+																	}}
+																>
+																	<div className="newtooltip"
+																		style={{
+																			// right: "0%",
+																			width:"300px",
+																			top:"25px",
+																			// marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+																			// marginTop: `${window.screen.width > 767 ? "10%" : "1%"}`,
+																			// zIndex:3000
+																		}}
+																	>
+																		{/* <p>Your CMP count</p> */}
+																			<p className="mt-1 text-end lh-base">{followerInfo?.bio}</p>																		
+																	</div>
+																</div>
+															}
+														</>
+													}
+												</div>}
+												
 												{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
 											</div>
 										}
