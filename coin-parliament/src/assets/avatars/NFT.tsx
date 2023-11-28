@@ -17,6 +17,7 @@ const images = {
   [AvatarType.Hodler]: "ape",
   [AvatarType.Investor]: "eagle",
   [AvatarType.Founder]: "rhino",
+  [AvatarType.Custom]: "",
 };
 
 const texts = {
@@ -30,6 +31,7 @@ const texts = {
     "Chairman of one of the world's leading VC’s, Board member of 18 internet & tech companies, portfolio consists predominantly of Crypto and stocks. Is seen as the ‘high priest’ in the investment community. Fast thinker, spots changes in trends ahead of others, but patient with his approach to investing - starts early and looks for fundamental long-term growth.",
   [AvatarType.Founder]:
     "Established CP and multiple other successful startups which have collectively IPO’s for over 100 Billion. Passionate about new concepts with a radical imagination & clear vision to revolutionize. Holds a high-risk tolerance, extremely knowledgeable and is a hit with the crowds.",
+  [AvatarType.Custom]:"",
 };
 
 const knownFor = {
@@ -38,6 +40,7 @@ const knownFor = {
   [AvatarType.Hodler]: "The Shepherd",
   [AvatarType.Investor]: "The Priest",
   [AvatarType.Founder]: "The GOAT",
+  [AvatarType.Custom]: "",
 };
 const occupation = {
   [AvatarType.Angel]: "Entrepreneur",
@@ -45,6 +48,7 @@ const occupation = {
   [AvatarType.Hodler]: "Programmer, CTO",
   [AvatarType.Investor]: "Venture Capitalist",
   [AvatarType.Founder]: "Businessman, Investor",
+  [AvatarType.Custom]: "",
 };
 const hobbies = {
   [AvatarType.Angel]: "Fashion, Arts & Politics",
@@ -52,6 +56,7 @@ const hobbies = {
   [AvatarType.Hodler]: "Music,Iron Man, technology",
   [AvatarType.Investor]: "Skiing, Swimming",
   [AvatarType.Founder]: "Golf, Whiskey & Wine making ",
+  [AvatarType.Custom]: "",
 };
 
 const Container = styled(Card)`

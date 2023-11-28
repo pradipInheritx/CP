@@ -89,6 +89,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     const [allCardArrayNew, setAllCardArrayNew] = useState<any>([])
     const [allCardNew, setAllCardNew] = useState<any>([])
     const [sameCards, setSameCards] = useState<any>({})
+    const [isLoading, setIsLoading] = useState(false);
     // const [notFound,setNotFound]=useState<any>(0) 
     var notFound = false;
 
@@ -106,7 +107,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     data.push({ id: doc.id, ...doc.data() });
                 });
                 setAllCardArrayNew(data)
-
+                setIsLoading(false)
             }).catch((error) => {
                 console.log(error, "error");
             });
@@ -146,6 +147,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
     useEffect(() => {
         getNftCard()
+        setIsLoading(true)
         // @ts-ignore
         getAllRewardsOfUser(`${userId}`)
     }, [])
@@ -550,6 +552,25 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         <label htmlFor="default-checkbox" > {texts.AvailableCards} </label>
                     </div>}
             </div>
+            {isLoading && <div style={{
+                position: 'fixed',
+                height: '100%',
+                display: 'flex',
+                textAlign: 'center',
+                justifyContent: 'center',
+                top: '0px',
+                right: '0px',
+                bottom: '0px',
+                zIndex: '9999',
+                overflow: 'hidden',
+                width: '100%',
+                alignItems: 'center',
+
+            }}>
+                <span className="loading" style={{ color: "#7767f7", zIndex: "2220px", fontSize: '1.5em', marginTop: `${window.screen.width > 767? "50px" :"240px"}`}}>
+                    {texts.waitForIt}
+                </span>
+            </div>}
             {
                 (collectionValue === 'none' && !displayMyCards) ?
                     <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }

@@ -157,6 +157,7 @@ import { request } from "http";
 import VotingBooster from "Components/Profile/VotingBooster";
 import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
 import Swal from "sweetalert2";
+import SelectBio from "Components/LoginComponent/SelectBio";
 
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -323,6 +324,7 @@ function App() {
   const [profileTab, setProfileTab] = useState(ProfileTabs.profile);
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
+  const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
   const [loginRedirectMessage, setLoginRedirectMessage] = useState("");
@@ -1304,7 +1306,9 @@ function App() {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                    selectBioEdit,
+                    setSelectBioEdit,
                   withLoginV2e,
                   setWithLoginV2e,
                   transactionId,
@@ -1571,6 +1575,21 @@ function App() {
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
                                   }
+                                  setSelectBioEdit={
+                                    setSelectBioEdit
+                                  }
+                                />
+                              )}
+                              
+                              {!firstTimeLogin && !firstTimeAvatarSlection && selectBioEdit && (
+                                <SelectBio
+                                  userData={user}
+                                  setSelectBioEdit={
+                                    setSelectBioEdit
+                                  }
+                                  // setFirstTimeAvatarSelection={
+                                  //   setFirstTimeAvatarSelection
+                                  // }
                                 />
                               )}
                               {/* {!firstTimeAvatarSlection &&
@@ -1608,7 +1627,7 @@ function App() {
                                   {(
                                     !login &&
                                     !firstTimeAvatarSlection &&
-                                    !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') != 'true') && (
+                                    !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>
                                         <Container
                                           fluid

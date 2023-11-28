@@ -17,7 +17,7 @@ import ProfileFollowing from "../Components/icons/ProfileFollowing";
 import Gallery from "../Components/icons/Gallery";
 import Notifications from "../Components/icons/notifications";
 import NotificationContext, { ToastType } from "../Contexts/Notification";
-import AvatarsModal from "../Components/Profile/AvatarsModal";
+import UpdateAvatars from "../Components/Profile/UpdateAvatars";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { AvatarType } from "../assets/avatars/Avatars";
@@ -129,7 +129,7 @@ const Profile = () => {
     <PageContainer fluid color='var(--pixie-powder)' radius={0} shadow='' className="">
       {avatarMode && (
         // <Container className="py-3" fluid>
-        <AvatarsModal
+        <UpdateAvatars
           {...{
             onSubmit: onSubmitAvatar,
             onClose: () => setAvatarMode(false),

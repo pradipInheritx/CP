@@ -3,7 +3,7 @@ import { Col, Container, Form, Modal, Row, InputGroup } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import User, { UserProps } from "../../common/models/User";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import TextField from "../Forms/Textfield";
 import { Buttons } from "../Atoms/Button/Button";
@@ -19,13 +19,20 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { generateGoogle2faUrl } from "../../common/consts/contents";
 import axios from "axios";
+import Avatars, { AvatarType } from "assets/avatars/Avatars";
+import Avatar from "Components/Users/Avatar";
+import { translate, useTranslation } from "common/models/Dictionary";
+import UpdateAvatars from "./UpdateAvatars";
+import { toast } from "react-toastify";
 
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
 
 
-
-
+const ElementsAvatarAImage1 = styled.div`
+  width: 70px;  
+  margin-top: 1px;    
+`;
 
 const PersonalInfo = () => {
   const { userInfo, user: u, setUserInfo, setUser } = useContext(UserContext);
@@ -42,7 +49,8 @@ const PersonalInfo = () => {
   const [show, setShow] = useState(false);
   let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
-
+  const [avatarMode, setAvatarMode] = useState(false);
+  const translate = useTranslation();
   useEffect(() => {
     setUserName(userInfo?.displayName || '')
     setFirstName(userInfo?.firstName || '')
@@ -81,7 +89,7 @@ const PersonalInfo = () => {
       const userRef = doc(db, "users", u?.uid);
       try {
         await updateDoc(userRef, newUserInfo);
-        showToast(texts.UserInfoUpdate);
+        showToast(texts.UserInfoUpdate);        
       } catch (e) {
         showToast(texts.UserFailUpdate, ToastType.ERROR);
       }
@@ -105,7 +113,25 @@ const PersonalInfo = () => {
         console.log(error);
       });
   }, [phone]);
-  console.log(userCurrentCountryCode, phone, "phonenumber");
+
+  const onSubmitAvatar = async (type: AvatarType) => {
+
+    console.log("yes i am calling")
+    
+    if (u?.uid) {          
+      const userRef = doc(db, "users", u?.uid);
+      try {
+        await setDoc(userRef, { avatar: type }, { merge: true });
+        showToast(translate(texts.UserInfoUpdate));
+        setAvatarMode(false)
+        toast.dismiss();        
+      } catch (e) {
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
+      }
+    }
+  };
+
+
   return (
     <>
 
@@ -135,8 +161,19 @@ const PersonalInfo = () => {
       }}>
 
         <Buttons.Primary style={{ maxWidth: '100px', placeSelf: 'end', margin: '20px', marginBottom: '0px' }} >{edit ? 'SAVE' : 'EDIT'}</Buttons.Primary>
-        <Container>
-
+        <Container className="">
+          <ElementsAvatarAImage1 className="m-auto mb-2" onClick={() => {
+            setAvatarMode(true)
+          }} role="button">
+            {user?.avatar && (
+              <Avatars type={user?.avatar as AvatarType} width={70} style={{
+                height:"70px"
+              }}/>
+            )}
+            {!user?.avatar &&                          
+              <Avatar />            
+            }
+          </ElementsAvatarAImage1>                    
           <Row >
 
             <Col >
@@ -194,20 +231,27 @@ const PersonalInfo = () => {
                   // edit: true,
                 }}
               />
-              <TextField
-                {...{
-                  label: `${texts.BIO}`,
-                  name: "bio",
-                  type: "bio",
-                  placeholder: "Bio",
-                  value: bio || "",
-                  onChange: async (e) => {
-                    setBio(e.target.value);
-                  },
-                  edit: !edit,
+              <SelectTextfield
+                label={`${texts.BIO}`}
+                name="Bio"
+
+              >
+              <textarea                                  
+                  name= "bio"                  
+                  placeholder= "Bio"
+                  value= {bio || ""}
+                onChange={(e) => {
+                  setBio(e.target.value)
+                  }}
+                  disabled ={!edit}
                   // edit: true,
+                  style={{
+                    border: "none",
+                    borderRadius:"5px",
+                  width:`${window.screen.width  > 767 ?"500px":""}`
                 }}
-              />
+                />
+                </SelectTextfield>
               <div className="mb-5">
                 <SelectTextfield
                   label={`${texts.PHONE}`}
@@ -283,6 +327,21 @@ const PersonalInfo = () => {
           </Buttons.Primary>
         </Modal.Footer>
       </Modal>
+      
+      {/* Avater change modal */}
+
+      <Modal show={avatarMode} onHide={handleClose} size="xl"
+        backdrop="static"
+        aria-labelledby="contained-modal-title-vcenter"
+        contentClassName={`${window.screen.width > 767 ? "" : "AvatarModalTop"} AvatarModal`}
+      >        
+        <UpdateAvatars
+          {...{
+            onSubmit: onSubmitAvatar,
+            onClose: () => setAvatarMode(false),
+          }}
+        />
+      </Modal>      
     </>
   );
 };
