@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  selectBioEdit?: any,
+  setSelectBioEdit?: any,
   withLoginV2e?:any,
   setWithLoginV2e?:any,
   transactionId?: any,
