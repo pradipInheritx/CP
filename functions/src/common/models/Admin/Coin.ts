@@ -387,6 +387,54 @@ export const getCoinCurrentAndPastDataDifference = async () => {
   }
 };
 
+export const getCoinPagination = async (req: any, res: any) => {
+  try {
+    const { coinName, pageNumber, pageSize, sorting } = req.query;
+
+    const getAllCoinsQuery: any = (
+      await await firestore().collection("settings").doc("coins").get()
+    ).data();
+
+    const getAllCoins = getAllCoinsQuery.coins;
+
+    // searching
+    if (coinName) {
+      const getCoin = getAllCoins.filter((coin: any) => coin.name === coinName);
+      console.log("getCoin : ", getCoin);
+      return res.status(200).send({
+        status: true,
+        message: "Get the coin successfully",
+        data: getCoin[0],
+      });
+    }
+
+    if (pageNumber && pageSize) {
+      const sortedCoin =
+        sorting.toLowerCase() == "asc"
+          ? getAllCoins.sort((a:any,b:any)=>a.id - b.id)
+          : getAllCoins.sort((a:any,b:any)=>b.id - a.id);
+
+      const startIndex: number = (pageNumber - 1) * pageSize;
+      const endIndex: number = startIndex + parseInt(pageSize);
+
+      console.log("startIndex, endIndex: ", startIndex, endIndex);
+
+      const coinPagination = sortedCoin.slice(startIndex, endIndex);
+
+      console.log("coinPagination : ", coinPagination);
+
+      return res.status(200).send({
+        status: true,
+        message: "Get the coins successfully",
+        data: coinPagination,
+        total : getAllCoins.length
+      });
+    }
+  } catch (error) {
+    errorLogging("getCoinPagination", "ERROR", error);
+  }
+};
+
 export const errorLogging = async (
   funcName: string,
   type: string,
