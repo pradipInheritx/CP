@@ -38,9 +38,7 @@ export default function SetsScreen() {
               }}
               className='border'
               >                  
-              <NftOneCard
-              
-              />
+              <NftOneCard />
               </div>
           </div>
     </SetBox>
