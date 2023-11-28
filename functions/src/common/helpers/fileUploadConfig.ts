@@ -107,27 +107,20 @@ export const avatarUploadFunction = async (req: any, res: any) => {
 
         logger.info("Start uploading new file-------");
 
-        // upload user's Avater
+        // upload user's Avatar
         busboy.on("file", (fieldname: any, file: any, fileMeta: any) => {
             console.log("File Meta : ", fileMeta);
             console.log("File :", file);
             console.log("fieldname : ", fieldname);
 
-            // const imageTypeValidation = /image*/g;
-            // console.log("File validation TYPE : ", (fileMeta.mimeType).match(imageTypeValidation))
-            // if ((fileMeta.mimeType).match(imageTypeValidation) == null || undefined || 0) {
-            //     return res.status(400).send({
-            //         status: true,
-            //         message: "Only allow image to upload",
-            //         result: null,
-            //     });
-            // }
-
-
-            // const array_of_allowed_file_types = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-            // if (!array_of_allowed_file_types.includes(fileMeta.mimeType)) {
-            //     throw Error('Invalid file');
-            // }
+            console.log("fileMeta.mimeType.includes('image') : ", fileMeta.mimeType.includes('image'));
+            if (!fileMeta.mimeType.includes('image')) {
+                return res.status(400).send({
+                    status: true,
+                    message: "Only allows image to upload",
+                    result: null,
+                });
+            }
 
             const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.png`);
             const fileStream = file.pipe(
@@ -137,6 +130,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
                     },
                 })
             );
+            
             fileUpload
                 .getSignedUrl({
                     action: "read",
