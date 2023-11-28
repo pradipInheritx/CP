@@ -70,16 +70,16 @@ export const filterCoins: (
   input: { [p: string]: Coin },
   allCoins: string[]
 ) => {
-    if (!allCoins.length) {
-      return input;
-    }
-    const cs = Object.assign({}, input);
-    Object.keys(cs)
-      .filter((c) => !allCoins.includes(c))
-      .forEach((c) => delete cs[c]);
+  if (!allCoins.length) {
+    return input;
+  }
+  const cs = Object.assign({}, input);
+  Object.keys(cs)
+    .filter((c) => !allCoins.includes(c))
+    .forEach((c) => delete cs[c]);
 
-    return cs;
-  };
+  return cs;
+};
 
 export const calculateCoinsByWazirXAndCoinCap = (
   getCoins: IWazirXSnapshotMetaData
@@ -198,9 +198,9 @@ export const getAllUpdated24HourRecords = async () => {
     .toString();
   const getAllStoredTimestampIds = getAllTimestampFromLast24Hour
     .map((timestamp) =>
-      timestamp.id > startTime && timestamp.id < endTime ?
-        timestamp.id :
-        undefined
+      timestamp.id > startTime && timestamp.id < endTime
+        ? timestamp.id
+        : undefined
     )
     .filter((timestamp) => timestamp !== "undefined")
     .sort();
@@ -278,7 +278,7 @@ export const updateTrendInAllCoins = async (allOldCoinsValue: CoinsWithKey) => {
             ((allOldCoinsValue[coin].price || 0) /
               (getAllCoinsData[coin].price || 1) -
               1) *
-            100
+              100
           ).toFixed(3)
         );
         getAllCoinsData[coin].trend = trend;
@@ -300,11 +300,11 @@ export const updateFixedValueInAllCoins = async (getAllCoins: CoinsWithKey) => {
     if (coin in getAllCoins) {
       getAllCoins[coin].price =
         allCoinsDecimalFixedVauesFromJson[coin] &&
-          allCoinsDecimalFixedVauesFromJson[coin].fixedValue ?
-          Number(getAllCoins[coin].price).toFixed(
-            allCoinsDecimalFixedVauesFromJson[coin].fixedValue
-          ) :
-          Number(getAllCoins[coin].price).toFixed(2);
+        allCoinsDecimalFixedVauesFromJson[coin].fixedValue
+          ? Number(getAllCoins[coin].price).toFixed(
+              allCoinsDecimalFixedVauesFromJson[coin].fixedValue
+            )
+          : Number(getAllCoins[coin].price).toFixed(2);
     }
   }
   return getAllCoins;
@@ -322,11 +322,13 @@ export const getUpdatedDataFromWebsocket = () => {
       "INFO ON OPEN",
       "WebSocket Client Connected"
     );
-    client.send(JSON.stringify({
-      method: 'SUBSCRIBE',
-      params: allTradeCoinsRate,
-      id: 1
-    }));
+    client.send(
+      JSON.stringify({
+        method: "SUBSCRIBE",
+        params: allTradeCoinsRate,
+        id: 1,
+      })
+    );
     // client.send(
     //   JSON.stringify({
     //     event: "subscribe",
@@ -346,8 +348,8 @@ export const getUpdatedDataFromWebsocket = () => {
     console.log("e.data =>", e.data);
     if (typeof e.data === "string") {
       const parseCoinsRateData: any = JSON.parse(e.data);
-      console.info("parseCoinsRateData", parseCoinsRateData)
-      const isResultFound = 'result' in parseCoinsRateData;
+      console.info("parseCoinsRateData", parseCoinsRateData);
+      const isResultFound = "result" in parseCoinsRateData;
       if (parseCoinsRateData && !isResultFound) {
         await updateLatestCoinRate(parseCoinsRateData);
       }
@@ -387,11 +389,11 @@ export const updateLatestCoinRate = async (latestCoinRate: any) => {
         });
 
       setTimeout(async () => {
-        console.info("EXECUTE IN SETIMEOUT")
+        console.info("EXECUTE IN SETIMEOUT");
         await fetchCoins({
           ...getCoinSymbolData,
           price: latestCoinRate.c,
-          timestamp: latestCoinRate.E
+          timestamp: latestCoinRate.E,
         });
       }, 2000);
 
@@ -414,13 +416,16 @@ export const fetchCoins = async (currentCoinValue: any) => {
   const res: any = await fetchCoinsFromCoinCapAndWazirX([currentCoinValue]);
   if (res && res.count) {
     const newCoins = calculateCoinsByWazirXAndCoinCap(res);
-    console.info("New Coins", newCoins)
+    console.info("New Coins", newCoins);
     if (newCoins) {
       const allCoins = await getAllCoins();
       const getUpdateFixedValueInAllCoins = await updateFixedValueInAllCoins(
         filterCoins(newCoins, allCoins)
       );
-      console.info("getUpdateFixedValueInAllCoins", getUpdateFixedValueInAllCoins)
+      console.info(
+        "getUpdateFixedValueInAllCoins",
+        getUpdateFixedValueInAllCoins
+      );
       await firestore()
         .collection("stats")
         .doc("coins")
@@ -495,7 +500,7 @@ export const updatePriceArray = async (before: any, after: any) => {
           ((after[key].price || 0) /
             (newPriceArray[newPriceArray.length - 1] || 1) -
             1) *
-          100
+            100
         ).toFixed(3)
       );
       after[key].trend = trend;
@@ -631,6 +636,53 @@ export const prepareCPVI = async (hours: number, table: string) => {
     }
   }
   // });
+};
+
+export const getCoinPagination = async (req: any, res: any) => {
+  try {
+    const { coinName, pageNumber, pageSize, sorting } = req.query;
+
+    const getAllCoinsQuery: any = (
+      await await firestore().collection("settings").doc("coins").get()
+    ).data();
+
+    const getAllCoins = getAllCoinsQuery.coins;
+
+    // searching
+    if (coinName) {
+      const getCoin = getAllCoins.filter((coin: any) => coin.name === coinName);
+      console.log("getCoin : ", getCoin);
+      return res.status(200).send({
+        status: true,
+        message: "Get the coin successfully",
+        data: getCoin,
+      });
+    }
+
+    // if (pageNumber && pageSize) {
+    //   // const sortedCoin =
+    //   //   sorting.toLowerCase() == "asc"
+    //   //     ? getAllCoins.sort()
+    //   //     : getAllCoins.reverse();
+
+    //   const startIndex: number = (pageNumber - 1) * pageSize;
+    //   const endIndex: number = startIndex + parseInt(pageSize);
+
+    //   console.log("startIndex, endIndex: ", startIndex, endIndex);
+
+    //   // const coinPagination = sortedCoin.slice(startIndex, endIndex);
+
+    //   console.log("coinPagination : ", coinPagination);
+
+    //   return res.status(200).send({
+    //     status: true,
+    //     message: "Get the coins successfully",
+    //     data: coinPagination,
+    //   });
+    // }
+  } catch (error) {
+    errorLogging("getCoinPagination", "ERROR", error);
+  }
 };
 
 export const errorLogging = async (
