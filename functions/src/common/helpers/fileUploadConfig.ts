@@ -127,11 +127,11 @@ export const avatarUploadFunction = async (req: any, res: any) => {
 
       const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.png`);
 
-      const imageSizeLimit = 2; //mb 
+      const imageSizeLimit = 5; //mb 
       // Check file size before uploading
       const [metadata] = await file.getMetadata();
       console.log("image MetaData : ",metadata)
-      const maxSizeInBytes = imageSizeLimit * 1024 * 1024; // 5 MB
+      const maxSizeInBytes = imageSizeLimit * 1024 * 1024; 
 
       if (metadata.size > maxSizeInBytes) {
         console.error("File size exceeds the limit. Aborting upload.");
