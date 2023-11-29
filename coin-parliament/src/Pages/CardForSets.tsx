@@ -31,7 +31,7 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd4}) !important;
     color: #160133;    
     border-image: linear-gradient(180deg, #FFD25A 0.05%, #F89E18 51.39%, #FFD25A 99.94%) 30; 
-    border-width: 8px;
+    border-width: 5px;
     border-style: solid;        
     background-color: black;   
   }
@@ -41,7 +41,7 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd5}) !important;
     color: #160133;
     border-image: linear-gradient(180deg, #B0B0B0 0.05%, #FFF 51.39%, #B0B0B0 99.94%) 30;     
-    border-width: 8px;
+    border-width: 5px;
     border-style: solid;        
     background-color: black;    
   }  
@@ -49,7 +49,7 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd3}) !important;
     color: #d4d0f3;    
     border-image:linear-gradient(180deg, #6250EE 0.05%, #D5ABFF 51.39%, #6250EE 99.94%) 30;     
-    border-width: 8px;
+    border-width: 5px;
     border-style: solid;    
     border-radius: 0px 0px 8px 8px;    
     background-color: black;    
@@ -58,7 +58,7 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd2}) !important;
     color: #160133;        
     border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;     
-    border-width: 8px;
+    border-width: 5px;
     border-style: solid;    
     border-color: #D4D1F2;
 
@@ -69,7 +69,7 @@ const Card = styled.div<{ darkTheme: boolean }>`
     background-image: url(${props => !props.darkTheme && bkgnd}) !important;
     color: #160133;
     border-image: linear-gradient(180deg, #D4D1F2 0.05%, #FFF 60.39%, #D4D1F2 99.94%) 30;        
-    border-width: 8px;
+    border-width: 5px;
     border-style: solid;    
     border-radius: 0px 0px 8px 8px;
     background-color: black;
@@ -230,8 +230,8 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
 
         }}
         style={{
-          minHeight: `${BigCard ? "230px" : "130px"}`,
-          minWidth: `${BigCard ? "250px" : "150px"}`,
+          minHeight: `${BigCard ? "210px" : "110px"}`,
+          minWidth: `${BigCard ? "250px" : "140px"}`,
           cursor: 'pointer',          
         }}
       >
@@ -280,7 +280,8 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
                 </div>
                 <CenterText className={HeaderClass}
                   style={{
-                    width: "50%"
+                    width: "70%",
+                    fontSize:"9px"
                   }}
                 >
                   &nbsp; {HeaderText?.toLocaleUpperCase()} &nbsp;{" "}
@@ -315,7 +316,7 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
                     }}
                     className="d-flex justify-content-center"
                   >
-                    <div
+                    {/* <div
                       className=""
                       style={{
                         position: "absolute",
@@ -331,7 +332,7 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
 
                       >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>}
 
-                    </div>
+                    </div> */}
                     <img
                       src={ImgUrl || TheEagle}
                       alt='the hgodler'
@@ -350,7 +351,9 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
                 color: (darkTheme ? "white" : ''),
               }}
               >
-                <strong> {cardHeader}</strong>
+                <strong style={{
+                  fontSize:"10px"
+                }}> {cardHeader}</strong>
               </span>
             </div>
           </Card>

@@ -558,9 +558,9 @@ const NFTGallery = () => {
       {
         selectCollection !== "none" && <>
           <div className="w-100 d-flex">
-            <div className={`${window.screen.width > 767 ? "" : ""} d-flex flex-wrap`} style={{
+            <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-around flex-wrap`} style={{
               // border: "1px solid blue",
-              padding: "30px 20px",
+              // padding: "30px 20px",
             }}>
               {setsValue.map((item:any,index:number) => {
                 return <SetsScreen

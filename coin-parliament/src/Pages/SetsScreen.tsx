@@ -3,8 +3,6 @@ import styled from "styled-components";
 import CardForSets from './CardForSets';
 
 const SetBox = styled.div`
-  
-  height:300px;
   border:2px solid red;  
   position: relative;
   border-radius:10px;
@@ -46,7 +44,12 @@ const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
   };
 
   return (
-    <SetBox className={`${window.screen.width > 767 ? "" : ""} mt-5`}>
+    <SetBox className={`mt-5 mx-1`}
+    
+      style={{
+        width: `${window.screen.width > 767 ? "24%" : "w-100"}`
+    }}
+    >
       <div className='d-flex justify-content-center align-items-center'>
           <HeadingBox style={{
                           
@@ -54,20 +57,17 @@ const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
               Set Name
           </HeadingBox>
       </div>
-      <div className='d-flex '
+      <div className='d-flex justify-content-around flex-wrap my-2'
         style={{
           position: "relative"
         }}
       >       
-        {allCardNew.filter((item:any,index:number) => {
+        {allCardNew.map((item:any,index:number) => {
           if (setsValue.setName == item.setName) {
             
             { console.log(item,"getallitem")}
-             <div style={{
-            //   width:"200px",
-            // height: "100px",            
-          }}
-          // className='border'
+           return  <div style={{
+          }}          
           >
             <CardForSets
               key={index}
@@ -78,18 +78,11 @@ const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
               Rarity={item?.cardType}
               Quantity={item?.totalQuantity}
               holderNo={item?.noOfCardHolders}
-              // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-              // cardNo={item?.sno[index]}
-              // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) }`}
               cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
               GeneralSerialNo={item?.sno && (item?.sno[0])?.replace(/[0-9]/g, '')}
               Serie={item?.setName || "Set" + (index + 1)}
               CollectionType={item?.albumName || "LEGENDARY"}
-
-              userId={item?.setId}
-              // CollectionType={item?.collectionName}
-              // CollectionType={item?.albumId}
-              // Disable={"CardDisebal"}                            
+              userId={item?.setId}              
               cardHeader={`${item?.cardName}`}
               id={item?.id || item?.cardId}
               BackSideCard={BackSideCard}
@@ -100,16 +93,7 @@ const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
             />
           </div>
           }
-        })}
-        
-          <div style={{
-            //   width:"200px",
-            // height: "100px",            
-          }}
-          // className='border'
-          >                  
-          <CardForSets />
-              </div>
+        })}                 
           </div>
     </SetBox>
   )
