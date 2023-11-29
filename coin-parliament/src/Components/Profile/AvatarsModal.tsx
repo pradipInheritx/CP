@@ -17,6 +17,7 @@ import { showToast } from "App";
 import { db } from "firebase";
 import { doc, setDoc } from "firebase/firestore";
 import UploadImg from '../../assets/images/UploadImg.svg';
+import ImageCompressor from 'image-compressor.js';
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;
@@ -111,22 +112,26 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
     fileInputRef.current!.click();
   };
 
-  const handleImageChange = (e:any) => {
+  const handleImageChange = async (e: any) => {
     const file = e.target.files[0];
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB    
-    if (file.size < maxSizeInBytes) {
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB 
+    const imageCompressor = new ImageCompressor();
+    const compressedImage = await imageCompressor.compress(file, {
+      quality: 0.6,
+    });
+    if (compressedImage.size < maxSizeInBytes) {
       setImageError("")
-      setImagepPath(file)
+      // @ts-ignore
+      setImagepPath(compressedImage)
       const reader = new FileReader();
       reader.onloadend = () => {
         // @ts-ignore
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
-    }
-    else {
-      setImageError('Image size allowed limit (2 MB)');
-      return;  
+    } else {
+      setImageError('Image size allowed limit (5 MB)');
+      return;
     }
   };
 
