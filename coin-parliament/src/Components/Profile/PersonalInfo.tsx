@@ -34,6 +34,18 @@ const ElementsAvatarAImage1 = styled.div`
   margin-top: 1px;    
 `;
 
+
+
+const TextAera = styled.textarea`
+      border-radius:5px;
+      width: ${ window.screen.width > 767 ? "500px" : "100%"};      
+    border:1px solid var(--color-e3e3e3);
+      box-shadow:inset 0 3px 6px #00000029;
+    opacity: 1;
+    padding:10px 10px 10px 20px;
+    color:#6d757d;
+`;
+
 const PersonalInfo = () => {
   const { userInfo, user: u, setUserInfo, setUser } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
@@ -59,6 +71,7 @@ const PersonalInfo = () => {
     setBio(userInfo?.bio || '');
     setPhone({ phone: userInfo?.phone })
   }, [userInfo]);
+
 
   const createPost = async (id: string) => {
     if (!id) return
@@ -236,8 +249,8 @@ const PersonalInfo = () => {
                 name="Bio"
 
               >
-              <textarea                                  
-                  name= "bio"                  
+                <TextAera                                  
+                  name="bio"                  
                   placeholder= "Bio"
                   value= {bio || ""}
                 onChange={(e) => {
@@ -245,10 +258,8 @@ const PersonalInfo = () => {
                   }}
                   disabled ={!edit}
                   // edit: true,
-                  style={{
-                    border: "none",
-                    borderRadius:"5px",
-                  width:`${window.screen.width  > 767 ?"500px":""}`
+                  style={{                    
+                    background: `${!edit ? "#e9ecef" : "var(--color-ffffff) 0% 0% no-repeat padding-box"}`,                      
                 }}
                 />
                 </SelectTextfield>
