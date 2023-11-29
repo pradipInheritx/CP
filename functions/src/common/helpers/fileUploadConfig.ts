@@ -129,7 +129,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
 
       const imageSizeLimit = 5; //mb 
       // Check file size before uploading
-      const [metadata] = await file.getMetadata();
+      const [metadata] = await fileUpload.getMetadata();
       console.log("image MetaData : ",metadata)
       const maxSizeInBytes = imageSizeLimit * 1024 * 1024; 
 
