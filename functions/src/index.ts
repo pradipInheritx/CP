@@ -109,12 +109,13 @@ const app = express();
 const main = express();
 // Enable The CORS
 app.use(cors({ origin: "*" }));
+app.use(bodyParser.urlencoded({ extended: false, limit: '100mb' }));
 main.use(cors({ origin: "*" }));
 // End
 // Add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
 main.use(bodyParser.json());
-main.use(bodyParser.urlencoded({ extended: false }));
+main.use(bodyParser.urlencoded({ extended: false, limit: '100mb' }));
 
 /**
  * @author Mukut Prasad

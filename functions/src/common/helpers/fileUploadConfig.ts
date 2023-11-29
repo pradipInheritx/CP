@@ -17,8 +17,8 @@ export const imageUploadFunction = async (req: any, res: any) => {
       forModule.toUpperCase() === "CARD"
         ? await getCardDetails(id)
         : forModule.toUpperCase() === "ALBUM"
-        ? await getAlbumDetails(id)
-        : { albumName: "", cardName: "", message: true };
+          ? await getAlbumDetails(id)
+          : { albumName: "", cardName: "", message: true };
     if (checkId?.message) {
       return res.status(400).send({
         status: false,
@@ -127,20 +127,20 @@ export const avatarUploadFunction = async (req: any, res: any) => {
 
       const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.png`);
 
-      const imageSizeLimit = 5; //mb 
+      //const imageSizeLimit = 5; //mb 
       // Check file size before uploading
-      const [metadata] = await fileUpload.getMetadata();
-      console.log("image MetaData : ",metadata)
-      const maxSizeInBytes = imageSizeLimit * 1024 * 1024; 
+      // const [metadata] = await fileUpload.getMetadata();
+      // console.log("image MetaData : ", metadata)
+      // const maxSizeInBytes = imageSizeLimit * 1024 * 1024;
 
-      if (metadata.size > maxSizeInBytes) {
-        console.error("File size exceeds the limit. Aborting upload.");
-        return res.status(400).send({
-            status: true,
-            message: "File size exceeds the limit. Aborting upload.",
-            result: null,
-          });
-      }
+      // if (metadata.size > maxSizeInBytes) {
+      //   console.error("File size exceeds the limit. Aborting upload.");
+      //   return res.status(400).send({
+      //     status: true,
+      //     message: "File size exceeds the limit. Aborting upload.",
+      //     result: null,
+      //   });
+      // }
       const fileStream = file.pipe(
         fileUpload.createWriteStream({
           metadata: {
