@@ -101,6 +101,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
   const { userInfo,user } = useContext(UserContext);
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [image, setImage] = useState(null);
+  const [imageError, setImageError] = useState("");
   const [imagePath, setImagepPath] = useState(null);
   const [bio, setBio] = useState("");
   const fileInputRef = useRef(null);
@@ -112,7 +113,9 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
 
   const handleImageChange = (e:any) => {
     const file = e.target.files[0];
-    if (file) {
+    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB    
+    if (file.size < maxSizeInBytes) {
+      setImageError("")
       setImagepPath(file)
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -120,6 +123,10 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
+    }
+    else {
+      setImageError('Image size allowed limit (2 MB)');
+      return;  
     }
   };
 
@@ -194,9 +201,17 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
                             onClick={handleAvatarClick}
                             className="img-fluid Homeimg"
                             style={{ cursor: 'pointer' }}
-                          />
+                        />
                         </div>
-                        <ButtonBox  onClick={handleUpload} disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
+                        {imageError != "" && <span style={{color:"red" , fontSize:"10px"}}>{imageError}</span>}
+                      <ButtonBox
+                        style={{
+                          opacity: `${imageError == "" ? "1":"0.6"}`
+                        }}
+                        onClick={() => {
+                        if (imageError == "")
+                        handleUpload()
+                      }} disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
                           Upload
                         </ButtonBox>
                       </CustomBox>                                          
@@ -228,6 +243,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
               onSubmit(defaultAvatar);
             }
             setFirstTimeAvatarSelection(false);
+            setSelectBioEdit(true)
             // setShowMenuBar(false);
           }}>{image !=null ?"Next":"Skip"}</span>
         </div>
