@@ -183,7 +183,7 @@ export type BoxItems = {
 };
 const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl, Hide360Icon, BigCard, MoveCard }: BoxItems) => {
 
-
+  console.log(HeaderText,"HeaderText")
 
   const Width: number = window.screen.width
   const [flip, setFlip] = useState(true)
