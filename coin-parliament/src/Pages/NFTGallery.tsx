@@ -555,20 +555,22 @@ const NFTGallery = () => {
 
         })}
       </GalleryType>
-      {/* {
+      {
         selectCollection !== "none" && <>
           <div className="w-100 d-flex">
-            <div className={`${window.screen.width > 767 ? "w-50" : "w-100"}`} style={{
+            <div className={`${window.screen.width > 767 ? "" : ""} d-flex flex-wrap`} style={{
               // border: "1px solid blue",
               padding: "30px 20px",
             }}>
-              <SetsScreen
-
-              />
+              {setsValue.map((item:any,index:number) => {
+               return  <SetsScreen
+                  setsValue={item}
+                />
+              })}
             </div>
           </div>
         </>
-      } */}
+      }
       {/* <GalleryType2 className='' style={{
         width: `${window.screen.width > 787 ? "800px" : "100%"}`,
         margin: "40px auto",
