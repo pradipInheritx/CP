@@ -563,7 +563,8 @@ const NFTGallery = () => {
               padding: "30px 20px",
             }}>
               {setsValue.map((item:any,index:number) => {
-               return  <SetsScreen
+                return <SetsScreen
+                  allCardNew={allCardNew}
                   setsValue={item}
                 />
               })}

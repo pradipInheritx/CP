@@ -24,11 +24,12 @@ const HeadingBox = styled.div`
 
 export type SetsItems = { 
   setsValue:any
+  allCardNew:any
 };
 
 
-const SetsScreen = ({ setsValue }: SetsItems) => {
-
+const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
+  console.log(allCardNew,"allCardNew")
   console.log(setsValue,"setsValue")
   return (
     <SetBox className={`${window.screen.width > 767 ? "" : ""} mt-5`}>
@@ -50,7 +51,8 @@ const SetsScreen = ({ setsValue }: SetsItems) => {
           }}
           // className='border'
           >                  
-          <CardForSets />
+          <CardForSets
+          />
         </div>
         
           <div style={{
