@@ -10,6 +10,7 @@
     "MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS": "Parent referal payment initiated successfully",
     "MESSAGE_GET_PAYMENT" :"Payment transaction fetched successfully",
     "MESSAGE_GET_PARENT_PAYMENT_HISTORY_SUCCESS": "Parent payment history fetched successfully",
+    "MESSAGE_GET_USER_PAYMENT_HISTORY_SUCCESS": "User payments history fetched successfully",
     "MESSAGE_NO_PARENT_PAYMENTS" : "there are no payments for todays",
     "MESSAGE_SOMETHINGS_WRONG" : "Something went wrong in server",
     "MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT" : "Parent Pending Payment Amount",
