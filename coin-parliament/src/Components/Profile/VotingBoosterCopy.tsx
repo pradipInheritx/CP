@@ -462,7 +462,8 @@ const VotingBoosterCopy = () => {
                 <ButttonDivMob className="mt-1">
                   <button
                     onClick={() => {
-                      getExtraVote(item.value, item.vote, item.Extra)
+                      // getExtraVote(item.value, item.vote, item.Extra)
+                      showModal(<Upgrade />)
                     }}
                   >BUY NOW !</button>
                 </ButttonDivMob>
