@@ -152,7 +152,7 @@ enum SiteTypes {
   voting = "voting",
 }
 function Home() {
-  const [showShare, setShowShare] = useState(false);
+  const [showShare, setShowShare] = useState<boolean | string>(false);
   const { setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
   const [sites, setSites] = useState<{ [key: string]: any }>({
@@ -160,7 +160,7 @@ function Home() {
       img: COINPARLIAMENT,
       des: "Coin Parliament is a web 3-based vote to earn game where you can make better investment decisions, mint NFTs, and earn rewards by voting and following top influencers.",
       title: "COIN PARLIAMENT",
-      redirect: "https://coinparliamentstaging.firebaseapp.com/",
+      redirect: "https://coinparliament.com/",
       // redirect: 'http://localhost:3001/',
       domain: process.env.REACT_APP_COIN_API,
       name: "coin",
@@ -276,7 +276,7 @@ function Home() {
   }, [currentImageIndex]);
 
   const referralUrl = (value: any, url?: any) => {
-    if (url == "") {    
+    if (url != "") {    
       return `${document.location.protocol}//${url}/?refer=${value}`
     }
   };  
@@ -284,7 +284,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center p-5 h-100">
-      <h1 className="pb-4">TOP VTE PLATFORMS</h1>
+      <h1 className="pb-4">TOP VTE APPS</h1>
       <div className="row">
         {Object.keys(sites).map((key: string, index) => {          
           return (
@@ -343,7 +343,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                               setLogin(true);
                               return;
                             } else {
-                              setShowShare((prev) => !prev);
+                              setShowShare((prev) => !prev ?sites[key]?.name : false );
                             }
                           }}
                           
@@ -358,7 +358,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                         </button>
                       </ButttonDiv>
 
-                      {showShare && <div className={"HomeshareBox"} style={window.screen.width < 300 ? {
+                      {showShare == sites[key]?.name  && <div className={"HomeshareBox"} style={window.screen.width < 300 ? {
                         marginLeft: '2em',
                         top: '26.5em',                        
                         zIndex : 1000,
