@@ -349,6 +349,7 @@ function App() {
   const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
+  const [avatarImage, setAvatarImage] = useState<any>(null)
   const [albumOpen, setAlbumOpen] = useState<any>("")
   const localID = localStorage.getItem("userId") || false;
   const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
@@ -1307,6 +1308,8 @@ function App() {
             >
               <AppContext.Provider
                   value={{
+                    avatarImage,
+                    setAvatarImage,
                     selectBioEdit,
                     setSelectBioEdit,
                   withLoginV2e,

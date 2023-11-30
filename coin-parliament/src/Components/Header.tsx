@@ -208,7 +208,7 @@ const Header = ({
 	const desktop = width && width > 979;
 
 
-	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar } = useContext(AppContext);
+	const { languages, setLang, setLogin, setSignup, setMenuOpen, setShowBack, showMenubar, avatarImage, setAvatarImage } = useContext(AppContext);
 	const { pages } = useContext(ContentContext);
 	const { votesLast24Hours, userInfo } = useContext(UserContext);
 	const { VoteRulesMng } = useContext(ManagersContext);
@@ -533,7 +533,7 @@ const Header = ({
 										}}
 									>
 										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
+											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (avatarImage || userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "45px",
 												height: "45px",
@@ -776,7 +776,7 @@ const Header = ({
 										}}
 									>
 										<Avatars
-											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
+											type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (avatarImage || userInfo?.avatar || defaultAvatar) as AvatarType}
 											style={{
 												width: "60px",
 												height: "60px",
