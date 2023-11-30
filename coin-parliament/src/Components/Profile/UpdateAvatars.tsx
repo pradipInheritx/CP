@@ -18,6 +18,7 @@ import { db } from "firebase";
 import { doc, setDoc } from "firebase/firestore";
 import UploadImg from '../../assets/images/UploadImg.svg';
 import ImageCompressor from 'image-compressor.js';
+import { texts } from "Components/LoginComponent/texts";
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;
@@ -109,6 +110,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
   const fileInputRef = useRef(null);
   const [imageError, setImageError] = useState("");  
   const pathname = window.location.pathname;
+  const [isLoading, setIsLoading] = useState(false);
   const handleAvatarClick = () => {
     // @ts-ignore
     fileInputRef.current!.click();
@@ -141,6 +143,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
   
   const handleUpload = async () => {
     if (imagePath) {
+      // setIsLoading(true)
       setAvatarImage(imageUrl)
       try {
         const formData = new FormData();
@@ -153,15 +156,17 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
         });        
         if (response.data.status) {
           showToast(response.data.message, ToastType.SUCCESS);
-          
+          // setIsLoading(false)
           onClose()
         } else {          
           showToast(response.data.message, ToastType.ERROR);
           setAvatarImage("")
+          // setIsLoading(false)
         }
       } catch (error) {        
         showToast("Error uploading image", ToastType.ERROR);
         setAvatarImage("")
+        // setIsLoading(false)
       }
     }
   };
@@ -174,7 +179,28 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
 }
 
   return (
-    <Container className="position-relative ">        
+    <Container className="position-relative ">
+      
+      {/* {isLoading && <div style={{
+        position: 'fixed',
+        height: '100%',
+        display: 'flex',
+        textAlign: 'center',
+        justifyContent: 'center',
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        zIndex: '9999',
+        overflow: 'hidden',
+        width: '100%',
+        alignItems: 'center',
+        backgroundColor: "rgba(0,0,0,0.8)"
+
+      }}>
+        <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em', marginTop: "50px" }}>
+          {texts.waitForIt}
+        </span>
+      </div>} */}
       <div className="position-absolute top-0" style={{ right: 0 }}>
         {pathname.includes('profile') && <div className="p-2 pl-0 close" role="button" onClick={onClose}>
           <CloseIcon aria-hidden="true">&times;</CloseIcon>
