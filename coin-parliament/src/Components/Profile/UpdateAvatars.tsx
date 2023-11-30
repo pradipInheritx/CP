@@ -98,7 +98,7 @@ margin-bottom:10px;
 `;
 
 const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
-  const { setFirstTimeAvatarSelection, setShowMenuBar, avatarImage,setAvatarImage } = useContext(AppContext);
+  const { setFirstTimeAvatarSelection, setShowMenuBar, avatarImage, setAvatarImage, backgrounHide, setBackgrounHide } = useContext(AppContext);
   const translate = useTranslation();
   const { width } = useWindowSize();
   const { userInfo,user } = useContext(UserContext);
@@ -118,12 +118,12 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
 
   const handleImageChange = async(e:any) => {
     const file = e.target.files[0];
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB 
+    const maxSizeInBytes = 11* 1024 * 1024; // 2 MB 
     const imageCompressor = new ImageCompressor();
     const compressedImage = await imageCompressor.compress(file, {
       quality: 0.6,
     });       
-    if (compressedImage.size < maxSizeInBytes) {
+    if (compressedImage.size < maxSizeInBytes && file.size < maxSizeInBytes) {
       setImageError("")
       // @ts-ignore
       setImagepPath(compressedImage)
@@ -136,14 +136,15 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
       };
       reader.readAsDataURL(file);
     } else {
-      setImageError('Image size allowed limit (5 MB)');
+      setImageError('Image size allowed limit (10 MB)');
       return;
     }
   };
   
   const handleUpload = async () => {
     if (imagePath) {
-      // setIsLoading(true)
+      setIsLoading(true)
+      setBackgrounHide (true)
       setAvatarImage(imageUrl)
       try {
         const formData = new FormData();
@@ -156,17 +157,20 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
         });        
         if (response.data.status) {
           showToast(response.data.message, ToastType.SUCCESS);
-          // setIsLoading(false)
+          setIsLoading(false)
+          setBackgrounHide(false)
           onClose()
         } else {          
           showToast(response.data.message, ToastType.ERROR);
           setAvatarImage("")
-          // setIsLoading(false)
+          setIsLoading(false)
+          setBackgrounHide(false)
         }
       } catch (error) {        
         showToast("Error uploading image", ToastType.ERROR);
         setAvatarImage("")
-        // setIsLoading(false)
+        setIsLoading(false)
+        setBackgrounHide(false)
       }
     }
   };
@@ -181,7 +185,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
   return (
     <Container className="position-relative ">
       
-      {/* {isLoading && <div style={{
+      {isLoading && <div style={{
         position: 'fixed',
         height: '100%',
         display: 'flex',
@@ -190,7 +194,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
         top: '0px',
         right: '0px',
         bottom: '0px',
-        zIndex: '9999',
+        zIndex: '109999',
         overflow: 'hidden',
         width: '100%',
         alignItems: 'center',
@@ -200,7 +204,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
         <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em', marginTop: "50px" }}>
           {texts.waitForIt}
         </span>
-      </div>} */}
+      </div>}
       <div className="position-absolute top-0" style={{ right: 0 }}>
         {pathname.includes('profile') && <div className="p-2 pl-0 close" role="button" onClick={onClose}>
           <CloseIcon aria-hidden="true">&times;</CloseIcon>
