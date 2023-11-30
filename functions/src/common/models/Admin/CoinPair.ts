@@ -281,7 +281,7 @@ export const getCoinPairPagination = async (req: any, res: any) => {
       await await firestore().collection("settings").doc("pairs").get()
     ).data();
 
-    const getAllCoinPair = getAllCoinPairQuery.coins;
+    const getAllCoinPair = getAllCoinPairQuery.pairs;
 
     // searching
     const getCoinPair = getAllCoinPair.filter(
