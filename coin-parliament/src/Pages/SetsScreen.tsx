@@ -3,14 +3,14 @@ import styled from "styled-components";
 import CardForSets from './CardForSets';
 
 const SetBox = styled.div`
-  border:2px solid red;  
+  border:2px solid #f3822e;  
   position: relative;
   border-radius:10px;
     
 `;
 const HeadingBox = styled.div`
   width:80%;  
-  border:2px solid red;  
+  border:2px solid #f3822e;  
   top:-35px;  
   position: absolute;
   padding:10px;
@@ -22,13 +22,12 @@ const HeadingBox = styled.div`
 
 export type SetsItems = { 
   setsValue:any
-  allCardNew:any
+  allCardNew: any
+  onSelectSets:any
 };
 
 
-const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
-  console.log(allCardNew,"allCardNew")
-  console.log(setsValue, "setsValue")
+const SetsScreen = ({ onSelectSets,allCardNew ,setsValue }: SetsItems) => {
   const [backCards, setBackCards] = useState<any>([]);
 
   const BackSideCard = (value: string | number) => {
@@ -45,7 +44,9 @@ const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
 
   return (
     <SetBox className={`mt-5 mx-1`}
-    
+      onClick={() => {
+        onSelectSets(setsValue.id)
+    }}
       style={{
         width: `${window.screen.width > 767 ? "24%" : "w-100"}`
     }}
@@ -54,7 +55,7 @@ const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
           <HeadingBox style={{
                           
           }}>
-              Set Name
+          {setsValue.setName}
           </HeadingBox>
       </div>
       <div className='d-flex justify-content-around flex-wrap my-2'
@@ -63,9 +64,7 @@ const SetsScreen = ({ allCardNew ,setsValue }: SetsItems) => {
         }}
       >       
         {allCardNew.map((item:any,index:number) => {
-          if (setsValue.setName == item.setName) {
-            
-            { console.log(item,"getallitem")}
+          if (setsValue.setName == item.setName) {                        
            return  <div style={{
           }}          
           >

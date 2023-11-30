@@ -207,28 +207,7 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
     >      
       <div        
         className={`card-containerSets ${flipCard == true || flip != true ? "flipped" : ""
-          }`}
-        onClick={(e: any) => {
-          if (Disable == "" || Disable == undefined && !MoveCard) {
-            console.log('data', e.currentTarget.className?.includes('flipped'), flipCard)
-            if (window.screen.width > 767) {
-              if (!flip && !flipCard) {
-                setFlip(true)
-                cardFlip()
-                return
-              }
-
-
-              // setFlip(!flip);
-            }
-            // @ts-ignore
-            BackSideCard(id);
-            if (window.screen.width < 767) {
-              cardFlip()
-            }
-          }
-
-        }}
+          }`}        
         style={{
           minHeight: `${BigCard ? "210px" : "110px"}`,
           minWidth: `${BigCard ? "250px" : "140px"}`,

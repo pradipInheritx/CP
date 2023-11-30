@@ -346,7 +346,7 @@ const NFTGallery = () => {
   }, [cardType, setsCardId, setsCardName])
 
 
-
+  console.log(setsCardName,"setsCardName")
   // use searched card for showing searchdata
 
 
@@ -487,6 +487,7 @@ const NFTGallery = () => {
           </select>
         </div>
       </div>
+
       {/* @ts-ignore */}      
       {isLoading && <div style={{
         position: 'fixed',
@@ -554,16 +555,16 @@ const NFTGallery = () => {
           </div>
 
         })}
-      </GalleryType>
+      </GalleryType> 
+      
+      
       {
-        selectCollection !== "none" && <>
+        selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType =="all" && <>
           <div className="w-100 d-flex">
-            <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-around flex-wrap`} style={{
-              // border: "1px solid blue",
-              // padding: "30px 20px",
-            }}>
+            <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap`} style={{}}>
               {setsValue.map((item:any,index:number) => {
                 return <SetsScreen
+                  onSelectSets={onSelectSets}                  
                   allCardNew={allCardNew}
                   setsValue={item}
                 />
@@ -578,7 +579,7 @@ const NFTGallery = () => {
         
       }} >     
         </GalleryType2>      */}
-      {allCardNew?.length > 0 ?
+      {allCardNew?.length > 0 && (setsCardId != "none" || setsCardName != "none" || cardType != "all")  ?
         <SummerCard className="mt-4">
           {!!cardShow ? equalPart?.map((cardPart: any, ind: number) => {
             return <div className='w-100 m-auto mb-4' key={ind}>
