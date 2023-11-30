@@ -2,7 +2,7 @@ import { firestore } from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
 import { getAllCoins as getAllCoin } from "../Coin";
 import axios from "axios";
-import env from '../../../env/env.json'
+import env from "../../../env/env.json";
 
 // import { getPriceOnParticularTime } from "../Rate";
 
@@ -13,14 +13,13 @@ import {
 import { sendNotification } from "../Notification";
 import { messaging } from "firebase-admin";
 
-
 type Coin = {
   id: any;
   coinName: string;
   symbol: any;
   coinLogo: any;
   status: string;
-  voteBarRange: any
+  voteBarRange: any;
 };
 
 export const addCoin = async (req: any, res: any) => {
@@ -113,17 +112,17 @@ export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
     const getAllCoinList: any = [];
 
     coinData.coins.forEach((coin: any) => {
-      getAllCoinList.push(coin)
+      getAllCoinList.push(coin);
     });
 
-    const checkCoin = getAllCoinList.find((coin: any) => coin.id == id)
+    const checkCoin = getAllCoinList.find((coin: any) => coin.id == id);
     if (!checkCoin) {
       return res.status(404).send({
         status: false,
         message: `${id} is not found`,
         result: null,
       });
-    };
+    }
 
     let getCoins = getAllCoinList.map((coin: any) => {
       return coin.id == id ? { ...coin, voteBarRange } : coin;
@@ -134,7 +133,7 @@ export const updateVoteBarRangeOfCoin = async (req: any, res: any) => {
       .doc("coins")
       .set({ coins: getCoins }, { merge: true });
 
-    const getCoin = getCoins.find((coin: any) => coin.id === id)
+    const getCoin = getCoins.find((coin: any) => coin.id === id);
 
     res.status(200).send({
       status: true,
@@ -173,8 +172,11 @@ export const getAllCoins = async (req: any, res: any) => {
 export const getCoinById = async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    console.log("id -------", id)
-    const getCoinsQuery = await firestore().collection("settings").doc("coins").get();
+    console.log("id -------", id);
+    const getCoinsQuery = await firestore()
+      .collection("settings")
+      .doc("coins")
+      .get();
     let getCoinsData: any = getCoinsQuery.data();
     let getCoin = getCoinsData.coins.find((coin: any) => {
       return coin.id == id;
@@ -201,7 +203,6 @@ export const getCoinById = async (req: any, res: any) => {
   }
 };
 
-
 export const updateCoin = async (req: any, res: any) => {
   const { id } = req.params;
   const { coinName, symbol, coinLogo, voteBarRange, status } = req.body;
@@ -212,8 +213,8 @@ export const updateCoin = async (req: any, res: any) => {
       symbol,
       coinLogo,
       voteBarRange,
-      status
-    }
+      status,
+    };
     const getAllDataQuery = await firestore()
       .collection("settings")
       .doc("coins")
@@ -221,14 +222,15 @@ export const updateCoin = async (req: any, res: any) => {
 
     const getAllCoinsData: any = getAllDataQuery.data();
     const getCoin: any = getAllCoinsData.coins.find((coin: any) => {
-      return coin.id == id
-    })
-    if (!getCoin) return res.status(404).send({
-      status: true,
-      message: "Coin not found : " + id,
-      result: null,
+      return coin.id == id;
     });
-    getCoin.coins = updateCoinData
+    if (!getCoin)
+      return res.status(404).send({
+        status: true,
+        message: "Coin not found : " + id,
+        result: null,
+      });
+    getCoin.coins = updateCoinData;
 
     await firestore()
       .collection("settings")
@@ -254,7 +256,6 @@ export const updateCoin = async (req: any, res: any) => {
   }
 };
 
-
 //Notification
 const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
   try {
@@ -264,9 +265,7 @@ const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
     );
 
     // console.info("getCoinPrice----", getCoinPrice.data[0].p);
-    return getCoinPrice.data &&
-      getCoinPrice.data[0] &&
-      getCoinPrice.data[0].p
+    return getCoinPrice.data && getCoinPrice.data[0] && getCoinPrice.data[0].p
       ? getCoinPrice?.data[0]?.p
       : 0;
   } catch (err) {
@@ -275,7 +274,7 @@ const getPriceOnpaticularTime = async (coin: any, timestamp: any) => {
   }
 };
 
-// get all users and send notification  
+// get all users and send notification
 const getAllUsersAndSendNotification = async (
   coinName: string,
   body: string
@@ -319,49 +318,79 @@ const getAllUsersAndSendNotification = async (
 };
 
 // call Past data from api
-const getPriceOnpaticularTimeFromPast = async (coinName: string, timestamp: number) => {
+const getPriceOnpaticularTimeFromPast = async (
+  coinName: string,
+  timestamp: number
+) => {
   const getCoinPrice: any = await axios.get(
     `https://api.binance.us/api/v3/aggTrades?symbol=${coinName}&limit=1&endTime=${timestamp}`,
-    defaultHeaderForgetDataFromTimestamp,
+    defaultHeaderForgetDataFromTimestamp
   );
-  return getCoinPrice?.data[0].p
-}
+  return getCoinPrice?.data[0].p;
+};
 
 export const getCoinCurrentAndPastDataDifference = async () => {
   try {
-
-    console.log("----------getCoinCurrentAndPastDataDifference started-----------");
+    console.log(
+      "----------getCoinCurrentAndPastDataDifference started-----------"
+    );
     const getCoins = await getAllCoin();
     const currentTime = Date.now();
     const beforeFourHoursTime = currentTime - 4 * 3600000;
     const currentCoinAndPrice: any = [];
     const missingCoinInBinanceApi = [
-      "LUNA", "FTT", "LTC", "KLAY", "CARL", "BABY", "STX", "WBTC", "DAI", "CRO", "HBAR", "LEO", "XMR", "XTZ", "MIOTA", "CAKE", "BTT", "BABYDOGE", "BSV", "EGLD"]
+      "LUNA",
+      "FTT",
+      "LTC",
+      "KLAY",
+      "CARL",
+      "BABY",
+      "STX",
+      "WBTC",
+      "DAI",
+      "CRO",
+      "HBAR",
+      "LEO",
+      "XMR",
+      "XTZ",
+      "MIOTA",
+      "CAKE",
+      "BTT",
+      "BABYDOGE",
+      "BSV",
+      "EGLD",
+    ];
     for (const data of getCoins) {
       //check the coins
-      if (missingCoinInBinanceApi.includes(data)) { continue }
-
-      const coin = data.toUpperCase() + "USDT";
-      const priceCurrent: number = Number(await getPriceOnpaticularTime(coin, currentTime));
-      const priceFourBefore: number = Number(await getPriceOnpaticularTimeFromPast(
-        coin,
-        beforeFourHoursTime
-      ));
-      console.log("Price Current: " + priceCurrent, typeof priceCurrent)
-      console.log("priceFourBefore: " + priceFourBefore, typeof priceFourBefore)
-      if (priceCurrent != undefined && priceFourBefore != undefined) {
-
-        priceCurrent.toFixed(3)
-        priceFourBefore.toFixed(3)
-        const differencePrice: number = priceFourBefore - priceCurrent;
-        differencePrice.toFixed(3)
-        const differnceInPercentag: number =
-          ((differencePrice / priceFourBefore) * 100);
-
-        currentCoinAndPrice.push({ coinName: data, differnceInPercentag: differnceInPercentag.toFixed(3) });
-
+      if (missingCoinInBinanceApi.includes(data)) {
+        continue;
       }
 
+      const coin = data.toUpperCase() + "USDT";
+      const priceCurrent: number = Number(
+        await getPriceOnpaticularTime(coin, currentTime)
+      );
+      const priceFourBefore: number = Number(
+        await getPriceOnpaticularTimeFromPast(coin, beforeFourHoursTime)
+      );
+      console.log("Price Current: " + priceCurrent, typeof priceCurrent);
+      console.log(
+        "priceFourBefore: " + priceFourBefore,
+        typeof priceFourBefore
+      );
+      if (priceCurrent != undefined && priceFourBefore != undefined) {
+        priceCurrent.toFixed(3);
+        priceFourBefore.toFixed(3);
+        const differencePrice: number = priceFourBefore - priceCurrent;
+        differencePrice.toFixed(3);
+        const differnceInPercentag: number =
+          (differencePrice / priceFourBefore) * 100;
+
+        currentCoinAndPrice.push({
+          coinName: data,
+          differnceInPercentag: differnceInPercentag.toFixed(3),
+        });
+      }
     }
 
     currentCoinAndPrice.forEach(async (coin: any) => {
@@ -389,8 +418,7 @@ export const getCoinCurrentAndPastDataDifference = async () => {
 
 export const getCoinPagination = async (req: any, res: any) => {
   try {
-    const { coinName, pageNumber, pageSize, sorting } = req.query;
-
+    const { coinName ="", pageNumber=1, pageSize=5, sorting='asc' } = req.query;
     const getAllCoinsQuery: any = (
       await await firestore().collection("settings").doc("coins").get()
     ).data();
@@ -398,21 +426,18 @@ export const getCoinPagination = async (req: any, res: any) => {
     const getAllCoins = getAllCoinsQuery.coins;
 
     // searching
-    if (coinName) {
-      const getCoin = getAllCoins.filter((coin: any) => coin.name === coinName);
+      const getCoin = getAllCoins.filter(
+        (coin: any) => coin.name.toLowerCase().includes(coinName.toLowerCase())
+      );
       console.log("getCoin : ", getCoin);
-      return res.status(200).send({
-        status: true,
-        message: "Get the coin successfully",
-        data: getCoin[0],
-      });
-    }
 
-    if (pageNumber && pageSize) {
-      const sortedCoin =
-        sorting.toLowerCase() == "asc"
-          ? getAllCoins.sort((a:any,b:any)=>a.id - b.id)
-          : getAllCoins.sort((a:any,b:any)=>b.id - a.id);
+   
+      const sortedCoin: any = [];
+      if (sorting.toLowerCase() == "asc") {
+        getCoin.sort((a: any, b: any) => a.id - b.id);
+      } else if (sorting.toLowerCase() == "desc") {
+        getCoin.sort((a: any, b: any) => b.id - a.id);
+      }
 
       const startIndex: number = (pageNumber - 1) * pageSize;
       const endIndex: number = startIndex + parseInt(pageSize);
@@ -427,9 +452,9 @@ export const getCoinPagination = async (req: any, res: any) => {
         status: true,
         message: "Get the coins successfully",
         data: coinPagination,
-        total : getAllCoins.length
+        total: getAllCoins.length,
       });
-    }
+   
   } catch (error) {
     errorLogging("getCoinPagination", "ERROR", error);
   }

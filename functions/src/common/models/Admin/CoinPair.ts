@@ -1,11 +1,11 @@
 import { firestore } from "firebase-admin";
 
 type CoinPair = {
-  id: string,
-  symbol1: string,
-  symbol2: string,
-  status: string,
-  logo: string
+  id: string;
+  symbol1: string;
+  symbol2: string;
+  status: string;
+  logo: string;
 };
 
 export type queryParams = {
@@ -19,17 +19,11 @@ function checkAndIncreseNumber(pairIdsList: number[]) {
   const sortedList = pairIdsList.sort((a, b) => a - b);
   let lastvalue = sortedList[pairIdsList.length - 1];
   ++lastvalue;
-  return lastvalue.toString()
-
+  return lastvalue.toString();
 }
 
 export const addCoinPair = async (req: any, res: any) => {
-  const {
-    symbol1,
-    symbol2,
-    status,
-    logo
-  } = req.body;
+  const { symbol1, symbol2, status, logo } = req.body;
 
   try {
     const coinPairRef = await firestore()
@@ -38,9 +32,9 @@ export const addCoinPair = async (req: any, res: any) => {
       .get();
 
     let coinPairData: any = coinPairRef.data();
-    const getAllPairIds: number[] = []
+    const getAllPairIds: number[] = [];
     coinPairData.pairs.forEach((coin: any) => {
-      getAllPairIds.push(Number(coin.id))
+      getAllPairIds.push(Number(coin.id));
     });
     const id: string = checkAndIncreseNumber(getAllPairIds);
     const coinPair: CoinPair = {
@@ -48,7 +42,7 @@ export const addCoinPair = async (req: any, res: any) => {
       symbol1,
       symbol2,
       status,
-      logo
+      logo,
     };
     if (!coinPair) {
       return res.status(400).send({
@@ -57,7 +51,6 @@ export const addCoinPair = async (req: any, res: any) => {
         result: null,
       });
     }
-
 
     coinPairData.pairs.push(coinPair);
 
@@ -111,7 +104,10 @@ export const getAllPairs = async (req: any, res: any) => {
 export const getPairById = async (req: any, res: any) => {
   try {
     const { id } = req.params;
-    const getPairsQuery = await firestore().collection("settings").doc("pairs").get();
+    const getPairsQuery = await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .get();
     let getPairsData: any = getPairsQuery.data();
     let getPairs = getPairsData.pairs.find((coin: any) => {
       return coin.id == id;
@@ -128,7 +124,6 @@ export const getPairById = async (req: any, res: any) => {
       message: "Get coin pair successfully",
       result: getPairs,
     });
-
   } catch (error) {
     errorLogging("getPairById", "ERROR", error);
     res.status(500).send({
@@ -137,16 +132,19 @@ export const getPairById = async (req: any, res: any) => {
       result: error,
     });
   }
-}
+};
 export const updateVoteBarRangeOfCoinPair = async (req: any, res: any) => {
   const { id } = req.params;
   const { voteBarRange } = req.body;
   try {
-    const coinpairRef = await firestore().collection("settings").doc("pairs").get();
+    const coinpairRef = await firestore()
+      .collection("settings")
+      .doc("pairs")
+      .get();
     let coinPairData: any = coinpairRef.data();
     const getAllCoinpairsList: any = [];
     coinPairData.pairs.forEach((coin: any) => {
-      getAllCoinpairsList.push(coin)
+      getAllCoinpairsList.push(coin);
     });
 
     let checkPair = getAllCoinpairsList.find((pair: any) => {
@@ -168,7 +166,7 @@ export const updateVoteBarRangeOfCoinPair = async (req: any, res: any) => {
       .doc("pairs")
       .set({ pairs: getCoinspairs }, { merge: true });
 
-    const getPair = getCoinspairs.find((coin: any) => coin.id === id)
+    const getPair = getCoinspairs.find((coin: any) => coin.id === id);
     res.status(200).send({
       status: true,
       message: "Pair voteBarRange is successfully update",
@@ -230,8 +228,8 @@ export const updateCoinPair = async (req: any, res: any) => {
       id,
       symbol1,
       symbol2,
-      status
-    }
+      status,
+    };
     const getAllDataQuery = await firestore()
       .collection("settings")
       .doc("pairs")
@@ -239,13 +237,14 @@ export const updateCoinPair = async (req: any, res: any) => {
 
     const getAllPairData: any = getAllDataQuery.data();
     const checkPair = getAllPairData.pairs.find((pair: any) => {
-      return pair.id == id
-    })
-    if (!checkPair) return res.status(404).send({
-      status: true,
-      message: "Pair not found : " + id,
-      result: null,
+      return pair.id == id;
     });
+    if (!checkPair)
+      return res.status(404).send({
+        status: true,
+        message: "Pair not found : " + id,
+        result: null,
+      });
     await firestore()
       .collection("settings")
       .doc("pairs")
@@ -270,6 +269,55 @@ export const updateCoinPair = async (req: any, res: any) => {
   }
 };
 
+export const getCoinPairPagination = async (req: any, res: any) => {
+  try {
+    const {
+      coinName = "",
+      pageNumber = 1,
+      pageSize = 5,
+      sorting = "asc",
+    } = req.query;
+    const getAllCoinPairQuery: any = (
+      await await firestore().collection("settings").doc("pairs").get()
+    ).data();
+
+    const getAllCoinPair = getAllCoinPairQuery.coins;
+
+    // searching
+    const getCoinPair = getAllCoinPair.filter(
+      (coin: any) =>
+        coin.symbol1.toLowerCase().includes(coinName.toLowerCase()) ||
+        coin.symbol2.toLowerCase().includes(coinName.toLowerCase())
+    );
+    console.log("getCoinPair : ", getCoinPair);
+
+    const sortedCoinPair: any = [];
+    if (sorting.toLowerCase() == "asc") {
+      getCoinPair.sort((a: any, b: any) => a.id - b.id);
+    } else if (sorting.toLowerCase() == "desc") {
+      getCoinPair.sort((a: any, b: any) => b.id - a.id);
+    }
+
+    const startIndex: number = (pageNumber - 1) * pageSize;
+    const endIndex: number = startIndex + parseInt(pageSize);
+
+    console.log("startIndex, endIndex: ", startIndex, endIndex);
+
+    const coinPairPagination = sortedCoinPair.slice(startIndex, endIndex);
+
+    console.log("coinPairPagination : ", coinPairPagination);
+
+    return res.status(200).send({
+      status: true,
+      message: "Get the coinPair successfully",
+      data: coinPairPagination,
+      total: getAllCoinPair.length,
+    });
+  } catch (error) {
+    errorLogging("getCoinPairPagination", "ERROR", error);
+  }
+};
+
 export const errorLogging = async (
   funcName: string,
   type: string,
@@ -277,4 +325,3 @@ export const errorLogging = async (
 ) => {
   console.info(funcName, type, error);
 };
-

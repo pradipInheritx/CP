@@ -199,7 +199,7 @@ export const
     if (getIndexFrom4Slice != -1) {
       return coinValueFor4Slice[getIndexFrom4Slice].substring(0, 4);
     }
-    const coinValueFor5Slice = ["MATICUSDT", "HBARAUSDT"];
+    const coinValueFor5Slice = ["MATICUSDT", "HBARUSDT"];
     const getIndexFrom5Slice = coinValueFor5Slice.findIndex((item: any) => item === getCoin.toUpperCase());
     console.log("getIndexFrom5Slice : ",getIndexFrom5Slice)
     if (getIndexFrom5Slice != -1) {
