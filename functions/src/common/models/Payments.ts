@@ -479,55 +479,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
   }
 };
 
-export const getUserPayment = async (req: any, res: any) => {
-  try {
-    const { userId } = req.params;
-    const { pageNumber, pageSize } = req.query;
-    const getUserPaymentsQuery: any = await firestore()
-      .collection("payments")
-      .where("userId", "==", userId)
-      .get();
 
-      console.log("getUserPaymentsQuery : ",getUserPaymentsQuery)
-    const getUserPayments = getUserPaymentsQuery.docs.map((payment: any) =>
-      payment.data()
-    );
-
-    console.log("getUserPayments : ", getUserPayments);
-
-    const paymentsSorting = getUserPayments.sort(
-      (a: any, b: any) => b.timestamp - a.timestamp
-    );
-    console.log("paymentsSorting", paymentsSorting);
-
-    const startIndex: number = (pageNumber - 1) * pageSize;
-    const endIndex: number = startIndex + parseInt(pageSize);
-    console.log(
-      "paymentsSorting",
-      paymentsSorting.length,
-      "startIndex",
-      startIndex,
-      "endIndex",
-      endIndex
-    );
-    const paymentPagination = paymentsSorting.slice(startIndex, endIndex);
-
-    console.log("getUserPayment : paymentPagination => ", paymentPagination);
-    res.status(200).send({
-      status: true,
-      message: parentConst.MESSAGE_GET_USER_PAYMENT_HISTORY_SUCCESS,
-      data: paymentPagination,
-      total: getUserPayments.length,
-    });
-  } catch (error) {
-    errorLogging("getUserPayment", "ERROR", error);
-    res.status(500).send({
-      status: false,
-      message: parentConst.MESSAGE_SOMETHINGS_WRONG,
-      result: error,
-    });
-  }
-};
 export const errorLogging = async (
   funcName: string,
   type: string,

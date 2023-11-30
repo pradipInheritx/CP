@@ -99,6 +99,7 @@ import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.r
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
 import PaymentRouter from "./routes/Payments.routes";
+import adminPaymentRouter from "./routes/AdminPayment.routes";
 import { imageUploadFunction, avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
@@ -133,6 +134,8 @@ app.use("/admin/settings", voteAndSettingsRouter);
 app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
+app.use("/admin/payments", adminPaymentRouter);
+
 app.use("/payment", PaymentRouter);
 
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);

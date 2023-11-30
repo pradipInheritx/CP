@@ -7,7 +7,6 @@ import {
     getTransactionHistory,
     makePaymentToServer,
     getParentPayment,
-    getUserPayment,
     updateUserAfterPayment,
     getInstantReferalAmount
 } from "../common/models/Payments";
@@ -22,7 +21,6 @@ PaymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
 PaymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
 PaymentRouter.get("/getAdminPayment/:userId",auth, getParentPayment);
 PaymentRouter.get("/getParentPayment/:userId", getParentPayment);
-PaymentRouter.get("/getUserPayment/:userId", getUserPayment);
 PaymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
 
 export default PaymentRouter;
