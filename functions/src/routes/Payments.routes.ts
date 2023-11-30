@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { auth } from "../common/middleware/authentication";
 
 import {
     makePayment,
@@ -19,6 +20,7 @@ PaymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
 
 PaymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
 PaymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
+PaymentRouter.get("/getAdminPayment/:userId",auth, getParentPayment);
 PaymentRouter.get("/getParentPayment/:userId", getParentPayment);
 PaymentRouter.get("/getUserPayment/:userId", getUserPayment);
 PaymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);

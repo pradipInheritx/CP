@@ -485,9 +485,10 @@ export const getUserPayment = async (req: any, res: any) => {
     const { pageNumber, pageSize } = req.query;
     const getUserPaymentsQuery: any = await firestore()
       .collection("payments")
-      .where("usrId", "==", userId)
+      .where("userId", "==", userId)
       .get();
 
+      console.log("getUserPaymentsQuery : ",getUserPaymentsQuery)
     const getUserPayments = getUserPaymentsQuery.docs.map((payment: any) =>
       payment.data()
     );
@@ -519,7 +520,7 @@ export const getUserPayment = async (req: any, res: any) => {
       total: getUserPayments.length,
     });
   } catch (error) {
-    errorLogging("getParentPayment", "ERROR", error);
+    errorLogging("getUserPayment", "ERROR", error);
     res.status(500).send({
       status: false,
       message: parentConst.MESSAGE_SOMETHINGS_WRONG,

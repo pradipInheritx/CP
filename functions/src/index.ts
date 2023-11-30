@@ -94,7 +94,7 @@ import rewardsDistributionRouter from "./routes/RewardsDistribution.routes";
 import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
 import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
 import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
-import userTypeSettingsRouter from "./routes/UserTypeSettings";
+import userTypeSettingsRouter from "./routes/UserTypeSettings.routes";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
