@@ -291,7 +291,6 @@ export const getCoinPairPagination = async (req: any, res: any) => {
     );
     console.log("getCoinPair : ", getCoinPair);
 
-    const sortedCoinPair: any = [];
     if (sorting.toLowerCase() == "asc") {
       getCoinPair.sort((a: any, b: any) => a.id - b.id);
     } else if (sorting.toLowerCase() == "desc") {
@@ -303,7 +302,7 @@ export const getCoinPairPagination = async (req: any, res: any) => {
 
     console.log("startIndex, endIndex: ", startIndex, endIndex);
 
-    const coinPairPagination = sortedCoinPair.slice(startIndex, endIndex);
+    const coinPairPagination = getCoinPair.slice(startIndex, endIndex);
 
     console.log("coinPairPagination : ", coinPairPagination);
 
