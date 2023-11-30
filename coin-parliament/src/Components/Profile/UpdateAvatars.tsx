@@ -17,7 +17,6 @@ import { showToast } from "App";
 import { db } from "firebase";
 import { doc, setDoc } from "firebase/firestore";
 import UploadImg from '../../assets/images/UploadImg.svg';
-import ImageCompressor from 'image-compressor.js';
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;
@@ -106,33 +105,22 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
   const [imagePath, setImagepPath] = useState(null);
   const [bio, setBio] = useState("");
   const fileInputRef = useRef(null);
-  const [imageError, setImageError] = useState("");
   const pathname = window.location.pathname;
   const handleAvatarClick = () => {
     // @ts-ignore
     fileInputRef.current!.click();
   };
 
-  const handleImageChange = async(e:any) => {
+  const handleImageChange = (e:any) => {
     const file = e.target.files[0];
-    const maxSizeInBytes = 2 * 1024 * 1024; // 2 MB 
-    const imageCompressor = new ImageCompressor();
-    const compressedImage = await imageCompressor.compress(file, {
-      quality: 0.6,
-    });    
-    if (compressedImage.size < maxSizeInBytes) {
-      setImageError("")
-      // @ts-ignore
-      setImagepPath(compressedImage)
+    if (file) {
+      setImagepPath(file)
       const reader = new FileReader();
       reader.onloadend = () => {
         // @ts-ignore
         setImage(reader.result);
       };
       reader.readAsDataURL(file);
-    } else {
-      setImageError('Image size allowed limit (5 MB)');
-      return;
     }
   };
 
@@ -214,17 +202,8 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
                             className="img-fluid Homeimg"
                             style={{ cursor: 'pointer' }}
                           />
-                      </div>
-                      {imageError != "" && <span style={{ color: "red", fontSize: "10px" }}>{imageError}</span>}
-                      <ButtonBox
-                        style={{
-                          opacity: `${imageError == "" ? "1" : "0.6"}`
-                        }}
-                        onClick={() => {
-                          if (imageError == "")
-                            handleUpload()
-                        }}                        
-                        disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
+                        </div>
+                        <ButtonBox  onClick={handleUpload} disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
                           Upload
                         </ButtonBox>
                       </CustomBox>                                          
