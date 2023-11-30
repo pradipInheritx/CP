@@ -17,6 +17,8 @@ import { showToast } from "App";
 import { db } from "firebase";
 import { doc, setDoc } from "firebase/firestore";
 import UploadImg from '../../assets/images/UploadImg.svg';
+import ImageCompressor from 'image-compressor.js';
+import { texts } from "Components/LoginComponent/texts";
 
 type AvatarsModalProps = {
   onSubmit: (type: AvatarType) => Promise<void>;
@@ -95,36 +97,54 @@ margin-bottom:10px;
 `;
 
 const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
-  const { setFirstTimeAvatarSelection, setShowMenuBar,setSelectBioEdit } = useContext(AppContext);
+  const { setFirstTimeAvatarSelection, setShowMenuBar, setSelectBioEdit, avatarImage, setAvatarImage } = useContext(AppContext);
   const translate = useTranslation();
   const { width } = useWindowSize();
   const { userInfo,user } = useContext(UserContext);
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [image, setImage] = useState(null);
+  const [imageError, setImageError] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [imagePath, setImagepPath] = useState(null);
   const [bio, setBio] = useState("");
   const fileInputRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAvatarClick = () => {
     // @ts-ignore
     fileInputRef.current!.click();
   };
 
-  const handleImageChange = (e:any) => {
+  const handleImageChange = async (e: any) => {
     const file = e.target.files[0];
-    if (file) {
-      setImagepPath(file)
+    const maxSizeInBytes = 11 * 1024 * 1024; // 2 MB 
+    const imageCompressor = new ImageCompressor();
+    const compressedImage = await imageCompressor.compress(file, {
+      quality: 0.6,
+    });
+    if (compressedImage.size < maxSizeInBytes && file.size < maxSizeInBytes) {
+      setImageError("")
+      // @ts-ignore
+      setImagepPath(compressedImage)
       const reader = new FileReader();
       reader.onloadend = () => {
         // @ts-ignore
         setImage(reader.result);
+        // @ts-ignore
+        setImageUrl(URL.createObjectURL(e.target.files[0]))
+
       };
       reader.readAsDataURL(file);
+    } else {
+      setImageError('Image size allowed limit (10 MB)');
+      return;
     }
   };
 
   const handleUpload = async () => {
+    setIsLoading(true)
     if (imagePath) {
+      setAvatarImage(imageUrl)
       try {
         const formData = new FormData();
         formData.append('file', imagePath);
@@ -137,12 +157,17 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         if (response.data.status) {
           showToast(response.data.message, ToastType.SUCCESS);
           setSelectBioEdit(true)
-          setFirstTimeAvatarSelection(false);          
+          setFirstTimeAvatarSelection(false);      
+          setIsLoading(false)
         } else {          
           showToast(response.data.message, ToastType.ERROR);
+          setAvatarImage("")
+          setIsLoading(false)
         }
       } catch (error) {        
         showToast("Error uploading image", ToastType.ERROR);
+        setAvatarImage("")
+        setIsLoading(false)
       }
     }
   };
@@ -154,6 +179,27 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
           <CloseIcon aria-hidden="true">&times;</CloseIcon>
         </div>}
       </div> */}
+
+      {isLoading && <div style={{
+        position: 'fixed',
+        height: '100%',
+        display: 'flex',
+        textAlign: 'center',
+        justifyContent: 'center',
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        zIndex: '9999',
+        overflow: 'hidden',
+        width: '100%',
+        alignItems: 'center',
+        backgroundColor: "rgba(0,0,0,0.8)"
+
+      }}>
+        <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em', marginTop: "50px" }}>
+          {texts.waitForIt}
+        </span>
+      </div>}
       {!selectedAvatar && (<>
         <Title>{translate("Select Your Avatar")}</Title>
         <Flex {...{ width }}>
@@ -194,9 +240,17 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
                             onClick={handleAvatarClick}
                             className="img-fluid Homeimg"
                             style={{ cursor: 'pointer' }}
-                          />
+                        />
                         </div>
-                        <ButtonBox  onClick={handleUpload} disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
+                        {imageError != "" && <span style={{color:"red" , fontSize:"10px"}}>{imageError}</span>}
+                      <ButtonBox
+                        style={{
+                          opacity: `${imageError == "" ? "1":"0.6"}`
+                        }}
+                        onClick={() => {
+                        if (imageError == "")
+                        handleUpload()
+                      }} disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
                           Upload
                         </ButtonBox>
                       </CustomBox>                                          
@@ -228,6 +282,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
               onSubmit(defaultAvatar);
             }
             setFirstTimeAvatarSelection(false);
+            setSelectBioEdit(true)
             // setShowMenuBar(false);
           }}>{image !=null ?"Next":"Skip"}</span>
         </div>

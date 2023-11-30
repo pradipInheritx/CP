@@ -79,7 +79,7 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
 
   useEffect(() => {
     // @ts-ignore
-    setBio(BioTexts[userInfo?.avatar])
+    setBio(BioTexts[userInfo?.avatar] || "")
   }, [])
   
   console.log(bio,"bioCheck")
