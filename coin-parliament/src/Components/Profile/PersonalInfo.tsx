@@ -24,6 +24,7 @@ import Avatar from "Components/Users/Avatar";
 import { translate, useTranslation } from "common/models/Dictionary";
 import UpdateAvatars from "./UpdateAvatars";
 import { toast } from "react-toastify";
+import AppContext from "Contexts/AppContext";
 
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
@@ -47,6 +48,7 @@ const TextAera = styled.textarea`
 `;
 
 const PersonalInfo = () => {
+  const {avatarImage, setAvatarImage } = useContext(AppContext);
   const { userInfo, user: u, setUserInfo, setUser } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const [edit, setEdit] = useState(false)
@@ -144,7 +146,7 @@ const PersonalInfo = () => {
     }
   };
 
-
+  console.log(avatarImage,"avatarImage")
   return (
     <>
 
@@ -179,7 +181,7 @@ const PersonalInfo = () => {
             setAvatarMode(true)
           }} role="button">
             {user?.avatar && (
-              <Avatars type={user?.avatar as AvatarType} width={70} style={{
+              <Avatars type={avatarImage || user?.avatar as AvatarType} width={70} style={{
                 height:"70px"
               }}/>
             )}
