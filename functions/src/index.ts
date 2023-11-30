@@ -94,11 +94,12 @@ import rewardsDistributionRouter from "./routes/RewardsDistribution.routes";
 import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
 import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
 import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
-import userTypeSettingsRouter from "./routes/UserTypeSettings";
+import userTypeSettingsRouter from "./routes/UserTypeSettings.routes";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
 import PaymentRouter from "./routes/Payments.routes";
+import adminPaymentRouter from "./routes/AdminPayment.routes";
 import { imageUploadFunction, avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
@@ -133,6 +134,8 @@ app.use("/admin/settings", voteAndSettingsRouter);
 app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
+app.use("/admin/payments", adminPaymentRouter);
+
 app.use("/payment", PaymentRouter);
 
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
