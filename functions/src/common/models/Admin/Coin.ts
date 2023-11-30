@@ -431,8 +431,7 @@ export const getCoinPagination = async (req: any, res: any) => {
       );
       console.log("getCoin : ", getCoin);
 
-   
-      const sortedCoin: any = [];
+  
       if (sorting.toLowerCase() == "asc") {
         getCoin.sort((a: any, b: any) => a.id - b.id);
       } else if (sorting.toLowerCase() == "desc") {
@@ -444,7 +443,7 @@ export const getCoinPagination = async (req: any, res: any) => {
 
       console.log("startIndex, endIndex: ", startIndex, endIndex);
 
-      const coinPagination = sortedCoin.slice(startIndex, endIndex);
+      const coinPagination = getCoin.slice(startIndex, endIndex);
 
       console.log("coinPagination : ", coinPagination);
 
