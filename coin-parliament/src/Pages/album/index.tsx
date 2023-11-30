@@ -17,6 +17,7 @@ import { texts } from "Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
 import { trim } from "lodash";
 import { divideArray, divideArray1 } from "common/utils/helper";
+import SetsScreen from "Pages/SetsScreen";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -286,6 +287,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
         });
 
     }, []);
+
+    console.log(collectionType,"collectionType")
     useEffect(() => {
         if (localStorage.getItem('filterCollection') && allCards.length > 0) {
             const filterCollection = JSON.parse(localStorage.getItem('filterCollection') || '');
@@ -322,7 +325,9 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     useEffect(() => {
         onCollectionChange(collectionValue)
     }, [collectionValue, collectionType])
+
     const getCardDetails = () => {
+        console.log("")
         const getCollectionType = firebase
             .firestore()
             .collection("cardsDetails")
@@ -572,6 +577,25 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                 </span>
             </div>}
             {
+                collectionValue !== "none" && collectionSetValue == "none" && collectionCardValue == "none" && collectionTypeValue == "all" && !displayMyCards && <>
+                    <div className="w-100 d-flex">
+                        <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap w-100`} style={{}}>
+                            {setsValue.map((item: any, index: number) => {
+                                return <SetsScreen
+                                type="album"
+                                onSelectSets={setCollectionSetValue}
+                                allCardNew={allCards}
+                                setsValue={item}
+                                winerCard={winerCard}
+                                />
+                            })}
+                        </div>
+                    </div>
+                </>
+            }
+
+
+            {
                 (collectionValue === 'none' && !displayMyCards) ?
                     <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
                     } >
@@ -600,7 +624,9 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         }
                     </GalleryType>
                     :
-                    Object.keys(myFilter)?.length > 0 ?
+                    (displayMyCards || collectionSetValue != "none" || collectionCardValue != "none" || collectionTypeValue != "all") &&
+                    <>
+                        {Object.keys(myFilter)?.length > 0 ?
                         <SummerCard className="mt-4" >
                             {
                                 Object.keys(myFilter).map((albumName, index) => {
@@ -710,7 +736,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             {<p style={{
                                 color: "black"
                             }}> Data Not Found </p>}
-                        </div>
+                        </div>}
+                    </>
             }
         </div >
     );

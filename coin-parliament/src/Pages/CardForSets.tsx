@@ -210,7 +210,7 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
           }`}        
         style={{
           minHeight: `${BigCard ? "210px" : "110px"}`,
-          minWidth: `${BigCard ? "250px" : "140px"}`,
+          minWidth: `${BigCard ? "250px" : "150px"}`,
           cursor: 'pointer',          
         }}
       >
