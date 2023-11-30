@@ -34,6 +34,7 @@ const Title = styled.div`
   text-align: center;
   opacity: 1;
   padding: 20px;
+  // font-weight:400 !important;
   font-weight:400 !important;
 `;
 
