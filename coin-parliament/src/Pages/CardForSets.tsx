@@ -315,7 +315,7 @@ const CardForSets = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, wid
                     <img
                       src={ImgUrl || TheEagle}
                       alt='the hgodler'
-                      className='image-fluid pk'
+                      className='image-fluid'
                       style={{
                         height: 'auto',
                         maxWidth: '100%',
