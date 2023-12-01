@@ -48,6 +48,9 @@ const Header = () => {
                 style={{ color: 'white', cursor: 'pointer' }}
               
               >
+              <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
+                Top VTE Apps
+              </NavDropdown.Item>
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
                 Profile
               </NavDropdown.Item>

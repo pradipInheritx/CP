@@ -57,9 +57,11 @@ export const saveFoundation = async (uid: string, foundationName: string) => {
 };
 
 export const saveUserData = async (uid: string, database: Firestore, data: { [key: string]: any }) => {
+  console.log(data,"datausername")
   let userData: { [key: string]: string } = {};
   Object.keys(data).map((value) => {
     if (data[value] !== undefined) {
+      console.log(value,data[value], "datausername")
       userData = { ...userData, [value]: data[value] }
     }
   });
@@ -101,14 +103,15 @@ export const storeAllPlatFormUserId = async (email: string) => {
       getReferUser(stockParliament.firestore(), email),
       getReferUser(votingParliament.firestore(), email)
     ]).then((data) => {
-      console.log(data, 'hello');
-
+      
       const V2E = data[0];
       const coinUser = data[1];
       const sportUser = data[2];
       const stockUser = data[3];
-      const votingUser = data[4];
+      const votingUser = data[4];            
       localStorage.setItem("userId", JSON.stringify({ V2E: (V2E?.uid || ''), coin: (coinUser?.uid || ''), sport: (sportUser?.uid || ''), stock: (stockUser?.uid || ''), voting: (votingUser?.uid || '') }));
+      // @ts-ignore
+      localStorage.setItem("DisplayName", JSON.stringify({ V2E: (V2E?.displayName || ''), coin: (coinUser?.displayName || ''), sport: (sportUser?.displayName || ''), stock: (stockUser?.displayName || ''), voting: (votingUser?.displayName || '') }));
     }).catch(() => {
 
     })

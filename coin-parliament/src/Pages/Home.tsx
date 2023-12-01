@@ -152,7 +152,7 @@ enum SiteTypes {
   voting = "voting",
 }
 function Home() {
-  const [showShare, setShowShare] = useState(false);
+  const [showShare, setShowShare] = useState<boolean | string>(false);
   const { setLogin } = useContext(AppContext);
   const { user } = useContext(UserContext);
   const [sites, setSites] = useState<{ [key: string]: any }>({
@@ -160,7 +160,7 @@ function Home() {
       img: COINPARLIAMENT,
       des: "Coin Parliament is a web 3-based vote to earn game where you can make better investment decisions, mint NFTs, and earn rewards by voting and following top influencers.",
       title: "COIN PARLIAMENT",
-      redirect: "https://coinparliamentstaging.firebaseapp.com/",
+      redirect: "https://coinparliament.com/",
       // redirect: 'http://localhost:3001/',
       domain: process.env.REACT_APP_COIN_API,
       name: "coin",
@@ -238,27 +238,33 @@ function Home() {
   ];
   // @ts-ignore
   const getAllId = JSON.parse(localStorage.getItem("userId"))
+  // @ts-ignore
+  const getAllDisplayName = JSON.parse(localStorage.getItem("DisplayName"))
 
   const [shareIcon, setshareIcon] = useState({
 
     coin:{
       name: "/cplog.png",
       id: getAllId?.coin,
+      displayName: getAllDisplayName?.coin,
       url: "coinparliament.com"
     },
    sport: {
       name: "/SPlogo.png",
       id: getAllId?.sport,
+     displayName: getAllDisplayName?.sport,
       url: "sportparliament.com"
     },
     voting:{
       name: "/vplogo.png",
       id: getAllId?.voting,
+      displayName: getAllDisplayName?.voting,
       url: "votingparliament.com"
     },
     stock:{
       name: "/sptlogo.png",
       id: getAllId?.stock,
+      displayName: getAllDisplayName?.stock,
       url: "stockparliament.com"
     }
   })  
@@ -275,16 +281,16 @@ function Home() {
     return () => clearInterval(interval);
   }, [currentImageIndex]);
 
-  const referralUrl = (value: any, url?: any) => {
-    if (url == "") {    
-      return `${document.location.protocol}//${url}/?refer=${value}`
+  const referralUrl = (value: any, url?: any, displayName?: any) => {    
+    if (url != "") {          
+      return `${document.location.protocol}//${url}/?refer=${value}&userName=${displayName}`
     }
   };  
 const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center p-5 h-100">
-      <h1 className="pb-4">TOP VTE PLATFORMS</h1>
+      <h1 className="pb-4">TOP VTE APPS</h1>
       <div className="row">
         {Object.keys(sites).map((key: string, index) => {          
           return (
@@ -343,7 +349,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                               setLogin(true);
                               return;
                             } else {
-                              setShowShare((prev) => !prev);
+                              setShowShare((prev) => !prev ?sites[key]?.name : false );
                             }
                           }}
                           
@@ -358,7 +364,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                         </button>
                       </ButttonDiv>
 
-                      {showShare && <div className={"HomeshareBox"} style={window.screen.width < 300 ? {
+                      {showShare == sites[key]?.name  && <div className={"HomeshareBox"} style={window.screen.width < 300 ? {
                         marginLeft: '2em',
                         top: '26.5em',                        
                         zIndex : 1000,
@@ -378,7 +384,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                               <span className="material-symbols-outlined text-secondary me-2"
                               onClick={() => {
                                 {/* @ts-ignore */ }
-                                copy(referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url));
+                                copy(referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url, shareIcon[`${key}`].displayName));
                                   showToast(
                                     'Your referral link is copied to the clipboard.',
                                     ToastType.SUCCESS
@@ -387,15 +393,15 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                                 content_copy
                             </span>
                             {/* @ts-ignore */}
-                            <a href={`https://api.whatsapp.com/send/?phone&text=${`${shareText} ${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url)}`.replace(" ", "+")}&app_absent=0`} target="_blank" onClick={() => setShowShare(false)}>
+                            <a href={`https://api.whatsapp.com/send/?phone&text=${`${shareText} ${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url, shareIcon[`${key}`].displayName)}`.replace(" ", "+")}&app_absent=0`} target="_blank" onClick={() => setShowShare(false)}>
                                 <img src={whatsApp} className="me-2" />
                             </a>
                             {/* @ts-ignore */}
-                            <a href={`https://twitter.com/intent/tweet?url=${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url)}?check_suite_focus=true&text=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
+                            <a href={`https://twitter.com/intent/tweet?url=${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url, shareIcon[`${key}`].displayName)}?check_suite_focus=true&text=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
                                 <img src={XTwitter} width={'25px'} height={'25px'} className="me-2" />
                             </a>
                             {/* @ts-ignore */}
-                            <a href={`https://www.facebook.com/sharer/sharer.php?u=${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url)}&t=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
+                            <a href={`https://www.facebook.com/sharer/sharer.php?u=${referralUrl(shareIcon[`${key}`].id, shareIcon[`${key}`].url, shareIcon[`${key}`].displayName)}&t=${shareText}`} target="_blank" onClick={() => setShowShare(false)}>
                                 <img src={facebook} className="me-2" />
                               </a>
                             </div>                          

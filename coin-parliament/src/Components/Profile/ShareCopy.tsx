@@ -222,7 +222,7 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
       <div className="pt-3">
         <H2
           style={{
-            fontSize: `${window.screen.width > 767 ? "4rem" : "3.5rem"}`,
+            fontSize: `${window.screen.width > 767 ? "4rem" : "2.5rem"}`,
           }}
         >BECOME AMBASSADOR</H2>
       </div>

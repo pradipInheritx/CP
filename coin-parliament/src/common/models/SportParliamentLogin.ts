@@ -7,6 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
 import sportParliament from "firebaseSportParliament";
 import axios from "axios";
+import { generateUsername } from "common/utils/strings";
 export const SignupRegularForSportParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -25,6 +26,7 @@ export const SignupRegularForSportParliament = async (
             // await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(sportParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
+                displayName:  await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
                 parent: referUser?.uid,
