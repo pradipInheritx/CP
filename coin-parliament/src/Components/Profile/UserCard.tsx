@@ -130,13 +130,13 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
       <Component515>
         <OverlapGroup1>
            
-          {/* <ElementsAvatarAImage1 onClick={onClick} role="button">
+          {/* <ElementsAvatarAImage1 className="border" onClick={onClick} role="button">
             {user?.avatar && (
               <Avatars type={user?.avatar as AvatarType} width={60}/>
             )}
             {!user?.avatar && <Avatar/>}
-          </ElementsAvatarAImage1>
-          <FlexCol>
+          </ElementsAvatarAImage1> */}
+          {/* <FlexCol>
             <UsernameUnique>
               {user?.displayName || user?.firstName}
             </UsernameUnique>

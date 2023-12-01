@@ -18,6 +18,7 @@ import firebase from "firebase/compat";
 import { Ratio } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
+import SetsScreen from "./SetsScreen";
 
 
 const GalleryType = styled.div`
@@ -88,6 +89,7 @@ const NFTGallery = () => {
   const [setsCardName, setSetsCardName] = useState<any>('none')
   const [cardName, setCardName] = useState<any>([])
   const [cardNameNew, setCardNameNew] = useState<any>([])
+  const [isLoading, setIsLoading] = useState(false);
   const [allVideo, setAllVideo] = useState<any>({
     Wildwest: Wildwest,
     Winter: Winter,
@@ -105,7 +107,7 @@ const NFTGallery = () => {
 
 
   useEffect(() => {
-    if (albumOpen != "") {
+    if (albumOpen != "") {      
       const getCollectionType = firebase
         .firestore()
         .collection("nftGallery")
@@ -142,6 +144,7 @@ const NFTGallery = () => {
           data.push({ id: doc.id, ...doc.data() });
         });
         setAllCardArrayNew(data)
+        setIsLoading(false)
         console.log(data, "allcardData")
       }).catch((error) => {
         console.log(error, "error");
@@ -323,6 +326,7 @@ const NFTGallery = () => {
 
   useEffect(() => {
     getNftCardNew()
+    setIsLoading(true)
   }, [])
   useEffect(() => {
     onCollectionChange(selectCollection)
@@ -342,7 +346,7 @@ const NFTGallery = () => {
   }, [cardType, setsCardId, setsCardName])
 
 
-
+  console.log(setsCardName,"setsCardName")
   // use searched card for showing searchdata
 
 
@@ -483,7 +487,29 @@ const NFTGallery = () => {
           </select>
         </div>
       </div>
-      {/* @ts-ignore */}
+
+      {/* @ts-ignore */}      
+      {isLoading && <div style={{
+        position: 'fixed',
+        height: '100%',
+        display: 'flex',
+        textAlign: 'center',
+        justifyContent: 'center',
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        zIndex: '9999',
+        overflow: 'hidden',
+        width: '100%',
+        alignItems: 'center',
+
+      }}>
+        <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em' ,marginTop:"50px"}}>
+          {texts.waitForIt}
+        </span>
+      </div>}
+
+      
       <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }} >
         {(!cardShow && selectCollection === 'none') && collectionType?.map((data: any, index: number) => {
           return <div className="" onClick={() => { setSelectCollection(data?.albumName) }} key={index}
@@ -529,64 +555,84 @@ const NFTGallery = () => {
           </div>
 
         })}
-      </GalleryType>
-
+      </GalleryType> 
+      
+      
+      {
+        selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType =="all" && <>
+          <div className="w-100 d-flex">
+            <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap`} style={{}}>
+              {setsValue.map((item:any,index:number) => {
+                return <SetsScreen
+                  type="nftalbum"
+                  onSelectSets={onSelectSets}                  
+                  allCardNew={allCardNew}
+                  setsValue={item}
+                />
+              })}
+            </div>
+          </div>
+        </>
+      }
       {/* <GalleryType2 className='' style={{
         width: `${window.screen.width > 787 ? "800px" : "100%"}`,
         margin: "40px auto",
         
       }} >     
         </GalleryType2>      */}
-      {allCardNew?.length > 0 ?
-        <SummerCard className="mt-4">
-          {!!cardShow ? equalPart?.map((cardPart: any, ind: number) => {
-            return <div className='w-100 m-auto mb-4' key={ind}>
-              <SwiperBar>
-                {cardPart?.map((item: any, index: number) => {
-                  return (
-                    <NftOneCard
-                      key={index}
-                      DivClass={item?.cardType}
-                      HeaderText={item?.cardType}
-                      HeaderClass={`${item?.cardType}_text`}
-                      BackCardName={item?.cardName}
-                      Rarity={item?.cardType}
-                      Quantity={item?.totalQuantity}
-                      holderNo={item?.noOfCardHolders}
-                      // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
-                      // cardNo={item?.sno[index]}
-                      // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) }`}
-                      cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
-                      GeneralSerialNo={item?.sno && (item?.sno[0])?.replace(/[0-9]/g, '')}
-                      Serie={item?.setName || "Set" + (index + 1)}
-                      CollectionType={item?.albumName || "LEGENDARY"}
+      {(setsCardId != "none" || setsCardName != "none" || cardType != "all") && <>
+        {allCardNew?.length > 0 ?
+          <SummerCard className="mt-4">
+            {!!cardShow ? equalPart?.map((cardPart: any, ind: number) => {
+              return <div className='w-100 m-auto mb-4' key={ind}>
+                <SwiperBar>
+                  {cardPart?.map((item: any, index: number) => {
+                    return (
+                      <NftOneCard
+                        key={index}
+                        DivClass={item?.cardType}
+                        HeaderText={item?.cardType}
+                        HeaderClass={`${item?.cardType}_text`}
+                        BackCardName={item?.cardName}
+                        Rarity={item?.cardType}
+                        Quantity={item?.totalQuantity}
+                        holderNo={item?.noOfCardHolders}
+                        // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                        // cardNo={item?.sno[index]}
+                        // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) }`}
+                        cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
+                        GeneralSerialNo={item?.sno && (item?.sno[0])?.replace(/[0-9]/g, '')}
+                        Serie={item?.setName || "Set" + (index + 1)}
+                        CollectionType={item?.albumName || "LEGENDARY"}
 
-                      userId={item?.setId}
-                      // CollectionType={item?.collectionName}
-                      // CollectionType={item?.albumId}
-                      // Disable={"CardDisebal"}                            
-                      cardHeader={`${item?.cardName}`}
-                      id={item?.id || item?.cardId}
-                      BackSideCard={BackSideCard}
-                      fulldata={item}
-                      flipCard={backCards?.includes(item?.id)}
-                      ImgUrl={item?.cardImageUrl || ""}
-                      VideoUrl={item?.cardVideoUrl || ""}
-                    />
-                  );
-                })}
-              </SwiperBar>
-            </div>
-          })
-            : ""
-          }
-        </SummerCard> :
-        <div className="d-flex justify-content-center mt-5">
-          {cardShow == true ? <p style={{
-            color: "black"
-          }}>Data Not Found</p> : ""}
-        </div>
-      }
+                        userId={item?.setId}
+                        // CollectionType={item?.collectionName}
+                        // CollectionType={item?.albumId}
+                        // Disable={"CardDisebal"}                            
+                        cardHeader={`${item?.cardName}`}
+                        id={item?.id || item?.cardId}
+                        BackSideCard={BackSideCard}
+                        fulldata={item}
+                        flipCard={backCards?.includes(item?.id)}
+                        ImgUrl={item?.cardImageUrl || ""}
+                        VideoUrl={item?.cardVideoUrl || ""}
+                      />
+                    );
+                  })}
+                </SwiperBar>
+              </div>
+            })
+              : ""
+            }
+          </SummerCard> :
+          <div className="d-flex justify-content-center mt-5">
+            {cardShow == true ? <p style={{
+              color: "black"
+            }}>Data Not Found</p> : ""}
+          </div>
+        }
+      </>}
+      
     </div>
   );
 };

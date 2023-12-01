@@ -16,8 +16,9 @@ import AppContext from "Contexts/AppContext";
 export type FirstTimeAvatarSelectionProps = {
   user: any;
   setFirstTimeAvatarSelection: any;
+  setSelectBioEdit: any;
 };
-const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, }: FirstTimeAvatarSelectionProps) => {
+const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, setSelectBioEdit}: FirstTimeAvatarSelectionProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
   const { setFirstTimeLogin, setShowMenuBar } = useContext(AppContext);
@@ -25,6 +26,7 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, }: FirstT
   ]
   const onSubmitAvatar = async (type: AvatarType) => {
     if (user?.uid) {
+      setSelectBioEdit(true)
       const userRef = doc(db, "users", user?.uid);
       try {
         const foundationName = FoundationArray[Math.trunc(Math.random() * 4)]
@@ -33,7 +35,7 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, }: FirstT
         showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
         setFirstTimeAvatarSelection(false)
-        setShowMenuBar(false)
+        // setShowMenuBar(false)        
       } catch (e) {
         showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
       }
@@ -43,7 +45,10 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, }: FirstT
     <Stack
       gap={2}
       className=" justify-content-center"
-      style={{ minHeight: "100vh", background: 'var(--light-purple)', paddingTop: '100px', flexDirection: 'row' }}
+      style={{
+        minHeight: "100vh", background: 'var(--light-purple)', paddingTop: '100px', flexDirection: 'row' ,
+      overflow:"hidden"
+      }}
     >
       <AvatarsModal
         {...{

@@ -51,20 +51,17 @@ export const providers = {
   // [LoginProviders.TWITTER]: new TwitterAuthProvider(),
 };
 
-export const Logout = (setUser?: () => void) => {
-  const navigate = useNavigate();
+export const Logout = (setUser?: () => void) => {  
   const auth = getAuth();
   signOut(auth)
     .then(() => {
       window.localStorage.setItem('mfa_passed', 'false');
       if (setUser) {
-        setUser();
-        navigate("/")
+        setUser();        
       }
     })
     .catch((error) => {
-      const errorMessage = error.message;
-      navigate("/")
+      const errorMessage = error.message;      
       console.log(errorMessage);
     });
 };

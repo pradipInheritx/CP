@@ -14,6 +14,9 @@ import UserContext from "../Contexts/User";
 import { isHomeBg } from "./App/App";
 import BackArrow from "./icons/BackArrow";
 import { handleSoundClick } from "../common/utils/SoundClick";
+import { signOut } from "firebase/auth";
+import { auth } from "firebase";
+import { Logout } from "common/models/Login";
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
@@ -28,6 +31,7 @@ export type MenuProps = {
   children?: React.ReactNode;
   items: (MenuItem | undefined)[];
   pathname: string;
+  setMfaLogin: any;
 };
 
 export type MenuItem = {
@@ -113,13 +117,15 @@ const Menu = ({
   items = [],
   title,
   pathname,
+  setMfaLogin,
 }: MenuProps) => {
-  const { menuOpen, setMenuOpen, login, showMenubar } =
+  const { menuOpen, setMenuOpen, login, showMenubar, languages, setLang, setLogin, setSignup, setShowBack, setShowMenuBar } =
     useContext(AppContext);
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, userInfo, setUser } = useContext(UserContext);
   var urlName = window.location.pathname.split('/');  
   const followerPage = urlName.includes("followerProfile")
+
   const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0);
   const { width } = useWindowSize();
   const { backgrounHide } = useContext(AppContext);
@@ -136,6 +142,16 @@ const Menu = ({
     else {
       setMenuOpen(true)
     }
+  };
+  const BackLogout = () => {
+    
+        Logout(setUser);
+        navigate("/")
+        setLogin(true);
+    setShowMenuBar(false)
+    setMfaLogin(false)
+        // console.log("i am working error")	
+        localStorage.removeItem("userId")    
   };
   const translate = useTranslation();
 
@@ -199,7 +215,7 @@ const Menu = ({
               className='d-flex justify-content-start'
               style={{ flexBasis: "20%" }}
             >
-              {!showMenubar && <HamburgerBut
+              {!showMenubar && localStorage.getItem('mfa_passed') != 'true' && <HamburgerBut
                 // variant='link'
                 onClick={() => {
                   handleShow()
@@ -214,18 +230,32 @@ const Menu = ({
                 {followerPage ? <BackArrow /> : <Hamburger />}
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
               </HamburgerBut>}
+              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && <HamburgerBut
+                // variant='link'
+                onClick={BackLogout}
+                className='position-relative'
+              >
+                <BackArrow />
+              </HamburgerBut>}
             </div>
           )}
           {desktop && (
             <div className='d-flex justify-content-start check'>
-              {!showMenubar && <HamburgerBut
+              {!showMenubar && localStorage.getItem('mfa_passed') != 'true' && <HamburgerBut
                 // variant='link'
                 onClick={handleShow}
                 className='position-relative'
               >
                 {/* <Hamburger /> */}
-                {followerPage ? <BackArrow /> : <Hamburger />}
+                {followerPage ? <BackArrow /> : <Hamburger />}                
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
+              </HamburgerBut>}
+              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' &&  <HamburgerBut
+                // variant='link'
+                onClick={BackLogout}
+                className='position-relative'
+              >
+                <BackArrow />
               </HamburgerBut>}
             </div>
           )}

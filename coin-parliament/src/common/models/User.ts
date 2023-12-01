@@ -204,7 +204,10 @@ type HasAvatar = { avatar?: string };
 export const getAvatar = (userInfo: HasAvatar) => {
   if (Object.values(AvatarType).includes(userInfo?.avatar as AvatarType)) {
     return importFile(`./The${userInfo?.avatar}`).default || "";
-  } else {
+  } else if (userInfo?.avatar !="") {    
+    return userInfo?.avatar
+  }
+  else {    
     return importFile("../../../assets/images/no-image", "png").default;
   }
 };

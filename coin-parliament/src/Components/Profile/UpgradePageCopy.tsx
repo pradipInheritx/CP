@@ -38,6 +38,7 @@ import VoteUg from "../../assets/images/VoteUg.png";
 import XXVote from "../../assets/images/XXVote.png";
 import VOUCHER from "../../assets/images/VOUCHER.png";
 import { useNavigate } from "react-router-dom";
+import Upgrade from "./Comingsoon";
 
 const H2 = styled.h2`
 color: #e6d348;
@@ -392,7 +393,8 @@ const UpgradePageCopy = () => {
               <ButttonDiv className="mt-1">
                 <button
                   onClick={() => {
-                    upgradeProfile(99, 0)
+                    // upgradeProfile(99, 0)
+                    showModal(<Upgrade />)
                   }}
                 >
                   <div className='d-flex justify-content-around' >

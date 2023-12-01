@@ -43,7 +43,7 @@ const Flex = styled.div`
   display: grid;
   grid-template-columns: repeat(
     ${(props: { width?: number }) =>
-    props.width && props.width > 969 ? "5" : "2"},
+    props.width && props.width > 767 ? "5" : "2"},
     1fr
   );
   grid-gap: 10px;
@@ -61,7 +61,7 @@ width:${window.screen.width > 979 ? '350px' : ''}
 
 const Container = styled.div`
   background: var(--color-d4d0f3) 0 0% no-repeat padding-box;
-  padding: 10px;
+  padding: ${window.screen.width > 767 ? "10px" : "0px"};      
 `;
 const CloseIcon = styled.span`
 color: var(--color-6352e8);
@@ -69,8 +69,9 @@ font-size: var(--font-size-22);
 `;
 
 const CustomBox = styled.div`
+margin:20px 0px 20px 0px;
 padding:0px 20px;
-  max-width: 183px;
+  max-width: ${window.screen.width > 767 ? "183px" : "165px"};
   background: rgba(255,255,255,0.47) 0 0% no-repeat padding-box;
   box-shadow: 0 3px 6px #00000029;
   border-radius: 6px;
@@ -96,32 +97,32 @@ color: var(--color-ffffff);
 margin-bottom:10px;
 `;
 
-const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
-  const { setFirstTimeAvatarSelection, setShowMenuBar, setSelectBioEdit, avatarImage, setAvatarImage } = useContext(AppContext);
+const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
+  const { setFirstTimeAvatarSelection, setShowMenuBar, avatarImage, setAvatarImage, backgrounHide, setBackgrounHide } = useContext(AppContext);
   const translate = useTranslation();
   const { width } = useWindowSize();
   const { userInfo,user } = useContext(UserContext);
   const [selectedAvatar, setSelectedAvatar] = useState('');
   const [image, setImage] = useState(null);
-  const [imageError, setImageError] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const [imagePath, setImagepPath] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [bio, setBio] = useState("");
   const fileInputRef = useRef(null);
+  const [imageError, setImageError] = useState("");  
+  const pathname = window.location.pathname;
   const [isLoading, setIsLoading] = useState(false);
-
   const handleAvatarClick = () => {
     // @ts-ignore
     fileInputRef.current!.click();
   };
 
-  const handleImageChange = async (e: any) => {
+  const handleImageChange = async(e:any) => {
     const file = e.target.files[0];
-    const maxSizeInBytes = 11 * 1024 * 1024; // 2 MB 
+    const maxSizeInBytes = 11* 1024 * 1024; // 2 MB 
     const imageCompressor = new ImageCompressor();
     const compressedImage = await imageCompressor.compress(file, {
       quality: 0.6,
-    });
+    });       
     if (compressedImage.size < maxSizeInBytes && file.size < maxSizeInBytes) {
       setImageError("")
       // @ts-ignore
@@ -132,7 +133,6 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         setImage(reader.result);
         // @ts-ignore
         setImageUrl(URL.createObjectURL(e.target.files[0]))
-
       };
       reader.readAsDataURL(file);
     } else {
@@ -140,10 +140,11 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
       return;
     }
   };
-
+  
   const handleUpload = async () => {
-    setIsLoading(true)
     if (imagePath) {
+      setIsLoading(true)
+      setBackgrounHide (true)
       setAvatarImage(imageUrl)
       try {
         const formData = new FormData();
@@ -156,30 +157,34 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         });        
         if (response.data.status) {
           showToast(response.data.message, ToastType.SUCCESS);
-          setSelectBioEdit(true)
-          setFirstTimeAvatarSelection(false);      
           setIsLoading(false)
+          setBackgrounHide(false)
+          onClose()
         } else {          
           showToast(response.data.message, ToastType.ERROR);
           setAvatarImage("")
           setIsLoading(false)
+          setBackgrounHide(false)
         }
       } catch (error) {        
         showToast("Error uploading image", ToastType.ERROR);
         setAvatarImage("")
         setIsLoading(false)
+        setBackgrounHide(false)
       }
     }
   };
 
-  return (
-    <Container className="position-relative">
-      {/* <div className="position-absolute top-0" style={{ right: 0 }}>
-        {pathname.includes('profile') && <div className="p-2 pl-0 close" role="button" onClick={onClose}>
-          <CloseIcon aria-hidden="true">&times;</CloseIcon>
-        </div>}
-      </div> */}
+  const UpdateBio = async () => {
+    if (user?.uid) {      
+      const userRef = doc(db, "users", user?.uid);
+      await setDoc(userRef, {bio:bio}, { merge: true });
+    }
+}
 
+  return (
+    <Container className="position-relative ">
+      
       {isLoading && <div style={{
         position: 'fixed',
         height: '100%',
@@ -189,7 +194,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         top: '0px',
         right: '0px',
         bottom: '0px',
-        zIndex: '9999',
+        zIndex: '109999',
         overflow: 'hidden',
         width: '100%',
         alignItems: 'center',
@@ -200,6 +205,11 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
           {texts.waitForIt}
         </span>
       </div>}
+      <div className="position-absolute top-0" style={{ right: 0 }}>
+        {pathname.includes('profile') && <div className="p-2 pl-0 close" role="button" onClick={onClose}>
+          <CloseIcon aria-hidden="true">&times;</CloseIcon>
+        </div>}
+      </div>
       {!selectedAvatar && (<>
         <Title>{translate("Select Your Avatar")}</Title>
         <Flex {...{ width }}>
@@ -240,17 +250,18 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
                             onClick={handleAvatarClick}
                             className="img-fluid Homeimg"
                             style={{ cursor: 'pointer' }}
-                        />
-                        </div>
-                        {imageError != "" && <span style={{color:"red" , fontSize:"10px"}}>{imageError}</span>}
+                          />
+                      </div>
+                      {imageError != "" && <span style={{ color: "red", fontSize: "10px" }}>{imageError}</span>}
                       <ButtonBox
                         style={{
-                          opacity: `${imageError == "" ? "1":"0.6"}`
+                          opacity: `${imageError == "" ? "1" : "0.6"}`
                         }}
                         onClick={() => {
-                        if (imageError == "")
-                        handleUpload()
-                      }} disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
+                          if (imageError == "")
+                            handleUpload()
+                        }}                        
+                        disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
                           Upload
                         </ButtonBox>
                       </CustomBox>                                          
@@ -258,6 +269,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
                   :
                   <>
                     <AvatarRadio
+                      maxWidth={window.screen.width > 767 ? 183 :165}
                       key={i}
                       type={type}
                       checked={type === (userInfo?.avatar || defaultAvatar)}
@@ -276,20 +288,21 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         </Flex>
 
         
-        <div className="d-flex justify-content-center text-center mt-4">
+        {/* <div className="d-flex justify-content-center text-center mt-4">
           <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
             if (!userInfo?.avatar) {
               onSubmit(defaultAvatar);
             }
             setFirstTimeAvatarSelection(false);
-            setSelectBioEdit(true)
-            // setShowMenuBar(false);
+            setShowMenuBar(false);
           }}>{image !=null ?"Next":"Skip"}</span>
-        </div>
+        </div> */}
       </>)}
+      <div className="d-flex justify-content-center">
       {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
+      </div>
     </Container>
   );
 };
 
-export default AvatarsModal;
+export default UpdateAvatars;

@@ -9,6 +9,7 @@ export enum AvatarType {
   Hodler = "Hodler",
   Investor = "Investor",
   Trader = "Trader",
+  Custom = "Custom",
 }
 export const defaultAvatar = AvatarType.Founder;
 
