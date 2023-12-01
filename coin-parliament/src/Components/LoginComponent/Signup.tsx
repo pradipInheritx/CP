@@ -85,14 +85,21 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
       try {
         const referUser = await firebase
           .firestore()
-          .collection('users').where('displayName', '==', refer).get();
+          .collection('users').where('displayName', '==', refer).get();  
         if (!referUser.empty) {
           referUser.forEach((doc: any) => {
             userdata = doc.data();
             setPreantId(doc.data().uid)            
           });
         } else if (referUser.empty) {
-          showToast("your link is expired", ToastType.ERROR)
+          const referUser = await firebase
+            .firestore()
+            .collection('users').where('email', '==', refer).get();  
+            referUser.forEach((doc: any) => {
+              userdata = doc.data();
+              setPreantId(doc.data().uid)
+            });
+          // showToast("your link is expired", ToastType.ERROR)
         }              
       } catch (err) {
         console.log( err, 'email');
