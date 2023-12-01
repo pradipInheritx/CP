@@ -85,10 +85,10 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 82%;
+  width: 85%;
   height: 30px;
   
-  margin-left:25px;
+  margin-left:30px;
   border-radius 50px;
   display: flex;
   justify-content:space-around;
@@ -544,7 +544,7 @@ const Header = ({
 										/>
 									</div>
 									<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
-										<HeaderCenterMob className='border'>
+										<HeaderCenterMob className=''>
 											<div></div>
 											<div className='mt-1'>
 												{
@@ -727,15 +727,22 @@ const Header = ({
 							<Title
 							 style={{ width: pathname === "/" ? "" : "" }}
 							 onClick={handleSoundClick}
-							 className="border"
+							 className=""
 							>
 								{mounted ? title : ""}
 							</Title>
 						</div> */}
 
-                           < div className='w-50'>
-							<Navbar.Brand as={Link} to='/'>
-								<img src={BigLogo} alt='' />
+						< div className=''
+							style={{
+								width:"35%"
+						}}
+						>
+							<Navbar.Brand as={Link} to='/'
+									
+								className="ml-1"
+							>
+								<img src={BigLogo} alt='' width="70px" />
 							</Navbar.Brand>
 							
 						</div>
@@ -744,7 +751,8 @@ const Header = ({
 			):
 			(logo ?
 				(
-					<div
+						<div
+							className=""
 						style={{
 							flexBasis: `${window.screen.width < 979 ?"80%":"100%"}`,
 							textAlign: "center",						
