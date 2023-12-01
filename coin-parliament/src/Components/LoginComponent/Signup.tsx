@@ -73,37 +73,34 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   const { user, userInfo } = useContext(UserContext);
   const [smsVerification, setSmsVerification] = useState('')
   const [signupLoading, setSignupLoading] = useState(false)
-  const [preantId, setPreantId] = useState(null)
   let navigate = useNavigate();
   const search = useLocation().search;
-  console.log(search,"search")
   const refer = new URLSearchParams(search).get("refer") || "user_test";
+  const [preantId, setPreantId] = useState(null)
 
   const getUserId = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(refer);
+
+
     var userdata = { uid: '' };
     if (refer) {
       try {
         const referUser = await firebase
           .firestore()
-          .collection('users').where('displayName', '==', refer).get();  
+          .collection('users').where(`${isValid ?'email':"displayName"}`, '==', refer).get();  
         if (!referUser.empty) {
           referUser.forEach((doc: any) => {
             userdata = doc.data();
             setPreantId(doc.data().uid)            
           });
-        } else if (referUser.empty) {
-          const referUser = await firebase
-            .firestore()
-            .collection('users').where('email', '==', refer).get();  
-            referUser.forEach((doc: any) => {
-              userdata = doc.data();
-              setPreantId(doc.data().uid)
-            });
-          // showToast("your link is expired", ToastType.ERROR)
+        } else if (referUser.empty) {         
+          showToast("your link is expired", ToastType.ERROR)          
         }              
       } catch (err) {
         console.log( err, 'email');
-      }      
+      }    
+      console.log(userdata,"userdata")
     }
   }
 

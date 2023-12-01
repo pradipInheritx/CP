@@ -140,7 +140,7 @@ const LoginAndSignup = ({
         
       >                        
         <Modal.Body>          
-          <p className="text-center">If you used Google to open the account</p>
+          <p className="text-center">If you have used the Google signup option to create your V2E account, please log in using the option below.</p>
           <br />
           {Object.values(LoginProviders).map((provider, i) => {
             console.log(provider,"provider")
