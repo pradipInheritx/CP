@@ -24,7 +24,7 @@ export const SignupRegularForStockParliament = async (
             // await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(stockParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
-                displayName: await generateUsername(),
+                // displayName: await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
                 parent: referUser?.uid,

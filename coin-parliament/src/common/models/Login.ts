@@ -344,7 +344,7 @@ export const SignupRegular = async (
 
       firstTimeLogin: true,
       parent: referUser?.uid,
-      displayName: await generateUsername()
+      // displayName: await generateUsername()
     });
     // showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore

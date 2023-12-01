@@ -281,9 +281,9 @@ function Home() {
     return () => clearInterval(interval);
   }, [currentImageIndex]);
 
-  const referralUrl = (value: any, url?: any, displayName?: any) => {    
+  const referralUrl = (value: any, url?: any, displayName?: any) => {     
     if (url != "") {          
-      return `${document.location.protocol}//${url}/?refer=${value}&userName=${displayName}`
+      return `${document.location.protocol}//${url}/?refer=${displayName || user?.email }`
     }
   };  
 const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
