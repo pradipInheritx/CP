@@ -28,7 +28,7 @@ export const SignupRegularForVotingParliament = async (
             // });
             const referUser = await getReferUser(votingParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
-                displayName: await generateUsername(),
+                // displayName: await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
                 parent: referUser?.uid,
