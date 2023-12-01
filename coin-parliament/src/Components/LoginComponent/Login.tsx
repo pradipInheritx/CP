@@ -186,7 +186,7 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
         </ForgetPasswordText>
         :
         <>
-          <div className='d-flex'>
+          <div className='d-flex justify-content-center'>
             <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${capitalize(translate('Forget password?'))}`}</ForgetPasswordText>
           </div>
           <div className='d-flex  mt-2'>

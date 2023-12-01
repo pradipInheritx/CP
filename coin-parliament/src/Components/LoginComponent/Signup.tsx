@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SignupForm from "./SignupForm";
 import { texts, urls } from "./texts";
 import {  useTranslation } from "../../common/models/Dictionary";
@@ -21,7 +21,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
-
+import firebase from "firebase/compat";
 
 const Login = styled.div`
   margin-left:5px;
@@ -75,8 +75,42 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
   const [signupLoading,setSignupLoading]=useState(false)
   let navigate = useNavigate();
   const search = useLocation().search;
-  const refer = new URLSearchParams(search).get("refer");
+  const refer = new URLSearchParams(search).get("refer") || "user_test";
   
+  const [preantId, setPreantId] = useState(null)
+
+  const getUserId = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValid = emailRegex.test(refer);
+
+
+    var userdata = { uid: '' };
+    if (refer) {
+      try {
+        const referUser = await firebase
+          .firestore()
+          .collection('users').where(`${isValid ? 'email' : "displayName"}`, '==', refer).get();
+        if (!referUser.empty) {
+          referUser.forEach((doc: any) => {
+            userdata = doc.data();
+            setPreantId(doc.data().uid)
+          });
+        } else if (referUser.empty) {
+          showToast("your link is expired", ToastType.ERROR)
+        }
+      } catch (err) {
+        console.log(err, 'email');
+      }
+      console.log(userdata, "userdata")
+    }
+  }
+
+  useEffect(() => {
+    if (refer) {
+      getUserId()
+    }
+  }, [])  
+
   const strings = {
     email: capitalize(translate(texts.email)),
     confirmPassword: capitalize(translate(texts.confirmPassword)),
@@ -100,7 +134,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
               provider={provider}
               onClick={() =>
                 // @ts-ignore
-                {agree? refer?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,refer):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast(texts.AgreetNc, ToastType.ERROR)}
+                {agree? preantId?authProvider(setUser, providers[provider], showToast,setSmsVerification, assign,preantId):authProvider(setUser, providers[provider], showToast,setSmsVerification):showToast(texts.AgreetNc, ToastType.ERROR)}
               }
             />
           </div>
@@ -162,7 +196,7 @@ const Signup = ({ setUser, setSignup, signup ,authProvider}: SignupProps) => {
         callback={{
           successFunc:async (params) => {
             console.log('params',params.uid)
-            if(refer)  await assign({parent: refer, child: params.uid});
+            if(preantId)  await assign({parent: preantId, child: params.uid});
             setSignup(false)
             setLogin(true)
             setSignupLoading(false)
