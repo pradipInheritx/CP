@@ -7,6 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
 import coinParliament from "firebaseCoinParliament";
 import axios from "axios";
+import { generateUsername } from "common/utils/strings";
 export const SignupRegularForCoinParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -24,6 +25,7 @@ export const SignupRegularForCoinParliament = async (
             // await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(coinParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
+                displayName: await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
                 parent: referUser?.uid,

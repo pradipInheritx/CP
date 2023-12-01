@@ -8,6 +8,7 @@ import { getReferUser, saveUserData, storeAllPlatFormUserId } from "Contexts/Use
 import votingParliament from "firebaseVotingParliament";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
+import { generateUsername } from "common/utils/strings";
 export const SignupRegularForVotingParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -27,6 +28,7 @@ export const SignupRegularForVotingParliament = async (
             // });
             const referUser = await getReferUser(votingParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
+                displayName: await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
                 parent: referUser?.uid,

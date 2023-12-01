@@ -6,6 +6,7 @@ import { User, sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { getReferUser, saveUserData } from "Contexts/User";
 import stockParliament from "firebaseStockParliament";
+import { generateUsername } from "common/utils/strings";
 export const SignupRegularForStockParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
@@ -23,6 +24,7 @@ export const SignupRegularForStockParliament = async (
             // await sendEmailVerification(auth?.currentUser);
             const referUser = await getReferUser(stockParliament.firestore());
             await saveUserData((auth?.currentUser?.uid || ''), db, {
+                displayName: await generateUsername(),
                 ...userData,
                 firstTimeLogin: true,
                 parent: referUser?.uid,

@@ -36,6 +36,7 @@ import { SignupRegularForVotingParliament } from "./VotingParliamentLogin";
 import { SignupRegularForCoinParliament } from "./CoinParliamentLogin";
 import { userDefaultData } from "common/consts/contents";
 import axios from "axios";
+import { generateUsername } from "common/utils/strings";
 const sendEmail = httpsCallable(functions, "sendEmail");
 export enum LoginModes {
   LOGIN,
@@ -338,10 +339,12 @@ export const SignupRegular = async (
     await sendEmailVerification(auth?.currentUser).then((data) => {
       showToast("Successfully sent  verification link on your mail");
     });
-    const referUser = await getReferUser(V2EParliament.firestore());
+    const referUser = await getReferUser(V2EParliament.firestore());    
     await saveUserData((auth?.currentUser?.uid || ''), db, {
+
       firstTimeLogin: true,
       parent: referUser?.uid,
+      displayName: await generateUsername()
     });
     // showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
