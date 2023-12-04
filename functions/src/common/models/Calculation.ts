@@ -245,6 +245,10 @@ class Calculation {
         "endValue && endValue < upRange && endValue > downRange : ",
         endValue && endValue < upRange && endValue > downRange
       );
+      console.log("voteResult.direction : ",voteResult.direction)
+      console.log(`Direction.BEAR : ${Direction.BEAR} | Direction.BULL : ${Direction.BULL}`)
+      console.log("voteResult.direction === Direction.BEAR : ", voteResult.direction === Direction.BEAR)
+      console.log("voteResult.direction === Direction.BULL : ", voteResult.direction === Direction.BULL)
 
       if (endValue && endValue < upRange && endValue > downRange) {
         this.voteResult.success = 2;
@@ -252,12 +256,14 @@ class Calculation {
         console.log("successValue Changed rand point not working");
         const bear =
           !!endValue &&
-          endValue <= startValue &&
-          voteResult.direction === Direction.BEAR;
+          endValue <= startValue 
+          // &&
+          // voteResult.direction === Direction.BEAR;
         const bull =
           !!endValue &&
-          endValue > startValue &&
-          voteResult.direction === Direction.BULL;
+          endValue > startValue 
+          // &&
+          // voteResult.direction === Direction.BULL;
         this.voteResult.success = bull ? 1 : 0 || bear ? 1 : 0;
 
         console.log("bear : ", bear);
@@ -266,6 +272,8 @@ class Calculation {
       if (this.status === 0 || this.status) {
         this.voteResult.success = this.status;
       }
+      console.log("this.status : ",this.status)
+      console.log("this.voteResult.success : ",this.status)
     } else {
       console.log(
         "Array.isArray(voteResult.valueVotingTime) && Array.isArray(voteResult.valueExpirationTime) : ",
