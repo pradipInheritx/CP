@@ -57,7 +57,7 @@ export const texts = {
   Speaker: "speaker",
   Ambassador: "ambassador",
   Minister: "minister",
-  SelectCollection: "Collection".toUpperCase(),
+  SelectCollection: "All Collections",
   SelectSets: "Sets".toUpperCase(),
   SelectName: "card".toUpperCase(),
   SelectType: "Type".toUpperCase(),

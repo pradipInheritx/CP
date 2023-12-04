@@ -148,13 +148,11 @@ const Complete: React.FC = () => {
             >
                 {
                     tableHeader.map((item: tableColumnType, index: number) => {
-<<<<<<< HEAD
-                        return (<div style={{ width: `22%` }} key={index}>
-                            <strong>{item?.title}</strong>
-=======
+
+
                         return (<div style={{ width: `${index == 0 ?"23%":"19%"}`}} key={index}>
                             <strong >{item?.title}</strong>
->>>>>>> 6081641ce917467440725f118c1749bf2b26588b
+
                         </div>)
                     })
                 }
