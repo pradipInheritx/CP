@@ -157,6 +157,7 @@ import { request } from "http";
 import VotingBooster from "Components/Profile/VotingBooster";
 import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
 import Swal from "sweetalert2";
+import SelectBio from "Components/LoginComponent/SelectBio";
 
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -323,6 +324,7 @@ function App() {
   const [profileTab, setProfileTab] = useState(ProfileTabs.profile);
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
+  const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
   const [loginRedirectMessage, setLoginRedirectMessage] = useState("");
@@ -347,6 +349,7 @@ function App() {
   const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
+  const [avatarImage, setAvatarImage] = useState<any>(null)
   const [albumOpen, setAlbumOpen] = useState<any>("")
   const localID = localStorage.getItem("userId") || false;
   const [isWLDPEventRegistered, setIsWLDPEventRegistered] = useState<boolean>(false);
@@ -1304,7 +1307,11 @@ function App() {
               }}
             >
               <AppContext.Provider
-                value={{
+                  value={{
+                    avatarImage,
+                    setAvatarImage,
+                    selectBioEdit,
+                    setSelectBioEdit,
                   withLoginV2e,
                   setWithLoginV2e,
                   transactionId,
@@ -1493,15 +1500,10 @@ function App() {
                               pathname={pathname}
                               login={login || firstTimeLogin ? "true" : "false"}
                             >
-
-                              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
-                                <Login2fa
-                                  setLogin={setLogin}
-                                  setMfaLogin={setMfaLogin}
-                                />
-                              )}
+                              
                               <Header
                                 remainingTimer={remainingTimer}
+                                setMfaLogin={setMfaLogin}
                                 logo={
                                   (login && window.screen.width > 979) ||
                                   window.screen.width > 979
@@ -1576,6 +1578,21 @@ function App() {
                                   setFirstTimeAvatarSelection={
                                     setFirstTimeAvatarSelection
                                   }
+                                  setSelectBioEdit={
+                                    setSelectBioEdit
+                                  }
+                                />
+                              )}
+                              
+                              {!firstTimeLogin && !firstTimeAvatarSlection && selectBioEdit && (
+                                <SelectBio
+                                  userData={user}
+                                  setSelectBioEdit={
+                                    setSelectBioEdit
+                                  }
+                                  // setFirstTimeAvatarSelection={
+                                  //   setFirstTimeAvatarSelection
+                                  // }
                                 />
                               )}
                               {/* {!firstTimeAvatarSlection &&
@@ -1604,10 +1621,16 @@ function App() {
                                       setMfaLogin={setMfaLogin}
                                     />
                                   )} */}
+                                  {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                                    <Login2fa
+                                      setLogin={setLogin}
+                                      setMfaLogin={setMfaLogin}
+                                    />
+                                  )}
                                   {(
                                     !login &&
                                     !firstTimeAvatarSlection &&
-                                    !firstTimeFoundationSelection && localStorage.getItem('mfa_passed') != 'true') && (
+                                    !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true') && (
                                       <>
                                         <Container
                                           fluid

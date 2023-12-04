@@ -154,10 +154,10 @@ const
   Ambassador = () => {
     const translate = useTranslation();
     const { showToast } = useContext(NotificationContext);
-    const { user } = useContext(UserContext);
+    const { user,userInfo } = useContext(UserContext);
     const { setLogin } = useContext(AppContext)
-    const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
-    const url = referralUrl
+    const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.displayName}`;
+    const url = referralUrl    
     const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
     const [showShare, setShowShare] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);

@@ -28,6 +28,18 @@ const RemoveButton = styled.button`
     color: white;  
     
 `;
+const I = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+position: absolute;
+  font-weight: 300;
+  top:-27px;
+  left:180px;
+  color: #6352e8;
+//   width: 16px;
+//   height: 16px;
+  text-align: center;
+`;
 
 function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
@@ -46,6 +58,7 @@ function WalletInfo() {
         coin: "",
         address: "",
     }]);
+    const [tooltipShow, setTooltipShow] = React.useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
 
 
@@ -330,14 +343,49 @@ function WalletInfo() {
 
     return (
         <>
-            <div className="mt-4">
-                
-
+            <div className="mt-4"            
+            >                                             
                 {walletDetailsObj.length > 0 && <SelectTextfield
-                    label={`${("Wallet Adderss").toLocaleUpperCase()}`}
-                    name="Wallet Adderss"
+                    label={`${("Add your wallet address").toLocaleUpperCase()}`}
+                    name="Add your wallet address"
 
                 >
+                    {
+                        walletDetailsObj.length > 0 && tooltipShow &&
+                        <div
+                            style={{
+                                display: "relative"
+                            }}
+                        >
+                            <div className="newtooltip"
+                                style={{
+                                    // right: "0%",
+                                    width: `${window.screen.width > 767 ? "50%" : "78%"}`,
+                                    marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+                                    marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
+                                }}
+                            >
+                                {/* <p>Your CMP count</p> */}
+                                <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases) and rewards (PAX and Collectible cards)</p>
+                                <p className="mt-3 text-end lh-base">
+                                    Be aware that the network fee will be deducted from the amount, so choose wisely
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    <div className=''>
+                        <I className='bi bi-info-circle'
+                            onMouseDown={(e) => {
+                                setTooltipShow(false)
+                            }}
+                            onMouseUp={(e) => {
+                                setTooltipShow(true)
+                            }}
+                            onMouseEnter={() => setTooltipShow(true)}
+                            onMouseLeave={() => setTooltipShow(false)}
+                        ></I>
+                    </div>
+                    
                 {walletDetailsObj.map((item,index) => {                                            
                     return <>
                     <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} mt-3 w-100`}>
@@ -368,7 +416,7 @@ function WalletInfo() {
                                 disabled={true}
                             name="address"
                             type="address"
-                            placeholder="Wallet Address"
+                            placeholder="Enter address"
                                 value={item.address || ""}
                             onChange={(e) => {
                                 handleChangeValue(e, "")
@@ -387,15 +435,47 @@ function WalletInfo() {
                     </>
                 })}
                 </SelectTextfield>}
-                
-
-                
+                                                
                 <SelectTextfield
-                    label={`${walletDetailsObj.length < 1 ? ("Wallet Adderss").toLocaleUpperCase() :""}`}
-                    name={`${walletDetailsObj.length < 1 &&  "Wallet Adderss"}`}
-
-                >                    
-                    <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} w-100`}  >
+                    label={`${walletDetailsObj.length < 1 ? ("Add your wallet address"):""}`}
+                    name={`${walletDetailsObj.length < 1 &&  "Add your wallet address"}`}
+                
+                >      
+                    
+                    {
+                        walletDetailsObj.length < 1 && tooltipShow &&
+                        <div                            
+                        >
+                            <div className="newtooltip"
+                                style={{
+                                    // right: "0%",
+                                    width: `${window.screen.width > 767 ? "50%" : "78%"}`,
+                                    marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+                                    marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
+                                }}
+                            >
+                                {/* <p>Your CMP count</p> */}
+                                    <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases) and rewards (PAX and Collectible cards)</p>
+                                <p className="mt-3 text-end lh-base">
+                                        Be aware that the network fee will be deducted from the amount, so choose wisely
+                                </p>                                
+                            </div>
+                        </div>
+                    }
+                    {walletDetailsObj.length < 1 && <div className=''                        
+                    >                    
+                    <I className='bi bi-info-circle'
+                        onMouseDown={(e) => {
+                            setTooltipShow(false)
+                        }}
+                        onMouseUp={(e) => {
+                            setTooltipShow(true)
+                        }}
+                        onMouseEnter={() => setTooltipShow(true)}
+                        onMouseLeave={() => setTooltipShow(false)}
+                    ></I> 
+                    </div>  }                 
+                    <div className={`${window.screen.width > 350 ? 'd-flex mt-2' : ''} w-100`}  >
                         <select
                             name="coin"
                                 id="coin"
@@ -410,7 +490,7 @@ function WalletInfo() {
                                 handleChangeValue(e, "")
                             }}
                         >
-                            <option value="">Select Coin</option>
+                            <option value="">Choose coin</option>
                             {coinList.map((item: any, index: number) => {
                                 return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
@@ -425,7 +505,7 @@ function WalletInfo() {
                             }}
                             name="address"
                             type="address"
-                            placeholder="Wallet Address"
+                            placeholder="Enter address"
                             value={walletDetails.address || ""}
                             onChange={(e) => {
                                 handleChangeValue(e, "")
@@ -466,8 +546,8 @@ function WalletInfo() {
                 {/* second part */}
                 
                 <SelectTextfield
-                    label={`${("Receiving payment").toLocaleUpperCase()}`}
-                    name="Receiving Payment"
+                    label={`${("Choose your preferred payment time").toLocaleLowerCase()}`}
+                    name="Choose your preferred payment time"
                 >
                     <div className="w-100" >
                         <div className="d-flex  justify-content-start align-items-center ">
@@ -481,7 +561,7 @@ function WalletInfo() {
                                     setSelectRadio('IMMEDIATE');
                                 }}
                             />
-                            <label htmlFor="immediate" >IMMEDIATE</label>
+                            <label htmlFor="immediate" >Immediate</label>
 
                         </div>
 
@@ -497,7 +577,7 @@ function WalletInfo() {
                                         setSelectRadio('LIMIT')
                                     }}
                                 />
-                                <label htmlFor="limit" >LIMIT</label>
+                                <label htmlFor="By limit" >By limit</label>
 
                             </div>
 
@@ -565,7 +645,7 @@ function WalletInfo() {
                                                 }}
                                             >
 
-                                                <option value=''>Please Select</option>
+                                            <option value=''>Select time frame</option>
                                                 <option value='1 DAY'>1 Day</option>
                                                 <option value='1 WEEK'>1 Week</option>
                                                 <option value='1 MONTH'>1 Month</option>
@@ -585,7 +665,7 @@ function WalletInfo() {
                                     className='mt-2'
                                         maxLength={10}
                                         type="text" name="" id=""
-                                        placeholder="Enter Amount"
+                                        placeholder="Type amount"
                                         value={amountValue}
                                         onChange={(e) => {
                                             const re = /^[0-9\b]+$/;
@@ -621,7 +701,7 @@ function WalletInfo() {
                                             }}
                                         >
 
-                                            <option value=''>Please Select</option>
+                                            <option value=''>Select time frame</option>
                                             <option value='1 DAY'>1 DAY</option>
                                             <option value='1 WEEK'>1 WEEK</option>
                                             <option value='1 MONTH'>1 MONTH</option>
@@ -636,7 +716,7 @@ function WalletInfo() {
                                             }}
                                             maxLength={10}
                                             type="text" name="" id=""
-                                            placeholder="Enter Amount"
+                                            placeholder="Type amount"
                                             value={timeAmount?.amount}
                                             onChange={(e) => {
                                                 const re = /^[0-9\b]+$/;
@@ -698,7 +778,14 @@ function WalletInfo() {
                                 </>
                             } */}
                             {(selectRadio === 'LIMIT') &&
+                                <>
+                                <p
+                                    style={{
+                                    margin:"0px 0px 10px 25px"
+                                }}
+                                >On demand</p>
                                 <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
+                                    
                                     <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
                                         maxWidth: '200px',
                                         marginLeft: `${window.screen.width > 767 ? "25px" : ""}`,
@@ -710,9 +797,10 @@ function WalletInfo() {
                                             setGetPendingShow(true)
                                         }}
                                 >
-                                        {getPendingShow ? <span className=''>Get Pending Referral...</span> : 'Get Pending Referral'}
+                                        {getPendingShow ? <span className=''> GET PENDING AMOUNT...</span> : 'GET PENDING AMOUNT'}
                                     </Buttons.Primary>
                                 </div>
+                                </>
                             }
                         </div>
 
@@ -726,7 +814,7 @@ function WalletInfo() {
                         <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{ maxWidth: '200px', }}
                             onClick={() => { selectSendType() }}
                         >
-                            {savePaymentMethod ? <span className="loading">Update Amount...</span> : 'Update Amount'}
+                            {savePaymentMethod ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
                         </Buttons.Primary>
                     </div>
                 </div>

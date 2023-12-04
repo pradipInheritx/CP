@@ -45,7 +45,6 @@ const Home = () => {
   // const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
   const src = `/hpbanner${width && width > 979 ? "" : ""}.png`;
 
-
   return (
     <>
       <div className='p-0 w-100' style={{ background: "#160133" }}>
