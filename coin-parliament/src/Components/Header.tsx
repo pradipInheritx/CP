@@ -573,12 +573,12 @@ const Header = ({
 															:
 															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp useEasing={false} className={textBlink ? "HeaderText " : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
+																	<CountUp useEasing={false} className={"HeaderText "} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																		onStart={() => {
 																			// handleExtraVote.play()
-																			setTimeout(() => {
-																				setTextBlink(true)
-																			}, 3000);
+																			// setTimeout(() => {
+																			// 	setTextBlink(true)
+																			// }, 3000);
 																		}}
 																		onEnd={() => {
 																			setTextBlink(false)
@@ -845,12 +845,12 @@ const Header = ({
 															>
 																{/* reward modal 4 */}
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp useEasing={false} className={textBlink ? "HeaderText" : ""} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
+																	<CountUp useEasing={false} className={"HeaderText"} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																		onStart={() => {
 																			// handleExtraVote.play()
-																			setTimeout(() => {
-																				setTextBlink(true)
-																			}, 3000);
+																			// setTimeout(() => {
+																			// 	setTextBlink(true)
+																			// }, 3000);
 																		}}
 																		onEnd={() => {
 																			setTextBlink(false)

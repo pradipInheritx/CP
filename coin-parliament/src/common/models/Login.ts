@@ -40,7 +40,7 @@ export enum LoginModes {
 }
 
 export enum LoginProviders {
-  GOOGLE = "google",
+  GOOGLE = " Google",
   // FACEBOOK = "facebook",
   // TWITTER = "twitter",
 }

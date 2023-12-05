@@ -276,7 +276,7 @@ const UpgradePageCopy = () => {
                   }}
                 >                  
                   <p>Collectibles Market</p>
-                  <span>Use your VTE to for  collectibles trading</span>
+                  <span>Use your VTE  for <br />  collectibles trading</span>
                 </div>
               </RoundBox>
 
@@ -333,7 +333,7 @@ const UpgradePageCopy = () => {
                   }}
                 >                   
                   <p>Purchases</p>
-                  <span>Use your parliament coin (VTE) to buy merchandise.</span>
+                  <span>Use your VTE to buy merchandise</span>
                 </div>
               </RoundBox>
 
@@ -352,7 +352,7 @@ const UpgradePageCopy = () => {
                   }}
                 >                     
                   <p>Full mining machine</p>
-                  <span>Mine PAX BEP20 token to your external wallet.</span>
+                  <span>Mine PAX BEP20 token <br /> to your external wallet</span>
                 </div>
               </RoundBox>
               
@@ -511,7 +511,7 @@ const UpgradePageCopy = () => {
                     padding:"1px"
                   }}>
                   
-                  50 Extra Votes</p>
+                  50 <br /> Extra Votes</p>
               </div>
               <div
                 style={{
@@ -529,7 +529,7 @@ const UpgradePageCopy = () => {
                   style={{
                     fontSize: "14px",
                 }}
-                >500 Parliament Coins (VTE)</p>
+                >500 <br /> VTE</p>
               </div>
             </div>
           </div>

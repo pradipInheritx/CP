@@ -26,7 +26,7 @@ const OR = styled.div`
   letter-spacing: 0;
   line-height: 11px;
   white-space: nowrap;
-  text-transform: uppercase;
+  text-transform: uppercase;  
 `;
 const SignUp = styled.div`
 margin-left:5px;
@@ -170,7 +170,7 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
             }}
           >
             <Image src={v2elogo} alt="" width={"25px"} height={"25px"} className="pl-3" />
-            <ContinueWith>CONTINUE WITH VoteToEarn</ContinueWith>
+            <ContinueWith>Continue with VoteToEarn</ContinueWith>
           </div>}
         </LoginButton>
       </div>
