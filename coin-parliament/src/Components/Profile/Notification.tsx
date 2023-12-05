@@ -74,7 +74,7 @@ const Body = styled.div`
 const Notification = ({ date, title, body }: NotificationProps) => {
   return (
     <Container className="mt-2">
-      <Date>{date && moment(date).format("hh:mm DD.MM.YYYY")}</Date>
+      <Date>{date && moment(date).format("HH:mm DD.MM.YYYY")}</Date>
       <Msg>
         <div>
           <Title>{title}</Title>
