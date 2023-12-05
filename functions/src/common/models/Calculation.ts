@@ -79,6 +79,7 @@ class Calculation {
     status: any
   ) {
     console.log("voteResult =>", voteResult);
+    console.log("STATUS", status);
 
     this.voteResult = voteResult;
     this.price = price;
@@ -111,7 +112,9 @@ class Calculation {
 
   async calcOnlySuccessScore(): Promise<any> {
     const { voteResult, userId } = this;
-    console.info("voteResult", voteResult);
+
+    console.info("VOTE RESULT", voteResult);
+
     console.info("this.price", this.price);
     let successScoreValue: any;
 
@@ -131,7 +134,11 @@ class Calculation {
 
       const upRange: any = Number(startValue) + Number(CPMRangeCurrentValue);
 
+      // startValue = 2247.99 and endValue = 2248.46 uprange = 2247.99 and downrange = 2247.99
+
       const downRange = Number(startValue) - Number(CPMRangeCurrentValue);
+
+      console.log("ENDVALUE", endValue, "UPRANGE", upRange, "DOWNRANGE", downRange)
 
       if (endValue && endValue < upRange && endValue > downRange) {
         successScoreValue = 2;
@@ -147,11 +154,14 @@ class Calculation {
           !!endValue &&
           endValue <= startValue &&
           voteResult.direction === Direction.BEAR;
+
         const bull =
           !!endValue &&
           endValue > startValue &&
           voteResult.direction === Direction.BULL;
-        voteResult.direction;
+
+        console.log("BEAR", bear, "BULL", bull);
+
         successScoreValue = bull ? 1 : 0 || bear ? 1 : 0;
       }
       if (this.status === 0 || this.status) {
@@ -270,7 +280,7 @@ class Calculation {
       console.log(
         "Array.isArray(voteResult.valueVotingTime) && Array.isArray(voteResult.valueExpirationTime) : ",
         Array.isArray(voteResult.valueVotingTime) &&
-          Array.isArray(voteResult.valueExpirationTime)
+        Array.isArray(voteResult.valueExpirationTime)
       );
       console.log(
         "Array.isArray(voteResult.valueVotingTime) : ",
@@ -579,12 +589,12 @@ export const getStatus: (
   currentUserType: UserTypeProps,
   prevUserType?: UserTypeProps
 ) => {
-  return [
-    percentage >= (prevUserType?.share || 0) &&
+    return [
+      percentage >= (prevUserType?.share || 0) &&
       percentage < currentUserType.share + (prevUserType?.share || 0),
-    currentUserType,
-  ];
-};
+      currentUserType,
+    ];
+  };
 
 export default Calculation;
 
@@ -620,21 +630,21 @@ export const getLeaderUsers = async (userId: string) => {
   return {
     leaders: leaders
       ? leaders.docs
-          .map((leader) => {
-            const { status } = leader.data();
-            const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-            return leaderObj ? { ...leaderObj, status } : undefined;
-          })
-          .filter((l) => l)
+        .map((leader) => {
+          const { status } = leader.data();
+          const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+          return leaderObj ? { ...leaderObj, status } : undefined;
+        })
+        .filter((l) => l)
       : undefined,
     subscribers: subscribers
       ? subscribers.docs
-          .map((leader) => {
-            const { status } = leader.data();
-            const leaderObj = allLeaders.find((l) => l.userId === leader.id);
-            return leaderObj ? { ...leaderObj, status } : undefined;
-          })
-          .filter((l) => l)
+        .map((leader) => {
+          const { status } = leader.data();
+          const leaderObj = allLeaders.find((l) => l.userId === leader.id);
+          return leaderObj ? { ...leaderObj, status } : undefined;
+        })
+        .filter((l) => l)
       : undefined,
   } as {
     leaders?: Leader[];
