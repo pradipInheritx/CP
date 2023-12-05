@@ -140,7 +140,7 @@ function ModalForResult({
         ...prev,
         lessTimeVote: undefined,
         activeVotes: temp,
-        openResultModal: false
+        openResultModal: false,        
       };
     });
     if (Object.keys(temp)?.length <= 0 && (Number(userInfo?.voteValue || 0) + Number(userInfo?.rewardStatistics?.extraVote || 0)) <= 0) {
@@ -180,6 +180,7 @@ function ModalForResult({
     pairCoinResult = calculateDiffBetweenCoins(vote?.valueVotingTime, vote?.valueExpirationTime, vote?.direction);
   }
 
+  console.log(pairCoinResult.difference,"pairCoinResult")
   return (
     <div>
       <Modal show={show} onHide={handleClose}
@@ -381,7 +382,9 @@ function ModalForResult({
                       {pairCoinResult?.difference.replaceAll('-', '')}%
                       {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
                     </span>
-                    <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p>
+                    {/* <p>Vote impact : {vote.success == 2 ? 'MID' : vote.success == 1 ? 'HIGH' : 'LOW'}</p> */}
+                    {/* @ts-ignore */}
+                    <p>Vote impact : {pairCoinResult.difference < 0 ? 'LOW' : pairCoinResult.difference == 0 ? 'MID':'HIGH'}</p>
                   </div>
                   <CoinVoteTimer>
                     {vote?.valueExpirationTime && vote?.score && (

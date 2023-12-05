@@ -1102,7 +1102,7 @@ function App() {
   const currentCMP = useContext(CurrentCMPContext);
   const voteEndCoinPrice = useContext(VoteEndCoinPriceContext);
 
-  console.log(voteDetails, lessTimeVoteDetails, 'pkkkk');
+  
   useEffect(() => {
     if (completedVotes.length > 0 && !voteDetails.openResultModal) {
       Swal.close();
@@ -1157,6 +1157,19 @@ function App() {
     latestVote.current = voteDetails;
   }, [voteDetails]);
 
+
+  const getCalculateDiffBetweenCoins = (valueVotingTime: any, valueExpirationTime:any, direction: number) => {
+
+    const firstCoin = (((valueExpirationTime[0] - valueVotingTime[0]) * 100) / valueVotingTime[0]);
+    const secondCoin = (((valueExpirationTime[1] - valueVotingTime[1]) * 100) / valueVotingTime[1]);
+    const difference = (direction === 0 ? (firstCoin) - (secondCoin) : (secondCoin) - (firstCoin)).toFixed(4);
+    return {
+      firstCoin: firstCoin.toFixed(4) || '0',
+      secondCoin: secondCoin.toFixed(4) || '0',
+      difference: difference || '0'
+    }
+  }
+
   const timeEndCalculation = (lessTimeVote: VoteResultProps) => {
     if (lessTimeVote) {
       // let exSec = new Date(-).getSeconds();
@@ -1164,19 +1177,24 @@ function App() {
       let current = new Date();
 
       // voteTime date
-      let voteTime = new Date(lessTimeVote?.expiration);
-
-      // finding the difference in total seconds between two dates
-
+      let voteTime = new Date(lessTimeVote?.expiration);      
+      // finding the difference in total seconds between two dates      
       let second_diff = (voteTime.getTime() - current.getTime()) / 1000;
       const timer = setTimeout(async () => {
-        console.log(pathNameRef.current, 'pathname');
-        if (pathNameRef.current?.includes('profile/mine')) {
-          return
-        }
         const coin = lessTimeVote?.coin.split('-') || [];
         const coin1 = `${coins && lessTimeVote?.coin[0] ? coins[coin[0]]?.symbol?.toLowerCase() || "" : ""}`;
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
+        const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,]
+
+        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction) 
+        console.log(getValue,"getValue")
+        // @ts-ignore
+        var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ?2: 1 : voteImpact.current?.impact;
+
+        console.log(StatusValue, 'StatusValue');
+        if (pathNameRef.current?.includes('profile/mine')) {
+          return
+        }
         const request = {
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1191,7 +1209,7 @@ function App() {
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
-                status: voteImpact.current?.impact,
+                status: StatusValue,
                 valueExpirationTimeOfCoin1: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,
                 valueExpirationTimeOfCoin2: latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,
               }
@@ -1199,14 +1217,14 @@ function App() {
               {}
           )
         }
-
+        console.log(lessTimeVote, "ChecklessTimeVote")
         await getResultAfterVote(request).then(async (response) => {
+
           console.log(latestUserInfo.current, 'latestUserInfo.current');
           getPriceCalculation(request).then(() => { }).catch(() => { });
           // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
           //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
-          // }
-          console.log(response.data, latestVote?.current, 'pkk res');
+          // }          
 
           if (response?.data && Object.keys(response.data).length > 0) {
             const res: VoteResultProps = response!.data as VoteResultProps;

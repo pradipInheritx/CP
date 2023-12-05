@@ -295,18 +295,22 @@ export default function SpeedTest(
         return false
       }
       let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
+
+      // [coinliveprice[1]-coinvotingprice[1]]
       const newPairPrice = [
         (((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange,
         (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange
       ]
+
       const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
       const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
+      
       let diff = [
         bothCurrentPrice[0] / bothLivePrice[0],
         bothCurrentPrice[1] / bothLivePrice[1],
       ];
-
       let winner = diff[0] < diff[1] ? 1 : 0;
+      console.log(diff, winner, "diffPer")
       const averageValue = Math.abs(diff[0] - diff[1]) * 100;
       console.log(bothCurrentPrice, bothLivePrice, newPairPrice, vote.direction, 'highLow');
 
@@ -319,6 +323,7 @@ export default function SpeedTest(
           setPersentValue(100)
           return
         }
+        console.log(vote?.direction, newPairPrice,"newPairPrice")
         setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
       } else {        
         if (vote?.direction == 1) {
@@ -352,7 +357,7 @@ export default function SpeedTest(
       // }
       // if (vote?.direction == 0) setPersentValue(50 + newPrice > 100 ? 100 : 50 + newPrice);
       // else setPersentValue(50 - newPrice < 0 ? 0 : 50 - newPrice);
-
+      
       let tempNewValue = parseFloat(voteEndCoinPrice?.[`${vote?.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0') * decimal[symbol1].multiply;
       let tempOldValue = vote?.valueVotingTime * decimal[symbol1].multiply;
       if (tempNewValue === tempOldValue) {

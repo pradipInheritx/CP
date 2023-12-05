@@ -384,8 +384,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
         if (displayMyCards) {
             let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
             tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
-        }
-        console.log(collectionValue, displayMyCards, tempFilter, allCards, 'pkkkk');
+        }        
         setMyFilter(divideArray1(tempFilter, 4));
     }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards, winerCard]);
     //End 
