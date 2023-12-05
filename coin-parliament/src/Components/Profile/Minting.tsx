@@ -46,6 +46,7 @@ const Title = styled.div`
   opacity: 1;
   text-align: center;
 `;
+// @ts-ignore
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
