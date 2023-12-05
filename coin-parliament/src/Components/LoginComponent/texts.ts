@@ -1,5 +1,5 @@
 export const texts = {
-  continueWith: "continue with".toUpperCase(),
+  continueWith: "Continue with",
   facebook: "facebook",
   google: "google",
   twitter: "twitter",
@@ -57,7 +57,7 @@ export const texts = {
   Speaker: "speaker",
   Ambassador: "ambassador",
   Minister: "minister",
-  SelectCollection: "Collection".toUpperCase(),
+  SelectCollection: "All Collections",
   SelectSets: "Sets".toUpperCase(),
   SelectName: "card".toUpperCase(),
   SelectType: "Type".toUpperCase(),

@@ -105,7 +105,7 @@ const ForgetPassword = ({ setForgetPassword, setUser, setSignup, authProvider, l
       </div>
       <div className='d-flex'>
         <DontHaveAccountText className="mr-5"> {`${translate('Go back to login page?')} `}</DontHaveAccountText>
-        <SignUp onClick={() => setForgetPassword(false)}>{`${translate('Click here.'.toUpperCase())}`}</SignUp>
+        <SignUp onClick={() => setForgetPassword(false)}>{`${translate('login.'.toUpperCase())}`}</SignUp>
       </div>
     </>
   );
