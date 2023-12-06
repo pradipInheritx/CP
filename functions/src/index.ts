@@ -263,8 +263,10 @@ exports.addNewKeysInCollection = functions.https.onCall((data) => {
     `keyName : ${keyName}, keyValue : ${keyValue}, collectionName : ${collectionName}`
   );
 
-  if (keyName && keyValue && collectionName) return addNewKeysInCollection;
-  else
+  if (keyName && keyValue && collectionName) {
+    const result = addNewKeysInCollection(keyName, keyValue, collectionName);
+    return result;
+  } else
     return {
       message: "some credentials is missing",
     };
