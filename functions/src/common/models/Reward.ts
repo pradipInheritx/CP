@@ -368,7 +368,7 @@ export const claimReward: (uid: string, isVirtual: boolean
 
         // get the transaction details
         const transData: any = await getRewardTransactionsByCardId(firstRewardCardObj.cardId);
-        console.log("TRANSDATA", transData);
+        console.log("TRANSDATA", transData , " length : ", transData.length);
 
         const userIds = transData.map((item: any) => item.user);
         // ----- End manipulate reward data for update and set-----
@@ -377,7 +377,9 @@ export const claimReward: (uid: string, isVirtual: boolean
         // ----- Start set and Update reward data into virtual collection-----
 
         if (userIds && userIds.length) {
+          console.info("Before  getRewardCardDetails.noOfCardHolders : ",getRewardCardDetails.noOfCardHolders)
           getRewardCardDetails.noOfCardHolders = Array.from(new Set(userIds)).length;
+          console.info("After  getRewardCardDetails.noOfCardHolders : ",getRewardCardDetails.noOfCardHolders)
           await firestore()
             .collection("cardsDetails")
             .doc(firstRewardCardObj.cardId)
