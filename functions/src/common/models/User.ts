@@ -1,6 +1,5 @@
 import { firestore } from "firebase-admin";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
-import { forIn } from "lodash";
 // import {DictionaryKeys} from "./Dictionary";
 
 export type UserTypeProps = {
