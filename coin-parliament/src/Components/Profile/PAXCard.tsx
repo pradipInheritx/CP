@@ -111,8 +111,11 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   useEffect(() => {
     setLatestRewardCoins((rewardTimer?.data?.thirdRewardDiamonds || 0));
   }, [rewardTimer?.data?.thirdRewardDiamonds]);
-  useEffect(() => {
+  console.log(latestRewardCoins,"setLatestRewardCoins")
+  useEffect(() => {  
+    
     setPrevCountRef((PAX || 0) - latestRewardCoins);
+
   }, [PAX, latestRewardCoins]);
 
 
@@ -121,19 +124,25 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
   const [modalShow, setModalShow] = React.useState(false);
   const [videoShow, setVideoShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
-  const handleShow = () => setModalShow(true);
-  const [textBlink, setTextBlink] = useState<any>(false)
-
+  const handleShow = () => setModalShow(true);  
   const translate = useTranslation();
   const [showCoinIncrement, setShowCoinIncrement] = useState<number>(0); //1 =show 1>=hide
+  const [showCountUp, setShowCountUp] = useState<number>(0); //1 =show 1>=hide
   const [sliverCoin, setSliverCoin] = useState(false);
   //1 =show 1>=hide
   useEffect(() => {
-    if (inOutReward === 1 && !modalShow && !showCoinIncrement) {
-      setShowCoinIncrement(1);
+    if (inOutReward === 1 && !modalShow && !showCoinIncrement) {      
+        setShowCoinIncrement(1);  
       setBackgrounHide(true)
+     var timer = setTimeout(() => {
+        setShowCountUp(1)
+      }, 3000);
       // setSliverCoin(true)      
     }
+    return () => {
+      clearTimeout(timer)
+    }
+
   }, [inOutReward, modalShow]);
 
 
@@ -172,19 +181,17 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
         <span
           style={{ fontSize: "15px" }}
         >
-          {showCoinIncrement === 1 ?
-            <>
-              <CountUp className={`${textBlink ? "PaxText " : ""}coinText`} start={prevCountRef} end={PAX && PAX} duration={rewardTimer?.data?.thirdRewardDiamonds < 10 ? rewardTimer?.data?.thirdRewardDiamonds : 10} delay={2} useEasing={false}
+          {showCountUp === 1 ?
+            <>              
+               <CountUp className={`PaxText`} start={(PAX || 0) - latestRewardCoins} end={PAX && PAX} duration={rewardTimer?.data?.thirdRewardDiamonds < 10 ? rewardTimer?.data?.thirdRewardDiamonds : 10} delay={2} useEasing={false}  
                 onStart={() => {
-                  // handleExtraCoin.play();
-                  setTimeout(() => {
-                    setTextBlink(true)
-                  }, 3000);
+                  // handleExtraCoin.play();                                                      
                 }}
                 onEnd={() => {
-                  setTextBlink(false)
+                  
                   // handleExtraCoin.pause();
                   handleShow();
+                  setShowCountUp(0);
                   setShowCoinIncrement(2);
                   setPrevCountRef(PAX);
                   setSliverCoin(false)
@@ -205,90 +212,15 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
                   // }, 1000);
                 }
                 }
-              /> VTE </> :
+              /> VTE </>              
+            :
             <>
               <span className="coinText">
                 {prevCountRef || 0} VTE
               </span>
             </>
           }
-        </span>
-        <div>
-          {/* reward modal 3 */}
-          <Modal
-            show={
-              sliverCoin
-            } onHide={() => {
-              setSliverCoin(false)
-            }}
-            // size="sm"
-            backdrop="static"
-            // contentClassName={window.screen.width >767? "card-content" :"card-contentMob"}
-            contentClassName={"modulebackground ForBigDiv"}
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            style={{ backgroundColor: "rgba(0,0,0,0.8)", zIndex: "2200" }}
-          >
-            <Modal.Body className="d-flex  flex-column  justify-content-between align-items-center"
-              style={{
-                width: `${window.screen.width > 767 ? "500px" : "100%"}`,
-                height: "400px"
-              }}
-            >
-
-              {/* <Popuphead>Congrats!</Popuphead> */}
-              {/* @ts-ignore */}
-              <div className=''>
-                <p style={{ fontSize: "24px", color: "white", fontWeight: "600" }}>{("parliament coins").toLocaleUpperCase()}</p>
-              </div>
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={{
-                  width: "100px",
-                  height: "100px",
-                  borderRadius: "75%",
-                  backgroundImage: `url(${coinBg})`,
-                  backgroundSize: "100px 100px",
-                  backgroundRepeat: 'no-repeat',
-                  //     fontSize: "25px",
-                  //     color: "#6352e8",
-                  // fontWeight:"600",
-                  // backgroundPosition: '-10px -10px',
-                }}
-              >
-                {showCoinIncrement === 1 ?
-                  <CountUp className="PaxText coinText" start={prevCountRef} end={PAX && PAX} duration={10}
-                    onEnd={() => {
-                      // setTimeout(() => {
-                      //   handleShow();
-                      //   setShowCoinIncrement(2);
-                      //   setPrevCountRef(PAX);
-                      //   setSliverCoin(false)
-                      //   // handleSoundWinCmp.play();
-                      //   handleSoundWinCmp.play()
-                      //   // setInOutReward((prev: number) => {
-                      //   //   return 2;
-                      //   //   // return prev == 1 ? 2 : prev;
-                      //   // });
-                      // }, 1000);
-                    }
-                    }
-                  /> :
-                  <>
-                    <span className="coinText">
-                      {prevCountRef || 0}
-                    </span>
-                  </>
-                }
-              </div>
-
-              {/* {inOutReward == 1 && <div className=""> <CoinAnimation /> </div>} */}
-              {/* <Modal.Footer> */}
-
-            </Modal.Body>
-            {/* </Modal.Footer>       */}
-          </Modal>
-        </div>
+        </span>        
         <div>
           <Modal
             show={videoShow}

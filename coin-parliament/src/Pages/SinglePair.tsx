@@ -290,7 +290,7 @@ const SinglePair = () => {
         ...prev,
         // voteNot: voteNumberEnd == 0 && Object.keys(voteDetails?.activeVotes).length == 0 ? true : undefined,
         voteNot: voteNumberEnd,
-        activeVotes: { ...prev.activeVotes, ...data }
+        activeVotes: { ...prev.activeVotes, ...data }        
       }
     })
   }, [allActiveVotes]);
@@ -301,7 +301,8 @@ const SinglePair = () => {
         ...prev,
         voteImpact: {
           timeFrame: selectedTimeFrame,
-          impact: null
+          impact: null,
+          
         }
       }
     })

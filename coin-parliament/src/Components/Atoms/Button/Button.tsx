@@ -22,7 +22,7 @@ const CPButton = styled.button`
   min-height: 19px;
   letter-spacing: 0;
   white-space: nowrap;
-  text-transform: capitalize;
+ 
   color: var(--blue-violet);
   min-width: ${(props: Props) => (props.fullWidth ? "100%" : "0")};
 

@@ -334,6 +334,7 @@ const UpgradePageCopy = () => {
                 >                   
                   <p>Purchases</p>
                   <span>Use your VTE to buy merchandise</span>
+                  
                 </div>
               </RoundBox>
 
@@ -349,8 +350,7 @@ const UpgradePageCopy = () => {
                 <div className="d-flex justify-content-center flex-column"
                   style={{
                     width: `${window.screen.width > 767 ? "70%" : "100%"} `,
-                  }}
-                >                     
+                  }}>      
                   <p>Full mining machine</p>
                   <span>Mine PAX BEP20 token <br />to your external wallet</span>
                 </div>
@@ -530,6 +530,7 @@ const UpgradePageCopy = () => {
                     fontSize: "14px",
                 }}
                 >500 <br /> VTE</p>
+                
               </div>
             </div>
           </div>
