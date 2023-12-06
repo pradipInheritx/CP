@@ -277,15 +277,19 @@ const Header = ({
 			setFollowUnfollow(false)
 		}
 	}, [followerUserId, userInfo]);
-	useEffect(() => {
-		if (voteNumber == 0 && votingTimer && pageTrue && urlName.length > 2 && user?.uid && !login && Object.keys(voteDetails?.activeVotes).length == 0 && voteDetails?.voteNot == 0) {
-			// setTimeout(() => {
-			// setShow(true);
-			// setAfterVotePopup(true);
-			// }, 1000);
+	useEffect(() => {		
+		// @ts-ignore
+		if (Number(userInfo?.voteValue) == 0 && user?.uid && !login && !userInfo?.lastVoteTime) {
+			console.log("yes i am working", Date.now() )
+			const liveValue = Date.now()
+			const usereData = firebase
+				.firestore()
+				.collection("users")
+				.doc(user?.uid)
+				.set({ "lastVoteTime": liveValue}, { merge: true });
+
 		} else {
 			setAfterVotePopup(false);
-			// setShow(false)
 		}
 	}, [voteNumber, /* votingTimer, */ voteDetails])
 

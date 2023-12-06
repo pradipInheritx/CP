@@ -776,70 +776,54 @@ function App() {
   // }, []);
 
 
+//   useEffect(() => {
+
+//     if (user?.uid) {
+// console.log()
+//       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
+//       // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
+//       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
+
+//       const votesLast24HoursRef = firebase
+//         .firestore()
+//         .collection("votes")
+//         .where("userId", "==", user?.uid)
+//         .where("voteTime", ">=", last24Hour)
+//         .where("voteTime", "<=", Date.now());
+//       votesLast24HoursRef.get()
+//         .then((snapshot) => {
+//           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+//           const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)         
+//         })
+//         .catch((error) => {
+//           console.log('extravoteError', error);
+//         });
+//     }
+
+
+//   }, [userInfo?.voteStatistics?.total])
+  // console.log('usermfa', userInfo)  
   useEffect(() => {
+    // @ts-ignore
+    console.log(voteNumberEnd, userInfo?.lastVoteTime  ,"voteNumberEnd")
+    // @ts-ignore
+    if (voteNumberEnd == 0 && user?.uid && userInfo?.lastVoteTime  ) {
+      // @ts-ignore
+      let remaining = (userInfo?.lastVoteTime + voteRules.timeLimit * 1000) - Date.now();
+      // @ts-ignore
+      setRemainingTimer(userInfo?.lastVoteTime + voteRules.timeLimit * 1000)
+      console.log(remaining,"remaining")
+      setTimeout(() => {
+        const usereData = firebase
+          .firestore()
+          .collection("users")
+          .doc(user?.uid)
+          .set({ "voteValue": voteRules?.maxVotes, lastVoteTime: 0 }, { merge: true });
+      }, remaining);
 
-    if (user?.uid) {
-
-      const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-      // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-      const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-      const votesLast24HoursRef = firebase
-        .firestore()
-        .collection("votes")
-        .where("userId", "==", user?.uid)
-        .where("voteTime", ">=", last24Hour)
-        .where("voteTime", "<=", Date.now());
-      votesLast24HoursRef.get()
-        .then((snapshot) => {
-          setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-          // let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-          // setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-          // console.log(voteRules.timeLimit, remaining, Date.now(), data, 'hello');
-
-          // setTimeout(() => {
-          //   if (user?.uid) {
-          //     console.log('hello');
-
-          //     const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
-          //     // const last24Hour = currentTime.toMillis() - 24 * 60 * 60 * 1000;
-          //     const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
-          //     const votesLast24HoursRef = firebase
-          //       .firestore()
-          //       .collection("votes")
-          //       .where("userId", "==", user?.uid)
-          //       .where("voteTime", ">=", last24Hour)
-          //       .where("voteTime", "<=", Date.now());
-          //     // console.log('extravote11',votesLast24HoursRef)
-          //     votesLast24HoursRef.get()
-          //       .then((snapshot) => {
-          //         setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-
-          //       })
-          //       .catch((error) => {
-          //         console.log('extravoteError', error);
-          //       });
-          //   }
-          // }, remaining);
-        })
-        .catch((error) => {
-          console.log('extravoteError', error);
-        });
-    }
-
-
-  }, [userInfo?.voteStatistics?.total])
-  // console.log('usermfa', userInfo)
-
-  useEffect(() => {
-    if (voteNumberEnd == 0 && user?.uid) {
-      console.log(voteNumberEnd, "voteNumberEnd")
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-
       const votesLast24HoursRef = firebase
         .firestore()
         .collection("votes")
@@ -851,23 +835,14 @@ function App() {
           console.log(voteNumberEnd)
           console.log("i am working ")
           setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
-          let remaining = (Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000) - Date.now();
-          setRemainingTimer((Math.min(...data.map((v) => v.voteTime)) + voteRules.timeLimit * 1000))
-          // console.log(remaining ,"allremaining")
-          setTimeout(() => {
-            const usereData = firebase
-              .firestore()
-              .collection("users")
-              .doc(user?.uid)
-              .set({ "voteValue": voteRules?.maxVotes }, { merge: true });
-          }, remaining);
+          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)          
+          // @ts-ignore          
         }).catch((error) => {
           console.log('extravoteError', error);
         });
     }
-
-  }, [voteNumberEnd])
+// @ts-ignore
+  }, [voteNumberEnd, userInfo?.lastVoteTime])
 
 
   useEffect(() => {
@@ -1007,7 +982,7 @@ function App() {
       coin2: `${coin2 != "" ? coin2 + "usdt" : ""}`,
       voteId: vote?.id,
       voteTime: vote?.voteTime,
-      valueVotingTime: vote?.valueVotingTime,
+      valueVotingTime: vote?.valueVotingTime,      
       // valueExpirationTimeOfCoin1: vote?.valueVotingTime[0] || null,
       // valueExpirationTimeOfCoin2: vote?.valueVotingTime[1] || null,
       expiration: vote?.expiration,
