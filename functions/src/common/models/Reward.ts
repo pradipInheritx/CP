@@ -95,6 +95,7 @@ async function getRewardTransactionsByCardId(cardId: string) {
     console.log("item.data ?>>>>>>>", item.data());
     transData.push(item.data());
   });
+  
   return transData;
 }
 
@@ -306,6 +307,18 @@ export const claimReward: (uid: string, isVirtual: boolean
         const thirdRewardDiamonds = getRandomNumber(
           distribution[cmp].diamondsPickFromRange
         );
+
+        // get the transaction details
+        const transData: any = (await firestore()
+        .collection("reward_transactions")
+        .where("winData.firstRewardCardId", "==", firstRewardCardObj.cardId)
+        .get()).docs.map((reward)=> reward.data());
+        console.log("TRANSDATA length: ", transData.length);
+        console.log("TRANSDATA : ", transData);
+
+        const userIds = transData.map((item: any) => item.user);
+        console.log("userID ", userIds)
+        console.log("userID length : ", userIds.length);
         // ----- End preparing reward data -----
 
 
@@ -366,11 +379,7 @@ export const claimReward: (uid: string, isVirtual: boolean
           thirdRewardDiamonds,
         };
 
-        // get the transaction details
-        const transData: any = await getRewardTransactionsByCardId(firstRewardCardObj.cardId);
-        console.log("TRANSDATA", transData , " length : ", transData.length);
-
-        const userIds = transData.map((item: any) => item.user);
+        
         // ----- End manipulate reward data for update and set-----
 
 
