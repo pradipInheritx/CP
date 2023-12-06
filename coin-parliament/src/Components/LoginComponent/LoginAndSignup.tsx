@@ -94,6 +94,9 @@ const LoginAndSignup = ({
             )}
           </div> : forgetPassword ? <Styles.Title>{translate("Forget Password")}</Styles.Title> : signup ? <Styles.Title>{translate(title[mode])}</Styles.Title> :
             <div className="d-flex flex-column justify-content-center align-items-end">
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:"100%"}}>
+                <img src={`/images/icons/vtelogo.png`} alt="" />
+              </div>
                 <Styles.Title style={{ marginTop: '1em', fontSize: `${window.screen.width > 767 ? "22px" : "17px"}` , textTransform:"none" }}>{translate("Login with your VoteToEarn account")}</Styles.Title>
             </div>
           }
