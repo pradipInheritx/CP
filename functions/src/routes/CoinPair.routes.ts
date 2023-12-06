@@ -16,7 +16,7 @@ const coinPairRouter = Router();
 coinPairRouter.post("/createPairCoin", auth, addCoinPair);
 coinPairRouter.get("/getAllCoinsPairs", auth, getAllPairs);
 coinPairRouter.get("/getCoinPair/:id", auth, getPairById);
-coinPairRouter.get("/getCoinPairPagination", auth, getCoinPairPagination);
+coinPairRouter.get("/getCoinPairs", auth, getCoinPairPagination);
 coinPairRouter.patch("/updateCoinPairStatus/:id", auth, updateStatusOfCoinPair);
 coinPairRouter.patch("/updateCoinPair/:id", auth, updateCoinPair)
 coinPairRouter.patch("/updateCoinPair/voteBarRange/:id", updateVoteBarRangeOfCoinPair)

@@ -1,5 +1,6 @@
 import { firestore } from "firebase-admin";
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
+import { forIn } from "lodash";
 // import {DictionaryKeys} from "./Dictionary";
 
 export type UserTypeProps = {
@@ -43,20 +44,21 @@ export type UserProps = {
   rewardStatistics?: RewardStatistics;
   firstTimeLogin?: boolean;
   refereeScrore?: number;
-  googleAuthenticatorData?: any,
-  voteValue?: number,
-  wellDAddress?: wellDAddressType,
-  referalReceiveType?: referalReceiveType
+  googleAuthenticatorData?: any;
+  voteValue?: number;
+  lastVoteTime?: number;
+  wellDAddress?: wellDAddressType;
+  referalReceiveType?: referalReceiveType;
 };
 
-export type wellDAddressType = []
+export type wellDAddressType = [];
 
 export type referalReceiveType = {
-  name: string,
-  amount: string,
-  days: string,
-  limitType: string
-}
+  name: string;
+  amount: string;
+  days: string;
+  limitType: string;
+};
 
 export type RewardStatistics = {
   total: number;
@@ -121,5 +123,39 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   } catch (e) {
     console.log(e);
     return false;
+  }
+};
+
+export const addNewKeysInCollection = async (
+  keyName: string,
+  keyValue: string | number,
+  collectionName: string,
+) => {
+  try {
+    const getAllDataFromCollection = (
+      await firestore().collection("collectionName").get()
+    ).docs.map((user: any) => user.data());
+    console.log("getAllDataFromCollection : ", getAllDataFromCollection);
+
+    const newObject: any = {};
+    newObject[keyName] = keyValue;
+
+
+    getAllDataFromCollection.forEach((data: any) => {
+      firestore()
+        .collection(collectionName)
+        .doc(data.id)
+        .set(newObject, { merge: true });
+    });
+
+    return {
+      result: true,
+      message: "new key added successfully",
+    };
+  } catch (error) {
+    return {
+      result: false,
+      message: "something wrong in server",
+    };
   }
 };

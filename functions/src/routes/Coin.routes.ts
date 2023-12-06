@@ -16,7 +16,7 @@ const coinRouter = Router();
 coinRouter.post("/createCoin", auth, addCoin);
 coinRouter.get("/getAllCoins", auth, getAllCoins);
 coinRouter.get("/getCoin/:id", auth, getCoinById);
-coinRouter.get("/getCoinPagination", auth, getCoinPagination);
+coinRouter.get("/getCoins", auth, getCoinPagination);
 coinRouter.patch("/updateCoinStatus/:id", auth, updateStatusOfCoin);
 coinRouter.patch("/updateCoin/voteBarRange/:id", auth, updateVoteBarRangeOfCoin);
 coinRouter.patch("/updateCoin/:id", auth, updateCoin);

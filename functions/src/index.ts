@@ -8,6 +8,7 @@ import speakeasy from "speakeasy";
 
 import cors from "cors";
 import {
+  addNewKeysInCollection,
   Colors,
   isAdmin,
   userConverter,
@@ -21,7 +22,7 @@ import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
-  setLeaders
+  setLeaders,
 } from "./common/models/Calculation";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 // import {middleware} from "../middleware/authentication";
@@ -32,7 +33,7 @@ import {
   voteConverter,
   VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
-  getResultAfterVote
+  getResultAfterVote,
 } from "./common/models/Vote";
 import {
   // fetchCoins,
@@ -82,7 +83,7 @@ import {
   sendCustomNotificationOnSpecificUsers,
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
-  TitleUpgradeNotificationLogic_Testing
+  TitleUpgradeNotificationLogic_Testing,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
@@ -100,7 +101,10 @@ import pushNotificationSettingRouter from "./routes/PushNotificationSetting.rout
 import FollowTableRouter from "./routes/FollowTable.routes";
 import PaymentRouter from "./routes/Payments.routes";
 import adminPaymentRouter from "./routes/AdminPayment.routes";
-import { imageUploadFunction, avatarUploadFunction } from "./common/helpers/fileUploadConfig";
+import {
+  imageUploadFunction,
+  avatarUploadFunction,
+} from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
@@ -110,13 +114,13 @@ const app = express();
 const main = express();
 // Enable The CORS
 app.use(cors({ origin: "*" }));
-app.use(bodyParser.urlencoded({ extended: false, limit: '100mb' }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }));
 main.use(cors({ origin: "*" }));
 // End
 // Add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
 main.use(bodyParser.json());
-main.use(bodyParser.urlencoded({ extended: false, limit: '100mb' }));
+main.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }));
 
 /**
  * @author Mukut Prasad
@@ -138,10 +142,13 @@ app.use("/admin/payments", adminPaymentRouter);
 
 app.use("/payment", PaymentRouter);
 
-app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
+app.post(
+  "/generic/admin/uploadFiles/:forModule/:fileType/:id",
+  auth,
+  imageUploadFunction
+);
 
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
-
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -176,10 +183,14 @@ exports.getAccessToken = () =>
     });
   });
 const getMaxVotes = async () => {
-  const getVoteAndReturnQuery = await admin.firestore().collection("settings").doc("settings").get();
+  const getVoteAndReturnQuery = await admin
+    .firestore()
+    .collection("settings")
+    .doc("settings")
+    .get();
   const getVoteAndReturnData: any = getVoteAndReturnQuery.data();
-  return getVoteAndReturnData?.voteRules.maxVotes
-}
+  return getVoteAndReturnData?.voteRules.maxVotes;
+};
 
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
@@ -226,10 +237,11 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     status,
     firstTimeLogin: true,
     refereeScrore: 0,
+    lastVoteTime: 0,
     googleAuthenticatorData: {},
     voteValue: await getMaxVotes(),
     wellDAddress: [],
-    referalReceiveType: { name: "", amount: "", days: "", limitType: "" }
+    referalReceiveType: { name: "", amount: "", days: "", limitType: "" },
   };
   try {
     console.log("new user >>>", userData, user.uid);
@@ -244,36 +256,55 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
+// temporarily used to add add keys to the collection
+exports.addNewKeysInCollection = functions.https.onCall((data) => {
+  const { keyName, keyValue, collectionName } = data;
+  console.log(
+    `keyName : ${keyName}, keyValue : ${keyValue}, collectionName : ${collectionName}`
+  );
+
+  if (keyName && keyValue && collectionName) return addNewKeysInCollection;
+  else
+    return {
+      message: "some credentials is missing",
+    };
+});
+
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
   return password === "CPVI2022!";
 });
 
 exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
-  const { userId, email } = data as { userId: string, email: string };
-  const getUserQuery: any = await admin.firestore().collection("users").where('uid', "==", userId).where('email', "==", email).get();
+  const { userId, email } = data as { userId: string; email: string };
+  const getUserQuery: any = await admin
+    .firestore()
+    .collection("users")
+    .where("uid", "==", userId)
+    .where("email", "==", email)
+    .get();
   const getUser = getUserQuery.docs.map((user: any) => user.data());
-  if (!getUser.length) return { messsage: "User is not found", token: null }
+  if (!getUser.length) return { messsage: "User is not found", token: null };
   const tokenForLogin = await admin
     .auth()
     .createCustomToken(getUser[0].uid)
     .then((token) => {
       // Send the custom token to the client
-      console.log('Custom Token:', token);
-      return token
+      console.log("Custom Token:", token);
+      return token;
     })
     .catch((error) => {
-      console.error('Error creating custom token:', error);
+      console.error("Error creating custom token:", error);
       return {
         messsage: "Something Wrong in isLoggedInFromVoteToEarn",
-        error
-      }
+        error,
+      };
     });
   // console.log("TOKEN ___ : ", customToken)
   return {
     messsage: "Token generated successfully",
-    token: tokenForLogin
-  }
+    token: tokenForLogin,
+  };
 });
 
 exports.setLeadersOnce = functions.https.onCall(async () => {
@@ -288,7 +319,7 @@ exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
         status: false,
         message: "userId and userType are required.",
         result: null,
-      }
+      };
     }
     console.log(" userId, userType =>", userId, userType);
 
@@ -310,7 +341,7 @@ exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
         status: false,
         message: "Please provide valid userType.",
         result: null,
-      }
+      };
     }
     console.log(" adminUserData =>", adminUserData);
 
@@ -318,7 +349,7 @@ exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
     console.info("getUserData", getUserData);
     const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
       issuer: "inheritx.com",
-      name: "Coin Parliament",//getUserData.firstName,
+      name: "Coin Parliament", //getUserData.firstName,
       length: 15,
     });
 
@@ -342,7 +373,7 @@ exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
         status: false,
         message: "Please provide valid userType.",
         result: null,
-      }
+      };
     }
 
     return {
@@ -352,13 +383,13 @@ exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
         base32: base32,
         otpauth_url: otpauth_url,
       },
-    }
+    };
   } catch (error) {
     return {
       status: false,
       message: "Error in generateGoogleAuthOTP API ",
       result: error,
-    }
+    };
   }
 });
 
@@ -370,18 +401,17 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
         status: false,
         message: "UserId must be required.",
         result: null,
-      }
+      };
     }
 
     let adminUserData: any;
 
     if (userType === "ADMIN") {
-      adminUserData =
-        await admin
-          .firestore()
-          .collection("admin")
-          .doc(userId)
-          .get();
+      adminUserData = await admin
+        .firestore()
+        .collection("admin")
+        .doc(userId)
+        .get();
     } else if (userType === "USER") {
       adminUserData = await admin
         .firestore()
@@ -393,7 +423,7 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
         status: false,
         message: "Please provide valid userType.",
         result: null,
-      }
+      };
     }
 
     const getUserData: any = adminUserData.data();
@@ -403,14 +433,14 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
       encoding: "base32",
       token,
     });
-    console.log("verified", verified)
+    console.log("verified", verified);
 
     if (!verified) {
       return {
         status: false,
         message: "OTP not verified.",
         result: null,
-      }
+      };
     }
     getUserData.googleAuthenticateOTPVerified = {
       otp_enabled: true,
@@ -426,7 +456,7 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
         status: false,
         message: "Please provide valid userType.",
         result: null,
-      }
+      };
     }
     return {
       status: true,
@@ -460,27 +490,30 @@ exports.verifyUserEmail = functions.https.onCall(async (data) => {
         status: false,
         message: "UserId and email must be required.",
         result: null,
-      }
+      };
     }
 
-    const userDataUpdate = await admin.auth().updateUser(uid, {
-      emailVerified: true,
-    }).then((userRecord) => {
-      return userRecord.toJSON()
-    }).catch((error) => {
-      return {
-        status: false,
-        message: "Error while verify the email API ",
-        result: error,
-      };
-    });
+    const userDataUpdate = await admin
+      .auth()
+      .updateUser(uid, {
+        emailVerified: true,
+      })
+      .then((userRecord) => {
+        return userRecord.toJSON();
+      })
+      .catch((error) => {
+        return {
+          status: false,
+          message: "Error while verify the email API ",
+          result: error,
+        };
+      });
 
     return {
       status: true,
       message: "User email verified successfully",
       result: userDataUpdate,
     };
-
   } catch (error) {
     return {
       status: false,
@@ -543,13 +576,13 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
 });
 
 // 5 minutes cron job
-exports.pendingPaymentSettlement = functions.pubsub.schedule("*/5 * * * *").onRun(async () => {
-  console.log("pendingPaymentSettlement start");
-  const currentTimeStamp = Date.now();
-  await setPaymentSchedulingByCronJob(currentTimeStamp)
-});
-
-
+exports.pendingPaymentSettlement = functions.pubsub
+  .schedule("*/5 * * * *")
+  .onRun(async () => {
+    console.log("pendingPaymentSettlement start");
+    const currentTimeStamp = Date.now();
+    await setPaymentSchedulingByCronJob(currentTimeStamp);
+  });
 
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
@@ -690,9 +723,6 @@ exports.onVote = functions.firestore
     await sendNotificationForFollwersFollowings(vote.userId, data.coin); // Send notification for follower & followings
   });
 
-
-
-
 exports.assignReferrer = functions.https.onCall(async (data) => {
   try {
     const { parent, child } = data as { parent: string; child: string };
@@ -708,12 +738,10 @@ exports.updateLeadersCron = functions.pubsub
   .onRun(async () => {
     try {
       await setLeaders();
-
     } catch (e) {
       console.log(e);
     }
   });
-
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
@@ -736,64 +764,55 @@ exports.getCoinCurrentAndPastDataDifference = functions.pubsub
     console.log("---Start getCoinCurrentAndPastDataDifference -------");
     await getCoinCurrentAndPastDataDifference();
     console.log("---End getCoinCurrentAndPastDataDifference -------");
-  })
+  });
 
 exports.checkTitleUpgrade24Hour = functions.pubsub
   .schedule("0 0 * * *")
-  .onRun(
-    async () => {
-      console.log("---Start checkTitleUpgrade24Hour -------");
-      const date = new Date();
-      const nowTime = date.getTime();
-      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-      await checkUserStatusIn24hrs(nowTime, yesterdayTime)
-      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
-      console.log("---End checkTitleUpgrade24Hour -------");
-    }
-  );
-
+  .onRun(async () => {
+    console.log("---Start checkTitleUpgrade24Hour -------");
+    const date = new Date();
+    const nowTime = date.getTime();
+    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
+    await checkUserStatusIn24hrs(nowTime, yesterdayTime);
+    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
+    console.log("---End checkTitleUpgrade24Hour -------");
+  });
 
 exports.checkTitleUpgrade24Hour = functions.pubsub
   .schedule("0 0 * * *")
-  .onRun(
-    async () => {
-      console.log("---Start checkTitleUpgrade24Hour -------");
-      const date = new Date();
-      const nowTime = date.getTime();
-      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-      await checkUserStatusIn24hrs(nowTime, yesterdayTime)
-      await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
-      console.log("---End checkTitleUpgrade24Hour -------");
-    }
-  );
+  .onRun(async () => {
+    console.log("---Start checkTitleUpgrade24Hour -------");
+    const date = new Date();
+    const nowTime = date.getTime();
+    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
+    await checkUserStatusIn24hrs(nowTime, yesterdayTime);
+    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
+    console.log("---End checkTitleUpgrade24Hour -------");
+  });
 
 exports.checkTitleUpgrade24Hour = functions.pubsub
   .schedule("0 0 * * *")
-  .onRun(
-    async () => {
-      console.log("---Start checkTitleUpgrade24Hour -------");
-      const date = new Date();
-      const nowTime = date.getTime();
-      const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-      TitleUpgradeNotificationLogic_Testing(nowTime, yesterdayTime);
-      console.log("---End checkTitleUpgrade24Hour -------");
-    }
-  );
+  .onRun(async () => {
+    console.log("---Start checkTitleUpgrade24Hour -------");
+    const date = new Date();
+    const nowTime = date.getTime();
+    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
+    TitleUpgradeNotificationLogic_Testing(nowTime, yesterdayTime);
+    console.log("---End checkTitleUpgrade24Hour -------");
+  });
 
 // for Testing purposes
-exports.checkTitleUpgradeNotification = functions.https.onCall(
-  async (data) => {
-    console.log("------- call set leader function -------");
-    await setLeaders();
-    console.log("set leader Done");
-    const { todayTime, yesterdayTime } = data;
-    // const date = new Date();
-    // const nowTime = date.getTime();
-    // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-    await checkUserStatusIn24hrs(todayTime, yesterdayTime);
-    await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
-  }
-);
+exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
+  console.log("------- call set leader function -------");
+  await setLeaders();
+  console.log("set leader Done");
+  const { todayTime, yesterdayTime } = data;
+  // const date = new Date();
+  // const nowTime = date.getTime();
+  // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+  await checkUserStatusIn24hrs(todayTime, yesterdayTime);
+  await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
+});
 
 //----------End Notifications scheduler-------------
 
@@ -831,19 +850,23 @@ exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   );
 });
 
-async function getRewardTransactions(id: string, pageSize: any, pageNumber: any) {
+async function getRewardTransactions(
+  id: string,
+  pageSize: any,
+  pageNumber: any
+) {
   const tempTransactionData: any[] = [];
 
   const transactionsBaseQuery = await admin
     .firestore()
-    .collection("reward_transactions")
+    .collection("reward_transactions");
 
   const transactions = await transactionsBaseQuery
     .where("user", "==", id)
     .get();
 
   transactions.forEach((doc) => {
-    tempTransactionData.push({ rewardId: doc.id, ...doc.data() })
+    tempTransactionData.push({ rewardId: doc.id, ...doc.data() });
   });
 
   const transactionsForCount = await admin
@@ -852,31 +875,39 @@ async function getRewardTransactions(id: string, pageSize: any, pageNumber: any)
     .where("user", "==", id);
 
   const rewardsTransactionTotalCount = (await transactionsForCount.get()).size;
-  console.info("rewardsTransactionTotalCount", rewardsTransactionTotalCount)
-
+  console.info("rewardsTransactionTotalCount", rewardsTransactionTotalCount);
 
   console.info("tempTransactionData", tempTransactionData);
 
-
-  const rewardTransactionData = tempTransactionData.sort((a: any, b: any) => b.transactionTime._seconds - a.transactionTime._seconds);
+  const rewardTransactionData = tempTransactionData.sort(
+    (a: any, b: any) => b.transactionTime._seconds - a.transactionTime._seconds
+  );
   const startIndex = (pageNumber - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const getTransactionDataAfterPagination: any = rewardTransactionData.slice(startIndex, endIndex)
+  const getTransactionDataAfterPagination: any = rewardTransactionData.slice(
+    startIndex,
+    endIndex
+  );
 
-  console.info("rewardTransactionData", rewardTransactionData)
+  console.info("rewardTransactionData", rewardTransactionData);
 
   return {
-    totalCount: rewardsTransactionTotalCount, rewardsTransaction: getTransactionDataAfterPagination
+    totalCount: rewardsTransactionTotalCount,
+    rewardsTransaction: getTransactionDataAfterPagination,
   };
 }
 
 exports.getRewardTransactions = functions.https.onCall(async (data) => {
-  const { uid, pageSize, pageNumber } = data as { uid: string, pageSize: any, pageNumber: any };
+  const { uid, pageSize, pageNumber } = data as {
+    uid: string;
+    pageSize: any;
+    pageNumber: any;
+  };
   return await getRewardTransactions(uid, pageSize, pageNumber);
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
-  const { uid, isVirtual } = data as { uid: string, isVirtual: boolean };
+  const { uid, isVirtual } = data as { uid: string; isVirtual: boolean };
   const reward = await claimReward(uid, isVirtual);
   console.log("reward --->", reward);
   return reward;
@@ -960,7 +991,6 @@ exports.prepare24HourlyCPVI = functions.pubsub
   .schedule("0 0 * * *")
   .onRun(async () => {
     await prepareCPVI(24, "daily");
-
   });
 
 exports.prepareWeeklyCPVI = functions.pubsub
@@ -974,29 +1004,28 @@ exports.getCPVIForVote = functions.https.onCall(async (data) => {
   return await getCPVIForVote(data);
 });
 
-
-exports.getResultAfterVote = functions.https.onCall(
-  async (data) => {
-    return await getResultAfterVote(data);
-  }
-);
-
+exports.getResultAfterVote = functions.https.onCall(async (data) => {
+  return await getResultAfterVote(data);
+});
 
 exports.getOldAndCurrentPriceAndMakeCalculation = functions.https.onCall(
   async (data) => {
     await getOldAndCurrentPriceAndMakeCalculation(data);
     // After Vote Updated For The User
-    const getAfterUpdatedVoteRef = await admin.firestore().collection("votes").doc(data?.voteId);
+    const getAfterUpdatedVoteRef = await admin
+      .firestore()
+      .collection("votes")
+      .doc(data?.voteId);
     const getAfterUpdatedVoteInstance = await getAfterUpdatedVoteRef.get();
-    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance)
+    console.info("getAfterUpdatedVoteInstance", getAfterUpdatedVoteInstance);
     const getAfterVoteUpdatedData = getAfterUpdatedVoteInstance.data();
     console.info("getAfterVoteUpdatedData", getAfterVoteUpdatedData);
     return {
-      voteId: getAfterUpdatedVoteInstance.id, ...getAfterVoteUpdatedData
+      voteId: getAfterUpdatedVoteInstance.id,
+      ...getAfterVoteUpdatedData,
     };
   }
 );
-
 
 const checkValidUsername = async (username: string) => {
   console.log("firebasefun");
@@ -1019,12 +1048,22 @@ exports.checkValidUsername = functions.https.onCall(async (data) => {
   return await checkValidUsername(data.username);
 });
 
-type GetVotesProps = { start: number; end: number; userId: string, isOpenVote: boolean };
+type GetVotesProps = {
+  start: number;
+  end: number;
+  userId: string;
+  isOpenVote: boolean;
+};
 
 const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
   console.log("voteCoinApi called isOpenVote");
-  console.log("start, end, userId, isOpenVote : ", start, end, userId, isOpenVote);
-
+  console.log(
+    "start, end, userId, isOpenVote : ",
+    start,
+    end,
+    userId,
+    isOpenVote
+  );
 
   const [votes, coins, pairs] = await Promise.all([
     admin
@@ -1036,7 +1075,6 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
     getAllCoins(),
     getAllPairs(),
   ]);
-
 
   const allVotes = votes.docs
     .map((v) => {
@@ -1062,36 +1100,48 @@ const getVotes = async ({ start, end, userId, isOpenVote }: GetVotesProps) => {
         pairs: VoteResultProps[];
       }
     );
-  console.log('allVotes : ', allVotes);
+  console.log("allVotes : ", allVotes);
 
   if (isOpenVote) {
-
-    let filterVotes: any = { coins: { votes: [], total: 0 }, pairs: { votes: [], total: 0 } };
+    let filterVotes: any = {
+      coins: { votes: [], total: 0 },
+      pairs: { votes: [], total: 0 },
+    };
 
     // for coins
     if (allVotes.coins.length) {
-      let coinsVotes = allVotes.coins.filter((vote) => !vote.valueExpirationTime);
+      let coinsVotes = allVotes.coins.filter(
+        (vote) => !vote.valueExpirationTime
+      );
       filterVotes.coins.total = coinsVotes.length;
-      console.log('getAllVotesData.coins.total is called : ', coinsVotes.length, coinsVotes);
-      filterVotes.coins.votes = coinsVotes.slice(start, end)
+      console.log(
+        "getAllVotesData.coins.total is called : ",
+        coinsVotes.length,
+        coinsVotes
+      );
+      filterVotes.coins.votes = coinsVotes.slice(start, end);
       console.log("filterVotes.coins : ", filterVotes.coins);
-    };
+    }
 
     // For pairs
     if (allVotes.pairs.length) {
-      let pairsVotes = allVotes.pairs.filter((vote) => !vote.valueExpirationTime);
+      let pairsVotes = allVotes.pairs.filter(
+        (vote) => !vote.valueExpirationTime
+      );
       filterVotes.pairs.total = pairsVotes.slice().length;
-      console.log('getAllVotesData.pairs.total is called : ', pairsVotes.length, pairsVotes);
-      filterVotes.pairs.votes = pairsVotes.slice(start, end)
+      console.log(
+        "getAllVotesData.pairs.total is called : ",
+        pairsVotes.length,
+        pairsVotes
+      );
+      filterVotes.pairs.votes = pairsVotes.slice(start, end);
       console.log("filterVotes.pairs : ", filterVotes.pairs);
-    };
+    }
     console.log("final filterVotes : ", filterVotes);
 
     return JSON.stringify(filterVotes);
-
   } else {
-
-    console.log('getAllVotesData called');
+    console.log("getAllVotesData called");
     const getAllVotesData = {
       coins: {
         votes: allVotes.coins.slice(start, end),
@@ -1137,5 +1187,3 @@ exports.sendEmail = functions.https.onCall(async () => {
   };
   await sgMail.send(msg);
 });
-
-
