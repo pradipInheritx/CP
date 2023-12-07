@@ -160,7 +160,7 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
                 }}
               >
                 <Image src={v2elogo} alt="" width={"25px"} height={"25px"} className="pl-3" />
-                <ContinueWith>CONTINUE WITH VoteToEarn</ContinueWith>
+                <ContinueWith>Continue with VoteToEarn</ContinueWith>
               </div>
             </LoginButton>
           </div>
@@ -183,7 +183,7 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           <span className="material-symbols-outlined" style={{ fontSize: '17px' }}>arrow_back</span>Go back
         </ForgetPasswordText>
         : <>
-          <div className='d-flex'>
+          <div className='d-flex justify-content-center align-items-center' >
             <ForgetPasswordText onClick={() => setForgetPassword(true)}>{`${capitalize(translate('Forget password?'))}`}</ForgetPasswordText>
           </div>
           <div className='d-flex  mt-2'>
