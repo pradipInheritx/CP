@@ -76,7 +76,7 @@ const Mine = () => {
   const translate = useTranslation();
   const location = useLocation();
   const [rewardTimer, setRewardTimer] = useState(null);
-  const [albumName, setAlbumName] = useState("");
+  const [cardsDetails, setCardsDetails] = useState("");
   const [modalShow, setModalShow] = React.useState(false);
   const [cardModalShow, setCardModalShow] = React.useState(false);
   const [paxValue, setPaxValue] = React.useState(userInfo?.rewardStatistics?.diamonds || 0);
@@ -238,8 +238,13 @@ const Mine = () => {
   const goBack = () => {
     navigate(-1);
   }
-// @ts-ignore
-  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${albumName}`;
+
+  console.log(cardsDetails, "cardsDetails")
+  // console.log(cardsDetails?.firstRewardCardCollection, cardsDetails?.firstRewardCard, cardsDetails?.firstRewardCardId, "cardsDetails")
+  
+  // @ts-ignore
+  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${cardsDetails?.firstRewardCardCollection}&cardName=${cardsDetails?.firstRewardCard}`;
+  // const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${cardsDetails?.firstRewardCardCollection}`;
   // const url = "https://coinparliament.com/"
   const shareText = "I won this unique card! Join the Parliament and win with me."  
 
@@ -410,7 +415,7 @@ const Mine = () => {
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} setAlbumName={setAlbumName} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} setCardsDetails={setCardsDetails} />
           </Modal.Body>
         </Modal>
       </CardDiv>
