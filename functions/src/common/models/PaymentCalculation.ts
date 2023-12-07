@@ -2,6 +2,9 @@ import axios from "axios";
 import { firestore } from "firebase-admin";
 import { log } from "firebase-functions/logger";
 import * as parentConst from "../consts/payment.const.json";
+import Web3 from 'web3';
+
+
 //import { log } from "firebase-functions/logger";
 
 interface PaymentParams {
@@ -55,7 +58,29 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
                 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
             }
         };
-        let transactionBodyForSmartContract = {
+        const ethereumNodeUrl =
+            parentConst.SMART_CONTRACT_ETHEREUMNODEURL;
+
+        const web3 = new Web3(ethereumNodeUrl);
+        const currentGasPrice = await web3.eth.getGasPrice();
+
+        // Convert the gas price to Ether and format it manually
+        const currentGasPriceWei: any = await web3.utils.fromWei(currentGasPrice, 'wei');
+        console.log('currentGasPriceWei', typeof currentGasPriceWei, "Value", currentGasPriceWei);
+
+        let getLimitAndCal: any = parentConst.SMART_CONTRACT_GAS_LIMIT * parseInt(currentGasPriceWei);
+
+        const currentGasPriceEther: any = await web3.utils.fromWei(
+            String(getLimitAndCal),
+            'ether'
+        ); // Calculated the gas price for Etherium Only
+
+        console.log('Current Gas Price (wei):', typeof currentGasPriceEther, parseFloat(currentGasPriceEther));
+
+        transactionBody.amount = transactionBody.amount - parseFloat(currentGasPriceEther);
+        console.info("transactionBody.amount", transactionBody.amount)
+
+        let transactionBodyForSmartContract: any = {
             "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
             "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
             "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
@@ -65,14 +90,17 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
                 {
                     "_to": transactionBody.address,
                     "_amount": transactionBody.amount,
-                    "_gas": parentConst.SMART_CONTRACT__GAS
+                    "_gas": parseFloat(currentGasPriceEther) //parentConst.SMART_CONTRACT__GAS
                 }
+
             ]
         }
+        console.info("transactionBodyForSmartContract", transactionBodyForSmartContract)
 
         const transaction = await axios.post('https://console.dev.welldapp.io/api/callSmartContract', transactionBodyForSmartContract, options);
 
         console.log("End smart contract payment function", transaction);
+
         return { status: true, result: transaction.data }
     } catch (error) {
         console.error("ERROR callSmartContractPaymentFunction : ", error);

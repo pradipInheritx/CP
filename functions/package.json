@@ -18,7 +18,9 @@
   "dependencies": {
     "@polygon.io/client-js": "^4.0.3",
     "@sendgrid/mail": "^7.7.0",
+    "@types/jsdom": "^21.1.6",
     "@types/speakeasy": "^2.0.7",
+    "@types/web3": "^1.2.2",
     "@types/ws": "^8.5.4",
     "axios": "^1.3.4",
     "bcryptjs": "^2.4.3",
@@ -27,6 +29,7 @@
     "firebase-functions": "^3.24.0",
     "generate-password": "^1.7.0",
     "google-auth-library": "^7.14.1",
+    "jsdom": "^23.0.1",
     "lightweight-charts": "^3.8.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
@@ -35,6 +38,7 @@
     "request": "^2.65.0",
     "request-promise": "^4.2.6",
     "speakeasy": "^2.0.0",
+    "web3": "^1.3.6",
     "ws": "^8.12.1"
   },
   "devDependencies": {
