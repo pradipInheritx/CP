@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { FormEvent, useContext, useState } from "react";
+import React, { FormEvent, useContext, useEffect, useState } from "react";
 import "./Login.css";
 import { Modal, Stack } from "react-bootstrap";
 import UserContext from "../../Contexts/User";
@@ -22,7 +22,7 @@ import ForgetPassword from "./ForgetPassword";
 import LoginWith from "./LoginWith";
 import { showToast } from "../../App";
 import { Buttons } from "../Atoms/Button/Button";
-
+import './style.css';
 
 const title = {
   [LoginModes.LOGIN]: texts.login,
@@ -66,6 +66,13 @@ const LoginAndSignup = ({
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    if (withLoginV2e) {
+      handleShow()
+    }
+  }, [withLoginV2e])
+
   return (
     <Stack
       gap={2}
@@ -83,7 +90,10 @@ const LoginAndSignup = ({
             )}
           </div> : forgetPassword ? <Styles.Title>{translate("Forget Password")}</Styles.Title> : signup ? <Styles.Title>{translate(title[mode])}</Styles.Title> :
             <div className="d-flex flex-column justify-content-center align-items-end">
-              <Styles.Title style={{ marginTop: '1em',fontSize:`${window.screen.width <767 && "17px"}`}}>{translate("Login With your VoteToEarn account")}</Styles.Title>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:"100%"}}>
+                <img src={`/images/icons/vtelogo.png`} alt="" />
+                </div>
+              <Styles.Title style={{ marginTop: '1em',fontSize:`${window.screen.width <767 && "17px"}`,textTransform:"none"}}>{translate("Login with your VoteToEarn  account")}</Styles.Title>
             </div>
           }
 

@@ -101,7 +101,7 @@ sendPasswordResetEmail(auth, email)
       </div>
       <div className='d-flex'>
       <DontHaveAccountText className="mr-5"> {`${capitalize(translate('Go back to login page?'))} `}</DontHaveAccountText> 
-      <SignUp  onClick={() => setForgetPassword(false)}>{`${capitalize(translate('Click here.'))}`}</SignUp>
+      <SignUp  onClick={() => setForgetPassword(false)}>{`${capitalize(translate('lOGIN.'))}`}</SignUp>
       </div>
     </>
   );
