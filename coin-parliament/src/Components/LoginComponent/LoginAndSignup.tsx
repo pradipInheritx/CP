@@ -21,6 +21,9 @@ import Refer from "../../Pages/Refer";
 import ForgetPassword from "./ForgetPassword";
 import LoginWith from "./LoginWith";
 import { Buttons } from "../Atoms/Button/Button";
+import './style.css';
+import { showToast } from "../../App";
+
 
 const title = {
   [LoginModes.LOGIN]: texts.login,
@@ -60,7 +63,6 @@ const LoginAndSignup = ({
   const [forgetPassword, setForgetPassword] = useState(false);
   const mode = signup ? LoginModes.SIGNUP : LoginModes.LOGIN;
   const refer = new URLSearchParams(search).get("refer");
-
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -94,7 +96,10 @@ const LoginAndSignup = ({
             )}
           </div> : forgetPassword ? <Styles.Title>{translate("Forget Password")}</Styles.Title> : signup ? <Styles.Title>{translate(title[mode])}</Styles.Title> :
             <div className="d-flex flex-column justify-content-center align-items-end">
-              <Styles.Title style={{ marginTop: '1em',fontSize:`${window.screen.width <767 && "17px"}`}}>{translate("Login With your VoteToEarn account")}</Styles.Title>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"center",width:"100%"}}>
+                <img src={`/images/icons/vtelogo.png`} alt="" />
+                  </div>
+              <Styles.Title style={{ marginTop: '1em',fontSize:`${window.screen.width <767 && "17px"}`,textTransform:"none"}}>{translate("Login With your VoteToEarn account")}</Styles.Title>
             </div>
           }
 
