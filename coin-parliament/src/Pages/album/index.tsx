@@ -270,7 +270,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
     const [displayMyCards, setDisplayMyCards] = useState<boolean>(false);
     const [winnerCardId, setWinnerCardId] = useState<string[]>([]);
     const parameters = new URLSearchParams(window.location.search);
-
+    console.log(parameters,"parameters")
     useEffect(() => {
         const getCollectionType = firebase.firestore().collection("nftGallery");
         getCollectionType.get().then((snapshot) => {
@@ -296,7 +296,13 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             setCollectionCardValue(filterCollection?.card || 'none');
             localStorage.removeItem("filterCollection");
         } else if (parameters.get('collectionName')) {
+            
             setCollectionValue(parameters.get('collectionName') || 'none');
+            if (parameters.get('setName')) {                
+                setCollectionSetValue(parameters.get('setName') || 'none')
+            }
+            setCollectionCardValue(parameters.get('cardName') || 'none')
+            console.log(parameters.get('setName'), parameters.get('cardName'),"parameters.get" )
         }
     }, [allCards]);
     const onCollectionChange = (collectionName: any) => {
@@ -625,7 +631,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     :
                     (displayMyCards || collectionSetValue != "none" || collectionCardValue != "none" || collectionTypeValue != "all") &&
                     <>
-                        {Object.keys(myFilter)?.length > 0 ?
+                        {Object.keys(myFilter)?.length > 0  ?
                         <SummerCard className="mt-4" >
                             {
                                 Object.keys(myFilter).map((albumName, index) => {
@@ -734,7 +740,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         <div className="d-flex justify-content-center mt-5" >
                             {<p style={{
                                 color: "black"
-                            }}> Data Not Found </p>}
+                                }}> {!isLoading && "Data Not Found"} </p>}
                         </div>}
                     </>
             }

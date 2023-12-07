@@ -43,7 +43,8 @@ function VideoPopup({ fulldata, Videoshow, setVideoshow, videoUrl, imgUrl, Minte
   // const url = window.location.host + "/profile/nftAlbum?cardImageUrl=" + fulldata?.cardImageUrl;
   console.log(fulldata?.cardImageUrl,"fulldata?.cardImageUrl")
   // const url = `${document.location.protocol}//${document.location.host}/profile/Album?cardImageUrl=${encodeURIComponent(fulldata?.cardImageUrl)}&collectionName=${fulldata?.albumName}`;
-  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${fulldata?.albumName}`;
+  console.log(fulldata,"fulldata")
+  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${fulldata?.albumName}&setName=${fulldata?.setId}&cardName=${fulldata?.cardName}`;
   const shareText = "I won this unique card! Join the Parliament and win with me.";
   return (
     <div>
