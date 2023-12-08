@@ -45,7 +45,27 @@ function PaymentFun({ isVotingPayment }: any) {
   const [selectCoin, setSelectCoin] = useState("none");
   const [showOptionList, setShowOptionList] = useState(false);
   const [showForWait, setShowForWait] = useState(false);
+  const [networkCode, setNetworkCode] = useState({
+    ETH: "11155111",
+    BNB: "97",
+    MATIC:"80001",    
+  });
+
+  // if (name == 'ethereum')
+  //   chainId = 11155111
+  // if (name == 'fantom')
+  //   chainId = 4002
+  // if (name == 'binance')
+  //   chainId = 97
+  // if (name == 'polygon')
+  //   chainId = 80001
+  // if (name == 'zkpolygon')
+  //   chainId = 1442
+  // if (name == 'avalanche')
+  //   chainId = 43113    
+
   const transactionId = useRef({});
+  
   console.log(coinInfo, 'coinInfo1');
 
   let navigate = useNavigate();
@@ -79,14 +99,15 @@ function PaymentFun({ isVotingPayment }: any) {
 
     const data = {
       // userId: `${user?.uid}`,
-      userEmail: `${sessionStorage.getItem("wldp_user")}`,
+      userEmail: `${sessionStorage.getItem("wldp_user")}`,     
       // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
       amount: payamount,
       // amount: 0.0001,
-      // network: "11155111",
-      // // @ts-ignore
-      // origincurrency: `${coinInfo?.symbol.toLowerCase()}`,
-      // token: "ETH",
+      // @ts-ignore
+      network: `${networkCode[coinInfo?.name] || ""}`,
+      // @ts-ignore
+      originCurrency: `${coinInfo?.symbol.toLowerCase()}`,      
+      token: `${coinInfo?.name}`,
       // transactionType: payType,
       // numberOfVotes: extraVote,
       // paymentDetails: detail,
@@ -105,6 +126,8 @@ function PaymentFun({ isVotingPayment }: any) {
       })
       .catch((error) => {
         // setPaymentStatus({ type: 'error', message: '' });
+        console.log(error, "response.data")
+        // setShowForWait(true)
         setApiCalling(false)
       })
   }
@@ -124,10 +147,12 @@ function PaymentFun({ isVotingPayment }: any) {
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
       amount: 0.0001,
-      network: "11155111",
+      // network: "11155111",
+      // @ts-ignore
+      network: `${networkCode[coinInfo?.name] || ""}`,
       // @ts-ignore
       origincurrency: `${coinInfo?.symbol?.toLowerCase()}`,
-      token: "ETH",
+      token: `${coinInfo?.name}`,
       transactionType: payType,
       numberOfVotes: extraVote,
       paymentDetails: { ...detail, ...transactionId.current },
@@ -190,7 +215,6 @@ function PaymentFun({ isVotingPayment }: any) {
     (window as any).wldp.isWalletConnected()
       .then((res: any) => {
         if (res === true) {
-          console.log("send call 1")
           payNow()
         }
         else {
