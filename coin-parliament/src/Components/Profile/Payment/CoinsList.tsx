@@ -126,7 +126,7 @@ const CoinsList: React.FC<{
     // const [payButton, setPayButton] = useState(false);
     // const [showOptionList, setShowOptionList] = useState(false);
     const [afterPay, setAfterPay] = useState(false);
-    const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
+  const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
 
     // Insufficient balance 
 

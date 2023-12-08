@@ -150,7 +150,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
         const formData = new FormData();
         formData.append('file', imagePath);
         // @ts-ignore
-        const response = await axios.post(`https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/generic/user/uploadAvatar/${user?.uid}`, formData, {
+        const response = await axios.post(`https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/generic/user/uploadAvatar/${user?.uid}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
