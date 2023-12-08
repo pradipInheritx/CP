@@ -48,7 +48,7 @@ function WalletInfo() {
     const [timeType, setTimeType] = useState<string>('time');
     const [limitType, setLimitType] = useState<string>("");
     const [getPendingShow, setGetPendingShow] = useState<boolean>(false);
-    const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
+    const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
     const [walletDetails, setWalletDetails] = useState({
         coin: "",
         address: "",
