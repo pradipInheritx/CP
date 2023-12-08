@@ -26,8 +26,8 @@ export const makePaymentToServer = async (req: any, res: any) => {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoid3d3LmNvaW5wYXJsaWFtZW50LmNvbSIsImF1ZCI6WyJHUk9VUFMiLCJBUFBMSUNBVElPTlMiLCJBVVRIIiwiV0VCMyJdLCJleHAiOjIwMTg2MjkyNjF9.xP0u9ndNG1xNS87utQb8a-RNuxkt3_Z1lzojfzaOMGc` //Coin Parliament Prod Token
-        //"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ", // Previously Used
+        authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ", // Previously Used
+        //`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoid3d3LmNvaW5wYXJsaWFtZW50LmNvbSIsImF1ZCI6WyJHUk9VUFMiLCJBUFBMSUNBVElPTlMiLCJBVVRIIiwiV0VCMyJdLCJleHAiOjIwMTg2MjkyNjF9.xP0u9ndNG1xNS87utQb8a-RNuxkt3_Z1lzojfzaOMGc` //Coin Parliament Prod Token
       },
       body: JSON.stringify(requestBody),
     })
