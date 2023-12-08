@@ -71,6 +71,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   const [email, setEmail] = useState('')
   const [agree, setAgree] = useState(true);
   const { user, userInfo } = useContext(UserContext);
+  
   const [smsVerification, setSmsVerification] = useState('')
   const [signupLoading, setSignupLoading] = useState(false)
   let navigate = useNavigate();
