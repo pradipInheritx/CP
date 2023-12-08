@@ -482,7 +482,8 @@ const VotingPaymentCopy: React.FC<{
       getCoinList.get()
         .then((snapshot) => {
           const allList = snapshot.data()?.coins;
-          setCoinsList(allList && allList);
+          const filterCoin = allList.filter((item: any, index: number) => { return item.name == "ETH" || item.name == "BNB" || item.name == "MATIC" && item })          
+          setCoinsList(filterCoin ? filterCoin : allList && allList );
         }).catch((error) => {
           console.log(error, "error");
         });
@@ -695,35 +696,39 @@ const VotingPaymentCopy: React.FC<{
 
                           maxHeight: "200px",
                           // top: `${!payamount? -200 : ""}` 
-                          top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : coinsList.length*42}` : ""}`,
+                          top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : `-${coinsList.length*44}px`}` : ""}`,
                           borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
                           borderTop: "none",
                           border: " 1px solid #cab7ff",
                         }}
                       >
                         {coinsList.map((option: any, index: number) => {
-                          return (
-                            <li
-                              style={{
-                              
-                              }}
-                              className="pay-custom-select-option"
-                              data-name={option.name}
-                              key={option.id}
-                              onClick={async () => {
-                                setSelectCoin(option.name)
-                                setCoinInfo(option)
-                                setShowOptionList(!showOptionList)                                  
-                                // window.scrollTo({ top: 1000, behavior: 'smooth' });
-                                // await mybtn("disconnect", "true").then(() => {
-                                //   setConnectOrNot(!connectOrNot)
-                                // })
-                              }}
-                            >
-                              {option.name}
-
-                            </li>
-                          );
+                                        
+                            return (
+                              <>
+                              <li
+                                style={{
+                                
+                                }}
+                                className="pay-custom-select-option"
+                                data-name={option.name}
+                                key={option.id}
+                                onClick={async () => {
+                                  setSelectCoin(option.name)
+                                  setCoinInfo(option)
+                                  setShowOptionList(!showOptionList)                                  
+                                  // window.scrollTo({ top: 1000, behavior: 'smooth' });
+                                  // await mybtn("disconnect", "true").then(() => {
+                                  //   setConnectOrNot(!connectOrNot)
+                                  // })
+                                }}
+                              >
+                                {option.name}
+  
+                                </li>
+                              </>
+                            );
+                          
                         })}
                       </ul>
                     )}
