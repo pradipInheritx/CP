@@ -21,8 +21,13 @@ const Title = styled.div`
 const Upgrade = () => {
   const translate = useTranslation();
   return (
-    <Container fluid style={{ background: "var(--black)", padding: 10 }}>
-      <Title>Coming soon</Title>
+    <Container fluid style={{
+      background: "var(--black)", padding: 10,
+    width:`${window.screen.width > 767 ? "300px":"100%"}`,
+      height: `${window.screen.width > 767 ? "150px" : "150px"}`
+    
+    }} className="d-flex justify-content-center align-items-center">
+      <Title >Coming soon</Title>
 
       {/* <Title>Upgrade your account <strong>To Earn Crypto & NFT</strong></Title>
       <Buttons.Primary fullWidth={true}>{capitalize(translate("upgrade account"))}</Buttons.Primary> */}
