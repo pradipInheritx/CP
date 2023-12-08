@@ -10,14 +10,14 @@ import fetch from "node-fetch";
 export const makePaymentToServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
-    const { userEmail, amount } = req.body;
+    const { userEmail, amount, network, originCurrency, token } = req.body;
     const requestBody = {
       method: parentConst.PAYMENT_METHOD,
       params: {
         amount: parseFloat(amount),
-        network: parentConst.PAYMENT_NETWORK,
-        origincurrency: parentConst.PAYMENT_ORIGIN_CURRENCY,
-        token: parentConst.PAYMENT_TOKEN,
+        network: network, // parentConst.PAYMENT_NETWORK,
+        origincurrency: originCurrency, //parentConst.PAYMENT_ORIGIN_CURRENCY,
+        token: token, // parentConst.PAYMENT_TOKEN,
       },
       user: userEmail,
     };
@@ -26,8 +26,8 @@ export const makePaymentToServer = async (req: any, res: any) => {
       method: "POST",
       headers: {
         "content-type": "application/json",
-        authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ",
+        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoid3d3LmNvaW5wYXJsaWFtZW50LmNvbSIsImF1ZCI6WyJHUk9VUFMiLCJBUFBMSUNBVElPTlMiLCJBVVRIIiwiV0VCMyJdLCJleHAiOjIwMTg2MjkyNjF9.xP0u9ndNG1xNS87utQb8a-RNuxkt3_Z1lzojfzaOMGc` //Coin Parliament Prod Token
+        //"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ", // Previously Used
       },
       body: JSON.stringify(requestBody),
     })
@@ -240,6 +240,7 @@ export const isUserUpgraded = async (req: any, res: any) => {
     });
   }
 };
+
 export const getParentPayment = async (req: any, res: any) => {
   try {
     const getAllPaymentArray: any = [];
@@ -321,6 +322,7 @@ export const getParentPayment = async (req: any, res: any) => {
     });
   }
 };
+
 export const getInstantReferalAmount = async (req: any, res: any) => {
   const { userId } = req.params;
   const getParentUser = await firestore().collection("users").doc(userId).get();

@@ -33,7 +33,9 @@
     "SMART_CONTRACT_METHOD":"sendTokenTo",
     "SMART_CONTRACT__GAS":2400,
     "SMART_CONTRACT_ADMIN_ADRESS" : "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",
-    "SMART_CONTRACT_ETHEREUMNODEURL" : "https://mainnet.infura.io/v3/e7f9d6c1bcb04382ac3ac6ca6ae92502",
+    "SMART_CONTRACT_ETHEREUM_NODE_URL" : "https://mainnet.infura.io/v3/e7f9d6c1bcb04382ac3ac6ca6ae92502",
+    "SMART_CONTRACT_MATIC_POLYGON_NODE_URL" : "https://mainnet.infura.io/v3/e7f9d6c1bcb04382ac3ac6ca6ae92502",
+    "SMART_CONTRACT_BNB_NODE_URL" : "https://bsc-dataseed.binance.org",
     "SMART_CONTRACT_ABI_ARRAY": [
         {
             "inputs": [

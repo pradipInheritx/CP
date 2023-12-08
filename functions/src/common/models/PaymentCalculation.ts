@@ -55,25 +55,13 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
         const options = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE'
+                //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE' // Previously Used
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdldm90ZXRvZWFybi5uZXQiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDE4NjI5MjYxfQ.EDko4JEjhBoAMZkly_QavXOreLhEs4ib2PaD3hg7ZCU' //For Smart Contract Prod VoteToEarn
             }
         };
-        const ethereumNodeUrl =
-            parentConst.SMART_CONTRACT_ETHEREUMNODEURL;
 
-        const web3 = new Web3(ethereumNodeUrl);
-        const currentGasPrice = await web3.eth.getGasPrice();
 
-        // Convert the gas price to Ether and format it manually
-        const currentGasPriceWei: any = await web3.utils.fromWei(currentGasPrice, 'wei');
-        console.log('currentGasPriceWei', typeof currentGasPriceWei, "Value", currentGasPriceWei);
-
-        let getLimitAndCal: any = parentConst.SMART_CONTRACT_GAS_LIMIT * parseInt(currentGasPriceWei);
-
-        const currentGasPriceEther: any = await web3.utils.fromWei(
-            String(getLimitAndCal),
-            'ether'
-        ); // Calculated the gas price for Etherium Only
+        let currentGasPriceEther = await isGasPriceCalculationOnCoin(transactionBody.network);
 
         console.log('Current Gas Price (wei):', typeof currentGasPriceEther, parseFloat(currentGasPriceEther));
 
@@ -108,6 +96,48 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
         return { status: false, result: error }
     }
 }
+
+export const isGasPriceCalculationOnCoin = async (coin: any): Promise<any> => {
+    console.info("coin", coin)
+
+    let gasPriceNodeURL = '';
+    if (coin === "ethereum") {
+        gasPriceNodeURL =
+            parentConst.SMART_CONTRACT_ETHEREUM_NODE_URL;
+    }
+
+    if (coin === "binance") {
+        gasPriceNodeURL =
+            parentConst.SMART_CONTRACT_BNB_NODE_URL;
+    }
+
+    if (coin === "polygon") {
+        gasPriceNodeURL =
+            parentConst.SMART_CONTRACT_MATIC_POLYGON_NODE_URL;
+    }
+
+    console.info("gasPriceNodeURL", gasPriceNodeURL)
+
+    const web3 = new Web3(gasPriceNodeURL);
+
+    const currentGasPrice = await web3.eth.getGasPrice();
+
+    // Convert the gas price to Ether and format it manually
+    const currentGasPriceWei: any = await web3.utils.fromWei(currentGasPrice, 'gwei');
+    console.log('currentGasPriceWei', typeof currentGasPriceWei, "Value", currentGasPriceWei);
+
+    let getLimitAndCal: any = parentConst.SMART_CONTRACT_GAS_LIMIT * parseInt(currentGasPriceWei);
+
+    let getCurrentGasPriceInEther = await web3.utils.fromWei(
+        String(getLimitAndCal),
+        'ether'
+    );
+
+    console.log("getCurrentGasPriceInEther", getCurrentGasPriceInEther);
+
+    return parseFloat(getCurrentGasPriceInEther).toFixed(6);
+}
+
 export const isParentExistAndGetReferalAmount = async (userData: any): Promise<any> => {
     try {
         const { userId, amount, transactionType, numberOfVotes, token } = userData;
@@ -138,7 +168,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
 
 
         // set payment schedule accroding parent settings
-        await setPaymentSchedulingDate(parentPaymentData)
+        await setPaymentSchedulingDate({ ...parentPaymentData, ...userData })
 
     } catch (error) {
         return {
@@ -147,6 +177,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         }
     }
 }
+
 export const setPaymentSchedulingDate = async (parentData: any) => {
     console.info("parentData", parentData)
     const getParentDetails: any = (await firestore().collection('users').doc(parentData.parentUserId).get()).data();
@@ -170,11 +201,10 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                 const getParentPendingPaymentReference = await firestore().collection('parentPayment').add(storeInParentData)
 
                 // const getPaymentAfterTransfer = await paymentFunction(parentTransactionDetails); // Previous Code
-
-                const parentTransactionDetails = {
+                let parentTransactionDetails = {
                     amount: parentData.amount,
                     address: getMatchedCoinAddress.address,
-                    network: "ethereum"
+                    network: await getNetworkAsPerCoin(parentData.origincurrency) ? await getNetworkAsPerCoin(parentData.origincurrency) : "ethereum"
                 }
                 const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
                 const getHash = getPaymentAfterTransfer?.result?.return_value[0].hash;
@@ -218,12 +248,12 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                         // };
                         parentData.amount = pendingAmount; // Override All Pending Amount With Current One
 
-
-                        const parentTransactionDetails = {
-                            amount: parseFloat("0.0001"), //parentData.amount
+                        let parentTransactionDetails = {
+                            amount: parentData.amount,
                             address: getMatchedCoinAddress.address,
-                            network: "ethereum"
+                            network: await getNetworkAsPerCoin(parentData.origincurrency) ? await getNetworkAsPerCoin(parentData.origincurrency) : "ethereum"
                         }
+
                         const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
 
                         console.info("getPaymentAfterTransfer After Smart Contract", getPaymentAfterTransfer)
@@ -254,6 +284,19 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
     } else {
         await firestore().collection('parentPayment').add({ ...parentData, status: parentConst.PAYMENT_STATUS_NO_COIN_FOUND, transactionId: null, parentPendingPaymentId: null, address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND, receiveType: parentConst.PAYMENT_RECIEVE_TYPE_NA, timestamp: firestore.FieldValue.serverTimestamp() })
     }
+}
+
+export const getNetworkAsPerCoin = async (coin: any) => {
+    if (coin.toLowerCase() === "eth") {
+        return "ethereum";
+    }
+    if (coin.toLowerCase() === "bnb") {
+        return "binance";
+    }
+    if (coin.toLowerCase() === "matic") {
+        return "polygon"
+    }
+    return "";
 }
 
 export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
@@ -315,7 +358,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
                 address: getMatchedCoinAddress.address,
-                network: "ethereum"
+                network: await getNetworkAsPerCoin(parent.origincurrency) ? await getNetworkAsPerCoin(parent.origincurrency) : "ethereum"
             }
             const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
             console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
@@ -326,7 +369,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
                 address: getMatchedCoinAddress.address,
-                network: "ethereum"
+                network: await getNetworkAsPerCoin(parent.origincurrency) ? await getNetworkAsPerCoin(parent.origincurrency) : "ethereum"
             }
             const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
             console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
@@ -337,7 +380,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
             const parentTransactionDetails: SmartContractBody = {
                 amount: parent.amount,
                 address: getMatchedCoinAddress.address,
-                network: "ethereum"
+                network: await getNetworkAsPerCoin(parent.origincurrency) ? await getNetworkAsPerCoin(parent.origincurrency) : "ethereum"
             }
             const getPaymentAfterTransfer = await callSmartContractPaymentFunction(parentTransactionDetails);
             console.log("getPaymentAfterTransfer", getPaymentAfterTransfer)
