@@ -32,7 +32,7 @@ function PaymentHistory() {
   const [index, setIndex] = useState(0);
   const [rowData, setRowData] = useState<any>([]);
   const [reciveRowData, setReciveRowData] = useState<any>([]);
-  const ApiUrl = "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/"
+  const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
   const [pageIndex, setPageIndex] = useState(1);
   let navigate = useNavigate();
 
