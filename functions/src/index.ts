@@ -245,11 +245,15 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   };
   try {
     console.log("new user >>>", userData, user.uid);
-    return await admin
+    const getUserAfterInsert = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
+
+    console.log("getUserAfterInsert", getUserAfterInsert);
+
+    return getUserAfterInsert;
   } catch (e) {
     console.log("create user Error....", e);
     return false;
