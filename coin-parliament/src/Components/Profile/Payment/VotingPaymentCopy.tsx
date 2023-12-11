@@ -442,8 +442,6 @@ const VotingPaymentCopy: React.FC<{
     let navigate = useNavigate();
 
 
-  const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
-
     useEffect(() => {
       // window.scrollTo({ top: 500, behavior: 'smooth' });
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });      

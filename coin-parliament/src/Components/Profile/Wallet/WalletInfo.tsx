@@ -47,8 +47,7 @@ function WalletInfo() {
     const [savePaymentMethod, setSavePaymentMethod] = useState(false);
     const [timeType, setTimeType] = useState<string>('time');
     const [limitType, setLimitType] = useState<string>("");
-    const [getPendingShow, setGetPendingShow] = useState<boolean>(false);
-    const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
+    const [getPendingShow, setGetPendingShow] = useState<boolean>(false);    
     const [walletDetails, setWalletDetails] = useState({
         coin: "",
         address: "",
@@ -277,7 +276,7 @@ function WalletInfo() {
             "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
             "content-type": "application/json"
         }
-        axios.get(`${ApiUrl}payment/getInstantReferalAmount/${user?.uid}`, {headers}            
+        axios.get(`/payment/getInstantReferalAmount/${user?.uid}`, {headers}            
         ).then(async (response) => {
             console.log(response, "response")
             showToast("Successfully Received all Pending Payment", ToastType.SUCCESS);
