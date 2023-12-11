@@ -105,6 +105,8 @@ export const avatarUploadFunction = async (req: any, res: any) => {
     console.log("BUSBOY  :  ", busboy);
     const bucket = admin.storage().bucket(env.STORAGE_BUCKET_URL);
 
+    const publicImageUrl :any={}
+
     logger.info("Start uploading new file-------");
 
     // upload user's Avatar
@@ -156,11 +158,8 @@ export const avatarUploadFunction = async (req: any, res: any) => {
         })
         .then(async (signedUrls) => {
           console.warn("Public Url ------\n", signedUrls[0]);
-          await admin
-            .firestore()
-            .collection("users")
-            .doc(userId)
-            .set({ avatar: signedUrls[0] }, { merge: true });
+          publicImageUrl['url'] = signedUrls[0]
+         
         })
         .catch((err: any) => {
           console.error("Error from catch block : ", err);
@@ -180,6 +179,12 @@ export const avatarUploadFunction = async (req: any, res: any) => {
         const result: any = (
           await admin.firestore().collection("users").doc(userId).get()
         ).data();
+        console.log("publicImageUrl.url  : ",publicImageUrl.url)
+        await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .set({ avatar: publicImageUrl.url }, { merge: true });
         return res.status(200).send({
           status: true,
           message: "Update avatar successfully",
