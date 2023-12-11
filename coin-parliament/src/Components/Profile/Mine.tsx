@@ -188,6 +188,7 @@ const Mine = () => {
         showCancelButton: ((userInfo?.rewardStatistics?.extraVote || 0) + parseInt(userInfo?.voteValue || '0') == 0),        
         cancelButtonText: "Buy more votes Now",
         cancelButtonColor: '#6352e8',
+        showCloseButton: true,
         customClass: {
           popup: 'stayInGamePopupStyle',
           htmlContainer: 'pt-3'

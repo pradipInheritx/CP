@@ -47,8 +47,7 @@ function WalletInfo() {
     const [savePaymentMethod, setSavePaymentMethod] = useState(false);
     const [timeType, setTimeType] = useState<string>('time');
     const [limitType, setLimitType] = useState<string>("");
-    const [getPendingShow, setGetPendingShow] = useState<boolean>(false);
-    const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
+    const [getPendingShow, setGetPendingShow] = useState<boolean>(false);    
     const [walletDetails, setWalletDetails] = useState({
         coin: "",
         address: "",
@@ -277,7 +276,7 @@ function WalletInfo() {
             "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
             "content-type": "application/json"
         }
-        axios.get(`${ApiUrl}payment/getInstantReferalAmount/${user?.uid}`, {headers}            
+        axios.get(`/payment/getInstantReferalAmount/${user?.uid}`, {headers}            
         ).then(async (response) => {
             console.log(response, "response")
             showToast("Successfully Received all Pending Payment", ToastType.SUCCESS);
@@ -623,7 +622,7 @@ function WalletInfo() {
                                                 setTimeError("")
                                             }}
                                         />
-                                        <label htmlFor="default-checkbox" style={{ marginRight: "20px" }} > {"Any of Them"} </label>
+                                        <label htmlFor="default-checkbox" style={{ marginRight: "7px" }} > {"Any of Them"} </label>
                                     </div>
                                 </div>
                                 {limitType == "TIME" &&                                                                     
@@ -777,7 +776,11 @@ function WalletInfo() {
                                     {amountError && <Errorsapn>{amountError}</Errorsapn>}
                                 </>
                             } */}
-                            {(selectRadio === 'LIMIT') &&
+
+
+
+                            
+                            {/* {(selectRadio === 'LIMIT') &&
                                 <>
                                 <p
                                     style={{
@@ -801,9 +804,44 @@ function WalletInfo() {
                                     </Buttons.Primary>
                                 </div>
                                 </>
+                            } */}
+                        </div>
+                        <div className="mt-3 ">
+                            <div className='d-flex align-items-center'>
+                                <Form.Check
+                                    style={{ fontSize: "20px", marginRight: "10px" }}
+                                    type="radio"
+                                    id={`demand`}
+                                    checked={selectRadio == 'DEMAND'}
+                                    onClick={(e) => {
+                                        setDefaultValue();
+                                        setSelectRadio('DEMAND')
+                                    }}
+                                />
+                                <label htmlFor="On demand" >On demand</label>
+
+                            </div>
+                           {(selectRadio === 'DEMAND') &&
+                                <>
+                                <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
+                                    
+                                    <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
+                                        maxWidth: '200px',
+                                        marginLeft: `${window.screen.width > 767 ? "25px" : ""}`,
+                                        opacity: `${getPendingShow ? 0.8 : 1}`
+                                    }}
+                                        
+                                        onClick={() => {
+                                            GetRefPayment()
+                                            setGetPendingShow(true)
+                                        }}
+                                >
+                                        {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'}
+                                    </Buttons.Primary>
+                                </div>
+                                </>
                             }
                         </div>
-
                     </div>
                 </SelectTextfield>
                 <div className="d-flex justify-content-center">

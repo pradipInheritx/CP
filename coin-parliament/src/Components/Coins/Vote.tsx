@@ -65,7 +65,7 @@ top: 2px;
     cursor:pointer;
   }
   &:not([disabled]) {
-    animation: bull_shake_left 2s ease 2s 3 alternate forwards;
+    animation: bull_shake_left 2s ease 2s infinite;
   }
   &:hover {
   background:#6352E8;
@@ -87,7 +87,7 @@ const Option1 = styled(Buttons.RadiusBottomLeft)`
       box-shadow: rgb(67 47 229) 0px 3px 1px, rgba(0,0,0,0.22) 0px 6px 12px;
   }
   &:not([disabled]) {
-    animation: bull_shake_right 2s ease 2s 3 alternate forwards;
+    animation: bull_shake_right 2s ease 2s infinite ;
   }
   &:hover {
     background:#6352E8;
