@@ -56,10 +56,9 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
             headers: {
                 'Content-Type': 'application/json',
                 //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE' // Previously Used
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdldm90ZXRvZWFybi5uZXQiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDE4NjI5MjYxfQ.EDko4JEjhBoAMZkly_QavXOreLhEs4ib2PaD3hg7ZCU' //For Smart Contract Prod VoteToEarn
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdldm90ZXRvZWFybi5uZXQiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDUwMjUxNjYxfQ.ajkjFwR4V1sL-_fYcnIA_nfFW2nV3Rr1zAcA6qPN-Lo' //For Smart Contract Prod VoteToEarn
             }
         };
-
 
         let currentGasPriceEther = await isGasPriceCalculationOnCoin(transactionBody.network);
 
