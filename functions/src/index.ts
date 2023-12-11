@@ -161,7 +161,7 @@ exports.api = functions.https.onRequest(main);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+  databaseURL: "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
 exports.getAccessToken = () =>
