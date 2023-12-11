@@ -761,7 +761,7 @@ exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
 });
 
 exports.getCoinCurrentAndPastDataDifference = functions.pubsub
-  .schedule("every 10 minutes")
+  .schedule("0 */6 * * *")
   .onRun(async () => {
     console.log("---Start getCoinCurrentAndPastDataDifference -------");
     await getCoinCurrentAndPastDataDifference();
