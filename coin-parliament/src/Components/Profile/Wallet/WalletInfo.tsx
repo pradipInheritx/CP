@@ -805,6 +805,27 @@ function WalletInfo() {
                                 </>
                             }
 
+                               {(selectRadio === 'LIMIT') &&
+                                <>
+                                <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
+                                    
+                                    <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
+                                        maxWidth: '200px',
+                                        marginLeft: `${window.screen.width > 767 ? "25px" : ""}`,
+                                        opacity: `${getPendingShow ? 0.8 : 1}`
+                                    }}
+                                        
+                                        onClick={() => {                                            
+                                            // setGetPendingShow(true)
+                                            handleModleShow()
+                                        }}
+                                >
+                                        {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'}
+                                    </Buttons.Primary>
+                                </div>
+                                </>
+                            }
+
                         </div>
                         <div className="mt-3">
                             {/* <div className='d-flex align-items-center'>
