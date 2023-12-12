@@ -579,7 +579,7 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
 
 // 5 minutes cron job
 exports.pendingPaymentSettlement = functions.pubsub
-  .schedule("*/5 * * * *")
+  .schedule("0 0 */1 * *")
   .onRun(async () => {
     console.log("pendingPaymentSettlement start");
     const currentTimeStamp = Date.now();
