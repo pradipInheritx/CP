@@ -393,6 +393,7 @@ const UpgradePageCopy = () => {
               <ButttonDiv className="mt-1">
                 <button
                   onClick={() => {
+                    handleSoundClick()
                     // upgradeProfile(99, 0)
                     showModal(<Upgrade />)
                   }}

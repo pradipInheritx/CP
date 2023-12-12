@@ -132,6 +132,7 @@ const NFTGallery = () => {
   }, [albumOpen])
 
 
+  
 
   const getNftCardNew = () => {
     const getCollectionType = firebase
