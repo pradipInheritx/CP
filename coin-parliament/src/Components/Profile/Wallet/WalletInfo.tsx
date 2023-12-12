@@ -4,7 +4,7 @@ import { texts } from 'Components/LoginComponent/texts'
 import UserContext from 'Contexts/User'
 import { useTranslation } from 'common/models/Dictionary'
 import React, { useContext, useEffect, useState } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import firebase from "firebase/compat";
 import styled from "styled-components";
@@ -14,6 +14,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import CoinsList from '../Payment/CoinsList'
 import { showToast } from 'App'
 import { ToastType } from 'Contexts/Notification'
+import WalletValidation from './WalletValidation'
 
 const Errorsapn = styled.span`
   color:red;
@@ -41,6 +42,17 @@ position: absolute;
   text-align: center;
 `;
 
+const IconValue = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+position: absolute;
+  font-weight: 300;
+  top:-27px;
+  left:262px;
+  color: #6352e8;
+  text-align: center;
+`;
+
 function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
@@ -58,8 +70,12 @@ function WalletInfo() {
         address: "",
     }]);
     const [tooltipShow, setTooltipShow] = React.useState(false);
+    const [tooltipShow2, setTooltipShow2] = React.useState(false);
     const [validationErrors, setValidationErrors] = useState([]);
-
+    const [modleShow, setModleShow] = useState(false)
+    const handleModleClose = () => setModleShow(false);
+    const handleModleShow = () => setModleShow(true);
+    const [mfaLogin, setMfaLogin] = useState(false)  
 
     const [errorValue, setErrorValue] = useState({
         coinError: "",
@@ -103,6 +119,7 @@ function WalletInfo() {
         ethereum: "/^0x[a-fA-F0-9]{40}$/",
     })
 
+    console.log(selectRadio,"selectRadio")
 
     useEffect(() => {
         const getCoinList = firebase
@@ -339,6 +356,21 @@ function WalletInfo() {
         // setWalletDetailsObj(newBoxes);
     };
  
+    const UpdateFunction = () => {
+        handleModleClose()
+        if (selectRadio === "DEMAND") {
+            GetRefPayment()
+        }
+        else {            
+            selectSendType()
+        }
+    }
+
+    const AddWalletFunction = () => {
+        handleModleClose()
+        updateAddress()
+    }
+
 
     return (
         <>
@@ -366,9 +398,7 @@ function WalletInfo() {
                             >
                                 {/* <p>Your CMP count</p> */}
                                 <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases) and rewards (PAX and Collectible cards)</p>
-                                <p className="mt-3 text-end lh-base">
-                                    Be aware that the network fee will be deducted from the amount, so choose wisely
-                                </p>
+
                             </div>
                         </div>
                     }
@@ -454,10 +484,7 @@ function WalletInfo() {
                                 }}
                             >
                                 {/* <p>Your CMP count</p> */}
-                                    <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases) and rewards (PAX and Collectible cards)</p>
-                                <p className="mt-3 text-end lh-base">
-                                        Be aware that the network fee will be deducted from the amount, so choose wisely
-                                </p>                                
+                                    <p className="mt-1 text-end lh-base">These addresses will be used to receive payments (50% of all your friends' total purchases) and rewards (PAX and Collectible cards)</p>                                                              
                             </div>
                         </div>
                     }
@@ -510,13 +537,17 @@ function WalletInfo() {
                                 handleChangeValue(e, "")
                             }}
                         />                       
-                        <RemoveButton type='button' disabled={saveAddress}
+                        <RemoveButton type='button'
+                            disabled={!walletDetails?.address || saveAddress}
                             style={{
                                 marginLeft: "10px",
                                 borderRadius: "5px"
                             }}
                             onClick={() => {
-                            updateAddress()
+                                // updateAddress()
+
+                                handleModleShow()
+                                
                         }}>
                             {saveAddress ? <span className="loading">+</span> : '+'}
                         </RemoveButton>
@@ -548,6 +579,40 @@ function WalletInfo() {
                     label={`${("Choose your preferred payment time").toLocaleLowerCase()}`}
                     name="Choose your preferred payment time"
                 >
+                    {
+                        tooltipShow2 &&
+                        <div
+                            style={{
+                                display: "relative"
+                            }}
+                        >
+                            <div className="newtooltip"
+                                style={{
+                                    // right: "0%",
+                                    width: `${window.screen.width > 767 ? "50%" : "78%"}`,
+                                    marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+                                    marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
+                                }}
+                            >                                                                
+                                <p className="mt-1 text-end lh-base">
+                                    Be aware that the network fee will be deducted from the amount, so choose wisely
+                                </p>
+                            </div>
+                        </div>
+                    }
+                    <div className=''>
+                        <IconValue className='bi bi-info-circle'
+                            onMouseDown={(e) => {
+                                setTooltipShow2(false)
+                            }}
+                            onMouseUp={(e) => {
+                                setTooltipShow2(true)
+                            }}
+                            onMouseEnter={() => setTooltipShow2(true)}
+                            onMouseLeave={() => setTooltipShow2(false)}
+                        ></IconValue>
+                    </div>
+                    
                     <div className="w-100" >
                         <div className="d-flex  justify-content-start align-items-center ">
                             <Form.Check
@@ -831,9 +896,9 @@ function WalletInfo() {
                                         opacity: `${getPendingShow ? 0.8 : 1}`
                                     }}
                                         
-                                        onClick={() => {
-                                            GetRefPayment()
-                                            setGetPendingShow(true)
+                                        onClick={() => {                                            
+                                            // setGetPendingShow(true)
+                                            handleModleShow()
                                         }}
                                 >
                                         {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'}
@@ -849,14 +914,66 @@ function WalletInfo() {
                         width: `${window.screen.width > 767 ? "34%" : ""}`,
                         margin: "0px 0px 15px 0px",
                     }}>
-                        <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{ maxWidth: '200px', }}
-                            onClick={() => { selectSendType() }}
+                        <Buttons.Primary
+                            disabled={!selectRadio || savePaymentMethod}
+                            type='button' style={{ maxWidth: '200px', }}
+                            onClick={() => {
+                                // selectSendType()
+                                
+                                handleModleShow()
+                            }}
                         >
                             {savePaymentMethod ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
                         </Buttons.Primary>
                     </div>
                 </div>
             </div>
+            <div>
+                <Modal
+                    className=""
+                    show={
+                        modleShow
+                    } onHide={handleModleClose}
+
+                    backdrop="static"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    style={{ backgroundColor: "rgb(0 0 0 / 80%)", zIndex: "2200" }}
+                // @ts-ignore
+                // contentClassName={"modulebackground ForBigNft"}
+                >
+                    
+                    
+                    <div className="d-flex justify-content-end"
+                        style={{
+                            color: "gray",
+                            cursor: "pointer"
+                        }}
+                        onClick={() => {
+                            handleModleClose()
+                        }}
+                    >
+                        X
+                    </div>
+                    <Modal.Body
+                    >
+                        <div className="d-flex flex-column align-items-center">
+                            {walletDetails.address ?  <WalletValidation
+                                setMfaLogin={setMfaLogin}
+                                UpdateFunction={AddWalletFunction}
+                                modalOpen={true}
+                            />    
+                            :
+                            <WalletValidation
+                                setMfaLogin={setMfaLogin}
+                                    UpdateFunction={UpdateFunction}
+                                    modalOpen={true}
+                            />    }
+                        </div>
+                    </Modal.Body>                    
+                </Modal>
+            </div> 
+
         </>
     )
 }
