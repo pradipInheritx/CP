@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
-import UserContext from "../../Contexts/User";
+import UserContext, { getReferUser } from "../../Contexts/User";
 import Share from "./Share";
 import ShareCopy from "./ShareCopy";
 import Info from "./Info";
@@ -19,14 +19,22 @@ const Pool = () => {
   );
   // console.log('referal user',children)
 
-  const referralUrl = (value: any, url?: any) => {
-    if (url=="") {      
-      return `${document.location.protocol}//${document.location.host}/sign-up?refer=${value}`
+  const referralUrl = (value: any, url?: any, uid?: any) => {
+    const lastSixCharacters = uid.slice(-6);
+    // Get the first 2 characters
+    const firstTwoCharacters = value.slice(0, 2);
+    
+    const result = firstTwoCharacters + lastSixCharacters;
+
+    if (url == "") {            
+      return `${document.location.protocol}//${document.location.host}/sign-up?refer=${result}`
     }
     else {      
       return `${document.location.protocol}//${url}/?refer=${value}`
     }
   };  
+  
+  
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
   }, [userInfo?.children]);

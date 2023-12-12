@@ -1,5 +1,5 @@
 import { Form } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { User } from "firebase/auth";
 import { Callback } from "../../common/models/utils";
 
@@ -14,6 +14,7 @@ import { passwordValidation } from "../../Components/Profile/utils";
 import { showToast } from "../../App";
 import { ToastType } from "../../Contexts/Notification";
 import { genericLogin } from "../../common/models/Login";
+import AppContext from "Contexts/AppContext";
 
 const SignupForm = ({
   emailValue,
@@ -30,7 +31,7 @@ const SignupForm = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-
+  const { parentEmailId } = useContext(AppContext);  
   const [agree, setAgree] = useState(true);
   useEffect(() => {
     setEmail(emailValue)
@@ -59,7 +60,8 @@ const SignupForm = ({
         passwordConfirm: password2,
         agree,
       },
-      callback
+      callback,
+      parentEmailId,
     );
   }
 
