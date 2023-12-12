@@ -1,7 +1,7 @@
 import firebase from "firebase/compat";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
-import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { connectFunctionsEmulator, getFunctions, httpsCallable } from "firebase/functions";
 import { getApp } from "firebase/app";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { getMessaging, isSupported } from "firebase/messaging";
@@ -48,5 +48,5 @@ export const db = getFirestore(coinParliament);
 export const auth = getAuth();
 export const functions = getFunctions(getApp());
 export const storage = getStorage();
-
+export const assignCoinParliament = httpsCallable(functions, "assignReferrer");
 export default coinParliament;

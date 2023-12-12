@@ -1,5 +1,5 @@
-import { SignupPayload, validateSignup, verifySportEmail } from "./Login";
-import firebaseCoinParliament, { auth, db } from "firebaseCoinParliament"
+import { SignupPayload, assignRef, validateSignup, verifySportEmail } from "./Login";
+import firebaseCoinParliament, { auth, db, assignCoinParliament } from "firebaseCoinParliament"
 
 import { Callback } from "./utils";
 import { User, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
@@ -8,13 +8,15 @@ import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
 import coinParliament from "firebaseCoinParliament";
 import axios from "axios";
 import { generateUsername } from "common/utils/strings";
+import { useContext } from "react";
 export const SignupRegularForCoinParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
-    userData?: { [key: string]: any }
-) => {
+    userData?: { [key: string]: any },
+    parentEmailId?:any
+) => {    
     try {
-        console.log('coin');
+        console.log(parentEmailId,'parentEmailIdcoin');
         validateSignup(payload);
         const auth = firebaseCoinParliament.auth();
         const userCredential = await auth.createUserWithEmailAndPassword(
@@ -23,7 +25,8 @@ export const SignupRegularForCoinParliament = async (
         );
         if (auth?.currentUser) {
             // await sendEmailVerification(auth?.currentUser);
-            const referUser = await getReferUser(coinParliament.firestore());
+            const referUser = await getReferUser(coinParliament.firestore(), parentEmailId);
+            
             await saveUserData((auth?.currentUser?.uid || ''), db, {
                 // displayName: await generateUsername(),
                 ...userData,
@@ -31,6 +34,9 @@ export const SignupRegularForCoinParliament = async (
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
+            // await assignCoinParliament({ parent: referUser?.uid, child: auth?.currentUser?.uid })
+
+            await assignRef(referUser?.uid, auth?.currentUser?.uid, process.env.REACT_APP_COIN_API || '')
             await verifySportEmail(auth?.currentUser?.uid, (auth?.currentUser?.email || ''), (process.env.REACT_APP_COIN_API || ''));
         } else {
             console.log('coin', auth);

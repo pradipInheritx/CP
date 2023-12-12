@@ -73,11 +73,44 @@ export const saveUserData = async (uid: string, database: Firestore, data: { [ke
   }
 };
 
+// export const getReferUser = async (database: any, emailArg?: string, storeRefer?: Firestore) => {
+//   const urlParams = new URLSearchParams(window.location.search);
+//   const queryEmail = urlParams.get('refer');
+//   const uidValue = queryEmail?.slice(-6);
+//   const emailValue = queryEmail?.slice(0, 2);
+
+//   const email = emailArg ? emailArg : localStorage.getItem('parentEmail');  
+
+//   var user = { uid: '' };  
+//   let userdata = { uid: '' };  
+//   if (queryEmail) {      
+//         const referUser = await database.collection('users')
+//         await referUser.get().then((snapshot:any) => {
+//           let data: any = []
+//           snapshot.forEach((doc:any) => {
+//             data.push({ ...doc.data() });
+//           });          
+          
+//         data?.map((item: any, index: number) => {
+//             if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
+//               // setPreantId(item.uid)   
+//               userdata = { ...item };
+//               console.log(item,"getitem")
+//             }
+//           })        
+//         })      
+//     console.log(userdata,"userdatacheck")
+//     return userdata
+//   }
+//   else {
+//     return userdata;  
+//   }
+// }
+
 export const getReferUser = async (database: any, emailArg?: string, storeRefer?: Firestore) => {
   const urlParams = new URLSearchParams(window.location.search);
   const queryEmail = urlParams.get('refer');
-  const email = emailArg ? emailArg : localStorage.getItem('parentEmail');
-  console.log(email, 'refer email');
+  const email = emailArg ? emailArg : localStorage.getItem('parentEmail');  
   let user = { uid: '' };
   if (email) {
     try {
@@ -94,6 +127,9 @@ export const getReferUser = async (database: any, emailArg?: string, storeRefer?
   }
   return user;
 }
+
+
+
 export const storeAllPlatFormUserId = async (email: string) => {
   try {
     await Promise.all([
@@ -103,7 +139,7 @@ export const storeAllPlatFormUserId = async (email: string) => {
       getReferUser(stockParliament.firestore(), email),
       getReferUser(votingParliament.firestore(), email)
     ]).then((data) => {
-      
+      console.log(data,"allvalue")
       const V2E = data[0];
       const coinUser = data[1];
       const sportUser = data[2];

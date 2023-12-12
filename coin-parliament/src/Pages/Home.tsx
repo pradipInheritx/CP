@@ -283,8 +283,14 @@ function Home() {
   }, [currentImageIndex]);
 
   const referralUrl = (value: any, url?: any, displayName?: any) => {     
+    const lastSixCharacters = value.slice(-6);
+    // @ts-ignore
+    const firstTwoCharacters = user?.email.slice(0, 2);
+
+    const result = firstTwoCharacters + lastSixCharacters;
+
     if (url != "") {          
-      return `${document.location.protocol}//${url}/?refer=${displayName || user?.email }`
+      return `${document.location.protocol}//${url}/?refer=${result}`
     }
   };  
 const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`

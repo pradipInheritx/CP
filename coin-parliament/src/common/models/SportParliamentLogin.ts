@@ -1,5 +1,5 @@
-import { SignupPayload, validateSignup, verifySportEmail } from "./Login";
-import firebaseSportParliament, { auth, db } from "firebaseSportParliament"
+import { SignupPayload, assignRef, validateSignup, verifySportEmail } from "./Login";
+import firebaseSportParliament, { auth, db, assignSport } from "firebaseSportParliament"
 
 import { Callback } from "./utils";
 import { User, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
@@ -8,10 +8,13 @@ import { getReferUser, saveUserData, saveUsername } from "../../Contexts/User";
 import sportParliament from "firebaseSportParliament";
 import axios from "axios";
 import { generateUsername } from "common/utils/strings";
+
+import { useContext } from "react";
 export const SignupRegularForSportParliament = async (
     payload: SignupPayload,
     callback: Callback<User>,
-    userData?: { [key: string]: any }
+    userData?: { [key: string]: any },
+    parentEmailId?: any
 ) => {
     try {
 
@@ -24,7 +27,8 @@ export const SignupRegularForSportParliament = async (
         if (auth?.currentUser) {
             console.log('sport', auth?.currentUser);
             // await sendEmailVerification(auth?.currentUser);
-            const referUser = await getReferUser(sportParliament.firestore());
+            const referUser = await getReferUser(sportParliament.firestore(), parentEmailId);
+            console.log(referUser,"referUserdata")
             await saveUserData((auth?.currentUser?.uid || ''), db, {
                 displayName:  await generateUsername(),
                 ...userData,
@@ -32,6 +36,8 @@ export const SignupRegularForSportParliament = async (
                 parent: referUser?.uid,
                 uid: auth?.currentUser?.uid
             });
+            // await assignSport({ parent: referUser?.uid, child: auth?.currentUser?.uid })
+            await assignRef(referUser?.uid, auth?.currentUser?.uid, process.env.REACT_APP_SPORT_API || '')
             await verifySportEmail(auth?.currentUser?.uid, (auth?.currentUser?.email || ''), (process.env.REACT_APP_SPORT_API || ''));
             // const userRef = doc(db, "users", auth?.currentUser?.uid);
             // await setDoc(userRef, { firstTimeLogin: true, ...userData }, { merge: true });

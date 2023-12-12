@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
-import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import UserContext, { getReferUser, getUserInfo, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
@@ -117,6 +117,7 @@ import GenericLoginSignup from "./Components/GenericSignup/GenericLoginSignup";
 import ProtectedRoutes from "routes/ProtectedRoutes";
 import PageNotFound from "Pages/PageNotFound";
 import Routes from "routes/Routes";
+import votingParliament from "firebaseVotingParliament";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -362,6 +363,7 @@ function App() {
   const [loginRedirectMessage, setLoginRedirectMessage] = useState("");
   const [userUid, setUserUid] = useState("");
   const [chosenUserType, setChosenUserType] = useState<string>("");
+  const [parentEmailId, setParentEmailId] = useState<string>("");
   const [lang, setLang] = useState<string>(
     getLangByKey(new URLSearchParams(search).get("lang") + "")
   );
@@ -589,6 +591,14 @@ function App() {
     // }
   }, [user, fcmToken, coins, JSON.stringify(auth?.currentUser)]);
 
+
+  const getpraintId = async () => {
+    // let refVale = await getReferUser(V2EParliament.firestore())
+    let refVale = await getReferUser(votingParliament.firestore())
+    console.log(refVale,"refValevalue")
+  }
+  getpraintId()
+
   useEffect(() => {
     const html = document.querySelector("html") as HTMLElement;
     const key = getKeyByLang(lang);
@@ -644,7 +654,9 @@ function App() {
             }}
           >
             <AppContext.Provider
-              value={{
+                value={{
+                parentEmailId,
+                setParentEmailId,
                 setLoader,
                 firstTimeAvatarSlection,
                 setFirstTimeAvatarSelection,

@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { FormEvent, useContext, useState } from "react";
+import React, { FormEvent, useContext, useEffect, useState } from "react";
 // import "./Login.css";
 import { Stack } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
@@ -19,7 +19,10 @@ import { AuthProvider, } from "firebase/auth";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import { Callback } from "../../common/models/utils";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
-import UserContext from "Contexts/User";
+import UserContext, { getReferUser } from "Contexts/User";
+import firebase from "firebase/compat";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "firebase";
 const Login = styled.div`
   margin-left:5px;
   margin-right:7px;
@@ -58,6 +61,60 @@ const GenericLoginSignup = ({ authProvider }:
   const search = location.search;
   const { setUser } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
+  const refer = new URLSearchParams(search).get("refer") || "VoteToEarn";
+  const [preantId, setPreantId] = useState(null)
+  const assign = httpsCallable(functions, "assignReferrer");
+  const { parentEmailId,setParentEmailId } = useContext(AppContext);
+  const getUserId = async () => {
+
+    const uidValue = refer?.slice(-6);    
+    const emailValue = refer?.slice(0, 2);    
+
+    var userdata = { uid: '' };
+    if (refer) {
+      try {
+        const referUser = await firebase
+          .firestore()
+          .collection('users').where("displayName", '==', refer).get();
+        if (!referUser.empty) {
+          referUser.forEach((doc: any) => {
+            userdata = doc.data();
+            setPreantId(doc.data().uid)
+            setParentEmailId(doc.data().email)
+          });
+        }
+        else if (referUser.empty) {          
+          const referUser2 = await firebase
+            .firestore()
+            .collection('users');
+          await referUser2.get().then((snapshot) => {
+            let data: any = []
+            snapshot.forEach((doc) => {
+              data.push({ ...doc.data() });
+            });        
+            data?.map((item: any, index: number) => {
+              if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
+                setPreantId(item.uid)   
+                setParentEmailId(item.email)
+                console.log(item.email,"item.email")
+              }
+            })
+          })          
+        }
+      } catch (err) {
+        console.log(err, 'email');
+      }
+    }
+  }
+  
+  useEffect(() => {
+    if (refer) {
+      getUserId()
+    }
+  }, [])  
+
+  
+
   return (
     <Stack
       gap={2}
@@ -74,7 +131,9 @@ const GenericLoginSignup = ({ authProvider }:
                 <LoginWith
                   provider={provider}
                   onClick={() =>
-                    authProvider(setUser, providers[provider], showToast)
+                    // authProvider(setUser, providers[provider], showToast)
+                    // @ts-ignore
+                  { preantId ? authProvider(setUser, providers[provider], showToast, assign, preantId, parentEmailId) : authProvider(setUser, providers[provider], showToast) }
                   }
                 />
               </div>

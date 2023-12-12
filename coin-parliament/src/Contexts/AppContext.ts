@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  parentEmailId?: any;
+  setParentEmailId?: any;
   followerUserId?: string;
   setFollowerUserId?: (lang: string) => void;
   remainingTimer?: any;

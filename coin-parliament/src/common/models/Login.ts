@@ -38,6 +38,7 @@ import { userDefaultData } from "common/consts/contents";
 import axios from "axios";
 import { generateUsername } from "common/utils/strings";
 const sendEmail = httpsCallable(functions, "sendEmail");
+const assign = httpsCallable(functions, "assignReferrer");
 export enum LoginModes {
   LOGIN,
   SIGNUP,
@@ -86,11 +87,14 @@ export const LoginAuthProvider = async (
     options?: ToastOptions | undefined,
 
   ) => void,
-  setSmsVerification?: (s: string) => void,
   callback?: (s: any) => void,
   refer?: any,
+  parentEmailId?:any,
+  setSmsVerification?: (s: string) => void,
 ) => {
   // const auth = getAuth();
+
+  console.log(parentEmailId,"parentEmailIdcheck")
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
@@ -118,7 +122,8 @@ export const LoginAuthProvider = async (
             firstTimeLogin: true,
             displayName: (auth.currentUser?.displayName || ''),
             avatar: (auth.currentUser?.photoURL || ''),
-          }
+          },
+          parentEmailId: parentEmailId
         });
       }
       const referUser = await getReferUser(V2EParliament.firestore());
@@ -324,7 +329,8 @@ export const validateSignup = (payload: SignupPayload) => {
 
 export const SignupRegular = async (
   payload: SignupPayload,
-  callback: Callback<AuthUser>
+  callback: Callback<AuthUser>,
+  parentEmailId?: any
 ) => {
   const auth = getAuth();
   try {
@@ -339,13 +345,18 @@ export const SignupRegular = async (
     await sendEmailVerification(auth?.currentUser).then((data) => {
       showToast("Successfully sent  verification link on your mail");
     });
-    const referUser = await getReferUser(V2EParliament.firestore());    
+
+    const referUser = await getReferUser(V2EParliament.firestore(), parentEmailId);    
+
+    
     await saveUserData((auth?.currentUser?.uid || ''), db, {
 
       firstTimeLogin: true,
       parent: referUser?.uid,
       // displayName: await generateUsername()
     });
+    
+    await assign({ parent: referUser?.uid, child: auth?.currentUser?.uid })
     // showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
     // callback.successFunc(auth?.currentUser)
@@ -362,13 +373,15 @@ export const SignupRegular = async (
   }
 };
 
-export const genericLogin = async (payload: SignupPayload, callback: Callback<any>) => {
+export const genericLogin = async (payload: SignupPayload, callback: Callback<any>, parentEmailId?: any) => {
+  
+  console.log(parentEmailId,"parentEmailIdlogin")
   Promise.all([
-    SignupRegular(payload, callback),
-    SignupRegularForCoinParliament(payload, callback),
-    SignupRegularForSportParliament(payload, callback),
-    SignupRegularForStockParliament(payload, callback),
-    SignupRegularForVotingParliament(payload, callback)
+    SignupRegular(payload, callback, parentEmailId),
+    SignupRegularForCoinParliament(payload, callback, {},parentEmailId),
+    SignupRegularForSportParliament(payload, callback, {}, parentEmailId),
+    SignupRegularForStockParliament(payload, callback, {}, parentEmailId),
+    SignupRegularForVotingParliament(payload, callback, {}, parentEmailId)
   ]).then(() => {
     // callback.successFunc({});
   }).catch(() => { })
@@ -382,16 +395,17 @@ export const genericLogin = async (payload: SignupPayload, callback: Callback<an
   // });
 }
 
-export const genericThirdPartyLogin = async ({ payload, callback, userData }: {
+export const genericThirdPartyLogin = async ({ payload, callback, userData, parentEmailId }: {
   payload: SignupPayload,
   callback: Callback<AuthUser>,
   userData?: { [key: string]: any }
+  parentEmailId?:any
 }) => {
 
-  await SignupRegularForCoinParliament(payload, callback, userData);
-  await SignupRegularForSportParliament(payload, callback, userData);
-  await SignupRegularForStockParliament(payload, callback, userData);
-  await SignupRegularForVotingParliament(payload, callback, userData);
+  await SignupRegularForCoinParliament(payload, callback, userData, parentEmailId);
+  await SignupRegularForSportParliament(payload, callback, userData, parentEmailId);
+  await SignupRegularForStockParliament(payload, callback, userData, parentEmailId);
+  await SignupRegularForVotingParliament(payload, callback, userData, parentEmailId);
 }
 
 export const verifySportEmail = async (uid: string, email: string, domain: string) => {
@@ -410,6 +424,25 @@ export const verifySportEmail = async (uid: string, email: string, domain: strin
     });
   }
 }
+
+export const assignRef = async (parent: string, child: string, domain: string) => {
+  if (child && parent) {
+    await axios.post(domain + `/assignReferrer`, {
+      data: {
+        parent,
+        child
+      }
+    }).then(() => {
+      console.log(domain + ' assignRef');
+      return true;
+    }).catch(() => {
+      console.log(domain + ' assignRef');
+      return false;
+    });
+  }
+}
+
+
 
 
 export type SignupPayload = {
