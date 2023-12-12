@@ -27,10 +27,12 @@ const Votes = () => {
     coins: { votes: [], total: 0 },
     pairs: { votes: [], total: 0 },
   } as GetVotesResponse);
+  const [isLoading, setIsLoading] = useState(false);
   const [coinSocketData, setCoinSocketData] = useState([])
   const getVotes = useCallback(
     async (start: number, isOpenVote: boolean) => {
       if (user?.uid) {
+        setIsLoading(true)
         const newVotes = await getVotesFunc({
           start,
           end: start + pageSize,
@@ -42,6 +44,7 @@ const Votes = () => {
         if (newVotes?.data) {
           setVotes(result);
         }
+        setIsLoading(false)
       }
     },
     [user?.uid, pageSize]
@@ -165,6 +168,7 @@ const Votes = () => {
         setRunVote={setRunVote}
         runVote={runVote}
         getVotes={getVotes}
+        isLoading={isLoading}
         tabs={[
           {
             eventKey: "pairs",

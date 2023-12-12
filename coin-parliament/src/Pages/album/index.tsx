@@ -278,7 +278,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             snapshot.forEach((doc) => {
                 data.push({ id: doc.id, ...doc.data() });
             });
-
+            setIsLoading(false)
             setCollectionType(data)
             setCardShow(false)
 
@@ -309,6 +309,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
         const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName);
 
         if (getAlbumId) {
+            setIsLoading(true)
             const getSetsType = firebase
                 .firestore()
                 .collection("nftGallery")
@@ -321,9 +322,11 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     snapshot.forEach((doc) => {
                         data.push({ id: doc.id, ...doc.data() });
                     });
+                    setIsLoading(false)
                     setSetsValue(data)
                     setCardType("all")
                 }).catch((error) => {
+                    setIsLoading(false)
                     console.log(error, "error");
                 });
         }
@@ -453,14 +456,14 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     onChange={e => {
                         setSearchValue(trim(e.target.value));
                     }}
-                    placeholder='Search...'
+                    placeholder='SEARCH...'
                     className='py-2 mx-2 color-back'
-                    style={{ width: "150px" }}
+                    style={{ width: "200px" }}
 
                 />
-                <div className={`${window.screen.width < 767 ? "py-3 px-3" : ""}`}>
+                <div className={`${window.screen.width < 767 ? "py-3 d-flex" : ""}`}>
                     <select
-                        className='color-back py-2'
+                        className='color-back py-2 mx-1'
                         value={collectionValue}
                         // onChange={e=>onCollectionChange(e.target.value)}
                         onChange={e => {
@@ -471,7 +474,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             setCollectionCardValue('none');
                         }}
                         style={{
-                            width: "140px"
+                            width: "155px"
                         }}
                     >
                         <option value='none' > {texts.SelectCollection} </option>
@@ -484,14 +487,14 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     </select>
                     <select
 
-                        className='color-back py-2 mx-2'
+                        className='color-back py-2 mx-1'
                         // onChange={e=>onCollectionChange(e.target.value)}
                         value={collectionSetValue}
                         onChange={e => {
                             setCollectionSetValue(e.target.value);
                         }}
                         style={{
-                            width: "140px"
+                            width: "155px"
                         }}
                     >
                         <option value='none' > {texts.SelectSets} </option>
@@ -503,7 +506,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     </select>
                 </div >
                 <div className={`${window.screen.width < 767 ? "" : ""}`}>
-
                     <select
                         name='type'
                         id='type'
@@ -513,7 +515,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         }}
                         value={collectionTypeValue}
                         style={{
-                            width: "140px"
+                            width: "155px"
                         }}
                     >
                         {collectionValue != "none" ? <><option value='all' > {texts.SelectType} </option>
@@ -533,7 +535,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         }}
                         value={collectionCardValue}
                         style={{
-                            width: "140px"
+                            width: "155px"
                         }}
                     >
                         <option value='none' > {texts.SelectName} </option>
@@ -562,7 +564,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         <label htmlFor="default-checkbox" > {texts.AvailableCards} </label>
                     </div>}
             </div>
-            {isLoading && <div style={{
+            {isLoading && collectionType !== "" &&<div style={{
                 position: 'fixed',
                 height: '100%',
                 display: 'flex',
