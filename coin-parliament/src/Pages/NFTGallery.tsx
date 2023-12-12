@@ -133,6 +133,7 @@ const NFTGallery = () => {
 
 
 
+
   const getNftCardNew = () => {
     const getCollectionType = firebase
       .firestore()
@@ -162,6 +163,7 @@ const NFTGallery = () => {
     }
 
     if (collectionName === 'none') {
+      setIsLoading(true);
       const getCollectionType = firebase
         .firestore()
         .collection("nftGallery")
@@ -176,12 +178,13 @@ const NFTGallery = () => {
           // setAllCardArray(data)
           setSetsValue([])
           setCardShow(false)
-
+          setIsLoading(false);
         }).catch((error) => {
           console.log(error, "error");
         });
     }
     else {
+      setIsLoading(true);
       const getCollectionType = firebase
         .firestore()
         .collection("cardsDetails")
@@ -197,8 +200,10 @@ const NFTGallery = () => {
           data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
           setCardNameNew(data)
           setAllCardNew(data)
+          setIsLoading(false);
           setCardShow(true)
         }).catch((error) => {
+          setIsLoading(false);
           console.log(error, "error");
         });
       const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
@@ -411,7 +416,7 @@ const NFTGallery = () => {
           type='text'
           onChange={e => onSearch(e.target.value)}
           // onChange={(e)=>{HandelonchangeFilter(e)}}
-          placeholder='Search...'
+          placeholder='SEARCH...'
           className='py-2 mx-2 color-back '
           style={{ width: "200px" }}
 
@@ -423,7 +428,7 @@ const NFTGallery = () => {
             // onChange={e=>onCollectionChange(e.target.value)}          
             onChange={e => setSelectCollection(e.target.value)}
             style={{
-              width: "140px"
+              width: "155px"
             }}
           >
             <option value='none'>{texts.SelectCollection}</option>
@@ -437,12 +442,12 @@ const NFTGallery = () => {
                 <option value='Monsoon'>Monsoon</option> */}
           </select>
           <select
-            className='  color-back py-2 mx-1'
+            className='color-back py-2 mx-2'
             // onChange={e=>onCollectionChange(e.target.value)}
             onChange={e => onSelectSets(e.target.value)}
             value={setsCardId}
             style={{
-              width: "140px"
+              width: "155px"
             }}
           >
             <option value='none'>{texts.SelectSets}</option>
@@ -456,11 +461,11 @@ const NFTGallery = () => {
           <select
             name='type'
             id='type'
-            className='  color-back mx-1 py-2'
+            className='  color-back mx-2 py-2'
             onChange={(e) => { onSelectType(e.target.value) }}
             value={cardType}
             style={{
-              width: "140px"
+              width: "155px"
             }}
           >
             {selectCollection != "none" ? <><option value='all'>{texts.SelectType}</option>
@@ -472,12 +477,12 @@ const NFTGallery = () => {
               <option value='all'>{texts.SelectType}</option>}
           </select>
           <select
-            className='  color-back py-2 mx-1'
+            className='color-back py-2 mx-2'
             // onChange={e=>onCollectionChange(e.target.value)}
             onChange={e => onSelectName(e.target.value)}
             value={setsCardName}
             style={{
-              width: "140px"
+              width: "155px"
             }}
           >
             <option value='none'>{texts.SelectName}</option>
@@ -489,7 +494,7 @@ const NFTGallery = () => {
       </div>
 
       {/* @ts-ignore */}      
-      {isLoading && <div style={{
+      {isLoading && collectionType !=="" && <div style={{
         position: 'fixed',
         height: '100%',
         display: 'flex',
@@ -559,7 +564,7 @@ const NFTGallery = () => {
       
       
       {
-        selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType =="all" && <>
+       !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType =="all" && <>
           <div className="w-100 d-flex">
             <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap`} style={{}}>
               {setsValue.map((item:any,index:number) => {

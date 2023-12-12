@@ -68,8 +68,7 @@ function PaymentFun({ isVotingPayment }: any) {
   
   console.log(coinInfo, 'coinInfo1');
 
-  let navigate = useNavigate();
-  const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
+  let navigate = useNavigate();  
 
   useEffect(() => {
     (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
@@ -114,7 +113,7 @@ function PaymentFun({ isVotingPayment }: any) {
 
     }
 
-    axios.post(`${ApiUrl}payment/makePayment/toServer`, data,
+    axios.post(`/payment/makePayment/toServer`, data,
       {
         headers: headers
       }).then(async (response) => {
@@ -158,7 +157,7 @@ function PaymentFun({ isVotingPayment }: any) {
       paymentDetails: { ...detail, ...transactionId.current },
 
     }
-    axios.post(`${ApiUrl}payment/update/user/afterVote`, data,
+    axios.post(`/payment/update/user/afterVote`, data,
       {
         headers: headers
       }).then(async (response) => {

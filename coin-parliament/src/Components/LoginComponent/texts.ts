@@ -21,10 +21,11 @@ export const texts = {
   chooseUserName: "choose username",
   chooseUserNameText:
     "Other members of the community will identify you by your username.",
-  FoundationSelect: 'For every vote you cast, Coin Parliament will match it and donate to one of The following foundations',
+  FoundationSelect:
+    "For every vote you cast, Coin Parliament will match it and donate to one of The following foundations",
   ForgetPasswordText: `Don't remember your password ?`,
-  UserNameValidation: 'User name should be unique and characters or number.',
-  Total100: 'total share must be 100%',
+  UserNameValidation: "User name should be unique and characters or number.",
+  Total100: "total share must be 100%",
   UserInfoUpdate: "user info was updated",
   UserFailUpdate: "user failed to be updated",
   success: "success",
@@ -32,8 +33,10 @@ export const texts = {
   PasswordResetLinkSent: "Password reset link has been sent to your email.",
   AgreetNc: "You must agree to t&c",
   PasswordUpdatSuccess: "Password updated successfully.",
-  PasswordUpdatSuccesslogout: "You need to login again because password is changed",
-  PasswordMustContain: "Password must contain at least 1 capital letter(s) (ABCDEFGHIJKLMNOPQRSTUVWXYZ). It must contain at least 1 numeric character(s) (0123456789). It must not contain more than 3 identical consecutive characters (AAA, iiii, $$$$$ ...). It must not contain your user name.",
+  PasswordUpdatSuccesslogout:
+    "You need to login again because password is changed",
+  PasswordMustContain:
+    "Password must contain at least 1 capital letter(s) (ABCDEFGHIJKLMNOPQRSTUVWXYZ). It must contain at least 1 numeric character(s) (0123456789). It must not contain more than 3 identical consecutive characters (AAA, iiii, $$$$$ ...). It must not contain your user name.",
   FASecurityAdded: "2FA security added to your account.",
   WrongCode: "Wrong code please try again.",
   CopiedClipboard: "copied to clipboard.",
@@ -47,7 +50,8 @@ export const texts = {
   YouMustLoggedInVote: "you must be logged in to vote",
   Bear: "bear",
   Bull: "bull",
-  InstallCoinParliament: "Install CoinParliament app for best experience".toUpperCase(),
+  InstallCoinParliament:
+    "Install CoinParliament app for best experience".toUpperCase(),
   Install: "Install".toUpperCase(),
   ViewAll: "view all".toUpperCase(),
   WhatYourCoinVote: "What's Your Coin Vote ?".toUpperCase(),
@@ -57,7 +61,7 @@ export const texts = {
   Speaker: "speaker",
   Ambassador: "ambassador",
   Minister: "minister",
-  SelectCollection: "All Collections",
+  SelectCollection: "All Collections".toUpperCase(),
   SelectSets: "Sets".toUpperCase(),
   SelectName: "card".toUpperCase(),
   SelectType: "Type".toUpperCase(),
@@ -72,11 +76,11 @@ export const texts = {
   CoinParliamentBalance: "PARLIAMENT COIN".toUpperCase(),
   CLAIMINGREWARDS: "CLAIMING REWARDS...",
   CLAIMYOURREWARDS: "CLAIM YOUR REWARDS",
-  
+
   friends: "friends".toUpperCase(),
   LoadingText: "loading...".toUpperCase(),
   Calculatingvoteresult: "Calculating vote result...".toUpperCase(),
-  waitForIt: 'Wait for it...',
+  waitForIt: "Waiting for it...",
   Prev: "Prev".toUpperCase(),
   Next: "Next".toUpperCase(),
   Pair: "pair".toUpperCase(),
@@ -90,8 +94,8 @@ export const texts = {
   // LASTNAME: "Last Name",
   LASTNAME: "Last Name".toUpperCase(),
   EMAIL: "Email".toUpperCase(),
-  BIO: 'BIO',
-  WALLETADDRESS: 'Wallet Address',
+  BIO: "BIO",
+  WALLETADDRESS: "Wallet Address",
   PHONE: "Phone".toUpperCase(),
   OLDPASSWORD: "Old Password".toUpperCase(),
   NEWPASSWORD: "New Password".toUpperCase(),
@@ -104,13 +108,14 @@ export const texts = {
   parliamentcoin: "parliament coin".toUpperCase(),
   Card: "Card".toUpperCase(),
   ForgetPassword: "Forget password",
-  Foundations: "Foundations",  
-  passwordValidation1: 'Password must be at least 8 characters.',
-  passwordValidation2: 'Password must contain 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character',
-  passwordValidation3: 'It must not contain more than 2 identical consecutive characters (AAA, iiii, ...).',
-  passwordValidation4: 'Password should be not contains user name.',
-  passwordValidation5: 'Confirm password  must be same as password.',
-
+  Foundations: "Foundations",
+  passwordValidation1: "Password must be at least 8 characters.",
+  passwordValidation2:
+    "Password must contain 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character",
+  passwordValidation3:
+    "It must not contain more than 2 identical consecutive characters (AAA, iiii, ...).",
+  passwordValidation4: "Password should be not contains user name.",
+  passwordValidation5: "Confirm password  must be same as password.",
 };
 
 export const urls = {

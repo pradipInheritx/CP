@@ -393,8 +393,9 @@ const UpgradePageCopy = () => {
               <ButttonDiv className="mt-1">
                 <button
                   onClick={() => {
-                    // upgradeProfile(99, 0)
-                    showModal(<Upgrade />)
+                    handleSoundClick()
+                    upgradeProfile(99, 0)
+                    // showModal(<Upgrade />)
                   }}
                 >
                   <div className='d-flex justify-content-around' >

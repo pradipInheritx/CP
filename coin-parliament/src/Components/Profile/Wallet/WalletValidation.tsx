@@ -8,7 +8,7 @@ import React, { useContext, useState } from 'react'
 import { Col, Container, Form, FormControl, Row } from 'react-bootstrap'
 
 
-const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAction<boolean>>, }> = ({ setMfaLogin, }) => {
+const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAction<boolean>>, UpdateFunction?:any, modalOpen?: boolean }> = ({ setMfaLogin, UpdateFunction, modalOpen }) => {
     const [textData, setTextData] = useState<string>('');
     const [buttonShow, setButtonShow] = useState<boolean>(false);
     const { userInfo } = useContext(UserContext);
@@ -27,6 +27,7 @@ const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAct
             window.localStorage.setItem('mfa_passed', 'false')
             setMfaLogin(true)
             setButtonShow(false)
+            UpdateFunction()
             console.log("i am working verify",response)
         } catch (error: any) {
             showToast(
@@ -46,10 +47,12 @@ const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAct
                 <div className=''>
                     <div className=''>
                         <Container
-                            style={{ minHeight: window.screen.width < 979 ? "59vh" : "67vh" }}
+                            style={{
+                                minHeight: modalOpen ? `${window.screen.width < 979 ? "" : ""}` : `${window.screen.width < 979 ? "59vh" : "67vh"}`
+                            }}
                         >
                             <Row style={{ justifyContent: "center" }}>
-                                <Col sm={6}>
+                                <Col sm={modalOpen ?12:6}>
                                     <Form.Group controlId="MFA">
                                         <Form.Check>
                                             <> <Row style={{ marginTop: '150px' }}>
@@ -63,9 +66,10 @@ const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAct
                                                     <Col>
                                                         <Container className="p-0">
 
-                                                            <div className="mb-5 "
+                                                            <div className="mb-5"
                                                                 style={{
-                                                                    width:`${window.screen.width >767 ?"620px":"100%"}`
+                                                                    width: modalOpen ? `${window.screen.width > 767 ? "300px" : "100%"}` : `${window.screen.width > 767 ? "620px" : "100%"}`
+                                                                    
                                                                 }}
                                                             >
                                                                 <div className='d-flex justify-content-between'
