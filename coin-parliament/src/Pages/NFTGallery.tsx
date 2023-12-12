@@ -132,7 +132,7 @@ const NFTGallery = () => {
   }, [albumOpen])
 
 
-  
+
 
   const getNftCardNew = () => {
     const getCollectionType = firebase
@@ -163,6 +163,7 @@ const NFTGallery = () => {
     }
 
     if (collectionName === 'none') {
+      setIsLoading(true);
       const getCollectionType = firebase
         .firestore()
         .collection("nftGallery")
@@ -177,12 +178,13 @@ const NFTGallery = () => {
           // setAllCardArray(data)
           setSetsValue([])
           setCardShow(false)
-
+          setIsLoading(false);
         }).catch((error) => {
           console.log(error, "error");
         });
     }
     else {
+      setIsLoading(true);
       const getCollectionType = firebase
         .firestore()
         .collection("cardsDetails")
@@ -198,8 +200,10 @@ const NFTGallery = () => {
           data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
           setCardNameNew(data)
           setAllCardNew(data)
+          setIsLoading(false);
           setCardShow(true)
         }).catch((error) => {
+          setIsLoading(false);
           console.log(error, "error");
         });
       const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
@@ -490,7 +494,7 @@ const NFTGallery = () => {
       </div>
 
       {/* @ts-ignore */}      
-      {isLoading && <div style={{
+      {isLoading && collectionType !=="" && <div style={{
         position: 'fixed',
         height: '100%',
         display: 'flex',
@@ -560,7 +564,7 @@ const NFTGallery = () => {
       
       
       {
-        selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType =="all" && <>
+       !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType =="all" && <>
           <div className="w-100 d-flex">
             <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap`} style={{}}>
               {setsValue.map((item:any,index:number) => {

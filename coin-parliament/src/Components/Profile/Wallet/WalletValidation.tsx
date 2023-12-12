@@ -8,7 +8,7 @@ import React, { useContext, useState } from 'react'
 import { Col, Container, Form, FormControl, Row } from 'react-bootstrap'
 
 
-const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAction<boolean>>, UpdateFunction: () => void, modalOpen?: boolean }> = ({ setMfaLogin, UpdateFunction, modalOpen }) => {
+const WalletValidation: React.FC<{ setMfaLogin: React.Dispatch<React.SetStateAction<boolean>>, UpdateFunction?:any, modalOpen?: boolean }> = ({ setMfaLogin, UpdateFunction, modalOpen }) => {
     const [textData, setTextData] = useState<string>('');
     const [buttonShow, setButtonShow] = useState<boolean>(false);
     const { userInfo } = useContext(UserContext);

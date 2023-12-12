@@ -278,7 +278,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             snapshot.forEach((doc) => {
                 data.push({ id: doc.id, ...doc.data() });
             });
-
+            setIsLoading(false)
             setCollectionType(data)
             setCardShow(false)
 
@@ -309,6 +309,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
         const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName);
 
         if (getAlbumId) {
+            setIsLoading(true)
             const getSetsType = firebase
                 .firestore()
                 .collection("nftGallery")
@@ -321,9 +322,11 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     snapshot.forEach((doc) => {
                         data.push({ id: doc.id, ...doc.data() });
                     });
+                    setIsLoading(false)
                     setSetsValue(data)
                     setCardType("all")
                 }).catch((error) => {
+                    setIsLoading(false)
                     console.log(error, "error");
                 });
         }
@@ -459,6 +462,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
                 />
                 <div className={`${window.screen.width < 767 ? "py-3 px-3" : ""}`}>
+
                     <select
                         className='color-back py-2'
                         value={collectionValue}
@@ -503,7 +507,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     </select>
                 </div >
                 <div className={`${window.screen.width < 767 ? "" : ""}`}>
-
                     <select
                         name='type'
                         id='type'
@@ -562,7 +565,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         <label htmlFor="default-checkbox" > {texts.AvailableCards} </label>
                     </div>}
             </div>
-            {isLoading && <div style={{
+            {isLoading && collectionType !== "" &&<div style={{
                 position: 'fixed',
                 height: '100%',
                 display: 'flex',
