@@ -559,6 +559,59 @@ export const getCPVIForVote = async ({ id }: { id: string }) => {
   }
 };
 
+export const CPVIForCoin = async (coinName: string) => {
+  try {
+    // get all the data in between24 hours
+    const currentTime = Date.now();
+    const before24hoursTime = currentTime - 24 * 3600000;
+    const getAllCoinListing = (
+      await firestore()
+        .collection('votes')
+        .where("expiration", ">", currentTime)
+        .where("expiration", "<", before24hoursTime)
+        .get()
+    ).docs.map((coin) => coin.data());
+
+    const getCoinListing = getAllCoinListing.filter((coin: any) => coin.coin === coinName);
+    console.log("getCoinListing : ", getCoinListing);
+
+    const countVoteObj = {
+      bear: 0,
+      bull: 0
+    }
+    getCoinListing.forEach((coin: any) => {
+      if (coin.direction == 1) countVoteObj.bull += 1
+      if (coin.direction == 0) countVoteObj.bear += 1
+    })
+
+    if (coinName.split("-").length > 0) {
+      let coins = coinName.split("-");
+      let result: any = Object.keys(coins);
+      result[coins[0]] = (countVoteObj.bull / getCoinListing.length) * 100;
+      result[coins[1]] = (countVoteObj.bear / getCoinListing.length) * 100;
+      return {
+        ...result,
+        totalVote: getCoinListing.length,
+        coin: coinName
+      }
+
+    }
+
+    return {
+      bull: (countVoteObj.bull / getCoinListing.length) * 100,
+      bear: (countVoteObj.bear / getCoinListing.length) * 100,
+      totalVote: getCoinListing.length,
+      coin: coinName
+    };
+
+
+  } catch (error) {
+    console.log("CPVIForCoin Error : ", error)
+    return { status: false, message: "Something went wrong", error }
+  }
+}
+
+
 // export const getCPVIForVote = async ({id}: { id: string }) => {
 //   const end = moment().utc().format();
 //   const start = moment().subtract(30, "d").utc().format();

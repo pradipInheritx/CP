@@ -74,6 +74,7 @@ import {
   cpviTaskCoin,
   cpviTaskPair,
   getCPVIForVote,
+  CPVIForCoin
   // getUniqCoins,
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
@@ -763,8 +764,9 @@ exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
 exports.getCoinCurrentAndPastDataDifference = functions.pubsub
   .schedule("0 */6 * * *")
   .onRun(async () => {
+    const timeDifference = 6
     console.log("---Start getCoinCurrentAndPastDataDifference -------");
-    await getCoinCurrentAndPastDataDifference();
+    await getCoinCurrentAndPastDataDifference(timeDifference);
     console.log("---End getCoinCurrentAndPastDataDifference -------");
   });
 
@@ -1004,6 +1006,12 @@ exports.prepareWeeklyCPVI = functions.pubsub
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
   // console.log("getCPVIForVote(data) =>", data);
   return await getCPVIForVote(data);
+});
+
+exports.CPVIForCoin = functions.https.onCall(async (data) => {
+  // console.log("getCPVIForVote(data) =>", data);
+  const {coinName} = data;
+  return await CPVIForCoin(coinName);
 });
 
 exports.getResultAfterVote = functions.https.onCall(async (data) => {
