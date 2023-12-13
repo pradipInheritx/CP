@@ -570,8 +570,8 @@ export const CPVIForCoin = async (coinName: string) => {
     const getAllCoinListing = (
       await firestore()
         .collection('votes')
-        .where("expiration", ">=", currentTime)
-        .where("expiration", "<=", before24hoursTime)
+        .where("expiration", "<=", currentTime)
+        .where("expiration", ">=", before24hoursTime)
         .get()
     ).docs.map((coin) => coin.data());
 
