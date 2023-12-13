@@ -29,7 +29,8 @@ export const getUsers = ({
   setIsLoading?: any;
   setUsers: (newUsers: Leader[]) => void;
 }) => {
-  try { 
+  try {
+    // setIsLoading(true)
     getLeaderUsersByIds({ userIds: users }).then((u) => {
       console.log(u.data, "checkdata")
       setUsers(u.data);

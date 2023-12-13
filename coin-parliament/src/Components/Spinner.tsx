@@ -5,7 +5,7 @@ const Spinner = () => {
   const translate = useTranslation();
   return (
     <React.Fragment>
-      <div className="tada m-2">{translate("Waiting for it...").toUpperCase()}</div>
+      <div className="tada m-2">{translate("Wait for it...").toUpperCase()}</div>
       {/* <div className="tada m-2"> <img src={BigLogo}></img></div> */}
     </React.Fragment>
   );

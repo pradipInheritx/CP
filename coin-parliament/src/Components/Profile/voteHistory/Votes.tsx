@@ -183,7 +183,10 @@ const Votes = () => {
                   )
 
                 })}
+                <div style={{display: !isLoading ? 'block' : 'none' }}>
+
                 {getButtons(votes.pairs)}
+                </div>
               </div>
             ),
           },
@@ -197,7 +200,10 @@ const Votes = () => {
                   return <MyVotedCard key={i} v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />
                 }
                 )}
+                 <div style={{display: !isLoading ? 'block' : 'none' }}>
+
                 {getButtons(votes.coins)}
+                </div>
               </div>
             ),
           }
