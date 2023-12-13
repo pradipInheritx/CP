@@ -598,11 +598,13 @@ export const CPVIForCoin = async (coinName: string) => {
       if (coin.direction == 0) countVoteObj.bear += 1
     })
 
-    if (coinName.split("-").length > 0) {
+    console.log("countVoteObj : ",countVoteObj)
+    if (coinName.split("-").length == 2) {
+      console.log("pair coin is calling")
       let coins = coinName.split("-");
-      let result: any = Object.keys(coins);
-      result[coins[0]] = (countVoteObj.bull / getCoinListing.length) * 100;
-      result[coins[1]] = (countVoteObj.bear / getCoinListing.length) * 100;
+      let result: any = {};
+      result[coins[0]] = ((countVoteObj.bull / getCoinListing.length) * 100).toFixed(2);
+      result[coins[1]] = ((countVoteObj.bear / getCoinListing.length) * 100).toFixed(2);
       return {
         ...result,
         totalVote: getCoinListing.length,
@@ -612,8 +614,8 @@ export const CPVIForCoin = async (coinName: string) => {
     }
 
     return {
-      bull: (countVoteObj.bull / getCoinListing.length) * 100,
-      bear: (countVoteObj.bear / getCoinListing.length) * 100,
+      bull: ((countVoteObj.bull / getCoinListing.length) * 100).toFixed(2),
+      bear: ((countVoteObj.bear / getCoinListing.length) * 100).toFixed(2),
       totalVote: getCoinListing.length,
       coin: coinName
     };
