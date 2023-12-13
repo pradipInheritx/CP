@@ -561,24 +561,38 @@ export const getCPVIForVote = async ({ id }: { id: string }) => {
 
 export const CPVIForCoin = async (coinName: string) => {
   try {
+    console.log("coinName: " , coinName);
     // get all the data in between24 hours
     const currentTime = Date.now();
     const before24hoursTime = currentTime - 24 * 3600000;
+    console.log("current time: " + currentTime)
+    console.log("before24hours time: " + before24hoursTime)
     const getAllCoinListing = (
       await firestore()
         .collection('votes')
-        .where("expiration", ">", currentTime)
-        .where("expiration", "<", before24hoursTime)
+        .where("expiration", ">=", currentTime)
+        .where("expiration", "<=", before24hoursTime)
         .get()
     ).docs.map((coin) => coin.data());
 
-    const getCoinListing = getAllCoinListing.filter((coin: any) => coin.coin === coinName);
+    console.log("getAllCoinListing : ",getAllCoinListing)
+    const getCoinListing = getAllCoinListing.filter((coin: any) => coin.coin == coinName);
     console.log("getCoinListing : ", getCoinListing);
 
     const countVoteObj = {
       bear: 0,
       bull: 0
     }
+
+    if(!getCoinListing.length) {
+      return {
+        totalVote: getCoinListing.length,
+        coin: coinName,
+        result : [],
+        message : "No data found in last 24 hours"
+      }
+    }
+
     getCoinListing.forEach((coin: any) => {
       if (coin.direction == 1) countVoteObj.bull += 1
       if (coin.direction == 0) countVoteObj.bear += 1
