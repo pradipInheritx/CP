@@ -329,14 +329,14 @@ const getPriceOnpaticularTimeFromPast = async (
   return getCoinPrice?.data[0].p;
 };
 
-export const getCoinCurrentAndPastDataDifference = async () => {
+export const getCoinCurrentAndPastDataDifference = async (timeDifference:number) => {
   try {
     console.log(
       "----------getCoinCurrentAndPastDataDifference started-----------"
     );
     const getCoins = await getAllCoin();
     const currentTime = Date.now();
-    const beforeFourHoursTime = currentTime - 4 * 3600000;
+    const beforeFourHoursTime = currentTime - timeDifference * 3600000;
     const currentCoinAndPrice: any = [];
     const missingCoinInBinanceApi = [
       "LUNA",
