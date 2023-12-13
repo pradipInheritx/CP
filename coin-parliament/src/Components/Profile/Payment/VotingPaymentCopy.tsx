@@ -671,7 +671,7 @@ const VotingPaymentCopy: React.FC<{
                 }}
               >
                 <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div className="pay-custom-select-container mb-3" style={{
+                  <div className={`${selectCoin === "none" && "pay-custom-select-container"} mb-3`} style={{
                     width: '23em',
                     zIndex: 4,                    
                   }} >
@@ -681,7 +681,9 @@ const VotingPaymentCopy: React.FC<{
                         if (payButton) {
                           return
                         }
-                        setShowOptionList(prev => !prev)
+                        if (selectCoin === "none") {
+                          setShowOptionList(prev => !prev)
+                        }
                       }
 
                       }
