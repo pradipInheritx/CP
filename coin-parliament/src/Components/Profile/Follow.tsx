@@ -30,7 +30,7 @@ export const getUsers = ({
   setUsers: (newUsers: Leader[]) => void;
 }) => {
   try {
-    setIsLoading(true)
+    // setIsLoading(true)
     getLeaderUsersByIds({ userIds: users }).then((u) => {
       console.log(u.data, "checkdata")
       setUsers(u.data);
@@ -58,11 +58,13 @@ const Follow = () => {
   useEffect(() => {
     if (userInfo?.leader) {
       getUsers({ users: userInfo?.leader, setUsers: setLeaders,setIsLoading })
+      setIsLoading(true)
     }
   }, [userInfo?.leader]);
   useEffect(() => {
     if (userInfo?.subscribers) {
       getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers,setIsLoading });
+      setIsLoading(true)
     }
   }, [userInfo?.subscribers]);
 
