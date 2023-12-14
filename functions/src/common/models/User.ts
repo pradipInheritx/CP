@@ -109,21 +109,6 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
-
-
-function generateRandomName(length: number) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  let randomName = '';
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    randomName += characters.charAt(randomIndex);
-  }
-
-  return randomName;
-}
-
-
 export const addNewKeysInCollection = async (
   keyName: string,
   keyValue: string,
@@ -141,10 +126,10 @@ export const addNewKeysInCollection = async (
     for (let user = 0; user < getAllDataFromCollection.length; user++) {
       let newObject: any = {};
       keyValue = getAllDataFromCollection[user].displayName ? getAllDataFromCollection[user].displayName : generateRandomName(10);
-      keyValue.replace(/\s/g, '').trim();
-      newObject[keyName] = keyValue;
+      let removeSpace = keyValue.replace(/\s/g, '').trim();
+      newObject[keyName] = removeSpace;
 
-      console.log("keyValue : ", keyValue, "\nuser : ", user);
+      console.log("removeSpace : ", removeSpace, "\nuser : ", user);
       console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
       if (getAllDataFromCollection[user].uid) {
         await firestore()
