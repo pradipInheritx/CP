@@ -138,6 +138,7 @@ function generateRandomName(length: number) {
   return randomName;
 }
 
+
 export const addNewKeysInCollection = async (
   keyName: string,
   keyValue: string,
@@ -157,10 +158,10 @@ export const addNewKeysInCollection = async (
       keyValue = getAllDataFromCollection[user].displayName ? getAllDataFromCollection[user].displayName : generateRandomName(10);
       keyValue.replace(/\s/g, '').trim();
       newObject[keyName] = keyValue;
-      
+
       console.log("keyValue : ", keyValue, "\nuser : ", user);
       console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
-      
+
       await firestore()
         .collection(collectionName)
         .doc(getAllDataFromCollection[user].uid)
@@ -180,9 +181,10 @@ export const addNewKeysInCollection = async (
       message: "new key added successfully",
     };
   } catch (error) {
+    console.error("addNewKeysInCollection Error : ", error);
     return {
       result: false,
-      message: "something wrong in server",
+      message: "something wrong in server" + error,
     };
   }
 };
