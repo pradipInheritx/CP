@@ -594,8 +594,8 @@ export const CPVIForCoin = async (coinName: string) => {
     }
 
     getCoinListing.forEach((coin: any) => {
-      if (coin.direction == 1) countVoteObj.bull += 1
-      if (coin.direction == 0) countVoteObj.bear += 1
+      if (coin.direction == 0) countVoteObj.bull += 1
+      if (coin.direction == 1) countVoteObj.bear += 1
     })
 
     console.log("countVoteObj : ",countVoteObj)
