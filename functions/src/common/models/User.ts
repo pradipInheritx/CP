@@ -161,12 +161,12 @@ export const addNewKeysInCollection = async (
 
       console.log("keyValue : ", keyValue, "\nuser : ", user);
       console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
-
-      await firestore()
-        .collection(collectionName)
-        .doc(getAllDataFromCollection[user].uid)
-        .set(newObject, { merge: true });
-
+      if (getAllDataFromCollection[user].uid) {
+        await firestore()
+          .collection(collectionName)
+          .doc(getAllDataFromCollection[user].uid)
+          .set(newObject, { merge: true });
+      }
     }
 
     // getAllDataFromCollection.forEach((data: any) => {
