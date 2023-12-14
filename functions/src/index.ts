@@ -215,7 +215,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     lastName: "",
     mfa: false,
     displayName: user.displayName,
-    userName: user?.displayName?.replace(/\s/g, '').trim(),
+    userName: "",
     phone: user.phoneNumber,
     subscribers: [],
     children: [],
