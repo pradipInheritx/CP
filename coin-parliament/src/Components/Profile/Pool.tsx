@@ -11,11 +11,12 @@ import VBGM from "assets/images/VBGM.png"
 
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
-  const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.displayName}`;
+  const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.userName}`;
   const [children, setChildren] = useState<Leader[]>([]);
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(3) || 0
   );
+  console.log(userInfo?.userName, userInfo,"userInfo?.userName")
 
   useEffect(() => {
     getUsers({ users: userInfo?.children, setUsers: setChildren });
