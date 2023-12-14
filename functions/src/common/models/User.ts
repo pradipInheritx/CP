@@ -149,20 +149,23 @@ export const addNewKeysInCollection = async (
     ).docs.map((user: any) => user.data());
     console.log("getAllDataFromCollection : ", getAllDataFromCollection);
 
+
+
     //generate random value 
     for (let user = 0; user < getAllDataFromCollection.length; user++) {
       let newObject: any = {};
       keyValue = getAllDataFromCollection[user].displayName ? getAllDataFromCollection[user].displayName : generateRandomName(10);
       keyValue.replace(/\s/g, '').trim();
-      console.log("keyValue : ", keyValue, "\nuser : ", user);
-      console.log("newObject : ", newObject);
       newObject[keyName] = keyValue;
-      if (keyValue && newObject[keyName] == null) {
-        firestore()
+      
+      console.log("keyValue : ", keyValue, "\nuser : ", user);
+      console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
+      
+      await firestore()
         .collection(collectionName)
         .doc(getAllDataFromCollection[user].uid)
         .set(newObject, { merge: true });
-      }
+
     }
 
     // getAllDataFromCollection.forEach((data: any) => {
