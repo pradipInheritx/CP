@@ -46,10 +46,24 @@ function PaymentFun({ isVotingPayment }: any) {
   const [showOptionList, setShowOptionList] = useState(false);
   const [showForWait, setShowForWait] = useState(false);
   const [networkCode, setNetworkCode] = useState({
-    ETH: "1",
-    BNB: "56",
-    MATIC:"137",    
-  }); 
+    ETH: "11155111",
+    BNB: "97",
+    MATIC:"80001",    
+  });
+
+  // if (name == 'ethereum')
+  //   chainId = 11155111
+  // if (name == 'fantom')
+  //   chainId = 4002
+  // if (name == 'binance')
+  //   chainId = 97
+  // if (name == 'polygon')
+  //   chainId = 80001
+  // if (name == 'zkpolygon')
+  //   chainId = 1442
+  // if (name == 'avalanche')
+  //   chainId = 43113    
+
   const transactionId = useRef({});
   
   console.log(coinInfo, 'coinInfo1');
@@ -114,7 +128,6 @@ function PaymentFun({ isVotingPayment }: any) {
         console.log(error, "response.data")
         // setShowForWait(true)
         setApiCalling(false)
-        setPayButton(false)
       })
   }
 
@@ -153,7 +166,6 @@ function PaymentFun({ isVotingPayment }: any) {
       .catch((error) => {
         // setPaymentStatus({ type: 'error', message: '' });
         setApiCalling(false)
-        setPayButton(false)
       })
 
 

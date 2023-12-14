@@ -24,7 +24,6 @@ import Swal from 'sweetalert2';
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
-import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -203,15 +202,14 @@ const Minting = ({
   const [modalShow, setModalShow] = React.useState(false);
   const [tooltipShow, setTooltipShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
-  const [upgraeShow, setUpgraeShow] = React.useState(false);
   const [ClickedOption, setClickedOption] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
     setModalShow(true)
     claimRewardSound.play();
     // handleSoundWinCmp.play()
+
   };
-  let navigate = useNavigate();
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleCmpPopupClose = () => {
     setCmpPopupShow(false);
@@ -221,42 +219,18 @@ const Minting = ({
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
   };
-  
-  const handleUpgraeShow = () => {
-    setUpgraeShow(true)
-  };
-  const handleUpgraeClose = () => {
-    setUpgraeShow(false)
-  };
-
-  useEffect(() => {
-    if (score === 100 && userInfo?.rewardStatistics?.total == 1) {
-      handleUpgraeShow()
-      // @ts-ignore
-    } else if (userInfo?.rewardStatistics?.total > 1) {
-      handleUpgraeClose()
-    }
-
-  }, [userInfo?.rewardStatistics?.total]);
-
-
   useEffect(() => {
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
     }
   }, [modalShow, CmpPopupShow]);
-  
   useEffect(() => {
-    // @ts-ignore
-    if (score === 100 && userInfo?.rewardStatistics?.total > 1) {      
+    if (score === 100) {
       setTimeout(() => {
         handleCmpPopupShow();
-        console.log("i am working")
       }, 8100);
     }
-  }, [score , upgraeShow]);
-
-
+  }, [score]);
   useEffect(() => {
     if (CmpPopupShow) {
       const Animation = lottie.loadAnimation({
@@ -505,47 +479,6 @@ const Minting = ({
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>
           <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim later</div>
-        </Modal>
-      </div>
-
-      {/* For show upgread your account  */}
-
-      <div>
-        <Modal
-          show={
-            upgraeShow
-          } onHide={handleUpgraeClose}
-          backdrop="static"
-          contentClassName=""
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
-            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
-              handleUpgraeClose();
-              setTimeout(() => {
-                handleCmpPopupShow();
-              }, 1000);
-
-            }
-            }></button>
-          </div>
-          <Modal.Body className="d-flex  justify-content-center align-items-center">          
-            <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>              
-              <strong className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Now you can upgrade your account</strong>
-              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Get Merchandise Voucher</p>
-              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>50 Extra Votes </p>
-              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>500 VTE</p>              
-            </div>
-          </Modal.Body>  
-          <div className="d-flex justify-content-center pb-1 " style={{ zIndex: '101' }}>
-            <Buttons.Primary className="mx-2"
-              onClick={async () => {
-                handleUpgraeClose();
-                navigate("/upgrade")
-              }}
-            >UPGRADE NOW</Buttons.Primary>
-          </div>
         </Modal>
       </div>
     </React.Fragment >

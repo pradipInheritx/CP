@@ -145,9 +145,9 @@ html[dir="rtl"] .offcanvas-start.show {
 .pwaPopup{
     z-index: 99999;
     position: fixed;
-    bottom: -54px;
+    bottom: 0px;
     background: white;
-    padding: 14px;
+    padding: 20px;
     display: flex;
     justify-content: center;
     width: 100%;

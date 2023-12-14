@@ -60,8 +60,7 @@ export const Other = styled(Buttons.ClickableText)`
   // text-decoration: underline;
 `;
 
-// const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
-const getCPVIForVoteV2 = httpsCallable(functions, "CPVIForCoin");
+const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
 // const getDatas = httpsCallable(functions, "getDatas");
 // const cpviRealTimeData = httpsCallable(functions, "cpviRealTimeData");
 // const getResultPrice = httpsCallable(functions, "getOldAndCurrentPriceAndMakeCalculation");
@@ -78,7 +77,7 @@ const SingleCoin = () => {
   const [loading, setLoading] = useState(false);
   const [confetti, setConfetti] = useState(false);
   const [allActiveVotes, setAllActiveVotes] = useState<VoteResultProps[]>([]);
-  const [cpviData, setCpviData] = useState<any>();
+  const [cpviData, setCpviData] = useState<LineData[]>();
   const mountedRef = useRef(true);
   // const {width, height} = useWindowSize();
   const [searchParams] = useSearchParams();
@@ -197,13 +196,9 @@ const SingleCoin = () => {
     if (voteId) {
       // if (!mountedRef.current) return null;
 
-      // const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: 86400 });
-      const data2 = await getCPVIForVoteV2({ coinName: params?.id });      
+      const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: 86400 });
 
-      console.log(data2,"data2")
-
-      // return data.data as unknown as LineData[];
-      return data2.data;
+      return data.data as unknown as LineData[];
     }
   }, [params?.id, voteId, vote?.voteTime]);
 
@@ -217,10 +212,10 @@ const SingleCoin = () => {
   // }, [voteId, getCpviData, vote]);
 
   useEffect(() => {
-    // if (vote.timeframe) {
+    if (vote.timeframe) {
 
       getCpviData().then((data) => data && setCpviData(data));
-    // }
+    }
   }, [voteId, getCpviData, vote?.voteTime, totals[params?.id ?? 'BTC']?.total, selectedTimeFrame])
 
   useEffect(() => {
@@ -516,7 +511,7 @@ const SingleCoin = () => {
                       />
                       {/* <Speedometer/> */}
 
-                      {cpviData?.bull && params?.id && (
+                      {cpviData?.length && params?.id && (
                         graphLoading ? <CalculatingVotes /> :
                           <>
                             {/* Temporary commented   */}
@@ -525,7 +520,7 @@ const SingleCoin = () => {
                               progressData={totals[`${symbol1}`]}
                               symbol1={'BULL'}
                               symbol2={'BEAR'}
-                              pct={cpviData?.bull || 0}
+                              pct={cpviData[cpviData?.length - 1]?.value || 0}
                               isSingleCoinVote={true}
                             />
 

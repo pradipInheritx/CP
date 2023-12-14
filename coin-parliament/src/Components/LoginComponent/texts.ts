@@ -80,7 +80,7 @@ export const texts = {
   friends: "friends".toUpperCase(),
   LoadingText: "loading...".toUpperCase(),
   Calculatingvoteresult: "Calculating vote result...".toUpperCase(),
-  waitForIt: "Wait for it...".toUpperCase(),
+  waitForIt: "Waiting for it...",
   Prev: "Prev".toUpperCase(),
   Next: "Next".toUpperCase(),
   Pair: "pair".toUpperCase(),

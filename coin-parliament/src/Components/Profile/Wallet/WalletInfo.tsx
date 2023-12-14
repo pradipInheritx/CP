@@ -71,7 +71,6 @@ function WalletInfo() {
     }]);
     const [tooltipShow, setTooltipShow] = React.useState(false);
     const [tooltipShow2, setTooltipShow2] = React.useState(false);
-    const [addType, setAddType] = React.useState("");
     const [validationErrors, setValidationErrors] = useState([]);
     const [modleShow, setModleShow] = useState(false)
     const handleModleClose = () => setModleShow(false);
@@ -283,29 +282,6 @@ function WalletInfo() {
                 setSavePaymentMethod(false);
             }  
         }
-        if (selectRadio === 'ONDEMAND') {
-            if (!errorCount && auth?.currentUser) {
-                setSavePaymentMethod(true);                    
-                try {
-                    const userRef = doc(db, "users", auth?.currentUser?.uid);
-
-                    await setDoc(userRef, {
-                        referalReceiveType: {
-                            days: "",
-                            name: selectRadio,
-                            amount: "",
-                            limitType: "",
-                        }            
-                    }, { merge: true });
-                    showToast("Update Wallet Successfully", ToastType.SUCCESS);
-                } catch (err) {
-                    console.log(err);
-                    // @ts-ignore
-                    showToast(err.message, ToastType.ERROR);
-                }                
-                setSavePaymentMethod(false);
-            }  
-        }
     }
 
     const GetRefPayment = () => {
@@ -382,22 +358,18 @@ function WalletInfo() {
  
     const UpdateFunction = () => {
         handleModleClose()
-
-        if (addType == "PAYNOW") {
-            GetRefPayment()  
+        if (selectRadio === "DEMAND") {
+            GetRefPayment()
         }
-        if (addType == "UPDATESETTING") {            
+        else {            
             selectSendType()
         }
-        if (addType == "ADDADDERS") {
-            updateAddress()
-        }                      
     }
 
-    // const AddWalletFunction = () => {
-    //     handleModleClose()
-    //     updateAddress()
-    // }
+    const AddWalletFunction = () => {
+        handleModleClose()
+        updateAddress()
+    }
 
 
     return (
@@ -573,7 +545,7 @@ function WalletInfo() {
                             }}
                             onClick={() => {
                                 // updateAddress()
-                                setAddType("ADDADDERS")
+
                                 handleModleShow()
                                 
                         }}>
@@ -833,7 +805,7 @@ function WalletInfo() {
                                 </>
                             }
 
-                            {(selectRadio === 'LIMIT') && userInfo?.referalReceiveType?.name =="LIMIT"  &&
+                               {(selectRadio === 'LIMIT') &&
                                 <>
                                 <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
                                     
@@ -845,7 +817,6 @@ function WalletInfo() {
                                         
                                         onClick={() => {                                            
                                             // setGetPendingShow(true)
-                                            setAddType("PAYNOW")
                                             handleModleShow()
                                         }}
                                 >
@@ -927,16 +898,16 @@ function WalletInfo() {
                                     style={{ fontSize: "20px", marginRight: "10px" }}
                                     type="radio"
                                     id={`demand`}
-                                    checked={selectRadio == 'ONDEMAND'}
+                                    checked={selectRadio == 'DEMAND'}
                                     onClick={(e) => {
                                         setDefaultValue();
-                                        setSelectRadio('ONDEMAND')
+                                        setSelectRadio('DEMAND')
                                     }}
                                 />
                                 <label htmlFor="On demand" >On demand</label>
 
                             </div>
-                            {(selectRadio === 'ONDEMAND') && (userInfo?.referalReceiveType?.name === 'ONDEMAND')&&
+                           {(selectRadio === 'DEMAND') &&
                                 <>
                                 <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
                                     
@@ -948,7 +919,6 @@ function WalletInfo() {
                                         
                                         onClick={() => {                                            
                                             // setGetPendingShow(true)
-                                            setAddType("PAYNOW")
                                             handleModleShow()
                                         }}
                                 >
@@ -970,7 +940,7 @@ function WalletInfo() {
                             type='button' style={{ maxWidth: '200px', }}
                             onClick={() => {
                                 // selectSendType()
-                                setAddType("UPDATESETTING")
+                                
                                 handleModleShow()
                             }}
                         >
@@ -1009,11 +979,17 @@ function WalletInfo() {
                     <Modal.Body
                     >
                         <div className="d-flex flex-column align-items-center">
-                            <WalletValidation
+                            {walletDetails.address ?  <WalletValidation
                                 setMfaLogin={setMfaLogin}
-                                UpdateFunction={UpdateFunction}
+                                UpdateFunction={AddWalletFunction}
                                 modalOpen={true}
                             />    
+                            :
+                            <WalletValidation
+                                setMfaLogin={setMfaLogin}
+                                    UpdateFunction={UpdateFunction}
+                                    modalOpen={true}
+                            />    }
                         </div>
                     </Modal.Body>                    
                 </Modal>

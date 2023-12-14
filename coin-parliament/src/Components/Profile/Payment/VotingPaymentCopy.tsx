@@ -671,19 +671,16 @@ const VotingPaymentCopy: React.FC<{
                 }}
               >
                 <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-                  {/* <div className={`${selectCoin === "none" && "pay-custom-select-container"} mb-3`} style={{ */}
-                  <div className={`pay-custom-select-container mb-3`} style={{
+                  <div className="pay-custom-select-container mb-3" style={{
                     width: '23em',
                     zIndex: 4,                    
                   }} >
                     <div
-                      className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" :  "pay-selected-text text-center"}
+                      className={showOptionList && selectCoin !== "none" ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
                       onClick={() => {
                         if (payButton) {
-                          return 
+                          return
                         }
-                        // if (selectCoin === "none") {
-                        // }
                         setShowOptionList(prev => !prev)
                       }
 
