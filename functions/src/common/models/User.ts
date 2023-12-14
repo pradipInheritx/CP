@@ -138,12 +138,6 @@ function generateRandomName(length: number) {
   return randomName;
 }
 
-async function getAllData(collectionName: string) {
-  const getAllDataFromCollection = (
-    await firestore().collection(collectionName).get()
-  ).docs.map((user: any) => user.data());
-  return getAllDataFromCollection
-}
 
 export const addNewKeysInCollection = async (
   keyName: string,
