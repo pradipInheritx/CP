@@ -33,7 +33,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
       user: userEmail,
     };
     console.info("RequestBody", requestBody);
-    fetch("https://console.dev.welldapp.io/api/transactions", {
+    fetch("https://console.welldapp.io/api/transactions", {
       method: "POST",
       headers: {
         "content-type": "application/json",
