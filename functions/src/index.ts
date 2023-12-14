@@ -84,7 +84,6 @@ import {
   sendCustomNotificationOnSpecificUsers,
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
-  TitleUpgradeNotificationLogic_Testing,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
@@ -989,7 +988,7 @@ exports.getCPVIForVote = functions.https.onCall(async (data) => {
 
 exports.CPVIForCoin = functions.https.onCall(async (data) => {
   // console.log("getCPVIForVote(data) =>", data);
-  const {coinName} = data;
+  const { coinName } = data;
   return await CPVIForCoin(coinName);
 });
 
