@@ -36,6 +36,8 @@ export type UserProps = {
   uid?: string;
   voteValue?: string;
   bio?: string;
+  userName?: any;
+  isUserUpgraded?: boolean;
   wellDAddress?: {
     coin: string;
     address: string;
