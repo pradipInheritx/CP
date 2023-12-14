@@ -46,51 +46,57 @@ const Container = styled.div`
 
 export type FirstTimeLoginProps = {
   generate: () => string;
-  saveUsername: (username: string) => Promise<void>;
+  saveUsername: (username: string, DisplayName: string) => Promise<void>;
   setFirstTimeAvatarSelection:any;
 };
 
-// const checkValidUsername = httpsCallable(functions, "checkValidUsername");
-const checkValidUsername = async (username: string) => {
-  console.log("firebasefun");
-  const users = await firebase
-    .firestore()
-    .collection("users")
-    // .withConverter(userConverter)
-    .get();
-
-  const usernames = users.docs.map((u) => u.data().displayName);
-  console.log("firebase", usernames);
-  return (
-    !usernames.includes(username) &&
-    username.length >= 8 &&
-    username.length <= "unique_username".length
-  );
-};
 const FirstTimeLogin = ({ generate, saveUsername ,setFirstTimeAvatarSelection}: FirstTimeLoginProps) => {
   const translate = useTranslation();
   const {setFirstTimeLogin} = useContext(AppContext );
-  const{user}=useContext(UserContext)
+  const { user, userInfo } = useContext(UserContext)
+  
   const { showToast } = useContext(NotificationContext);
   const title = texts.chooseUserName;
   const text = texts.chooseUserNameText;
   const [username, setUsername] = useState<string>("");
   const [show, setShow] = useState(false);
   const [valid, setValid] = useState(false);
-const[userNameErr,setUserNameErr]=useState(false);
+  const [userNameErr, setUserNameErr] = useState(false);  
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
+  const [displayValue, setDisplayValue] = useState<string>("");
+  const [displayValueErr, setDisplayValueErr] = useState(false);
+
+  const checkValidUsername = async (username: string) => {
+    console.log("firebasefun");
+    const users = await firebase
+      .firestore()
+      .collection("users")
+      .get();
+    const usernames = users.docs.map((u) => u.data().userName).filter(u => u !== (userInfo?.userName || ''));
+    console.log("firebase", usernames);
+    return (
+      !usernames.includes(username)/*  &&
+      username.length >= 8 &&
+      username.length <= "unique_username".length */
+    );
+  };
+
+  useEffect(() => {
+    setDisplayValue(userInfo?.displayName || '');
+  }, [JSON.stringify(userInfo?.displayName)]);
+
+
   const triggerSaveUsername = async () => {
     try {
       // setFirstTimeAvatarSelection(true)
-      const firstTimeLogin:Boolean=false
+      const firstTimeLogin: Boolean = false
       // @ts-ignore
       const userRef = doc(db, "users", user?.uid);
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
-      await saveUsername(username);
+      await saveUsername(username, displayValue);
       setFirstTimeLogin(false);
-      
+
     } catch (e) {
       showToast((e as Error).message, ToastType.ERROR);
     }
@@ -116,58 +122,93 @@ useEffect(() => {
             <Form
               onSubmit={async (e) => {
                 e.preventDefault();
-                if(username?.length<16 && username?.length>7){
-                  checkValidUsername( username ).then(res=>res?handleShow():setUserNameErr(true))
-                  // handleShow()
-                }
-                else{
-         
+
+                if (username?.length > 1 && /^[a-zA-Z0-9\s_]+$/g.test(username)) {
+                  setUserNameErr(false)
+                  if (displayValue.length > 5 && displayValue.length < 16) {
+                    setDisplayValueErr(false)
+                    checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));
+                  } else {
+                    setDisplayValueErr(true)
+                  }
+                } else {
                   setUserNameErr(true)
                 }
-              
+
+
               }}
             >
-              <Container>
+              <Input
+                style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
+                placeholder={capitalize(translate("Dispaly Name"))}
+                name="dispalyName"
+                required
+                value={displayValue}
+                // @ts-ignore
+                // maxlength={10}
+                onChange={(e) => {
+                  setDisplayValue(e.target.value)
+                  setDisplayValueErr(false)
+                }}
+              />
+              {displayValueErr ? <Styles.p className=" mt-1 mb-2 text-danger"
+                style={{
+                  fontSize: "10px"
+                }}
+              >
+                {translate("Display Name should be between 6-15 characters")}
+              </Styles.p> : null}
+
+              <Container className="mt-3">
                 <Input
-                 style={{color:'var(--blue-violet)',boxShadow:window.screen.width>979?'0px 3px 6px #00000029':''}}
+                  style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
                   placeholder={capitalize(translate(texts.username))}
                   name="username"
                   required
+                  type="text"
                   value={username}
                   // @ts-ignore
-                  maxlength={10}
+                  // maxlength={10}
                   onChange={(e) => {
-                    setUsername(e.target.value.replace(" ", "_").toLowerCase());
-                    setUserNameErr(false)
+                    const newValue = e.target.value.replace(/\s/g, '');
+
+                    // Update the state only if the new value doesn't contain spaces
+                    if (!newValue.includes(' ')) {
+                      setUsername(newValue);
+                      setUserNameErr(false)
+                    }
                   }}
                 />
                 <Generate
-                  onClick={(e) =>
-                    {e.preventDefault();
-                    setUsername(generate().replace(" ", "_").toLowerCase())}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setUsername(generate())
+                  }
                   }
                 >
                   {capitalize(translate(texts.generate))}
                 </Generate>
-                
               </Container>
+              {userNameErr ? <Styles.p className="mb-2 text-danger">
+                {translate(texts.UserNameValidation)}
+              </Styles.p> : null}
+
+
               <div className="my-4">
-                
+
                 <Buttons.Primary
-                
+
                   fullWidth={true}
                   type="submit"
-                  // disabled={!valid}
+                // disabled={!valid}
                 >
                   {texts.continue}
                 </Buttons.Primary>
               </div>
-              {userNameErr?<Styles.p className="mb-2">
-              {translate(texts.UserNameValidation)}
-            </Styles.p>:null}
+
               <Styles.p className="mb-2">
-              {translate(text)}
-            </Styles.p>
+                {translate(text)}
+              </Styles.p>
             </Form>
           </div>
         </div>

@@ -11,7 +11,7 @@ import VBGM from "../../assets/images/VBGM.png"
 
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
-  const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.displayName}`;
+  const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.userName}`;
   const [children, setChildren] = useState<Leader[]>([]);
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
