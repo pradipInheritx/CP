@@ -138,6 +138,12 @@ function generateRandomName(length: number) {
   return randomName;
 }
 
+async function getAllData(collectionName: string) {
+  const getAllDataFromCollection = (
+    await firestore().collection(collectionName).get()
+  ).docs.map((user: any) => user.data());
+  return getAllDataFromCollection
+}
 
 export const addNewKeysInCollection = async (
   keyName: string,
@@ -161,12 +167,12 @@ export const addNewKeysInCollection = async (
 
       console.log("keyValue : ", keyValue, "\nuser : ", user);
       console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
-
-      await firestore()
-        .collection(collectionName)
-        .doc(getAllDataFromCollection[user].uid)
-        .set(newObject, { merge: true });
-
+      if (getAllDataFromCollection[user].uid) {
+        await firestore()
+          .collection(collectionName)
+          .doc(getAllDataFromCollection[user].uid)
+          .set(newObject, { merge: true });
+      }
     }
 
     // getAllDataFromCollection.forEach((data: any) => {
