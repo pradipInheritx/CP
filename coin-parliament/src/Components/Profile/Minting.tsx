@@ -303,7 +303,7 @@ const Minting = ({
     } else {
       Swal.fire({
         title: '',
-        text: `You still need ${100 - score} CMP to claim your reward.`,
+        text: `You still need ${(100 - score).toFixed(2)} CMP to claim your reward.`,
         color: 'black',
         confirmButtonText: 'Ok',
         confirmButtonColor: '#6352e8',
