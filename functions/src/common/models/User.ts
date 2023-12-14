@@ -139,7 +139,7 @@ function generateRandomName(length: number) {
 
 export const addNewKeysInCollection = async (
   keyName: string,
-  keyValue: string | number,
+  keyValue: string,
   collectionName: string,
 ) => {
   try {
@@ -152,8 +152,9 @@ export const addNewKeysInCollection = async (
     for (let user = 0; user < getAllDataFromCollection.length; user++) {
       let newObject: any = {};
       keyValue = getAllDataFromCollection[user].displayName ? getAllDataFromCollection[user].displayName : generateRandomName(10);
+      keyValue.replace(/\s/g, '').trim();
       console.log("keyValue : ", keyValue, "\nuser : ", user);
-      console.log("newObject : ", newObject)
+      console.log("newObject : ", newObject);
       newObject[keyName] = keyValue;
       if (keyValue && newObject[keyName] == null) {
         firestore()
