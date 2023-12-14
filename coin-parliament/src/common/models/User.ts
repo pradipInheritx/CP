@@ -29,7 +29,8 @@ export type UserProps = {
   token?: string;
   wallet?: string;
   rewardStatistics?:RewardStatistics;
-  uid?:string;
+  uid?: string;
+  userName?: any;
 };
 
 class User implements UserProps {
