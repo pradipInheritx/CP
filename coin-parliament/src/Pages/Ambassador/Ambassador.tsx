@@ -50,7 +50,7 @@ const
         const { showToast } = useContext(NotificationContext);
         const { user, userInfo } = useContext(UserContext);
         const { setLogin } = useContext(AppContext)
-        const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.displayName}`;
+        const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.userName}`;
         const url = referralUrl
         const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your opinion!%0aLet's vote together!`
         const [showShare, setShowShare] = useState(false);
