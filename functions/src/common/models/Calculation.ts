@@ -12,7 +12,6 @@ import {
   voteExpireAndGetCpmNotification,
   poolMiningNotification,
 } from "./SendCustomNotification";
-import { logger } from "firebase-functions/v1";
 
 export type Totals = {
   total: number;
@@ -475,65 +474,234 @@ const getLeaders = async () => {
         total: voteStatistics?.total || 0,
       } as Leader;
     })
-    .sort((a, b) => Number(b.score) - Number(a.score));
+    .sort((a, b) => Number(a.score) - Number(b.score));
+};
+
+const getTotalCountOfUserType = async () => {
+
+  const leaders = await getLeaders();
+
+  const userTypes = await firestore()
+    .collection("settings")
+    .doc("userTypes")
+    .withConverter(userTypeConverter)
+    .get();
+
+  // Sorted On Share Of UserType Settings
+  const sortedUserType: UserTypeProps[] = userTypes
+    .data()
+    ?.userTypes.sort(
+      (a, b) => Number(a.share) - Number(b.share)
+    ) as UserTypeProps[];
+
+  let getTotalNumberOfSpeaker = 0;
+  let getTotalNumberOfCouncil = 0;
+  let getTotalNumberOfAmbassador = 0;
+  let getTotalNumberOfMinister = 0;
+  let getTotalNumberOfChairman = 0;
+
+  for (let userType = 0; userType < sortedUserType.length; userType++) {
+    const eachUserType: any = sortedUserType[userType];
+    if (eachUserType.name === "Speaker") {
+      const userLengthForThisUserType = Math.round(
+        (leaders.length * Number(eachUserType.share)) / 100
+      );
+      getTotalNumberOfSpeaker = userLengthForThisUserType
+    }
+    if (eachUserType.name === "Council") {
+      const userLengthForThisUserType = Math.round(
+        (leaders.length * Number(eachUserType.share)) / 100
+      );
+      getTotalNumberOfCouncil = userLengthForThisUserType
+    }
+    if (eachUserType.name === "Ambassador") {
+      const userLengthForThisUserType = Math.round(
+        (leaders.length * Number(eachUserType.share)) / 100
+      );
+      getTotalNumberOfAmbassador = userLengthForThisUserType
+    }
+    if (eachUserType.name === "Minister") {
+      const userLengthForThisUserType = Math.round(
+        (leaders.length * Number(eachUserType.share)) / 100
+      );
+      getTotalNumberOfMinister = userLengthForThisUserType
+    }
+    if (eachUserType.name === "Chairman") {
+      const userLengthForThisUserType = Math.round(
+        (leaders.length * Number(eachUserType.share)) / 100
+      );
+      getTotalNumberOfChairman = userLengthForThisUserType
+    }
+  }
+  return { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman }
 };
 
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
-    const leaders = await getLeaders();
-    // console.log("Leaders : ", leaders)
-    const userTypes = await firestore()
-      .collection("settings")
-      .doc("userTypes")
-      .withConverter(userTypeConverter)
-      .get();
+    let getLeadersResponse: any = await getLeaders();
+    let leaders = getLeadersResponse
+      .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
+      .filter((obj: any) => obj.total > 1);
 
-    // Sorted On Share Of UserType Settings
-    const sortedUserType: UserTypeProps[] = userTypes
-      .data()
-      ?.userTypes.sort(
-        (a, b) => Number(a.share) - Number(b.share)
-      ) as UserTypeProps[];
+    console.info("Length With Leaders", leaders, leaders.length);
+    const { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman } = await getTotalCountOfUserType();
+    let leaderStatus: Leader[] = [];
+    console.info("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker, "getTotalNumberOfCouncil", getTotalNumberOfCouncil, "getTotalNumberOfAmbassador", getTotalNumberOfAmbassador, "getTotalNumberOfMinister", getTotalNumberOfMinister, "getTotalNumberOfChairman", getTotalNumberOfChairman)
 
-    const leaderStatus: Leader[] = [];
-
-    for (let userType = 0; userType < sortedUserType.length; userType++) {
-      const eachUserType: any = sortedUserType[userType];
-
-      const userLengthForThisUserType = Math.round(
-        (leaders.length * Number(eachUserType.share)) / 100
-      );
-
+    let leaderStatusForSpeaker: Leader[] = [];
+    console.log("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker);
+    if (getTotalNumberOfSpeaker && getTotalNumberOfSpeaker > 0) {
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if (
-          eachUser.total >= eachUserType.minVote &&
-          leader <= userLengthForThisUserType
-        ) {
-          eachUser.status = eachUserType.name;
-          leaderStatus.push(eachUser);
-          console.log(
-            "eachUser.status = eachUserType.name",
-            eachUser.status,
-            eachUserType.name
-          );
+        console.info("eachUser.total", eachUser.total)
+        if ((eachUser.total > 2 || eachUser.total === 2) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
+          console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
+          if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
+            console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
+            eachUser.status = "Speaker";
+            leaderStatusForSpeaker.push(eachUser);
+          } else {
+            console.log("Come Here Total Else ", typeof eachUser.total, "Value", eachUser.total);
+            let tempArrayAfterSliced = leaderStatusForSpeaker.slice(1);
+            eachUser.status = "Speaker";
+            leaderStatusForSpeaker = [...tempArrayAfterSliced]
+            leaderStatusForSpeaker.push(eachUser);
+          }
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
-            .set({ status: eachUserType }, { merge: true });
-
-          leaders.splice(leader, 1);
+            .set({ status: "Speaker" }, { merge: true });
         }
       }
+
+      console.info("leaders In leaderStatusForSpeaker", leaderStatusForSpeaker)
+      leaders.splice(0, getTotalNumberOfSpeaker);
+      console.info("leaders In Speaker", leaders)
     }
 
-    // testing purpose start
-    logger.warn("leaderStatus before sort: ");
-    console.log(leaderStatus);
-    leaderStatus.sort((a, b) => Number(b.score) - Number(a.score));
-    logger.warn("leaderStatus after sort : ", leaderStatus);
-    console.log(leaderStatus);
-    // testing purpose end
+    for (let speaker = 0; speaker < leaderStatusForSpeaker.length; speaker++) {
+      leaderStatus.push(leaderStatusForSpeaker[speaker]);
+    }
+
+    console.info("After Spliced Only leaders", leaders)
+    let leaderStatusForCouncil: Leader[] = [];
+    if (getTotalNumberOfCouncil && getTotalNumberOfCouncil > 0) {
+      console.log("getTotalNumberOfCouncil", getTotalNumberOfCouncil);
+      for (let leader = 0; leader < leaders.length; leader++) {
+        const eachUser: any = leaders[leader];
+        if ((eachUser.total > 4 || eachUser.total === 4) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
+          if (leaderStatusForCouncil.length < getTotalNumberOfSpeaker) {
+            eachUser.status = "Council";
+            leaderStatusForCouncil.push(eachUser);
+          } else {
+            let tempArrayAfterSliced = leaderStatusForCouncil.slice(1);
+            eachUser.status = "Council";
+            leaderStatusForCouncil = [...tempArrayAfterSliced]
+            leaderStatusForCouncil.push(eachUser);
+          }
+          await firestore()
+            .collection("users")
+            .doc(eachUser.userId)
+            .set({ status: "Council" }, { merge: true });
+        }
+      }
+      leaders.splice(0, getTotalNumberOfCouncil);
+      console.info("leaders In Council", leaders)
+    }
+
+    console.log("Council Data Only", leaderStatusForCouncil)
+
+    for (let speaker = 0; speaker < leaderStatusForCouncil.length; speaker++) {
+      leaderStatus.push(leaderStatusForCouncil[speaker]);
+    }
+
+    console.info("After Spliced Council", leaderStatus)
+
+    let leaderStatusForAmbassador: Leader[] = [];
+    if (getTotalNumberOfAmbassador && getTotalNumberOfAmbassador > 0) {
+      console.log("getTotalNumberOfAmbassador", getTotalNumberOfAmbassador);
+      for (let leader = 0; leader < leaders.length; leader++) {
+        const eachUser: any = leaders[leader];
+        if ((eachUser.total >= 6 || eachUser.total == 6) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
+          if (leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
+            eachUser.status = "Ambassador";
+            leaderStatusForAmbassador.push(eachUser);
+          } else {
+            let tempArrayAfterSliced = leaderStatusForAmbassador.slice(1);
+            eachUser.status = "Ambassador";
+            leaderStatusForAmbassador = [...tempArrayAfterSliced]
+            leaderStatusForAmbassador.push(eachUser);
+          }
+          await firestore()
+            .collection("users")
+            .doc(eachUser.userId)
+            .set({ status: "Ambassador" }, { merge: true });
+        }
+      }
+      leaders.splice(0, getTotalNumberOfAmbassador);
+    }
+    for (let speaker = 0; speaker < leaderStatusForAmbassador.length; speaker++) {
+      leaderStatus.push(leaderStatusForAmbassador[speaker]);
+    }
+
+    let leaderStatusForMinister: Leader[] = [];
+    if (getTotalNumberOfMinister && getTotalNumberOfMinister > 0) {
+      console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
+      for (let leader = 0; leader < leaders.length; leader++) {
+        const eachUser: any = leaders[leader];
+        if ((eachUser.total >= 8 || eachUser.total == 8) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
+          if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
+            eachUser.status = "Minister";
+            leaderStatusForMinister.push(eachUser);
+          } else {
+            let tempArrayAfterSliced = leaderStatusForMinister.slice(1);
+            eachUser.status = "Minister";
+            leaderStatusForMinister = [...tempArrayAfterSliced]
+            leaderStatusForMinister.push(eachUser);
+          }
+          await firestore()
+            .collection("users")
+            .doc(eachUser.userId)
+            .set({ status: "Minister" }, { merge: true });
+        }
+      }
+      leaders.splice(0, getTotalNumberOfMinister);
+    }
+
+    for (let speaker = 0; speaker < leaderStatusForMinister.length; speaker++) {
+      leaderStatus.push(leaderStatusForMinister[speaker]);
+    }
+
+    let leaderStatusForChairman: Leader[] = [];
+    if (getTotalNumberOfChairman && getTotalNumberOfChairman > 0) {
+      console.log("getTotalNumberOfChairman", getTotalNumberOfChairman);
+      for (let leader = 0; leader < leaders.length; leader++) {
+        const eachUser: any = leaders[leader];
+        if (eachUser.total >= 10 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
+          if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
+            eachUser.status = "Chairman";
+            leaderStatusForChairman.push(eachUser);
+          } else {
+            let tempArrayAfterSliced = leaderStatusForChairman.slice(1);
+            eachUser.status = "Chairman";
+            leaderStatusForChairman = [...tempArrayAfterSliced]
+            leaderStatusForChairman.push(eachUser);
+          }
+          await firestore()
+            .collection("users")
+            .doc(eachUser.userId)
+            .set({ status: "Chairman" }, { merge: true });
+        }
+      }
+      leaders.splice(0, getTotalNumberOfChairman);
+    }
+    for (let speaker = 0; speaker < leaderStatusForChairman.length; speaker++) {
+      leaderStatus.push(leaderStatusForChairman[speaker]);
+    }
+    console.info("leaders", leaders)
+    console.log("leaderStatus Final", leaderStatus);
+
+    leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
 
     return await firestore()
       .collection("stats")

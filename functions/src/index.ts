@@ -74,6 +74,7 @@ import {
   cpviTaskCoin,
   cpviTaskPair,
   getCPVIForVote,
+  CPVIForCoin
   // getUniqCoins,
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
@@ -83,7 +84,6 @@ import {
   sendCustomNotificationOnSpecificUsers,
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
-  TitleUpgradeNotificationLogic_Testing,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
@@ -215,6 +215,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     lastName: "",
     mfa: false,
     displayName: user.displayName,
+    userName: "",
     phone: user.phoneNumber,
     subscribers: [],
     children: [],
@@ -267,7 +268,7 @@ exports.addNewKeysInCollection = functions.https.onCall((data) => {
     `keyName : ${keyName}, keyValue : ${keyValue}, collectionName : ${collectionName}`
   );
 
-  if (keyName && keyValue && collectionName) {
+  if (keyName && collectionName) {
     const result = addNewKeysInCollection(keyName, keyValue, collectionName);
     return result;
   } else
@@ -275,6 +276,8 @@ exports.addNewKeysInCollection = functions.https.onCall((data) => {
       message: "some credentials is missing",
     };
 });
+
+
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -767,8 +770,9 @@ exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
 exports.getCoinCurrentAndPastDataDifference = functions.pubsub
   .schedule("0 */6 * * *")
   .onRun(async () => {
+    const timeDifference = 6
     console.log("---Start getCoinCurrentAndPastDataDifference -------");
-    await getCoinCurrentAndPastDataDifference();
+    await getCoinCurrentAndPastDataDifference(timeDifference);
     console.log("---End getCoinCurrentAndPastDataDifference -------");
   });
 
@@ -781,29 +785,6 @@ exports.checkTitleUpgrade24Hour = functions.pubsub
     const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
     await checkUserStatusIn24hrs(nowTime, yesterdayTime);
     await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
-    console.log("---End checkTitleUpgrade24Hour -------");
-  });
-
-exports.checkTitleUpgrade24Hour = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    console.log("---Start checkTitleUpgrade24Hour -------");
-    const date = new Date();
-    const nowTime = date.getTime();
-    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
-    await checkUserStatusIn24hrs(nowTime, yesterdayTime);
-    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
-    console.log("---End checkTitleUpgrade24Hour -------");
-  });
-
-exports.checkTitleUpgrade24Hour = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    console.log("---Start checkTitleUpgrade24Hour -------");
-    const date = new Date();
-    const nowTime = date.getTime();
-    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
-    TitleUpgradeNotificationLogic_Testing(nowTime, yesterdayTime);
     console.log("---End checkTitleUpgrade24Hour -------");
   });
 
@@ -1008,6 +989,12 @@ exports.prepareWeeklyCPVI = functions.pubsub
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
   // console.log("getCPVIForVote(data) =>", data);
   return await getCPVIForVote(data);
+});
+
+exports.CPVIForCoin = functions.https.onCall(async (data) => {
+  // console.log("getCPVIForVote(data) =>", data);
+  const { coinName } = data;
+  return await CPVIForCoin(coinName);
 });
 
 exports.getResultAfterVote = functions.https.onCall(async (data) => {

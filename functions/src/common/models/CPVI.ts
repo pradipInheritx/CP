@@ -559,6 +559,75 @@ export const getCPVIForVote = async ({ id }: { id: string }) => {
   }
 };
 
+export const CPVIForCoin = async (coinName: string) => {
+  try {
+    console.log("coinName: " , coinName);
+    // get all the data in between24 hours
+    const currentTime = Date.now();
+    const before24hoursTime = currentTime - 24 * 3600000;
+    console.log("current time: " + currentTime)
+    console.log("before24hours time: " + before24hoursTime)
+    const getAllCoinListing = (
+      await firestore()
+        .collection('votes')
+        .where("expiration", "<=", currentTime)
+        .where("expiration", ">=", before24hoursTime)
+        .get()
+    ).docs.map((coin) => coin.data());
+
+    console.log("getAllCoinListing : ",getAllCoinListing)
+    const getCoinListing = getAllCoinListing.filter((coin: any) => coin.coin == coinName);
+    console.log("getCoinListing : ", getCoinListing);
+
+    const countVoteObj = {
+      bear: 0,
+      bull: 0
+    }
+
+    if(!getCoinListing.length) {
+      return {
+        totalVote: getCoinListing.length,
+        coin: coinName,
+        result : [],
+        message : "No data found in last 24 hours"
+      }
+    }
+
+    getCoinListing.forEach((coin: any) => {
+      if (coin.direction == 1) countVoteObj.bull += 1
+      if (coin.direction == 0) countVoteObj.bear += 1
+    })
+
+    console.log("countVoteObj : ",countVoteObj)
+    if (coinName.split("-").length == 2) {
+      console.log("pair coin is calling")
+      let coins = coinName.split("-");
+      let result: any = {};
+      result[coins[0]] = ((countVoteObj.bull / getCoinListing.length) * 100).toFixed(2);
+      result[coins[1]] = ((countVoteObj.bear / getCoinListing.length) * 100).toFixed(2);
+      return {
+        ...result,
+        totalVote: getCoinListing.length,
+        coin: coinName
+      }
+
+    }
+
+    return {
+      bull: ((countVoteObj.bull / getCoinListing.length) * 100).toFixed(2),
+      bear: ((countVoteObj.bear / getCoinListing.length) * 100).toFixed(2),
+      totalVote: getCoinListing.length,
+      coin: coinName
+    };
+
+
+  } catch (error) {
+    console.log("CPVIForCoin Error : ", error)
+    return { status: false, message: "Something went wrong", error }
+  }
+}
+
+
 // export const getCPVIForVote = async ({id}: { id: string }) => {
 //   const end = moment().utc().format();
 //   const start = moment().subtract(30, "d").utc().format();
