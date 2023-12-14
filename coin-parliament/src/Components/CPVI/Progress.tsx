@@ -13,7 +13,7 @@ export type ProgressProps = {
   }
   symbol1: string;
   symbol2?: string;
-  pct?: number;
+  pct?: any;
   compare?: boolean;
   isSingleCoinVote?: boolean;
 };
