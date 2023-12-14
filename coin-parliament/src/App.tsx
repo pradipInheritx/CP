@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
-import UserContext, { getUserInfo, saveUsername } from "./Contexts/User";
+import UserContext, { getUserInfo, saveDisplayName, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
@@ -895,9 +895,10 @@ function App() {
                                   setFirstTimeAvatarSelection
                                 }
                                 generate={generateUsername}
-                                saveUsername={async (username) => {
+                                saveUsername={async (username: any, DisplayName: any) => {
                                   if (user?.uid) {
                                     await saveUsername(user?.uid, username, "");
+                                    await saveDisplayName(user?.uid, DisplayName, "");
                                     setFirstTimeAvatarSelection(true);
                                     // setFirstTimeFoundationSelection(true);
                                     setFirstTimeLogin(false);
