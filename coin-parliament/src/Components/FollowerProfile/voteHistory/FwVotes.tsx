@@ -32,11 +32,9 @@ const FwVotes = () => {
   const [coinSubscription, setCoinSubscription] = useState([])
   const [coinSocketData, setCoinSocketData] = useState([])
 const [runVote, setRunVote] = useState(false);
-const [isLoading, setIsLoading] = useState(false);
   const getVotes = useCallback(
     async (start: number) => {
       if (followerUserId) {
-        setIsLoading(true)
         const newVotes = await getVotesFunc({
           start,
           end: start + pageSize,
@@ -57,7 +55,6 @@ const [isLoading, setIsLoading] = useState(false);
           // @ts-ignore
           // setCoinSubscription(coinStat)
         }
-        setIsLoading(false)
       }
     },
     [followerUserId, pageSize]
@@ -133,7 +130,6 @@ const [isLoading, setIsLoading] = useState(false);
       onSelect={() => setIndex(0)}
       setRunVote={setRunVote}
       runVote={runVote}
-      isLoading={isLoading}
       tabs={[
         {
           eventKey: "pairs",
@@ -160,10 +156,7 @@ const [isLoading, setIsLoading] = useState(false);
                   </div>
                 
               })}
-              <div style={{display: !isLoading ? 'block' : 'none' }}>
-
               {getButtons(votes.pairs)}
-              </div>
             </div>
           ),
         },
@@ -186,10 +179,8 @@ const [isLoading, setIsLoading] = useState(false);
                 return  <MyVotedCard key={i} v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />                
               }
               )}
-               <div style={{display: !isLoading ? 'block' : 'none' }}>
 
               {getButtons(votes.coins)}
-              </div>
             </div>
           ),
         }

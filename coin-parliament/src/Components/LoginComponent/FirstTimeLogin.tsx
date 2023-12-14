@@ -47,7 +47,7 @@ const Container = styled.div`
 
 export type FirstTimeLoginProps = {
   generate: () => string;
-  saveUsername: (username: string, DisplayName: string) => Promise<void>;
+  saveUsername: (username: string) => Promise<void>;
   setFirstTimeAvatarSelection: any;
 };
 
@@ -62,11 +62,9 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
   const title = texts.chooseUserName;
   const text = texts.chooseUserNameText;
   const [username, setUsername] = useState<string>("");
-  const [displayValue, setDisplayValue] = useState<string>("");
   const [show, setShow] = useState(false);
   const [valid, setValid] = useState(false);
   const [userNameErr, setUserNameErr] = useState(false);
-  const [displayValueErr, setDisplayValueErr] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -86,7 +84,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
   };
 
   useEffect(() => {
-    setDisplayValue(userInfo?.displayName || '');
+    setUsername(userInfo?.displayName || '');
   }, [JSON.stringify(userInfo?.displayName)]);
 
   const triggerSaveUsername = async () => {
@@ -96,7 +94,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
       // @ts-ignore
       const userRef = doc(db, "users", user?.uid);
       await setDoc(userRef, { firstTimeLogin }, { merge: true });
-      await saveUsername(username , displayValue);
+      await saveUsername(username);
       setFirstTimeLogin(false);
 
     } catch (e) {
@@ -125,60 +123,28 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
               onSubmit={async (e) => {
                 e.preventDefault();
 
-                if (username?.length > 1 && /^[a-zA-Z0-9\s_]+$/g.test(username) ) {
-                  setUserNameErr(false)                  
-                  if (displayValue.length > 5 && displayValue.length < 16) {                    
-                    setDisplayValueErr(false)
-                    checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));
-                  } else {
-                    setDisplayValueErr(true)
-                  }
-                } else {
-                  setUserNameErr(true)
-                }                            
-               
+                if (username?.length > 1 && /^[a-zA-Z0-9\s_]+$/g.test(username)) {
+                  setUserNameErr(false)
+                  checkValidUsername(username).then(res => res ? handleShow() : setUserNameErr(true));
+                }
+                else {
+                  setUserNameErr(true);
+                }
 
               }}
             >
-              <Input
-                style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
-                placeholder={capitalize(translate("Dispaly Name"))}
-                name="dispalyName"
-                required
-                value={displayValue}
-                // @ts-ignore
-                // maxlength={10}
-                onChange={(e) => {                             
-                  setDisplayValue(e.target.value)                                    
-                  setDisplayValueErr(false)
-                }}
-              />
-              {displayValueErr ? <Styles.p className=" mt-1 mb-2 text-danger"
-                style={{
-                fontSize:"10px"
-              }}
-              >
-                {translate("Display Name should be between 6-15 characters")}
-              </Styles.p> : null}
-              
-              <Container className="mt-3">                
-                <Input                  
+              <Container>
+                <Input
                   style={{ color: 'var(--blue-violet)', boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
                   placeholder={capitalize(translate(texts.username))}
                   name="username"
                   required
-                  type="text"
                   value={username}
                   // @ts-ignore
                   // maxlength={10}
                   onChange={(e) => {
-                    const newValue = e.target.value.replace(/\s/g, '');
-
-                    // Update the state only if the new value doesn't contain spaces
-                    if (!newValue.includes(' ')) {
-                      setUsername(newValue);
-                      setUserNameErr(false)
-                    }
+                    setUsername(e.target.value);
+                    setUserNameErr(false)
                   }}
                 />
                 <Generate
@@ -190,12 +156,10 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
                 >
                   {capitalize(translate(texts.generate))}
                 </Generate>
-              </Container>              
+              </Container>
               {userNameErr ? <Styles.p className="mb-2 text-danger">
                 {translate(texts.UserNameValidation)}
               </Styles.p> : null}
-
-
               <div className="my-4">
 
                 <Buttons.Primary

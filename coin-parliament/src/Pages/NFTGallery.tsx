@@ -169,7 +169,6 @@ const NFTGallery = () => {
         .collection("nftGallery")
       getCollectionType.get()
         .then((snapshot) => {
-          setIsLoading(false);
 
           const data: any = []
           snapshot.forEach((doc) => {
@@ -179,6 +178,7 @@ const NFTGallery = () => {
           // setAllCardArray(data)
           setSetsValue([])
           setCardShow(false)
+          setIsLoading(false);
         }).catch((error) => {
           console.log(error, "error");
         });
@@ -193,7 +193,6 @@ const NFTGallery = () => {
       getCollectionType.get()
         .then((snapshot) => {
           console.log(collectionName, "collectionName")
-          setIsLoading(false);
           const data: any = []
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
@@ -201,6 +200,7 @@ const NFTGallery = () => {
           data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
           setCardNameNew(data)
           setAllCardNew(data)
+          setIsLoading(false);
           setCardShow(true)
         }).catch((error) => {
           setIsLoading(false);

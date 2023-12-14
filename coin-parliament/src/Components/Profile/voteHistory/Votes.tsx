@@ -175,7 +175,7 @@ const Votes = () => {
             title: capitalize(translate(`${texts.Pair}`)),
             pane: (
               <div className="d-flex justify-content-center align-items-center flex-column">
-                {!isLoading && votes?.pairs && votes?.pairs.votes.map((v, i) => {
+                {votes?.pairs && votes?.pairs.votes.map((v, i) => {
                   return (
                     <div className="mb-2" key={i}>
                       <MyVotedCard v={v} callbackFun={callbackFun} />
@@ -183,10 +183,7 @@ const Votes = () => {
                   )
 
                 })}
-                <div style={{display: !isLoading ? 'block' : 'none' }}>
-
                 {getButtons(votes.pairs)}
-                </div>
               </div>
             ),
           },
@@ -196,14 +193,11 @@ const Votes = () => {
             pane: (
               <div className="d-flex justify-content-center align-items-center flex-column">
 
-                { !isLoading &&votes?.coins && votes?.coins.votes.map((v, i) => {
+                {votes?.coins && votes?.coins.votes.map((v, i) => {
                   return <MyVotedCard key={i} v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />
                 }
                 )}
-                 <div style={{display: !isLoading ? 'block' : 'none' }}>
-
                 {getButtons(votes.coins)}
-                </div>
               </div>
             ),
           }

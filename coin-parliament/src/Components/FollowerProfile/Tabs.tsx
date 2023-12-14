@@ -1,7 +1,6 @@
 import React from "react";
 import { Form, Nav, Tab } from "react-bootstrap";
 import styled from "styled-components";
-import { texts } from "../LoginComponent/texts";
 
 type TabsProps = {
   defaultActiveKey: string;
@@ -10,7 +9,6 @@ type TabsProps = {
   tabs: { eventKey: string; title: string; pane: React.ReactNode }[];
   setRunVote?: any;
   runVote?: any;
-  isLoading?:boolean
 };
 
 const Container = styled.div`
@@ -48,7 +46,7 @@ const Content = styled.div`
   }
 `;
 
-const Tabs = ({ isLoading,defaultActiveKey, id, onSelect, tabs, setRunVote, runVote }: TabsProps) => {
+const Tabs = ({ defaultActiveKey, id, onSelect, tabs, setRunVote, runVote }: TabsProps) => {
   return (
     <Tab.Container
       {...{
@@ -86,25 +84,6 @@ const Tabs = ({ isLoading,defaultActiveKey, id, onSelect, tabs, setRunVote, runV
           <label htmlFor="default-checkbox" className="custom-control-label" style={{ color: "#6352e8" }}>Open vote</label>
         </div>
       </div>}
-      {isLoading && <div style={{
-                position: 'fixed',
-                height: '100%',
-                display: 'flex',
-                textAlign: 'center',
-                justifyContent: 'center',
-                top: '0px',
-                right: '0px',
-                bottom: '0px',
-                zIndex: '9999',
-                overflow: 'hidden',
-                width: '100%',
-                alignItems: 'center',
-
-            }}>
-                <span className="loading" style={{ color: "#7767f7", zIndex: "2220px", fontSize: '1.5em', marginTop: `${window.screen.width > 767? "100px" :"240px"}`}}>
-                    {texts.waitForIt}
-                </span>
-            </div>}
       <div className="pb-1">
         <Tab.Content>
           <Content>

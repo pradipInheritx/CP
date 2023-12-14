@@ -138,7 +138,7 @@ const ImageTabs = ({ tabs, chosenByDefault, handleSelect }: ImageTabsProps) => {
         >
           {tabs.map((tab, i) => {
             return (
-              <Nav.Item key={i} style={{width:`${window.screen.width < 450 && tabs.length == 4 ? "35%" :""}`}}>
+              <Nav.Item key={i}>
                 <NavLink
                   eventKey={tab.eventKey}
                   style={{ padding: "10px 2px" }}

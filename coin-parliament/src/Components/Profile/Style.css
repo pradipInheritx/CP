@@ -203,25 +203,6 @@ content: "" !important;
   position: relative;
 }
 
-.pay-selected-textv2 {
-  /* background-color: #47eded; */
-  background-color: transparent;
-  border: 1px solid #cab7ff;
-  padding: 10px 20px;
-  font-size: 15px;
-  border-radius: 8px 8px 8px 8px;
-  
-  /* border-bottom: 1px solid #37b0b0; */
-}
-.pay-selected-textv2.active::after {
-  top: 8px;  
-  border-color: transparent transparent #fff transparent;
-}
-.pay-selected-textv2.active {
-  border-radius: 8px 8px 0px 0px;
-  border-bottom:none ;
-}
-
 .pay-selected-text {
   /* background-color: #47eded; */
   background-color: transparent;
@@ -250,7 +231,6 @@ content: "" !important;
   border-radius: 8px 8px 0px 0px;
   border-bottom:none ;
 }
-
 
 .pay-custom-select-container ul {
   /* border: 1px solid #cab7ff; */
