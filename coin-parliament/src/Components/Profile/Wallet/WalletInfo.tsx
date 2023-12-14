@@ -833,7 +833,7 @@ function WalletInfo() {
                                 </>
                             }
 
-                               {(selectRadio === 'LIMIT') &&
+                            {(selectRadio === 'LIMIT') && userInfo?.referalReceiveType?.name =="LIMIT"  &&
                                 <>
                                 <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
                                     
