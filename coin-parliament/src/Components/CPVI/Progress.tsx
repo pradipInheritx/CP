@@ -153,21 +153,21 @@ const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true,
       <div>
         <div className="px-3">
           <Bar>
-
-            <ProgressBar
+           {Math.floor(pct || 0) > 0 && <ProgressBar
               style={{ background: "var(--ebb)", color: '#6352E8' }}
               now={pct}
               key={1}
               label={`${Math.floor(pct || 0)}%`}
-            />
+            />}
 
-            <ProgressBar
+            {Math.floor(pct || 0) > 0 && Math.ceil(100 - (pct || 0)) && <ProgressBar
               style={{ background: "#6352E8", color: '#6352E8' }}
               now={1}
               key={2}
               label={`${pct}%`}
-            />
-            {symbol2 && <ProgressBar
+            />}
+
+            {symbol2 && Math.ceil(100 - (pct || 0)) > 0  && <ProgressBar
               style={{ background: "var(--ebb)", color: '#6352E8' }}
               now={100 - (pct || 0)}
               key={3}
