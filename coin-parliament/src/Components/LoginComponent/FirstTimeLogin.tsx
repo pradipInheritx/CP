@@ -76,7 +76,7 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
       .firestore()
       .collection("users")
       .get();
-    const usernames = users.docs.map((u) => u.data().displayName).filter(u => u !== (userInfo?.displayName || ''));
+    const usernames = users.docs.map((u) => u.data().userName).filter(u => u !== (userInfo?.userName || ''));
     console.log("firebase", usernames);
     return (
       !usernames.includes(username)/*  &&
