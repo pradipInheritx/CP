@@ -603,8 +603,8 @@ export const CPVIForCoin = async (coinName: string) => {
       console.log("pair coin is calling")
       let coins = coinName.split("-");
       let result: any = {};
-      result[coins[0]] = ((countVoteObj.bull / getCoinListing.length) * 100).toFixed(2);
-      result[coins[1]] = ((countVoteObj.bear / getCoinListing.length) * 100).toFixed(2);
+      result[coins[0]] = ((countVoteObj.bear / getCoinListing.length) * 100).toFixed(2);
+      result[coins[1]] = ((countVoteObj.bull / getCoinListing.length) * 100).toFixed(2);
       return {
         ...result,
         totalVote: getCoinListing.length,
