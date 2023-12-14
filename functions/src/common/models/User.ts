@@ -108,3 +108,68 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
     return false;
   }
 };
+
+
+
+function generateRandomName(length: number) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let randomName = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomName += characters.charAt(randomIndex);
+  }
+
+  return randomName;
+}
+
+
+export const addNewKeysInCollection = async (
+  keyName: string,
+  keyValue: string,
+  collectionName: string,
+) => {
+  try {
+    const getAllDataFromCollection = (
+      await firestore().collection(collectionName).get()
+    ).docs.map((user: any) => user.data());
+    console.log("getAllDataFromCollection : ", getAllDataFromCollection);
+
+
+
+    //generate random value 
+    for (let user = 0; user < getAllDataFromCollection.length; user++) {
+      let newObject: any = {};
+      keyValue = getAllDataFromCollection[user].displayName ? getAllDataFromCollection[user].displayName : generateRandomName(10);
+      keyValue.replace(/\s/g, '').trim();
+      newObject[keyName] = keyValue;
+
+      console.log("keyValue : ", keyValue, "\nuser : ", user);
+      console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
+      if (getAllDataFromCollection[user].uid) {
+        await firestore()
+          .collection(collectionName)
+          .doc(getAllDataFromCollection[user].uid)
+          .set(newObject, { merge: true });
+      }
+    }
+
+    // getAllDataFromCollection.forEach((data: any) => {
+    //   firestore()
+    //     .collection(collectionName)
+    //     .doc(data.id)
+    //     .set(newObject, { merge: true });
+    // });
+
+    return {
+      result: true,
+      message: "new key added successfully",
+    };
+  } catch (error) {
+    console.error("addNewKeysInCollection Error : ", error);
+    return {
+      result: false,
+      message: "something wrong in server" + error,
+    };
+  }
+};
