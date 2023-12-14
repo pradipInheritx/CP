@@ -30,6 +30,7 @@ export type UserProps = {
   wallet?: string;
   rewardStatistics?:RewardStatistics;
   uid?:string;
+  userName?:any;
 };
 
 class User implements UserProps {
