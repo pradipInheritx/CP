@@ -13,7 +13,7 @@ export type ProgressProps = {
   }
   symbol1: string;
   symbol2?: string;
-  pct?: number;
+  pct?: any;
   compare?: boolean;
   isSingleCoinVote?: boolean;
 };
@@ -148,7 +148,7 @@ const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true,
         >
           SVI (i)
         </CPVI>
-        <Votes>{abbrNum(total || 0)} votes</Votes>
+        <Votes></Votes>
       </div>
       <div>
         <div className="px-3">

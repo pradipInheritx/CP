@@ -31,8 +31,7 @@ function PaymentHistory() {
   ]);
   const [index, setIndex] = useState(0);
   const [rowData, setRowData] = useState<any>([]);
-  const [reciveRowData, setReciveRowData] = useState<any>([]);
-  const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
+  const [reciveRowData, setReciveRowData] = useState<any>([]);  
   const [pageIndex, setPageIndex] = useState(1);
   let navigate = useNavigate();
 
@@ -47,7 +46,7 @@ function PaymentHistory() {
       // @ts-ignore
       "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
     }
-    axios.get(`${ApiUrl}payment/getTransactionHistory/${user?.uid}?pageNumber=${pageIndex}&pageSize=${5}`,
+    axios.get(`/payment/getTransactionHistory/${user?.uid}?pageNumber=${pageIndex}&pageSize=${5}`,
       {
         headers: headers
       }

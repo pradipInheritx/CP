@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
+import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -202,14 +203,15 @@ const Minting = ({
   const [modalShow, setModalShow] = React.useState(false);
   const [tooltipShow, setTooltipShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
+  const [upgraeShow, setUpgraeShow] = React.useState(false);
   const [ClickedOption, setClickedOption] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
     setModalShow(true)
     claimRewardSound.play();
     // handleSoundWinCmp.play()
-
   };
+  let navigate = useNavigate();
   const setCurrentCMP = useContext(CurrentCMPDispatchContext);
   const handleCmpPopupClose = () => {
     setCmpPopupShow(false);
@@ -219,18 +221,30 @@ const Minting = ({
   const handleCmpPopupShow = () => {
     setCmpPopupShow(true)
   };
+  
+  const handleUpgraeShow = () => {
+    setUpgraeShow(true)
+  };
+  const handleUpgraeClose = () => {
+    setUpgraeShow(false)
+  };
+
   useEffect(() => {
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
     }
   }, [modalShow, CmpPopupShow]);
+  
   useEffect(() => {
-    if (score === 100) {
+    
+    if (score === 100) {      
       setTimeout(() => {
-        handleCmpPopupShow();
+        handleCmpPopupShow();    
       }, 8100);
     }
-  }, [score]);
+  }, [score , upgraeShow]);
+
+
   useEffect(() => {
     if (CmpPopupShow) {
       const Animation = lottie.loadAnimation({
@@ -277,10 +291,11 @@ const Minting = ({
     } else {
       Swal.fire({
         title: '',
-        text: `You still need ${100 - score} CMP to claim your reward.`,
+        text: `You still need ${(100 - score).toFixed(2)} CMP to claim your reward.`,
         color: 'black',
         confirmButtonText: 'Ok',
         confirmButtonColor: '#6352e8',
+        showCloseButton: true,
         customClass: {
           popup: 'popupStyle',
           container: 'popupStyleContainer'
@@ -381,8 +396,8 @@ const Minting = ({
           <div className="w-100" style={{ display: 'flex', alignContent: 'center', paddingLeft: (width < 767 ? '2em' : ''), paddingRight: (width < 767 ? '2em' : '') }} >
             <Option0
               style={{ marginTop: "10px" }}
-              {...{
-                onClick: claimRewardHandler,
+              {...{              
+                onClick:!userInfo?.isUserUpgraded ? handleUpgraeShow : claimRewardHandler,
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
@@ -392,8 +407,9 @@ const Minting = ({
               {(!!claim) && <Dot>{claim}</Dot>
               }
               {loading ? `${texts.CLAIMINGREWARDS}` : `${texts.CLAIMYOURREWARDS}`}
+              
             </Option0>
-
+              
           </div>
         )}
       </Container>
@@ -457,9 +473,9 @@ const Minting = ({
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
-          {/* <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
             <button type="button" className="btn-close " aria-label="Close" onClick={handleCmpPopupClose}></button>
-          </div> */}
+          </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">
             <div className="Cmp-animation" style={{ height: '150%', width: '120%', position: 'absolute', zIndex: '99' }} />
             <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>
@@ -471,12 +487,63 @@ const Minting = ({
           <div className="d-flex justify-content-center pb-1 " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
-                claimRewardHandler();
-                handleCmpPopupClose();
+                if (!userInfo?.isUserUpgraded) {                  
+                  handleCmpPopupClose();
+                  handleUpgraeShow()
+                }
+                else {
+                  claimRewardHandler();
+                  handleCmpPopupClose();
+              }
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>
           <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim later</div>
+        </Modal>
+      </div>
+
+      {/* For show upgread your account  */}
+
+      <div>
+        <Modal
+          show={
+            upgraeShow
+          } onHide={handleUpgraeClose}
+          backdrop="static"
+          contentClassName=""
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            {/* <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              
+              handleUpgraeClose();
+              claimRewardHandler();
+
+            }
+            }></button> */}
+          </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center">          
+            <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>              
+              <strong className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Don’t miss it!</strong>
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Upgrade before you claim to get the full CMP mining rewards.</p>                    
+            </div>
+          </Modal.Body>  
+          <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>
+            <Buttons.Primary className="mx-2"
+              onClick={async () => {
+                handleUpgraeClose();
+                navigate("/upgrade")
+              }}
+            >🚀 &nbsp; Let’s do it</Buttons.Primary>
+
+            <Buttons.Primary className="mx-2 px-2 mt-3"
+              onClick={async () => {
+                handleUpgraeClose();                
+                claimRewardHandler();
+              }}
+            >❌  &nbsp; I give up the benefits</Buttons.Primary>
+          </div>
         </Modal>
       </div>
     </React.Fragment >

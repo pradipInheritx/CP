@@ -34,6 +34,7 @@ import VoteTop from '../../assets/images/VoteTop.png';
 import VBG from '../../assets/images/VBG.png';
 import VBGM from '../../assets/images/VBGM.png';
 import Upgrade from "./Comingsoon";
+import { handleSoundClick } from "common/utils/SoundClick";
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -361,8 +362,9 @@ const VotingBoosterCopy = () => {
                 <ButttonDiv className="mt-1">
                   <button
                     onClick={() => {
-                      // getExtraVote(item.value, item.vote, item.Extra)
-                      showModal(<Upgrade />)
+                      handleSoundClick()
+                      getExtraVote(item.value, item.vote, item.Extra)
+                      // showModal(<Upgrade />)
                   }}
                   >BUY NOW !</button>
                 </ButttonDiv>                
@@ -462,8 +464,8 @@ const VotingBoosterCopy = () => {
                 <ButttonDivMob className="mt-1">
                   <button
                     onClick={() => {
-                      // getExtraVote(item.value, item.vote, item.Extra)
-                      showModal(<Upgrade />)
+                      getExtraVote(item.value, item.vote, item.Extra)
+                      // showModal(<Upgrade />)
                     }}
                   >BUY NOW !</button>
                 </ButttonDivMob>

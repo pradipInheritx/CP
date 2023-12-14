@@ -442,8 +442,6 @@ const VotingPaymentCopy: React.FC<{
     let navigate = useNavigate();
 
 
-  const ApiUrl = "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/"
-
     useEffect(() => {
       // window.scrollTo({ top: 500, behavior: 'smooth' });
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });      
@@ -673,16 +671,19 @@ const VotingPaymentCopy: React.FC<{
                 }}
               >
                 <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div className="pay-custom-select-container mb-3" style={{
+                  {/* <div className={`${selectCoin === "none" && "pay-custom-select-container"} mb-3`} style={{ */}
+                  <div className={`pay-custom-select-container mb-3`} style={{
                     width: '23em',
                     zIndex: 4,                    
                   }} >
                     <div
-                      className={showOptionList && selectCoin !== "none" ? "pay-selected-text active text-center" : "pay-selected-text text-center"}
+                      className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" :  "pay-selected-text text-center"}
                       onClick={() => {
                         if (payButton) {
-                          return
+                          return 
                         }
+                        // if (selectCoin === "none") {
+                        // }
                         setShowOptionList(prev => !prev)
                       }
 

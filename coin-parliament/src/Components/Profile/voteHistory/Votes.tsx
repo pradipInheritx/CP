@@ -27,10 +27,12 @@ const Votes = () => {
     coins: { votes: [], total: 0 },
     pairs: { votes: [], total: 0 },
   } as GetVotesResponse);
+  const [isLoading, setIsLoading] = useState(false);
   const [coinSocketData, setCoinSocketData] = useState([])
   const getVotes = useCallback(
     async (start: number, isOpenVote: boolean) => {
       if (user?.uid) {
+        setIsLoading(true)
         const newVotes = await getVotesFunc({
           start,
           end: start + pageSize,
@@ -42,6 +44,7 @@ const Votes = () => {
         if (newVotes?.data) {
           setVotes(result);
         }
+        setIsLoading(false)
       }
     },
     [user?.uid, pageSize]
@@ -165,13 +168,14 @@ const Votes = () => {
         setRunVote={setRunVote}
         runVote={runVote}
         getVotes={getVotes}
+        isLoading={isLoading}
         tabs={[
           {
             eventKey: "pairs",
             title: capitalize(translate(`${texts.Pair}`)),
             pane: (
               <div className="d-flex justify-content-center align-items-center flex-column">
-                {votes?.pairs && votes?.pairs.votes.map((v, i) => {
+                {!isLoading && votes?.pairs && votes?.pairs.votes.map((v, i) => {
                   return (
                     <div className="mb-2" key={i}>
                       <MyVotedCard v={v} callbackFun={callbackFun} />
@@ -179,7 +183,10 @@ const Votes = () => {
                   )
 
                 })}
+                <div style={{display: !isLoading ? 'block' : 'none' }}>
+
                 {getButtons(votes.pairs)}
+                </div>
               </div>
             ),
           },
@@ -189,11 +196,14 @@ const Votes = () => {
             pane: (
               <div className="d-flex justify-content-center align-items-center flex-column">
 
-                {votes?.coins && votes?.coins.votes.map((v, i) => {
+                { !isLoading &&votes?.coins && votes?.coins.votes.map((v, i) => {
                   return <MyVotedCard key={i} v={v} coinSocketData={coinSocketData} callbackFun={callbackFun} />
                 }
                 )}
+                 <div style={{display: !isLoading ? 'block' : 'none' }}>
+
                 {getButtons(votes.coins)}
+                </div>
               </div>
             ),
           }

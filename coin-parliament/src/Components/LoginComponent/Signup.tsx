@@ -79,25 +79,40 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   const refer = new URLSearchParams(search).get("refer") || "VoteToEarn";
   const [preantId, setPreantId] = useState(null)
 
-  const getUserId = async () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValid = emailRegex.test(refer);
-
+  const getUserId = async () => {    
+    const uidValue = refer?.slice(-6);
+    const emailValue = refer?.slice(0, 2);    
 
     var userdata = { uid: '' };
     if (refer) {
       try {
         const referUser = await firebase
           .firestore()
-          .collection('users').where(`${isValid ?'email':"displayName"}`, '==', refer).get();  
+          .collection('users').where("userName", '==', refer).get();  
         if (!referUser.empty) {
           referUser.forEach((doc: any) => {
             userdata = doc.data();
             setPreantId(doc.data().uid)            
           });
-        } else if (referUser.empty) {         
-          showToast("your link is expired", ToastType.ERROR)          
-        }              
+        }
+        else if (referUser.empty) {
+          const referUser2 = await firebase
+            .firestore()
+            .collection('users');
+          await referUser2.get().then((snapshot) => {
+            let data: any = []
+            snapshot.forEach((doc) => {
+              data.push({ ...doc.data() });
+            });
+            console.log(data,"alldat")
+            data?.map((item: any, index: number) => {
+              if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
+                setPreantId(item.uid)
+                // setParentEmailId(item.email)
+              }              
+            })
+          })
+        }
       } catch (err) {
         console.log( err, 'email');
       }    
@@ -110,6 +125,8 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
       getUserId()
     }
   }, [])  
+
+  console.log(preantId,"PreantId")
 
   const strings = {
     email: capitalize(translate(texts.email)),

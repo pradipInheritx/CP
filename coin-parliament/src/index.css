@@ -145,9 +145,9 @@ html[dir="rtl"] .offcanvas-start.show {
 .pwaPopup{
     z-index: 99999;
     position: fixed;
-    bottom: 0px;
+    bottom: -54px;
     background: white;
-    padding: 20px;
+    padding: 14px;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -1463,4 +1463,12 @@ iframe{
     to {
       clip-path: inset(0 -1ch 0 0)
     }
+  }
+
+  .popupStyleContainer .swal2-close:hover {
+    color: grey !important;
+  }
+
+  .stayInGamePopupStyle .swal2-close:hover {
+    color: grey !important;
   }

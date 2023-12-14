@@ -28,7 +28,8 @@ import ModalForResult from "./ModalForResult";
 import { Coin } from "../common/models/Coin";
 import { decimal } from "../Components/Profile/utils";
 import { VoteContext, VoteDispatchContext } from "Contexts/VoteProvider";
-const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
+// const getCPVIForVote = httpsCallable(functions, "getCPVIForVote");
+const getCPVIForVoteV2 = httpsCallable(functions, "CPVIForCoin");
 const SinglePair = () => {
   let params = useParams();
 
@@ -46,7 +47,7 @@ const SinglePair = () => {
   const combination = symbolCombination([coin1?.symbol, coin2?.symbol]);
   const [confetti, setConfetti] = useState(false);
   const { width, height } = useWindowSize();
-  const [pct, setPct] = useState(0);
+  const [pct, setPct] = useState<any>(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<number>(0);
   useEffect(() => {
@@ -81,7 +82,8 @@ const SinglePair = () => {
   const getCpviData = useCallback(async () => {
     if (voteId) {
       // if (!mountedRef.current) return null;
-      const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: vote.timeframe.seconds });
+      // const data = await getCPVIForVote({ id: params?.id, voteForTimeInHour: vote.timeframe.seconds });
+      const data = await getCPVIForVoteV2({ coinName: params?.id});
 
       return data;
     }
@@ -155,9 +157,9 @@ const SinglePair = () => {
 
   }, [socket, socketConnect])
   useEffect(() => {
-    if (vote.timeframe) {
-      getCpviData().then((data) => data && setPct(Number(data.data)));
-    }
+    // if (vote.timeframe) {
+      getCpviData().then((data) => data && setPct(data.data));
+    // }
   }, [voteId, getCpviData, vote, totals, selectedTimeFrame])
   const choseTimeFrame = async (timeframe: any) => {
     if (user?.uid && params?.id) {
@@ -308,7 +310,7 @@ const SinglePair = () => {
     })
   }, [selectedTimeFrame]);
 
-  //end modal
+  //end modal  
 
   return (
     <>
@@ -389,12 +391,12 @@ const SinglePair = () => {
                       />
                       {graphLoading ? <CalculatingVotes /> :
                         <>
-                          {/* Temporary commented   */}
+                          {/* Temporary commented   */}                          
                           <Progress
                             totals={totals}
                             symbol1={symbol1}
                             symbol2={symbol2}
-                            pct={pct}
+                            pct={pct[symbol1]}
                           />
                         </>
                       }
