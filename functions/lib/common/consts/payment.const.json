@@ -10,6 +10,7 @@
     "MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS": "Parent referal payment initiated successfully",
     "MESSAGE_GET_PAYMENT": "Payment transaction fetched successfully",
     "MESSAGE_GET_PARENT_PAYMENT_HISTORY_SUCCESS": "Parent payment history fetched successfully",
+    "MESSAGE_GET_USER_PAYMENT_HISTORY_SUCCESS": "User payments history fetched successfully",
     "MESSAGE_NO_PARENT_PAYMENTS": "there are no payments for todays",
     "MESSAGE_SOMETHINGS_WRONG": "Something went wrong in server",
     "MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT": "Parent Pending Payment Amount",
@@ -28,10 +29,13 @@
     "PAYMENT_LIMIT_TYPE_AMOUNT": "AMOUNT",
     "PAYMENT_LIMIT_TYPE_DAYS": "DAYS",
     "PAYMENT_LIMIT_TYPE_ANYOFTHEM": "ANYOFTHEM",
-    "SMART_CONTRACT_GAS_LIMIT": 21712,
+    "SMART_CONTRACT_GAS_LIMIT": 21000,
     "SMART_CONTRACT_METHOD": "sendTokenTo",
     "SMART_CONTRACT__GAS": 2400,
-    "SMART_CONTRACT_ADMIN_ADRESS": "0x0401f866C4B2ae5dc30c9D4BDb6d73398fAFb7A7",
+    "SMART_CONTRACT_ADMIN_ADRESS": "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",
+    "SMART_CONTRACT_ETHEREUM_NODE_URL": "https://mainnet.infura.io/v3/e7f9d6c1bcb04382ac3ac6ca6ae92502",
+    "SMART_CONTRACT_MATIC_POLYGON_NODE_URL": "https://mainnet.infura.io/v3/e7f9d6c1bcb04382ac3ac6ca6ae92502",
+    "SMART_CONTRACT_BNB_NODE_URL": "https://bsc-dataseed.binance.org",
     "SMART_CONTRACT_ABI_ARRAY": [
         {
             "inputs": [
