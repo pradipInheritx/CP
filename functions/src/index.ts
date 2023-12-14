@@ -194,6 +194,25 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+import {addNewKeysInCollection} from "./common/models/User";
+// temporarily used to add add keys to the collection
+exports.addNewKeysInCollection = functions.https.onCall((data) => {
+  const { keyName, keyValue, collectionName } = data;
+  console.log(
+    `keyName : ${keyName}, keyValue : ${keyValue}, collectionName : ${collectionName}`
+  );
+
+  if (keyName && collectionName) {
+    const result = addNewKeysInCollection(keyName, keyValue, collectionName);
+    return result;
+  } else
+    return {
+      message: "some credentials is missing",
+    };
+});
+
+
+
 
 exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
   const { userId, email } = data as { userId: string, email: string };
