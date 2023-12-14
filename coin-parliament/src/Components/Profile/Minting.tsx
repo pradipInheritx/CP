@@ -230,28 +230,16 @@ const Minting = ({
   };
 
   useEffect(() => {
-    if (score === 100 && userInfo?.rewardStatistics?.total == 1) {
-      handleUpgraeShow()
-      // @ts-ignore
-    } else if (userInfo?.rewardStatistics?.total > 1) {
-      handleUpgraeClose()
-    }
-
-  }, [userInfo?.rewardStatistics?.total]);
-
-
-  useEffect(() => {
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
     }
   }, [modalShow, CmpPopupShow]);
   
   useEffect(() => {
-    // @ts-ignore
-    if (score === 100 && userInfo?.rewardStatistics?.total > 1) {      
+    
+    if (score === 100) {      
       setTimeout(() => {
-        handleCmpPopupShow();
-        console.log("i am working")
+        handleCmpPopupShow();    
       }, 8100);
     }
   }, [score , upgraeShow]);
@@ -408,8 +396,8 @@ const Minting = ({
           <div className="w-100" style={{ display: 'flex', alignContent: 'center', paddingLeft: (width < 767 ? '2em' : ''), paddingRight: (width < 767 ? '2em' : '') }} >
             <Option0
               style={{ marginTop: "10px" }}
-              {...{
-                onClick: claimRewardHandler,
+              {...{              
+                onClick:!userInfo?.isUserUpgraded ? handleUpgraeShow : claimRewardHandler,
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
@@ -499,8 +487,14 @@ const Minting = ({
           <div className="d-flex justify-content-center pb-1 " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
-                claimRewardHandler();
-                handleCmpPopupClose();
+                if (!userInfo?.isUserUpgraded) {                  
+                  handleCmpPopupClose();
+                  handleUpgraeShow()
+                }
+                else {
+                  claimRewardHandler();
+                  handleCmpPopupClose();
+              }
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>
@@ -521,30 +515,34 @@ const Minting = ({
           centered
         >
           <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
-            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+            {/* <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              
               handleUpgraeClose();
-              setTimeout(() => {
-                handleCmpPopupShow();
-              }, 1000);
+              claimRewardHandler();
 
             }
-            }></button>
+            }></button> */}
           </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">          
             <div className='py-2 d-flex flex-column  justify-content-center align-items-center' style={{ zIndex: '101' }}>              
-              <strong className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Now you can upgrade your account</strong>
-              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Get Merchandise Voucher</p>
-              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>50 Extra Votes </p>
-              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>500 VTE</p>              
+              <strong className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Don’t miss it!</strong>
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Upgrade before you claim to get the full CMP mining rewards.</p>                    
             </div>
           </Modal.Body>  
-          <div className="d-flex justify-content-center pb-1 " style={{ zIndex: '101' }}>
+          <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
               onClick={async () => {
                 handleUpgraeClose();
                 navigate("/upgrade")
               }}
-            >UPGRADE NOW</Buttons.Primary>
+            >🚀 &nbsp; Let’s do it</Buttons.Primary>
+
+            <Buttons.Primary className="mx-2 px-2 mt-3"
+              onClick={async () => {
+                handleUpgraeClose();                
+                claimRewardHandler();
+              }}
+            >❌  &nbsp; I give up the benefits</Buttons.Primary>
           </div>
         </Modal>
       </div>
