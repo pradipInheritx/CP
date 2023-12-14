@@ -215,6 +215,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     lastName: "",
     mfa: false,
     displayName: user.displayName,
+    userName: "",
     phone: user.phoneNumber,
     subscribers: [],
     children: [],
@@ -263,7 +264,7 @@ exports.addNewKeysInCollection = functions.https.onCall((data) => {
     `keyName : ${keyName}, keyValue : ${keyValue}, collectionName : ${collectionName}`
   );
 
-  if (keyName && keyValue && collectionName) {
+  if (keyName && collectionName) {
     const result = addNewKeysInCollection(keyName, keyValue, collectionName);
     return result;
   } else
@@ -271,6 +272,8 @@ exports.addNewKeysInCollection = functions.https.onCall((data) => {
       message: "some credentials is missing",
     };
 });
+
+
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
