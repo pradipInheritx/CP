@@ -51,6 +51,17 @@ export const makePaymentToServer = async (req: any, res: any) => {
     console.info("Error while make payment to welld app server", error);
   }
 };
+
+export const callbackFromServer = async (req: any, res: any) => {
+  try {
+    console.info("req.body", typeof req.body, req.body);
+    await firestore()
+      .collection("callbackHistory").add({ ...req.body, timestamp: firestore.FieldValue.serverTimestamp() })
+  } catch (error: any) {
+    console.info("Error while call callback URL payment to welld app server", error);
+  }
+};
+
 export const updateUserAfterPayment = async (req: any, res: any) => {
   console.info("get request body", req.body);
   const {
