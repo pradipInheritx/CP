@@ -14,6 +14,7 @@ import SelectTextfield from "../Forms/SelectTextfield";
 import { CountryCode } from "./utils";
 import styled from "styled-components";
 import { Input } from "../Atoms/styles";
+import Styles from "../LoginComponent/styles";
 import { texts } from "../LoginComponent/texts";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
@@ -53,6 +54,8 @@ const PersonalInfo = () => {
   const { showToast } = useContext(NotificationContext);
   const [edit, setEdit] = useState(false)
   const [userName, setUserName] = useState('')
+  const [displayName, setDisplayName] = useState('')
+  const [displayNameErr, setDisplayNameErr] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -66,7 +69,8 @@ const PersonalInfo = () => {
   const [avatarMode, setAvatarMode] = useState(false);
   const translate = useTranslation();
   useEffect(() => {
-    setUserName(userInfo?.displayName || '')
+    setDisplayName(userInfo?.displayName || '')
+    setUserName(userInfo?.userName || '')
     setFirstName(userInfo?.firstName || '')
     setLastName(userInfo?.lastName || '')
     setEmail(userInfo?.email || '')
@@ -145,36 +149,43 @@ const PersonalInfo = () => {
       }
     }
   };
-
-  console.log(avatarImage,"avatarImage")
+  
   return (
     <>
 
       <Form className="mt-1 d-flex flex-column" onSubmit={async (e) => {
         e.preventDefault();
         if (edit) {
-          const newUserInfo = {
-            ...(userInfo as UserProps),
-            firstName: firstName as string,
-            lastName: lastName as string,
-            email: email as string,
-            bio: bio as string,
-            phone: countryCode + phone.phone as string,
-          };
-          if (email === user?.email) {
-            setUserInfo(newUserInfo);
-            await onSubmit(newUserInfo);
-            setEdit(false)
+          if (displayName.length > 6 && displayName.length < 15) {            
+            const newUserInfo = {
+              ...(userInfo as UserProps),
+              firstName: firstName as string,
+              lastName: lastName as string,
+              email: email as string,
+              displayName: displayName as string,
+              bio: bio as string,
+              phone: countryCode + phone.phone as string,
+            };
+            if (email === user?.email) {
+              setUserInfo(newUserInfo);
+              await onSubmit(newUserInfo);
+              setEdit(false)
+            }
+            else {
+              setShow(true)
+            }
           }
-          else {
-            setShow(true)
+          else{
+            setDisplayNameErr(true);
           }
+          
         } else {
           setEdit(true)
         }
         // await login(e, callback);
       }}>
 
+        
         <Buttons.Primary style={{ maxWidth: '100px', placeSelf: 'end', margin: '20px', marginBottom: '0px' }} >{edit ? 'SAVE' : 'EDIT'}</Buttons.Primary>
         <Container className="">
           <ElementsAvatarAImage1 className="m-auto mb-2" onClick={() => {
@@ -207,6 +218,29 @@ const PersonalInfo = () => {
                 }}
 
               />
+              <TextField
+                {...{
+                  label: `${"Dispaly Name"}`,
+                  name: "displayName",
+                  placeholder: "Display Name",
+                  min:6,
+                  max:15,
+                  value: displayName || "",
+                  onChange: async (e) => {
+                    setDisplayName(e.target.value)
+                    setDisplayNameErr(false)
+                  },
+                  edit: !edit,
+                }}
+
+              />
+              {displayNameErr ? <Styles.p className=" mt-1 mb-2 text-danger"
+                style={{
+                  fontSize: "10px"
+                }}
+              >
+                {translate("Display Name should be between 6-15 characters")}
+              </Styles.p> : null}
               <TextField
                 {...{
                   label: `${texts.FIRSTNAME}`,
