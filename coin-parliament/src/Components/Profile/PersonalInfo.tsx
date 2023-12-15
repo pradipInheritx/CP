@@ -19,7 +19,7 @@ import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { generateGoogle2faUrl } from "../../common/consts/contents";
 import axios from "axios";
-
+import Styles from "../LoginComponent/styles";
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
 
@@ -42,10 +42,12 @@ const PersonalInfo = () => {
   const [show, setShow] = useState(false);
   let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
+  const [displayName, setDisplayName] = useState('')
+  const [displayNameErr, setDisplayNameErr] = useState(false)
 
   useEffect(() => {
-    setUserName(userInfo?.displayName || '')
-    setFirstName(userInfo?.firstName || '')
+    setDisplayName(userInfo?.displayName || '')
+    setUserName(userInfo?.userName || '')
     setLastName(userInfo?.lastName || '')
     setEmail(userInfo?.email || '')
 // @ts-ignore
@@ -113,21 +115,27 @@ const PersonalInfo = () => {
       <Form className="mt-1 d-flex flex-column" onSubmit={async (e) => {
         e.preventDefault();
         if (edit) {
-          const newUserInfo = {
-            ...(userInfo as UserProps),
-            firstName: firstName as string,
-            lastName: lastName as string,
-            email: email as string,
-            bio: bio as string,
-            phone: countryCode + phone.phone as string,
-          };
-          if (email === user?.email) {
-            setUserInfo(newUserInfo);
-            await onSubmit(newUserInfo);
-            setEdit(false)
+          if (displayName.length > 6 && displayName.length < 15) {
+            const newUserInfo = {
+              ...(userInfo as UserProps),
+              firstName: firstName as string,
+              lastName: lastName as string,
+              email: email as string,
+              displayName: displayName as string,
+              bio: bio as string,
+              phone: countryCode + phone.phone as string,
+            };
+            if (email === user?.email) {
+              setUserInfo(newUserInfo);
+              await onSubmit(newUserInfo);
+              setEdit(false)
+            }
+            else {
+              setShow(true)
+            }
           }
           else {
-            setShow(true)
+            setDisplayNameErr(true);
           }
         } else {
           setEdit(true)
@@ -158,6 +166,29 @@ const PersonalInfo = () => {
               />
               <TextField
                 {...{
+                  label: `${"Dispaly Name"}`,
+                  name: "displayName",
+                  placeholder: "Display Name",
+                  min: 6,
+                  max: 15,
+                  value: displayName || "",
+                  onChange: async (e) => {
+                    setDisplayName(e.target.value)
+                    setDisplayNameErr(false)
+                  },
+                  edit: !edit,
+                }}
+
+              />
+              {displayNameErr ? <Styles.p className=" mt-1 mb-2 text-danger"
+                style={{
+                  fontSize: "10px"
+                }}
+              >
+                Display Name should be between 6-15 characters
+              </Styles.p> : null}
+              <TextField
+                {...{
                   label: `${texts.FIRSTNAME}`,
                   name: "firstName",
                   placeholder: "First Name",
@@ -169,6 +200,7 @@ const PersonalInfo = () => {
                 }}
 
               />
+              
               <TextField
                 {...{
                   label: `${texts.LASTNAME}`,
