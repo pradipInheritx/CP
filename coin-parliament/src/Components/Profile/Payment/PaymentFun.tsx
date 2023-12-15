@@ -10,6 +10,7 @@ import AppContext from 'Contexts/AppContext';
 import { texts } from 'Components/LoginComponent/texts';
 import { Modal } from 'react-bootstrap';
 import VotingPaymentCopy from './VotingPaymentCopy';
+import CoinsContext from 'Contexts/CoinsContext';
 
 export type paymentProps = {
   type: any;
@@ -45,6 +46,7 @@ function PaymentFun({ isVotingPayment }: any) {
   const [selectCoin, setSelectCoin] = useState("none");
   const [showOptionList, setShowOptionList] = useState(false);
   const [showForWait, setShowForWait] = useState(false);
+  const { coins, totals, allCoins } = useContext(CoinsContext);
   const [networkCode, setNetworkCode] = useState({
     ETH: "1",
     BNB: "56",
@@ -73,6 +75,9 @@ function PaymentFun({ isVotingPayment }: any) {
     return;
   }
 
+  
+
+
   const payNow = (detail?: any) => {
     const headers = {
       // 'Content-Type': 'application/json',
@@ -81,12 +86,12 @@ function PaymentFun({ isVotingPayment }: any) {
       "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
       "content-type": "application/json"
     }
-
+    
     const data = {
       // userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,     
       // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: payamount,
+      amount: Number(payamount && payamount/coins[`${coinInfo?.symbol}`].price),
       // amount: 0.0001,
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
@@ -132,7 +137,7 @@ function PaymentFun({ isVotingPayment }: any) {
       userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: 0.0001,
+      amount: payamount,
       // network: "11155111",
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
