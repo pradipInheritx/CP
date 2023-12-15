@@ -57,6 +57,11 @@ export const callbackFromServer = async (req: any, res: any) => {
     console.info("req.body", typeof req.body, req.body);
     await firestore()
       .collection("callbackHistory").add({ ...req.body, timestamp: firestore.FieldValue.serverTimestamp() })
+    res.status(200).send({
+      status: true,
+      message: "Transaction logged in DB on transaction details",
+      data: [],
+    });
   } catch (error: any) {
     console.info("Error while call callback URL payment to welld app server", error);
   }
