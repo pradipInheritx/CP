@@ -18,6 +18,7 @@ import { useTranslation } from "../../common/models/Dictionary";
 import AppContext from "../../Contexts/AppContext";
 import UserContext from "../../Contexts/User";
 import { texts } from "../LoginComponent/texts";
+import { handleSoundClick } from "common/utils/SoundClick";
 
 const OverlapGroup1 = styled.div`
   height: 50px;
@@ -230,7 +231,7 @@ const UserCard = ({
           </Address>
         </FlexCol>
         {userInfo?.uid !== leader?.userId ?
-          <Component5031 style={{ background: checked ? "" : "white" }}>
+          <Component5031 style={{ background: checked ? "" : "white" }} onClick={() => { handleSoundClick() }}>
             <Icon
               setChecked={setChecked}
               checked={checked}
