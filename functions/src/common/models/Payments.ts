@@ -25,7 +25,7 @@ export const makePaymentToServer = async (req: any, res: any) => {
     const requestBody = {
       method: parentConst.PAYMENT_METHOD,
       callback_secret: "RPU8UNHhsyEV69yTUA0kBHieIouvxcuV",
-      callback_url: "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/payment/makePayment/callback/fromServer",
+      callback_url: "https://us-central1-coinparliament-51ae1.cloudfunctions.net/api/v1/payment/makePayment/callback/fromServer",
       params: {
         amount: parseFloat(amount),
         network: network, // parentConst.PAYMENT_NETWORK,
