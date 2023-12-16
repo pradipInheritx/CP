@@ -24,6 +24,8 @@ export const makePaymentToServer = async (req: any, res: any) => {
     // }
     const requestBody = {
       method: parentConst.PAYMENT_METHOD,
+      callback_secret: "RPU8UNHhsyEV69yTUA0kBHieIouvxcuV",
+      callback_url: "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/payment/makePayment/callback/fromServer",
       params: {
         amount: parseFloat(amount),
         network: network, // parentConst.PAYMENT_NETWORK,
@@ -62,6 +64,22 @@ export const makePaymentToServer = async (req: any, res: any) => {
     console.info("Error while make payment to welld app server", error);
   }
 };
+
+export const callbackFromServer = async (req: any, res: any) => {
+  try {
+    console.info("req.body", typeof req.body, req.body);
+    await firestore()
+      .collection("callbackHistory").add({ ...req.body, timestamp: firestore.FieldValue.serverTimestamp() })
+    res.status(200).send({
+      status: true,
+      message: "Transaction logged in DB on transaction details",
+      data: [],
+    });
+  } catch (error: any) {
+    console.info("Error while call callback URL payment to welld app server", error);
+  }
+};
+
 export const updateUserAfterPayment = async (req: any, res: any) => {
   console.info("get request body", req.body);
   const {
