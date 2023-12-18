@@ -123,9 +123,10 @@ function ModalForResult({
   const handleShow = () => setShow(true);
   const handleClose = () => {
     removeVote();
-    if (remainingCMP > 99.98 && location.pathname !== "/profile/mine") {
+    if (score > 99.98 && location.pathname !== "/profile/mine") {
       setShowComplete100CMP(true);
     }
+    console.log(remainingCMP, score ,"remainingCMP")
   };
 
   const removeVote = () => {
