@@ -391,37 +391,61 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
 };
 
 export const settlePendingTransactionFunction = async () => {
-    console.log("TODO For Payment Settlement");
-    const currentTime: any = new Date();
-    const thirtyMinutesAgo = new Date(currentTime - 30 * 60 * 1000);
+    try {
+        const currentTime: any = new Date();
+        const thirtyMinutesAgo = new Date(currentTime - 30 * 60 * 1000);
+        const getPendingPaymentHistory: any = await firestore()
+            .collection("callbackHistory")
+            .where("timestamp", ">=", thirtyMinutesAgo)
+            .get();
+        const getAllPendingPaymentCallbackHistory: any = getPendingPaymentHistory.docs.map((snapshot: any) => {
+            return { ...snapshot.data(), id: snapshot.id };
+        });
 
-    const getPendingPaymentHistory: any = await firestore()
-        .collection("callbackHistory")
-        .where("timestamp", ">=", thirtyMinutesAgo)
-        .get();
-    const getAllPendingPaymentCallbackHistory: any = getPendingPaymentHistory.docs.map((snapshot: any) => {
-        return { ...snapshot.data(), id: snapshot.id };
-    });
-
-    for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
-        console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
-
-        if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === "success") {
-            if (getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType === "EXTRAVOTES") {
-                await addIsExtraVotePurchase(getAllPendingPaymentCallbackHistory[allPendingCallback]);
+        for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
+            console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
+            if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === parentConst.PAYMENT_SUCCESS_EVENT_SUCCESS) {
+                if (getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+                    await addIsExtraVotePurchase(getAllPendingPaymentCallbackHistory[allPendingCallback]);
+                }
+                if (getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+                    await addIsUpgradedValue(getAllPendingPaymentCallbackHistory[allPendingCallback].userId)
+                }
+                let getData = {
+                    paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
+                    event: getAllPendingPaymentCallbackHistory[allPendingCallback].event,
+                    timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp,
+                    amount: getAllPendingPaymentCallbackHistory[allPendingCallback].amount,
+                    network: getAllPendingPaymentCallbackHistory[allPendingCallback].network,
+                    numberOfVotes: getAllPendingPaymentCallbackHistory[allPendingCallback].numberOfVotes,
+                    origincurrency: getAllPendingPaymentCallbackHistory[allPendingCallback].origincurrency,
+                    token: getAllPendingPaymentCallbackHistory[allPendingCallback].token,
+                    transactionType: getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType,
+                    userEmail: getAllPendingPaymentCallbackHistory[allPendingCallback].userEmail,
+                    userId: getAllPendingPaymentCallbackHistory[allPendingCallback].userId,
+                    walletType: getAllPendingPaymentCallbackHistory[allPendingCallback].walletType
+                }
+                await firestore().collection("payments").add(getData);
+            } else {
+                let getData = {
+                    paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
+                    event: getAllPendingPaymentCallbackHistory[allPendingCallback].event,
+                    timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp,
+                    amount: getAllPendingPaymentCallbackHistory[allPendingCallback].amount,
+                    network: getAllPendingPaymentCallbackHistory[allPendingCallback].network,
+                    numberOfVotes: getAllPendingPaymentCallbackHistory[allPendingCallback].numberOfVotes,
+                    origincurrency: getAllPendingPaymentCallbackHistory[allPendingCallback].origincurrency,
+                    token: getAllPendingPaymentCallbackHistory[allPendingCallback].token,
+                    transactionType: getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType,
+                    userEmail: getAllPendingPaymentCallbackHistory[allPendingCallback].userEmail,
+                    userId: getAllPendingPaymentCallbackHistory[allPendingCallback].userId,
+                    walletType: getAllPendingPaymentCallbackHistory[allPendingCallback].walletType
+                }
+                await firestore().collection("payments").add(getData);
             }
-            if (getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType === "UPGRADE") {
-                await addIsUpgradedValue(getAllPendingPaymentCallbackHistory[allPendingCallback].userId)
-            }
-
-            let getData = { paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data, event: getAllPendingPaymentCallbackHistory[allPendingCallback].event, timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp }
-            console.info("Iff", getData)
-            await firestore().collection("payments").add(getData);
-        } else {
-            let getData = { paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data, event: getAllPendingPaymentCallbackHistory[allPendingCallback].event, timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp }
-            console.info("Else", getData)
-            await firestore().collection("payments").add(getData);
         }
+    } catch (error) {
+        console.info("Getting Error While Fetch The Pending Event Transaction");
     }
 };
 
