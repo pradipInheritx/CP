@@ -461,7 +461,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     style={{ width: "200px" }}
 
                 />
-                <div className={`${window.screen.width < 767 ? "py-3 d-flex" : ""}`}>
+                <div className={`${window.screen.width < 767 ? "py-3 d-flex" : ""}`} >
                     <select
                         className='color-back py-2 mx-1'
                         value={collectionValue}
@@ -474,13 +474,14 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             setCollectionCardValue('none');
                         }}
                         style={{
-                            width: "155px"
+                            width: "155px",
+                            textTransform:"uppercase"
                         }}
                     >
                         <option value='none' > {texts.SelectCollection} </option>
                         {
                             collectionType?.map((data: any, index: number) => {
-                                return <option selected value={data?.albumName} key={index} > {data?.albumName} </option>
+                                return <option selected value={data?.albumName} key={index}  style={{textTransform:"uppercase"}} > {data?.albumName} </option>
                             })
                         }
 
@@ -494,13 +495,14 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             setCollectionSetValue(e.target.value);
                         }}
                         style={{
-                            width: "155px"
+                            width: "155px",
+                            textTransform:"uppercase"
                         }}
                     >
                         <option value='none' > {texts.SelectSets} </option>
                         {
                             setsValue?.map((data: any, index: number) => {
-                                return <option selected value={data?.id} key={index} > {(data?.setName)?.toUpperCase()
+                                return <option selected value={data?.id} key={index} style={{textTransform:"uppercase"}}> {(data?.setName)?.toUpperCase()
                                 }</option>
                             })}
                     </select>
@@ -515,10 +517,11 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         }}
                         value={collectionTypeValue}
                         style={{
-                            width: "155px"
+                            width: "155px",
+                            textTransform:"uppercase"
                         }}
                     >
-                        {collectionValue != "none" ? <><option value='all' > {texts.SelectType} </option>
+                        {collectionValue != "none" ? <><option value='all' style={{textTransform:"uppercase"}} > {texts.SelectType} </option>
                             <option value={`${texts.Legendary}`} > {texts.Legendary} </option>
                             <option value={`${texts.Rare}`}> {texts.Rare} </option>
                             <option value={`${texts.Epic}`}> {texts.Epic} </option>
@@ -535,13 +538,14 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         }}
                         value={collectionCardValue}
                         style={{
-                            width: "155px"
+                            width: "155px",
+                            textTransform:"uppercase"
                         }}
                     >
                         <option value='none' > {texts.SelectName} </option>
                         {
                             collectionValue !== 'none' && cardNameNew?.map((data: any, index: number) => {
-                                return <option selected value={data?.cardName} key={index} > {`${data?.cardName}`
+                                return <option selected value={data?.cardName} key={index} style={{textTransform:"uppercase"}} > {`${data?.cardName}`
                                 }</option>
                             })}
                     </select>

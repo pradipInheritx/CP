@@ -160,7 +160,7 @@ const Progress = ({ totals, progressData, symbol1, symbol2, pct, compare = true,
               label={`${Math.floor(pct || 0)}%`}
             />}
 
-            {Math.floor(pct || 0) > 0 && Math.ceil(100 - (pct || 0)) && <ProgressBar
+            {Math.floor(pct || 0) > 0 && Math.ceil(100 - (pct || 0)) > 0 && <ProgressBar
               style={{ background: "#6352E8", color: '#6352E8' }}
               now={1}
               key={2}
