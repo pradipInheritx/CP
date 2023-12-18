@@ -98,7 +98,12 @@ function Speed(props: SpeedProps) {
           // right: 13.5%;          
           transform: rotate(84deg);
         }
-        .select {
+        .low.select {
+          color: #fa0202;
+          text-shadow: -1px 1px 25px rgba(255, 57, 57, 1);
+          font-weight: 600;
+        }
+        .high.select {
           color: #5dff6d;
           text-shadow: 0 0px 10px #5dff6d, 0 0px 20px #5dff6d, 0 0px 30px #5dff6d;
           font-weight: 600;
