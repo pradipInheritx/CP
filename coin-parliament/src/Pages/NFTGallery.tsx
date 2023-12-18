@@ -421,21 +421,22 @@ const NFTGallery = () => {
           style={{ width: "200px" }}
 
         />
-        <div className={`${window.screen.width < 767 ? "py-3 d-flex" : ""} `}>
+        <div className={`${window.screen.width < 767 ? "py-3 d-flex" : ""}`}>
           <select
             className='color-back py-2 mx-2'
             value={selectCollection}
             // onChange={e=>onCollectionChange(e.target.value)}          
             onChange={e => setSelectCollection(e.target.value)}
             style={{
-              width: "155px"
+              width: "155px",
+              textTransform:"uppercase"
             }}
           >
             <option value='none'>{texts.SelectCollection}</option>
 
 
             {collectionType?.map((data: any, index: number) => {
-              return <option selected value={data?.albumName} key={index}>{data?.albumName}</option>
+              return <option selected value={data?.albumName} key={index} style={{textTransform:"uppercase"}} >{data?.albumName}</option>
             })}
             {/* <option value='Summer'>SUMMER</option>
                 <option value='Winter'>WINTER</option>
@@ -465,10 +466,11 @@ const NFTGallery = () => {
             onChange={(e) => { onSelectType(e.target.value) }}
             value={cardType}
             style={{
-              width: "155px"
+              width: "155px",
+              textTransform:"uppercase"
             }}
           >
-            {selectCollection != "none" ? <><option value='all'>{texts.SelectType}</option>
+            {selectCollection != "none" ? <><option value='all' style={{textTransform:"uppercase"}}>{texts.SelectType}</option>
               <option value={`${texts.Legendary}`}>{texts.Legendary}</option>
               <option value={`${texts.Rare}`}>{texts.Rare}</option>
               <option value={`${texts.Epic}`}>{texts.Epic}</option>
@@ -482,12 +484,13 @@ const NFTGallery = () => {
             onChange={e => onSelectName(e.target.value)}
             value={setsCardName}
             style={{
-              width: "155px"
+              width: "155px",
+              textTransform:"uppercase"
             }}
           >
             <option value='none'>{texts.SelectName}</option>
             {cardNameNew?.map((data: any, index: number) => {
-              return <option selected value={data?.cardName} key={index}>{`${data?.cardName}`}</option>
+              return <option selected value={data?.cardName} key={index} style={{textTransform:"uppercase"}}>{`${data?.cardName}`}</option>
             })}
           </select>
         </div>
