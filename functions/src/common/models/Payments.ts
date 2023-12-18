@@ -178,7 +178,7 @@ export const storeInDBOfPayment = async (metaData: any) => {
     .collection("payments")
     .add({ ...metaData, timestamp: firestore.FieldValue.serverTimestamp() });
 };
-const addIsExtraVotePurchase = async (metaData: any) => {
+export const addIsExtraVotePurchase = async (metaData: any) => {
   const userDocumentRef = firestore().collection("users").doc(metaData.userId);
   userDocumentRef
     .get()
@@ -211,7 +211,7 @@ const addIsExtraVotePurchase = async (metaData: any) => {
       errorLogging("isUserExtraVote", "ERROR", error);
     });
 };
-const addIsUpgradedValue = async (userId: string) => {
+export const addIsUpgradedValue = async (userId: string) => {
   const getUserDetails: any = (
     await firestore().collection("users").doc(userId).get()
   ).data();
