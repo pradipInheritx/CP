@@ -408,10 +408,9 @@ export const settlePendingTransactionFunction = async () => {
 
     for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
         console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback])
+        await firestore().collection("payments").add(getAllPendingPaymentCallbackHistory[allPendingCallback])
+        //TODO FOR DELETE
     }
-
 }
-
-
 
 
