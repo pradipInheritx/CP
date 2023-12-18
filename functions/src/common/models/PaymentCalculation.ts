@@ -395,11 +395,12 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
 
 export const settlePendingTransactionFunction = async () => {
     console.log("TODO For Payment Settlement");
-    // const currentTime: any = new Date();
-    // const twoMinutesAgo = new Date(currentTime - 2 * 60 * 1000);
-    //  .where("timestamp", ">=", twoMinutesAgo)
+    const currentTime: any = new Date();
+    const thirtyMinutesAgo = new Date(currentTime - 30 * 60 * 1000);
+
     const getPendingPaymentHistory: any = await firestore()
         .collection('callbackHistory')
+        .where("timestamp", ">=", thirtyMinutesAgo)
         .get();
     const getAllPendingPaymentCallbackHistory: any = getPendingPaymentHistory.docs.map((snapshot: any) => {
         return { ...snapshot.data() }
