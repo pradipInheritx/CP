@@ -94,6 +94,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
+
   });
   console.log("start parent payment");
   const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(

@@ -393,6 +393,10 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
 
 }
 
+export const settlePendingTransactionFunction = async () => {
+    console.log("TODO For Payment Settlement");
+}
+
 
 
 
