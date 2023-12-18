@@ -70,8 +70,11 @@ export type LoginProps = {
       content: ToastContent,
       type?: ToastType,
       options?: ToastOptions | undefined
-    ) => void
+    ) => void,
+    setSmsVerification?: (s: string) => void,
+    callback?: (s: any) => void,    
   ) => Promise<void>;
+  
   login: (
     e: FormEvent<HTMLFormElement>,
     callback: Callback<AuthUser>
@@ -105,10 +108,11 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
               onClick={() => {
                 if (setLoader) {
                   setLoader(true);
-                }
-                // @ts-ignore
-                authProvider(setUser, providers[provider], showToast, setSmsVerification, () => {
+                }                
+                authProvider(setUser, providers[provider], showToast, setSmsVerification,() => {
+                  console.log("it is calling")
                   if (setLoader) {
+                    
                     setLoader(false);
                   }
                 })

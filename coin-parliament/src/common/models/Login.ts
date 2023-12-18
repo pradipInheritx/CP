@@ -87,14 +87,12 @@ export const LoginAuthProvider = async (
     options?: ToastOptions | undefined,
 
   ) => void,
+  setSmsVerification?: (s: string) => void,
   callback?: (s: any) => void,
   refer?: any,
   parentEmailId?:any,
-  setSmsVerification?: (s: string) => void,
 ) => {
   // const auth = getAuth();
-
-  console.log(parentEmailId,"parentEmailIdcheck")
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;

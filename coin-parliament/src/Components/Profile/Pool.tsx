@@ -9,15 +9,33 @@ import { Leader } from "../../Contexts/CoinsContext";
 import PoolMiningCard from "./PoolMiningCard";
 import VBG from "../../assets/images/VBG.png"
 import VBGM from "../../assets/images/VBGM.png"
-
+import coinParliament from "firebaseCoinParliament";
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
+  const [cmpValue, setCmpValue] = useState(0)
   
   const [children, setChildren] = useState<Leader[]>([]);
-  const childrenActivity = Number(
-    Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
-  );
-  // console.log('referal user',children)
+
+
+  const childrenActivity = async () => {     
+    try {
+      const referUser = await coinParliament.firestore().collection('users').where('email', '==', userInfo?.email).get();
+      if (!referUser.empty) {
+        referUser.forEach((doc: any) => {          
+          setCmpValue(doc.data()?.voteStatistics?.commission || 0)   
+          console.log(doc.data(),"doc.data()")
+        });
+      }
+    } catch (err) {
+      console.log( err, 'email');
+    }    
+    // Number(userInfo?.voteStatistics?.commission || 0).toFixed(2) || 0
+  }  
+  
+  useEffect(() => {       
+      childrenActivity()        
+  }, [])
+  
 
   const referralUrl = (value: any, url?: any, uid?: any) => {
     const lastSixCharacters = uid.slice(-6);
@@ -65,7 +83,7 @@ const Pool = () => {
         <div className="mb-3">
           <Info
             friends={userInfo?.children?.length || 0}
-            cpm={childrenActivity || 0}
+            cpm={cmpValue}
           />
         </div>
         <div className='pb-2'>

@@ -101,7 +101,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
               provider={provider}
               onClick={() =>
               // @ts-ignore
-              { agree ? preantId ? authProvider(setUser, providers[provider], showToast, setSmsVerification, assign, preantId,) : authProvider(setUser, providers[provider], showToast, setSmsVerification) : showToast(texts.AgreetNc, ToastType.ERROR) }
+              { agree ? preantId ? authProvider(setUser, providers[provider], showToast, setSmsVerification, () => {},assign, preantId,) : authProvider(setUser, providers[provider], showToast, setSmsVerification) : showToast(texts.AgreetNc, ToastType.ERROR) }
               }
             />
           </div>
