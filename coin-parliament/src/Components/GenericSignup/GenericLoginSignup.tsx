@@ -133,7 +133,7 @@ const GenericLoginSignup = ({ authProvider }:
                   onClick={() =>
                     // authProvider(setUser, providers[provider], showToast)
                     // @ts-ignore
-                  { preantId ? authProvider(setUser, providers[provider], showToast, assign, preantId, parentEmailId) : authProvider(setUser, providers[provider], showToast) }
+                  { preantId ? authProvider(setUser, providers[provider], showToast,()=>{},()=>{}, assign,parentEmailId) : authProvider(setUser, providers[provider], showToast) }
                   }
                 />
               </div>
