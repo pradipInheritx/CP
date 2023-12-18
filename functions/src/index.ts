@@ -749,7 +749,7 @@ exports.updateLeadersCron = functions.pubsub
   });
 
 exports.paymentCallbackHistorySattlement = functions.pubsub
-  .schedule('*/10 * * * *')
+  .schedule('*/2 * * * *')
   .onRun(async () => {
     try {
       await settlePendingTransactionFunction();
