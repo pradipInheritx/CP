@@ -204,6 +204,7 @@ const Minting = ({
   const [tooltipShow, setTooltipShow] = React.useState(false);
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const [upgraeShow, setUpgraeShow] = React.useState(false);
+  const [pendingVoteShow, setPendingVoteShow] = React.useState(false);
   const [ClickedOption, setClickedOption] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
@@ -289,18 +290,19 @@ const Minting = ({
         showToast(error.message, ToastType.ERROR);
       });
     } else {
-      Swal.fire({
-        title: '',
-        text: `You still need ${(100 - score).toFixed(2)} CMP to claim your reward.`,
-        color: 'black',
-        confirmButtonText: 'Ok',
-        confirmButtonColor: '#6352e8',
-        showCloseButton: true,
-        customClass: {
-          popup: 'popupStyle',
-          container: 'popupStyleContainer'
-        }
-      });
+      // Swal.fire({
+      //   title: '',
+      //   text: `You still need ${(100 - score).toFixed(2)} CMP to claim your reward.`,
+      //   color: 'black',
+      //   confirmButtonText: 'Ok',
+      //   confirmButtonColor: '#6352e8',
+      //   showCloseButton: true,
+      //   customClass: {
+      //     popup: 'popupStyle',
+      //     container: 'popupStyleContainer'
+      //   }
+      // });
+      setPendingVoteShow(true)
     }
   }
 
@@ -308,7 +310,7 @@ const Minting = ({
   // const tooltip = (props:any) => {
 
   // };
-  console.log(animateButton, "setAnimateButton")
+  console.log(claim, "setAnimateButton")
 
   return (
     <React.Fragment>
@@ -397,7 +399,7 @@ const Minting = ({
             <Option0
               style={{ marginTop: "10px" }}
               {...{              
-                onClick:!userInfo?.isUserUpgraded ? handleUpgraeShow : claimRewardHandler,
+                onClick: !!claim && !userInfo?.isUserUpgraded ? handleUpgraeShow : claim && !userInfo?.isUserUpgraded ? handleUpgraeShow : claimRewardHandler,
                 borderColor: "var(--blue-violet)",
                 selected: animateButton,
                 className: ["p-3 confetti-button svg-button", (animateButton ? "animate" : "")].join(" "),
@@ -531,18 +533,59 @@ const Minting = ({
           </Modal.Body>  
           <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>
             <Buttons.Primary className="mx-2"
+              style={{
+                width:"180px"
+              }}
               onClick={async () => {
                 handleUpgraeClose();
                 navigate("/upgrade")
               }}
             >🚀 &nbsp; Let’s do it</Buttons.Primary>
 
-            <Buttons.Primary className="mx-2 px-2 mt-3"
+            <Buttons.Primary className="mx-2 mt-3"
+              style={{
+                width:"180px"
+              }}
               onClick={async () => {
                 handleUpgraeClose();                
                 claimRewardHandler();
               }}
             >❌  &nbsp; I give up the benefits</Buttons.Primary>
+          </div>
+        </Modal>
+      </div>
+
+      {/* show Pending vote to get cmp */}
+
+      <div>
+        <Modal
+          show={
+            pendingVoteShow
+          } onHide={() => { setPendingVoteShow(false) }}
+          backdrop="static"
+          contentClassName=""
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+              
+              setPendingVoteShow(false) 
+
+            }
+            }></button>
+          </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center">          
+            
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>You still need ${(100 - score).toFixed(2)} CMP to claim your reward.</p>                    
+            
+          </Modal.Body>  
+          <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>
+            <Buttons.Primary className="mx-2"
+              onClick={async () => {
+                 setPendingVoteShow(false) 
+              }}
+            >ok</Buttons.Primary>            
           </div>
         </Modal>
       </div>
