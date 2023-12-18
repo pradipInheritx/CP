@@ -403,10 +403,13 @@ export const settlePendingTransactionFunction = async () => {
         .where("timestamp", ">=", thirtyMinutesAgo)
         .get();
     const getAllPendingPaymentCallbackHistory: any = getPendingPaymentHistory.docs.map((snapshot: any) => {
-        return { ...snapshot.data() }
+        return { ...snapshot.data(), id: snapshot.id }
     });
 
-    console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory)
+    for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
+        console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback])
+    }
+
 }
 
 
