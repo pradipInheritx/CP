@@ -413,9 +413,14 @@ export const settlePendingTransactionFunction = async () => {
             if (getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType === "UPGRADE") {
                 await addIsUpgradedValue(getAllPendingPaymentCallbackHistory[allPendingCallback].userId)
             }
-            await firestore().collection("payments").add({ paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data, event: getAllPendingPaymentCallbackHistory[allPendingCallback].event, timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp });
+
+            let getData = { paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data, event: getAllPendingPaymentCallbackHistory[allPendingCallback].event, timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp }
+            console.info("Iff", getData)
+            await firestore().collection("payments").add(getData);
         } else {
-            await firestore().collection("payments").add({ paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data, event: getAllPendingPaymentCallbackHistory[allPendingCallback].event, timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp });
+            let getData = { paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data, event: getAllPendingPaymentCallbackHistory[allPendingCallback].event, timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp }
+            console.info("Else", getData)
+            await firestore().collection("payments").add(getData);
         }
     }
 };
