@@ -100,7 +100,12 @@ export const adminCreate = async (req: any, res: any, next: any) => {
       .add(adminData);
 
     const getAdminAdded = await getResponse.get();
-
+    // add uid in admin details
+    await admin
+    .firestore()
+    .collection("admin")
+    .doc(getResponse.id)
+    .set({uid : getResponse.id},{merge: true});
     await sendEmail(
       email,
       "Account created",
