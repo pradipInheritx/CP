@@ -14,6 +14,12 @@ const Complete100CMPModal: React.FC<{
 }> = ({ setCurrentCMP, showComplete100CMP, setShowComplete100CMP }) => {
     const { setShowBack } = useContext(AppContext);
     const navigate = useNavigate();
+    
+    useEffect(() => {
+        if (window.location.pathname == "/profile/mine") {
+            setShowComplete100CMP(false)
+        }
+    }, [])
 
     return (
         <>
