@@ -501,6 +501,70 @@ export const getTransactionHistory = async (req: any, res: any) => {
 };
 
 
+export const paymentStatusOnTransaction = async (req: any, res: any) => {
+  try {
+    const { transactionId } = req.params;
+    const { userEmail,
+      walletType,
+      amount,
+      network,
+      origincurrency,
+      token,
+      transactionType,
+      numberOfVotes } = req.body;
+
+    console.log("paymentStatusOnTransaction Body : ", {
+      userEmail,
+      walletType,
+      amount,
+      network,
+      origincurrency,
+      token,
+      transactionType,
+      numberOfVotes
+    });
+
+    const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { details: transaction.data(), id: transaction.id } });
+    console.log("getAllTransactions : ", getAllTransactions)
+    const getTransaction: any = getAllTransactions.filter((transaction: any) => transaction.details.data.transaction_id === transactionId);
+    console.log("getTransaction : ", getTransaction);
+
+    if (!getTransaction) {
+      res.status(404).send({
+        status: false,
+        message: parentConst.TRANSACTION_NOT_FOUND,
+        result: "",
+      });
+    }
+
+    await firestore().collection("callbackHistory").doc(getTransaction.id).set({
+      userEmail,
+      walletType,
+      amount,
+      network,
+      origincurrency,
+      token,
+      transactionType,
+      numberOfVotes
+    }, { merge: true });
+
+    const data = (await firestore().collection("callbackHistory").doc(getTransaction.id).get()).data();
+    res.status(200).send({
+      status: true,
+      message: parentConst.PAYMENT_UPDATE_SUCCESS,
+      data
+
+    });
+  } catch (error) {
+    errorLogging("paymentStatusOnTransaction", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: parentConst.MESSAGE_SOMETHINGS_WRONG,
+      result: error,
+    });
+  }
+}
+
 export const errorLogging = async (
   funcName: string,
   type: string,
