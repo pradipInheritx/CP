@@ -541,7 +541,7 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       });
     }
 
-    await firestore().collection("callbackHistory").doc(getTransaction.id).set({
+    await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
       userEmail,
       walletType,
       amount,
@@ -552,7 +552,7 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       numberOfVotes
     }, { merge: true });
 
-    const data = (await firestore().collection("callbackHistory").doc(getTransaction.id).get()).data();
+    const data = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
     res.status(200).send({
       status: true,
       message: parentConst.PAYMENT_UPDATE_SUCCESS,
