@@ -410,10 +410,10 @@ export const settlePendingTransactionFunction = async () => {
             console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
             if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === parentConst.PAYMENT_SUCCESS_EVENT_SUCCESS) {
 
-                const getPendingPaymentHistory: any = await firestore()
-                    .collection("callbackHistory")
-                    .where("data.transaction_id", "==", getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id)
-                    .get();
+                const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
+                const getPendingPaymentHistory: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.transaction_id === getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id);
+                console.info("getPendingPaymentHistory", getPendingPaymentHistory);
+
                 if (!getPendingPaymentHistory.empty) {
                     // Assuming you want the first document if there are multiple
                     const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.docs[0].data();
