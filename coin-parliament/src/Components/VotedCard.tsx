@@ -387,6 +387,7 @@ const VotedCard = ({
             </div>
 
             <RangeSilder
+              pairCoinResult={pairCoinResult}
               vote={vote}
               coins={coins}
               symbol1={symbol1}
