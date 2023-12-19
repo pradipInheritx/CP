@@ -543,6 +543,8 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       });
     }
 
+    console.info("getTransaction In API", getTransaction)
+
     await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
       userEmail,
       walletType,
