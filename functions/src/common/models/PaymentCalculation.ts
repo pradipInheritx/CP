@@ -427,17 +427,17 @@ export const settlePendingTransactionFunction = async () => {
                     }
                     let getData = {
                         paymentDetails: getInitiatedRecordAfterSuccess.callbackDetails.data,
-                        event: getInitiatedRecordAfterSuccess.event,
-                        timestamp: getInitiatedRecordAfterSuccess.timestamp,
-                        amount: getInitiatedRecordAfterSuccess.amount,
-                        network: getInitiatedRecordAfterSuccess.network,
-                        numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
-                        origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
-                        token: getInitiatedRecordAfterSuccess.token,
-                        transactionType: getInitiatedRecordAfterSuccess.transactionType,
-                        userEmail: getInitiatedRecordAfterSuccess.userEmail,
-                        userId: getInitiatedRecordAfterSuccess.userId,
-                        walletType: getInitiatedRecordAfterSuccess.walletType
+                        event: getInitiatedRecordAfterSuccess.callbackDetails.event,
+                        timestamp: getInitiatedRecordAfterSuccess.callbackDetails.timestamp,
+                        amount: getInitiatedRecordAfterSuccess.callbackDetails.amount,
+                        network: getInitiatedRecordAfterSuccess.callbackDetails.network,
+                        numberOfVotes: getInitiatedRecordAfterSuccess.callbackDetails.numberOfVotes,
+                        origincurrency: getInitiatedRecordAfterSuccess.callbackDetails.origincurrency,
+                        token: getInitiatedRecordAfterSuccess.callbackDetails.token,
+                        transactionType: getInitiatedRecordAfterSuccess.callbackDetails.transactionType,
+                        userEmail: getInitiatedRecordAfterSuccess.callbackDetails.userEmail,
+                        userId: getInitiatedRecordAfterSuccess.callbackDetails.userId,
+                        walletType: getInitiatedRecordAfterSuccess.callbackDetails.walletType
                     }
 
                     console.info("Before Insert", getData)
