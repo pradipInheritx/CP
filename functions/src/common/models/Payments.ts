@@ -541,7 +541,7 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       });
     }
 
-    await firestore().collection("callbackHistory").doc(getTransaction.id).set({
+    await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
       userEmail,
       walletType,
       amount,
