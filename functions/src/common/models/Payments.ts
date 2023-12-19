@@ -5,7 +5,7 @@ import {
   callSmartContractPaymentFunction,
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
-import {userPurchaseNotification} from "./Admin/NotificationForAdmin";
+import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
 import fetch from "node-fetch";
 
 export const makePaymentToServer = async (req: any, res: any) => {
@@ -145,7 +145,7 @@ export const makePayment = async (req: any, res: any) => {
     numberOfVotes,
     paymentDetails,
   });
-// send notification to admin
+  // send notification to admin
   await userPurchaseNotification(userId);
   res.status(200).json({
     status: true,
@@ -515,6 +515,8 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       transactionType,
       numberOfVotes } = req.body;
 
+    console.log("transactionId : ", transactionId);
+
     console.log("paymentStatusOnTransaction Body : ", {
       userEmail,
       walletType,
@@ -530,7 +532,7 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
     // console.log("getAllTransactions : ", getAllTransactions)
     // const getTransaction: any = getAllTransactions.filter((transaction: any) => transaction.details.data.transaction_id === transactionId);
     // console.log("getTransaction : ", getTransaction);
-    const getTransaction: any =(await firestore().collection("callbackHistory").where("data.transaction_id","==",transactionId).get()).docs.map((transaction) => { return { details: transaction.data(), id: transaction.id } });
+    const getTransaction: any = (await firestore().collection("callbackHistory").where("data.transaction_id", "==", transactionId).get()).docs.map((transaction) => { return { details: transaction.data(), id: transaction.id } });
     if (!getTransaction) {
       res.status(404).send({
         status: false,
