@@ -573,7 +573,8 @@ const NFTGallery = () => {
               {setsValue.map((item:any,index:number) => {
                 return <SetsScreen
                   type="nftalbum"
-                  onSelectSets={onSelectSets}                  
+                  // onSelectSets={onSelectSets}                  
+                  onSelectName={onSelectName}                  
                   allCardNew={allCardNew}
                   setsValue={item}
                 />

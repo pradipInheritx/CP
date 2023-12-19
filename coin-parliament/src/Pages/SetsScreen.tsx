@@ -23,12 +23,12 @@ export type SetsItems = {
   type:any
   setsValue:any
   allCardNew: any
-  onSelectSets:any
+  onSelectName:any
   winerCard?:any
 };
 
 
-const SetsScreen = ({ type ,onSelectSets, allCardNew, setsValue, winerCard }: SetsItems) => {
+const SetsScreen = ({ type ,onSelectName, allCardNew, setsValue, winerCard }: SetsItems) => {
   const [backCards, setBackCards] = useState<any>([]);
   console.log(allCardNew,"allCardNew")
   const BackSideCard = (value: string | number) => {
@@ -65,10 +65,7 @@ const SetsScreen = ({ type ,onSelectSets, allCardNew, setsValue, winerCard }: Se
 
 
   return (
-    <SetBox className={`mt-5 mx-1`}
-      onClick={() => {
-        onSelectSets(setsValue?.id)
-    }}
+    <SetBox className={`mt-5 mx-1`}    
       style={{
         width: `${window.screen.width > 767 ? "24%" : "w-100"}`
     }}
@@ -87,8 +84,12 @@ const SetsScreen = ({ type ,onSelectSets, allCardNew, setsValue, winerCard }: Se
       >       
         {allCardNew?.map((item:any,index:number) => {
           if (setsValue?.setName == item?.setName) {                        
-           return  <div style={{
-          }}          
+            return <div style={{
+             
+            }} 
+              onClick={() => {
+                onSelectName(item?.cardName)
+    }}
            >
              {type=="nftalbum" ?
             <CardForSets
