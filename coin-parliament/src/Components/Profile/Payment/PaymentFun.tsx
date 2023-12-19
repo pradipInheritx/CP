@@ -45,8 +45,7 @@ function PaymentFun({ isVotingPayment }: any) {
   const [payButton, setPayButton] = useState(false);
   const [selectCoin, setSelectCoin] = useState("none");
   const [showOptionList, setShowOptionList] = useState(false);
-  const [showForWait, setShowForWait] = useState(false);
-  const [transactionIdSet, setTransactionIdSet] = useState("");
+  const [showForWait, setShowForWait] = useState(false);  
   const { coins, totals, allCoins } = useContext(CoinsContext);
   const [networkCode, setNetworkCode] = useState({
     ETH: "1",
@@ -113,7 +112,7 @@ function PaymentFun({ isVotingPayment }: any) {
         // console.log(,"response.data.data")
         console.log(response.data, "response.data")
         transactionId.current = response.data
-        setTransactionIdSet(response.data.transaction_id)
+        
         setShowForWait(true)
       })
       .catch((error) => {
@@ -183,8 +182,10 @@ function PaymentFun({ isVotingPayment }: any) {
       transactionType: payType,
       numberOfVotes: extraVote,      
       initiated: "FE"
-
     }
+    console.log(data, "PaymentWaitData")
+    // @ts-ignore
+    const transactionIdSet = transactionId?.current?.transaction_id
     axios.post(`/payment/update/paymentStatusOnTransaction/${transactionIdSet}`, data,
       {        
         headers: headers
@@ -220,12 +221,14 @@ function PaymentFun({ isVotingPayment }: any) {
         }
         // @ts-ignore
         else if (e?.detail?.trx?.transactionStatus) {
+          console.log(e, "Withstatus")
           PaymentWait()
           // @ts-ignore             
           afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)
         }
         // @ts-ignore
         else if (typeof e?.detail?.trx == "string") {
+          console.log(e, "withoutstatus")
           PaymentWait()
           // @ts-ignore  
           afterPayPopup("error", e?.detail?.trx,)
