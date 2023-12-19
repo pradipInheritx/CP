@@ -414,31 +414,35 @@ export const settlePendingTransactionFunction = async () => {
                     .collection("callbackHistory")
                     .where("data.transaction_id", "==", getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id)
                     .get();
+                if (!getPendingPaymentHistory.empty) {
+                    // Assuming you want the first document if there are multiple
+                    const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.docs[0].data();
+                    console.info("getInitiatedRecordAfterSuccess", getInitiatedRecordAfterSuccess)
 
-                const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.data();
-                console.info("getInitiatedRecordAfterSuccess", getInitiatedRecordAfterSuccess)
-
-                if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
-                    await addIsExtraVotePurchase(getInitiatedRecordAfterSuccess);
+                    if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+                        await addIsExtraVotePurchase(getInitiatedRecordAfterSuccess);
+                    }
+                    if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+                        await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
+                    }
+                    let getData = {
+                        paymentDetails: getInitiatedRecordAfterSuccess.data,
+                        event: getInitiatedRecordAfterSuccess.event,
+                        timestamp: getInitiatedRecordAfterSuccess.timestamp,
+                        amount: getInitiatedRecordAfterSuccess.amount,
+                        network: getInitiatedRecordAfterSuccess.network,
+                        numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
+                        origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
+                        token: getInitiatedRecordAfterSuccess.token,
+                        transactionType: getInitiatedRecordAfterSuccess.transactionType,
+                        userEmail: getInitiatedRecordAfterSuccess.userEmail,
+                        userId: getInitiatedRecordAfterSuccess.userId,
+                        walletType: getInitiatedRecordAfterSuccess.walletType
+                    }
+                    await firestore().collection("payments").add(getData);
+                } else {
+                    console.info("No documents found for the given query.");
                 }
-                if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
-                    await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
-                }
-                let getData = {
-                    paymentDetails: getInitiatedRecordAfterSuccess.data,
-                    event: getInitiatedRecordAfterSuccess.event,
-                    timestamp: getInitiatedRecordAfterSuccess.timestamp,
-                    amount: getInitiatedRecordAfterSuccess.amount,
-                    network: getInitiatedRecordAfterSuccess.network,
-                    numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
-                    origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
-                    token: getInitiatedRecordAfterSuccess.token,
-                    transactionType: getInitiatedRecordAfterSuccess.transactionType,
-                    userEmail: getInitiatedRecordAfterSuccess.userEmail,
-                    userId: getInitiatedRecordAfterSuccess.userId,
-                    walletType: getInitiatedRecordAfterSuccess.walletType
-                }
-                await firestore().collection("payments").add(getData);
             } else {
                 let getData = {
                     paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
