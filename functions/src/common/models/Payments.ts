@@ -556,6 +556,9 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
 
     const getUpdatedData = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
 
+
+    //TODO Get the data and store in payment collection 
+
     res.status(200).send({
       status: true,
       message: parentConst.PAYMENT_UPDATE_SUCCESS,
