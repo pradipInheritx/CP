@@ -63,5 +63,7 @@
         }
     ],
     "UPGRADE_USER_VOTE" : 50,
-    "UPGRADE_USER_COIN" : 500
+    "UPGRADE_USER_COIN" : 500,
+    "PAYMENT_UPDATE_SUCCESS":"Transaction update successfully",
+    "TRANSACTION_NOT_FOUND": "Transaction not found"
 }
