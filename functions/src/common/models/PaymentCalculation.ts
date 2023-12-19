@@ -416,7 +416,7 @@ export const settlePendingTransactionFunction = async () => {
 
                 if (!getPendingPaymentHistory.empty) {
                     // Assuming you want the first document if there are multiple
-                    const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.docs[0].data();
+                    const getInitiatedRecordAfterSuccess = getPendingPaymentHistory[0];
                     console.info("getInitiatedRecordAfterSuccess", getInitiatedRecordAfterSuccess)
 
                     if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
@@ -439,6 +439,8 @@ export const settlePendingTransactionFunction = async () => {
                         userId: getInitiatedRecordAfterSuccess.userId,
                         walletType: getInitiatedRecordAfterSuccess.walletType
                     }
+
+                    console.info("Before Insert", getData)
                     await firestore().collection("payments").add(getData);
                 } else {
                     console.info("No documents found for the given query.");
