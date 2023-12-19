@@ -31,8 +31,9 @@ const Notifications = () => {
       {
         notifications.sort((a:any, b:any) => b.time - a.time)
         .map((notification, index) => {
-        const date = (notification.time && notification.time.toDate()) || undefined;
-        return <Notification date={date} title={notification.message.title} body={notification.message.body} key={index} />;
+          const date = (notification.time && notification.time.toDate()) || undefined;
+          // const dataTime = new Date(date).toString()
+          return <Notification date={date} title={notification.message.title} body={notification.message.body} key={index} />;
       })}
     </Container>
   );
