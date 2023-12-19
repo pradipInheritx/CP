@@ -169,7 +169,8 @@ function PaymentFun({ isVotingPayment }: any) {
     const headers = {
       "accept": "application/json",      
     }
-    const data = {      
+    const data = {   
+      userId: userInfo?.uid,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
       amount: payamount,
