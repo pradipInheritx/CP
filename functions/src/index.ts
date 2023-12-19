@@ -749,12 +749,12 @@ exports.updateLeadersCron = functions.pubsub
   });
 
 exports.paymentCallbackHistorySattlement = functions.pubsub
-  .schedule('*/2 * * * *')
+  .schedule('*/10 * * * *')
   .onRun(async () => {
     try {
       await settlePendingTransactionFunction();
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      console.log("Error In Payment Settlement", error);
     }
   });
 

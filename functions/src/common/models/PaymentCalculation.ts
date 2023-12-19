@@ -390,16 +390,14 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     }
 };
 
-
-
 export const settlePendingTransactionFunction = async () => {
     try {
         const currentTime: any = new Date();
-        const thirtyMinutesAgo = new Date(currentTime - 30 * 60 * 1000);
+        const tenMinutesAgo = new Date(currentTime - 10 * 60 * 1000);
 
         const getPendingPaymentHistory: any = await firestore()
             .collection("callbackHistory")
-            .where("timestamp", ">=", thirtyMinutesAgo)
+            .where("timestamp", ">=", tenMinutesAgo)
             .get();
 
         const getAllPendingPaymentCallbackHistory: any = getPendingPaymentHistory.docs.map((snapshot: any) => {
@@ -407,8 +405,7 @@ export const settlePendingTransactionFunction = async () => {
         });
 
         for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
-            console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
-            if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === parentConst.PAYMENT_SUCCESS_EVENT_SUCCESS) {
+            if (getAllPendingPaymentCallbackHistory[allPendingCallback].event == parentConst.PAYMENT_EVENT_APPROVED || getAllPendingPaymentCallbackHistory[allPendingCallback].event == parentConst.PAYMENT_EVENT_CONFIRMED) {
 
                 const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
                 const getPendingPaymentHistory: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.transaction_id === getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id);
