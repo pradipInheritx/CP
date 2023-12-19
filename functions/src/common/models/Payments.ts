@@ -513,7 +513,8 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       origincurrency,
       token,
       transactionType,
-      numberOfVotes } = req.body;
+      numberOfVotes,
+      initiated } = req.body;
 
     console.log("transactionId : ", transactionId);
 
@@ -525,7 +526,8 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       origincurrency,
       token,
       transactionType,
-      numberOfVotes
+      numberOfVotes,
+      initiated
     });
 
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { details: transaction.data(), id: transaction.id } });
@@ -549,7 +551,8 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       origincurrency,
       token,
       transactionType,
-      numberOfVotes
+      numberOfVotes,
+      initiated
     }, { merge: true });
 
     const data = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
