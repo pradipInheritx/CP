@@ -441,22 +441,6 @@ export const settlePendingTransactionFunction = async () => {
                 } else {
                     console.info("No documents found for the given query.");
                 }
-            } else {
-                let getData = {
-                    paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
-                    event: getAllPendingPaymentCallbackHistory[allPendingCallback].event,
-                    timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp,
-                    amount: getAllPendingPaymentCallbackHistory[allPendingCallback].amount,
-                    network: getAllPendingPaymentCallbackHistory[allPendingCallback].network,
-                    numberOfVotes: getAllPendingPaymentCallbackHistory[allPendingCallback].numberOfVotes,
-                    origincurrency: getAllPendingPaymentCallbackHistory[allPendingCallback].origincurrency,
-                    token: getAllPendingPaymentCallbackHistory[allPendingCallback].token,
-                    transactionType: getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType,
-                    userEmail: getAllPendingPaymentCallbackHistory[allPendingCallback].userEmail,
-                    userId: getAllPendingPaymentCallbackHistory[allPendingCallback].userId,
-                    walletType: getAllPendingPaymentCallbackHistory[allPendingCallback].walletType
-                }
-                await firestore().collection("payments").add(getData);
             }
         }
     } catch (error) {
