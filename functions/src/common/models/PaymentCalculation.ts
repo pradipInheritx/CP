@@ -390,14 +390,19 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     }
 };
 
+
+
 export const settlePendingTransactionFunction = async () => {
     try {
         const currentTime: any = new Date();
         const thirtyMinutesAgo = new Date(currentTime - 30 * 60 * 1000);
+
         const getPendingPaymentHistory: any = await firestore()
             .collection("callbackHistory")
             .where("timestamp", ">=", thirtyMinutesAgo)
+            .where("initiated", "==", "FE")
             .get();
+
         const getAllPendingPaymentCallbackHistory: any = getPendingPaymentHistory.docs.map((snapshot: any) => {
             return { ...snapshot.data(), id: snapshot.id };
         });
@@ -405,25 +410,35 @@ export const settlePendingTransactionFunction = async () => {
         for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
             console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
             if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === parentConst.PAYMENT_SUCCESS_EVENT_SUCCESS) {
-                if (getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
-                    await addIsExtraVotePurchase(getAllPendingPaymentCallbackHistory[allPendingCallback]);
+
+                const getPendingPaymentHistory: any = await firestore()
+                    .collection("callbackHistory")
+                    .where("data.transaction_id", "==", getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id)
+                    .where("initiated", "==", "FE")
+                    .get();
+
+                const documentSnapshot = getPendingPaymentHistory.docs[0];
+                const getInitiatedRecordAfterSuccess = documentSnapshot.data();
+
+                if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+                    await addIsExtraVotePurchase(getInitiatedRecordAfterSuccess);
                 }
-                if (getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
-                    await addIsUpgradedValue(getAllPendingPaymentCallbackHistory[allPendingCallback].userId)
+                if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+                    await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
                 }
                 let getData = {
-                    paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
-                    event: getAllPendingPaymentCallbackHistory[allPendingCallback].event,
-                    timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp,
-                    amount: getAllPendingPaymentCallbackHistory[allPendingCallback].amount,
-                    network: getAllPendingPaymentCallbackHistory[allPendingCallback].network,
-                    numberOfVotes: getAllPendingPaymentCallbackHistory[allPendingCallback].numberOfVotes,
-                    origincurrency: getAllPendingPaymentCallbackHistory[allPendingCallback].origincurrency,
-                    token: getAllPendingPaymentCallbackHistory[allPendingCallback].token,
-                    transactionType: getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType,
-                    userEmail: getAllPendingPaymentCallbackHistory[allPendingCallback].userEmail,
-                    userId: getAllPendingPaymentCallbackHistory[allPendingCallback].userId,
-                    walletType: getAllPendingPaymentCallbackHistory[allPendingCallback].walletType
+                    paymentDetails: getInitiatedRecordAfterSuccess.data,
+                    event: getInitiatedRecordAfterSuccess.event,
+                    timestamp: getInitiatedRecordAfterSuccess.timestamp,
+                    amount: getInitiatedRecordAfterSuccess.amount,
+                    network: getInitiatedRecordAfterSuccess.network,
+                    numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
+                    origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
+                    token: getInitiatedRecordAfterSuccess.token,
+                    transactionType: getInitiatedRecordAfterSuccess.transactionType,
+                    userEmail: getInitiatedRecordAfterSuccess.userEmail,
+                    userId: getInitiatedRecordAfterSuccess.userId,
+                    walletType: getInitiatedRecordAfterSuccess.walletType
                 }
                 await firestore().collection("payments").add(getData);
             } else {
@@ -445,7 +460,7 @@ export const settlePendingTransactionFunction = async () => {
             }
         }
     } catch (error) {
-        console.info("Getting Error While Fetch The Pending Event Transaction");
+        console.info("Getting Error While Fetch The Pending Event Transaction", error);
     }
 };
 
