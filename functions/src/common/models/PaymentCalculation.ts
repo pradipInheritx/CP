@@ -407,58 +407,59 @@ export const settlePendingTransactionFunction = async () => {
             return { ...snapshot.data(), id: snapshot.id };
         });
 
-        for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
-            console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
-            if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === parentConst.PAYMENT_SUCCESS_EVENT_SUCCESS) {
+        console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory)
+        // for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
+        //     console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
+        //     if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === parentConst.PAYMENT_SUCCESS_EVENT_SUCCESS) {
 
-                const getPendingPaymentHistory: any = await firestore()
-                    .collection("callbackHistory")
-                    .where("initiated", "==", "FE")
-                    .get();
+        //         const getPendingPaymentHistory: any = await firestore()
+        //             .collection("callbackHistory")
+        //             .where("initiated", "==", "FE")
+        //             .get();
 
 
-                const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.data();
-                console.info("getInitiatedRecordAfterSuccess", getInitiatedRecordAfterSuccess)
+        //         const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.data();
+        //         console.info("getInitiatedRecordAfterSuccess", getInitiatedRecordAfterSuccess)
 
-                // if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
-                //     await addIsExtraVotePurchase(getInitiatedRecordAfterSuccess);
-                // }
-                // if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
-                //     await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
-                // }
-                // let getData = {
-                //     paymentDetails: getInitiatedRecordAfterSuccess.data,
-                //     event: getInitiatedRecordAfterSuccess.event,
-                //     timestamp: getInitiatedRecordAfterSuccess.timestamp,
-                //     amount: getInitiatedRecordAfterSuccess.amount,
-                //     network: getInitiatedRecordAfterSuccess.network,
-                //     numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
-                //     origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
-                //     token: getInitiatedRecordAfterSuccess.token,
-                //     transactionType: getInitiatedRecordAfterSuccess.transactionType,
-                //     userEmail: getInitiatedRecordAfterSuccess.userEmail,
-                //     userId: getInitiatedRecordAfterSuccess.userId,
-                //     walletType: getInitiatedRecordAfterSuccess.walletType
-                // }
-                // await firestore().collection("payments").add(getData);
-            } else {
-                let getData = {
-                    paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
-                    event: getAllPendingPaymentCallbackHistory[allPendingCallback].event,
-                    timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp,
-                    amount: getAllPendingPaymentCallbackHistory[allPendingCallback].amount,
-                    network: getAllPendingPaymentCallbackHistory[allPendingCallback].network,
-                    numberOfVotes: getAllPendingPaymentCallbackHistory[allPendingCallback].numberOfVotes,
-                    origincurrency: getAllPendingPaymentCallbackHistory[allPendingCallback].origincurrency,
-                    token: getAllPendingPaymentCallbackHistory[allPendingCallback].token,
-                    transactionType: getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType,
-                    userEmail: getAllPendingPaymentCallbackHistory[allPendingCallback].userEmail,
-                    userId: getAllPendingPaymentCallbackHistory[allPendingCallback].userId,
-                    walletType: getAllPendingPaymentCallbackHistory[allPendingCallback].walletType
-                }
-                await firestore().collection("payments").add(getData);
-            }
-        }
+        //         // if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+        //         //     await addIsExtraVotePurchase(getInitiatedRecordAfterSuccess);
+        //         // }
+        //         // if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+        //         //     await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
+        //         // }
+        //         // let getData = {
+        //         //     paymentDetails: getInitiatedRecordAfterSuccess.data,
+        //         //     event: getInitiatedRecordAfterSuccess.event,
+        //         //     timestamp: getInitiatedRecordAfterSuccess.timestamp,
+        //         //     amount: getInitiatedRecordAfterSuccess.amount,
+        //         //     network: getInitiatedRecordAfterSuccess.network,
+        //         //     numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
+        //         //     origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
+        //         //     token: getInitiatedRecordAfterSuccess.token,
+        //         //     transactionType: getInitiatedRecordAfterSuccess.transactionType,
+        //         //     userEmail: getInitiatedRecordAfterSuccess.userEmail,
+        //         //     userId: getInitiatedRecordAfterSuccess.userId,
+        //         //     walletType: getInitiatedRecordAfterSuccess.walletType
+        //         // }
+        //         // await firestore().collection("payments").add(getData);
+        //     } else {
+        //         let getData = {
+        //             paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
+        //             event: getAllPendingPaymentCallbackHistory[allPendingCallback].event,
+        //             timestamp: getAllPendingPaymentCallbackHistory[allPendingCallback].timestamp,
+        //             amount: getAllPendingPaymentCallbackHistory[allPendingCallback].amount,
+        //             network: getAllPendingPaymentCallbackHistory[allPendingCallback].network,
+        //             numberOfVotes: getAllPendingPaymentCallbackHistory[allPendingCallback].numberOfVotes,
+        //             origincurrency: getAllPendingPaymentCallbackHistory[allPendingCallback].origincurrency,
+        //             token: getAllPendingPaymentCallbackHistory[allPendingCallback].token,
+        //             transactionType: getAllPendingPaymentCallbackHistory[allPendingCallback].transactionType,
+        //             userEmail: getAllPendingPaymentCallbackHistory[allPendingCallback].userEmail,
+        //             userId: getAllPendingPaymentCallbackHistory[allPendingCallback].userId,
+        //             walletType: getAllPendingPaymentCallbackHistory[allPendingCallback].walletType
+        //         }
+        //         await firestore().collection("payments").add(getData);
+        //     }
+        // }
     } catch (error) {
         console.info("Getting Error While Fetch The Pending Event Transaction", error);
     }
