@@ -506,35 +506,12 @@ export const getTransactionHistory = async (req: any, res: any) => {
 export const paymentStatusOnTransaction = async (req: any, res: any) => {
   try {
     const { transactionId } = req.params;
-    const { userEmail,
-      walletType,
-      amount,
-      network,
-      origincurrency,
-      token,
-      transactionType,
-      numberOfVotes,
-      initiated } = req.body;
+    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
+    const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
+    const getTransaction: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.transaction_id === transactionId);
 
-    console.log("transactionId : ", transactionId);
-
-    console.log("paymentStatusOnTransaction Body : ", {
-      userEmail,
-      walletType,
-      amount,
-      network,
-      origincurrency,
-      token,
-      transactionType,
-      numberOfVotes,
-      initiated
-    });
-
-    const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { details: transaction.data(), id: transaction.id } });
-    console.log("getAllTransactions : ", getAllTransactions)
-    const getTransaction: any = getAllTransactions.filter((transaction: any) => transaction.details.data.transaction_id === transactionId);
     console.log("getTransaction : ", getTransaction);
-    // const getTransaction: any = (await firestore().collection("callbackHistory").where("data.transaction_id", "==", transactionId).get()).docs.map((transaction) => { return { details: transaction.data(), id: transaction.id } });
+
     if (!getTransaction) {
       res.status(404).send({
         status: false,
@@ -545,7 +522,27 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
 
     console.info("getTransaction In API", getTransaction)
 
+    if (getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_APPROVED || getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_CONFIRMED) {
+      if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+        await addIsExtraVotePurchase({
+          userId,
+          userEmail,
+          walletType,
+          amount,
+          network,
+          origincurrency,
+          token,
+          transactionType,
+          numberOfVotes,
+          initiated
+        });
+      }
+      if (transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+        await addIsUpgradedValue(userId)
+      }
+    }
     await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
+      userId,
       userEmail,
       walletType,
       amount,
@@ -557,12 +554,12 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       initiated
     }, { merge: true });
 
-    const data = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
+    const getUpdatedData = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
+
     res.status(200).send({
       status: true,
       message: parentConst.PAYMENT_UPDATE_SUCCESS,
-      data
-
+      getUpdatedData
     });
   } catch (error) {
     errorLogging("paymentStatusOnTransaction", "ERROR", error);

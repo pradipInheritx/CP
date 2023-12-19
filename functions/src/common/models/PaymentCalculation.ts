@@ -406,7 +406,6 @@ export const settlePendingTransactionFunction = async () => {
             return { ...snapshot.data(), id: snapshot.id };
         });
 
-        console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory)
         for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
             console.info("getAllPendingPaymentCallbackHistory", getAllPendingPaymentCallbackHistory[allPendingCallback]);
             if (getAllPendingPaymentCallbackHistory[allPendingCallback].event === parentConst.PAYMENT_SUCCESS_EVENT_SUCCESS) {
@@ -414,9 +413,7 @@ export const settlePendingTransactionFunction = async () => {
                 const getPendingPaymentHistory: any = await firestore()
                     .collection("callbackHistory")
                     .where("data.transaction_id", "==", getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id)
-                    .where("initiated", "==", "FE")
                     .get();
-
 
                 const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.data();
                 console.info("getInitiatedRecordAfterSuccess", getInitiatedRecordAfterSuccess)
