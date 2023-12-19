@@ -5,6 +5,7 @@ import {
   callSmartContractPaymentFunction,
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
+import {userPurchaseNotification} from "./Admin/NotificationForAdmin";
 import fetch from "node-fetch";
 
 export const makePaymentToServer = async (req: any, res: any) => {
@@ -144,7 +145,8 @@ export const makePayment = async (req: any, res: any) => {
     numberOfVotes,
     paymentDetails,
   });
-
+// send notification to admin
+  await userPurchaseNotification(userId);
   res.status(200).json({
     status: true,
     message: `Payment done successfully of amount ${amount}$`,
