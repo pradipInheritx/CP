@@ -8,9 +8,6 @@ export const userPurchaseNotification = async (userId: string) => {
         const getAdmin: any = (await firestore().collection('admin').get()).docs.map((admin) => admin.data());
         const getUser: any = (await firestore().collection('users').doc(userId).get()).data();
         const token = getAdmin?.token;
-        if (!token) {
-
-        }
         console.log("admin token: ", token);
         const message: messaging.Message = {
             token,
@@ -31,7 +28,7 @@ export const userPurchaseNotification = async (userId: string) => {
         console.log("Message:", message);
         await sendNotification({
             token,
-            id : getAdmin.uid,
+            id: getAdmin.uid,
             title: `${getUser?.displayName} is purchased somethings`,
             body: 'user have purchased somethings',
             message,
