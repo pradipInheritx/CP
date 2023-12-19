@@ -5,6 +5,7 @@ import {
   callSmartContractPaymentFunction,
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
+import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
 import fetch from "node-fetch";
 
 export const makePaymentToServer = async (req: any, res: any) => {
@@ -105,6 +106,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     transactionType,
     numberOfVotes,
     paymentDetails,
+
   });
   console.log("start parent payment");
   const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
@@ -154,7 +156,8 @@ export const makePayment = async (req: any, res: any) => {
     numberOfVotes,
     paymentDetails,
   });
-
+  // send notification to admin
+  await userPurchaseNotification(userId);
   res.status(200).json({
     status: true,
     message: `Payment done successfully of amount ${amount}$`,
@@ -186,7 +189,7 @@ export const storeInDBOfPayment = async (metaData: any) => {
     .collection("payments")
     .add({ ...metaData, timestamp: firestore.FieldValue.serverTimestamp() });
 };
-const addIsExtraVotePurchase = async (metaData: any) => {
+export const addIsExtraVotePurchase = async (metaData: any) => {
   const userDocumentRef = firestore().collection("users").doc(metaData.userId);
   userDocumentRef
     .get()
@@ -219,7 +222,7 @@ const addIsExtraVotePurchase = async (metaData: any) => {
       errorLogging("isUserExtraVote", "ERROR", error);
     });
 };
-const addIsUpgradedValue = async (userId: string) => {
+export const addIsUpgradedValue = async (userId: string) => {
   const getUserDetails: any = (
     await firestore().collection("users").doc(userId).get()
   ).data();
@@ -510,6 +513,74 @@ export const getTransactionHistory = async (req: any, res: any) => {
   }
 };
 
+
+export const paymentStatusOnTransaction = async (req: any, res: any) => {
+  try {
+    const { transactionId } = req.params;
+    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
+    const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
+    const getTransaction: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.transaction_id === transactionId);
+
+    console.log("getTransaction : ", getTransaction);
+
+    if (!getTransaction) {
+      res.status(404).send({
+        status: false,
+        message: parentConst.TRANSACTION_NOT_FOUND,
+        result: "",
+      });
+    }
+
+    console.info("getTransaction In API", getTransaction)
+
+    if (getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_APPROVED || getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_CONFIRMED) {
+      if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+        await addIsExtraVotePurchase({
+          userId,
+          userEmail,
+          walletType,
+          amount,
+          network,
+          origincurrency,
+          token,
+          transactionType,
+          numberOfVotes,
+          initiated
+        });
+      }
+      if (transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+        await addIsUpgradedValue(userId)
+      }
+    }
+    await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
+      userId,
+      userEmail,
+      walletType,
+      amount,
+      network,
+      origincurrency,
+      token,
+      transactionType,
+      numberOfVotes,
+      initiated
+    }, { merge: true });
+
+    const getUpdatedData = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
+
+    res.status(200).send({
+      status: true,
+      message: parentConst.PAYMENT_UPDATE_SUCCESS,
+      getUpdatedData
+    });
+  } catch (error) {
+    errorLogging("paymentStatusOnTransaction", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: parentConst.MESSAGE_SOMETHINGS_WRONG,
+      result: error,
+    });
+  }
+}
 
 export const errorLogging = async (
   funcName: string,

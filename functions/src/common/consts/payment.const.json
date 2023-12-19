@@ -29,6 +29,9 @@
     "PAYMENT_LIMIT_TYPE_AMOUNT" : "AMOUNT",
     "PAYMENT_LIMIT_TYPE_DAYS" : "DAYS",
     "PAYMENT_LIMIT_TYPE_ANYOFTHEM" : "ANYOFTHEM",
+    "PAYMENT_SUCCESS_EVENT_SUCCESS" : "success",
+    "PAYMENT_EVENT_APPROVED": "approved",
+    "PAYMENT_EVENT_CONFIRMED":"confirmed",
     "SMART_CONTRACT_GAS_LIMIT":21000,
     "SMART_CONTRACT_METHOD":"sendTokenTo",
     "SMART_CONTRACT__GAS":2400,
@@ -62,5 +65,7 @@
         }
     ],
     "UPGRADE_USER_VOTE" : 50,
-    "UPGRADE_USER_COIN" : 500
+    "UPGRADE_USER_COIN" : 500,
+    "PAYMENT_UPDATE_SUCCESS":"Transaction update successfully",
+    "TRANSACTION_NOT_FOUND": "Transaction not found"
 }

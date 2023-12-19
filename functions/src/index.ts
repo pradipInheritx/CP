@@ -107,7 +107,7 @@ import {
 } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
-import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // initialize express server
 const app = express();
@@ -749,6 +749,16 @@ exports.updateLeadersCron = functions.pubsub
       await setLeaders();
     } catch (e) {
       console.log(e);
+    }
+  });
+
+exports.paymentCallbackHistorySattlement = functions.pubsub
+  .schedule('*/10 * * * *')
+  .onRun(async () => {
+    try {
+      await settlePendingTransactionFunction();
+    } catch (error) {
+      console.log("Error In Payment Settlement", error);
     }
   });
 
