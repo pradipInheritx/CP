@@ -413,6 +413,7 @@ export const settlePendingTransactionFunction = async () => {
 
                 const getPendingPaymentHistory: any = await firestore()
                     .collection("callbackHistory")
+                    .where("data.transaction_id", "==", getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id)
                     .where("initiated", "==", "FE")
                     .get();
 
