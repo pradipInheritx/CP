@@ -4,7 +4,7 @@ import { log } from "firebase-functions/logger";
 import * as parentConst from "../consts/payment.const.json";
 import Web3 from "web3";
 
-// import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments"
+import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments"
 
 
 // import { log } from "firebase-functions/logger";
@@ -420,27 +420,27 @@ export const settlePendingTransactionFunction = async () => {
                 const getInitiatedRecordAfterSuccess = getPendingPaymentHistory.data();
                 console.info("getInitiatedRecordAfterSuccess", getInitiatedRecordAfterSuccess)
 
-                // if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
-                //     await addIsExtraVotePurchase(getInitiatedRecordAfterSuccess);
-                // }
-                // if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
-                //     await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
-                // }
-                // let getData = {
-                //     paymentDetails: getInitiatedRecordAfterSuccess.data,
-                //     event: getInitiatedRecordAfterSuccess.event,
-                //     timestamp: getInitiatedRecordAfterSuccess.timestamp,
-                //     amount: getInitiatedRecordAfterSuccess.amount,
-                //     network: getInitiatedRecordAfterSuccess.network,
-                //     numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
-                //     origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
-                //     token: getInitiatedRecordAfterSuccess.token,
-                //     transactionType: getInitiatedRecordAfterSuccess.transactionType,
-                //     userEmail: getInitiatedRecordAfterSuccess.userEmail,
-                //     userId: getInitiatedRecordAfterSuccess.userId,
-                //     walletType: getInitiatedRecordAfterSuccess.walletType
-                // }
-                // await firestore().collection("payments").add(getData);
+                if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+                    await addIsExtraVotePurchase(getInitiatedRecordAfterSuccess);
+                }
+                if (getInitiatedRecordAfterSuccess.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+                    await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
+                }
+                let getData = {
+                    paymentDetails: getInitiatedRecordAfterSuccess.data,
+                    event: getInitiatedRecordAfterSuccess.event,
+                    timestamp: getInitiatedRecordAfterSuccess.timestamp,
+                    amount: getInitiatedRecordAfterSuccess.amount,
+                    network: getInitiatedRecordAfterSuccess.network,
+                    numberOfVotes: getInitiatedRecordAfterSuccess.numberOfVotes,
+                    origincurrency: getInitiatedRecordAfterSuccess.origincurrency,
+                    token: getInitiatedRecordAfterSuccess.token,
+                    transactionType: getInitiatedRecordAfterSuccess.transactionType,
+                    userEmail: getInitiatedRecordAfterSuccess.userEmail,
+                    userId: getInitiatedRecordAfterSuccess.userId,
+                    walletType: getInitiatedRecordAfterSuccess.walletType
+                }
+                await firestore().collection("payments").add(getData);
             } else {
                 let getData = {
                     paymentDetails: getAllPendingPaymentCallbackHistory[allPendingCallback].data,
