@@ -426,7 +426,7 @@ export const settlePendingTransactionFunction = async () => {
                         await addIsUpgradedValue(getInitiatedRecordAfterSuccess.userId)
                     }
                     let getData = {
-                        paymentDetails: getInitiatedRecordAfterSuccess.data,
+                        paymentDetails: getInitiatedRecordAfterSuccess.callbackDetails.data,
                         event: getInitiatedRecordAfterSuccess.event,
                         timestamp: getInitiatedRecordAfterSuccess.timestamp,
                         amount: getInitiatedRecordAfterSuccess.amount,
