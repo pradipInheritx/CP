@@ -752,7 +752,7 @@ exports.updateLeadersCron = functions.pubsub
     }
   });
 
-exports.paymentCallbackHistorySattlement = functions.pubsub
+exports.paymentCallbackHistorySettlement = functions.pubsub
   .schedule('*/10 * * * *')
   .onRun(async () => {
     try {
