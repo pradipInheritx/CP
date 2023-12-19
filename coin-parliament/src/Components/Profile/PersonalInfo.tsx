@@ -56,6 +56,7 @@ const PersonalInfo = () => {
   const [userName, setUserName] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [displayNameErr, setDisplayNameErr] = useState(false)
+  const [phoneErr, setPhoneErr] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -115,13 +116,16 @@ const PersonalInfo = () => {
     }
   };
   const handleOnChange = (value: any, data: any, event: any, formattedValue: any) => {
+    setPhoneErr(false)
     setPhone({ phone: value });
     if (countryCode === data.country) {
       setCountryCode(data.countryCode);
     }
 
   }
-  // console.log(phone,"Phonenumber")
+
+
+  console.log(phone , phoneErr,"Phonenumber")
   useEffect(() => {
     axios
       .get("https://ipapi.co/json/")
@@ -134,9 +138,6 @@ const PersonalInfo = () => {
   }, [phone]);
 
   const onSubmitAvatar = async (type: AvatarType) => {
-
-    console.log("yes i am calling")
-    
     if (u?.uid) {          
       const userRef = doc(db, "users", u?.uid);
       try {
@@ -156,29 +157,30 @@ const PersonalInfo = () => {
       <Form className="mt-1 d-flex flex-column" onSubmit={async (e) => {
         e.preventDefault();
         if (edit) {
-          if (displayName.length > 6 && displayName.length < 15) {            
-            const newUserInfo = {
-              ...(userInfo as UserProps),
-              firstName: firstName as string,
-              lastName: lastName as string,
-              email: email as string,
-              displayName: displayName as string,
-              bio: bio as string,
-              phone: countryCode + phone.phone as string,
-            };
-            if (email === user?.email) {
-              setUserInfo(newUserInfo);
-              await onSubmit(newUserInfo);
-              setEdit(false)
-            }
-            else {
-              setShow(true)
-            }
-          }
-          else{
+          let newUserInfo = {
+            ...(userInfo as UserProps),
+            firstName: firstName as string,
+            lastName: lastName as string,
+            email: email as string,
+            displayName: displayName as string,
+            bio: bio as string,
+            phone: countryCode + phone.phone as string,
+          };
+
+          if (displayName.length < 6 || displayName.length > 15 || displayName=="") {                                   
             setDisplayNameErr(true);
           }
-          
+          else if (!phone.phone) {
+            setPhoneErr(true)
+          }        
+          else if(email === user?.email) {
+            setUserInfo(newUserInfo);
+            await onSubmit(newUserInfo);
+            setEdit(false)
+          }
+          else {
+            setShow(true)
+          }                      
         } else {
           setEdit(true)
         }
@@ -319,12 +321,19 @@ const PersonalInfo = () => {
                       disabled: !edit
                     }}
                     disableDropdown={!edit}
-                    country={phone?.phone == undefined ? userCurrentCountryCode : ''}
+                    country={phone?.phone == undefined || phone?.phone == "" ? userCurrentCountryCode : ''}
                     // country={""}
                     value={phone?.phone && phone?.phone}
                     onChange={handleOnChange}
                   />
                 </SelectTextfield>
+                {phoneErr ? <Styles.p className=" mt-1 mb-1 text-danger"
+                  style={{
+                    fontSize: "10px"
+                  }}
+                >
+                  {translate("Phone number must required")}
+                </Styles.p> : null}
               </div>
             </Col>
 

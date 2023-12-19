@@ -594,7 +594,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                             {setsValue.map((item: any, index: number) => {
                                 return <SetsScreen
                                 type="album"
-                                onSelectSets={setCollectionSetValue}
+                                onSelectName={setCollectionCardValue}
                                 allCardNew={allCards}
                                 setsValue={item}
                                 winerCard={winerCard}
