@@ -110,7 +110,9 @@ import {
 } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
-import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+
+import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+//import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // initialize express server
 const app = express();
