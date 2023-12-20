@@ -165,13 +165,16 @@ export const makePayment = async (req: any, res: any) => {
   });
 };
 export const storeInDBOfPayment = async (metaData: any) => {
+  console.info("STORE in DB", metaData)
   if (
     metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE &&
     metaData?.userId
   ) {
+    console.info("For Account Upgrade", metaData.userId);
     await addIsUpgradedValue(metaData.userId);
   }
   if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+    console.info("For Vote Purchase", metaData);
     await addIsExtraVotePurchase(metaData);
   }
   await firestore()
@@ -221,6 +224,8 @@ export const addIsUpgradedValue = async (userId: string) => {
     parentConst.UPGRADE_USER_VOTE + rewardStatistics.extraVote;
   rewardStatistics.diamonds =
     parentConst.UPGRADE_USER_COIN + rewardStatistics.diamonds;
+
+  console.info("For Is Upgraded", rewardStatistics)
 
   await firestore()
     .collection("users")
@@ -566,7 +571,7 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       }).catch((error) => {
         console.log(`${getTransaction[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
       });
-    }
+    };
 
     res.status(200).send({
       status: true,
