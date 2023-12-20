@@ -234,9 +234,7 @@ function PaymentFun({ isVotingPayment }: any) {
           console.log(e, "withoutstatus")
           setTimeout(() => {
             PaymentWait()
-          }, 2000);
-
-          
+          }, 2000);          
           // @ts-ignore  
           afterPayPopup("error", e?.detail?.trx,)
         }
