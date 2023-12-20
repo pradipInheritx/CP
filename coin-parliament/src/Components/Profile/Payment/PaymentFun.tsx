@@ -45,7 +45,7 @@ function PaymentFun({ isVotingPayment }: any) {
   const [payButton, setPayButton] = useState(false);
   const [selectCoin, setSelectCoin] = useState("none");
   const [showOptionList, setShowOptionList] = useState(false);
-  const [showForWait, setShowForWait] = useState(false);
+  const [showForWait, setShowForWait] = useState(false);  
   const { coins, totals, allCoins } = useContext(CoinsContext);
   const [networkCode, setNetworkCode] = useState({
     ETH: "1",
@@ -112,6 +112,7 @@ function PaymentFun({ isVotingPayment }: any) {
         // console.log(,"response.data.data")
         console.log(response.data, "response.data")
         transactionId.current = response.data
+        
         setShowForWait(true)
       })
       .catch((error) => {
@@ -163,6 +164,43 @@ function PaymentFun({ isVotingPayment }: any) {
 
 
   }
+
+  const PaymentWait = () => {    
+    const headers = {
+      "accept": "application/json",      
+    }
+    const data = {   
+      userId: userInfo?.uid,
+      userEmail: `${sessionStorage.getItem("wldp_user")}`,
+      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+      amount: payamount,
+      // network: "11155111",
+      // @ts-ignore
+      network: `${networkCode[coinInfo?.name] || ""}`,
+      // @ts-ignore
+      origincurrency: `${coinInfo?.symbol?.toLowerCase()}`,
+      token: `${coinInfo?.name}`,
+      transactionType: payType,
+      numberOfVotes: extraVote,      
+      initiated: "FE"
+    }
+    console.log(data, "PaymentWaitData")
+    // @ts-ignore
+    const transactionIdSet = transactionId?.current?.transaction_id
+    axios.post(`/payment/update/paymentStatusOnTransaction/${transactionIdSet}`, data,
+      {        
+        headers: headers
+      }).then(async (response) => {
+        setApiCalling(false)
+      })
+      .catch((error) => {
+        // setPaymentStatus({ type: 'error', message: '' });
+        setApiCalling(false)
+        setPayButton(false)
+      })
+
+
+  }
   useEffect(() => {
     const WLDPHandler = (e: any) => {
       try {
@@ -184,13 +222,15 @@ function PaymentFun({ isVotingPayment }: any) {
         }
         // @ts-ignore
         else if (e?.detail?.trx?.transactionStatus) {
-
-          // @ts-ignore      
-          afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message,)
-
+          console.log(e, "Withstatus")
+          PaymentWait()
+          // @ts-ignore             
+          afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)
         }
         // @ts-ignore
         else if (typeof e?.detail?.trx == "string") {
+          console.log(e, "withoutstatus")
+          PaymentWait()
           // @ts-ignore  
           afterPayPopup("error", e?.detail?.trx,)
         }

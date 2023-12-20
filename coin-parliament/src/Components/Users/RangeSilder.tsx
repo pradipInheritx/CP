@@ -248,12 +248,14 @@ function Speed(props: SpeedProps) {
 export default function SpeedTest(
   {
     // lastTenSec,
+    pairCoinResult,
     vote,
     coins,
     symbol1,
     symbol2
   }: {
-    // lastTenSec?: any
+      // lastTenSec?: any
+    pairCoinResult?:any,
     vote: VoteResultProps;
     coins: { [symbol: string]: Coin };
     symbol1: string;
@@ -293,60 +295,71 @@ export default function SpeedTest(
 
 
     if (symbol2 !== undefined) {
-      // range bar for pair
-      let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
-      if (!vote?.valueVotingTime) {
+      console.log(pairCoinResult.difference,"pairCoinResult")
+
+      if (pairCoinResult.difference < 0) {
+        setPersentValue(Math.floor(Math.random() * 49) + 1)
+      }      
+      if (pairCoinResult.difference  > 0) {
+        setPersentValue(Math.floor(Math.random() * 99) + 51)
+      }      
+      if (pairCoinResult.difference == 0) {
         setPersentValue(50)
-        return false
-      }
-      let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
-
-      // [coinliveprice[1]-coinvotingprice[1]]
-      const newPairPrice = [
-        (((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange,
-        (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange
-      ]
-
-      const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
-      const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
+      }      
+      // range bar for pair
+      // let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
+      // if (!vote?.valueVotingTime) {
+      //   setPersentValue(50)
+      //   return false
+      // }
+      // let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
       
-      let diff = [
-        bothCurrentPrice[0] / bothLivePrice[0],
-        bothCurrentPrice[1] / bothLivePrice[1],
-      ];
-      let winner = diff[0] < diff[1] ? 1 : 0;
-      console.log(diff, winner, "diffPer")
-      const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-      console.log(bothCurrentPrice, bothLivePrice, newPairPrice, vote.direction, 'highLow');
+      // const newPairPrice = [
+      //   (((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange,
+      //   (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange
+      // ]
 
-      if ((averageValue == averageValue)) {
-        if (50 - (newPairPrice[0] - newPairPrice[1]) < 0) {
-          setPersentValue(0)
-          return
-        }
-        if (50 + (newPairPrice[0] - newPairPrice[1]) > 100) {
-          setPersentValue(100)
-          return
-        }
-        console.log(vote?.direction, newPairPrice,"newPairPrice")
-        setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
-      } else {        
-        if (vote?.direction == 1) {
-          winner == vote?.direction
-            ?
-            setPersentValue(25 + getPer[1] > 0 ? 25 + getPer[1] : 0)
-            :
-            setPersentValue(75 + getPer[1] > 100 ? 100 : 75 + getPer[1])
+      // const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
+      // const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
+      
+      // let diff = [
+      //   bothCurrentPrice[0] / bothLivePrice[0],
+      //   bothCurrentPrice[1] / bothLivePrice[1],
+      // ];
+      // let winner = diff[0] < diff[1] ? 1 : 0;
+      // console.log(diff, winner, "diffPer")
+      // const averageValue = Math.abs(diff[0] - diff[1]) * 100;
+      // console.log(bothCurrentPrice, bothLivePrice, newPairPrice, vote.direction, 'highLow');
 
-        } else if (vote?.direction == 0) {
-          winner != vote?.direction
-            ?
-            setPersentValue(25 + getPer[0] > 0 ? 25 + getPer[0] : 0)
-            :
-            setPersentValue(75 + getPer[0] > 100 ? 100 : 75 + getPer[0])
+      // if ((averageValue == averageValue)) {
+      //   if (50 - (newPairPrice[0] - newPairPrice[1]) < 0) {
+      //     setPersentValue(0)
+      //     return
+      //   }
+      //   if (50 + (newPairPrice[0] - newPairPrice[1]) > 100) {
+      //     setPersentValue(100)
+      //     return
+      //   }
+      //   console.log(vote?.direction, newPairPrice,"newPairPrice")
+      //   setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
+      // } else {        
+      //   if (vote?.direction == 1) {
+      //     winner == vote?.direction
+      //       ?
+      //       setPersentValue(25 + getPer[1] > 0 ? 25 + getPer[1] : 0)
+      //       :
+      //       setPersentValue(75 + getPer[1] > 100 ? 100 : 75 + getPer[1])
 
-        }
-      }
+      //   } else if (vote?.direction == 0) {
+      //     winner != vote?.direction
+      //       ?
+      //       setPersentValue(25 + getPer[0] > 0 ? 25 + getPer[0] : 0)
+      //       :
+      //       setPersentValue(75 + getPer[0] > 100 ? 100 : 75 + getPer[0])
+
+      //   }
+      // }
+
     } else if (symbol2 == undefined && !Array.isArray(vote?.valueVotingTime)) {
       // range bar for single coin
       if (!vote?.valueVotingTime) {
