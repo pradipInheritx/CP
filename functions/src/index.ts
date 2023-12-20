@@ -87,7 +87,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
-import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
+import { getRandomFoundationForUserLogin } from "./common/models/Admin/Foundation"
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
@@ -110,7 +110,9 @@ import {
 } from "./common/helpers/fileUploadConfig";
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
-import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+
+import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+//import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // initialize express server
 const app = express();
@@ -142,7 +144,7 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 app.use("/admin/payments", adminPaymentRouter);
-app.use("/admin/foundation",foundatioRouter)
+app.use("/admin/foundation", foundatioRouter)
 app.use("/payment", PaymentRouter);
 
 app.post(
@@ -755,15 +757,15 @@ exports.updateLeadersCron = functions.pubsub
     }
   });
 
-exports.paymentCallbackHistorySettlement = functions.pubsub
-  .schedule('*/10 * * * *')
-  .onRun(async () => {
-    try {
-      await settlePendingTransactionFunction();
-    } catch (error) {
-      console.log("Error In Payment Settlement", error);
-    }
-  });
+// exports.paymentCallbackHistorySettlement = functions.pubsub
+//   .schedule('*/10 * * * *')
+//   .onRun(async () => {
+//     try {
+//       await settlePendingTransactionFunction();
+//     } catch (error) {
+//       console.log("Error In Payment Settlement", error);
+//     }
+//   });
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
