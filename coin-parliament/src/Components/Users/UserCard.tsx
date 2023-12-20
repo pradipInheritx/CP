@@ -104,9 +104,11 @@ const Address = styled.p`
 `;
 
 const ElementsAvatarAImage1 = styled.div`
-  width: 40px;
-  margin-top: 1px;
-  display: flex;
+  width: 43px;
+  height: 43px;
+  // margin-top: 1px;
+  // display: flex;
+
 `;
 
 const Component5031 = styled.div`
@@ -184,7 +186,7 @@ const UserCard = ({
     }
   }
 
-
+  console.log(leader?.isUserUpgraded,"allleader")
 
   return (
     <Component515
@@ -198,7 +200,14 @@ const UserCard = ({
           padding: pathname?.includes("/influencers") ? "10px 0" : "",
         }}
       >
-        <ElementsAvatarAImage1 onClick={e => {
+        <ElementsAvatarAImage1
+          className=" d-flex justify-content-center align-items-center"
+          style={{            
+            borderRadius: "50px",
+            boxShadow: `${leader?.isUserUpgraded && "1px 0px 5px #ffd700"}`,
+            backgroundColor: `${leader?.isUserUpgraded && "#ffd700"}`,
+          }}
+          onClick={e => {
           if (user) {
             redirectTab()
           }
