@@ -477,6 +477,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         userId: transaction.userId,
         walletType: transaction.walletType,
         paymentDetails: transaction.paymentDetails,
+
       });
     });
 
@@ -558,6 +559,9 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       }
     }
     await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
+      paymentDetails
+        : getTransaction[0].callbackDetails.data,
+      event: getTransaction[0].callbackDetails.event,
       userId,
       userEmail,
       walletType,
@@ -571,7 +575,6 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
     }, { merge: true });
 
     const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
-
 
     //TODO Get the data and store in payment collection 
     const addNewPayment = await firestore().collection('payments').add(getUpdatedData);
