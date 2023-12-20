@@ -566,7 +566,7 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       }).catch((error) => {
         console.log(`${getTransaction[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
       });
-    }
+    };
 
     res.status(200).send({
       status: true,
