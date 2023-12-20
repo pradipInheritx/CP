@@ -737,11 +737,7 @@ const Header = ({
 							</Title>
 						</div> */}
 
-						< div className=''
-							style={{
-								width:"30%"
-						}}
-						>
+						< div className='' style={{width:"30%"}}>
 							<Navbar.Brand as={Link} to='/'
 									
 								className="ml-1"
