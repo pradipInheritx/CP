@@ -22,6 +22,8 @@ import {
   getLeaderUsersByIds,
   setLeaders,
 } from "./common/models/Calculation";
+
+import { updateAndGetPaxDistribution } from "./common/models/PAX"
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 import {
   calculateOffset,
@@ -393,7 +395,7 @@ exports.sendPassword = functions.https.onCall(async (data) => {
 
 exports.updateAndGetPaxDistribution = functions.https.onCall(async (data) => {
 
-  // await updateAndGetPaxDistribution()
+  await updateAndGetPaxDistribution("50")
 
 });
 

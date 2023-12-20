@@ -250,6 +250,29 @@ export const updateAndGetPaxDistribution: (
   pax: any
 ) => Promise<void> = async (pax: any) => {
 
+  console.info("PAX", pax);
+  const getDefaultPaxSettings: any = (await firestore().collection("settings").doc("pax").get()).data();
+  console.info("getDefaultPaxSettings.paxDistribution", typeof getDefaultPaxSettings.paxDistribution, "pax", typeof pax)
+  if (getDefaultPaxSettings.paxDistribution === parseFloat(pax)) {
+    if (getDefaultPaxSettings.used > getDefaultPaxSettings.default) {
+      console.info("All Pax Of 21 Million is exahust. Please contact with administrator")
+    } else {
+      if (getDefaultPaxSettings.used > getDefaultPaxSettings.maxPaxDistribution) {
+        getDefaultPaxSettings.maxPaxDistribution += 210000;
+        getDefaultPaxSettings.initialize = 0;
+        getDefaultPaxSettings.paxDistribution = (parseFloat(getDefaultPaxSettings.paxDistribution) / 2).toFixed(2);
+      }
+      console.info("updateAndGetPaxDistribution Before", getDefaultPaxSettings);
+      getDefaultPaxSettings.initialize += parseFloat(pax);
+      getDefaultPaxSettings.block += 1;
+      getDefaultPaxSettings.used += parseFloat(pax);
+      console.info("updateAndGetPaxDistribution After", getDefaultPaxSettings);
 
-  await firestore().collection("settings").doc().collection("Pax");
+      const getUpdatedPaxDistribution = await firestore().collection("settings").doc("pax").set(getDefaultPaxSettings, { merge: true });
+      console.info("getUpdatedPaxDistribution", getUpdatedPaxDistribution)
+    }
+  } else {
+    console.info("No Pax Matched As Per Current Distribution")
+  }
+
 };
