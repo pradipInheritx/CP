@@ -33,7 +33,7 @@ export const getRandomFoundationForUserLogin = async () => {
             return foundationConst.FOUNDATION_NOT_FOUND
         }
         foundationList.sort((foundation_1, foundation_2) => {
-            return foundation_1.createdAt - foundation_2.createdAt;
+            return foundation_1.timestamp - foundation_2.timestamp;
         });
         const getRandomValue = getRandomArbitrary(0, (foundationList.length-1));
         console.log("selected Foundation Name : ", foundationList[getRandomValue])
