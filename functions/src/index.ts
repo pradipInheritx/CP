@@ -87,6 +87,8 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
+import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
+
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
 import coinRouter from "./routes/Coin.routes";
@@ -99,6 +101,7 @@ import userTypeSettingsRouter from "./routes/UserTypeSettings.routes";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
+import foundatioRouter from "./routes/Foundation.routes";
 import PaymentRouter from "./routes/Payments.routes";
 import adminPaymentRouter from "./routes/AdminPayment.routes";
 import {
@@ -139,7 +142,7 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 app.use("/admin/payments", adminPaymentRouter);
-
+app.use("/admin/foundation",foundatioRouter)
 app.use("/payment", PaymentRouter);
 
 app.post(
@@ -208,7 +211,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     address: "",
     avatar: "",
     bio: "",
-    // foundationName: user.foundationName,
+    foundationData: await getRandomFoundationForUserLogin(),
     country: "",
     email: user.email,
     firstName: "",

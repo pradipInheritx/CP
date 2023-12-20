@@ -438,6 +438,16 @@ export const settlePendingTransactionFunction = async () => {
 
                     console.info("Before Insert", getData)
                     await firestore().collection("payments").add(getData);
+                    // remove the is from callback history
+                    console.log("getPendingPaymentHistory[0].id : ", getPendingPaymentHistory[0].id);
+
+                    if (getPendingPaymentHistory[0].id) {
+                        firestore().collection("callbackHistory").doc(getPendingPaymentHistory[0].id).delete().then(() => {
+                            console.log(`${getPendingPaymentHistory[0].id} Document successfully deleted from callbackHistory!`)
+                        }).catch((error) => {
+                            console.log(`${getPendingPaymentHistory[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+                        });
+                    };
                 } else {
                     console.info("No documents found for the given query.");
                 }
