@@ -554,10 +554,19 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       initiated
     }, { merge: true });
 
-    const getUpdatedData = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
+    const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
 
 
     //TODO Get the data and store in payment collection 
+    const addNewPayment = await firestore().collection('payments').add(getUpdatedData);
+
+    if (addNewPayment.id) {
+      firestore().collection("callbackHistory").doc(getTransaction[0].id).delete().then(() => {
+        console.log(`${getTransaction[0].id} Document successfully deleted from callbackHistory!`)
+      }).catch((error) => {
+        console.log(`${getTransaction[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+      });
+    }
 
     res.status(200).send({
       status: true,
