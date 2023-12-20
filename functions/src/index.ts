@@ -196,7 +196,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
-import {addNewKeysInCollection} from "./common/models/User";
+import { addNewKeysInCollection } from "./common/models/User";
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall((data) => {
   const { keyName, keyValue, collectionName } = data;
@@ -392,6 +392,8 @@ exports.sendPassword = functions.https.onCall(async (data) => {
 });
 
 exports.updateAndGetPaxDistribution = functions.https.onCall(async (data) => {
+
+  // await updateAndGetPaxDistribution()
 
 });
 

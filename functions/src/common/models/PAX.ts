@@ -1,9 +1,9 @@
-import {userConverter, UserProps} from "./User";
-import {firestore, messaging} from "firebase-admin";
-import {uniq} from "lodash";
-import {Change} from "firebase-functions/v1";
-import {QueryDocumentSnapshot} from "firebase-functions/v1/firestore";
-import {sendNotification} from "./Subscribe";
+import { userConverter, UserProps } from "./User";
+import { firestore, messaging } from "firebase-admin";
+import { uniq } from "lodash";
+import { Change } from "firebase-functions/v1";
+import { QueryDocumentSnapshot } from "firebase-functions/v1/firestore";
+import { sendNotification } from "./Subscribe";
 
 export const shouldHaveTransaction: (
   before: UserProps,
@@ -94,7 +94,7 @@ export type PaxTransaction = {
 export const createPaxTransaction: (
   transaction: CpmTransaction
 ) => Promise<void> = async (transaction: CpmTransaction) => {
-  const {totalBlocksGivenUntilNow, user} = transaction;
+  const { totalBlocksGivenUntilNow, user } = transaction;
   const amount =
     transaction.blocks * getCurrentPaxReward(totalBlocksGivenUntilNow);
 
@@ -112,26 +112,26 @@ export const createPaxTransaction: (
 export const checkPendingTransactions: () => Promise<void> = async () => {
   const pendings = (
     await firestore()
-        .collection("pax_transactions")
-        .where("status", "==", PaxTransactionStatus.PENDING)
-        .get()
+      .collection("pax_transactions")
+      .where("status", "==", PaxTransactionStatus.PENDING)
+      .get()
   ).docs as unknown as PaxTransaction[];
   const users = uniq(pendings.map((pending) => pending.user));
 
   for (const user of users) {
     const userObj = await firestore()
-        .collection("users")
-        .doc(user)
-        .withConverter(userConverter)
-        .get();
+      .collection("users")
+      .doc(user)
+      .withConverter(userConverter)
+      .get();
 
-    const {token} = userObj.data() || {};
+    const { token } = userObj.data() || {};
     if (!token) return;
 
     await sendNotificationForPending(
-        pendings.filter((pending) => pending.user === user),
-        token,
-        userObj.id
+      pendings.filter((pending) => pending.user === user),
+      token,
+      userObj.id
     );
   }
 };
@@ -181,10 +181,10 @@ export const onEnteringAddress: (
   if (after.address) {
     const pendings = (
       await firestore()
-          .collection("pax_transactions")
-          .where("user", "==", snapshot.after.id)
-          .where("status", "==", PaxTransactionStatus.PENDING)
-          .get()
+        .collection("pax_transactions")
+        .where("user", "==", snapshot.after.id)
+        .where("status", "==", PaxTransactionStatus.PENDING)
+        .get()
     ).docs;
 
     const batch = firestore().batch();
@@ -202,22 +202,22 @@ export const updateProcessing: (
   transaction: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>,
   userProps?: UserProps
 ) => Promise<void> = async (
-    batch: firestore.WriteBatch,
-    transaction: firestore.QueryDocumentSnapshot<firestore.DocumentData>,
-    userProps?: UserProps
+  batch: firestore.WriteBatch,
+  transaction: firestore.QueryDocumentSnapshot<firestore.DocumentData>,
+  userProps?: UserProps
 ) => {
-  const {paid, address} = userProps || {};
-  if (!(paid && address)) {
-    return;
-  }
+    const { paid, address } = userProps || {};
+    if (!(paid && address)) {
+      return;
+    }
 
-  await processTransaction(address, transaction.data() as PaxTransaction);
-  await batch.set(
+    await processTransaction(address, transaction.data() as PaxTransaction);
+    await batch.set(
       transaction.ref,
-      {status: PaxTransactionStatus.PROCESSING, address},
-      {merge: true}
-  );
-};
+      { status: PaxTransactionStatus.PROCESSING, address },
+      { merge: true }
+    );
+  };
 
 export const shouldUpdateTransactions: (
   before: UserProps,
@@ -244,4 +244,12 @@ export const processTransaction: (
   transaction: PaxTransaction
 ) => Promise<never> = async (address: string, transaction: PaxTransaction) => {
   return Promise.reject(new Error("Not implemented"));
+};
+
+export const updateAndGetPaxDistribution: (
+  pax: any
+) => Promise<void> = async (pax: any) => {
+
+
+  await firestore().collection("settings").doc().collection("Pax");
 };
