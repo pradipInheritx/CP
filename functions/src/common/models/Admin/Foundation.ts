@@ -4,13 +4,13 @@ const foundationConst: any = {}
 const getFoundationById = async (foundationId: string, res: any) => {
     try {
         const data = (await firestore().collection('foundations').doc(foundationId).get()).data();
+        console.log("getFoundationById : ", data)
         if (!data) {
-            res.status(404).send({
+            return res.status(404).send({
                 status: false,
                 message: foundationConst.FOUNDATION_NOT_FOUND,
             });
         }
-        console.log("getFoundationById : ", data)
         return data;
     } catch (error) {
         errorLogging("paymentStatusOnTransaction", "ERROR", error);
@@ -35,9 +35,9 @@ export const getRandomFoundationForUserLogin = async () => {
         foundationList.sort((foundation_1, foundation_2) => {
             return foundation_1.createdAt - foundation_2.createdAt;
         });
-        const getRandomValue = getRandomArbitrary(0, foundationList.length);
+        const getRandomValue = getRandomArbitrary(0, (foundationList.length-1));
         console.log("selected Foundation Name : ", foundationList[getRandomValue])
-        return foundationList[getRandomValue];
+        return foundationList[getRandomValue].id;
     } catch (error) {
         errorLogging("getRandomFoundationForUserLogin", "ERROR", error);
         console.error("getRandomFoundationForUserLogin Error", foundationConst.SOMETHING_WRONG);
@@ -48,11 +48,22 @@ export const createFoundation = async (req: any, res: any) => {
     try {
         const {
             name,
+            address
         } = req.body;
 
-        const addNewFoundation = await firestore().collection('foundations').add({ name, commission: 0, createdAt: Date.now() });
-        await firestore().collection('foundations').doc(addNewFoundation.id).set({ id: addNewFoundation.id });
-        const result = await getFoundationById(addNewFoundation.id, res)
+        const foundationObject = {
+            name,
+            commission: 0,
+            timestamp: Date.now(),
+            address,
+            maxCMP : 100
+        }
+
+        const addNewFoundation = await firestore().collection('foundations').add(foundationObject);
+        console.log("addNewFoundation.id : ",addNewFoundation.id)
+        await firestore().collection('foundations').doc(addNewFoundation.id).set({ id: addNewFoundation.id },{merge: true});
+        const result = (await firestore().collection('foundations').doc(addNewFoundation.id).get()).data();
+        console.log("result: " ,result)
         res.status(201).send({
             status: true,
             message: foundationConst.FOUNDATION_CREATE_SUCCESS,
@@ -110,9 +121,18 @@ export const updateFoundation = async (req: any, res: any) => {
         const { foundationId } = req.params;
         const {
             name,
+            address
         } = req.body;
+        const updatedData :any = {};
+        if(name){
+            updatedData['name'] = name;
+        };
+        if(address){
+            updatedData['address'] = address;
+        }
+        console.log("Updated data : ", updatedData);
         await getFoundationById(foundationId, res);
-        await firestore().collection('foundations').doc(foundationId).set({ name });
+        await firestore().collection('foundations').doc(foundationId).set(updatedData,{merge: true});
         const result = await getFoundationById(foundationId, res);
         res.status(200).send({
             status: true,
