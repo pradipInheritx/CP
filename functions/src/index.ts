@@ -87,6 +87,8 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
+import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
+
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
 import coinRouter from "./routes/Coin.routes";
@@ -209,7 +211,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     address: "",
     avatar: "",
     bio: "",
-    // foundationName: user.foundationName,
+    foundationData: await getRandomFoundationForUserLogin(),
     country: "",
     email: user.email,
     firstName: "",

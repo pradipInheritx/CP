@@ -3,5 +3,6 @@
     "FOUNDATION_NOT_FOUND":"Foundation is not found",
     "GET_FOUNDATION_SUCCESS":"Foundation retrieved successfully",
     "UPDATE_FOUNDATION_SUCCESS":"Foundation updated successfully",
-    "FOUNDATION_DELETED_SUCCESS":"Foundation deleted successfully"
+    "FOUNDATION_DELETED_SUCCESS":"Foundation deleted successfully",
+    "SOMETHING_WRONG":"Somethings were wrong"
 }

@@ -49,6 +49,7 @@ export type UserProps = {
   lastVoteTime?: number;
   wellDAddress?: wellDAddressType;
   referalReceiveType?: referalReceiveType;
+  foundationData?:any;
 };
 
 export type wellDAddressType = [];

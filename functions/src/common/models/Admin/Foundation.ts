@@ -2,24 +2,55 @@ import { firestore } from "firebase-admin";
 const foundationConst: any = {}
 
 const getFoundationById = async (foundationId: string, res: any) => {
-    const data = (await firestore().collection('foundations').doc(foundationId).get()).data();
-    if (!data) {
-        res.status(404).send({
+    try {
+        const data = (await firestore().collection('foundations').doc(foundationId).get()).data();
+        if (!data) {
+            res.status(404).send({
+                status: false,
+                message: foundationConst.FOUNDATION_NOT_FOUND,
+            });
+        }
+        console.log("getFoundationById : ", data)
+        return data;
+    } catch (error) {
+        errorLogging("paymentStatusOnTransaction", "ERROR", error);
+        res.status(500).send({
             status: false,
-            message: foundationConst.FOUNDATION_NOT_FOUND,
+            message: foundationConst.MESSAGE_SOMETHINGS_WRONG,
+            result: error,
         });
     }
-    console.log("getFoundationById : ", data)
-    return data;
 }
-
+function getRandomArbitrary(min: number, max: number) {
+    return Math.random() * (max - min) + min;
+}
+export const getRandomFoundationForUserLogin = async () => {
+    try {
+        const foundationList = (await firestore().collection('foundations').get()).docs.map((foundation) => foundation.data());
+        console.log("foundationList : ", foundationList)
+        if (!foundationList) {
+            console.error("getRandomFoundationForUserLogin Error", foundationConst.FOUNDATION_NOT_FOUND);
+            return foundationConst.FOUNDATION_NOT_FOUND
+        }
+        foundationList.sort((foundation_1, foundation_2) => {
+            return foundation_1.createdAt - foundation_2.createdAt;
+        });
+        const getRandomValue = getRandomArbitrary(0, foundationList.length);
+        console.log("selected Foundation Name : ", foundationList[getRandomValue])
+        return foundationList[getRandomValue];
+    } catch (error) {
+        errorLogging("getRandomFoundationForUserLogin", "ERROR", error);
+        console.error("getRandomFoundationForUserLogin Error", foundationConst.SOMETHING_WRONG);
+        return foundationConst.SOMETHING_WRONG
+    }
+}
 export const createFoundation = async (req: any, res: any) => {
     try {
         const {
             name,
         } = req.body;
 
-        const addNewFoundation = await firestore().collection('foundations').add({ name, commission: 0 });
+        const addNewFoundation = await firestore().collection('foundations').add({ name, commission: 0, createdAt: Date.now() });
         await firestore().collection('foundations').doc(addNewFoundation.id).set({ id: addNewFoundation.id });
         const result = await getFoundationById(addNewFoundation.id, res)
         res.status(201).send({
