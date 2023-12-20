@@ -223,14 +223,18 @@ function PaymentFun({ isVotingPayment }: any) {
         // @ts-ignore
         else if (e?.detail?.trx?.transactionStatus) {
           console.log(e, "Withstatus")
-          PaymentWait()
+          setTimeout(() => {            
+            PaymentWait()
+          }, 2000);
           // @ts-ignore             
           afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)
         }
         // @ts-ignore
         else if (typeof e?.detail?.trx == "string") {
           console.log(e, "withoutstatus")
-          PaymentWait()
+          setTimeout(() => {
+            PaymentWait()
+          }, 2000);
           // @ts-ignore  
           afterPayPopup("error", e?.detail?.trx,)
         }
