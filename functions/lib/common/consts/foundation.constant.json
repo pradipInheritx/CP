@@ -1,0 +1,7 @@
+{
+    "FOUNDATION_CREATE_SUCCESS":"Foundation created successfully",
+    "FOUNDATION_NOT_FOUND":"Foundation is not found",
+    "GET_FOUNDATION_SUCCESS":"Foundation retrieved successfully",
+    "UPDATE_FOUNDATION_SUCCESS":"Foundation updated successfully",
+    "FOUNDATION_DELETED_SUCCESS":"Foundation deleted successfully"
+}
