@@ -509,7 +509,7 @@ const Header = ({
 			{/* {for center modile size} */}
 
 			{!desktop ? (
-				<div className='' style={{ width: "75%" }}>
+				<div className='' style={{ width: "80%" }}>
 					<div className='d-flex w-100  '>
 						<ForZoom {...{ showReward, inOutReward }} className="w-100"
 						>
@@ -543,13 +543,13 @@ const Header = ({
 												height: "45px",
 												// border: "1px solid #6352E8",
 												// @ts-ignore
-												boxShadow: `${(userInfo?.isUserUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUserUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
+												boxShadow: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "#ffd700" : "#6352E8"}`,
 											}}
 										/>
 									</div>
 									<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
 										<HeaderCenterMob className=''>
-											<div></div>
+											{/* <div></div> */}
 											<div className='mt-1'>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
@@ -629,6 +629,7 @@ const Header = ({
 													className="mt-1"
 													bsPrefix="label"
 													onClick={async () => {
+														handleSoundClick()
 														setFollowUnfollow(!followUnfollow)
 														// console.log('folower',followerInfo)
 														const ll = leaders.find((l) => l.userId === followerInfo?.uid);
@@ -737,11 +738,7 @@ const Header = ({
 							</Title>
 						</div> */}
 
-						< div className=''
-							style={{
-								width:"35%"
-						}}
-						>
+						< div className='' style={{width:"30%"}}>
 							<Navbar.Brand as={Link} to='/'
 									
 								className="ml-1"
@@ -798,7 +795,7 @@ const Header = ({
 													width: "60px",
 													height: "60px",
 													// @ts-ignore
-													boxShadow: `${(userInfo?.isUserUpgraded && !followerPage) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${(userInfo?.isUserUpgraded && !followerPage) ? "#ffd700" : "#6352E8"}`,
+													boxShadow: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "1px 0px 5px #ffd700" : "1px 0px 5px #6352E8"}`, backgroundColor: `${((userInfo?.isUserUpgraded && !followerPage) || (followerInfo?.isUserUpgraded && followerPage)) ? "#ffd700" : "#6352E8"}`,
 													// boxShadow: "1px 0px 5px #6352E8",
 													// backgroundColor: "#6352E8",
 												}}
