@@ -509,7 +509,7 @@ const Header = ({
 			{/* {for center modile size} */}
 
 			{!desktop ? (
-				<div className='' style={{ width: "75%" }}>
+				<div className='' style={{ width: "80%" }}>
 					<div className='d-flex w-100  '>
 						<ForZoom {...{ showReward, inOutReward }} className="w-100"
 						>
@@ -549,7 +549,7 @@ const Header = ({
 									</div>
 									<div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
 										<HeaderCenterMob className=''>
-											<div></div>
+											{/* <div></div> */}
 											<div className='mt-1'>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
@@ -737,11 +737,7 @@ const Header = ({
 							</Title>
 						</div> */}
 
-						< div className=''
-							style={{
-								width:"35%"
-						}}
-						>
+						< div className='' style={{width:"30%"}}>
 							<Navbar.Brand as={Link} to='/'
 									
 								className="ml-1"
