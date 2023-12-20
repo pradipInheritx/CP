@@ -374,6 +374,11 @@ exports.sendPassword = functions.https.onCall(async (data) => {
   return password === "CPVI2022!";
 });
 
+exports.updateAndGetPaxDistribution = functions.https.onCall(async (data) => {
+
+});
+
+
 exports.setLeadersOnce = functions.https.onCall(async () => {
   await setLeaders();
 });
