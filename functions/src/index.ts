@@ -144,7 +144,7 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 app.use("/admin/payments", adminPaymentRouter);
-app.use("/admin/foundation",foundationRouter)
+app.use("/admin/foundation", foundationRouter)
 app.use("/payment", PaymentRouter);
 
 app.post(
@@ -905,8 +905,8 @@ exports.getRewardTransactions = functions.https.onCall(async (data) => {
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
-  const { uid, isVirtual } = data as { uid: string; isVirtual: boolean };
-  const reward = await claimReward(uid, isVirtual);
+  const { uid, isVirtual, paxDistributionToUser } = data as { uid: string; isVirtual: boolean; paxDistributionToUser: any };
+  const reward = await claimReward(uid, isVirtual, paxDistributionToUser);
   console.log("reward --->", reward);
   return reward;
 });
