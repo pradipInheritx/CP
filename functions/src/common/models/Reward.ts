@@ -521,6 +521,15 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
 
     console.log("End smart contract payment function in admin", transaction);
 
+    if(transaction.data){
+      const user :any= (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
+      console.log("user : ", user?.uid, " paxEarned : ", user?.paxEarned);
+      const paxEarned = user?.paxEarned + paxDistributionToUser.currentPaxValue;
+      await firestore().collection("users").doc(paxDistributionToUser.userId).set({
+        paxEarned
+      },{merge:true})
+    }
+
     return { status: true, result: transaction.data };
   } catch (error) {
     return { status: false, result: { message: "Something went wrong while process the mint for user" } };
