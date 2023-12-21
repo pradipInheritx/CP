@@ -2,6 +2,7 @@ import * as admin from "firebase-admin";
 import { UserTypeProps } from "./User";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
+import {getUserAndCalculatePax} from "../models/Calculation";
 import Timestamp = admin.firestore.Timestamp;
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 
@@ -119,9 +120,11 @@ export const getResultAfterVote = async (requestBody: any) => {
       userId,
       status,
       //Pax Distribution
+      paxDistributionToUser
     } = requestBody;
 
     console.info("status", status);
+    console.log("paxDistributionToUser from getResultAfterVote : ",paxDistributionToUser)
 
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
@@ -145,8 +148,9 @@ export const getResultAfterVote = async (requestBody: any) => {
         const priceTwo = valueExpirationTimeOfCoin2 ? valueExpirationTimeOfCoin2 : await getPriceOnParticularTime(coin2, timestamp);
         price = [Number(priceOne), Number(priceTwo)];
         console.info("Get Price", price);
-        const calc = new Calculation(vote, price, voteId, userId, status);
+        const calc = new Calculation(vote, price, voteId, userId, status,paxDistributionToUser);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        const paxData = await getUserAndCalculatePax(paxDistributionToUser)
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
           voteId: getVoteData?.voteId,
@@ -159,12 +163,13 @@ export const getResultAfterVote = async (requestBody: any) => {
           timeframe: getVoteData?.timeframe,
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}-${await returnShortCoinValue(coin2.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
-          score: getSuccessAndScore?.score
+          score: getSuccessAndScore?.score,
+          paxData
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
-        const calc = new Calculation(vote, Number(price), voteId, userId, status);
+        const calc = new Calculation(vote, Number(price), voteId, userId, status,paxDistributionToUser);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
@@ -225,6 +230,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
       timestamp,
       userId,
       status,
+      paxDistributionToUser
     } = requestBody;
 
     console.info("status", status);
@@ -251,13 +257,13 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
         const priceTwo = valueExpirationTimeOfCoin2 ? valueExpirationTimeOfCoin2 : await getPriceOnParticularTime(coin2, timestamp);
         price = [Number(priceOne), Number(priceTwo)];
         console.info("Get Price", price);
-        const calc = new Calculation(vote, price, voteId, userId, status);
+        const calc = new Calculation(vote, price, voteId, userId, status,paxDistributionToUser);
         await calc.calc(getVoteRef);
         return { status: true, message: "Success" }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
-        const calc = new Calculation(vote, Number(price), voteId, userId, status);
+        const calc = new Calculation(vote, Number(price), voteId, userId, status,paxDistributionToUser);
         await calc.calc(getVoteRef);
         return { status: true, message: "Success" }
       }

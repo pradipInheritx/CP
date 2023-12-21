@@ -459,4 +459,53 @@ export const settlePendingTransactionFunction = async () => {
     }
 };
 
+export const calculationOfMintPaxDistribution = async (transactionBody: any): Promise<{
+    status: boolean,
+    result: any
+} | undefined> => {
+    try {
+        console.log("Start smart contract payment function");
+        console.log("transactionBody : ", transactionBody);
+        const options = {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "",
+            },
+        };
 
+// 
+        const currentGasPriceEther = await isGasPriceCalculationOnCoin(transactionBody.network);
+
+        console.log("Current Gas Price (wei):", typeof currentGasPriceEther, parseFloat(currentGasPriceEther));
+
+        transactionBody.amount = transactionBody.amount - parseFloat(currentGasPriceEther);
+        console.info("transactionBody.amount", transactionBody.amount);
+
+        const transactionBodyForMintPaxDistribution: any = {
+            "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
+            "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
+            "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+            "method": "mintFor",
+            "network": transactionBody.network,
+            "params": [
+                {
+                    "_to": transactionBody.mintForUserAddress,
+                    "_amount": transactionBody.currentPaxValue  ,
+                    "_gas": parseFloat(currentGasPriceEther), // parentConst.SMART_CONTRACT__GAS
+                },
+
+            ],
+        };
+        console.info("transactionBodyForMintPaxDistribution", transactionBodyForMintPaxDistribution);
+
+        const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForMintPaxDistribution, options);
+
+        console.log("End mint pax distribution function", transaction);
+
+        return { status: true, result: transaction.data };
+    } catch (error) {
+        console.error("ERROR calculationOfMintPaxDistribution : ", error);
+        console.log("End mint pax distribution function");
+        return { status: false, result: error };
+    }
+};
