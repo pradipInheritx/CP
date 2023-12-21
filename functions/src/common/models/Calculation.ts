@@ -13,6 +13,7 @@ import {
   poolMiningNotification,
 } from "./SendCustomNotification";
 
+
 export type Totals = {
   total: number;
   success: number;
@@ -75,7 +76,7 @@ class Calculation {
     price: number | number[],
     id: string,
     userId: string,
-    status: any
+    status: any,
   ) {
     console.log("voteResult =>", voteResult);
     console.log("STATUS", status);
@@ -147,6 +148,7 @@ class Calculation {
           user?.status
         );
         // TODO When score reach to 100 create a function for send Pax to that user
+
         return { successScoreValue, score };
       } else {
         console.log("SuccessValue Changed rand point not working");
@@ -212,10 +214,7 @@ class Calculation {
     }
   }
 
-  async sendPaxToUserMintForAddress() {
-    //Mint For Address Is Required
-    // If isUserUpgraded Then need to send PAX to user mintFor Address
-  }
+
 
   calcValueExpirationTime(): void {
     console.log("calcValueExpirationTime", this.price, typeof this.price);
@@ -864,6 +863,8 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
     })
     .filter((leaderData) => leaderData);
 };
+
+
 
 export const errorLogging = async (
   funcName: string,
