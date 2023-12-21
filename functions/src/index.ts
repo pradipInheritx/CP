@@ -69,6 +69,8 @@ import {
   claimReward,
   addReward,
   cardHolderListing,
+  sendMintForPaxToAdmin,
+  sendMintForPaxToUser
 } from "./common/models/Reward";
 import {
   cpviTaskCoin,
@@ -1190,4 +1192,25 @@ exports.sendEmail = functions.https.onCall(async () => {
     },
   };
   await sgMail.send(msg);
+});
+
+exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
+  const { paxDistributionToUser } = data;
+  console.log("paxDistributionToUser : ", paxDistributionToUser);
+  let getResultAfterSentPaxToUser: any;
+  let getResultAfterSentPaxToAdmin: any;
+  if (paxDistributionToUser.isUserUpgraded === true) {
+    // Call to user mintFor Address
+    getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
+    console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
+    const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToUser, timestamp: Date.now() });
+    return { id: addNewPax.id, getResultAfterSentPaxToUser }
+  }
+  if (paxDistributionToUser.isUserUpgraded === false) {
+    // Call to Admin mintFor Address
+    getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
+    console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
+    const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToAdmin, timestamp: Date.now() });
+    return { id: addNewPax.id }
+  }
 });
