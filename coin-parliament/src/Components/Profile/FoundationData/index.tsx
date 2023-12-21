@@ -47,6 +47,8 @@ const FoundationData=()=> {
 
     useEffect(() => {
         FoundationValue()
+        // @ts-ignore
+        setFoundationData(userInfo?.foundationData || {})        
     }, [])
 
 
