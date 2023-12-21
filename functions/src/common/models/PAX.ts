@@ -246,10 +246,13 @@ export const processTransaction: (
   return Promise.reject(new Error("Not implemented"));
 };
 
-export const updateAndGetPaxDistribution: (
-  pax: any
-) => Promise<void> = async (pax: any) => {
+export const getCurrentPaxDistribution = async () => {
+  const getCurrentPaxSettings: any = (await firestore().collection("settings").doc("pax").get()).data();
+  console.info("getCurrentPaxSettings", getCurrentPaxSettings)
+  return getCurrentPaxSettings;
+}
 
+export const updateAndGetPaxDistribution = async (pax: any) => {
   console.info("PAX", pax);
   const getDefaultPaxSettings: any = (await firestore().collection("settings").doc("pax").get()).data();
   console.info("getDefaultPaxSettings.paxDistribution", typeof getDefaultPaxSettings.paxDistribution, "pax", typeof pax)
@@ -267,12 +270,12 @@ export const updateAndGetPaxDistribution: (
       getDefaultPaxSettings.block += 1;
       getDefaultPaxSettings.used += parseFloat(pax);
       console.info("updateAndGetPaxDistribution After", getDefaultPaxSettings);
-
-      const getUpdatedPaxDistribution = await firestore().collection("settings").doc("pax").set(getDefaultPaxSettings, { merge: true });
-      console.info("getUpdatedPaxDistribution", getUpdatedPaxDistribution)
+      await firestore().collection("settings").doc("pax").set(getDefaultPaxSettings, { merge: true });
+      const getUpdatedPaxSettings: any = (await firestore().collection("settings").doc("pax").get()).data();
+      console.info("getUpdatedPaxSettings", getUpdatedPaxSettings)
+      return getUpdatedPaxSettings;
     }
   } else {
     console.info("No Pax Matched As Per Current Distribution")
   }
-
 };

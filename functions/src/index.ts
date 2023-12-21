@@ -23,7 +23,8 @@ import {
   setLeaders,
 } from "./common/models/Calculation";
 
-import { updateAndGetPaxDistribution } from "./common/models/PAX"
+import { updateAndGetPaxDistribution } from "./common/models/PAX";
+import { getCurrentPaxDistribution } from "./common/models/PAX"
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 import {
   calculateOffset,
@@ -393,10 +394,13 @@ exports.sendPassword = functions.https.onCall(async (data) => {
   return password === "CPVI2022!";
 });
 
+exports.getCurrentPaxDistribution = functions.https.onCall(async () => {
+  return await getCurrentPaxDistribution()
+});
+
 exports.updateAndGetPaxDistribution = functions.https.onCall(async (data) => {
-
-  await updateAndGetPaxDistribution("50")
-
+  const { pax } = data as { pax: any };
+  return await updateAndGetPaxDistribution(pax)
 });
 
 
