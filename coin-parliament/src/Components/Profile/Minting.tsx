@@ -188,6 +188,7 @@ type MintingProps = {
   setCountShow?: any;
 };
 const claimReward = httpsCallable(functions, "claimReward");
+const getUserAndCalculatePax = httpsCallable(functions, "getUserAndCalculatePax");
 const Minting = ({
 
   score,
@@ -285,16 +286,7 @@ const Minting = ({
       setLoading(true);
       claimReward({
         uid: user?.uid,
-        isVirtual: false,
-        paxDistributionToUser: {
-          userId: userInfo?.uid,
-          currentPaxValue: Number(paxDistribution),
-          isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
-          mintForUserAddress: userInfo?.paxAddress?.address || "",
-          eligibleForMint: userInfo?.paxAddress?.address ? true : false
-        }
-      }).then((result: any) => {
-        // afterpaxDistributionToUser(paxDistribution)
+        isVirtual: false,    }).then((result: any) => {        
         handleShow();
         setResultData(result);
         setRewardTimer(result);
@@ -307,6 +299,19 @@ const Minting = ({
       }).catch((error) => {
         showToast(error.message, ToastType.ERROR);
       });
+
+      getUserAndCalculatePax({
+        paxDistributionToUser: {
+          userId: userInfo?.uid,
+          currentPaxValue: Number(paxDistribution),
+          isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+          mintForUserAddress: userInfo?.paxAddress?.address || "",
+          eligibleForMint: userInfo?.paxAddress?.address ? true : false
+        }
+      }).then(() => {
+        // afterpaxDistributionToUser(paxDistribution)
+      }).catch(() => { });
+
     } else {
       // Swal.fire({
       //   title: '',

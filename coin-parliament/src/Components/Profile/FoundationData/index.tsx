@@ -68,13 +68,11 @@ const FoundationData=()=> {
         }
     };
 
-    const handleChangeValue = (e: any, type?: string) => {
-        let id = e.target.id;
+    const handleChangeValue = (e: any, type?: string) => {    
+        let id = e.target.options[e.target.selectedIndex].id;
         let value = e.target.value        
         setFoundationData({ name: value,id:id })                        
-    }
-
-    console.log(foundationData,"setFoundationData")
+    }    
 
     return (
         <div className='d-flex justify-content-center px-2'>
@@ -90,7 +88,7 @@ const FoundationData=()=> {
                     
                         <select
                             name="coin"
-                            id="coin"
+                        id={foundationData.id}
                             style={{
                                 width: `${window.screen.width > 767 ? "70%" : "70%"}`,
                                 padding: "9px 0px 9px 20px",
