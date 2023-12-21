@@ -248,27 +248,25 @@ const getVirtualRewardStatisticsByUserId = async (uid: string) => {
   return getVirtualRewardStatistics[0];
 }
 
-export const claimReward: (uid: string, isVirtual: boolean, paxDistributionToUser: any
+export const claimReward: (uid: string, isVirtual: boolean
 ) => { [key: string]: any } = async (
   uid: string,
   isVirtual: boolean,
-  paxDistributionToUser: any,
 ) => {
     try {
-      console.info("paxDistributionToUser", paxDistributionToUser)
       console.log("Beginning execution claimReward function");
-      let getResultAfterSentPaxToUser: any;
-      let getResultAfterSentPaxToAdmin: any;
-      if (paxDistributionToUser.isUserUpgraded === true) {
-        // Call to user mintFor Address
-        getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
-        console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
-      }
-      if (paxDistributionToUser.isUserUpgraded === false) {
-        // Call to Admin mintFor Address
-        getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
-        console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
-      }
+      // let getResultAfterSentPaxToUser: any;
+      // let getResultAfterSentPaxToAdmin: any;
+      // if (paxDistributionToUser.isUserUpgraded === true) {
+      //   // Call to user mintFor Address
+      //   getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
+      //   console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
+      // }
+      // if (paxDistributionToUser.isUserUpgraded === false) {
+      //   // Call to Admin mintFor Address
+      //   getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
+      //   console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
+      // }
 
       const userRef = firestore()
         .collection("users")
@@ -524,6 +522,15 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
     const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnUserMintFor, options);
 
     console.log("End smart contract payment function in admin", transaction);
+
+    if(transaction.data){
+      const user :any= (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
+      console.log("user : ", user?.uid, " paxEarned : ", user?.paxEarned);
+      const paxEarned = user?.paxEarned + paxDistributionToUser.currentPaxValue;
+      await firestore().collection("users").doc(paxDistributionToUser.userId).set({
+        paxEarned
+      },{merge:true})
+    }
 
     return { status: true, result: transaction.data };
   } catch (error) {
