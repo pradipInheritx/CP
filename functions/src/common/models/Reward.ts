@@ -6,6 +6,9 @@ import { userConverter, UserProps } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";
+
+import axios from "axios";
+import * as parentConst from "../consts/payment.const.json";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -95,7 +98,7 @@ async function getRewardTransactionsByCardId(cardId: string) {
     console.log("item.data ?>>>>>>>", item.data());
     transData.push(item.data());
   });
-  
+
   return transData;
 }
 
@@ -245,13 +248,28 @@ const getVirtualRewardStatisticsByUserId = async (uid: string) => {
   return getVirtualRewardStatistics[0];
 }
 
-export const claimReward: (uid: string, isVirtual: boolean
+export const claimReward: (uid: string, isVirtual: boolean, paxDistributionToUser: any
 ) => { [key: string]: any } = async (
   uid: string,
-  isVirtual: boolean
+  isVirtual: boolean,
+  paxDistributionToUser: any,
 ) => {
     try {
+      console.info("paxDistributionToUser", paxDistributionToUser)
       console.log("Beginning execution claimReward function");
+      let getResultAfterSentPaxToUser: any;
+      let getResultAfterSentPaxToAdmin: any;
+      if (paxDistributionToUser.isUserUpgraded === true) {
+        // Call to user mintFor Address
+        getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
+        console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
+      }
+      if (paxDistributionToUser.isUserUpgraded === false) {
+        // Call to Admin mintFor Address
+        getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
+        console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
+      }
+
       const userRef = firestore()
         .collection("users")
         .doc(uid)
@@ -310,9 +328,9 @@ export const claimReward: (uid: string, isVirtual: boolean
 
         // get the transaction details
         const transData: any = (await firestore()
-        .collection("reward_transactions")
-        .where("winData.firstRewardCardId", "==", firstRewardCardObj.cardId)
-        .get()).docs.map((reward)=> reward.data());
+          .collection("reward_transactions")
+          .where("winData.firstRewardCardId", "==", firstRewardCardObj.cardId)
+          .get()).docs.map((reward) => reward.data());
         console.log("TRANSDATA length: ", transData.length);
         console.log("TRANSDATA : ", transData);
 
@@ -379,16 +397,16 @@ export const claimReward: (uid: string, isVirtual: boolean
           thirdRewardDiamonds,
         };
 
-        
+
         // ----- End manipulate reward data for update and set-----
 
 
         // ----- Start set and Update reward data into virtual collection-----
 
         if (userIds && userIds.length) {
-          console.info("Before  getRewardCardDetails.noOfCardHolders : ",getRewardCardDetails.noOfCardHolders)
+          console.info("Before  getRewardCardDetails.noOfCardHolders : ", getRewardCardDetails.noOfCardHolders)
           getRewardCardDetails.noOfCardHolders = Array.from(new Set(userIds)).length;
-          console.info("After  getRewardCardDetails.noOfCardHolders : ",getRewardCardDetails.noOfCardHolders)
+          console.info("After  getRewardCardDetails.noOfCardHolders : ", getRewardCardDetails.noOfCardHolders)
           await firestore()
             .collection("cardsDetails")
             .doc(firstRewardCardObj.cardId)
@@ -422,6 +440,92 @@ export const claimReward: (uid: string, isVirtual: boolean
       };
     }
   };
+
+export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
+  try {
+    console.info("Get paxDistributionToUser For Admin", paxDistributionToUser);
+
+    console.log("Start Smart Contract Function For Admin Mint For");
+
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdlLnBheGJlcDIwIiwiYXVkIjpbIkdST1VQUyIsIkFQUExJQ0FUSU9OUyIsIkFVVEgiLCJXRUIzIl0sImV4cCI6MjA1MDI1MTY2MX0.2WUhJ_lwgWaBB3lI7dYaLoZGJCBeOQZkV5TgDy0BLVI", // For Smart Contract Prod VoteToEarn
+      },
+    };
+
+    const transactionBodyForSmartContractOnAdminMintFor: any = {
+      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
+      "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
+      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+      "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
+      "network": parentConst.PAYMENT_BNB_NETWORK,
+      "params": [
+        {
+          "_to": parentConst.SMART_CONTRACT_ADMIN_ADRESS_FOR_MINT, //This is the admin address for PAX receive //paxDistributionToUser.mintForUserAddress,
+          "_amount": paxDistributionToUser.currentPaxValue,
+          "_gas": parentConst.SMART_CONTRACT__GAS
+        },
+      ],
+    };
+    console.info("transactionBodyForSmartContractOnAdminMintFor", transactionBodyForSmartContractOnAdminMintFor);
+
+    const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
+
+    console.log("End smart contract payment function in admin", transaction);
+
+    return { status: true, result: transaction.data };
+  } catch (error) {
+    return { status: false, result: { message: "Something went wrong while process the mint for admin" } };
+  }
+}
+
+
+export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
+  try {
+    console.info("Get paxDistributionToUser For User", paxDistributionToUser);
+
+    console.log("Start Smart Contract Function For User Mint For");
+
+    if (!paxDistributionToUser.mintForUserAddress) {
+      return {
+        status: false,
+        message: "User mint for address is not available for receive the pax"
+      }
+    }
+
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdlLnBheGJlcDIwIiwiYXVkIjpbIkdST1VQUyIsIkFQUExJQ0FUSU9OUyIsIkFVVEgiLCJXRUIzIl0sImV4cCI6MjA1MDI1MTY2MX0.2WUhJ_lwgWaBB3lI7dYaLoZGJCBeOQZkV5TgDy0BLVI", // For Smart Contract Prod VoteToEarn
+      },
+    };
+
+    const transactionBodyForSmartContractOnUserMintFor: any = {
+      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
+      "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
+      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+      "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
+      "network": parentConst.PAYMENT_BNB_NETWORK,
+      "params": [
+        {
+          "_to": paxDistributionToUser.mintForUserAddress, //This is the user pax address for PAX receive
+          "_amount": paxDistributionToUser.currentPaxValue,
+          "_gas": parentConst.SMART_CONTRACT__GAS
+        },
+      ],
+    };
+    console.info("transactionBodyForSmartContractOnUserMintFor", transactionBodyForSmartContractOnUserMintFor);
+
+    const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnUserMintFor, options);
+
+    console.log("End smart contract payment function in admin", transaction);
+
+    return { status: true, result: transaction.data };
+  } catch (error) {
+    return { status: false, result: { message: "Something went wrong while process the mint for user" } };
+  }
+}
 
 export enum CpmTransactionType {
   REWARD = "reward",
