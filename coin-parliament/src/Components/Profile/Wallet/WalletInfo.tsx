@@ -56,6 +56,7 @@ position: absolute;
 function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
+    const [savePaxAddress, setSavePaxAddress] = useState(false)
     const [savePaymentMethod, setSavePaymentMethod] = useState(false);
     const [timeType, setTimeType] = useState<string>('time');
     const [limitType, setLimitType] = useState<string>("");
@@ -64,6 +65,12 @@ function WalletInfo() {
         coin: "",
         address: "",
     });
+    const [paxDetails, setPaxWalletDetails] = useState({
+        coin: "",
+        address: "",
+    });
+
+    console.log(paxDetails,"paxDetails")
 
     const [walletDetailsObj, setWalletDetailsObj] = useState([{
         coin: "",
@@ -82,6 +89,11 @@ function WalletInfo() {
         coinError: "",
         walletError: ""
     })
+
+    const [PaxErrorValue, setPaxErrorValue] = useState({
+        coinError: "",
+        walletError: ""
+    })
     const [timeAmount, setTimeAmount] = useState({
         time: "",
         amount: ""
@@ -93,17 +105,24 @@ function WalletInfo() {
         // setWalletDetailsObj({
         //     coin: userInfo?.wellDAddress?.coin || '',
         //     walletAddress: userInfo?.wellDAddress?.address || '',
-        // });
-        // @ts-ignore
-        if (Array.isArray(userInfo?.wellDAddress) == true) {            
+        // });        
+        if (Array.isArray(userInfo?.wellDAddress) == true) {                        
             // @ts-ignore
             setWalletDetailsObj(userInfo?.wellDAddress || []);
         }
+        else {            
+            // @ts-ignore
+            setWalletDetailsObj([userInfo?.wellDAddress] || []);            
+        }        
+        if (typeof userInfo?.paxAddress === 'object') {            
+            // @ts-ignore
+            setPaxWalletDetails(userInfo?.paxAddress || {});
+        }
         else {
             // @ts-ignore
-            setWalletDetailsObj([userInfo?.wellDAddress] || []);
-            
+            setPaxWalletDetails({});
         }
+
         console.log(userInfo?.wellDAddress,"userInfo?.wellDAddress")
         setSelectRadio(userInfo?.referalReceiveType?.name || '');
         setDefaultValue();
@@ -114,6 +133,7 @@ function WalletInfo() {
     const [amountError, setAmountError] = useState("")
     let navigate = useNavigate();
     const [coinList, setCoinsList] = useState([])
+    const [coinListPax, setCoinsListPax] = useState([])
     const [selectRadio, setSelectRadio] = useState<string>('');
     const [regexList, setRegexList] = useState({
         bitcoin: "/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/",
@@ -136,19 +156,30 @@ function WalletInfo() {
                     userInfo?.wellDAddress && !userInfo?.wellDAddress.some((obj1:any) => obj1.coin == obj2.name)
                 );                                
                 setCoinsList(uniqueNamesArray2);
+                setCoinsListPax(allList)
             }).catch((error) => {
                 console.log(error, "error");
             });
     }, [userInfo?.wellDAddress])
+    
 
     const handleChangeValue = (e: any, type: string) => {
         let name = e.target.name;
         let value = e.target.value
-        setWalletDetails({ ...walletDetails, [name]: value })
-        setErrorValue({
-            coinError: "",
-            walletError: ""
-        })
+        if (type == "paxDetails") {            
+            setPaxWalletDetails({ ...paxDetails, [name]: value })
+            setPaxErrorValue({
+                coinError: "",
+                walletError: ""
+            })
+        }
+        else {            
+            setWalletDetails({ ...walletDetails, [name]: value })
+            setErrorValue({
+                coinError: "",
+                walletError: ""
+            })
+        }
     }
 
     const updateAddress = async () => {
@@ -159,7 +190,7 @@ function WalletInfo() {
         }
         else if (walletDetails.address) {
             setSaveAddress(true);
-            const validate = await validateAddress(walletDetails.address, walletDetails.coin)
+            const validate = await validateAddress(walletDetails.address, walletDetails.coin,"forWallet")
             if (validate) {
                 setSaveAddress(false);
             } else {
@@ -169,23 +200,61 @@ function WalletInfo() {
         }
     }
 
-    const validateAddress = async (inputAddress: string, type: string) => {
+    const updatePaxAddress = async () => {
+        if (!paxDetails.coin) {
+            setPaxErrorValue({ ...PaxErrorValue, coinError: "Please select coin" })
+        } else if (!paxDetails.address) {
+            setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Pax Address" })
+        }
+        else if (paxDetails.address) {
+            setSavePaxAddress(true);
+            const validate = await validateAddress(paxDetails.address, paxDetails.coin,"forPax")
+            if (validate) {
+                setSavePaxAddress(false);
+            } else {
+                setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Valid Pax Address " })
+                setSavePaxAddress(false);
+            }
+        }
+    }
+
+    console.log(PaxErrorValue,"PaxErrorValue")
+
+    const validateAddress = async (inputAddress: string, type: string,checktype:string) => {
         return axios.get(
             `https://api.blockcypher.com/v1/${type.toLowerCase()}/main/addrs/${inputAddress}`
-        ).then(async (response) => {
+        ).then(async (response) => {            
             const { error } = response.data;
-            setWalletDetails({ coin: "", address : ""})
-            if (auth?.currentUser) {
-                const allwalletData = [...walletDetailsObj, {
-                    address: inputAddress,
-                    coin: type,
-                }]
-                const userRef = doc(db, "users", auth?.currentUser?.uid);
-                await setDoc(userRef, {
-                    wellDAddress: allwalletData                    
-                }, { merge: true });
+            if (checktype == "forWallet") {                
+                setWalletDetails({ coin: "", address : ""})
+                if (auth?.currentUser) {
+                    const allwalletData = [...walletDetailsObj, {
+                        address: inputAddress,
+                        coin: type,
+                    }]
+                    const userRef = doc(db, "users", auth?.currentUser?.uid);
+                    await setDoc(userRef, {
+                        wellDAddress: allwalletData                    
+                    }, { merge: true });
+                }
+                showToast("Wallet Adderss Add Successfully", ToastType.SUCCESS);
             }
-            showToast("Wallet Adderss Add Successfully", ToastType.SUCCESS);
+            
+            // Cehck pax value
+
+            if (checktype == "forPax") {
+                if (auth?.currentUser) {
+                    const allwalletData = {
+                        address: inputAddress,
+                        coin: type,
+                    }
+                    const userRef = doc(db, "users", auth?.currentUser?.uid);
+                    await setDoc(userRef, {
+                        paxAddress: allwalletData
+                    }, { merge: true });
+                }
+                showToast("PAX Adderss Add Successfully", ToastType.SUCCESS);
+            }
             if (error) {
                 return false;                
             } else {
@@ -392,6 +461,9 @@ function WalletInfo() {
         if (addType == "ADDADDERS") {
             updateAddress()
         }                      
+        if (addType == "PAXADDADDERS") {
+            updatePaxAddress()
+        }                      
     }
 
     // const AddWalletFunction = () => {
@@ -403,7 +475,74 @@ function WalletInfo() {
     return (
         <>
             <div className="mt-4"            
-            >                                             
+            >       
+                {/* PAX Wallet dropdown */}
+                
+                {userInfo?.isUserUpgraded && <SelectTextfield
+                    label={"Add your PAX address"}
+                    name={"Add your PAX address"}                
+                >                    
+                    <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100`}  >
+                        <select
+                            name="coin"
+                            id="coin"
+
+                            style={{
+                                width: "45%",
+                                padding: "11px 0px 11px 20px",
+                                borderRadius: "5px"
+                            }}
+                            value={paxDetails?.coin || ""}
+                            onChange={(e) => {
+                                handleChangeValue(e, "paxDetails")
+                            }}
+                        >
+                            <option value="">Choose coin</option>
+                            {coinListPax.map((item: any, index: number) => {
+                                return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
+                            })}
+                        </select>
+                        <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
+                        <input
+
+                            style={{
+                                width: "45%",
+                                padding: "10px 0px 10px 20px",
+                                borderRadius: "5px"
+                            }}
+                            name="address"
+                            type="address"
+                            placeholder="Enter address"
+                            value={paxDetails.address || ""}
+                            onChange={(e) => {
+                                handleChangeValue(e, "paxDetails")
+                            }}
+                        />
+                        <RemoveButton type='button'
+                            disabled={!paxDetails?.address || savePaxAddress}
+                            style={{
+                                marginLeft: "10px",
+                                borderRadius: "5px",
+                                fontSize: "12px",
+                            }}
+                            onClick={() => {
+                                // updateAddress()
+                                setAddType("PAXADDADDERS")
+                                handleModleShow()
+
+                            }}>
+                            {savePaxAddress ? <span className="loading">ADD..</span> : 'ADD'}
+                        </RemoveButton>
+                    </div>
+
+                    {PaxErrorValue?.coinError && <Errorsapn>{PaxErrorValue?.coinError}</Errorsapn>}
+                    {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>}
+
+                </SelectTextfield>}
+
+
+                {/* For Wallet dropdown */}
+
                 {walletDetailsObj.length > 0 && <SelectTextfield
                     label={`${("Add your wallet address").toLocaleUpperCase()}`}
                     name="Add your wallet address"
@@ -580,7 +719,7 @@ function WalletInfo() {
                             {saveAddress ? <span className="loading">+</span> : '+'}
                         </RemoveButton>
                     </div>
-
+                    {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
                     {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
 
                     </SelectTextfield>
