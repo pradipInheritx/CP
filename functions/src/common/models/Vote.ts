@@ -118,6 +118,7 @@ export const getResultAfterVote = async (requestBody: any) => {
       timestamp,
       userId,
       status,
+      //Pax Distribution
     } = requestBody;
 
     console.info("status", status);

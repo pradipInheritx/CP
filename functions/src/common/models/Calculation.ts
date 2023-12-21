@@ -146,6 +146,7 @@ class Calculation {
           settings.data()?.voteRules,
           user?.status
         );
+        // TODO When score reach to 100 create a function for send Pax to that user
         return { successScoreValue, score };
       } else {
         console.log("SuccessValue Changed rand point not working");
@@ -171,6 +172,7 @@ class Calculation {
         settings.data()?.voteRules,
         user.status
       );
+      // TODO When score reach to 100
       return { successScoreValue, score };
     } else {
       if (
@@ -208,6 +210,11 @@ class Calculation {
         return { successScoreValue, score };
       }
     }
+  }
+
+  async sendPaxToUserMintForAddress() {
+    //Mint For Address Is Required
+    // If isUserUpgraded Then need to send PAX to user mintFor Address
   }
 
   calcValueExpirationTime(): void {
