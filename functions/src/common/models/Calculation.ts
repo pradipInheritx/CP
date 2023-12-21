@@ -13,9 +13,6 @@ import {
   poolMiningNotification,
 } from "./SendCustomNotification";
 
-import {
-  calculationOfMintPaxDistribution
-} from "./PaymentCalculation"
 
 export type Totals = {
   total: number;
@@ -73,7 +70,6 @@ class Calculation {
   private readonly id: string;
   private readonly userId: string;
   private readonly status: any;
-  private readonly paxDistributionToUser;
 
   constructor(
     voteResult: VoteResultProps,
@@ -81,11 +77,9 @@ class Calculation {
     id: string,
     userId: string,
     status: any,
-    paxDistributionToUser: any
   ) {
     console.log("voteResult =>", voteResult);
     console.log("STATUS", status);
-    console.log("paxDistributionToUser from Calculation : ", paxDistributionToUser)
 
     this.voteResult = voteResult;
     this.price = price;
@@ -93,7 +87,6 @@ class Calculation {
     this.db = firestore();
     this.userId = userId;
     this.status = status;
-    this.paxDistributionToUser = paxDistributionToUser
   }
 
   async calc(
@@ -221,25 +214,7 @@ class Calculation {
     }
   }
 
-  async sendPaxToUserMintForAddress() {
-    const paxDetails = this.paxDistributionToUser;
-    //Mint For Address Is Required
-    // If isUserUpgraded Then need to send PAX to user mintFor Address
-    if (!paxDetails.mintForUserAddress) {
-      return errorLogging("sendPaxToUserMintForAddress",
-        "Error",
-        "Please Provide the mint address");
-    }
-    if (!paxDetails.isUserUpgraded) {
-      return errorLogging("sendPaxToUserMintForAddress",
-        "Error",
-        "User is not upgraded");
-    }
-    // send pax function here 
-    const data = await calculationOfMintPaxDistribution(paxDetails);
-    console.log("sendPaxToUserMintForAddress Result : ", data);
-    return data;
-  }
+
 
   calcValueExpirationTime(): void {
     console.log("calcValueExpirationTime", this.price, typeof this.price);
@@ -889,21 +864,7 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
     .filter((leaderData) => leaderData);
 };
 
-export const getUserAndCalculatePax = async (paxData: any) => {
-  try {
-    const getUser = (await firestore().collection("users").doc(paxData.userId).get()).data();
-    if(!getUser) {
-      return errorLogging("getUserAndCalculatePax","ERROR","User not found");
-    }
-    console.log("getUser score and total : ",getUser.score," : ",getUser.total);
 
-    const checkCMP = getUser?.score - (getUser?.total * 100 );
-    console.log("checkCMP : ",checkCMP)
-
-  } catch (error) {
-
-  }
-}
 
 export const errorLogging = async (
   funcName: string,
