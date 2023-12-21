@@ -1245,23 +1245,27 @@ function App() {
     }
   }
   const claimReward = httpsCallable(functions, "claimReward");
+  
+  const getUserAndCalculatePax = httpsCallable(functions, "getUserAndCalculatePax");
 
   useEffect(() => {
     if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0)) {
       claimReward({
-        uid: user?.uid,
-        isVirtual: true,
+        uid: user?.uid,isVirtual: true,}).then(() => {        
+      }).catch(() => { });
+      
+      getUserAndCalculatePax({
         paxDistributionToUser: {
           userId: userInfo?.uid,
           currentPaxValue: Number(paxDistribution),
           isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
           mintForUserAddress: userInfo?.paxAddress?.address || "",
           eligibleForMint: userInfo?.paxAddress?.address ? true : false
-        }
-      
-      }).then(() => {
+        }      
+      }).then(() => { 
         // afterpaxDistributionToUser(paxDistribution)
-       }).catch(() => { });
+      }).catch(() => { });
+      
     }
     latestUserInfo.current = userInfo;
   }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed)]);
