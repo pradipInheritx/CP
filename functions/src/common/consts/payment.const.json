@@ -69,6 +69,31 @@
             "type": "function"
         }
     ],
+    "SMART_CONTRACT_ABI_ARRAY_FOR_MINT": [
+        {
+            "inputs": [
+                {
+                    "internalType": "address payable",
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_amount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_gas",
+                    "type": "uint256"
+                }
+            ],
+            "name": "mintFor",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ],
     "UPGRADE_USER_VOTE" : 50,
     "UPGRADE_USER_COIN" : 500,
     "PAYMENT_UPDATE_SUCCESS":"Transaction update successfully",

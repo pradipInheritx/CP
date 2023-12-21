@@ -3,6 +3,7 @@
     "TRANSACTION_TYPE_EXTRA_VOTES": "EXTRAVOTES",
     "PAYMENT_METHOD": "getTransaction",
     "PAYMENT_NETWORK": "11155111",
+    "PAYMENT_BNB_NETWORK": "56",
     "PAYMENT_ORIGIN_CURRENCY": "eth",
     "PAYMENT_TOKEN": "ETH",
     "PAYMENT_TYPE_REFERAL": "REFERAL",
@@ -34,8 +35,11 @@
     "PAYMENT_EVENT_CONFIRMED": "confirmed",
     "SMART_CONTRACT_GAS_LIMIT": 21000,
     "SMART_CONTRACT_METHOD": "sendTokenTo",
+    "SMART_CONTRACT_METHOD_MINT_FOR": "mintFor",
     "SMART_CONTRACT__GAS": 2400,
     "SMART_CONTRACT_ADMIN_ADRESS": "0xF157C3Ad629DcA7F62784268c72e0a89cE3F5AF3",
+    "SMART_CONTRACT_ADMIN_ADRESS_FOR_MINT": "0xbb59486B10032beDae01A4cdDdd61d1732c2eFD5",
+    "SMART_CONTRACT_ADMIN_ADRESS_LIVE": "0xB9Fd14912CD2fF2F0D6d3C2B46Ddc73705D77D3c",
     "SMART_CONTRACT_ETHEREUM_NODE_URL": "https://mainnet.infura.io/v3/e7f9d6c1bcb04382ac3ac6ca6ae92502",
     "SMART_CONTRACT_MATIC_POLYGON_NODE_URL": "https://mainnet.infura.io/v3/e7f9d6c1bcb04382ac3ac6ca6ae92502",
     "SMART_CONTRACT_BNB_NODE_URL": "https://bsc-dataseed.binance.org",
@@ -59,6 +63,31 @@
                 }
             ],
             "name": "sendTokenTo",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ],
+    "SMART_CONTRACT_ABI_ARRAY_FOR_MINT": [
+        {
+            "inputs": [
+                {
+                    "internalType": "address payable",
+                    "name": "_to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_amount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_gas",
+                    "type": "uint256"
+                }
+            ],
+            "name": "mintFor",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
