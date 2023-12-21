@@ -2,6 +2,8 @@ import * as admin from "firebase-admin";
 import { UserTypeProps } from "./User";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
+import { errorLogging } from "../models/Calculation";
+import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
 import Timestamp = admin.firestore.Timestamp;
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 
@@ -119,9 +121,11 @@ export const getResultAfterVote = async (requestBody: any) => {
       userId,
       status,
       //Pax Distribution
+      paxDistributionToUser
     } = requestBody;
 
     console.info("status", status);
+    console.log("paxDistributionToUser from getResultAfterVote : ", paxDistributionToUser)
 
     // Snapshot Get From ID
     console.info("Vote ID", voteId, typeof voteId);
@@ -147,6 +151,8 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        const paxDistribution = await getUserAndCalculatePax(paxDistributionToUser)
+        console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
           voteId: getVoteData?.voteId,
@@ -159,13 +165,16 @@ export const getResultAfterVote = async (requestBody: any) => {
           timeframe: getVoteData?.timeframe,
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}-${await returnShortCoinValue(coin2.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
-          score: getSuccessAndScore?.score
+          score: getSuccessAndScore?.score,
+          "paxDistributionToUser": paxDistribution
         }
       } else {
         price = valueExpirationTimeOfCoin1 ? valueExpirationTimeOfCoin1 : await getPriceOnParticularTime(coin1, timestamp);
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
+        const paxDistribution = await getUserAndCalculatePax(paxDistributionToUser)
+        console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
           voteId: getVoteData?.voteId,
@@ -178,7 +187,8 @@ export const getResultAfterVote = async (requestBody: any) => {
           timeframe: getVoteData?.timeframe,
           coin: `${await returnShortCoinValue(coin1.toUpperCase())}`,
           success: getSuccessAndScore?.successScoreValue,
-          score: getSuccessAndScore?.score
+          score: getSuccessAndScore?.score,
+          "paxDistributionToUser": paxDistribution
         }
       }
     }
@@ -225,6 +235,7 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
       timestamp,
       userId,
       status,
+
     } = requestBody;
 
     console.info("status", status);
@@ -264,5 +275,40 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
     }
   } catch (error) {
     return { status: false, message: "Something went wrong", error }
+  }
+}
+
+
+export const getUserAndCalculatePax = async (paxDetails: any) => {
+  try {
+    const getUser = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
+    if (!getUser) {
+      return errorLogging("getUserAndCalculatePax", "ERROR", "User not found");
+    }
+    console.log("getUser score and total : ", getUser.score, " : ", getUser.total);
+
+    const checkCMP = getUser?.score - (getUser?.total * 100);
+    console.log("checkCMP : ", checkCMP)
+    console.log("0 < checkCMP && checkCMP > 10 : ", 0 < checkCMP && checkCMP > 10)
+
+    if (0 < checkCMP && checkCMP > 10) {
+      let getResultAfterSentPaxToUser: any;
+      let getResultAfterSentPaxToAdmin: any;
+      if (paxDetails.isUserUpgraded === true) {
+        // Call to user mintFor Address
+        getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDetails)
+        console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
+        return getResultAfterSentPaxToUser
+      }
+      if (paxDetails.isUserUpgraded === false) {
+        // Call to Admin mintFor Address
+        getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDetails);
+        console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
+        return getResultAfterSentPaxToAdmin
+      }
+    }
+
+  } catch (error) {
+    return errorLogging("getUserAndCalculatePax", "ERROR", error);
   }
 }
