@@ -453,7 +453,7 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
     };
 
     const transactionBodyForSmartContractOnAdminMintFor: any = {
-      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
+      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
       "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
       "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
       "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
@@ -470,11 +470,15 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
 
     const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
 
+    if (transaction.data) {
+      //paxDistributionToUser.userId
+    }
+
     console.log("End smart contract payment function in admin", transaction);
 
     return { status: true, result: transaction.data };
   } catch (error) {
-    return { status: false, result: { message: "Something went wrong while process the mint for admin" } };
+    return { status: false, result: { message: `Something went wrong while process the mint for admin ${error}` } };
   }
 }
 
@@ -500,7 +504,7 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
     };
 
     const transactionBodyForSmartContractOnUserMintFor: any = {
-      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
+      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
       "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
       "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
       "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
@@ -530,7 +534,7 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
 
     return { status: true, result: transaction.data };
   } catch (error) {
-    return { status: false, result: { message: "Something went wrong while process the mint for user" } };
+    return { status: false, result: { message: `Something went wrong while process the mint for user ${error}` } };
   }
 }
 
