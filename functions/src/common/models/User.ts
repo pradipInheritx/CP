@@ -156,15 +156,13 @@ export const addNewKeysInCollection = async (
     console.log("FoundationList : ", foundationList);
     const sortedList = foundationList.sort((foundation_1, foundation_2) => foundation_1.timestamp - foundation_2.timestamp)
     console.log("Sorted list : ", sortedList);
+
     
-    //generate random value 
     for (let user = 0; user < getAllDataFromCollection.length; user++) {
       let newObject: any = {};
-      const randomValue = Math.random() * (sortedList?.length - 0) + 0;
-    console.log("Random value : ", randomValue);
-      keyValue = "" // left to add more details here
-
-
+      const randomValue = Math.floor(Math.random() * sortedList?.length);
+      console.log("Random value : ", randomValue);
+      newObject[keyName] = sortedList[randomValue].id;
 
         console.log("newObject : ", newObject);
       if (getAllDataFromCollection[user].uid) {
@@ -174,13 +172,6 @@ export const addNewKeysInCollection = async (
           .set(newObject, { merge: true });
       }
     }
-
-    // getAllDataFromCollection.forEach((data: any) => {
-    //   firestore()
-    //     .collection(collectionName)
-    //     .doc(data.id)
-    //     .set(newObject, { merge: true });
-    // });
 
     return {
       result: true,
