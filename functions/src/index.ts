@@ -907,8 +907,8 @@ exports.getRewardTransactions = functions.https.onCall(async (data) => {
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
-  const { uid, isVirtual, paxDistributionToUser } = data as { uid: string; isVirtual: boolean; paxDistributionToUser: any };
-  const reward = await claimReward(uid, isVirtual, paxDistributionToUser);
+  const { uid, isVirtual} = data as { uid: string; isVirtual: boolean; paxDistributionToUser: any };
+  const reward = await claimReward(uid, isVirtual);
   console.log("reward --->", reward);
   return reward;
 });
@@ -1213,4 +1213,5 @@ exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
     const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToAdmin, timestamp: Date.now() });
     return { id: addNewPax.id }
   }
+  return null
 });
