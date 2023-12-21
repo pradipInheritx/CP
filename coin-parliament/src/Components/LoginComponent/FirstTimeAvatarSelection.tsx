@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Login.css";
 import { Stack } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
@@ -10,6 +10,7 @@ import { db } from "../../firebase";
 import { toast } from "react-toastify";
 import { texts } from "./texts";
 import AppContext from "Contexts/AppContext";
+import axios from "axios";
 
 
 
@@ -22,15 +23,36 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, setSelect
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
   const { setFirstTimeLogin, setShowMenuBar } = useContext(AppContext);
-  const FoundationArray = ['Foundation One', 'Foundation Two', 'Foundation Three', 'Foundation Four', 'Foundation Five'
-  ]
+  const [FoundationArray, setFoundationArray] = useState([])
+  // var FoundationArray = [];
+
+  const FoundationValue = async () => {
+    axios.get(`/admin/foundation/getList`).then((res) => {
+      const FoundData = res.data.foundationList
+      const makeFroundArray : any =[]
+      FoundData.map((item:any,number:number) => {
+        makeFroundArray.push({ id: item.id, name: item.name,})
+      })
+      setFoundationArray(makeFroundArray)
+    }).catch((err) => {
+      console.log(err, "foundationListerr")
+    })    
+  }
+
+useEffect(() => {  
+  FoundationValue()  
+}, [])
+
+
   const onSubmitAvatar = async (type: AvatarType) => {
+    console.log(FoundationArray,"FoundationArray")
     if (user?.uid) {
       setSelectBioEdit(true)
       const userRef = doc(db, "users", user?.uid);
-      try {
-        const foundationName = FoundationArray[Math.trunc(Math.random() * 4)]
-        await setDoc(userRef, { avatar: type, foundationName }, { merge: true });
+      try {        
+        const foundationData = FoundationArray[Math.trunc(Math.random() * FoundationArray.length)]
+
+        await setDoc(userRef, { avatar: type, foundationData }, { merge: true });
         // await setDoc(userRef, { foundationName }, { merge: true });
         showToast(translate(texts.UserInfoUpdate));
         toast.dismiss();
