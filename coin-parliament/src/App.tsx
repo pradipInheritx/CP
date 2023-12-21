@@ -158,6 +158,9 @@ import VotingBooster from "Components/Profile/VotingBooster";
 import { LessTimeVoteDetailContext, LessTimeVoteDetailDispatchContext } from "Contexts/LessTimeVoteDetails";
 import Swal from "sweetalert2";
 import SelectBio from "Components/LoginComponent/SelectBio";
+import axios from "axios";
+import { afterpaxDistributionToUser } from "common/utils/helper";
+import FoundationData from "Components/Profile/FoundationData";
 
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -300,6 +303,7 @@ function App() {
   const [backgrounHide, setBackgrounHide] = useState<any>(false)
   const [transactionId, setTransactionId] = useState({});
   const [withLoginV2e, setWithLoginV2e] = useState(false)
+  const [paxDistribution, setPaxDistribution] = useState(0)
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
@@ -702,6 +706,15 @@ function App() {
           })
       );
     });
+
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {      
+        data: {}      
+    }).then((res) => {
+      console.log(res.data.result, "resultdata")
+      setPaxDistribution(res.data.result.paxDistribution)
+    }).catch((err) => {
+      console.log(err,"resultdata")      
+    })
   }, [user?.uid]);
 
   window.onbeforeunload = function () {
@@ -1180,7 +1193,13 @@ function App() {
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
             userId: lessTimeVote?.userId,
-
+            paxDistributionToUser: {
+              userId: lessTimeVote?.userId,
+              currentPaxValue: Number(paxDistribution),
+              isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+              mintForUserAddress: userInfo?.paxAddress?.address || "",
+              eligibleForMint: userInfo?.paxAddress?.address ? true : false
+            }
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {
@@ -1199,8 +1218,10 @@ function App() {
           getPriceCalculation(request).then(() => { }).catch(() => { });
           // if (latestUserInfo && (latestUserInfo.current?.rewardStatistics?.total || 0) > (latestUserInfo.current?.rewardStatistics?.claimed || 0)) {
           //   await claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
-          // }          
+          // }
 
+          // afterpaxDistributionToUser(paxDistribution)
+          
           if (response?.data && Object.keys(response.data).length > 0) {
             const res: VoteResultProps = response!.data as VoteResultProps;
             // @ts-ignore
@@ -1227,7 +1248,20 @@ function App() {
 
   useEffect(() => {
     if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0)) {
-      claimReward({ uid: user?.uid, isVirtual: true }).then(() => { }).catch(() => { });
+      claimReward({
+        uid: user?.uid,
+        isVirtual: true,
+        paxDistributionToUser: {
+          userId: userInfo?.uid,
+          currentPaxValue: Number(paxDistribution),
+          isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+          mintForUserAddress: userInfo?.paxAddress?.address || "",
+          eligibleForMint: userInfo?.paxAddress?.address ? true : false
+        }
+      
+      }).then(() => {
+        // afterpaxDistributionToUser(paxDistribution)
+       }).catch(() => { });
     }
     latestUserInfo.current = userInfo;
   }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed)]);
@@ -1723,6 +1757,11 @@ function App() {
                                                 path={ProfileTabs.history}
 
                                                 element={<PaymentHistory />}
+                                              />
+                                              <Route
+                                              path={ProfileTabs.foundationshow}
+
+                                                element={<FoundationData />}
                                               />
                                               <Route
                                                 path={ProfileTabs.password}

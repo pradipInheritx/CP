@@ -25,6 +25,8 @@ import { CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { afterpaxDistributionToUser } from "common/utils/helper";
 const Container = styled.div`
   box-shadow: ${(props: { width: number }) =>
     `${props.width > 767}?"0 3px 6px #00000029":"none"`};
@@ -205,6 +207,7 @@ const Minting = ({
   const [CmpPopupShow, setCmpPopupShow] = React.useState(false);
   const [upgraeShow, setUpgraeShow] = React.useState(false);
   const [pendingVoteShow, setPendingVoteShow] = React.useState(false);
+  const [paxDistribution, setPaxDistribution] = React.useState(0);
   const [ClickedOption, setClickedOption] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
@@ -233,7 +236,17 @@ const Minting = ({
   useEffect(() => {
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
-    }
+    }    
+
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
+      data: {}
+    }).then((res:any) => {
+      console.log(res.data.result, "resultdata")
+      setPaxDistribution(res.data.result.paxDistribution)
+    }).catch((err:any) => {
+      console.log(err, "resultdata")
+    })
+
   }, [modalShow, CmpPopupShow]);
   
   useEffect(() => {
@@ -257,12 +270,6 @@ const Minting = ({
         autoplay: true, // boolean   ,
       });
       handleSoundWinCmp.play();
-      // setTimeout(function () {
-      //   // Animation.destroy();
-      //   handleSoundWinCmp.pause();
-      // }, 3000);  // 5000 milliseconds = 5 seconds
-
-      // setShowBack(false)
     } else {
       handleSoundWinCmp.pause();
     }
@@ -276,7 +283,18 @@ const Minting = ({
     handleSoundClick()
     if (claim) {
       setLoading(true);
-      claimReward({ uid: user?.uid, isVirtual: false }).then((result: any) => {
+      claimReward({
+        uid: user?.uid,
+        isVirtual: false,
+        paxDistributionToUser: {
+          userId: userInfo?.uid,
+          currentPaxValue: Number(paxDistribution),
+          isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+          mintForUserAddress: userInfo?.paxAddress?.address || "",
+          eligibleForMint: userInfo?.paxAddress?.address ? true : false
+        }
+      }).then((result: any) => {
+        // afterpaxDistributionToUser(paxDistribution)
         handleShow();
         setResultData(result);
         setRewardTimer(result);

@@ -38,7 +38,15 @@ export type UserProps = {
   bio?: string;
   userName?: any;
   isUserUpgraded?: boolean;
+  foundationData?: {
+    id:any
+    name:string
+  };
   wellDAddress?: {
+    coin: string;
+    address: string;
+  },
+  paxAddress?: {
     coin: string;
     address: string;
   },
