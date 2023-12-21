@@ -49,7 +49,7 @@ export type UserProps = {
   lastVoteTime?: number;
   wellDAddress?: wellDAddressType;
   referalReceiveType?: referalReceiveType;
-  foundationData?:any;
+  foundationData?: any;
 };
 
 export type wellDAddressType = [];
@@ -150,18 +150,21 @@ export const addNewKeysInCollection = async (
       await firestore().collection(collectionName).get()
     ).docs.map((user: any) => user.data());
     console.log("getAllDataFromCollection : ", getAllDataFromCollection);
+    const foundationListQuery = (await firestore().collection('foundations').get()).docs.map((foundation) => foundation.data());
 
+    const foundationList = await Promise.all(foundationListQuery);
+    console.log("FoundationList : ", foundationList);
+    const sortedList = foundationList.sort((foundation_1, foundation_2) => foundation_1.timestamp - foundation_2.timestamp)
+    console.log("Sorted list : ", sortedList);
 
-
-    //generate random value 
+    
     for (let user = 0; user < getAllDataFromCollection.length; user++) {
       let newObject: any = {};
-      keyValue = getAllDataFromCollection[user].displayName ? getAllDataFromCollection[user].displayName : generateRandomName(10);
-      let removeSpace = keyValue.replace(/\s/g, '').trim();
-      newObject[keyName] = removeSpace;
+      const randomValue = Math.floor(Math.random() * sortedList?.length);
+      console.log("Random value : ", randomValue);
+      newObject[keyName] = sortedList[randomValue].id;
 
-      console.log("removeSpace : ", removeSpace, "\nuser : ", user);
-      console.log("newObject : ", newObject, " :  ", getAllDataFromCollection[user].uid);
+        console.log("newObject : ", newObject);
       if (getAllDataFromCollection[user].uid) {
         await firestore()
           .collection(collectionName)
@@ -169,13 +172,6 @@ export const addNewKeysInCollection = async (
           .set(newObject, { merge: true });
       }
     }
-
-    // getAllDataFromCollection.forEach((data: any) => {
-    //   firestore()
-    //     .collection(collectionName)
-    //     .doc(data.id)
-    //     .set(newObject, { merge: true });
-    // });
 
     return {
       result: true,
