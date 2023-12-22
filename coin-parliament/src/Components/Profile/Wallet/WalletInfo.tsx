@@ -35,7 +35,7 @@ const I = styled.i`
 position: absolute;
   font-weight: 300;
   top:-27px;
-  left:180px;
+  left:${window.screen.width >767 ? "375px":"70px"};
   color: #6352e8;
 //   width: 16px;
 //   height: 16px;
@@ -53,6 +53,17 @@ position: absolute;
   text-align: center;
 `;
 
+const Icon2 = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+position: absolute;
+  font-weight: 300;
+  top:-27px;
+  left:290px;
+  color: #6352e8;
+  text-align: center;
+`;
+
 function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
@@ -66,7 +77,7 @@ function WalletInfo() {
         address: "",
     });
     const [paxDetails, setPaxWalletDetails] = useState({
-        coin: "",
+        coin: "BNB",
         address: "",
     });
 
@@ -77,6 +88,7 @@ function WalletInfo() {
         address: "",
     }]);
     const [tooltipShow, setTooltipShow] = React.useState(false);
+    const [tooltipShowPax, setTooltipShowPax] = React.useState(false);
     const [tooltipShow2, setTooltipShow2] = React.useState(false);
     const [addType, setAddType] = React.useState("");
     const [validationErrors, setValidationErrors] = useState([]);
@@ -479,11 +491,11 @@ function WalletInfo() {
                 {/* PAX Wallet dropdown */}
                 
                 {userInfo?.isUserUpgraded && <SelectTextfield
-                    label={"Add your PAX address"}
-                    name={"Add your PAX address"}                
+                    label={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}
+                    name={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}                
                 >                    
                     <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100`}  >
-                        <select
+                        {/* <select
                             name="coin"
                             id="coin"
 
@@ -498,11 +510,58 @@ function WalletInfo() {
                             }}
                         >
                             <option value="">Choose coin</option>
-                            {/* {coinListPax.map((item: any, index: number) => { */}
-                                {/* return <option key={index} value={item.symbol} id={item.id}>{item.name}</option> */}
-                                <option value={"BNB"} >{"BNB"}</option>
-                            {/* })} */}
-                        </select>
+                            {coinListPax.map((item: any, index: number) => {
+                                return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
+                             })}
+                        </select> */}
+
+                        {
+                            tooltipShowPax &&
+                            <div
+                                style={{
+                                    display: "relative"
+                                }}
+                            >
+                                <div className="newtooltip"
+                                    style={{
+                                        // right: "0%",
+                                        width: `${window.screen.width > 767 ? "50%" : "78%"}`,
+                                        marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+                                        marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
+                                    }}
+                                >
+                                    {/* <p>Your CMP count</p> */}
+                                        <p className="mt-1 text-end lh-base">Pax rewards will be sent automatically to this address every time you achieve the 100 CMP</p>
+
+                                </div>
+                            </div>
+                        }
+                        <div className=''>
+                            <Icon2 className='bi bi-info-circle'
+                                onMouseDown={(e) => {
+                                    setTooltipShowPax(false)
+                                }}
+                                onMouseUp={(e) => {
+                                    setTooltipShowPax(true)
+                                }}
+                                onMouseEnter={() => setTooltipShowPax(true)}
+                                onMouseLeave={() => setTooltipShowPax(false)}
+                            ></Icon2>
+                        </div>
+                        <input
+
+                            style={{
+                                width: "45%",
+                                padding: "11px 0px 11px 20px",
+                                borderRadius: "5px"
+
+                            }}
+                            disabled
+                            name="coin"
+                            id="coin"                            
+                            value={"BNB"}                            
+                        />
+
                         <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
                         <input
 
@@ -545,8 +604,8 @@ function WalletInfo() {
                 {/* For Wallet dropdown */}
 
                 {walletDetailsObj.length > 0 && <SelectTextfield
-                    label={`${("Add your wallet address").toLocaleUpperCase()}`}
-                    name="Add your wallet address"
+                    label={`${("ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS ").toLocaleUpperCase()}`}
+                    name="ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS "
 
                 >
                     {
@@ -632,10 +691,10 @@ function WalletInfo() {
                     </>
                 })}
                 </SelectTextfield>}
-                                                
+                
                 <SelectTextfield
-                    label={`${walletDetailsObj.length < 1 ? ("Add your wallet address"):""}`}
-                    name={`${walletDetailsObj.length < 1 &&  "Add your wallet address"}`}
+                    label={`${walletDetailsObj.length < 1 ? ("ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"):""}`}
+                    name={`${walletDetailsObj.length < 1 &&  "ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"}`}
                 
                 >      
                     
@@ -1100,7 +1159,8 @@ function WalletInfo() {
                         </div>
                     </div>
                 </SelectTextfield>
-                <div className="d-flex justify-content-center">
+                {console.log(userInfo?.referalReceiveType?.name !== selectRadio,"!== selectRadio")}
+                {(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT" )? <div className="d-flex justify-content-center">
                     <div className="d-flex justify-content-center" style={{
                         width: `${window.screen.width > 767 ? "34%" : ""}`,
                         margin: "0px 0px 15px 0px",
@@ -1114,10 +1174,10 @@ function WalletInfo() {
                                 handleModleShow()
                             }}
                         >
-                            {savePaymentMethod ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
+                            {savePaymentMethod  ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
                         </Buttons.Primary>
                     </div>
-                </div>
+                </div>:null}
             </div>
             <div>
                 <Modal

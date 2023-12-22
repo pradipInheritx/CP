@@ -54,6 +54,7 @@ export type UserProps = {
     amount: string;
     name: string;
     time: string;
+    limitType: string;
   }
 };
 
