@@ -152,6 +152,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         if (!parentUserDetails.parent) {
             console.log("Parent Not Found: ", "Parent user data is not exist");
             return null;
+            //TODO If user's parent not exists then give the half amount to admin
         }
 
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
