@@ -43,7 +43,7 @@ export enum ProfileTabs {
   password = "password",
   followers = "followers",
   history = "history",
-  foundationshow = "foundationshow",
+  // foundationshow = "foundationshow",
   mine = "mine",
   edit = "edit",
   wallet = "wallet",
@@ -173,7 +173,7 @@ const Profile = () => {
                       ProfileTabs.password as string,
                       ProfileTabs.wallet as string,
                       ProfileTabs.history as string,                      
-                      ProfileTabs.foundationshow as string,                    
+                      // ProfileTabs.foundationshow as string,                    
                     ].includes(pathname) && (
                         <ImageTabs
                           {...{
@@ -237,7 +237,7 @@ const Profile = () => {
                       ProfileTabs.password as string,
                       ProfileTabs.wallet as string,
                       ProfileTabs.history as string,
-                      ProfileTabs.foundationshow as string,
+                      // ProfileTabs.foundationshow as string,
                     ].includes(pathname) &&
                       window.screen.width < 979 && (
                         <ImageTabs
@@ -278,12 +278,12 @@ const Profile = () => {
                                 icon: <PaymentHitory/>,
                                 eventKey: ProfileTabs.history,
                               },
-                              {
-                                component: <></>,
-                                label: "Foundation",
-                                icon: <FoundationIcon/>,
-                                eventKey: ProfileTabs.foundationshow,
-                              },
+                              // {
+                              //   component: <></>,
+                              //   label: "Foundation",
+                              //   icon: <FoundationIcon/>,
+                              //   eventKey: ProfileTabs.foundationshow,
+                              // },
                             ],
                           }}
                         />

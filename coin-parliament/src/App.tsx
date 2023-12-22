@@ -160,7 +160,7 @@ import Swal from "sweetalert2";
 import SelectBio from "Components/LoginComponent/SelectBio";
 import axios from "axios";
 import { afterpaxDistributionToUser } from "common/utils/helper";
-import FoundationData from "Components/Profile/FoundationData";
+// import FoundationData from "Components/Profile/FoundationData";
 
 // import CoinsListDesgin from "Components/Profile/CoinsList";
 const getVotesFunc = httpsCallable<{ start?: number; end?: number; userId: string }, GetVotesResponse>(functions, "getVotes");
@@ -1213,6 +1213,12 @@ function App() {
         }
         console.log(lessTimeVote, "ChecklessTimeVote")
         await getResultAfterVote(request).then(async (response) => {
+        
+          console.log(response?.data, "response?.data?.result?")
+          // @ts-ignore
+          if (response?.data?.paxDistributionToUser && response?.data?.paxDistributionToUser?.status == true) {
+          afterpaxDistributionToUser(paxDistribution)
+          }
 
           console.log(latestUserInfo.current, 'latestUserInfo.current');
           getPriceCalculation(request).then(() => { }).catch(() => { });
@@ -1246,7 +1252,7 @@ function App() {
   }
   const claimReward = httpsCallable(functions, "claimReward");
   
-  const getUserAndCalculatePax = httpsCallable(functions, "getUserAndCalculatePax");
+  const paxDistributionOnClaimReward = httpsCallable(functions, "paxDistributionOnClaimReward");
 
   useEffect(() => {
     if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0)) {
@@ -1254,7 +1260,7 @@ function App() {
         uid: user?.uid,isVirtual: true,}).then(() => {        
       }).catch(() => { });
       
-      getUserAndCalculatePax({
+      paxDistributionOnClaimReward({
         paxDistributionToUser: {
           userId: userInfo?.uid,
           currentPaxValue: Number(paxDistribution),
@@ -1262,7 +1268,12 @@ function App() {
           mintForUserAddress: userInfo?.paxAddress?.address || "",
           eligibleForMint: userInfo?.paxAddress?.address ? true : false
         }      
-      }).then(() => { 
+      }).then((res) => { 
+        console.log(res?.data, "resdata")
+        // @ts-ignore
+        if (res?.data?.getResultAfterSentPaxToUser?.status) {
+          afterpaxDistributionToUser(paxDistribution)
+        }
         // afterpaxDistributionToUser(paxDistribution)
       }).catch(() => { });
       
@@ -1762,11 +1773,11 @@ function App() {
 
                                                 element={<PaymentHistory />}
                                               />
-                                              <Route
+                                            {/* <Route
                                               path={ProfileTabs.foundationshow}
 
                                                 element={<FoundationData />}
-                                              />
+                                              /> */}
                                               <Route
                                                 path={ProfileTabs.password}
                                                 element={<Security />}

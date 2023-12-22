@@ -34,6 +34,7 @@ export type VoteResultProps = VoteProps & {
   CPMRangePercentage?: number;
   voteId?: string
   voteType?: string
+  paxDistributionToUser?: any;
 };
 
 export type TimeFrame = {

@@ -101,7 +101,7 @@ export enum ProfileTabs {
   wallet = "wallet",
   followers = "followers",
   history = "history",
-  foundationshow = "foundationshow",
+  // foundationshow = "foundationshow",
   mine = "mine",
   edit = "edit",
   votes = "votes",
@@ -152,7 +152,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               ProfileTabs.password as string,
               ProfileTabs.wallet as string,
               ProfileTabs.history as string,
-              ProfileTabs.foundationshow as string,
+              // ProfileTabs.foundationshow as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -217,7 +217,7 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
               ProfileTabs.password as string,
               ProfileTabs.wallet as string,
               ProfileTabs.history as string,
-              ProfileTabs.foundationshow as string,
+              // ProfileTabs.foundationshow as string,
             ].includes(pathname) &&
               window.screen.width > 979 && (
                 <ImageTabs
@@ -258,12 +258,12 @@ const UserCard = ({ user, onClick, children }: UserCardProps) => {
                         icon: <PaymentHitory />,
                         eventKey: ProfileTabs.history,
                       },
-                      {
-                        component: <></>,
-                        label: "Foundation",
-                        icon: <FoundationIcon />,
-                        eventKey: ProfileTabs.foundationshow,
-                      },
+                      // {
+                      //   component: <></>,
+                      //   label: "Foundation",
+                      //   icon: <FoundationIcon />,
+                      //   eventKey: ProfileTabs.foundationshow,
+                      // },
                     ],
                   }}
                 />

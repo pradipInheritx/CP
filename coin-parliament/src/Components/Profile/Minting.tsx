@@ -188,7 +188,7 @@ type MintingProps = {
   setCountShow?: any;
 };
 const claimReward = httpsCallable(functions, "claimReward");
-const getUserAndCalculatePax = httpsCallable(functions, "getUserAndCalculatePax");
+const paxDistributionOnClaimReward = httpsCallable(functions, "paxDistributionOnClaimReward");
 const Minting = ({
 
   score,
@@ -300,7 +300,7 @@ const Minting = ({
         showToast(error.message, ToastType.ERROR);
       });
 
-      getUserAndCalculatePax({
+      paxDistributionOnClaimReward({
         paxDistributionToUser: {
           userId: userInfo?.uid,
           currentPaxValue: Number(paxDistribution),
@@ -308,8 +308,12 @@ const Minting = ({
           mintForUserAddress: userInfo?.paxAddress?.address || "",
           eligibleForMint: userInfo?.paxAddress?.address ? true : false
         }
-      }).then(() => {
-        // afterpaxDistributionToUser(paxDistribution)
+      }).then((res) => {
+        console.log(res?.data, "resdata")
+        // @ts-ignore
+        if (res?.data?.getResultAfterSentPaxToUser?.status) {          
+          afterpaxDistributionToUser(paxDistribution)
+        }
       }).catch(() => { });
 
     } else {
