@@ -287,7 +287,7 @@ export const getUserAndCalculatePax = async (paxDetails: any) => {
     }
     console.log("getUser score and total : ", getUser.score, " : ", getUser.total);
 
-    const checkCMP = getUser?.score - (getUser?.total * 100);
+    const checkCMP = getUser?.voteStatistics?.score - (getUser?.rewardStatistics?.total * 100);
     console.log("checkCMP : ", checkCMP)
     console.log("0 < checkCMP && checkCMP > 10 : ", 0 < checkCMP && checkCMP > 10)
 
