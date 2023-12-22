@@ -26,7 +26,7 @@ import VBGM from "../../assets/images/VBGM.png"
 
 
 const PoolBox = styled.div`
-  overFlow-x:hidden;
+  overFlow:hidden;
   min-height: 76px;
   
   // background-color: #6352e8;
@@ -432,7 +432,7 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
                   {/* <img src={item.name} alt="" width={"25px"} /> */}
                   <span className="material-symbols-outlined text-secondary me-2"
                     onClick={() => {
-                      copy(url(item.id, item.url));
+                      copy(url(item.id, item.url, item.uid));
                       showToast(
                         'Your referral link is copied to the clipboard.',
                         ToastType.SUCCESS
@@ -440,13 +440,13 @@ const ShareCopy = ({ url, text, shareText }: ShareAndEarnProps) => {
                     }}>
                     content_copy
                   </span>
-                  <a href={`https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url(item.id, item.url) }`.replace(" ", "+")}&app_absent=0`} target="_blank" onClick={() => setShowShare2(false)}>
+                  <a href={`https://api.whatsapp.com/send/?phone&text=${`${shareText} ${url(item.id, item.url, item.uid) }`.replace(" ", "+")}&app_absent=0`} target="_blank" onClick={() => setShowShare2(false)}>
                     <img src={whatsApp} className="me-2" />
                   </a>
-                  <a href={`https://twitter.com/intent/tweet?url=${url(item.id, item.url) }?check_suite_focus=true&text=${shareText}`} target="_blank" onClick={() => setShowShare2(false)}>
+                  <a href={`https://twitter.com/intent/tweet?url=${url(item.id, item.url, item.uid) }?check_suite_focus=true&text=${shareText}`} target="_blank" onClick={() => setShowShare2(false)}>
                     <img src={XTwitter} width={'25px'} height={'25px'} className="me-2" />
                   </a>
-                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${url(item.id, item.url) }&t=${shareText}`} target="_blank" onClick={() => setShowShare2(false)}>
+                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${url(item.id, item.url, item.uid) }&t=${shareText}`} target="_blank" onClick={() => setShowShare2(false)}>
                     <img src={facebook} className="me-2" />
                   </a>
                 </div>

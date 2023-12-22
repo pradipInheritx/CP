@@ -53,8 +53,8 @@ const PersonalInfo = () => {
     setLastName(userInfo?.lastName || '')
     setEmail(userInfo?.email || '')
     setBio(userInfo?.bio || '');
-    setPhone({ phone: userInfo?.phone })
-  }, [userInfo]);
+    setPhone({ phone: userInfo?.phone || ""})
+  }, [userInfo, userInfo?.phone]);
 
   console.log(phone,"phone")
   const createPost = async (id: string) => {
@@ -246,7 +246,7 @@ const PersonalInfo = () => {
                     disabled: !edit
                   }}
                   disableDropdown={!edit}
-                  country={phone?.phone == undefined || null? userCurrentCountryCode : ''}
+                    country={phone?.phone == undefined || phone?.phone == "" ? userCurrentCountryCode : ''}
                   // country={""}
                   value={phone?.phone && phone?.phone}
                   onChange={handleOnChange}
