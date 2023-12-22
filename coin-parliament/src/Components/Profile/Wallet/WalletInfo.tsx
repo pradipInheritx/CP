@@ -498,9 +498,10 @@ function WalletInfo() {
                             }}
                         >
                             <option value="">Choose coin</option>
-                            {coinListPax.map((item: any, index: number) => {
-                                return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
-                            })}
+                            {/* {coinListPax.map((item: any, index: number) => { */}
+                                {/* return <option key={index} value={item.symbol} id={item.id}>{item.name}</option> */}
+                                <option value={"BNB"} >{"BNB"}</option>
+                            {/* })} */}
                         </select>
                         <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
                         <input
