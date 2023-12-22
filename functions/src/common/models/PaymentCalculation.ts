@@ -148,17 +148,20 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         //     let data = snapshot.data();
         //     return { childId: data.uid, parentId: data.parent }
         // });
+       
         console.info("parentUserDetails", parentUserDetails);
-        if (!parentUserDetails.parent) {
-            console.log("Parent Not Found: ", "Parent user data is not exist");
-            return null;
-            //TODO If user's parent not exists then give the half amount to admin
-        }
+        // if (!parentUserDetails.parent) {
+        //     console.log("Parent Not Found: ", "Parent user data is not exist");
+        //     // return null;
+        //     //TODO If user's parent not exists then give the half amount to admin
 
+        // }
+        const parentUserId = parentUserDetails.parent ? parentUserDetails.parent : parentConst.ADMIN_UID;
+        console.log("Parent Id: ", parentUserId);
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
         const parentPaymentData = {
-            parentUserId: parentUserDetails.parent,
+            parentUserId,
             childUserId: parentUserDetails.uid,
             amount: halfAmount,
             type: parentConst.PAYMENT_TYPE_REFERAL,
