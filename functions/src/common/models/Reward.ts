@@ -455,9 +455,9 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
     const transactionBodyForSmartContractOnAdminMintFor: any = {
       "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
       "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
-      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
       "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
-      "network": parentConst.PAYMENT_BNB_NETWORK,
+      "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
       "params": [
         {
           "_to": parentConst.SMART_CONTRACT_ADMIN_ADRESS_FOR_MINT, //This is the admin address for PAX receive //paxDistributionToUser.mintForUserAddress,
@@ -506,9 +506,9 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
     const transactionBodyForSmartContractOnUserMintFor: any = {
       "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
       "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
-      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
       "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
-      "network": parentConst.PAYMENT_BNB_NETWORK,
+      "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
       "params": [
         {
           "_to": paxDistributionToUser.mintForUserAddress, //This is the user pax address for PAX receive
@@ -523,13 +523,13 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
 
     console.log("End smart contract payment function in admin", transaction);
 
-    if(transaction.data){
-      const user :any= (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
+    if (transaction.data) {
+      const user: any = (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
       console.log("user : ", user?.uid, " paxEarned : ", user?.paxEarned);
       const paxEarned = user?.paxEarned + paxDistributionToUser.currentPaxValue;
       await firestore().collection("users").doc(paxDistributionToUser.userId).set({
         paxEarned
-      },{merge:true})
+      }, { merge: true })
     }
 
     return { status: true, result: transaction.data };

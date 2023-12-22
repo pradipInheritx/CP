@@ -75,7 +75,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
             "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
             "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
             "method": parentConst.SMART_CONTRACT_METHOD,
-            "network": transactionBody.network,
+            "network": transactionBody.network, //etherium, binance, matic
             "params": [
                 {
                     "_to": transactionBody.address,
@@ -148,7 +148,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         //     let data = snapshot.data();
         //     return { childId: data.uid, parentId: data.parent }
         // });
-       
+
         console.info("parentUserDetails", parentUserDetails);
         // if (!parentUserDetails.parent) {
         //     console.log("Parent Not Found: ", "Parent user data is not exist");
