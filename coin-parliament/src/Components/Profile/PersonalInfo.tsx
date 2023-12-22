@@ -170,7 +170,8 @@ const PersonalInfo = () => {
           if (displayName.length < 6 || displayName.length > 15 || displayName=="") {                                   
             setDisplayNameErr(true);
           }
-          else if (!/(^\d{5,15}$)|(^\d{5}-\d{4}$)/.test(phone?.phone)) {
+          else if (phone?.phone.length < 5 || phone?.phone.length > 15 || phone?.phone == "") {
+            console.log(phone?.phone,"phone?.phone")
             setPhoneErr(true)
           }       
           else if(email === user?.email) {

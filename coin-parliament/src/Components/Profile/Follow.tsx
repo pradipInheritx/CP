@@ -83,11 +83,12 @@ const Follow = () => {
             <div>
                 {isLoading && <div style={{
                 position: 'fixed',
-                height: '100%',
+                height: '68%',
+                // border: "2px solid red",
                 display: 'flex',
                 textAlign: 'center',
                 justifyContent: 'center',
-                top: '0px',
+                // top: '0px',
                 right: '0px',
                 bottom: '0px',
                 zIndex: '9999',
@@ -96,7 +97,10 @@ const Follow = () => {
                 alignItems: 'center',
 
             }}>
-                <span className="loading" style={{ color: "#7767f7", zIndex: "2220px", fontSize: '1.5em', marginTop: `${window.screen.width > 767? "50px" :"240px"}`}}>
+                <span className="loading" style={{
+                  color: "#7767f7", zIndex: "2220px", fontSize: '1.5em',
+                  // marginTop: `${window.screen.width > 767 ? "50px" : "240px"}`
+                }}>
                     {texts.waitForIt}
                 </span>
             </div>}
