@@ -122,7 +122,7 @@ const Foundations = () => {
         </p>
       </div>
 
-      <div className='d-flex justify-content-center px-2'>
+      {/* <div className='d-flex justify-content-center px-2'>
         <div
           style={{
             width: `${window.screen.width > 767 ? "500px" : "100%"}`
@@ -165,14 +165,12 @@ const Foundations = () => {
                   setFoundationEdit(true)
                 }
               }}
-            >
-              {/* {savePaymentMethod ? <span className="loading"> UPDATE...</span> : 'UPDATE'} */}
+            >              
               {FoundationEdit ? "Save" :"Edit"}
             </Buttons.Primary>
             </div>
           </>
-          }
-          {/* <HeaderText className='text-uppercase'>All foundation</HeaderText> */}
+          }          
           <div>
 
             <div className='d-flex justify-content-between my-3 text-uppercase'>
@@ -198,7 +196,7 @@ const Foundations = () => {
             })}
           </div>
         </div>
-      </div>
+      </div> */}
     </GeneralPage>
   );
 };
