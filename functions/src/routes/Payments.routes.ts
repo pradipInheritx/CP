@@ -12,6 +12,7 @@ import {
     callbackFromServer,
     paymentStatusOnTransaction
 } from "../common/models/Payments";
+import { getPendingPaymentbyUserId } from "../common/models/Admin/payments"
 
 const PaymentRouter = Router();
 
@@ -26,5 +27,6 @@ PaymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
 PaymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);
 PaymentRouter.get("/getParentPayment/:userId", getParentPayment);
 PaymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
+PaymentRouter.get("/getPendingPaymentbyUserId/:userId", getPendingPaymentbyUserId);
 
 export default PaymentRouter;
