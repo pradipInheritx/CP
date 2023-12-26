@@ -530,16 +530,13 @@ export const sendNotificationForMintAddress = async (userId: string) => {
     if (user) {
       errorLogging("sendNotificationForMintAddress", "Error", "user is not found");
     }
-    const userWellDAddress: any = user.wellDAddress;
-    console.log("userWellDAddress : ", userWellDAddress);
-    const checkMintFor = userWellDAddress.filter((data: any) => data.name == "BNB" && data.address.length != 0)
-    console.log("checkMintFor : ", checkMintFor)
-    if (!checkMintFor) {
+    console.log("userWellDAddress : ", user.paxAddress);
+    if (!user.paxAddress.address && !user.paxAddress.coin) {
       const message: messaging.Message = {
         token: user.token,
         notification: {
-          title: "Add BNB address",
-          body: "Please add the BNB address for receive the PAX",
+          title: "Add PAX address",
+          body: "Please add the PAX address for receive the PAX",
         },
         webpush: {
           headers: {
@@ -554,21 +551,21 @@ export const sendNotificationForMintAddress = async (userId: string) => {
       await sendNotification({
         token: user.token,
         message,
-        title: "Add BNB address",
-        body: "Please add the BNB address for receive the PAX",
+        title: "Add PAX address",
+        body: "Please add the PAX address for receive the PAX",
         id: user.uid,
       });
 
       return {
         status: false,
-        message: "Notifocation is sent successfully",
+        message: "PAX Notification is sent successfully",
         result: ""
       }
     }
     return {
       status: true,
-      message: "user have BNB address",
-      result: checkMintFor[0]
+      message: "user have PAX address",
+      result: user.paxAddress
     }
   } catch (error) {
     console.log("sendNotificationForMintAddress Error : ", error);
