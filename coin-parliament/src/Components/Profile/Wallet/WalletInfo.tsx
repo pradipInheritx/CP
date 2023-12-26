@@ -152,7 +152,7 @@ function WalletInfo() {
         ethereum: "/^0x[a-fA-F0-9]{40}$/",
     })
 
-    console.log(selectRadio,"selectRadio")
+    console.log(coinListPax,"coinListPax")
 
     useEffect(() => {
         const getCoinList = firebase
@@ -160,15 +160,54 @@ function WalletInfo() {
             .collection("settings").doc("paymentCoins")
         getCoinList.get()
             .then((snapshot) => {
-                const allList = snapshot.data()?.coins;
+                // const allList = snapshot.data()?.coins;
+                // const allList = [
+                //     {
+                //         id:1,
+                //         Name:"Ethereum",
+                //         symbol:"ETH"
+                //     },
+                //     {
+                //         id:2,
+                //         Name:"Binance",
+                //         symbol:"BNB"
+                //     },
+                //     {
+                //         id:3,
+                //         Name:"Polygon",
+                //         symbol:"MATIC"
+                //     }
+                // ]
+                let allList = [                    
+                    {
+                        "status": "Active",
+                        "symbol": "ETH",
+                        "id": "2",
+                        "name": "Ethereum"
+                    },
+                    {
+                        "id": "3",
+                        "status": "Active",
+                        "name": "Binance",
+                        "symbol": "BNB"
+                    },
+                    {
+                        "symbol": "MATIC",
+                        "status": "Active",
+                        "name": "Polygon",
+                        "id": "4"
+                    },
+                    
+                ]
                 console.log(walletDetailsObj, "walletDetailsObj")
                 
                 const uniqueNamesArray2 = allList.filter((obj2:any) =>
                     // @ts-ignore
                     userInfo?.wellDAddress && !userInfo?.wellDAddress.some((obj1:any) => obj1.coin == obj2.name)
-                );                                
+                );       
+                // @ts-ignore
                 setCoinsList(uniqueNamesArray2);
-                setCoinsListPax(allList)
+                // setCoinsListPax(allList)
             }).catch((error) => {
                 console.log(error, "error");
             });
@@ -559,7 +598,7 @@ function WalletInfo() {
                             disabled
                             name="coin"
                             id="coin"                            
-                            value={"BNB"}                            
+                            value={"Binancein chain"}                            
                         />
 
                         <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
@@ -743,7 +782,7 @@ function WalletInfo() {
                                 handleChangeValue(e, "")
                             }}
                         >
-                            <option value="">Choose coin</option>
+                            <option value="">Choose chain</option>
                             {coinList.map((item: any, index: number) => {
                                 return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
@@ -1034,7 +1073,7 @@ function WalletInfo() {
 
                             {(selectRadio === 'LIMIT') && userInfo?.referalReceiveType?.name =="LIMIT"  &&
                                 <>
-                                <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
+                                {/* <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
                                     
                                     <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
                                         maxWidth: '200px',
@@ -1050,7 +1089,7 @@ function WalletInfo() {
                                 >
                                         {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'}
                                     </Buttons.Primary>
-                                </div>
+                                </div> */}
                                 </>
                             }
 
@@ -1120,7 +1159,7 @@ function WalletInfo() {
                                 </>
                             } */}
                         </div>
-                        <div className="mt-3 ">
+                        {/* <div className="mt-3 ">
                             <div className='d-flex align-items-center'>
                                 <Form.Check
                                     style={{ fontSize: "20px", marginRight: "10px" }}
@@ -1156,18 +1195,21 @@ function WalletInfo() {
                                 </div>
                                 </>
                             }
-                        </div>
+                        </div> */}
                     </div>
                 </SelectTextfield>
                 {console.log(userInfo?.referalReceiveType?.name !== selectRadio,"!== selectRadio")}
-                {(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT" )? <div className="d-flex justify-content-center">
+                <div className="d-flex justify-content-center">
                     <div className="d-flex justify-content-center" style={{
                         width: `${window.screen.width > 767 ? "34%" : ""}`,
                         margin: "0px 0px 15px 0px",
                     }}>
                         <Buttons.Primary
                             disabled={!selectRadio || savePaymentMethod}
-                            type='button' style={{ maxWidth: '200px', }}
+                            type='button' style={{
+                                maxWidth: '200px',                            
+                                backgroundColor: `${(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT") ?"" :"gray"}`
+                            }}
                             onClick={() => {
                                 // selectSendType()
                                 setAddType("UPDATESETTING")
@@ -1177,7 +1219,7 @@ function WalletInfo() {
                             {savePaymentMethod  ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
                         </Buttons.Primary>
                     </div>
-                </div>:null}
+                </div>
             </div>
             <div>
                 <Modal
