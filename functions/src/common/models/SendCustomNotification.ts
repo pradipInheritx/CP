@@ -519,6 +519,62 @@ export const sendNotificationForTitleUpgrade_test = async (getAllUserDetails: an
     }
   }
 }
+
+export const sendNotificationForMintAddress = async (userId: string) => {
+  try {
+    if (!userId) {
+      errorLogging("sendNotificationForMintAddress", "Error", "userId is required");
+    }
+    console.log("userId : ", userId);
+    const user: any = (await firestore().collection("users").doc(userId).get()).data();
+    if (user) {
+      errorLogging("sendNotificationForMintAddress", "Error", "user is not found");
+    }
+    const userWellDAddress: any = user.wellDAddress;
+    console.log("userWellDAddress : ", userWellDAddress);
+    const checkMintFor = userWellDAddress.filter((data: any) => data.name == "BNB" && data.address.length != 0)
+    console.log("checkMintFor : ", checkMintFor)
+    if (!checkMintFor) {
+      const message: messaging.Message = {
+        token: user.token,
+        notification: {
+          title: "Add BNB address",
+          body: "Please add the BNB address for receive the PAX",
+        },
+        webpush: {
+          headers: {
+            Urgency: "high",
+          },
+          fcmOptions: {
+            link: `${env.BASE_SITE_URL}/profile`, // TODO: put link for deep linking
+          },
+        },
+      };
+
+      await sendNotification({
+        token: user.token,
+        message,
+        title: "Add BNB address",
+        body: "Please add the BNB address for receive the PAX",
+        id: user.uid,
+      });
+
+      return {
+        status: false,
+        message: "Notifocation is sent successfully",
+        result: ""
+      }
+    }
+    return {
+      status: true,
+      message: "user have BNB address",
+      result: checkMintFor[0]
+    }
+  } catch (error) {
+    console.log("sendNotificationForMintAddress Error : ", error);
+    return errorLogging("sendNotificationForMintAddress", "Error", error)
+  }
+}
 // Error Function
 export const errorLogging = async (
   funcName: string,

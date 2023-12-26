@@ -86,6 +86,7 @@ import {
   sendCustomNotificationOnSpecificUsers,
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
+  sendNotificationForMintAddress
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
@@ -907,7 +908,7 @@ exports.getRewardTransactions = functions.https.onCall(async (data) => {
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
-  const { uid, isVirtual} = data as { uid: string; isVirtual: boolean; paxDistributionToUser: any };
+  const { uid, isVirtual } = data as { uid: string; isVirtual: boolean; paxDistributionToUser: any };
   const reward = await claimReward(uid, isVirtual);
   console.log("reward --->", reward);
   return reward;
@@ -1214,4 +1215,10 @@ exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
     return { id: addNewPax.id }
   }
   return null
+});
+
+// send a notification to add mint-address in wellDaddress
+exports.sendNotificationForMintAddress = functions.https.onCall(async (data) => {
+  const user = await sendNotificationForMintAddress(data.userId);
+  return user;
 });

@@ -149,7 +149,7 @@ export const addNewKeysInCollection = async (
       let newObject: any = {};
       const randomValue = Math.floor(Math.random() * sortedList?.length);
       console.log("Random value : ", randomValue);
-      newObject[keyName] = sortedList[randomValue].id;
+      newObject[keyName] = { id: sortedList[randomValue].id, name: sortedList[randomValue].name };
 
       console.log("newObject : ", newObject);
       if (getAllDataFromCollection[user].uid) {
