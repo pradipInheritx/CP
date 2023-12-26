@@ -48,7 +48,8 @@ import {
 import { JWT } from "google-auth-library";
 import {
   addCpmTransaction,
-  shouldHaveTransaction
+  shouldHaveTransaction,
+  addPaxTransactionWithPendingStatus
 } from "./common/models/PAX";
 import {
   claimReward,
@@ -1133,13 +1134,12 @@ exports.sendNotificationForMintAddress = functions.https.onCall(async (data) => 
 exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data) => {
   try {
     const { userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress } = data;
-
     console.info("Data", userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress);
-
+    await addPaxTransactionWithPendingStatus({ userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress });
     return {
       status: true,
       message: "Pending PAX stored successfully",
-      result: {},
+      result: null,
     };
   } catch (error) {
     return {

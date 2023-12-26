@@ -6,6 +6,9 @@ import { userConverter, UserProps } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";
+import {
+  addPaxTransactionWithPendingStatus
+} from "../models/PAX";
 
 import axios from "axios";
 import * as parentConst from "../consts/payment.const.json";
@@ -490,6 +493,8 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
     console.log("Start Smart Contract Function For User Mint For");
 
     if (!paxDistributionToUser.mintForUserAddress) {
+      console.info("Need To Store For PAX Pending Transaction For User Due To BNB Address")
+      await addPaxTransactionWithPendingStatus(paxDistributionToUser);
       return {
         status: false,
         message: "User mint for address is not available for receive the pax"

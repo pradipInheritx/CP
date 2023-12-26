@@ -32,11 +32,20 @@ export enum PaxTransactionType {
   MINT = "mint",
 }
 
-
-// export const addPaxTransactionWithPendingStatus = async (paxTransaction: any) => {
-
-// };
-
+export const addPaxTransactionWithPendingStatus = async (paxTransactionData: any) => {
+  const getParentPendingPaymentReference = await firestore().collection("paxTransactions").add({ ...paxTransactionData, timestamp: firestore.FieldValue.serverTimestamp(), status: "PENDING" });
+  if (getParentPendingPaymentReference) {
+    return {
+      status: true,
+      result: getParentPendingPaymentReference
+    }
+  } else {
+    return {
+      status: false,
+      result: getParentPendingPaymentReference
+    }
+  }
+};
 
 export enum PaxTransactionStatus {
   PENDING = "pending",
