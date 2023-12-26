@@ -300,21 +300,21 @@ const Minting = ({
         showToast(error.message, ToastType.ERROR);
       });
 
-      paxDistributionOnClaimReward({
-        paxDistributionToUser: {
-          userId: userInfo?.uid,
-          currentPaxValue: Number(paxDistribution),
-          isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
-          mintForUserAddress: userInfo?.paxAddress?.address || "",
-          eligibleForMint: userInfo?.paxAddress?.address ? true : false
-        }
-      }).then((res) => {
-        console.log(res?.data, "resdata")
-        // @ts-ignore
-        if (res?.data?.getResultAfterSentPaxToUser?.status) {          
-          afterpaxDistributionToUser(paxDistribution)
-        }
-      }).catch(() => { });
+      // paxDistributionOnClaimReward({
+      //   paxDistributionToUser: {
+      //     userId: userInfo?.uid,
+      //     currentPaxValue: Number(paxDistribution),
+      //     isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+      //     mintForUserAddress: userInfo?.paxAddress?.address || "",
+      //     eligibleForMint: userInfo?.paxAddress?.address ? true : false
+      //   }
+      // }).then((res) => {
+      //   console.log(res?.data, "resdata")
+      //   // @ts-ignore
+      //   if (res?.data?.getResultAfterSentPaxToUser?.status) {          
+      //     afterpaxDistributionToUser(paxDistribution)
+      //   }
+      // }).catch(() => { });
 
     } else {
       // Swal.fire({
