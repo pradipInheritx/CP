@@ -11,6 +11,7 @@ import { texts } from 'Components/LoginComponent/texts';
 import { Modal } from 'react-bootstrap';
 import VotingPaymentCopy from './VotingPaymentCopy';
 import CoinsContext from 'Contexts/CoinsContext';
+import Button, { Buttons } from 'Components/Atoms/Button/Button';
 
 export type paymentProps = {
   type: any;
@@ -46,6 +47,9 @@ function PaymentFun({ isVotingPayment }: any) {
   const [selectCoin, setSelectCoin] = useState("none");
   const [showOptionList, setShowOptionList] = useState(false);
   const [showForWait, setShowForWait] = useState(false);  
+  const [PassCodeModal, setPassCodeModal] = useState(false);  
+  const [PassCodeErr, setPassCodeErr] = useState(false);  
+  const [passCode, setPassCode] = useState("");    
   const { coins, totals, allCoins } = useContext(CoinsContext);
   const [networkCode, setNetworkCode] = useState({
     ETH: "1",
@@ -74,6 +78,9 @@ function PaymentFun({ isVotingPayment }: any) {
     setPaymentStatus({ type, message: msg });
     return;
   }
+useEffect(() => {
+  setPassCodeModal(true)
+}, [])
 
   
 
@@ -91,7 +98,7 @@ function PaymentFun({ isVotingPayment }: any) {
       // userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,     
       // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: Number(payamount && payamount/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+      amount: Number(payamount && Number(0.01)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
       // amount: 0.0001,
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
@@ -138,7 +145,10 @@ function PaymentFun({ isVotingPayment }: any) {
       userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: payamount,
+      amount:
+      // payamount
+        0.01
+      ,
       // network: "11155111",
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
@@ -173,7 +183,8 @@ function PaymentFun({ isVotingPayment }: any) {
       userId: userInfo?.uid,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: payamount,
+      // amount: payamount,
+      amount: 0.01,
       // network: "11155111",
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
@@ -202,6 +213,7 @@ function PaymentFun({ isVotingPayment }: any) {
 
   }
   useEffect(() => {
+  
     const WLDPHandler = (e: any) => {
       try {
         console.log(e, "alldata231dsf");
@@ -260,6 +272,9 @@ function PaymentFun({ isVotingPayment }: any) {
           });
           (window as any).wldp.connectionWallet('connect', 'ethereum')
             .then((account: any) => {
+              (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
+                console.log(data, "username")
+              })
               if (account) {
                 payNow()
               }
@@ -282,6 +297,46 @@ function PaymentFun({ isVotingPayment }: any) {
         selectCoin={selectCoin}
         setSelectCoin={setSelectCoin}
       />
+      <Modal
+        show={PassCodeModal}
+        backdrop="static"
+        centered
+        style={{ zIndex: "2200", backgroundColor: 'rgba(0, 0, 0, 0.6)' }}        
+      >
+        <Modal.Body>
+          <div className='d-flex justify-content-center align-items-center flex-column'>
+            <p>Enter Pass Code</p>
+            <input type="text" name="" id=""
+              onChange={(e) => {
+                setPassCode(e.target.value)
+                setPassCodeErr(false)
+              }}    
+              className='mt-2'
+            />
+
+            {PassCodeErr == true && <span
+              style={{
+                color: "red",
+                fontSize:"10px"
+            }}
+            >Enter Right Passcode</span>}
+            <Buttons.Primary
+              className='my-3'
+              onClick={() => {
+                if (passCode == "Inx!@123") {
+                  setPassCodeModal(false)
+                }
+                else {
+                  setPassCodeErr(true)
+                }
+            }}
+            >
+              Submit
+            </Buttons.Primary>
+          </div>
+        </Modal.Body>
+      </Modal>
+
       {showForWait && <Modal
         show={showForWait}
         backdrop="static"

@@ -1216,9 +1216,9 @@ function App() {
         
           console.log(response?.data, "response?.data?.result?")
           // @ts-ignore
-          if (response?.data?.paxDistributionToUser && response?.data?.paxDistributionToUser?.status == true) {
-          afterpaxDistributionToUser(paxDistribution)
-          }
+          // if (response?.data?.paxDistributionToUser && response?.data?.paxDistributionToUser?.status == true) {
+          // afterpaxDistributionToUser(paxDistribution)
+          // }
 
           console.log(latestUserInfo.current, 'latestUserInfo.current');
           getPriceCalculation(request).then(() => { }).catch(() => { });
@@ -1260,22 +1260,22 @@ function App() {
         uid: user?.uid,isVirtual: true,}).then(() => {        
       }).catch(() => { });
       
-      paxDistributionOnClaimReward({
-        paxDistributionToUser: {
-          userId: userInfo?.uid,
-          currentPaxValue: Number(paxDistribution),
-          isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
-          mintForUserAddress: userInfo?.paxAddress?.address || "",
-          eligibleForMint: userInfo?.paxAddress?.address ? true : false
-        }      
-      }).then((res) => { 
-        console.log(res?.data, "resdata")
-        // @ts-ignore
-        if (res?.data?.getResultAfterSentPaxToUser?.status) {
-          afterpaxDistributionToUser(paxDistribution)
-        }
-        // afterpaxDistributionToUser(paxDistribution)
-      }).catch(() => { });
+      // paxDistributionOnClaimReward({
+      //   paxDistributionToUser: {
+      //     userId: userInfo?.uid,
+      //     currentPaxValue: Number(paxDistribution),
+      //     isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+      //     mintForUserAddress: userInfo?.paxAddress?.address || "",
+      //     eligibleForMint: userInfo?.paxAddress?.address ? true : false
+      //   }      
+      // }).then((res) => { 
+      //   console.log(res?.data, "resdata")
+      //   // @ts-ignore
+      //   if (res?.data?.getResultAfterSentPaxToUser?.status) {
+      //     afterpaxDistributionToUser(paxDistribution)
+      //   }
+      //   // afterpaxDistributionToUser(paxDistribution)
+      // }).catch(() => { });
       
     }
     latestUserInfo.current = userInfo;
