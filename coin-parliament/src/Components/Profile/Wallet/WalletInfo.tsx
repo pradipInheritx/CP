@@ -743,7 +743,7 @@ function WalletInfo() {
                                 handleChangeValue(e, "")
                             }}
                         >
-                            <option value="">Choose coin</option>
+                            <option value="">Choose chain</option>
                             {coinList.map((item: any, index: number) => {
                                 return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
@@ -1034,7 +1034,7 @@ function WalletInfo() {
 
                             {(selectRadio === 'LIMIT') && userInfo?.referalReceiveType?.name =="LIMIT"  &&
                                 <>
-                                <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
+                                {/* <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
                                     
                                     <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
                                         maxWidth: '200px',
@@ -1050,7 +1050,7 @@ function WalletInfo() {
                                 >
                                         {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'}
                                     </Buttons.Primary>
-                                </div>
+                                </div> */}
                                 </>
                             }
 
@@ -1120,7 +1120,7 @@ function WalletInfo() {
                                 </>
                             } */}
                         </div>
-                        <div className="mt-3 ">
+                        {/* <div className="mt-3 ">
                             <div className='d-flex align-items-center'>
                                 <Form.Check
                                     style={{ fontSize: "20px", marginRight: "10px" }}
@@ -1156,7 +1156,7 @@ function WalletInfo() {
                                 </div>
                                 </>
                             }
-                        </div>
+                        </div> */}
                     </div>
                 </SelectTextfield>
                 {console.log(userInfo?.referalReceiveType?.name !== selectRadio,"!== selectRadio")}
@@ -1167,7 +1167,7 @@ function WalletInfo() {
                     }}>
                         <Buttons.Primary
                             disabled={!selectRadio || savePaymentMethod}
-                            type='button' style={{ maxWidth: '200px', }}
+                            type='button' style={{ maxWidth: '200px', backgroundColor:"gray" }}
                             onClick={() => {
                                 // selectSendType()
                                 setAddType("UPDATESETTING")
