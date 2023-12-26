@@ -4,8 +4,8 @@ import { log } from "firebase-functions/logger";
 import * as parentConst from "../consts/payment.const.json";
 import Web3 from "web3";
 
-import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments"
-
+import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments";
+import { sendRefferalNotification } from "./SendCustomNotification";
 
 // import { log } from "firebase-functions/logger";
 
@@ -171,7 +171,10 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         };
 
         console.log("parentPaymentData : ", parentPaymentData);
-
+        await sendRefferalNotification([
+            { id: parentPaymentData.parentUserId, amount: parentPaymentData.amount, isParent: true },
+            { id: parentPaymentData.childUserId, amount, isParent: false },
+        ])
 
         // set payment schedule accroding parent settings
         await setPaymentSchedulingDate({ ...parentPaymentData, ...userData });
