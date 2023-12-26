@@ -499,11 +499,12 @@ const NFTGallery = () => {
       {/* @ts-ignore */}      
       {isLoading && collectionType !=="" && <div style={{
         position: 'fixed',
-        height: '100%',
+        height: '68%',
+        // border: "2px solid red",
         display: 'flex',
         textAlign: 'center',
         justifyContent: 'center',
-        top: '0px',
+        // top: '0px',
         right: '0px',
         bottom: '0px',
         zIndex: '9999',
@@ -512,7 +513,10 @@ const NFTGallery = () => {
         alignItems: 'center',
 
       }}>
-        <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em' ,marginTop:"50px"}}>
+        <span className="loading" style={{
+          color: "White", zIndex: "2220px", fontSize: '1.5em',
+          // marginTop: "50px"
+        }}>
           {texts.waitForIt}
         </span>
       </div>}
@@ -567,7 +571,7 @@ const NFTGallery = () => {
       
       
       {
-       !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType =="all" && <>
+        !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType == "all" && searchTerm=="" && <>
           <div className="w-100 d-flex">
             <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap`} style={{}}>
               {setsValue.map((item:any,index:number) => {

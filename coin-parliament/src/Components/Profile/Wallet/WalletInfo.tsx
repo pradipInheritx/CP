@@ -35,7 +35,7 @@ const I = styled.i`
 position: absolute;
   font-weight: 300;
   top:-27px;
-  left:180px;
+  left:${window.screen.width >767 ? "375px":"70px"};
   color: #6352e8;
 //   width: 16px;
 //   height: 16px;
@@ -53,9 +53,21 @@ position: absolute;
   text-align: center;
 `;
 
+const Icon2 = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+position: absolute;
+  font-weight: 300;
+  top:-27px;
+  left:290px;
+  color: #6352e8;
+  text-align: center;
+`;
+
 function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
+    const [savePaxAddress, setSavePaxAddress] = useState(false)
     const [savePaymentMethod, setSavePaymentMethod] = useState(false);
     const [timeType, setTimeType] = useState<string>('time');
     const [limitType, setLimitType] = useState<string>("");
@@ -64,12 +76,19 @@ function WalletInfo() {
         coin: "",
         address: "",
     });
+    const [paxDetails, setPaxWalletDetails] = useState({
+        coin: "BNB",
+        address: "",
+    });
+
+    console.log(paxDetails,"paxDetails")
 
     const [walletDetailsObj, setWalletDetailsObj] = useState([{
         coin: "",
         address: "",
     }]);
     const [tooltipShow, setTooltipShow] = React.useState(false);
+    const [tooltipShowPax, setTooltipShowPax] = React.useState(false);
     const [tooltipShow2, setTooltipShow2] = React.useState(false);
     const [addType, setAddType] = React.useState("");
     const [validationErrors, setValidationErrors] = useState([]);
@@ -79,6 +98,11 @@ function WalletInfo() {
     const [mfaLogin, setMfaLogin] = useState(false)  
 
     const [errorValue, setErrorValue] = useState({
+        coinError: "",
+        walletError: ""
+    })
+
+    const [PaxErrorValue, setPaxErrorValue] = useState({
         coinError: "",
         walletError: ""
     })
@@ -93,17 +117,24 @@ function WalletInfo() {
         // setWalletDetailsObj({
         //     coin: userInfo?.wellDAddress?.coin || '',
         //     walletAddress: userInfo?.wellDAddress?.address || '',
-        // });
-        // @ts-ignore
-        if (Array.isArray(userInfo?.wellDAddress) == true) {            
+        // });        
+        if (Array.isArray(userInfo?.wellDAddress) == true) {                        
             // @ts-ignore
             setWalletDetailsObj(userInfo?.wellDAddress || []);
         }
+        else {            
+            // @ts-ignore
+            setWalletDetailsObj([userInfo?.wellDAddress] || []);            
+        }        
+        if (typeof userInfo?.paxAddress === 'object') {            
+            // @ts-ignore
+            setPaxWalletDetails(userInfo?.paxAddress || {});
+        }
         else {
             // @ts-ignore
-            setWalletDetailsObj([userInfo?.wellDAddress] || []);
-            
+            setPaxWalletDetails({});
         }
+
         console.log(userInfo?.wellDAddress,"userInfo?.wellDAddress")
         setSelectRadio(userInfo?.referalReceiveType?.name || '');
         setDefaultValue();
@@ -114,6 +145,7 @@ function WalletInfo() {
     const [amountError, setAmountError] = useState("")
     let navigate = useNavigate();
     const [coinList, setCoinsList] = useState([])
+    const [coinListPax, setCoinsListPax] = useState([])
     const [selectRadio, setSelectRadio] = useState<string>('');
     const [regexList, setRegexList] = useState({
         bitcoin: "/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/",
@@ -136,19 +168,30 @@ function WalletInfo() {
                     userInfo?.wellDAddress && !userInfo?.wellDAddress.some((obj1:any) => obj1.coin == obj2.name)
                 );                                
                 setCoinsList(uniqueNamesArray2);
+                setCoinsListPax(allList)
             }).catch((error) => {
                 console.log(error, "error");
             });
     }, [userInfo?.wellDAddress])
+    
 
     const handleChangeValue = (e: any, type: string) => {
         let name = e.target.name;
         let value = e.target.value
-        setWalletDetails({ ...walletDetails, [name]: value })
-        setErrorValue({
-            coinError: "",
-            walletError: ""
-        })
+        if (type == "paxDetails") {            
+            setPaxWalletDetails({ ...paxDetails, [name]: value })
+            setPaxErrorValue({
+                coinError: "",
+                walletError: ""
+            })
+        }
+        else {            
+            setWalletDetails({ ...walletDetails, [name]: value })
+            setErrorValue({
+                coinError: "",
+                walletError: ""
+            })
+        }
     }
 
     const updateAddress = async () => {
@@ -159,7 +202,7 @@ function WalletInfo() {
         }
         else if (walletDetails.address) {
             setSaveAddress(true);
-            const validate = await validateAddress(walletDetails.address, walletDetails.coin)
+            const validate = await validateAddress(walletDetails.address, walletDetails.coin,"forWallet")
             if (validate) {
                 setSaveAddress(false);
             } else {
@@ -169,23 +212,61 @@ function WalletInfo() {
         }
     }
 
-    const validateAddress = async (inputAddress: string, type: string) => {
+    const updatePaxAddress = async () => {
+        if (!paxDetails.coin) {
+            setPaxErrorValue({ ...PaxErrorValue, coinError: "Please select coin" })
+        } else if (!paxDetails.address) {
+            setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Pax Address" })
+        }
+        else if (paxDetails.address) {
+            setSavePaxAddress(true);
+            const validate = await validateAddress(paxDetails.address, paxDetails.coin,"forPax")
+            if (validate) {
+                setSavePaxAddress(false);
+            } else {
+                setPaxErrorValue({ ...PaxErrorValue, walletError: "Please Enter Valid Pax Address " })
+                setSavePaxAddress(false);
+            }
+        }
+    }
+
+    console.log(PaxErrorValue,"PaxErrorValue")
+
+    const validateAddress = async (inputAddress: string, type: string,checktype:string) => {
         return axios.get(
             `https://api.blockcypher.com/v1/${type.toLowerCase()}/main/addrs/${inputAddress}`
-        ).then(async (response) => {
+        ).then(async (response) => {            
             const { error } = response.data;
-            setWalletDetails({ coin: "", address : ""})
-            if (auth?.currentUser) {
-                const allwalletData = [...walletDetailsObj, {
-                    address: inputAddress,
-                    coin: type,
-                }]
-                const userRef = doc(db, "users", auth?.currentUser?.uid);
-                await setDoc(userRef, {
-                    wellDAddress: allwalletData                    
-                }, { merge: true });
+            if (checktype == "forWallet") {                
+                setWalletDetails({ coin: "", address : ""})
+                if (auth?.currentUser) {
+                    const allwalletData = [...walletDetailsObj, {
+                        address: inputAddress,
+                        coin: type,
+                    }]
+                    const userRef = doc(db, "users", auth?.currentUser?.uid);
+                    await setDoc(userRef, {
+                        wellDAddress: allwalletData                    
+                    }, { merge: true });
+                }
+                showToast("Wallet Adderss Add Successfully", ToastType.SUCCESS);
             }
-            showToast("Wallet Adderss Add Successfully", ToastType.SUCCESS);
+            
+            // Cehck pax value
+
+            if (checktype == "forPax") {
+                if (auth?.currentUser) {
+                    const allwalletData = {
+                        address: inputAddress,
+                        coin: type,
+                    }
+                    const userRef = doc(db, "users", auth?.currentUser?.uid);
+                    await setDoc(userRef, {
+                        paxAddress: allwalletData
+                    }, { merge: true });
+                }
+                showToast("PAX Adderss Add Successfully", ToastType.SUCCESS);
+            }
             if (error) {
                 return false;                
             } else {
@@ -392,6 +473,9 @@ function WalletInfo() {
         if (addType == "ADDADDERS") {
             updateAddress()
         }                      
+        if (addType == "PAXADDADDERS") {
+            updatePaxAddress()
+        }                      
     }
 
     // const AddWalletFunction = () => {
@@ -403,10 +487,125 @@ function WalletInfo() {
     return (
         <>
             <div className="mt-4"            
-            >                                             
+            >       
+                {/* PAX Wallet dropdown */}
+                
+                {userInfo?.isUserUpgraded && <SelectTextfield
+                    label={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}
+                    name={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}                
+                >                    
+                    <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100`}  >
+                        {/* <select
+                            name="coin"
+                            id="coin"
+
+                            style={{
+                                width: "45%",
+                                padding: "11px 0px 11px 20px",
+                                borderRadius: "5px"
+                            }}
+                            value={paxDetails?.coin || ""}
+                            onChange={(e) => {
+                                handleChangeValue(e, "paxDetails")
+                            }}
+                        >
+                            <option value="">Choose coin</option>
+                            {coinListPax.map((item: any, index: number) => {
+                                return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
+                             })}
+                        </select> */}
+
+                        {
+                            tooltipShowPax &&
+                            <div
+                                style={{
+                                    display: "relative"
+                                }}
+                            >
+                                <div className="newtooltip"
+                                    style={{
+                                        // right: "0%",
+                                        width: `${window.screen.width > 767 ? "50%" : "78%"}`,
+                                        marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+                                        marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
+                                    }}
+                                >
+                                    {/* <p>Your CMP count</p> */}
+                                        <p className="mt-1 text-end lh-base">Pax rewards will be sent automatically to this address every time you achieve the 100 CMP</p>
+
+                                </div>
+                            </div>
+                        }
+                        <div className=''>
+                            <Icon2 className='bi bi-info-circle'
+                                onMouseDown={(e) => {
+                                    setTooltipShowPax(false)
+                                }}
+                                onMouseUp={(e) => {
+                                    setTooltipShowPax(true)
+                                }}
+                                onMouseEnter={() => setTooltipShowPax(true)}
+                                onMouseLeave={() => setTooltipShowPax(false)}
+                            ></Icon2>
+                        </div>
+                        <input
+
+                            style={{
+                                width: "45%",
+                                padding: "11px 0px 11px 20px",
+                                borderRadius: "5px"
+
+                            }}
+                            disabled
+                            name="coin"
+                            id="coin"                            
+                            value={"BNB"}                            
+                        />
+
+                        <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
+                        <input
+
+                            style={{
+                                width: "45%",
+                                padding: "10px 0px 10px 20px",
+                                borderRadius: "5px"
+                            }}
+                            name="address"
+                            type="address"
+                            placeholder="Enter address"
+                            value={paxDetails.address || ""}
+                            onChange={(e) => {
+                                handleChangeValue(e, "paxDetails")
+                            }}
+                        />
+                        <RemoveButton type='button'
+                            disabled={!paxDetails?.address || savePaxAddress}
+                            style={{
+                                marginLeft: "10px",
+                                borderRadius: "5px",
+                                fontSize: "12px",
+                            }}
+                            onClick={() => {
+                                // updateAddress()
+                                setAddType("PAXADDADDERS")
+                                handleModleShow()
+
+                            }}>
+                            {savePaxAddress ? <span className="loading">ADD..</span> : 'ADD'}
+                        </RemoveButton>
+                    </div>
+
+                    {PaxErrorValue?.coinError && <Errorsapn>{PaxErrorValue?.coinError}</Errorsapn>}
+                    {PaxErrorValue?.walletError && <Errorsapn>{PaxErrorValue?.walletError}</Errorsapn>}
+
+                </SelectTextfield>}
+
+
+                {/* For Wallet dropdown */}
+
                 {walletDetailsObj.length > 0 && <SelectTextfield
-                    label={`${("Add your wallet address").toLocaleUpperCase()}`}
-                    name="Add your wallet address"
+                    label={`${("ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS ").toLocaleUpperCase()}`}
+                    name="ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS "
 
                 >
                     {
@@ -492,10 +691,10 @@ function WalletInfo() {
                     </>
                 })}
                 </SelectTextfield>}
-                                                
+                
                 <SelectTextfield
-                    label={`${walletDetailsObj.length < 1 ? ("Add your wallet address"):""}`}
-                    name={`${walletDetailsObj.length < 1 &&  "Add your wallet address"}`}
+                    label={`${walletDetailsObj.length < 1 ? ("ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"):""}`}
+                    name={`${walletDetailsObj.length < 1 &&  "ADD YOUR ADDRESSES TO RECEIVE THE REFERRAL PAYMENTS"}`}
                 
                 >      
                     
@@ -580,7 +779,7 @@ function WalletInfo() {
                             {saveAddress ? <span className="loading">+</span> : '+'}
                         </RemoveButton>
                     </div>
-
+                    {errorValue?.coinError && <Errorsapn>{errorValue?.coinError}</Errorsapn>}
                     {errorValue?.walletError && <Errorsapn>{errorValue?.walletError}</Errorsapn>}
 
                     </SelectTextfield>
@@ -960,7 +1159,8 @@ function WalletInfo() {
                         </div>
                     </div>
                 </SelectTextfield>
-                <div className="d-flex justify-content-center">
+                {console.log(userInfo?.referalReceiveType?.name !== selectRadio,"!== selectRadio")}
+                {(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT" )? <div className="d-flex justify-content-center">
                     <div className="d-flex justify-content-center" style={{
                         width: `${window.screen.width > 767 ? "34%" : ""}`,
                         margin: "0px 0px 15px 0px",
@@ -974,10 +1174,10 @@ function WalletInfo() {
                                 handleModleShow()
                             }}
                         >
-                            {savePaymentMethod ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
+                            {savePaymentMethod  ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
                         </Buttons.Primary>
                     </div>
-                </div>
+                </div>:null}
             </div>
             <div>
                 <Modal

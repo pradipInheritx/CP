@@ -218,10 +218,10 @@ const UserCard = ({
         </ElementsAvatarAImage1>
         <FlexCol>
           <UsernameUnique className="pb-1">{leader.displayName}</UsernameUnique>
-          <Group4092>
+          {leader?.status && <Group4092>
             <Minister>{translate(leader?.status || "")}</Minister>
             {/* <Minister>{translate(leader?.status?.name || "")}</Minister> */}
-          </Group4092>
+          </Group4092>}
           <Address>
             <span className='mx-1'>
               {leader.subscribers} {translate("Followers")}

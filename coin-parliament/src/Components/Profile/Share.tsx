@@ -25,7 +25,8 @@ import VBG from "assets/images/VBG.png"
 import VBGM from "assets/images/VBGM.png"
 
 const PoolBox = styled.div`
-  overFlow-x:hidden;
+  // overFlow-x:hidden;
+  overFlow:hidden;
   min-height: 76px;
   
   // background-color: #6352e8;

@@ -1,4 +1,5 @@
 import { VoteContextType } from "Contexts/VoteProvider";
+import axios from "axios";
 import { UserProps } from "common/models/User";
 import { VoteResultProps } from "common/models/Vote";
 import { type } from "os";
@@ -109,6 +110,17 @@ export const divideArray1 = (arr: any, partSize: any) => {
 export const getPaginationData = (data: any[], pageIndex = 0, pageSize = 5) => {
     // page index start from 0
     return data.slice(pageSize * pageIndex, pageSize * (pageIndex + 1))
+}
+
+export const afterpaxDistributionToUser = (pax:number) => {
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/updateAndGetPaxDistribution", {
+        data:pax
+    }).then((res) => {
+        console.log(res.data,"afterpaxDistributionToUser")
+    }).catch((err) => {
+        console.log(err,"afterpaxDistributionToUser")        
+    })
+    
 }
 
 export const removeVote = (
