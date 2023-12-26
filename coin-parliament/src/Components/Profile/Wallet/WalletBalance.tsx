@@ -9,18 +9,18 @@ const WalletBalance = () => {
     })
     const { userInfo, user } = useContext(UserContext);
     useEffect(() => {
-        getPendingAmount()
+        // getPendingAmount()
     }, [])
 
-    const getPendingAmount = () => {
-        axios.get(`/payment/getInstantReferalAmount/${user?.uid}`)
-            .then(async (response) => {
-                setPendingAmount(response.data.data)                
-            })
-            .catch((error) => {
-                console.log(error,"error")
-            })
-    }     
+    // const getPendingAmount = () => {
+    //     axios.get(`/payment/getInstantReferalAmount/${user?.uid}`)
+    //         .then(async (response) => {
+    //             setPendingAmount(response.data.data)                
+    //         })
+    //         .catch((error) => {
+    //             console.log(error,"error")
+    //         })
+    // }     
 
   return (
       <div className='d-flex justify-content-center align-items-center'            
