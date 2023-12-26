@@ -33,9 +33,9 @@ export enum PaxTransactionType {
 }
 
 
-export const addPaxTransactionWithPendingStatus = async (paxTransaction: any) => {
+// export const addPaxTransactionWithPendingStatus = async (paxTransaction: any) => {
 
-};
+// };
 
 
 export enum PaxTransactionStatus {
