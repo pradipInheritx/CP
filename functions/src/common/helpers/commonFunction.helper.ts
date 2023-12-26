@@ -59,3 +59,10 @@ export async function verifyRefreshToken(refresh_token: string) {
     return false;
   }
 }
+export const errorLogging = async (
+  funcName: string,
+  type: string,
+  error: any
+) => {
+  console.info(funcName, type, error);
+};

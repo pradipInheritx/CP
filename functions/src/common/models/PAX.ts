@@ -1,5 +1,6 @@
 import { UserProps } from "./User";
 import { firestore } from "firebase-admin";
+import { errorLogging } from "../helpers/commonFunction.helper"
 
 export const shouldHaveTransaction: (
   before: UserProps,
@@ -94,3 +95,32 @@ export type PaxTransaction = {
   address?: string;
 };
 
+export const getPendingPaxTransaction = async () => {
+  try {
+    const getPax = (await firestore().collection("paxTransaction").where("status", "==", "PENDING").get()).docs.map((transaction: any) => transaction.data());
+    console.log("getPax : ", getPax);
+    if (!getPax) {
+      return errorLogging("getPendingPaxTransaction", "Error", "No pending transaction available")
+    }
+    return {
+      status: true,
+      message: "Pending transaction successfully",
+      result: getPax
+    }
+  } catch (error) {
+    return errorLogging("getPendingPaxTransaction", "Error", error)
+  }
+}
+export const checkUsersWellDAddress = async (userIds: any) => {
+  try {
+    const getUserDetails = [];
+    for (let index = 0; index < userIds.length; index++) {
+      const user: any = (await firestore().collection("users").doc(userIds[index]).get()).data();
+      user?.paxAddress.address ? getUserDetails.push(user) : "";
+    }
+    console.log("getUserDetails : ", getUserDetails);
+    return getUserDetails;
+  } catch (error) {
+    return errorLogging("checkUsersWellDAddress", "Error", error)
+  }
+}
