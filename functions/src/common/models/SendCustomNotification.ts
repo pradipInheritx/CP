@@ -546,7 +546,7 @@ export const sendNotificationForMintAddress = async (userId: string) => {
             Urgency: "high",
           },
           fcmOptions: {
-            link: `${env.BASE_SITE_URL}/profile`, // TODO: put link for deep linking
+            link: `${env.BASE_SITE_URL}/profile/wallet`, // TODO: put link for deep linking
           },
         },
       };
@@ -573,6 +573,54 @@ export const sendNotificationForMintAddress = async (userId: string) => {
   } catch (error) {
     console.log("sendNotificationForMintAddress Error : ", error);
     return errorLogging("sendNotificationForMintAddress", "Error", error)
+  }
+}
+export const sendRefferalNotification = async (userData: any) => {
+  try {
+    console.log("-----Start Refferal Notification -------");
+    console.log("userData: ", userData);
+    if (!userData[0].id && !userData[1].id) {
+      return errorLogging("sendRefferalNotification", "Error", "Parent Id or Child Id must be nedded");
+    }
+
+    for (let index = 0; index < userData.length; index++) {
+      const user = (await firestore().collection('users').doc(userData[index].id).get()).data()
+      if (!user) {
+        errorLogging("sendRefferalNotification", "Error", "User not found");
+        break;
+      }
+
+      const title = userData[index].isParent ? `Earn some amount` : `Paid some amount`;
+      const body = userData[index].isParent ? `you earn ${userData[index].amount} amount` : `you paid ${userData[index].amount} amount`;
+      const message: messaging.Message = {
+        token: user.token,
+        notification: {
+          title,
+          body
+        },
+        webpush: {
+          headers: {
+            Urgency: "high",
+          },
+          fcmOptions: {
+            link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
+          },
+        },
+      };
+
+      await sendNotification({
+        token: user.token,
+        message,
+        title,
+        body,
+        id: user.uid,
+      });
+    }
+
+    console.log("-----End Refferal Notification -------");
+  } catch (error) {
+    console.log("sendRefferalNotification Error : ", error)
+    errorLogging("sendRefferalNotification", "Error", error);
   }
 }
 // Error Function
