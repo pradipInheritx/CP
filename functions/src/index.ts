@@ -15,19 +15,13 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-// import {generateAuthTokens} from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
-// import { getPrice } from "./common/models/Rate";
-// import {getPrice, getRateRemote} from "./common/models/Rate";
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
   setLeaders,
 } from "./common/models/Calculation";
-// import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
-// import {middleware} from "../middleware/authentication";
 import {
-  // calculateOffset,
   updateVotesTotal,
   updateVotesTotalForSingleCoin,
   voteConverter,
@@ -36,7 +30,6 @@ import {
   getResultAfterVote,
 } from "./common/models/Vote";
 import {
-  // fetchCoins,
   getAllCoins,
   getAllPairs,
   Leader,
@@ -55,15 +48,7 @@ import {
 import { JWT } from "google-auth-library";
 import {
   addCpmTransaction,
-  checkPendingTransactions,
-  CpmTransaction,
-  createPaxTransaction,
-  onEnteringAddress,
-  PaxData,
-  PaxTransaction,
-  shouldHaveTransaction,
-  shouldUpdateTransactions,
-  updateProcessing,
+  shouldHaveTransaction
 } from "./common/models/PAX";
 import {
   claimReward,
@@ -669,39 +654,6 @@ exports.onUpdateUser = functions.firestore
     await addCpmTransaction(snapshot.after.id, amount);
   });
 
-exports.onEnteringAddress = functions.firestore
-  .document("users/{id}")
-  .onUpdate(async (snapshot) => {
-    const before = snapshot.before.data() as UserProps;
-    const after = snapshot.after.data() as UserProps;
-    const should = await shouldUpdateTransactions(before, after);
-    if (!should) {
-      return;
-    }
-    await onEnteringAddress(snapshot);
-  });
-
-exports.onCreateCpmTransaction = functions.firestore
-  .document("cpm_transactions/{id}")
-  .onCreate(async (snapshot) => {
-    const transaction = snapshot.data() as CpmTransaction;
-
-    await admin
-      .firestore()
-      .collection("settings")
-      .doc("paxData")
-      .set(
-        {
-          blocksGiven: admin.firestore.FieldValue.increment(transaction.blocks),
-        } as unknown as PaxData,
-        {
-          merge: true,
-        }
-      );
-
-    await createPaxTransaction(transaction);
-  });
-
 exports.onVote = functions.firestore
   .document("votes/{id}")
   .onCreate(async (snapshot) => {
@@ -755,16 +707,6 @@ exports.updateLeadersCron = functions.pubsub
       console.log(e);
     }
   });
-
-// exports.paymentCallbackHistorySettlement = functions.pubsub
-//   .schedule('*/10 * * * *')
-//   .onRun(async () => {
-//     try {
-//       await settlePendingTransactionFunction();
-//     } catch (error) {
-//       console.log("Error In Payment Settlement", error);
-//     }
-//   });
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
@@ -921,50 +863,15 @@ exports.cardHolderListing = functions.https.onCall(async (data) => {
   return userList;
 });
 
-exports.checkPendingTransactions = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    try {
-      await checkPendingTransactions();
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-exports.onCreatePaxTransaction = functions.firestore
-  .document("pax_transactions/{id}")
-  .onCreate(async (snapshot) => {
-    const transaction = snapshot.data() as PaxTransaction;
-    const user = await admin
-      .firestore()
-      .collection("users")
-      .withConverter(userConverter)
-      .doc(transaction.user)
-      .get();
-
-    try {
-      const batch = admin.firestore().batch();
-      await updateProcessing(batch, snapshot, user.data());
-      await batch.commit();
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-// exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-//   [0, 60].forEach((i) => {
-//     setTimeout(async () => await fetchCoins(), i * 1000);
-//   });
-// });
 
 exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 2 minutes")
+  .schedule("every 10 minutes")
   .onRun(async () => {
     await getUpdatedDataFromWebsocket();
   });
 
 exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 5 minutes")
+  .schedule("every 15 minutes")
   .onRun(async () => {
     await getAllUpdated24HourRecords();
     await removeTheBefore24HoursData();
@@ -1221,4 +1128,24 @@ exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
 exports.sendNotificationForMintAddress = functions.https.onCall(async (data) => {
   const user = await sendNotificationForMintAddress(data.userId);
   return user;
+});
+
+exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data) => {
+  try {
+    const { userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress } = data;
+
+    console.info("Data", userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress);
+
+    return {
+      status: true,
+      message: "Pending PAX stored successfully",
+      result: {},
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error while store Pending PAX.",
+      result: error,
+    };
+  }
 });
