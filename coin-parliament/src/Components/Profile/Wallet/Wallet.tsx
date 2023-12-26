@@ -55,17 +55,6 @@ const Wallet = () => {
         onSelect={() => setIndex(1)}
         tabs={[
           {
-            eventKey: "Wallet",
-            title: "Wallet",
-            pane: (         
-              <>
-                {userInfo?.mfa &&
-                  <WalletInfo/>
-              }
-              </>
-            ),
-          },
-          {
             eventKey: "Balance",
             title: "Balance",
             pane: (
@@ -75,6 +64,18 @@ const Wallet = () => {
               // 
             ),
           },
+          {
+            eventKey: "Wallet",
+            title: "setting",
+            pane: (         
+              <>
+                {userInfo?.mfa &&
+                  <WalletInfo/>
+              }
+              </>
+            ),
+          },
+          
         ]}
       />  }    
 
