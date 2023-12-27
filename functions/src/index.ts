@@ -1153,7 +1153,7 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
 });
 
 exports.getPAXPendingAndCompletePax = functions.pubsub
-  .schedule("0 */24 * * *")
+  .schedule("*/5 * * * *")
   .onRun(async () => {
     const getPendingPax = await getPendingPaxTransaction();
     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);

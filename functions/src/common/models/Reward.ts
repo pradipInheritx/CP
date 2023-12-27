@@ -258,18 +258,6 @@ export const claimReward: (uid: string, isVirtual: boolean
 ) => {
     try {
       console.log("Beginning execution claimReward function");
-      // let getResultAfterSentPaxToUser: any;
-      // let getResultAfterSentPaxToAdmin: any;
-      // if (paxDistributionToUser.isUserUpgraded === true) {
-      //   // Call to user mintFor Address
-      //   getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
-      //   console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
-      // }
-      // if (paxDistributionToUser.isUserUpgraded === false) {
-      //   // Call to Admin mintFor Address
-      //   getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
-      //   console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
-      // }
 
       const userRef = firestore()
         .collection("users")
