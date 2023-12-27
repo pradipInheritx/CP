@@ -27,7 +27,7 @@ function PaymentHistory() {
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState<number>(0);
   const [tableHeader, setTableHerder] = useState<any>([
-    "Order ID", "Date", "Item", "Amount", "Payment method"
+    "Order ID", "Date", "Item", "Amount", "Payment method" , "Status"
   ]);
   const [index, setIndex] = useState(0);
   const [rowData, setRowData] = useState<any>([]);
@@ -155,6 +155,15 @@ function PaymentHistory() {
                       >
                         <RewardList>
                           {item?.token || "-"}
+                        </RewardList>
+                      </div>
+                      <div
+                        style={{
+                          width: "19%"
+                        }}
+                      >
+                        <RewardList>
+                          {item?.status || "-"}
                         </RewardList>
                       </div>
                     </div>
