@@ -49,7 +49,9 @@ import { JWT } from "google-auth-library";
 import {
   addCpmTransaction,
   shouldHaveTransaction,
-  addPaxTransactionWithPendingStatus
+  addPaxTransactionWithPendingStatus,
+  getPendingPaxTransaction,
+  checkUsersWellDAddress
 } from "./common/models/PAX";
 import {
   claimReward,
@@ -1149,3 +1151,19 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
     };
   }
 });
+
+exports.getPAXPendingAndCompletePax = functions.pubsub
+  .schedule("0 */24 * * *")
+  .onRun(async () => {
+    const getPendingPax = await getPendingPaxTransaction();
+    const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
+    console.log("getUserIds", getUserIds);
+    const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
+    // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
+    // call payment method here
+    console.log("getUsersWellDAddress : ", getUsersWellDAddress);
+    return null
+  });
+
+
+
