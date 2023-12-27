@@ -479,7 +479,11 @@ const getLeaders = async () => {
 
 const getTotalCountOfUserType = async () => {
 
-  const leaders = await getLeaders();
+  const getLeadersResponse = await getLeaders();
+
+  let leaders = getLeadersResponse
+    .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
+    .filter((obj: any) => obj.total > 19);
 
   const userTypes = await firestore()
     .collection("settings")
