@@ -547,7 +547,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let getLeadersResponse: any = await getLeaders();
     let leaders = getLeadersResponse
       .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
-      .filter((obj: any) => obj.total > 1);
+      .filter((obj: any) => obj.total > 19); // Filter Only Those Users Which Has More Than 19 Votes
 
     console.info("Length With Leaders", leaders, leaders.length);
     const { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman } = await getTotalCountOfUserType();
