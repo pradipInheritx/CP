@@ -50,7 +50,7 @@ const Wallet = () => {
   return (    
     <>      
       {userInfo?.mfa == true && <Tabs
-        defaultActiveKey={"Wallet"}
+        defaultActiveKey={"Balance"}
         id="Wallet"
         onSelect={() => setIndex(1)}
         tabs={[

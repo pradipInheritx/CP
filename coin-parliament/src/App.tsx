@@ -888,7 +888,7 @@ function App() {
     };
     ws.onclose = (event: any) => {
       setSocketConnect(false);
-      if (!login) window.location.reload()
+      // if (!login) window.location.reload()
       console.log('WebSocket connection closed', event);
       if (event.code !== 1000) {
         console.log('WebSocket Attempting to reconnect in 5 seconds...');
