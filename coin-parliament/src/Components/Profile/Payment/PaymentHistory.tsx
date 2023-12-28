@@ -61,6 +61,16 @@ function PaymentHistory() {
       })
   }
 
+  const getCenterText = (type?: any) => {
+    if (type == "EXTRAVOTES") {
+      return "EXT-"
+    } else if (type == "UPGRADE") {
+      return "UPD-"
+    } else {
+      return ""
+    }      
+  }
+
   return (
     <>
       <Tabs
@@ -117,7 +127,8 @@ function PaymentHistory() {
                         }}
                       >
                         <RewardList>
-                          {item?.paymentDetails?.transaction_id || "NA"}
+                          {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4):"NA"}
+                          {/* {item?.paymentDetails?.transaction_id || "NA"} */}
                         </RewardList>
                       </div>
                       <div

@@ -1193,13 +1193,13 @@ function App() {
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
             userId: lessTimeVote?.userId,
-            paxDistributionToUser: {
-              userId: lessTimeVote?.userId,
-              currentPaxValue: Number(paxDistribution),
-              isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
-              mintForUserAddress: userInfo?.paxAddress?.address || "",
-              eligibleForMint: userInfo?.paxAddress?.address ? true : false
-            }
+            // paxDistributionToUser: {
+            //   userId: lessTimeVote?.userId,
+            //   currentPaxValue: Number(paxDistribution),
+            //   isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+            //   mintForUserAddress: userInfo?.paxAddress?.address || "",
+            //   eligibleForMint: userInfo?.paxAddress?.address ? true : false
+            // }
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {

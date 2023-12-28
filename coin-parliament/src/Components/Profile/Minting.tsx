@@ -302,46 +302,46 @@ const Minting = ({
         showToast(error.message, ToastType.ERROR);
       });
 
-      if (!userInfo?.paxAddress?.address) {
+      // if (!userInfo?.paxAddress?.address) {
 
-        sendNotificationForMintAddress({
-          userId:userInfo?.uid
-        }).then((res) => {
-          console.log(res?.data, "notification data")
-          // @ts-ignore          
-        }).catch((err) => {
-          console.log(err,"notification err")
-         });
+      //   sendNotificationForMintAddress({
+      //     userId:userInfo?.uid
+      //   }).then((res) => {
+      //     console.log(res?.data, "notification data")
+      //     // @ts-ignore          
+      //   }).catch((err) => {
+      //     console.log(err,"notification err")
+      //    });
         
-        addPaxTransactionWithPendingStatus({          
-            userId: userInfo?.uid,
-            currentPaxValue: Number(paxDistribution),
-            isUserUpgraded:false,
-            mintForUserAddress:"",
-            eligibleForMint:false          
-        }).then((res) => {
-          console.log(res?.data, "resdata")
-          // @ts-ignore
-          if (res?.data?.getResultAfterSentPaxToUser?.status) {
-            afterpaxDistributionToUser(paxDistribution)
-          }
-        }).catch(() => { });
-      }
-      if (userInfo?.paxAddress?.address) {        
-        paxDistributionOnClaimReward({          
-            userId: userInfo?.uid,
-            currentPaxValue: Number(paxDistribution),
-            isUserUpgraded: userInfo?.isUserUpgraded,
-            mintForUserAddress: userInfo?.paxAddress?.address,
-          eligibleForMint:true,
-        }).then((res) => {
-          console.log(res?.data, "resdata")
-          // @ts-ignore
-          if (res?.data?.getResultAfterSentPaxToUser?.status) {          
-            afterpaxDistributionToUser(paxDistribution)
-          }
-        }).catch(() => { });
-      }
+      //   addPaxTransactionWithPendingStatus({          
+      //       userId: userInfo?.uid,
+      //       currentPaxValue: Number(paxDistribution),
+      //       isUserUpgraded:false,
+      //       mintForUserAddress:"",
+      //       eligibleForMint:false          
+      //   }).then((res) => {
+      //     console.log(res?.data, "resdata")
+      //     // @ts-ignore
+      //     if (res?.data?.getResultAfterSentPaxToUser?.status) {
+      //       afterpaxDistributionToUser(paxDistribution)
+      //     }
+      //   }).catch(() => { });
+      // }
+      // if (userInfo?.paxAddress?.address) {        
+      //   paxDistributionOnClaimReward({          
+      //       userId: userInfo?.uid,
+      //       currentPaxValue: Number(paxDistribution),
+      //       isUserUpgraded: userInfo?.isUserUpgraded,
+      //       mintForUserAddress: userInfo?.paxAddress?.address,
+      //     eligibleForMint:true,
+      //   }).then((res) => {
+      //     console.log(res?.data, "resdata")
+      //     // @ts-ignore
+      //     if (res?.data?.getResultAfterSentPaxToUser?.status) {          
+      //       afterpaxDistributionToUser(paxDistribution)
+      //     }
+      //   }).catch(() => { });
+      // }
 
     } else {
       // Swal.fire({
