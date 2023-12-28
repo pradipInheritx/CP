@@ -30,6 +30,7 @@ export type Leader = {
   leaders?: number;
   status?: string;
   total?: number;
+  isUserUpgraded?: any;
 };
 
 // export const returnValue: (success: boolean, voteRules: VoteRules) => number = (
@@ -459,6 +460,7 @@ const getLeaders = async () => {
         country,
         phone,
         leader,
+        isUserUpgraded,
       } = u.data();
       const { score = 0 } = voteStatistics || {};
       return {
@@ -478,6 +480,7 @@ const getLeaders = async () => {
         pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
         successful: voteStatistics?.successful,
         total: voteStatistics?.total || 0,
+        isUserUpgraded: isUserUpgraded ? isUserUpgraded : null
       } as Leader;
     })
     .sort((a, b) => Number(a.score) - Number(b.score));

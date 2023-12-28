@@ -50,6 +50,7 @@ export type UserProps = {
   wellDAddress?: wellDAddressType;
   referalReceiveType?: referalReceiveType;
   foundationData?: any;
+  isUserUpgraded?: any;
 };
 
 export type wellDAddressType = [];
