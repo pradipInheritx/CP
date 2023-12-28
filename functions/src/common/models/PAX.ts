@@ -115,8 +115,10 @@ export const checkUsersWellDAddress = async (userIds: any) => {
   try {
     const getUserDetails = [];
     for (let index = 0; index < userIds.length; index++) {
-      const user: any = (await firestore().collection("users").doc(userIds[index]).get()).data();
-      user?.paxAddress.address ? getUserDetails.push(user) : "";
+      const getUser: any = (await firestore().collection("users").doc(userIds[index]).get()).data();
+      if (getUser?.paxAddress && getUser?.paxAddress.address) {
+        getUserDetails.push(getUser)
+      }
     }
     console.log("getUserDetails : ", getUserDetails);
     return getUserDetails;
