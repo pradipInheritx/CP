@@ -124,7 +124,6 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             firstRewardCardType: string,
             secondRewardExtraVotes: number,
             thirdRewardDiamonds: number
-
         }[] = []
         await firebase
             .firestore()
@@ -135,7 +134,9 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
                 doc.forEach((cards: any, index: number) => {
                     // winCards.push(cards.data().)
-                    winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
+                    if (cards?.data()?.winData?.firstRewardCardId) {                        
+                        winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
+                    }
 
                 })
             })

@@ -50,21 +50,10 @@ const Wallet = () => {
   return (    
     <>      
       {userInfo?.mfa == true && <Tabs
-        defaultActiveKey={"Wallet"}
+        defaultActiveKey={"Balance"}
         id="Wallet"
         onSelect={() => setIndex(1)}
         tabs={[
-          {
-            eventKey: "Wallet",
-            title: "Wallet",
-            pane: (         
-              <>
-                {userInfo?.mfa &&
-                  <WalletInfo/>
-              }
-              </>
-            ),
-          },
           {
             eventKey: "Balance",
             title: "Balance",
@@ -75,6 +64,18 @@ const Wallet = () => {
               // 
             ),
           },
+          {
+            eventKey: "Wallet",
+            title: "setting",
+            pane: (         
+              <>
+                {userInfo?.mfa &&
+                  <WalletInfo/>
+              }
+              </>
+            ),
+          },
+          
         ]}
       />  }    
 

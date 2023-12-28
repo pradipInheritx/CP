@@ -204,8 +204,8 @@ const UserCard = ({
           className=" d-flex justify-content-center align-items-center"
           style={{            
             borderRadius: "50px",
-            boxShadow: `${leader?.isUserUpgraded && "1px 0px 5px #ffd700"}`,
-            backgroundColor: `${leader?.isUserUpgraded && "#ffd700"}`,
+            boxShadow: `${leader?.isUserUpgraded && "1px 0px 5px #FAE481"}`,
+            backgroundColor: `${leader?.isUserUpgraded && "#FAE481"}`,          
           }}
           onClick={e => {
           if (user) {

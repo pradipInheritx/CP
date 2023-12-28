@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Login.css";
-import { Stack } from "react-bootstrap";
+import { Button, Stack } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import AvatarsModal from "../Profile/AvatarsModal";
@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { texts } from "./texts";
 import AppContext from "Contexts/AppContext";
 import axios from "axios";
+import firebase from "firebase/compat";
 
 
 
@@ -42,6 +43,28 @@ const FirstTimeAvatarSelection = ({ user, setFirstTimeAvatarSelection, setSelect
 useEffect(() => {  
   FoundationValue()  
 }, [])
+  
+  // const usersCollection = async () => {
+  //   console.log("i am clicked")
+  //   const usersCollectionData = await  firebase
+  //     .firestore()
+  //     .collection("users").get();
+            
+  //   usersCollectionData.forEach(async (doc) => {
+  //     const userData = doc.data();
+  //     const foundationData = FoundationArray[Math.trunc(Math.random() * FoundationArray.length)]  
+  //     console.log(userData, "userData", !userData.hasOwnProperty("foundation"))
+  //     if (!userData.hasOwnProperty("foundationData")) {
+  //       await firebase
+  //         .firestore()
+  //         .collection("users").doc(doc.id).update({
+  //           foundationData: foundationData
+  //       });
+  //       console.log(`Added foundation key to user with ID: ${doc.id}`);
+  //     }
+  //   });
+  // } 
+
 
 
   const onSubmitAvatar = async (type: AvatarType) => {

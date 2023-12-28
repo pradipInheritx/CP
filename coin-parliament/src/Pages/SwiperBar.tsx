@@ -8,6 +8,7 @@ export type SliderItems = {
 
 };
 function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | string, slideSize?: number }) {
+  console.log(children,"children")
   var settings = {
     dots: true,
     infinite: false,
@@ -39,7 +40,7 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
         }
       },
       {
-        breakpoint: 480,
+        breakpoint: 450,
         settings: {
           centerMode: true,
           slidesToShow: 1,
@@ -48,17 +49,17 @@ function SwiperBar({ children, slideSize = 5 }: { children: React.ReactNode | st
           infinite: true,
         }
       },
-      {
-        breakpoint: 390,
-        settings: {
-          centerMode: true,
-          slidesToShow: 0.5,
-          slidesToScroll: 1,
-          initialSlide: 1,
-          variableWidth: true,
-          infinite: true,
-        }
-      }
+      // {
+      //   breakpoint: 390,
+      //   settings: {
+      //     centerMode: true,
+      //     slidesToShow: 0.5,
+      //     slidesToScroll: 1,
+      //     initialSlide: 1,
+      //     variableWidth: true,
+      //     infinite: true,
+      //   }
+      // }
     ]
   };
   return (

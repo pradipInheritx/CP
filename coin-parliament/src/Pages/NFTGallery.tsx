@@ -596,8 +596,9 @@ const NFTGallery = () => {
       {(setsCardId != "none" || setsCardName != "none" || cardType != "all") && <>
         {allCardNew?.length > 0 ?
           <SummerCard className="mt-4">
-            {!!cardShow ? equalPart?.map((cardPart: any, ind: number) => {
-              return <div className='w-100 m-auto mb-4' key={ind}>
+            {!!cardShow ? equalPart?.map((cardPart: any, ind: number) => {              
+              return <div className='w-100 m-auto mb-4' key={ind}>    
+              
                 <SwiperBar>
                   {cardPart?.map((item: any, index: number) => {
                     return (

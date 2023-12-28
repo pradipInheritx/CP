@@ -152,7 +152,7 @@ function WalletInfo() {
         ethereum: "/^0x[a-fA-F0-9]{40}$/",
     })
 
-    console.log(selectRadio,"selectRadio")
+    console.log(coinListPax,"coinListPax")
 
     useEffect(() => {
         const getCoinList = firebase
@@ -160,15 +160,37 @@ function WalletInfo() {
             .collection("settings").doc("paymentCoins")
         getCoinList.get()
             .then((snapshot) => {
-                const allList = snapshot.data()?.coins;
+                // const allList = snapshot.data()?.coins;               
+                let allList = [                    
+                    {
+                        "status": "Active",
+                        "symbol": "ETH",
+                        "id": "2",
+                        "name": "Ethereum"
+                    },
+                    {
+                        "id": "3",
+                        "status": "Active",
+                        "name": "Binance",
+                        "symbol": "BNB"
+                    },
+                    {
+                        "symbol": "MATIC",
+                        "status": "Active",
+                        "name": "Polygon",
+                        "id": "4"
+                    },
+                    
+                ]
                 console.log(walletDetailsObj, "walletDetailsObj")
                 
                 const uniqueNamesArray2 = allList.filter((obj2:any) =>
                     // @ts-ignore
-                    userInfo?.wellDAddress && !userInfo?.wellDAddress.some((obj1:any) => obj1.coin == obj2.name)
-                );                                
+                    userInfo?.wellDAddress && !userInfo?.wellDAddress.some((obj1: any) => obj1.coin == obj2.symbol)
+                );       
+                // @ts-ignore
                 setCoinsList(uniqueNamesArray2);
-                setCoinsListPax(allList)
+                // setCoinsListPax(allList)
             }).catch((error) => {
                 console.log(error, "error");
             });
@@ -179,7 +201,13 @@ function WalletInfo() {
         let name = e.target.name;
         let value = e.target.value
         if (type == "paxDetails") {            
-            setPaxWalletDetails({ ...paxDetails, [name]: value })
+            
+            setPaxWalletDetails(
+                {
+                    coin: "BNB",
+                    address: value,
+                }
+            )
             setPaxErrorValue({
                 coinError: "",
                 walletError: ""
@@ -494,7 +522,7 @@ function WalletInfo() {
                     label={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}
                     name={"ADD YOUR ADDRESS TO RECEIVE PAX REWARD"}                
                 >                    
-                    <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100`}  >
+                    <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100 text-uppercase`}  >
                         {/* <select
                             name="coin"
                             id="coin"
@@ -522,7 +550,7 @@ function WalletInfo() {
                                     display: "relative"
                                 }}
                             >
-                                <div className="newtooltip"
+                                    <div className="newtooltip text-uppercase"
                                     style={{
                                         // right: "0%",
                                         width: `${window.screen.width > 767 ? "50%" : "78%"}`,
@@ -549,22 +577,20 @@ function WalletInfo() {
                             ></Icon2>
                         </div>
                         <input
-
                             style={{
                                 width: "45%",
                                 padding: "11px 0px 11px 20px",
                                 borderRadius: "5px"
-
                             }}
                             disabled
                             name="coin"
                             id="coin"                            
-                            value={"BNB"}                            
+                            value={"BNB chain".toLocaleUpperCase()}                            
                         />
 
                         <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
                         <input
-
+                            className='text-uppercase'
                             style={{
                                 width: "45%",
                                 padding: "10px 0px 10px 20px",
@@ -645,8 +671,7 @@ function WalletInfo() {
                 {walletDetailsObj.map((item,index) => {                                            
                     return <>
                     <div className={`${window.screen.width > 350 ? 'd-flex ' : ''} mt-3 w-100`}>
-                            <input
-                                
+                            <input                                
                             name="coin"
                             id="coin"
                             style={{
@@ -655,7 +680,7 @@ function WalletInfo() {
                                 borderRadius: "5px"
                             }}
                                 disabled={true}
-                                value={item?.coin || ""}
+                                value={item?.coin.toLocaleUpperCase() || ""}
                             // onChange={(e) => {
                             //     handleChangeValue(e, "")
                             // }}
@@ -738,14 +763,14 @@ function WalletInfo() {
                                 padding: "11px 0px 11px 20px",
                                 borderRadius: "5px"
                             }}
-                            value={walletDetails?.coin || ""}
+                            value={walletDetails?.coin.toLocaleUpperCase() || ""}
                             onChange={(e) => {
                                 handleChangeValue(e, "")
                             }}
                         >
-                            <option value="">Choose coin</option>
+                            <option value="" className='text-uppercase'>{"Choose chain".toLocaleUpperCase()}</option>
                             {coinList.map((item: any, index: number) => {
-                                return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
+                                return <option className='text-uppercase' key={index} value={item.symbol} id={item.id}>{item.name}</option>
                             })}
                         </select>
                         <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
@@ -758,7 +783,7 @@ function WalletInfo() {
                             }}
                             name="address"
                             type="address"
-                            placeholder="Enter address"
+                            placeholder={"Enter address".toLocaleUpperCase()}
                             value={walletDetails.address || ""}
                             onChange={(e) => {
                                 handleChangeValue(e, "")
@@ -852,7 +877,7 @@ function WalletInfo() {
                                     setSelectRadio('IMMEDIATE');
                                 }}
                             />
-                            <label htmlFor="immediate" >Immediate</label>
+                            <label htmlFor="immediate" >{"Immediate".toLocaleUpperCase()}</label>
 
                         </div>
 
@@ -868,7 +893,7 @@ function WalletInfo() {
                                         setSelectRadio('LIMIT')
                                     }}
                                 />
-                                <label htmlFor="By limit" >By limit</label>
+                                <label htmlFor="By limit" >{"By limit".toLocaleUpperCase()}</label>
 
                             </div>
 
@@ -888,7 +913,7 @@ function WalletInfo() {
                                                 setTimeError("")
                                             }}
                                         />
-                                        <label htmlFor="default-checkbox" style={{ marginRight: "20px" }}> {"Time"} </label>
+                                        <label htmlFor="default-checkbox" style={{ marginRight: "20px" }}> {"Time".toLocaleUpperCase()} </label>
                                     </div>
                                 <div className=" d-flex  align-items-center">
                                         <Form.Check
@@ -901,7 +926,7 @@ function WalletInfo() {
                                                 setTimeError("")                                            
                                             }}
                                         />
-                                        <label htmlFor="default-checkbox" style={{ marginRight: "20px" }}> {"Amount"} </label>
+                                        <label htmlFor="default-checkbox" style={{ marginRight: "20px" }}> {"Amount".toLocaleUpperCase()} </label>
                                     </div>
                                 <div className=" d-flex  align-items-center">
                                         <Form.Check
@@ -914,7 +939,7 @@ function WalletInfo() {
                                                 setTimeError("")
                                             }}
                                         />
-                                        <label htmlFor="default-checkbox" style={{ marginRight: "7px" }} > {"Any of Them"} </label>
+                                        <label htmlFor="default-checkbox" style={{ marginRight: "7px" }} > {"Any of Them".toLocaleUpperCase() } </label>
                                     </div>
                                 </div>
                                 {limitType == "TIME" &&                                                                     
@@ -929,14 +954,14 @@ function WalletInfo() {
                                                     borderRadius: "0px 5px 5px 0px",
                                                 }}
                                                 defaultValue={timeType}
-                                                value={timeValue}
+                                            value={timeValue.toLocaleUpperCase()}
                                                 onChange={e => {
                                                     // setTimeAmount({ ...timeAmount, time: e.target.value })
                                                     setTimeValue(e.target.value)
                                                 }}
                                             >
 
-                                            <option value=''>Select time frame</option>
+                                            <option value=''>{"Select time frame".toLocaleUpperCase()}</option>
                                                 <option value='1 DAY'>1 Day</option>
                                                 <option value='1 WEEK'>1 Week</option>
                                                 <option value='1 MONTH'>1 Month</option>
@@ -956,7 +981,7 @@ function WalletInfo() {
                                     className='mt-2'
                                         maxLength={10}
                                         type="text" name="" id=""
-                                        placeholder="Type amount"
+                                        placeholder={"Type amount".toLocaleUpperCase()}
                                         value={amountValue}
                                         onChange={(e) => {
                                             const re = /^[0-9\b]+$/;
@@ -992,7 +1017,7 @@ function WalletInfo() {
                                             }}
                                         >
 
-                                            <option value=''>Select time frame</option>
+                                            <option  value=''>{"Select time frame".toLocaleUpperCase()}</option>
                                             <option value='1 DAY'>1 DAY</option>
                                             <option value='1 WEEK'>1 WEEK</option>
                                             <option value='1 MONTH'>1 MONTH</option>
@@ -1007,7 +1032,7 @@ function WalletInfo() {
                                             }}
                                             maxLength={10}
                                             type="text" name="" id=""
-                                            placeholder="Type amount"
+                                            placeholder={"Type amount".toLocaleUpperCase()}
                                             value={timeAmount?.amount}
                                             onChange={(e) => {
                                                 const re = /^[0-9\b]+$/;
@@ -1034,7 +1059,7 @@ function WalletInfo() {
 
                             {(selectRadio === 'LIMIT') && userInfo?.referalReceiveType?.name =="LIMIT"  &&
                                 <>
-                                <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
+                                {/* <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
                                     
                                     <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
                                         maxWidth: '200px',
@@ -1050,7 +1075,7 @@ function WalletInfo() {
                                 >
                                         {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'}
                                     </Buttons.Primary>
-                                </div>
+                                </div> */}
                                 </>
                             }
 
@@ -1132,12 +1157,12 @@ function WalletInfo() {
                                         setSelectRadio('ONDEMAND')
                                     }}
                                 />
-                                <label htmlFor="On demand" >On demand</label>
+                                <label htmlFor="On demand" >{"On demand".toLocaleUpperCase()}</label>
 
                             </div>
                             {(selectRadio === 'ONDEMAND') && (userInfo?.referalReceiveType?.name === 'ONDEMAND')&&
                                 <>
-                                <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
+                                {/* <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
                                     
                                     <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
                                         maxWidth: '200px',
@@ -1153,31 +1178,37 @@ function WalletInfo() {
                                 >
                                         {getPendingShow ? <span className=''> Pay me now...</span> : ' Pay me now'}
                                     </Buttons.Primary>
-                                </div>
+                                </div> */}
                                 </>
                             }
                         </div>
                     </div>
                 </SelectTextfield>
                 {console.log(userInfo?.referalReceiveType?.name !== selectRadio,"!== selectRadio")}
-                {(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT" )? <div className="d-flex justify-content-center">
+                <div className="d-flex justify-content-center">
                     <div className="d-flex justify-content-center" style={{
                         width: `${window.screen.width > 767 ? "34%" : ""}`,
                         margin: "0px 0px 15px 0px",
                     }}>
                         <Buttons.Primary
                             disabled={!selectRadio || savePaymentMethod}
-                            type='button' style={{ maxWidth: '200px', }}
+                            // disabled={(userInfo?.referalReceiveType?.name == selectRadio) || !(selectRadio == "LIMIT")}
+                            type='button' style={{
+                                maxWidth: '200px',                            
+                                backgroundColor: `${(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT") ? "" :"gray"}`
+                            }}
                             onClick={() => {
                                 // selectSendType()
-                                setAddType("UPDATESETTING")
-                                handleModleShow()
+                                if ((userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT")) {                                    
+                                    setAddType("UPDATESETTING")
+                                    handleModleShow()
+                                }
                             }}
                         >
                             {savePaymentMethod  ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
                         </Buttons.Primary>
                     </div>
-                </div>:null}
+                </div>
             </div>
             <div>
                 <Modal

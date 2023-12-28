@@ -232,6 +232,14 @@ useEffect(() => {
             setApiCalling(false)
           }
         }
+        else if (e?.detail?.trx =="Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!") {
+          afterPayPopup("success", "",)
+          if (apiCalling) {
+            // @ts-ignore
+            afterPayment(e?.detail)
+            setApiCalling(false)
+          }
+        }
         // @ts-ignore
         else if (e?.detail?.trx?.transactionStatus) {
           console.log(e, "Withstatus")

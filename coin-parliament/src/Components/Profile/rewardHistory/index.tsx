@@ -98,28 +98,25 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null, isFoll
                             <span
                                 style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}
                                 onClick={() => {
-
-                                    // setAlbumOpen(item?.winData?.firstRewardCardCollection);
-                                    {/* @ts-ignore */ }
-
-                                    {/* @ts-ignore */ }
-                                    // navigate(`/singalCard/${item?.winData?.firstRewardCardCollection}/${item?.winData?.firstRewardCardId}`);
-                                    if (isFollower) {
-                                        navigate(`/followerProfile/Album`);
-                                        // @ts-ignore
-                                        setAlbumOpen(item?.winData?.firstRewardCardCollection);
-                                        // @ts-ignore
-                                        localStorage.setItem('filterCollection', JSON.stringify({ name: item?.winData?.firstRewardCardCollection, card: item?.winData?.firstRewardCard }));
-                                    } else {
-                                        navigate(`/profile/Album`);
-                                        // @ts-ignore
-                                        localStorage.setItem('filterCollection', JSON.stringify({ name: item?.winData?.firstRewardCardCollection, card: item?.winData?.firstRewardCard }));
+                                    // @ts-ignore
+                                    if (item?.winData?.firstRewardCardSerialNo) {                                        
+                                        if (isFollower) {
+                                            navigate(`/followerProfile/Album`);
+                                            // @ts-ignore
+                                            setAlbumOpen(item?.winData?.firstRewardCardCollection);
+                                            // @ts-ignore
+                                            localStorage.setItem('filterCollection', JSON.stringify({ name: item?.winData?.firstRewardCardCollection, card: item?.winData?.firstRewardCard }));
+                                        } else {
+                                            navigate(`/profile/Album`);
+                                            // @ts-ignore
+                                            localStorage.setItem('filterCollection', JSON.stringify({ name: item?.winData?.firstRewardCardCollection, card: item?.winData?.firstRewardCard }));
+                                        }
                                     }
                                 }}
                             >
                                 {/* {item?.winData?.firstRewardCard} */}
                                 {/* @ts-ignore */}
-                                CARD ID &nbsp;{item?.winData?.firstRewardCardSerialNo}
+                                CARD ID &nbsp;{item?.winData?.firstRewardCardSerialNo || "NA"}
                             </span>
                         </RewardList>
                     </div>

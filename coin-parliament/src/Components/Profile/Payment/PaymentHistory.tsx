@@ -27,7 +27,7 @@ function PaymentHistory() {
   const [data, setData] = useState([]);
   const [totalData, setTotalData] = useState<number>(0);
   const [tableHeader, setTableHerder] = useState<any>([
-    "Order ID", "Date", "Item", "Amount", "Payment method"
+    "Order ID", "Date", "Item", "Amount", "Payment method" , "Status"
   ]);
   const [index, setIndex] = useState(0);
   const [rowData, setRowData] = useState<any>([]);
@@ -59,6 +59,16 @@ function PaymentHistory() {
       .catch((error) => {
 
       })
+  }
+
+  const getCenterText = (type?: any) => {
+    if (type == "EXTRAVOTES") {
+      return "EXT-"
+    } else if (type == "UPGRADE") {
+      return "UPD-"
+    } else {
+      return ""
+    }      
   }
 
   return (
@@ -117,7 +127,8 @@ function PaymentHistory() {
                         }}
                       >
                         <RewardList>
-                          {item?.paymentDetails?.transaction_id || "NA"}
+                          {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4):"NA"}
+                          {/* {item?.paymentDetails?.transaction_id || "NA"} */}
                         </RewardList>
                       </div>
                       <div
@@ -155,6 +166,15 @@ function PaymentHistory() {
                       >
                         <RewardList>
                           {item?.token || "-"}
+                        </RewardList>
+                      </div>
+                      <div
+                        style={{
+                          width: "19%"
+                        }}
+                      >
+                        <RewardList>
+                          {item?.status || "-"}
                         </RewardList>
                       </div>
                     </div>

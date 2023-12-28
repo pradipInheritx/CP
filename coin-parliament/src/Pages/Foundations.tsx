@@ -122,7 +122,7 @@ const Foundations = () => {
         </p>
       </div>
 
-      {/* <div className='d-flex justify-content-center px-2'>
+      <div className='d-flex justify-content-center px-2'>
         <div
           style={{
             width: `${window.screen.width > 767 ? "500px" : "100%"}`
@@ -196,7 +196,7 @@ const Foundations = () => {
             })}
           </div>
         </div>
-      </div> */}
+      </div>
     </GeneralPage>
   );
 };
