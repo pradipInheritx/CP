@@ -480,7 +480,7 @@ const getLeaders = async () => {
         pct: (voteStatistics?.successful || 0) / (voteStatistics?.total || 1),
         successful: voteStatistics?.successful,
         total: voteStatistics?.total || 0,
-        isUserUpgraded: isUserUpgraded ? isUserUpgraded : null
+        isUserUpgraded: isUserUpgraded ? isUserUpgraded : false
       } as Leader;
     })
     .sort((a, b) => Number(a.score) - Number(b.score));
