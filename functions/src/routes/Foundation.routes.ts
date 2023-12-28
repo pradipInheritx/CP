@@ -9,15 +9,15 @@ import {
     deleteFoundation
 } from "../common/models/Admin/Foundation";
 
-const foundatioRouter = Router();
+const foundationRouter = Router();
 
 
-foundatioRouter.use(auth); //who api need authentication, put below otherwise put up
+foundationRouter.get("/getList", getFoundationList);
+foundationRouter.use(auth); //who api need authentication, put below otherwise put up
 
-foundatioRouter.post("/create", createFoundation);
-foundatioRouter.get("/get/:foundationId", getFoundation);
-foundatioRouter.get("/getList", getFoundationList);
-foundatioRouter.get("/update/:foundationId", updateFoundation);
-foundatioRouter.get("/delete", deleteFoundation);
+foundationRouter.post("/create", createFoundation);
+foundationRouter.get("/get/:foundationId", getFoundation);
+foundationRouter.patch("/update/:foundationId", updateFoundation);
+foundationRouter.get("/delete", deleteFoundation);
 
-export default foundatioRouter;
+export default foundationRouter;

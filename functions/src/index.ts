@@ -15,19 +15,14 @@ import {
   UserProps,
   UserTypeProps,
 } from "./common/models/User";
-// import {generateAuthTokens} from "./common/models/Admin/Admin";
 import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
-// import { getPrice } from "./common/models/Rate";
-// import {getPrice, getRateRemote} from "./common/models/Rate";
+
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
   setLeaders,
 } from "./common/models/Calculation";
-// import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
-// import {middleware} from "../middleware/authentication";
 import {
-  // calculateOffset,
   updateVotesTotal,
   updateVotesTotalForSingleCoin,
   voteConverter,
@@ -36,7 +31,6 @@ import {
   getResultAfterVote,
 } from "./common/models/Vote";
 import {
-  // fetchCoins,
   getAllCoins,
   getAllPairs,
   Leader,
@@ -55,20 +49,17 @@ import {
 import { JWT } from "google-auth-library";
 import {
   addCpmTransaction,
-  checkPendingTransactions,
-  CpmTransaction,
-  createPaxTransaction,
-  onEnteringAddress,
-  PaxData,
-  PaxTransaction,
   shouldHaveTransaction,
-  shouldUpdateTransactions,
-  updateProcessing,
+  addPaxTransactionWithPendingStatus,
+  // getPendingPaxTransaction,
+  // checkUsersWellDAddress
 } from "./common/models/PAX";
 import {
   claimReward,
   addReward,
   cardHolderListing,
+  sendMintForPaxToAdmin,
+  sendMintForPaxToUser
 } from "./common/models/Reward";
 import {
   cpviTaskCoin,
@@ -84,10 +75,11 @@ import {
   sendCustomNotificationOnSpecificUsers,
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
+  sendNotificationForMintAddress
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
-import { getRandomFoundationForUserLogin } from "./common/models/Admin/Foundation"
+// import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 
 import subAdminRouter from "./routes/SubAdmin.routes";
 import authAdminRouter from "./routes/Auth.routes";
@@ -101,7 +93,7 @@ import userTypeSettingsRouter from "./routes/UserTypeSettings.routes";
 import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
 import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
 import FollowTableRouter from "./routes/FollowTable.routes";
-import foundatioRouter from "./routes/Foundation.routes";
+import foundationRouter from "./routes/Foundation.routes";
 import PaymentRouter from "./routes/Payments.routes";
 import adminPaymentRouter from "./routes/AdminPayment.routes";
 import {
@@ -144,7 +136,7 @@ app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
 app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
 app.use("/admin/FollowTable", FollowTableRouter);
 app.use("/admin/payments", adminPaymentRouter);
-app.use("/admin/foundation", foundatioRouter)
+app.use("/admin/foundation", foundationRouter)
 app.use("/payment", PaymentRouter);
 
 app.post(
@@ -213,7 +205,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     address: "",
     avatar: "",
     bio: "",
-    foundationData: await getRandomFoundationForUserLogin(),
+    foundationData: "",
     country: "",
     email: user.email,
     firstName: "",
@@ -670,39 +662,6 @@ exports.onUpdateUser = functions.firestore
     await addCpmTransaction(snapshot.after.id, amount);
   });
 
-exports.onEnteringAddress = functions.firestore
-  .document("users/{id}")
-  .onUpdate(async (snapshot) => {
-    const before = snapshot.before.data() as UserProps;
-    const after = snapshot.after.data() as UserProps;
-    const should = await shouldUpdateTransactions(before, after);
-    if (!should) {
-      return;
-    }
-    await onEnteringAddress(snapshot);
-  });
-
-exports.onCreateCpmTransaction = functions.firestore
-  .document("cpm_transactions/{id}")
-  .onCreate(async (snapshot) => {
-    const transaction = snapshot.data() as CpmTransaction;
-
-    await admin
-      .firestore()
-      .collection("settings")
-      .doc("paxData")
-      .set(
-        {
-          blocksGiven: admin.firestore.FieldValue.increment(transaction.blocks),
-        } as unknown as PaxData,
-        {
-          merge: true,
-        }
-      );
-
-    await createPaxTransaction(transaction);
-  });
-
 exports.onVote = functions.firestore
   .document("votes/{id}")
   .onCreate(async (snapshot) => {
@@ -756,16 +715,6 @@ exports.updateLeadersCron = functions.pubsub
       console.log(e);
     }
   });
-
-// exports.paymentCallbackHistorySettlement = functions.pubsub
-//   .schedule('*/10 * * * *')
-//   .onRun(async () => {
-//     try {
-//       await settlePendingTransactionFunction();
-//     } catch (error) {
-//       console.log("Error In Payment Settlement", error);
-//     }
-//   });
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
@@ -909,7 +858,7 @@ exports.getRewardTransactions = functions.https.onCall(async (data) => {
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
-  const { uid, isVirtual } = data as { uid: string; isVirtual: boolean };
+  const { uid, isVirtual } = data as { uid: string; isVirtual: boolean; paxDistributionToUser: any };
   const reward = await claimReward(uid, isVirtual);
   console.log("reward --->", reward);
   return reward;
@@ -922,50 +871,15 @@ exports.cardHolderListing = functions.https.onCall(async (data) => {
   return userList;
 });
 
-exports.checkPendingTransactions = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    try {
-      await checkPendingTransactions();
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-exports.onCreatePaxTransaction = functions.firestore
-  .document("pax_transactions/{id}")
-  .onCreate(async (snapshot) => {
-    const transaction = snapshot.data() as PaxTransaction;
-    const user = await admin
-      .firestore()
-      .collection("users")
-      .withConverter(userConverter)
-      .doc(transaction.user)
-      .get();
-
-    try {
-      const batch = admin.firestore().batch();
-      await updateProcessing(batch, snapshot, user.data());
-      await batch.commit();
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-// exports.fetchCoins = functions.pubsub.schedule("* * * * *").onRun(async () => {
-//   [0, 60].forEach((i) => {
-//     setTimeout(async () => await fetchCoins(), i * 1000);
-//   });
-// });
 
 exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 2 minutes")
+  .schedule("every 10 minutes")
   .onRun(async () => {
     await getUpdatedDataFromWebsocket();
   });
 
 exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 5 minutes")
+  .schedule("every 15 minutes")
   .onRun(async () => {
     await getAllUpdated24HourRecords();
     await removeTheBefore24HoursData();
@@ -1195,3 +1109,66 @@ exports.sendEmail = functions.https.onCall(async () => {
   };
   await sgMail.send(msg);
 });
+
+exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
+  const { paxDistributionToUser } = data;
+  console.log("paxDistributionToUser : ", paxDistributionToUser);
+  let getResultAfterSentPaxToUser: any;
+  let getResultAfterSentPaxToAdmin: any;
+  if (paxDistributionToUser.isUserUpgraded === true) {
+    // Call to user mintFor Address
+    getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
+    console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
+    const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToUser, timestamp: Date.now() });
+    return { id: addNewPax.id, getResultAfterSentPaxToUser }
+  }
+  if (paxDistributionToUser.isUserUpgraded === false) {
+    // Call to Admin mintFor Address
+    getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
+    console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
+    const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToAdmin, timestamp: Date.now() });
+    return { id: addNewPax.id }
+  }
+  return null
+});
+
+// send a notification to add mint-address in wellDaddress
+exports.sendNotificationForMintAddress = functions.https.onCall(async (data) => {
+  const user = await sendNotificationForMintAddress(data.userId);
+  return user;
+});
+
+exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data) => {
+  try {
+    const { userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress } = data;
+    console.info("Data", userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress);
+    await addPaxTransactionWithPendingStatus({ userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress });
+    return {
+      status: true,
+      message: "Pending PAX stored successfully",
+      result: null,
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error while store Pending PAX.",
+      result: error,
+    };
+  }
+});
+
+// exports.getPAXPendingAndCompletePax = functions.pubsub
+//   .schedule("*/5 * * * *")
+//   .onRun(async () => {
+//     const getPendingPax = await getPendingPaxTransaction();
+//     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
+//     console.log("getUserIds", getUserIds);
+//     const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
+//     // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
+//     // call payment method here
+//     console.log("getUsersWellDAddress : ", getUsersWellDAddress);
+//     return null
+//   });
+
+
+

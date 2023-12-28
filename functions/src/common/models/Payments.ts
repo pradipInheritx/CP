@@ -242,6 +242,29 @@ export const addIsUpgradedValue = async (userId: string) => {
     .collection("users")
     .doc(userId)
     .set({ isUserUpgraded: true, rewardStatistics }, { merge: true });
+
+  const rewardData = {
+    winData: {
+      firstRewardCardType: "",
+      firstRewardCardId: "",
+      firstRewardCard: "",
+      firstRewardCardCollection: "",
+      firstRewardCardSerialNo: "",
+      firstRewardCardImageUrl: "",
+      firstRewardCardVideoUrl: "",
+      secondRewardExtraVotes: parentConst.UPGRADE_USER_VOTE,
+      thirdRewardDiamonds: parentConst.UPGRADE_USER_COIN,
+    },
+    transactionTime: firestore.FieldValue.serverTimestamp(),
+    user: userId,
+    winningTime: rewardStatistics.claimed,
+    isUserUpgraded: true
+  }
+  console.log("rewardData : ", rewardData);
+  const addReward = await firestore().collection('reward_transactions').add(rewardData);
+  if (!addReward.id) {
+    console.log("rewardData is not added")
+  }
 };
 //get user payment information by userId
 export const isUserUpgraded = async (req: any, res: any) => {

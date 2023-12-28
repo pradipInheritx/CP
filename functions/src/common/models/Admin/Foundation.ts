@@ -3,6 +3,7 @@ const foundationConst: any = {}
 
 const getFoundationById = async (foundationId: string, res: any) => {
     try {
+        console.log("foundationId : ",foundationId)
         const data = (await firestore().collection('foundations').doc(foundationId).get()).data();
         console.log("getFoundationById : ", data)
         if (!data) {
@@ -21,29 +22,29 @@ const getFoundationById = async (foundationId: string, res: any) => {
         });
     }
 }
-function getRandomArbitrary(min: number, max: number) {
-    return Math.random() * (max - min) + min;
-}
-export const getRandomFoundationForUserLogin = async () => {
-    try {
-        const foundationList = (await firestore().collection('foundations').get()).docs.map((foundation) => foundation.data());
-        console.log("foundationList : ", foundationList)
-        if (!foundationList) {
-            console.error("getRandomFoundationForUserLogin Error", foundationConst.FOUNDATION_NOT_FOUND);
-            return foundationConst.FOUNDATION_NOT_FOUND
-        }
-        foundationList.sort((foundation_1, foundation_2) => {
-            return foundation_1.timestamp - foundation_2.timestamp;
-        });
-        const getRandomValue = getRandomArbitrary(0, (foundationList.length-1));
-        console.log("selected Foundation Name : ", foundationList[getRandomValue])
-        return foundationList[getRandomValue].id;
-    } catch (error) {
-        errorLogging("getRandomFoundationForUserLogin", "ERROR", error);
-        console.error("getRandomFoundationForUserLogin Error", foundationConst.SOMETHING_WRONG);
-        return foundationConst.SOMETHING_WRONG
-    }
-}
+// function getRandomArbitrary(min: number, max: number) {
+//     return Math.random() * (max - min) + min;
+// }
+// export const getRandomFoundationForUserLogin = async () => {
+//     try {
+//         const foundationList = (await firestore().collection('foundations').get()).docs.map((foundation) => foundation.data());
+//         console.log("foundationList : ", foundationList)
+//         if (!foundationList) {
+//             console.error("getRandomFoundationForUserLogin Error", foundationConst.FOUNDATION_NOT_FOUND);
+//             return foundationConst.FOUNDATION_NOT_FOUND
+//         }
+//         foundationList.sort((foundation_1, foundation_2) => {
+//             return foundation_1.timestamp - foundation_2.timestamp;
+//         });
+//         const getRandomValue = getRandomArbitrary(0, (foundationList.length-1));
+//         console.log("selected Foundation Name : ", foundationList[getRandomValue])
+//         return foundationList[getRandomValue].id;
+//     } catch (error) {
+//         errorLogging("getRandomFoundationForUserLogin", "ERROR", error);
+//         console.error("getRandomFoundationForUserLogin Error", foundationConst.SOMETHING_WRONG);
+//         return foundationConst.SOMETHING_WRONG
+//     }
+// }
 export const createFoundation = async (req: any, res: any) => {
     try {
         const {
@@ -82,7 +83,7 @@ export const getFoundation = async (req: any, res: any) => {
     try {
         const {
             foundationId,
-        } = req.body;
+        } = req.params;
         const result = await getFoundationById(foundationId, res)
         res.status(200).send({
             status: true,
@@ -174,6 +175,7 @@ export const deleteFoundation = async (req: any, res: any) => {
         });
     }
 }
+
 
 export const errorLogging = async (
     funcName: string,

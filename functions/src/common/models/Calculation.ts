@@ -13,6 +13,7 @@ import {
   poolMiningNotification,
 } from "./SendCustomNotification";
 
+
 export type Totals = {
   total: number;
   success: number;
@@ -75,7 +76,7 @@ class Calculation {
     price: number | number[],
     id: string,
     userId: string,
-    status: any
+    status: any,
   ) {
     console.log("voteResult =>", voteResult);
     console.log("STATUS", status);
@@ -146,6 +147,8 @@ class Calculation {
           settings.data()?.voteRules,
           user?.status
         );
+        // TODO When score reach to 100 create a function for send Pax to that user
+
         return { successScoreValue, score };
       } else {
         console.log("SuccessValue Changed rand point not working");
@@ -171,6 +174,7 @@ class Calculation {
         settings.data()?.voteRules,
         user.status
       );
+      // TODO When score reach to 100
       return { successScoreValue, score };
     } else {
       if (
@@ -209,6 +213,8 @@ class Calculation {
       }
     }
   }
+
+
 
   calcValueExpirationTime(): void {
     console.log("calcValueExpirationTime", this.price, typeof this.price);
@@ -545,7 +551,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let getLeadersResponse: any = await getLeaders();
     let leaders = getLeadersResponse
       .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
-      .filter((obj: any) => obj.total > 19);
+      .filter((obj: any) => obj.total > 19); // Filter Only Those Users Which Has More Than 19 Votes
 
     console.info("Length With Leaders", leaders, leaders.length);
     const { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman } = await getTotalCountOfUserType();
@@ -861,6 +867,8 @@ export const getLeaderUsersByIds = async (userIds: string[]) => {
     })
     .filter((leaderData) => leaderData);
 };
+
+
 
 export const errorLogging = async (
   funcName: string,

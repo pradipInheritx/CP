@@ -4,8 +4,8 @@ import { log } from "firebase-functions/logger";
 import * as parentConst from "../consts/payment.const.json";
 import Web3 from "web3";
 
-import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments"
-
+import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments";
+import { sendRefferalNotification } from "./SendCustomNotification";
 
 // import { log } from "firebase-functions/logger";
 
@@ -74,7 +74,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
             "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
             "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
             "method": parentConst.SMART_CONTRACT_METHOD,
-            "network": transactionBody.network,
+            "network": transactionBody.network, //etherium, binance, matic
             "params": [
                 {
                     "_to": transactionBody.address,
@@ -86,7 +86,7 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
         };
         console.info("transactionBodyForSmartContract", transactionBodyForSmartContract);
 
-        const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContract, options);
+        const transaction = await axios.post("https://console.welldapp.io/api/callSmartContract", transactionBodyForSmartContract, options);
 
         console.log("End smart contract payment function", transaction);
 
@@ -147,16 +147,20 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         //     let data = snapshot.data();
         //     return { childId: data.uid, parentId: data.parent }
         // });
-        console.info("parentUserDetails", parentUserDetails);
-        if (!parentUserDetails.parent) {
-            console.log("Parent Not Found: ", "Parent user data is not exist");
-            return null;
-        }
 
+        console.info("parentUserDetails", parentUserDetails);
+        // if (!parentUserDetails.parent) {
+        //     console.log("Parent Not Found: ", "Parent user data is not exist");
+        //     // return null;
+        //     //TODO If user's parent not exists then give the half amount to admin
+
+        // }
+        const parentUserId = parentUserDetails.parent ? parentUserDetails.parent : parentConst.ADMIN_UID;
+        console.log("Parent Id: ", parentUserId);
         const halfAmount: number = (parseFloat(amount) * 50) / 100;
 
         const parentPaymentData = {
-            parentUserId: parentUserDetails.parent,
+            parentUserId,
             childUserId: parentUserDetails.uid,
             amount: halfAmount,
             type: parentConst.PAYMENT_TYPE_REFERAL,
@@ -166,7 +170,10 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         };
 
         console.log("parentPaymentData : ", parentPaymentData);
-
+        await sendRefferalNotification([
+            { id: parentPaymentData.parentUserId, amount: parentPaymentData.amount, isParent: true },
+            { id: parentPaymentData.childUserId, amount, isParent: false },
+        ])
 
         // set payment schedule accroding parent settings
         await setPaymentSchedulingDate({ ...parentPaymentData, ...userData });
@@ -457,5 +464,4 @@ export const settlePendingTransactionFunction = async () => {
         console.info("Getting Error While Fetch The Pending Event Transaction", error);
     }
 };
-
 

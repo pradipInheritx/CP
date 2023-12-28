@@ -519,6 +519,107 @@ export const sendNotificationForTitleUpgrade_test = async (getAllUserDetails: an
     }
   }
 }
+
+export const sendNotificationForMintAddress = async (userId: string) => {
+  try {
+    if (!userId) {
+      errorLogging("sendNotificationForMintAddress", "Error", "userId is required");
+    }
+    console.log("userId : ", userId);
+    const user: any = (await firestore().collection("users").doc(userId).get()).data();
+    if (user) {
+      errorLogging("sendNotificationForMintAddress", "Error", "user is not found");
+    }
+    console.log("userWellDAddress : ", user.paxAddress);
+    if (!user.paxAddress.address && !user.paxAddress.coin) {
+      const message: messaging.Message = {
+        token: user.token,
+        notification: {
+          title: "Add PAX address",
+          body: "Please add the PAX address for receive the PAX",
+        },
+        webpush: {
+          headers: {
+            Urgency: "high",
+          },
+          fcmOptions: {
+            link: `${env.BASE_SITE_URL}/profile/wallet`, // TODO: put link for deep linking
+          },
+        },
+      };
+
+      await sendNotification({
+        token: user.token,
+        message,
+        title: "Add PAX address",
+        body: "Please add the PAX address for receive the PAX",
+        id: user.uid,
+      });
+
+      return {
+        status: false,
+        message: "PAX Notification is sent successfully",
+        result: ""
+      }
+    }
+    return {
+      status: true,
+      message: "user have PAX address",
+      result: user.paxAddress
+    }
+  } catch (error) {
+    console.log("sendNotificationForMintAddress Error : ", error);
+    return errorLogging("sendNotificationForMintAddress", "Error", error)
+  }
+}
+export const sendRefferalNotification = async (userData: any) => {
+  try {
+    console.log("-----Start Refferal Notification -------");
+    console.log("userData: ", userData);
+    if (!userData[0].id && !userData[1].id) {
+      return errorLogging("sendRefferalNotification", "Error", "Parent Id or Child Id must be nedded");
+    }
+
+    for (let index = 0; index < userData.length; index++) {
+      const user = (await firestore().collection('users').doc(userData[index].id).get()).data()
+      if (!user) {
+        errorLogging("sendRefferalNotification", "Error", "User not found");
+        break;
+      }
+
+      const title = userData[index].isParent ? `Earn some amount` : `Paid some amount`;
+      const body = userData[index].isParent ? `you earn ${userData[index].amount} amount` : `you paid ${userData[index].amount} amount`;
+      const message: messaging.Message = {
+        token: user.token,
+        notification: {
+          title,
+          body
+        },
+        webpush: {
+          headers: {
+            Urgency: "high",
+          },
+          fcmOptions: {
+            link: `${env.BASE_SITE_URL}`, // TODO: put link for deep linking
+          },
+        },
+      };
+
+      await sendNotification({
+        token: user.token,
+        message,
+        title,
+        body,
+        id: user.uid,
+      });
+    }
+
+    console.log("-----End Refferal Notification -------");
+  } catch (error) {
+    console.log("sendRefferalNotification Error : ", error)
+    errorLogging("sendRefferalNotification", "Error", error);
+  }
+}
 // Error Function
 export const errorLogging = async (
   funcName: string,

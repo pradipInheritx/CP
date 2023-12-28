@@ -137,13 +137,19 @@ export const getUserPayment = async (req: any, res: any) => {
 export const getPendingPaymentbyUserId = async (req: any, res: any) => {
   try {
     const { userId } = req.params;
-    const coinObject: any = {}
-    const getAllPaymentsByUserId: any = (await firestore().collection('parentPayments').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
+    const coinObject: any = {};
+    const getAllCoins: any = (await firestore().collection('settings').doc('coins').get()).data();
+    getAllCoins.coins.map((item: any) => {
+      coinObject[item.symbol] = 0;
+    });
+
+    const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
     const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == 'PENDING');
     getAllPendingPayment.forEach((payment: any) => {
-        coinObject[payment.token] += payment.receiveType.amount
+      if (payment.token && payment.amount) {
+        coinObject[payment.token] += parseFloat(payment.amount);
+      }
     })
-    console.log("coinObject : ", coinObject);
     res.status(200).send({
       status: true,
       data: coinObject,
