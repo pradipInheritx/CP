@@ -170,7 +170,7 @@ const PersonalInfo = () => {
           if (displayName.length < 6 || displayName.length > 15 || displayName=="") {                                   
             setDisplayNameErr(true);
           }
-          else if (phone?.phone.length < 5 || phone?.phone.length > 15 || phone?.phone == "") {
+          else if (phone?.phone.replace(/\D/g, '').length < 6 || phone?.phone == "") {
             console.log(phone?.phone,"phone?.phone")
             setPhoneErr(true)
           }       
