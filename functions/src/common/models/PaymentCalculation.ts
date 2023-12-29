@@ -177,7 +177,7 @@ export const isParentExistAndGetReferalAmount = async (userData: any): Promise<a
         ])
 
         // set payment schedule accroding parent settings
-        await setPaymentSchedulingDate({ ...parentPaymentData, ...userData });
+        await setPaymentSchedulingDate({ ...userData, ...parentPaymentData });
     } catch (error) {
         return {
             status: false,
