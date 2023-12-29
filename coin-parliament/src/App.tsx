@@ -6,6 +6,7 @@ import UserContext, { getUserInfo, saveDisplayName, saveUsername } from "./Conte
 // import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
+
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
   Link,

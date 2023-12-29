@@ -56,7 +56,7 @@ const ForgetPassword = ({ setForgetPassword, setUser, setSignup, authProvider, l
   const onForgetPasswordClick = () => {
     const auth = getAuth();
     var actionCodeSettings = {
-      url: 'https://coin-parliament-staging.firebaseapp.com/resetpassword?email=user@example.com',
+      url: `${process.env.REACT_APP_SITE_URL}/resetpassword?email=${email}`,
     };
     sendPasswordResetEmail(auth, email, actionCodeSettings)
       .then(() => {
