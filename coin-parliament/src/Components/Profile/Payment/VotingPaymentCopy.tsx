@@ -480,7 +480,10 @@ const VotingPaymentCopy: React.FC<{
       getCoinList.get()
         .then((snapshot) => {
           const allList = snapshot.data()?.coins;
-          const filterCoin = allList.filter((item: any, index: number) => { return item.name == "ETH" || item.name == "BNB" || item.name == "MATIC" && item })          
+          const filterCoin = allList.filter((item: any, index: number) => {
+            return item.name == "ETH"
+              // || item.name == "BNB" || item.name == "MATIC" && item
+          })          
           setCoinsList(filterCoin ? filterCoin : allList && allList );
         }).catch((error) => {
           console.log(error, "error");
@@ -816,7 +819,14 @@ const VotingPaymentCopy: React.FC<{
 
 
           </div>}
-
+        {console.log(selectPayment,"selectPayment")}
+        {selectPayment == 1 && window.screen.width < 767 && <p
+          style={{
+            padding: "10px",
+            fontSize: "10px",
+            textAlign:"center"
+        }}
+        >Please select the desired network in your wallet before initiating any payments.</p>}
         <div className="pb-3">
           {paymentStatus?.type === 'success' && <PaymentSuccess paymentSuccessAction={paymentSuccessAction} message={paymentStatus?.message} />}
           {paymentStatus?.type === 'error' && <PaymentFail tryAgainAction={handleClick} startAgainAction={startAgainAction} message={paymentStatus?.message} />}

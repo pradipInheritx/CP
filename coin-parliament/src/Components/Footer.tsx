@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AppContext from "../Contexts/AppContext";
 import { texts } from "./LoginComponent/texts";
 import XTwitter from "assets/images/x-twitter-white.svg"
+import axios from "axios";
 const FooterContainer = styled.footer`
   bottom: 0;
   width: 100%;
@@ -38,7 +39,46 @@ const I = styled.i`
   margin:5px;
 `;
 const Footer = () => {
-  const { appStats, paxData } = useContext(AppContext);
+  const { appStats, paxData } = useContext(AppContext);   
+  const [footerData, setFooterData] = useState(
+    {
+        paxDistribution: "",
+      default: "",
+      maxPaxDistribution: "",
+      block: "",
+      initialize: "",
+      used: ""
+}
+  )
+
+  useEffect(() => {
+    showData()
+}, [])
+
+  const showData = () => {
+    axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
+      data: {}
+    }).then((res: any) => {
+      console.log(res.data.result, "resultdata")
+      setFooterData(res.data.result)
+    }).catch((err: any) => {
+      console.log(err, "resultdata")
+    })
+  }
+
+  console.log(footerData, "footerData")
+  
+  const  formatNumberAbbreviated=(number:number)=> {
+    if (number >= 1e9) {
+      return (number / 1e9) + 'B';
+    } else if (number >= 1e6) {
+      return (number / 1e6) + 'M';
+    } else if (number >= 1e3) {
+      return (number / 1e3) + 'K';
+    }
+    return number.toString();
+  }
+
   return (
     <FooterContainer>
       <p style={{ marginBottom: '5px' }}>
@@ -106,8 +146,17 @@ const Footer = () => {
           to="/influencers">Influencers</Link>.
       </p> */}
 
-      <p> PAX BEP20 Total supply : 21M | Minted quantity : 0   </p><p> Current block number : 0 | Next halving : in 210,000 blocks  </p>
-      <p>Current block reward 50 | Current value 8.28$</p>
+      {/* {
+        "paxDistribution": 50,
+      "default": 21000000,
+      "maxPaxDistribution": 210000,
+      "block": 3,
+      "initialize": 150,
+      "used": 150
+} */}
+
+      <p> PAX BEP20 Total supply : {formatNumberAbbreviated(Number(footerData?.default))} | Minted quantity : {footerData?.used}   </p><p> Current block number : {footerData?.block} | Next halving : in {footerData?.maxPaxDistribution} blocks  </p>
+      <p>Current block reward {footerData?.paxDistribution} | Current value 8.28$</p>
 
 
 
