@@ -6,7 +6,6 @@ import UserContext, { getUserInfo, saveDisplayName, saveUsername } from "./Conte
 // import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
-
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import {
   Link,
@@ -1317,12 +1316,40 @@ function App() {
     </div>
   ) : (
     <BackDiv
-      style={{
-        // border: "1px solid red",
+        style={{
+                
         // transform: "scale(4.3)",
         // backgroundColor: "rgba(0,0,0,0.5)",
       }}
-      >        
+      >  
+
+        {!login &&
+          !firstTimeAvatarSlection &&
+          !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&
+        <div className='pwaPopup' style={{ display: pwaPopUp }}>
+          <span>{texts.InstallCoinParliament}</span>
+          <button
+            className="link-button"
+            id="setup_button"
+            aria-label="Install app"
+            title="Install app"
+            onClick={onClick}
+            style={{ zIndex: 99999 }}
+          >
+            {texts.Install}
+          </button>
+          <span
+            className="link-button"
+            id="setup_button"
+            aria-label="Install app"
+            title="Install app"
+            onClick={e => setPwaPopUp('none')}
+            style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
+          >
+            x
+          </span>
+        </div>}
+
       <div>
         {enabled && (
           <NotificationContext.Provider
@@ -1698,30 +1725,7 @@ function App() {
                                             transition: `${backgrounHide ? "all 3s" : ""}`,
 
                                           }}
-                                        >
-                                          <div className='pwaPopup' style={{ display: pwaPopUp }}>
-                                            <span>{texts.InstallCoinParliament}</span>
-                                            <button
-                                              className="link-button"
-                                              id="setup_button"
-                                              aria-label="Install app"
-                                              title="Install app"
-                                              onClick={onClick}
-                                              style={{ zIndex: 99999 }}
-                                            >
-                                              {texts.Install}
-                                            </button>
-                                            <span
-                                              className="link-button"
-                                              id="setup_button"
-                                              aria-label="Install app"
-                                              title="Install app"
-                                              onClick={e => setPwaPopUp('none')}
-                                              style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
-                                            >
-                                              x
-                                            </span>
-                                          </div>
+                                        >                                          
                                           <Routes>
                                             <Route path='/' element={
 
