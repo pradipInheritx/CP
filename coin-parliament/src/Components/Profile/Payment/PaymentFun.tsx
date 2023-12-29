@@ -47,7 +47,7 @@ function PaymentFun({ isVotingPayment }: any) {
   const [selectCoin, setSelectCoin] = useState("none");
   const [showOptionList, setShowOptionList] = useState(false);
   const [showForWait, setShowForWait] = useState(false);  
-  const [PassCodeModal, setPassCodeModal] = useState(false);  
+  // const [PassCodeModal, setPassCodeModal] = useState(false);  
   const [PassCodeErr, setPassCodeErr] = useState(false);  
   const [passCode, setPassCode] = useState("");    
   const { coins, totals, allCoins } = useContext(CoinsContext);
@@ -78,9 +78,6 @@ function PaymentFun({ isVotingPayment }: any) {
     setPaymentStatus({ type, message: msg });
     return;
   }
-useEffect(() => {
-  setPassCodeModal(true)
-}, [])
 
   
 
@@ -98,7 +95,7 @@ useEffect(() => {
       // userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,     
       // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: Number(payamount && Number(0.01)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+      amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
       // amount: 0.0001,
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
@@ -145,10 +142,7 @@ useEffect(() => {
       userId: `${user?.uid}`,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount:
-      // payamount
-        0.01
-      ,
+      amount:payamount,
       // network: "11155111",
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
@@ -183,8 +177,8 @@ useEffect(() => {
       userId: userInfo?.uid,
       userEmail: `${sessionStorage.getItem("wldp_user")}`,
       walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      // amount: payamount,
-      amount: 0.01,
+      amount: payamount,
+      // amount: 0.01,
       // network: "11155111",
       // @ts-ignore
       network: `${networkCode[coinInfo?.name] || ""}`,
@@ -305,7 +299,7 @@ useEffect(() => {
         selectCoin={selectCoin}
         setSelectCoin={setSelectCoin}
       />
-      <Modal
+      {/* <Modal
         show={PassCodeModal}
         backdrop="static"
         centered
@@ -343,7 +337,7 @@ useEffect(() => {
             </Buttons.Primary>
           </div>
         </Modal.Body>
-      </Modal>
+      </Modal> */}
 
       {showForWait && <Modal
         show={showForWait}
