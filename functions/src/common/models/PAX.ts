@@ -121,9 +121,9 @@ export const checkUsersWellDAddress = async (userIds: any) => {
       }
     }
     console.log("getUserDetails : ", getUserDetails);
-    for (let userDetail = 0; userDetail < getUserDetails.length; userDetail++) {
+    // for (let userDetail = 0; userDetail < getUserDetails.length; userDetail++) {
 
-    }
+    // }
     return getUserDetails;
   } catch (error) {
     return errorLogging("checkUsersWellDAddress", "Error", error)
