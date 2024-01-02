@@ -63,7 +63,7 @@ const CircularProgress = ({ percentage }) => {
                         easingFunction={easeQuadIn}
                     >
                         {(value) => {
-                            const roundedValue = parseFloat(value.toFixed(2));
+                            const roundedValue = parseFloat(value.toFixed(3));
                             return (
                                 <>
                                     <div>
@@ -77,7 +77,7 @@ const CircularProgress = ({ percentage }) => {
                                                 trailColor: (w > 767 ? "transparent" : '#160133')
                                             })}
                                         >
-                                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{roundedValue.toFixed(2)}/100</span>
+                                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{roundedValue.toFixed(3)}/100</span>
                                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                                         </CircularProgressbarWithChildren>
@@ -96,7 +96,8 @@ const CircularProgress = ({ percentage }) => {
                                 trailColor: (w > 767 ? "transparent" : '#160133')
                             })}
                         >
-                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */).toFixed(2)}/100</span>
+                            
+                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */)}/100</span>
                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                         </CircularProgressbarWithChildren>

@@ -420,7 +420,7 @@ const VotedCard = ({
                     fontSize: '1.7em',
                     color: getSingleCoinPriceColor(parseFloat(row2.replaceAll('$', '').replaceAll(',', '')), parseFloat(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00'), vote?.direction),
                   }}>
-                    ${voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || 0.00}
+                    ${voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 && voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || 0.00}
                   </div>
                 </div>
                 <BitcoinBTCBULL24H3864490

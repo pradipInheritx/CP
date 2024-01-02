@@ -1183,6 +1183,7 @@ function App() {
         if (pathNameRef.current?.includes('profile/mine')) {
           return
         }
+        console.log(voteNumberEnd,"voteNumberEnd")
         const request = {
           ...{
             coin1: `${coin1 != "" ? coin1 + "usdt" : ""}`,
@@ -1192,7 +1193,9 @@ function App() {
             valueVotingTime: lessTimeVote?.valueVotingTime,
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
-            userId: lessTimeVote?.userId,
+            userId: lessTimeVote?.userId,                  
+            // @ts-ignore
+            voteType: `${userInfo?.voteValue > 0 ? "FreeVote" : "ExtraVote"}`,
             // paxDistributionToUser: {
             //   userId: lessTimeVote?.userId,
             //   currentPaxValue: Number(paxDistribution),

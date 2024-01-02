@@ -446,7 +446,7 @@ const Minting = ({
           ></I>
 
 
-          <CircularProgress percentage={(score.toFixed(2) || 0)} />
+          <CircularProgress percentage={(score.toFixed(3) || 0)} />
         </div>
         {/* width > 767 &&  */(
           <div className="w-100" style={{ display: 'flex', alignContent: 'center', paddingLeft: (width < 767 ? '2em' : ''), paddingRight: (width < 767 ? '2em' : '') }} >
