@@ -8,21 +8,24 @@ import { Leader } from "../../Contexts/CoinsContext";
 import PoolMiningCard from "./PoolMiningCard";
 import VBG from "assets/images/VBG.png"
 import VBGM from "assets/images/VBGM.png"
+import { texts } from "Components/LoginComponent/texts";
 
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
   const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.userName}`;
   const [children, setChildren] = useState<Leader[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const childrenActivity = Number(
     Number(userInfo?.voteStatistics?.commission || 0).toFixed(3) || 0
   );
   console.log(userInfo?.userName, userInfo,"userInfo?.userName")
 
   useEffect(() => {
-    getUsers({ users: userInfo?.children, setUsers: setChildren });
+    getUsers({ users: userInfo?.children, setUsers: setChildren, setIsLoading: setIsLoading });
+    setIsLoading(true)
   }, [userInfo?.children]);
 
-  console.log(userInfo,"userdata")
+  console.log(children,"userdata")
   return (
     <>
       <div className={`${window.screen.width > 767 ? "pt-4" : ""}`}
@@ -52,7 +55,13 @@ const Pool = () => {
           />
         </div>
         <div className='pb-2'>
-          {children.map((child) => {
+          {isLoading ?
+            <div className="w-100 text-center">
+              <span className="loading " style={{
+                color:"white",
+              }}>{texts.waitForIt}</span>
+            </div>
+          :children.map((child) => {
             return (
               <div className="mb-2" key={child?.userId}>
                 <PoolMiningCard user={child} />
