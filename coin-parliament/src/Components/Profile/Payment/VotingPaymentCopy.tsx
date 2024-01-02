@@ -738,6 +738,13 @@ const VotingPaymentCopy: React.FC<{
                     )}
                   </div>
                 </Sidediv>
+                {selectPayment == 1 && window.screen.width < 767 && <p
+                  style={{
+                    padding: "10px",
+                    fontSize: "10px",
+                    textAlign: "center"
+                  }}
+                >Please select the desired network in your wallet before initiating any payments.</p>}
 
                 {/* {
                   selectCoin != "none" &&
@@ -818,15 +825,7 @@ const VotingPaymentCopy: React.FC<{
               </Boxdiv>}
 
 
-          </div>}
-        {console.log(selectPayment,"selectPayment")}
-        {selectPayment == 1 && window.screen.width < 767 && <p
-          style={{
-            padding: "10px",
-            fontSize: "10px",
-            textAlign:"center"
-        }}
-        >Please select the desired network in your wallet before initiating any payments.</p>}
+          </div>}                
         <div className="pb-3">
           {paymentStatus?.type === 'success' && <PaymentSuccess paymentSuccessAction={paymentSuccessAction} message={paymentStatus?.message} />}
           {paymentStatus?.type === 'error' && <PaymentFail tryAgainAction={handleClick} startAgainAction={startAgainAction} message={paymentStatus?.message} />}

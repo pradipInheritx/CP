@@ -431,11 +431,12 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                 });
         }
         else {
-            getsamecard(userInfo)
+            getsamecard(userInfo && userInfo)
         }
-    }, [])
+    }, [userInfo])
 
     const getsamecard = (data: any) => {
+        console.log(data ,"sameCards i am every time calling")
         var commonCard = {}
         // @ts-ignore
         const allCards = data?.rewardStatistics?.cards
@@ -447,7 +448,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
         setSameCards(commonCard)
     }
 
-
+    console.log(sameCards,"sameCards")
     return (
         <div className='' style={{ background: "white", minHeight: "80vh" }
         }>
@@ -716,7 +717,10 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                                                                     holderNo={item?.noOfCardHolders}
                                                                                     // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                                                                                     // cardNo={item?.sno[index]}
-                                                                                    Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
+                                                                                    // Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
+                                                                                    
+                                                                                    Quantity={`${sameCards[item?.cardName] || 1} / ${item?.totalQuantity}`}
+                                                                                    
                                                                                     cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
                                                                                     // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                                                                                     MintedTime={getMintedTime(item?.cardId)}
