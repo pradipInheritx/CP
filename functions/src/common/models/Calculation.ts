@@ -555,8 +555,9 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let leaders = getLeadersResponse
       .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
       .filter((obj: any) => obj.total > 19); // Filter Only Those Users Which Has More Than 19 Votes
-
-    console.info("Length With Leaders", leaders, leaders.length);
+    leaders.sort((user_1: any, user_2: any) => user_1.total - user_2.total); // sort the users based on total 
+    console.log("Length With Leaders", leaders);
+    console.log("leader length : ", leaders.length);
     const { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman } = await getTotalCountOfUserType();
     let leaderStatus: Leader[] = [];
     console.info("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker, "getTotalNumberOfCouncil", getTotalNumberOfCouncil, "getTotalNumberOfAmbassador", getTotalNumberOfAmbassador, "getTotalNumberOfMinister", getTotalNumberOfMinister, "getTotalNumberOfChairman", getTotalNumberOfChairman)
@@ -623,7 +624,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     }
 
     console.log("Council Data Only", leaderStatusForCouncil)
-    console.log("after Council ,Leader list ",leaders, leaders.length)
+    console.log("after Council ,Leader list ", leaders, leaders.length)
 
     for (let speaker = 0; speaker < leaderStatusForCouncil.length; speaker++) {
       leaderStatus.push(leaderStatusForCouncil[speaker]);
@@ -654,8 +655,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
       }
       leaders.splice(0, getTotalNumberOfAmbassador);
-      console.log("Ambassador List : ",leaderStatusForAmbassador);
-      console.log("after Ambassador ,Leader list ",leaders, leaders.length)
+      console.log("Ambassador List : ", leaderStatusForAmbassador);
+      console.log("after Ambassador ,Leader list ", leaders, leaders.length)
     }
     for (let speaker = 0; speaker < leaderStatusForAmbassador.length; speaker++) {
       leaderStatus.push(leaderStatusForAmbassador[speaker]);
@@ -683,8 +684,8 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
       }
       leaders.splice(0, getTotalNumberOfMinister);
-      console.log("Minister List : ",leaderStatusForMinister);
-      console.log("after Minister ,Leader list ",leaders, leaders.length)
+      console.log("Minister List : ", leaderStatusForMinister);
+      console.log("after Minister ,Leader list ", leaders, leaders.length)
     }
 
     for (let speaker = 0; speaker < leaderStatusForMinister.length; speaker++) {
