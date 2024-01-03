@@ -658,7 +658,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if ((eachUser.total >= 8 || eachUser.total == 8) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
+        if ((eachUser.total > 8 || eachUser.total == 8) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
           if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
             eachUser.status = "Minister";
             leaderStatusForMinister.push(eachUser);
@@ -686,7 +686,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       console.log("getTotalNumberOfChairman", getTotalNumberOfChairman);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if (eachUser.total >= 10 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
+        if (eachUser.total > 10 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
           if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
             eachUser.status = "Chairman";
             leaderStatusForChairman.push(eachUser);
