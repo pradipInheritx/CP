@@ -683,14 +683,16 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                                                                     holderNo={item?.noOfCardHolders}
                                                                                     // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                                                                                     // cardNo={item?.sno[index]}
-                                                                                    // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
+                                                                                    ShowQuantity={`${sameCards[item?.cardName] || 1}`}
+                                                                                    GeneralSerialNo={item?.sno && (item?.sno[0])?.replace(/[0-9]/g, '')}
                                                                                     cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
                                                                                     // GeneralSerialNo={}                            
                                                                                     CollectionType={item?.albumName || "LEGENDARY"}
                                                                                     MintedTime={getMintedTime(item?.cardId)}
                                                                                     PrivateSerialNo={getPriSerialNo(item?.cardId)}
                                                                                     Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
-                                                                                    userId={item?.setId}
+                                                                                    userId={userId}
+                                                                                    isFollower={isFollower}
                                                                                     // Disable={"CardDisebal"}                            
                                                                                     cardHeader={`${item?.cardName}`}
                                                                                     id={item?.cardId}
@@ -718,15 +720,15 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                                                                     // cardNo={`${((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                                                                                     // cardNo={item?.sno[index]}
                                                                                     // Quantity={`${getTotalSameCard(item?.id)} / ${item?.totalQuantity}`}
-                                                                                    
+                                                                                    ShowQuantity={`${sameCards[item?.cardName] || 1}`}
                                                                                     Quantity={`${sameCards[item?.cardName] || 1} / ${item?.totalQuantity}`}
-                                                                                    
+                                                                                    GeneralSerialNo={item?.sno && (item?.sno[0])?.replace(/[0-9]/g, '')}
                                                                                     cardNo={`${((item?.cardName)?.toUpperCase())?.slice(0, 2) + (item?.id)?.slice(0, 2)}`}
                                                                                     // GeneralSerialNo={`${((item.collectionName)?.toUpperCase())?.slice(0, 3) + ((item?.setName)?.toUpperCase())?.slice(0, 3) + item?.setId}`}
                                                                                     MintedTime={getMintedTime(item?.cardId)}
                                                                                     PrivateSerialNo={getPriSerialNo(item?.cardId)}
                                                                                     Disable={winerCard.length ? CheckCardDisable(item?.cardId) : 'CardDisebal'}
-                                                                                    userId={item?.setId}
+                                                                                    userId={userId}
                                                                                     // CollectionType={item?.collectionName}
                                                                                     CollectionType={item?.albumName || "LEGENDARY"}
                                                                                     // Disable={"CardDisebal"}                            
@@ -737,6 +739,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                                                                     flipCard={backCards?.includes(item?.cardId)}
                                                                                     ImgUrl={item?.cardImageUrl || ""}
                                                                                     VideoUrl={item?.cardVideoUrl || ""}
+                                                                                    isFollower={isFollower}
                                                                                 />
                                                                             );
                                                                         }

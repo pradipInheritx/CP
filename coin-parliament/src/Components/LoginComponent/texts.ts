@@ -28,6 +28,7 @@ export const texts = {
   Total100: "total share must be 100%",
   UserInfoUpdate: "user info was updated",
   UserFailUpdate: "user failed to be updated",
+  RequiresRecent: "Requires Recent login",
   success: "success",
   failed: "failed",
   PasswordResetLinkSent: "Password reset link has been sent to your email.",

@@ -160,6 +160,7 @@ import Swal from "sweetalert2";
 import SelectBio from "Components/LoginComponent/SelectBio";
 import axios from "axios";
 import { afterpaxDistributionToUser } from "common/utils/helper";
+import SingleCardDetails from "Pages/album/SingleCardDetails";
 // import FoundationData from "Components/Profile/FoundationData";
 
 // import CoinsListDesgin from "Components/Profile/CoinsList";
@@ -1753,6 +1754,10 @@ function App() {
                                             <Route
                                               path='singalCard/:type/:id'
                                               element={<SingalCard />}
+                                            />
+                                            <Route
+                                            path='singlecarddetails/:type/:id'
+                                            element={<SingleCardDetails />}
                                             />
                                             <Route
                                               path='coins/:id'

@@ -311,7 +311,7 @@ const PersonalInfo = () => {
               >
                 <TextAera                                  
                   name="Bio"                  
-                  placeholder= "Add bio 5 to 300 characters"
+                  placeholder= "Add bio 5 to 400 characters"
                   value= {bio || ""}
                 onChange={(e) => {
                   setBio(e.target.value)
@@ -325,7 +325,7 @@ const PersonalInfo = () => {
                 />
                 {bioErr ?
                   <Styles.p className="mt-1 mb-2 text-danger" style={{ fontSize: "10px" }}>
-                    {translate("Bio should be between 6-190 characters")}
+                    {translate("Bio should be between 5-400 characters")}
                   </Styles.p>
                   : null}
                 </SelectTextfield>
@@ -400,7 +400,9 @@ const PersonalInfo = () => {
                   });
                 // ...
               }).catch((error) => {
-                showToast(texts.UserFailUpdate, ToastType.ERROR);
+                showToast(texts.RequiresRecent, ToastType.ERROR);
+                const errorMessage = error.message;
+                console.log(errorMessage);
                 // ...
               });
               // await triggerSaveUsername();
