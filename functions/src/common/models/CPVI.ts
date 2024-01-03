@@ -561,11 +561,11 @@ export const getCPVIForVote = async ({ id }: { id: string }) => {
 
 export const CPVIForCoin = async (coinName: string) => {
   try {
-    console.log("coinName: " , coinName);
+    console.log("coinName: ", coinName);
     // get all the data in between24 hours
     const timeNow = Date.now();
-    const currentTime = timeNow +30;
-    const before24hoursTime = (currentTime - 24 * 3600000);
+    const currentTime = timeNow + 30;
+    const before24hoursTime = (currentTime - 24 * 7 * 3600000); //Update 24 hours to 7 days
     console.log("current time: " + currentTime)
     console.log("before24hours time: " + before24hoursTime)
     const getAllCoinListing = (
@@ -576,7 +576,7 @@ export const CPVIForCoin = async (coinName: string) => {
         .get()
     ).docs.map((coin) => coin.data());
 
-    console.log("getAllCoinListing : ",getAllCoinListing)
+    console.log("getAllCoinListing : ", getAllCoinListing)
     const getCoinListing = getAllCoinListing.filter((coin: any) => coin.coin == coinName);
     console.log("getCoinListing : ", getCoinListing);
 
@@ -585,12 +585,12 @@ export const CPVIForCoin = async (coinName: string) => {
       bull: 0
     }
 
-    if(!getCoinListing.length) {
+    if (!getCoinListing.length) {
       return {
         totalVote: getCoinListing.length,
         coin: coinName,
-        result : [],
-        message : "No data found in last 24 hours"
+        result: [],
+        message: "No data found in last 24 hours"
       }
     }
 
@@ -599,7 +599,7 @@ export const CPVIForCoin = async (coinName: string) => {
       if (coin.direction == 1) countVoteObj.bear += 1
     })
 
-    console.log("countVoteObj : ",countVoteObj)
+    console.log("countVoteObj : ", countVoteObj)
     if (coinName.split("-").length == 2) {
       console.log("pair coin is calling")
       let coins = coinName.split("-");
