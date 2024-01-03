@@ -407,7 +407,7 @@ const Header = ({
 	};
 
 
-
+	console.log(followerInfo,"followerInfo")
 	return (
 
 		<MenuContainer
@@ -677,7 +677,7 @@ const Header = ({
 											}											
 											{!!followerInfo && <div className="d-flex"
 											>
-												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+												{(!!followerInfo?.status && followerPage) && <MemberText>{followerInfo?.status}</MemberText>}
 												{
 													(!!followerInfo?.bio && followerPage) && <>
 														<div className='mx-2 '>
@@ -718,7 +718,7 @@ const Header = ({
 													</>
 												}
 											</div>}
-											{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
+											{(!!userInfo?.status && !followerPage) && <MemberText>{userInfo?.status}</MemberText>}
 
 										</div>
 									</div>
@@ -952,7 +952,7 @@ const Header = ({
 													}
 													{!!followerInfo && <div className="d-flex"													
 													>												
-														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
+														{(!!followerInfo?.status && followerPage) && <MemberText>{followerInfo?.status}</MemberText>}
 														{
 															(!!followerInfo?.bio && followerPage) && <>
 																<div className='mx-2 '>
@@ -993,7 +993,7 @@ const Header = ({
 														}
 													</div>}
 													
-													{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
+													{(!!userInfo?.status && !followerPage) && <MemberText>{userInfo?.status}</MemberText>}
 												</div>
 											}
 	

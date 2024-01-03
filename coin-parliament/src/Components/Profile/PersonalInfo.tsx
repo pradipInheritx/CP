@@ -325,7 +325,7 @@ const PersonalInfo = () => {
                 />
                 {bioErr ?
                   <Styles.p className="mt-1 mb-2 text-danger" style={{ fontSize: "10px" }}>
-                    {translate("Bio should be between 6-190 characters")}
+                    {translate("Bio should be between 5-400 characters")}
                   </Styles.p>
                   : null}
                 </SelectTextfield>

@@ -125,8 +125,8 @@ const PieChart = (props: PieChartProps & { pax: number }) => {
               // console.log(percentage, percentage?.toString()?.substring(0, 7),"percentage")
             }
             <div className="d-flex justify-content-center align-items-center flex-column">
-              <PAX style={{color: w>767?"var(--white)":"var(--black)",fontSize:'20px'}}>{percentage.toFixed(3)}/100</PAX>
-              <REWARD style={{color: w>767?"var(--blue-violet)":"var(--blue-violet)", fontSize:'20px'}}>CMP</REWARD>
+              <PAX style={{color: w>767?"var(--white)":"var(--black)",fontSize:`${window.screen.width > 767 ?"20px":"16px"}`}}>{percentage.toFixed(3)}/100</PAX>
+              <REWARD style={{color: w>767?"var(--blue-violet)":"var(--blue-violet)", fontSize:`${window.screen.width > 767 ?"20px":"16px"}`}}>CMP</REWARD>
             </div>
           </Pie>
         </div>
