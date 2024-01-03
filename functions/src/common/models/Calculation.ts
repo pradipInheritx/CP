@@ -488,7 +488,11 @@ const getLeaders = async () => {
 
 const getTotalCountOfUserType = async () => {
 
-  const leaders = await getLeaders();
+  const getLeadersResponse = await getLeaders();
+
+  let leaders = getLeadersResponse
+    .map((obj: any) => ({ ...obj })) // Create a shallow copy of each object
+    .filter((obj: any) => obj.total > 19);
 
   const userTypes = await firestore()
     .collection("settings")
@@ -558,13 +562,13 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     console.info("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker, "getTotalNumberOfCouncil", getTotalNumberOfCouncil, "getTotalNumberOfAmbassador", getTotalNumberOfAmbassador, "getTotalNumberOfMinister", getTotalNumberOfMinister, "getTotalNumberOfChairman", getTotalNumberOfChairman)
 
     let leaderStatusForSpeaker: Leader[] = [];
-    // console.log("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker);
+    console.log("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker);
     if (getTotalNumberOfSpeaker && getTotalNumberOfSpeaker > 0) {
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
         console.info("eachUser.total", eachUser.total)
-        if ((eachUser.total > 2 || eachUser.total === 2) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
-          // console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
+        if ((eachUser.total > 20 || eachUser.total === 20) && leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
+          console.info("leaderStatusForSpeaker.length < getTotalNumberOfSpeaker", leaderStatusForSpeaker.length, getTotalNumberOfSpeaker)
           if (leaderStatusForSpeaker.length < getTotalNumberOfSpeaker) {
             console.log("Come Here Total Iff", typeof eachUser.total, "Value", eachUser.total);
             eachUser.status = "Speaker";
@@ -583,7 +587,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
       }
 
-      // console.info("leaders In leaderStatusForSpeaker", leaderStatusForSpeaker)
+      console.info("leaders In leaderStatusForSpeaker", leaderStatusForSpeaker)
       leaders.splice(0, getTotalNumberOfSpeaker);
       // console.info("leaders In Speaker", leaders)
     }
@@ -595,10 +599,10 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     // console.info("After Spliced Only leaders", leaders)
     let leaderStatusForCouncil: Leader[] = [];
     if (getTotalNumberOfCouncil && getTotalNumberOfCouncil > 0) {
-      console.log("getTotalNumberOfCouncil", getTotalNumberOfCouncil);
+      // console.log("getTotalNumberOfCouncil", getTotalNumberOfCouncil);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if ((eachUser.total > 4 || eachUser.total === 4) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
+        if ((eachUser.total > 40 || eachUser.total === 40) && leaderStatusForCouncil.length < getTotalNumberOfCouncil) {
           if (leaderStatusForCouncil.length < getTotalNumberOfSpeaker) {
             eachUser.status = "Council";
             leaderStatusForCouncil.push(eachUser);
@@ -618,20 +622,20 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       // console.info("leaders In Council", leaders)
     }
 
-    // console.log("Council Data Only", leaderStatusForCouncil)
+    console.log("Council Data Only", leaderStatusForCouncil)
 
     for (let speaker = 0; speaker < leaderStatusForCouncil.length; speaker++) {
       leaderStatus.push(leaderStatusForCouncil[speaker]);
     }
 
-    console.info("After Spliced Council", leaderStatus)
+    // console.info("After Spliced Council", leaderStatus)
 
     let leaderStatusForAmbassador: Leader[] = [];
     if (getTotalNumberOfAmbassador && getTotalNumberOfAmbassador > 0) {
-      console.log("getTotalNumberOfAmbassador", getTotalNumberOfAmbassador);
+      // console.log("getTotalNumberOfAmbassador", getTotalNumberOfAmbassador);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if ((eachUser.total >= 6 || eachUser.total == 6) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
+        if ((eachUser.total > 60 || eachUser.total == 60) && leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
           if (leaderStatusForAmbassador.length < getTotalNumberOfAmbassador) {
             eachUser.status = "Ambassador";
             leaderStatusForAmbassador.push(eachUser);
@@ -648,6 +652,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
       }
       leaders.splice(0, getTotalNumberOfAmbassador);
+      console.log("Ambassador List : ", leaderStatusForAmbassador);
     }
     for (let speaker = 0; speaker < leaderStatusForAmbassador.length; speaker++) {
       leaderStatus.push(leaderStatusForAmbassador[speaker]);
@@ -655,10 +660,10 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
 
     let leaderStatusForMinister: Leader[] = [];
     if (getTotalNumberOfMinister && getTotalNumberOfMinister > 0) {
-      console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
+      // console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if ((eachUser.total > 8 || eachUser.total == 8) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
+        if ((eachUser.total > 80 || eachUser.total == 80) && leaderStatusForMinister.length < getTotalNumberOfMinister) {
           if (leaderStatusForMinister.length < getTotalNumberOfMinister) {
             eachUser.status = "Minister";
             leaderStatusForMinister.push(eachUser);
@@ -675,6 +680,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
       }
       leaders.splice(0, getTotalNumberOfMinister);
+      console.log("Minister List : ", leaderStatusForMinister);
     }
 
     for (let speaker = 0; speaker < leaderStatusForMinister.length; speaker++) {
@@ -686,7 +692,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
       console.log("getTotalNumberOfChairman", getTotalNumberOfChairman);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
-        if (eachUser.total > 10 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
+        if (eachUser.total > 100 && leaderStatusForChairman.length < getTotalNumberOfMinister) {
           if (leaderStatusForChairman.length < getTotalNumberOfChairman) {
             eachUser.status = "Chairman";
             leaderStatusForChairman.push(eachUser);
@@ -703,11 +709,13 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
         }
       }
       leaders.splice(0, getTotalNumberOfChairman);
+      console.log("Chairman List : ", leaderStatusForChairman);
     }
     for (let speaker = 0; speaker < leaderStatusForChairman.length; speaker++) {
       leaderStatus.push(leaderStatusForChairman[speaker]);
     }
     console.info("leaders", leaders)
+    console.log(`length of level : speaker : ${leaderStatusForSpeaker.length} council : ${leaderStatusForCouncil.length} Ambassador : ${leaderStatusForAmbassador.length} minister : ${leaderStatusForMinister.length} chairman : ${leaderStatusForChairman.length}`)
     console.log("leaderStatus Final", leaderStatus);
 
     leaderStatus.sort((a, b) => Number(a.score) - Number(b.score));
