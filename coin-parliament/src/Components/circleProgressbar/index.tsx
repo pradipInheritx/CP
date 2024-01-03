@@ -97,7 +97,7 @@ const CircularProgress = ({ percentage }) => {
                             })}
                         >
                             
-                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */)}/100</span>
+                            <span style={{ color: w > 767 ? "var(--white)" : "var(--black)", fontSize: (w > 767 ? '20px' : '16px') }}>{(percentage - currentCMP /* localStorage.getItem(`${user?.uid}_newScores`) */).toFixed(3)}/100</span>
                             <span style={{ color: w > 767 ? "var(--blue-violet)" : "var(--blue-violet)", fontSize: (w > 767 ? '20px' : '16px') }}>CMP</span>
 
                         </CircularProgressbarWithChildren>

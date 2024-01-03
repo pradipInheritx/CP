@@ -179,9 +179,10 @@ export type BoxItems = {
   Hide360Icon?: boolean;
   BigCard?: boolean;
   MoveCard?: boolean;
-
+  ShowQuantity?: any;
+  isFollower?: boolean
 };
-const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl, Hide360Icon, BigCard, MoveCard }: BoxItems) => {
+const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, width, Disable, cardNo, cardHeader, BackSideCard, id, flipCard, Serie, BackCardName, Rarity, Quantity, holderNo, MintedTime, PrivateSerialNo, GeneralSerialNo, fulldata, userId, CollectionType, ImgUrl, VideoUrl, Hide360Icon, BigCard, MoveCard, ShowQuantity, isFollower}: BoxItems) => {
 
 
 
@@ -376,12 +377,33 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     }}
                     className="d-flex justify-content-center"
                   >
+                    {["followerProfile", "profile"].includes(pathnameName[1]) && <span
+                      style={{
+                        
+                        position: "absolute",
+                        left: "0px",
+                        // bottom: "60px",
+                        top:"70px",
+                        // transform: "rotate(-90deg)",
+                        // width: "100px",
+                        color: "black",
+                        border: "1px solid #7557ff",
+                        borderRadius: "10px",
+                        width:"20px",
+                        height: "20px",                        
+                        textAlign: "center",
+                        paddingTop:"2.5px",
+                        // alignItems:""
+                      }}
+                    >
+                      {ShowQuantity}
+                    </span>}
                     <div
                       className=""
                       style={{
                         position: "absolute",
                         left: "-40px",
-                        bottom: "60px",
+                        bottom: "70px",
                         transform: "rotate(-90deg)",
                         width: "100px",
                         color: "black",
@@ -390,7 +412,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     >
                      {imageLoaded && <p
 
-                      >{["followerProfile", "profile"].includes(pathnameName[1]) ? PrivateSerialNo || "" : GeneralSerialNo || ""}</p>}
+                      >{["followerProfile", "profile"].includes(pathnameName[1]) ? GeneralSerialNo || "" : GeneralSerialNo || ""}</p>}
 
                     </div>
                     <img
@@ -456,7 +478,20 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
             <div className=''>
               <span>
                 {["followerProfile", "profile"].includes(pathnameName[1])
-                  ? `Serial No. : ${PrivateSerialNo || ""}`
+                  ?
+                  <span
+                    className="d-inline border-0"
+                    onClick={() => {
+                      navigate(`/singlecarddetails/${CollectionType || type}/${id}`)
+                      // setSingalCardData({ ...fulldata, myID: userId })
+                      localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId, isFollower: isFollower }))
+                    }}
+                  >
+                    Serial No. : {GeneralSerialNo || ""}
+                  </span>
+                  
+                  // `Serial No. : ${GeneralSerialNo || ""}`
+
                   : `Serial No. : ${GeneralSerialNo || ""}`}
               </span>
               <span>Collection : {CollectionType || type}</span>
@@ -514,9 +549,13 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </span>
 
               <span>
-                {["followerProfile", "profile"].includes(pathnameName[1]) ? `Quantity : ${Quantity}` : `Total quantity : ${Quantity}`}
+                {["followerProfile", "profile", "singlecarddetails"].includes(pathnameName[1]) ? `Quantity : ${ShowQuantity}` : `Total quantity : ${Quantity}`}
               </span>
-              {["followerProfile", "profile"].includes(pathnameName[1]) ? <span>Minted Time : {MintedTime}</span> : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ?
+              {["followerProfile", "profile", "singlecarddetails"].includes(pathnameName[1]) ?
+                // <span>Minted Time : {MintedTime}</span> 
+                // <span>General Serial : {GeneralSerialNo || ""}</span>
+                ""
+                : <span className="">Number of holders: {holderNo != 0 && holderNo != undefined && holderNo != "" ?
                 <span className="d-inline border-0"
                   onClick={() => {
                     navigate(`/singalCard/${CollectionType || type}/${id}`)

@@ -311,7 +311,7 @@ const PersonalInfo = () => {
               >
                 <TextAera                                  
                   name="Bio"                  
-                  placeholder= "Add bio 5 to 300 characters"
+                  placeholder= "Add bio 5 to 400 characters"
                   value= {bio || ""}
                 onChange={(e) => {
                   setBio(e.target.value)
@@ -400,7 +400,9 @@ const PersonalInfo = () => {
                   });
                 // ...
               }).catch((error) => {
-                showToast(texts.UserFailUpdate, ToastType.ERROR);
+                showToast(texts.RequiresRecent, ToastType.ERROR);
+                const errorMessage = error.message;
+                console.log(errorMessage);
                 // ...
               });
               // await triggerSaveUsername();
