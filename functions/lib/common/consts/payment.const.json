@@ -4,6 +4,7 @@
     "PAYMENT_METHOD": "getTransaction",
     "PAYMENT_NETWORK": "11155111",
     "PAYMENT_BNB_NETWORK": "56",
+    "PAYMENT_BNB_MINT_FOR_NETWORK_NAME": "binance",
     "PAYMENT_ORIGIN_CURRENCY": "eth",
     "PAYMENT_TOKEN": "ETH",
     "PAYMENT_TYPE_REFERAL": "REFERAL",
@@ -34,6 +35,7 @@
     "PAYMENT_EVENT_APPROVED": "approved",
     "PAYMENT_EVENT_CONFIRMED": "confirmed",
     "SMART_CONTRACT_GAS_LIMIT": 21000,
+    "SMART_CONTRACT_GAS_LIMIT_FOR_MINT": 21724,
     "SMART_CONTRACT_METHOD": "sendTokenTo",
     "SMART_CONTRACT_METHOD_MINT_FOR": "mintFor",
     "SMART_CONTRACT__GAS": 2400,
@@ -96,5 +98,6 @@
     "UPGRADE_USER_VOTE": 50,
     "UPGRADE_USER_COIN": 500,
     "PAYMENT_UPDATE_SUCCESS": "Transaction update successfully",
-    "TRANSACTION_NOT_FOUND": "Transaction not found"
+    "TRANSACTION_NOT_FOUND": "Transaction not found",
+    "ADMIN_UID": "Zd5mFlq1xPg7TJ97DVlZnILSrVq1"
 }

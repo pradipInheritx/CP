@@ -58,7 +58,8 @@ import {
   addReward,
   cardHolderListing,
   sendMintForPaxToAdmin,
-  sendMintForPaxToUser
+  sendMintForPaxToUser,
+  sendCMPComissionToFoundation
 } from "./common/models/Reward";
 import {
   cpviTaskCoin,
@@ -1103,6 +1104,13 @@ exports.sendEmail = functions.https.onCall(async () => {
     },
   };
   await sgMail.send(msg);
+});
+
+exports.sendCMPComissionToFoundation = functions.https.onCall(async (data) => {
+  const { userId, CMPComission } = data;
+  let getUserFoundation = await sendCMPComissionToFoundation(userId, CMPComission)
+  console.info("sendCMPComissionToFoundation", getUserFoundation);
+  return getUserFoundation;
 });
 
 exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
