@@ -203,7 +203,7 @@ const Minting = ({
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack } = useContext(AppContext);
+  const { showReward, setShowReward, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack,setIsVirtualCall } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const [tooltipShow, setTooltipShow] = React.useState(false);
@@ -286,12 +286,14 @@ const Minting = ({
     handleSoundClick()
     if (claim) {
       setLoading(true);
+      setIsVirtualCall(true);
       claimReward({
         uid: user?.uid,
         isVirtual: false,    }).then((result: any) => {        
         handleShow();
         setResultData(result);
         setRewardTimer(result);
+        setIsVirtualCall(false);
         if (result?.data) {
           // @ts-ignore
           setHeaderExtraVote({ vote: result?.data!.secondRewardExtraVotes, collect: false })
@@ -631,7 +633,7 @@ const Minting = ({
           </div>
           <Modal.Body className="d-flex  justify-content-center align-items-center">          
             
-              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>You still need ${(100 - score).toFixed(2)} CMP to claim your reward.</p>                    
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>You still need {(100 - score).toFixed(3)} CMP to claim your reward.</p>                    
             
           </Modal.Body>  
           <div className="d-flex justify-content-center pb-3 flex-column align-items-center " style={{ zIndex: '101' }}>

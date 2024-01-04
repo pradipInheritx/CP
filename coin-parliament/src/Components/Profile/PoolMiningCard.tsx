@@ -8,13 +8,13 @@ type PoolMiningCardProps = {
   user: Leader;
 };
 
-const Avatar = styled(Image)`
-  border: 3px solid var(--blue-violet);
-`;
+// const Avatar = styled(Image)`
+//   // border: 3px solid var(--blue-violet);
+// `;
 
 const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
   const translate = useTranslation();
-  const { avatar, displayName, status, subscribers, leaders, pct, score } =
+  const { avatar, displayName, status, subscribers, leaders, pct, score,isUserUpgraded } =
     user;
     
     
@@ -22,7 +22,12 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
     <div className="user_card mx-auto shadow-sm" style={{boxShadow: '0px 3px 6px #00000029',width:window.screen.width<979?'322px':'40%'}} >
       <div className="row hstack">
         <div className="col-2">
-          <Avatar
+          <Image
+          style={{
+            border:`${!isUserUpgraded && " 3px solid var(--blue-violet)"}`,
+            boxShadow: `${isUserUpgraded && "1px 0px 5px #FAE481"}`,
+            backgroundColor: `${isUserUpgraded && "#FAE481"}`,    
+          }}
             roundedCircle={true}
             src={avatar?importFile(`./The${avatar}`).default : importFile("./mystery", "png").default}
             alt="avatar"

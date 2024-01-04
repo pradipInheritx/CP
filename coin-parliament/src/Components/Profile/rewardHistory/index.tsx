@@ -64,32 +64,42 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null, isFoll
                     }}
                 >
                     {" "}
-                    <div className='d-flex justify-content-around  pt-2' >
+                    <div className={`${item?.winData?.firstRewardCardSerialNo ?'justify-content-around':"justify-content-center"} d-flex  pt-2`} >
                         <RewardList
                             className=""
-                            style={{ width: "30%" }}>
+                            style={{width:`${item?.winData?.firstRewardCardSerialNo ?"30%":"49%"}`}}
+                            >
                             <span style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}>
                                 {/* @ts-ignore */}
-                                {item?.winData?.thirdRewardDiamonds}&nbsp; {texts.parliamentcoin}
+                                {item?.winData?.thirdRewardDiamonds}&nbsp; VTE 
+                                
+                                {/* {texts.parliamentcoin} */}
                             </span>{" "}
 
                         </RewardList>
                         <div style={{
                             borderLeft: "1px solid black",
-                            maxHeight: '1.3rem'
+                            maxHeight: '1.3rem',
+                            // marginRight:`${!item?.winData?.firstRewardCardSerialNo && window.screen.width >767 ?"50px": !item?.winData?.firstRewardCardSerialNo && window.screen.width <767 ?"30px":""}`,
+                            // marginLeft:`${!item?.winData?.firstRewardCardSerialNo && window.screen.width >767 ?"50px": !item?.winData?.firstRewardCardSerialNo && window.screen.width <767 ?"30px":""}`
                         }} />
-                        <RewardList className="d-flex justify-content-center ">
+                        <RewardList className="d-flex justify-content-center "
+                        style={{
+                            width:`${!item?.winData?.firstRewardCardSerialNo && "49%"}`,
+                        }}
+                        >
                             <span style={{ color: "#050505", fontSize: window.screen.width < 525 ? '0.9em' : '1.2em', fontWeight: 'normal' }}>
                                 {/* @ts-ignore */}
                                 {item?.winData?.secondRewardExtraVotes} &nbsp; {texts.ExtraVotes}
                             </span>{" "}
 
                         </RewardList>
-                        <div style={{
+                        {item?.winData?.firstRewardCardSerialNo && <div style={{
                             borderLeft: "1px solid black",
                             maxHeight: '1.3rem'
-                        }} />
-                        <RewardList className=""
+                        }} />}
+
+                        {item?.winData?.firstRewardCardSerialNo &&<RewardList className=""
                             style={{
                                 width: "30%",
                                 color: "#050505"
@@ -116,9 +126,9 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null, isFoll
                             >
                                 {/* {item?.winData?.firstRewardCard} */}
                                 {/* @ts-ignore */}
-                                CARD ID &nbsp;{item?.winData?.firstRewardCardSerialNo || "NA"}
+                                CARD ID &nbsp;{item?.winData?.firstRewardCardSerialNo}
                             </span>
-                        </RewardList>
+                        </RewardList>}
                     </div>
                     <div className='d-flex justify-content-around pb-2 pt-3' style={{ color: "#050505", }}>
                         <span style={{ color: "#050505", fontSize: '0.8em', fontWeight: 'normal' }}>

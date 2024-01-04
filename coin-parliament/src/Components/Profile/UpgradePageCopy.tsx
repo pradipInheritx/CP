@@ -39,6 +39,7 @@ import XXVote from "../../assets/images/XXVote.png";
 import VOUCHER from "../../assets/images/VOUCHER.png";
 import { useNavigate } from "react-router-dom";
 import Upgrade from "./Comingsoon";
+import Spinner from "Components/Spinner";
 
 const H2 = styled.h2`
 color: #e6d348;
@@ -47,7 +48,7 @@ letter-spacing:3px;
   -webkit-text-stroke-width: 3px;
   -webkit-text-stroke-color: #e6d348;
   text-transform: uppercase;
-  font-size: 4rem;
+  
   text-shadow: 0px 1px 3px 0px #5B03FF;
   font-family: 'Lilita One';
 `;
@@ -186,6 +187,12 @@ const UpgradePageCopy = () => {
   
 
   return (
+    <>
+    {
+
+    
+    userInfo?
+   
     <>            
       <div
         className='p-0 m-0 w-100 d-flex justify-content-center'
@@ -194,7 +201,8 @@ const UpgradePageCopy = () => {
           backgroundImage: `${window.screen.width > 767 ? `url(${UGBG})` : `url(${UGBGM})`}`,
           backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}` ,
           backgroundPosition: "0 0",
-          backgroundSize: "100%",
+          // backgroundSize: "100% 100%",
+          backgroundSize:`${window.screen.width > 767 ? "100% 100%" : "100%"}`,
           // backgroundSize: "cover",
           backgroundAttachment: "fixed",   
           // height: "75vh",
@@ -214,7 +222,8 @@ const UpgradePageCopy = () => {
          {!userInfo?.isUserUpgraded && <H2
             style={{
               textAlign:"center",
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              fontSize: `${window.screen.width >767 ? "4rem":"2rem"}`,
             }}
           >
             {translate("Become a miner")}
@@ -223,7 +232,8 @@ const UpgradePageCopy = () => {
           {userInfo?.isUserUpgraded && <H2
             style={{
               textAlign: "center",
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              fontSize: `${window.screen.width >767 ? "4rem":"2rem"}`,
             }}
           >
             {translate("Congratulations")}
@@ -232,19 +242,20 @@ const UpgradePageCopy = () => {
           {userInfo?.isUserUpgraded && <H2
             style={{
               textAlign: "center",
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              fontSize: `${window.screen.width >767 ? "4rem":"2rem"}`,
             }}
           >
             {translate("YOU'RE NOW A MINER")}
           </H2>}
           
         {/* @ts-ignore */}
-         {!userInfo?.isUserUpgraded && <P
+         {!userInfo?.isUserUpgraded ? <P
             style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
             className="px-3 pt-4  pb-3"
           >
             Upgrade your account to a full mining account and enjoy the benefits of being a miner.
-          </P>}
+          </P>:null}
 {/* @ts-ignore */}
           {userInfo?.isUserUpgraded && <P
             style={{ fontSize: "18px", fontWeight: "100", marginTop: "10px" }}
@@ -462,7 +473,7 @@ const UpgradePageCopy = () => {
             }}
             className="mb-4"
           >
-            <p
+           {!userInfo?.isUserUpgraded && <p
               style={{
                 textAlign: "center",
                 color: "#dbbd54",
@@ -477,7 +488,7 @@ const UpgradePageCopy = () => {
             >
               In addition, you will
               receive the following gifts
-            </p>
+            </p>}
             <div className="d-flex justify-content-around mt-4 mb-3">
               <div
                 style={{
@@ -559,7 +570,17 @@ const UpgradePageCopy = () => {
       >
 
       </div> */}
+    </>:
+    
+    <div
+      className='d-flex justify-content-center align-items-center'
+      style={{ height: "100vh", width: "100vw", color: "white" }}
+    >
+      <Spinner />
+    </div>
+    }
     </>
+    
   );
 };
 

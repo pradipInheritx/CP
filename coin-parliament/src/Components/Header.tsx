@@ -36,6 +36,7 @@ import { claimRewardSound, handleExtraVote, handleSoundClick, handleSoundWinCmp 
 import CountUp from "react-countup";
 import { Other } from "Pages/SingleCoin";
 import { VoteContext } from "Contexts/VoteProvider";
+import Spinner from "./Spinner";
 
 enum EventKeys {
 	LOGIN = "login",
@@ -409,6 +410,8 @@ const Header = ({
 
 	console.log(followerInfo,"followerInfo")
 	return (
+<>
+{userInfo?
 
 		<MenuContainer
 			setMfaLogin={setMfaLogin}
@@ -1126,7 +1129,18 @@ const Header = ({
 				</Modal>
 			</div> */}
 		</MenuContainer >
-
+	:
+	null
+// 	<div
+// 	className='d-flex justify-content-center align-items-center'
+// 	style={{ height: "100vh", width: "100vw", color: "white" ,
+// overflow:"hidden"
+// }}
+// 	>
+// 	<Spinner />
+// 	</div>
+	}	
+		</>
 	);
 };
 

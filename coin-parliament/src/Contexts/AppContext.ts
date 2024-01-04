@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  isVirtualCall?:any, 
+  setIsVirtualCall?:any,
   avatarImage?: any,
   setAvatarImage?: any,
   selectBioEdit?: any,

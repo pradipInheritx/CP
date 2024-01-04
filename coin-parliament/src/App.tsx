@@ -107,7 +107,7 @@ import { useWindowSize } from "./hooks/useWindowSize";
 import Votes from "./Components/Profile/voteHistory/Votes";
 import { ToastContent, ToastOptions } from "react-toastify/dist/types";
 import FAQ from "./Pages/FAQ";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { myPages, quotes } from "./common/consts/contents";
 import Notifications from "./Components/Profile/Notifications";
 import Background from "./Components/Background";
@@ -354,6 +354,7 @@ function App() {
   const [headerExtraVote, setHeaderExtraVote] = useState<number>(0)
   const [rewardExtraVote, setRewardExtraVote] = useState<number>(0)
   const [afterVotePopup, setAfterVotePopup] = useState<any>(false)
+  const [isVirtualCall, setIsVirtualCall] = useState<any>(false)
   const [avatarImage, setAvatarImage] = useState<any>(null)
   const [albumOpen, setAlbumOpen] = useState<any>("")
   const localID = localStorage.getItem("userId") || false;
@@ -1259,9 +1260,12 @@ function App() {
   const paxDistributionOnClaimReward = httpsCallable(functions, "paxDistributionOnClaimReward");
 
   useEffect(() => {
-    if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0)) {
+console.log("i am calling",isVirtualCall);
+
+    if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0) && !isVirtualCall) {
+      console.log("i am calling again");
       claimReward({
-        uid: user?.uid,isVirtual: true,}).then(() => {        
+        uid: user?.uid,isVirtual: true}).then(() => {        
       }).catch(() => { });
       
       // paxDistributionOnClaimReward({
@@ -1386,6 +1390,8 @@ function App() {
                     setAvatarImage,
                     selectBioEdit,
                     setSelectBioEdit,
+                    isVirtualCall, 
+                    setIsVirtualCall,
                   withLoginV2e,
                   setWithLoginV2e,
                   transactionId,

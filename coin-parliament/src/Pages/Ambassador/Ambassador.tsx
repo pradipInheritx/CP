@@ -182,7 +182,7 @@ const
           backgroundImage: `${window.screen.width > 767 ? `url(${VBG})` : `url(${VBGM})`}`,
           backgroundRepeat: `${window.screen.width > 767 ? "no-repeat" : "repeat"}`,
           backgroundPosition: "0 0",
-          backgroundSize: "100%",
+          backgroundSize:`${window.screen.width > 767 ? "100% 100%" : "100%"}`,
           // backgroundSize: "cover",
           backgroundAttachment: "fixed",   
       }}
@@ -193,7 +193,7 @@ const
               fontSize: `${window.screen.width > 767 ? "4rem" : window.screen.width > 390 ? "3.5rem" : "2.8rem"}`,
               alignItems:"center"
           }}
-          >BECOME AMBASSADOR TODAY</H2>
+          >BECOME AMBASSADOR</H2>
         </div>
         <PoolBox style={{ paddingTop: '5em' }}>
 

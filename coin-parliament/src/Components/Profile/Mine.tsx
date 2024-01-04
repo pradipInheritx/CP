@@ -160,7 +160,7 @@ const Mine = () => {
           Cmppopup();
         }
         setShowBack(false)
-      }, 15000);
+      }, 10000);
     }
     return () => {
       if (timerPopup) {
