@@ -9,7 +9,7 @@ const ProtectedRoutes = () => {
 
     const [checkAuth, setCheckAuth] = useState<boolean | string>('none');
     const [loading, setLoading] = useState(true);
-    const { setUser, userInfo } = useContext(UserContext);
+    const { setUser, userInfo ,setUserInfo} = useContext(UserContext);
 
     useEffect(() => {
         auth.onAuthStateChanged(function (user) {
@@ -19,12 +19,16 @@ const ProtectedRoutes = () => {
                 setUser(user);
             } else {
                 setCheckAuth(false);
+                setUserInfo();
                 setUser();
             }
             setLoading(false);
         });
 
-    }, [JSON.stringify(auth.currentUser)]);
+    }, [auth?.currentUser]);
+
+    console.log(loading , localStorage.getItem('mfa_passed'),auth?.currentUser,checkAuth,userInfo,'hello');
+    
     return (!loading && localStorage.getItem('mfa_passed') !== 'true') ? (checkAuth ? <Outlet /> : <Navigate to={'/login'} />) : <></>;
 }
 
