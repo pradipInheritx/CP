@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+import { merge } from "lodash";
 const foundationConst: any = {}
 
 const getFoundationById = async (foundationId: string, res: any) => {
@@ -175,7 +176,18 @@ export const deleteFoundation = async (req: any, res: any) => {
         });
     }
 }
-
+export async function sendCPMToFoundation(userId:string,cpm:number){
+try {
+    const user:any = (await firestore().collection('user').doc(userId).get()).data();
+    console.log("user.foundationData.id : ",user?.foundationData?.id)
+    const foundationCPM = cpm * 0.1;
+    console.log("CMP : foundationCPM : ",cpm,foundationCPM)
+    await firestore().collection('foundations').doc(user?.foundationData?.id).set({commission :foundationCPM},{merge:true})
+} catch (error) {
+    console.log("sendCPMToFoundation : ",error);
+    errorLogging('sendCPMToFoundation','Error',error);
+}
+}
 
 export const errorLogging = async (
     funcName: string,

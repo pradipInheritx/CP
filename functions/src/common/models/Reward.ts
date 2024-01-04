@@ -12,7 +12,7 @@ import {
 
 import axios from "axios";
 import * as parentConst from "../consts/payment.const.json";
-
+import {sendCPMToFoundation} from "./Admin/Foundation"
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -474,11 +474,6 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
   }
 }
 
-export const sendCMPComissionToFoundation = async (userId: any, CMPComission: any) => {
-  const getUser: any = (await firestore().collection("users").doc(userId).get()).data();
-  console.info("user", getUser)
-  return getUser;
-}
 
 export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
   try {
@@ -606,6 +601,8 @@ export const addReward: (
       );
     console.log("Send the block complete notification : ", userId);
     await sendNotificationForCpm(userId); // For Send Notification
+    const cmp = (after.voteStatistics?.score || 0) - (before.voteStatistics?.score || 0);
+    await sendCPMToFoundation(userId,cmp); // add 0.1% cpm to foundation
     console.log("Finished execution addReward function");
     return;
   }
