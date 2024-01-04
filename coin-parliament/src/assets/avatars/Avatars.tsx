@@ -41,7 +41,7 @@ export const importFile = (name: string, ext: string = "png") => {
 };
 
 const Avatars = ({
-  type = AvatarType.Angel,
+  type,
   width = 160,
   style,
 }: AvatarsProps) => {
