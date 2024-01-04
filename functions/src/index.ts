@@ -8,7 +8,6 @@ import speakeasy from "speakeasy";
 
 import cors from "cors";
 import {
-  addNewKeysInCollection,
   Colors,
   isAdmin,
   userConverter,
@@ -254,19 +253,26 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
 });
 
 // temporarily used to add add keys to the collection
-exports.addNewKeysInCollection = functions.https.onCall((data) => {
-  const { keyName, keyValue, collectionName } = data;
-  console.log(
-    `keyName : ${keyName}, keyValue : ${keyValue}, collectionName : ${collectionName}`
-  );
-
-  if (keyName && collectionName) {
-    const result = addNewKeysInCollection(keyName, keyValue, collectionName);
-    return result;
-  } else
-    return {
-      message: "some credentials is missing",
-    };
+exports.addNewKeysInCollection = functions.https.onCall(async () => {
+  try {
+    const getAllUsers= (await admin.firestore().collection('users').get()).docs.map((user:any)=>user.data());
+    console.log("getAllUsers length : ", getAllUsers.length);
+    if(!getAllUsers) return {message : "No users found"}
+    const getStatusQuery :any= (await admin.firestore().collection('settings').doc('userTypes').get()).data();
+    const getStatusList = getStatusQuery.userTypes;
+    for(let index=0;index<getAllUsers.length;index++){
+      if(typeof getAllUsers[index].rewardStatistics.status === 'string'){
+        let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == getAllUsers[index].rewardStatistics.status.toLowerCase());
+        admin.firestore().collection('users').doc(getAllUsers[index].uid).set(status,{merge : true})
+        .then(()=>{console.log(`${getAllUsers[index].uid} is updated successfully`)})
+        .catch((error)=>{console.error(`${getAllUsers[index].uid} is not updated ....ERROR : ${error}`)});
+      }
+    }
+    return {message : "update operation complete"}
+  } catch (error) {
+    console.log("addNewKeysInCollection : error",error)
+    return {message : "something went wrong : ", error}
+  }
 });
 
 
