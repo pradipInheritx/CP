@@ -50,6 +50,10 @@ export type UserProps = {
     coin: string;
     address: string;
   },
+  cardAddress?: {
+    coin: string;
+    address: string;
+  },
   referalReceiveType?: {
     amount: string;
     name: string;

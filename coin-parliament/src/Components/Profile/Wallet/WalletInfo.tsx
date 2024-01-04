@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Form, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import firebase from "firebase/compat";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import axios from 'axios'
 import { auth, db } from 'firebase'
 import { doc, setDoc } from 'firebase/firestore'
@@ -64,10 +64,22 @@ position: absolute;
   text-align: center;
 `;
 
+const Icon3 = styled.i`
+  border-radius: 50%;
+  font-size: 13px;  
+position: absolute;
+  font-weight: 300;
+  top:-27px;
+  left:${window.screen.width >767 ? "430px":"125px"};
+  color: #6352e8;
+  text-align: center;
+`;
+
 function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
     const [savePaxAddress, setSavePaxAddress] = useState(false)
+    const [saveCardAddress, setSaveCardAddress] = useState(false)
     const [savePaymentMethod, setSavePaymentMethod] = useState(false);
     const [timeType, setTimeType] = useState<string>('time');
     const [limitType, setLimitType] = useState<string>("");
@@ -80,7 +92,10 @@ function WalletInfo() {
         coin: "BNB",
         address: "",
     });
-
+    const [CardDetails, setCardWalletDetails] = useState({
+        coin: "MATIC",
+        address: "",
+    });
     console.log(paxDetails,"paxDetails")
 
     const [walletDetailsObj, setWalletDetailsObj] = useState([{
@@ -89,6 +104,7 @@ function WalletInfo() {
     }]);
     const [tooltipShow, setTooltipShow] = React.useState(false);
     const [tooltipShowPax, setTooltipShowPax] = React.useState(false);
+    const [tooltipShowCard, setTooltipShowCard] = React.useState(false);
     const [tooltipShow2, setTooltipShow2] = React.useState(false);
     const [addType, setAddType] = React.useState("");
     const [validationErrors, setValidationErrors] = useState([]);
@@ -103,6 +119,10 @@ function WalletInfo() {
     })
 
     const [PaxErrorValue, setPaxErrorValue] = useState({
+        coinError: "",
+        walletError: ""
+    })
+    const [CardErrorValue, setCardErrorValue] = useState({
         coinError: "",
         walletError: ""
     })
@@ -134,7 +154,16 @@ function WalletInfo() {
             // @ts-ignore
             setPaxWalletDetails({});
         }
-
+        // @ts-ignore
+        if (typeof userInfo?.cardAddress === 'object') {            
+            // @ts-ignore
+            setCardWalletDetails(userInfo?.cardAddress || {});
+        }
+        else {
+            // @ts-ignore
+            setCardWalletDetails({});
+        }
+        
         console.log(userInfo?.wellDAddress,"userInfo?.wellDAddress")
         setSelectRadio(userInfo?.referalReceiveType?.name || '');
         setDefaultValue();
@@ -212,8 +241,21 @@ function WalletInfo() {
                 coinError: "",
                 walletError: ""
             })
+        } 
+        if(type == "CardDetails"){
+
+            setCardWalletDetails(
+                {
+                    coin: "MATIC",
+                    address: value,
+                }
+            )
+            setPaxErrorValue({
+                coinError: "",
+                walletError: ""
+            })
         }
-        else {            
+       if(type == "walletDetails") {            
             setWalletDetails({ ...walletDetails, [name]: value })
             setErrorValue({
                 coinError: "",
@@ -258,6 +300,24 @@ function WalletInfo() {
         }
     }
 
+    const updateCardAddress = async () => {
+        if (!CardDetails.coin) {
+            setCardErrorValue({ ...CardErrorValue, coinError: "Please select coin" })
+        } else if (!CardDetails.address) {
+            setCardErrorValue({ ...CardErrorValue, walletError: "Please Enter Card Address" })
+        }
+        else if (CardDetails.address) {
+            setSaveCardAddress(true);
+            const validate = await validateAddress(CardDetails.address, CardDetails.coin,"forCard")
+            if (validate) {
+                setSaveCardAddress(false);
+            } else {
+                setCardErrorValue({ ...CardErrorValue, walletError: "Please Enter Valid Card Address " })
+                setSaveCardAddress(false);
+            }
+        }
+    }
+
     console.log(PaxErrorValue,"PaxErrorValue")
 
     const validateAddress = async (inputAddress: string, type: string,checktype:string) => {
@@ -265,7 +325,9 @@ function WalletInfo() {
             `https://api.blockcypher.com/v1/${type.toLowerCase()}/main/addrs/${inputAddress}`
         ).then(async (response) => {            
             const { error } = response.data;
-            if (checktype == "forWallet") {                
+            console.log(response,"geterror")
+            
+            if (!error &&checktype == "forWallet") {                
                 setWalletDetails({ coin: "", address : ""})
                 if (auth?.currentUser) {
                     const allwalletData = [...walletDetailsObj, {
@@ -294,6 +356,20 @@ function WalletInfo() {
                     }, { merge: true });
                 }
                 showToast("PAX Adderss Add Successfully", ToastType.SUCCESS);
+            }
+
+            if (checktype == "forCard") {
+                if (auth?.currentUser) {
+                    const allwalletData = {
+                        address: inputAddress,
+                        coin: type,
+                    }
+                    const userRef = doc(db, "users", auth?.currentUser?.uid);
+                    await setDoc(userRef, {
+                        cardAddress: allwalletData
+                    }, { merge: true });
+                }
+                showToast("Card Adderss Add Successfully", ToastType.SUCCESS);
             }
             if (error) {
                 return false;                
@@ -504,6 +580,9 @@ function WalletInfo() {
         if (addType == "PAXADDADDERS") {
             updatePaxAddress()
         }                      
+        if (addType == "CARDADDADDERS") {
+            updateCardAddress()
+        }                      
     }
 
     // const AddWalletFunction = () => {
@@ -516,6 +595,118 @@ function WalletInfo() {
         <>
             <div className="mt-4"            
             >       
+               
+               {/* Wallet  */}
+               
+               {userInfo?.isUserUpgraded && <SelectTextfield
+                    label={"Add your address to receive the converted collectible card "}
+                    name={"Add your address to receive the converted collectible card "}                
+                >                    
+                    <div className={`${window.screen.width > 350 ? 'd-flex' : ''} w-100 text-uppercase`}  >
+                        {/* <select
+                            name="coin"
+                            id="coin"
+
+                            style={{
+                                width: "45%",
+                                padding: "11px 0px 11px 20px",
+                                borderRadius: "5px"
+                            }}
+                            value={paxDetails?.coin || ""}
+                            onChange={(e) => {
+                                handleChangeValue(e, "paxDetails")
+                            }}
+                        >
+                            <option value="">Choose coin</option>
+                            {coinListPax.map((item: any, index: number) => {
+                                return <option key={index} value={item.symbol} id={item.id}>{item.name}</option>
+                             })}
+                        </select> */}
+
+                        {
+                            tooltipShowCard &&
+                            <div
+                                style={{
+                                    display: "relative"
+                                }}
+                            >
+                                    <div className="newtooltip text-uppercase"
+                                    style={{
+                                        // right: "0%",
+                                        width: `${window.screen.width > 767 ? "50%" : "78%"}`,
+                                        marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
+                                        marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
+                                    }}
+                                >
+                                    {/* <p>Your CMP count</p> */}
+                                        <p className="mt-1 text-end lh-base">This address will be used in case you decide to convert your card reward to a collectible card</p>
+
+                                </div>
+                            </div>
+                        }
+                        <div className=''>
+                            <Icon3 className='bi bi-info-circle'
+                                onMouseDown={(e) => {
+                                    setTooltipShowCard(false)
+                                }}
+                                onMouseUp={(e) => {
+                                    setTooltipShowCard(true)
+                                }}
+                                onMouseEnter={() => setTooltipShowCard(true)}
+                                onMouseLeave={() => setTooltipShowCard(false)}
+                            ></Icon3>
+                        </div>
+                        <input
+                            style={{
+                                width: "45%",
+                                padding: "11px 0px 11px 20px",
+                                borderRadius: "5px"
+                            }}
+                            disabled
+                            name="coin"
+                            id="coin"                            
+                            value={"Polygon chain".toLocaleUpperCase()}                            
+                        />
+                        
+
+                        <div style={{ width: (window.screen.width < 350 ? '10em' : 'auto'), padding: '1em', textAlign: 'center' }}></div>
+                        <input
+                            className='text-uppercase'
+                            style={{
+                                width: "45%",
+                                padding: "10px 0px 10px 20px",
+                                borderRadius: "5px"
+                            }}
+                            name="address"
+                            type="address"
+                            placeholder="Enter address"
+                            value={CardDetails.address || ""}
+                            onChange={(e) => {
+                                handleChangeValue(e, "CardDetails")
+                            }}
+                        />
+                        <RemoveButton type='button'
+                            disabled={!CardDetails?.address || saveCardAddress}
+                            style={{
+                                marginLeft: "10px",
+                                borderRadius: "5px",
+                                fontSize: "12px",
+                            }}
+                            onClick={() => {
+                                // updateAddress()
+                                setAddType("CARDADDADDERS")
+                                handleModleShow()
+
+                            }}>
+                            {savePaxAddress ? <span className="loading">ADD..</span> : 'ADD'}
+                        </RemoveButton>
+                    </div>
+
+                    {CardErrorValue?.coinError && <Errorsapn>{CardErrorValue?.coinError}</Errorsapn>}
+                    {CardErrorValue?.walletError && <Errorsapn>{CardErrorValue?.walletError}</Errorsapn>}
+
+                </SelectTextfield>}
+
                 {/* PAX Wallet dropdown */}
                 
                 {userInfo?.isUserUpgraded && <SelectTextfield
@@ -700,7 +891,7 @@ function WalletInfo() {
                             placeholder="Enter address"
                                 value={item.address || ""}
                             onChange={(e) => {
-                                handleChangeValue(e, "")
+                                handleChangeValue(e, "walletDetails")
                             }}
                             />
                             <RemoveButton
@@ -765,7 +956,7 @@ function WalletInfo() {
                             }}
                             value={walletDetails?.coin.toLocaleUpperCase() || ""}
                             onChange={(e) => {
-                                handleChangeValue(e, "")
+                                handleChangeValue(e, "walletDetails")
                             }}
                         >
                             <option value="" className='text-uppercase'>{"Choose chain".toLocaleUpperCase()}</option>
@@ -786,7 +977,7 @@ function WalletInfo() {
                             placeholder={"Enter address".toLocaleUpperCase()}
                             value={walletDetails.address || ""}
                             onChange={(e) => {
-                                handleChangeValue(e, "")
+                                handleChangeValue(e, "walletDetails")
                             }}
                         />                       
                         <RemoveButton type='button'
