@@ -343,22 +343,22 @@ export const SignupRegular = async (
     await sendEmailVerification(auth?.currentUser).then((data) => {
       showToast("Successfully sent  verification link on your mail");
     });
-
+    const AuthUser=auth?.currentUser;
+    Logout();
     const referUser = await getReferUser(V2EParliament.firestore(), parentEmailId);    
 
     
-    await saveUserData((auth?.currentUser?.uid || ''), db, {
+    await saveUserData((AuthUser?.uid || ''), db, {
 
       firstTimeLogin: true,
       parent: referUser?.uid,
       // displayName: await generateUsername()
     });
     
-    await assign({ parent: referUser?.uid, child: auth?.currentUser?.uid })
+    await assign({ parent: referUser?.uid, child: AuthUser?.uid })
     // showToast("User register successfully.", ToastType.SUCCESS);
     // @ts-ignore
     // callback.successFunc(auth?.currentUser)
-    Logout();
     return true;
   } catch (e) {
     // callback.errorFunc(e as Error);
