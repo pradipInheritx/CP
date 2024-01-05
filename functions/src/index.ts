@@ -194,7 +194,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
-import {addNewKeysInCollection} from "./common/models/User";
+import { addNewKeysInCollection } from "./common/models/User";
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall((data) => {
   const { keyName, keyValue, collectionName } = data;
@@ -422,6 +422,35 @@ exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
 });
 
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
+
+
+exports.getUserNames = functions.https.onCall(async (data) => {
+  const { userIds = [] } = data as { userIds: string[] };
+  try {
+    if (userIds && userIds.length > 0) {
+      const usersRef = await admin
+        .firestore()
+        .collection("users")
+        .where(admin.firestore.FieldPath.documentId(), "in", userIds)
+        .get();
+
+      return usersRef.docs.map((doc) => {
+        const { displayName, email } = doc.data();
+        return {
+          id: doc.id,
+          username: displayName || email,
+        };
+      });
+    } else {
+      console.log("empty");
+      return [];
+    }
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+});
+
 
 exports.getUserNames = functions.https.onCall(async (data) => {
   const { userIds = [] } = data as { userIds: string[] };
