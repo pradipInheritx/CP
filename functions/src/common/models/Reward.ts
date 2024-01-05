@@ -12,6 +12,7 @@ import {
 
 import axios from "axios";
 import * as parentConst from "../consts/payment.const.json";
+import { sendCPMToFoundation } from "./Admin/Foundation"
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -197,7 +198,7 @@ export const addRewardTransaction: (
       transactionTime: firestore.FieldValue.serverTimestamp(),
     };
     console.log("addRewardTransaction.......", obj);
-    await firestore().collection("reward_transactions").doc().set(obj);
+    await firestore().collection("reward_transactions").add(obj);
     console.log("Finished execution addRewardTransaction function");
     return obj;
   };
@@ -250,7 +251,29 @@ const getVirtualRewardStatisticsByUserId = async (uid: string) => {
   console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics)
   return getVirtualRewardStatistics[0];
 }
+async function removeAllVirtualRewardByUserId(uid: string) {
+  try {
+    const getVirtualRewardListByUserId = (await firestore()
+      .collection('virtualRewardStatistics')
+      .where('userId', '==', uid)
+      .get())
+      .docs.map(reward => reward.data());
+    if (!getVirtualRewardListByUserId) {
+      console.log("not virtual reward list found");
+    }
+    for (let index = 0; index < getVirtualRewardListByUserId.length; index++) {
+      const deletedReward = await firestore().collection('virtualRewardStatistics')
+        .doc(getVirtualRewardListByUserId[index].rewardId)
+        .delete();
+      console.log(`index : ${index} || delete Reward :  ${deletedReward}`);
+      console.log(`${getVirtualRewardListByUserId[index].rewardId} is deleted successfully. || list length : ${getVirtualRewardListByUserId.length}`);
+    }
+    console.log("complete the remove operation from virtual reward transaction");
+  } catch (error) {
+    console.error(`Error to remove virtual Reward : ${error}`);
+  }
 
+}
 export const claimReward: (uid: string, isVirtual: boolean
 ) => { [key: string]: any } = async (
   uid: string,
@@ -279,15 +302,11 @@ export const claimReward: (uid: string, isVirtual: boolean
       if (isVirtual === false && total - claimed > 0) {
         const getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
         console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic)
-        // update the reward in User data
+
         await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
-        // add reward details into reward_transaction collection
+
         const result = await addRewardTransaction(uid, getVirtualRewardStatistic.winData, claimed + 1);
-        await firestore().collection('virtualRewardStatistics')
-          .doc(getVirtualRewardStatistic.rewardId)
-          .delete()
-          .then(() => console.log(`${getVirtualRewardStatistic.rewardId} is deleted successfully`))
-          .catch((error) => { console.error(`Error removing ${getVirtualRewardStatistic.rewardId} document: ${error}`); });
+        await removeAllVirtualRewardByUserId(uid);
         console.log("isVirtual Result : ", result)
         return result.winData;
       }
@@ -473,7 +492,6 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
   }
 }
 
-
 export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
   try {
     console.info("Get paxDistributionToUser For User", paxDistributionToUser);
@@ -600,6 +618,8 @@ export const addReward: (
       );
     console.log("Send the block complete notification : ", userId);
     await sendNotificationForCpm(userId); // For Send Notification
+    const cmp = (after.voteStatistics?.score || 0) - (before.voteStatistics?.score || 0);
+    await sendCPMToFoundation(userId, cmp); // add 0.1% cpm to foundation
     console.log("Finished execution addReward function");
     return;
   }

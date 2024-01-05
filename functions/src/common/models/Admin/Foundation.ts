@@ -3,7 +3,7 @@ const foundationConst: any = {}
 
 const getFoundationById = async (foundationId: string, res: any) => {
     try {
-        console.log("foundationId : ",foundationId)
+        console.log("foundationId : ", foundationId)
         const data = (await firestore().collection('foundations').doc(foundationId).get()).data();
         console.log("getFoundationById : ", data)
         if (!data) {
@@ -57,14 +57,14 @@ export const createFoundation = async (req: any, res: any) => {
             commission: 0,
             timestamp: Date.now(),
             address,
-            maxCMP : 100
+            maxCMP: 100
         }
 
         const addNewFoundation = await firestore().collection('foundations').add(foundationObject);
-        console.log("addNewFoundation.id : ",addNewFoundation.id)
-        await firestore().collection('foundations').doc(addNewFoundation.id).set({ id: addNewFoundation.id },{merge: true});
+        console.log("addNewFoundation.id : ", addNewFoundation.id)
+        await firestore().collection('foundations').doc(addNewFoundation.id).set({ id: addNewFoundation.id }, { merge: true });
         const result = (await firestore().collection('foundations').doc(addNewFoundation.id).get()).data();
-        console.log("result: " ,result)
+        console.log("result: ", result)
         res.status(201).send({
             status: true,
             message: foundationConst.FOUNDATION_CREATE_SUCCESS,
@@ -124,16 +124,16 @@ export const updateFoundation = async (req: any, res: any) => {
             name,
             address
         } = req.body;
-        const updatedData :any = {};
-        if(name){
+        const updatedData: any = {};
+        if (name) {
             updatedData['name'] = name;
         };
-        if(address){
+        if (address) {
             updatedData['address'] = address;
         }
         console.log("Updated data : ", updatedData);
         await getFoundationById(foundationId, res);
-        await firestore().collection('foundations').doc(foundationId).set(updatedData,{merge: true});
+        await firestore().collection('foundations').doc(foundationId).set(updatedData, { merge: true });
         const result = await getFoundationById(foundationId, res);
         res.status(200).send({
             status: true,
@@ -175,7 +175,23 @@ export const deleteFoundation = async (req: any, res: any) => {
         });
     }
 }
-
+export async function sendCPMToFoundation(userId: string, cpm: number) {
+    try {
+        const user: any = (await firestore().collection('user').doc(userId).get()).data();
+        console.log("user.foundationData.id : ", user?.foundationData?.id)
+        const foundation = (await firestore().collection('foundations').doc(user?.foundationData?.id).get()).data();
+        const foundationCPM = (cpm*10) / 100;
+        const commission = Number(foundation?.commission) + foundationCPM;
+        if ((commission / 100) >= 1) {
+            // foundation Payment method here
+        }
+        console.log("CMP : foundationCPM : ", cpm, foundationCPM);
+        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission, commissionEarn: commission }, { merge: true });
+    } catch (error) {
+        console.log("sendCPMToFoundation : ", error);
+        errorLogging('sendCPMToFoundation', 'Error', error);
+    }
+}
 
 export const errorLogging = async (
     funcName: string,
