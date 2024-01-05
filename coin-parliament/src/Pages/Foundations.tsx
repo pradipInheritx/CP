@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { db } from "firebase";
 import { ToastType } from "Contexts/Notification";
 import { Buttons } from "Components/Atoms/Button/Button";
-
+import { Avatar } from "Components/Profile/PoolMiningCard";
 const text = [
   {
     image: UNICEF,
@@ -39,6 +39,13 @@ const text = [
     text: "American Red Cross: The American Red Cross provides disaster relief, blood donation services, and support to military families, saving lives and easing human suffering."
   },
 ]
+const avatarIMG:any = {
+  "SAVE THE CHILDREN":savetheChildren,
+  "UNICEF WALLET":UNICEF,
+  "UNITED WAY":unitedWay,
+  "AMERICAN RED CROSS":americanRedCross,
+  "SALVATION ARMY":salvationArmy
+}
 
 const HeaderText = styled.p`
   font-size: 15px;
@@ -133,17 +140,30 @@ const Foundations = () => {
           <HeaderText className='mt-4 text-uppercase'>This is foundation select by you</HeaderText>
 
 
-          <div className='w-100 d-flex justify-content-between'>
+          <div className='w-100 ' style={{backgroundColor:"#5d4ae1",
+            color: "white",
+            width:"40%",
+            height:"40px",
+            borderRadius:'6px',
+            lineHeight:"40px",
+            padding:"25px",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-between"}}>
 
-            <select
+           {FoundationEdit?<select
               name="coin"
               id={foundationData.id}
               style={{
-                width: `${window.screen.width > 767 ? "70%" : "70%"}`,
-                padding: "9px 0px 9px 20px",
-                borderRadius: "5px"
+                // width: `${window.screen.width > 767 ? "70%" : "70%"}`,
+                // padding: "9px 0px 9px 20px",
+                // borderRadius: transparent","
+                border:"none",
+                backgroundColor:"#5d4ae1",
+                outline:"none",
+                color: "white"
               }}
-              value={foundationData.name}
+              value={foundationData?.name}
               disabled={!FoundationEdit}
               onChange={(e) => {
                 handleChangeValue(e)
@@ -153,11 +173,11 @@ const Foundations = () => {
               {FoundationArray.map((item: any, index: number) => {
                 return <option className='' key={index} value={item.name} id={item.id}>{item.name.toUpperCase()}</option>
               })}
-            </select>
+            </select>: <span style={{textTransform:"uppercase"}}>{foundationData?.name}</span> }
 
-            <Buttons.Primary
+            <span
               // disabled={!foundationData.id || !foundationData.name}
-              type='button' style={{ maxWidth: '200px', }}
+              style={{ maxWidth: '200px', }}
               onClick={() => {
                 if (foundationData.id && foundationData.name && FoundationEdit) {                  
                   onSubmitAvatar()
@@ -167,30 +187,76 @@ const Foundations = () => {
               }}
             >              
               {FoundationEdit ? "Save" :"Edit"}
-            </Buttons.Primary>
+            </span>
             </div>
           </>
           }          
           <div>
 
-            <div className='d-flex justify-content-between my-3 text-uppercase'>
-              <strong>Foundation &nbsp;Name</strong>
+            <div className='d-flex justify-content-between my-3 text-uppercase '>
+           
+              <strong>Foundation</strong>
               <strong>Total Cpm</strong>
             </div>
             {FoundationArray.map((item: any, index: number) => {
               return (
                 <>
-                  <div className='d-flex justify-content-between mt-2 text-uppercase'>
-                    <span
+                  <div style={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+                  width:"100%",
+                  height:"76px",
+                  borderRadius:"6px",
+                  padding:"20px"}}>
+                          <div className="row hstack">
+                              <div className="col-2" style={{width:"15%"}}>
+                              <Avatar
+                                  roundedCircle={true}
+                                  src={avatarIMG[`${item.name.toUpperCase()}`]}
+                                  alt="avatar"
+                                  className="avatar_sm"
+                              />
+                              </div>
+
+                              <div className="col-7" style={{width:"75%"}}>
+                              <span className="badge_sm rounded-pill vstack" style={{marginBottom:'2px',
+                                    width:"150px",
+                                    height:"21px",
+                                    padding:"2px",
+                                    fontSize:"11px",
+                                    display:"flex",
+                                    justifyContent:"center",
+                                    fontWeight:"bold"}}>{item.name}</span>
+                              </div>
+
+                              <div className="col-3" style={{width:"10%"}}>
+                              <span className='d-flex justify-content-center'
+                                style={{
+                                    width: "10%",
+                                    color: "#6352E8"
+                                    }}
+                                 >{item.commission}</span>
+                              </div>
+                          </div>
+                    {/* <span
                       style={{
                         width: "90%"
-                      }}>{item.name}</span>
-                    <span className='d-flex justify-content-center'
+                      }}>{item.name}</span> */}
+
+
+                       {/* <span className="badge_sm rounded-pill" style={{marginBottom:'2px',
+                       width:"95px",
+                       height:"21px",
+                       padding:"5px",
+                       fontSize:"8px"}}>{item.name}</span> */}
+
+                    {/* <span className='d-flex justify-content-center'
                       style={{
-                        width: "10%"
+                        width: "10%",
+                        color: "#6352E8"
                       }}
-                    >{item.commission}</span>
+                    >{item.commission}</span> */}
                   </div>
+
+           
                 </>
               )
             })}

@@ -8,7 +8,7 @@ type PoolMiningCardProps = {
   user: Leader;
 };
 
-const Avatar = styled(Image)`
+export const Avatar = styled(Image)`
   border: 3px solid var(--blue-violet);
 `;
 
