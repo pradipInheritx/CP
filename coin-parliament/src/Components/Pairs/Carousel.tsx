@@ -186,13 +186,15 @@ const Carousel = ({
               key={i}
 
             >
-              <CardsContainer
+              {console.log(arr,"arrcheck")}
+              {arr?.length > 0 ?<CardsContainer
                 cols={cols}
                 gap={gap}
                 offset={offset}
-                {...handlers}
+                {...handlers}              
               >
-                {arr.map((pair, j) => {
+                
+                {arr?.map((pair, j) => {
                   const [coin1, coin2] = pair || [];
                   const combination = symbolCombination([
                     coin1.symbol,
@@ -200,7 +202,7 @@ const Carousel = ({
                   ]);
 
                   return (
-                    <div className="d-flex px-1" key={j}>
+                    <div className="d-flex px-1" key={j}>                      
                       <PairCard className="w-100" >
                         <Card
                           favorite={favorites.includes(combination)}
@@ -223,7 +225,9 @@ const Carousel = ({
                     </div>
                   );
                 })}
-              </CardsContainer>
+              </CardsContainer> :               
+              <p className="text-center py-3">Data not Found</p>
+              }
             </div>
           ) : null;
         })}

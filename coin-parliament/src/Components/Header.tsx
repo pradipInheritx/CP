@@ -721,7 +721,20 @@ const Header = ({
 													</>
 												}
 											</div>}
-											{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
+													{(!!userInfo?.status?.name && !followerPage) && <MemberText
+														style={{
+															marginLeft: `${!userInfo?.isUserUpgraded && "-40px"}`
+																}}
+													>{userInfo?.status?.name}</MemberText>}
+
+													{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText className="mx-2" style={{ background: "#ff9700", color: "black" }}
+														onClick={() => {
+															if (!showMenubar) {
+																handleSoundClick()
+																navigate("/upgrade")
+															}
+														}}
+													>UPGRADE NOW</MemberText>}
 
 										</div>
 									</div>
@@ -996,7 +1009,21 @@ const Header = ({
 														}
 													</div>}
 													
-													{(!!userInfo?.status?.name && !followerPage) && <MemberText>{userInfo?.status?.name}</MemberText>}
+																{(!!userInfo?.status?.name && !followerPage) && <MemberText
+																	style={{
+																		marginLeft: `${!userInfo?.isUserUpgraded && "-55px"}`
+																	}}
+																>{userInfo?.status?.name}</MemberText>}
+																{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText className="mx-2" style={{ background: "#ff9700", color: "black" }}
+																	onClick={() => {
+																		if (!showMenubar) {
+																			handleSoundClick()
+																			navigate("/upgrade")
+																		}
+																}}
+																>UPGRADE NOW</MemberText>}
+																
+																
 												</div>
 											}
 	

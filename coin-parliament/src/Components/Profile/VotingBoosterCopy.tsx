@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useState } from "react";
-import { Col, Image, Row } from "react-bootstrap";
+import { Col, Image, Modal, Row } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Pairs from "../Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -35,6 +35,7 @@ import VBG from '../../assets/images/VBG.png';
 import VBGM from '../../assets/images/VBGM.png';
 import Upgrade from "./Comingsoon";
 import { handleSoundClick } from "common/utils/SoundClick";
+import { Buttons } from "Components/Atoms/Button/Button";
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -193,7 +194,7 @@ const VotingBoosterCopy = () => {
   const { showModal } = useContext(NotificationContext);
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
-
+const [comingSoon, setComingSoon] = useState(false)
   const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
@@ -364,7 +365,8 @@ const VotingBoosterCopy = () => {
                     onClick={() => {
                       handleSoundClick()
                       // getExtraVote(item.value, item.vote, item.Extra)
-                      showModal(<Upgrade />)
+                      // showModal(<Upgrade />)
+                      setComingSoon(true)
                   }}
                   >BUY NOW !</button>
                 </ButttonDiv>                
@@ -465,7 +467,8 @@ const VotingBoosterCopy = () => {
                   <button
                     onClick={() => {
                       // getExtraVote(item.value, item.vote, item.Extra)
-                      showModal(<Upgrade />)
+                      // showModal(<Upgrade />)
+                      setComingSoon(true)
                     }}
                   >BUY NOW !</button>
                 </ButttonDivMob>
@@ -476,7 +479,34 @@ const VotingBoosterCopy = () => {
           })}          
         </div >
         
-      </div >               
+      </div >  
+      
+      <div>
+        <Modal
+          show={
+            comingSoon
+          } onHide={() => { setComingSoon(false) }}
+          backdrop="static"                    
+          aria-labelledby="contained-modal-title-vcenter"          
+          centered
+        >
+          <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+            <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+
+              setComingSoon(false)
+
+            }
+            }></button>
+          </div>
+          <Modal.Body className="d-flex  justify-content-center align-items-center"            
+          >
+
+            <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Coming soon</p>
+
+          </Modal.Body>
+        </Modal>
+      </div>
+
       {window.screen.width < 767 && <div>
         <img src={votingbooster} alt="" className=""  width={"100px"}/>
       </div>}

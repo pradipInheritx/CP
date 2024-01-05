@@ -123,7 +123,7 @@ const MyCarousel = ({
     );
   };
   return (
-    <CarouselWrapper width={window.screen.width} centerMode={centerMode} coin={coin}>
+    <CarouselWrapper width={window.screen.width} centerMode={centerMode} coin={coin} >
       {/* @ts-ignore */}
       <Carousel
         customButtonGroup={cursorShow == true ? <ButtonGroup /> : <></>}
