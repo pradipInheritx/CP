@@ -261,11 +261,13 @@ exports.addNewKeysInCollection = functions.https.onCall(async () => {
     const getStatusQuery :any= (await admin.firestore().collection('settings').doc('userTypes').get()).data();
     const getStatusList = getStatusQuery.userTypes;
     for(let index=0;index<getAllUsers.length;index++){
-      if(typeof getAllUsers[index].rewardStatistics.status === 'string'){
+      if(typeof getAllUsers[index].rewardStatistics.status != 'string'){
+
         let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == getAllUsers[index].rewardStatistics.status.toLowerCase());
-        admin.firestore().collection('users').doc(getAllUsers[index].uid).set({status : status[0]},{merge : true})
-        .then(()=>{console.log(`${getAllUsers[index].uid} is updated successfully`)})
-        .catch((error)=>{console.error(`${getAllUsers[index].uid} is not updated ....ERROR : ${error}`)});
+        console.log("status : ", status);
+        await admin.firestore().collection('users').doc(getAllUsers[index].uid).set({"status" : status[0]},{merge : true})
+        console.log(`${getAllUsers[index].uid} is updated successfully`)
+       
       }
     }
     return {message : "update operation complete"}
