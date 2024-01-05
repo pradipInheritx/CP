@@ -12,7 +12,7 @@ import {
 
 import axios from "axios";
 import * as parentConst from "../consts/payment.const.json";
-import {sendCPMToFoundation} from "./Admin/Foundation"
+import { sendCPMToFoundation } from "./Admin/Foundation"
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const distribution: { [key: number]: { [key: string]: number[] } } = {
@@ -283,6 +283,9 @@ export const claimReward: (uid: string, isVirtual: boolean
         // update the reward in User data
         await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
         // add reward details into reward_transaction collection
+        // Remove isUpgrade Rewards Transaction
+        // Match the score for Courtney 
+        // Get User Rewards Transaction Length < getVirtualRewardStatistic.rewardObj claimed Then call add Reward Transaction
         const result = await addRewardTransaction(uid, getVirtualRewardStatistic.winData, claimed + 1);
         await firestore().collection('virtualRewardStatistics')
           .doc(getVirtualRewardStatistic.rewardId)
@@ -474,6 +477,9 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
   }
 }
 
+export const sendMintForPaxToFoundation = async (foundationId: any) => {
+
+}
 
 export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
   try {
@@ -602,7 +608,7 @@ export const addReward: (
     console.log("Send the block complete notification : ", userId);
     await sendNotificationForCpm(userId); // For Send Notification
     const cmp = (after.voteStatistics?.score || 0) - (before.voteStatistics?.score || 0);
-    await sendCPMToFoundation(userId,cmp); // add 0.1% cpm to foundation
+    await sendCPMToFoundation(userId, cmp); // add 0.1% cpm to foundation
     console.log("Finished execution addReward function");
     return;
   }
