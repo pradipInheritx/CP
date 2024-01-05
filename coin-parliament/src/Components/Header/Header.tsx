@@ -33,7 +33,7 @@ const Header = () => {
             </Link>
           </Navbar.Brand>
 
-          {auth.currentUser && (
+          {(auth.currentUser&& userInfo) && (
             <Navbar.Collapse className="justify-content-end" style={{ color: 'white', cursor: 'pointer' }}>
 
             {userInfo?.avatar ?
