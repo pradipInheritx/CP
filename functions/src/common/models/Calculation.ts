@@ -549,13 +549,13 @@ const getTotalCountOfUserType = async () => {
   return { getTotalNumberOfSpeaker, getTotalNumberOfCouncil, getTotalNumberOfAmbassador, getTotalNumberOfMinister, getTotalNumberOfChairman }
 };
 
- 
+
 export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
   async () => {
     // get already existing Leader 
     let getLeadersResponse: any = await getLeaders();
     // get userTypes
-    const getStatusQuery :any= (await firestore().collection('settings').doc('userTypes').get()).data();
+    const getStatusQuery: any = (await firestore().collection('settings').doc('userTypes').get()).data();
     const getStatusList = getStatusQuery.userTypes;
     console.log("getStatusList :  ", getStatusList);
     let leaders = getLeadersResponse
@@ -571,7 +571,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let leaderStatusForSpeaker: Leader[] = [];
     console.log("getTotalNumberOfSpeaker", getTotalNumberOfSpeaker);
     if (getTotalNumberOfSpeaker && getTotalNumberOfSpeaker > 0) {
-      let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == 'speaker');
+      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'speaker');
       console.log("Status: " + status);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
@@ -592,7 +592,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
-            .set({ status }, { merge: true });
+            .set({ "status": status[0] }, { merge: true });
         }
       }
 
@@ -609,7 +609,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let leaderStatusForCouncil: Leader[] = [];
     if (getTotalNumberOfCouncil && getTotalNumberOfCouncil > 0) {
       // console.log("getTotalNumberOfCouncil", getTotalNumberOfCouncil);
-      let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == 'council');
+      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'council');
       console.log("Status: " + status);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
@@ -626,7 +626,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
-            .set({ status }, { merge: true });
+            .set({ "status": status[0] }, { merge: true });
         }
       }
       leaders.splice(0, getTotalNumberOfCouncil);
@@ -646,7 +646,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let leaderStatusForAmbassador: Leader[] = [];
     if (getTotalNumberOfAmbassador && getTotalNumberOfAmbassador > 0) {
       // console.log("getTotalNumberOfAmbassador", getTotalNumberOfAmbassador);
-      let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == 'ambassador');
+      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'ambassador');
       console.log("Status: " + status);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
@@ -663,7 +663,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
-            .set({ status }, { merge: true });
+            .set({ "status": status[0] }, { merge: true });
         }
       }
       leaders.splice(0, getTotalNumberOfAmbassador);
@@ -677,7 +677,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let leaderStatusForMinister: Leader[] = [];
     if (getTotalNumberOfMinister && getTotalNumberOfMinister > 0) {
       // console.log("getTotalNumberOfMinister", getTotalNumberOfMinister);
-      let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == 'minister');
+      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'minister');
       console.log("Status: " + status);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
@@ -694,7 +694,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
-            .set({ status }, { merge: true });
+            .set({ "status": status[0] }, { merge: true });
         }
       }
       leaders.splice(0, getTotalNumberOfMinister);
@@ -709,7 +709,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
     let leaderStatusForChairman: Leader[] = [];
     if (getTotalNumberOfChairman && getTotalNumberOfChairman > 0) {
       console.log("getTotalNumberOfChairman", getTotalNumberOfChairman);
-      let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == 'chairman');
+      let status = getStatusList.filter((level: any) => level.name.toLowerCase() == 'chairman');
       console.log("Status: " + status);
       for (let leader = 0; leader < leaders.length; leader++) {
         const eachUser: any = leaders[leader];
@@ -726,7 +726,7 @@ export const setLeaders: () => Promise<FirebaseFirestore.WriteResult> =
           await firestore()
             .collection("users")
             .doc(eachUser.userId)
-            .set({ status }, { merge: true });
+            .set({ "status": status[0] }, { merge: true });
         }
       }
       leaders.splice(0, getTotalNumberOfChairman);
