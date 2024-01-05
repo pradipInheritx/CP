@@ -263,7 +263,7 @@ exports.addNewKeysInCollection = functions.https.onCall(async () => {
     for(let index=0;index<getAllUsers.length;index++){
       if(typeof getAllUsers[index].rewardStatistics.status === 'string'){
         let status = getStatusList.filter((level:any)=>level.name.toLowerCase() == getAllUsers[index].rewardStatistics.status.toLowerCase());
-        admin.firestore().collection('users').doc(getAllUsers[index].uid).set(status,{merge : true})
+        admin.firestore().collection('users').doc(getAllUsers[index].uid).set({status : status[0]},{merge : true})
         .then(()=>{console.log(`${getAllUsers[index].uid} is updated successfully`)})
         .catch((error)=>{console.error(`${getAllUsers[index].uid} is not updated ....ERROR : ${error}`)});
       }
