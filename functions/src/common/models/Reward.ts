@@ -492,10 +492,6 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
   }
 }
 
-export const sendMintForPaxToFoundation = async (foundationId: any) => {
-
-}
-
 export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
   try {
     console.info("Get paxDistributionToUser For User", paxDistributionToUser);
