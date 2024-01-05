@@ -84,9 +84,9 @@ export const myPages: ContentPage[] = [
     slug: "foundations",
   },
   {
-    title: "FAQ",
+    title: "Knowledge Hub",
     content: privacy,
-    slug: "FAQ",
+    slug: "knowledgehub",
   },
 ];
 

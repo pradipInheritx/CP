@@ -56,7 +56,7 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null, isFoll
                 }} >
                 {texts.REWARDHISTORY}
             </div>
-            {data?.map((item, index) => (
+            {data?.map((item:any, index:number) => (
                 <div key={index}
                     className="my-2"
                     style={{

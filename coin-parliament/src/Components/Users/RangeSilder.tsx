@@ -401,7 +401,7 @@ export default function SpeedTest(
     setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
   }, [symbol1, allCoinsSetting, vote?.voteTime])
   return (
-    <MotionConfig transition={{ type: "tween", ease: "linear" }} >
+    <MotionConfig transition={{ duration: 0.1, type: "tween", ease: "linear" }} >
       <Speed value={persentValue} />{/* // low<mid 40-60>high */}
     </MotionConfig>
   );

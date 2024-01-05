@@ -66,19 +66,29 @@ const WalletBalance = () => {
                             if (value == "ETH" || value == "BNB" || value == "MATIC") {
                                 return <>
 
-                                    <div className='d-flex justify-content-between align-items-center my-2'>
+                                    <div className='d-flex justify-content-around align-items-center my-2 '
+                                        style={{
+                                            background: "white",
+                                            borderRadius: "5px",
+                                            padding:"8px",
+                                    }}
+                                    >
                                         <div className='d-flex align-items-center'>
                                             <Logo
                                                 symbol={value}
-                                            />
-                                            <p className=''
-                                                style={{
-                                                    marginLeft: `${value == "ETH" ? "28px" : "23px"}`
-                                                }}
-                                            >{value} :</p>
+                                            />                                            
                                         </div>
+                                        <p className=''
+                                            style={{
+                                                // marginLeft: `${value == "ETH" ? "28px" : "23px"}`
+                                            }}
+                                        >{value} </p>
                                         {/* @ts-ignore */}
-                                        <p className=''>{pendingAmount[value]}</p>
+                                        <p className=''
+                                            style={{
+                                                color:"#6352E8",
+                                        }}
+                                        >{pendingAmount[value]}</p>
                                     </div>
                                 </>
                         }

@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useState, useEffect } from "react";
-import { Image } from "react-bootstrap";
+import { Image, Modal } from "react-bootstrap";
 import { useTranslation } from "../../common/models/Dictionary";
 import Pairs from "../Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -167,6 +167,7 @@ const UpgradePageCopy = () => {
   const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
   const [clicked, setClicked] = useState(false)
+  const [comingSoon, setComingSoon] = useState(false)
   const screenWidth = () => (window.screen.width > 979 ? "22%" : "40%");
   const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
   const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
@@ -406,7 +407,8 @@ const UpgradePageCopy = () => {
                   onClick={() => {
                     handleSoundClick()
                     // upgradeProfile(99, 0)
-                    showModal(<Upgrade />)
+                          // showModal(<Upgrade />)
+                          setComingSoon(true)
                   }}
                 >
                   <div className='d-flex justify-content-around' >
@@ -462,92 +464,117 @@ const UpgradePageCopy = () => {
               // }}
             />
           </div>}
-          <div
-            style={{
-              width: `${window.screen.width > 767 ? "800px" : "100%"}`,
-              border: `${window.screen.width > 767 ?"3px solid #f3f6fa" :"2.5px solid #d4b05c"}`,
-              borderRadius: `${window.screen.width > 767 ? "55px":"10px"}`,
-              padding: "15px 5px 15px 5px",
-              margin: "auto",
-              background:`${ window.screen.width > 767 && "linear-gradient(180deg,rgba(82, 99, 184, 0.30) 0%,rgba(178, 102, 245, 0.30) 100%)"}`,
-            }}
-            className="mb-4"
-          >
-           {!userInfo?.isUserUpgraded && <p
-              style={{
-                textAlign: "center",
-                color: "#dbbd54",
-                fontFamily: 'Lilita One',
-            fontSize: "25px",
-            fontStyle: "normal",
-            fontWeight: "900",
-            lineHeight: "normal",
-              // textTransform: `${window.screen.width < 767 ? "uppercase":""}`,
-            letterSpacing:"2px"
-            }}
-            >
-              In addition, you will
-              receive the following gifts
-            </p>}
-            <div className="d-flex justify-content-around mt-4 mb-3">
-              <div
-                style={{
-                  background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
-                  width: `${window.screen.width > 767 ? "19%" : "28%"}`,
-                  borderRadius: "25px",                  
-                }}
-                className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
-              >
-                <img src={GiftUg2} alt="" width={"40px"} />
-                <p className="text-center mt-2"
+                {!userInfo?.isUserUpgraded && <div
                   style={{
-                    fontSize: "14px",
-                  }}>
+                    width: `${window.screen.width > 767 ? "800px" : "100%"}`,
+                    border: `${window.screen.width > 767 ? "3px solid #f3f6fa" : "2.5px solid #d4b05c"}`,
+                    borderRadius: `${window.screen.width > 767 ? "55px" : "10px"}`,
+                    padding: "15px 5px 15px 5px",
+                    margin: "auto",
+                    background: `${window.screen.width > 767 && "linear-gradient(180deg,rgba(82, 99, 184, 0.30) 0%,rgba(178, 102, 245, 0.30) 100%)"}`,
+                  }}
+                  className="mb-4"
+                >
+                  <p
+                    style={{
+                      textAlign: "center",
+                      color: "#dbbd54",
+                      fontFamily: 'Lilita One',
+                      fontSize: "25px",
+                      fontStyle: "normal",
+                      fontWeight: "900",
+                      lineHeight: "normal",
+                      // textTransform: `${window.screen.width < 767 ? "uppercase":""}`,
+                      letterSpacing: "2px"
+                    }}
+                  >
+                    In addition, you will
+                    receive the following gifts
+                  </p>
+                  <div className="d-flex justify-content-around mt-4 mb-3">
+                    <div
+                      style={{
+                        background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
+                        width: `${window.screen.width > 767 ? "19%" : "28%"}`,
+                        borderRadius: "25px",
+                      }}
+                      className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+                    >
+                      <img src={GiftUg2} alt="" width={"40px"} />
+                      <p className="text-center mt-2"
+                        style={{
+                          fontSize: "14px",
+                        }}>
                   
-                  Merchandise Voucher</p>
-              </div>
-              <div
-              style={{                
-                  background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
-                  width: `${window.screen.width > 767 ? "19%" : "28%"}`,
-                  borderRadius: "25px",
+                        Merchandise Voucher</p>
+                    </div>
+                    <div
+                      style={{
+                        background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
+                        width: `${window.screen.width > 767 ? "19%" : "28%"}`,
+                        borderRadius: "25px",
                   
 
-                }}   
-                className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
-              >
-                <img src={VoteUg} alt="" width={"70px"} />
-                <p className="text-center mt-2"
-                  style={{
-                    fontSize: "14px",
-                    padding:"1px"
-                  }}>
+                      }}
+                      className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+                    >
+                      <img src={VoteUg} alt="" width={"70px"} />
+                      <p className="text-center mt-2"
+                        style={{
+                          fontSize: "14px",
+                          padding: "1px"
+                        }}>
                   
-                  50 <br /> Extra Votes</p>
-              </div>
-              <div
-                style={{
+                        50 <br /> Extra Votes</p>
+                    </div>
+                    <div
+                      style={{
                   
-                  background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
-                  width: `${window.screen.width > 767 ? "19%" : "28%"}`,
-                  borderRadius: "25px",
+                        background: `${window.screen.width < 767 && "linear-gradient(180deg, rgba(82,99,184,1) 0%, rgba(178,102,245,1) 100%)"}`,
+                        width: `${window.screen.width > 767 ? "19%" : "28%"}`,
+                        borderRadius: "25px",
                   
-                }}
-                className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
-              >
+                      }}
+                      className="d-flex justify-content-center align-items-center flex-column pt-3 pb-3"
+                    >
               
-                <img src={XXCOIN} alt="" width={"80px"}/>
-                <p className="text-center mt-2"
-                  style={{
-                    fontSize: "14px",
-                }}
-                >500 <br /> VTE</p>
+                      <img src={XXCOIN} alt="" width={"80px"} />
+                      <p className="text-center mt-2"
+                        style={{
+                          fontSize: "14px",
+                        }}
+                      >500 <br /> VTE</p>
                 
-              </div>
-            </div>
-          </div>
+                    </div>
+                  </div>
+                </div>}
         </div>
-      </div>
+            </div>
+            <div>
+              <Modal
+                show={
+                  comingSoon
+                } onHide={() => { setComingSoon(false) }}
+                backdrop="static"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+              >
+                <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+                  <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+
+                    setComingSoon(false)
+
+                  }
+                  }></button>
+                </div>
+                <Modal.Body className="d-flex  justify-content-center align-items-center"
+                >
+
+                  <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Coming soon</p>
+
+                </Modal.Body>
+              </Modal>
+            </div>
       {/* {clicked &&
         <PaymentPop
         openPopup={clicked}

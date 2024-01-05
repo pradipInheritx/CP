@@ -295,6 +295,7 @@ const Carousel = ({
               <div className='m-1' key={i}>
                 <Card
                   // key={i}
+                  
                   favorite={favorites.includes(symbol)}
                   setFavorite={() => {
                     onFavClick(favorites, user);
@@ -321,8 +322,8 @@ const Carousel = ({
     <form id={id} className='carousel slide' data-bs-ride='carousel'>
       <div className='carousel-inner'>
         <div className='carousel-item active'>
-          <CardsContainer cols={cols} gap={gap} {...handlers}>
-            {page.length > 0 &&
+            {page.length > 0 ? <CardsContainer cols={cols} gap={gap} {...handlers}>
+              {page.length > 0 &&
               page.slice(0, page.length).map((row: Row<BearVsBullRow>, i: number) => {
                 prepareRow(row);
                 return (
@@ -335,6 +336,7 @@ const Carousel = ({
                           {cell.column.id === "symbol" ? (
                             <Card
                               // key={i}
+                              
                               favorite={favorites.includes(symbol)}
                               setFavorite={() => {
                                 onFavClick(favorites, user);
@@ -360,7 +362,12 @@ const Carousel = ({
                   </div>
                 );
               })}
-          </CardsContainer>
+            </CardsContainer>            
+            :
+            <p className="text-center w-100">
+              Data Not Found
+            </p>
+            }
         </div>
       </div>
 

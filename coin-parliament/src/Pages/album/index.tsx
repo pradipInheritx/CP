@@ -384,6 +384,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
         if (searchValue !== '') {
             tempFilter = tempFilter.filter((value: any) => value.cardName.toLowerCase().includes(searchValue.toLowerCase()));
+
+            console.log("i am call for search")
         }
         if (collectionTypeValue !== 'all') {
             tempFilter = tempFilter.filter((value: any) => value.cardType.toLowerCase() === collectionTypeValue.toLowerCase());
@@ -647,7 +649,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                         {Object.keys(myFilter)?.length > 0  ?
                         <SummerCard className="mt-4" >
                             {
-                                Object.keys(myFilter).map((albumName, index) => {
+                                    Object.keys(myFilter).map((albumName, index) => {                                                                            
                                     return (
                                         <React.Fragment key={index} >
                                             <div className='w-100 m-auto row pt-3' style={{ borderTop: ((index !== 0 && addAlbumSeparator !== albumName) ? '3px solid #bebac7' : '') }

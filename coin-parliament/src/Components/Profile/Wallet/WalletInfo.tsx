@@ -610,6 +610,7 @@ function WalletInfo() {
                             style={{
                                 width: "45%",
                                 padding: "11px 0px 11px 20px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             value={paxDetails?.coin || ""}
@@ -660,6 +661,7 @@ function WalletInfo() {
                             style={{
                                 width: "45%",
                                 padding: "11px 0px 11px 20px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             disabled
@@ -674,7 +676,8 @@ function WalletInfo() {
                             className='text-uppercase'
                             style={{
                                 width: "45%",
-                                padding: "10px 0px 10px 20px",
+                                padding: "10px 0px 10px 10px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             name="address"
@@ -721,6 +724,7 @@ function WalletInfo() {
                             style={{
                                 width: "45%",
                                 padding: "11px 0px 11px 20px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             value={paxDetails?.coin || ""}
@@ -771,6 +775,7 @@ function WalletInfo() {
                             style={{
                                 width: "45%",
                                 padding: "11px 0px 11px 20px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             disabled
@@ -784,7 +789,8 @@ function WalletInfo() {
                             className='text-uppercase'
                             style={{
                                 width: "45%",
-                                padding: "10px 0px 10px 20px",
+                                padding: "10px 0px 10px 10px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             name="address"
@@ -868,6 +874,7 @@ function WalletInfo() {
                             style={{
                                 width: "45%",
                                 padding: "11px 0px 11px 20px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                                 disabled={true}
@@ -882,7 +889,8 @@ function WalletInfo() {
                                 
                             style={{
                                 width: "45%",
-                                padding: "10px 0px 10px 20px",
+                                padding: "10px 0px 10px 10px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                                 }}
                                 disabled={true}
@@ -951,7 +959,8 @@ function WalletInfo() {
                                 
                             style={{
                                 width: "45%",
-                                padding: "11px 0px 11px 20px",
+                                padding: "11px 0px 11px 10px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             value={walletDetails?.coin.toLocaleUpperCase() || ""}
@@ -969,7 +978,8 @@ function WalletInfo() {
 
                             style={{
                                 width: "45%",
-                                padding: "10px 0px 10px 20px",
+                                padding: "10px 0px 10px 10px",
+                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
                             name="address"
@@ -1164,7 +1174,8 @@ function WalletInfo() {
                                     <input
                                         style={{
                                             width: '15em',
-                                            padding: "10px 0px 10px 20px",
+                                            padding: "10px 0px 10px 10px",
+                                            fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                             borderRadius: "5px",
                                             paddingLeft: '10px',
                                             marginLeft: '2em' ,
@@ -1217,7 +1228,8 @@ function WalletInfo() {
                                         <input
                                             style={{
                                                 width: '15em',
-                                                padding: "10px 0px 10px 20px",
+                                                padding: "10px 0px 10px 10px",
+                                                fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                                 borderRadius: "5px",
                                                 paddingLeft: '10px',
                                             }}
@@ -1290,7 +1302,8 @@ function WalletInfo() {
                                     <input type="" name="" id=""
                                         style={{
                                             width: "100%",
-                                            padding: "10px 0px 10px 20px",
+                                            padding: "10px 0px 10px 10px",
+                                            fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                             borderRadius: "5px"
                                         }}
                                         value={sendAmount}

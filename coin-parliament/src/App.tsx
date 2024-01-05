@@ -1260,7 +1260,7 @@ function App() {
   const paxDistributionOnClaimReward = httpsCallable(functions, "paxDistributionOnClaimReward");
 
   useEffect(() => {
-console.log("i am calling",isVirtualCall);
+      
 
     if ((userInfo?.rewardStatistics?.total || 0) > (userInfo?.rewardStatistics?.claimed || 0) && !isVirtualCall) {
       console.log("i am calling again");
@@ -1287,7 +1287,7 @@ console.log("i am calling",isVirtualCall);
       
     }
     latestUserInfo.current = userInfo;
-  }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed)]);
+  }, [JSON.stringify(userInfo?.rewardStatistics?.total), JSON.stringify(userInfo?.rewardStatistics?.claimed), isVirtualCall]);
 
   ///END vote result //
 
@@ -1919,7 +1919,7 @@ console.log("i am calling",isVirtualCall);
                                             />
 
                                             {/* <Route path="signup" element={<LoginAndSignup/>}/> */}
-                                            <Route path='faq' element={<FAQ />} />
+                                          <Route path='knowledgehub' element={<FAQ />} />
                                             <Route
                                               path='about'
                                               element={<About />}
