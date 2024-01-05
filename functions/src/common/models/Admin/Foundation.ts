@@ -180,7 +180,7 @@ export async function sendCPMToFoundation(userId: string, cpm: number) {
         const user: any = (await firestore().collection('user').doc(userId).get()).data();
         console.log("user.foundationData.id : ", user?.foundationData?.id)
         const foundation = (await firestore().collection('foundations').doc(user?.foundationData?.id).get()).data();
-        const foundationCPM = cpm * 0.1;
+        const foundationCPM = (cpm*10) / 100;
         const commission = Number(foundation?.commission) + foundationCPM;
         if ((commission / 100) >= 1) {
             // foundation Payment method here
