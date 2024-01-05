@@ -182,11 +182,11 @@ export async function sendCPMToFoundation(userId: string, cpm: number) {
         const foundation = (await firestore().collection('foundations').doc(user?.foundationData?.id).get()).data();
         const foundationCPM = (cpm*10) / 100;
         const commission = Number(foundation?.commission) + foundationCPM;
-        if((commission/100) >= 1 ){
+        if ((commission / 100) >= 1) {
             // foundation Payment method here
         }
         console.log("CMP : foundationCPM : ", cpm, foundationCPM);
-        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission, commissionEarn : commission }, { merge: true });
+        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission, commissionEarn: commission }, { merge: true });
     } catch (error) {
         console.log("sendCPMToFoundation : ", error);
         errorLogging('sendCPMToFoundation', 'Error', error);

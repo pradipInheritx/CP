@@ -296,6 +296,9 @@ export const claimReward: (uid: string, isVirtual: boolean
         // update the reward in User data
         await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
         // add reward details into reward_transaction collection
+        // Remove isUpgrade Rewards Transaction
+        // Match the score for Courtney 
+        // Get User Rewards Transaction Length < getVirtualRewardStatistic.rewardObj claimed Then call add Reward Transaction
         const result = await addRewardTransaction(uid, getVirtualRewardStatistic.winData, claimed + 1);
         await removeAllVirtualRewardByUserId(uid);
         console.log("isVirtual Result : ", result)
@@ -483,6 +486,9 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
   }
 }
 
+export const sendMintForPaxToFoundation = async (foundationId: any) => {
+
+}
 
 export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
   try {
