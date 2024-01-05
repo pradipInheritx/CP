@@ -478,7 +478,7 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
     };
     console.info("transactionBodyForSmartContractOnAdminMintFor", transactionBodyForSmartContractOnAdminMintFor);
 
-    const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
+    const transaction = await axios.post("https://console.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
 
     if (transaction.data) {
       //paxDistributionToUser.userId
@@ -530,7 +530,7 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
     };
     console.info("transactionBodyForSmartContractOnUserMintFor", transactionBodyForSmartContractOnUserMintFor);
 
-    const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnUserMintFor, options);
+    const transaction = await axios.post("https://console.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnUserMintFor, options);
 
     console.log("End smart contract payment function in admin", transaction);
 
