@@ -262,9 +262,10 @@ async function removeAllVirtualRewardByUserId(uid: string) {
       console.log("not virtual reward list found");
     }
     for (let index = 0; index < getVirtualRewardListByUserId.length; index++) {
-      await firestore().collection('virtualRewardStatistics')
+      const deletedReward = await firestore().collection('virtualRewardStatistics')
         .doc(getVirtualRewardListByUserId[index].rewardId)
         .delete();
+      console.log(`index : ${index} || delete Reward :  ${deletedReward}`);
       console.log(`${getVirtualRewardListByUserId[index].rewardId} is deleted successfully. || list length : ${getVirtualRewardListByUserId.length}`);
     }
     console.log("complete the remove operation from virtual reward transaction");
