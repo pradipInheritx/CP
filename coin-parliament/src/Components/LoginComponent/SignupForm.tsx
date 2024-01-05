@@ -41,7 +41,6 @@ const SignupForm = ({
   
   const [agree, setAgree] = useState(false);
   const [recaptcha, setrecaptcha] = useState(false)
-  
   useEffect(() => {
     setEmail(emailValue)
   }, [])
@@ -118,7 +117,7 @@ const SignupForm = ({
 
     <div style={{marginTop:"15px"}}>
       <ReCAPTCHA
-        sitekey="6LdpwEYpAAAAALP-cORxV_LMXnJn_fYVRO_LpagS"
+        sitekey={process.env.REACT_APP_RECAPTCHA_KEY || ""}
         onChange={handleReCaptcha}
       />
     </div>
