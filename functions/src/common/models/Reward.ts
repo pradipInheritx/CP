@@ -252,18 +252,26 @@ const getVirtualRewardStatisticsByUserId = async (uid: string) => {
   return getVirtualRewardStatistics[0];
 }
 async function removeAllVirtualRewardByUserId(uid: string) {
-  const getVirtualRewardListByUserId = (await firestore().collection('virtualRewardStatistics').where('userId', '==', uid).get()).docs.map(reward => reward.data());
-  if (!getVirtualRewardListByUserId) {
-    console.log("not virtual reward list found")
+  try {
+    const getVirtualRewardListByUserId = (await firestore()
+      .collection('virtualRewardStatistics')
+      .where('userId', '==', uid)
+      .get())
+      .docs.map(reward => reward.data());
+    if (!getVirtualRewardListByUserId) {
+      console.log("not virtual reward list found");
+    }
+    for (let index = 0; index < getVirtualRewardListByUserId.length; index++) {
+      await firestore().collection('virtualRewardStatistics')
+        .doc(getVirtualRewardListByUserId[index].rewardId)
+        .delete();
+      console.log(`${getVirtualRewardListByUserId[index].rewardId} is deleted successfully. || list length : ${getVirtualRewardListByUserId.length}`);
+    }
+    console.log("complete the remove operation from virtual reward transaction");
+  } catch (error) {
+    console.error(`Error to remove virtual Reward : ${error}`);
   }
-  for (let index = 0; index < getVirtualRewardListByUserId.length; index++) {
-    await firestore().collection('virtualRewardStatistics')
-      .doc(getVirtualRewardListByUserId[index].rewardId)
-      .delete()
-      .then(() => console.log(`${getVirtualRewardListByUserId[index].rewardId} is deleted successfully. || list length ${getVirtualRewardListByUserId.length}`))
-      .catch((error) => { console.error(`Error removing ${getVirtualRewardListByUserId[index].rewardId} document: ${error}`); });
-  }
-  console.log("complete the remove operation from virtual reward transaction");
+
 }
 export const claimReward: (uid: string, isVirtual: boolean
 ) => { [key: string]: any } = async (
@@ -293,12 +301,9 @@ export const claimReward: (uid: string, isVirtual: boolean
       if (isVirtual === false && total - claimed > 0) {
         const getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
         console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic)
-        // update the reward in User data
+
         await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
-        // add reward details into reward_transaction collection
-        // Remove isUpgrade Rewards Transaction
-        // Match the score for Courtney 
-        // Get User Rewards Transaction Length < getVirtualRewardStatistic.rewardObj claimed Then call add Reward Transaction
+
         const result = await addRewardTransaction(uid, getVirtualRewardStatistic.winData, claimed + 1);
         await removeAllVirtualRewardByUserId(uid);
         console.log("isVirtual Result : ", result)
