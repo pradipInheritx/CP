@@ -19,6 +19,8 @@ import facebook from "../assets/images/facebook.svg"
 import XTwitter from "../assets/images/x-twitter.svg"
 import './styles.css';
 import { Link } from 'react-router-dom';
+import TelegramLogo from "../assets/svg/Telegram.svg"
+
 
 // const Button = styled.a`
 //   flex-direction: column;
@@ -301,11 +303,15 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
 
       <div className="pb-4" style={{textAlign:"center"}}>
         <h3 >
-         <Link style={{color:"white", textDecoration:"none"}} to="https://t.me/VoteToEarn" target="_blank"> 
-          Join Telegram 
-         </Link> 
-          Channel To Get Latest Updates 
-         <br style={{display:(window.screen.width > 767 ? 'none' : 'block') }}/>  
+         {/* <img src={TelegramLogo} alt="Telegram Logo" style={{ marginRight: "14px", width:"35px",marginBottom:"10px"}} />  */}
+         JOIN FOR UPDATES
+         <br style={{display:(window.screen.width > 767 ? 'none' : 'block') }}/>  &nbsp;
+         <button className="buttonHover" style={{borderRadius:"15px",paddingBottom:"4px"}}>
+        
+           <Link to="https://t.me/VoteToEarn" target="_blank"> 
+           <img src={TelegramLogo} alt="Telegram Logo" style={{width:"30px"}} /> 
+           </Link> 
+         </button>
         </h3>   
       </div>
 
