@@ -36,13 +36,15 @@ export type Leader = {
 
 type SubscribeFuncProps = { leader: Leader; userId: string; add: boolean };
 
-export const follow = async (leader: Leader, you: User, add: boolean) => {
+export const follow = async (leader: Leader, you: User, add: boolean, setIsLoading?:any) => {
 
 
   const subscribe = httpsCallable(functions, "subscribe");
   const setLeadersOnce = httpsCallable(functions, "setLeadersOnce");
 
-  await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps);
+  await subscribe({ leader, userId: you.uid, add } as SubscribeFuncProps).then((res) => {
+    setIsLoading(false)
+  });
 
   if (add) {
     await setDoc(

@@ -257,7 +257,7 @@ const Minting = ({
     if (score === 100) {      
       setTimeout(() => {
         handleCmpPopupShow();    
-      }, 8100);
+      }, 5100);
     }
   }, [score , upgraeShow]);
 

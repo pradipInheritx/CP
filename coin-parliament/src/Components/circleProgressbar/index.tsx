@@ -32,7 +32,7 @@ const CircularProgress = ({ percentage }) => {
             const time = setTimeout(() => {
                 localStorage.setItem(`${user?.uid}_newScores`, 0);
                 setCurrentCMP(0);
-            }, [4000]);
+            }, [5000]);
         }
     }, [progressBarValue]);
     useEffect(() => {
