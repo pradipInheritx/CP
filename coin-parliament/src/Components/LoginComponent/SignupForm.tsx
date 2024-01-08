@@ -15,6 +15,7 @@ import { validatePassword } from "Components/Profile/utils";
 import { passwordValidation } from "Components/Profile/utils";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const SignupForm = ({
   emailValue,
@@ -37,8 +38,9 @@ const SignupForm = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [recaptcha, setrecaptcha] = useState(false)
 
-  const [agree, setAgree] = useState(true);
+  const [agree, setAgree] = useState(false);
   useEffect(() => {
     setEmail(emailValue)
   }, [])
@@ -50,6 +52,11 @@ const SignupForm = ({
     agree: capitalize(translate(texts.agree.toUpperCase())),
   };
 
+  const handleReCaptcha = () => {
+    console.log("change")
+    setrecaptcha(true)
+  }
+  
   return (
     <Form
       onSubmit={async (e) => {
@@ -107,6 +114,13 @@ const SignupForm = ({
         />
       </Form.Group>
 
+      <div style={{marginTop:"15px"}}>
+      <ReCAPTCHA
+        sitekey={process.env.REACT_APP_RECAPTCHA_KEY || ""}
+        onChange={handleReCaptcha}
+      />
+      </div>
+
       <div className="mt-4 mb-3">
         <Buttons.Primary fullWidth={true} type="submit" 
         disabled={!agree}
@@ -116,7 +130,7 @@ const SignupForm = ({
       </div>
 
       <Form.Group className="mb-2  text-center" controlId="agree">
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)}>
+        <Checkbox disabled={!recaptcha} name="agree" checked={agree} onClick={() => setAgree(!agree)} >
           <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
             {translate('terms & conditions')}
           </Link>  and

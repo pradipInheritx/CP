@@ -16,7 +16,10 @@ import { toast } from "react-toastify";
 import { db } from "firebase";
 import { ToastType } from "Contexts/Notification";
 import { Buttons } from "Components/Atoms/Button/Button";
-
+import { Image } from "react-bootstrap";
+import { CircularProgressbar ,buildStyles} from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { useWindowSize } from "../hooks/useWindowSize";
 const text = [
   {
     image: UNICEF,
@@ -40,6 +43,14 @@ const text = [
   },
 ]
 
+const avatarIMG:any = {
+  "SAVE THE CHILDREN":savetheChildren,
+  "UNICEF WALLET":UNICEF,
+  "UNITED WAY":unitedWay,
+  "AMERICAN RED CROSS":americanRedCross,
+  "SALVATION ARMY":salvationArmy
+}
+
 const HeaderText = styled.p`
   font-size: 15px;
   margin:15px 0px;
@@ -54,7 +65,7 @@ const Foundations = () => {
     id: "",
     name: "",
   })
-
+  const { width: w = 0 } = useWindowSize();
   const FoundationValue = async () => {
     axios.get(`/admin/foundation/getList`).then((res) => {
       setFoundationArray(res.data.foundationList)
@@ -69,7 +80,7 @@ const Foundations = () => {
     setFoundationData(userInfo?.foundationData || {})
   }, [userInfo])
 
-
+  
   const onSubmitAvatar = async () => {    
     if (user?.uid) {
 
@@ -91,9 +102,14 @@ const Foundations = () => {
     let id = e.target.options[e.target.selectedIndex].id;
     let value = e.target.value
     setFoundationData({ name: value, id: id })
-  } 
+
+  }
+  
+  const percentage = 66;
   return (
+      <div style={{padding:"0px!important"}}>
     <GeneralPage>
+      
       <div >
         <div style={{ textAlign: 'center' }}>
           <h1>
@@ -125,7 +141,8 @@ const Foundations = () => {
       <div className='d-flex justify-content-center px-2'>
         <div
           style={{
-            width: `${window.screen.width > 767 ? "500px" : "100%"}`
+            width: `${window.screen.width > 767 ? "500px" : "100%"}`,
+            padding: `${window.screen.width > 767 ? "" : ""}`
           }}
         >
           {user?.uid && 
@@ -133,15 +150,28 @@ const Foundations = () => {
           <HeaderText className='mt-4 text-uppercase'>This is foundation select by you</HeaderText>
 
 
-          <div className='w-100 d-flex justify-content-between'>
+          <div className='w-100 ' style={{backgroundColor:"#5d4ae1",
+            color: "white",
+            width:"40%",
+            height:"40px",
+            borderRadius:'6px',
+            lineHeight:"40px",
+            padding:"25px",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-between"}}>
 
-            <select
+          {FoundationEdit?<select
               name="coin"
               id={foundationData.id}
               style={{
-                width: `${window.screen.width > 767 ? "70%" : "70%"}`,
-                padding: "9px 0px 9px 20px",
-                borderRadius: "5px"
+                // width: `${window.screen.width > 767 ? "70%" : "70%"}`,
+                // padding: "9px 0px 9px 20px",
+                // borderRadius: "5px"
+                border:"none",
+                backgroundColor:"#5d4ae1",
+                outline:"none",
+                color: "white"
               }}
               value={foundationData.name}
               disabled={!FoundationEdit}
@@ -153,11 +183,11 @@ const Foundations = () => {
               {FoundationArray.map((item: any, index: number) => {
                 return <option className='' key={index} value={item.name} id={item.id}>{item.name.toUpperCase()}</option>
               })}
-            </select>
+            </select>: <span style={{textTransform:"uppercase"}}>{foundationData?.name}</span> }
 
-            <Buttons.Primary
+            <span
               // disabled={!foundationData.id || !foundationData.name}
-              type='button' style={{ maxWidth: '200px', }}
+              style={{ maxWidth: '200px', }}
               onClick={() => {
                 if (foundationData.id && foundationData.name && FoundationEdit) {                  
                   onSubmitAvatar()
@@ -167,21 +197,75 @@ const Foundations = () => {
               }}
             >              
               {FoundationEdit ? "Save" :"Edit"}
-            </Buttons.Primary>
+            </span>
             </div>
           </>
           }          
           <div>
 
             <div className='d-flex justify-content-between my-3 text-uppercase'>
-              <strong>Foundation &nbsp;Name</strong>
-              <strong>Total Cpm</strong>
+              <strong style={{width:"60%"}}>Foundation</strong>
+              <strong style={{width:"30%"}}>Total Cpm</strong>
+              <strong style={{width:"10%"}}>Pax</strong>
             </div>
             {FoundationArray.map((item: any, index: number) => {
+              
               return (
                 <>
-                  <div className='d-flex justify-content-between mt-2 text-uppercase'>
-                    <span
+                  <div style={{boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px",
+                  width:"100%",
+                  height:"76px",
+                  borderRadius:"6px",
+                  padding:"1rem"}}
+                  >
+                  <div className="row hstack" >
+                              <div className="col-2" style={{width:window.screen.width > 767 ? '15%' : '15%',transform:window.screen.width > 320 ? 'scale(1)' : 'scale(0.7)'}} >
+                              <Image
+                                style={{
+                                  border: " 3px solid var(--blue-violet)",
+                                  boxShadow: "1px 0px 5px #FAE481",
+                                  backgroundColor:"#FAE481",    
+                                }}
+                                  roundedCircle={true}
+                                  src={avatarIMG[`${item.name.toUpperCase()}`]}
+                                  alt="avatar"
+                                  className="avatar_sm"
+                                />
+                              </div>
+                              <div className="col-5" style={{width:window.screen.width > 767 ? '55%' : '45%'}}>
+                              <span className="badge_sm rounded-pill vstack" style={{marginBottom:'2px',
+                                    width:"6rem",
+                                    height:"1.5rem",
+                                    padding:"3px",
+                                    fontSize:"8px",
+                                    display:"flex",
+                                    justifyContent:"center",
+                                    fontWeight:"bold"}}>{item.name}</span>
+                              </div>
+                              <div className="col-3" style={{width:window.screen.width > 767 ? '15%' : '15%'}}>
+                              <CircularProgressbar value={item.commission*100} text={`${(item.commission*100).toFixed(2)}`}
+                               styles={buildStyles({
+                                pathColor: "#6352e8",
+                                pathTransition: "none",
+                                strokeLinecap: "butt",
+                                trailColor:"grey",
+                                textColor:"#6352E8"
+                            })}/>
+                              </div>
+                              <div className="col-3" style={{width:window.screen.width > 767 ? '10%' : '25%', display:"flex",justifyContent:"flex-end"}}>
+                              <span className='d-flex justify-content-center'
+                                style={{
+                                    width: "10%",
+                                    color: "#6352E8"
+                                    }}
+                                 >
+                                  {/* {item.commission} */}
+                                  {item?.paxValue || 0}
+                                  </span>
+                              </div>
+                              
+                          </div>
+                    {/* <span
                       style={{
                         width: "90%"
                       }}>{item.name}</span>
@@ -189,7 +273,7 @@ const Foundations = () => {
                       style={{
                         width: "10%"
                       }}
-                    >{item.commission}</span>
+                    >{item.commission}</span> */}
                   </div>
                 </>
               )
@@ -197,7 +281,9 @@ const Foundations = () => {
           </div>
         </div>
       </div>
-    </GeneralPage>
+      </GeneralPage>
+      </div>
+    
   );
 };
 
