@@ -33,14 +33,15 @@ const Header = () => {
             </Link>
           </Navbar.Brand>
 
-          {(auth.currentUser&& userInfo) && (
+          {(auth.currentUser && userInfo) && (
             <Navbar.Collapse className="justify-content-end" style={{ color: 'white', cursor: 'pointer' }}>
 
-            {userInfo?.avatar ?
+            {auth.currentUser && userInfo?.avatar ?
               <Avatars type={userInfo?.avatar} /> :
               <span className="material-symbols-outlined d-flex align-items-center">
                 account_circle
-              </span>}
+              </span>
+              }
 
               <NavDropdown color='white' title={window.screen.width > 767 ? userInfo?.displayName || userInfo?.email : ""}
                 id="basic-nav-dropdown"

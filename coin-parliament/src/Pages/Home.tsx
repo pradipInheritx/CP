@@ -18,6 +18,7 @@ import whatsApp from "../assets/images/whatsapp.svg"
 import facebook from "../assets/images/facebook.svg"
 import XTwitter from "../assets/images/x-twitter.svg"
 import './styles.css';
+import { Link } from 'react-router-dom';
 
 // const Button = styled.a`
 //   flex-direction: column;
@@ -297,7 +298,18 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
 
   return (
     <div className="d-flex flex-column justify-content-center align-items-center p-5 h-100">
-      <h1 className="pb-4">TOP VTE APPS</h1>
+
+      <div className="pb-4" style={{textAlign:"center"}}>
+        <h3 >
+         <Link style={{color:"white", textDecoration:"none"}} to="https://t.me/VoteToEarn" target="_blank"> 
+          Join Telegram 
+         </Link> 
+          Channel To Get Latest Updates 
+         <br style={{display:(window.screen.width > 767 ? 'none' : 'block') }}/>  
+        </h3>   
+      </div>
+
+      <h1 className="pb-4">TOP V2E APPS</h1>
       <div className="row">
         {Object.keys(sites).map((key: string, index) => {          
           return (
