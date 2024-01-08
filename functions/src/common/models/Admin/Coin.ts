@@ -336,8 +336,8 @@ export const getCoinCurrentAndPastDataDifference = async (timeDifference:number)
     );
     const getCoins = await getAllCoin();
     const currentTime = Date.now();
-    // const beforeFourHoursTime = currentTime - timeDifference * 3600000;
-    const beforeFourHoursTime = currentTime - (5 * 60 * 1000);
+    const beforeFourHoursTime = currentTime - timeDifference * 3600000;
+    // const beforeFourHoursTime = currentTime - (5 * 60 * 1000);
     const currentCoinAndPrice: any = [];
     const missingCoinInBinanceApi = [
       "LUNA",

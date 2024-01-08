@@ -591,16 +591,16 @@ export const addReward: (
   if (!changed) {
     return;
   }
-
+  console.log("ADD REWARD USERID : ", userId);
   const divisionBefore = Math.floor((before.voteStatistics?.score || 0) / 100);
   const divisionAfter = Math.floor((after.voteStatistics?.score || 0) / 100);
-  // console.log('divisionAfter --->', divisionAfter);
-  // console.log('divisionBefore --->', divisionBefore);
+  console.log('DIVISION-AFTER --->', divisionAfter);
+  console.log('DIVISION-BEFORE --->', divisionBefore);
   if (divisionAfter > divisionBefore) {
     // console.log('before.rewardStatistics?.total --->', before.rewardStatistics?.total);
     const newReward = (before.rewardStatistics?.total || 0) + 1;
     const claimedUpdated = before.rewardStatistics?.claimed || 0;
-    // console.log('newReward --->', newReward);
+    console.log('NEW-REWARD  ||  CLAIMED-UPDATE : --->', newReward," || ",claimedUpdated);
     await firestore()
       .collection("users")
       .doc(userId)

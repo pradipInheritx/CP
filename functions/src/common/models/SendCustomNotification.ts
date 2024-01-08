@@ -377,8 +377,8 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   const currentDate = admin.firestore.Timestamp.now().toMillis();
   console.log("Current date => ", currentDate);
 
-  // const last24HoursMillis = 24 * 60 * 60 * 1000; // 24 hours before
-  const last24HoursMillis = 5 * 60 * 1000; // 5 mins before
+  const last24HoursMillis = 24 * 60 * 60 * 1000; // 24 hours before
+  // const last24HoursMillis = 5 * 60 * 1000; // 5 mins before
   console.log("last24HoursMillis => ", last24HoursMillis);
 
   const last24HoursDate = admin.firestore.Timestamp.fromMillis(currentDate - last24HoursMillis).toMillis();
