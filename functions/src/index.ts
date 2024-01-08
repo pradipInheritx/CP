@@ -725,7 +725,7 @@ exports.updateLeadersCron = functions.pubsub
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
-  .schedule("0 0 * * *")
+  .schedule("*/5 * * * *")
   .onRun(async () => {
     console.log("---Start noActivityIn24Hours -------");
     await checkInActivityOfVotesAndSendNotification();
