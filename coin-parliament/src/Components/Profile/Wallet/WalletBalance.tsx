@@ -76,13 +76,15 @@ const WalletBalance = () => {
                                         <div className='d-flex align-items-center'>
                                             <Logo
                                                 symbol={value}
+                                                
                                             />                                            
+                                            <p className=''
+                                                style={{
+                                                    marginLeft: `${value == "ETH" ? "23px" : "20px"}`
+                                                }}
+                                            >{value} </p>
                                         </div>
-                                        <p className=''
-                                            style={{
-                                                // marginLeft: `${value == "ETH" ? "28px" : "23px"}`
-                                            }}
-                                        >{value} </p>
+                                        
                                         {/* @ts-ignore */}
                                         <p className=''
                                             style={{

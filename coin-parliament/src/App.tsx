@@ -1195,9 +1195,7 @@ function App() {
             valueVotingTime: lessTimeVote?.valueVotingTime,
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
-            userId: lessTimeVote?.userId,                  
-            // @ts-ignore
-            voteType: `${userInfo?.voteValue > 0 ? "FreeVote" : "ExtraVote"}`,
+            userId: lessTimeVote?.userId,                                          
             // paxDistributionToUser: {
             //   userId: lessTimeVote?.userId,
             //   currentPaxValue: Number(paxDistribution),

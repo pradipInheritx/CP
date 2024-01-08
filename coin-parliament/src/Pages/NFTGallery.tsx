@@ -200,6 +200,7 @@ const NFTGallery = () => {
           });
           data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
           setCardNameNew(data)
+          
           setAllCardNew(data)
           setCardShow(true)
         }).catch((error) => {
@@ -222,7 +223,7 @@ const NFTGallery = () => {
           });
           setSetsValue(data)
           console.log("setsdata", data)
-          setCardType("all")
+          setCardType("all")          
         }).catch((error) => {
           console.log(error, "error");
         });
@@ -259,6 +260,7 @@ const NFTGallery = () => {
   }
 
 
+  console.log(cardShow,"checkcardshow")
   const onSelectType = (cardType: any) => {
     setCardType(cardType)
     console.log(setsCardId, "setsCardId")
@@ -416,6 +418,7 @@ const NFTGallery = () => {
           type='text'
           onChange={e => onSearch(e.target.value)}
           // onChange={(e)=>{HandelonchangeFilter(e)}}
+          value={searchTerm}
           placeholder='SEARCH...'
           className='py-2 mx-2 color-back '
           style={{ width: "200px" }}
@@ -426,7 +429,11 @@ const NFTGallery = () => {
             className='color-back py-2 mx-2'
             value={selectCollection}
             // onChange={e=>onCollectionChange(e.target.value)}          
-            onChange={e => setSelectCollection(e.target.value)}
+            onChange={e => {
+              setSelectCollection(e.target.value)
+              // onSearch("")
+              setSearchTerm("")
+            }}
             style={{
               width: "155px",
               textTransform:"uppercase"
@@ -593,7 +600,7 @@ const NFTGallery = () => {
         
       }} >     
         </GalleryType2>      */}
-      {(setsCardId != "none" || setsCardName != "none" || cardType != "all") && <>
+      {(setsCardId != "none" || setsCardName != "none" || cardType != "all" || (allCardNew != "" && searchTerm != "")) && <>
         {allCardNew?.length > 0 ?
           <SummerCard className="mt-4">
             {!!cardShow ? equalPart?.map((cardPart: any, ind: number) => {              
@@ -647,7 +654,15 @@ const NFTGallery = () => {
         }
       </>}
       
+      {(allCardNew == "" && searchTerm != "") && (setsCardId == "none" && setsCardName && "none" && cardType == "all") &&
+        <div className="d-flex justify-content-center mt-5">
+          <p style={{
+            color: "black"
+          }}>Data Not Found</p>
+        </div>
+      }
     </div>
+    
   );
 };
 

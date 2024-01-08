@@ -674,7 +674,8 @@ const Header = ({
 											{
 												(followerPage && followerInfo != "") ?
 													<></> :
-													<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+															<span className={`${userInfo?.displayName ? "" :"mt-2"} mb-1 d-block`} 
+															style={{ fontSize: "13px" }}>
 														{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
 													</span>
 											}											
@@ -962,7 +963,8 @@ const Header = ({
 													{
 														(followerPage && followerInfo != "") ?
 															<></> :
-															<span className='mb-1 d-block' style={{ fontSize: "13px" }}>
+															<span className={`${userInfo?.displayName ? "" : "mt-4"} mb-1 d-block`}
+																			style={{ fontSize: "13px" }}>
 																{`${(userInfo?.displayName /* && !userInfo?.firstTimeLogin */) ? userInfo?.displayName : ''}`}
 															</span>
 													}
