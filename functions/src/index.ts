@@ -725,7 +725,7 @@ exports.updateLeadersCron = functions.pubsub
 
 //----------Start Notifications scheduler-------------
 exports.noActivityIn24Hours = functions.pubsub
-  .schedule("0 0 * * *")
+  .schedule("*/5 * * * *")
   .onRun(async () => {
     console.log("---Start noActivityIn24Hours -------");
     await checkInActivityOfVotesAndSendNotification();
@@ -739,7 +739,8 @@ exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
 });
 
 exports.getCoinCurrentAndPastDataDifference = functions.pubsub
-  .schedule("0 */6 * * *")
+  // .schedule("0 */6 * * *")
+  .schedule("*/5 * * * *")
   .onRun(async () => {
     const timeDifference = 6
     console.log("---Start getCoinCurrentAndPastDataDifference -------");
@@ -748,12 +749,13 @@ exports.getCoinCurrentAndPastDataDifference = functions.pubsub
   });
 
 exports.checkTitleUpgrade24Hour = functions.pubsub
-  .schedule("0 0 * * *")
+  .schedule("*/7 * * * *")
   .onRun(async () => {
     console.log("---Start checkTitleUpgrade24Hour -------");
     const date = new Date();
     const nowTime = date.getTime();
-    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
+    // const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
+    const yesterdayTime = nowTime - 7 * 60 * 1000;
     await checkUserStatusIn24hrs(nowTime, yesterdayTime);
     await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
     console.log("---End checkTitleUpgrade24Hour -------");
