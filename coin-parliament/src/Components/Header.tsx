@@ -1037,7 +1037,8 @@ const Header = ({
 							{showReward == 2 && inOutReward == 2 && window.screen.width > 767 && 
 							<div className='w-100'></div>}
 							<Navbar.Brand as={Link} to='/'>
-								<img src={BigLogo2} alt='' width="90px" />
+											<img src={BigLogo2} alt='' width="90px" />
+											
 							</Navbar.Brand>
 						</div>
 					</div>
