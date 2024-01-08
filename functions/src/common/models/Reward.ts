@@ -585,9 +585,12 @@ export const addReward: (
   after: UserProps
 ) => void = async (userId: string, before: UserProps, after: UserProps) => {
   console.log("Beginning execution addReward function");
+
   const changed =
     (after.voteStatistics?.score || 0) > (before.voteStatistics?.score || 0);
-
+  console.log("BEFORE VOTE : ", before);
+  console.log("AFTER VOTE : ", after);
+  console.log("CHANGED BETWEEN VOTE : ", changed);
   if (!changed) {
     return;
   }
@@ -600,7 +603,7 @@ export const addReward: (
     // console.log('before.rewardStatistics?.total --->', before.rewardStatistics?.total);
     const newReward = (before.rewardStatistics?.total || 0) + 1;
     const claimedUpdated = before.rewardStatistics?.claimed || 0;
-    console.log('NEW-REWARD  ||  CLAIMED-UPDATE : --->', newReward," || ",claimedUpdated);
+    console.log('NEW-REWARD  ||  CLAIMED-UPDATE : --->', newReward, " || ", claimedUpdated);
     await firestore()
       .collection("users")
       .doc(userId)
