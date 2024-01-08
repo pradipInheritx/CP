@@ -1451,9 +1451,9 @@ html[dir="rtl"] .accordion-button {
 .placeholderColor::placeholder{
     color:white !important;
 }
-iframe{
+/* iframe{
     display:none !important;
-}
+} */
 
 .loading {
     clip-path: inset(0 1.2ch 0 0);

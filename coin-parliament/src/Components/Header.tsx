@@ -19,6 +19,7 @@ import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType, defaultAvatar } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/logoiconx2.png";
+import BigLogo2 from "../assets/svg/logoiconxbig2.png";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
@@ -1036,7 +1037,7 @@ const Header = ({
 							{showReward == 2 && inOutReward == 2 && window.screen.width > 767 && 
 							<div className='w-100'></div>}
 							<Navbar.Brand as={Link} to='/'>
-								<img src={BigLogo} alt='' />
+								<img src={BigLogo2} alt='' width="90px" />
 							</Navbar.Brand>
 						</div>
 					</div>

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useTranslation } from "../../common/models/Dictionary";
 import { texts } from "../LoginComponent/texts";
 
-const Box = styled.div`
+export const Box = styled.div`
   width: 322px;
   height: 40px;
   border-radius: 6px;
@@ -12,7 +12,7 @@ const Box = styled.div`
   line-height: 40px;
 `;
 
-const PurpleText = styled.div`
+export const PurpleText = styled.div`
   font-family: Poppins;
   font-size: 1.2rem;
   font-style: normal;
