@@ -98,3 +98,11 @@ background-repeat: no-repeat;
     max-width: 310px;
   }
 }
+
+.buttonHover:hover {
+  background-color: #6352e8; 
+}
+
+.buttonHover:hover a {
+  color: #ffffff;
+}
