@@ -1,8 +1,8 @@
 import axios from "axios";
 import { firestore } from "firebase-admin";
+import Web3 from "web3";
 import { log } from "firebase-functions/logger";
 import * as parentConst from "../consts/payment.const.json";
-import Web3 from "web3";
 
 import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments";
 import { sendRefferalNotification } from "./SendCustomNotification";

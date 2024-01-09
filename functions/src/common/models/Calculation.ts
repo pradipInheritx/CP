@@ -1,11 +1,11 @@
 import {
   userConverter,
-  UserProps,
   userTypeConverter,
-  UserTypeProps,
-  VoteStatistics,
 } from "./User";
-import { Direction, voteConverter, VoteResultProps } from "./Vote";
+import { VoteStatistics } from "../interfaces/Vote.interface"
+import { voteConverter } from "./Vote";
+import { Direction, VoteResultProps } from "../interfaces/Vote.interface"
+import { UserProps, UserTypeProps, Leader, Totals } from '../interfaces/User.interface'
 import { firestore } from "firebase-admin";
 import Refer, { VoteRules } from "./Refer";
 import {
@@ -14,24 +14,8 @@ import {
 } from "./SendCustomNotification";
 
 
-export type Totals = {
-  total: number;
-  success: number;
-};
 
-export type Leader = {
-  displayName: string;
-  email: string;
-  userId: string;
-  avatar?: string;
-  score: number;
-  pct: number;
-  subscribers?: number;
-  leaders?: number;
-  status?: string;
-  total?: number;
-  isUserUpgraded?: any;
-};
+
 
 // export const returnValue: (success: boolean, voteRules: VoteRules) => number = (
 //     success = false,

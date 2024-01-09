@@ -1,6 +1,7 @@
 import { firestore } from "firebase-admin";
 import { uniq } from "lodash";
-import { voteConverter, VoteProps, VoteResultProps } from "./Vote";
+import { voteConverter } from "./Vote";
+import { VoteProps, VoteResultProps } from "../interfaces/Vote.interface"
 import moment from "moment";
 import { rest } from "./Ajax";
 import { sequence_operate } from "./Coin";

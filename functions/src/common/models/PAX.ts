@@ -1,4 +1,4 @@
-import { UserProps } from "./User";
+import { UserProps } from "../interfaces/User.interface";
 import { firestore } from "firebase-admin";
 import { errorLogging } from "../helpers/commonFunction.helper"
 import { paxTransactionObj } from "../interfaces/Pax.interface";

@@ -1,8 +1,6 @@
 import { firestore } from "firebase-admin";
-// import * as admin from "firebase-admin";
-// import { getStorage, getDownloadURL,ref } from "firebase/storage"
-// import path from "path";
-import { userConverter, UserProps } from "../models/User";
+import {UserProps} from "../interfaces/User.interface"
+import { userConverter } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";

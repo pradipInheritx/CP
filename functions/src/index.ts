@@ -1,20 +1,28 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-// import {credential, firestore, initializeApp, messaging, ServiceAccount} from "firebase-admin";
 import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
-
 import cors from "cors";
+import { pullAll, union, uniq } from "lodash";
+import sgMail from "@sendgrid/mail";
+import { JWT } from "google-auth-library";
+
+// Interfaces
+import {Colors,UserProps,UserTypeProps} from "./common/interfaces/User.interface"
+import {VoteResultProps} from "./common/interfaces/Vote.interface"
+import {Leader} from "./common/interfaces/Coin.interface"
+
+// database Configuration file
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+
+// function import 
 import {
-  Colors,
   isAdmin,
   userConverter,
-  UserProps,
-  UserTypeProps,
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
+
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
@@ -24,27 +32,23 @@ import {
   updateVotesTotal,
   updateVotesTotalForSingleCoin,
   voteConverter,
-  VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
 } from "./common/models/Vote";
 import {
   getAllCoins,
   getAllPairs,
-  Leader,
   prepareCPVI,
   fetchAskBidCoin,
   getUpdatedDataFromWebsocket,
   getAllUpdated24HourRecords,
   removeTheBefore24HoursData,
 } from "./common/models/Coin";
-import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
 import {
   subscribeToTopic,
   unsubscribeToTopic,
 } from "./common/models/Subscribe";
-import { JWT } from "google-auth-library";
 import {
   addCpmTransaction,
   shouldHaveTransaction,
@@ -68,7 +72,6 @@ import {
   // getUniqCoins,
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
-import sgMail from "@sendgrid/mail";
 import {
   sendNotificationForFollwersFollowings,
   sendCustomNotificationOnSpecificUsers,
@@ -79,22 +82,6 @@ import {
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
-
-import subAdminRouter from "./routes/SubAdmin.routes";
-import authAdminRouter from "./routes/Auth.routes";
-import coinRouter from "./routes/Coin.routes";
-import coinPairRouter from "./routes/CoinPair.routes";
-import rewardsDistributionRouter from "./routes/RewardsDistribution.routes";
-import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
-import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
-import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
-import userTypeSettingsRouter from "./routes/UserTypeSettings.routes";
-import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
-import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
-import FollowTableRouter from "./routes/FollowTable.routes";
-import foundationRouter from "./routes/Foundation.routes";
-import PaymentRouter from "./routes/Payments.routes";
-import adminPaymentRouter from "./routes/AdminPayment.routes";
 import {
   imageUploadFunction,
   avatarUploadFunction,
@@ -104,6 +91,9 @@ import { auth } from "./common/middleware/authentication";
 
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+
+// Routers files
+import Routers from "./routes/index"
 
 // initialize express server
 const app = express();
@@ -122,36 +112,28 @@ main.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }));
  * @author Mukut Prasad
  * @description Added admin routes seperately
  */
-app.use("/admin/sub-admin", subAdminRouter);
-app.use("/admin/auth", authAdminRouter);
-app.use("/admin/rewards", rewardNftAdminRouter);
-app.use("/admin/coins", coinRouter);
-app.use("/admin/coinsPair", coinPairRouter);
-app.use("/admin/voteSetting", timeframeRouter);
-app.use("/admin/voteSetting", perUserVoteRouter);
-app.use("/admin/userTypeSettings", userTypeSettingsRouter);
-app.use("/admin/settings", voteAndSettingsRouter);
-app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
-app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
-app.use("/admin/FollowTable", FollowTableRouter);
-app.use("/admin/payments", adminPaymentRouter);
-app.use("/admin/foundation", foundationRouter)
-app.use("/payment", PaymentRouter);
+app.use("/admin/sub-admin", Routers.subAdminRouter);
+app.use("/admin/auth", Routers.authAdminRouter);
+app.use("/admin/rewards", Routers.rewardNftAdminRouter);
+app.use("/admin/coins", Routers.coinRouter);
+app.use("/admin/coinsPair", Routers.coinPairRouter);
+app.use("/admin/voteSetting", Routers.timeframeRouter);
+app.use("/admin/voteSetting", Routers.perUserVoteRouter);
+app.use("/admin/userTypeSettings", Routers.userTypeSettingsRouter);
+app.use("/admin/settings", Routers.voteAndSettingsRouter);
+app.use("/admin/RewardsDistribution", Routers.rewardsDistributionRouter);
+app.use("/admin/PushNotificationSetting", Routers.pushNotificationSettingRouter);
+app.use("/admin/FollowTable", Routers.FollowTableRouter);
+app.use("/admin/payments", Routers.adminPaymentRouter);
+app.use("/admin/foundation", Routers.foundationRouter)
+app.use("/payment", Routers.paymentRouter);
 
-app.post(
-  "/generic/admin/uploadFiles/:forModule/:fileType/:id",
-  auth,
-  imageUploadFunction
-);
-
+// global routers
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id",auth,imageUploadFunction);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
 
-app.get("/calculateCoinCPVI", async (req, res) => {
-  await cpviTaskCoin((result) => res.status(200).json(result));
-});
-app.get("/calculatePairCPVI", async (req, res) => {
-  await cpviTaskPair((result) => res.status(200).json(result));
-});
+app.get("/calculateCoinCPVI", async (req, res) => {await cpviTaskCoin((result) => res.status(200).json(result));});
+app.get("/calculatePairCPVI", async (req, res) => {await cpviTaskPair((result) => res.status(200).json(result));});
 
 exports.api = functions.https.onRequest(main);
 

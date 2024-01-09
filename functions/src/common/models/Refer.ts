@@ -1,5 +1,6 @@
 import {firestore} from "firebase-admin";
-import {userConverter, UserProps} from "./User";
+import {userConverter} from "./User";
+import {UserProps} from "../interfaces/User.interface"
 import FieldValue = firestore.FieldValue;
 
 export type VoteRules = {
