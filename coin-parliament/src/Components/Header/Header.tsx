@@ -1,6 +1,6 @@
 import { showToast } from 'App';
 import UserContext from 'Contexts/User';
-import Avatars from 'assets/avatars/Avatars';
+import Avatars, { AvatarType, defaultAvatar } from 'assets/avatars/Avatars';
 import { Logout } from 'common/models/Login';
 import { useContext, useState } from 'react';
 import { NavDropdown } from 'react-bootstrap';
@@ -37,7 +37,16 @@ const Header = () => {
             <Navbar.Collapse className="justify-content-end" style={{ color: 'white', cursor: 'pointer' }}>
 
             {userInfo?.avatar ?
-              <Avatars type={userInfo?.avatar} /> :
+                <Avatars
+                  // @ts-ignore
+                  type={userInfo?.avatar || defaultAvatar as AvatarType}
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    // border: "1px solid #6352E8",
+                    // @ts-ignore                    
+                  }}
+                /> :
               <span className="material-symbols-outlined d-flex align-items-center">
                 account_circle
               </span>}

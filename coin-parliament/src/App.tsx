@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
-import UserContext, { getReferUser, getUserInfo, saveUsername } from "./Contexts/User";
+import UserContext, { getReferUser, getUserInfo, saveDisplayName, saveUsername } from "./Contexts/User";
 import FollowerContext, { getFollowerInfo } from "./Contexts/FollowersInfo";
 import { texts } from './Components/LoginComponent/texts'
 import { NotificationProps, UserProps } from "./common/models/User";
@@ -118,6 +118,7 @@ import ProtectedRoutes from "routes/ProtectedRoutes";
 import PageNotFound from "Pages/PageNotFound";
 import Routes from "routes/Routes";
 import votingParliament from "firebaseVotingParliament";
+import SelectBio from "Components/LoginComponent/SelectBio";
 
 const sendPassword = httpsCallable(functions, "sendPassword");
 const localhost = window.location.hostname === "localhost";
@@ -293,6 +294,7 @@ function App() {
   const [singalCardData, setSingalCardData] = useState<any>([]);
   const [nftAlbumData, setNftAlbumData] = useState<any>();
   const [forRun, setForRun] = useState<any>(0);
+  const [backgrounHide, setBackgrounHide] = useState<any>(false)
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [pages, setPages] = useState<ContentPage[] | undefined>(myPages);
   // const [coins, setCoins] = useState<{ [symbol: string]: Coin }>(
@@ -350,6 +352,7 @@ function App() {
   const [login, setLogin] = useState(false);
   const [signup, setSignup] = useState(false);
   const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+  const [showMenubar, setShowMenuBar] = useState(false);
   const [user, setUser] = useState<User>();
   const [userInfo, setUserInfo] = useState<UserProps>();
   const [displayName, setDisplayName] = useState<string>("");
@@ -358,6 +361,7 @@ function App() {
   const [profileTab, setProfileTab] = useState(ProfileTabs.profile);
   const [firstTimeAvatarSlection, setFirstTimeAvatarSelection] =
     useState(false);
+  const [selectBioEdit, setSelectBioEdit] = useState(false);
   const [firstTimeFoundationSelection, setFirstTimeFoundationSelection] =
     useState(false);
   const [loginRedirectMessage, setLoginRedirectMessage] = useState("");
@@ -378,6 +382,7 @@ function App() {
   const [admin, setAdmin] = useState<boolean | undefined>(undefined);
   const [remainingTimer, setRemainingTimer] = useState(0)
   const [followerUserId, setFollowerUserId] = useState<string>('')
+  const [avatarImage, setAvatarImage] = useState<any>(null)  
   const [CPMSettings, setCPMSettings] = useState<CPMSettings>(
     {} as CPMSettings
   );
@@ -494,6 +499,7 @@ function App() {
     // @ts-ignore
     if ((user && userInfo && userInfo?.displayName === "" && userUid) || userInfo?.firstTimeLogin) {
       setFirstTimeLogin(true);
+      setShowMenuBar(true);
     }
 
   }, [userInfo]);
@@ -655,6 +661,12 @@ function App() {
           >
             <AppContext.Provider
                 value={{
+                  setBackgrounHide,
+                  backgrounHide,
+                  avatarImage,
+                  setAvatarImage,
+                  selectBioEdit,
+                  setSelectBioEdit,
                 parentEmailId,
                 setParentEmailId,
                 setLoader,
@@ -690,6 +702,8 @@ function App() {
                 setSignup,
                 firstTimeLogin,
                 setFirstTimeLogin,
+                showMenubar,
+                setShowMenuBar,
                 menuOpen,
                 setMenuOpen,
                 fcmToken,
@@ -801,9 +815,6 @@ function App() {
                           login={login || firstTimeLogin ? "true" : "false"}
                         // width={width}
                         >
-
-
-
                           <Container
                             fluid
                             style={{
@@ -815,14 +826,51 @@ function App() {
                             }}
                           >
                             <Header />
-                            {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
-                              <Login2fa
-                                setLogin={setLogin}
-                                setMfaLogin={setMfaLogin}
+                            {user && firstTimeLogin && (
+                              <FirstTimeLogin
+                                setFirstTimeAvatarSelection={
+                                  setFirstTimeAvatarSelection
+                                }
+                                generate={generateUsername}
+
+                                saveUsername={async (username: any, DisplayName: any) => {
+                                  if (user?.uid) {
+                                    await saveUsername(user?.uid, username, "");
+                                    await saveDisplayName(user?.uid, DisplayName, "");
+                                    setFirstTimeAvatarSelection(true);
+                                    // setFirstTimeFoundationSelection(true);
+                                    setFirstTimeLogin(false);
+                                  }
+                                }}
                               />
                             )}
 
-                            <Routes>
+                            {!firstTimeLogin && firstTimeAvatarSlection && (
+                              <FirstTimeAvatarSelection
+                                user={user}
+                                setFirstTimeAvatarSelection={
+                                  setFirstTimeAvatarSelection
+                                }
+                                setSelectBioEdit={
+                                  setSelectBioEdit
+                                }
+                              />
+                            )}
+                            {!firstTimeLogin && !firstTimeAvatarSlection && selectBioEdit && (
+                              <SelectBio
+                                userData={user}
+                                setSelectBioEdit={
+                                  setSelectBioEdit
+                                }
+                              // setFirstTimeAvatarSelection={
+                              //   setFirstTimeAvatarSelection
+                              // }
+                              />
+                            )}
+
+                            
+
+                            {!firstTimeLogin && <Routes>
                               <Route path='/login' element={!userInfo ?
                                 <LoginAndSignup
                                   {...{
@@ -832,6 +880,18 @@ function App() {
                                   }}
                                 /> : <Navigate to="/" />
                               } />
+
+                              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                                <Login2fa
+                                  setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
+                                />
+                              )}
+
+                              {!login &&
+                                !firstTimeAvatarSlection &&
+                                !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&
+                              <>
                               <Route path='/sign-up' element={!userInfo ? <GenericLoginSignup authProvider={LoginAuthProvider} /> : <Navigate to="/" />} />
                               <Route path="/" element={<ProtectedRoutes />}>
                                 <Route path='/' element={<Home />} />
@@ -842,8 +902,9 @@ function App() {
                                   <Route path={ProfileTabs.password} element={<Security />} />
                                   <Route path={ProfileTabs.wallet} element={<Wallet />} />
                                 </Route>
-                              </Route>
-                            </Routes>
+                                </Route>
+                              </>}
+                            </Routes>}
                           </Container>
                           {/* <Footer /> */}
                         </AppContainer>

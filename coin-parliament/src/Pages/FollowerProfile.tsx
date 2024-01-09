@@ -244,7 +244,7 @@ const FollowerProfile = () => {
       )}
       <div
         className='p-0'
-        style={{ minHeight: window.screen.width < 979 ? "68vh" : "70vh" }}
+        style={{ minHeight: window.screen.width < 979 ? "70vh" : "70vh" }}
       >
         <div  className="w-100"  style={{ color: "var(--black)" }}>
           <div className='p-0 col'>

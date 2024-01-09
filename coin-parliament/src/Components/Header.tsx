@@ -446,8 +446,9 @@ const Header = ({
                   >
                     <Avatars
                       type={(userInfo?.avatar || defaultAvatar) as AvatarType}
-                      style={{
-                        width: "45px",
+                      style={{                        
+                        width: "60px",
+                        height: "60px",
                         boxShadow: `${"1px 0px 5px #6352E8"}`, backgroundColor: `${"#6352E8"}`,
 
                       }}
@@ -506,6 +507,7 @@ const Header = ({
                       type={followerPage && followerInfo != "" ? followerInfo?.avatar || defaultAvatar as AvatarType : (userInfo?.avatar || defaultAvatar) as AvatarType}
                       style={{
                         width: "60px",
+                        height: "60px",
                         boxShadow: `${"1px 0px 5px #6352E8"}`, backgroundColor: `${"#6352E8"}`,
                       }}
                     />
