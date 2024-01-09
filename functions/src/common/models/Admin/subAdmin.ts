@@ -1,12 +1,6 @@
 import * as admin from "firebase-admin";
 
-export type subAdminProps = {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  webAppAccess: string[];
-  action?: string;
-};
+
 
 export const subAdminList = async (req: any, res: any, next: any) => {
   try {

@@ -1,7 +1,8 @@
 import * as admin from "firebase-admin";
-import moment from "moment";
 import * as jwt from "jsonwebtoken";
 import * as generator from "generate-password";
+import moment from "moment";
+import speakeasy from "speakeasy";
 
 import {
   validPassword,
@@ -15,23 +16,9 @@ import constants from "../../config/constants.json";
 import { sendEmail } from "../../services/emailServices";
 import { adminSignupTemplate } from "../../emailTemplates/adminSignupTemplate";
 import { adminForgotPasswordTemplate } from "../../emailTemplates/adminForgotPassword";
-import speakeasy from "speakeasy";
+import { adminUserProps } from "../../interfaces/Admin.interface"
 
-export type adminUserProps = {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  phone?: number;
-  isAdmin?: boolean;
-  adminUserId?: string;
-  password?: string;
-  webAppAccess: string[];
-  status?: string;
-  authTokens?: string[];
-  refreshToken: string;
-  createdAt?: number;
-  updatedAt?: number;
-};
+
 
 export const adminCreate = async (req: any, res: any, next: any) => {
   try {
@@ -102,10 +89,10 @@ export const adminCreate = async (req: any, res: any, next: any) => {
     const getAdminAdded = await getResponse.get();
     // add uid in admin details
     await admin
-    .firestore()
-    .collection("admin")
-    .doc(getResponse.id)
-    .set({uid : getResponse.id},{merge: true});
+      .firestore()
+      .collection("admin")
+      .doc(getResponse.id)
+      .set({ uid: getResponse.id }, { merge: true });
     await sendEmail(
       email,
       "Account created",

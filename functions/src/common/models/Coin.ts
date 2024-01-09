@@ -1,3 +1,4 @@
+import { WebSocket } from "ws";
 // import { ICryptoSnapshotTickers } from "@polygon.io/client-js";
 import coinList from "../consts/coins.json";
 import { firestore } from "firebase-admin";
@@ -10,58 +11,8 @@ import {
   allTradeCoinsRate,
 } from "../consts/config";
 import allCoinsDecimalFixedVaues from "../consts/coins.constant.json";
-import { WebSocket } from "ws";
 import wazirXCoinsFromJson from "../consts/wazirXCoins.json";
-
-export type Coin = {
-  name: string;
-  symbol: string;
-  id: number;
-  price: number;
-  trend?: number;
-};
-
-export type CoinSnap = {
-  timestamp: string;
-  data: { [symbol: string]: Coin };
-};
-
-export type Leader = {
-  displayName?: string;
-  email: string;
-  userId: string;
-  avatar?: string;
-  score: number;
-  subscribers?: number;
-};
-
-export type IWazirXSnapshotTickers = {
-  id?: number;
-  name?: string;
-  price?: string;
-  symbol?: string;
-};
-
-export type IWazirXSnapshotMetaData = {
-  count?: number;
-  status?: string;
-  tickers?: IWazirXSnapshotTickers[];
-};
-
-export type CoinsWithKey = {
-  [key: string]: {
-    id: number;
-    price: any;
-    symbol: string;
-    name: string;
-  };
-};
-
-export type CoinsWithFixedDecimalValue = {
-  [key: string]: {
-    fixedValue: number;
-  };
-};
+import {Coin,IWazirXSnapshotMetaData,IWazirXSnapshotTickers,CoinsWithKey,CoinsWithFixedDecimalValue} from "../interfaces/Coin.interface"
 
 export const filterCoins: (
   input: { [p: string]: Coin },

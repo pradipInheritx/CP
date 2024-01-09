@@ -1,7 +1,7 @@
-import { UserProps } from "./User";
+import { UserProps } from "../interfaces/User.interface";
 import { firestore } from "firebase-admin";
 import { errorLogging } from "../helpers/commonFunction.helper"
-import { paxTransactionObj } from "../interfaces/pax";
+import { paxTransactionObj } from "../interfaces/Pax.interface";
 import * as constants from "../consts/payment.const.json";
 
 export const shouldHaveTransaction: (
@@ -135,17 +135,22 @@ export const getAllPendingPaxByUserId = async (userId: string) => {
   try {
     if (!userId) return errorLogging("getAllPendingPaxByUserId", "Error", "userId is required");
     const pendingPaxList: Array<paxTransactionObj> = []
+    let sumOfPendingPax :number= 0;
     const getAllPendingPaxByUserId: any = (await firestore().collection('paxTransaction').where("userId", "==", userId).get()).docs.map((payment: any) => payment.data());
-    const getAllPendingPax : Array<paxTransactionObj> = getAllPendingPaxByUserId.filter((payment: any) => payment.status == constants.PAYMENT_STATUS_PENDING);
+    const getAllPendingPax: Array<paxTransactionObj> = getAllPendingPaxByUserId.filter((payment: any) => payment.status == constants.PAYMENT_STATUS_PENDING);
     console.log("getAllPendingPax length : ", getAllPendingPax.length)
     getAllPendingPax.forEach((payment: paxTransactionObj) => {
       pendingPaxList.push(payment);
+      sumOfPendingPax += payment.currentPaxValue;
     })
     console.log("pendingPaxList : ", pendingPaxList)
     return {
       status: true,
       message: "get all pending payments successfully",
-      result: pendingPaxList
+      result: {
+        pendingPaxTotal : sumOfPendingPax,
+        paxList : pendingPaxList
+      }
     }
   } catch (error) {
     console.error("getAllPendingPaxByUserId : Error => ", error)

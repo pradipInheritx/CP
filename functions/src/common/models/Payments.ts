@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+import fetch from "node-fetch";
 import { log } from "firebase-functions/logger";
 import {
   isParentExistAndGetReferalAmount,
@@ -6,7 +7,6 @@ import {
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
 import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
-import fetch from "node-fetch";
 
 export const makePaymentToServer = async (req: any, res: any) => {
   try {

@@ -1,5 +1,5 @@
 import {firestore, messaging} from "firebase-admin";
-import {Direction, VoteResultProps} from "./Vote";
+import {Direction,VoteResultProps} from "../interfaces/Vote.interface"
 import {userConverter} from "./User";
 import {sendNotification} from "./Notification";
 
