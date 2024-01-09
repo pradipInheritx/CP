@@ -144,12 +144,18 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
     });
 
     const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
-    const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == 'PENDING');
+    const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
     getAllPendingPayment.forEach((payment: any) => {
       if (payment.token && payment.amount) {
         coinObject[payment.token] += parseFloat(payment.amount);
       }
     })
+    const getAllPendingPaxByUserId: any = (await firestore().collection('paxTransaction').where("userId", "==", userId).get()).docs.map((payment: any) => payment.data());
+    const getAllPendingPax = getAllPendingPaxByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
+    getAllPendingPax.forEach((payment: any) => {
+      coinObject['Pax'] += parseFloat(payment?.currentPaxValue);
+    })
+    console.log("coinObject : ",coinObject)
     res.status(200).send({
       status: true,
       data: coinObject,
