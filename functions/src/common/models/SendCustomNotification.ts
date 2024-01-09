@@ -201,6 +201,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   console.log("End Push Notification of voteExpireAndGetCpmNotification")
 }
 
+// For 24 hours no activity status
 export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTimeFrame: number) => {
   console.log('-------Start checkUserStatusIn24hrs-------')
   console.log("todayTimeFrame  -  yesterdayTimeFrame == ", todayTimeFrame, yesterdayTimeFrame)
