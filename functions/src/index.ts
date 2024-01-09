@@ -18,11 +18,11 @@ import {Leader} from "./common/interfaces/Coin.interface"
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
 // function import 
+import "./common/models/scheduleFunction"
 import {
   isAdmin,
   userConverter,
 } from "./common/models/User";
-
 import {
   getLeaderUsers,
   getLeaderUsersByIds,
@@ -141,6 +141,9 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL: "https://coin-parliament-staging-default-rtdb.firebaseio.com",
 });
+
+
+
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
@@ -263,7 +266,6 @@ exports.addNewKeysInCollection = functions.https.onCall(async () => {
     return {message : "something went wrong : ", error}
   }
 });
-
 
 
 exports.sendPassword = functions.https.onCall(async (data) => {
