@@ -173,7 +173,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   let token = userData.token;
   console.log("Called Token", token)
   // if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName, cmp)
-
+  remainingCMP = parseFloat(remainingCMP.toFixed(3));
   const message: messaging.Message = {
     token,
     notification: {
@@ -243,10 +243,10 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
       for (let vote = 0; vote < userVoteList.length; vote++) {
         console.log("vote Index ->", vote);
         console.log("userVoteList old =>", userVoteList[vote]);
-        console.log("userVoteList new =>", userVoteList[userVoteList?.length-1]);
+        console.log("userVoteList new =>", userVoteList[userVoteList?.length - 1]);
         if (userVoteList[vote].status.name !== userVoteList[vote + 1].status.name) {
           let oldStatusData = userTypesData.find((item: any) => item.name === userVoteList[vote]?.status?.name);
-          let newStatusData = userTypesData.find((item: any) => item.name === userVoteList[userVoteList?.length-1]?.status?.name);
+          let newStatusData = userTypesData.find((item: any) => item.name === userVoteList[userVoteList?.length - 1]?.status?.name);
 
           let status = newStatusData.index > oldStatusData.index ? 'Upgrade' : 'Downgrade';
 
