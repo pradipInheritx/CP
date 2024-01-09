@@ -1,6 +1,8 @@
 import { UserProps } from "./User";
 import { firestore } from "firebase-admin";
 import { errorLogging } from "../helpers/commonFunction.helper"
+import { paxTransactionObj } from "../interfaces/pax";
+import * as constants from "../consts/payment.const.json";
 
 export const shouldHaveTransaction: (
   before: UserProps,
@@ -127,5 +129,26 @@ export const checkUsersWellDAddress = async (userIds: any) => {
     return getUserDetails;
   } catch (error) {
     return errorLogging("checkUsersWellDAddress", "Error", error)
+  }
+}
+export const getAllPendingPaxByUserId = async (userId: string) => {
+  try {
+    if (!userId) return errorLogging("getAllPendingPaxByUserId", "Error", "userId is required");
+    const pendingPaxList: Array<paxTransactionObj> = []
+    const getAllPendingPaxByUserId: any = (await firestore().collection('paxTransaction').where("userId", "==", userId).get()).docs.map((payment: any) => payment.data());
+    const getAllPendingPax : Array<paxTransactionObj> = getAllPendingPaxByUserId.filter((payment: any) => payment.status == constants.PAYMENT_STATUS_PENDING);
+    console.log("getAllPendingPax length : ", getAllPendingPax.length)
+    getAllPendingPax.forEach((payment: paxTransactionObj) => {
+      pendingPaxList.push(payment);
+    })
+    console.log("pendingPaxList : ", pendingPaxList)
+    return {
+      status: true,
+      message: "get all pending payments successfully",
+      result: pendingPaxList
+    }
+  } catch (error) {
+    console.error("getAllPendingPaxByUserId : Error => ", error)
+    return errorLogging("getAllPendingPaxByUserId", "Error", error);
   }
 }
