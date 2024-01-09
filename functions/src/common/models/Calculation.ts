@@ -374,8 +374,7 @@ class Calculation {
       await voteExpireAndGetCpmNotification(
         userId,
         voteStatistics,
-        score,
-        this.voteResult.coin
+        score
       );
 
       // For Add Only Commission In Current User

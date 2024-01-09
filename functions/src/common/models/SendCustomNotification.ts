@@ -155,7 +155,7 @@ export const sendNotificationForFollwersFollowings = async (
 };
 
 // For Vote Expiry
-export const voteExpireAndGetCpmNotification = async (userId: string, voteStatistics: any, cmp: number, coin: string) => {
+export const voteExpireAndGetCpmNotification = async (userId: string, voteStatistics: any, cmp: number) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
   let remainingCMP: any = 0;
   const userFindQuery = await firestore().collection("users").doc(userId).get();
@@ -239,20 +239,19 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
 
       let userVoteList = userVoteGroupObj[userId];
 
-
       for (let vote = 0; vote < userVoteList.length; vote++) {
         console.log("vote Index ->", vote);
-        console.log("userVoteList old =>", userVoteList[vote]);
-        console.log("userVoteList new =>", userVoteList[userVoteList?.length - 1]);
-        if (userVoteList[vote].status.name !== userVoteList[vote + 1].status.name) {
-          let oldStatusData = userTypesData.find((item: any) => item.name === userVoteList[vote]?.status?.name);
-          let newStatusData = userTypesData.find((item: any) => item.name === userVoteList[userVoteList?.length - 1]?.status?.name);
-
-          let status = newStatusData.index > oldStatusData.index ? 'Upgrade' : 'Downgrade';
-
+        let newStatusData= userVoteList[vote];
+        let oldStatusData= userVoteList[userVoteList?.length - 1];
+        console.log("userVoteList new =>", newStatusData);
+        console.log("userVoteList old =>", oldStatusData);
+        
+        if (newStatusData?.status?.index !== oldStatusData?.status?.index) {
+          let status = newStatusData?.status?.index > oldStatusData?.status?.index ? 'Upgrade' : 'Downgrade';
+          console.log("user status level: ",status)
           let message;
           let title;
-          let statusName: any = userVoteList[vote + 1].status.name;
+          let statusName: any = newStatusData?.status?.name;
           if (status === 'Upgrade') {
             title = upgradeMessage[statusName];
             message = `Vote to earn more!`;
