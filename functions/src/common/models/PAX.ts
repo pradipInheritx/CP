@@ -1,7 +1,7 @@
 import { UserProps } from "./User";
 import { firestore } from "firebase-admin";
 import { errorLogging } from "../helpers/commonFunction.helper"
-import { paxTransactionObj } from "../interfaces/pax";
+import { paxTransactionObj } from "../interfaces/Pax.interface";
 import * as constants from "../consts/payment.const.json";
 
 export const shouldHaveTransaction: (
