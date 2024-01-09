@@ -49,6 +49,7 @@ import {
   addCpmTransaction,
   shouldHaveTransaction,
   addPaxTransactionWithPendingStatus,
+  getAllPendingPaxByUserId,
   // getPendingPaxTransaction,
   // checkUsersWellDAddress
 } from "./common/models/PAX";
@@ -1165,6 +1166,11 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
     };
   }
 });
+
+exports.getAllPendingPaxByUserId = functions.https.onCall(async (data)=>{
+  const {userId} = data;
+   return await getAllPendingPaxByUserId(userId);
+})
 
 // exports.getPAXPendingAndCompletePax = functions.pubsub
 //   .schedule("*/5 * * * *")
