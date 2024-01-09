@@ -90,7 +90,7 @@ const Minister = styled.div`
   white-space: nowrap;
 `;
 
-const Address = styled.p`
+export const Address = styled.p`
   ${PoppinsNormalGunsmoke10px};
   min-height: 17px;
   margin-top: 2px;
