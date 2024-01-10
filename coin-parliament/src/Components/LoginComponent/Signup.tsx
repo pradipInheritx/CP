@@ -22,7 +22,7 @@ import { functions } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import firebase from "firebase/compat";
-
+import copy from "copy-to-clipboard";
 const Login = styled.div`
   margin-left:5px;
   margin-right:7px;
@@ -127,7 +127,8 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   }, [])  
 
   console.log(preantId,"PreantId")
-
+  var userAgent = navigator.userAgent.toLowerCase(); 
+  const isInstagramAvailable = /instagram/.test(userAgent) || /fb_iab/.test(userAgent);
   const strings = {
     email: capitalize(translate(texts.email)),
     confirmPassword: capitalize(translate(texts.confirmPassword.toUpperCase())),
@@ -144,7 +145,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   // https://us-central1-coinparliament-51ae1.cloudfunctions.net/assignReferrer
   return (
     <>
-      {signupWithProviders ? <>{Object.values(LoginProviders).map((provider, i) => {
+      { signupWithProviders ? <>{!isInstagramAvailable ? Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100">
             <LoginWith
@@ -156,7 +157,13 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
             />
           </div>
         );
-      })}
+      }):<div style={{width:'243px', color:'black'}}>TO SIGNUP WITH GOOGLE, COPY THIS LINK AND OPEN IN ANOTHER BROWSER, <span style={{textDecoration:'underline',textAlign:'center'}}  onClick={() => {
+        copy(window.location.href);
+        showToast(
+          'Your link is copied to the clipboard.',
+          ToastType.SUCCESS
+        );
+      }}>COPY LINK</span></div>}
         <div className="my-3 align-self-center">
           <OR className="mx-auto">{translate("or")}</OR>
         </div>

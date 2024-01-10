@@ -116,10 +116,10 @@ const SignupForm = ({
 
       <div style={{marginTop:"15px"}}>
       {/* @ts-ignore */}
-      {/* <ReCAPTCHA
+      <ReCAPTCHA
         sitekey={process.env.REACT_APP_RECAPTCHA_KEY || ""}
         onChange={handleReCaptcha}
-      /> */}
+      />
       </div>
 
       <div className="mt-4 mb-3">
