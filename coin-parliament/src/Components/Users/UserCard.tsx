@@ -90,7 +90,7 @@ const Minister = styled.div`
   white-space: nowrap;
 `;
 
-export const Address = styled.p`
+const Address = styled.p`
   ${PoppinsNormalGunsmoke10px};
   min-height: 17px;
   margin-top: 2px;
@@ -186,7 +186,6 @@ const UserCard = ({
     }
   }
 
-  console.log(leader?.isUserUpgraded,"allleader")
 
   return (
     <Component515
@@ -211,7 +210,7 @@ const UserCard = ({
           if (user) {
             redirectTab()
           }
-
+          
 
         }}>
           <Avatar url={getAvatar(leader)} />
