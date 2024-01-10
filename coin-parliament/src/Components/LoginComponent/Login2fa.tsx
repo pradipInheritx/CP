@@ -134,12 +134,15 @@ const Login2fa = ({
       console.log('2facalled2')
       return
     }
-    else { setMfaLogin(true) }
+    else { 
+      setMfaLogin(true)
+     }
     window.localStorage.setItem('mfa_passed', 'true')
     // createPost(u?.uid as string)
     return () => setCopied(false)
+    
   }, [])
-
+  
   if (u?.photoURL !== 'mfa') {
     setLogin(false)
     return <>wait</>

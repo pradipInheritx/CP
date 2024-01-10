@@ -567,7 +567,7 @@ function App() {
         setLoginRedirectMessage("");
 
 
-        // await updateUser(user);
+        await updateUser(user);
         setUserUid(user?.uid);
         onSnapshot(doc(db, "users", user.uid), async (doc) => {
           await setUserInfo(doc.data() as UserProps);
@@ -868,7 +868,12 @@ function App() {
                               />
                             )}
 
-                            
+                              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
+                                <Login2fa
+                                  setLogin={setLogin}
+                                  setMfaLogin={setMfaLogin}
+                                />
+                              )}
 
                             {!firstTimeLogin && <Routes>
                               <Route path='/login' element={!userInfo ?
@@ -880,14 +885,7 @@ function App() {
                                   }}
                                 /> : <Navigate to="/" />
                               } />
-
-                              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && (
-                                <Login2fa
-                                  setLogin={setLogin}
-                                  setMfaLogin={setMfaLogin}
-                                />
-                              )}
-
+                           
                               {!login &&
                                 !firstTimeAvatarSlection &&
                                 !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&

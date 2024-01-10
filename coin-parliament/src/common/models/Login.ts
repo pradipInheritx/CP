@@ -96,7 +96,7 @@ export const LoginAuthProvider = async (
   try {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
-    console.log(auth);
+    console.log(auth?.currentUser,"inx");
 
 
     if (auth?.currentUser?.photoURL === 'mfa') {
@@ -168,7 +168,7 @@ export const LoginAuthProvider = async (
         // @ts-ignore
         setSmsVerification(true)
       }
-      // setUser(user);
+      setUser(user);
 
     }
   } catch (e) {
