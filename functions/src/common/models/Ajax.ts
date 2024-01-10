@@ -1,6 +1,6 @@
 import env from "../../env/env.json";
 import requestPromise from "request-promise";
-import {VoteResultProps} from "./Vote";
+import {VoteResultProps} from "../interfaces/Vote.interface";
 import {messaging} from "firebase-admin";
 import {
   ICryptoSnapshotTickers,

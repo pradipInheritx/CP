@@ -1,4 +1,7 @@
 import { firestore } from "firebase-admin";
+
+import { sendPaxToFoundation } from "../Reward"
+
 const foundationConst: any = {}
 
 const getFoundationById = async (foundationId: string, res: any) => {
@@ -175,23 +178,62 @@ export const deleteFoundation = async (req: any, res: any) => {
         });
     }
 }
-export async function sendCPMToFoundation(userId: string, cpm: number) {
+
+export async function sendCPMToFoundationOfUser(userId: string, cpm: number) {
     try {
-        const user: any = (await firestore().collection('user').doc(userId).get()).data();
+        const user: any = (await firestore().collection('users').doc(userId).get()).data();
         console.log("user.foundationData.id : ", user?.foundationData?.id)
         const foundation = (await firestore().collection('foundations').doc(user?.foundationData?.id).get()).data();
-        const foundationCPM = (cpm*10) / 100;
+        const foundationCPM = (cpm * 10) / 100;
         const commission = Number(foundation?.commission) + foundationCPM;
+        console.info("commission", commission)
         if ((commission / 100) >= 1) {
-            // foundation Payment method here
+            // foundation Payment method here sendPaxToFoundation
+            const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
+            console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
+        } else {
+            const getResultAfterPaxTransferToFoundation = await sendPaxToFoundation(user?.foundationData?.id)
+            console.info("getResultAfterPaxTransferToFoundation", getResultAfterPaxTransferToFoundation)
         }
         console.log("CMP : foundationCPM : ", cpm, foundationCPM);
-        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission, commissionEarn: commission }, { merge: true });
+        await firestore().collection('foundations').doc(user?.foundationData?.id).set({ commission: commission }, { merge: true });
+        return {
+            status: true,
+            message: "Added PAX To Foundation"
+        }
     } catch (error) {
         console.log("sendCPMToFoundation : ", error);
         errorLogging('sendCPMToFoundation', 'Error', error);
+        return {
+            status: false,
+            message: "Added PAX To Foundation"
+        }
     }
 }
+
+export const sendCPMToUserFoundation = async (req: any, res: any) => {
+    try {
+        const { userId, CMPComission } = req.body;
+        console.info("userId", userId)
+        console.info("CMPComission", CMPComission)
+
+        const getUserCPMCommission = await sendCPMToFoundationOfUser(userId, CMPComission);
+        res.status(200).send({
+            status: true,
+            message: `Send`,
+            result: getUserCPMCommission,
+        });
+        console.info("getUserCPMCommission", getUserCPMCommission)
+    } catch (error) {
+        errorLogging("Error in user CMP comission", "ERROR", error);
+        res.status(500).send({
+            status: false,
+            message: foundationConst.MESSAGE_SOMETHINGS_WRONG,
+            result: error,
+        });
+    }
+}
+
 
 export const errorLogging = async (
     funcName: string,

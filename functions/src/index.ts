@@ -1,18 +1,26 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-// import {credential, firestore, initializeApp, messaging, ServiceAccount} from "firebase-admin";
 import express from "express";
 import * as bodyParser from "body-parser";
 import env from "./env/env.json";
 import speakeasy from "speakeasy";
-
 import cors from "cors";
+import { pullAll, union, uniq } from "lodash";
+import sgMail from "@sendgrid/mail";
+import { JWT } from "google-auth-library";
+
+// Interfaces
+import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
+import { VoteResultProps } from "./common/interfaces/Vote.interface"
+import { Leader } from "./common/interfaces/Coin.interface"
+
+// function import 
+import "./common/models/scheduleFunction"
 import {
-  Colors,
   isAdmin,
   userConverter,
-  UserProps,
-  UserTypeProps,
+  sendEmailVerificationLink,
+  getEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
 
@@ -25,27 +33,23 @@ import {
   updateVotesTotal,
   updateVotesTotalForSingleCoin,
   voteConverter,
-  VoteResultProps,
   getOldAndCurrentPriceAndMakeCalculation,
   getResultAfterVote,
 } from "./common/models/Vote";
 import {
   getAllCoins,
   getAllPairs,
-  Leader,
   prepareCPVI,
   fetchAskBidCoin,
   getUpdatedDataFromWebsocket,
   getAllUpdated24HourRecords,
   removeTheBefore24HoursData,
 } from "./common/models/Coin";
-import { pullAll, union, uniq } from "lodash";
 import Refer from "./common/models/Refer";
 import {
   subscribeToTopic,
   unsubscribeToTopic,
 } from "./common/models/Subscribe";
-import { JWT } from "google-auth-library";
 import {
   addCpmTransaction,
   shouldHaveTransaction,
@@ -68,7 +72,6 @@ import {
   // getUniqCoins,
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
-import sgMail from "@sendgrid/mail";
 import {
   sendNotificationForFollwersFollowings,
   sendCustomNotificationOnSpecificUsers,
@@ -79,22 +82,6 @@ import {
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
-
-import subAdminRouter from "./routes/SubAdmin.routes";
-import authAdminRouter from "./routes/Auth.routes";
-import coinRouter from "./routes/Coin.routes";
-import coinPairRouter from "./routes/CoinPair.routes";
-import rewardsDistributionRouter from "./routes/RewardsDistribution.routes";
-import rewardNftAdminRouter from "./routes/RewardNftAdmin.routes";
-import timeframeRouter from "./routes/VoteSettings/timeframe.routes";
-import perUserVoteRouter from "./routes/VoteSettings/perUserVotes.routes";
-import userTypeSettingsRouter from "./routes/UserTypeSettings.routes";
-import voteAndSettingsRouter from "./routes/VoteSettings/VoteAndRetrunSettings.routes";
-import pushNotificationSettingRouter from "./routes/PushNotificationSetting.routes";
-import FollowTableRouter from "./routes/FollowTable.routes";
-import foundationRouter from "./routes/Foundation.routes";
-import PaymentRouter from "./routes/Payments.routes";
-import adminPaymentRouter from "./routes/AdminPayment.routes";
 import {
   imageUploadFunction,
   avatarUploadFunction,
@@ -104,6 +91,9 @@ import { auth } from "./common/middleware/authentication";
 
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+
+// Routers files
+import Routers from "./routes/index"
 
 // initialize express server
 const app = express();
@@ -122,36 +112,30 @@ main.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }));
  * @author Mukut Prasad
  * @description Added admin routes seperately
  */
-app.use("/admin/sub-admin", subAdminRouter);
-app.use("/admin/auth", authAdminRouter);
-app.use("/admin/rewards", rewardNftAdminRouter);
-app.use("/admin/coins", coinRouter);
-app.use("/admin/coinsPair", coinPairRouter);
-app.use("/admin/voteSetting", timeframeRouter);
-app.use("/admin/voteSetting", perUserVoteRouter);
-app.use("/admin/userTypeSettings", userTypeSettingsRouter);
-app.use("/admin/settings", voteAndSettingsRouter);
-app.use("/admin/RewardsDistribution", rewardsDistributionRouter);
-app.use("/admin/PushNotificationSetting", pushNotificationSettingRouter);
-app.use("/admin/FollowTable", FollowTableRouter);
-app.use("/admin/payments", adminPaymentRouter);
-app.use("/admin/foundation", foundationRouter)
-app.use("/payment", PaymentRouter);
+app.use("/admin/sub-admin", Routers.subAdminRouter);
+app.use("/admin/auth", Routers.authAdminRouter);
+app.use("/admin/rewards", Routers.rewardNftAdminRouter);
+app.use("/admin/coins", Routers.coinRouter);
+app.use("/admin/coinsPair", Routers.coinPairRouter);
+app.use("/admin/voteSetting", Routers.timeframeRouter);
+app.use("/admin/voteSetting", Routers.perUserVoteRouter);
+app.use("/admin/userTypeSettings", Routers.userTypeSettingsRouter);
+app.use("/admin/settings", Routers.voteAndSettingsRouter);
+app.use("/admin/RewardsDistribution", Routers.rewardsDistributionRouter);
+app.use("/admin/PushNotificationSetting", Routers.pushNotificationSettingRouter);
+app.use("/admin/FollowTable", Routers.FollowTableRouter);
+app.use("/admin/payments", Routers.adminPaymentRouter);
+app.use("/admin/foundation", Routers.foundationRouter)
+app.use("/payment", Routers.paymentRouter);
 
-app.post(
-  "/generic/admin/uploadFiles/:forModule/:fileType/:id",
-  auth,
-  imageUploadFunction
-);
-
+// global routers
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
 
-app.get("/calculateCoinCPVI", async (req, res) => {
-  await cpviTaskCoin((result) => res.status(200).json(result));
-});
-app.get("/calculatePairCPVI", async (req, res) => {
-  await cpviTaskPair((result) => res.status(200).json(result));
-});
+
+app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
+app.get("/calculatePairCPVI", async (req, res) => { await cpviTaskPair((result) => res.status(200).json(result)); });
+app.get("/user-verification-link", getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
 
@@ -159,6 +143,9 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL: "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
 });
+
+
+
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
@@ -242,15 +229,13 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   };
   try {
     console.log("new user >>>", userData, user.uid);
-    const getUserAfterInsert = await admin
+    const newUser = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
-
-    console.log("getUserAfterInsert", getUserAfterInsert);
-
-    return getUserAfterInsert;
+    await sendEmailVerificationLink(userData.email || "")
+    return newUser;
   } catch (e) {
     console.log("create user Error....", e);
     return false;
@@ -260,32 +245,31 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
-    const getAllUsers= (await admin.firestore().collection('users').get()).docs.map((user:any)=>user.data());
+    const getAllUsers = (await admin.firestore().collection('users').get()).docs.map((user: any) => user.data());
     console.log("getAllUsers length : ", getAllUsers.length);
-    if(!getAllUsers) return {message : "No users found"}
-    const getStatusQuery :any= (await admin.firestore().collection('settings').doc('userTypes').get()).data();
+    if (!getAllUsers) return { message: "No users found" }
+    const getStatusQuery: any = (await admin.firestore().collection('settings').doc('userTypes').get()).data();
     const getStatusList = getStatusQuery.userTypes;
-    for(let index=0;index<getAllUsers.length;index++){
-      if(typeof getAllUsers[index].status == 'string'){
-        let status = getStatusList.filter((level:any)=>level?.name.toLowerCase() == getAllUsers[index]?.status?.toLowerCase());
+    for (let index = 0; index < getAllUsers.length; index++) {
+      if (typeof getAllUsers[index].status == 'string') {
+        let status = getStatusList.filter((level: any) => level?.name.toLowerCase() == getAllUsers[index]?.status?.toLowerCase());
         console.log("status : ", status);
-        await admin.firestore().collection('users').doc(getAllUsers[index].uid).set({"status" : status[0]},{merge : true})
+        await admin.firestore().collection('users').doc(getAllUsers[index].uid).set({ "status": status[0] }, { merge: true })
         console.log(`${getAllUsers[index].uid} is updated successfully`)
       }
-      else if(Array.isArray(getAllUsers[index].status)){
-        let status = getStatusList.filter((level:any)=>level?.name.toLowerCase() == getAllUsers[index]?.status[0].name.toLowerCase());
+      else if (Array.isArray(getAllUsers[index].status)) {
+        let status = getStatusList.filter((level: any) => level?.name.toLowerCase() == getAllUsers[index]?.status[0].name.toLowerCase());
         console.log("status : ", status);
-        await admin.firestore().collection('users').doc(getAllUsers[index].uid).set({"status" : status[0]},{merge : true})
+        await admin.firestore().collection('users').doc(getAllUsers[index].uid).set({ "status": status[0] }, { merge: true })
         console.log(`${getAllUsers[index].uid} is updated successfully`)
       }
     }
-    return {message : "update operation complete"}
+    return { message: "update operation complete" }
   } catch (error) {
-    console.log("addNewKeysInCollection : error",error)
-    return {message : "something went wrong : ", error}
+    console.log("addNewKeysInCollection : error", error)
+    return { message: "something went wrong : ", error }
   }
 });
-
 
 
 exports.sendPassword = functions.https.onCall(async (data) => {
@@ -1144,6 +1128,26 @@ exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
     return { id: addNewPax.id }
   }
   return null
+});
+
+exports.updatePAXValueToFoundation = functions.https.onCall(async (data) => {
+  const { currentPaxValue } = data;
+  const collectionRef = admin.firestore().collection('foundations');
+  collectionRef.get()
+    .then(querySnapshot => {
+      const batch = admin.firestore().batch();
+      querySnapshot.forEach(doc => {
+        const docRef = collectionRef.doc(doc.id);
+        batch.update(docRef, { currentPaxValue });
+      });
+      return batch.commit();
+    })
+    .then(() => {
+      console.log('Foundation batch update completed successfully.');
+    })
+    .catch(error => {
+      console.error('Error while updating batch documents: ', error);
+    });
 });
 
 // send a notification to add mint-address in wellDaddress

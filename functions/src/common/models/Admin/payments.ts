@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+
 import * as parentConst from "../../consts/payment.const.json";
 
 export const getAdminPayment = async (req: any, res: any) => {
@@ -133,7 +134,6 @@ export const getUserPayment = async (req: any, res: any) => {
   }
 };
 
-
 export const getPendingPaymentbyUserId = async (req: any, res: any) => {
   try {
     const { userId } = req.params;
@@ -144,12 +144,14 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
     });
 
     const getAllPaymentsByUserId: any = (await firestore().collection('parentPayment').where("parentUserId", "==", userId).get()).docs.map((payment: any) => payment.data());
-    const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == 'PENDING');
+    const getAllPendingPayment = getAllPaymentsByUserId.filter((payment: any) => payment.status == parentConst.PAYMENT_STATUS_PENDING);
     getAllPendingPayment.forEach((payment: any) => {
       if (payment.token && payment.amount) {
         coinObject[payment.token] += parseFloat(payment.amount);
       }
     })
+
+    console.log("coinObject : ", coinObject)
     res.status(200).send({
       status: true,
       data: coinObject,

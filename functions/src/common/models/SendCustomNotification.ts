@@ -155,7 +155,7 @@ export const sendNotificationForFollwersFollowings = async (
 };
 
 // For Vote Expiry
-export const voteExpireAndGetCpmNotification = async (userId: string, voteStatistics: any, cmp: number, coin: string) => {
+export const voteExpireAndGetCpmNotification = async (userId: string, voteStatistics: any, cmp: number) => {
   console.log("Push Notification of voteExpireAndGetCpmNotification")
   let remainingCMP: any = 0;
   const userFindQuery = await firestore().collection("users").doc(userId).get();
@@ -173,7 +173,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   let token = userData.token;
   console.log("Called Token", token)
   // if (userData.subscribers.length) subscribersNotification(userData.subscribers, userData.displayName, cmp)
-
+  remainingCMP = parseFloat(remainingCMP.toFixed(3));
   const message: messaging.Message = {
     token,
     notification: {
@@ -201,6 +201,7 @@ export const voteExpireAndGetCpmNotification = async (userId: string, voteStatis
   console.log("End Push Notification of voteExpireAndGetCpmNotification")
 }
 
+// For 24 hours users status
 export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTimeFrame: number) => {
   console.log('-------Start checkUserStatusIn24hrs-------')
   console.log("todayTimeFrame  -  yesterdayTimeFrame == ", todayTimeFrame, yesterdayTimeFrame)
@@ -239,20 +240,19 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
 
       let userVoteList = userVoteGroupObj[userId];
 
-
       for (let vote = 0; vote < userVoteList.length; vote++) {
         console.log("vote Index ->", vote);
-        console.log("userVoteList old =>", userVoteList[vote]);
-        console.log("userVoteList new =>", userVoteList[userVoteList?.length-1]);
-        if (userVoteList[vote].status.name !== userVoteList[vote + 1].status.name) {
-          let oldStatusData = userTypesData.find((item: any) => item.name === userVoteList[vote]?.status?.name);
-          let newStatusData = userTypesData.find((item: any) => item.name === userVoteList[userVoteList?.length-1]?.status?.name);
-
-          let status = newStatusData.index > oldStatusData.index ? 'Upgrade' : 'Downgrade';
-
+        let newStatusData= userVoteList[vote];
+        let oldStatusData= userVoteList[userVoteList?.length - 1];
+        console.log("userVoteList new =>", newStatusData);
+        console.log("userVoteList old =>", oldStatusData);
+        
+        if (newStatusData?.status?.index !== oldStatusData?.status?.index) {
+          let status = newStatusData?.status?.index > oldStatusData?.status?.index ? 'Upgrade' : 'Downgrade';
+          console.log("user status level: ",status)
           let message;
           let title;
-          let statusName: any = userVoteList[vote + 1].status.name;
+          let statusName: any = newStatusData?.status?.name;
           if (status === 'Upgrade') {
             title = upgradeMessage[statusName];
             message = `Vote to earn more!`;
@@ -439,88 +439,6 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   }
 };
 
-export const TitleUpgradeNotificationLogic_Testing = async function (todayTimeFrame: number, yesterdayTimeFrame: number) {
-  const getAllVotesIn24Hours: { userId: string, status: string, voteTime: number }[] = [];
-  // get all data 
-  const getAllVotesIn24HoursQuery: any = await firestore()
-    .collection('votes')
-    .where("voteTime", "<", todayTimeFrame)
-    .where("voteTime", ">", yesterdayTimeFrame)
-    .orderBy('voteTime', 'desc')
-    .get();
-  getAllVotesIn24HoursQuery.docs.map((vote: any) => {
-    const { userId, status, voteTime } = vote.data();
-    getAllVotesIn24Hours.push({ userId, status: status.name, voteTime });
-  });
-  console.log("getAllVotesIn24Hours ------", getAllVotesIn24Hours)
-  // Group the array of objects by the 'userId' property
-  const userVoteGroupObj = getAllVotesIn24Hours.reduce((result: any, item: any) => {
-    (result[item.userId] = result[item.userId] || []).push(item);
-    return result;
-  }, {});
-
-  const getAllUserDetails: any = []
-  for (const userId in userVoteGroupObj) {
-    if (userId && userVoteGroupObj[userId]) {
-      const currentStatus = userVoteGroupObj[userId][0];
-      const yesterdayStatus = userVoteGroupObj[userId][(userVoteGroupObj[userId].length) - 1];
-
-      const status = currentStatus.index > yesterdayStatus.index ? "Upgrade" : "Downgrade";
-
-      if (status === "Upgrade") {
-        getAllUserDetails.push({
-          userId,
-          title: upgradeMessage[currentStatus.name],
-          message: "Vote to earn more!",
-        });
-      } else if (status === "Downgrade") {
-        getAllUserDetails.push({
-          userId,
-          title: downGradeMessage[currentStatus.name],
-          message: "Keep Voting to Rise Again!",
-        });
-      }
-      console.log("call sendNotificationForTitleUpgrade function");
-    }
-  }
-  console.log("getAllUserDetails : ", getAllUserDetails);
-
-  await sendNotificationForTitleUpgrade_test(getAllUserDetails)
-}
-
-export const sendNotificationForTitleUpgrade_test = async (getAllUserDetails: any) => {
-  for (let user = 0; user < getAllUserDetails.length; user++) {
-    const getUserData: any = (await (firestore().collection('users').doc(getAllUserDetails[user].userId).get())).data();
-    console.log("getUserData : ", getUserData);
-
-    if (getUserData.token) {
-      const message: messaging.Message = {
-        token: getUserData.token,
-        notification: {
-          title: getAllUserDetails[user].title,
-          body: getAllUserDetails[user].message,
-        },
-        webpush: {
-          headers: {
-            Urgency: "high",
-          },
-          fcmOptions: {
-            link: `${env.BASE_SITE_URL}/profile/mine`, // TODO: put link for deep linking
-          },
-        },
-      };
-      console.log("Notification Link from 24 hours : ", `${env.BASE_SITE_URL}/profile/mine`)
-      await sendNotification({
-        token: getUserData.token,
-        message,
-        title: getAllUserDetails[user].title,
-        body: getAllUserDetails[user].message,
-        id: getUserData.uid,
-      });
-    }
-  }
-}
-
 export const sendNotificationForMintAddress = async (userId: string) => {
   try {
     if (!userId) {
@@ -573,6 +491,7 @@ export const sendNotificationForMintAddress = async (userId: string) => {
     return errorLogging("sendNotificationForMintAddress", "Error", error)
   }
 }
+
 export const sendRefferalNotification = async (userData: any) => {
   try {
     console.log("-----Start Refferal Notification -------");

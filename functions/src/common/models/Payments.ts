@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+import fetch from "node-fetch";
 import { log } from "firebase-functions/logger";
 import {
   isParentExistAndGetReferalAmount,
@@ -6,7 +7,9 @@ import {
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
 import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
-import fetch from "node-fetch";
+import { getAllPendingPaxByUserId } from "./PAX";
+
+
 
 export const makePaymentToServer = async (req: any, res: any) => {
   try {
@@ -119,6 +122,7 @@ export const updateUserAfterPayment = async (req: any, res: any) => {
     data: req.body,
   });
 };
+
 export const makePayment = async (req: any, res: any) => {
   const {
     userId,
@@ -175,6 +179,7 @@ export const makePayment = async (req: any, res: any) => {
     },
   });
 };
+
 export const storeInDBOfPayment = async (metaData: any) => {
   console.info("STORE in DB", metaData)
   if (
@@ -192,6 +197,7 @@ export const storeInDBOfPayment = async (metaData: any) => {
     .collection("payments")
     .add({ ...metaData, timestamp: firestore.FieldValue.serverTimestamp() });
 };
+
 export const addIsExtraVotePurchase = async (metaData: any) => {
   const userDocumentRef = firestore().collection("users").doc(metaData.userId);
   userDocumentRef
@@ -390,7 +396,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
   const getUserPendingReferalAmount = await firestore()
     .collection("parentPayment")
     .where("parentUserId", "==", userId)
-    .where("status", "==", parentConst.PAMENT_STATUS_PENDING)
+    .where("status", "==", parentConst.PAYMENT_STATUS_PENDING)
     .get();
   const getUserPendingReferalAmountData: any =
     getUserPendingReferalAmount.docs.map((payment) => {
@@ -500,7 +506,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         userId: transaction.userId,
         walletType: transaction.walletType,
         paymentDetails: transaction.paymentDetails,
-
+        event: transaction && transaction.event ? transaction.event : "failed"
       });
     });
 
@@ -625,6 +631,25 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
   }
 }
 
+export const getAllPendingPaxByUser = async (req: any, res: any) => {
+  try {
+    const { userId } = req.body;
+    const getPendingPaxValue = await getAllPendingPaxByUserId(userId);
+    console.info("getPendingPaxValue", getPendingPaxValue)
+    return res.status(200).send({
+      status: true,
+      message: parentConst.MESSAGE_PENDING_PAX_VALUE,
+      data: getPendingPaxValue,
+    });
+  } catch (error) {
+    errorLogging("getAllPendingPaxByUser", "ERROR", error);
+    res.status(500).send({
+      status: false,
+      message: parentConst.MESSAGE_SOMETHINGS_WRONG,
+      result: error,
+    });
+  }
+}
 export const errorLogging = async (
   funcName: string,
   type: string,

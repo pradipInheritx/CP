@@ -1,84 +1,14 @@
-import { firestore } from "firebase-admin";
-import FirestoreDataConverter = firestore.FirestoreDataConverter;
-// import {DictionaryKeys} from "./Dictionary";
+import admin from "firebase-admin";
+import * as jwt from "jsonwebtoken";
 
-export type UserTypeProps = {
-  index: number;
-  name: string;
-  givenCPM: number;
-  weight: number;
-  color?: Colors;
-  share: number;
-  minVote?: number;
-};
+import { UserProps, UserTypeProps } from '../interfaces/User.interface'
+import env from "../../env/env.json";
+import consts from "../config/constants.json"
+import { sendEmail } from "../services/emailServices";
+import { adminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 
-export enum Colors {
-  PLATINUM = "Platinum",
-  GOLD = "Gold",
-  SILVER = "Silver",
-}
-
-export type UserProps = {
-  uid?: string;
-  paid?: boolean;
-  userName?: string;
-  displayName?: string;
-  address?: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  avatar?: string;
-  bio?: string;
-  phone?: string;
-  country?: string;
-  children: string[];
-  status?: UserTypeProps;
-  parent?: string;
-  mfa: boolean;
-  voteStatistics?: VoteStatistics;
-  leader?: string[];
-  subscribers?: string[];
-  favorites: string[];
-  token?: string;
-  wallet?: string;
-  rewardStatistics?: RewardStatistics;
-  firstTimeLogin?: boolean;
-  refereeScrore?: number;
-  googleAuthenticatorData?: any;
-  voteValue?: number;
-  lastVoteTime?: number;
-  wellDAddress?: wellDAddressType;
-  referalReceiveType?: referalReceiveType;
-  foundationData?: any;
-  isUserUpgraded?: any;
-};
-
-export type wellDAddressType = [];
-
-export type referalReceiveType = {
-  name: string;
-  amount: string;
-  days: string;
-  limitType: string;
-};
-
-export type RewardStatistics = {
-  total: number;
-  claimed: number;
-  cards: string[];
-  extraVote: number;
-  diamonds: number;
-};
-
-export type VoteStatistics = {
-  total: number;
-  successful: number;
-  score: number;
-  rank: number;
-  commission: number;
-  pax: number;
-};
-
+import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
+import { errorLogging } from "../helpers/commonFunction.helper";
 export const userConverter: FirestoreDataConverter<UserProps> = {
   fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): UserProps {
     const data = snapshot.data() || {};
@@ -120,7 +50,7 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   user: string
 ) => {
   try {
-    const admins = await firestore().collection("settings").doc("admins").get();
+    const admins = await admin.firestore().collection("settings").doc("admins").get();
     return !!admins.data()?.admins.includes(user);
   } catch (e) {
     console.log(e);
@@ -128,3 +58,40 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
+// user verification link and email
+export async function sendEmailVerificationLink(email: string) {
+  try {
+    // make verification link using jwt and user data
+    // send email
+    if(!email) errorLogging("sendEmailVerificationLink", "ERROR", "email is required")
+    const user = admin.auth().getUserByEmail(email)
+      .then((snapshot) => snapshot.toJSON());
+    console.log("sendEmailVerificationLink : user : ", user)
+    if (!user) return errorLogging("sendEmailVerificationLink", "ERROR", "User not found")
+    const token = jwt.sign({ data: user }, env.JWT_AUTH_SECRET, { expiresIn: consts.USER_VERIFICATION_LINK_EXPIRE_TIME })
+    const url =
+      env.BASE_SITE_URL +
+      "/user-verification-link?token=" +
+      token;
+    await sendEmail(
+      email,
+      "Verification Link",
+      adminForgotPasswordTemplate(url, "Verification Link")
+    );
+  } catch (error) {
+    return errorLogging("sendEmailVerificationLink", "ERROR", error)
+  }
+}
+
+export async function getEmailVerificationLink(req: any, res: any) {
+  try {
+    const { token } = req.params;
+    const user = token ? jwt.verify(token, env.JWT_AUTH_SECRET) : null;
+    if (!user) errorLogging("getEmailVerificationLink", "ERROR", "user not found")
+    admin.auth().updateUser(user?.includes, {
+      emailVerified: true
+    });
+  } catch (error) {
+    return errorLogging("getEmailVerificationLink", "ERROR", error)
+  }
+}

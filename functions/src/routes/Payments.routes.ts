@@ -10,23 +10,25 @@ import {
     updateUserAfterPayment,
     getInstantReferalAmount,
     callbackFromServer,
-    paymentStatusOnTransaction
+    paymentStatusOnTransaction,
+    getAllPendingPaxByUser
 } from "../common/models/Payments";
 import { getPendingPaymentbyUserId } from "../common/models/Admin/payments"
 
-const PaymentRouter = Router();
+const paymentRouter = Router();
 
-PaymentRouter.post("/makePayment", makePayment);
-PaymentRouter.post("/makePayment/toServer", makePaymentToServer);
-PaymentRouter.post("/makePayment/callback/fromServer", callbackFromServer);
-PaymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
-PaymentRouter.post("/update/paymentStatusOnTransaction/:transactionId", paymentStatusOnTransaction);
+paymentRouter.post("/makePayment", makePayment);
+paymentRouter.post("/makePayment/toServer", makePaymentToServer);
+paymentRouter.post("/makePayment/callback/fromServer", callbackFromServer);
+paymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
+paymentRouter.post("/update/paymentStatusOnTransaction/:transactionId", paymentStatusOnTransaction);
 
-PaymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
-PaymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
-PaymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);
-PaymentRouter.get("/getParentPayment/:userId", getParentPayment);
-PaymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
-PaymentRouter.get("/getPendingPaymentbyUserId/:userId", getPendingPaymentbyUserId);
+paymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
+paymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
+paymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);
+paymentRouter.get("/getParentPayment/:userId", getParentPayment);
+paymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
+paymentRouter.get("/getPendingPaymentbyUserId/:userId", getPendingPaymentbyUserId);
+paymentRouter.post("/getAllPendingPaxByUserId", getAllPendingPaxByUser);
 
-export default PaymentRouter;
+export default paymentRouter;

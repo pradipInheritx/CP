@@ -1,8 +1,8 @@
 import axios from "axios";
 import { firestore } from "firebase-admin";
+import Web3 from "web3";
 import { log } from "firebase-functions/logger";
 import * as parentConst from "../consts/payment.const.json";
-import Web3 from "web3";
 
 import { addIsUpgradedValue, addIsExtraVotePurchase } from "./Payments";
 import { sendRefferalNotification } from "./SendCustomNotification";
@@ -225,7 +225,7 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                 const getParentPaymentQuery: any = await firestore()
                     .collection("parentPayment")
                     .where("parentUserId", "==", parentData.parentUserId)
-                    .where("status", "==", parentConst.PAMENT_STATUS_PENDING)
+                    .where("status", "==", parentConst.PAYMENT_STATUS_PENDING)
                     .get();
 
                 getParentPaymentQuery.forEach((doc: any) => {
@@ -275,15 +275,15 @@ export const setPaymentSchedulingDate = async (parentData: any) => {
                         });
                     } else {
                         console.info("Come Here In Else 1");
-                        await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
+                        await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
                     }
                 } else {
                     console.info("Come Here In Else ");
-                    await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
+                    await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
                 }
             }
             if (getParentSettings.name === parentConst.PAYMENT_SETTING_NAME_LIMIT && (getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_DAYS || getParentSettings.limitType === parentConst.PAYMENT_LIMIT_TYPE_ANYOFTHEM)) {
-                await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
+                await firestore().collection("parentPayment").add({ ...parentData, status: parentConst.PAYMENT_STATUS_PENDING, transactionId: null, parentPendingPaymentId: null, address: getMatchedCoinAddress.address, receiveType: getParentSettings, timestamp: firestore.FieldValue.serverTimestamp() });
             }
         } catch (error) {
             console.info("Error while make referal payment", error);
@@ -310,7 +310,7 @@ export const setPaymentSchedulingByCronJob = async (currentTime: any) => {
     const parentPaymentDetails: any = [];
     const getPendingParentDetails: any = await firestore()
         .collection("parentPayment")
-        .where("status", "==", parentConst.PAMENT_STATUS_PENDING)
+        .where("status", "==", parentConst.PAYMENT_STATUS_PENDING)
         .get();
     const filteredPendingPaymentData: any = getPendingParentDetails.docs.map((snapshot: any) => {
         return { parentPaymentId: snapshot.id, ...snapshot.data() };

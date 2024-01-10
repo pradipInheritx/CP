@@ -1,21 +1,13 @@
 import * as admin from "firebase-admin";
-import { UserTypeProps } from "./User";
+import { VoteResultProps,TimeFrame } from "../interfaces/Vote.interface";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import { errorLogging } from "../models/Calculation";
 import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
-import Timestamp = admin.firestore.Timestamp;
+
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 
-export type VoteProps = {
-  coin: string;
-  userId: string;
-  timeframe: TimeFrame;
-  direction: Direction;
-  valueVotingTime: number | number[];
-  status?: UserTypeProps;
-  trendChange?: number;
-};
+
 
 export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
   toFirestore(modelObject: VoteResultProps): FirebaseFirestore.DocumentData {
@@ -29,27 +21,7 @@ export const voteConverter: FirestoreDataConverter<VoteResultProps> = {
   },
 };
 
-export type VoteResultProps = VoteProps & {
-  voteTime: Timestamp;
-  expiration: Timestamp;
-  valueExpirationTime?: number | number[];
-  direction?: any;
-  success?: number;
-  score?: number;
-  CPMRangePercentage?: number;
-  CPMRangeCurrentValue?: number;
-};
 
-export type TimeFrame = {
-  index: number;
-  name: string;
-  seconds: number;
-};
-
-export enum Direction {
-  BULL,
-  BEAR,
-}
 
 export const calculateOffset: (timeframe: TimeFrame) => number = (
   timeframe: TimeFrame
