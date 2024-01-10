@@ -150,6 +150,15 @@ export const avatarUploadFunction = async (req: any, res: any) => {
           },
         })
       );
+      //On Error Event
+      fileStream.on("error", (error: any) => {
+        console.error("File Upload Error Event:", error);
+        return res.status(500).send({
+          status: true,
+          message: "Unable to upload file",
+          result: null,
+        });
+      });
 
       fileUpload
         .getSignedUrl({
@@ -161,18 +170,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
           publicImageUrl['url'] = signedUrls[0]
          
         })
-        .catch((err: any) => {
-          console.error("Error from catch block : ", err);
-        });
-      //On Error Event
-      fileStream.on("error", (error: any) => {
-        console.error("File Upload Error Event:", error);
-        return res.status(500).send({
-          status: true,
-          message: "Unable to upload file",
-          result: null,
-        });
-      });
+      
     });
     busboy.on("finish", async () => {
       await setTimeout(async () => {
