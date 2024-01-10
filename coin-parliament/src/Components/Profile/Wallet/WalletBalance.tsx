@@ -30,8 +30,11 @@ const WalletBalance = () => {
         MATIC: 0
     })
     const { userInfo, user } = useContext(UserContext);
+    const [pendingPax, setPendingPax] = React.useState(0);
+
+
     useEffect(() => {
-        ShowPendingAmount()
+        ShowPendingAmount()        
     }, [])
 
     const ShowPendingAmount = () => {
@@ -42,7 +45,18 @@ const WalletBalance = () => {
             .catch((error) => {
                 console.log(error, "error")
             })
+        
+        axios.post("payment/getAllPendingPaxByUserId", {              
+                userId: userInfo?.uid            
+        }).then((res: any) => {
+            console.log(res.data.result, "resultdata")
+            setPendingPax(res?.data?.data?.result?.pendingPaxTotal || 0)
+        }).catch((err: any) => {
+            console.log(err, "resultdata")
+        })
     }
+
+    console.log(pendingPax,"pendingPax")
     const getPendingAmount = () => {
         axios.get(`/payment/getInstantReferalAmount/${user?.uid}`)
             .then(async (response) => {
@@ -102,21 +116,25 @@ const WalletBalance = () => {
                     <div className="d-flex justify-content-center" >
                         <p className='mt-3'>Pending Payment Amount is not found</p>
                     </div>
-                }
-                {/* {!userInfo?.paxAddress?.address && userInfo?.isUserUpgraded && <>
-              <div className='d-flex justify-content-between mt-3 mb-2'>
-                  <p>Pending pax balance : </p>
-                  <p>0</p>                  
+                }                
+                {pendingPax > 0 && userInfo?.isUserUpgraded && <>
+                    <div className='d-flex justify-content-around mt-3 mb-2 '
+                        style={{
+                            padding: "0px 8px",
+                    }}
+                    >
+                  <p>Pending pax balance  </p>
+                        <p>{pendingPax}</p>                  
               </div>
-              <div className='d-block'
+              {/* <div className='d-block'
                   style={{
                       fontSize: "9px",
                       color:"red"
                   }}
               >
                   * Please add pax address to get pax
-              </div>
-              </>} */}
+              </div> */}
+              </>}
 
                 <div className={`${window.screen.width > 767 ? "justify-content-center" : "justify-content-center"} d-flex mt-3`}>
 

@@ -218,10 +218,10 @@ const [comingSoon, setComingSoon] = useState(false)
       vote: 20
     },
     {
-      value:20,
-      Extra:33,
+      value:25,
+      Extra:50,
       star: 5,
-      vote: 30
+      vote: 50
     }
   ])
   let navigate = useNavigate();
@@ -310,7 +310,7 @@ const [comingSoon, setComingSoon] = useState(false)
                       fontSize: "25px"
                     }}
                   >{item.Extra}</strong>%</p>
-                  <p>Extra</p>
+                  <p>SAVE</p>
                 </div>
               </TopDiv>}
               <div className="d-flex align-items-center flex-column"

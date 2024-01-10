@@ -26,6 +26,8 @@ export type PaxData = {
 };
 
 export type AppContextProps = {
+  walletTab?:any,
+  setWalletTab?:any,
   isVirtualCall?:any, 
   setIsVirtualCall?:any,
   avatarImage?: any,

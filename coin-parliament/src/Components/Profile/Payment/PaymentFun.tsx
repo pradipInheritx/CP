@@ -63,9 +63,9 @@ function PaymentFun({ isVotingPayment }: any) {
   let navigate = useNavigate();  
 
   useEffect(() => {
-    (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
-      console.log(data, "username")
-    })
+    // (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
+    //   console.log(data, "username")
+    // })
     // @ts-ignore
     let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
     setPayamount(AllInfo[0])
@@ -206,83 +206,84 @@ function PaymentFun({ isVotingPayment }: any) {
 
 
   }
-  useEffect(() => {
+  // useEffect(() => {
   
-    const WLDPHandler = (e: any) => {
-      try {
-        console.log(e, "alldata231dsf");
-        setPayButton(false);
-        setShowForWait(false)
-        window.scrollTo({
-          top: 500,
-          behavior: 'smooth',
-        });
-        // @ts-ignore
-        if (e?.detail?.trx?.transactionHash) {
-          afterPayPopup("success", "",)
-          if (apiCalling) {
-            // @ts-ignore
-            afterPayment(e?.detail)
-            setApiCalling(false)
-          }
-        }
-        else if (e?.detail?.trx =="Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!") {
-          afterPayPopup("success", "",)
-          if (apiCalling) {
-            // @ts-ignore
-            afterPayment(e?.detail)
-            setApiCalling(false)
-          }
-        }
-        // @ts-ignore
-        else if (e?.detail?.trx?.transactionStatus) {
-          console.log(e, "Withstatus")
-          setTimeout(() => {            
-            PaymentWait()
-          }, 2000);
-          // @ts-ignore             
-          afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)
-        }
-        // @ts-ignore
-        else if (typeof e?.detail?.trx == "string") {
-          console.log(e, "withoutstatus")
-          setTimeout(() => {
-            PaymentWait()
-          }, 2000);          
-          // @ts-ignore  
-          afterPayPopup("error", e?.detail?.trx,)
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setShowForWait(false);
-      }
-    }
-    document.addEventListener('wldp:trx', WLDPHandler);
-    return () => document.removeEventListener('wldp:trx', WLDPHandler);
-  }, [coinInfo]);
+  //   const WLDPHandler = (e: any) => {
+  //     try {
+  //       console.log(e, "alldata231dsf");
+  //       setPayButton(false);
+  //       setShowForWait(false)
+  //       window.scrollTo({
+  //         top: 500,
+  //         behavior: 'smooth',
+  //       });
+  //       // @ts-ignore
+  //       if (e?.detail?.trx?.transactionHash) {
+  //         afterPayPopup("success", "",)
+  //         if (apiCalling) {
+  //           // @ts-ignore
+  //           afterPayment(e?.detail)
+  //           setApiCalling(false)
+  //         }
+  //       }
+  //       else if (e?.detail?.trx =="Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!") {
+  //         afterPayPopup("success", "",)
+  //         if (apiCalling) {
+  //           // @ts-ignore
+  //           afterPayment(e?.detail)
+  //           setApiCalling(false)
+  //         }
+  //       }
+  //       // @ts-ignore
+  //       else if (e?.detail?.trx?.transactionStatus) {
+  //         console.log(e, "Withstatus")
+  //         setTimeout(() => {            
+  //           PaymentWait()
+  //         }, 2000);
+  //         // @ts-ignore             
+  //         afterPayPopup("error", e?.detail?.trx?.transactionStatus?.message)
+  //       }
+  //       // @ts-ignore
+  //       else if (typeof e?.detail?.trx == "string") {
+  //         console.log(e, "withoutstatus")
+  //         setTimeout(() => {
+  //           PaymentWait()
+  //         }, 2000);          
+  //         // @ts-ignore  
+  //         afterPayPopup("error", e?.detail?.trx,)
+  //       }
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //       setShowForWait(false);
+  //     }
+  //   }
+  //   document.addEventListener('wldp:trx', WLDPHandler);
+  //   return () => document.removeEventListener('wldp:trx', WLDPHandler);
+  // }, [coinInfo]);
 
   const checkAndPay = () => {
-    (window as any).wldp.isWalletConnected()
-      .then((res: any) => {
-        if (res === true) {
-          payNow()
-        }
-        else {
-          window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-          });
-          (window as any).wldp.connectionWallet('connect', 'ethereum')
-            .then((account: any) => {
-              (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
-                console.log(data, "username")
-              })
-              if (account) {
-                payNow()
-              }
-            })
-        }
-      })
+    console.log("click working")
+    // (window as any).wldp.isWalletConnected()
+    //   .then((res: any) => {
+    //     if (res === true) {
+    //       payNow()
+    //     }
+    //     else {
+    //       window.scrollTo({
+    //         top: 0,
+    //         behavior: 'smooth',
+    //       });
+    //       (window as any).wldp.connectionWallet('connect', 'ethereum')
+    //         .then((account: any) => {
+    //           (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
+    //             console.log(data, "username")
+    //           })
+    //           if (account) {
+    //             payNow()
+    //           }
+    //         })
+    //     }
+    //   })
   }
   return (
     <>

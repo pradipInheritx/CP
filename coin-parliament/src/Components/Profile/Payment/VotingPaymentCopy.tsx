@@ -432,6 +432,7 @@ const VotingPaymentCopy: React.FC<{
     const [payType, setPayType] = useState();
     const [extraVote, setExtraVote] = useState(0);
     const [extraPer, setExtraPer] = useState(0);
+  const [showText, setShowText] = useState(false);
     // const [payButton, setPayButton] = useState(false);
     // const [showOptionList, setShowOptionList] = useState(false);
     // const [afterPay, setAfterPay] = useState(false);
@@ -492,7 +493,8 @@ const VotingPaymentCopy: React.FC<{
     }, [])
 
 
-    const handleClick = () => {
+  const handleClick = () => {
+      setShowText(true)
       setPaymentStatus({ type: "", message: '' });
       setPayButton(true);
       // Call the global function and pass the values as arguments    
@@ -738,7 +740,7 @@ const VotingPaymentCopy: React.FC<{
                     )}
                   </div>
                 </Sidediv>
-                {selectPayment == 1 && window.screen.width < 767 && <p
+                {selectPayment == 1 && showText == false && window.screen.width < 767 && <p
                   style={{
                     padding: "10px",
                     fontSize: "10px",

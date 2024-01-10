@@ -406,7 +406,7 @@ const UpgradePageCopy = () => {
                 <button
                   onClick={() => {
                     handleSoundClick()
-                    // upgradeProfile(99, 0)
+                    // upgradeProfile(99, 25)
                           // showModal(<Upgrade />)
                           setComingSoon(true)
                   }}
@@ -525,7 +525,7 @@ const UpgradePageCopy = () => {
                           padding: "1px"
                         }}>
                   
-                        50 <br /> Extra Votes</p>
+                        25 <br /> Extra Votes</p>
                     </div>
                     <div
                       style={{
