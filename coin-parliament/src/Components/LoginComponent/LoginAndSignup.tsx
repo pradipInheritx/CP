@@ -61,9 +61,18 @@ const LoginAndSignup = ({
   const mode = signup ? LoginModes.SIGNUP : LoginModes.LOGIN;
   const refer = new URLSearchParams(search).get("refer");
   const [show, setShow] = useState(false);
+var userAgent = navigator.userAgent.toLowerCase();
+  const isInstagramAvailable = /instagram/.test(userAgent) || /fb_iab/.test(userAgent);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => {
+
+    setShow(false)
+  };
+  const handleShow = () => {
+    if (!isInstagramAvailable) {
+      setShow(true)
+    }
+  };
 
   useEffect(() => {  
     if (withLoginV2e) {
@@ -77,7 +86,7 @@ const LoginAndSignup = ({
       gap={2}
       className=' justify-content-center'
       style={{ height: "100vh", background: "var(--light-purple)" }}
-    >
+    >      
       <div className='container-center-horizontal'
       >
         <div className='login-signin screen'>

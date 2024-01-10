@@ -9,6 +9,7 @@ import PoolMiningCard from "./PoolMiningCard";
 import VBG from "assets/images/VBG.png"
 import VBGM from "assets/images/VBGM.png"
 import { texts } from "Components/LoginComponent/texts";
+import { useNavigate } from "react-router-dom";
 
 const Pool = () => {
   const { user, userInfo } = useContext(UserContext);
@@ -24,8 +25,15 @@ const Pool = () => {
     getUsers({ users: userInfo?.children, setUsers: setChildren, setIsLoading: setIsLoading });
     setIsLoading(true)
   }, [userInfo?.children]);
-
-  console.log(children,"userdata")
+  const navigate = useNavigate()
+  console.log(children, "userdata")
+  const redirectTab = (chlidUserId:any) => {   
+    // @ts-ignore
+    if (chlidUserId) {
+      window.localStorage.setItem('followerId', chlidUserId)
+      navigate('/followerProfile/mine')
+    } 
+  }
   return (
     <>
       <div className={`${window.screen.width > 767 ? "pt-4" : ""}`}
@@ -63,7 +71,15 @@ const Pool = () => {
             </div>
           :children.map((child) => {
             return (
-              <div className="mb-2" key={child?.userId}>
+              <div className="mb-2"
+                style={{
+                  cursor:"pointer"
+              }}
+                key={child?.userId}
+                onClick={() => {
+                  redirectTab(child?.userId)
+              }}
+              >
                 <PoolMiningCard user={child} />
               </div>
             );

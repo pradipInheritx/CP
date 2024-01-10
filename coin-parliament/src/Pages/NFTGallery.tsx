@@ -198,10 +198,11 @@ const NFTGallery = () => {
           snapshot.forEach((doc) => {
             data.push({ id: doc.id, ...doc.data() });
           });
-          data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
-          setCardNameNew(data)
+          const serchresult = data.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+          serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))          
+          setCardNameNew(serchresult)
           
-          setAllCardNew(data)
+          setAllCardNew(serchresult)
           setCardShow(true)
         }).catch((error) => {
           setIsLoading(false);
@@ -432,7 +433,7 @@ const NFTGallery = () => {
             onChange={e => {
               setSelectCollection(e.target.value)
               // onSearch("")
-              setSearchTerm("")
+              // setSearchTerm("")
             }}
             style={{
               width: "155px",
@@ -578,7 +579,7 @@ const NFTGallery = () => {
       
       
       {
-        !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType == "all" && searchTerm=="" && <>
+        !isLoading && selectCollection !== "none" && setsCardId == "none" && setsCardName == "none" && cardType == "all" && searchTerm == "" && <>
           <div className="w-100 d-flex">
             <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap`} style={{}}>
               {setsValue.map((item:any,index:number) => {

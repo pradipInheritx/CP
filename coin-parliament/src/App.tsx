@@ -305,6 +305,7 @@ function App() {
   const [transactionId, setTransactionId] = useState({});
   const [withLoginV2e, setWithLoginV2e] = useState(false)
   const [paxDistribution, setPaxDistribution] = useState(0)
+  const [walletTab, setWalletTab] = useState("Balance")
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
   const [localPrice, setLocalPrice] = useState<any>(getCoinPrice)
@@ -437,7 +438,7 @@ function App() {
     const info = await getUserInfo(user);
     console.log("i am working")
     setUserInfo(info);
-    setDisplayName(info.displayName + "");
+    setDisplayName(info.displayName + "");   
   }, []);
 
 
@@ -888,9 +889,11 @@ function App() {
         id: 1
       }));
     };
+    var userAgent = navigator.userAgent.toLowerCase();
+    const isInstagramAvailable =/iphone/.test(userAgent);
     ws.onclose = (event: any) => {
+      if (isInstagramAvailable) window.location.reload()
       setSocketConnect(false);
-      // if (!login) window.location.reload()
       console.log('WebSocket connection closed', event);
       if (event.code !== 1000) {
         console.log('WebSocket Attempting to reconnect in 5 seconds...');
@@ -901,7 +904,7 @@ function App() {
     };
 
     ws.onerror = () => {
-      if (!login) window.location.reload()
+      // if (!login) window.location.reload()
       console.log('WebSocket connection occurred');
     };
 
@@ -916,9 +919,9 @@ function App() {
         },
       };
       socket.send(JSON.stringify(req));
-    };
+    };         
     socket.onclose = (event: any) => {
-      // if (!login) window.location.reload()
+      if (isInstagramAvailable) window.location.reload()
       console.log('WebSocket connection closed crypto', event);
       if (event.code !== 1000) {
         console.log('WebSocket Attempting to reconnect in 5 seconds... crypto');
@@ -929,7 +932,7 @@ function App() {
     };
 
     socket.onerror = () => {
-      if (!login) window.location.reload()
+      // if (!login) window.location.reload()
       console.log('WebSocket connection occurred crypto');
     };
 
@@ -1384,6 +1387,8 @@ function App() {
             >
               <AppContext.Provider
                   value={{
+                    walletTab,
+                    setWalletTab,
                     avatarImage,
                     setAvatarImage,
                     selectBioEdit,

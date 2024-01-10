@@ -127,13 +127,16 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
     setSmsVerification('')
 
   };
+
+  var userAgent = navigator.userAgent.toLowerCase(); 
+  const isInstagramAvailable = /instagram/.test(userAgent) || /fb_iab/.test(userAgent);
   return (
     <div
       className="text-center"
       style={{ width: "300px" }}
-    >
+    >      
       {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
-      {!withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
+      {!isInstagramAvailable && !withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100" id='login'>
             <LoginWith

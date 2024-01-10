@@ -33,7 +33,11 @@ const RewardHistory: React.FC<{ rewardTimer: any, userId?: string | null, isFoll
         setTotalData(result?.data?.totalCount);
     };
     useEffect(() => {
-        rewardList(pageIndex, 5);
+         rewardList(pageIndex, 5);        
+        return () => {            
+            
+        };
+
     }, [rewardTimer, pageIndex]);
 
     return (

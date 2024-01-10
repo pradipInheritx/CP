@@ -232,7 +232,7 @@ const Foundations = () => {
               <strong style={{width:"60%"}}>Foundation</strong>
               <strong style={{
                 width: "30%",
-                textAlign: `${window.screen.width > 767 ?"center":""}`,
+                textAlign: `${window.screen.width > 767 ?"center":"left"}`,
               }}>Cpm</strong>
               <strong style={{width:"10%"}}>Pax</strong>
             </div>

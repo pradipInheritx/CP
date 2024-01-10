@@ -11,11 +11,12 @@ import firebase from "firebase/compat";
 import { Col, Form, FormControl, Modal, Row } from "react-bootstrap";
 
 import UserContext from "Contexts/User";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import WalletValidation from "./WalletValidation";
 import WalletInfo from "./WalletInfo";
 import Tabs from "../Tabs";
 import WalletBalance from "./WalletBalance";
+import AppContext from "Contexts/AppContext";
 
 // var WAValidator = require('wallet-address-validator');
 
@@ -24,11 +25,12 @@ const Errorsapn = styled.span`
 `;
 
 const Wallet = () => {
-  const { userInfo } = useContext(UserContext);  
+  const { userInfo, } = useContext(UserContext);  
+  const {walletTab, setWalletTab } = useContext(AppContext);
   let navigate = useNavigate();  
   const [modleShow, setModleShow] = useState(false)
   const [mfaLogin, setMfaLogin] = useState(false)  
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0);  
   const [regexList, setRegexList] = useState({
     bitcoin: "/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/",
     ethereum : "/^0x[a-fA-F0-9]{40}$/",
@@ -36,21 +38,22 @@ const Wallet = () => {
 
   const handleModleClose = () => setModleShow(false);
   const handleModleShow = () => setModleShow(true);
+  const searchParams = new URLSearchParams(useLocation().search);
 
+  // console.log(searchParams.get('name'),"window.location.search")
   useEffect(() => {
     // @ts-ignore
     console.log(userInfo?.mfa,"userInfo?.mfa")
-    if (userInfo?.mfa !==undefined && !userInfo?.mfa) {    
+    if (userInfo?.mfa !== undefined && !userInfo?.mfa) {
       handleModleShow()
-  }
-}, [])  
+    }  
+  }, [searchParams])  
     
-  console.log(mfaLogin,"mfaLogin")
   
   return (    
     <>      
       {userInfo?.mfa == true && <Tabs
-        defaultActiveKey={"Balance"}
+        defaultActiveKey={walletTab}
         id="Wallet"
         onSelect={() => setIndex(1)}
         tabs={[
@@ -65,7 +68,7 @@ const Wallet = () => {
             ),
           },
           {
-            eventKey: "Wallet",
+            eventKey: "setting",
             title: "setting",
             pane: (         
               <>

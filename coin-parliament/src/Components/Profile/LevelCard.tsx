@@ -43,7 +43,7 @@ const I = styled.i`
 `;
 const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
 
-  console.log(userTypes,"userTypescehck")
+  console.log(userTypes, userInfo,"userTypescehck")
   const translate = useTranslation();
   const [tooltipShow, setTooltipShow] = React.useState(false);
   return (
@@ -91,10 +91,10 @@ const LevelCard = ({ userInfo, userTypes }: LevelCardProps) => {
         {console.log(userInfo?.status,"userInfo?.status")}
         {userTypes.sort((a, b) => b.index - a.index).map((userType, i) => {          
           // @ts-ignore
-          const opacity = userInfo?.status.name === userType.name ? "" : " opacity-50";
+          const opacity = userInfo?.status && userInfo?.status?.name === userType?.name ? "" : " opacity-50";
           return (
             <Badge className={"rounded-pill mt-1 w-50 d-flex justify-content-center" + opacity} key={i} >
-              {userType.name}
+              {userType?.name}
             </Badge>
           );
         })}
