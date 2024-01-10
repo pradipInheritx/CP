@@ -63,6 +63,7 @@ export async function sendEmailVerificationLink(email: string) {
   try {
     // make verification link using jwt and user data
     // send email
+    if(!email) errorLogging("sendEmailVerificationLink", "ERROR", "email is required")
     const user = admin.auth().getUserByEmail(email)
       .then((snapshot) => snapshot.toJSON());
     console.log("sendEmailVerificationLink : user : ", user)

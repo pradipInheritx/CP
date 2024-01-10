@@ -235,7 +235,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     .collection("users")
     .doc(user.uid)
     .set(userData);
-    await sendEmailVerificationLink(user.email)
+    await sendEmailVerificationLink(userData.email || "")
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
