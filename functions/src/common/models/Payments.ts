@@ -495,7 +495,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         userId: transaction.userId,
         walletType: transaction.walletType,
         paymentDetails: transaction.paymentDetails,
-
+        event: transaction && transaction.event ? transaction.event : "failed"
       });
     });
 
