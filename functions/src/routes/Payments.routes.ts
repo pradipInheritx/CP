@@ -10,7 +10,8 @@ import {
     updateUserAfterPayment,
     getInstantReferalAmount,
     callbackFromServer,
-    paymentStatusOnTransaction
+    paymentStatusOnTransaction,
+    getAllPendingPaxByUser
 } from "../common/models/Payments";
 import { getPendingPaymentbyUserId } from "../common/models/Admin/payments"
 
@@ -28,5 +29,6 @@ paymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);
 paymentRouter.get("/getParentPayment/:userId", getParentPayment);
 paymentRouter.get("/getInstantReferalAmount/:userId", getInstantReferalAmount);
 paymentRouter.get("/getPendingPaymentbyUserId/:userId", getPendingPaymentbyUserId);
+paymentRouter.post("/getAllPendingPaxByUserId", getAllPendingPaxByUser);
 
 export default paymentRouter;

@@ -17,6 +17,7 @@
     "MESSAGE_SOMETHINGS_WRONG" : "Something went wrong in server",
     "MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT" : "Parent Pending Payment Amount",
     "MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT_NOT_FOUND" : "Parent Pending Payment Amount is not found",
+    "MESSAGE_PENDING_PAX_VALUE" : "Get All Pending Pax Data Successfully",
     "PAYMENT_SETTING_NAME_LIMIT" : "LIMIT",
     "PAYMENT_SETTING_NAME_MANUAL": "MANUAL",
     "PAYMENT_SETTING_NAME_IMMEDIATE" : "IMMEDIATE",

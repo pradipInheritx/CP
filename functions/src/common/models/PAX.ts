@@ -131,11 +131,12 @@ export const checkUsersWellDAddress = async (userIds: any) => {
     return errorLogging("checkUsersWellDAddress", "Error", error)
   }
 }
+
 export const getAllPendingPaxByUserId = async (userId: string) => {
   try {
     if (!userId) return errorLogging("getAllPendingPaxByUserId", "Error", "userId is required");
-    const pendingPaxList: Array<paxTransactionObj> = []
-    let sumOfPendingPax :number= 0;
+    const pendingPaxList: Array<any> = []
+    let sumOfPendingPax: number = 0;
     const getAllPendingPaxByUserId: any = (await firestore().collection('paxTransaction').where("userId", "==", userId).get()).docs.map((payment: any) => payment.data());
     const getAllPendingPax: Array<paxTransactionObj> = getAllPendingPaxByUserId.filter((payment: any) => payment.status == constants.PAYMENT_STATUS_PENDING);
     console.log("getAllPendingPax length : ", getAllPendingPax.length)
@@ -146,10 +147,10 @@ export const getAllPendingPaxByUserId = async (userId: string) => {
     console.log("pendingPaxList : ", pendingPaxList)
     return {
       status: true,
-      message: "get all pending payments successfully",
+      message: "Get all pending payments successfully",
       result: {
-        pendingPaxTotal : sumOfPendingPax,
-        paxList : pendingPaxList
+        pendingPaxTotal: sumOfPendingPax,
+        paxList: pendingPaxList
       }
     }
   } catch (error) {

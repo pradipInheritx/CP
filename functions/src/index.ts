@@ -10,9 +10,9 @@ import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 
 // Interfaces
-import {Colors,UserProps,UserTypeProps} from "./common/interfaces/User.interface"
-import {VoteResultProps} from "./common/interfaces/Vote.interface"
-import {Leader} from "./common/interfaces/Coin.interface"
+import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
+import { VoteResultProps } from "./common/interfaces/Vote.interface"
+import { Leader } from "./common/interfaces/Coin.interface"
 
 // database Configuration file
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
@@ -53,7 +53,6 @@ import {
   addCpmTransaction,
   shouldHaveTransaction,
   addPaxTransactionWithPendingStatus,
-  getAllPendingPaxByUserId,
   // getPendingPaxTransaction,
   // checkUsersWellDAddress
 } from "./common/models/PAX";
@@ -129,11 +128,11 @@ app.use("/admin/foundation", Routers.foundationRouter)
 app.use("/payment", Routers.paymentRouter);
 
 // global routers
-app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id",auth,imageUploadFunction);
+app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
 
-app.get("/calculateCoinCPVI", async (req, res) => {await cpviTaskCoin((result) => res.status(200).json(result));});
-app.get("/calculatePairCPVI", async (req, res) => {await cpviTaskPair((result) => res.status(200).json(result));});
+app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
+app.get("/calculatePairCPVI", async (req, res) => { await cpviTaskPair((result) => res.status(200).json(result)); });
 
 exports.api = functions.https.onRequest(main);
 
@@ -1170,11 +1169,6 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
     };
   }
 });
-
-exports.getAllPendingPaxByUserId = functions.https.onCall(async (data) => {
-  const { userId } = data;
-  return await getAllPendingPaxByUserId(userId);
-})
 
 // exports.getPAXPendingAndCompletePax = functions.pubsub
 //   .schedule("*/5 * * * *")

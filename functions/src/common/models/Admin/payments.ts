@@ -1,4 +1,5 @@
 import { firestore } from "firebase-admin";
+
 import * as parentConst from "../../consts/payment.const.json";
 
 export const getAdminPayment = async (req: any, res: any) => {
@@ -149,8 +150,8 @@ export const getPendingPaymentbyUserId = async (req: any, res: any) => {
         coinObject[payment.token] += parseFloat(payment.amount);
       }
     })
-  
-    console.log("coinObject : ",coinObject)
+
+    console.log("coinObject : ", coinObject)
     res.status(200).send({
       status: true,
       data: coinObject,
