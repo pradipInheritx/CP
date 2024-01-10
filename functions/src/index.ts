@@ -22,6 +22,8 @@ import "./common/models/scheduleFunction"
 import {
   isAdmin,
   userConverter,
+  sendEmailVerificationLink,
+  getEmailVerificationLink
 } from "./common/models/User";
 import {
   getLeaderUsers,
@@ -131,8 +133,10 @@ app.use("/payment", Routers.paymentRouter);
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
 
+
 app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
 app.get("/calculatePairCPVI", async (req, res) => { await cpviTaskPair((result) => res.status(200).json(result)); });
+app.get("/user-verification-link",getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
 
@@ -226,11 +230,13 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   };
   try {
     console.log("new user >>>", userData, user.uid);
-    return await admin
-      .firestore()
-      .collection("users")
-      .doc(user.uid)
-      .set(userData);
+    const newUser = await admin
+    .firestore()
+    .collection("users")
+    .doc(user.uid)
+    .set(userData);
+    await sendEmailVerificationLink(userData.email || "")
+    return newUser;
   } catch (e) {
     console.log("create user Error....", e);
     return false;

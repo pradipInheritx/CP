@@ -1,4 +1,5 @@
 {
-    "URL_EXPIRE_TIME": "1m"
+    "URL_EXPIRE_TIME": "1m",
+    "USER_VERIFICATION_LINK_EXPIRE_TIME": "10m"
     
 }
