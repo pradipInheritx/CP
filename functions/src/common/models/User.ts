@@ -63,12 +63,12 @@ export async function sendEmailVerificationLink(email: string) {
   try {
     // make verification link using jwt and user data
     // send email
-    if(!email) errorLogging("sendEmailVerificationLink", "ERROR", "email is required")
-    const user = admin.auth().getUserByEmail(email)
-      .then((snapshot) => snapshot.toJSON());
-    console.log("sendEmailVerificationLink : user : ", user)
-    if (!user) return errorLogging("sendEmailVerificationLink", "ERROR", "User not found")
-    const token = jwt.sign({ data: user }, env.JWT_AUTH_SECRET, { expiresIn: consts.USER_VERIFICATION_LINK_EXPIRE_TIME })
+    if (!email) errorLogging("sendEmailVerificationLink", "ERROR", "email is required")
+    // const user = admin.auth().getUserByEmail(email)
+    //   .then((snapshot) => snapshot.toJSON());
+    // console.log("sendEmailVerificationLink : user : ", user)
+    // if (!user) return errorLogging("sendEmailVerificationLink", "ERROR", "User not found")
+    const token = jwt.sign({ data: email }, env.JWT_AUTH_SECRET, { expiresIn: consts.USER_VERIFICATION_LINK_EXPIRE_TIME })
     const url =
       env.BASE_SITE_URL +
       "/user-verification-link?token=" +
@@ -82,13 +82,19 @@ export async function sendEmailVerificationLink(email: string) {
     return errorLogging("sendEmailVerificationLink", "ERROR", error)
   }
 }
-
+interface JwtPayload {
+  id: string;
+}
 export async function getEmailVerificationLink(req: any, res: any) {
   try {
-    const { token } = req.params;
-    const user = token ? jwt.verify(token, env.JWT_AUTH_SECRET) : null;
+    const { token } = req.query;
+    const user: any = jwt.verify(
+      token,
+      env.JWT_AUTH_SECRET
+    ) as JwtPayload;
+    console.log("user : ", user);
     if (!user) errorLogging("getEmailVerificationLink", "ERROR", "user not found")
-    admin.auth().updateUser(user?.includes, {
+    await admin.auth().updateUser(user?.data.email, {
       emailVerified: true
     });
   } catch (error) {
