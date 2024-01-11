@@ -248,7 +248,7 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
         console.log("userVoteList new =>", newStatusData);
         console.log("userVoteList old =>", oldStatusData);
 
-        if(!newStatusData.status && !oldStatusData.status) continue;
+        if(!newStatusData.status || !oldStatusData.status) continue;
         
         if (newStatusData?.status?.index !== oldStatusData?.status?.index) {
           let status = newStatusData?.status?.index > oldStatusData?.status?.index ? 'Upgrade' : 'Downgrade';
