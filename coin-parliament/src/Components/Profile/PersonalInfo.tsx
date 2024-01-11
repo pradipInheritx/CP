@@ -3,8 +3,8 @@ import { Col, Container, Form, Modal, Row, InputGroup } from "react-bootstrap";
 import UserContext, { saveUserData } from "../../Contexts/User";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import User, { UserProps } from "../../common/models/User";
-import { doc, updateDoc } from "firebase/firestore";
-import { db as V2EDB } from "../../firebase";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { db, db as V2EDB } from "../../firebase";
 import TextField from "../Forms/Textfield";
 import { Buttons } from "../Atoms/Button/Button";
 import { getAuth, sendEmailVerification, signOut, updateEmail } from "firebase/auth";
@@ -17,18 +17,37 @@ import { Input } from "../Atoms/styles";
 import { texts } from "../LoginComponent/texts";
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
-import { db as coinDB } from "firebaseCoinParliament";
-import { db as sportDB } from "firebaseSportParliament";
-import { db as stockDB } from "firebaseStockParliament";
-import { db as votingDB } from "firebaseVotingParliament";
+import Styles from "../LoginComponent/styles";
+// import { db as coinDB, db } from "firebaseCoinParliament";
+// import { db as sportDB } from "firebaseSportParliament";
+// import { db as stockDB } from "firebaseStockParliament";
+// import { db as votingDB } from "firebaseVotingParliament";
 import axios from "axios";
 import { generateGoogle2faUrl } from "common/consts/contents";
+import AppContext from "Contexts/AppContext";
+import { useTranslation } from "common/models/Dictionary";
+import { toast } from "react-toastify";
+import Avatars, { AvatarType } from "assets/avatars/Avatars";
+import Avatar from "Components/Users/Avatar";
+import UpdateAvatars from "./UpdateAvatars";
 
 const phonePattern =
   "([0-9\\s\\-]{7,})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$";
 
+const ElementsAvatarAImage1 = styled.div`
+  width: 70px;  
+  margin-top: 1px;    
+`;
 
-
+const TextAera = styled.textarea`
+      border-radius:5px;
+      width: ${window.screen.width > 767 ? "500px" : "100%"};      
+    border:1px solid var(--color-e3e3e3);
+      box-shadow:inset 0 3px 6px #00000029;
+    opacity: 1;
+    padding:10px 10px 10px 20px;
+    color:#6d757d;
+`;
 
 
 const PersonalInfo = () => {
@@ -47,16 +66,25 @@ const PersonalInfo = () => {
   let navigate = useNavigate();
   const user = userInfo ? new User({ user: userInfo }) : ({} as User);
   const [loading, setLoading] = useState(false);
+  const { avatarImage, setAvatarImage } = useContext(AppContext);  
+  const [displayName, setDisplayName] = useState('')
+  const [displayNameErr, setDisplayNameErr] = useState(false)
+  const [phoneErr, setPhoneErr] = useState(false)  
+  const [avatarMode, setAvatarMode] = useState(false);  
+  const [bioErr, setBioErr] = useState(false);
+  const translate = useTranslation();
+
   useEffect(() => {
-    setUserName(userInfo?.displayName || '')
+    setDisplayName(userInfo?.displayName || '')
+    setUserName(userInfo?.userName || '')
     setFirstName(userInfo?.firstName || '')
     setLastName(userInfo?.lastName || '')
     setEmail(userInfo?.email || '')
     setBio(userInfo?.bio || '');
-    setPhone({ phone: userInfo?.phone || ""})
-  }, [userInfo, userInfo?.phone]);
+    setPhone({ phone: userInfo?.phone })
+  }, [userInfo]);
 
-  console.log(phone,"phone")
+
   const createPost = async (id: string) => {
     if (!id) return
     // @ts-ignore
@@ -74,34 +102,43 @@ const PersonalInfo = () => {
       console.error(error);
     }
   };
+
+
   useEffect(() => {
     if (!userInfo?.mfa) createPost(userInfo?.uid as string);
     // return () => setCopied(false);
   }, [userInfo?.mfa]);
+
+
   const handleClose = () => {
     setShow(false)
   }
-  const onSubmit = async (newUserInfo: { firstName: string, lastName: string, email: string, phone: string, bio: string }) => {
-    const userIds = JSON.parse((localStorage.getItem('userId') || "{}"));
-    setLoading(true);
-    await saveUserData(userIds.V2E, V2EDB, newUserInfo);
-    await saveUserData(userIds.coin, coinDB, newUserInfo);
-    await saveUserData(userIds.sport, sportDB, newUserInfo);
-    await saveUserData(userIds.stock, stockDB, newUserInfo);
-    await saveUserData(userIds.voting, votingDB, newUserInfo);
-    setLoading(false);
-    return;
-    // if (u?.uid) {
-    //   const userRef = doc(db, "users", u?.uid);
-    //   try {
-    //     await updateDoc(userRef, newUserInfo);
-    //     showToast(texts.UserInfoUpdate);
-    //   } catch (e) {
-    //     showToast(texts.UserFailUpdate, ToastType.ERROR);
-    //   }
-    // }
+  // const onSubmit = async (newUserInfo: { firstName: string, lastName: string, email: string, phone: string, bio: string }) => {
+  //   const userIds = JSON.parse((localStorage.getItem('userId') || "{}"));
+  //   setLoading(true);
+  //   await saveUserData(userIds.V2E, V2EDB, newUserInfo);
+  //   await saveUserData(userIds.coin, coinDB, newUserInfo);
+  //   await saveUserData(userIds.sport, sportDB, newUserInfo);
+  //   await saveUserData(userIds.stock, stockDB, newUserInfo);
+  //   await saveUserData(userIds.voting, votingDB, newUserInfo);
+  //   setLoading(false);
+  //   return;
+  // };
+  
+  const onSubmit = async (newUserInfo: UserProps) => {
+    if (u?.uid) {
+      const userRef = doc(db, "users", u?.uid);
+      try {
+        await updateDoc(userRef, newUserInfo);
+        showToast(texts.UserInfoUpdate);
+      } catch (e) {
+        showToast(texts.UserFailUpdate, ToastType.ERROR);
+      }
+    }
   };
+
   const handleOnChange = (value: any, data: any, event: any, formattedValue: any) => {
+    setPhoneErr(false)
     setPhone({ phone: value });
     if (countryCode === data.country) {
       setCountryCode(data.countryCode);
@@ -119,6 +156,21 @@ const PersonalInfo = () => {
         console.log(error);
       });
   }, [phone]);
+
+  const onSubmitAvatar = async (type: AvatarType) => {
+    if (u?.uid) {
+      const userRef = doc(db, "users", u?.uid);
+      try {
+        await setDoc(userRef, { avatar: type }, { merge: true });
+        showToast(translate(texts.UserInfoUpdate));
+        setAvatarMode(false)
+        toast.dismiss();
+      } catch (e) {
+        showToast(translate(texts.UserFailUpdate), ToastType.ERROR);
+      }
+    }
+  };
+
   console.log(userCurrentCountryCode, phone, "phonenumber");
   return (
     <>
@@ -126,21 +178,35 @@ const PersonalInfo = () => {
       <Form className="mt-1 d-flex flex-column" onSubmit={async (e) => {
         e.preventDefault();
         if (edit) {
-          const newUserInfo = {
-            // ...(userInfo as UserProps),
+          let newUserInfo = {
+            ...(userInfo as UserProps),
             firstName: firstName as string,
             lastName: lastName as string,
             email: email as string,
+            displayName: displayName as string,
             bio: bio as string,
             phone: countryCode + phone.phone as string,
           };
-          if (email === user?.email) {
-            setUserInfo({ ...(userInfo as UserProps), ...newUserInfo });
+
+          if (displayName.length < 6 || displayName.length > 15 || displayName == "") {
+            setDisplayNameErr(true);
+          }
+          // else if (phone?.phone && phone?.phone.replace(/\D/g, '').length < 6 || phone?.phone == "") {
+          //   console.log(phone?.phone,"phone?.phone")
+          //   setPhoneErr(true)
+          // }          
+          else if (bio.length < 5 || bio.length > 401 || bio === "") {
+            setBioErr(true);
+          }
+          else if (email === user?.email) {
+            console.log("i am working234234345")
+            setUserInfo(newUserInfo);
             await onSubmit(newUserInfo);
             setEdit(false)
           }
           else {
             setShow(true)
+            // handleModleShow()
           }
         } else {
           setEdit(true)
@@ -154,109 +220,164 @@ const PersonalInfo = () => {
             : 'EDIT'
           }
         </Buttons.Primary>
-        <Container>
 
-          <Row >
+        <ElementsAvatarAImage1 className="m-auto mb-2" onClick={() => {
+          setAvatarMode(true)
+        }} role="button">
+          {user?.avatar && (
+            <Avatars type={avatarImage || user?.avatar as AvatarType} width={70} style={{
+              height: "70px"
+            }} />
+          )}
+          {!user?.avatar &&
+            <Avatar />
+          }
+        </ElementsAvatarAImage1>    
 
-            <Col >
+       
 
-              <TextField
-                {...{
-                  label: `${texts.USERNAME}`,
-                  name: "UserName",
-                  placeholder: "User Name",
-                  value: userName,
-                  onChange: async (e) => {
-                    setUserName(e.target.value)
-                  },
-                  maxLength: 10,
-                  edit: true,
-                }}
+        <Row >
 
-              />
-              <TextField
-                {...{
-                  label: `${texts.FIRSTNAME}`,
-                  name: "firstName",
-                  placeholder: "First Name",
-                  value: firstName || "",
-                  onChange: async (e) => {
-                    setFirstName(e.target.value)
-                  },
-                  edit: !edit,
-                }}
+          <Col >
 
-              />
-              <TextField
-                {...{
-                  label: `${texts.LASTNAME}`,
-                  name: "lastName",
-                  placeholder: "Last Name",
-                  value: lastName,
-                  onChange: (e) => {
-                    setLastName(e.target.value);
-                  },
-                  edit: !edit,
+            <TextField
+              {...{
+                label: `${texts.USERNAME}`,
+                name: "UserName",
+                placeholder: "User Name",
+                value: userName,
+                onChange: async (e) => {
+                  setUserName(e.target.value)
+                },
+                maxLength: 10,
+                edit: true,
+              }}
+
+            />
+            <TextField
+              {...{
+                label: `${"Dispaly Name"}`,
+                name: "displayName",
+                placeholder: "Display Name",
+                min: 6,
+                max: 15,
+                value: displayName || "",
+                onChange: async (e) => {
+                  setDisplayName(e.target.value)
+                  setDisplayNameErr(false)
+                },
+                edit: !edit,
+              }}
+
+            />
+            {displayNameErr ? <Styles.p className=" mt-1 mb-2 text-danger"
+              style={{
+                fontSize: "10px"
+              }}
+            >
+              {translate("Display Name should be between 6-15 characters")}
+            </Styles.p> : null}
+            <TextField
+              {...{
+                label: `${texts.FIRSTNAME}`,
+                name: "firstName",
+                placeholder: "First Name",
+                value: firstName || "",
+                onChange: async (e) => {
+                  setFirstName(e.target.value)
+                },
+                edit: !edit,
+              }}
+
+            />
+            <TextField
+              {...{
+                label: `${texts.LASTNAME}`,
+                name: "lastName",
+                placeholder: "Last Name",
+                value: lastName,
+                onChange: (e) => {
+                  setLastName(e.target.value);
+                },
+                edit: !edit,
+              }}
+            />
+            <TextField
+              {...{
+                label: `${texts.EMAIL}`,
+                name: "email",
+                type: "email",
+                placeholder: "Email",
+                value: email || "",
+                onChange: async (e) => {
+                  setEmail(e.target.value);
+                },
+                edit: !edit,
+                // edit: true,
+              }}
+            />
+            <SelectTextfield
+              label={`${texts.BIO}`}
+              name="Bio"
+
+            >
+              <TextAera
+                name="bio"
+                placeholder="Bio"
+                value={bio || ""}
+                onChange={(e) => {
+                  setBio(e.target.value)
+                  setBioErr(false)
+                }}
+                disabled={!edit}
+                // edit: true,
+                style={{
+                  background: `${!edit ? "#e9ecef" : "var(--color-ffffff) 0% 0% no-repeat padding-box"}`,
                 }}
               />
-              <TextField
-                {...{
-                  label: `${texts.EMAIL}`,
-                  name: "email",
-                  type: "email",
-                  placeholder: "Email",
-                  value: email || "",
-                  onChange: async (e) => {
-                    setEmail(e.target.value);
-                  },
-                  edit: !edit,
-                  // edit: true,
-                }}
-              />
-              <TextField
-                {...{
-                  label: `${texts.BIO}`,
-                  name: "bio",
-                  type: "bio",
-                  placeholder: "Bio",
-                  value: bio || "",
-                  onChange: async (e) => {
-                    setBio(e.target.value);
-                  },
-                  edit: !edit,
-                  // edit: true,
-                }}
-              />
-              <div style={{
-                marginBottom:`${edit && "160px"}`
-              }}>
+              {bioErr ?
+                <Styles.p className="mt-1 mb-2 text-danger" style={{ fontSize: "10px" }}>
+                  {translate("Bio should be between 5-400 characters")}
+                </Styles.p>
+                : null}
+            </SelectTextfield>
+            <div className="mb-5">
               <SelectTextfield
                 label={`${texts.PHONE}`}
-                name="Phone"                
+                name="phone"
+
               >
                 <PhoneInput
-                  inputStyle={{ width: "100%", padding: "20px 0px 20px 50px" }}
-                  placeholder=""
+                  inputStyle={{
+                    width: "100%", padding: "20px 0px 20px 50px",
+                  }}
                   dropdownStyle={{
                     maxHeight: "150px"
                   }}
+                  placeholder=""
                   inputProps={{
                     name: 'phone',
                     required: true,
                     disabled: !edit
                   }}
                   disableDropdown={!edit}
-                    country={phone?.phone == undefined || phone?.phone == "" ? userCurrentCountryCode : ''}
+                  country={phone?.phone == undefined || phone?.phone == "" ? userCurrentCountryCode : ''}
                   // country={""}
                   value={phone?.phone && phone?.phone}
                   onChange={handleOnChange}
-                  />                  
-                </SelectTextfield>
-              </div>
-            </Col>
+                />
+              </SelectTextfield>
+              {phoneErr ? <Styles.p className=" mt-1 mb-1 text-danger"
+                style={{
+                  fontSize: "10px"
+                }}
+              >
+                {translate("Phone number must required")}
+              </Styles.p> : null}
+            </div>
+          </Col>
 
-          </Row>
-        </Container>
+        </Row>        
       </Form >
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header >
@@ -301,6 +422,21 @@ const PersonalInfo = () => {
           </Buttons.Primary>
         </Modal.Footer>
       </Modal>
+      {/* Avater change modal */}
+
+      <Modal show={avatarMode} onHide={handleClose} size="xl"
+        backdrop="static"
+        aria-labelledby="contained-modal-title-vcenter"
+        contentClassName={`${window.screen.width > 767 ? "" : "AvatarModalTop"} AvatarModal`}
+      >
+        <UpdateAvatars
+          {...{
+            onSubmit: onSubmitAvatar,
+            onClose: () => setAvatarMode(false),
+          }}
+        />
+      </Modal> 
+
     </>
   );
 };

@@ -12,7 +12,7 @@ const ProtectedRoutes = () => {
     const { setUser, userInfo ,setUserInfo} = useContext(UserContext);
 
     useEffect(() => {
-        auth.onAuthStateChanged(function (user) {
+        const userAuth = auth.onAuthStateChanged(function (user) {
             if (user) {
 
                 setCheckAuth(true);
@@ -24,6 +24,10 @@ const ProtectedRoutes = () => {
             }
             setLoading(false);
         });
+
+        return () => {
+            userAuth();
+          };
 
     }, [auth?.currentUser]);
 

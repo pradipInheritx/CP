@@ -301,21 +301,20 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
   return (
     <div className="d-flex flex-column justify-content-center align-items-center p-5 h-100">
 
-      <div className="pb-4" style={{textAlign:"center"}}>
-        <h3 >
+      <div className="pb-3" style={{textAlign:"center"}}>
+        <h3 style={{whiteSpace:"nowrap"}}>
          {/* <img src={TelegramLogo} alt="Telegram Logo" style={{ marginRight: "14px", width:"35px",marginBottom:"10px"}} />  */}
          JOIN FOR UPDATES
-         <br style={{display:(window.screen.width > 767 ? 'none' : 'block') }}/>  &nbsp;
-         <button className="buttonHover" style={{borderRadius:"15px",paddingBottom:"4px"}}>
-        
+         &nbsp;
+         <button className="buttonHover" style={{borderRadius:"15px",padding:"3px"}}>
            <Link to="https://t.me/VoteToEarn" target="_blank"> 
-           <img src={TelegramLogo} alt="Telegram Logo" style={{width:"30px"}} /> 
+           <img src={TelegramLogo} alt="Telegram Logo" style={{width:"30px", paddingBottom:"2px"}} /> 
            </Link> 
          </button>
         </h3>   
       </div>
 
-      <h1 className="pb-4">TOP V2E APPS</h1>
+      <h1 className="pb-2">TOP V2E APPS</h1>
       <div className="row">
         {Object.keys(sites).map((key: string, index) => {          
           return (

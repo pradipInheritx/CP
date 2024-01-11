@@ -22,6 +22,10 @@ const CardBg = styled(Card)`
   box-shadow: 0 3px 6px #00000029;
   border-radius: 6px;
   border:none;
+  width: 252px;
+  height: 320px;  
+  text-align: center;
+
 `;
 const Title = styled.div`
   background: transparent
