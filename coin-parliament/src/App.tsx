@@ -890,9 +890,14 @@ function App() {
       }));
     };
     var userAgent = navigator.userAgent.toLowerCase();
-    const isInstagramAvailable =/iphone/.test(userAgent);
+    const isInstagramAvailable = /iphone/.test(userAgent);
+    
+    console.log(userAgent,"isInstagramAvailable")
     ws.onclose = (event: any) => {
-      if (isInstagramAvailable) window.location.reload()
+      if (isInstagramAvailable) {
+        console.log("reloadtrue")
+        window.location.reload()
+      }
       setSocketConnect(false);
       console.log('WebSocket connection closed', event);
       if (event.code !== 1000) {
@@ -921,7 +926,10 @@ function App() {
       socket.send(JSON.stringify(req));
     };         
     socket.onclose = (event: any) => {
-      if (isInstagramAvailable) window.location.reload()
+      if (isInstagramAvailable) {
+        console.log("reloadtrue")
+        window.location.reload()
+      }
       console.log('WebSocket connection closed crypto', event);
       if (event.code !== 1000) {
         console.log('WebSocket Attempting to reconnect in 5 seconds... crypto');
@@ -1199,13 +1207,13 @@ function App() {
             expiration: lessTimeVote?.expiration,
             timestamp: Date.now(),
             userId: lessTimeVote?.userId,                                          
-            // paxDistributionToUser: {
-            //   userId: lessTimeVote?.userId,
-            //   currentPaxValue: Number(paxDistribution),
-            //   isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
-            //   mintForUserAddress: userInfo?.paxAddress?.address || "",
-            //   eligibleForMint: userInfo?.paxAddress?.address ? true : false
-            // }
+            paxDistributionToUser: {
+              userId: lessTimeVote?.userId,
+              currentPaxValue: Number(paxDistribution),
+              isUserUpgraded: userInfo?.isUserUpgraded == true ? true : false,
+              mintForUserAddress: userInfo?.paxAddress?.address || "",
+              eligibleForMint: userInfo?.paxAddress?.address ? true : false
+            }
           }, ...(
             (pathname.includes(lessTimeVote?.coin) && lessTimeVote?.timeframe.index === voteImpact.current?.timeFrame && voteImpact.current?.impact !== null) ?
               {

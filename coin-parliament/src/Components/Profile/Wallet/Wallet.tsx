@@ -42,12 +42,11 @@ const Wallet = () => {
 
   // console.log(searchParams.get('name'),"window.location.search")
   useEffect(() => {
-    // @ts-ignore
-    console.log(userInfo?.mfa,"userInfo?.mfa")
+    // @ts-ignore    
     if (userInfo?.mfa !== undefined && !userInfo?.mfa) {
       handleModleShow()
     }  
-  }, [searchParams])  
+  }, [])  
     
   
   return (    

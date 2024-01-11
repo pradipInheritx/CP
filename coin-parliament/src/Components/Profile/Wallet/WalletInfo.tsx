@@ -79,7 +79,9 @@ function WalletInfo() {
     const { userInfo,user } = useContext(UserContext);
     const [saveAddress, setSaveAddress] = useState(false)
     const [savePaxAddress, setSavePaxAddress] = useState(false)
+    const [editPaxAddress, setEditPaxAddress] = useState(false)
     const [saveCardAddress, setSaveCardAddress] = useState(false)
+    const [editCardAddress, setEditCardAddress] = useState(false)
     const [savePaymentMethod, setSavePaymentMethod] = useState(false);
     const [timeType, setTimeType] = useState<string>('time');
     const [limitType, setLimitType] = useState<string>("");
@@ -149,19 +151,23 @@ function WalletInfo() {
         if (typeof userInfo?.paxAddress === 'object') {            
             // @ts-ignore
             setPaxWalletDetails(userInfo?.paxAddress || {});
+            setEditPaxAddress(userInfo?.paxAddress?.address ? false : true)
         }
         else {
             // @ts-ignore
             setPaxWalletDetails({});
+            setEditPaxAddress(true)
         }
         // @ts-ignore
         if (typeof userInfo?.cardAddress === 'object') {            
             // @ts-ignore
             setCardWalletDetails(userInfo?.cardAddress || {});
+            setEditCardAddress(userInfo?.cardAddress?.address ? false:true)
         }
         else {
             // @ts-ignore
             setCardWalletDetails({});
+            setEditCardAddress(true)
         }
         
         console.log(userInfo?.wellDAddress,"userInfo?.wellDAddress")
@@ -328,18 +334,22 @@ function WalletInfo() {
             console.log(response,"geterror")
             
             if (!error &&checktype == "forWallet") {                
-                setWalletDetails({ coin: "", address : ""})
-                if (auth?.currentUser) {
-                    const allwalletData = [...walletDetailsObj, {
+                setWalletDetails({ coin: "", address: "" })
+                setWalletDetailsObj([...walletDetailsObj, {
                         address: inputAddress,
                         coin: type,
-                    }]
-                    const userRef = doc(db, "users", auth?.currentUser?.uid);
-                    await setDoc(userRef, {
-                        wellDAddress: allwalletData                    
-                    }, { merge: true });
-                }
-                showToast("Wallet Adderss Add Successfully", ToastType.SUCCESS);
+                }])
+                // if (auth?.currentUser) {
+                //     const allwalletData = [...walletDetailsObj, {
+                //         address: inputAddress,
+                //         coin: type,
+                //     }]
+                //     const userRef = doc(db, "users", auth?.currentUser?.uid);
+                //     await setDoc(userRef, {
+                //         wellDAddress: allwalletData                    
+                //     }, { merge: true });
+                // }
+                // showToast("Wallet Adderss Add Successfully", ToastType.SUCCESS);
             }
             
             // Cehck pax value
@@ -422,17 +432,19 @@ function WalletInfo() {
                     amount: `${limitType == "TIME" ? "" : limitType == "AMOUNT" ? amountValue : timeAmount.amount}`,
                     limitType: limitType,
                 }
-                // {
-                //     time: `${timeAmount.time}`,
-                //         name: selectRadio,
-                //             amount: `${timeAmount.amount}`,
-                //         }
                 try {
                     const userRef = doc(db, "users", auth?.currentUser?.uid);
 
                     await setDoc(userRef, {
                         referalReceiveType: data
                     }, { merge: true });
+                    if (auth?.currentUser) {
+                        const allwalletData = [...walletDetailsObj]
+                        const userRef = doc(db, "users", auth?.currentUser?.uid);
+                        await setDoc(userRef, {
+                            wellDAddress: allwalletData
+                        }, { merge: true });
+                    }
                     showToast("Update Wallet Successfully", ToastType.SUCCESS);
                 } catch (error) {   
                     // @ts-ignore
@@ -553,6 +565,7 @@ function WalletInfo() {
         const newBoxes = [...walletDetailsObj];
         newBoxes.splice(index, 1);
         // @ts-ignore
+        
         const userRef = doc(db, "users", auth?.currentUser?.uid);
         await setDoc(userRef, {
             wellDAddress: newBoxes
@@ -562,7 +575,7 @@ function WalletInfo() {
             //     time: ''
             // },
         }, { merge: true })       
-        // setWalletDetailsObj(newBoxes);
+        setWalletDetailsObj(newBoxes);
     };
  
     const UpdateFunction = () => {
@@ -574,9 +587,9 @@ function WalletInfo() {
         if (addType == "UPDATESETTING") {            
             selectSendType()
         }
-        if (addType == "ADDADDERS") {
-            updateAddress()
-        }                      
+        // if (addType == "ADDADDERS") {
+        //     updateAddress()
+        // }                      
         if (addType == "PAXADDADDERS") {
             updatePaxAddress()
         }                      
@@ -680,6 +693,7 @@ function WalletInfo() {
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
+                            disabled={!editCardAddress}
                             name="address"
                             type="address"
                             placeholder="Enter address"
@@ -688,12 +702,12 @@ function WalletInfo() {
                                 handleChangeValue(e, "CardDetails")
                             }}
                         />
-                        <RemoveButton type='button'
+                        {editCardAddress && <RemoveButton type='button'
                             disabled={!CardDetails?.address || saveCardAddress}
                             style={{
                                 marginLeft: "10px",
                                 borderRadius: "5px",
-                                fontSize: "12px",
+                                fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
                             }}
                             onClick={() => {
                                 // updateAddress()
@@ -702,7 +716,20 @@ function WalletInfo() {
 
                             }}>
                             {saveCardAddress ? <span className="loading">ADD..</span> : 'ADD'}
-                        </RemoveButton>
+                        </RemoveButton>}
+
+                        {!editCardAddress &&<RemoveButton type='button'
+                            disabled={!CardDetails?.address || saveCardAddress}
+                            style={{
+                                marginLeft: "10px",
+                                borderRadius: "5px",
+                                fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
+                            }}
+                            onClick={() => {                                
+                                setEditCardAddress(true)
+                            }}>
+                            {<span className="">Edit</span>}
+                        </RemoveButton>}
                     </div>
 
                     {CardErrorValue?.coinError && <Errorsapn>{CardErrorValue?.coinError}</Errorsapn>}
@@ -793,6 +820,7 @@ function WalletInfo() {
                                 fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
                                 borderRadius: "5px"
                             }}
+                            disabled={!editPaxAddress}
                             name="address"
                             type="address"
                             placeholder="Enter address"
@@ -801,12 +829,12 @@ function WalletInfo() {
                                 handleChangeValue(e, "paxDetails")
                             }}
                         />
-                        <RemoveButton type='button'
+                        {editPaxAddress && <RemoveButton type='button'
                             disabled={!paxDetails?.address || savePaxAddress}
                             style={{
                                 marginLeft: "10px",
                                 borderRadius: "5px",
-                                fontSize: "12px",
+                                fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
                             }}
                             onClick={() => {
                                 // updateAddress()
@@ -815,7 +843,19 @@ function WalletInfo() {
 
                             }}>
                             {savePaxAddress ? <span className="loading">ADD..</span> : 'ADD'}
-                        </RemoveButton>
+                        </RemoveButton>}
+                        {!editPaxAddress &&<RemoveButton type='button'
+                            disabled={!paxDetails?.address || savePaxAddress}
+                            style={{
+                                marginLeft: "10px",
+                                borderRadius: "5px",
+                                fontSize: `${window.screen.width > 767 ?"12px":"9px"}`,
+                            }}
+                            onClick={() => {
+                       setEditPaxAddress(true)
+                            }}>
+                       <span className="">EDIT</span> 
+                        </RemoveButton>}
                     </div>
 
                     {PaxErrorValue?.coinError && <Errorsapn>{PaxErrorValue?.coinError}</Errorsapn>}
@@ -997,9 +1037,9 @@ function WalletInfo() {
                                 borderRadius: "5px"
                             }}
                             onClick={() => {
-                                // updateAddress()
-                                setAddType("ADDADDERS")
-                                handleModleShow()
+                                updateAddress()
+                                // setAddType("ADDADDERS")
+                                // handleModleShow()
                                 
                         }}>
                             {saveAddress ? <span className="loading">+</span> : '+'}
@@ -1283,72 +1323,7 @@ function WalletInfo() {
                             }
 
                         </div>
-                        <div className="mt-3">
-                            {/* <div className='d-flex align-items-center'>
-                                <Form.Check
-                                    style={{ fontSize: "20px", marginRight: "10px" }}
-                                    type="radio"
-                                    id={`manually`}
-                                    checked={selectRadio === 'MANUAL'}
-                                    onClick={(e) => {
-                                        setSelectRadio('MANUAL');
-                                        hideError();
-                                    }}
-                                />
-                                <label htmlFor="manually" >MANUAL</label>
-                            </div>
-                            {(selectRadio === 'MANUAL' && false) &&
-                                <>
-                                    <input type="" name="" id=""
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px 0px 10px 10px",
-                                            fontSize:`${window.screen.width > 767 ?"12px":"10px"}`,
-                                            borderRadius: "5px"
-                                        }}
-                                        value={sendAmount}
-                                        placeholder="Enter amount send to the parent account"
-                                        onChange={(e) => {
-                                            const re = /^[0-9\b.]+$/;
-                                            if (e.target.value === '' || re.test(e.target.value)) {
-                                                setTimeAmount({ time: '', amount: e.target.value })
-                                            }
-                                            hideError();
-                                        }}
-                                    />
-                                    {amountError && <Errorsapn>{amountError}</Errorsapn>}
-                                </>
-                            } */}
-
-
-
-                            
-                            {/* {(selectRadio === 'LIMIT') &&
-                                <>
-                                <p
-                                    style={{
-                                    margin:"0px 0px 10px 25px"
-                                }}
-                                >On demand</p>
-                                <div className={`${window.screen.width > 767 ? "justify-content-start" : "justify-content-center"} d-flex`}>
-                                    
-                                    <Buttons.Primary disabled={!selectRadio || savePaymentMethod} type='button' style={{
-                                        maxWidth: '200px',
-                                        marginLeft: `${window.screen.width > 767 ? "25px" : ""}`,
-                                        opacity: `${getPendingShow ? 0.8 : 1}`
-                                    }}
-                                        
-                                        onClick={() => {
-                                            GetRefPayment()
-                                            setGetPendingShow(true)
-                                        }}
-                                >
-                                        {getPendingShow ? <span className=''> GET PENDING AMOUNT...</span> : 'GET PENDING AMOUNT'}
-                                    </Buttons.Primary>
-                                </div>
-                                </>
-                            } */}
-                        </div>
+                        
                         <div className="mt-3 ">
                             <div className='d-flex align-items-center'>
                                 <Form.Check
@@ -1399,11 +1374,13 @@ function WalletInfo() {
                             // disabled={(userInfo?.referalReceiveType?.name == selectRadio) || !(selectRadio == "LIMIT")}
                             type='button' style={{
                                 maxWidth: '200px',                            
-                                backgroundColor: `${(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT") ? "" :"gray"}`
+                                // @ts-ignore
+                                backgroundColor: `${(userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT") || userInfo?.wellDAddress?.length != walletDetailsObj?.length ? "" :"gray"}`
                             }}
                             onClick={() => {
                                 // selectSendType()
-                                if ((userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT")) {                                    
+                                // @ts-ignore
+                                if ((userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT") || userInfo?.wellDAddress?.length != walletDetailsObj?.length) {                                    
                                     setAddType("UPDATESETTING")
                                     handleModleShow()
                                 }

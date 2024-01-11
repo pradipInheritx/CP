@@ -242,16 +242,15 @@ const Minting = ({
     if (modalShow && CmpPopupShow) {
       setCmpPopupShow(false);
     }    
-
     axios.post("https://us-central1-votetoearn-9d9dd.cloudfunctions.net/getCurrentPaxDistribution", {
       data: {}
     }).then((res:any) => {
       console.log(res.data.result, "resultdata")
-      setPaxDistribution(res.data.result.paxDistribution)
+      setPaxDistribution(res?.data?.result?.paxDistribution)
     }).catch((err:any) => {
       console.log(err, "resultdata")
-    })
-
+    })   
+    
     if (userInfo?.uid) {      
       axios.post("payment/getAllPendingPaxByUserId", {        
           userId:userInfo?.uid        
@@ -268,12 +267,52 @@ const Minting = ({
 
   useEffect(() => {
     
-    if (score === 100) {      
+    if (score === 100) {             
       setTimeout(() => {
         handleCmpPopupShow();    
       }, 5100);
     }
-  }, [score , upgraeShow]);
+  }, [score, upgraeShow]);
+  
+  // useEffect(() => {
+    
+  //   if (score === 100 && paxDistribution > 0) {   
+      
+  //     if (!userInfo?.paxAddress?.address) {
+  //       sendNotificationForMintAddress({userId: userInfo?.uid})
+
+  //       addPaxTransactionWithPendingStatus({
+  //         userId: userInfo?.uid,
+  //         currentPaxValue: Number(paxDistribution),
+  //         isUserUpgraded: false,
+  //         mintForUserAddress: "",
+  //         eligibleForMint: false
+  //       }).then((res) => {
+  //         console.log(res,"resdata")
+  //         // @ts-ignore
+  //         if (res?.data?.status) {
+  //           afterpaxDistributionToUser(paxDistribution)
+  //         }
+  //       }).catch(() => { });
+  //     }
+  //     if (userInfo?.paxAddress?.address) {
+  //       paxDistributionOnClaimReward({
+  //         userId: userInfo?.uid,
+  //         currentPaxValue: Number(paxDistribution),
+  //         isUserUpgraded: userInfo?.isUserUpgraded,
+  //         mintForUserAddress: userInfo?.paxAddress?.address,
+  //         eligibleForMint: true,
+  //       }).then((res) => {
+  //         console.log(res?.data, "resdata")
+  //         // @ts-ignore
+  //         if (res?.data?.getResultAfterSentPaxToUser?.status) {
+  //           afterpaxDistributionToUser(paxDistribution)
+  //         }
+  //       }).catch(() => { });
+  //     }
+  //   }
+
+  // }, [paxDistribution]);
 
 
   console.log(pendingPax,"pendingPax")
@@ -318,48 +357,7 @@ const Minting = ({
         setLoading(false);
       }).catch((error) => {
         showToast(error.message, ToastType.ERROR);
-      });
-
-      // if (!userInfo?.paxAddress?.address) {
-
-      //   sendNotificationForMintAddress({
-      //     userId:userInfo?.uid
-      //   }).then((res) => {
-      //     console.log(res?.data, "notification data")
-      //     // @ts-ignore          
-      //   }).catch((err) => {
-      //     console.log(err,"notification err")
-      //    });
-        
-      //   addPaxTransactionWithPendingStatus({          
-      //       userId: userInfo?.uid,
-      //       currentPaxValue: Number(paxDistribution),
-      //       isUserUpgraded:false,
-      //       mintForUserAddress:"",
-      //       eligibleForMint:false          
-      //   }).then((res) => {
-      //     console.log(res?.data, "resdata")
-      //     // @ts-ignore
-      //     if (res?.data?.getResultAfterSentPaxToUser?.status) {
-      //       afterpaxDistributionToUser(paxDistribution)
-      //     }
-      //   }).catch(() => { });
-      // }
-      // if (userInfo?.paxAddress?.address) {        
-      //   paxDistributionOnClaimReward({          
-      //       userId: userInfo?.uid,
-      //       currentPaxValue: Number(paxDistribution),
-      //       isUserUpgraded: userInfo?.isUserUpgraded,
-      //       mintForUserAddress: userInfo?.paxAddress?.address,
-      //     eligibleForMint:true,
-      //   }).then((res) => {
-      //     console.log(res?.data, "resdata")
-      //     // @ts-ignore
-      //     if (res?.data?.getResultAfterSentPaxToUser?.status) {          
-      //       afterpaxDistributionToUser(paxDistribution)
-      //     }
-      //   }).catch(() => { });
-      // }
+      });      
 
     } else {
       // Swal.fire({

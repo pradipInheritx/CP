@@ -194,6 +194,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
   const navigate = useNavigate();
   const { singalCardData, setSingalCardData } = useContext(AppContext);
   const [tooltipShow, setTooltipShow] = React.useState(false);
+  const [tooltipShow2, setTooltipShow2] = React.useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   let params = useParams();
   const { type } = params;
@@ -383,7 +384,7 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                         position: "absolute",
                         left: "0px",
                         // bottom: "60px",
-                        top:"70px",
+                        top:"85px",
                         // transform: "rotate(-90deg)",
                         // width: "100px",
                         color: "black",
@@ -480,14 +481,27 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                 {["followerProfile", "profile"].includes(pathnameName[1])
                   ?
                   <span
-                    className="d-inline border-0"
+                    className="d-inline border-0 d-flex"
                     onClick={() => {
                       navigate(`/singlecarddetails/${CollectionType || type}/${id}`)
                       // setSingalCardData({ ...fulldata, myID: userId })
                       localStorage.setItem("singalCardData", JSON.stringify({ ...fulldata, myID: userId, isFollower: isFollower }))
                     }}
                   >
-                    Serial No. : {GeneralSerialNo || ""}
+                    Serial No. : &nbsp;{<u>{GeneralSerialNo || ""}</u>}
+                    <img src={information2} alt=""
+                      className="mx-1"
+                      width={"10px"}
+                      height={"10px"}
+                      onMouseEnter={(e) => {
+                        e.stopPropagation();
+                        setTooltipShow2(true)
+                      }}
+                      onMouseLeave={(e) => {
+                        e.stopPropagation();
+                        setTooltipShow2(false);
+                      }}
+                    />
                   </span>
                   
                   // `Serial No. : ${GeneralSerialNo || ""}`
@@ -516,14 +530,28 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
                     <p className="mt-1 text-end lh-base">
                       As the original Collectible card holder, you get 50% of the royalties from the fee charged on Collectible card sale lifetime! This arrangement ensures you have a continuous and substantial income stream from your digital assets. only members who upgrade their account will have their cards converted to Collectible cards
                     </p>
-                    {/* <p className="mt-3 text-end lh-base">
-                  Watch your CMP grow with every influential vote, unlocking Parliament Coins, extra votes, and exclusive cards at key milestones. 
-                </p> 
-                
-                  <p className="mt-3 text-end lh-base">
-                  As you climb through user levels, CMP reflects your dedication, making your experience in Coin Parliament uniquely rewarding and engaging.
-                  </p> */}
+                  </div>
+                </div>
+              }
 
+              {
+                tooltipShow2 &&
+                <div
+                  style={{
+                    display: "relative",
+                  }}
+                >
+                  <div className="newtooltip2"
+                    style={{
+                      width: "93%",
+                      marginTop: "-35%",
+                      fontSize: "11px"
+                    }}
+                  >
+                    {/* <p>Your CMP count</p> */}
+                    <p className="mt-1 text-end lh-base">
+                        Please click on serial number to see all details
+                    </p>
                   </div>
                 </div>
               }
@@ -549,7 +577,23 @@ const NftOneCard = ({ darkTheme = false, DivClass, HeaderText, HeaderClass, widt
               </span>
 
               <span>
-                {["followerProfile", "profile", "singlecarddetails"].includes(pathnameName[1]) ? `Quantity : ${ShowQuantity}` : `Total quantity : ${Quantity}`}
+                {["followerProfile", "profile", "singlecarddetails"].includes(pathnameName[1]) ?
+                  <div className="d-flex">                    
+                    Quantity : &nbsp;{<u>{ShowQuantity}</u>}                   
+                  <img src={information2} alt=""
+                    className="mx-1"
+                    width={"10px"}
+                    height={"10px"}
+                    onMouseEnter={(e) => {
+                      e.stopPropagation();
+                      setTooltipShow2(true)
+                    }}
+                    onMouseLeave={(e) => {
+                      e.stopPropagation();
+                      setTooltipShow2(false);
+                    }}
+                  />
+                </div> : `Total quantity : ${Quantity}`}
               </span>
               {["followerProfile", "profile", "singlecarddetails"].includes(pathnameName[1]) ?
                 // <span>Minted Time : {MintedTime}</span> 

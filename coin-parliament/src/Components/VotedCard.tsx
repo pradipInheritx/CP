@@ -129,7 +129,7 @@ const VotedCard = ({
 
 
 }) => {
-
+  
   const [borderColor, setBorderColor] = useState<any>("#6352e8");
   const getBorderColor = () => {
     // let PricePer = livePrice / 100;   
@@ -405,7 +405,7 @@ const VotedCard = ({
                   fontSize: '1.7em',
                   color: getPairResultColor(parseFloat(pairCoinResult?.firstCoin), parseFloat(pairCoinResult?.secondCoin), vote?.direction),
                 }}>
-                  {`${pairCoinResult?.difference.replaceAll('-', '')}%`}
+                  {`${pairCoinResult?.difference && pairCoinResult?.difference.replaceAll('-', '') || 0.00}%`}
                 </div>
                 <div className="row justify-content-center align-items-center">
                   <Row1 style={{ textAlign: 'center', fontSize: window.screen.width <= 400 ? '1em' : '1.1em' }}>{"You voted for "}{voted}</Row1>
