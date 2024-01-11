@@ -84,7 +84,7 @@ export type LoginProps = {
 const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: LoginProps) => {
   const translate = useTranslation();
   const { showToast } = useContext(NotificationContext);
-  const { setLoginRedirectMessage, loginRedirectMessage, setLoader } = useContext(AppContext);
+  const { setLoginRedirectMessage, loginRedirectMessage, setLoader,setLogin } = useContext(AppContext);
   const [smsVerification, setSmsVerification] = useState('')
   const [verificationCode, setVerificationCode] = useState("");
   const navigate = useNavigate();
@@ -128,7 +128,10 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
         <LoginForm
           callback={{
             successFunc: (params) => {
+              console.log('user successFunc');
+              
               setUser(params);
+              setLogin(false);
               navigate('/');
             },
             errorFunc: (e) => showToast(e.message, ToastType.ERROR),

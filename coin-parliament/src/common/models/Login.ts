@@ -261,6 +261,8 @@ export const LoginRegular = async (
           callback.successFunc(userCredential.user)
         }, 100);
       } else {
+        console.log('user callback');
+        
         callback.successFunc(userCredential.user)
       }
     } else {

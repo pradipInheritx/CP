@@ -59,7 +59,7 @@ const Header = () => {
               
               >
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
-                Top VTE Apps
+                Top V2E Apps
               </NavDropdown.Item>
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
                 Profile

@@ -634,6 +634,15 @@ function App() {
   }, []);
   // console.log(auth?.currentUser, userInfo, loader, 'pkk');
 
+useEffect(()=>{
+  if (userInfo) {
+    setFirstTimeAvatarSelection(!userInfo?.avatar)      
+  }
+},[JSON.stringify(userInfo)])
+
+     console.log("user1434",userInfo,!login ,
+                                !firstTimeAvatarSlection ,
+                                !firstTimeFoundationSelection , !selectBioEdit , localStorage.getItem('mfa_passed') != 'true')
   return loader ? (
     <Spinner />
   ) : (
@@ -885,7 +894,7 @@ function App() {
                                   }}
                                 /> : <Navigate to="/" />
                               } />
-                           
+                                                           
                               {!login &&
                                 !firstTimeAvatarSlection &&
                                 !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&
