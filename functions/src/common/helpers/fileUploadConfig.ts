@@ -126,12 +126,20 @@ export const avatarUploadFunction = async (req: any, res: any) => {
           result: null,
         });
       }
-      const getFileType = (fileMeta.mimeType.split('/'))[1]
-      console.log("getFileType : ", getFileType);
-      // const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.${getFileType}`); 
-      const fileUpload = bucket.file(`UsersAvatar/${Date.now()}/${fileMeta.filename}`); 
+      // const getFileType = (fileMeta.mimeType.split('/'))[1]
+      // console.log("getFileType : ", getFileType);
+      // // const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.${getFileType}`); 
+      // const filepath = `UsersAvatar/${Date.now()}/${fileMeta.filename}`
+      // console.log("file path : ", filepath)
+      // const fileUpload = bucket.file(filepath); 
 
-      
+
+      const getFileExtension = fileMeta.filename.split('.').pop();
+      const filepath = `UsersAvatar/${fileMeta?.filename}-${Date.now()}.${getFileExtension}`;
+      console.log("file path : ", filepath);
+
+      const fileUpload = bucket.file(filepath);
+
       const fileStream = file.pipe(
         fileUpload.createWriteStream({
           metadata: {
@@ -139,6 +147,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
           },
         })
       );
+
       //On Error Event
       fileStream.on("error", (error: any) => {
         console.error("File Upload Error Event:", error);
