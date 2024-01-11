@@ -52,7 +52,9 @@ const Footer = () => {
   )
 
   useEffect(() => {
-    showData()
+    showData()    
+    return () => {      
+    }
 }, [])
 
   const showData = () => {

@@ -396,7 +396,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
         if (displayMyCards) {
             let winnerCardId = winerCard?.map((WinerItem: any) => WinerItem?.firstRewardCardId);
             tempFilter = tempFilter.filter((value: any) => winnerCardId.includes(value?.cardId));
-        }        
+        }            
+        console.log(tempFilter,"tempFilter")
         setMyFilter(divideArray1(tempFilter, 4));
     }, [searchValue, collectionValue, collectionSetValue, collectionTypeValue, collectionCardValue, displayMyCards, allCards, winerCard]);
     //End 
@@ -597,7 +598,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                 </span>
             </div>}
             {
-                collectionValue !== "none" && collectionSetValue == "none" && collectionCardValue == "none" && collectionTypeValue == "all" && !displayMyCards && <>
+                collectionValue !== "none" && collectionSetValue == "none" && collectionCardValue == "none" && collectionTypeValue == "all" && !displayMyCards && searchValue == "" &&  <>
                     <div className="w-100 d-flex">
                         <div className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between flex-wrap w-100`} style={{}}>
                             {setsValue.map((item: any, index: number) => {
@@ -616,35 +617,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
 
 
             {
-                (collectionValue === 'none' && !displayMyCards) ?
-                    <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
-                    } >
-                        {
-                            collectionType?.map((data: any, index: number) => {
-                                return (
-                                    <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }
-                                    } key={index}
-                                        style={{
-                                            width: "380px",
-                                            overflow: "hidden",
-                                            height: "108px",
-                                            borderRadius: "10px",
-                                        }}
-                                    >
-                                        {
-                                            data?.albumVideoUrl ?
-                                                <img src={data?.albumVideoUrl} width={'100%'} height={'100%'} />
-                                                :
-                                                <p style={{ color: "white" }}> {data?.albumName} </p>
-                                        }
-                                        {/* <p>{data?.collectionName} COLLECTION</p> */}
-                                    </div>
-                                )
-                            })
-                        }
-                    </GalleryType>
-                    :
-                    (displayMyCards || collectionSetValue != "none" || collectionCardValue != "none" || collectionTypeValue != "all") &&
+                (displayMyCards || collectionSetValue != "none" || collectionCardValue != "none" || collectionTypeValue != "all" || searchValue != "") ?                    
                     <>
                         {Object.keys(myFilter)?.length > 0  ?
                         <SummerCard className="mt-4" >
@@ -763,7 +736,35 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                 color: "black"
                                 }}> {!isLoading && "Data Not Found"} </p>}
                         </div>}
-                    </>
+                    </>  
+                    
+                    :
+                    <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
+                    } >
+                        {
+                            collectionType?.map((data: any, index: number) => {
+                                return (
+                                    <div className="" onClick={() => { setSelectCollection(data?.albumName); setCollectionValue(data?.albumName); }
+                                    } key={index}
+                                        style={{
+                                            width: "380px",
+                                            overflow: "hidden",
+                                            height: "108px",
+                                            borderRadius: "10px",
+                                        }}
+                                    >
+                                        {
+                                            data?.albumVideoUrl ?
+                                                <img src={data?.albumVideoUrl} width={'100%'} height={'100%'} />
+                                                :
+                                                <p style={{ color: "white" }}> {data?.albumName} </p>
+                                        }
+                                        {/* <p>{data?.collectionName} COLLECTION</p> */}
+                                    </div>
+                                )
+                            })
+                        }
+                    </GalleryType>
             }
         </div >
     );

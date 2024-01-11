@@ -115,6 +115,7 @@ const SignupForm = ({
       </Form.Group>
 
       <div style={{marginTop:"15px"}}>
+      {/* @ts-ignore */}
       <ReCAPTCHA
         sitekey={process.env.REACT_APP_RECAPTCHA_KEY || ""}
         onChange={handleReCaptcha}
@@ -130,7 +131,7 @@ const SignupForm = ({
       </div>
 
       <Form.Group className="mb-2  text-center" controlId="agree">
-        <Checkbox disabled={!recaptcha} name="agree" checked={agree} onClick={() => setAgree(!agree)} >
+        <Checkbox  name="agree" checked={agree} onClick={() => setAgree(!agree)} >
           <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
             {translate('terms & conditions')}
           </Link>  and

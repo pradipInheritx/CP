@@ -701,7 +701,7 @@ function WalletInfo() {
                                 handleModleShow()
 
                             }}>
-                            {savePaxAddress ? <span className="loading">ADD..</span> : 'ADD'}
+                            {saveCardAddress ? <span className="loading">ADD..</span> : 'ADD'}
                         </RemoveButton>
                     </div>
 

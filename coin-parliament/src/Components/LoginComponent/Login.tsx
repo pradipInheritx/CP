@@ -18,7 +18,7 @@ import AppContext from "../../Contexts/AppContext";
 import { Buttons } from "../Atoms/Button/Button";
 import logo from "../../assets/svg/logoiconx2.png";
 import v2elogo from "../../assets/svg/VTElogo.png";
-
+import copy from "copy-to-clipboard";
 const OR = styled.div`
   ${PoppinsMediumBlack12px};
   min-height: 19px;
@@ -127,13 +127,16 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
     setSmsVerification('')
 
   };
+
+  var userAgent = navigator.userAgent.toLowerCase(); 
+  const isInstagramAvailable = /instagram/.test(userAgent) || /fb_iab/.test(userAgent);
   return (
     <div
       className="text-center"
       style={{ width: "300px" }}
-    >
+    >      
       {loginRedirectMessage && <H1 className='.tooltip-inner'>You need to login to {loginRedirectMessage}.</H1>}
-      {!withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
+      {!isInstagramAvailable && !withLoginV2e && Object.values(LoginProviders).map((provider, i) => {
         return (
           <div key={i} className="mb-2 w-100" id='login'>
             <LoginWith
@@ -148,6 +151,13 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           </div>
         );
       })}
+      {isInstagramAvailable && <div style={{width:'243px', color:'black'}}>TO LOGIN WITH GOOGLE, COPY THIS LINK AND OPEN IN ANOTHER BROWSER, <span style={{textDecoration:'underline',textAlign:'center'}}  onClick={() => {
+        copy(window.location.href);
+        showToast(
+          'Your referral link is copied to the clipboard.',
+          ToastType.SUCCESS
+        );
+      }}>COPY LINK</span></div>}
       <div className="mb-2 w-100">
         <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           onClick={() => {

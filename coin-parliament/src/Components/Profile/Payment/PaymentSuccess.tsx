@@ -1,10 +1,16 @@
 import React from 'react'
 
-const PaymentFail: React.FC<{ paymentSuccessAction: () => void, message?: string }> = ({ paymentSuccessAction, message = 'Your payment has been confirmed' }) => {
+const PaymentSuccess: React.FC<{ paymentSuccessAction: () => void, message?: string }> = ({ paymentSuccessAction, message = 'Your payment has been confirmed' }) => {
+    
+    // @ts-ignore
+    let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
+
+
+
     return (
         <div className='w-100 d-flex justify-content-center'>
             <div style={{
-                backgroundColor: 'white',
+                // backgroundColor: 'white',
                 boxSizing: 'border-box',
                 gridTemplateColumns: 'minmax(0, 100%)',
                 width: '32em',
@@ -23,16 +29,38 @@ const PaymentFail: React.FC<{ paymentSuccessAction: () => void, message?: string
                 justifySelf: 'center',
             }}>
                 <div className="swal2-icon swal2-success swal2-icon-show" style={{ display: "flex" }}>
-                    <div className="swal2-success-circular-line-left" style={{ backgroundColor: "rgb(255, 255, 255);" }}></div>
+                    <div className="swal2-success-circular-line-left" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
                     <span className="swal2-success-line-tip"></span> <span className="swal2-success-line-long"></span>
-                    <div className="swal2-success-ring"></div> <div className="swal2-success-fix" style={{ backgroundColor: "rgb(255, 255, 255);" }}></div>
-                    <div className="swal2-success-circular-line-right" style={{ backgroundColor: "rgb(255, 255, 255);" }}></div>
+                    <div className="swal2-success-ring"></div> <div className="swal2-success-fix" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
+                    <div className="swal2-success-circular-line-right" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
                 </div>
                 <div style={{
                     fontSize: '1.875em',
                     fontWeight: '600',
                     textAlign: 'center',
                 }}>Payment Successful</div>
+                {AllInfo[1] == "EXTRAVOTES" && <div style={{
+                    fontSize: '1.125em',
+                    fontWeight: 'normal',
+                    lineHeight: 'normal',
+                    textAlign: 'center',
+                    margin: '1em 2.6em .3em',
+                    padding: '0'
+                }}>
+                    {/* {message} */}
+                    You get {AllInfo[2]} Votes
+                </div>}
+                {AllInfo[1] == "UPGRADE" && <div style={{
+                    fontSize: '1.125em',
+                    fontWeight: 'normal',
+                    lineHeight: 'normal',
+                    textAlign: 'center',
+                    margin: '1em 2.6em .3em',
+                    padding: '0'
+                }}>
+                    {/* {message} */}
+                    You get {AllInfo[2]} Votes and 500 VTE
+                </div>}
                 <div style={{
                     fontSize: '1.125em',
                     fontWeight: 'normal',
@@ -43,6 +71,9 @@ const PaymentFail: React.FC<{ paymentSuccessAction: () => void, message?: string
                 }}>
                     {message}
                 </div>
+                
+                
+
                 <div className='d-flex justify-content-center'>
                     <button type="button"
                         style={{
@@ -67,4 +98,4 @@ const PaymentFail: React.FC<{ paymentSuccessAction: () => void, message?: string
     )
 }
 
-export default PaymentFail;
+export default PaymentSuccess;

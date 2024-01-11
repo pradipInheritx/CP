@@ -174,7 +174,7 @@ function PaymentHistory() {
                         }}
                       >
                         <RewardList>
-                          {item?.status || "-"}
+                          {(item?.event).toUpperCase() || "-"}
                         </RewardList>
                       </div>
                     </div>

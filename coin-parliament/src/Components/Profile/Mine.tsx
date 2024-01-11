@@ -122,6 +122,10 @@ const Mine = () => {
   useEffect(() => {
     // @ts-ignore
     setPaxValue(userInfo?.rewardStatistics?.diamonds)
+  let Modal=true
+    return () => {
+      Modal=false
+    }
   }, [userInfo?.rewardStatistics?.diamonds])
   
 
@@ -133,22 +137,32 @@ const Mine = () => {
     }
     if (countShow) {
       prevPAXValue.current = userInfo?.rewardStatistics?.diamonds || 0;
+    }    
+    return () => {
+     
     }
-
   }, [paxValue, countShow])
 
 
   useEffect(() => {
     if (!!rewardTimer && showReward == 3 && inOutReward == 3) {
-
       handleCardShow();
     }
+    return () => {
+      // handleCardClose();
+    };
   }, [inOutReward, showReward, rewardTimer]);
   const remainingRewardRef = useRef<number>(0);
   const remainingCMPRef = useRef<number>(0);
+
   useEffect(() => {
+    
     remainingRewardRef.current = remainingReward;
     remainingCMPRef.current = remainingCMP;
+    let Modal = true
+    return () => {
+      Modal = false
+    }
   }, [remainingReward, remainingCMP]);
   useEffect(() => {
     let timerPopup: any = null;

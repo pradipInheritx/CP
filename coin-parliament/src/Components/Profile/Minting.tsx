@@ -203,7 +203,7 @@ const Minting = ({
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack,setIsVirtualCall } = useContext(AppContext);
+  const { showReward, setShowReward, rewardExtraVote,setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack, setIsVirtualCall, walletTab ,setWalletTab } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const [tooltipShow, setTooltipShow] = React.useState(false);
@@ -211,7 +211,9 @@ const Minting = ({
   const [upgraeShow, setUpgraeShow] = React.useState(false);
   const [pendingVoteShow, setPendingVoteShow] = React.useState(false);
   const [paxDistribution, setPaxDistribution] = React.useState(0);
+  const [pendingPax, setPendingPax] = React.useState(0);
   const [ClickedOption, setClickedOption] = React.useState(false);
+  const [paxAddShow, setPaxAddShow] = React.useState(false);
   const handleClose = () => setModalShow(false);
   const handleShow = () => {
     setModalShow(true)
@@ -250,8 +252,20 @@ const Minting = ({
       console.log(err, "resultdata")
     })
 
+    if (userInfo?.uid) {      
+      axios.post("payment/getAllPendingPaxByUserId", {        
+          userId:userInfo?.uid        
+      }).then((res: any) => {                
+        setPendingPax(res?.data?.data?.result?.pendingPaxTotal)
+      }).catch((err:any) => {
+        console.log(err, "resultdata")
+      })
+    }
+
   }, [modalShow, CmpPopupShow]);
   
+  
+
   useEffect(() => {
     
     if (score === 100) {      
@@ -261,6 +275,8 @@ const Minting = ({
     }
   }, [score , upgraeShow]);
 
+
+  console.log(pendingPax,"pendingPax")
 
   useEffect(() => {
     if (CmpPopupShow) {
@@ -367,6 +383,20 @@ const Minting = ({
 
   // };
   console.log(claim, "setAnimateButton")
+
+  console.log(inOutReward, "inOutReward")
+  const updateState = () => {
+    setShowReward(1);
+    console.log(inOutReward, "inOutReward2")
+    setInOutReward(1);
+
+    setCountShow(true)
+    // @ts-ignore
+    setAlbumOpen(resultData?.data?.firstRewardCardCollection);
+    // @ts-ignore
+    setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
+    // setRewardTimer(resultData); i commented here because i set this when i get result 
+}
 
   return (
     <React.Fragment>
@@ -500,14 +530,16 @@ const Minting = ({
             <div className="d-flex justify-content-center ">
               <Buttons.Primary className="mx-2" onClick={() => {
                 setTimeout(() => {
-                  setShowReward(1);
-                  setInOutReward(1);
+                  // setShowReward(1);                  
+                  // setInOutReward(1);
+
                   // setCountShow(true)
-                  // @ts-ignore
-                  setAlbumOpen(resultData?.data?.firstRewardCardCollection);
-                  // @ts-ignore
-                  setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
-                  // setRewardTimer(resultData); i commented here because i set this when i get result 
+                  // // @ts-ignore
+                  // setAlbumOpen(resultData?.data?.firstRewardCardCollection);
+                  // // @ts-ignore
+                  // setRewardExtraVote(resultData?.data?.secondRewardExtraVotes);
+                  // // setRewardTimer(resultData); i commented here because i set this when i get result 
+                  updateState()
                 }, 1000);
                 claimRewardSound.pause()
                 handleClose()
@@ -548,6 +580,12 @@ const Minting = ({
                 if (!userInfo?.isUserUpgraded) {                  
                   handleCmpPopupClose();
                   handleUpgraeShow()
+                  return;
+                }
+                else if (userInfo?.isUserUpgraded && !userInfo?.paxAddress?.address && pendingPax > 0) {
+                  handleCmpPopupClose()
+                  setPaxAddShow(true)
+                  return;
                 }
                 else {
                   claimRewardHandler();
@@ -556,7 +594,19 @@ const Minting = ({
               }}
             >CLAIM YOUR REWARDS</Buttons.Primary>
           </div>
-          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={handleCmpPopupClose}>Claim later</div>
+          <div className="mx-2 text-center" style={{ cursor: 'pointer', color: '#6352e8', fontSize: '0.9em' }} onClick={
+            () => {              
+              if (userInfo?.isUserUpgraded && !userInfo?.paxAddress?.address && pendingPax > 0) {                
+                handleCmpPopupClose()
+                setPaxAddShow(true)
+                  return;
+              }
+              else {
+                handleCmpPopupClose()
+              }
+            }
+          
+          }>Claim later</div>
         </Modal>
       </div>
 
@@ -644,6 +694,47 @@ const Minting = ({
             >ok</Buttons.Primary>            
           </div>
         </Modal>
+
+{/* This popup show for add pax data */}
+        <div>
+          <Modal
+            show={
+              paxAddShow
+            } onHide={() => { setPaxAddShow(false) }}
+            backdrop="static"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+              <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+
+                setPaxAddShow(false)
+
+              }
+              }></button>
+            </div>
+            <Modal.Body className="d-flex  justify-content-center align-items-center"
+            >
+
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Please add pax address to mint your pending pax</p>
+
+            </Modal.Body>
+            <div className="d-flex justify-content-center">
+            <Buttons.Primary className="mx-2"
+              style={{
+                width: "150px"
+              }}
+              onClick={async () => {
+                // setPendingVoteShow(false)
+                setWalletTab("setting")
+                navigate(`/profile/wallet`)
+              }}
+            >Add Now</Buttons.Primary> 
+            </div>
+            
+          </Modal>
+        </div>
+
       </div>
     </React.Fragment >
   );

@@ -145,6 +145,7 @@ const PAXCard = ({ walletId, PAX, rewardTimer, countShow, setCountShow }: PAXCar
 
   }, [inOutReward, modalShow]);
 
+  console.log(inOutReward, showReward, rewardExtraVote, "rewardExtraVote")
 
   return (
     <ForZoom2 {...{ showCoinIncrement }} style={{
