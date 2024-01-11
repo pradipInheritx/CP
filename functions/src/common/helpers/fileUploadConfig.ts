@@ -128,22 +128,10 @@ export const avatarUploadFunction = async (req: any, res: any) => {
       }
       const getFileType = (fileMeta.mimeType.split('/'))[1]
       console.log("getFileType : ", getFileType);
-      const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.${getFileType}`);
+      // const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.${getFileType}`); 
+      const fileUpload = bucket.file(`UsersAvatar/${Date.now()}/${fileMeta.filename}`); 
 
-      //const imageSizeLimit = 5; //mb 
-      // Check file size before uploading
-      // const [metadata] = await fileUpload.getMetadata();
-      // console.log("image MetaData : ", metadata)
-      // const maxSizeInBytes = imageSizeLimit * 1024 * 1024;
-
-      // if (metadata.size > maxSizeInBytes) {
-      //   console.error("File size exceeds the limit. Aborting upload.");
-      //   return res.status(400).send({
-      //     status: true,
-      //     message: "File size exceeds the limit. Aborting upload.",
-      //     result: null,
-      //   });
-      // }
+      
       const fileStream = file.pipe(
         fileUpload.createWriteStream({
           metadata: {
