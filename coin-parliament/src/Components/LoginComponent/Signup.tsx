@@ -23,6 +23,7 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import firebase from "firebase/compat";
 import copy from "copy-to-clipboard";
+import googleLogo from "../../assets/svg/google_Logo.svg"
 const Login = styled.div`
   margin-left:5px;
   margin-right:7px;
@@ -157,13 +158,14 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
             />
           </div>
         );
-      }):<div style={{width:'243px', color:'black'}}>TO SIGNUP WITH GOOGLE, COPY THIS LINK AND OPEN IN ANOTHER BROWSER, <span style={{textDecoration:'underline',textAlign:'center'}}  onClick={() => {
+      }):<div><img src={googleLogo} alt="" style={{width:"50px",marginLeft:"38%"}}/>
+      <div style={{width:'239px', color:'black'}}>To signup with google, copy this link and open in another browser, <span style={{textAlign:'center',color: 'var(--blue-violet)',fontSize:"9px"}}  onClick={() => {
         copy(window.location.href);
         showToast(
           'Your link is copied to the clipboard.',
           ToastType.SUCCESS
         );
-      }}>COPY LINK</span></div>}
+      }}>Copy link</span></div></div>}
         <div className="my-3 align-self-center">
           <OR className="mx-auto">{translate("or")}</OR>
         </div>
