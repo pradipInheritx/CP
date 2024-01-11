@@ -128,7 +128,9 @@ export const avatarUploadFunction = async (req: any, res: any) => {
       }
       const getFileType = (fileMeta.mimeType.split('/'))[1]
       console.log("getFileType : ", getFileType);
-      const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.${getFileType}`);
+      const fileUpload = bucket.file(
+        `UserAvatar/${fileMeta.filename}`
+      );
 
       //const imageSizeLimit = 5; //mb 
       // Check file size before uploading
