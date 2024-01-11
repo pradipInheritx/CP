@@ -716,7 +716,7 @@ const Header = ({
 																	}}
 																>
 																	{/* <p>Your CMP count</p> */}
-																		<p className="mt-1 text-end lh-base">{followerInfo?.bio}</p>																	
+																				<p className="mt-1 text-end lh-base">{followerInfo?.bio.toUpperCase()}</p>																	
 																</div>
 															</div>
 														}
@@ -993,7 +993,7 @@ const Header = ({
 																				position: 'fixed',
 																		}}
 																	>
-																		<div className="newtooltip"
+																		<div className="newtooltip "
 																			style={{
 																				// right: "0%",
 																				width:"300px",
@@ -1004,7 +1004,7 @@ const Header = ({
 																			}}
 																		>
 																			{/* <p>Your CMP count</p> */}
-																				<p className="mt-1 text-end lh-base">{followerInfo?.bio}</p>																		
+																				<p className="mt-1 text-end lh-base">{followerInfo?.bio.toUpperCase()}</p>																		
 																		</div>
 																	</div>
 																}
