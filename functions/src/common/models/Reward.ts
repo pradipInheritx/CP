@@ -1,5 +1,5 @@
 import { firestore } from "firebase-admin";
-import {UserProps} from "../interfaces/User.interface"
+import { UserProps } from "../interfaces/User.interface"
 import { userConverter } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
@@ -248,7 +248,7 @@ const getVirtualRewardStatisticsByUserId = async (uid: string) => {
   const getVirtualRewardStatisticsQuery = await firestore().collection("virtualRewardStatistics").where("userId", "==", uid).get();
   const getVirtualRewardStatistics = getVirtualRewardStatisticsQuery.docs.map((reward) => reward.data());
   console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics);
-  return getVirtualRewardStatistics[0];
+  return getVirtualRewardStatistics[getVirtualRewardStatistics.length - 1];
 };
 async function removeAllVirtualRewardByUserId(uid: string) {
   try {
@@ -286,7 +286,7 @@ export const claimReward: (uid: string, isVirtual: boolean
         .withConverter(userConverter);
 
       const userProps = await userRef.get();
-      const userData = userProps.data();
+      const userData: any = userProps.data();
 
       const { total, claimed } = userData?.rewardStatistics || {
         total: 0,
@@ -301,6 +301,18 @@ export const claimReward: (uid: string, isVirtual: boolean
         const getVirtualRewardStatistic = await getVirtualRewardStatisticsByUserId(uid);
         console.log("getVirtualRewardStatistic : ", getVirtualRewardStatistic);
 
+
+        //Current User Extra Vote + winning extra vote and then set in the user reward
+        console.info("userData", userData);
+        const cmp = (claimed + 1) * 100 > 1000 ? 1000 : (claimed + 1) * 100;
+        const getRewardExtraVotes = getRandomNumber(
+          distribution[cmp].extraVotePickFromRange
+        );
+        console.info("getRewardExtraVotes", getRewardExtraVotes);
+        getVirtualRewardStatistic.rewardObj.extraVote = userData.rewardStatistics.extraVote + getVirtualRewardStatistic.winData.secondRewardExtraVotes;
+
+        console.info("getVirtualRewardStatistic", getVirtualRewardStatistic);
+
         await firestore().collection("users").doc(uid).set({ rewardStatistics: getVirtualRewardStatistic.rewardObj }, { merge: true });
 
         const result = await addRewardTransaction(uid, getVirtualRewardStatistic.winData, claimed + 1);
@@ -308,6 +320,7 @@ export const claimReward: (uid: string, isVirtual: boolean
         console.log("isVirtual Result : ", result);
         return result.winData;
       }
+
 
 
       if (total - claimed > 0) {

@@ -226,6 +226,7 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
   }, {});
 
   console.log("userVoteGroupObj =>", userVoteGroupObj);
+  console.log("userVoteGroupObj length =>", Object.keys(userVoteGroupObj).length);
 
   const userTypesQuery = await firestore().collection("settings").doc("userTypes").get();
 
@@ -246,6 +247,8 @@ export const checkUserStatusIn24hrs = async (todayTimeFrame: number, yesterdayTi
         let oldStatusData= userVoteList[userVoteList?.length - 1];
         console.log("userVoteList new =>", newStatusData);
         console.log("userVoteList old =>", oldStatusData);
+
+        if(!newStatusData.status || !oldStatusData.status) continue;
         
         if (newStatusData?.status?.index !== oldStatusData?.status?.index) {
           let status = newStatusData?.status?.index > oldStatusData?.status?.index ? 'Upgrade' : 'Downgrade';

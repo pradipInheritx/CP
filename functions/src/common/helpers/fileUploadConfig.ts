@@ -105,7 +105,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
     console.log("BUSBOY  :  ", busboy);
     const bucket = admin.storage().bucket(env.STORAGE_BUCKET_URL);
 
-    const publicImageUrl :any={}
+    const publicImageUrl: any = {}
 
     logger.info("Start uploading new file-------");
 
@@ -126,23 +126,20 @@ export const avatarUploadFunction = async (req: any, res: any) => {
           result: null,
         });
       }
+      // const getFileType = (fileMeta.mimeType.split('/'))[1]
+      // console.log("getFileType : ", getFileType);
+      // // const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.${getFileType}`); 
+      // const filepath = `UsersAvatar/${Date.now()}/${fileMeta.filename}`
+      // console.log("file path : ", filepath)
+      // const fileUpload = bucket.file(filepath); 
 
-      const fileUpload = bucket.file(`UsersAvatar/${Date.now()}.png`);
 
-      //const imageSizeLimit = 5; //mb 
-      // Check file size before uploading
-      // const [metadata] = await fileUpload.getMetadata();
-      // console.log("image MetaData : ", metadata)
-      // const maxSizeInBytes = imageSizeLimit * 1024 * 1024;
+      const getFileExtension = fileMeta.filename.split('.').pop();
+      const filepath = `UsersAvatar/${fileMeta?.filename}-${Date.now()}.${getFileExtension}`;
+      console.log("file path : ", filepath);
 
-      // if (metadata.size > maxSizeInBytes) {
-      //   console.error("File size exceeds the limit. Aborting upload.");
-      //   return res.status(400).send({
-      //     status: true,
-      //     message: "File size exceeds the limit. Aborting upload.",
-      //     result: null,
-      //   });
-      // }
+      const fileUpload = bucket.file(filepath);
+
       const fileStream = file.pipe(
         fileUpload.createWriteStream({
           metadata: {
@@ -150,6 +147,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
           },
         })
       );
+
       //On Error Event
       fileStream.on("error", (error: any) => {
         console.error("File Upload Error Event:", error);
@@ -168,21 +166,21 @@ export const avatarUploadFunction = async (req: any, res: any) => {
         .then(async (signedUrls) => {
           console.warn("Public Url ------\n", signedUrls[0]);
           publicImageUrl['url'] = signedUrls[0]
-         
+
         })
-      
+
     });
     busboy.on("finish", async () => {
       await setTimeout(async () => {
         const result: any = (
           await admin.firestore().collection("users").doc(userId).get()
         ).data();
-        console.log("publicImageUrl.url  : ",publicImageUrl.url)
+        console.log("publicImageUrl.url  : ", publicImageUrl.url)
         await admin
-        .firestore()
-        .collection("users")
-        .doc(userId)
-        .set({ avatar: publicImageUrl.url }, { merge: true });
+          .firestore()
+          .collection("users")
+          .doc(userId)
+          .set({ avatar: publicImageUrl.url }, { merge: true });
         return res.status(200).send({
           status: true,
           message: "Update avatar successfully",
