@@ -402,12 +402,22 @@ const [comingSoon, setComingSoon] = useState(false)
                     lineHeight: 0.9,                    
                 }}
                 >
-                  <p className=""><strong
+                  <p
+                    style={{
+                      fontSize: "20px"
+                    }}
+                  >SAVE</p>
+                  <p className="mt-1"><strong
+                    style={{
+                      fontSize: "20px"
+                    }}
+                  >{item.Extra}</strong>%</p>
+                  {/* <p className=""><strong
                     style={{
                       fontSize: "25px"
                     }}
                   >{item.Extra}</strong>%</p>
-                <p>Extra</p>
+                <p>Extra</p> */}
                 </div>
               </TopDiv>}
               <div className="d-flex align-items-center flex-column"
