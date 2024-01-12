@@ -369,9 +369,9 @@ const [comingSoon, setComingSoon] = useState(false)
                   <button
                     onClick={() => {
                       handleSoundClick()
-                      // getExtraVote(item.value, item.vote, item.Extra)
+                      getExtraVote(item.value, item.vote, item.Extra)
                       // showModal(<Upgrade />)
-                      setComingSoon(true)
+                      // setComingSoon(true)
                   }}
                   >BUY NOW !</button>
                 </ButttonDiv>                
@@ -481,9 +481,9 @@ const [comingSoon, setComingSoon] = useState(false)
                 <ButttonDivMob className="mt-1">
                   <button
                     onClick={() => {
-                      // getExtraVote(item.value, item.vote, item.Extra)
+                      getExtraVote(item.value, item.vote, item.Extra)
                       // showModal(<Upgrade />)
-                      setComingSoon(true)
+                      // setComingSoon(true)
                     }}
                   >BUY NOW !</button>
                 </ButttonDivMob>

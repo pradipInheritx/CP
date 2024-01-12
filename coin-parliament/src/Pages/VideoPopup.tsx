@@ -44,7 +44,7 @@ function VideoPopup({ fulldata, Videoshow, setVideoshow, videoUrl, imgUrl, Minte
   console.log(fulldata?.cardImageUrl,"fulldata?.cardImageUrl")
   // const url = `${document.location.protocol}//${document.location.host}/profile/Album?cardImageUrl=${encodeURIComponent(fulldata?.cardImageUrl)}&collectionName=${fulldata?.albumName}`;
   console.log(fulldata,"fulldata")
-  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${fulldata?.albumName}&setName=${fulldata?.setId}&cardName=${fulldata?.cardName}`;
+  const url = `${document.location.protocol}//${document.location.host}/profile/Album?collectionName=${fulldata?.albumName}&setName=${fulldata?.setId}&cardName=${fulldata?.cardName.replace(" ", "-")}`;
   const shareText = "I won this unique card! Join the Parliament and win with me.";
   return (
     <div>
