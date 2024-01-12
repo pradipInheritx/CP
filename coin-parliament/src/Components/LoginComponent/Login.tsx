@@ -19,6 +19,7 @@ import { Buttons } from "../Atoms/Button/Button";
 import logo from "../../assets/svg/logoiconx2.png";
 import v2elogo from "../../assets/svg/VTElogo.png";
 import copy from "copy-to-clipboard";
+import googleLogo from "../../assets/svg/google_Logo.svg"
 const OR = styled.div`
   ${PoppinsMediumBlack12px};
   min-height: 19px;
@@ -151,13 +152,14 @@ const Login = ({ setForgetPassword, setUser, setSignup, authProvider, login }: L
           </div>
         );
       })}
-      {isInstagramAvailable && <div style={{width:'243px', color:'black'}}>TO LOGIN WITH GOOGLE, COPY THIS LINK AND OPEN IN ANOTHER BROWSER, <span style={{textDecoration:'underline',textAlign:'center'}}  onClick={() => {
+      {isInstagramAvailable && <div><img src={googleLogo} alt="" style={{width:"50px"}}/>
+      <div style={{width:'260px', color:'black',margin:"20px"}}>To login with google, copy this link and open in another browser, <span style={{textAlign:'center',color: 'var(--blue-violet)',fontSize:"9px"}}  onClick={() => {
         copy(window.location.href);
         showToast(
           'Your referral link is copied to the clipboard.',
           ToastType.SUCCESS
         );
-      }}>COPY LINK</span></div>}
+      }}>Copy link</span></div></div>}
       <div className="mb-2 w-100">
         <LoginButton style={{ boxShadow: window.screen.width > 979 ? '0px 3px 6px #00000029' : '' }}
           onClick={() => {

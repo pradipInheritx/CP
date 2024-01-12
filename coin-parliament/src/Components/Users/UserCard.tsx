@@ -186,7 +186,6 @@ const UserCard = ({
     }
   }
 
-  console.log(leader?.isUserUpgraded,"allleader")
 
   return (
     <Component515
@@ -211,7 +210,7 @@ const UserCard = ({
           if (user) {
             redirectTab()
           }
-
+          
 
         }}>
           <Avatar url={getAvatar(leader)} />
