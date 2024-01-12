@@ -248,7 +248,7 @@ const getVirtualRewardStatisticsByUserId = async (uid: string) => {
   const getVirtualRewardStatisticsQuery = await firestore().collection("virtualRewardStatistics").where("userId", "==", uid).get();
   const getVirtualRewardStatistics = getVirtualRewardStatisticsQuery.docs.map((reward) => reward.data());
   console.log("getVirtualRewardStatistics : ", getVirtualRewardStatistics);
-  return getVirtualRewardStatistics[0];
+  return getVirtualRewardStatistics[getVirtualRewardStatistics.length-1];
 };
 async function removeAllVirtualRewardByUserId(uid: string) {
   try {
