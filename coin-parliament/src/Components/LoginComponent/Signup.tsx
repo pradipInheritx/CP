@@ -159,6 +159,7 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
           </div>
         );
       }):<div><img src={googleLogo} alt="" style={{width:"50px",marginLeft:"38%"}}/>
+      
       <div style={{width:'239px', color:'black'}}>To signup with google, copy this link and open in another browser, <span style={{textAlign:'center',color: 'var(--blue-violet)',fontSize:"9px"}}  onClick={() => {
         copy(window.location.href);
         showToast(
