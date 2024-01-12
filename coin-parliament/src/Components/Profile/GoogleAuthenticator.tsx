@@ -117,16 +117,18 @@ const GoogleAuthenticator = () => {
           userType: "USER",
         }
       });
-      console.log(response.data);
+      if (response?.data?.result?.status) {
       const newUserInfo = {
         ...(userInfo as UserProps),
         mfa: true as boolean,
       };
       onSubmit(newUserInfo);
       showToast("2FA enabled successfully.", ToastType.SUCCESS);
-    } catch (error: any) {
-      showToast(error.response.data.message, ToastType.ERROR);
-      console.error(error.response);
+    }else{
+      showToast(response.data?.result?.message, ToastType.ERROR);
+    }
+  } catch (error: any) {
+    console.error(error.response);
     }
   };
 

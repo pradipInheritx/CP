@@ -88,6 +88,13 @@ const ChangePassword = () => {
       reauthenticateWithCredential(currentUser, credential)
         .then(() => {
           // @ts-ignore
+
+          if (oldPassword === newPassword) {
+            showToast('New password cannot be the same as the old password.', ToastType.ERROR);
+            setChangePassword(false);
+            return;
+          }
+          
           updatePassword(u, newPassword)
             .then(() => {
               setOldPassword("");

@@ -51,7 +51,7 @@ const Header = () => {
                 account_circle
               </span>
               }
-
+              {(userInfo?.uid) && localStorage.getItem('mfa_passed') === 'false' ?
               <NavDropdown color='white' title={window.screen.width > 767 ? userInfo?.displayName || userInfo?.email : ""}
                 id="basic-nav-dropdown"
                 className={`${window.screen.width > 767 ? "BigDiv" : "SmallDiv"} justify-content-start textWhite`}
@@ -69,7 +69,8 @@ const Header = () => {
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item style={{ textAlign: 'start' }} onClick={() => logOutHandler()}>Log out</NavDropdown.Item>
-            </NavDropdown>
+            </NavDropdown>:<span style={{paddingLeft:"10px"}}>{userInfo?.displayName || userInfo?.email}</span>
+            }
           </Navbar.Collapse>)}
         </Container>
       </Navbar>
