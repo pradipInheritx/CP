@@ -14,7 +14,7 @@ export const calculateDiffBetweenCoins = (valueVotingTime: number[], valueExpira
     return {
         firstCoin: firstCoin.toFixed(4) || '0',
         secondCoin: secondCoin.toFixed(4) || '0',
-        difference: difference || '0'
+        difference: difference != undefined && difference != "" && difference != "NaN"  ? difference : '0'
     }
 }
 

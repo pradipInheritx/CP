@@ -313,7 +313,7 @@ const SingleCardDetails = () => {
                   color: "black",
                   fontWeight: 500,
                   fontSize: "15px"
-                }}>{"All Details of Card".toUpperCase()}</span>                
+                }}>{"Card list".toUpperCase()}</span>                
               </div>              
               <div
                 className="d-flex align-items-center flex-column w-100"

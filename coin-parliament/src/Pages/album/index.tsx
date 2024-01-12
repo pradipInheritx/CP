@@ -739,7 +739,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                     </>  
                     
                     :
-                    <GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
+                    <>
+                        {collectionValue == "none" ?<GalleryType className='d-flex' style={{ width: `${window.screen.width > 787 ? "800px" : "100%"}` }
                     } >
                         {
                             collectionType?.map((data: any, index: number) => {
@@ -764,7 +765,8 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
                                 )
                             })
                         }
-                    </GalleryType>
+                    </GalleryType> :null}
+                    </>
             }
         </div >
     );
