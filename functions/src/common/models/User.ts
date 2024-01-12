@@ -63,21 +63,24 @@ export async function sendEmailVerificationLink(email: string) {
   try {
     // make verification link using jwt and user data
     // send email
-    if (!email) errorLogging("sendEmailVerificationLink", "ERROR", "email is required")
+    if (!email) errorLogging("sendEmailVerificationLink", "ERROR", "email is required");
     // const user = admin.auth().getUserByEmail(email)
     //   .then((snapshot) => snapshot.toJSON());
     // console.log("sendEmailVerificationLink : user : ", user)
     // if (!user) return errorLogging("sendEmailVerificationLink", "ERROR", "User not found")
-    const token = jwt.sign({ data: email }, env.JWT_AUTH_SECRET, { expiresIn: consts.USER_VERIFICATION_LINK_EXPIRE_TIME })
+    const token = jwt.sign({ data: email }, env.JWT_AUTH_SECRET, { expiresIn: consts.USER_VERIFICATION_LINK_EXPIRE_TIME });
+
     const url =
       env.BASE_SITE_URL +
       "/user-verification-link?token=" +
       token;
+
     await sendEmail(
       email,
       "Verification Link",
       adminForgotPasswordTemplate(url, "Verification Link")
     );
+    return { url };
   } catch (error) {
     return errorLogging("sendEmailVerificationLink", "ERROR", error)
   }
@@ -88,15 +91,25 @@ interface JwtPayload {
 export async function getEmailVerificationLink(req: any, res: any) {
   try {
     const { token } = req.query;
-    const user: any = jwt.verify(
+    const decodeToken: any = jwt.verify(
       token,
       env.JWT_AUTH_SECRET
     ) as JwtPayload;
-    console.log("user : ", user);
-    if (!user) errorLogging("getEmailVerificationLink", "ERROR", "user not found")
-    await admin.auth().updateUser(user?.data.email, {
+    console.log("decodeToken : ", decodeToken);
+    if (!decodeToken.data) errorLogging("getEmailVerificationLink", "ERROR", "user not found")
+    const userQuery = (await admin.firestore().collection('users').where("email","==",decodeToken.data).get()).docs.map(user => user.data());
+    const user: any= userQuery[0];
+    console.log("user : ", userQuery.length);
+    const checkTheUser = await admin.auth().getUser(user.id);
+    console.log("check the user", checkTheUser)
+    await admin.auth().updateUser(user.uid, {
       emailVerified: true
     });
+    res.status(200).send({
+      status : true,
+      message : "user verified successfully",
+      result : user
+    })
   } catch (error) {
     return errorLogging("getEmailVerificationLink", "ERROR", error)
   }

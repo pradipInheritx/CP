@@ -235,7 +235,8 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     .collection("users")
     .doc(user.uid)
     .set(userData);
-    await sendEmailVerificationLink(userData.email || "")
+
+    await sendEmailVerificationLink(user.email || "");
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
@@ -243,6 +244,10 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
+exports.sendEmailVerificationLink = functions.https.onCall(async (data)=>{
+  const {email} = data;
+  return await sendEmailVerificationLink(email);
+})
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
