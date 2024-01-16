@@ -22,8 +22,8 @@ import "./common/models/scheduleFunction"
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink,
-  getEmailVerificationLink
+  // sendEmailVerificationLink,
+  // getEmailVerificationLink
 } from "./common/models/User";
 import {
   getLeaderUsers,
@@ -136,7 +136,7 @@ app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
 
 app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
 app.get("/calculatePairCPVI", async (req, res) => { await cpviTaskPair((result) => res.status(200).json(result)); });
-app.get("/user-verification-link",getEmailVerificationLink);
+// app.get("/user-verification-link",getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
 
@@ -244,10 +244,11 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 
-exports.sendEmailVerificationLink = functions.https.onCall(async (data)=>{
-  const {email} = data;
-  return await sendEmailVerificationLink(email);
-})
+// exports.sendEmailVerificationLink = functions.https.onCall(async (data)=>{
+//   const {email} = data;
+//   return await sendEmailVerificationLink(email);
+// })
+
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
