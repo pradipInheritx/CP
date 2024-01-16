@@ -245,8 +245,8 @@ const VotedCard = ({
     if (vote?.expiration < new Date().getTime()) {
       return;
     }
-    let value1 = `${formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol1.toUpperCase()) ? coins[symbol1]?.randomDecimal : ''}`
-    let value2 = symbol2 ? `${formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol2.toUpperCase()) ? coins[symbol2]?.randomDecimal : ''}` : '0.00'
+    let value1 = `${formatCurrency(coins[symbol1]?.price, precision[symbol1]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol1.toUpperCase()) ? (coins[symbol1]?.randomDecimal || 0) : ''}`
+    let value2 = symbol2 ? `${formatCurrency(coins[symbol2]?.price, precision[symbol2]).replaceAll('$', '').replaceAll(',', '')}${!['BTC', 'ETH'].includes(symbol2.toUpperCase()) ? (coins[symbol2]?.randomDecimal || 0) : ''}` : '0.00'
     setVoteEndCoinPrice((prev) => {
       return {
         ...prev,
@@ -420,6 +420,7 @@ const VotedCard = ({
                     fontSize: '1.7em',
                     color: getSingleCoinPriceColor(parseFloat(row2.replaceAll('$', '').replaceAll(',', '')), parseFloat(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || '0.00'), vote?.direction),
                   }}>
+                    {console.log(voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1,"getvalue")}
                     ${voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 && voteEndCoinPrice?.[`${vote.coin}_${vote?.timeframe?.seconds}`]?.coin1 || 0.00}
                   </div>
                 </div>

@@ -88,7 +88,7 @@ const WalletBalance = () => {
                             <img src={PAX} alt=""
                                 style={{
                                     // margin: "0 auto",
-                                    width: "35px",
+                                    width: "40px",
                                     height: "40px",
                                 }}
                             />
