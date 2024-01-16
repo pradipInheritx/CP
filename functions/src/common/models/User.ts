@@ -8,7 +8,7 @@ import { UserProps, UserTypeProps } from '../interfaces/User.interface'
 // import { adminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
-import { errorLogging } from "../helpers/commonFunction.helper";
+// import { errorLogging } from "../helpers/commonFunction.helper";
 export const userConverter: FirestoreDataConverter<UserProps> = {
   fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): UserProps {
     const data = snapshot.data() || {};
