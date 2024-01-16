@@ -10,8 +10,22 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Link, useNavigate } from 'react-router-dom';
 import './header.css';
 import { auth } from 'firebase';
-const Header = () => {
-  const { userInfo, setUserInfo, setUser } = useContext(UserContext); 
+import BackArrow from 'Components/icons/BackArrow';
+import AppContext from 'Contexts/AppContext';
+import styled from 'styled-components';
+
+const HamburgerBut = styled.button`
+ background:none;
+ border:none;
+ &:focus {
+    outline:none;
+  }
+`;
+
+const Header = (setMfaLogin?:any) => {
+  const { userInfo, setUserInfo, setUser,user } = useContext(UserContext); 
+  const { menuOpen, setMenuOpen, login, firstTimeLogin,showMenubar,setLogin,setShowMenuBar } =
+    useContext(AppContext);
   const navigate = useNavigate();
   const logOutHandler = async () => {
     const result = await Logout(setUser);
@@ -23,10 +37,32 @@ const Header = () => {
     }
   }
 
+  const BackLogout = () => {
+    
+    Logout(setUser);
+    navigate("/")
+    setLogin(true);
+    setShowMenuBar(false)
+    setMfaLogin(false)
+    // console.log("i am working error")	
+    localStorage.removeItem("userId")    
+};
+
   return (
     <header>
       <Navbar className='navColor' data-bs-theme="light" >
+      <div style={{paddingLeft:'10px'}}>
+           {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && <HamburgerBut
+                // variant='link'
+                onClick={BackLogout}
+                className='position-relative'
+              >
+                <BackArrow />
+              </HamburgerBut>
+            }
+      </div>
         <Container>
+       
           <Navbar.Brand style={{ color: 'white' }}>
             <Link to={'/'} style={{ textDecoration: 'none', color: 'white' }}>
               <img src="/VTE logo.png" alt="Vote to Earn" className='pe-3' height={50} />{window.screen.width > 350 ? 'Vote to Earn' : ''}
@@ -51,7 +87,7 @@ const Header = () => {
                 account_circle
               </span>
               }
-
+              {(userInfo?.uid) && localStorage.getItem('mfa_passed') === 'false' ?
               <NavDropdown color='white' title={window.screen.width > 767 ? userInfo?.displayName || userInfo?.email : ""}
                 id="basic-nav-dropdown"
                 className={`${window.screen.width > 767 ? "BigDiv" : "SmallDiv"} justify-content-start textWhite`}
@@ -69,7 +105,8 @@ const Header = () => {
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item style={{ textAlign: 'start' }} onClick={() => logOutHandler()}>Log out</NavDropdown.Item>
-            </NavDropdown>
+            </NavDropdown>:<span style={{paddingLeft:"10px"}}>{userInfo?.displayName || userInfo?.email}</span>
+            }
           </Navbar.Collapse>)}
         </Container>
       </Navbar>

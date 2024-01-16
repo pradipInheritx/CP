@@ -834,7 +834,9 @@ useEffect(()=>{
                               padding: '0px 0px 0px 0px'
                             }}
                           >
-                            <Header />
+                            <Header
+                            setMfaLogin={setMfaLogin}
+                            />
                             {user && firstTimeLogin && (
                               <FirstTimeLogin
                                 setFirstTimeAvatarSelection={
