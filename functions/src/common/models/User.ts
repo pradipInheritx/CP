@@ -95,21 +95,24 @@ export async function getEmailVerificationLink(req: any, res: any) {
       token,
       env.JWT_AUTH_SECRET
     ) as JwtPayload;
-    console.log("decodeToken : ", decodeToken);
+    console.log("decodeToken : ", decodeToken.data);
     if (!decodeToken.data) errorLogging("getEmailVerificationLink", "ERROR", "user not found")
     const userQuery = (await admin.firestore().collection('users').where("email","==",decodeToken.data).get()).docs.map(user => user.data());
     const user: any= userQuery[0];
-    console.log("user : ", userQuery.length);
-    const checkTheUser = await admin.auth().getUser(user.id);
-    console.log("check the user", checkTheUser)
-    await admin.auth().updateUser(user.uid, {
+    console.log("user : ", userQuery);
+    // const checkTheUser = await admin.auth().getUser(user.id);
+    // console.log("check the user", checkTheUser)
+    admin.auth().updateUser(user.uid, {
       emailVerified: true
+    }).then((userData)=>{
+      res.status(200).send({
+        status : true,
+        message : "user verified successfully",
+        result : userData
+      }).catch((error:any)=>{
+        console.log("getEmailVerificationLink Error : ",error);
+      })
     });
-    res.status(200).send({
-      status : true,
-      message : "user verified successfully",
-      result : user
-    })
   } catch (error) {
     return errorLogging("getEmailVerificationLink", "ERROR", error)
   }
