@@ -8,6 +8,7 @@ import { UserProps, UserTypeProps } from '../interfaces/User.interface'
 // import { adminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
+import { errorLogging } from "../helpers/commonFunction.helper";
 // import { errorLogging } from "../helpers/commonFunction.helper";
 export const userConverter: FirestoreDataConverter<UserProps> = {
   fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): UserProps {
@@ -58,3 +59,27 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
+export const sendEmailVerificationLink = async (email:string,uid:string)=>{
+  try {
+    if(!email) return errorLogging("sendEmailVerificationLink","Error","email is required");
+    //testing only
+    const getAllUser = await admin.auth().listUsers();
+    console.log("getAllUser : ",getAllUser);
+    const checkUserExistById = await admin.auth().getUser(uid);
+    const checkUserExistByEmail = await admin.auth().getUserByEmail(email);
+
+    console.log("checkUserExistById : ",checkUserExistById);
+    console.log("checkUserExistByEmail : ",checkUserExistByEmail);
+    // if(!checkUserExist) return errorLogging("sendEmailVerificationLink","Error","user does not exist");
+
+    return {
+      users :{
+        byId : checkUserExistById,
+        byEmail : checkUserExistByEmail
+      }
+    }
+
+  } catch (error) {
+    errorLogging("sendEmailVerificationLink","Error",error)
+  }
+};
