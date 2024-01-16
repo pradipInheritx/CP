@@ -15,6 +15,7 @@ import { showToast } from "../../App";
 import { ToastType } from "../../Contexts/Notification";
 import { genericLogin } from "../../common/models/Login";
 import AppContext from "Contexts/AppContext";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const SignupForm = ({
   emailValue,
@@ -32,7 +33,8 @@ const SignupForm = ({
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const { parentEmailId } = useContext(AppContext);  
-  const [agree, setAgree] = useState(true);
+  const [agree, setAgree] = useState(false);
+  const [recaptcha, setrecaptcha] = useState(false);
   useEffect(() => {
     setEmail(emailValue)
   }, [])
@@ -43,6 +45,11 @@ const SignupForm = ({
     continue: capitalize(translate(texts.continue.toUpperCase())),
     agree: capitalize(translate(texts.agree.toUpperCase())),
   };
+
+  const handleReCaptcha = () => {
+    console.log("change")
+    setrecaptcha(true)
+  }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -103,14 +110,25 @@ const SignupForm = ({
         />
       </Form.Group>
 
+      <div style={{marginTop:"15px"}}>
+      {/* @ts-ignore */}
+      <ReCAPTCHA
+        sitekey={"6Ld4iVIpAAAAAFXMeAVhaxvk_JcqrzpKq6Pk7Dt-"}
+        onChange={handleReCaptcha}
+      />
+      </div>
+
       <div className="mt-4 mb-3">
-        <Buttons.Primary fullWidth={true} type="submit" disabled={signupLoading} >
+        <Buttons.Primary fullWidth={true} type="submit" 
+        disabled={!agree}
+        >
           {signupLoading ? 'Wait...' : strings.continue.toUpperCase()}
         </Buttons.Primary>
       </div>
 
+
       <Form.Group className="mb-2  text-center" controlId="agree">
-        <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} required={true}>
+        <Checkbox disabled={!recaptcha}  name="agree" checked={agree} onClick={() => setAgree(!agree)} >
           <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
             {translate('terms & conditions')}
           </Link>  and

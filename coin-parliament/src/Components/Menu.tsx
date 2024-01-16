@@ -13,6 +13,7 @@ import { useWindowSize } from "../hooks/useWindowSize";
 import UserContext from "../Contexts/User";
 import { isHomeBg } from "./App/App";
 import BackArrow from "./icons/BackArrow";
+import { Logout } from "common/models/Login";
 
 export const convertPageToMenuItem = (page: ContentPage) => {
   return {
@@ -27,6 +28,7 @@ export type MenuProps = {
   children?: React.ReactNode;
   items: (MenuItem | undefined)[];
   pathname: string;
+  setMfaLogin:any;
 };
 
 export type MenuItem = {
@@ -86,15 +88,17 @@ const Menu = ({
   items = [],
   title,
   pathname,
+  setMfaLogin,
 }: MenuProps) => {
-  const { menuOpen, setMenuOpen, login, firstTimeLogin } =
+  const { menuOpen, setMenuOpen, login, firstTimeLogin,showMenubar,setLogin,setShowMenuBar } =
     useContext(AppContext);
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, userInfo, setUser } = useContext(UserContext);
   var urlName = window.location.pathname.split('/');
   const followerPage = urlName.includes("followerProfile")
   const { width } = useWindowSize();
   const handleClose = () => setMenuOpen(false);
+  const { backgrounHide } = useContext(AppContext);
   const handleShow = () => {
     if (followerPage) {
       navigate(-1)
@@ -103,11 +107,22 @@ const Menu = ({
       setMenuOpen(true)
     }
   };
+
+  const BackLogout = () => {
+    
+    Logout(setUser);
+    navigate("/")
+    setLogin(true);
+    setShowMenuBar(false)
+    setMfaLogin(false)
+    // console.log("i am working error")	
+    localStorage.removeItem("userId")    
+};
+
   const translate = useTranslation();
-
-
+  
   const desktop = width && width > 979;
-  return <></>;
+  // return <></>;
   return (
     <>
       <NavContainer
@@ -124,6 +139,24 @@ const Menu = ({
           // boxShadow: width && width > 979 ? "1px 1px 4px #6352e8" : undefined,
         }}
       >
+        {
+          backgrounHide &&
+          <div style={{
+          position: 'fixed',
+          height: '120px',
+          display: 'flex',          
+          borderRadius:" 0px 0px 80px 0px",
+          top: '0',
+          right: '0',
+          bottom: '0',
+          left: '0',
+          background: 'rgba(0, 0, 0, 0.8)',
+          zIndex: '1001',
+          overflow: 'hidden',
+          
+          width: '100%',
+          
+        }} />}
         <Container
           className='text-capitalize align-items-center px-2 justify-content-start'
           fluid={true}
@@ -133,35 +166,51 @@ const Menu = ({
               className='d-flex justify-content-start'
               style={{ flexBasis: "20%" }}
             >
-              {/* <HamburgerBut
+              {!showMenubar && localStorage.getItem('mfa_passed') != 'true' && <HamburgerBut
                 // variant='link'
-                onClick={handleShow}
+                onClick={() => {
+                  handleShow()
+                  // handleSoundClick()
+                }}
                 className='position-relative'
                 style={{
-                  
-                  
-                  
+
                 }}
               >
-                
-                {followerPage ? <BackArrow /> :<Hamburger />}
-              </HamburgerBut> */}
-              {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
+
+                {followerPage ? <BackArrow /> : <Hamburger />}
+                {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
+              </HamburgerBut>}
+              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && <HamburgerBut
+                // variant='link'
+                onClick={BackLogout}
+                className='position-relative'
+              >
+                <BackArrow />
+              </HamburgerBut>}
             </div>
           )}
           {desktop && (
             <div className='d-flex justify-content-start check'>
-              <HamburgerBut
+              {!showMenubar && localStorage.getItem('mfa_passed') != 'true' && <HamburgerBut
                 // variant='link'
                 onClick={handleShow}
                 className='position-relative'
               >
                 {/* <Hamburger /> */}
-                {followerPage ? <BackArrow /> : <Hamburger />}
+                {followerPage ? <BackArrow /> : <Hamburger />}                
                 {/* <Dot {...{loggedIn: !!user}}>•</Dot> */}
-              </HamburgerBut>
+              </HamburgerBut>}
+              {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' &&  <HamburgerBut
+                // variant='link'
+                onClick={BackLogout}
+                className='position-relative'
+              >
+                <BackArrow />
+              </HamburgerBut>}
             </div>
           )}
+
           {children}
         </Container>
       </NavContainer>

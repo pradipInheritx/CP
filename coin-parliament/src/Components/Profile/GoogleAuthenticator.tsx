@@ -23,7 +23,9 @@ import { texts } from "../LoginComponent/texts";
 import axios from "axios";
 import QRCode from "qrcode";
 // import BigLogo from "../../assets/svg/logoiconx2.png";
+import BigLogo from "../../assets/svg/VTE logo.png"
 import { generateGoogle2faUrl, otpurl } from "../../common/consts/contents";
+// import src from '../../react-app-env';
 const BtnLabel = styled(Form.Check.Label)`
   ${InputAndButton}
   ${PoppinsMediumWhite12px}
@@ -73,6 +75,7 @@ const GoogleAuthenticator = () => {
   const auth = getAuth();
   const [copied, setCopied] = useState(false);
   useEffect(() => {
+
     // @ts-ignore
     if (userInfo?.googleAuthenticatorData?.otp_auth_url) {
       // @ts-ignore
@@ -92,6 +95,7 @@ const GoogleAuthenticator = () => {
       userId: id,
       userType: "USER",
     };
+    
     try {
       const response = await axios.post(generateGoogle2faUrl, { data: data });
       console.log(response.data);
@@ -101,7 +105,7 @@ const GoogleAuthenticator = () => {
         (dataUrl: string) => {
           setQrCodeDataUrl(dataUrl);
           console.log('qrcode', dataUrl)
-        }
+        } 
       );
     } catch (error) {
       console.error(error);
@@ -320,8 +324,10 @@ const GoogleAuthenticator = () => {
                               }}
                             >
 
+                            {qrCodeDataUrl && <> 
                               <img
-                                src={'/VTE logo.png'}
+                                // src={'/VTE logo.png'}
+                                src={BigLogo}
                                 alt="QR code for Google Authenticator"
                                 style={{ maxWidth: "100px", position: 'absolute', top: '35%' }}
                               />
@@ -330,6 +336,7 @@ const GoogleAuthenticator = () => {
                                 alt="QR code for Google Authenticator"
                                 style={{ maxWidth: "300px" }}
                               />
+                            </>}
 
                               {/* <div className='mt-2'
                                   style={{
