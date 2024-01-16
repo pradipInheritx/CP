@@ -23,7 +23,7 @@ import {
   isAdmin,
   userConverter,
   sendEmailVerificationLink,
-  // getEmailVerificationLink
+  verifyUserWithToken
 } from "./common/models/User";
 import {
   getLeaderUsers,
@@ -245,9 +245,14 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
 });
 
 exports.sendEmailVerificationLink = functions.https.onCall(async (data)=>{
-  const {email,uid} = data;
-  return await sendEmailVerificationLink(email,uid);
+  const {email} = data;
+  return await sendEmailVerificationLink(email);
 })
+
+exports.verifyUserWithToken = functions.https.onCall(async (data)=>{
+  const {token} = data;
+  return await verifyUserWithToken(token)
+});
 
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
