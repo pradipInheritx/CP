@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import VotingPayment from './VotingPayment';
 import Swal from 'sweetalert2';
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 import UserContext from 'Contexts/User';
 import { useNavigate } from 'react-router-dom';
 import { auth } from "firebase";
@@ -285,6 +285,13 @@ function PaymentFun({ isVotingPayment }: any) {
     //     }
     //   })
   }
+  
+  const cardPayment = () => {
+  //   axios.post(`https://direct.palaris.io/api?ref_id=${2}&email=${"manish.s@inheritx.com"}&ftype=${1}&famount=${100}&ctype=${2}`).then((res) => {
+  //     console.log("getresponse", res)
+  // })
+}
+
   return (
     <>
       <VotingPaymentCopy
@@ -299,6 +306,7 @@ function PaymentFun({ isVotingPayment }: any) {
         setShowOptionList={setShowOptionList}
         selectCoin={selectCoin}
         setSelectCoin={setSelectCoin}
+        cardPayment={cardPayment}
       />
       {/* <Modal
         show={PassCodeModal}

@@ -1187,8 +1187,7 @@ function App() {
         const coin2 = `${coins && coin?.length > 1 ? coins[coin[1]]?.symbol?.toLowerCase() || "" : ""}`;
         const ExpriTime = [latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin1 || null,latestCoinsPrice.current[`${lessTimeVote?.coin.toUpperCase()}_${lessTimeVote?.timeframe?.seconds}`].coin2 || null,]
 
-        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction) 
-        console.log(getValue,"getValue")
+        const getValue = coin2 != "" && await getCalculateDiffBetweenCoins(lessTimeVote?.valueVotingTime, ExpriTime, lessTimeVote.direction)         
         // @ts-ignore
         var StatusValue = coin2 != "" ? getValue?.difference < 0 ? 0 : getValue?.difference == 0 ?2: 1 : voteImpact.current?.impact;
 

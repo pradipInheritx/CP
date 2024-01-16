@@ -5,6 +5,7 @@ import axios from 'axios'
 import { BearVsBullRow } from 'common/models/CoinTable';
 import React, { useContext, useEffect, useState } from 'react'
 import { Image } from 'react-bootstrap';
+import PAX from '../../../assets/logos/PAX.png';
 
 
 const Logo = ({ symbol }: BearVsBullRow) => {
@@ -71,8 +72,42 @@ const WalletBalance = () => {
         <div className='d-flex justify-content-center align-items-center'
         >
             <div className='mt-3'>
+                {pendingPax > 0 && userInfo?.isUserUpgraded && <>
                 <p className='mx-3' style={{
                     fontSize: "18px"
+                }}>{"YOUR REWARD PENDING  AMOUNT".toLocaleUpperCase()}</p>
+                
+                    <div className='d-flex justify-content-around align-items-center my-2'
+                        style={{
+                            background: "white",
+                            borderRadius: "5px",
+                            padding: "8px 8px",
+                        }}
+                    >
+                        <div className='d-flex align-items-center'>
+                            <img src={PAX} alt=""
+                                style={{
+                                    // margin: "0 auto",
+                                    width: "40px",
+                                    height: "40px",
+                                }}
+                            />
+                            <p className=''
+                                style={{
+                                    marginLeft: `${"23px"}`
+                                }}
+                            >PAX</p>
+                        </div>                      
+                        <p className=''
+                            style={{
+                                color: "#6352E8",
+                            }}
+                        >{pendingPax}</p>
+                    </div>
+                </>}
+                <p className='mx-3' style={{
+                    fontSize: "18px",
+                    margin:"20px 0px 10px 0px"
                 }}>{"Your Referral Pending Amount".toLocaleUpperCase()}</p>
                 {Object.keys(pendingAmount).length ?
                     <div className='d-flex flex-column'>
@@ -116,26 +151,7 @@ const WalletBalance = () => {
                     <div className="d-flex justify-content-center" >
                         <p className='mt-3'>Pending Payment Amount is not found</p>
                     </div>
-                }                
-                {pendingPax > 0 && userInfo?.isUserUpgraded && <>
-                    <div className='d-flex justify-content-around mt-3 mb-2 '
-                        style={{
-                            padding: "0px 8px",
-                    }}
-                    >
-                  <p>Pending pax balance  </p>
-                        <p>{pendingPax}</p>                  
-              </div>
-              {/* <div className='d-block'
-                  style={{
-                      fontSize: "9px",
-                      color:"red"
-                  }}
-              >
-                  * Please add pax address to get pax
-              </div> */}
-              </>}
-
+                }                                
                 <div className={`${window.screen.width > 767 ? "justify-content-center" : "justify-content-center"} d-flex mt-3`}>
 
                     <Buttons.Primary

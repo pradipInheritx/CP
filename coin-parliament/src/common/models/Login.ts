@@ -85,7 +85,7 @@ export const LoginAuthProvider = async (
     const user = result.user;
 
     if (auth?.currentUser?.photoURL === 'mfa') {
-      localStorage.setItem('mfa_passed', 'true');
+      localStorage.setItem('mfa_passed', 'false');
     } else {
       localStorage.setItem('mfa_passed', 'false');
     }
@@ -195,7 +195,7 @@ export const LoginRegular = async (
     );
     console.log(userCredential, "userCredential");
     if (auth?.currentUser?.photoURL === 'mfa') {
-      localStorage.setItem('mfa_passed', 'true');
+      localStorage.setItem('mfa_passed', 'false');
     } else {
       localStorage.setItem('mfa_passed', 'false');
     }

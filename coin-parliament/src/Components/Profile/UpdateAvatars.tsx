@@ -120,13 +120,13 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
     const file = e.target.files[0];
     const maxSizeInBytes = 11* 1024 * 1024; // 2 MB 
     const imageCompressor = new ImageCompressor();
-    const compressedImage = await imageCompressor.compress(file, {
+    const compressedImage = await imageCompressor.compress(file, {      
       quality: 0.6,
     });       
     if (compressedImage.size < maxSizeInBytes && file.size < maxSizeInBytes) {
       setImageError("")
       // @ts-ignore
-      setImagepPath(compressedImage)
+      setImagepPath(e.target.files[0])      
       const reader = new FileReader();
       reader.onloadend = () => {
         // @ts-ignore

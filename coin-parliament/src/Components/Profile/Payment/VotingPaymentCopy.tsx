@@ -1,7 +1,7 @@
 /** @format */
 
 import React, { useContext, useEffect, useState } from "react";
-import { Col, Image, Row } from "react-bootstrap";
+import { Col, Image, Modal, Row } from "react-bootstrap";
 import { useTranslation } from "../../../common/models/Dictionary";
 import Pairs from "../../Pairs/Pairs";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -301,6 +301,12 @@ margin-top:${window.screen.width > 767 ? "" : "30px"};
     align-items: center;
  margin-left:20px;
 `;
+
+const CardInput = styled.input`
+width:100%;
+border:0px 0px 0px 0px;
+padding:10px;
+`;
 const Divbutton = styled.div`
   width:60%;
   border-radius:10px;
@@ -389,6 +395,7 @@ const VotingPaymentCopy: React.FC<{
   setSelectCoin: React.Dispatch<React.SetStateAction<string>>,
   showOptionList: boolean,
   setShowOptionList: React.Dispatch<React.SetStateAction<boolean>>,
+  cardPayment:Function,
 }> = ({
   checkAndPay,
   setPaymentStatus,
@@ -401,6 +408,7 @@ const VotingPaymentCopy: React.FC<{
   setSelectCoin,
   showOptionList,
   setShowOptionList,
+  cardPayment,
 }) => {
     const translate = useTranslation();
     const { user, userInfo } = useContext(UserContext);
@@ -428,11 +436,12 @@ const VotingPaymentCopy: React.FC<{
 
     // const connectOrNot = localStorage.getItem("wldp_disconnect");
 
-    const [payamount, setPayamount] = useState("");
+    const [payamount, setPayamount] = useState(0);
     const [payType, setPayType] = useState();
     const [extraVote, setExtraVote] = useState(0);
     const [extraPer, setExtraPer] = useState(0);
   const [showText, setShowText] = useState(false);
+  const [comingSoon, setComingSoon] = useState(false);
     // const [payButton, setPayButton] = useState(false);
     // const [showOptionList, setShowOptionList] = useState(false);
     // const [afterPay, setAfterPay] = useState(false);
@@ -647,11 +656,11 @@ const VotingPaymentCopy: React.FC<{
                   style={{
                     cursor: "pointer",
                     // borderBottom: "1px solid white",
-                    background: `${selectPayment && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+                    background: `${selectPayment==1 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
                   }}
                   onClick={() => {
-                    setSelectPayment(1)
-                    
+                    // setSelectPayment(1)
+                    setComingSoon(true)                    
                   }}
                 >
                   <i className="bi bi-coin"></i>
@@ -659,7 +668,16 @@ const VotingPaymentCopy: React.FC<{
                 </div>
                 <div
                   style={{
-                    cursor: "not-allowed",
+                    cursor: "pointer",
+                    background: `${selectPayment==2 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
+                  }}
+                  onClick={() => {
+                    if (payamount > 24) {                      
+                      setSelectPayment(2)
+                    }
+                    else {                      
+                      setComingSoon(true)                      
+                    }
                   }}
                 >
                   <i className="bi bi-credit-card-fill "></i>
@@ -825,9 +843,109 @@ const VotingPaymentCopy: React.FC<{
                   </>
                 }
               </Boxdiv>}
+            
+            {selectPayment == 2 &&
+              <Boxdiv className="mt-4 mb-4"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",                  
+                }}
+              >                                                                               
+                {payType == "EXTRAVOTES"  &&                   
+                    <div
+                        className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                  >
+                    <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}`}
+                      target="_blank"
+                      style={{
+                        textDecoration:"none",
+                      }}
+                    >
+                        <ButttonDiv className="mt-1">
+                          <button
+                            disabled={payButton}                                              
+                          onClick={() => {                            
+                            }}
+                          >
+                            {payButton ? "PAY NOW..." : 'PAY NOW !'}
+                          </button>
+                      </ButttonDiv>
+                    </a> 
+                     
+                    </div >                  
+                }
+
+                {payType !== "EXTRAVOTES" && 
+                  <>
+                  <div
+                    className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
+                  ><a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}`}
+                      target="_blank"
+                      style={{
+                        textDecoration:"none",
+                      }}
+                    >                      
+                    <ButttonDivSec className="mt-1">
+                      <button
+                        onClick={() => {
+                        }}
+                      >
+                        <div className='d-flex justify-content-around' >
+                          <div
+                          >
+                            <span
+                              style={{
+                                letterSpacing: "4px",
+                                // display:"inline-block",
+                              }}
+                            >LIMITED
+                            </span>
+                            <br />
+                            <span>TIME OFFER</span>
+                          </div>
+                          <u>$199</u>
+                          <p>$99</p>
+                        </div>
 
 
-          </div>}                
+                      </button>
+                    </ButttonDivSec>
+                    </a> 
+                  </div>
+                  </>
+                }
+              </Boxdiv>
+            }
+
+
+          </div>}  
+        
+        <div>
+          <Modal
+            show={
+              comingSoon
+            } onHide={() => { setComingSoon(false) }}
+            backdrop="static"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+          >
+            <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
+              <button type="button" className="btn-close " aria-label="Close" onClick={() => {
+
+                setComingSoon(false)
+
+              }
+              }></button>
+            </div>
+            <Modal.Body className="d-flex  justify-content-center align-items-center"
+            >
+
+              <p className="py-2" style={{ fontSize: "20px", textAlign: "center" }}>Coming soon</p>
+
+            </Modal.Body>
+          </Modal>
+        </div>
+
         <div className="pb-3">
           {paymentStatus?.type === 'success' && <PaymentSuccess paymentSuccessAction={paymentSuccessAction} message={paymentStatus?.message} />}
           {paymentStatus?.type === 'error' && <PaymentFail tryAgainAction={handleClick} startAgainAction={startAgainAction} message={paymentStatus?.message} />}

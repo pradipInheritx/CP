@@ -302,7 +302,7 @@ const Album: React.FC<{ userId: string, isFollower?: boolean }> = ({ userId, isF
             if (parameters.get('setName')) {                
                 setCollectionSetValue(parameters.get('setName') || 'none')
             }
-            setCollectionCardValue(parameters.get('cardName') || 'none')
+            setCollectionCardValue(parameters.get('cardName')?.replace("-"," ") || 'none')
             console.log(parameters.get('setName'), parameters.get('cardName'),"parameters.get" )
         }
     }, [allCards]);

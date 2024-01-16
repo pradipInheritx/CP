@@ -406,9 +406,9 @@ const UpgradePageCopy = () => {
                 <button
                   onClick={() => {
                     handleSoundClick()
-                    // upgradeProfile(99, 25)
+                    upgradeProfile(99, 25)
                           // showModal(<Upgrade />)
-                          setComingSoon(true)
+                          // setComingSoon(true)
                   }}
                 >
                   <div className='d-flex justify-content-around' >

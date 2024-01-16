@@ -557,7 +557,7 @@ const Header = ({
 											<div className='mt-1'>
 												{
 													followerPage && followerInfo != "" ? followerInfo?.displayName :
-														(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+																(!voteNumber && userInfo.rewardStatistics?.extraVote == 0 && votingTimer && !!new Date(votingTimer).getDate()) ?
 															// @ts-ignore */
 															<div style={{ marginLeft: '20px', marginTop: "5px", lineHeight: "90%", textAlign: 'center', }}>
 																{/* @ts-ignore */}
@@ -581,7 +581,7 @@ const Header = ({
 															:
 															<span style={{ color: "#6352E8", marginLeft: "10px", fontSize: window.screen.width <= 340 ? '0.7889em' : '12px' }}>
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp useEasing={false} className={"HeaderText "} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
+																			<CountUp useEasing={false} className={"HeaderText "} start={voteNumber == 0 ? 0 : voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																		onStart={() => {
 																			// handleExtraVote.play()
 																			// setTimeout(() => {
@@ -834,7 +834,7 @@ const Header = ({
 													</>
 	
 													:
-													(!voteNumber && votingTimer && !!new Date(votingTimer).getDate()) ?
+																(!voteNumber && userInfo.rewardStatistics?.extraVote == 0 && votingTimer && !!new Date(votingTimer).getDate()) ?
 														// @ts-ignore
 														<>
 															{/* @ts-ignore */}
@@ -864,7 +864,7 @@ const Header = ({
 															>
 																{/* reward modal 4 */}
 																{(MyPath == "/profile/mine" && inOutReward === 2) ?
-																	<CountUp useEasing={false} className={"HeaderText"} start={voteNumber || 0 - (headerExtraVote?.vote || 0)} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
+																				<CountUp useEasing={false} className={"HeaderText"} start={voteNumber == 0 ? 0 : voteNumber || 0} end={(voteNumber || 0) + (headerExtraVote?.vote || 0)} duration={rewardExtraVote < 10 ? rewardExtraVote : 10} delay={2}
 																		onStart={() => {
 																			// handleExtraVote.play()
 																			// setTimeout(() => {
