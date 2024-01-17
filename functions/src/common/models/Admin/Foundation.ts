@@ -52,7 +52,8 @@ export const createFoundation = async (req: any, res: any) => {
     try {
         const {
             name,
-            address
+            address,
+            commissionPercentage =10
         } = req.body;
 
         const foundationObject = {
@@ -60,7 +61,8 @@ export const createFoundation = async (req: any, res: any) => {
             commission: 0,
             timestamp: Date.now(),
             address,
-            maxCMP: 100
+            maxCMP: 100,
+            commissionPercentage
         }
 
         const addNewFoundation = await firestore().collection('foundations').add(foundationObject);
@@ -125,7 +127,8 @@ export const updateFoundation = async (req: any, res: any) => {
         const { foundationId } = req.params;
         const {
             name,
-            address
+            address,
+            commissionPercentage
         } = req.body;
         const updatedData: any = {};
         if (name) {
@@ -133,6 +136,9 @@ export const updateFoundation = async (req: any, res: any) => {
         };
         if (address) {
             updatedData['address'] = address;
+        }
+        if(commissionPercentage){
+            updatedData['commissionPercentage'] = commissionPercentage;
         }
         console.log("Updated data : ", updatedData);
         await getFoundationById(foundationId, res);
@@ -181,10 +187,11 @@ export const deleteFoundation = async (req: any, res: any) => {
 
 export async function sendCPMToFoundationOfUser(userId: string, cpm: number) {
     try {
-        const user: any = (await firestore().collection('users').doc(userId).get()).data();
+        const user = (await firestore().collection('users').doc(userId).get()).data();
         console.log("user.foundationData.id : ", user?.foundationData?.id)
         const foundation = (await firestore().collection('foundations').doc(user?.foundationData?.id).get()).data();
-        const foundationCPM = (cpm * 10) / 100;
+        const foundationCommission = foundation?.commissionPercentage || 10
+        const foundationCPM = (cpm *foundationCommission ) / 100;
         const commission = Number(foundation?.commission) + foundationCPM;
         console.info("commission", commission)
         if ((commission / 100) >= 1) {
