@@ -1,4 +1,4 @@
-export const userVerifyEmailTemplate = (email: any, password: any, title: any) => {
+export const userVerifyEmailTemplate = (email: any, verifyLink: any, title: any) => {
   return `
           <!DOCTYPE html>
           <html>
@@ -142,7 +142,7 @@ export const userVerifyEmailTemplate = (email: any, password: any, title: any) =
                     <!-- start copy -->
                     <tr>
                       <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Use email id <b>${email}</b> and password <b>${password}</b> to login.</p>
+                        <p style="margin: 0;">Please verify your account with this email <b>${email}</b>. Click here <b>${verifyLink}</b> to verify.</p>
                       </td>
                     </tr>
                     <!-- end copy -->
