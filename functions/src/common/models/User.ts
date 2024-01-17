@@ -1,14 +1,15 @@
 import admin from "firebase-admin";
 import * as jwt from "jsonwebtoken";
 
-import { UserProps, UserTypeProps } from '../interfaces/User.interface'
+import { UserProps, UserTypeProps } from "../interfaces/User.interface";
 import env from "../../env/env.json";
-import consts from "../config/constants.json"
-import { sendEmail } from "../services/emailServices";
-import { adminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
+// import consts from "../config/constants.json"
+// import { sendEmail } from "../services/emailServices";
+// import { adminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
-import { errorLogging } from "../helpers/commonFunction.helper";
+// import { errorLogging } from "../helpers/commonFunction.helper";
+// import { errorLogging } from "../helpers/commonFunction.helper";
 export const userConverter: FirestoreDataConverter<UserProps> = {
   fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): UserProps {
     const data = snapshot.data() || {};
@@ -50,7 +51,11 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   user: string
 ) => {
   try {
-    const admins = await admin.firestore().collection("settings").doc("admins").get();
+    const admins = await admin
+      .firestore()
+      .collection("settings")
+      .doc("admins")
+      .get();
     return !!admins.data()?.admins.includes(user);
   } catch (e) {
     console.log(e);
@@ -58,62 +63,78 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
-// user verification link and email
+const auth = admin.auth();
+
 export async function sendEmailVerificationLink(email: string) {
   try {
-    // make verification link using jwt and user data
-    // send email
-    if (!email) errorLogging("sendEmailVerificationLink", "ERROR", "email is required");
-    // const user = admin.auth().getUserByEmail(email)
-    //   .then((snapshot) => snapshot.toJSON());
-    // console.log("sendEmailVerificationLink : user : ", user)
-    // if (!user) return errorLogging("sendEmailVerificationLink", "ERROR", "User not found")
-    const token = jwt.sign({ data: email }, env.JWT_AUTH_SECRET, { expiresIn: consts.USER_VERIFICATION_LINK_EXPIRE_TIME });
+    // Get user data from Firebase Authentication
+    const userRecord = await auth.getUserByEmail(email);
 
-    const url =
-      env.BASE_SITE_URL +
-      "/user-verification-link?token=" +
-      token;
-
-    await sendEmail(
-      email,
-      "Verification Link",
-      adminForgotPasswordTemplate(url, "Verification Link")
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
     );
-    return { url };
+
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.BASE_SITE_URL}/verify?token=${token}`;
+
+    // Send the verification email to the user
+    // Implement your email sending logic here
+
+    console.log("Verification link:", verificationLink);
   } catch (error) {
-    return errorLogging("sendEmailVerificationLink", "ERROR", error)
+    console.error("Error sending verification link:", error);
   }
 }
+
 interface JwtPayload {
   id: string;
 }
-export async function getEmailVerificationLink(req: any, res: any) {
+
+export async function verifyUserWithToken(token: string) {
   try {
-    const { token } = req.query;
-    const decodeToken: any = jwt.verify(
+    // Verify the JWT token
+    const decodedToken: any = (await jwt.verify(
       token,
       env.JWT_AUTH_SECRET
-    ) as JwtPayload;
-    console.log("decodeToken : ", decodeToken.data);
-    if (!decodeToken.data) errorLogging("getEmailVerificationLink", "ERROR", "user not found")
-    const userQuery = (await admin.firestore().collection('users').where("email","==",decodeToken.data).get()).docs.map(user => user.data());
-    const user: any= userQuery[0];
-    console.log("user : ", userQuery);
-    // const checkTheUser = await admin.auth().getUser(user.id);
-    // console.log("check the user", checkTheUser)
-    admin.auth().updateUser(user.uid, {
-      emailVerified: true
-    }).then((userData)=>{
-      res.status(200).send({
-        status : true,
-        message : "user verified successfully",
-        result : userData
-      }).catch((error:any)=>{
-        console.log("getEmailVerificationLink Error : ",error);
+    )) as JwtPayload;
+
+    // Use the UID from the decoded token to verify the user in Firebase Authentication
+    auth
+      .updateUser(decodedToken.uid, { emailVerified: true })
+      .then((userRecord) => {
+        console.log("User successfully verified:", userRecord.toJSON());
       })
-    });
+      .catch((error) => {
+        console.error("Error verifying user:", error);
+      });
   } catch (error) {
-    return errorLogging("getEmailVerificationLink", "ERROR", error)
+    console.error("Error decoding or verifying token:", error);
   }
 }
+
+// export const sendEmailVerificationLink = async (email:string,uid:string)=>{
+//   try {
+//     if(!email) return errorLogging("sendEmailVerificationLink","Error","email is required");
+//     //testing only
+//     const getAllUser = await admin.auth().listUsers();
+//     console.log("getAllUser : ",getAllUser);
+//     const checkUserExistById = await admin.auth().getUser(uid);
+//     const checkUserExistByEmail = await admin.auth().getUserByEmail(email);
+
+//     console.log("checkUserExistById : ",checkUserExistById);
+//     console.log("checkUserExistByEmail : ",checkUserExistByEmail);
+//     // if(!checkUserExist) return errorLogging("sendEmailVerificationLink","Error","user does not exist");
+
+//     return {
+//       users :{
+//         byId : checkUserExistById,
+//         byEmail : checkUserExistByEmail
+//       }
+//     }
+
+//   } catch (error) {
+//     errorLogging("sendEmailVerificationLink","Error",error)
+//   }
+// };
