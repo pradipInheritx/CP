@@ -8,6 +8,8 @@ import cors from "cors";
 import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
+import { sendEmail } from "./common/services/emailServices";
+import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 
 // Interfaces
 import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
@@ -228,12 +230,17 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   };
   try {
     console.log("new user >>>", userData, user.uid);
-    const newUser = await admin
-    .firestore()
-    .collection("users")
-    .doc(user.uid)
-    .set(userData);
+    const newUser: any = await admin
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .set(userData);
 
+    await sendEmail(
+      newUser.email,
+      "Verify Your Account",
+      userVerifyEmailTemplate(newUser.email, newUser.password, "Your account has been created")
+    );
     // await sendEmailVerificationLink(user.email || "");
     return newUser;
   } catch (e) {
@@ -655,6 +662,15 @@ exports.onUpdateUser = functions.firestore
     if (!should || !amount) {
       return;
     }
+
+    console.info("Send Email Begins")
+    await sendEmail(
+      "demoemail@yopmail.com",
+      "Verify Your Account",
+      userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
+    );
+    console.info("Send Email Successfully")
+
     await addCpmTransaction(snapshot.after.id, amount);
   });
 
