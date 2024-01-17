@@ -110,11 +110,11 @@ const Menu = ({
 
   const BackLogout = () => {
     
-    Logout(setUser);
-    navigate("/")
     setLogin(true);
+    Logout(setUser);
     setShowMenuBar(false)
     setMfaLogin(false)
+    navigate("/")
     // console.log("i am working error")	
     localStorage.removeItem("userId")    
 };

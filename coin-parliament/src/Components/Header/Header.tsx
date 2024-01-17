@@ -36,14 +36,12 @@ const Header = (setMfaLogin?:any) => {
       showToast("Unable to log out please try again.");
     }
   }
-
-  const BackLogout = () => {
-    
-    Logout(setUser);
-    navigate("/")
+  const BackLogout = () => {    
     setLogin(true);
+    Logout(setUser);
     setShowMenuBar(false)
     setMfaLogin(false)
+    navigate("/")
     // console.log("i am working error")	
     localStorage.removeItem("userId")    
 };
@@ -54,8 +52,8 @@ const Header = (setMfaLogin?:any) => {
       <div style={{paddingLeft:'10px'}}>
            {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && <HamburgerBut
                 // variant='link'
-                onClick={BackLogout}
                 className='position-relative'
+                onClick={BackLogout}
               >
                 <BackArrow />
               </HamburgerBut>
@@ -94,10 +92,14 @@ const Header = (setMfaLogin?:any) => {
                 style={{ color: 'white', cursor: 'pointer' }}
               
               >
+              <NavDropdown.Item  style={{ color: 'black',textAlign: 'start'}}>
+                 {window.screen.width <= 767 ? userInfo?.displayName || userInfo?.email : ""}
+              </NavDropdown.Item>
+              <NavDropdown.Divider style={{display: window.screen.width <= 767 ? "block":"none"}} /> 
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
                 Top V2E Apps
               </NavDropdown.Item>
-              <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
+              <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile/edit')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
                 Profile
               </NavDropdown.Item>
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile/share')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>

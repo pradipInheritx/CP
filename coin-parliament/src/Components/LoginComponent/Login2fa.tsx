@@ -47,6 +47,7 @@ import {
   RecaptchaVerifier,
 } from "firebase/auth";
 import axios from 'axios';
+import Spinner from "Components/Spinner";
 // import QRCode from "qrcode";
 
 const title = {
@@ -175,7 +176,7 @@ const Login2fa = ({
   
   if (u?.photoURL !== 'mfa') {
     setLogin(false)
-    return <>wait</>
+    return <Spinner/>
   }
 
   return (

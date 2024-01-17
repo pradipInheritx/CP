@@ -172,12 +172,14 @@ const Header = ({
   title,
   logo = true,
   pathname,
-  remainingTimer
+  remainingTimer,
+  setMfaLogin,
 }: {
   title?: React.ReactNode;
   logo?: boolean;
   pathname: string;
   remainingTimer: number;
+  setMfaLogin:any;
 }) => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
@@ -328,6 +330,7 @@ const Header = ({
   return (
 
     <MenuContainer
+      setMfaLogin={setMfaLogin}
       pathname={pathname}
       onSelect={onSelect}
 
