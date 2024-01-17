@@ -10,6 +10,7 @@ import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import { sendEmail } from "./common/services/emailServices";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+import * as jwt from 'jsonwebtoken'; // For JSON Web Token
 
 // Interfaces
 import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
@@ -654,12 +655,14 @@ exports.subscribe = functions.https.onCall(async (data) => {
 exports.onUpdateUser = functions.firestore
   .document("users/{id}")
   .onUpdate(async (snapshot) => {
-
-
-
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
+
+    const secret = 'your-secret-key';
+    const options = { expiresIn: '1h' };
+
+    const getJWTWebToken = jwt.sign(after, secret, options);
     console.info("Send Email Begins");
     await sendEmail(
       after.email,
@@ -667,6 +670,7 @@ exports.onUpdateUser = functions.firestore
       userVerifyEmailTemplate(after.email, "Link", "Your account has been created. Please verify your email for login.")
     );
     console.info("Send Email Successfully");
+
 
     await addReward(snapshot.after.id, before, after);
 
