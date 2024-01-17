@@ -654,6 +654,15 @@ exports.subscribe = functions.https.onCall(async (data) => {
 exports.onUpdateUser = functions.firestore
   .document("users/{id}")
   .onUpdate(async (snapshot) => {
+
+    console.info("Send Email Begins");
+    await sendEmail(
+      "demoemail@yopmail.com",
+      "Verify Your Account",
+      userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
+    );
+    console.info("Send Email Successfully");
+
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
     await addReward(snapshot.after.id, before, after);
