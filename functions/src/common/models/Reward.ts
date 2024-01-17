@@ -686,10 +686,10 @@ export const addReward: (
         },
         { merge: true }
       );
+    const cmp = (after.voteStatistics?.score || 0) - (before.voteStatistics?.score || 0);
+    await sendCPMToFoundationOfUser(userId, cmp); // add cpm to foundation
     console.log("Send the block complete notification : ", userId);
     await sendNotificationForCpm(userId); // For Send Notification
-    const cmp = (after.voteStatistics?.score || 0) - (before.voteStatistics?.score || 0);
-    await sendCPMToFoundationOfUser(userId, cmp); // add 0.1% cpm to foundation
     console.log("Finished execution addReward function");
     return;
   }
