@@ -21,7 +21,9 @@ import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 import "./common/models/scheduleFunction"
 import {
   isAdmin,
-  userConverter
+  userConverter,
+  sendEmailVerificationLink,
+  verifyUserWithToken
 } from "./common/models/User";
 import {
   getLeaderUsers,
@@ -241,7 +243,16 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+// user's email verification link
+exports.sendEmailVerificationLink = functions.https.onCall(async (data)=>{
+  const {email} = data;
+  return await sendEmailVerificationLink(email);
+})
 
+exports.verifyUserWithToken = functions.https.onCall(async (data)=>{
+  const {token} = data;
+  return await verifyUserWithToken(token)
+});
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
