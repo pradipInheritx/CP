@@ -10,7 +10,8 @@ import {
     updateUserAfterPayment,
     getInstantReferalAmount,
     callbackFromServer,
-    paymentStatusOnTransaction,
+    paymentStatusOnTransactionFromWellDApp,
+    paymentStatusOnEmailFromCreditCard,
     getAllPendingPaxByUser
 } from "../common/models/Payments";
 import { getPendingPaymentbyUserId } from "../common/models/Admin/payments"
@@ -21,8 +22,8 @@ paymentRouter.post("/makePayment", makePayment);
 paymentRouter.post("/makePayment/toServer", makePaymentToServer);
 paymentRouter.post("/makePayment/callback/fromServer", callbackFromServer);
 paymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
-paymentRouter.post("/update/paymentStatusOnTransaction/:transactionId", paymentStatusOnTransaction);
-
+paymentRouter.post("/update/paymentStatusOnTransaction/:transactionId", paymentStatusOnTransactionFromWellDApp);
+paymentRouter.post("/update/paymentStatusOnTransaction/fromEmail/onCreditCard", paymentStatusOnEmailFromCreditCard);
 paymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
 paymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
 paymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);
