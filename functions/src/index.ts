@@ -666,7 +666,7 @@ exports.onUpdateUser = functions.firestore
 
     const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
     console.log("getJWTWebToken : ",getJWTWebToken);
-    const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
+    const userLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
     console.info("Send Email Begins");
     await sendEmail(
       after.email,
@@ -683,12 +683,12 @@ exports.onUpdateUser = functions.firestore
       return;
     }
 
-    console.info("Send Email Begins")
-    await sendEmail(
-      "demoemail@yopmail.com",
-      "Verify Your Account",
-      userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
-    );
+    // console.info("Send Email Begins")
+    // await sendEmail(
+    //   "demoemail@yopmail.com",
+    //   "Verify Your Account",
+    //   userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
+    // );
     console.info("Send Email Successfully")
 
     await addCpmTransaction(snapshot.after.id, amount);
