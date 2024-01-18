@@ -62,40 +62,13 @@ export const callbackFromServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
     if (req.body.order_buyer) {
-      const userSnapshot = await firestore()
-        .collection("users")
-        .where("email", "==", req.body.order_buyer)
-        .get();
-      if (userSnapshot.empty) {
-        console.log("NO_USER_FOUND", req.body, req.body.order_buyer);
-        await firestore()
-          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, timestamp: firestore.FieldValue.serverTimestamp() })
-        res.status(200).send({
-          status: true,
-          message: "Transaction logged in DB on transaction details",
-          data: [],
-        });
-      } else {
-        const getUser = userSnapshot.docs[0].data();
-        await firestore().collection('users').doc(getUser.uid).set({ isCreditCardSession: req.body.order_status })
-          .then(function () {
-            console.log("Status Of Credit Card In User", req.body.order_status);
-          })
-          .catch(function (error) {
-            console.error("Error writing users document: ", error);
-          });
-        if (req.body.order_status == "Open") {
-          console.log("CREDITCARD STATUS IS OPEN", req.body.order_status);
-        } else {
-          await firestore()
-            .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
-          res.status(200).send({
-            status: true,
-            message: "Transaction logged in DB on transaction details",
-            data: [],
-          });
-        }
-      }
+      await firestore()
+        .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+      res.status(200).send({
+        status: true,
+        message: "Transaction logged in DB on transaction details",
+        data: [],
+      });
     } else {
       await firestore()
         .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.FieldValue.serverTimestamp() });
@@ -575,11 +548,11 @@ export const getTransactionHistory = async (req: any, res: any) => {
   }
 };
 
-export const paymentStatusOnEmailFromCreditCard = async (req: any, res: any) => {
+export const paymentStatusOnUserFromCreditCard = async (req: any, res: any) => {
   try {
     const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.order_buyer === userEmail);
+    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.p1 === userId);
 
     console.log("getTransactionFromCreditCard : ", getTransactionFromCreditCard);
 
