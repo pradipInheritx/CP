@@ -256,11 +256,12 @@ export const getUserAndCalculatePax = async (paxDetails: any) => {
     if (!getUser) {
       return errorLogging("getUserAndCalculatePax", "ERROR", "User not found");
     }
-    console.log("getUser score and total : ", getUser?.voteStatistics?.score, " : ", getUser?.rewardStatistics?.total);
-    const checkCMP = (getUser?.voteStatistics?.score) - (getUser?.rewardStatistics?.total * 100);
+    console.log("getUser score and total : ", getUser.score, " : ", getUser.total);
 
-    console.log("checkCMP : ", checkCMP,typeof checkCMP)
+    const checkCMP = getUser?.voteStatistics?.score - (getUser?.rewardStatistics?.total * 100);
+    console.log("checkCMP : ", checkCMP)
     console.log("0 < checkCMP && checkCMP > 10 : ", 0 < checkCMP && checkCMP > 10)
+
     if (0 < checkCMP && checkCMP > 10) {
       let getResultAfterSentPaxToUser: any;
       let getResultAfterSentPaxToAdmin: any;
