@@ -645,7 +645,11 @@ export const paymentStatusOnEmailFromCreditCard = async (req: any, res: any) => 
       getUpdatedData
     });
   } catch {
+    res.status(200).send({
+      status: true,
+      message: "Error"
 
+    });
   }
 }
 
