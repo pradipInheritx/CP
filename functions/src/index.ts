@@ -8,6 +8,9 @@ import cors from "cors";
 import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
+import { sendEmail } from "./common/services/emailServices";
+import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+import * as jwt from 'jsonwebtoken'; // For JSON Web Token
 
 // Interfaces
 import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
@@ -19,8 +22,7 @@ import "./common/models/scheduleFunction"
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink,
-  getEmailVerificationLink
+  userVerifiedLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
 
@@ -131,11 +133,12 @@ app.use("/payment", Routers.paymentRouter);
 // global routers
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
+app.get("/user/verified", userVerifiedLink);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
 app.get("/calculatePairCPVI", async (req, res) => { await cpviTaskPair((result) => res.status(200).json(result)); });
-app.get("/user-verification-link", getEmailVerificationLink);
+//app.get("/user-verification-link", getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
 
@@ -234,7 +237,6 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       .collection("users")
       .doc(user.uid)
       .set(userData);
-    await sendEmailVerificationLink(userData.email || "")
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
@@ -649,12 +651,38 @@ exports.onUpdateUser = functions.firestore
   .onUpdate(async (snapshot) => {
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
+
+
+    // const secret = 'your-secret-key';
+    const options = { expiresIn: '1h' };
+
+    const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
+    console.log("getJWTWebToken : ", getJWTWebToken);
+    const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
+    console.info("Send Email Begins");
+    await sendEmail(
+      after.email,
+      "Verify Your Account",
+      userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
+    );
+    console.info("Send Email Successfully");
+
+
     await addReward(snapshot.after.id, before, after);
 
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {
       return;
     }
+
+    console.info("Send Email Begins")
+    await sendEmail(
+      "demoemail@yopmail.com",
+      "Verify Your Account",
+      userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
+    );
+    console.info("Send Email Successfully")
+
     await addCpmTransaction(snapshot.after.id, amount);
   });
 

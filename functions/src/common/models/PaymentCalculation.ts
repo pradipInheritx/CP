@@ -411,7 +411,7 @@ export const settlePendingTransactionFunction = async () => {
         });
 
         for (let allPendingCallback = 0; allPendingCallback < getAllPendingPaymentCallbackHistory.length; allPendingCallback++) {
-            if (getAllPendingPaymentCallbackHistory[allPendingCallback].event == parentConst.PAYMENT_EVENT_APPROVED || getAllPendingPaymentCallbackHistory[allPendingCallback].event == parentConst.PAYMENT_EVENT_CONFIRMED) {
+            if (getAllPendingPaymentCallbackHistory[allPendingCallback].event == parentConst.WELLDAPP_PAYMENT_EVENT_APPROVED || getAllPendingPaymentCallbackHistory[allPendingCallback].event == parentConst.WELLDAPP_PAYMENT_EVENT_CONFIRMED) {
 
                 const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
                 const getPendingPaymentHistory: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.transaction_id === getAllPendingPaymentCallbackHistory[allPendingCallback].data.transaction_id);

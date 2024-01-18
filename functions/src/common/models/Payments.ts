@@ -72,13 +72,51 @@ export const makePaymentToServer = async (req: any, res: any) => {
 export const callbackFromServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
-    await firestore()
-      .collection("callbackHistory").add({ ...req.body, timestamp: firestore.FieldValue.serverTimestamp() })
-    res.status(200).send({
-      status: true,
-      message: "Transaction logged in DB on transaction details",
-      data: [],
-    });
+    if (req.body.order_buyer) {
+      const userSnapshot = await firestore()
+        .collection("users")
+        .where("email", "==", req.body.order_buyer)
+        .get();
+      if (userSnapshot.empty) {
+        console.log("NO_USER_FOUND", req.body, req.body.order_buyer);
+        await firestore()
+          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, timestamp: firestore.FieldValue.serverTimestamp() })
+        res.status(200).send({
+          status: true,
+          message: "Transaction logged in DB on transaction details",
+          data: [],
+        });
+      } else {
+        const getUser = userSnapshot.docs[0].data();
+        await firestore().collection('users').doc(getUser.uid).set({ isCreditCardSession: req.body.order_status })
+          .then(function () {
+            console.log("Status Of Credit Card In User", req.body.order_status);
+          })
+          .catch(function (error) {
+            console.error("Error writing users document: ", error);
+          });
+        if (req.body.order_status == "Open") {
+          console.log("CREDITCARD STATUS IS OPEN", req.body.order_status);
+        } else {
+          await firestore()
+            .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+          res.status(200).send({
+            status: true,
+            message: "Transaction logged in DB on transaction details",
+            data: [],
+          });
+        }
+      }
+    } else {
+      await firestore()
+        .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.FieldValue.serverTimestamp() });
+      res.status(200).send({
+        status: true,
+        message: "Transaction logged in DB on transaction details",
+        data: [],
+      });
+    }
+    // Assuming there's only one user with the given email (unique constraint)
   } catch (error: any) {
     console.info("Error while call callback URL payment to welld app server", error);
   }
@@ -548,8 +586,86 @@ export const getTransactionHistory = async (req: any, res: any) => {
   }
 };
 
+export const paymentStatusOnEmailFromCreditCard = async (req: any, res: any) => {
+  try {
+    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
+    const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
+    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.order_buyer === userEmail);
 
-export const paymentStatusOnTransaction = async (req: any, res: any) => {
+    console.log("getTransactionFromCreditCard : ", getTransactionFromCreditCard);
+
+    if (!getTransactionFromCreditCard) {
+      res.status(404).send({
+        status: false,
+        message: parentConst.CREDITCARD_TRANSACTION_NOT_FOUND,
+        result: "",
+      });
+    }
+
+    if (getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
+      if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+        await addIsExtraVotePurchase({
+          userId,
+          userEmail,
+          walletType,
+          amount,
+          network,
+          origincurrency,
+          token,
+          transactionType,
+          numberOfVotes,
+          initiated
+        });
+      }
+      if (transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+        await addIsUpgradedValue(userId)
+      }
+    }
+    await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).set({
+      paymentDetails
+        : getTransactionFromCreditCard[0].callbackDetails.data,
+      event: getTransactionFromCreditCard[0].callbackDetails.event,
+      userId,
+      userEmail,
+      walletType,
+      amount,
+      network,
+      origincurrency,
+      token,
+      transactionType,
+      numberOfVotes,
+      initiated
+    }, { merge: true });
+
+    const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).get()).data();
+
+    //TODO Get the data and store in payment collection 
+    const addNewPayment = await firestore().collection('payments').add(getUpdatedData);
+
+    if (addNewPayment.id) {
+      firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).delete().then(() => {
+        console.log(`${getTransactionFromCreditCard[0].id} Document successfully deleted from callbackHistory!`)
+      }).catch((error) => {
+        console.log(`${getTransactionFromCreditCard[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+      });
+    };
+
+    res.status(200).send({
+      status: true,
+      message: parentConst.PAYMENT_UPDATE_SUCCESS,
+      getUpdatedData
+    });
+  } catch {
+    res.status(200).send({
+      status: true,
+      message: "Error"
+
+    });
+  }
+}
+
+
+export const paymentStatusOnTransactionFromWellDApp = async (req: any, res: any) => {
   try {
     const { transactionId } = req.params;
     const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
@@ -561,14 +677,14 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
     if (!getTransaction) {
       res.status(404).send({
         status: false,
-        message: parentConst.TRANSACTION_NOT_FOUND,
+        message: parentConst.WELLDAPP_TRANSACTION_NOT_FOUND,
         result: "",
       });
     }
 
     console.info("getTransaction In API", getTransaction)
 
-    if (getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_APPROVED || getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_CONFIRMED) {
+    if (getTransaction[0].callbackDetails.event == parentConst.WELLDAPP_PAYMENT_EVENT_APPROVED || getTransaction[0].callbackDetails.event == parentConst.WELLDAPP_PAYMENT_EVENT_CONFIRMED) {
       if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
         await addIsExtraVotePurchase({
           userId,
