@@ -19,8 +19,8 @@ import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 // import BigLogo from "../assets/svg/logoiconx2.svg";
-import BigLogo from "../assets/svg/spblue.svg";
-
+import BigLogo from "../assets/svg/spblue.png";
+import BigLogoText from "../assets/svg/spLogoText.png"
 
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
@@ -514,11 +514,14 @@ const Header = ({
                 ) : (
                   <div className='w-100'></div>
                 )}
-                <div className='mt-2'>
+                {/* <div className='mt-2'>
                   <Title style={{ width: pathname === "/" ? "" : "" }}>
                     {mounted ? title : ""}
                   </Title>
-                </div>
+                </div> */}
+                  <Navbar.Brand as={Link} to='/'>
+											<img src={BigLogo} alt='' width="70px" />	
+							</Navbar.Brand>
               </div>
             </div>
           )}
@@ -631,7 +634,7 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <Navbar.Brand as={Link} to='/'>
-                  <img src={BigLogo} alt='' />
+                  <img src={BigLogoText} alt='' width="90px" />
                 </Navbar.Brand>
                 {/* <Navbar.Brand
                   style={{
