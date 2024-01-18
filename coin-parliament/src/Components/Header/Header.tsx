@@ -36,14 +36,12 @@ const Header = (setMfaLogin?:any) => {
       showToast("Unable to log out please try again.");
     }
   }
-
-  const BackLogout = () => {
-    
-    Logout(setUser);
-    navigate("/")
+  const BackLogout = () => {    
     setLogin(true);
+    Logout(setUser);
     setShowMenuBar(false)
     setMfaLogin(false)
+    navigate("/")
     // console.log("i am working error")	
     localStorage.removeItem("userId")    
 };
@@ -51,21 +49,24 @@ const Header = (setMfaLogin?:any) => {
   return (
     <header>
       <Navbar className='navColor' data-bs-theme="light" >
-      <div style={{paddingLeft:'10px'}}>
+      <div style={{paddingLeft:'0px'}}>
            {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && <HamburgerBut
                 // variant='link'
-                onClick={BackLogout}
                 className='position-relative'
+                onClick={BackLogout}
               >
                 <BackArrow />
               </HamburgerBut>
             }
       </div>
-        <Container>
+        <Container className='header-container gap-3'>
        
-          <Navbar.Brand style={{ color: 'white' }}>
+          <Navbar.Brand style={{ color: 'white', margin: 0 }}>
             <Link to={'/'} style={{ textDecoration: 'none', color: 'white' }}>
-              <img src="/VTE logo.png" alt="Vote to Earn" className='pe-3' height={50} />{window.screen.width > 350 ? 'Vote to Earn' : ''}
+              <img src="/VTE logo.png" alt="Vote to Earn" height={50} className='me-1' />
+              {/* {window.screen.width > 370 ? ' */}
+              Vote to Earn
+              {/* ' : ''} */}
             </Link>
           </Navbar.Brand>
 
@@ -94,10 +95,14 @@ const Header = (setMfaLogin?:any) => {
                 style={{ color: 'white', cursor: 'pointer' }}
               
               >
+              <NavDropdown.Item  style={{ color: 'black',textAlign: 'start'}}>
+                 {window.screen.width <= 767 ? userInfo?.displayName || userInfo?.email : ""}
+              </NavDropdown.Item>
+              <NavDropdown.Divider style={{display: window.screen.width <= 767 ? "block":"none"}} /> 
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
                 Top V2E Apps
               </NavDropdown.Item>
-              <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
+              <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile/edit')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
                 Profile
               </NavDropdown.Item>
               <NavDropdown.Item className='dropdown-item' onClick={() => navigate('/profile/share')} style={{ textDecoration: 'none', color: 'black', textAlign: 'start' }}>
@@ -105,7 +110,7 @@ const Header = (setMfaLogin?:any) => {
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item style={{ textAlign: 'start' }} onClick={() => logOutHandler()}>Log out</NavDropdown.Item>
-            </NavDropdown>:<span style={{paddingLeft:"10px"}}>{userInfo?.displayName || userInfo?.email}</span>
+            </NavDropdown>:<span className='line-clamp-2' style={{paddingLeft:"10px"}}>{userInfo?.displayName || userInfo?.email}</span>
             }
           </Navbar.Collapse>)}
         </Container>

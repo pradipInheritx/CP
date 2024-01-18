@@ -1,8 +1,23 @@
-
-.SmallDiv >.dropdown-menu.show{
+.SmallDiv > .dropdown-menu.show {
   margin-left: -160px !important;
 }
-.BigDiv >.dropdown-menu.show{
+.BigDiv > .dropdown-menu.show {
   min-width: 13rem;
   margin-left: -20px !important;
+}
+
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 0.75rem !important;
+  }
+  .header-container {
+    padding-left: 0 !important;
+  }
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

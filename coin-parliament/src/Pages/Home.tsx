@@ -307,7 +307,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
          JOIN FOR UPDATES
          &nbsp;
          <button className="buttonHover" style={{borderRadius:"15px",padding:"3px"}}>
-           <Link to="https://t.me/VoteToEarn" target="_blank"> 
+           <Link to="https://telegram.me/VoteToEarn" target="_blank"> 
            <img src={TelegramLogo} alt="Telegram Logo" style={{width:"30px", paddingBottom:"2px"}} /> 
            </Link> 
          </button>
