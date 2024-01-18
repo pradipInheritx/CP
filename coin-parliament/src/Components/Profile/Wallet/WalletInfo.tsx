@@ -937,7 +937,7 @@ function WalletInfo() {
                             name="address"
                             type="address"
                             placeholder="Enter address"
-                                value={item.address || ""}
+                                value={item?.address || ""}
                             onChange={(e) => {
                                 handleChangeValue(e, "walletDetails")
                             }}
