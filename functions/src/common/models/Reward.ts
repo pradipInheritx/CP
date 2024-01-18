@@ -5,8 +5,7 @@ import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";
 import {
-  addPaxTransactionWithPendingStatus,
-
+  addPaxTransactionWithPendingStatus
 } from "../models/PAX";
 
 import axios from "axios";
