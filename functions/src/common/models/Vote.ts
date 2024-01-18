@@ -123,7 +123,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser,getSuccessAndScore?.score) : "";
         console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
@@ -145,7 +145,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser) : "";
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser,getSuccessAndScore?.score) : "";
         console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
@@ -250,19 +250,19 @@ export const getOldAndCurrentPriceAndMakeCalculation = async (requestBody: any) 
 }
 
 
-export const getUserAndCalculatePax = async (paxDetails: any) => {
+export const getUserAndCalculatePax = async (paxDetails: any,currentVoteCMP:number) => {
   try {
     const getUser = (await admin.firestore().collection("users").doc(paxDetails.userId).get()).data();
     if (!getUser) {
       return errorLogging("getUserAndCalculatePax", "ERROR", "User not found");
     }
-    console.log("getUser score and total : ", getUser?.voteStatistics?.score, " : ", getUser?.rewardStatistics?.total);
+    console.log("getUser currentVoteCMP,score and total : ",currentVoteCMP," || ", getUser?.voteStatistics?.score, " || ", getUser?.rewardStatistics?.total);
+    const score = getUser?.voteStatistics?.score + currentVoteCMP
+    const checkCMP = score - (getUser?.rewardStatistics?.total * 100);
+    console.log("score, checkCMP : ",score, " || ", checkCMP)
+    console.log("99 < checkCMP && checkCMP < 200: ", 99 < checkCMP && checkCMP < 200)
 
-    const checkCMP = getUser?.voteStatistics?.score - (getUser?.rewardStatistics?.total * 100);
-    console.log("checkCMP : ", checkCMP)
-    console.log("0 < checkCMP && checkCMP > 10 : ", 0 < checkCMP && checkCMP < 10)
-
-    if (0 < checkCMP && checkCMP > 10) {
+    if (99 < checkCMP && checkCMP < 200) {
       let getResultAfterSentPaxToUser: any;
       let getResultAfterSentPaxToAdmin: any;
       if (paxDetails.isUserUpgraded === true) {
