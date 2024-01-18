@@ -49,7 +49,7 @@ const Header = (setMfaLogin?:any) => {
   return (
     <header>
       <Navbar className='navColor' data-bs-theme="light" >
-      <div style={{paddingLeft:'10px'}}>
+      <div style={{paddingLeft:'0px'}}>
            {(user || userInfo?.uid) && localStorage.getItem('mfa_passed') === 'true' && <HamburgerBut
                 // variant='link'
                 className='position-relative'
@@ -59,11 +59,14 @@ const Header = (setMfaLogin?:any) => {
               </HamburgerBut>
             }
       </div>
-        <Container>
+        <Container className='header-container gap-3'>
        
-          <Navbar.Brand style={{ color: 'white' }}>
+          <Navbar.Brand style={{ color: 'white', margin: 0 }}>
             <Link to={'/'} style={{ textDecoration: 'none', color: 'white' }}>
-              <img src="/VTE logo.png" alt="Vote to Earn" className='pe-3' height={50} />{window.screen.width > 350 ? 'Vote to Earn' : ''}
+              <img src="/VTE logo.png" alt="Vote to Earn" height={50} className='me-1' />
+              {/* {window.screen.width > 370 ? ' */}
+              Vote to Earn
+              {/* ' : ''} */}
             </Link>
           </Navbar.Brand>
 
@@ -107,7 +110,7 @@ const Header = (setMfaLogin?:any) => {
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item style={{ textAlign: 'start' }} onClick={() => logOutHandler()}>Log out</NavDropdown.Item>
-            </NavDropdown>:<span style={{paddingLeft:"10px"}}>{userInfo?.displayName || userInfo?.email}</span>
+            </NavDropdown>:<span className='line-clamp-2' style={{paddingLeft:"10px"}}>{userInfo?.displayName || userInfo?.email}</span>
             }
           </Navbar.Collapse>)}
         </Container>
