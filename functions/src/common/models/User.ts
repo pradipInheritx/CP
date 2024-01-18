@@ -1,13 +1,11 @@
 import admin from "firebase-admin";
-// import * as jwt from "jsonwebtoken";
-
+// import {getAuth,updateProfile} from "firebase/auth"
 import { UserProps, UserTypeProps } from "../interfaces/User.interface";
-// import env from "../../env/env.json";
-// import consts from "../config/constants.json"
-// import { sendEmail } from "../services/emailServices";
-// import { adminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
+import * as jwt from "jsonwebtoken";
+import env from "../../env/env.json";
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
+import { errorLogging } from "../helpers/commonFunction.helper";
 
 export const userConverter: FirestoreDataConverter<UserProps> = {
   fromFirestore(snapshot: FirebaseFirestore.QueryDocumentSnapshot): UserProps {
@@ -62,3 +60,52 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
+
+
+interface JwtPayload {
+  id: string;
+}
+
+export const userVerifiedLink = async (req: any, res: any) => {
+  try {
+    const { token } = req.query;
+    console.log("token : ", token);
+    const decodedToken: any = (await jwt.verify(
+      token,
+      env.JWT_AUTH_SECRET
+    )) as JwtPayload;
+    console.log("decoded token : ", decodedToken);
+
+    const getUser = await admin.auth().getUser(decodedToken?.uid);
+    if (getUser && getUser.emailVerified) {
+      return res.send(200).status({
+        status: true,
+        message: 'User is verified',
+        result: {
+          uid : decodedToken?.uid,
+          email : getUser?.email,
+          emailVerified : getUser?.emailVerified
+        }
+      })
+    }
+
+   const updateUser = await admin.auth().updateUser(decodedToken?.uid,{
+      emailVerified : true
+    })
+    res.send(200).status({
+      status: true,
+      message: 'User is verified',
+      result: updateUser
+    })
+
+  } catch (error) {
+    errorLogging("userVerifiedLink", "Error", error);
+    res.status(500).send(
+      {
+        status: false,
+        message: 'Something went wrong',
+        error
+      }
+    )
+  }
+}

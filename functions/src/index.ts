@@ -24,7 +24,8 @@ import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 import "./common/models/scheduleFunction"
 import {
   isAdmin,
-  userConverter
+  userConverter,
+  userVerifiedLink
 } from "./common/models/User";
 import {
   getLeaderUsers,
@@ -133,6 +134,7 @@ app.use("/payment", Routers.paymentRouter);
 // global routers
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
+app.get("/user/verified", userVerifiedLink);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
@@ -659,15 +661,17 @@ exports.onUpdateUser = functions.firestore
     const after = snapshot.after.data() as UserProps;
 
 
-    const secret = 'your-secret-key';
+    // const secret = 'your-secret-key';
     const options = { expiresIn: '1h' };
 
-    const getJWTWebToken = jwt.sign(after, secret, options);
+    const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
+    console.log("getJWTWebToken : ",getJWTWebToken);
+    const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
     console.info("Send Email Begins");
     await sendEmail(
       after.email,
       "Verify Your Account",
-      userVerifyEmailTemplate(after.email, "Link", "Your account has been created. Please verify your email for login.")
+      userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
     );
     console.info("Send Email Successfully");
 
@@ -689,7 +693,7 @@ exports.onUpdateUser = functions.firestore
 
     await addCpmTransaction(snapshot.after.id, amount);
   });
-
+ 
 exports.onVote = functions.firestore
   .document("votes/{id}")
   .onCreate(async (snapshot) => {
