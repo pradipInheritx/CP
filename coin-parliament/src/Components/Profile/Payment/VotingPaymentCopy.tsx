@@ -24,9 +24,9 @@ import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
 import { useNavigate } from "react-router-dom";
 import firebase from "firebase/compat";
-import { auth } from "firebase";
+import { auth, db } from "firebase";
 import Swal from "sweetalert2";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import PaymentFail from "./PaymentFail";
 import PaymentSuccess from "./PaymentSuccess";
 import upgrade from "../../../assets/images/upgrade_small.png";
@@ -34,6 +34,8 @@ import VoteBg from '../../../assets/images/VoteBg.png';
 import votebgMob from '../../../assets/images/votebgMob.png';
 import VoteStar from '../../../assets/images/VoteStar.png';
 import VoteToP from '../../../assets/images/VoteTop.png';
+import { texts } from "Components/LoginComponent/texts";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 
 const H2 = styled.h2`
 width: 100%;
@@ -416,7 +418,8 @@ const VotingPaymentCopy: React.FC<{
       useContext(AppContext);
     const { showModal } = useContext(NotificationContext);
     const { quotes } = useContext(ContentContext);
-    const { width } = useWindowSize();
+  const { width } = useWindowSize();
+  const [isLoading, setIsLoading] = useState(false)
 
 
     const [coinsList, setCoinsList] = useState([])
@@ -442,6 +445,7 @@ const VotingPaymentCopy: React.FC<{
     const [extraPer, setExtraPer] = useState(0);
   const [showText, setShowText] = useState(false);
   const [comingSoon, setComingSoon] = useState(false);
+  const [paymentCurruntTime, setPaymentCurruntTime] = useState <any>();
     // const [payButton, setPayButton] = useState(false);
     // const [showOptionList, setShowOptionList] = useState(false);
     // const [afterPay, setAfterPay] = useState(false);
@@ -498,7 +502,6 @@ const VotingPaymentCopy: React.FC<{
         }).catch((error) => {
           console.log(error, "error");
         });
-
     }, [])
 
 
@@ -511,9 +514,13 @@ const VotingPaymentCopy: React.FC<{
     };
 
     const startAgainAction = () => {
-      setShowOptionList(false)
+      // setShowOptionList(false)
+      // setSelectCoin("none");
+      // setSelectPayment(2)
+      // setPaymentStatus({ type: "", message: '' });
+      // console.log("yes i am calling")
+      navigate(-1)
       setSelectCoin("none");
-      setPaymentStatus({ type: "", message: '' });
     }
 
     const paymentSuccessAction = () => {
@@ -521,10 +528,92 @@ const VotingPaymentCopy: React.FC<{
       setSelectCoin("none");
     }
 
+  useEffect(() => {
+    if (userInfo?.uid && paymentCurruntTime) {      
+      const colRef = collection(db, "callbackHistory")
+      //real time update    
+      console.log(userInfo, "userInfodata")
+      
+      onSnapshot(colRef, (snapshot) => {
+        snapshot.docs.forEach((doc) => {
+          // setTestData((prev) => [...prev, doc.data()])
+          console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data:"" , "useralldata")   
+          if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {  
+            console.log(doc.data()?.data,"livepaymentdata")            
+            if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {              
+              onCreditCardPayment()
+            }
+            if (doc.data()?.data?.order_status == "Declined") {
+              console.log(doc.data()?.data,"DeclinedData")
+              setIsLoading(false)
+              setPaymentStatus({ type: "error", message: '' });   
+            }
+          } else {
+            // console.log(doc.data(),"doc.data()")
+          }
+        })
+      })
+    }
+  }, [userInfo?.uid, paymentCurruntTime])
 
+  console.log(paymentCurruntTime,"livepaymentdata23")
+  const onCreditCardPayment = () => {
+    const data = {
+      userId: userInfo?.uid,
+      userEmail: userInfo?.email,
+      walletType: "CreditCard",
+      amount: payamount,
+      network: "",
+      origincurrency: "",
+      token: "",
+      transactionType: payType,
+      numberOfVotes: extraVote,
+      initiated: "BE"
+    }
+    const headers = {
+      "accept": "application/json",
+    }
+    axios.post(`/payment/update/paymentStatusOnTransaction/fromUser/onCreditCard`, data,
+      {
+        headers: headers
+      }).then(async (response) => {
+        // setApiCalling(false)
+        setIsLoading(false)
+        setPaymentStatus({ type: "success", message: '' });
+      })
+      .catch((error) => {
+        setIsLoading(false)
+        // setPaymentStatus({ type: 'error', message: '' });
+        // setApiCalling(false)
+        // setPayButton(false)
+      })
+  }
 
     return (
       <>
+        {isLoading && <div style={{
+          position: 'fixed',
+          height: '90%',
+          // border: "2px solid red",
+          display: 'flex',
+          textAlign: 'center',
+          justifyContent: 'center',
+          // top: '0px',
+          right: '0px',
+          bottom: '0px',
+          zIndex: '9999',
+          overflow: 'hidden',
+          width: '100%',
+          alignItems: 'center',
+          backgroundColor: "rgba(0,0,0,0.6)"
+        }}>
+          <span className="loading" style={{
+            color: "White", zIndex: "2220px", fontSize: '1.5em',
+            // marginTop: "50px"
+          }}>
+            {texts.waitForIt}
+          </span>
+        </div>}
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,
@@ -855,7 +944,7 @@ const VotingPaymentCopy: React.FC<{
                     <div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
-                    <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}`}
+                    <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime()}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
@@ -864,7 +953,11 @@ const VotingPaymentCopy: React.FC<{
                         <ButttonDiv className="mt-1">
                           <button
                             disabled={payButton}                                              
-                          onClick={() => {                            
+                          onClick={() => {    
+                            window.scrollTo({ top: 100, behavior: 'smooth' });  
+                            setIsLoading(true)    
+                            // getPayment()
+                            setPaymentCurruntTime(new Date().getTime())
                             }}
                           >
                             {payButton ? "PAY NOW..." : 'PAY NOW !'}
@@ -879,7 +972,7 @@ const VotingPaymentCopy: React.FC<{
                   <>
                   <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
-                  ><a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}`}
+                  ><a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime()}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
@@ -887,7 +980,11 @@ const VotingPaymentCopy: React.FC<{
                     >                      
                     <ButttonDivSec className="mt-1">
                       <button
-                        onClick={() => {
+                          onClick={() => {
+                            window.scrollTo({ top: 100, behavior: 'smooth' });  
+                            setIsLoading(true)
+                            // getPayment()
+                            setPaymentCurruntTime(new Date().getTime())
                         }}
                       >
                         <div className='d-flex justify-content-around' >
