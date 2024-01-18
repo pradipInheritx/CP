@@ -100,7 +100,7 @@ export const LoginAuthProvider = async (
 
 
     if (auth?.currentUser?.photoURL === 'mfa') {
-      localStorage.setItem('mfa_passed', 'true');
+      localStorage.setItem('mfa_passed', 'false');
     } else {
       localStorage.setItem('mfa_passed', 'false');
     }
@@ -139,7 +139,7 @@ export const LoginAuthProvider = async (
       await storeAllPlatFormUserId(auth?.currentUser?.email);
     }
     if (auth?.currentUser?.photoURL === 'mfa') {
-      localStorage.setItem('mfa_passed', 'true');
+      localStorage.setItem('mfa_passed', 'false');
     } else {
       localStorage.setItem('mfa_passed', 'false');
     }
@@ -241,7 +241,7 @@ export const LoginRegular = async (
     );
     const isFirstLogin = getAdditionalUserInfo(userCredential);
     if (auth?.currentUser?.photoURL === 'mfa') {
-      localStorage.setItem('mfa_passed', 'true');
+      localStorage.setItem('mfa_passed', 'false');
     } else {
       localStorage.setItem('mfa_passed', 'false');
     }
