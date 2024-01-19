@@ -112,8 +112,7 @@ const SignupForm = ({
 
       <div style={{marginTop:"15px"}}>
       {/* @ts-ignore */}
-      <ReCAPTCHA
-        sitekey={"6Ld4iVIpAAAAAFXMeAVhaxvk_JcqrzpKq6Pk7Dt-"}
+      <ReCAPTCHA  sitekey={process.env.REACT_APP_RECAPTCHA_KEY}
         onChange={handleReCaptcha}
       />
       </div>
