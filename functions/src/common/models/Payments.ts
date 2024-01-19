@@ -774,10 +774,12 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
     await firestore()
       .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
 
+    const redirectUrl = `https://direct.palaris.io/api?ref_id=2&email=${req.body.email}&ftype=1&famount=${req.body.amount}&ctype=2&p1=${req.body.userId}&p2=${req.body.timestamp}`;
+
     res.status(200).send({
       status: true,
       message: "Temp payment transaction created successfully",
-      result: "",
+      redirectUrl
     });
   } catch (error) {
     res.status(500).send({
