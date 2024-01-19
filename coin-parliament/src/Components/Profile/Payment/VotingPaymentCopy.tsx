@@ -537,7 +537,7 @@ const VotingPaymentCopy: React.FC<{
       onSnapshot(colRef, (snapshot) => {
         snapshot.docs.forEach((doc) => {
           // setTestData((prev) => [...prev, doc.data()])
-          console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data:"" , "useralldata")   
+          console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data?.p2:"" , "useralldata")   
           if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {  
             console.log(doc.data()?.data,"livepaymentdata")            
             if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {              
@@ -944,7 +944,7 @@ const VotingPaymentCopy: React.FC<{
                     <div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
-                    <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime()}`}
+                    <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime() , payType,payamount}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
@@ -972,7 +972,7 @@ const VotingPaymentCopy: React.FC<{
                   <>
                   <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
-                  ><a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime()}`}
+                  ><a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime(), payType, payamount}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
