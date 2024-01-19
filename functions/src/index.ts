@@ -9,7 +9,7 @@ import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 // import * as jwt from 'jsonwebtoken'; // For JSON Web Token
-import { firestore } from "firebase-admin";
+//import { firestore } from "firebase-admin";
 
 // Interfaces
 import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
