@@ -161,6 +161,40 @@ import SelectBio from "Components/LoginComponent/SelectBio";
 import axios from "axios";
 import { afterpaxDistributionToUser } from "common/utils/helper";
 import SingleCardDetails from "Pages/album/SingleCardDetails";
+import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+
+const projectId = '1556d7953ee6f664810aacaad77addb1'
+const mainnet = [
+  {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
+  },
+
+  {
+    chainId: 56,
+    name: 'Binance',
+    currency: 'BNB',
+    explorerUrl: 'https://bscscan.com',
+    rpcUrl: 'https://bsc-dataseed.binance.org'
+  }
+]
+
+// 3. Create modal
+const metadata = {
+  name: 'My Website',
+  description: 'My Website description',
+  url: 'https://mywebsite.com',
+  icons: ['https://avatars.mywebsite.com/']
+}
+
+createWeb3Modal({
+  ethersConfig: defaultConfig({ metadata }),
+  chains: mainnet,
+  projectId
+})
 // import FoundationData from "Components/Profile/FoundationData";
 
 // import CoinsListDesgin from "Components/Profile/CoinsList";
