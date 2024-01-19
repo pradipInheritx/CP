@@ -609,7 +609,11 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
   try {
     const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.p1 === userId);
+    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => {
+      if (transaction.callbackDetails.data && transaction.callbackDetails.data.p1 && transaction.callbackDetails.data.p1 === userId) {
+        return transaction;
+      }
+    });
     console.log("getTransactionFromCreditCard : ", getTransactionFromCreditCard);
     if (!getTransactionFromCreditCard) {
       return {
