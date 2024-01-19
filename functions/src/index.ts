@@ -1277,15 +1277,18 @@ exports.addPaxToRemainingUsers = functions.https.onCall(async (data: any) => {
 exports.addPaxInPendingKEY =functions.https.onCall(async (data: any) => {
   try {
     const paxList = [];
-    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map(pax => {
+    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax:any) => {
       let paxData = pax.data()
-      return {...paxData,id : pax.id}
+      let id = pax.id
+      return {...paxData,id}
     });
     console.log("getPaxTransactionList : ", getPaxTransactionList);
     for (let index = 0; index < getPaxTransactionList.length; index++) {
-      let pax = getPaxTransactionList[index];
+      let pax : any = getPaxTransactionList[index];
       console.log("index - pax : ",index," - ",pax)
-      if (pax && pax.hasOwnProperty('status') == false) {
+      if ("status" in pax) {
+        console.log("status have",pax.id)
+      }else{
         await admin.firestore().collection('paxTransaction').doc(pax.id).set({status : "PENDING"},{merge : true})
         paxList.push(pax)
       }
