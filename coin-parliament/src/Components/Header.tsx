@@ -19,6 +19,7 @@ import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import BigLogo from "../assets/svg/vporange.svg";
+import TextLogo from "../assets/svg/LogoText.svg"
 // import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
@@ -411,8 +412,8 @@ const Header = ({
           {/* {for center modile size} */}
 
           {!desktop && (
-            <div className='' style={{ width: "75%" }}>
-              <div className='d-flex w-100 '>
+            <div className='' style={{ width: "80%" }}>
+              <div className='d-flex w-100'>
                 {user?.uid ? (
                   <div
                     className='d-flex w-100'
@@ -444,7 +445,7 @@ const Header = ({
                     <div className='w-100 mt-3' style={{ marginLeft: "0px" }}>
                       {userInfo?.displayName && <HeaderCenterMob className=''>
                         <div></div>
-                        <div className='mt-1'>
+                        <div className='mt-1'style={{paddingLeft:"10px"}}>
 
                           {/* @ts-ignore */}
 
@@ -512,11 +513,14 @@ const Header = ({
                 ) : (
                   <div className='w-100'></div>
                 )}
-                <div className='mt-2'>
+                {/* <div className='mt-2'>
                   <Title style={{ width: pathname === "/" ? "" : "" }}>
                     {mounted ? title : ""}
                   </Title>
-                </div>
+                </div> */}
+                <Navbar.Brand as={Link} to='/'>
+                  <img src={BigLogo} alt=''width="70px" />
+                </Navbar.Brand>
               </div>
             </div>
           )}
@@ -629,7 +633,7 @@ const Header = ({
                   <div className='w-100'></div>
                 )}
                 <Navbar.Brand as={Link} to='/'>
-                  <img src={BigLogo} alt='' />
+                  <img src={TextLogo} alt='' width="95px" />
                 </Navbar.Brand>
                 {/* <Navbar.Brand
                   style={{
