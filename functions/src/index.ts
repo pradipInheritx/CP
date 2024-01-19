@@ -23,7 +23,7 @@ import {
   userConverter,
   userVerifiedLink
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
 import {
   getLeaderUsers,
@@ -1262,4 +1262,36 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
 //     }
 //   }
 // })
+
+exports.addPaxInPendingKEY =functions.https.onCall(async (data: any) => {
+  try {
+    const paxList = [];
+    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax:any) => {
+      let paxData = pax.data()
+      let id = pax.id
+      return {...paxData,id}
+    });
+    console.log("getPaxTransactionList : ", getPaxTransactionList);
+    for (let index = 0; index < getPaxTransactionList.length; index++) {
+      let pax : any = getPaxTransactionList[index];
+      console.log("index - pax : ",index," - ",pax)
+      if ("status" in pax) {
+        console.log("status have",pax.id)
+      }else{
+        await admin.firestore().collection('paxTransaction').doc(pax.id).set({status : "PENDING"},{merge : true})
+        paxList.push(pax)
+      }
+    }
+    console.log("paxList : ", paxList)
+    return {
+      message : "pax status updated",
+      paxList
+    }
+  } catch (error) {
+    return {
+      message : "pax status is not updated",
+      error
+    }
+  }
+})
 
