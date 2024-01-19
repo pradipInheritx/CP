@@ -44,7 +44,7 @@ const PaymentFail: React.FC<{ tryAgainAction: () => void, startAgainAction: () =
                     {message}
                 </div>
                 <div className='d-flex justify-content-center'>
-                    <button type="button"
+                    {/* <button type="button"
                         style={{
                             display: 'inline-block',
                             backgroundColor: 'rgb(84, 60, 214)',
@@ -61,7 +61,7 @@ const PaymentFail: React.FC<{ tryAgainAction: () => void, startAgainAction: () =
                         onClick={tryAgainAction}
                     >
                         Try again
-                    </button>
+                    </button> */}
                     <button type="button"
                         style={{
                             display: 'inline-block',
