@@ -11,6 +11,7 @@ import { getAllPendingPaxByUserId } from "./PAX";
 
 
 
+
 export const makePaymentToServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
@@ -62,6 +63,37 @@ export const callbackFromServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
     if (req.body.order_buyer) {
+      if (req.body.order_status !== "Open") {
+        await firestore()
+          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+
+
+        const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
+          .where("timestamp", "==", req.body.p2)
+          .get();
+
+        const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
+          return tempPaymentTransaction.data();
+        });
+
+        console.info("getTempCrediCardData", getTempCrediCardData[0])
+        let requestBody: any;
+        if (getTempCrediCardData.length && getTempCrediCardData[0]) {
+          requestBody = { userId: req.body.p1, userEmail: req.body.order_buyer, walletType: "CREDITCARD", amount: req.body.order_famount, orderFee: req.body.order_fee, network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
+        } else {
+          requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
+        }
+
+        const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
+        console.info("getResponseFromCreditCard", getResponseFromCreditCard);
+
+        res.status(200).send({
+          status: true,
+          message: "Transaction logged in DB and transaction made successfully",
+          data: [],
+        });
+
+      }
       await firestore()
         .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
       res.status(200).send({
@@ -550,18 +582,30 @@ export const getTransactionHistory = async (req: any, res: any) => {
 
 export const paymentStatusOnUserFromCreditCard = async (req: any, res: any) => {
   try {
-    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
+    const getResponseFromCreditCardUpdate: any = await paymentStatusOnUserFromCreditCardFunction(req.body)
+    res.status(getResponseFromCreditCardUpdate.statusCode).send(getResponseFromCreditCardUpdate);
+  } catch (error: any) {
+    res.status(500).send({
+      status: true,
+      message: "Error",
+      error
+    });
+  }
+}
+
+export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any) => {
+  try {
+    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
     const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.p1 === userId);
-
     console.log("getTransactionFromCreditCard : ", getTransactionFromCreditCard);
-
     if (!getTransactionFromCreditCard) {
-      res.status(404).send({
+      return {
+        statusCode: 404,
         status: false,
         message: parentConst.CREDITCARD_TRANSACTION_NOT_FOUND,
         result: "",
-      });
+      }
     }
 
     if (getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
@@ -612,20 +656,21 @@ export const paymentStatusOnUserFromCreditCard = async (req: any, res: any) => {
       });
     };
 
-    res.status(200).send({
+    return {
+      statusCode: 200,
       status: true,
       message: parentConst.PAYMENT_UPDATE_SUCCESS,
       getUpdatedData
-    });
-  } catch {
-    res.status(200).send({
+    }
+  } catch (error: any) {
+    return {
+      statusCode: 500,
       status: true,
-      message: "Error"
-
-    });
+      message: "Error",
+      error
+    }
   }
 }
-
 
 export const paymentStatusOnTransactionFromWellDApp = async (req: any, res: any) => {
   try {
@@ -708,6 +753,34 @@ export const paymentStatusOnTransactionFromWellDApp = async (req: any, res: any)
     });
   }
 }
+
+export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: any) => {
+  try {
+    await firestore()
+      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
+
+    const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
+      .where("timestamp", "==", "1705601268918")
+      .get();
+    const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
+      return tempPaymentTransaction.data();
+    });
+
+    console.info("getTempCrediCardData", getTempCrediCardData[0])
+    res.status(200).send({
+      status: true,
+      message: "Temp payment transaction created successfully",
+      result: "",
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong",
+      result: error,
+    });
+  }
+}
+
 
 export const getAllPendingPaxByUser = async (req: any, res: any) => {
   try {
