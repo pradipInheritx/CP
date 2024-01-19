@@ -165,7 +165,7 @@ function PaymentHistory() {
                         }}
                       >
                         <RewardList>
-                          {item?.token ? item?.token : item?.walletType ? item?.walletType  : "-"}
+                          {item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}
                         </RewardList>
                       </div>
                       <div
