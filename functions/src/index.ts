@@ -23,7 +23,7 @@ import {
   userConverter,
   userVerifiedLink
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
 import {
   getLeaderUsers,
