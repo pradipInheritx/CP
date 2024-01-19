@@ -10,7 +10,8 @@ import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import { sendEmail } from "./common/services/emailServices";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
-import * as jwt from 'jsonwebtoken'; // For JSON Web Token
+// import * as jwt from 'jsonwebtoken'; // For JSON Web Token
+import { firestore } from "firebase-admin";
 
 // Interfaces
 import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
@@ -654,18 +655,18 @@ exports.onUpdateUser = functions.firestore
 
 
     // const secret = 'your-secret-key';
-    const options = { expiresIn: '1h' };
+    // const options = { expiresIn: '1h' };
 
-    const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
-    console.log("getJWTWebToken : ", getJWTWebToken);
-    const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
-    console.info("Send Email Begins");
-    await sendEmail(
-      after.email,
-      "Verify Your Account",
-      userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
-    );
-    console.info("Send Email Successfully");
+    // const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
+    // console.log("getJWTWebToken : ", getJWTWebToken);
+    // const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
+    // console.info("Send Email Begins");
+    // await sendEmail(
+    //   after.email,
+    //   "Verify Your Account",
+    //   userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
+    // );
+    // console.info("Send Email Successfully");
 
 
     await addReward(snapshot.after.id, before, after);
@@ -675,13 +676,13 @@ exports.onUpdateUser = functions.firestore
       return;
     }
 
-    console.info("Send Email Begins")
-    await sendEmail(
-      "demoemail@yopmail.com",
-      "Verify Your Account",
-      userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
-    );
-    console.info("Send Email Successfully")
+    // console.info("Send Email Begins")
+    // await sendEmail(
+    //   "demoemail@yopmail.com",
+    //   "Verify Your Account",
+    //   userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
+    // );
+    // console.info("Send Email Successfully")
 
     await addCpmTransaction(snapshot.after.id, amount);
   });
@@ -1216,5 +1217,51 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
 //     return null
 //   });
 
+exports.addPaxToRemainingUsers = functions.https.onCall(async (data: any) => {
+  try {
+    const finalUserList: any = [];
+    const paxBody = {
+      userId: "",
+      currentPaxValue: 50,
+      isUserUpgraded: true,
+      eligibleForMint: false,
+      mintForUserAddress: ""
+    }
+    const getUserList = (await admin.firestore().collection('users').where("rewardStatistics.total", ">", 0).get()).docs.map(user => user.data());
+    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map(pax => pax.data());
 
+    console.log("user and pax List length : ", getUserList.length, getPaxTransactionList.length)
+
+    // remove yopmail and isUserUpgraded :false or not
+    getUserList.forEach((user: any) => {
+      const checkEmail = (user?.email.split("@")[1]).includes("yopmail")
+      if (checkEmail && user.isUserUpgraded) {
+        finalUserList.push(user)
+      }
+    })
+
+    console.log("final user list : ", finalUserList)
+    // check user have paxTransaction or not
+    for (let index = 0; index < finalUserList.length; index++) {
+      let getUser = finalUserList[index];
+      // get paxTransaction of user
+      let paxTransactionList = getPaxTransactionList.filter(pax => pax.userId == getUser.uid)
+      console.log("paxTransactionList length || user total ", paxTransactionList.length, " || ", getUser?.rewardStatistics?.total);
+      // check how many pax transactions are available
+      if (paxTransactionList.length < getUser?.rewardStatistics?.total) {
+        let remainingPaxCount: number = getUser?.rewardStatistics?.total - paxTransactionList.length;
+        console.log("remainingPaxCounter : ", remainingPaxCount);
+        for (let paxIndex = 0; paxIndex < remainingPaxCount; paxIndex++) {
+          let newPax = await admin.firestore().collection('paxTransaction').add({ ...paxBody, userId: getUser.uid, timestamp: firestore.FieldValue.serverTimestamp() })
+          console.log("userId : newPax : ", getUser?.uid, " || ", newPax.id);
+        }
+      }
+    }
+    return { message: "add pax successfully", userIds: finalUserList.map((user: any) => user.uid) }
+  } catch (error) {
+    return {
+      error
+    }
+  }
+})
 
