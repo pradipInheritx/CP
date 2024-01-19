@@ -97,19 +97,12 @@ export const callbackFromServer = async (req: any, res: any) => {
 
         const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
         console.info("getResponseFromCreditCard", getResponseFromCreditCard);
-
-        res.status(200).send({
-          status: true,
-          message: "Transaction logged in DB and transaction made successfully",
-          data: [],
-        });
-
       }
       // await firestore()
       //   .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
       res.status(200).send({
         status: true,
-        message: "Transaction logged in DB on transaction details",
+        message: "Transaction logged in DB and transaction made successfully",
         data: [],
       });
     } else {
