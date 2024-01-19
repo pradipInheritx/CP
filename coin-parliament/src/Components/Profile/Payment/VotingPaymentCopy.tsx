@@ -37,6 +37,7 @@ import VoteToP from '../../../assets/images/VoteTop.png';
 import { texts } from "Components/LoginComponent/texts";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 
+
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -412,6 +413,7 @@ const VotingPaymentCopy: React.FC<{
   setShowOptionList,
   cardPayment,
 }) => {
+  
     const translate = useTranslation();
     const { user, userInfo } = useContext(UserContext);
     const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
@@ -420,24 +422,8 @@ const VotingPaymentCopy: React.FC<{
     const { quotes } = useContext(ContentContext);
   const { width } = useWindowSize();
   const [isLoading, setIsLoading] = useState(false)
-
-
     const [coinsList, setCoinsList] = useState([])
-  // const [coinsList, setCoinsList] = useState([{
-  //     name:"a"
-  // },
-  //   {
-  //     name: "a"
-  //   },
-  //   {
-  //     name: "a"
-  //   },    
-  // ])
-    const [selectPayment, setSelectPayment] = useState(0);
-    // const [selectCoin, setSelectCoin] = useState("none");
-    // const [coinInfo, setCoinInfo] = useState([]);
-
-    // const connectOrNot = localStorage.getItem("wldp_disconnect");
+    const [selectPayment, setSelectPayment] = useState(0);    
 
     const [payamount, setPayamount] = useState(0);
     const [payType, setPayType] = useState();
@@ -446,9 +432,6 @@ const VotingPaymentCopy: React.FC<{
   const [showText, setShowText] = useState(false);
   const [comingSoon, setComingSoon] = useState(false);
   const [paymentCurruntTime, setPaymentCurruntTime] = useState <any>();
-    // const [payButton, setPayButton] = useState(false);
-    // const [showOptionList, setShowOptionList] = useState(false);
-    // const [afterPay, setAfterPay] = useState(false);
 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
@@ -540,11 +523,14 @@ const VotingPaymentCopy: React.FC<{
           console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data?.p2:"" , "useralldata")   
           if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {  
             console.log(doc.data()?.data,"livepaymentdata")            
-            if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {              
-              onCreditCardPayment()
+            if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {                            
+              setIsLoading(false)
+              window.scrollTo({ top: 650, behavior: 'smooth' }); 
+              setPaymentStatus({ type: "success", message: '' }); 
             }
             if (doc.data()?.data?.order_status == "Declined") {
-              console.log(doc.data()?.data,"DeclinedData")
+              console.log(doc.data()?.data, "DeclinedData")
+              window.scrollTo({ top: 650, behavior: 'smooth' }); 
               setIsLoading(false)
               setPaymentStatus({ type: "error", message: '' });   
             }
@@ -555,37 +541,36 @@ const VotingPaymentCopy: React.FC<{
       })
     }
   }, [userInfo?.uid, paymentCurruntTime])
-
-  console.log(paymentCurruntTime,"livepaymentdata23")
-  const onCreditCardPayment = () => {
+  
+  const getPayment = () => {
     const data = {
       userId: userInfo?.uid,
-      userEmail: userInfo?.email,
-      walletType: "CreditCard",
-      amount: payamount,
-      network: "",
-      origincurrency: "",
-      token: "",
+      email: userInfo?.email,      
+      amount: payamount,      
       transactionType: payType,
-      numberOfVotes: extraVote,
-      initiated: "BE"
+      numberOfVotes: extraVote,      
+      timestamp: new Date().getTime(),
     }
     const headers = {
       "accept": "application/json",
     }
-    axios.post(`/payment/update/paymentStatusOnTransaction/fromUser/onCreditCard`, data,
+    axios.post(`/payment/make/createTempPaymentTransaction/onCreditCard`, data,
       {
         headers: headers
       }).then(async (response) => {
-        // setApiCalling(false)
-        setIsLoading(false)
-        setPaymentStatus({ type: "success", message: '' });
+        console.log(response,"getresponse")
+        window.open(`${response.data?.redirectUrl}`, '_blank');  
+        const regex = /p2=([^&]*)/;
+        const match = response?.data?.redirectUrl.match(regex);
+
+        if (match) {
+          const valueAfterP2 = match[1];
+          setPaymentCurruntTime(valueAfterP2)
+          console.log("P2 value" ,valueAfterP2)
+        }
       })
       .catch((error) => {
-        setIsLoading(false)
-        // setPaymentStatus({ type: 'error', message: '' });
-        // setApiCalling(false)
-        // setPayButton(false)
+        console.log(error)
       })
   }
 
@@ -944,26 +929,26 @@ const VotingPaymentCopy: React.FC<{
                     <div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
-                    <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime() , payType,payamount}`}
+                    {/* <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime() , payType,payamount}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
                       }}
-                    >
+                    > */}
                         <ButttonDiv className="mt-1">
                           <button
                             disabled={payButton}                                              
                           onClick={() => {    
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
                             setIsLoading(true)    
-                            // getPayment()
-                            setPaymentCurruntTime(new Date().getTime())
+                            getPayment()
+                            // setPaymentCurruntTime(new Date().getTime())
                             }}
                           >
                             {payButton ? "PAY NOW..." : 'PAY NOW !'}
                           </button>
                       </ButttonDiv>
-                    </a> 
+                    {/* </a>  */}
                      
                     </div >                  
                 }
@@ -972,19 +957,20 @@ const VotingPaymentCopy: React.FC<{
                   <>
                   <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
-                  ><a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime(), payType, payamount}`}
+                  >
+                    {/* <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime(), payType, payamount}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
                       }}
-                    >                      
+                    >                       */}
                     <ButttonDivSec className="mt-1">
                       <button
                           onClick={() => {
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
                             setIsLoading(true)
-                            // getPayment()
-                            setPaymentCurruntTime(new Date().getTime())
+                            getPayment()
+                            // setPaymentCurruntTime(new Date().getTime())
                         }}
                       >
                         <div className='d-flex justify-content-around' >
@@ -1007,7 +993,7 @@ const VotingPaymentCopy: React.FC<{
 
                       </button>
                     </ButttonDivSec>
-                    </a> 
+                    {/* </a>  */}
                   </div>
                   </>
                 }
