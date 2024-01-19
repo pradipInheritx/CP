@@ -654,7 +654,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).get()).data();
 
     //TODO Get the data and store in payment collection 
-    const addNewPayment = await firestore().collection('payments').add(getUpdatedData);
+    const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: firestore.FieldValue.serverTimestamp() });
 
     if (addNewPayment.id) {
       firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).delete().then(() => {
