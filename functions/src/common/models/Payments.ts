@@ -79,7 +79,8 @@ export const callbackFromServer = async (req: any, res: any) => {
         console.info("getTempCrediCardData", getTempCrediCardData[0])
         let requestBody: any;
         if (getTempCrediCardData.length && getTempCrediCardData[0]) {
-          requestBody = { userId: req.body.p1, userEmail: req.body.order_buyer, walletType: "CREDITCARD", amount: req.body.order_famount, orderFee: req.body.order_fee, network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
+          let userId = req.body && req.body.p1 ? req.body.p1 : "";
+          requestBody = { userId, userEmail: req.body.order_buyer, walletType: "CREDITCARD", amount: req.body.order_famount, orderFee: req.body.order_fee, network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
         } else {
           requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
         }
@@ -759,14 +760,6 @@ export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: 
     await firestore()
       .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
 
-    const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
-      .where("timestamp", "==", "1705601268918")
-      .get();
-    const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
-      return tempPaymentTransaction.data();
-    });
-
-    console.info("getTempCrediCardData", getTempCrediCardData[0])
     res.status(200).send({
       status: true,
       message: "Temp payment transaction created successfully",
