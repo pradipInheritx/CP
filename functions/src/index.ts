@@ -10,7 +10,7 @@ import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
 import { sendEmail } from "./common/services/emailServices";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
-import * as jwt from 'jsonwebtoken'; // For JSON Web Token
+// import * as jwt from 'jsonwebtoken'; // For JSON Web Token
 import { firestore } from "firebase-admin";
 
 // Interfaces
@@ -663,18 +663,18 @@ exports.onUpdateUser = functions.firestore
 
 
     // const secret = 'your-secret-key';
-    const options = { expiresIn: '1h' };
+    // const options = { expiresIn: '1h' };
 
-    const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
-    console.log("getJWTWebToken : ", getJWTWebToken);
-    const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
-    console.info("Send Email Begins");
-    await sendEmail(
-      after.email,
-      "Verify Your Account",
-      userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
-    );
-    console.info("Send Email Successfully");
+    // const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
+    // console.log("getJWTWebToken : ", getJWTWebToken);
+    // const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
+    // console.info("Send Email Begins");
+    // await sendEmail(
+    //   after.email,
+    //   "Verify Your Account",
+    //   userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
+    // );
+    // console.info("Send Email Successfully");
 
 
     await addReward(snapshot.after.id, before, after);
@@ -684,13 +684,13 @@ exports.onUpdateUser = functions.firestore
       return;
     }
 
-    console.info("Send Email Begins")
-    await sendEmail(
-      "demoemail@yopmail.com",
-      "Verify Your Account",
-      userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
-    );
-    console.info("Send Email Successfully")
+    // console.info("Send Email Begins")
+    // await sendEmail(
+    //   "demoemail@yopmail.com",
+    //   "Verify Your Account",
+    //   userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
+    // );
+    // console.info("Send Email Successfully")
 
     await addCpmTransaction(snapshot.after.id, amount);
   });
