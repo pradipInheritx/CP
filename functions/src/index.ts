@@ -1215,53 +1215,7 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
 //     return null
 //   });
 
-// exports.addPaxToRemainingUsers = functions.https.onCall(async (data: any) => {
-//   try {
-//     const finalUserList: any = [];
-//     const paxBody = {
-//       userId: "",
-//       currentPaxValue: 50,
-//       isUserUpgraded: true,
-//       eligibleForMint: false,
-//       mintForUserAddress: ""
-//     }
-//     const getUserList = (await admin.firestore().collection('users').where("rewardStatistics.total", ">", 0).get()).docs.map(user => user.data());
-//     const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map(pax => pax.data());
-
-//     console.log("user and pax List length : ", getUserList.length, getPaxTransactionList.length)
-
-//     // remove yopmail and isUserUpgraded :false or not
-//     getUserList.forEach((user: any) => {
-//       const checkEmail = (user?.email.split("@")[1]).includes("yopmail")
-//       if (checkEmail && user.isUserUpgraded) {
-//         finalUserList.push(user)
-//       }
-//     })
-
-//     console.log("final user list : ", finalUserList)
-//     // check user have paxTransaction or not
-//     for (let index = 0; index < finalUserList.length; index++) {
-//       let getUser = finalUserList[index];
-//       // get paxTransaction of user
-//       let paxTransactionList = getPaxTransactionList.filter(pax => pax.userId == getUser.uid)
-//       console.log("paxTransactionList length || user total ", paxTransactionList.length, " || ", getUser?.rewardStatistics?.total);
-//       // check how many pax transactions are available
-//       if (paxTransactionList.length < getUser?.rewardStatistics?.total) {
-//         let remainingPaxCount: number = getUser?.rewardStatistics?.total - paxTransactionList.length;
-//         console.log("remainingPaxCounter : ", remainingPaxCount);
-//         for (let paxIndex = 0; paxIndex < remainingPaxCount; paxIndex++) {
-//           let newPax = await admin.firestore().collection('paxTransaction').add({ ...paxBody, userId: getUser.uid, timestamp: firestore.FieldValue.serverTimestamp() })
-//           console.log("userId : newPax : ", getUser?.uid, " || ", newPax.id);
-//         }
-//       }
-//     }
-//     return { message: "add pax successfully", userIds: finalUserList.map((user: any) => user.uid) }
-//   } catch (error) {
-//     return {
-//       error
-//     }
-//   }
-// })
+//
 
 exports.addPaxInPendingKEY =functions.https.onCall(async (data: any) => {
   try {
