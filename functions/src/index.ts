@@ -1243,7 +1243,7 @@ exports.addPaxToRemainingUsers = functions.https.onCall(async (data: any) => {
     // remove yopmail and isUserUpgraded :false or not
     getUserList.forEach((user: any) => {
       const checkEmail = (user?.email.split("@")[1]).includes("yopmail")
-      if (checkEmail && user.isUserUpgraded) {
+      if (!checkEmail && user.isUserUpgraded) {
         finalUserList.push(user)
       }
     })
