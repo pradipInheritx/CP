@@ -1274,7 +1274,7 @@ exports.addPaxToRemainingUsers = functions.https.onCall(async (data: any) => {
   }
 })
 
-exports.addPaxInPendingKEY = functions.https.onCall(async () => {
+exports.addPaxInPendingKEY =functions.https.onCall(async (data: any) => {
   try {
     const paxList = [];
     const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map(pax => {
@@ -1282,7 +1282,7 @@ exports.addPaxInPendingKEY = functions.https.onCall(async () => {
       return {...paxData,id : pax.id}
     });
     console.log("getPaxTransactionList : ", getPaxTransactionList);
-    for (let index = 0; index < paxList.length; index++) {
+    for (let index = 0; index < getPaxTransactionList.length; index++) {
       let pax = getPaxTransactionList[index];
       console.log("index - pax : ",index," - ",pax)
       if (pax && pax.hasOwnProperty('status') == false) {
