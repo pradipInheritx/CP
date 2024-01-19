@@ -486,7 +486,10 @@ function App() {
     //     buttons[i].removeEventListener('click', handleSoundClick);
     //   }
     // }
-  }, [location, search]);
+    if (auth?.currentUser) {
+      setLogin(false);
+    }
+  }, [location, search, JSON.stringify(auth?.currentUser)]);
 
   // useEffect(() => {
   //   if (!user) {
@@ -896,7 +899,6 @@ useEffect(()=>{
                                   }}
                                 /> : <Navigate to="/" />
                               } />
-                                                           
                               {!login &&
                                 !firstTimeAvatarSlection &&
                                 !firstTimeFoundationSelection && !selectBioEdit && localStorage.getItem('mfa_passed') != 'true' &&

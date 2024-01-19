@@ -126,6 +126,7 @@ const SignupForm = ({
       </div>
 
 
+      {/* <Checkbox name="agree" checked={agree} onClick={() => setAgree(!agree)} required={true}> */}
       <Form.Group className="mb-2  text-center" controlId="agree">
         <Checkbox disabled={!recaptcha}  name="agree" checked={agree} onClick={() => setAgree(!agree)} >
           <p className='mb-1'> I agree to <Link to={urls.termsConditions} style={{ color: 'var(--blue-violet)' }}>
