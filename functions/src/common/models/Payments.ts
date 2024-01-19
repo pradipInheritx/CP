@@ -78,7 +78,6 @@ export const callbackFromServer = async (req: any, res: any) => {
         await firestore()
           .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
 
-
         const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
           .where("timestamp", "==", req.body.p2)
           .get();
@@ -106,8 +105,8 @@ export const callbackFromServer = async (req: any, res: any) => {
         });
 
       }
-      await firestore()
-        .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+      // await firestore()
+      //   .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
@@ -624,7 +623,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
       }
     }
 
-    if (getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
+    if (getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
       if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
         await addIsExtraVotePurchase({
           userId,
@@ -643,10 +642,10 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
         await addIsUpgradedValue(userId)
       }
     }
-    await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).set({
+    await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).set({
       paymentDetails
-        : getTransactionFromCreditCard[0].callbackDetails.data,
-      event: getTransactionFromCreditCard[0].callbackDetails.event,
+        : getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.data,
+      event: getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].callbackDetails.event,
       userId,
       userEmail,
       walletType,
@@ -665,10 +664,10 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     const addNewPayment = await firestore().collection('payments').add(getUpdatedData);
 
     if (addNewPayment.id) {
-      firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).delete().then(() => {
-        console.log(`${getTransactionFromCreditCard[0].id} Document successfully deleted from callbackHistory!`)
+      firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).delete().then(() => {
+        console.log(`${getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id} Document successfully deleted from callbackHistory!`)
       }).catch((error) => {
-        console.log(`${getTransactionFromCreditCard[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+        console.log(`${getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
       });
     };
 
