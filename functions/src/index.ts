@@ -23,7 +23,7 @@ import {
   userConverter,
   userVerifiedLink
 } from "./common/models/User";
-import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
+import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
 import {
   getLeaderUsers,
@@ -1215,51 +1215,37 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
 //     return null
 //   });
 
-// exports.addPaxToRemainingUsers = functions.https.onCall(async (data: any) => {
-//   try {
-//     const finalUserList: any = [];
-//     const paxBody = {
-//       userId: "",
-//       currentPaxValue: 50,
-//       isUserUpgraded: true,
-//       eligibleForMint: false,
-//       mintForUserAddress: ""
-//     }
-//     const getUserList = (await admin.firestore().collection('users').where("rewardStatistics.total", ">", 0).get()).docs.map(user => user.data());
-//     const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map(pax => pax.data());
+//
 
-//     console.log("user and pax List length : ", getUserList.length, getPaxTransactionList.length)
-
-//     // remove yopmail and isUserUpgraded :false or not
-//     getUserList.forEach((user: any) => {
-//       const checkEmail = (user?.email.split("@")[1]).includes("yopmail")
-//       if (checkEmail && user.isUserUpgraded) {
-//         finalUserList.push(user)
-//       }
-//     })
-
-//     console.log("final user list : ", finalUserList)
-//     // check user have paxTransaction or not
-//     for (let index = 0; index < finalUserList.length; index++) {
-//       let getUser = finalUserList[index];
-//       // get paxTransaction of user
-//       let paxTransactionList = getPaxTransactionList.filter(pax => pax.userId == getUser.uid)
-//       console.log("paxTransactionList length || user total ", paxTransactionList.length, " || ", getUser?.rewardStatistics?.total);
-//       // check how many pax transactions are available
-//       if (paxTransactionList.length < getUser?.rewardStatistics?.total) {
-//         let remainingPaxCount: number = getUser?.rewardStatistics?.total - paxTransactionList.length;
-//         console.log("remainingPaxCounter : ", remainingPaxCount);
-//         for (let paxIndex = 0; paxIndex < remainingPaxCount; paxIndex++) {
-//           let newPax = await admin.firestore().collection('paxTransaction').add({ ...paxBody, userId: getUser.uid, timestamp: firestore.FieldValue.serverTimestamp() })
-//           console.log("userId : newPax : ", getUser?.uid, " || ", newPax.id);
-//         }
-//       }
-//     }
-//     return { message: "add pax successfully", userIds: finalUserList.map((user: any) => user.uid) }
-//   } catch (error) {
-//     return {
-//       error
-//     }
-//   }
-// })
+exports.addPaxInPendingKEY =functions.https.onCall(async (data: any) => {
+  try {
+    const paxList = [];
+    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax:any) => {
+      let paxData = pax.data()
+      let id = pax.id
+      return {...paxData,id}
+    });
+    console.log("getPaxTransactionList : ", getPaxTransactionList);
+    for (let index = 0; index < getPaxTransactionList.length; index++) {
+      let pax : any = getPaxTransactionList[index];
+      console.log("index - pax : ",index," - ",pax)
+      if ("status" in pax) {
+        console.log("status have",pax.id)
+      }else{
+        await admin.firestore().collection('paxTransaction').doc(pax.id).set({status : "PENDING"},{merge : true})
+        paxList.push(pax)
+      }
+    }
+    console.log("paxList : ", paxList)
+    return {
+      message : "pax status updated",
+      paxList
+    }
+  } catch (error) {
+    return {
+      message : "pax status is not updated",
+      error
+    }
+  }
+})
 
