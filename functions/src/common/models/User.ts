@@ -79,7 +79,7 @@ export async function sendEmailVerificationLink(email: string) {
     );
 
     // Construct the verification link with the JWT token
-    const verificationLink = `${env.BASE_SITE_URL}/verify?token=${token}`;
+    const verificationLink = `${env.BASE_SITE_URL}/user/verify?token=${token}`;
 
     // Send the verification email to the user
     // Implement your email sending logic here

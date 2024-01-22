@@ -21,3 +21,7 @@ export type adminUserProps = {
     webAppAccess: string[];
     action?: string;
   };
+
+  export interface JwtPayload {
+    id: string;
+  } 
