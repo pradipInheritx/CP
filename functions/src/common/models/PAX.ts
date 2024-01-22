@@ -3,6 +3,7 @@ import { firestore } from "firebase-admin";
 import { errorLogging } from "../helpers/commonFunction.helper"
 import { paxTransactionObj } from "../interfaces/Pax.interface";
 import * as constants from "../consts/payment.const.json";
+import { sendPaxPendingNotification } from "./SendCustomNotification";
 
 export const shouldHaveTransaction: (
   before: UserProps,
@@ -38,6 +39,7 @@ export enum PaxTransactionType {
 export const addPaxTransactionWithPendingStatus = async (paxTransactionData: any) => {
   const getParentPendingPaymentReference = await firestore().collection("paxTransaction").add({ ...paxTransactionData, timestamp: firestore.FieldValue.serverTimestamp(), status: "PENDING" });
   if (getParentPendingPaymentReference) {
+    await sendPaxPendingNotification(paxTransactionData.userId)
     return {
       status: true,
       result: getParentPendingPaymentReference
