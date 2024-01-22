@@ -102,6 +102,15 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 // Routers files
 import Routers from "./routes/index";
 
+
+// initialize the database
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  databaseURL:
+    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+});
+
+
 // initialize express server
 const app = express();
 const main = express();
@@ -203,11 +212,6 @@ app.get("/calculatePairCPVI", async (req, res) => {
 
 exports.api = functions.https.onRequest(main);
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
-});
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
