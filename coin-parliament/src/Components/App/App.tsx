@@ -131,6 +131,11 @@ export const HomeContainer = styled(Container)`
     props.width && props.width > 979 ? "233px" : undefined};
   margin-top: ${(props: { width?: number }) =>
     props.width && props.width > 979 ? "170px" : undefined};
+
+  @media (max-width: 768px) {
+    height: 100px;
+  }
+  
   & h2 {
     font-size: var(--font-size-xxxl);
     line-height: 29px;

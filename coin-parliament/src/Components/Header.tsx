@@ -95,6 +95,10 @@ export const HeaderCenterMob = styled.div`
   display: flex;
   justify-content:space-around;
   // align-items: center;
+
+  	@media(max-width: 768px) {
+		width:9rem
+	}
 `;
 export const MemberText = styled.span`
   text-transform: uppercase;
@@ -522,7 +526,8 @@ const Header = ({
 									className="d-flex"
 									style={{
 										position: "relative",
-										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
+										margin: '0 auto',
+										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "fit-content"}`,
 										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
 										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
 										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,

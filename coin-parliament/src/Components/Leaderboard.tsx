@@ -18,6 +18,15 @@ const LeadersContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+
+  @media(max-width: 768px) {
+    max-width: 729px;
+    width: 83%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+	}
 `;
 const Leaderboard = ({
   leaders,
