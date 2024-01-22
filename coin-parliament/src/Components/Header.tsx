@@ -18,8 +18,8 @@ import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
-import BigLogo from "../assets/svg/vporange.svg";
-import TextLogo from "../assets/svg/LogoText.svg"
+import BigLogo from "../assets/svg/vporange.png";
+import TextLogo from "../assets/svg/LogoText.png"
 // import BigLogo from "../assets/svg/logoiconx2.svg";
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
