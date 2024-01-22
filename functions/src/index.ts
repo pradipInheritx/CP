@@ -8,20 +8,25 @@ import cors from "cors";
 import { pullAll, union, uniq } from "lodash";
 import sgMail from "@sendgrid/mail";
 import { JWT } from "google-auth-library";
-// import * as jwt from 'jsonwebtoken'; // For JSON Web Token
+// import * as jwt from "jsonwebtoken"; // For JSON Web Token
 //import { firestore } from "firebase-admin";
 
 // Interfaces
-import { Colors, UserProps, UserTypeProps } from "./common/interfaces/User.interface"
-import { VoteResultProps } from "./common/interfaces/Vote.interface"
-import { Leader } from "./common/interfaces/Coin.interface"
+import {
+  Colors,
+  UserProps,
+  UserTypeProps,
+} from "./common/interfaces/User.interface";
+import { VoteResultProps } from "./common/interfaces/Vote.interface";
+import { Leader } from "./common/interfaces/Coin.interface";
 
-// function import 
-import "./common/models/scheduleFunction"
+// function import
+import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  userVerifiedLink
+  // sendEmailVerificationLink,
+  // verifyUserWithToken,
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
 
@@ -62,14 +67,14 @@ import {
   claimReward,
   addReward,
   cardHolderListing,
-  sendMintForPaxToAdmin,
-  sendMintForPaxToUser
+  // sendMintForPaxToAdmin,
+  // sendMintForPaxToUser
 } from "./common/models/Reward";
 import {
   cpviTaskCoin,
   cpviTaskPair,
   getCPVIForVote,
-  CPVIForCoin
+  CPVIForCoin,
   // getUniqCoins,
   // getUniqPairsBothCombinations,
 } from "./common/models/CPVI";
@@ -78,9 +83,10 @@ import {
   sendCustomNotificationOnSpecificUsers,
   checkUserStatusIn24hrs,
   checkInActivityOfVotesAndSendNotification,
-  sendNotificationForMintAddress
+  sendNotificationForMintAddress,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
+// import { JwtPayload } from "./common/interfaces/Admin.interface";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -94,7 +100,7 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // Routers files
-import Routers from "./routes/index"
+import Routers from "./routes/index";
 
 // initialize express server
 const app = express();
@@ -123,31 +129,85 @@ app.use("/admin/voteSetting", Routers.perUserVoteRouter);
 app.use("/admin/userTypeSettings", Routers.userTypeSettingsRouter);
 app.use("/admin/settings", Routers.voteAndSettingsRouter);
 app.use("/admin/RewardsDistribution", Routers.rewardsDistributionRouter);
-app.use("/admin/PushNotificationSetting", Routers.pushNotificationSettingRouter);
+app.use(
+  "/admin/PushNotificationSetting",
+  Routers.pushNotificationSettingRouter
+);
 app.use("/admin/FollowTable", Routers.FollowTableRouter);
 app.use("/admin/payments", Routers.adminPaymentRouter);
-app.use("/admin/foundation", Routers.foundationRouter)
+app.use("/admin/foundation", Routers.foundationRouter);
 app.use("/payment", Routers.paymentRouter);
 
 // global routers
-app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
+app.post(
+  "/generic/admin/uploadFiles/:forModule/:fileType/:id",
+  auth,
+  imageUploadFunction
+);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
-app.get("/user/verified", userVerifiedLink);
+// app.get("/user/verified", async (req: any, res: any) => {
+//   try {
+//     const { token } = req.query;
+//     const auth = admin.auth();
+//     if (!token) {
+//       return res.status(400).send({
+//         status: false,
+//         message: "Token is required",
+//         result: null,
+//       });
+//     }
 
+//     // Verify the JWT token
+//     const decodedToken: any = (await jwt.verify(
+//       token,
+//       env.JWT_AUTH_SECRET
+//     )) as JwtPayload;
 
-app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
-app.get("/calculatePairCPVI", async (req, res) => { await cpviTaskPair((result) => res.status(200).json(result)); });
+//     // Use the UID from the decoded token to verify the user in Firebase Authentication
+//     auth
+//       .updateUser(decodedToken.uid, { emailVerified: true })
+//       .then((userRecord) => {
+//         console.log("User successfully verified:", userRecord.toJSON());
+//         return res.status(200).send({
+//           status: true,
+//           message: "User verified successfully",
+//           result: userRecord.toJSON(),
+//         });
+//       });
+//     // .catch((error) => {
+//     //   console.error("Error verifying user:", error);
+//     //   return res.status(400).send({
+//     //     status: false,
+//     //     message: "Token is required",
+//     //     result: null,
+//     //   });
+//     // });
+//     return "verified done";
+//   } catch (error) {
+//     console.error("Error decoding or verifying token:", error);
+//     return res.status(400).send({
+//       status: false,
+//       message: "Something went wrong",
+//       error,
+//     });
+//   }
+// });
+
+app.get("/calculateCoinCPVI", async (req, res) => {
+  await cpviTaskCoin((result) => res.status(200).json(result));
+});
+app.get("/calculatePairCPVI", async (req, res) => {
+  await cpviTaskPair((result) => res.status(200).json(result));
+});
 //app.get("/user-verification-link", getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL:
+    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
 });
-
-
-
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
@@ -242,36 +302,63 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+// user's email verification link
+// exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
+//   const { email } = data;
+//   return await sendEmailVerificationLink(email);
+// });
 
+// exports.verifyUserWithToken = functions.https.onCall(async (data) => {
+//   const { token } = data;
+//   return await verifyUserWithToken(token);
+// });
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
-    const getAllUsers = (await admin.firestore().collection('users').get()).docs.map((user: any) => user.data());
+    const getAllUsers = (
+      await admin.firestore().collection("users").get()
+    ).docs.map((user: any) => user.data());
     console.log("getAllUsers length : ", getAllUsers.length);
-    if (!getAllUsers) return { message: "No users found" }
-    const getStatusQuery: any = (await admin.firestore().collection('settings').doc('userTypes').get()).data();
+    if (!getAllUsers) return { message: "No users found" };
+    const getStatusQuery: any = (
+      await admin.firestore().collection("settings").doc("userTypes").get()
+    ).data();
     const getStatusList = getStatusQuery.userTypes;
     for (let index = 0; index < getAllUsers.length; index++) {
-      if (typeof getAllUsers[index].status == 'string') {
-        let status = getStatusList.filter((level: any) => level?.name.toLowerCase() == getAllUsers[index]?.status?.toLowerCase());
+      if (typeof getAllUsers[index].status == "string") {
+        let status = getStatusList.filter(
+          (level: any) =>
+            level?.name.toLowerCase() ==
+            getAllUsers[index]?.status?.toLowerCase()
+        );
         console.log("status : ", status);
-        await admin.firestore().collection('users').doc(getAllUsers[index].uid).set({ "status": status[0] }, { merge: true })
-        console.log(`${getAllUsers[index].uid} is updated successfully`)
-      }
-      else if (Array.isArray(getAllUsers[index].status)) {
-        let status = getStatusList.filter((level: any) => level?.name.toLowerCase() == getAllUsers[index]?.status[0].name.toLowerCase());
+        await admin
+          .firestore()
+          .collection("users")
+          .doc(getAllUsers[index].uid)
+          .set({ status: status[0] }, { merge: true });
+        console.log(`${getAllUsers[index].uid} is updated successfully`);
+      } else if (Array.isArray(getAllUsers[index].status)) {
+        let status = getStatusList.filter(
+          (level: any) =>
+            level?.name.toLowerCase() ==
+            getAllUsers[index]?.status[0].name.toLowerCase()
+        );
         console.log("status : ", status);
-        await admin.firestore().collection('users').doc(getAllUsers[index].uid).set({ "status": status[0] }, { merge: true })
-        console.log(`${getAllUsers[index].uid} is updated successfully`)
+        await admin
+          .firestore()
+          .collection("users")
+          .doc(getAllUsers[index].uid)
+          .set({ status: status[0] }, { merge: true });
+        console.log(`${getAllUsers[index].uid} is updated successfully`);
       }
     }
-    return { message: "update operation complete" }
+    return { message: "update operation complete" };
   } catch (error) {
-    console.log("addNewKeysInCollection : error", error)
-    return { message: "something went wrong : ", error }
+    console.log("addNewKeysInCollection : error", error);
+    return { message: "something went wrong : ", error };
   }
 });
-
 
 exports.sendPassword = functions.https.onCall(async (data) => {
   const { password } = data as { password: string };
@@ -651,7 +738,6 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
-
     // const secret = 'your-secret-key';
     // const options = { expiresIn: '1h' };
 
@@ -665,7 +751,6 @@ exports.onUpdateUser = functions.firestore
     //   userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
     // );
     // console.info("Send Email Successfully");
-
 
     await addReward(snapshot.after.id, before, after);
 
@@ -758,7 +843,7 @@ exports.getCoinCurrentAndPastDataDifference = functions.pubsub
   .schedule("0 */6 * * *")
   // .schedule("*/5 * * * *")
   .onRun(async () => {
-    const timeDifference = 6
+    const timeDifference = 6;
     console.log("---Start getCoinCurrentAndPastDataDifference -------");
     await getCoinCurrentAndPastDataDifference(timeDifference);
     console.log("---End getCoinCurrentAndPastDataDifference -------");
@@ -883,7 +968,11 @@ exports.getRewardTransactions = functions.https.onCall(async (data) => {
 });
 
 exports.claimReward = functions.https.onCall(async (data) => {
-  const { uid, isVirtual } = data as { uid: string; isVirtual: boolean; paxDistributionToUser: any };
+  const { uid, isVirtual } = data as {
+    uid: string;
+    isVirtual: boolean;
+    paxDistributionToUser: any;
+  };
   const reward = await claimReward(uid, isVirtual);
   console.log("reward --->", reward);
   return reward;
@@ -895,7 +984,6 @@ exports.cardHolderListing = functions.https.onCall(async (data) => {
   console.log("userList --->", userList);
   return userList;
 });
-
 
 exports.getUpdatedDataFromWebsocket = functions.pubsub
   .schedule("every 10 minutes")
@@ -1135,72 +1223,96 @@ exports.sendEmail = functions.https.onCall(async () => {
   await sgMail.send(msg);
 });
 
-exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
-  const { paxDistributionToUser } = data;
-  console.log("paxDistributionToUser : ", paxDistributionToUser);
-  let getResultAfterSentPaxToUser: any;
-  let getResultAfterSentPaxToAdmin: any;
-  if (paxDistributionToUser.isUserUpgraded === true) {
-    // Call to user mintFor Address
-    getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
-    console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
-    const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToUser, timestamp: Date.now() });
-    return { id: addNewPax.id, getResultAfterSentPaxToUser }
-  }
-  if (paxDistributionToUser.isUserUpgraded === false) {
-    // Call to Admin mintFor Address
-    getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
-    console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
-    const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToAdmin, timestamp: Date.now() });
-    return { id: addNewPax.id }
-  }
-  return null
-});
+// exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
+//   const { paxDistributionToUser } = data;
+//   console.log("paxDistributionToUser : ", paxDistributionToUser);
+//   let getResultAfterSentPaxToUser: any;
+//   let getResultAfterSentPaxToAdmin: any;
+//   if (paxDistributionToUser.isUserUpgraded === true) {
+//     // Call to user mintFor Address
+//     getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
+//     console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
+//     const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToUser, timestamp: Date.now() });
+//     return { id: addNewPax.id, getResultAfterSentPaxToUser }
+//   }
+//   if (paxDistributionToUser.isUserUpgraded === false) {
+//     // Call to Admin mintFor Address
+//     getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
+//     console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
+//     const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToAdmin, timestamp: Date.now() });
+//     return { id: addNewPax.id }
+//   }
+//   return null
+// });
 
 exports.updatePAXValueToFoundation = functions.https.onCall(async (data) => {
   const { currentPaxValue } = data;
-  const collectionRef = admin.firestore().collection('foundations');
-  collectionRef.get()
-    .then(querySnapshot => {
+  const collectionRef = admin.firestore().collection("foundations");
+  collectionRef
+    .get()
+    .then((querySnapshot) => {
       const batch = admin.firestore().batch();
-      querySnapshot.forEach(doc => {
+      querySnapshot.forEach((doc) => {
         const docRef = collectionRef.doc(doc.id);
         batch.update(docRef, { currentPaxValue });
       });
       return batch.commit();
     })
     .then(() => {
-      console.log('Foundation batch update completed successfully.');
+      console.log("Foundation batch update completed successfully.");
     })
-    .catch(error => {
-      console.error('Error while updating batch documents: ', error);
+    .catch((error) => {
+      console.error("Error while updating batch documents: ", error);
     });
 });
 
 // send a notification to add mint-address in wellDaddress
-exports.sendNotificationForMintAddress = functions.https.onCall(async (data) => {
-  const user = await sendNotificationForMintAddress(data.userId);
-  return user;
-});
-
-exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data) => {
-  try {
-    const { userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress } = data;
-    console.info("Data", userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress);
-    await addPaxTransactionWithPendingStatus({ userId, currentPaxValue, isUserUpgraded, eligibleForMint, mintForUserAddress });
-    return {
-      status: true,
-      message: "Pending PAX stored successfully",
-      result: null,
-    };
-  } catch (error) {
-    return {
-      status: false,
-      message: "Error while store Pending PAX.",
-      result: error,
-    };
+exports.sendNotificationForMintAddress = functions.https.onCall(
+  async (data) => {
+    const user = await sendNotificationForMintAddress(data.userId);
+    return user;
   }
-});
+);
+
+exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
+  async (data) => {
+    try {
+      const {
+        userId,
+        currentPaxValue,
+        isUserUpgraded,
+        eligibleForMint,
+        mintForUserAddress,
+      } = data;
+      console.info(
+        "Data",
+        userId,
+        currentPaxValue,
+        isUserUpgraded,
+        eligibleForMint,
+        mintForUserAddress
+      );
+      await addPaxTransactionWithPendingStatus({
+        userId,
+        currentPaxValue,
+        isUserUpgraded,
+        eligibleForMint,
+        mintForUserAddress,
+      });
+      return {
+        status: true,
+        message: "Pending PAX stored successfully",
+        result: null,
+      };
+    } catch (error) {
+      return {
+        status: false,
+        message: "Error while store Pending PAX.",
+        result: error,
+      };
+    }
+  }
+);
 
 // exports.getPAXPendingAndCompletePax = functions.pubsub
 //   .schedule("*/5 * * * *")
@@ -1220,32 +1332,37 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(async (data)
 exports.addPaxInPendingKEY = functions.https.onCall(async (data: any) => {
   try {
     const paxList = [];
-    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => {
-      let paxData = pax.data()
-      let id = pax.id
-      return { ...paxData, id }
+    const getPaxTransactionList = (
+      await admin.firestore().collection("paxTransaction").get()
+    ).docs.map((pax: any) => {
+      let paxData = pax.data();
+      let id = pax.id;
+      return { ...paxData, id };
     });
     console.log("getPaxTransactionList : ", getPaxTransactionList);
     for (let index = 0; index < getPaxTransactionList.length; index++) {
       let pax: any = getPaxTransactionList[index];
-      console.log("index - pax : ", index, " - ", pax)
+      console.log("index - pax : ", index, " - ", pax);
       if ("status" in pax) {
-        console.log("status have", pax.id)
+        console.log("status have", pax.id);
       } else {
-        await admin.firestore().collection('paxTransaction').doc(pax.id).set({ status: "PENDING" }, { merge: true })
-        paxList.push(pax)
+        await admin
+          .firestore()
+          .collection("paxTransaction")
+          .doc(pax.id)
+          .set({ status: "PENDING" }, { merge: true });
+        paxList.push(pax);
       }
     }
-    console.log("paxList : ", paxList)
+    console.log("paxList : ", paxList);
     return {
       message: "pax status updated",
-      paxList
-    }
+      paxList,
+    };
   } catch (error) {
     return {
       message: "pax status is not updated",
-      error
-    }
+      error,
+    };
   }
-})
-
+});
