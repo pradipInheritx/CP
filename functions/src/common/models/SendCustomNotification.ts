@@ -3,6 +3,7 @@ import { firestore, messaging } from "firebase-admin";
 import { userConverter } from "./User";
 import { sendNotification } from "./Notification";
 import { upgradeMessage, downGradeMessage } from "../consts/config";
+import {errorLogging} from '../helpers/commonFunction.helper'
 import env from '../../env/env.json'
 
 
@@ -442,6 +443,7 @@ export const checkInActivityOfVotesAndSendNotification = async () => {
   }
 };
 
+// user don't have PAX Address
 export const sendNotificationForMintAddress = async (userId: string) => {
   try {
     if (!userId) {
@@ -543,11 +545,43 @@ export const sendRefferalNotification = async (userData: any) => {
     errorLogging("sendRefferalNotification", "Error", error);
   }
 }
-// Error Function
-export const errorLogging = async (
-  funcName: string,
-  type: string,
-  error: any
-) => {
-  console.info(funcName, type, error);
-};
+
+// Pax Pending notification
+export async function sendPaxPendingNotification(userId: string){
+try {
+  const userRef = await firestore().collection("users").doc(userId).get();
+  const user: any = userRef.data();
+  console.log("userId from sendNotificationForCpm : ", user)
+  const token = user.token;
+  if (!token) {
+    throw errorLogging("sendPaxPendingNotification","ERROR", "No token found from sendNotification");
+  }
+
+  const message: messaging.Message = {
+    token,
+    notification: {
+      title: "Pax pending",
+      body: "Your 50 pax is pending...",
+    },
+    webpush: {
+      headers: {
+        Urgency: "high",
+      },
+      fcmOptions: {
+        link: `${env.BASE_SITE_URL}/profile/wallet`,
+      },
+    },
+  };
+  console.log("notification link: ", `${env.BASE_SITE_URL}/profile/mine`);
+  console.log("Message:", message);
+  await sendNotification({
+    token,
+    message,
+    title: "Pax pending",
+    body: "Your 50 pax is pending...",
+    id: userId,
+  });
+} catch (error) {
+  return errorLogging("sendPaxPendingNotification","Error", error);
+}
+}
