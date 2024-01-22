@@ -21,7 +21,8 @@ import "./common/models/scheduleFunction"
 import {
   isAdmin,
   userConverter,
-  userVerifiedLink
+  sendEmailVerificationLink,
+  verifyUserWithToken
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
@@ -132,7 +133,7 @@ app.use("/payment", Routers.paymentRouter);
 // global routers
 app.post("/generic/admin/uploadFiles/:forModule/:fileType/:id", auth, imageUploadFunction);
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
-app.get("/user/verified", userVerifiedLink);
+app.get("/user/verified", verifyUserWithToken);
 
 
 app.get("/calculateCoinCPVI", async (req, res) => { await cpviTaskCoin((result) => res.status(200).json(result)); });
@@ -242,7 +243,16 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
+// user's email verification link
+exports.sendEmailVerificationLink = functions.https.onCall(async (data)=>{
+  const {email} = data;
+  return await sendEmailVerificationLink(email);
+})
 
+exports.verifyUserWithToken = functions.https.onCall(async (data)=>{
+  const {token} = data;
+  return await verifyUserWithToken(token)
+});
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
