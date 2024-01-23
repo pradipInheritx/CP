@@ -604,7 +604,8 @@ export const sendPaxToFoundation = async (foundationId: any) => {
     if (transaction.data) {
       const foundation: any = (await firestore().collection("foundations").doc(foundationId).get()).data();
       console.log("user : ", foundation?.id, " paxEarned : ", foundation?.paxEarned);
-      const paxEarned = foundation?.paxEarned + parseInt(getFoundation.currentPaxValue);
+      let paxEarned = foundation?.paxEarned || 0;
+      paxEarned = paxEarned + parseFloat(getFoundation.currentPaxValue);
       await firestore().collection("foundations").doc(foundation?.id).set({
         paxEarned,
       }, { merge: true });
