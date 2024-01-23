@@ -518,10 +518,16 @@ const Header = ({
                     {mounted ? title : ""}
                   </Title>
                 </div> */}
-                <Navbar.Brand as={Link} to='/' className="mr-1">
-                  <img src={BigLogo} alt=''width="70px" />
-                </Navbar.Brand>
-
+   
+                < div className="logo" style={{width:"5rem"}}>
+							<Navbar.Brand as={Link} to='/'
+									
+								className="ml-1"
+							>
+								<img src={BigLogo} alt='' width="80px" />
+							</Navbar.Brand>
+							
+						</div>
               </div>
             </div>
           )}
