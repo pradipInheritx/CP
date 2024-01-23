@@ -5,8 +5,7 @@ import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";
 import {
-  addPaxTransactionWithPendingStatus,
-
+  addPaxTransactionWithPendingStatus
 } from "../models/PAX";
 
 import axios from "axios";
@@ -581,25 +580,25 @@ export const sendPaxToFoundation = async (foundationId: any) => {
 
 
 
-    const transactionBodyForSmartContractOnUserFoundationMintFor: any = {
-      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
-      "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE, // Need to be check
-      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
-      "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
-      "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
-      "params": [
-        {
-          "_to": getFoundation.address, // This is the user pax address for PAX receive
-          "_amount": getFoundation.currentPaxValue ? getFoundation.currentPaxValue : 0,//paxDistributionToUser.currentPaxValue,
-          "_gas": parentConst.SMART_CONTRACT__GAS,
-        },
-      ],
-    };
-    console.info("transactionBodyForSmartContractOnUserFoundationMintFor", transactionBodyForSmartContractOnUserFoundationMintFor);
+    // const transactionBodyForSmartContractOnUserFoundationMintFor: any = {
+    //   "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
+    //   "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE, // Need to be check
+    //   "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
+    //   "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
+    //   "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
+    //   "params": [
+    //     {
+    //       "_to": getFoundation.address, // This is the user pax address for PAX receive
+    //       "_amount": getFoundation.currentPaxValue ? getFoundation.currentPaxValue : 0,//paxDistributionToUser.currentPaxValue,
+    //       "_gas": parentConst.SMART_CONTRACT__GAS,
+    //     },
+    //   ],
+    // };
+    //console.info("transactionBodyForSmartContractOnUserFoundationMintFor", transactionBodyForSmartContractOnUserFoundationMintFor);
 
     // const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnUserMintFor, options);
     const transaction = { data: true };
-    console.log("End smart contract payment function in admin", transaction);
+    console.log("End smart contract foundation function in admin", transaction);
 
     if (transaction.data) {
       const foundation: any = (await firestore().collection("foundations").doc(foundationId).get()).data();

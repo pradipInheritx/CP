@@ -3,9 +3,10 @@ import { VoteResultProps,TimeFrame } from "../interfaces/Vote.interface";
 import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import { errorLogging } from "../models/Calculation";
-import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
+// import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
+import { addPaxTransactionWithPendingStatus } from "./PAX";
 
 
 
@@ -123,7 +124,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, price, voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser,getSuccessAndScore.score) : "";
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser,getSuccessAndScore?.score) : "";
         console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore)
         return {
@@ -145,7 +146,7 @@ export const getResultAfterVote = async (requestBody: any) => {
         console.info("Get Price", price);
         const calc = new Calculation(vote, Number(price), voteId, userId, status);
         const getSuccessAndScore: any = await calc.calcOnlySuccess();
-        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser,getSuccessAndScore.score) : "";
+        const paxDistribution = paxDistributionToUser ? await getUserAndCalculatePax(paxDistributionToUser,getSuccessAndScore?.score) : "";
         console.log("paxDistribution : ", paxDistribution)
         console.info("getSuccessAndScore", getSuccessAndScore);
         return {
@@ -258,7 +259,7 @@ export const getUserAndCalculatePax = async (paxDetails: any,currentVoteCMP:numb
     }
     console.log("getUser currentVoteCMP,score and total : ",currentVoteCMP," || ", getUser?.voteStatistics?.score, " || ", getUser?.rewardStatistics?.total);
     const score = getUser?.voteStatistics?.score + currentVoteCMP
-    const checkCMP = score - ((getUser?.rewardStatistics?.total) * 100);
+    const checkCMP = score - (getUser?.rewardStatistics?.total * 100);
     console.log("score, checkCMP : ",score, " || ", checkCMP)
     console.log("99 < checkCMP && checkCMP < 200: ", 99 < checkCMP && checkCMP < 200)
 
@@ -267,13 +268,15 @@ export const getUserAndCalculatePax = async (paxDetails: any,currentVoteCMP:numb
       let getResultAfterSentPaxToAdmin: any;
       if (paxDetails.isUserUpgraded === true) {
         // Call to user mintFor Address
-        getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDetails)
+        // getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDetails)
+        await addPaxTransactionWithPendingStatus(paxDetails)
         console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
         return getResultAfterSentPaxToUser
       }
       if (paxDetails.isUserUpgraded === false) {
         // Call to Admin mintFor Address
-        getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDetails);
+        // getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDetails);
+        await addPaxTransactionWithPendingStatus(paxDetails)
         console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
         return getResultAfterSentPaxToAdmin
       }

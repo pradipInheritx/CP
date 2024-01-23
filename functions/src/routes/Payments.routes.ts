@@ -5,24 +5,27 @@ import {
     makePayment,
     isUserUpgraded,
     getTransactionHistory,
-    makePaymentToServer,
+    //makePaymentToServer,
     getParentPayment,
-    updateUserAfterPayment,
+    //updateUserAfterPayment,
     getInstantReferalAmount,
     callbackFromServer,
-    paymentStatusOnTransaction,
-    getAllPendingPaxByUser
+    //paymentStatusOnTransactionFromWellDApp,
+    paymentStatusOnUserFromCreditCard,
+    getAllPendingPaxByUser,
+    createPaymentOnTempTransactionOnCreditCard
 } from "../common/models/Payments";
 import { getPendingPaymentbyUserId } from "../common/models/Admin/payments"
 
 const paymentRouter = Router();
 
 paymentRouter.post("/makePayment", makePayment);
-paymentRouter.post("/makePayment/toServer", makePaymentToServer);
+//paymentRouter.post("/makePayment/toServer", makePaymentToServer);
 paymentRouter.post("/makePayment/callback/fromServer", callbackFromServer);
-paymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
-paymentRouter.post("/update/paymentStatusOnTransaction/:transactionId", paymentStatusOnTransaction);
-
+//paymentRouter.post("/update/user/afterVote", updateUserAfterPayment);
+//paymentRouter.post("/update/paymentStatusOnTransaction/:transactionId", paymentStatusOnTransactionFromWellDApp);
+paymentRouter.post("/update/paymentStatusOnTransaction/fromUser/onCreditCard", paymentStatusOnUserFromCreditCard);
+paymentRouter.post("/make/createTempPaymentTransaction/onCreditCard", createPaymentOnTempTransactionOnCreditCard);
 paymentRouter.get("/isUserUpgraded/:userId", isUserUpgraded);
 paymentRouter.get("/getTransactionHistory/:userId", getTransactionHistory);
 paymentRouter.get("/getAdminPayment/:userId", auth, getParentPayment);

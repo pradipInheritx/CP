@@ -1,116 +1,156 @@
 import { firestore } from "firebase-admin";
-import fetch from "node-fetch";
+//import fetch from "node-fetch";
 import { log } from "firebase-functions/logger";
 import {
-  isParentExistAndGetReferalAmount,
+  //isParentExistAndGetReferalAmount,
   callSmartContractPaymentFunction,
 } from "./PaymentCalculation";
 import * as parentConst from "../consts/payment.const.json";
 import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
 import { getAllPendingPaxByUserId } from "./PAX";
 
-
-
-export const makePaymentToServer = async (req: any, res: any) => {
-  try {
-    console.info("req.body", typeof req.body, req.body);
-    const { userEmail, amount, network, originCurrency, token } = req.body;
-    const requestBody = {
-      method: parentConst.PAYMENT_METHOD,
-      callback_secret: "RPU8UNHhsyEV69yTUA0kBHieIouvxcuV",
-      callback_url: "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/payment/makePayment/callback/fromServer",
-      params: {
-        amount: parseFloat(amount),
-        network: network, // parentConst.PAYMENT_NETWORK,
-        origincurrency: originCurrency, //parentConst.PAYMENT_ORIGIN_CURRENCY,
-        token: token, // parentConst.PAYMENT_TOKEN,
-      },
-      user: userEmail,
-    };
-    console.info("RequestBody", requestBody);
-    fetch("https://console.dev.welldapp.io/api/transactions", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoid3d3LmNvaW5wYXJsaWFtZW50LmNvbSIsImF1ZCI6WyJHUk9VUFMiLCJBUFBMSUNBVElPTlMiLCJBVVRIIiwiV0VCMyJdLCJleHAiOjIwMTg2MjkyNjF9.xP0u9ndNG1xNS87utQb8a-RNuxkt3_Z1lzojfzaOMGc` //Coin Parliament Prod Token
-        //"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ", // Previously Used
-      },
-      body: JSON.stringify(requestBody),
-    })
-      .then((res) => {
-        if (res.ok) {
-          console.info(res.ok, "Response After WellDApp", res);
-          return res.json();
-        } else {
-          throw Error(`code ${res.status}`);
-        }
-      })
-      .then(async (data) => {
-        log("Payment response data : ", data);
-        res.json(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        res.status(400).send(err);
-      });
-  } catch (error: any) {
-    console.info("Error while make payment to welld app server", error);
-  }
-};
+// export const makePaymentToServer = async (req: any, res: any) => {
+//   try {
+//     console.info("req.body", typeof req.body, req.body);
+//     const { userEmail, amount, network, originCurrency, token } = req.body;
+//     const requestBody = {
+//       method: parentConst.PAYMENT_METHOD,
+//       callback_secret: "RPU8UNHhsyEV69yTUA0kBHieIouvxcuV",
+//       callback_url: "https://us-central1-coin-parliament-staging.cloudfunctions.net/api/v1/payment/makePayment/callback/fromServer",
+//       params: {
+//         amount: parseFloat(amount),
+//         network: network, // parentConst.PAYMENT_NETWORK,
+//         origincurrency: originCurrency, //parentConst.PAYMENT_ORIGIN_CURRENCY,
+//         token: token, // parentConst.PAYMENT_TOKEN,
+//       },
+//       user: userEmail,
+//     };
+//     console.info("RequestBody", requestBody);
+//     fetch("https://console.dev.welldapp.io/api/transactions", {
+//       method: "POST",
+//       headers: {
+//         "content-type": "application/json",
+//         authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoid3d3LmNvaW5wYXJsaWFtZW50LmNvbSIsImF1ZCI6WyJHUk9VUFMiLCJBUFBMSUNBVElPTlMiLCJBVVRIIiwiV0VCMyJdLCJleHAiOjIwMTg2MjkyNjF9.xP0u9ndNG1xNS87utQb8a-RNuxkt3_Z1lzojfzaOMGc` //Coin Parliament Prod Token
+//         //"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjIsImlzcyI6IldFTExEQVBQIiwic3ViIjoiYXBwMS5hcHAiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMjk4MjE5MzE2fQ.XzOIhftGzwPC5F0T-xbnpWJnY5xSTmpE36648pPQwUQ", // Previously Used
+//       },
+//       body: JSON.stringify(requestBody),
+//     })
+//       .then((res) => {
+//         if (res.ok) {
+//           console.info(res.ok, "Response After WellDApp", res);
+//           return res.json();
+//         } else {
+//           throw Error(`code ${res.status}`);
+//         }
+//       })
+//       .then(async (data) => {
+//         log("Payment response data : ", data);
+//         res.json(data);
+//       })
+//       .catch((err) => {
+//         console.error(err);
+//         res.status(400).send(err);
+//       });
+//   } catch (error: any) {
+//     console.info("Error while make payment to welld app server", error);
+//   }
+// };
 
 export const callbackFromServer = async (req: any, res: any) => {
   try {
     console.info("req.body", typeof req.body, req.body);
-    await firestore()
-      .collection("callbackHistory").add({ ...req.body, timestamp: firestore.FieldValue.serverTimestamp() })
-    res.status(200).send({
-      status: true,
-      message: "Transaction logged in DB on transaction details",
-      data: [],
-    });
+    if (req.body.order_buyer) {
+      if (req.body.order_status !== "Open") {
+        await firestore()
+          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+
+        const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
+          .where("timestamp", "==", req.body.p2)
+          .get();
+
+        const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
+          return tempPaymentTransaction.data();
+        });
+
+        console.info("getTempCrediCardData", getTempCrediCardData[0])
+        let requestBody: any;
+        if (getTempCrediCardData.length && getTempCrediCardData[0]) {
+          let userId = req.body && req.body.p1 ? req.body.p1 : "";
+          requestBody = { userId, userEmail: req.body.order_buyer, walletType: "CREDITCARD", amount: req.body.order_famount, orderFee: req.body.order_fee, network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
+        } else {
+          requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
+        }
+
+        const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
+        console.info("getResponseFromCreditCard", getResponseFromCreditCard);
+
+        res.status(200).send({
+          status: true,
+          message: "Transaction logged in DB and transaction made successfully",
+          data: [],
+        });
+
+      }
+      await firestore()
+        .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+      res.status(200).send({
+        status: true,
+        message: "Transaction logged in DB on transaction details",
+        data: [],
+      });
+    } else {
+      await firestore()
+        .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.FieldValue.serverTimestamp() });
+      res.status(200).send({
+        status: true,
+        message: "Transaction logged in DB on transaction details",
+        data: [],
+      });
+    }
+    // Assuming there's only one user with the given email (unique constraint)
   } catch (error: any) {
     console.info("Error while call callback URL payment to welld app server", error);
   }
 };
 
-export const updateUserAfterPayment = async (req: any, res: any) => {
-  console.info("get request body", req.body);
-  const {
-    userId,
-    walletType,
-    userEmail,
-    amount,
-    network,
-    origincurrency,
-    token,
-    transactionType,
-    numberOfVotes,
-    paymentDetails,
-  } = req.body;
-  await storeInDBOfPayment({
-    userId,
-    userEmail,
-    walletType,
-    amount,
-    network,
-    origincurrency,
-    token,
-    transactionType,
-    numberOfVotes,
-    paymentDetails,
+// export const updateUserAfterPayment = async (req: any, res: any) => {
+//   console.info("get request body", req.body);
+//   const {
+//     userId,
+//     walletType,
+//     userEmail,
+//     amount,
+//     network,
+//     origincurrency,
+//     token,
+//     transactionType,
+//     numberOfVotes,
+//     paymentDetails,
+//   } = req.body;
+//   await storeInDBOfPayment({
+//     userId,
+//     userEmail,
+//     walletType,
+//     amount,
+//     network,
+//     origincurrency,
+//     token,
+//     transactionType,
+//     numberOfVotes,
+//     paymentDetails,
 
-  });
-  console.log("start parent payment");
-  const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
-    req.body
-  );
-  console.info("getResponseAfterParentPayment", getResponseAfterParentPayment);
-  res.status(200).send({
-    status: true,
-    message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
-    data: req.body,
-  });
-};
+//   });
+//   console.log("start parent payment");
+//   const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
+//     req.body
+//   );
+//   console.info("getResponseAfterParentPayment", getResponseAfterParentPayment);
+//   res.status(200).send({
+//     status: true,
+//     message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
+//     data: req.body,
+//   });
+// };
 
 export const makePayment = async (req: any, res: any) => {
   const {
@@ -220,6 +260,7 @@ export const addIsExtraVotePurchase = async (metaData: any) => {
       errorLogging("isUserExtraVote", "ERROR", error);
     });
 };
+
 export const addIsUpgradedValue = async (userId: string) => {
   const getUserDetails: any = (
     await firestore().collection("users").doc(userId).get()
@@ -470,6 +511,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
     });
   }
 };
+
 export const getTransactionHistory = async (req: any, res: any) => {
   try {
     const { userId } = req.params;
@@ -537,27 +579,35 @@ export const getTransactionHistory = async (req: any, res: any) => {
   }
 };
 
-
-export const paymentStatusOnTransaction = async (req: any, res: any) => {
+export const paymentStatusOnUserFromCreditCard = async (req: any, res: any) => {
   try {
-    const { transactionId } = req.params;
-    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
+    const getResponseFromCreditCardUpdate: any = await paymentStatusOnUserFromCreditCardFunction(req.body)
+    res.status(getResponseFromCreditCardUpdate.statusCode).send(getResponseFromCreditCardUpdate);
+  } catch (error: any) {
+    res.status(500).send({
+      status: true,
+      message: "Error",
+      error
+    });
+  }
+}
+
+export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any) => {
+  try {
+    const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = requestBody;
     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
-    const getTransaction: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.transaction_id === transactionId);
-
-    console.log("getTransaction : ", getTransaction);
-
-    if (!getTransaction) {
-      res.status(404).send({
+    const getTransactionFromCreditCard: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.p1 === userId);
+    console.log("getTransactionFromCreditCard : ", getTransactionFromCreditCard);
+    if (!getTransactionFromCreditCard) {
+      return {
+        statusCode: 404,
         status: false,
-        message: parentConst.TRANSACTION_NOT_FOUND,
+        message: parentConst.CREDITCARD_TRANSACTION_NOT_FOUND,
         result: "",
-      });
+      }
     }
 
-    console.info("getTransaction In API", getTransaction)
-
-    if (getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_APPROVED || getTransaction[0].callbackDetails.event == parentConst.PAYMENT_EVENT_CONFIRMED) {
+    if (getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_APPROVED || getTransactionFromCreditCard[0].callbackDetails.event == parentConst.CREDITCARD_PAYMENT_EVENT_COMPLETED) {
       if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
         await addIsExtraVotePurchase({
           userId,
@@ -576,10 +626,10 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
         await addIsUpgradedValue(userId)
       }
     }
-    await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
+    await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).set({
       paymentDetails
-        : getTransaction[0].callbackDetails.data,
-      event: getTransaction[0].callbackDetails.event,
+        : getTransactionFromCreditCard[0].callbackDetails.data,
+      event: getTransactionFromCreditCard[0].callbackDetails.event,
       userId,
       userEmail,
       walletType,
@@ -592,29 +642,131 @@ export const paymentStatusOnTransaction = async (req: any, res: any) => {
       initiated
     }, { merge: true });
 
-    const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
+    const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).get()).data();
 
     //TODO Get the data and store in payment collection 
-    const addNewPayment = await firestore().collection('payments').add(getUpdatedData);
+    const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: firestore.FieldValue.serverTimestamp() });
 
     if (addNewPayment.id) {
-      firestore().collection("callbackHistory").doc(getTransaction[0].id).delete().then(() => {
-        console.log(`${getTransaction[0].id} Document successfully deleted from callbackHistory!`)
+      firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[0].id).delete().then(() => {
+        console.log(`${getTransactionFromCreditCard[0].id} Document successfully deleted from callbackHistory!`)
       }).catch((error) => {
-        console.log(`${getTransaction[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+        console.log(`${getTransactionFromCreditCard[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
       });
     };
 
-    res.status(200).send({
+    return {
+      statusCode: 200,
       status: true,
       message: parentConst.PAYMENT_UPDATE_SUCCESS,
       getUpdatedData
+    }
+  } catch (error: any) {
+    return {
+      statusCode: 500,
+      status: true,
+      message: "Error",
+      error
+    }
+  }
+}
+
+// export const paymentStatusOnTransactionFromWellDApp = async (req: any, res: any) => {
+//   try {
+//     const { transactionId } = req.params;
+//     const { userId, userEmail, walletType, amount, network, origincurrency, token, transactionType, numberOfVotes, initiated } = req.body;
+//     const getAllTransactions = (await firestore().collection("callbackHistory").get()).docs.map((transaction) => { return { callbackDetails: transaction.data(), id: transaction.id } });
+//     const getTransaction: any = getAllTransactions.filter((transaction: any) => transaction.callbackDetails.data.transaction_id === transactionId);
+
+//     console.log("getTransaction : ", getTransaction);
+
+//     if (!getTransaction) {
+//       res.status(404).send({
+//         status: false,
+//         message: parentConst.WELLDAPP_TRANSACTION_NOT_FOUND,
+//         result: "",
+//       });
+//     }
+
+//     console.info("getTransaction In API", getTransaction)
+
+//     if (getTransaction[0].callbackDetails.event == parentConst.WELLDAPP_PAYMENT_EVENT_APPROVED || getTransaction[0].callbackDetails.event == parentConst.WELLDAPP_PAYMENT_EVENT_CONFIRMED) {
+//       if (transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+//         await addIsExtraVotePurchase({
+//           userId,
+//           userEmail,
+//           walletType,
+//           amount,
+//           network,
+//           origincurrency,
+//           token,
+//           transactionType,
+//           numberOfVotes,
+//           initiated
+//         });
+//       }
+//       if (transactionType === parentConst.TRANSACTION_TYPE_UPGRADE) {
+//         await addIsUpgradedValue(userId)
+//       }
+//     }
+//     await firestore().collection("callbackHistory").doc(getTransaction[0].id).set({
+//       paymentDetails
+//         : getTransaction[0].callbackDetails.data,
+//       event: getTransaction[0].callbackDetails.event,
+//       userId,
+//       userEmail,
+//       walletType,
+//       amount,
+//       network,
+//       origincurrency,
+//       token,
+//       transactionType,
+//       numberOfVotes,
+//       initiated
+//     }, { merge: true });
+
+//     const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransaction[0].id).get()).data();
+
+//     //TODO Get the data and store in payment collection 
+//     const addNewPayment = await firestore().collection('payments').add(getUpdatedData);
+
+//     if (addNewPayment.id) {
+//       firestore().collection("callbackHistory").doc(getTransaction[0].id).delete().then(() => {
+//         console.log(`${getTransaction[0].id} Document successfully deleted from callbackHistory!`)
+//       }).catch((error) => {
+//         console.log(`${getTransaction[0].id} Document is not deleted from callbackHistory! \n Error: ${error}`);
+//       });
+//     };
+
+//     res.status(200).send({
+//       status: true,
+//       message: parentConst.PAYMENT_UPDATE_SUCCESS,
+//       getUpdatedData
+//     });
+//   } catch (error) {
+//     errorLogging("paymentStatusOnTransaction", "ERROR", error);
+//     res.status(500).send({
+//       status: false,
+//       message: parentConst.MESSAGE_SOMETHINGS_WRONG,
+//       result: error,
+//     });
+//   }
+// }
+
+export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: any) => {
+  try {
+    await firestore()
+      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
+
+    res.status(200).send({
+      status: true,
+      message: "Temp payment transaction created successfully",
+      result: "",
     });
   } catch (error) {
-    errorLogging("paymentStatusOnTransaction", "ERROR", error);
     res.status(500).send({
       status: false,
-      message: parentConst.MESSAGE_SOMETHINGS_WRONG,
+      message: "Something went wrong",
       result: error,
     });
   }
@@ -639,6 +791,7 @@ export const getAllPendingPaxByUser = async (req: any, res: any) => {
     });
   }
 }
+
 export const errorLogging = async (
   funcName: string,
   type: string,
