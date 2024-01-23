@@ -100,8 +100,8 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // import sendGrid Email function and templates 
-import {sendEmail} from "./common/services/emailServices"
-import  {userVerifyEmailTemplate} from "./common/emailTemplates/userVerifyEmailTemplate";
+import { sendEmail } from "./common/services/emailServices"
+import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 
 // Routers files
 import Routers from "./routes/index";
@@ -161,7 +161,7 @@ app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
 app.get("/user/verified", async (req: any, res: any) => {
   try {
     const { token } = req.query;
-    console.log("user verification Token : ",token)
+    console.log("user verification Token : ", token)
     const auth = admin.auth();
     if (!token) {
       return res.status(400).send({
@@ -179,7 +179,7 @@ app.get("/user/verified", async (req: any, res: any) => {
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
-    console.log("decodedToken.uid : ",decodedToken.uid)
+    console.log("decodedToken.uid : ", decodedToken.uid)
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
       .then((userRecord) => {
@@ -268,13 +268,13 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     // Construct the verification link with the JWT token
     const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
 
-    if(email && verificationLink){
+    if (email && verificationLink) {
       await sendEmail(
-          email,
-          "Verify Your Account",
-          userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
-        );
-        console.info("Send Email Successfully");
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
     }
 
     console.log("Verification link:", verificationLink);
