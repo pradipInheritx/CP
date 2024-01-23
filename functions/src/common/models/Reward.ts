@@ -545,7 +545,8 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
     if (transaction.data) {
       const user: any = (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
       console.log("user : ", user?.uid, " paxEarned : ", user?.paxEarned);
-      const paxEarned = user?.paxEarned + paxDistributionToUser.currentPaxValue;
+      let paxEarned :number = user?.paxEarned || 0;
+      paxEarned = paxEarned + paxDistributionToUser.currentPaxValue;
       await firestore().collection("users").doc(paxDistributionToUser.userId).set({
         paxEarned,
       }, { merge: true });
