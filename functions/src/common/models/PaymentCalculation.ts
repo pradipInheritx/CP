@@ -30,17 +30,18 @@ export const paymentFunction = async (transactionBody: PaymentBody): Promise<{
 } | undefined> => {
     try {
         console.info("transactionBody", transactionBody);
-        const options = {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M",
-            },
-        }; // This token is from Yaniv Account Side
+        // const options = {
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6InZvdGV0b2Vhcm4iLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.0JYa8ZLdfdtC78-DJSy91m3KqTPX9PrGMAD0rtma0_M",
+        //     },
+        // }; // This token is from Yaniv Account Side
 
-        const transaction = await axios.post("https://console.dev.welldapp.io/api/transactions", transactionBody, options);
+        // const transaction = await axios.post("https://console.dev.welldapp.io/api/transactions", transactionBody, options);
 
-        console.info("payment transaction : ", transaction.data);
+        // console.info("payment transaction : ", transaction.data);
 
+        const transaction = { data: true }
         return { status: true, result: transaction.data };
     } catch (error) {
         console.error("ERROR paymentFunction : ", error);
@@ -54,41 +55,42 @@ export const callSmartContractPaymentFunction = async (transactionBody: SmartCon
     try {
         console.log("Start smart contract payment function");
         console.log("transactionBody : ", transactionBody);
-        const options = {
-            headers: {
-                "Content-Type": "application/json",
-                // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE' // Previously Used
-                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdldm90ZXRvZWFybi5uZXQiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDE4NjI5MjYxfQ.EDko4JEjhBoAMZkly_QavXOreLhEs4ib2PaD3hg7ZCU", // For Smart Contract Prod VoteToEarn
-            },
-        };
+        // const options = {
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjEzLCJpc3MiOiJXRUxMREFQUCIsInN1YiI6Im1hbmFnZS52MmUiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDIyNTkwODI1fQ.ae0mlVsGYN6cURolHv0veNaKtBIBsFokWgbLyvMd_OE' // Previously Used
+        //         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdldm90ZXRvZWFybi5uZXQiLCJhdWQiOlsiR1JPVVBTIiwiQVBQTElDQVRJT05TIiwiQVVUSCIsIldFQjMiXSwiZXhwIjoyMDE4NjI5MjYxfQ.EDko4JEjhBoAMZkly_QavXOreLhEs4ib2PaD3hg7ZCU", // For Smart Contract Prod VoteToEarn
+        //     },
+        // };
 
 
         const currentGasPriceEther = await isGasPriceCalculationOnCoin(transactionBody.network);
 
         console.log("Current Gas Price (wei):", typeof currentGasPriceEther, parseFloat(currentGasPriceEther));
 
-        transactionBody.amount = transactionBody.amount - parseFloat(currentGasPriceEther);
-        console.info("transactionBody.amount", transactionBody.amount);
+        // transactionBody.amount = transactionBody.amount - parseFloat(currentGasPriceEther);
+        // console.info("transactionBody.amount", transactionBody.amount);
 
-        const transactionBodyForSmartContract: any = {
-            "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
-            "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
-            "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
-            "method": parentConst.SMART_CONTRACT_METHOD,
-            "network": transactionBody.network, //etherium, binance, matic
-            "params": [
-                {
-                    "_to": transactionBody.address,
-                    "_amount": transactionBody.amount,
-                    "_gas": parseFloat(currentGasPriceEther), // parentConst.SMART_CONTRACT__GAS
-                },
+        // const transactionBodyForSmartContract: any = {
+        //     "abi": parentConst.SMART_CONTRACT_ABI_ARRAY,
+        //     "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS,
+        //     "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT,
+        //     "method": parentConst.SMART_CONTRACT_METHOD,
+        //     "network": transactionBody.network, //etherium, binance, matic
+        //     "params": [
+        //         {
+        //             "_to": transactionBody.address,
+        //             "_amount": transactionBody.amount,
+        //             "_gas": parseFloat(currentGasPriceEther), // parentConst.SMART_CONTRACT__GAS
+        //         },
 
-            ],
-        };
-        console.info("transactionBodyForSmartContract", transactionBodyForSmartContract);
+        //     ],
+        // };
+        // console.info("transactionBodyForSmartContract", transactionBodyForSmartContract);
 
-        const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContract, options);
+        // const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContract, options);
 
+        const transaction = { data: true }
         console.log("End smart contract payment function", transaction);
 
         return { status: true, result: transaction.data };
