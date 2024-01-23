@@ -8,8 +8,8 @@ import {
   addPaxTransactionWithPendingStatus
 } from "../models/PAX";
 
-import axios from "axios";
-import * as parentConst from "../consts/payment.const.json";
+// import axios from "axios";
+// import * as parentConst from "../consts/payment.const.json";
 import { sendCPMToFoundationOfUser } from "./Admin/Foundation";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
@@ -463,31 +463,31 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
 
     console.log("Start Smart Contract Function For Admin Mint For");
 
-    const options = {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdlLnBheGJlcDIwIiwiYXVkIjpbIkdST1VQUyIsIkFQUExJQ0FUSU9OUyIsIkFVVEgiLCJXRUIzIl0sImV4cCI6MjA1MDI1MTY2MX0.2WUhJ_lwgWaBB3lI7dYaLoZGJCBeOQZkV5TgDy0BLVI", // For Smart Contract Prod VoteToEarn
-      },
-    };
+    // const options = {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdlLnBheGJlcDIwIiwiYXVkIjpbIkdST1VQUyIsIkFQUExJQ0FUSU9OUyIsIkFVVEgiLCJXRUIzIl0sImV4cCI6MjA1MDI1MTY2MX0.2WUhJ_lwgWaBB3lI7dYaLoZGJCBeOQZkV5TgDy0BLVI", // For Smart Contract Prod VoteToEarn
+    //   },
+    // };
 
-    const transactionBodyForSmartContractOnAdminMintFor: any = {
-      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
-      "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
-      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
-      "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
-      "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
-      "params": [
-        {
-          "_to": parentConst.SMART_CONTRACT_ADMIN_ADRESS_FOR_MINT, // This is the admin address for PAX receive //paxDistributionToUser.mintForUserAddress,
-          "_amount": paxDistributionToUser.currentPaxValue,
-          "_gas": parentConst.SMART_CONTRACT__GAS,
-        },
-      ],
-    };
-    console.info("transactionBodyForSmartContractOnAdminMintFor", transactionBodyForSmartContractOnAdminMintFor);
+    // const transactionBodyForSmartContractOnAdminMintFor: any = {
+    //   "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
+    //   "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
+    //   "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
+    //   "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
+    //   "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
+    //   "params": [
+    //     {
+    //       "_to": parentConst.SMART_CONTRACT_ADMIN_ADRESS_FOR_MINT, // This is the admin address for PAX receive //paxDistributionToUser.mintForUserAddress,
+    //       "_amount": paxDistributionToUser.currentPaxValue,
+    //       "_gas": parentConst.SMART_CONTRACT__GAS,
+    //     },
+    //   ],
+    // };
+    // console.info("transactionBodyForSmartContractOnAdminMintFor", transactionBodyForSmartContractOnAdminMintFor);
 
-    const transaction = await axios.post("https://console.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
-
+    // const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
+    const transaction = { data: true };
     if (transaction.data) {
       // paxDistributionToUser.userId
     }
@@ -515,37 +515,38 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
       };
     }
 
-    const options = {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdlLnBheGJlcDIwIiwiYXVkIjpbIkdST1VQUyIsIkFQUExJQ0FUSU9OUyIsIkFVVEgiLCJXRUIzIl0sImV4cCI6MjA1MDI1MTY2MX0.2WUhJ_lwgWaBB3lI7dYaLoZGJCBeOQZkV5TgDy0BLVI", // For Smart Contract Prod VoteToEarn
-      },
-    };
+    // const options = {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlX2lkIjowLCJvcmdfaWQiOjUsImlzcyI6IldFTExEQVBQIiwic3ViIjoibWFuYWdlLnBheGJlcDIwIiwiYXVkIjpbIkdST1VQUyIsIkFQUExJQ0FUSU9OUyIsIkFVVEgiLCJXRUIzIl0sImV4cCI6MjA1MDI1MTY2MX0.2WUhJ_lwgWaBB3lI7dYaLoZGJCBeOQZkV5TgDy0BLVI", // For Smart Contract Prod VoteToEarn
+    //   },
+    // };
 
-    const transactionBodyForSmartContractOnUserMintFor: any = {
-      "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
-      "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
-      "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
-      "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
-      "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
-      "params": [
-        {
-          "_to": paxDistributionToUser.mintForUserAddress, // This is the user pax address for PAX receive
-          "_amount": paxDistributionToUser.currentPaxValue,
-          "_gas": parentConst.SMART_CONTRACT__GAS,
-        },
-      ],
-    };
-    console.info("transactionBodyForSmartContractOnUserMintFor", transactionBodyForSmartContractOnUserMintFor);
+    // const transactionBodyForSmartContractOnUserMintFor: any = {
+    //   "abi": parentConst.SMART_CONTRACT_ABI_ARRAY_FOR_MINT,
+    //   "address": parentConst.SMART_CONTRACT_ADMIN_ADRESS_LIVE,
+    //   "gas_limit": parentConst.SMART_CONTRACT_GAS_LIMIT_FOR_MINT,
+    //   "method": parentConst.SMART_CONTRACT_METHOD_MINT_FOR,
+    //   "network": parentConst.PAYMENT_BNB_MINT_FOR_NETWORK_NAME,
+    //   "params": [
+    //     {
+    //       "_to": paxDistributionToUser.mintForUserAddress, // This is the user pax address for PAX receive
+    //       "_amount": paxDistributionToUser.currentPaxValue,
+    //       "_gas": parentConst.SMART_CONTRACT__GAS,
+    //     },
+    //   ],
+    // };
+    // console.info("transactionBodyForSmartContractOnUserMintFor", transactionBodyForSmartContractOnUserMintFor);
 
-    const transaction = await axios.post("https://console.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnUserMintFor, options);
+    // const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnUserMintFor, options);
 
-    console.log("End smart contract payment function in admin", transaction);
-
+    // console.log("End smart contract payment function in admin", transaction);
+    const transaction = { data: true };
     if (transaction.data) {
       const user: any = (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
       console.log("user : ", user?.uid, " paxEarned : ", user?.paxEarned);
-      const paxEarned = user?.paxEarned + paxDistributionToUser.currentPaxValue;
+      let paxEarned: number = user?.paxEarned || 0;
+      paxEarned = paxEarned + paxDistributionToUser.currentPaxValue;
       await firestore().collection("users").doc(paxDistributionToUser.userId).set({
         paxEarned,
       }, { merge: true });
@@ -603,7 +604,8 @@ export const sendPaxToFoundation = async (foundationId: any) => {
     if (transaction.data) {
       const foundation: any = (await firestore().collection("foundations").doc(foundationId).get()).data();
       console.log("user : ", foundation?.id, " paxEarned : ", foundation?.paxEarned);
-      const paxEarned = foundation?.paxEarned + parseInt(getFoundation.currentPaxValue);
+      let paxEarned = foundation?.paxEarned || 0;
+      paxEarned = paxEarned + parseFloat(getFoundation.currentPaxValue);
       await firestore().collection("foundations").doc(foundation?.id).set({
         paxEarned,
       }, { merge: true });
