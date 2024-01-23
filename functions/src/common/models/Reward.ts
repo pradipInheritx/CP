@@ -8,8 +8,8 @@ import {
   addPaxTransactionWithPendingStatus
 } from "../models/PAX";
 
-import axios from "axios";
-import * as parentConst from "../consts/payment.const.json";
+// import axios from "axios";
+// import * as parentConst from "../consts/payment.const.json";
 import { sendCPMToFoundationOfUser } from "./Admin/Foundation";
 // import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
