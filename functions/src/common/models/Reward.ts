@@ -485,11 +485,17 @@ export const sendMintForPaxToAdmin = async (paxDistributionToUser: any) => {
     // console.info("transactionBodyForSmartContractOnAdminMintFor", transactionBodyForSmartContractOnAdminMintFor);
 
     // const transaction = await axios.post("https://console.dev.welldapp.io/api/callSmartContract", transactionBodyForSmartContractOnAdminMintFor, options);
+    
     const transaction = { data: true };
     if (transaction.data) {
-      // paxDistributionToUser.userId
+      const user: any = (await firestore().collection("users").doc(paxDistributionToUser.userId).get()).data();
+      console.log("user : ", user?.uid, " paxEarned : ", user?.paxEarned);
+      let paxEarned: number = user?.paxEarned || 0;
+      paxEarned = paxEarned + paxDistributionToUser.currentPaxValue;
+      await firestore().collection("users").doc(paxDistributionToUser.userId).set({
+        paxEarned,
+      }, { merge: true });
     }
-
     console.log("End smart contract payment function in admin", transaction);
 
     return { status: true, result: transaction.data };
