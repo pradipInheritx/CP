@@ -520,7 +520,7 @@ const Header = ({
                   </Title>
                 </div> */}
                   
-                < div className="logo" style={{width:"25.5%"}}>
+                < div className="logo" style={{width:"26%"}}>
 							<Navbar.Brand as={Link} to='/'
 									
 								className="ml-1"
