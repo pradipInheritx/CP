@@ -412,7 +412,7 @@ const Header = ({
           {/* {for center modile size} */}
 
           {!desktop && (
-            <div className='' style={{ width: "80%" }}>
+            <div className='' style={{ width: "75%" }}>
               <div className='d-flex w-100'>
                 {user?.uid ? (
                   <div
@@ -518,7 +518,7 @@ const Header = ({
                     {mounted ? title : ""}
                   </Title>
                 </div> */}
-                  < div className="logo"  style={{width:"30%"}}>
+                  < div className="logo"  style={{width:"26%"}}>
 							<Navbar.Brand as={Link} to='/'
 									
 								className="ml-1"
