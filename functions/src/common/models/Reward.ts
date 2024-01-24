@@ -4,9 +4,7 @@ import { userConverter } from "../models/User";
 import { toArray } from "lodash";
 import { sendNotificationForCpm } from "./SendCustomNotification";
 import { getCardDetails } from "./Admin/Rewards";
-import {
-  addPaxTransactionWithPendingStatus
-} from "../models/PAX";
+
 
 // import axios from "axios";
 // import * as parentConst from "../consts/payment.const.json";
