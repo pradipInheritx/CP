@@ -40,7 +40,7 @@ const Leaderboard = ({
   return (
     <div>
       <LeadersContainer>
-        {leaders?.sort((a, b) => b.score- a.score)
+        {leaders?.sort((a, b) => ((b?.successful || 1) / (b?.total || 1) * (b?.successful || 1)) - ((a?.successful || 1) / (a?.total || 1) * (a?.successful || 1)))
           ?.map((leader) => {
           const checked = !toFollow(userInfo?.leader || [], leader?.userId);
           return (

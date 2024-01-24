@@ -50,7 +50,7 @@ const TextAera = styled.textarea`
 `;
 
 const PersonalInfo = () => {
-  const {avatarImage, setAvatarImage } = useContext(AppContext);
+  const { avatarImage, setAvatarImage } = useContext(AppContext);
   const { userInfo, user: u, setUserInfo, setUser } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const [edit, setEdit] = useState(false)
@@ -152,6 +152,7 @@ const PersonalInfo = () => {
       const userRef = doc(db, "users", u?.uid);
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
+        setAvatarImage("")
         showToast(translate(texts.UserInfoUpdate));
         setAvatarMode(false)
         toast.dismiss();        

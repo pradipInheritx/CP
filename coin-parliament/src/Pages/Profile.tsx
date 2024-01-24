@@ -37,6 +37,7 @@ import ProfileFollowingnew from "Components/icons/ProfileFollowingnew";
 import Notificationsnew from "Components/icons/notificationsnew";
 import PaymentHitory from "Components/icons/PaymentHitory";
 import FoundationIcon from "Components/icons/FoundationIcon";
+import AppContext from "Contexts/AppContext";
 
 export enum ProfileTabs {
   profile = "profile",
@@ -87,6 +88,7 @@ const MyBadge = styled(Badge)`
 
 const Profile = () => {
   const { userInfo, user } = useContext(UserContext);
+  const { avatarImage, setAvatarImage } = useContext(AppContext);
   const { showToast } = useContext(NotificationContext);
   const [avatarMode, setAvatarMode] = useState(false);
   const location = useLocation();
@@ -117,6 +119,7 @@ const Profile = () => {
       const userRef = doc(db, "users", user?.uid);
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
+        setAvatarImage("")
         showToast(translate(texts.UserInfoUpdate));
 
         toast.dismiss();

@@ -464,6 +464,7 @@ const VotingPaymentCopy: React.FC<{
       })
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
+      console.log(AllInfo,"AllInfo")
       setPayamount(AllInfo[0])
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
@@ -549,8 +550,9 @@ const VotingPaymentCopy: React.FC<{
       amount: payamount,      
       transactionType: payType,
       numberOfVotes: extraVote,      
-      timestamp: new Date().getTime(),
+      timestamp: (new Date().getTime()).toString(),
     }
+    console.log(data,"datacehck")
     const headers = {
       "accept": "application/json",
     }
@@ -726,7 +728,7 @@ const VotingPaymentCopy: React.FC<{
               }}
             >
               <Opctiondiv className="">
-                <div
+                {/* <div
                   style={{
                     cursor: "pointer",
                     // borderBottom: "1px solid white",
@@ -739,7 +741,7 @@ const VotingPaymentCopy: React.FC<{
                 >
                   <i className="bi bi-coin"></i>
                   <p className="mx-2">Cryptocurrency</p>
-                </div>
+                </div> */}
                 <div
                   style={{
                     cursor: "pointer",
