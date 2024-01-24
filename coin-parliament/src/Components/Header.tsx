@@ -83,10 +83,10 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 82%;
+  width: 85%;
   height: 30px;
   
-  margin-left:25px;
+  margin-left:30px;
   border-radius 50px;
   display: flex;
   justify-content:space-around;
@@ -520,12 +520,12 @@ const Header = ({
                   </Title>
                 </div> */}
                   
-                < div className="logo" style={{width:"3.9rem"}}>
+                < div className="logo" style={{width:"26%"}}>
 							<Navbar.Brand as={Link} to='/'
 									
 								className="ml-1"
 							>
-								<img src={BigLogo} alt='' width="80px" />
+								<img src={BigLogo} alt='' width="73px" />
 							</Navbar.Brand>
 							
 						</div>
