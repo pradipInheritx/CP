@@ -508,7 +508,7 @@ export const sendMintForPaxToUser = async (paxDistributionToUser: any) => {
 
     if (!paxDistributionToUser.mintForUserAddress) {
       console.info("Need To Store For PAX Pending Transaction For User Due To BNB Address");
-      await addPaxTransactionWithPendingStatus(paxDistributionToUser);
+      // await addPaxTransactionWithPendingStatus(paxDistributionToUser);
       return {
         status: false,
         message: "User mint for address is not available for receive the pax",
