@@ -138,7 +138,9 @@ const GoogleAuthenticator = () => {
 
   // console.log('user',userInfo,u)
   useEffect(() => {
-    if (!userInfo?.mfa) createPost(userInfo?.uid as string);
+    // @ts-ignore
+
+    if (userInfo&& !userInfo?.googleAuthenticatorData?.otp_auth_url &&!userInfo?.mfa) createPost(userInfo?.uid as string);
     return () => setCopied(false);
   }, [userInfo?.mfa]);
 

@@ -88,7 +88,7 @@ const Header = (setMfaLogin?:any) => {
                 account_circle
               </span>
               }
-              {(userInfo?.uid) && localStorage.getItem('mfa_passed') === 'false' ?
+              {(userInfo?.uid) ?
               <NavDropdown color='white' title={window.screen.width > 767 ? userInfo?.displayName || userInfo?.email : ""}
                 id="basic-nav-dropdown"
                 className={`${window.screen.width > 767 ? "BigDiv" : "SmallDiv"} justify-content-start textWhite`}
