@@ -19,7 +19,7 @@ import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
 // import BigLogo from "../assets/svg/logoiconx2.svg";
-import BigLogo from "../assets/svg/spblue.png";
+import BigLogo from "../assets/svg/spblue-Header-Logo.png";
 import BigLogoText from "../assets/svg/spLogoText.png"
 
 import ManagersContext from "../Contexts/ManagersContext";
@@ -520,12 +520,12 @@ const Header = ({
                   </Title>
                 </div> */}
                   
-                < div className="logo" style={{width:"26%"}}>
+                < div className="logo" style={{width:"25.5%"}}>
 							<Navbar.Brand as={Link} to='/'
 									
 								className="ml-1"
 							>
-								<img src={BigLogo} alt='' width="73px" />
+								<img src={BigLogo} alt='' width="70px" />
 							</Navbar.Brand>
 							
 						</div>
