@@ -9,6 +9,7 @@ import * as parentConst from "../consts/payment.const.json";
 import { userPurchaseNotification } from "./Admin/NotificationForAdmin";
 import { getAllPendingPaxByUserId } from "./PAX";
 
+
 // export const makePaymentToServer = async (req: any, res: any) => {
 //   try {
 //     console.info("req.body", typeof req.body, req.body);
@@ -69,7 +70,7 @@ export const callbackFromServer = async (req: any, res: any) => {
           .get();
 
         const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
-          return tempPaymentTransaction.data();
+          return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
         });
 
         console.info("getTempCrediCardData", getTempCrediCardData[0])
@@ -80,6 +81,19 @@ export const callbackFromServer = async (req: any, res: any) => {
         } else {
           requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
         }
+
+        await firestore().collection('tempPaymentTransaction').doc(getTempCrediCardData[0].id).delete().then(() => {
+          res.status(200).send({
+            status: true,
+            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY,
+          });
+        }).catch((error) => {
+          res.status(400).send({
+            status: false,
+            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED,
+            result: error,
+          });
+        });
 
         const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
         console.info("getResponseFromCreditCard", getResponseFromCreditCard);
