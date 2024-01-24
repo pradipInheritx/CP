@@ -18,7 +18,7 @@ import UserCard from "./Profile/UserCard";
 import ImageTabs from "./Profile/ImageTabs";
 import Avatars, { AvatarType } from "../assets/avatars/Avatars";
 import { translate, useTranslation } from "../common/models/Dictionary";
-import BigLogo from "../assets/svg/sporange.svg";
+import BigLogo from "../assets/svg/sporange-Header-Logo.png";
 import LogoText from "../assets/svg/LogoText.png"
 import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
@@ -81,10 +81,10 @@ export const HeaderCenter = styled.div`
 export const HeaderCenterMob = styled.div` 
   background:white;
   color:#3712B3;
-  width: 82%;
+  width: 85%;
   height: 30px;
   
-  margin-left:25px;
+  margin-left:30px;
   border-radius 50px;
   display: flex;
   justify-content:space-around;
@@ -518,10 +518,16 @@ const Header = ({
                     {mounted ? title : ""}
                   </Title>
                 </div> */}
-                <Navbar.Brand as={Link} to='/' className="mr-1">
-                  <img src={BigLogo} alt=''width="70px" />
-                </Navbar.Brand>
-
+   
+                < div className="logo" style={{width:"26%"}}>
+							<Navbar.Brand as={Link} to='/'
+									
+								className="ml-1"
+							>
+								<img src={BigLogo} alt='' width="70px" />
+							</Navbar.Brand>
+							
+						</div>
               </div>
             </div>
           )}
