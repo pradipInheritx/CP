@@ -40,7 +40,7 @@ const Title = styled.div`
 `;
 
 const Flex = styled.div`
-  display: grid;
+  // display: grid;
   grid-template-columns: repeat(
     ${(props: { width?: number }) =>
     props.width && props.width > 969 ? "5" : "2"},
@@ -201,14 +201,16 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         </span>
       </div>}
       {!selectedAvatar && (<>
+      <div >
         <Title>{translate("Select Your Avatar")}</Title>
+        </div>
         <Flex {...{ width }}>
           {Object.values(AvatarType).map((type, i) => {
             return <>
               {
                 type == "Custom" ?
                   <>                    
-                    {/* <CustomBox className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between align-items-center flex-column`}>
+                    <CustomBox className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between align-items-center flex-column`}>
                       <span className="mt-2" style={{
                         color:"rgb(110, 83, 255)"
                       }}>Custom Avatar</span>
@@ -253,11 +255,11 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
                       }} disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
                           Upload
                         </ButtonBox>
-                      </CustomBox>                                           */}
+                      </CustomBox>                                          
                   </>
                   :
                   <>
-                    <AvatarRadio
+                    {/* <AvatarRadio
                       key={i}
                       type={type}
                       checked={type === (userInfo?.avatar || defaultAvatar)}
@@ -268,7 +270,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
                         // showModal(<NFT id={id} />);
                         if (!selectedAvatar) setSelectedAvatar(id)
                       }}
-                    />
+                    /> */}
                   </>                  
               }              
               </>    
@@ -276,7 +278,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
         </Flex>
 
         
-        <div className="d-flex justify-content-center text-center mt-4">
+        {/* <div className="d-flex justify-content-center text-center mt-4">
           <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
             if (!userInfo?.avatar) {
               onSubmit(defaultAvatar);
@@ -285,7 +287,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
             setSelectBioEdit(true)
             // setShowMenuBar(false);
           }}>{image !=null ?"Next":"Skip"}</span>
-        </div>
+        </div> */}
       </>)}
       {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
     </Container>

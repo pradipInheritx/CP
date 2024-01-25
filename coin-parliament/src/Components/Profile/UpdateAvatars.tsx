@@ -39,13 +39,15 @@ const Title = styled.div`
   font-weight:400 !important;
 `;
 
+// grid-template-columns: repeat(
+//     ${(props: { width?: number }) =>
+//         props.width && props.width > 767 ? "5" : "2"},
+//     1fr
+//   );
+
 const Flex = styled.div`
   display: grid;
-  grid-template-columns: repeat(
-    ${(props: { width?: number }) =>
-        props.width && props.width > 767 ? "5" : "2"},
-    1fr
-  );
+ 
   grid-gap: 10px;
   align-items: center;
 
@@ -218,7 +220,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
                             {
                                 type == "Custom" ?
                                     <>
-                                        {/* <CustomBox className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between align-items-center flex-column`}>
+                                        <CustomBox className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between align-items-center flex-column`}>
                                             <span className="mt-2" style={{
                                                 color: "rgb(110, 83, 255)"
                                             }}>Custom Avatar</span>
@@ -264,11 +266,11 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
                                                 disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
                                                 Upload
                                             </ButtonBox>
-                                        </CustomBox> */}
+                                        </CustomBox>
                                     </>
                                     :
                                     <>
-                                        <AvatarRadio
+                                        {/* <AvatarRadio
                                             maxWidth={window.screen.width > 767 ? 183 : 165}
                                             key={i}
                                             type={type}
@@ -280,7 +282,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
                                                 // showModal(<NFT id={id} />);
                                                 if (!selectedAvatar) setSelectedAvatar(id)
                                             }}
-                                        />
+                                        /> */}
                                     </>
                             }
                         </>
