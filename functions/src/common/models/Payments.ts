@@ -82,6 +82,11 @@ export const callbackFromServer = async (req: any, res: any) => {
           requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
         }
 
+
+
+        const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
+        console.info("getResponseFromCreditCard", getResponseFromCreditCard);
+
         await firestore().collection('tempPaymentTransaction').doc(getTempCrediCardData[0].id).delete().then(() => {
           res.status(200).send({
             status: true,
@@ -94,9 +99,6 @@ export const callbackFromServer = async (req: any, res: any) => {
             result: error,
           });
         });
-
-        const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
-        console.info("getResponseFromCreditCard", getResponseFromCreditCard);
 
         res.status(200).send({
           status: true,
