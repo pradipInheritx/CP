@@ -86,7 +86,7 @@ import {
   sendNotificationForMintAddress,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
-// import { JwtPayload } from "./common/interfaces/Admin.interface";
+import { JwtPayload } from "./common/interfaces/Admin.interface";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -149,97 +149,50 @@ app.post(
   imageUploadFunction
 );
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
-// user verification link
-// app.get("/user/verified", async (req: any, res: any) => {
-//   try {
-//     const { token } = req.query;
-//     console.log("user verification Token : ", token)
-//     const auth = admin.auth();
-//     if (!token) {
-//       return res.status(400).send({
-//         status: false,
-//         message: "Token is required",
-//         result: null,
-//       });
-//     }
-// app.get("/user/verified", async (req: any, res: any) => {
-//   try {
-//     const { token } = req.query;
-//     const auth = admin.auth();
-//     if (!token) {
-//       return res.status(400).send({
-//         status: false,
-//         message: "Token is required",
-//         result: null,
-//       });
-//     }
 
-//     // Verify the JWT token
-//     const decodedToken: any = (await jwt.verify(
-//       token,
-//       env.JWT_AUTH_SECRET
-//     )) as JwtPayload;
+// user verification link
+app.get("/user/verified", async (req: any, res: any) => {
+  try {
+    const { token } = req.query;
+    const auth = admin.auth();
+    if (!token) {
+      return res.status(400).send({
+        status: false,
+        message: "Token is required",
+        result: null,
+      });
+    }
+
+    // Verify the JWT token
+    const decodedToken: any = (await jwt.verify(
+      token,
+      env.JWT_AUTH_SECRET
+    )) as JwtPayload;
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
-    // console.log("decode token : ", decodedToken);
-    // console.log("decodedToken.uid : ", decodedToken.uid)
-    // auth
-    //   .updateUser(decodedToken.uid, { emailVerified: true })
-    //   .then((userRecord) => {
-    //     console.log("User successfully verified:", userRecord.toJSON());
-    //     return res.status(200).send({
-    //       status: true,
-    //       message: "User verified successfully",
-    //       result: userRecord.toJSON(),
-    //     });
-    //   });
-    // // .catch((error) => {
-    //   console.error("Error verifying user:", error);
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: "Token is required",
-    //     result: null,
-    //   });
-    // });
-//     return "verified done";
-//   } catch (error) {
-//     console.error("Error decoding or verifying token:", error);
-//     return res.status(400).send({
-//       status: false,
-//       message: "Something went wrong",
-//       error,
-//     });
-//   }
-// });
-//     // Use the UID from the decoded token to verify the user in Firebase Authentication
-//     auth
-//       .updateUser(decodedToken.uid, { emailVerified: true })
-//       .then((userRecord) => {
-//         console.log("User successfully verified:", userRecord.toJSON());
-//         return res.status(200).send({
-//           status: true,
-//           message: "User verified successfully",
-//           result: userRecord.toJSON(),
-//         });
-//       });
-//     // .catch((error) => {
-//     //   console.error("Error verifying user:", error);
-//     //   return res.status(400).send({
-//     //     status: false,
-//     //     message: "Token is required",
-//     //     result: null,
-//     //   });
-//     // });
-//     return "verified done";
-//   } catch (error) {
-//     console.error("Error decoding or verifying token:", error);
-//     return res.status(400).send({
-//       status: false,
-//       message: "Something went wrong",
-//       error,
-//     });
-//   }
-// });
+    console.log("decode token : ", decodedToken);
+    console.log("decodedToken.uid : ", decodedToken.uid)
+    auth
+      .updateUser(decodedToken.uid, { emailVerified: true })
+      .then((userRecord) => {
+        console.log("User successfully verified:", userRecord.toJSON());
+        return res.status(200).send({
+          status: true,
+          message: "User verified successfully",
+          result: userRecord.toJSON(),
+        });
+      });
+  }
+  catch (error: any){
+    console.error("Error verifying user:", error);
+    return res.status(400).send({
+      status: false,
+      message: "Token is required",
+      result: null,
+    });
+  }
+});
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
