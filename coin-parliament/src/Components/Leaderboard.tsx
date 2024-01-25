@@ -19,9 +19,9 @@ const LeadersContainer = styled.div`
   flex-wrap: wrap;
   justify-content: center;
 
-  @media(max-width: 768px) {
+  @media(max-width: 1000px) {
     max-width: 729px;
-    width: 83%;
+    width: 68%;
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
