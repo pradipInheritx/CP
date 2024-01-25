@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 import env from "../../env/env.json";
-import Busboy from "busboy";
+import busboyFileUpload from "busboy";
 import { logger } from "firebase-functions/v1";
 
 export const avatarUploadFunction = async (req: any, res: any) => {
@@ -8,7 +8,7 @@ export const avatarUploadFunction = async (req: any, res: any) => {
 
   try {
     // const fileSizeLimit = 2; //mb
-    const busboy = Busboy({
+    const busboy = busboyFileUpload({
       headers: req.headers,
       // limits: { fileSize: fileSizeLimit * 1024 * 1024 }
     });
