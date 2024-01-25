@@ -106,7 +106,7 @@ export const MemberText = styled.span`
   background: #d4d0f3;
   color: #6352e8;
   border-radius: 10px;
-  font-size: 10px;
+  font-size: 9px;
 `;
 
 export const PlusButton = styled.div`

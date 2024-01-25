@@ -169,7 +169,7 @@ const UserCard = ({
   const { setFollowerUserId } = useContext(AppContext)
   const { userInfo, user } = useContext(UserContext);
 
-  // console.log(leader,"allleader")
+  console.log(leader,"allleader")
 
   const redirectTab = () => {
     if (leader != undefined && setFollowerUserId != undefined) {
@@ -232,7 +232,10 @@ const UserCard = ({
               <span className='mx-1'>
                 {/* {Number(Number(leader.pct * 100).toFixed(2))}&nbsp;Score */}
                 {/* { leader?.score || 0}&nbsp;Score */}
-                {leader?.score === Math.floor(leader?.score) ? leader?.score  || 0 : (leader?.score).toFixed(2) || 0}&nbsp;Score
+                {/* {leader?.score === Math.floor(leader?.score) ? leader?.score  || 0 : (leader?.score).toFixed(2) || 0}&nbsp;Score */}
+                {/* {((leader?.successful || 1) / ((leader?.total || 1) * (leader?.successful || 1)))?.toFixed(2)} */}
+                {((leader?.successful || 1) / (leader?.total || 1) * (leader?.successful || 1))?.toFixed(2)}
+
               </span>
             )}
             {!expanded && <span className='mx-1'></span>}
