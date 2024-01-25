@@ -70,35 +70,36 @@ export const callbackFromServer = async (req: any, res: any) => {
           .get();
 
         const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
-          return tempPaymentTransaction.data();
+          return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
         });
 
-        console.info("getTempCrediCardData", getTempCrediCardData[0])
+        console.info("getTempCrediCardData", getTempCrediCardData[getTempCrediCardData.length - 1])
         let requestBody: any;
-        if (getTempCrediCardData.length && getTempCrediCardData[0]) {
+        if (getTempCrediCardData.length && getTempCrediCardData[getTempCrediCardData.length - 1]) {
           let userId = req.body && req.body.p1 ? req.body.p1 : "";
-          requestBody = { userId, userEmail: req.body.order_buyer, walletType: "CREDITCARD", amount: req.body.order_famount, orderFee: req.body.order_fee, network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
+          requestBody = { userId, userEmail: req.body.order_buyer, walletType: "CREDITCARD", amount: req.body.order_famount, orderFee: req.body.order_fee, network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[getTempCrediCardData.length - 1].transactionType, numberOfVotes: getTempCrediCardData[getTempCrediCardData.length - 1].numberOfVotes, initiated: "BE" };
         } else {
-          requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[0].numberOfVotes, initiated: "BE" };
+          requestBody = { userId: "", userEmail: "", walletType: "", amount: "", network: "", origincurrency: "", token: "", transactionType: getTempCrediCardData[0].transactionType, numberOfVotes: getTempCrediCardData[getTempCrediCardData.length - 1].numberOfVotes, initiated: "BE" };
         }
 
         console.log("Request Body Before", requestBody);
 
         const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
-        console.info("getResponseFromCreditCard", getResponseFromCreditCard);
+        console.log("getResponseFromCreditCard", getResponseFromCreditCard, "For Delete", getTempCrediCardData[getTempCrediCardData.length - 1].id);
 
-        // await firestore().collection('tempPaymentTransaction').doc(getTempCrediCardData[0].id).delete().then(() => {
-        //   res.status(200).send({
-        //     status: true,
-        //     message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY,
-        //   });
-        // }).catch((error) => {
-        //   res.status(400).send({
-        //     status: false,
-        //     message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED,
-        //     result: error,
-        //   });
-        // });
+        await firestore().collection('tempPaymentTransaction').doc(getTempCrediCardData[getTempCrediCardData.length - 1].id).delete().then(() => {
+          console.log("Temp Payment Transaction Deletion Start Begins ");
+          res.status(200).send({
+            status: true,
+            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY,
+          });
+        }).catch((error) => {
+          res.status(400).send({
+            status: false,
+            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED,
+            result: error,
+          });
+        });
 
         res.status(200).send({
           status: true,
