@@ -70,7 +70,7 @@ export const callbackFromServer = async (req: any, res: any) => {
           .get();
 
         const getTempCrediCardData = getTempPaymentTransaction.docs.map((tempPaymentTransaction: any) => {
-          return { ...tempPaymentTransaction.data(), id: tempPaymentTransaction.id };
+          return tempPaymentTransaction.data();
         });
 
         console.info("getTempCrediCardData", getTempCrediCardData[0])
@@ -87,18 +87,18 @@ export const callbackFromServer = async (req: any, res: any) => {
         const getResponseFromCreditCard = await paymentStatusOnUserFromCreditCardFunction(requestBody);
         console.info("getResponseFromCreditCard", getResponseFromCreditCard);
 
-        await firestore().collection('tempPaymentTransaction').doc(getTempCrediCardData[0].id).delete().then(() => {
-          res.status(200).send({
-            status: true,
-            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY,
-          });
-        }).catch((error) => {
-          res.status(400).send({
-            status: false,
-            message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED,
-            result: error,
-          });
-        });
+        // await firestore().collection('tempPaymentTransaction').doc(getTempCrediCardData[0].id).delete().then(() => {
+        //   res.status(200).send({
+        //     status: true,
+        //     message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY,
+        //   });
+        // }).catch((error) => {
+        //   res.status(400).send({
+        //     status: false,
+        //     message: parentConst.MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED,
+        //     result: error,
+        //   });
+        // });
 
         res.status(200).send({
           status: true,
