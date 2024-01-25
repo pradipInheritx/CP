@@ -79,6 +79,10 @@ import {
 } from "./common/models/CPVI";
 import sgMail from "@sendgrid/mail";
 // import {ws} from "./common/models/Ajax";
+import {
+  avatarUploadFunction,
+} from "./common/helpers/fileUploadConfig";
+
 
 const whitelist = ["https://coin-parliament.com/", "http://localhost:3000/"];
 
@@ -106,6 +110,8 @@ const main = express();
 main.use("/v1", app);
 main.use(bodyParser.json());
 main.use(bodyParser.urlencoded({ extended: false }));
+app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
