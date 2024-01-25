@@ -87,6 +87,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
+import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -189,7 +190,7 @@ app.get("/user/verified", async (req: any, res: any) => {
         });
       });
   }
-  catch (error: any){
+  catch (error: any) {
     console.error("Error verifying user:", error);
     return res.status(400).send({
       status: false,
@@ -277,7 +278,10 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
   }
 
 });
-
+exports.pushNotificationOnCallbackURL = functions.auth.user().onCreate(async (user) => {
+  const getResponseFromPushNotificationcallBackURL = await createPushNotificationOnCallbackURL
+  console.info("getResponseFromPushNotificationcallBackURL", getResponseFromPushNotificationcallBackURL)
+})
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
