@@ -132,6 +132,14 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
                                 Update
                             </Buttons.Primary>
                         </div>
+                        <div className="d-flex justify-content-center text-center mt-4">
+                            <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
+                                setFirstTimeAvatarSelection(false);
+                                setSelectBioEdit(true)
+                              }}>
+                                {"Skip"}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </Stack>

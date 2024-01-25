@@ -167,6 +167,7 @@ function Home() {
       // redirect: 'http://localhost:3001/',
       domain: process.env.REACT_APP_COIN_API,
       name: "coin",
+      isLive:true 
     },
     [SiteTypes.sport]: {
       img: SPORTPARLIAMENT,
@@ -175,6 +176,7 @@ function Home() {
       redirect: "https://sportparliament.com/",
       domain: process.env.REACT_APP_SPORT_API,
       name: "sport",
+      isLive:false
     },
     [SiteTypes.stock]: {
       img: STOCKPARLIAMENT,
@@ -183,6 +185,7 @@ function Home() {
       redirect: "https://stockparliament.com/",
       domain: process.env.REACT_APP_STOCK_API,
       name: "stock",
+      isLive:false
     },
     [SiteTypes.voting]: {
       img: VOTINGPARLIAMENT,
@@ -192,6 +195,7 @@ function Home() {
       // redirect: 'http://localhost:3001/',
       domain: process.env.REACT_APP_VOTING_API,
       name: "voting",
+      isLive:false
     },
   });
 
@@ -341,7 +345,7 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                     <h6 style={{ marginRight: "1em", textAlign: "center" }}>
                       {sites[key].title}
                     </h6>
-                    <p className="card-text" style={{ marginTop: "5px" }}>
+                    <p className="card-text" style={{ marginTop: "5px" }}>  
                       {sites[key].des}
                     </p>
 
@@ -349,24 +353,25 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                       className="d-flex mt-2 align-items-center"
                       style={{ gap: "4px" }}
                     >
-                      <ButttonDiv className="mt-1 m-auto">
-                        <button
-                          >
-                          <a
+                    {sites[key].isLive ?
+                      <>
+                       <ButttonDiv className="mt-1 m-auto">
+                        <button>
+                         <a
                             href={sites[key].redirect}
                             target="_blank"
                             style={{ textDecoration: "none" }}
                           >
-                            {loading === sites[key]?.name ? (
+                           {loading === sites[key]?.name ? (
                               <span className="loading">wait...</span>
                             ) : (
                               "VOTE NOW !"
-                            )}
-                          </a>
+                          )}
+                         </a>
                         </button>
-                      </ButttonDiv>
+                       </ButttonDiv>
 
-                      <ButttonDiv className="mt-1 m-auto">
+                       <ButttonDiv className="mt-1 m-auto">
                         <button
                           onClick={() => {
                             if (!user?.uid) {
@@ -386,7 +391,17 @@ const shareText = `Hey,%0ajoin me on Coin Parliament and earn rewards for your o
                             className=""
                           />
                         </button>
+                       </ButttonDiv>
+                     </> :
+                      <ButttonDiv className="mt-1 m-auto">
+                        <button
+                       
+                          >
+                            <span style={{ textDecoration: "none" , color:"#0d6efd"}}>COMING SOON...</span>
+                              
+                        </button>
                       </ButttonDiv>
+                    } 
 
                       {showShare == sites[key]?.name  && <div className={"HomeshareBox"} style={window.screen.width < 300 ? {
                         marginLeft: '2em',

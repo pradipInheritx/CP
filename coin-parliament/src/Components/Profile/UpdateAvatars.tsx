@@ -39,13 +39,15 @@ const Title = styled.div`
   font-weight:400 !important;
 `;
 
+// grid-template-columns: repeat(
+//     ${(props: { width?: number }) =>
+//         props.width && props.width > 767 ? "5" : "2"},
+//     1fr
+//   );
+
 const Flex = styled.div`
   display: grid;
-  grid-template-columns: repeat(
-    ${(props: { width?: number }) =>
-        props.width && props.width > 767 ? "5" : "2"},
-    1fr
-  );
+ 
   grid-gap: 10px;
   align-items: center;
 
