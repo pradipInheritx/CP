@@ -36,8 +36,10 @@ function PaymentHistory() {
   let navigate = useNavigate();
 
   useEffect(() => {
-    getPaymentList()
-  }, [pageIndex])
+    if (userInfo?.uid) {      
+      getPaymentList()
+    }
+  }, [pageIndex, userInfo?.uid])
 
   const getPaymentList = () => {
     const headers = {
