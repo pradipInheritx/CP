@@ -25,7 +25,7 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink
+  sendEmailVerificationLink,
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
@@ -86,7 +86,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
-import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
+import { createPushNotificationOnCallbackURL } from "./common/models/Notification";
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -99,8 +99,8 @@ import { auth } from "./common/middleware/authentication";
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
-// import sendGrid Email function and templates 
-import { sendEmail } from "./common/services/emailServices"
+// import sendGrid Email function and templates
+import { sendEmail } from "./common/services/emailServices";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 
 // Routers files
@@ -177,7 +177,7 @@ app.get("/user/verified", async (req: any, res: any) => {
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
     console.log("decode token : ", decodedToken);
-    console.log("decodedToken.uid : ", decodedToken.uid)
+    console.log("decodedToken.uid : ", decodedToken.uid);
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
       .then((userRecord) => {
@@ -188,8 +188,7 @@ app.get("/user/verified", async (req: any, res: any) => {
           result: userRecord.toJSON(),
         });
       });
-  }
-  catch (error: any) {
+  } catch (error: any) {
     console.error("Error verifying user:", error);
     return res.status(400).send({
       status: false,
@@ -198,7 +197,6 @@ app.get("/user/verified", async (req: any, res: any) => {
     });
   }
 });
-
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -209,7 +207,6 @@ app.get("/calculatePairCPVI", async (req, res) => {
 //app.get("/user-verification-link", getEmailVerificationLink);
 
 exports.api = functions.https.onRequest(main);
-
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
@@ -248,7 +245,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     console.log("user email : ", email);
     // Get user data from Firebase Authentication
     const userRecord = await admin.auth().getUserByEmail(email);
-    console.log("user record : ", userRecord)
+    console.log("user record : ", userRecord);
 
     // Create a JWT token with user data
     const token = jwt.sign(
@@ -263,23 +260,32 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
       await sendEmail(
         email,
         "Verify Your Account",
-        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+        userVerifyEmailTemplate(
+          email,
+          verificationLink,
+          "Your account has been created. Please verify your email for login."
+        )
       );
       console.info("Send Email Successfully");
     }
 
     console.log("Verification link:", verificationLink);
-    return { verificationLink }
+    return { verificationLink };
   } catch (error) {
     console.error("Error sending verification link:", error);
-    return { error }
+    return { error };
   }
-
 });
-exports.pushNotificationOnCallbackURL = functions.auth.user().onCreate(async (user) => {
-  const getResponseFromPushNotificationcallBackURL = await createPushNotificationOnCallbackURL
-  console.info("getResponseFromPushNotificationcallBackURL", getResponseFromPushNotificationcallBackURL)
-})
+exports.pushNotificationOnCallbackURL = functions.auth
+  .user()
+  .onCreate(async (user) => {
+    const getResponseFromPushNotificationcallBackURL =
+      await createPushNotificationOnCallbackURL;
+    console.info(
+      "getResponseFromPushNotificationcallBackURL",
+      getResponseFromPushNotificationcallBackURL
+    );
+  });
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
@@ -336,12 +342,16 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   try {
     console.log("new user >>>", userData, user.uid);
     const newUser = await admin
-    .firestore()
-    .collection("users")
-    .doc(user.uid)
-    .set(userData);
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .set(userData);
     // send user verification email
-    user.email ? await sendEmailVerificationLink(user.email) : null;
+    const getUserEmail: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUserEmail.email);
+    await sendEmailVerificationLink(getUserEmail.email);
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
