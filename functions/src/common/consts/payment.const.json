@@ -18,6 +18,8 @@
     "MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT" : "Parent Pending Payment Amount",
     "MESSAGE_PARENT_PENDING_PAYMENT_AMOUNT_NOT_FOUND" : "Parent Pending Payment Amount is not found",
     "MESSAGE_PENDING_PAX_VALUE" : "Get All Pending Pax Data Successfully",
+    "MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_SUCCESSFULLY" :"Temp Payment Transaction Deleted Successfully",
+    "MESSAGE_TEMP_PAYMENT_TRASACTION_DELETED_FAILED" :"Temp Payment Trasaction Is Not Deleted",
     "PAYMENT_SETTING_NAME_LIMIT" : "LIMIT",
     "PAYMENT_SETTING_NAME_MANUAL": "MANUAL",
     "PAYMENT_SETTING_NAME_IMMEDIATE" : "IMMEDIATE",

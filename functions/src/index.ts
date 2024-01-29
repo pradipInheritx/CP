@@ -25,8 +25,8 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  sendEmailVerificationLink,
-  verifyUserWithToken,
+  // sendEmailVerificationLink,
+  // verifyUserWithToken,
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
@@ -67,8 +67,8 @@ import {
   claimReward,
   addReward,
   cardHolderListing,
-  sendMintForPaxToAdmin,
-  sendMintForPaxToUser,
+  // sendMintForPaxToAdmin,
+  // sendMintForPaxToUser
 } from "./common/models/Reward";
 import {
   cpviTaskCoin,
@@ -87,6 +87,7 @@ import {
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
+import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -99,17 +100,18 @@ import { auth } from "./common/middleware/authentication";
 import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
+// import sendGrid Email function and templates 
+import { sendEmail } from "./common/services/emailServices"
+import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+
 // Routers files
 import Routers from "./routes/index";
 
-
-// initialize the database
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL:
     "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
 });
-
 
 // initialize express server
 const app = express();
@@ -154,6 +156,8 @@ app.post(
   imageUploadFunction
 );
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
+
+// user verification link
 app.get("/user/verified", async (req: any, res: any) => {
   try {
     const { token } = req.query;
@@ -173,6 +177,8 @@ app.get("/user/verified", async (req: any, res: any) => {
     )) as JwtPayload;
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
+    console.log("decode token : ", decodedToken);
+    console.log("decodedToken.uid : ", decodedToken.uid)
     auth
       .updateUser(decodedToken.uid, { emailVerified: true })
       .then((userRecord) => {
@@ -183,24 +189,17 @@ app.get("/user/verified", async (req: any, res: any) => {
           result: userRecord.toJSON(),
         });
       });
-    // .catch((error) => {
-    //   console.error("Error verifying user:", error);
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: "Token is required",
-    //     result: null,
-    //   });
-    // });
-    return "verified done";
-  } catch (error) {
-    console.error("Error decoding or verifying token:", error);
+  }
+  catch (error: any) {
+    console.error("Error verifying user:", error);
     return res.status(400).send({
       status: false,
-      message: "Something went wrong",
-      error,
+      message: "Token is required",
+      result: null,
     });
   }
 });
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -231,6 +230,7 @@ exports.getAccessToken = () =>
       resolve(tokens?.access_token);
     });
   });
+
 const getMaxVotes = async () => {
   const getVoteAndReturnQuery = await admin
     .firestore()
@@ -241,6 +241,47 @@ const getMaxVotes = async () => {
   return getVoteAndReturnData?.voteRules.maxVotes;
 };
 
+// user's email verification link
+exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
+  const { email } = data;
+
+  try {
+    console.log("user email : ", email);
+    // Get user data from Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log("user record : ", userRecord)
+
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
+    );
+
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+
+    if (email && verificationLink) {
+      await sendEmail(
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
+    }
+
+    console.log("Verification link:", verificationLink);
+    return { verificationLink }
+  } catch (error) {
+    console.error("Error sending verification link:", error);
+    return { error }
+  }
+
+});
+exports.pushNotificationOnCallbackURL = functions.auth.user().onCreate(async (user) => {
+  const getResponseFromPushNotificationcallBackURL = await createPushNotificationOnCallbackURL
+  console.info("getResponseFromPushNotificationcallBackURL", getResponseFromPushNotificationcallBackURL)
+})
+// create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
   const status: UserTypeProps = {
@@ -307,15 +348,15 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 // user's email verification link
-exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
-  const { email } = data;
-  return await sendEmailVerificationLink(email);
-});
+// exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
+//   const { email } = data;
+//   return await sendEmailVerificationLink(email);
+// });
 
-exports.verifyUserWithToken = functions.https.onCall(async (data) => {
-  const { token } = data;
-  return await verifyUserWithToken(token);
-});
+// exports.verifyUserWithToken = functions.https.onCall(async (data) => {
+//   const { token } = data;
+//   return await verifyUserWithToken(token);
+// });
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
@@ -1227,45 +1268,27 @@ exports.sendEmail = functions.https.onCall(async () => {
   await sgMail.send(msg);
 });
 
-exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
-  const { paxDistributionToUser } = data;
-  console.log("paxDistributionToUser : ", paxDistributionToUser);
-  let getResultAfterSentPaxToUser: any;
-  let getResultAfterSentPaxToAdmin: any;
-  if (paxDistributionToUser.isUserUpgraded === true) {
-    // Call to user mintFor Address
-    getResultAfterSentPaxToUser = await sendMintForPaxToUser(
-      paxDistributionToUser
-    );
-    console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
-    const addNewPax = await admin
-      .firestore()
-      .collection("paxTransaction")
-      .add({
-        ...paxDistributionToUser,
-        getResultAfterSentPaxToUser,
-        timestamp: Date.now(),
-      });
-    return { id: addNewPax.id, getResultAfterSentPaxToUser };
-  }
-  if (paxDistributionToUser.isUserUpgraded === false) {
-    // Call to Admin mintFor Address
-    getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(
-      paxDistributionToUser
-    );
-    console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
-    const addNewPax = await admin
-      .firestore()
-      .collection("paxTransaction")
-      .add({
-        ...paxDistributionToUser,
-        getResultAfterSentPaxToAdmin,
-        timestamp: Date.now(),
-      });
-    return { id: addNewPax.id };
-  }
-  return null;
-});
+// exports.paxDistributionOnClaimReward = functions.https.onCall(async (data) => {
+//   const { paxDistributionToUser } = data;
+//   console.log("paxDistributionToUser : ", paxDistributionToUser);
+//   let getResultAfterSentPaxToUser: any;
+//   let getResultAfterSentPaxToAdmin: any;
+//   if (paxDistributionToUser.isUserUpgraded === true) {
+//     // Call to user mintFor Address
+//     getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDistributionToUser)
+//     console.info("getResultAfterSentPaxToUser", getResultAfterSentPaxToUser);
+//     const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToUser, timestamp: Date.now() });
+//     return { id: addNewPax.id, getResultAfterSentPaxToUser }
+//   }
+//   if (paxDistributionToUser.isUserUpgraded === false) {
+//     // Call to Admin mintFor Address
+//     getResultAfterSentPaxToAdmin = await sendMintForPaxToAdmin(paxDistributionToUser);
+//     console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
+//     const addNewPax = await admin.firestore().collection('paxTransaction').add({ ...paxDistributionToUser, getResultAfterSentPaxToAdmin, timestamp: Date.now() });
+//     return { id: addNewPax.id }
+//   }
+//   return null
+// });
 
 exports.updatePAXValueToFoundation = functions.https.onCall(async (data) => {
   const { currentPaxValue } = data;
