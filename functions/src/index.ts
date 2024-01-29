@@ -347,9 +347,9 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
 
     //Send Welcome Mail To User
     await sendEmail(
-      newUser.email,
+      userData.email,
       "Welcome To Coin Parliament!",
-      userWelcomeEmailTemplate(`${newUser.firstName} ${newUser.lastName}`, env.BASE_SITE_URL)
+      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
     );
 
     return newUser;
