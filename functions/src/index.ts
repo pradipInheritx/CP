@@ -103,6 +103,7 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 // import sendGrid Email function and templates 
 import { sendEmail } from "./common/services/emailServices"
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
 
 // Routers files
 import Routers from "./routes/index";
@@ -276,9 +277,10 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     console.error("Error sending verification link:", error);
     return { error }
   }
-
 });
-exports.pushNotificationOnCallbackURL = functions.auth.user().onCreate(async (user) => {
+
+
+exports.pushNotificationOnCallbackURL = functions.https.onCall(async () => {
   const getResponseFromPushNotificationcallBackURL = await createPushNotificationOnCallbackURL
   console.info("getResponseFromPushNotificationcallBackURL", getResponseFromPushNotificationcallBackURL)
 })
@@ -337,11 +339,19 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   };
   try {
     console.log("new user >>>", userData, user.uid);
-    const newUser = await admin
+    const newUser: any = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
+
+    //Send Welcome Mail To User
+    await sendEmail(
+      newUser.email,
+      "Welcome To Coin Parliament!",
+      userWelcomeEmailTemplate(`${newUser.firstName} ${newUser.lastName}`, env.BASE_SITE_URL)
+    );
+
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
@@ -784,19 +794,8 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
-    // const secret = 'your-secret-key';
-    // const options = { expiresIn: '1h' };
-
-    // const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
-    // console.log("getJWTWebToken : ", getJWTWebToken);
-    // const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
-    // console.info("Send Email Begins");
-    // await sendEmail(
-    //   after.email,
-    //   "Verify Your Account",
-    //   userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
-    // );
-    // console.info("Send Email Successfully");
+    console.info("after", after)
+    console.info("Send Email Successfully")
 
     await addReward(snapshot.after.id, before, after);
 
@@ -804,14 +803,6 @@ exports.onUpdateUser = functions.firestore
     if (!should || !amount) {
       return;
     }
-
-    // console.info("Send Email Begins")
-    // await sendEmail(
-    //   "demoemail@yopmail.com",
-    //   "Verify Your Account",
-    //   userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
-    // );
-    // console.info("Send Email Successfully")
 
     await addCpmTransaction(snapshot.after.id, amount);
   });
