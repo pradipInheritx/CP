@@ -25,8 +25,7 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  // sendEmailVerificationLink,
-  // verifyUserWithToken,
+  sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
@@ -258,7 +257,7 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     );
 
     // Construct the verification link with the JWT token
-    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verified?token=${token}`;
 
     if (email && verificationLink) {
       await sendEmail(
@@ -337,10 +336,12 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   try {
     console.log("new user >>>", userData, user.uid);
     const newUser = await admin
-      .firestore()
-      .collection("users")
-      .doc(user.uid)
-      .set(userData);
+    .firestore()
+    .collection("users")
+    .doc(user.uid)
+    .set(userData);
+    // send user verification email
+    user.email ? await sendEmailVerificationLink(user.email) : null;
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
