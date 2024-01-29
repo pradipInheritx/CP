@@ -125,7 +125,7 @@ exports.api = functions.https.onRequest(main);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL:
-    "https://votingparliament-default-rtdb.firebaseio.com",
+    "https://votetoearn-9d9dd-default-rtdb.firebaseio.com",
 });
 
 exports.getAccessToken = () =>
