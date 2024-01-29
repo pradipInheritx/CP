@@ -677,14 +677,26 @@ const Header = ({
 										>
 											{/* <p>{"unique_Username"}</p> */}
 
-											{
-												(followerPage && followerInfo != "") ?
-													<></> :
-															<span className={`${userInfo?.displayName ? "" :"mt-2"} mb-1 d-block`} 
-															style={{ fontSize: "13px" }}>
-														{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
-													</span>
-											}											
+											<div  className="d-flex">
+												{
+													(followerPage && followerInfo != "") ?
+														<></> :
+																<span className={`${userInfo?.displayName ? "" :"mt-2"} mb-1`} 
+																style={{
+																	fontSize: "13px",
+																	width:"58.5px",	
+																	display: 'inline-block',
+																	textOverflow: 'ellipsis',
+																	overflow: 'hidden',
+																	}}>
+															{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
+														</span>
+												}					
+												<span style={{marginLeft:"10px"}}>
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText
+													>{userInfo?.status?.name}</MemberText>}
+												</span>
+											</div>						
 											{!!followerInfo && <div className="d-flex"
 											>
 												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
@@ -728,13 +740,13 @@ const Header = ({
 													</>
 												}
 											</div>}
-													{(!!userInfo?.status?.name && !followerPage) && <MemberText
+													{/* {(!!userInfo?.status?.name && !followerPage) && <MemberText
 														style={{
 															marginLeft: `${!userInfo?.isUserUpgraded && "-40px"}`
-																}}
-													>{userInfo?.status?.name}</MemberText>}
+														}}
+													>{userInfo?.status?.name}</MemberText>} */}
 
-													{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText className="mx-2" style={{ background: "#ff9700", color: "black" }}
+													{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText style={{ background: "#ff9700", color: "black",wordBreak:"break-word"}}
 														onClick={() => {
 															if (!showMenubar) {
 																handleSoundClick()
@@ -966,14 +978,27 @@ const Header = ({
 															{userInfo?.displayName && userInfo?.displayName}
 														</span>
 													}													 */}
-													{
-														(followerPage && followerInfo != "") ?
-															<></> :
-															<span className={`${userInfo?.displayName ? "" : "mt-4"} mb-1 d-block`}
-																			style={{ fontSize: "13px" }}>
-																{`${(userInfo?.displayName /* && !userInfo?.firstTimeLogin */) ? userInfo?.displayName : ''}`}
-															</span>
-													}
+													<div className="d-flex">
+														{
+															(followerPage && followerInfo != "") ?
+																<></> :
+																<span className={`${userInfo?.displayName ? "" : "mt-4"} mb-1`}
+																				style={{
+																				fontSize: "13px",
+																				width: '85px',
+																				display: 'inline-block',
+																				textOverflow: 'ellipsis',
+																				overflow: 'hidden',
+																				}}>
+																	{`${(userInfo?.displayName ) ? userInfo?.displayName : ''}`}
+																</span>
+														}
+														<span style={{marginLeft:"10px"}}>
+														{(!!userInfo?.status?.name && !followerPage) && <MemberText
+														>{userInfo?.status?.name}</MemberText>}
+														</span>
+													</div>
+
 													{!!followerInfo && <div className="d-flex"													
 													>												
 														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
@@ -1017,12 +1042,12 @@ const Header = ({
 														}
 													</div>}
 													
-																{(!!userInfo?.status?.name && !followerPage) && <MemberText
+																{/* {(!!userInfo?.status?.name && !followerPage) && <MemberText
 																	style={{
 																		marginLeft: `${!userInfo?.isUserUpgraded && "-55px"}`
 																	}}
-																>{userInfo?.status?.name}</MemberText>}
-																{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText className="mx-2" style={{ background: "#ff9700", color: "black" }}
+																>{userInfo?.status?.name}</MemberText>} */}
+																{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText style={{ background: "#ff9700", color: "black" }}
 																	onClick={() => {
 																		if (!showMenubar) {
 																			handleSoundClick()

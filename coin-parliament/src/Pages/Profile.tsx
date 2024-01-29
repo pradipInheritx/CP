@@ -154,10 +154,11 @@ const Profile = () => {
                   <MyBadge bg='-' onClick={() => {
                     handleSoundClick()
                     navigate("/upgrade")
-                  }} style={{ cursor: "pointer" }} >
+                  }} style={{ cursor: "pointer",boxShadow: `${userInfo?.isUserUpgraded ? "#FFD700 1px 0px 5px 2px" : "none"}`,
+                  }} >
                     {/* {translate("upgrade your account")} */}
                     {/* @ts-ignore */}
-                    {userInfo?.isUserUpgraded ? ("your account is upgraded").toUpperCase() : texts.UpgradeYourAccount}
+                    {userInfo?.isUserUpgraded ? ("Verified Miner").toUpperCase() : texts.UpgradeYourAccount}
                   </MyBadge>
                 </Row>
               )}
