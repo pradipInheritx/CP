@@ -25,8 +25,7 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  // sendEmailVerificationLink,
-  // verifyUserWithToken,
+  sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-staging.json";
 
@@ -352,23 +351,19 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
       userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
     );
 
+    const getUserEmail: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUserEmail.email);
+    await sendEmailVerificationLink(getUserEmail.email);
+
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
     return false;
   }
 });
-// user's email verification link
-// exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
-//   const { email } = data;
-//   return await sendEmailVerificationLink(email);
-// });
 
-// exports.verifyUserWithToken = functions.https.onCall(async (data) => {
-//   const { token } = data;
-//   return await verifyUserWithToken(token);
-// });
-// temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
     const getAllUsers = (

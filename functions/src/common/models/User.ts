@@ -1,11 +1,10 @@
 import admin from "firebase-admin";
-// import * as jwt from "jsonwebtoken";
+import * as jwt from "jsonwebtoken";
 
 import { UserProps, UserTypeProps } from "../interfaces/User.interface";
-// import env from "../../env/env.json";
-// import consts from "../config/constants.json"
-// import { sendEmail } from "../services/emailServices";
-// import { adminForgotPasswordTemplate } from "../emailTemplates/adminForgotPassword";
+import env from "../../env/env.json";
+import { sendEmail } from "../services/emailServices";
+import { userVerifyEmailTemplate } from "../emailTemplates/userVerifyEmailTemplate";
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 // import { errorLogging } from "../helpers/commonFunction.helper";
@@ -63,67 +62,35 @@ export const isAdmin: (user: string) => Promise<boolean> = async (
   }
 };
 
-// user's email verification
+export const sendEmailVerificationLink = async (email:string)=>{
+  try {
+    console.log("user email : ", email);
+    // Get user data from Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log("user record : ", userRecord)
 
-// // const auth = admin.auth();
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
+    );
 
-// // export async function sendEmailVerificationLink(email: string) {
-// //   try {
-// //     // Get user data from Firebase Authentication
-// //     const userRecord = await auth.getUserByEmail(email);
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verified?token=${token}`;
 
-// //     // Create a JWT token with user data
-// //     const token = jwt.sign(
-// //       { uid: userRecord.uid, email: userRecord.email },
-// //       env.JWT_AUTH_SECRET
-// //     );
+    if (email && verificationLink) {
+      await sendEmail(
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
+    }
 
-// //     // Construct the verification link with the JWT token
-// //     const verificationLink = `${env.BASE_SITE_URL}/user/verify?token=${token}`;
-
-// //     // Send the verification email to the user
-// //     // Implement your email sending logic here
-
-// //     console.log("Verification link:", verificationLink);
-// //     return {verificationLink}
-// //   } catch (error) {
-// //     console.error("Error sending verification link:", error);
-// //     return {error}
-// //   }
-// // }
-
-// interface JwtPayload {
-//   id: string;
-// }
-
-// export async function verifyUserWithToken(token: string) {
-//   try {
-//     // Verify the JWT token
-//     const decodedToken: any = (await jwt.verify(
-//       token,
-//       env.JWT_AUTH_SECRET
-//     )) as JwtPayload;
-
-//     // Use the UID from the decoded token to verify the user in Firebase Authentication
-//     auth
-//       .updateUser(decodedToken.uid, { emailVerified: true })
-//       .then((userRecord) => {
-//         console.log("User successfully verified:", userRecord.toJSON());
-//         return userRecord.toJSON();
-//       })
-//       .catch((error) => {
-//         console.error("Error verifying user:", error);
-//         // return {
-//         //   message : "Error verifying user ",
-//         //   error 
-//         // }
-//       });
-//       return "verified done"
-//   } catch (error) {
-//     console.error("Error decoding or verifying token:", error);
-//     return {
-//       message : "Error decoding or verifying token",
-//       error 
-//     }
-//   }
-// }
+    console.log("Verification link:", verificationLink);
+    return { verificationLink }
+  } catch (error) {
+    console.error("Error sending verification link:", error);
+    return { error }
+  }
+}
