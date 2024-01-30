@@ -1,7 +1,6 @@
 import { texts } from 'Components/LoginComponent/texts';
 import { httpsCallable } from 'firebase/functions';
 import React, { useContext, useEffect, useState } from 'react'
-import { functions } from "firebase";
 import UserContext from 'Contexts/User';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,7 @@ import Button from "Components/Atoms/Button/Button";
 import moment from 'moment';
 import AppContext from 'Contexts/AppContext';
 import axios from 'axios';
-import { auth } from "firebase";
+import { auth, functions } from "../../../firebase";
 import Tabs from '../Tabs';
 import ReceivePayment from "Components/Profile/Payment/receivePayment"
 const RewardList = styled.p`

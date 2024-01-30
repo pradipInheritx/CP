@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import { texts } from "Components/LoginComponent/texts";
 import SelectTextfield from "Components/Forms/SelectTextfield";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 
 import { Col, Form, FormControl, Modal, Row } from "react-bootstrap";
 

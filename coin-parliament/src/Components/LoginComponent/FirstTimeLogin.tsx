@@ -14,7 +14,7 @@ import { httpsCallable } from "firebase/functions";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import AppContext from "../../Contexts/AppContext";
 import { userConverter } from "../../common/models/User";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import UserContext from "../../Contexts/User";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";

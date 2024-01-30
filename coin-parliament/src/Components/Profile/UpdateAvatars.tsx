@@ -14,7 +14,7 @@ import Button from "Components/Atoms/Button/Button";
 import Avatar from '../../assets/images/avatar.svg';
 import { ToastType } from "Contexts/Notification";
 import { showToast } from "App";
-import { db } from "firebase";
+import { db } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import UploadImg from '../../assets/images/UploadImg.svg';
 import ImageCompressor from 'image-compressor.js';

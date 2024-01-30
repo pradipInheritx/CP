@@ -27,7 +27,7 @@ import { getFollowerInfo } from "../Contexts/FollowersInfo";
 import { doc, getDoc } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
 import { db, functions } from "../firebase";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
 import CoinsContext, { Leader, follow } from "../Contexts/CoinsContext";
@@ -254,16 +254,16 @@ const Header = ({
 
 	const getFollowerData = () => {
 
-		const getCollectionType = firebase
-			.firestore()
-			.collection("users")
-			.where("uid", "==", followerUserId)
-		getCollectionType.get()
-			.then((snapshot) => {
-				snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
-			}).catch((error) => {
-				console.log(error, "error");
-			});
+		// const getCollectionType = firebase
+		// 	.firestore()
+		// 	.collection("users")
+		// 	.where("uid", "==", followerUserId)
+		// getCollectionType.get()
+		// 	.then((snapshot) => {
+		// 		snapshot.docs?.map(doc => setFollowerInfo(doc.data()))
+		// 	}).catch((error) => {
+		// 		console.log(error, "error");
+		// 	});
 	}	
 
 	useEffect(() => {

@@ -1,7 +1,7 @@
 import { texts } from 'Components/LoginComponent/texts';
 import { httpsCallable } from 'firebase/functions';
 import React, { useContext, useEffect, useState } from 'react'
-import { functions } from "firebase";
+import { functions } from "../../../firebase";
 import UserContext from 'Contexts/User';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';

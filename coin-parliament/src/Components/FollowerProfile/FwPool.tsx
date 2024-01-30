@@ -6,7 +6,7 @@ import Info from "./Info";
 import { getUsers } from "./FwFollow";
 import { Leader } from "../../Contexts/CoinsContext";
 import PoolMiningCard from "./PoolMiningCard";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import AppContext from "../../Contexts/AppContext";
 const FwPool = () => {
   const { user } = useContext(UserContext);

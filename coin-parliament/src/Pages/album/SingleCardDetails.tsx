@@ -6,7 +6,7 @@ import styled, { createGlobalStyle } from "styled-components";
 
 import "../styles.css";
 import { httpsCallable } from "@firebase/functions";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 
 
 import { Ratio } from "react-bootstrap";

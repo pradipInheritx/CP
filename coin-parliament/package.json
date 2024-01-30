@@ -137,13 +137,15 @@
     "workbox-webpack-plugin": "5.1.4"
   },
   "scripts": {
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "build_plugins": "npm run build & npm run plugins",
     "plugins": "npm run remove_plugins_public & npm run copy_plugins_public",
     "remove_plugins_public": "rm -rf ../plugins/coin-parliament/public",
     "copy_plugins_public": "cp -a ../public ../plugins/coin-parliament",
-    "test": "node scripts/test.js",
+    
     "deploy": "firebase deploy",
     "emulate": "firebase emulators:start --inspect-functions --import=../functions/dir",
     "emulate:empty": "firebase emulators:start ",

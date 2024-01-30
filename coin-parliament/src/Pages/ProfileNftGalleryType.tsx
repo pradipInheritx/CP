@@ -15,7 +15,7 @@ import SwiperBar from "./SwiperBar";
 import { Link, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import UserContext from "../Contexts/User";
 import { Other } from "./SingleCoin";
 import BackArrow from "../Components/icons/BackArrow";

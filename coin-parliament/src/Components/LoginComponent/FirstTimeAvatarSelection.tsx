@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { texts } from "./texts";
 import AppContext from "Contexts/AppContext";
 import axios from "axios";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 
 
 

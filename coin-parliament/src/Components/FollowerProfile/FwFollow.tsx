@@ -8,7 +8,7 @@ import { capitalize } from "lodash";
 import { follow, Leader } from "../../Contexts/CoinsContext";
 import UserCard from "../Users/UserCard";
 import { toFollow } from "../../common/models/User";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import AppContext from "../../Contexts/AppContext";
 import { texts } from "../LoginComponent/texts";
 export type Follower = {

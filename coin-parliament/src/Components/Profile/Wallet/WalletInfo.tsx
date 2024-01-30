@@ -6,10 +6,10 @@ import { useTranslation } from 'common/models/Dictionary'
 import React, { useContext, useEffect, useState } from 'react'
 import { Form, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import styled, { createGlobalStyle } from "styled-components";
 import axios from 'axios'
-import { auth, db } from 'firebase'
+import { auth, db } from '../../../firebase'
 import { doc, setDoc } from 'firebase/firestore'
 import CoinsList from '../Payment/CoinsList'
 import { showToast } from 'App'

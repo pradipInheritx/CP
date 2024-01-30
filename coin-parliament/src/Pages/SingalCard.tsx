@@ -15,7 +15,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { functions } from "../firebase";
 import { httpsCallable } from "@firebase/functions";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { Other } from "./SingleCoin";
 import { translate, useTranslation } from "../common/models/Dictionary";
 import { Ratio } from "react-bootstrap";

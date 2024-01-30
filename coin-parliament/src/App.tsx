@@ -39,6 +39,7 @@ import {
 import {
   collection,
   doc,
+  getDoc,
   onSnapshot,
   query,
   setDoc,
@@ -65,7 +66,7 @@ import VoteRulesManager from "./managers/VoteRulesManager";
 import TimeframesManager from "./managers/TimeframesManager";
 import UserTypeManager from "./managers/UserTypeManager";
 import CoinMain from "./Pages/CoinMain";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import PairsMain from "./Pages/PairsMain";
 import SinglePair from "./Pages/SinglePair";
 import { ENGLISH, translations } from "./common/models/Dictionary";
@@ -143,7 +144,7 @@ import Login2fa from "./Components/LoginComponent/Login2fa";
 import TermsAndConditions from "./Pages/TermsAndConditions";
 import { VoteContext, VoteContextType, VoteDispatchContext, VoteProvider } from "Contexts/VoteProvider";
 import { vote } from "common/models/canVote.test";
-import { setTimeout } from "timers";
+// import { setTimeout } from "timers";
 import ModalForResult from "Pages/ModalForResult";
 import { CompletedVotesContext, CompletedVotesDispatchContext } from "Contexts/CompletedVotesProvider";
 import { CurrentCMPContext, CurrentCMPDispatchContext } from "Contexts/CurrentCMP";
@@ -162,6 +163,7 @@ import axios from "axios";
 import { afterpaxDistributionToUser } from "common/utils/helper";
 import SingleCardDetails from "Pages/album/SingleCardDetails";
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { ethers } from "ethers";
 
 const projectId = '1556d7953ee6f664810aacaad77addb1'
 const mainnet = [
@@ -617,6 +619,21 @@ function App() {
   //   isAdmin(user?.uid).then((newAdmin) => setAdmin(newAdmin));
   // }, [user?.uid, isAdmin]);
 
+  const getCoinData = async () => {
+    const coinData = doc(db, "stats", "coins");
+    try {
+      const userDocSnapshot = await getDoc(coinData);
+
+      if (userDocSnapshot.exists()) {
+        setCoins(userDocSnapshot.data());
+      } else {
+        console.log("Document does not exist");
+      }
+    } catch (error) {
+      console.error("Error getting document:", error);
+    }
+  }
+
   useEffect(() => {
     onSnapshot(doc(db, "stats", "leaders"), (doc) => {
       setLeaders((doc.data() as { leaders: Leader[] })?.leaders || []);
@@ -700,14 +717,16 @@ function App() {
     //   // console.log('allcoins',coins)
     //   // saveCoins(newAllCoins);
     // }); 
-    const coinData = firebase
-      .firestore()
-      .collection("stats").doc('coins')
-    coinData.get()
-      .then((snapshot: any) => {
-        //  console.log('allcoin',snapshot.data())
-        setCoins(snapshot.data());
-      });
+
+    // const coinData = firebase
+    //   .firestore()
+    //   .collection("stats").doc('coins')
+    // coinData.get()
+    //   .then((snapshot: any) => {
+    //     //  console.log('allcoin',snapshot.data())
+    //     setCoins(snapshot.data());
+    //   });
+    getCoinData();
 
     onSnapshot(doc(db, "stats", "app"), (doc) => {
       setAppStats(doc.data() as AppStats);
@@ -1357,6 +1376,39 @@ function App() {
     }
   }, [searchParams]);
 
+  async function sendTransaction() {
+    const ethereum = (window as any).ethereum
+    try {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+
+      // Request access to MetaMask
+      await ethereum?.request({ method: 'eth_requestAccounts' });
+
+      // Create a wallet signer
+      const wallet = provider.getSigner();
+
+      // send a tx
+      const transaction = {
+        // chainId: 56,
+        to: '0xFB77A51d879FB3F79Dd31DB55D51d792e619051f',
+        value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
+      };
+
+      const txResponse = await wallet.sendTransaction(transaction);
+
+      // Handle the transaction response
+      console.log('Transaction hash:', txResponse.hash);
+      await txResponse.wait();
+
+      console.log('Transaction mined!');
+
+    } catch (error) {
+      console.log(error, 'Hello');
+    }
+  }
+
+  const{open,close} =useWeb3Modal()
+
   return loader ? (
     <div
       className='d-flex justify-content-center align-items-center'
@@ -1397,7 +1449,21 @@ function App() {
             style={{ zIndex: 99999, position: 'absolute', top: '5px', right: '10px', fontSize: '18px', cursor: "pointer" }}
           >
             x
-          </span>
+            </span>
+            <button
+              onClick={() => {
+                open({ view: 'Networks' })
+            }}
+            >
+              open
+            </button>
+            <button
+              onClick={() => {
+                sendTransaction()
+            }}
+            >
+              Pay now
+            </button>
         </div>}
 
       <div>

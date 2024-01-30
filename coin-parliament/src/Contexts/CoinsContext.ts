@@ -11,7 +11,7 @@ import { User } from "firebase/auth";
 import { db, functions } from "../firebase";
 import { httpsCallable } from "firebase/functions";
 import { userConverter } from "../common/models/User";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { ICryptoClient } from "@polygon.io/client-js";
 
 export type Rates = { [key: string]: Rate };

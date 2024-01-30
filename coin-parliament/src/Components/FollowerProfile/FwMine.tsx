@@ -22,7 +22,7 @@ import NFTCard from "../../common/NFTCard/NFTCard";
 
 import { httpsCallable } from "firebase/functions";
 import { db, functions } from "../../firebase";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { texts } from "../LoginComponent/texts";
 import RewardHistory from "Components/Profile/rewardHistory";
 const MyBadge = styled(Badge)`

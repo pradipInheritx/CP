@@ -9,7 +9,7 @@ import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import { useParams } from "react-router-dom";
 import { handleSoundClick, VoteButton } from "../../common/utils/SoundClick";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { scrollUp } from "common/utils/helper";
 
 export type VoteOption = {

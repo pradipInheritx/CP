@@ -9,7 +9,7 @@ import AppContext from "../Contexts/AppContext";
 import NftOneCard from "./NftOneCard";
 import { db } from "../firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";

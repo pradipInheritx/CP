@@ -14,7 +14,7 @@ import lock from '../assets/images/lock.png';
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { Ratio } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";

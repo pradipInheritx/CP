@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import axios, { Axios } from 'axios';
 import UserContext from 'Contexts/User';
 import { useNavigate } from 'react-router-dom';
-import { auth } from "firebase";
+import { auth } from "../../../firebase";
 import CoinsList from './CoinsList';
 import AppContext from 'Contexts/AppContext';
 import { texts } from 'Components/LoginComponent/texts';

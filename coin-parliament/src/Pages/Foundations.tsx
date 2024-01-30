@@ -13,7 +13,7 @@ import UserContext from "Contexts/User";
 import { doc, setDoc } from "firebase/firestore";
 import { showToast } from "App";
 import { toast } from "react-toastify";
-import { db } from "firebase";
+import { db } from "../firebase";
 import { ToastType } from "Contexts/Notification";
 import { Buttons } from "Components/Atoms/Button/Button";
 import { Image } from "react-bootstrap";

@@ -23,7 +23,7 @@ import Rectangle from "assets/images/Rectangle.png"
 import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
 import { useNavigate, useParams } from "react-router-dom";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { auth } from "firebase";
 import Swal from "sweetalert2";
 import axios from "axios";

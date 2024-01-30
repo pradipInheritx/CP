@@ -5,7 +5,7 @@ import { Form, Image, Modal } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styled from "styled-components";
 
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { Buttons } from "Components/Atoms/Button/Button";
 import axios from "axios";
 import UserContext from "Contexts/User";

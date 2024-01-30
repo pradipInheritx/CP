@@ -49,7 +49,7 @@ describe("PairTable", () => {
   describe("getFilteredDataByFav", () => {
     it("should filtered data properly", () => {
       const pairs = getPairs(allPairs, coins);
-      const actual = getFilteredDataByFav(["BTC-ETH"], pairs, totals);
+      const actual = getFilteredDataByFav("",["BTC-ETH"], pairs, totals);
       expect(actual).toStrictEqual([
         {
           coin1: "BTC",

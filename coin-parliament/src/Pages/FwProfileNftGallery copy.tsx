@@ -7,7 +7,7 @@ import bkgnd4 from "../assets/images/bkgnd4.png";
 import MyCarousel from "../Components/Carousel/Carousel";
 
 import NftOneCard from "./NftOneCard";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 
 import "./styles.css";
 import SwiperBar from "./SwiperBar";

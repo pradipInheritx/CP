@@ -21,7 +21,7 @@ import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import copy from "copy-to-clipboard";
 import googleLogo from "../../assets/svg/google_Logo.svg"
 const Login = styled.div`

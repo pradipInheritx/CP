@@ -1,8 +1,8 @@
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectAuthEmulator, getAuth } from "firebase/auth";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
-import { getApp } from "firebase/app";
+import { getApp, initializeApp } from "firebase/app";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 import { getMessaging, isSupported } from "firebase/messaging";
 
@@ -18,6 +18,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
 export const messaging = (async () => {
   try {
@@ -33,6 +34,7 @@ export const messaging = (async () => {
     return null;
   }
 })();
+export const firestore = getFirestore(app);
 export const db = getFirestore();
 export const auth = getAuth();
 export const functions = getFunctions(getApp());

@@ -16,7 +16,7 @@ import rare from '../../assets/images/rareText.png';
 import uncommon from '../../assets/images/uncommonText.png';
 import Showround from '../../assets/images/Showround.png';
 import information from '../../assets/svg/information.svg';
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 
 import newcommon from '../../assets/images/newcommon.png';
 import newepic from '../../assets/images/newepic.png';

@@ -15,7 +15,7 @@ import SwiperBar from "./SwiperBar";
 import { Link, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import UserContext from "../Contexts/User";
 import AppContext from "../Contexts/AppContext";
 import { Other } from "./SingleCoin";
