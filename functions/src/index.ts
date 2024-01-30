@@ -103,6 +103,9 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 import { sendEmail } from "./common/services/emailServices"
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+import {newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
+import {newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
+
 
 // Routers files
 import Routers from "./routes/index";
@@ -183,12 +186,13 @@ app.get("/user/verified", async (req: any, res: any) => {
       .updateUser(decodedToken.uid, { emailVerified: true })
       .then((userRecord) => {
         console.log("User successfully verified:", userRecord.toJSON());
-        return res.status(200).send({
-          status: true,
-          message: "User verified successfully",
-          result: userRecord.toJSON(),
-        });
-      });
+        let userData: any = userRecord.toJSON()
+        if (userData?.emailVerified == true) {
+          res.send(newUserVerifySuccessTemplate);
+        } else {
+          res.send(newUserVerifyFailureTemplate);
+        }
+      })
   }
   catch (error: any) {
     console.error("Error verifying user:", error);
