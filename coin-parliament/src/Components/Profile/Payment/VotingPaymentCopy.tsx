@@ -283,7 +283,7 @@ const Opctiondiv = styled.div`
   border-radius:10px;
     padding:25px 15px;
     display:flex;    
-    width:${window.screen.width > 767 ? "230px" : "250px"};
+    width:${window.screen.width > 767 ? "244px" : "250px"};
   }
 `;
 
@@ -757,7 +757,8 @@ const VotingPaymentCopy: React.FC<{
                   }}
                 >
                   <i className="bi bi-credit-card-fill "></i>
-                  <p className="mx-2">Debit & Credit cards</p>
+                  {/* <p className="mx-2">Debit & Credit cards</p> */}
+                  <p className="mx-2">No Crypto? No problem. <br /> Buy Crypto</p>
                 </div>
               </Opctiondiv>
             </Boxdiv>
@@ -947,7 +948,7 @@ const VotingPaymentCopy: React.FC<{
                             // setPaymentCurruntTime(new Date().getTime())
                             }}
                           >
-                            {payButton ? "PAY NOW..." : 'PAY NOW !'}
+                            {payButton ? "BUY NOW..." : 'BUY NOW !'}
                           </button>
                       </ButttonDiv>
                     {/* </a>  */}
