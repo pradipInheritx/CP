@@ -6,4 +6,5 @@ export type paxTransactionObj = {
     mintForUserAddress :string,
     status : string,
     timestamp : string,
+    isVirtual? : boolean
 }

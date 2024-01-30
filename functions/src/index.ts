@@ -106,6 +106,7 @@ import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEma
 
 // Routers files
 import Routers from "./routes/index";
+import { errorLogging } from "./common/helpers/commonFunction.helper";
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
@@ -1284,7 +1285,7 @@ exports.pendingPaymentSettlement = functions.pubsub
     const currentTimeStamp = Date.now();
     await setPaymentSchedulingByCronJob(currentTimeStamp);
   });
-  
+
 exports.updateLeadersCron = functions.pubsub
   .schedule("0 0 * * *")
   .onRun(async () => {
@@ -1295,7 +1296,7 @@ exports.updateLeadersCron = functions.pubsub
     }
   });
 
-  exports.getUpdatedDataFromWebsocket = functions.pubsub
+exports.getUpdatedDataFromWebsocket = functions.pubsub
   .schedule("every 10 minutes")
   .onRun(async () => {
     await getUpdatedDataFromWebsocket();
@@ -1392,6 +1393,77 @@ exports.prepareWeeklyCPVI = functions.pubsub
     await prepareCPVI(24 * 7, "weekly");
   });
 //----------END CPVI scheduler-------------
+
+
+// -------- pax distribution -----------
+// ------ 24 hours --------
+exports.paxDistribution = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    try {
+      const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
+      const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+      console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
+      if (getIsVirtualTransaction.length == 0) {
+        return {
+          status: true,
+          message: "pax transaction is updated successfully",
+          result: getIsVirtualTransaction
+        }
+      }
+      for (let index = 0; index < getIsVirtualTransaction.length; index++) {
+        let pax = getIsVirtualTransaction[index];
+        await admin.firestore().collection('paxTransaction').doc(pax.id).set({
+          isVirtual: admin.firestore.FieldValue.delete()
+        }, { merge: true });
+      }
+      return {
+        status: true,
+        message: "pax transaction is updated successfully",
+        result: null
+      }
+    } catch (error: any) {
+      errorLogging("paxDistribution", "ERROR", error)
+      return {
+        status: false,
+        message: "Something went wrong",
+        result: null
+      }
+    }
+  });
+
+exports.paxDistributionTesting = functions.https.onCall(async (data:any) => {
+  try {
+    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
+    const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+    console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
+    if (getIsVirtualTransaction.length == 0) {
+      return {
+        status: true,
+        message: "pax transaction is updated successfully",
+        result: getIsVirtualTransaction
+      }
+    }
+    for (let index = 0; index < getIsVirtualTransaction.length; index++) {
+      let pax = getIsVirtualTransaction[index];
+      await admin.firestore().collection('paxTransaction').doc(pax.id).set({
+        isVirtual: admin.firestore.FieldValue.delete()
+      }, { merge: true });
+    }
+    return {
+      status: true,
+      message: "pax transaction is updated successfully",
+      result: null
+    }
+  } catch (error: any) {
+    errorLogging("paxDistribution", "ERROR", error)
+    return {
+      status: false,
+      message: "Something went wrong",
+      result: null
+    }
+  }
+});
 
 // exports.getPAXPendingAndCompletePax = functions.pubsub
 //   .schedule("*/5 * * * *")
