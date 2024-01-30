@@ -430,7 +430,7 @@ exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
   const tokenForLogin = await admin
     .auth()
     .createCustomToken(getUser[0].uid)
-    .then((token) => {
+    .then((token: any) => {
       // Send the custom token to the client
       console.log("Custom Token:", token);
       return token;
@@ -1432,7 +1432,7 @@ exports.paxDistribution = functions.pubsub
     }
   });
 
-exports.paxDistributionTesting = functions.https.onCall(async (data:any) => {
+exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
   try {
     const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
     const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
