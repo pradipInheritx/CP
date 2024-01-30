@@ -716,14 +716,7 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
-// 5 minutes cron job
-exports.pendingPaymentSettlement = functions.pubsub
-  .schedule("0 0 */1 * *")
-  .onRun(async () => {
-    console.log("pendingPaymentSettlement start");
-    const currentTimeStamp = Date.now();
-    await setPaymentSchedulingByCronJob(currentTimeStamp);
-  });
+
 
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
@@ -846,68 +839,7 @@ exports.assignReferrer = functions.https.onCall(async (data) => {
   }
 });
 
-exports.updateLeadersCron = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    try {
-      await setLeaders();
-    } catch (e) {
-      console.log(e);
-    }
-  });
 
-//----------Start Notifications scheduler-------------
-exports.noActivityIn24Hours = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    console.log("---Start noActivityIn24Hours -------");
-    await checkInActivityOfVotesAndSendNotification();
-    console.log("---End noActivityIn24Hours -------");
-  });
-
-exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
-  console.log("---Start noActivityIn24Hours -------");
-  await checkInActivityOfVotesAndSendNotification();
-  console.log("---End noActivityIn24Hours -------");
-});
-
-exports.getCoinCurrentAndPastDataDifference = functions.pubsub
-  .schedule("0 */6 * * *")
-  // .schedule("*/5 * * * *")
-  .onRun(async () => {
-    const timeDifference = 6;
-    console.log("---Start getCoinCurrentAndPastDataDifference -------");
-    await getCoinCurrentAndPastDataDifference(timeDifference);
-    console.log("---End getCoinCurrentAndPastDataDifference -------");
-  });
-
-exports.checkTitleUpgrade24Hour = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    console.log("---Start checkTitleUpgrade24Hour -------");
-    const date = new Date();
-    const nowTime = date.getTime();
-    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
-    // const yesterdayTime = nowTime - 7 * 60 * 1000;
-    await checkUserStatusIn24hrs(nowTime, yesterdayTime);
-    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
-    console.log("---End checkTitleUpgrade24Hour -------");
-  });
-
-// for Testing purposes
-exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
-  console.log("------- call set leader function -------");
-  await setLeaders();
-  console.log("set leader Done");
-  const { todayTime, yesterdayTime } = data;
-  // const date = new Date();
-  // const nowTime = date.getTime();
-  // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-  await checkUserStatusIn24hrs(todayTime, yesterdayTime);
-  await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
-});
-
-//----------End Notifications scheduler-------------
 
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
@@ -1016,49 +948,6 @@ exports.cardHolderListing = functions.https.onCall(async (data) => {
   console.log("userList --->", userList);
   return userList;
 });
-
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 10 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
-
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 15 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
-
-exports.prepareEveryFiveMinuteCPVI = functions.pubsub
-  .schedule("*/3 * * * *")
-  .onRun(async () => {
-    await Promise.all([await fetchAskBidCoin()]);
-  });
-
-exports.prepareHourlyCPVI = functions.pubsub
-  .schedule("0 * * * *")
-  .onRun(async () => {
-    await prepareCPVI(1, "hourly");
-  });
-
-exports.prepare4HourlyCPVI = functions.pubsub
-  .schedule("0 */4 * * *")
-  .onRun(async () => {
-    await prepareCPVI(4, "fourHourly");
-  });
-
-exports.prepare24HourlyCPVI = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    await prepareCPVI(24, "daily");
-  });
-
-exports.prepareWeeklyCPVI = functions.pubsub
-  .schedule("0 0 * * 0")
-  .onRun(async () => {
-    await prepareCPVI(24 * 7, "weekly");
-  });
 
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
   // console.log("getCPVIForVote(data) =>", data);
@@ -1346,20 +1235,6 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-// exports.getPAXPendingAndCompletePax = functions.pubsub
-//   .schedule("*/5 * * * *")
-//   .onRun(async () => {
-//     const getPendingPax = await getPendingPaxTransaction();
-//     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
-//     console.log("getUserIds", getUserIds);
-//     const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
-//     // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
-//     // call payment method here
-//     console.log("getUsersWellDAddress : ", getUsersWellDAddress);
-//     return null
-//   });
-
-//
 
 exports.addPaxInPendingKEY = functions.https.onCall(async (data: any) => {
   try {
@@ -1398,3 +1273,137 @@ exports.addPaxInPendingKEY = functions.https.onCall(async (data: any) => {
     };
   }
 });
+
+
+// ******************* START CRON JOBS ****************
+// 5 minutes cron job
+exports.pendingPaymentSettlement = functions.pubsub
+  .schedule("0 0 */1 * *")
+  .onRun(async () => {
+    console.log("pendingPaymentSettlement start");
+    const currentTimeStamp = Date.now();
+    await setPaymentSchedulingByCronJob(currentTimeStamp);
+  });
+  
+exports.updateLeadersCron = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    try {
+      await setLeaders();
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+  exports.getUpdatedDataFromWebsocket = functions.pubsub
+  .schedule("every 10 minutes")
+  .onRun(async () => {
+    await getUpdatedDataFromWebsocket();
+  });
+
+exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+  .schedule("every 15 minutes")
+  .onRun(async () => {
+    await getAllUpdated24HourRecords();
+    await removeTheBefore24HoursData();
+  });
+
+//----------Start Notifications scheduler-------------
+exports.noActivityIn24Hours = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    console.log("---Start noActivityIn24Hours -------");
+    await checkInActivityOfVotesAndSendNotification();
+    console.log("---End noActivityIn24Hours -------");
+  });
+
+exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
+  console.log("---Start noActivityIn24Hours -------");
+  await checkInActivityOfVotesAndSendNotification();
+  console.log("---End noActivityIn24Hours -------");
+});
+
+exports.getCoinCurrentAndPastDataDifference = functions.pubsub
+  .schedule("0 */6 * * *")
+  // .schedule("*/5 * * * *")
+  .onRun(async () => {
+    const timeDifference = 6;
+    console.log("---Start getCoinCurrentAndPastDataDifference -------");
+    await getCoinCurrentAndPastDataDifference(timeDifference);
+    console.log("---End getCoinCurrentAndPastDataDifference -------");
+  });
+
+exports.checkTitleUpgrade24Hour = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    console.log("---Start checkTitleUpgrade24Hour -------");
+    const date = new Date();
+    const nowTime = date.getTime();
+    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
+    // const yesterdayTime = nowTime - 7 * 60 * 1000;
+    await checkUserStatusIn24hrs(nowTime, yesterdayTime);
+    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
+    console.log("---End checkTitleUpgrade24Hour -------");
+  });
+
+// for Testing purposes
+exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
+  console.log("------- call set leader function -------");
+  await setLeaders();
+  console.log("set leader Done");
+  const { todayTime, yesterdayTime } = data;
+  // const date = new Date();
+  // const nowTime = date.getTime();
+  // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+  await checkUserStatusIn24hrs(todayTime, yesterdayTime);
+  await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
+});
+
+//----------End Notifications scheduler-------------
+
+//----------Start CPVI scheduler-------------
+exports.prepareEveryFiveMinuteCPVI = functions.pubsub
+  .schedule("*/3 * * * *")
+  .onRun(async () => {
+    await Promise.all([await fetchAskBidCoin()]);
+  });
+
+exports.prepareHourlyCPVI = functions.pubsub
+  .schedule("0 * * * *")
+  .onRun(async () => {
+    await prepareCPVI(1, "hourly");
+  });
+
+exports.prepare4HourlyCPVI = functions.pubsub
+  .schedule("0 */4 * * *")
+  .onRun(async () => {
+    await prepareCPVI(4, "fourHourly");
+  });
+
+exports.prepare24HourlyCPVI = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    await prepareCPVI(24, "daily");
+  });
+
+exports.prepareWeeklyCPVI = functions.pubsub
+  .schedule("0 0 * * 0")
+  .onRun(async () => {
+    await prepareCPVI(24 * 7, "weekly");
+  });
+//----------END CPVI scheduler-------------
+
+// exports.getPAXPendingAndCompletePax = functions.pubsub
+//   .schedule("*/5 * * * *")
+//   .onRun(async () => {
+//     const getPendingPax = await getPendingPaxTransaction();
+//     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
+//     console.log("getUserIds", getUserIds);
+//     const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
+//     // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
+//     // call payment method here
+//     console.log("getUsersWellDAddress : ", getUsersWellDAddress);
+//     return null
+//   });
+
+// ******************* END CRON JOBS ****************
