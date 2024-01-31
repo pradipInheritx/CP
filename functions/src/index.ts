@@ -1,9 +1,11 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+
 // import {credential, firestore, initializeApp, messaging, ServiceAccount} from "firebase-admin";
 import express from "express";
 import env from "./env/env.json";
 import cors from "cors";
+import * as bodyParser from "body-parser";
 import {
   Colors,
   isAdmin,
@@ -96,7 +98,13 @@ cors({
 // initialize express server
 const app = express();
 const main = express();
+// Enable The CORS
+app.use(cors({ origin: "*" }));
+app.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }));
 
+main.use(cors({ origin: "*" }));
+main.use(bodyParser.json());
+main.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }));
 // add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
 
