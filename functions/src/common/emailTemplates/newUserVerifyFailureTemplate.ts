@@ -1,5 +1,5 @@
 
-export const newUserVerifyFailureTemplate = (): any => {
+export const newUserVerifyFailureTemplate = (): string => {
     return `
         <!DOCTYPE html>
         <html lang="en">

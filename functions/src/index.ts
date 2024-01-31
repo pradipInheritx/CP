@@ -189,9 +189,11 @@ app.get("/user/verified", async (req: any, res: any) => {
         console.log("User successfully verified:", userRecord.toJSON());
         let userData: any = userRecord.toJSON()
         if (userData?.emailVerified == true) {
-          res.send(newUserVerifySuccessTemplate);
+          const successTemplate = newUserVerifySuccessTemplate();
+          res.send(successTemplate);
         } else {
-          res.send(newUserVerifyFailureTemplate);
+          const failureTemplate = newUserVerifyFailureTemplate();
+          res.send(failureTemplate);
         }
       })
   }
