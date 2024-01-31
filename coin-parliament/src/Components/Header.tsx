@@ -684,7 +684,7 @@ const Header = ({
 																<span className={`${userInfo?.displayName ? "" :"mt-2"} mb-1`} 
 																style={{
 																	fontSize: "13px",
-																	width:"58.5px",	
+																	width:"3.2rem",
 																	display: 'inline-block',
 																	textOverflow: 'ellipsis',
 																	overflow: 'hidden',
@@ -692,7 +692,7 @@ const Header = ({
 															{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
 														</span>
 												}					
-												<span style={{marginLeft:"10px"}}>
+												<span style={{marginLeft:"2px"}}>
 												{(!!userInfo?.status?.name && !followerPage) && <MemberText
 													>{userInfo?.status?.name}</MemberText>}
 												</span>
@@ -985,7 +985,6 @@ const Header = ({
 																<span className={`${userInfo?.displayName ? "" : "mt-4"} mb-1`}
 																				style={{
 																				fontSize: "13px",
-																				width: '85px',
 																				display: 'inline-block',
 																				textOverflow: 'ellipsis',
 																				overflow: 'hidden',
@@ -993,7 +992,7 @@ const Header = ({
 																	{`${(userInfo?.displayName ) ? userInfo?.displayName : ''}`}
 																</span>
 														}
-														<span style={{marginLeft:"10px"}}>
+														<span style={{marginLeft:"1px"}}>
 														{(!!userInfo?.status?.name && !followerPage) && <MemberText
 														>{userInfo?.status?.name}</MemberText>}
 														</span>
