@@ -103,8 +103,8 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 import { sendEmail } from "./common/services/emailServices"
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
 import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
-import {newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
-import {newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
+import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
+import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 
 
 // Routers files
@@ -114,7 +114,7 @@ import { errorLogging } from "./common/helpers/commonFunction.helper";
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
+    "https://coin-parliament-staging-default-rtdb.firebaseio.com",
 });
 
 // initialize express server
