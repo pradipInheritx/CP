@@ -749,7 +749,13 @@ const VotingPaymentCopy: React.FC<{
                   }}
                   onClick={() => {
                     if (payamount > 24) {                      
-                      setSelectPayment(2)
+                      // setSelectPayment(2)
+                         
+                        window.scrollTo({ top: 100, behavior: 'smooth' });  
+                        setIsLoading(true)    
+                        getPayment()
+                        // setPaymentCurruntTime(new Date().getTime())
+                        
                     }
                     else {                      
                       setComingSoon(true)                      
@@ -938,7 +944,7 @@ const VotingPaymentCopy: React.FC<{
                         textDecoration:"none",
                       }}
                     > */}
-                        <ButttonDiv className="mt-1">
+                        {/* <ButttonDiv className="mt-1">
                           <button
                             disabled={payButton}                                              
                           onClick={() => {    
@@ -950,7 +956,7 @@ const VotingPaymentCopy: React.FC<{
                           >
                             {payButton ? "BUY NOW..." : 'BUY NOW !'}
                           </button>
-                      </ButttonDiv>
+                      </ButttonDiv> */}
                     {/* </a>  */}
                      
                     </div >                  
@@ -967,7 +973,7 @@ const VotingPaymentCopy: React.FC<{
                         textDecoration:"none",
                       }}
                     >                       */}
-                    <ButttonDivSec className="mt-1">
+                    {/* <ButttonDivSec className="mt-1">
                       <button
                           onClick={() => {
                             window.scrollTo({ top: 100, behavior: 'smooth' });  
@@ -995,7 +1001,7 @@ const VotingPaymentCopy: React.FC<{
 
 
                       </button>
-                    </ButttonDivSec>
+                    </ButttonDivSec> */}
                     {/* </a>  */}
                   </div>
                   </>
