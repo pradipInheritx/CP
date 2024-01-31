@@ -1404,7 +1404,8 @@ html[dir="rtl"] .accordion-button {
 
 /* //modal */
 .modal-content{
-    
+    display: flex;
+    align-items: center;
     border-radius: 100px 0px 100px 100px !important;
 }
 .modal-backdrop.fade{
