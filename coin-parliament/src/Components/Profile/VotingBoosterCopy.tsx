@@ -36,6 +36,8 @@ import VBGM from '../../assets/images/VBGM.png';
 import Upgrade from "./Comingsoon";
 import { handleSoundClick } from "common/utils/SoundClick";
 import { Buttons } from "Components/Atoms/Button/Button";
+import { ethers } from "ethers";
+import { useWeb3Modal } from "@web3modal/ethers5/react";
 const H2 = styled.h2`
 width: 100%;
 height: 45px;
@@ -233,6 +235,46 @@ const [comingSoon, setComingSoon] = useState(false)
     localStorage.setItem("PayAmount", PayValuestring);
     navigate("/votepayment")
   }
+  async function sendTransaction() {
+    let ethereum = (window as any).ethereum;
+
+    if (!ethereum) {
+      ethereum = (window as any).web3?.currentProvider;
+    }
+
+    if (!ethereum) {
+      console.error("No Ethereum provider found");
+      return;
+    }
+    try {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+
+      // Request access to MetaMask
+      await ethereum?.request({ method: 'eth_requestAccounts' });
+
+      // Create a wallet signer
+      const wallet = provider.getSigner();
+
+      // send a tx
+      const transaction = {
+        // chainId: 56,
+        to: '0xFB77A51d879FB3F79Dd31DB55D51d792e619051f',
+        value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
+      };
+
+      const txResponse = await wallet.sendTransaction(transaction);
+
+      // Handle the transaction response
+      console.log('Transaction hash:', txResponse.hash);
+      await txResponse.wait();
+
+      console.log('Transaction mined!');
+
+    } catch (error) {
+      console.log(error, 'Hello');
+    }
+  }
+  const { open, close } = useWeb3Modal()
 
   return (
     <div
@@ -243,7 +285,20 @@ const [comingSoon, setComingSoon] = useState(false)
         backgroundSize: "100%",
     }}
     >
-
+      <button
+        onClick={() => {
+          open({ view: 'Networks' })
+        }}
+      >
+        open
+      </button>
+      <button
+        onClick={() => {
+          sendTransaction()
+        }}
+      >
+        Pay now
+      </button>
       <H2
         style={{
           zIndex: 1,
