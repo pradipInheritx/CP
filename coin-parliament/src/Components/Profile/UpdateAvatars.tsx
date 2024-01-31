@@ -186,7 +186,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
     }
 
     return (
-        <Container className="position-relative ">
+        <Container className="position-relative"  style={{marginLeft:"35%"}}>
 
             {isLoading && <div style={{
                 position: 'fixed',
@@ -202,7 +202,6 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
                 width: '100%',
                 alignItems: 'center',
                 backgroundColor: "rgba(0,0,0,0.8)"
-
             }}>
                 <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em', marginTop: "50px" }}>
                     {texts.waitForIt}
