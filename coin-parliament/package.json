@@ -141,7 +141,7 @@
     "emulate": "firebase emulators:start",
     "emulate:empty": "firebase emulators:start ",
     "emulators:export": " firebase emulators:export ../functions/dir",
-    "build_functions": "npm --prefix ../functions run build",
+    "build_functions": "npm --prefix ../functions run build_watch",
     "build_and_deploy": "yarn build && yarn deploy --only hosting",
     "build_and_emulate": "yarn build_functions && yarn emulate",
     "kill_port": "npx kill-port 4000 && npx kill-port 8080 && npx kill-port 8085",
