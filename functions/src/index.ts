@@ -21,7 +21,8 @@ import {
 } from "./common/models/Calculation";
 
 import { updateAndGetPaxDistribution } from "./common/models/PAX";
-import { getCurrentPaxDistribution } from "./common/models/PAX"
+import { getCurrentPaxDistribution } from "./common/models/PAX";
+import { avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
 import {
   calculateOffset,
@@ -98,9 +99,8 @@ const main = express();
 
 // add the path to receive request and set json as bodyParser to process the body
 main.use("/v1", app);
+
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
-
-
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -195,7 +195,7 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   }
 });
 import { addNewKeysInCollection } from "./common/models/User";
-import { avatarUploadFunction } from "./common/helpers/fileUploadConfig";
+
 // temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall((data) => {
   const { keyName, keyValue, collectionName } = data;
