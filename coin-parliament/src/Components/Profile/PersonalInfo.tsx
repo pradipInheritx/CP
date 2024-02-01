@@ -428,8 +428,7 @@ const PersonalInfo = () => {
       <Modal show={avatarMode} onHide={handleClose} size="xl"
         backdrop="static"
         aria-labelledby="contained-modal-title-vcenter"
-        contentClassName={`${window.screen.width > 767 ? "" : "AvatarModalTop"} AvatarModal`}
-      >
+        contentClassName={`${window.screen.width > 767 ? "" : "AvatarModalTop"} AvatarModal d-flex justify-content-between align-items-center`}   >
         <UpdateAvatars
           {...{
             onSubmit: onSubmitAvatar,

@@ -204,7 +204,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
       <div >
         <Title>{translate("Select Your Avatar")}</Title>
         </div>
-        <Flex {...{ width }}>
+        <Flex {...{ width }} style={{display:"flex",justifyContent:"center"}}>
           {Object.values(AvatarType).map((type, i) => {
             return <>
               {

@@ -8,7 +8,7 @@ import InputField from "../Atoms/Input/InputField";
 import Button, { Buttons } from "../Atoms/Button/Button";
 import styled from "styled-components";
 import { Border1pxEbb, BorderRadius4px } from "../../styledMixins";
-import { capitalize } from "lodash";
+import { capitalize, update } from "lodash";
 import { functions } from "../../firebase";
 import { httpsCallable } from "firebase/functions";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
@@ -84,10 +84,10 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
 
     console.log(bio, "bioCheck")
 
-    const UpdateBio = async () => {
+    const UpdateBio = async (type?:any) => {
         if (user?.uid) {
             const userRef = doc(db, "users", user?.uid);
-            await setDoc(userRef, { bio: bio }, { merge: true });
+            await setDoc(userRef, { bio: type == "update" ? bio:"" }, { merge: true });
             setSelectBioEdit(false)
             setShowMenuBar(false);
         }
@@ -126,7 +126,9 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
                                 style={{
                                     width: "200px"
                                 }}
-                                onClick={UpdateBio}
+                                onClick={() => {
+                                    UpdateBio("update")
+                                  }}
                             // disabled={!valid}
                             >
                                 Update
@@ -134,10 +136,9 @@ const SelectBio = ({ userData, setSelectBioEdit, setFirstTimeAvatarSelection }: 
                         </div>
                         <div className="d-flex justify-content-center text-center mt-4">
                             <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
-                                setFirstTimeAvatarSelection(false);
-                                setSelectBioEdit(true)
+                                UpdateBio("SKIP")
                               }}>
-                                {"Skip"}
+                                Skip
                             </span>
                         </div>
                     </div>
