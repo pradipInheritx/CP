@@ -114,7 +114,7 @@ import { errorLogging } from "./common/helpers/commonFunction.helper";
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   databaseURL:
-    "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
 });
 
 // initialize express server
@@ -191,7 +191,7 @@ app.get("/user/verified", async (req: any, res: any) => {
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
           res.send(successTemplate);
-        } 
+        }
       })
   }
   catch (error: any) {
