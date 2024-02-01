@@ -191,19 +191,13 @@ app.get("/user/verified", async (req: any, res: any) => {
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
           res.send(successTemplate);
-        } else {
-          const failureTemplate = newUserVerifyFailureTemplate();
-          res.send(failureTemplate);
-        }
+        } 
       })
   }
   catch (error: any) {
     console.error("Error verifying user:", error);
-    return res.status(400).send({
-      status: false,
-      message: "Token is required",
-      result: null,
-    });
+    const failureTemplate = newUserVerifyFailureTemplate();
+    return res.status(400).send(failureTemplate);
   }
 });
 
