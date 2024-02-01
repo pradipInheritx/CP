@@ -64,7 +64,7 @@ width:${window.screen.width > 979 ? '350px' : ''}
 const Container = styled.div`
   background: var(--color-d4d0f3) 0 0% no-repeat padding-box;
   padding: ${window.screen.width > 767 ? "10px" : "0px"};      
-  width:30%;
+  width: ${window.screen.width > 767 ? "30%" : "80%"};
 `;
 const CloseIcon = styled.span`
 color: var(--color-6352e8);
@@ -186,7 +186,7 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
     }
 
     return (
-        <Container className="position-relative"  style={{marginLeft:"35%"}}>
+        <Container className="position-relative" >
 
             {isLoading && <div style={{
                 position: 'fixed',
