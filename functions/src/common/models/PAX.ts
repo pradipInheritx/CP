@@ -37,7 +37,13 @@ export enum PaxTransactionType {
 }
 
 export const addPaxTransactionWithPendingStatus = async (paxTransactionData: any) => {
-  const getParentPendingPaymentReference = await firestore().collection("paxTransaction").add({ ...paxTransactionData, timestamp: firestore.FieldValue.serverTimestamp(), status: "PENDING" });
+  const getParentPendingPaymentReference = await firestore().collection("paxTransaction").add(
+    {
+      ...paxTransactionData,
+      isVirtual: true,
+      timestamp: firestore.FieldValue.serverTimestamp(),
+      status: "PENDING"
+    });
   if (getParentPendingPaymentReference) {
     await sendPaxPendingNotification(paxTransactionData.userId)
     return {
@@ -140,7 +146,7 @@ export const getAllPendingPaxByUserId = async (userId: string) => {
     const pendingPaxList: Array<any> = []
     let sumOfPendingPax: number = 0;
     const getAllPendingPaxByUserId: any = (await firestore().collection('paxTransaction').where("userId", "==", userId).get()).docs.map((payment: any) => payment.data());
-    const getAllPendingPax: Array<paxTransactionObj> = getAllPendingPaxByUserId.filter((payment: any) => payment.status == constants.PAYMENT_STATUS_PENDING);
+    const getAllPendingPax: Array<paxTransactionObj> = getAllPendingPaxByUserId.filter((pax: any) => pax.status == constants.PAYMENT_STATUS_PENDING && pax.isVirtual != true);
     console.log("getAllPendingPax length : ", getAllPendingPax.length)
     getAllPendingPax.forEach((payment: paxTransactionObj) => {
       pendingPaxList.push(payment);

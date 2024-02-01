@@ -33,3 +33,23 @@ export const sendNotification = async ({
     console.log("Error sending message:", e, token);
   }
 };
+
+
+export const createPushNotificationOnCallbackURL = async (req: any, res: any) => {
+  try {
+    await firestore()
+      .collection("userPushNotificationCallbackURL").add({ userId: "", PushNotificationDetails: "", callbackURL: "", serverTimestamp: firestore.FieldValue.serverTimestamp() });
+
+    res.status(200).send({
+      status: true,
+      message: "Push Notification Callback URL Created Successfully",
+      result: "",
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: false,
+      message: "Something went wrong",
+      result: error,
+    });
+  }
+}

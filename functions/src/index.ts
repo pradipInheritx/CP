@@ -25,8 +25,7 @@ import "./common/models/scheduleFunction";
 import {
   isAdmin,
   userConverter,
-  // sendEmailVerificationLink,
-  // verifyUserWithToken,
+  sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/coin-parliament-prod.json";
 
@@ -86,7 +85,8 @@ import {
   sendNotificationForMintAddress,
 } from "./common/models/SendCustomNotification";
 import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
-// import { JwtPayload } from "./common/interfaces/Admin.interface";
+import { JwtPayload } from "./common/interfaces/Admin.interface";
+import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
 
 // import {getRandomFoundationForUserLogin} from "./common/models/Admin/Foundation"
 import {
@@ -102,9 +102,20 @@ import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculatio
 // import sendGrid Email function and templates 
 import { sendEmail } from "./common/services/emailServices"
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate";
+import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
+import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
+
 
 // Routers files
 import Routers from "./routes/index";
+import { errorLogging } from "./common/helpers/commonFunction.helper";
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  databaseURL:
+    "https://coin-parliament-staging-default-rtdb.firebaseio.com",
+});
 
 // initialize express server
 const app = express();
@@ -149,97 +160,47 @@ app.post(
   imageUploadFunction
 );
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
-// user verification link
-// app.get("/user/verified", async (req: any, res: any) => {
-//   try {
-//     const { token } = req.query;
-//     console.log("user verification Token : ", token)
-//     const auth = admin.auth();
-//     if (!token) {
-//       return res.status(400).send({
-//         status: false,
-//         message: "Token is required",
-//         result: null,
-//       });
-//     }
-// app.get("/user/verified", async (req: any, res: any) => {
-//   try {
-//     const { token } = req.query;
-//     const auth = admin.auth();
-//     if (!token) {
-//       return res.status(400).send({
-//         status: false,
-//         message: "Token is required",
-//         result: null,
-//       });
-//     }
 
-//     // Verify the JWT token
-//     const decodedToken: any = (await jwt.verify(
-//       token,
-//       env.JWT_AUTH_SECRET
-//     )) as JwtPayload;
+// user verification link
+app.get("/user/verified", async (req: any, res: any) => {
+  try {
+    const { token } = req.query;
+    const auth = admin.auth();
+    if (!token) {
+      return res.status(400).send({
+        status: false,
+        message: "Token is required",
+        result: null,
+      });
+    }
+
+    // Verify the JWT token
+    const decodedToken: any = (await jwt.verify(
+      token,
+      env.JWT_AUTH_SECRET
+    )) as JwtPayload;
 
     // Use the UID from the decoded token to verify the user in Firebase Authentication
-    // console.log("decode token : ", decodedToken);
-    // console.log("decodedToken.uid : ", decodedToken.uid)
-    // auth
-    //   .updateUser(decodedToken.uid, { emailVerified: true })
-    //   .then((userRecord) => {
-    //     console.log("User successfully verified:", userRecord.toJSON());
-    //     return res.status(200).send({
-    //       status: true,
-    //       message: "User verified successfully",
-    //       result: userRecord.toJSON(),
-    //     });
-    //   });
-    // // .catch((error) => {
-    //   console.error("Error verifying user:", error);
-    //   return res.status(400).send({
-    //     status: false,
-    //     message: "Token is required",
-    //     result: null,
-    //   });
-    // });
-//     return "verified done";
-//   } catch (error) {
-//     console.error("Error decoding or verifying token:", error);
-//     return res.status(400).send({
-//       status: false,
-//       message: "Something went wrong",
-//       error,
-//     });
-//   }
-// });
-//     // Use the UID from the decoded token to verify the user in Firebase Authentication
-//     auth
-//       .updateUser(decodedToken.uid, { emailVerified: true })
-//       .then((userRecord) => {
-//         console.log("User successfully verified:", userRecord.toJSON());
-//         return res.status(200).send({
-//           status: true,
-//           message: "User verified successfully",
-//           result: userRecord.toJSON(),
-//         });
-//       });
-//     // .catch((error) => {
-//     //   console.error("Error verifying user:", error);
-//     //   return res.status(400).send({
-//     //     status: false,
-//     //     message: "Token is required",
-//     //     result: null,
-//     //   });
-//     // });
-//     return "verified done";
-//   } catch (error) {
-//     console.error("Error decoding or verifying token:", error);
-//     return res.status(400).send({
-//       status: false,
-//       message: "Something went wrong",
-//       error,
-//     });
-//   }
-// });
+    console.log("decode token : ", decodedToken);
+    console.log("decodedToken.uid : ", decodedToken.uid)
+    auth
+      .updateUser(decodedToken.uid, { emailVerified: true })
+      .then((userRecord) => {
+        console.log("User successfully verified:", userRecord.toJSON());
+        let userData: any = userRecord.toJSON()
+        if (userData?.emailVerified == true) {
+          const successTemplate = newUserVerifySuccessTemplate();
+          res.send(successTemplate);
+        } 
+      })
+  }
+  catch (error: any) {
+    console.error("Error verifying user:", error);
+    const failureTemplate = newUserVerifyFailureTemplate();
+    return res.status(400).send(failureTemplate);
+  }
+});
+
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -251,11 +212,7 @@ app.get("/calculatePairCPVI", async (req, res) => {
 
 exports.api = functions.https.onRequest(main);
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL:
-    "https://coinparliament-51ae1-default-rtdb.europe-west1.firebasedatabase.app",
-});
+
 
 exports.getAccessToken = () =>
   new Promise(function (resolve, reject) {
@@ -320,9 +277,13 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
     console.error("Error sending verification link:", error);
     return { error }
   }
-
 });
 
+
+exports.pushNotificationOnCallbackURL = functions.https.onCall(async () => {
+  const getResponseFromPushNotificationcallBackURL = await createPushNotificationOnCallbackURL
+  console.info("getResponseFromPushNotificationcallBackURL", getResponseFromPushNotificationcallBackURL)
+})
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
@@ -378,28 +339,32 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   };
   try {
     console.log("new user >>>", userData, user.uid);
-    const newUser = await admin
+    const newUser: any = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
+
+    //Send Welcome Mail To User
+    await sendEmail(
+      userData.email,
+      "Welcome To Coin Parliament!",
+      userWelcomeEmailTemplate(`${userData.userName ? userData.userName : 'user'}`, env.BASE_SITE_URL)
+    );
+
+    const getUserEmail: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUserEmail.email);
+    await sendEmailVerificationLink(getUserEmail.email);
+
     return newUser;
   } catch (e) {
     console.log("create user Error....", e);
     return false;
   }
 });
-// user's email verification link
-// exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
-//   const { email } = data;
-//   return await sendEmailVerificationLink(email);
-// });
 
-// exports.verifyUserWithToken = functions.https.onCall(async (data) => {
-//   const { token } = data;
-//   return await verifyUserWithToken(token);
-// });
-// temporarily used to add add keys to the collection
 exports.addNewKeysInCollection = functions.https.onCall(async () => {
   try {
     const getAllUsers = (
@@ -465,7 +430,7 @@ exports.isLoggedInFromVoteToEarn = functions.https.onCall(async (data) => {
   const tokenForLogin = await admin
     .auth()
     .createCustomToken(getUser[0].uid)
-    .then((token) => {
+    .then((token: any) => {
       // Send the custom token to the client
       console.log("Custom Token:", token);
       return token;
@@ -752,14 +717,7 @@ exports.sendCustomNotification = functions.https.onCall(async (requestBody) => {
   await sendCustomNotificationOnSpecificUsers(requestBody);
 });
 
-// 5 minutes cron job
-exports.pendingPaymentSettlement = functions.pubsub
-  .schedule("0 0 */1 * *")
-  .onRun(async () => {
-    console.log("pendingPaymentSettlement start");
-    const currentTimeStamp = Date.now();
-    await setPaymentSchedulingByCronJob(currentTimeStamp);
-  });
+
 
 exports.observeTopics = functions.https.onCall(async (data, context) => {
   const { leaders = [] } = data as { leaders: string[] };
@@ -825,19 +783,8 @@ exports.onUpdateUser = functions.firestore
     const before = snapshot.before.data() as UserProps;
     const after = snapshot.after.data() as UserProps;
 
-    // const secret = 'your-secret-key';
-    // const options = { expiresIn: '1h' };
-
-    // const getJWTWebToken = jwt.sign(after, env.JWT_AUTH_SECRET, options);
-    // console.log("getJWTWebToken : ", getJWTWebToken);
-    // const userLink = `${env.BASE_SITE_URL}/api/v1/user/verified?token=${getJWTWebToken}`
-    // console.info("Send Email Begins");
-    // await sendEmail(
-    //   after.email,
-    //   "Verify Your Account",
-    //   userVerifyEmailTemplate(after.email, userLink, "Your account has been created. Please verify your email for login.")
-    // );
-    // console.info("Send Email Successfully");
+    console.info("after", after)
+    console.info("Send Email Successfully")
 
     await addReward(snapshot.after.id, before, after);
 
@@ -845,14 +792,6 @@ exports.onUpdateUser = functions.firestore
     if (!should || !amount) {
       return;
     }
-
-    // console.info("Send Email Begins")
-    // await sendEmail(
-    //   "demoemail@yopmail.com",
-    //   "Verify Your Account",
-    //   userVerifyEmailTemplate("demoemail@yopmail.com", "123456889", "Your account has been created")
-    // );
-    // console.info("Send Email Successfully")
 
     await addCpmTransaction(snapshot.after.id, amount);
   });
@@ -901,68 +840,7 @@ exports.assignReferrer = functions.https.onCall(async (data) => {
   }
 });
 
-exports.updateLeadersCron = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    try {
-      await setLeaders();
-    } catch (e) {
-      console.log(e);
-    }
-  });
 
-//----------Start Notifications scheduler-------------
-exports.noActivityIn24Hours = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    console.log("---Start noActivityIn24Hours -------");
-    await checkInActivityOfVotesAndSendNotification();
-    console.log("---End noActivityIn24Hours -------");
-  });
-
-exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
-  console.log("---Start noActivityIn24Hours -------");
-  await checkInActivityOfVotesAndSendNotification();
-  console.log("---End noActivityIn24Hours -------");
-});
-
-exports.getCoinCurrentAndPastDataDifference = functions.pubsub
-  .schedule("0 */6 * * *")
-  // .schedule("*/5 * * * *")
-  .onRun(async () => {
-    const timeDifference = 6;
-    console.log("---Start getCoinCurrentAndPastDataDifference -------");
-    await getCoinCurrentAndPastDataDifference(timeDifference);
-    console.log("---End getCoinCurrentAndPastDataDifference -------");
-  });
-
-exports.checkTitleUpgrade24Hour = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    console.log("---Start checkTitleUpgrade24Hour -------");
-    const date = new Date();
-    const nowTime = date.getTime();
-    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
-    // const yesterdayTime = nowTime - 7 * 60 * 1000;
-    await checkUserStatusIn24hrs(nowTime, yesterdayTime);
-    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
-    console.log("---End checkTitleUpgrade24Hour -------");
-  });
-
-// for Testing purposes
-exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
-  console.log("------- call set leader function -------");
-  await setLeaders();
-  console.log("set leader Done");
-  const { todayTime, yesterdayTime } = data;
-  // const date = new Date();
-  // const nowTime = date.getTime();
-  // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
-  await checkUserStatusIn24hrs(todayTime, yesterdayTime);
-  await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
-});
-
-//----------End Notifications scheduler-------------
 
 exports.getLeadersByCoin = functions.https.onCall(async (data) => {
   const { symbol } = data as { symbol: string };
@@ -1071,49 +949,6 @@ exports.cardHolderListing = functions.https.onCall(async (data) => {
   console.log("userList --->", userList);
   return userList;
 });
-
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 10 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
-
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 15 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
-
-exports.prepareEveryFiveMinuteCPVI = functions.pubsub
-  .schedule("*/3 * * * *")
-  .onRun(async () => {
-    await Promise.all([await fetchAskBidCoin()]);
-  });
-
-exports.prepareHourlyCPVI = functions.pubsub
-  .schedule("0 * * * *")
-  .onRun(async () => {
-    await prepareCPVI(1, "hourly");
-  });
-
-exports.prepare4HourlyCPVI = functions.pubsub
-  .schedule("0 */4 * * *")
-  .onRun(async () => {
-    await prepareCPVI(4, "fourHourly");
-  });
-
-exports.prepare24HourlyCPVI = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    await prepareCPVI(24, "daily");
-  });
-
-exports.prepareWeeklyCPVI = functions.pubsub
-  .schedule("0 0 * * 0")
-  .onRun(async () => {
-    await prepareCPVI(24 * 7, "weekly");
-  });
 
 exports.getCPVIForVote = functions.https.onCall(async (data) => {
   // console.log("getCPVIForVote(data) =>", data);
@@ -1401,20 +1236,6 @@ exports.addPaxTransactionWithPendingStatus = functions.https.onCall(
   }
 );
 
-// exports.getPAXPendingAndCompletePax = functions.pubsub
-//   .schedule("*/5 * * * *")
-//   .onRun(async () => {
-//     const getPendingPax = await getPendingPaxTransaction();
-//     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
-//     console.log("getUserIds", getUserIds);
-//     const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
-//     // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
-//     // call payment method here
-//     console.log("getUsersWellDAddress : ", getUsersWellDAddress);
-//     return null
-//   });
-
-//
 
 exports.addPaxInPendingKEY = functions.https.onCall(async (data: any) => {
   try {
@@ -1453,3 +1274,208 @@ exports.addPaxInPendingKEY = functions.https.onCall(async (data: any) => {
     };
   }
 });
+
+
+// ******************* START CRON JOBS ****************
+// 5 minutes cron job
+exports.pendingPaymentSettlement = functions.pubsub
+  .schedule("0 0 */1 * *")
+  .onRun(async () => {
+    console.log("pendingPaymentSettlement start");
+    const currentTimeStamp = Date.now();
+    await setPaymentSchedulingByCronJob(currentTimeStamp);
+  });
+
+exports.updateLeadersCron = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    try {
+      await setLeaders();
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
+exports.getUpdatedDataFromWebsocket = functions.pubsub
+  .schedule("every 10 minutes")
+  .onRun(async () => {
+    await getUpdatedDataFromWebsocket();
+  });
+
+exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+  .schedule("every 15 minutes")
+  .onRun(async () => {
+    await getAllUpdated24HourRecords();
+    await removeTheBefore24HoursData();
+  });
+
+//----------Start Notifications scheduler-------------
+exports.noActivityIn24Hours = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    console.log("---Start noActivityIn24Hours -------");
+    await checkInActivityOfVotesAndSendNotification();
+    console.log("---End noActivityIn24Hours -------");
+  });
+
+exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
+  console.log("---Start noActivityIn24Hours -------");
+  await checkInActivityOfVotesAndSendNotification();
+  console.log("---End noActivityIn24Hours -------");
+});
+
+exports.getCoinCurrentAndPastDataDifference = functions.pubsub
+  .schedule("0 */6 * * *")
+  // .schedule("*/5 * * * *")
+  .onRun(async () => {
+    const timeDifference = 6;
+    console.log("---Start getCoinCurrentAndPastDataDifference -------");
+    await getCoinCurrentAndPastDataDifference(timeDifference);
+    console.log("---End getCoinCurrentAndPastDataDifference -------");
+  });
+
+exports.checkTitleUpgrade24Hour = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    console.log("---Start checkTitleUpgrade24Hour -------");
+    const date = new Date();
+    const nowTime = date.getTime();
+    const yesterdayTime = nowTime - 24 * 60 * 60 * 1000;
+    // const yesterdayTime = nowTime - 7 * 60 * 1000;
+    await checkUserStatusIn24hrs(nowTime, yesterdayTime);
+    await getFollowersFollowingsAndVoteCoin(nowTime, yesterdayTime);
+    console.log("---End checkTitleUpgrade24Hour -------");
+  });
+
+// for Testing purposes
+exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
+  console.log("------- call set leader function -------");
+  await setLeaders();
+  console.log("set leader Done");
+  const { todayTime, yesterdayTime } = data;
+  // const date = new Date();
+  // const nowTime = date.getTime();
+  // const yesterdayTime = nowTime - (24 * 60 * 60 * 1000)
+  await checkUserStatusIn24hrs(todayTime, yesterdayTime);
+  await getFollowersFollowingsAndVoteCoin(todayTime, yesterdayTime);
+});
+
+//----------End Notifications scheduler-------------
+
+//----------Start CPVI scheduler-------------
+exports.prepareEveryFiveMinuteCPVI = functions.pubsub
+  .schedule("*/3 * * * *")
+  .onRun(async () => {
+    await Promise.all([await fetchAskBidCoin()]);
+  });
+
+exports.prepareHourlyCPVI = functions.pubsub
+  .schedule("0 * * * *")
+  .onRun(async () => {
+    await prepareCPVI(1, "hourly");
+  });
+
+exports.prepare4HourlyCPVI = functions.pubsub
+  .schedule("0 */4 * * *")
+  .onRun(async () => {
+    await prepareCPVI(4, "fourHourly");
+  });
+
+exports.prepare24HourlyCPVI = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    await prepareCPVI(24, "daily");
+  });
+
+exports.prepareWeeklyCPVI = functions.pubsub
+  .schedule("0 0 * * 0")
+  .onRun(async () => {
+    await prepareCPVI(24 * 7, "weekly");
+  });
+//----------END CPVI scheduler-------------
+
+
+// -------- pax distribution -----------
+// ------ 24 hours --------
+exports.paxDistribution = functions.pubsub
+  .schedule("0 0 * * *")
+  .onRun(async () => {
+    try {
+      const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
+      const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+      console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
+      if (getIsVirtualTransaction.length == 0) {
+        return {
+          status: true,
+          message: "pax transaction is updated successfully",
+          result: getIsVirtualTransaction
+        }
+      }
+      for (let index = 0; index < getIsVirtualTransaction.length; index++) {
+        let pax = getIsVirtualTransaction[index];
+        await admin.firestore().collection('paxTransaction').doc(pax.id).set({
+          isVirtual: admin.firestore.FieldValue.delete()
+        }, { merge: true });
+      }
+      return {
+        status: true,
+        message: "pax transaction is updated successfully",
+        result: null
+      }
+    } catch (error: any) {
+      errorLogging("paxDistribution", "ERROR", error)
+      return {
+        status: false,
+        message: "Something went wrong",
+        result: null
+      }
+    }
+  });
+
+exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
+  try {
+    const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
+    const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+    console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
+    if (getIsVirtualTransaction.length == 0) {
+      return {
+        status: true,
+        message: "pax transaction is updated successfully",
+        result: getIsVirtualTransaction
+      }
+    }
+    for (let index = 0; index < getIsVirtualTransaction.length; index++) {
+      let pax = getIsVirtualTransaction[index];
+      await admin.firestore().collection('paxTransaction').doc(pax.id).set({
+        isVirtual: admin.firestore.FieldValue.delete()
+      }, { merge: true });
+    }
+    return {
+      status: true,
+      message: "pax transaction is updated successfully",
+      result: null
+    }
+  } catch (error: any) {
+    errorLogging("paxDistribution", "ERROR", error)
+    return {
+      status: false,
+      message: "Something went wrong",
+      result: null
+    }
+  }
+});
+
+// exports.getPAXPendingAndCompletePax = functions.pubsub
+//   .schedule("*/5 * * * *")
+//   .onRun(async () => {
+//     const getPendingPax = await getPendingPaxTransaction();
+//     const getUserIds = getPendingPax?.result.map((transaction: any) => transaction.userId);
+//     console.log("getUserIds", getUserIds);
+//     const getUsersWellDAddress = getUserIds ? await checkUsersWellDAddress(getUserIds) : "";
+//     // getUsersWellDAddress is give those usersIds who have panding payments and Pax-address
+//     // call payment method here
+//     console.log("getUsersWellDAddress : ", getUsersWellDAddress);
+//     return null
+//   });
+
+// ******************* END CRON JOBS ****************
