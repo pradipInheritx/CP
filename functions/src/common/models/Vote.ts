@@ -266,6 +266,28 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
     if (99 < checkCMP && checkCMP < 200) {
       let getResultAfterSentPaxToUser: any;
       let getResultAfterSentPaxToAdmin: any;
+      // for short time and testing purposes
+      // try to update the user total and claim instead of addRewards function
+      const newTotal = getUser?.rewardStatistics?.total + 1;
+      const newClaimed = getUser?.rewardStatistics?.claimed || 0;
+      console.log("newTotal || newClaimed : ", newTotal, " || ",newClaimed);
+      admin.firestore()
+        .collection("users")
+        .doc(paxDetails.userId)
+        .set(
+          {
+            rewardStatistics: {
+              total:newTotal,
+              claimed: newClaimed,
+            },
+          },
+          { merge: true }
+        ).then(() => {
+          console.log("Total and Claimed are updated Successfully");
+        }).catch(() => {
+          console.error("Failed to update the total and claimed");
+        });
+        // end testing purposes code
       if (paxDetails.isUserUpgraded === true) {
         // Call to user mintFor Address
         getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDetails);
