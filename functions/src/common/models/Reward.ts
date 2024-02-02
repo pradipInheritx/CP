@@ -663,8 +663,8 @@ export const addReward: (
 
   const changed =
     (after.voteStatistics?.score || 0) > (before.voteStatistics?.score || 0);
-  console.log("BEFORE VOTE : ", before);
-  console.log("AFTER VOTE : ", after);
+  console.log("BEFORE VOTE : ", {id : before.uid, rewardStatics :  before.rewardStatistics, voteStatistics : before.voteStatistics});
+  console.log("AFTER VOTE : ", {id : before.uid, rewardStatics :  before.rewardStatistics, voteStatistics : before.voteStatistics});
   console.log("CHANGED BETWEEN VOTE : ", changed);
   if (!changed) {
     return;
