@@ -40,12 +40,13 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   query,
   setDoc,
   where,
 } from "firebase/firestore";
-import { auth, db, functions, messaging } from "./firebase";
+import { auth, db, firestore, functions, messaging } from "./firebase";
 import Admin from "./Pages/Admin";
 import { GetVotesResponse, TimeFrame, VoteResultProps } from "./common/models/Vote";
 import AppContext, {
@@ -871,46 +872,73 @@ function App() {
 
 
 //   }, [userInfo?.voteStatistics?.total])
-  // console.log('usermfa', userInfo)  
-  useEffect(() => {
-    // @ts-ignore
-    console.log(voteNumberEnd, userInfo?.lastVoteTime  ,"voteNumberEnd")
-    // @ts-ignore
-    if (voteNumberEnd == 0 && user?.uid && userInfo?.lastVoteTime  ) {
+  // console.log('usermfa', userInfo)
+  const fetchVotesLast24Hours = async () => {
+    if (voteNumberEnd == 0 && user?.uid && userInfo?.lastVoteTime) {
       // @ts-ignore
       let remaining = (userInfo?.lastVoteTime + voteRules.timeLimit * 1000) - Date.now();
       // @ts-ignore
       setRemainingTimer(userInfo?.lastVoteTime + voteRules.timeLimit * 1000)
-      console.log(remaining,"remaining")
-      setTimeout(() => {
-        const usereData = firebase
-          .firestore()
-          .collection("users")
-          .doc(user?.uid)
-          .set({ "voteValue": voteRules?.maxVotes, lastVoteTime: 0 }, { merge: true });
+      console.log(remaining, "remaining")
+      setTimeout(() => {        
+        const userDocRef = doc(firestore, 'users', user?.uid);
+        try {
+          setDoc(userDocRef, {
+            voteValue: voteRules?.maxVotes,
+            lastVoteTime: 0
+          }, { merge: true });
+        } catch (error) {
+          console.error('Error updating user data:', error);
+        }
       }, remaining);
 
       const currentTime = firebase.firestore.Timestamp.fromDate(new Date());
       // const last24Hour = currentTime.toMillis() - 24  60  60 * 1000;
       const last24Hour = currentTime.toMillis() - voteRules.timeLimit * 1000;
-      const votesLast24HoursRef = firebase
-        .firestore()
-        .collection("votes")
-        .where("userId", "==", user?.uid)
-        .where("voteTime", ">=", last24Hour)
-        .where("voteTime", "<=", Date.now());
-      votesLast24HoursRef.get()
-        .then((snapshot) => {
-          console.log(voteNumberEnd)
-          console.log("i am working ")
-          setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
-          const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)          
-          // @ts-ignore          
-        }).catch((error) => {
-          console.log('extravoteError', error);
-        });
+      // const votesLast24HoursRef = firebase
+      //   .firestore()
+      //   .collection("votes")
+      //   .where("userId", "==", user?.uid)
+      //   .where("voteTime", ">=", last24Hour)
+      //   .where("voteTime", "<=", Date.now());
+      // votesLast24HoursRef.get()
+      //   .then((snapshot) => {
+      //     console.log(voteNumberEnd)
+      //     console.log("i am working ")
+      //     setVotesLast24Hours(snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps));
+      //     const data = snapshot.docs.map((doc) => doc.data() as unknown as VoteResultProps)
+      //     // @ts-ignore
+      //   }).catch((error) => {
+      //     console.log('extravoteError', error);
+      //   });
+    
+      const votesCollectionRef = collection(firestore, 'votes');    
+      try {
+        const q = query(
+          votesCollectionRef,
+          where('userId', '==', user?.uid),
+          where('voteTime', '>=', last24Hour),
+          where('voteTime', '<=', Date.now())
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        setVotesLast24Hours(
+          querySnapshot.docs.map((doc:any) => doc.data() as unknown as VoteResultProps)
+        );
+        // If you need the data separately
+        const data = querySnapshot.docs.map((doc:any) => doc.data() as unknown as VoteResultProps);
+        console.log(data);
+      } catch (error) {
+        console.error('Error fetching votes in the last 24 hours:', error);
+      }
+    
     }
-// @ts-ignore
+  };
+  useEffect(() => {
+    if (user?.uid) {      
+      fetchVotesLast24Hours()
+    }
   }, [voteNumberEnd, userInfo?.lastVoteTime])
 
 

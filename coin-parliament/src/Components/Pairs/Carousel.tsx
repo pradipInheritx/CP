@@ -185,8 +185,7 @@ const Carousel = ({
               className={`carousel-item ${i === active ? "active" : ""}`}
               key={i}
 
-            >
-              {console.log(arr,"arrcheck")}
+            >            
               {arr?.length > 0 ?<CardsContainer
                 cols={cols}
                 gap={gap}

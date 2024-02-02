@@ -24,9 +24,9 @@ import ManagersContext from "../Contexts/ManagersContext";
 import Countdown from "react-countdown";
 import { getFollowerInfo } from "../Contexts/FollowersInfo";
 
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from "firebase/firestore";
 import { httpsCallable } from "firebase/functions";
-import { db, functions } from "../firebase";
+import { db, firestore, functions } from "../firebase";
 import firebase from "firebase/compat/app";
 import AddFollower from "./icons/AddFollower";
 import Following from "./icons/Following";
@@ -252,7 +252,7 @@ const Header = ({
 	// console.log(urlName,"checkurlName")
 	const prevCountRef = useRef(voteNumber)
 
-	const getFollowerData = () => {
+	const getFollowerData = async () => {
 
 		// const getCollectionType = firebase
 		// 	.firestore()
@@ -264,10 +264,24 @@ const Header = ({
 		// 	}).catch((error) => {
 		// 		console.log(error, "error");
 		// 	});
+			const userCollection = collection(firestore, 'users');
+			try {
+				const q = query(userCollection, where('uid', '==', followerUserId));
+				const querySnapshot = await getDocs(q);
+
+				querySnapshot.forEach((doc) => {
+					console.log(doc.data(),"followerUserId")
+					setFollowerInfo(doc.data());
+				});
+			} catch (error) {
+				console.error('Error fetching follower info:', error);
+			}		
 	}	
 
 	useEffect(() => {
-		getFollowerData()
+		if (followerUserId) {			
+			getFollowerData()
+		}
 	}, [followerUserId])
 
 	useEffect(() => {
@@ -284,12 +298,18 @@ const Header = ({
 		if (Number(userInfo?.voteValue) == 0 && user?.uid && !login && !userInfo?.lastVoteTime) {
 			console.log("yes i am working", Date.now() )
 			const liveValue = Date.now()
-			const usereData = firebase
-				.firestore()
-				.collection("users")
-				.doc(user?.uid)
-				.set({ "lastVoteTime": liveValue}, { merge: true });
-
+			// const usereData = firebase
+			// 	.firestore()
+			// 	.collection("users")
+			// 	.doc(user?.uid)
+			// 	.set({ "lastVoteTime": liveValue}, { merge: true });
+			const userDocRef = doc(firestore, 'users', user?.uid)
+			try {
+				 setDoc(userDocRef, { lastVoteTime: liveValue }, { merge: true });
+				console.log("User data updated successfully!");
+			} catch (error) {
+				console.error("Error updating user data:", error);
+			}
 		} else {
 			setAfterVotePopup(false);
 		}

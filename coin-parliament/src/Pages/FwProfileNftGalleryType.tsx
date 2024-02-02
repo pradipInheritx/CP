@@ -13,8 +13,8 @@ import "./styles.css";
 import { Container } from "react-bootstrap";
 import SwiperBar from "./SwiperBar";
 import { Link, useParams } from "react-router-dom";
-import { db } from "../firebase";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db, firestore } from "../firebase";
+import { collection, doc, getDoc, getDocs, onSnapshot, query, where } from "firebase/firestore";
 import firebase from "firebase/compat/app";
 import UserContext from "../Contexts/User";
 import AppContext from "../Contexts/AppContext";
@@ -142,104 +142,187 @@ const FwProfileNftGalleryType = () => {
 
   const [nftAlbumData, setNftAlbumData] = useState<any>();
 
-  const getNftCard = () => {
-    const getCards = firebase
-      .firestore()
-      .collection("nft_gallery")
-    getCards.get()
-      .then((snapshot) => {
-        let allcollection = snapshot.docs.map((doc) => doc.data())
+  // const getNftCard = () => {
+  //   const getCards = firebase
+  //     .firestore()
+  //     .collection("nft_gallery")
+  //   getCards.get()
+  //     .then((snapshot) => {
+  //       let allcollection = snapshot.docs.map((doc) => doc.data())
 
-        allcollection?.map((card) => {
-          if (card?.collectionName == type) {
-            setNftAlbumData(card?.setDetails)
-          }
-        })
-      }).catch((error) => {
-        console.log(error, "error");
-      })
-      ;
-  }
+  //       allcollection?.map((card) => {
+  //         if (card?.collectionName == type) {
+  //           setNftAlbumData(card?.setDetails)
+  //         }
+  //       })
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     })
+  //     ;
+  // }
+
+  const getNftCard = async () => {
+    try {
+      const nftGalleryCollection = collection(firestore, 'nft_gallery');
+      const querySnapshot = await getDocs(nftGalleryCollection);
+
+      const allCollections = querySnapshot.docs.map((doc) => doc.data());
+
+      allCollections?.forEach((card) => {
+        if (card?.collectionName === type) {
+          setNftAlbumData(card?.setDetails);
+        }
+      });
+    } catch (error) {
+      console.error('getNftCard Error:', error);
+    }
+  };
+
+
+  // const getAllRewardsOfUser = async (uid: string) => {
+
+  //   var winCards: {
+  //     firstRewardCard: string,
+  //     firstRewardCardCollection: string,
+  //     firstRewardCardId: number,
+  //     firstRewardCardSerialNo: string,
+  //     firstRewardCardType: string,
+  //     secondRewardExtraVotes: number,
+  //     thirdRewardDiamonds: number
+
+  //   }[] = []
+  //   await firebase
+  //     .firestore()
+  //     .collection("reward_transactions")
+  //     .where("user", "==", uid && uid)
+  //     .get()
+  //     .then((doc: any) => {
+
+  //       doc.forEach((cards: any, index: number) => {
+
+  //         // winCards.push(cards.data().)
+
+  //         winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
+
+  //       })
+  //     })
+  //     .catch((error: any) => {
+  //       console.log("getAllRewardsOfUser Error", error)
+  //     })
+
+  //   setWinerCard(winCards)
+  // }
 
 
   const getAllRewardsOfUser = async (uid: string) => {
+      var winCards: {
+        firstRewardCard: string,
+        firstRewardCardCollection: string,
+        firstRewardCardId: number,
+        firstRewardCardSerialNo: string,
+        firstRewardCardType: string,
+        secondRewardExtraVotes: number,
+        thirdRewardDiamonds: number
 
-    var winCards: {
-      firstRewardCard: string,
-      firstRewardCardCollection: string,
-      firstRewardCardId: number,
-      firstRewardCardSerialNo: string,
-      firstRewardCardType: string,
-      secondRewardExtraVotes: number,
-      thirdRewardDiamonds: number
+      }[] = []
+    try {
+      const rewardTransactionsCollection = collection(firestore, 'reward_transactions');
+      const q = query(rewardTransactionsCollection, where('user', '==', uid));
 
-    }[] = []
-    await firebase
-      .firestore()
-      .collection("reward_transactions")
-      .where("user", "==", uid && uid)
-      .get()
-      .then((doc: any) => {
+      const querySnapshot = await getDocs(q);
 
-        doc.forEach((cards: any, index: number) => {
+      const winCards = querySnapshot.docs.map((cards) => ({
+        ...cards.data().winData,
+        ...cards.data().transactionTime
+      }));
 
-          // winCards.push(cards.data().)
-
-          winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
-
-        })
-      })
-      .catch((error: any) => {
-        console.log("getAllRewardsOfUser Error", error)
-      })
-
-    setWinerCard(winCards)
-  }
+      setWinerCard(winCards);
+    } catch (error) {
+      console.error('getAllRewardsOfUser Error', error);
+    }
+  };
 
 
+  // const onCollectionChange = () => {
 
-  const onCollectionChange = () => {
+  //   const getCollectionType = firebase
+  //     .firestore()
+  //     .collection("nft_gallery")
+  //     .where("collectionName", "==", type)
+  //   getCollectionType.get()
+  //     .then((snapshot) => {
 
-    const getCollectionType = firebase
-      .firestore()
-      .collection("nft_gallery")
-      .where("collectionName", "==", type)
-    getCollectionType.get()
-      .then((snapshot) => {
+  //       const data: any = []
+  //       snapshot.forEach((doc) => {
+  //         data.push({ id: doc.id, ...doc.data() });
+  //       });
+  //       setAllCardArray(data)
+  //       const cards: any = [];
+  //       const idSets: any = [];
+  //       const getCardName: any = [];
+  //       data.forEach((element: any) => {
 
-        const data: any = []
-        snapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data() });
-        });
-        setAllCardArray(data)
-        const cards: any = [];
-        const idSets: any = [];
-        const getCardName: any = [];
-        data.forEach((element: any) => {
+  //         const collectionId = element.collectionId;
+  //         const collectionName = element.collectionName;
+  //         const collectionDocId = element.id;
 
-          const collectionId = element.collectionId;
-          const collectionName = element.collectionName;
-          const collectionDocId = element.id;
+  //         element.setDetails.forEach((setDetail: any) => {
+  //           const setId = setDetail.id;
+  //           const setName = setDetail?.name;
+  //           idSets.push({ setId, setName })
+  //           setDetail.cards.forEach((cardDetail: any) => {
+  //             getCardName.push({ name: cardDetail.name })
+  //             cards.push({ collectionId, collectionName, collectionDocId, setId, setName, ...cardDetail });
+  //           });
+  //         });
+  //       });
+  //       setAllCard(cards)
+  //       setSetsValue(idSets)
+  //       setCardName(getCardName)
 
-          element.setDetails.forEach((setDetail: any) => {
-            const setId = setDetail.id;
-            const setName = setDetail?.name;
-            idSets.push({ setId, setName })
-            setDetail.cards.forEach((cardDetail: any) => {
-              getCardName.push({ name: cardDetail.name })
-              cards.push({ collectionId, collectionName, collectionDocId, setId, setName, ...cardDetail });
-            });
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     });
+
+  // }
+
+  const onCollectionChange = async() => {
+    try {
+      const nftGalleryCollection = collection(firestore, 'nft_gallery');
+      const q = query(nftGalleryCollection, where('collectionName', '==', type));
+
+      const querySnapshot = await getDocs(q);
+
+      const data = [];
+      const cards :any= [];
+      const idSets: any = [];
+      const getCardName: any = [];
+
+      querySnapshot.forEach((doc) => {
+        const element = { id: doc.id, ...doc.data() };
+        data.push(element);
+// @ts-ignore
+        element?.setDetails?.forEach((setDetail:any) => {
+          const setId = setDetail.id;
+          const setName = setDetail?.name;
+          idSets.push({ setId, setName });
+
+          setDetail.cards.forEach((cardDetail:any) => {
+            getCardName.push({ name: cardDetail.name });
+            // @ts-ignore
+            cards.push({ collectionId: element?.collectionId, collectionName: element?.collectionName, collectionDocId: element.id, setId, setName, ...cardDetail });
           });
         });
-        setAllCard(cards)
-        setSetsValue(idSets)
-        setCardName(getCardName)
-
-      }).catch((error) => {
-        console.log(error, "error");
       });
 
-  }
+      setAllCardArray(cards);
+      setAllCard(cards);
+      setSetsValue(idSets);
+      setCardName(getCardName);
+    } catch (error) {
+      console.log('onCollectionChange Error', error);
+    }
+  };
   const onSearch = (searchTerm: any) => {
     if (searchTerm?.length) {
       setCardShow(true)

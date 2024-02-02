@@ -9,14 +9,14 @@ import Button, { Buttons } from "../Atoms/Button/Button";
 import styled from "styled-components";
 import { Border1pxEbb, BorderRadius4px } from "../../styledMixins";
 import { capitalize } from "lodash";
-import { functions } from "../../firebase";
+import { firestore, functions } from "../../firebase";
 import { httpsCallable } from "firebase/functions";
 import NotificationContext, { ToastType } from "../../Contexts/Notification";
 import AppContext from "../../Contexts/AppContext";
 import { userConverter } from "../../common/models/User";
 import firebase from "firebase/compat/app";
 import UserContext from "../../Contexts/User";
-import { doc, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { userInfo } from "os";
 const Generate = styled(Button)`
@@ -72,17 +72,13 @@ const FirstTimeLogin = ({ generate, saveUsername, setFirstTimeAvatarSelection }:
 
   const checkValidUsername = async (username: string) => {
     console.log("firebasefun");
-    const users = await firebase
-      .firestore()
-      .collection("users")
-      .get();
-    const usernames = users.docs.map((u) => u.data().userName).filter(u => u !== (userInfo?.userName || ''));
+    const usersCollectionRef = collection(firestore, 'users');
+    const usersSnapshot = await getDocs(usersCollectionRef);
+
+    const usernames = usersSnapshot.docs.map((u) => u.data().userName).filter(u => u !== (userInfo?.userName || ''));
     console.log("firebase", usernames);
-    return (
-      !usernames.includes(username)/*  &&
-      username.length >= 8 &&
-      username.length <= "unique_username".length */
-    );
+
+    return !usernames.includes(username);
   };
 
   useEffect(() => {

@@ -30,9 +30,10 @@ import { useNavigate } from "react-router-dom";
 import giftImage from "../../assets/images/giftCard.gif"
 import popupbg from "../../assets/images/popupbg.png"
 import popupline from "../../assets/images/popupline.png"
-import { doc } from "firebase/firestore";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import VideoPopup from "Pages/VideoPopup";
 import UserContext from "Contexts/User";
+import { firestore } from "../../firebase";
 
 type MintingProps = {
   cardType?: any;
@@ -121,78 +122,138 @@ function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShar
 
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    console.log(rewardTimer?.data?.firstRewardCardId, "rewardTimer")
-    const getCardDetails = firebase
-      .firestore()
+  //   console.log(rewardTimer?.data?.firstRewardCardId, "rewardTimer")
+  //   const getCardDetails = firebase
+  //     .firestore()
 
-      .collection("cardsDetails")
-      .where("cardId", "==", rewardTimer?.data?.firstRewardCardId)
-    getCardDetails.get()
-      .then((snapshot) => {
-        const data: any = []
-        snapshot.forEach((doc) => {
-          let cardData = doc.data()
-          data.push({
-            cardType: cardData?.cardType,
-            setName: cardData?.setName,
-            cardName: cardData?.cardName,
-            albumName: cardData?.albumName,
-            noOfCardHolders: cardData?.noOfCardHolders,
-            cardId: cardData?.cardId,
-            id: cardData?.cardId,
-            totalQuantity: cardData?.totalQuantity,
-            cardImageUrl: cardData?.cardImageUrl,
-            cardVideoUrl: cardData?.cardVideoUrl,
-            setId: cardData?.setId,
-          });
-        });
-        setFulldata(data[0])
-        console.log(data, "rewardcarddata")
-        // setAllCardArrayNew(data)
-        console.log(data, "allcardData")
-      }).catch((error) => {
-        console.log(error, "error");
-      });
+  //     .collection("cardsDetails")
+  //     .where("cardId", "==", rewardTimer?.data?.firstRewardCardId)
+  //   getCardDetails.get()
+  //     .then((snapshot) => {
+  //       const data: any = []
+  //       snapshot.forEach((doc) => {
+  //         let cardData = doc.data()
+  //         data.push({
+  //           cardType: cardData?.cardType,
+  //           setName: cardData?.setName,
+  //           cardName: cardData?.cardName,
+  //           albumName: cardData?.albumName,
+  //           noOfCardHolders: cardData?.noOfCardHolders,
+  //           cardId: cardData?.cardId,
+  //           id: cardData?.cardId,
+  //           totalQuantity: cardData?.totalQuantity,
+  //           cardImageUrl: cardData?.cardImageUrl,
+  //           cardVideoUrl: cardData?.cardVideoUrl,
+  //           setId: cardData?.setId,
+  //         });
+  //       });
+  //       setFulldata(data[0])
+  //       console.log(data, "rewardcarddata")
+  //       // setAllCardArrayNew(data)
+  //       console.log(data, "allcardData")
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     });
 
-    const getTime = []
+  //   const getTime = []
 
-    const getRewardTransactions = firebase
-      .firestore()
-      .collection("reward_transactions")
-      .where("user", "==", user?.uid)
-    getRewardTransactions.get()
-      .then((doc: any) => {
+  //   const getRewardTransactions = firebase
+  //     .firestore()
+  //     .collection("reward_transactions")
+  //     .where("user", "==", user?.uid)
+  //   getRewardTransactions.get()
+  //     .then((doc: any) => {
 
-        doc.forEach((cards: any, index: number) => {
-          // winCards.push(cards.data().)
-          if (cards.data()?.winData?.firstRewardCardSerialNo == rewardTimer?.data?.firstRewardCardSerialNo) {
-            const date = new Date(cards.data()?.transactionTime?.seconds * 1000);
-            // console.log(cards.data()?.transactionTime?.seconds,"getMIntedTime")            
-            var getMIntedTime = date.toLocaleString()
-            setMintedTime(getMIntedTime)
-            // getTime.push(
-            //   { ...cards.data().winData, ...cards.data().transactionTime}
-            // )
+  //       doc.forEach((cards: any, index: number) => {
+  //         // winCards.push(cards.data().)
+  //         if (cards.data()?.winData?.firstRewardCardSerialNo == rewardTimer?.data?.firstRewardCardSerialNo) {
+  //           const date = new Date(cards.data()?.transactionTime?.seconds * 1000);
+  //           // console.log(cards.data()?.transactionTime?.seconds,"getMIntedTime")
+  //           var getMIntedTime = date.toLocaleString()
+  //           setMintedTime(getMIntedTime)
+  //           // getTime.push(
+  //           //   { ...cards.data().winData, ...cards.data().transactionTime}
+  //           // )
 
-          }
-        })
+  //         }
+  //       })
 
-        // console.log(getTime,"getTime")
-      })
-      .catch((error: any) => {
-        console.log("getAllRewardsOfUser Error", error)
-      })
+  //       // console.log(getTime,"getTime")
+  //     })
+  //     .catch((error: any) => {
+  //       console.log("getAllRewardsOfUser Error", error)
+  //     })
 
-    // const userRef = doc(db, "cardsDetails", rewardTimer?.data?.firstRewardCardId);
-    return () => {
+  //   // const userRef = doc(db, "cardsDetails", rewardTimer?.data?.firstRewardCardId);
+  //   return () => {
 
-    };
-  }, []);
+  //   };
+  // }, []);
 
 
   // console.log(mintedTime,"getMIntedTime")
+
+  
+  const cardsDetailsCollectionRef = collection(firestore, 'cardsDetails');
+  const rewardTransactionsCollectionRef = collection(firestore, 'reward_transactions');
+
+  const fetchData = async () => {
+    try {
+      // Fetch card details
+      const cardDetailsQuery = query(
+        cardsDetailsCollectionRef,
+        where('cardId', '==', rewardTimer?.data?.firstRewardCardId)
+      );
+      const cardDetailsSnapshot = await getDocs(cardDetailsQuery);
+
+      const cardData = cardDetailsSnapshot.docs.map((doc) => {
+        const cardDetails = doc.data();
+        return {
+          cardType: cardDetails?.cardType,
+          setName: cardDetails?.setName,
+          cardName: cardDetails?.cardName,
+          albumName: cardDetails?.albumName,
+          noOfCardHolders: cardDetails?.noOfCardHolders,
+          cardId: cardDetails?.cardId,
+          id: cardDetails?.cardId,
+          totalQuantity: cardDetails?.totalQuantity,
+          cardImageUrl: cardDetails?.cardImageUrl,
+          cardVideoUrl: cardDetails?.cardVideoUrl,
+          setId: cardDetails?.setId,
+        };
+      });
+// @ts-ignore
+      setFulldata(cardData[0]);
+      console.log(cardData, "rewardcarddata");
+
+      // Fetch reward transactions
+      const rewardTransactionsQuery = query(
+        rewardTransactionsCollectionRef,
+        where('user', '==', user?.uid)
+      );
+      const rewardTransactionsSnapshot = await getDocs(rewardTransactionsQuery);
+
+      rewardTransactionsSnapshot.forEach((cards) => {
+        if (cards.data()?.winData?.firstRewardCardSerialNo == rewardTimer?.data?.firstRewardCardSerialNo) {
+          const date = new Date(cards.data()?.transactionTime?.seconds * 1000);
+          var getMintedTime = date.toLocaleString();
+          setMintedTime(getMintedTime);
+        }
+      });
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Usage within a React component
+  useEffect(() => {
+    fetchData();
+  }, [user?.uid, rewardTimer?.data?.firstRewardCardId, rewardTimer?.data?.firstRewardCardSerialNo]);
+
+
   useEffect(() => {
     const handleTouchMove = (e: TouchEvent) => {
       if (isDrawing) {

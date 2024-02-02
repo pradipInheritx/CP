@@ -19,6 +19,8 @@ import { Ratio } from "react-bootstrap";
 import { texts } from "../Components/LoginComponent/texts";
 import AppContext from "Contexts/AppContext";
 import SetsScreen from "./SetsScreen";
+import { firestore } from "../firebase";
+import { doc, getDocs, query, where, collection } from "firebase/firestore";
 
 
 const GalleryType = styled.div`
@@ -83,7 +85,7 @@ const NFTGallery = () => {
   const [backCards, setBackCards] = useState<any>([]);
   const [equalPart, setEqualPart] = useState<any>([]);
   const [cardShow, setCardShow] = useState<any>(false);
-  const [collection, setCollection] = useState<any>()
+  // const [collection, setCollection] = useState<any>()
   const [setsCardId, setSetsCardId] = useState<any>('none')
   const [setsValue, setSetsValue] = useState<any>([])
   const [setsCardName, setSetsCardName] = useState<any>('none')
@@ -106,53 +108,85 @@ const NFTGallery = () => {
   )
 
 
-  useEffect(() => {
-    if (albumOpen != "") {      
-      const getCollectionType = firebase
-        .firestore()
-        .collection("nftGallery")
-      getCollectionType.get()
-        .then((snapshot) => {
+  const nftGalleryCollectionRef = collection(firestore, 'nftGallery');
 
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
+  const fetchData = async () => {
+    try {
+      const snapshot = await getDocs(nftGalleryCollectionRef);
 
-          setCollectionType(data)
-          setSelectCollection(albumOpen)
-          setSetsValue([])
-          setCardShow(false)
+      const data = snapshot.docs.map((doc:any) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
 
-        }).catch((error) => {
-          console.log(error, "error");
-        });
-      setAlbumOpen("")
+      setCollectionType(data);
+      setSelectCollection(albumOpen);
+      setSetsValue([]);
+      setCardShow(false);
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-  }, [albumOpen])
+  };
+
+  useEffect(() => {
+    if (albumOpen !== "") {
+      fetchData();
+      setAlbumOpen("");
+    }
+  }, [albumOpen]);
+
+
+  // useEffect(() => {
+  //   // if (albumOpen != "") {      
+  //   //   const getCollectionType = firebase
+  //   //     .firestore()
+  //   //     .collection("nftGallery")
+  //   //   getCollectionType.get()
+  //   //     .then((snapshot) => {
+
+  //   //       const data: any = []
+  //   //       snapshot.forEach((doc) => {
+  //   //         data.push({ id: doc.id, ...doc.data() });
+  //   //       });
+
+  //   //       setCollectionType(data)
+  //   //       setSelectCollection(albumOpen)
+  //   //       setSetsValue([])
+  //   //       setCardShow(false)
+
+  //   //     }).catch((error) => {
+  //   //       console.log(error, "error");
+  //   //     });
+  //   //   setAlbumOpen("")
+  //   // }
+  // }, [albumOpen])
 
 
 
 
+  
+  const cardsDetailsCollectionRef = collection(firestore, 'cardsDetails');
   const getNftCardNew = () => {
-    const getCollectionType = firebase
-      .firestore()
-      .collection("cardsDetails")
-    getCollectionType.get()
-      .then((snapshot) => {
-        const data: any = []
-        snapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data() });
-        });
-        setAllCardArrayNew(data)
-        setIsLoading(false)
-        console.log(data, "allcardData")
-      }).catch((error) => {
-        console.log(error, "error");
-      });
-  }
+    const fetchData = async () => {
+      try {
+        const snapshot = await getDocs(cardsDetailsCollectionRef);
+        const data = snapshot.docs.map((doc:any) => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setAllCardArrayNew(data);
+        setIsLoading(false);
+        console.log(data, "allcardData");
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-  const onCollectionChange = (collectionName: any) => {
+    fetchData();
+  };
+
+  const onCollectionChange = async (collectionName: any) => {
     onSelectSets("none")
     if (searchTerm?.length || selectCollection != "none") {
       // console.log(selectCollection,cardType?.length,"selectCollection")
@@ -164,72 +198,112 @@ const NFTGallery = () => {
 
     if (collectionName === 'none') {
       setIsLoading(true);
-      const getCollectionType = firebase
-        .firestore()
-        .collection("nftGallery")
-      getCollectionType.get()
-        .then((snapshot) => {
-          setIsLoading(false);
+      // const getCollectionType = firebase
+      //   .firestore()
+      //   .collection("nftGallery")
+      // getCollectionType.get()
+      //   .then((snapshot) => {
+      //     setIsLoading(false);
 
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
-          setCollectionType(data)
-          // setAllCardArray(data)
-          setSetsValue([])
-          setCardShow(false)
-        }).catch((error) => {
-          console.log(error, "error");
-        });
+      //     const data: any = []
+      //     snapshot.forEach((doc) => {
+      //       data.push({ id: doc.id, ...doc.data() });
+      //     });
+      //     setCollectionType(data)
+      //     // setAllCardArray(data)
+      //     setSetsValue([])
+      //     setCardShow(false)
+      //   }).catch((error) => {
+      //     console.log(error, "error");
+      //   });
+      try {
+        const snapshot = await getDocs(nftGalleryCollectionRef);
+        const data = snapshot.docs.map((doc:any) => ({
+          id: doc.id,...doc.data()
+        }));
+        setCollectionType(data);
+        setSetsValue([]);
+        setCardShow(false);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching data from nftGallery:', error);
+        setIsLoading(false);
+      }
+    
     }
     else {
-      setIsLoading(true);
-      const getCollectionType = firebase
-        .firestore()
-        .collection("cardsDetails")
-        // .where("albumId", "==", collectionName)
-        .where("albumName", "==", collectionName)
-      getCollectionType.get()
-        .then((snapshot) => {
-          console.log(collectionName, "collectionName")
-          setIsLoading(false);
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
-          const serchresult = data.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
-          serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))          
-          setCardNameNew(serchresult)
+      // setIsLoading(true);
+      // const getCollectionType = firebase
+      //   .firestore()
+      //   .collection("cardsDetails")
+      //   // .where("albumId", "==", collectionName)
+      //   .where("albumName", "==", collectionName)
+      // getCollectionType.get()
+      //   .then((snapshot) => {
+      //     console.log(collectionName, "collectionName")
+      //     setIsLoading(false);
+      //     const data: any = []
+      //     snapshot.forEach((doc) => {
+      //       data.push({ id: doc.id, ...doc.data() });
+      //     });
+      //     const serchresult = data.filter((card: any) => card.cardName?.toLowerCase()?.includes(searchTerm.toLowerCase()))
+      //     serchresult.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
+      //     setCardNameNew(serchresult)
           
-          setAllCardNew(serchresult)
-          setCardShow(true)
-        }).catch((error) => {
-          setIsLoading(false);
-          console.log(error, "error");
-        });
-      const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
-      const getSetsType = firebase
-        .firestore()
-        .collection("nftGallery")
-        // .doc(collectionName)
-        .doc(getAlbumId && getAlbumId[0]?.id)
-        .collection("setDetails")
-      getSetsType.get()
-        .then((snapshot) => {
-          console.log(collectionName, "collectionName")
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
-          setSetsValue(data)
-          console.log("setsdata", data)
-          setCardType("all")          
-        }).catch((error) => {
-          console.log(error, "error");
-        });
+      //     setAllCardNew(serchresult)
+      //     setCardShow(true)
+      //   }).catch((error) => {
+      //     setIsLoading(false);
+      //     console.log(error, "error");
+      //   });
+      // const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
+      // const getSetsType = firebase
+      //   .firestore()
+      //   .collection("nftGallery")
+      //   // .doc(collectionName)
+      //   .doc(getAlbumId && getAlbumId[0]?.id)
+      //   .collection("setDetails")
+      // getSetsType.get()
+      //   .then((snapshot) => {
+      //     console.log(collectionName, "collectionName")
+      //     const data: any = []
+      //     snapshot.forEach((doc) => {
+      //       data.push({ id: doc.id, ...doc.data() });
+      //     });
+      //     setSetsValue(data)
+      //     console.log("setsdata", data)
+      //     setCardType("all")
+      //   }).catch((error) => {
+      //     console.log(error, "error");
+      //   });
+      try {
+        setIsLoading(true);
 
+        // Fetch data from "cardsDetails"
+        const cardsCollectionRef = collection(firestore, 'cardsDetails');
+        const cardsQuery = query(cardsCollectionRef, where('albumName', '==', collectionName));
+        const cardsSnapshot = await getDocs(cardsQuery);
+        const cardsData = cardsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
+        // Fetch data from "setDetails"
+        const getAlbumId = collectionType && collectionType?.filter((item:any) => item.albumName === collectionName);
+        if (getAlbumId && getAlbumId[0]?.id) {
+          const setDetailsCollectionRef = collection(doc(firestore, 'nftGallery', getAlbumId[0]?.id), 'setDetails');
+          const setsSnapshot = await getDocs(setDetailsCollectionRef);
+          const setsData = setsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+          setSetsValue(setsData);
+          setCardType("all");
+        } else {
+          console.error("No valid album ID found");
+        }
+
+        setIsLoading(false);
+
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Error fetching data:", error);
+      }
     }
   }
 

@@ -24,12 +24,13 @@ import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
 import { useNavigate, useParams } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import { auth } from "firebase";
+import { auth, firestore } from "../../../firebase";
 import Swal from "sweetalert2";
 import axios from "axios";
 import PaymentFail from "./PaymentFail";
 import PaymentSuccess from "./PaymentSuccess";
 import upgrade from "../../../assets/images/upgrade_small.png";
+import { doc, getDoc } from "firebase/firestore";
 
 
 const H2 = styled.h2`
@@ -255,18 +256,30 @@ const VotingPayment: React.FC<{
       setExtraPer(AllInfo[3])
     }, [])
 
-    useEffect(() => {
-      const getCoinList = firebase
-        .firestore()
-        .collection("settings").doc("paymentCoins")
-      getCoinList.get()
-        .then((snapshot) => {
-          const allList = snapshot.data()?.coins;
-          setCoinsList(allList && allList);
-        }).catch((error) => {
-          console.log(error, "error");
-        });
+  const getCoinList = async () => {
+    const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
+    try {
+      const snapshot = await getDoc(coinsDocRef);
+      const allList = snapshot.data()?.coins;
+      setCoinsList(allList && allList);
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
+  
+    useEffect(() => {
+      // const getCoinList = firebase
+      //   .firestore()
+      //   .collection("settings").doc("paymentCoins")
+      // getCoinList.get()
+      //   .then((snapshot) => {
+      //     const allList = snapshot.data()?.coins;
+      //     setCoinsList(allList && allList);
+      //   }).catch((error) => {
+      //     console.log(error, "error");
+      //   });
+      getCoinList()
     }, [])
 
 

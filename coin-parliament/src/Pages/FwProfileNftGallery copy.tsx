@@ -16,6 +16,8 @@ import AppContext from "../Contexts/AppContext";
 // @ts-ignore
 import Wildwest from '../assets/avatars/videos/Monsoon.mp4'; import Winter from '../assets/avatars/videos/Winter.mp4'; import Summer from '../assets/avatars/videos/Summer.mp4'; import Space from '../assets/avatars/videos/Science.mp4';
 import { texts } from "../Components/LoginComponent/texts";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { firestore } from "../firebase";
 
 // import { Firestore } from "firebase/firestore";
 
@@ -93,57 +95,104 @@ const FwProfileNftGallery = () => {
     Space: Space,
   });
 
+  const loadAlbumData = async (albumOpen:any) => {
+    if (albumOpen !== "") {
+      const nftGalleryCollection = collection(firestore, 'nftGallery');
+
+      try {
+        const snapshot = await getDocs(nftGalleryCollection);
+        // @ts-ignore
+        const data = [];
+
+        snapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
+        });
+        // @ts-ignore
+        setCollectionType(data);
+        setSelectCollection(albumOpen);
+        setSetsValue([]);
+        setCardShow(false);
+      } catch (error) {
+        console.log(error, "error");
+      }
+      setAlbumOpen("");
+    }
+  };
 
 
   useEffect(() => {
-    if (albumOpen != "") {
-      const getCollectionType = firebase
-        .firestore()
-        .collection("nftGallery")
-      getCollectionType.get()
-        .then((snapshot) => {
-
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
-
-          setCollectionType(data)
-          setSelectCollection(albumOpen)
-          setSetsValue([])
-          setCardShow(false)
-
-        }).catch((error) => {
-          console.log(error, "error");
-        });
-      setAlbumOpen("")
-    }
     // if (albumOpen != "") {
-    //   setSelectCollection(albumOpen)
-    //   setAlbumOpen("")      
+    //   const getCollectionType = firebase
+    //     .firestore()
+    //     .collection("nftGallery")
+    //   getCollectionType.get()
+    //     .then((snapshot) => {
+
+    //       const data: any = []
+    //       snapshot.forEach((doc) => {
+    //         data.push({ id: doc.id, ...doc.data() });
+    //       });
+
+    //       setCollectionType(data)
+    //       setSelectCollection(albumOpen)
+    //       setSetsValue([])
+    //       setCardShow(false)
+
+    //     }).catch((error) => {
+    //       console.log(error, "error");
+    //     });
+    //   setAlbumOpen("")
     // }
+
+    // if (albumOpen != "") {
+      //   setSelectCollection(albumOpen)
+      //   setAlbumOpen("")      
+      // }
+      if (albumOpen) {
+        loadAlbumData(albumOpen)
+      }
   }, [albumOpen])
 
 
 
-  const getNftCard = () => {
-    const getCollectionType = firebase
-      .firestore()
-      .collection("cardsDetails")
-    getCollectionType.get()
-      .then((snapshot) => {
-        const data: any = []
-        snapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data() });
-        });
-        setAllCardArrayNew(data)
-        console.log(data, "allcardData")
-      }).catch((error) => {
-        console.log(error, "error");
-      });
-  }
+  // const getNftCard = () => {
+  //   const getCollectionType = firebase
+  //     .firestore()
+  //     .collection("cardsDetails")
+  //   getCollectionType.get()
+  //     .then((snapshot) => {
+  //       const data: any = []
+  //       snapshot.forEach((doc) => {
+  //         data.push({ id: doc.id, ...doc.data() });
+  //       });
+  //       setAllCardArrayNew(data)
+  //       console.log(data, "allcardData")
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     });
+  // }
 
-  const onCollectionChange = (collectionName: any) => {
+  const getNftCard = async () => {
+    const cardsDetailsCollection = collection(firestore, 'cardsDetails');
+
+    try {
+      const snapshot = await getDocs(cardsDetailsCollection);
+      // @ts-ignore
+      const data = [];
+
+      snapshot.forEach((doc) => {
+        data.push({ id: doc.id, ...doc.data() });
+      });
+      // @ts-ignore
+      setAllCardArrayNew(data);
+      // @ts-ignore
+      console.log(data, "allcardData");
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
+
+  const onCollectionChange = async(collectionName: any) => {
     if (searchTerm?.length || selectCollection != "none") {
       setCardShow(true)
     }
@@ -152,69 +201,104 @@ const FwProfileNftGallery = () => {
     }
     onSelectSets("none")
     if (collectionName === 'none') {
-      const getCollectionType = firebase
-        .firestore()
-        .collection("nftGallery")
-      getCollectionType.get()
-        .then((snapshot) => {
+      const nftGalleryCollection = collection(firestore, 'nftGallery');
 
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
+      try {
+        const snapshot = await getDocs(nftGalleryCollection);
+        // @ts-ignore
+        const data = [];
 
-          setCollectionType(data)
-          // setAllCardArray(data)
-          setSetsValue([])
-          setCardShow(false)
-
-        }).catch((error) => {
-          console.log(error, "error");
+        snapshot.forEach((doc) => {
+          data.push({ id: doc.id, ...doc.data() });
         });
+        // @ts-ignore
+        setCollectionType(data);
+        // setAllCardArray(data)
+        setSetsValue([]);
+        setCardShow(false);
+      } catch (error) {
+        console.log(error, "error");
+      }
     }
-    else {
-      const getCollectionType = firebase
-        .firestore()
-        .collection("cardsDetails")
-        // .where("albumId", "==", collectionName)
-        .where("albumName", "==", collectionName)
-      getCollectionType.get()
-        .then((snapshot) => {
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
+    
+    // else {
+    //   const getCollectionType = firebase
+    //     .firestore()
+    //     .collection("cardsDetails")
+    //     // .where("albumId", "==", collectionName)
+    //     .where("albumName", "==", collectionName)
+    //   getCollectionType.get()
+    //     .then((snapshot) => {
+    //       const data: any = []
+    //       snapshot.forEach((doc) => {
+    //         data.push({ id: doc.id, ...doc.data() });
+    //       });
 
-          console.log(data, "alldatacard")
-          data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
-          setAllCardNew(data)
-          setCardNameNew(data)
-          // onSelectSets("none")
-          setCardShow(true)
-        }).catch((error) => {
-          console.log(error, "error");
-        });
-      const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
-      const getSetsType = firebase
-        .firestore()
-        .collection("nftGallery")
-        .doc(getAlbumId && getAlbumId[0]?.id)
-        .collection("setDetails")
-      getSetsType.get()
-        .then((snapshot) => {
-          console.log(collectionName, "collectionName")
-          const data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ id: doc.id, ...doc.data() });
-          });
-          setSetsValue(data)
-          setCardType("all")
+    //       console.log(data, "alldatacard")
+    //       data.sort((a: any, b: any) => a.setName.localeCompare(b.setName))
+    //       setAllCardNew(data)
+    //       setCardNameNew(data)
+    //       // onSelectSets("none")
+    //       setCardShow(true)
+    //     }).catch((error) => {
+    //       console.log(error, "error");
+    //     });
+    //   const getAlbumId = collectionType && collectionType?.filter((item: any, index: number) => item.albumName == collectionName)
+    //   const getSetsType = firebase
+    //     .firestore()
+    //     .collection("nftGallery")
+    //     .doc(getAlbumId && getAlbumId[0]?.id)
+    //     .collection("setDetails")
+    //   getSetsType.get()
+    //     .then((snapshot) => {
+    //       console.log(collectionName, "collectionName")
+    //       const data: any = []
+    //       snapshot.forEach((doc) => {
+    //         data.push({ id: doc.id, ...doc.data() });
+    //       });
+    //       setSetsValue(data)
+    //       setCardType("all")
 
-        }).catch((error) => {
-          console.log(error, "error");
-        });
+    //     }).catch((error) => {
+    //       console.log(error, "error");
+    //     });
 
 
+    // }
+    try {
+      // Fetch cardsDetails collection
+      const cardsDetailsCollection = collection(firestore, 'cardsDetails');
+      const cardsDetailsQuery = query(cardsDetailsCollection, where('albumName', '==', collectionName));
+      const cardsDetailsSnapshot = await getDocs(cardsDetailsQuery);
+// @ts-ignore
+      const cardData = [];
+      cardsDetailsSnapshot.forEach((doc) => {
+        cardData.push({ id: doc.id, ...doc.data() });
+      });
+
+      // console.log(cardData, "alldatacard");
+      // @ts-ignore
+      cardData.sort((a, b) => a.setName.localeCompare(b.setName));
+      // @ts-ignore
+      setAllCardNew(cardData);
+      // @ts-ignore
+      setCardNameNew(cardData);
+      setCardShow(true);
+
+      // Fetch setDetails from nftGallery
+      const getAlbumId = collectionType && collectionType.filter((item:any) => item.albumName === collectionName);
+      const nftGalleryCollection = collection(firestore, 'nftGallery', getAlbumId && getAlbumId[0]?.id, 'setDetails');
+      const setDetailsSnapshot = await getDocs(nftGalleryCollection);
+// @ts-ignore
+      const setData = [];
+      setDetailsSnapshot.forEach((doc) => {
+        setData.push({ id: doc.id, ...doc.data() });
+      });
+      // @ts-ignore
+      setSetsValue(setData);
+      setCardType('all');
+    } catch (error) {
+      console.log(error, 'error');
     }
   }
 
@@ -314,39 +398,63 @@ const FwProfileNftGallery = () => {
   }
 
 
+  // const getAllRewardsOfUser = async (uid: string) => {
+
+  //   var winCards: {
+  //     firstRewardCard: string,
+  //     firstRewardCardCollection: string,
+  //     firstRewardCardId: number,
+  //     firstRewardCardSerialNo: string,
+  //     firstRewardCardType: string,
+  //     secondRewardExtraVotes: number,
+  //     thirdRewardDiamonds: number
+
+  //   }[] = []
+  //   await firebase
+  //     .firestore()
+  //     .collection("reward_transactions")
+  //     .where("user", "==", uid)
+  //     .get()
+  //     .then((doc: any) => {
+
+  //       doc.forEach((cards: any, index: number) => {
+
+  //         // winCards.push(cards.data().)
+  //         winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
+
+  //       })
+  //     })
+  //     .catch((error: any) => {
+  //       console.log("getAllRewardsOfUser Error", error)
+  //     })
+
+  //   setWinerCard(winCards)
+  // }
   const getAllRewardsOfUser = async (uid: string) => {
+    try {
+      const rewardTransactionsCollection = collection(firestore, 'reward_transactions');
+      const rewardTransactionsQuery = query(rewardTransactionsCollection, where('user', '==', uid));
+      const rewardTransactionsSnapshot = await getDocs(rewardTransactionsQuery);
 
-    var winCards: {
-      firstRewardCard: string,
-      firstRewardCardCollection: string,
-      firstRewardCardId: number,
-      firstRewardCardSerialNo: string,
-      firstRewardCardType: string,
-      secondRewardExtraVotes: number,
-      thirdRewardDiamonds: number
+        var winCards: {
+          firstRewardCard: string,
+          firstRewardCardCollection: string,
+          firstRewardCardId: number,
+          firstRewardCardSerialNo: string,
+          firstRewardCardType: string,
+          secondRewardExtraVotes: number,
+          thirdRewardDiamonds: number
 
-    }[] = []
-    await firebase
-      .firestore()
-      .collection("reward_transactions")
-      .where("user", "==", uid)
-      .get()
-      .then((doc: any) => {
+        }[] = []
+      rewardTransactionsSnapshot.forEach((cards) => {
+        winCards.push({ ...cards.data().winData, ...cards.data().transactionTime });
+      });
 
-        doc.forEach((cards: any, index: number) => {
-
-          // winCards.push(cards.data().)
-          winCards.push({ ...cards.data().winData, ...cards.data().transactionTime })
-
-        })
-      })
-      .catch((error: any) => {
-        console.log("getAllRewardsOfUser Error", error)
-      })
-
-    setWinerCard(winCards)
-  }
-
+      setWinerCard(winCards);
+    } catch (error) {
+      console.log('getAllRewardsOfUser Error', error);
+    }
+  };
 
   useEffect(() => {
     getNftCard()
@@ -456,13 +564,13 @@ const FwProfileNftGallery = () => {
   //       .firestore()
   //        .collection("reward_transactions")
   //        .where("user", "==", user?.uid)
-  //        .where("winData.firstRewardCardId", "==", cardId)      
+  //        .where("winData.firstRewardCardId", "==", cardId)
   //           getSameCard.get()
   //       .then(async (snapshot) => {
   //         const data: any = []
   //         snapshot.forEach((doc) => {
   //           data.push({...doc.data() });
-  //         });     
+  //         });
   //         let datalength = await  data.length;
   //         console.log(datalength, "data.length")
   //         samecount=  datalength
@@ -473,23 +581,39 @@ const FwProfileNftGallery = () => {
   //       });
 
   //     console.log(samecount,"alldatacheck")
-  //         return  samecount  ? samecount: 0  
+  //         return  samecount  ? samecount: 0
   // }
 
-  const getTotalSameCard = (cardId: any) => {
+  // const getTotalSameCard = (cardId: any) => {
 
-    const samevalue = 1;
-    // console.log(cardId,"data.length")
-    const getSameCard = firebase
-      .firestore()
-      .collection("reward_transactions")
-      .where("user", "==", user?.uid)
-      .where("winData.firstRewardCardId", "==", cardId);
-    // console.info("getawait", getSameCard.get()).size
-    // return (await getSameCard.get()).size;
-    return samevalue
-  }
+  //   const samevalue = 1;
+  //   // console.log(cardId,"data.length")
+  //   const getSameCard = firebase
+  //     .firestore()
+  //     .collection("reward_transactions")
+  //     .where("user", "==", user?.uid)
+  //     .where("winData.firstRewardCardId", "==", cardId);
+  //   return samevalue
+  // }
 
+  const getTotalSameCard = async (cardId: any) => {
+      const samevalue = 1;
+    try {
+      const rewardTransactionsCollection = collection(firestore, 'reward_transactions');
+      const sameCardQuery = query(rewardTransactionsCollection,
+        where('user', '==', user?.uid),
+        where('winData.firstRewardCardId', '==', cardId)
+      );
+
+      const sameCardSnapshot = await getDocs(sameCardQuery);
+      const sameCardCount = sameCardSnapshot.size;
+
+      return sameCardCount;
+    } catch (error) {
+      console.log('getTotalSameCard Error', error);
+      return 0; // or handle the error as needed
+    }
+  };
 
   console.log(allCardNew, "allCardNew", cardShow)
   return (

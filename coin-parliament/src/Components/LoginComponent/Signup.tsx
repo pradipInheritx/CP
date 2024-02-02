@@ -18,12 +18,13 @@ import { Buttons } from "../Atoms/Button/Button";
 import Checkbox from "../Atoms/Checkbox/Checkbox";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../firebase";
+import { firestore, functions } from "../../firebase";
 import UserContext from "../../Contexts/User";
 import AppContext from "../../Contexts/AppContext";
 import firebase from "firebase/compat/app";
 import copy from "copy-to-clipboard";
 import googleLogo from "../../assets/svg/google_Logo.svg"
+import { collection, getDocs, query, where } from "firebase/firestore";
 const Login = styled.div`
   margin-left:5px;
   margin-right:7px;
@@ -80,46 +81,84 @@ const Signup = ({ setUser, setSignup, signup, authProvider }: SignupProps) => {
   const refer = new URLSearchParams(search).get("refer") || "VoteToEarn";
   const [preantId, setPreantId] = useState(null)
 
-  const getUserId = async () => {    
+  // const getUserId = async () => {    
+  //   const uidValue = refer?.slice(-6);
+  //   const emailValue = refer?.slice(0, 2);
+
+  //   var userdata = { uid: '' };
+  //   if (refer) {
+  //     try {
+  //       const referUser = await firebase
+  //         .firestore()
+  //         .collection('users').where("userName", '==', refer).get();
+  //       if (!referUser.empty) {
+  //         referUser.forEach((doc: any) => {
+  //           userdata = doc.data();
+  //           setPreantId(doc.data().uid)
+  //         });
+  //       }
+  //       else if (referUser.empty) {
+  //         const referUser2 = await firebase
+  //           .firestore()
+  //           .collection('users');
+  //         await referUser2.get().then((snapshot) => {
+  //           let data: any = []
+  //           snapshot.forEach((doc) => {
+  //             data.push({ ...doc.data() });
+  //           });
+  //           console.log(data,"alldat")
+  //           data?.map((item: any, index: number) => {
+  //             if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
+  //               setPreantId(item.uid)
+  //               // setParentEmailId(item.email)
+  //             }
+  //           })
+  //         })
+  //       }
+  //     } catch (err) {
+  //       console.log( err, 'email');
+  //     }
+  //     console.log(userdata,"userdata")
+  //   }
+  // }
+
+  const getUserId = async () => {
     const uidValue = refer?.slice(-6);
-    const emailValue = refer?.slice(0, 2);    
+    const emailValue = refer?.slice(0, 2);
 
     var userdata = { uid: '' };
     if (refer) {
       try {
-        const referUser = await firebase
-          .firestore()
-          .collection('users').where("userName", '==', refer).get();  
-        if (!referUser.empty) {
-          referUser.forEach((doc: any) => {
+        const usersCollectionRef = collection(firestore, 'users');
+        const referUserQuery = query(usersCollectionRef, where('userName', '==', refer));
+        const referUserSnapshot = await getDocs(referUserQuery);
+
+        if (!referUserSnapshot.empty) {
+          referUserSnapshot.forEach((doc:any) => {
             userdata = doc.data();
-            setPreantId(doc.data().uid)            
+            setPreantId(doc.data().uid);
+          });
+        } else {
+          const allUsersQuery = query(usersCollectionRef);
+          const allUsersSnapshot = await getDocs(allUsersQuery);
+
+          let data: any = [];
+          allUsersSnapshot.forEach((doc) => {
+            data.push({ ...doc.data() });
+          });
+
+          data?.map((item: any, index: number) => {
+            if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
+              setPreantId(item.uid);
+            }
           });
         }
-        else if (referUser.empty) {
-          const referUser2 = await firebase
-            .firestore()
-            .collection('users');
-          await referUser2.get().then((snapshot) => {
-            let data: any = []
-            snapshot.forEach((doc) => {
-              data.push({ ...doc.data() });
-            });
-            console.log(data,"alldat")
-            data?.map((item: any, index: number) => {
-              if (item.uid?.slice(-6) == uidValue && item.email?.slice(0, 2) == emailValue) {
-                setPreantId(item.uid)
-                // setParentEmailId(item.email)
-              }              
-            })
-          })
-        }
       } catch (err) {
-        console.log( err, 'email');
-      }    
-      console.log(userdata,"userdata")
+        console.log(err, 'email');
+      }
+      console.log(userdata, "userdata");
     }
-  }
+  };
 
   useEffect(() => {
     if (refer) {

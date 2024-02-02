@@ -34,9 +34,10 @@ export type UserProps = {
   wallet?: string;
   rewardStatistics?: RewardStatistics;
   uid?: string;
-  voteValue?: string;
+  voteValue?: any;
   bio?: string;
   userName?: any;
+  lastVoteTime?: any;
   isUserUpgraded?: boolean;
   foundationData?: {
     id:any

@@ -16,6 +16,8 @@ import CoinsContext from "Contexts/CoinsContext";
 import AppContext from "Contexts/AppContext";
 import { Other } from "Pages/SingleCoin";
 import { useTranslation } from "common/models/Dictionary";
+import { firestore } from "../../firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const CenterItem = styled.div`
   background-color: #f2f2f2;  
@@ -126,23 +128,42 @@ const SingleCardDetails = () => {
   const navigate = useNavigate();  
   
 
-  const getNftCard = () => {
-    const getCards = firebase
-      .firestore()
-      .collection("nft_gallery")
-      .where("collectionName", "==", type)
-    getCards.get()
-      .then((snapshot) => {
-        let allcollection = snapshot.docs.map((doc) => doc.data())
+  // const getNftCard = () => {
+  //   const getCards = firebase
+  //     .firestore()
+  //     .collection("nft_gallery")
+  //     .where("collectionName", "==", type)
+  //   getCards.get()
+  //     .then((snapshot) => {
+  //       let allcollection = snapshot.docs.map((doc) => doc.data())
 
-        const collectionType = allcollection?.map((allCard: any) => {
-          return allCard?.setDetails
-        })
-      }).catch((error) => {
-        console.log(error, "error");
-      })
-      ;
-  }
+  //       const collectionType = allcollection?.map((allCard: any) => {
+  //         return allCard?.setDetails
+  //       })
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     })
+  //     ;
+  // }
+
+  const getNftCard = async () => {
+    try {
+      const nftGalleryRef = collection(firestore, 'nft_gallery');
+      const nftGalleryQuery = query(nftGalleryRef, where('collectionName', '==', type));
+      const snapshot = await getDocs(nftGalleryQuery);
+
+      let allcollection = snapshot.docs.map((doc:any) => doc.data());
+
+      const collectionType = allcollection?.map((allCard: any) => {
+        return allCard?.setDetails;
+      });
+
+      // Further processing with collectionType...
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {    
     getNftCard()
     // alllist= getList({cardID:id})
@@ -164,7 +185,7 @@ const SingleCardDetails = () => {
   //       let data = snapshot.docs.map((doc) => doc.data());
   //       if (data.length > 0) {
   //         setSingalCardData(data[0]);
-  //       }        
+  //       }
 
   //     }).catch((error) => {
   //       console.log(error, "error");
@@ -172,32 +193,56 @@ const SingleCardDetails = () => {
   //     ;
   // }
 
-  useEffect(() => {   
-    if (singalCardData?.myID) {
-      firebase
-        .firestore()
-        .collection("users")
-        .where("uid", "==", singalCardData?.myID)
-        .get()
-        .then((snapshot) => {
-          var data: any = []
-          snapshot.forEach((doc) => {
-            data.push({ ...doc.data() });
-          });
+  // useEffect(() => {
+  //   if (singalCardData?.myID) {
+  //     firebase
+  //       .firestore()
+  //       .collection("users")
+  //       .where("uid", "==", singalCardData?.myID)
+  //       .get()
+  //       .then((snapshot) => {
+  //         var data: any = []
+  //         snapshot.forEach((doc) => {
+  //           data.push({ ...doc.data() });
+  //         });
 
-          getsamecard(data[0])
-          console.log(data[0],"checkdata")
-        }).catch((error) => {
-          console.log(error, "error");
-        });
-    }
+  //         getsamecard(data[0])
+  //         console.log(data[0],"checkdata")
+  //       }).catch((error) => {
+  //         console.log(error, "error");
+  //       });
+  //   }
       
-    if (singalCardData?.myID) {      
-      getRewardTransactions(singalCardData?.myID)
-    }
+  //   if (singalCardData?.myID) {
+  //     getRewardTransactions(singalCardData?.myID)
+  //   }
 
-  }, [singalCardData])
+  // }, [singalCardData])
 
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (singalCardData?.myID) {
+          const usersRef = collection(firestore, 'users');
+          const userQuery = query(usersRef, where('uid', '==', singalCardData?.myID));
+          const snapshot = await getDocs(userQuery);
+
+          const data = snapshot.docs.map((doc) => ({ ...doc.data() }));
+          getsamecard(data[0]);
+          console.log(data[0], 'checkdata');
+        }
+
+        if (singalCardData?.myID) {
+          getRewardTransactions(singalCardData?.myID);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [singalCardData]);
 
   const getsamecard = (data: any) => {
     console.log(data, "sameCards i am every time calling")
@@ -213,30 +258,53 @@ const SingleCardDetails = () => {
   }
 
 
-  const getRewardTransactions = (myID:any) => {    
-    const allTimeData = firebase
-    .firestore()
-    .collection("reward_transactions")
-      .where("user", "==", myID)
-    allTimeData.get()
-      .then((doc: any) => {
-        var AllSameCard:any =[]
-      doc.forEach((cards: any, index: number) => {
-        // winCards.push(cards.data().)
-        if (cards.data()?.winData?.firstRewardCardId == singalCardData.id) {          
-          const date = new Date(cards.data()?.transactionTime.seconds * 1000);
-          var getMIntedTime = date.toLocaleString()
-          AllSameCard.push({ ...cards.data(), getMIntedTime: getMIntedTime })
+  // const getRewardTransactions = (myID:any) => {    
+  //   const allTimeData = firebase
+  //   .firestore()
+  //   .collection("reward_transactions")
+  //     .where("user", "==", myID)
+  //   allTimeData.get()
+  //     .then((doc: any) => {
+  //       var AllSameCard:any =[]
+  //     doc.forEach((cards: any, index: number) => {
+  //       // winCards.push(cards.data().)
+  //       if (cards.data()?.winData?.firstRewardCardId == singalCardData.id) {
+  //         const date = new Date(cards.data()?.transactionTime.seconds * 1000);
+  //         var getMIntedTime = date.toLocaleString()
+  //         AllSameCard.push({ ...cards.data(), getMIntedTime: getMIntedTime })
           
+  //       }
+  //     })
+  //       setAllCardList(AllSameCard)
+  //       // console.log(AllSameCard,"AllSameCard")
+  //   })
+  //   .catch((error: any) => {
+  //     console.log("getAllRewardsOfUser Error", error)
+  //   })
+  // }
+  
+
+  const getRewardTransactions = async (myID:any) => {
+    try {
+      const rewardTransactionsRef = collection(firestore, 'reward_transactions');
+      const rewardTransactionsQuery = query(rewardTransactionsRef, where('user', '==', myID));
+      const snapshot = await getDocs(rewardTransactionsQuery);
+
+      const AllSameCard:any = [];
+      snapshot.forEach((cards) => {
+        if (cards.data()?.winData?.firstRewardCardId === singalCardData.id) {
+          const date = new Date(cards.data()?.transactionTime.seconds * 1000);
+          const getMIntedTime = date.toLocaleString();
+          AllSameCard.push({ ...cards.data(), getMIntedTime });
         }
-      })        
-        setAllCardList(AllSameCard)
-        // console.log(AllSameCard,"AllSameCard")
-    })
-    .catch((error: any) => {
-      console.log("getAllRewardsOfUser Error", error)
-    })
-  }
+      });
+
+      setAllCardList(AllSameCard);
+      // console.log(AllSameCard, "AllSameCard");
+    } catch (error) {
+      console.error('Error fetching reward transactions:', error);
+    }
+  };
 
   console.log(allCardList,"allCardList")
   return (

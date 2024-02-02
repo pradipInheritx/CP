@@ -9,13 +9,14 @@ import firebase from "firebase/compat/app";
 import { Buttons } from "Components/Atoms/Button/Button";
 import axios from "axios";
 import UserContext from "Contexts/User";
-import { auth } from "firebase";
+import { auth, firestore } from "../../../firebase";
 import { showToast } from "App";
 import { ToastType } from "Contexts/Notification";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import PaymentSuccess from "./PaymentSuccess";
 import PaymentFail from "./PaymentFail";
+import { doc, getDoc } from "firebase/firestore";
 
 const CoinList = styled.div`
   // border:1px solid red;
@@ -135,20 +136,32 @@ const CoinsList: React.FC<{
     //  For put email in userid
 
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  
+  const getCoinList = async () => {
+    const coinsDocRef = doc(firestore, 'settings', 'coins');
+
+    try {
+      const snapshot = await getDoc(coinsDocRef);
+      const allList = snapshot.data()?.coins;
+      setCoinsList(allList && allList);
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
 
     useEffect(() => {
-      const getCoinList = firebase
-        .firestore()
-        .collection("settings").doc("coins")
-      getCoinList.get()
-        .then((snapshot) => {
-          const allList = snapshot.data()?.coins;
-          setCoinsList(allList && allList);
-        }).catch((error) => {
-          console.log(error, "error");
-        });
-
+      // const getCoinList = firebase
+      //   .firestore()
+      //   .collection("settings").doc("coins")
+      // getCoinList.get()
+      //   .then((snapshot) => {
+      //     const allList = snapshot.data()?.coins;
+      //     setCoinsList(allList && allList);
+      //   }).catch((error) => {
+      //     console.log(error, "error");
+      //   });
+      getCoinList()
     }, [])
 
     useEffect(() => {

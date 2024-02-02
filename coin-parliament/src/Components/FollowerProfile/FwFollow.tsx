@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import UserContext from "../../Contexts/User";
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../../firebase";
+import { firestore, functions } from "../../firebase";
 import Tabs from "./Tabs";
 import { useTranslation } from "../../common/models/Dictionary";
 import { capitalize } from "lodash";
@@ -11,6 +11,7 @@ import { toFollow } from "../../common/models/User";
 import firebase from "firebase/compat/app";
 import AppContext from "../../Contexts/AppContext";
 import { texts } from "../LoginComponent/texts";
+import { collection, getDocs, query, where } from "firebase/firestore";
 export type Follower = {
   username: string;
   id: string;
@@ -56,23 +57,29 @@ const FwFollow = () => {
   const [leaders, setLeaders] = useState<Leader[]>([]);
   const [subscribers, setSubscribers] = useState<Leader[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const getFollowerData = () => {
-    const getCollectionType = firebase
-      .firestore()
-      .collection("users")
-      .where("uid", "==", followerUserId)
-    getCollectionType.get()
-      .then((snapshot) => {
+  // const getFollowerData = () => {
+  //   const getCollectionType = firebase
+  //     .firestore()
+  //     .collection("users")
+  //     .where("uid", "==", followerUserId)
+  //   getCollectionType.get()
+  //     .then((snapshot) => {
+  //       snapshot.docs?.map(doc => setUserInfo(doc.data()))
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     });
+  // }
+  const getFollowerData = async () => {
+    const usersCollectionRef = collection(firestore, 'users');
+    const followerQuery = query(usersCollectionRef, where('uid', '==', followerUserId));
 
-        snapshot.docs?.map(doc => setUserInfo(doc.data()))
-
-
-
-
-      }).catch((error) => {
-        console.log(error, "error");
-      });
-  }
+    try {
+      const snapshot = await getDocs(followerQuery);
+      snapshot.docs?.forEach((doc:any) => setUserInfo(doc.data()));
+    } catch (error) {
+      console.error("Error fetching follower data:", error);
+    }
+  };
   useEffect(() => {
     getUsers({ users: userInfo?.leader, setUsers: setLeaders,setIsLoading });
     getUsers({ users: userInfo?.subscribers, setUsers: setSubscribers,setIsLoading });

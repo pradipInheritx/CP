@@ -24,7 +24,7 @@ import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
 import { useNavigate } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import { auth } from "firebase";
+import { auth, firestore } from "../../../firebase";
 import Swal from "sweetalert2";
 import axios from "axios";
 import PaymentFail from "./PaymentFail";
@@ -34,6 +34,7 @@ import VoteBg from '../../../assets/images/VoteBg.png';
 import votebgMob from '../../../assets/images/votebgMob.png';
 import VoteStar from '../../../assets/images/VoteStar.png';
 import VoteToP from '../../../assets/images/VoteTop.png';
+import { doc, getDoc } from "firebase/firestore";
 
 const H2 = styled.h2`
 width: 100%;
@@ -483,22 +484,36 @@ const VotingPaymentCopy: React.FC<{
       setExtraPer(AllInfo[3])
     }, [])
 
-    useEffect(() => {
-      const getCoinList = firebase
-        .firestore()
-        .collection("settings").doc("paymentCoins")
-      getCoinList.get()
-        .then((snapshot) => {
-          const allList = snapshot.data()?.coins;
-          const filterCoin = allList.filter((item: any, index: number) => {
-            return item.name == "ETH"
-              // || item.name == "BNB" || item.name == "MATIC" && item
-          })          
-          setCoinsList(filterCoin ? filterCoin : allList && allList );
-        }).catch((error) => {
-          console.log(error, "error");
-        });
+  
+  const getCoinList = async () => {
+    const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
+    try {
+      const snapshot = await getDoc(coinsDocRef);
+      const allList = snapshot.data()?.coins;
+      const filterCoin = allList.filter((item: any) => item.name === "ETH"); // Adjust filter condition
+      setCoinsList(filterCoin || allList);
+    } catch (error) {
+      console.log(error, "error");
+    }
+  };
+  
+    useEffect(() => {
+      // const getCoinList = firebase
+      //   .firestore()
+      //   .collection("settings").doc("paymentCoins")
+      // getCoinList.get()
+      //   .then((snapshot) => {
+      //     const allList = snapshot.data()?.coins;
+      //     const filterCoin = allList.filter((item: any, index: number) => {
+      //       return item.name == "ETH"
+      //         // || item.name == "BNB" || item.name == "MATIC" && item
+      //     })          
+      //     setCoinsList(filterCoin ? filterCoin : allList && allList );
+      //   }).catch((error) => {
+      //     console.log(error, "error");
+      //   });
+      getCoinList()
     }, [])
 
 

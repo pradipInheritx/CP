@@ -9,8 +9,8 @@ import { useNavigate } from 'react-router-dom'
 import firebase from "firebase/compat/app";
 import styled, { createGlobalStyle } from "styled-components";
 import axios from 'axios'
-import { auth, db } from '../../../firebase'
-import { doc, setDoc } from 'firebase/firestore'
+import { auth, db, firestore } from '../../../firebase'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 import CoinsList from '../Payment/CoinsList'
 import { showToast } from 'App'
 import { ToastType } from 'Contexts/Notification'
@@ -186,17 +186,13 @@ function WalletInfo() {
         bitcoin: "/^(1|3)[a-km-zA-HJ-NP-Z1-9]{25,34}$/",
         ethereum: "/^0x[a-fA-F0-9]{40}$/",
     })
+    
+    const getCoinList = async () => {
+        const coinsDocRef = doc(firestore, 'settings', 'paymentCoins');
 
-    console.log(coinListPax,"coinListPax")
-
-    useEffect(() => {
-        const getCoinList = firebase
-            .firestore()
-            .collection("settings").doc("paymentCoins")
-        getCoinList.get()
-            .then((snapshot) => {
-                // const allList = snapshot.data()?.coins;               
-                let allList = [                    
+        try {
+            const snapshot = await getDoc(coinsDocRef);
+                    let allList = [
                     {
                         "status": "Active",
                         "symbol": "ETH",
@@ -217,18 +213,60 @@ function WalletInfo() {
                     },
                     
                 ]
-                console.log(walletDetailsObj, "walletDetailsObj")
-                
-                const uniqueNamesArray2 = allList.filter((obj2:any) =>
-                    // @ts-ignore
-                    userInfo?.wellDAddress && !userInfo?.wellDAddress.some((obj1: any) => obj1.coin == obj2.symbol)
-                );       
+
+            const uniqueNamesArray2 = allList.filter(obj2 =>
                 // @ts-ignore
-                setCoinsList(uniqueNamesArray2);
-                // setCoinsListPax(allList)
-            }).catch((error) => {
-                console.log(error, "error");
-            });
+                userInfo?.wellDAddress && !userInfo?.wellDAddress?.some(obj1 => obj1?.coin === obj2?.symbol)
+            );
+            // @ts-ignore
+            setCoinsList(uniqueNamesArray2);
+        } catch (error) {
+            console.log(error, "error");
+        }
+    };
+
+
+    useEffect(() => {
+        // const getCoinList = firebase
+        //     .firestore()
+        //     .collection("settings").doc("paymentCoins")
+        // getCoinList.get()
+        //     .then((snapshot) => {
+        //         // const allList = snapshot.data()?.coins;
+        //         let allList = [
+        //             {
+        //                 "status": "Active",
+        //                 "symbol": "ETH",
+        //                 "id": "2",
+        //                 "name": "Ethereum"
+        //             },
+        //             {
+        //                 "id": "3",
+        //                 "status": "Active",
+        //                 "name": "Binance",
+        //                 "symbol": "BNB"
+        //             },
+        //             {
+        //                 "symbol": "MATIC",
+        //                 "status": "Active",
+        //                 "name": "Polygon",
+        //                 "id": "4"
+        //             },
+                    
+        //         ]
+        //         console.log(walletDetailsObj, "walletDetailsObj")
+                
+        //         const uniqueNamesArray2 = allList.filter((obj2:any) =>
+        //             // @ts-ignore
+        //             userInfo?.wellDAddress && !userInfo?.wellDAddress.some((obj1: any) => obj1.coin == obj2.symbol)
+        //         );
+        //         // @ts-ignore
+        //         setCoinsList(uniqueNamesArray2);
+        //         // setCoinsListPax(allList)
+        //     }).catch((error) => {
+        //         console.log(error, "error");
+        //     });
+        getCoinList()
     }, [userInfo?.wellDAddress])
     
 
@@ -1362,8 +1400,7 @@ function WalletInfo() {
                             }
                         </div>
                     </div>
-                </SelectTextfield>
-                {console.log(userInfo?.referalReceiveType?.name !== selectRadio,"!== selectRadio")}
+                </SelectTextfield>                
                 <div className="d-flex justify-content-center">
                     <div className="d-flex justify-content-center" style={{
                         width: `${window.screen.width > 767 ? "34%" : ""}`,

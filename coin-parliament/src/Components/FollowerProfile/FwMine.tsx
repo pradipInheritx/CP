@@ -21,10 +21,11 @@ import AnimationReward from "./Animation/AnimationReward";
 import NFTCard from "../../common/NFTCard/NFTCard";
 
 import { httpsCallable } from "firebase/functions";
-import { db, functions } from "../../firebase";
+import { db, firestore, functions } from "../../firebase";
 import firebase from "firebase/compat/app";
 import { texts } from "../LoginComponent/texts";
 import RewardHistory from "Components/Profile/rewardHistory";
+import { collection, getDocs, query, where } from "firebase/firestore";
 const MyBadge = styled(Badge)`
   background-color: var(--color-6352e8);
   box-shadow: 0 3px 6px #00000029;
@@ -64,27 +65,29 @@ const FwMine = () => {
   };
 
 
-  const getFollowerData = () => {
+  // const getFollowerData = () => {
+  //   const getCollectionType = firebase
+  //     .firestore()
+  //     .collection("users")
+  //     .where("uid", "==", followerUserId)
+  //   getCollectionType.get()
+  //     .then((snapshot) => {
+  //       snapshot.docs?.map(doc => setUserInfo(doc.data()))
+  //     }).catch((error) => {
+  //       console.log(error, "error");
+  //     });
+  // }
+  const getFollowerData = async () => {
+    const usersCollectionRef = collection(firestore, 'users');
+    const followerQuery = query(usersCollectionRef, where('uid', '==', followerUserId));
 
-
-
-    const getCollectionType = firebase
-      .firestore()
-      .collection("users")
-      .where("uid", "==", followerUserId)
-    getCollectionType.get()
-      .then((snapshot) => {
-
-        snapshot.docs?.map(doc => setUserInfo(doc.data()))
-
-
-
-
-      }).catch((error) => {
-        console.log(error, "error");
-      });
-  }
-
+    try {
+      const snapshot = await getDocs(followerQuery);
+      snapshot.docs?.forEach((doc:any) => setUserInfo(doc.data()));
+    } catch (error) {
+      console.error("Error fetching follower data:", error);
+    }
+  };
 
   useEffect(() => {
     rewardList();
