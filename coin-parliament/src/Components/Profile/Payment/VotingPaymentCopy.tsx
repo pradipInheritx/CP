@@ -11,7 +11,7 @@ import Coins from "../../Coins/Coins";
 import { calcFavorites } from "../../../common/utils/coins";
 import AppContext from "../../../Contexts/AppContext";
 import { HomeContainer } from "../../App/App";
-import NotificationContext from "../../../Contexts/Notification";
+import NotificationContext, { ToastType } from "../../../Contexts/Notification";
 import NotLoggedInPopup from "../../App/NotLoggedInPopup";
 import Quotes from "../../Quotes";
 import ContentContext from "../../../Contexts/ContentContext";
@@ -35,6 +35,9 @@ import votebgMob from '../../../assets/images/votebgMob.png';
 import VoteStar from '../../../assets/images/VoteStar.png';
 import VoteToP from '../../../assets/images/VoteTop.png';
 import { doc, getDoc } from "firebase/firestore";
+import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalError } from '@web3modal/ethers5/react';
+import { ethers } from "ethers";
+import { showToast } from "../../../App";
 
 const H2 = styled.h2`
 width: 100%;
@@ -418,24 +421,8 @@ const VotingPaymentCopy: React.FC<{
     const { showModal } = useContext(NotificationContext);
     const { quotes } = useContext(ContentContext);
     const { width } = useWindowSize();
-
-
     const [coinsList, setCoinsList] = useState([])
-  // const [coinsList, setCoinsList] = useState([{
-  //     name:"a"
-  // },
-  //   {
-  //     name: "a"
-  //   },
-  //   {
-  //     name: "a"
-  //   },    
-  // ])
     const [selectPayment, setSelectPayment] = useState(0);
-    // const [selectCoin, setSelectCoin] = useState("none");
-    // const [coinInfo, setCoinInfo] = useState([]);
-
-    // const connectOrNot = localStorage.getItem("wldp_disconnect");
 
     const [payamount, setPayamount] = useState(0);
     const [payType, setPayType] = useState();
@@ -443,9 +430,6 @@ const VotingPaymentCopy: React.FC<{
     const [extraPer, setExtraPer] = useState(0);
   const [showText, setShowText] = useState(false);
   const [comingSoon, setComingSoon] = useState(false);
-    // const [payButton, setPayButton] = useState(false);
-    // const [showOptionList, setShowOptionList] = useState(false);
-    // const [afterPay, setAfterPay] = useState(false);
 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
@@ -463,11 +447,9 @@ const VotingPaymentCopy: React.FC<{
         if (window.screen.width > 767) {          
           window.scrollTo({ top:650, behavior: 'smooth' });                        
         }
-
         else {
           window.scrollTo({ top:630, behavior: 'smooth' });          
-        }
-        
+        }        
       }
     }, [coinInfo])
 
@@ -522,7 +504,8 @@ const VotingPaymentCopy: React.FC<{
       setPaymentStatus({ type: "", message: '' });
       setPayButton(true);
       // Call the global function and pass the values as arguments    
-      checkAndPay();
+    // checkAndPay();
+    sendTransaction()
     };
 
     const startAgainAction = () => {
@@ -536,6 +519,60 @@ const VotingPaymentCopy: React.FC<{
       setSelectCoin("none");
     }
 
+  const {open,close}= useWeb3Modal()
+  const { address, chainId, isConnected } = useWeb3ModalAccount()
+  const { walletProvider } = useWeb3ModalProvider()
+  
+  
+  console.log(address, chainId, isConnected, "address,chainId,isConnected")
+  
+  async function sendTransaction() {
+
+    let ethereum = (window as any).ethereum;
+
+    // if (!ethereum) {
+    //   ethereum = (window as any).web3?.currentProvider;
+    // }
+
+    // if (!ethereum) {
+    //   console.error("No Ethereum provider found");
+    //   return;
+    // }
+
+    try {
+      const provider = new ethers.providers.Web3Provider(walletProvider || ethereum)
+      // Request access to MetaMask
+      // await ethereum?.request({ method: 'eth_requestAccounts' });
+      // Create a wallet signer
+      const wallet = provider.getSigner();
+      // send a tx
+      const transaction = {
+        chainId: chainId,
+        to: '0xFB77A51d879FB3F79Dd31DB55D51d792e619051f',
+        value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
+      };
+
+      const txResponse = await wallet.sendTransaction(transaction);
+
+      // Handle the transaction response
+      console.log('Transaction hash:', txResponse.hash);
+      await txResponse.wait();
+      setPaymentStatus({ type:"success", message: "" })
+      setShowText(false)      
+      
+      setPayButton(false);
+      console.log('Transaction mined!');
+
+    } catch (error: any) {
+      const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];
+      // console.log(errorMessageWithoutTextAfterBracket);
+      showToast(errorMessageWithoutTextAfterBracket, ToastType.ERROR);
+      console.log((error as Error).message, 'Hello');
+      setShowText(false)
+      // setPaymentStatus({ type: "", message: '' });
+      setPayButton(false);
+    }
+  }
 
 
     return (
@@ -674,8 +711,8 @@ const VotingPaymentCopy: React.FC<{
                     background: `${selectPayment==1 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
                   }}
                   onClick={() => {
-                    // setSelectPayment(1)
-                    setComingSoon(true)                    
+                    setSelectPayment(1)
+                    // setComingSoon(true)                    
                   }}
                 >
                   <i className="bi bi-coin"></i>
@@ -706,10 +743,12 @@ const VotingPaymentCopy: React.FC<{
                 style={{
                   display: "flex",
                   justifyContent: "center",                  
+                  alignItems: "center",                  
+                  flexDirection:"column",                  
                 }}
               >
-                <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
-                  {/* <div className={`${selectCoin === "none" && "pay-custom-select-container"} mb-3`} style={{ */}
+                {/* <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
+                  
                   <div className={`pay-custom-select-container mb-3`} style={{
                     width: '23em',
                     zIndex: 4,                    
@@ -719,9 +758,7 @@ const VotingPaymentCopy: React.FC<{
                       onClick={() => {
                         if (payButton) {
                           return 
-                        }
-                        // if (selectCoin === "none") {
-                        // }
+                        }                        
                         setShowOptionList(prev => !prev)
                       }
 
@@ -733,8 +770,7 @@ const VotingPaymentCopy: React.FC<{
                       <ul className="pay-select-options"
                         style={{
 
-                          maxHeight: "200px",
-                          // top: `${!payamount? -200 : ""}` 
+                          maxHeight: "200px",                        
                           top: `${selectCoin == "none" ? `${coinsList.length > 5 ? "-200px" : `-${coinsList.length*44}px`}` : ""}`,
                           borderRadius: `${selectCoin == "none" ? "8px 8px 8px 8px " : "0px 0px 8px 8px "}`,
                           borderTop: "none",
@@ -755,11 +791,7 @@ const VotingPaymentCopy: React.FC<{
                                 onClick={async () => {
                                   setSelectCoin(option.name)
                                   setCoinInfo(option)
-                                  setShowOptionList(!showOptionList)                                  
-                                  // window.scrollTo({ top: 1000, behavior: 'smooth' });
-                                  // await mybtn("disconnect", "true").then(() => {
-                                  //   setConnectOrNot(!connectOrNot)
-                                  // })
+                                  setShowOptionList(!showOptionList)                                                                    
                                 }}
                               >
                                 {option.name}
@@ -772,17 +804,31 @@ const VotingPaymentCopy: React.FC<{
                       </ul>
                     )}
                   </div>
-                </Sidediv>
-                {selectPayment == 1 && showText == false && window.screen.width < 767 && <p
+                </Sidediv> */}
+                <Divbutton>
+                  <button
+                    style={{
+                      background: "#543cd6",
+                      color: "white",
+                      opacity: `${payButton ? "0.6" : "1"}`
+                    }}
+                    
+                  onClick={() => {
+                    open({ view: 'Networks' })
+                }}
+                >Select Coin</button>
+                </Divbutton>
+                
+
+                {/* {selectPayment == 1 && showText == false && window.screen.width < 767 && <p
                   style={{
                     padding: "10px",
                     fontSize: "10px",
                     textAlign: "center"
                   }}
-                >Please select the desired network in your wallet before initiating any payments.</p>}
+                >Please select the desired network in your wallet before initiating any payments.</p>} */}
 
-                {/* {
-                  selectCoin != "none" &&
+                {address&& chainId&& isConnected &&
                   <Divbutton>
                     <button
                       style={{
@@ -793,10 +839,11 @@ const VotingPaymentCopy: React.FC<{
                       disabled={payButton}
                       onClick={async () => {
                         handleClick()
+                        
                       }}
                     >{payButton ? <span className="">Pay Now...</span> : 'Pay Now'}</button>
                   </Divbutton>
-                } */}
+                }
                 
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" && 
@@ -812,7 +859,7 @@ const VotingPaymentCopy: React.FC<{
                               // opacity: `${payButton ? "0.6" : "1"}`
                             }}
                             onClick={() => {
-                              handleClick()
+                              // handleClick()
                             }}
                           >
 
