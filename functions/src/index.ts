@@ -44,11 +44,11 @@ import {
 import {
   getAllCoins,
   getAllPairs,
-  prepareCPVI,
-  fetchAskBidCoin,
-  getUpdatedDataFromWebsocket,
-  getAllUpdated24HourRecords,
-  removeTheBefore24HoursData,
+  // prepareCPVI,
+  // fetchAskBidCoin,
+  // getUpdatedDataFromWebsocket,
+  // getAllUpdated24HourRecords,
+  // removeTheBefore24HoursData,
 } from "./common/models/Coin";
 import Refer from "./common/models/Refer";
 import {
@@ -84,7 +84,7 @@ import {
   checkInActivityOfVotesAndSendNotification,
   sendNotificationForMintAddress,
 } from "./common/models/SendCustomNotification";
-import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
+// import { getCoinCurrentAndPastDataDifference } from "./common/models/Admin/Coin";
 import { JwtPayload } from "./common/interfaces/Admin.interface";
 import { createPushNotificationOnCallbackURL } from "./common/models/Notification"
 
@@ -96,7 +96,7 @@ import {
 import { getFollowersFollowingsAndVoteCoin } from "./common/models/NotificationCalculation";
 import { auth } from "./common/middleware/authentication";
 
-import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
+// import { setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 //import { settlePendingTransactionFunction, setPaymentSchedulingByCronJob } from "./common/models/PaymentCalculation";
 
 // import sendGrid Email function and templates 
@@ -1278,45 +1278,45 @@ exports.addPaxInPendingKEY = functions.https.onCall(async (data: any) => {
 
 // ******************* START CRON JOBS ****************
 // 5 minutes cron job
-exports.pendingPaymentSettlement = functions.pubsub
-  .schedule("0 0 */1 * *")
-  .onRun(async () => {
-    console.log("pendingPaymentSettlement start");
-    const currentTimeStamp = Date.now();
-    await setPaymentSchedulingByCronJob(currentTimeStamp);
-  });
+// exports.pendingPaymentSettlement = functions.pubsub
+//   .schedule("0 0 */1 * *")
+//   .onRun(async () => {
+//     console.log("pendingPaymentSettlement start");
+//     const currentTimeStamp = Date.now();
+//     await setPaymentSchedulingByCronJob(currentTimeStamp);
+//   });
 
-exports.updateLeadersCron = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    try {
-      await setLeaders();
-    } catch (e) {
-      console.log(e);
-    }
-  });
+// exports.updateLeadersCron = functions.pubsub
+//   .schedule("0 0 * * *")
+//   .onRun(async () => {
+//     try {
+//       await setLeaders();
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   });
 
-exports.getUpdatedDataFromWebsocket = functions.pubsub
-  .schedule("every 10 minutes")
-  .onRun(async () => {
-    await getUpdatedDataFromWebsocket();
-  });
+// exports.getUpdatedDataFromWebsocket = functions.pubsub
+//   .schedule("every 10 minutes")
+//   .onRun(async () => {
+//     await getUpdatedDataFromWebsocket();
+//   });
 
-exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
-  .schedule("every 15 minutes")
-  .onRun(async () => {
-    await getAllUpdated24HourRecords();
-    await removeTheBefore24HoursData();
-  });
+// exports.getUpdatedTrendAndDeleteOlderData = functions.pubsub
+//   .schedule("every 15 minutes")
+//   .onRun(async () => {
+//     await getAllUpdated24HourRecords();
+//     await removeTheBefore24HoursData();
+//   });
 
 //----------Start Notifications scheduler-------------
-exports.noActivityIn24Hours = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    console.log("---Start noActivityIn24Hours -------");
-    await checkInActivityOfVotesAndSendNotification();
-    console.log("---End noActivityIn24Hours -------");
-  });
+// exports.noActivityIn24Hours = functions.pubsub
+//   .schedule("0 0 * * *")
+//   .onRun(async () => {
+//     console.log("---Start noActivityIn24Hours -------");
+//     await checkInActivityOfVotesAndSendNotification();
+//     console.log("---End noActivityIn24Hours -------");
+//   });
 
 exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
   console.log("---Start noActivityIn24Hours -------");
@@ -1324,15 +1324,15 @@ exports.noActivityIn24HoursLocal = functions.https.onCall(async (data) => {
   console.log("---End noActivityIn24Hours -------");
 });
 
-exports.getCoinCurrentAndPastDataDifference = functions.pubsub
-  .schedule("0 */6 * * *")
-  // .schedule("*/5 * * * *")
-  .onRun(async () => {
-    const timeDifference = 6;
-    console.log("---Start getCoinCurrentAndPastDataDifference -------");
-    await getCoinCurrentAndPastDataDifference(timeDifference);
-    console.log("---End getCoinCurrentAndPastDataDifference -------");
-  });
+// exports.getCoinCurrentAndPastDataDifference = functions.pubsub
+//   .schedule("0 */6 * * *")
+//   // .schedule("*/5 * * * *")
+//   .onRun(async () => {
+//     const timeDifference = 6;
+//     console.log("---Start getCoinCurrentAndPastDataDifference -------");
+//     await getCoinCurrentAndPastDataDifference(timeDifference);
+//     console.log("---End getCoinCurrentAndPastDataDifference -------");
+//   });
 
 exports.checkTitleUpgrade24Hour = functions.pubsub
   .schedule("0 0 * * *")
@@ -1363,74 +1363,74 @@ exports.checkTitleUpgradeNotification = functions.https.onCall(async (data) => {
 //----------End Notifications scheduler-------------
 
 //----------Start CPVI scheduler-------------
-exports.prepareEveryFiveMinuteCPVI = functions.pubsub
-  .schedule("*/3 * * * *")
-  .onRun(async () => {
-    await Promise.all([await fetchAskBidCoin()]);
-  });
+// exports.prepareEveryFiveMinuteCPVI = functions.pubsub
+//   .schedule("*/3 * * * *")
+//   .onRun(async () => {
+//     await Promise.all([await fetchAskBidCoin()]);
+//   });
 
-exports.prepareHourlyCPVI = functions.pubsub
-  .schedule("0 * * * *")
-  .onRun(async () => {
-    await prepareCPVI(1, "hourly");
-  });
+// exports.prepareHourlyCPVI = functions.pubsub
+//   .schedule("0 * * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(1, "hourly");
+//   });
 
-exports.prepare4HourlyCPVI = functions.pubsub
-  .schedule("0 */4 * * *")
-  .onRun(async () => {
-    await prepareCPVI(4, "fourHourly");
-  });
+// exports.prepare4HourlyCPVI = functions.pubsub
+//   .schedule("0 */4 * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(4, "fourHourly");
+//   });
 
-exports.prepare24HourlyCPVI = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    await prepareCPVI(24, "daily");
-  });
+// exports.prepare24HourlyCPVI = functions.pubsub
+//   .schedule("0 0 * * *")
+//   .onRun(async () => {
+//     await prepareCPVI(24, "daily");
+//   });
 
-exports.prepareWeeklyCPVI = functions.pubsub
-  .schedule("0 0 * * 0")
-  .onRun(async () => {
-    await prepareCPVI(24 * 7, "weekly");
-  });
+// exports.prepareWeeklyCPVI = functions.pubsub
+//   .schedule("0 0 * * 0")
+//   .onRun(async () => {
+//     await prepareCPVI(24 * 7, "weekly");
+//   });
 //----------END CPVI scheduler-------------
 
 
 // -------- pax distribution -----------
 // ------ 24 hours --------
-exports.paxDistribution = functions.pubsub
-  .schedule("0 0 * * *")
-  .onRun(async () => {
-    try {
-      const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
-      const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
-      console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
-      if (getIsVirtualTransaction.length == 0) {
-        return {
-          status: true,
-          message: "pax transaction is updated successfully",
-          result: getIsVirtualTransaction
-        }
-      }
-      for (let index = 0; index < getIsVirtualTransaction.length; index++) {
-        let pax = getIsVirtualTransaction[index];
-        await admin.firestore().collection('paxTransaction').doc(pax.id).set({
-          isVirtual: admin.firestore.FieldValue.delete()
-        }, { merge: true });
-      }
-      return {
-        status: true,
-        message: "pax transaction is updated successfully",
-        result: null
-      }
-    } catch (error: any) {
-      errorLogging("paxDistribution", "ERROR", error)
-      return {
-        status: false,
-        message: "Something went wrong",
-        result: null
-      }
-    }
-  });
+// exports.paxDistribution = functions.pubsub
+//   .schedule("0 0 * * *")
+//   .onRun(async () => {
+//     try {
+//       const getPaxTransactionList = (await admin.firestore().collection('paxTransaction').get()).docs.map((pax: any) => { return { ...pax.data(), id: pax.id } });
+//       const getIsVirtualTransaction = getPaxTransactionList.filter((pax: any) => pax.isVirtual == true);
+//       console.log("getIsVirtualTransaction : ", getIsVirtualTransaction);
+//       if (getIsVirtualTransaction.length == 0) {
+//         return {
+//           status: true,
+//           message: "pax transaction is updated successfully",
+//           result: getIsVirtualTransaction
+//         }
+//       }
+//       for (let index = 0; index < getIsVirtualTransaction.length; index++) {
+//         let pax = getIsVirtualTransaction[index];
+//         await admin.firestore().collection('paxTransaction').doc(pax.id).set({
+//           isVirtual: admin.firestore.FieldValue.delete()
+//         }, { merge: true });
+//       }
+//       return {
+//         status: true,
+//         message: "pax transaction is updated successfully",
+//         result: null
+//       }
+//     } catch (error: any) {
+//       errorLogging("paxDistribution", "ERROR", error)
+//       return {
+//         status: false,
+//         message: "Something went wrong",
+//         result: null
+//       }
+//     }
+//   });
 
 exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
   try {
