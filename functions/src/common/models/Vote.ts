@@ -4,6 +4,10 @@ import { getPriceOnParticularTime } from "../models/Rate";
 import Calculation from "../models/Calculation";
 import { errorLogging } from "../models/Calculation";
 import { sendMintForPaxToUser, sendMintForPaxToAdmin } from "./Reward"
+import { sendNotificationForCpm } from "./SendCustomNotification";
+import { sendCPMToFoundationOfUser } from "./Admin/Foundation";
+
+
 
 import FirestoreDataConverter = admin.firestore.FirestoreDataConverter;
 import { addPaxTransactionWithPendingStatus } from "./PAX";
@@ -302,6 +306,10 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
         console.info("getResultAfterSentPaxToAdmin", getResultAfterSentPaxToAdmin);
         return getResultAfterSentPaxToAdmin
       }
+      console.log("Send the block complete notification : ", paxDetails.userId);
+      await sendNotificationForCpm(paxDetails.userId); // For Send Notification
+      await sendCPMToFoundationOfUser(paxDetails.userId, currentVoteCMP); // add 0.1% cpm to foundation
+      console.log("Finished execution addReward function");
     }
 
   } catch (error) {
