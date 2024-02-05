@@ -86,22 +86,22 @@ const Footer = () => {
     <FooterContainer>
       <p style={{ marginBottom: '5px' }}>
         <img src={XTwitter} height='22' width={'15'} className="me-1 pb-1" style={{ cursor: 'pointer' }}
-          // onClick={() =>
-          //   window.open(
-          //     `https://twitter.com/CoinParliament`,
-          //     "_blank"
-          //   )
-          // } 
+          onClick={() =>
+            window.open(
+              `https://twitter.com/VoteToEarn`,
+              "_blank"
+            )
+          } 
           />
         <img
-          style={{ margin: '5px', marginTop: '-3px' }}
+          style={{ margin: '5px', marginTop: '-3px', cursor:"pointer" }}
           height='17'
           src={process.env.PUBLIC_URL + '/images/icons/facebook.svg'}
-        // onClick={() =>
-        //   window.open(
-        //     "https://www.facebook.com/CoinParliament","_blank"
-        //   )
-        // }
+        onClick={() =>
+          window.open(
+            "https://www.facebook.com/VoteToEarn","_blank"
+          )
+        }
         />
         {/* <img
             style={{marginTop:'-5px'}}
