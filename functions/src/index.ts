@@ -6,6 +6,7 @@ import express from "express";
 import env from "./env/env.json";
 import cors from "cors";
 import * as bodyParser from "body-parser";
+import speakeasy from "speakeasy";
 import {
   Colors,
   isAdmin,
@@ -144,6 +145,8 @@ exports.getAccessToken = () =>
     });
   });
 
+
+
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
   console.log("create user");
   const status: UserTypeProps = {
@@ -244,6 +247,171 @@ exports.updateAndGetPaxDistribution = functions.https.onCall(async (data) => {
 
 exports.setLeadersOnce = functions.https.onCall(async () => {
   await setLeaders();
+});
+
+// added code for the QR code
+exports.generateGoogleAuthOTP = functions.https.onCall(async (data) => {
+  try {
+    const { userId, userType } = data;
+    if (!userId || !userType) {
+      return {
+        status: false,
+        message: "userId and userType are required.",
+        result: null,
+      };
+    }
+    console.log(" userId, userType =>", userId, userType);
+
+    let adminUserData: any;
+    if (userType === "ADMIN") {
+      adminUserData = await admin
+        .firestore()
+        .collection("admin")
+        .doc(userId)
+        .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+    console.log(" adminUserData =>", adminUserData);
+
+    const getUserData: any = adminUserData.data();
+    console.info("getUserData", getUserData);
+    const { ascii, hex, base32, otpauth_url } = speakeasy.generateSecret({
+      issuer: "inheritx.com",
+      name: "Coin Parliament", //getUserData.firstName,
+      length: 15,
+    });
+
+    console.log(" getUserData =>", getUserData);
+
+    getUserData.googleAuthenticatorData = {
+      otp_ascii: ascii,
+      otp_auth_url: otpauth_url,
+      otp_base32: base32,
+      otp_hex: hex,
+    };
+
+    console.log("googleAuthenticatorData =>", getUserData);
+
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+
+    return {
+      status: true,
+      message: "OTP generated successfully",
+      result: {
+        base32: base32,
+        otpauth_url: otpauth_url,
+      },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error in generateGoogleAuthOTP API ",
+      result: error,
+    };
+  }
+});
+
+exports.verifyGoogleAuthOTP = functions.https.onCall(async (data) => {
+  try {
+    const { userId, token, userType } = data;
+    if (!userId) {
+      return {
+        status: false,
+        message: "UserId must be required.",
+        result: null,
+      };
+    }
+
+    let adminUserData: any;
+
+    if (userType === "ADMIN") {
+      adminUserData = await admin
+        .firestore()
+        .collection("admin")
+        .doc(userId)
+        .get();
+    } else if (userType === "USER") {
+      adminUserData = await admin
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .get();
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+
+    const getUserData: any = adminUserData.data();
+
+    const verified = speakeasy.totp.verify({
+      secret: getUserData.googleAuthenticatorData.otp_base32,
+      encoding: "base32",
+      token,
+    });
+    console.log("verified", verified);
+
+    if (!verified) {
+      return {
+        status: false,
+        message: "OTP not verified.",
+        result: null,
+      };
+    }
+    getUserData.googleAuthenticateOTPVerified = {
+      otp_enabled: true,
+      otp_verified: true,
+    };
+
+    if (userType === "ADMIN") {
+      await admin.firestore().collection("admin").doc(userId).set(getUserData);
+    } else if (userType === "USER") {
+      await admin.firestore().collection("users").doc(userId).set(getUserData);
+    } else {
+      return {
+        status: false,
+        message: "Please provide valid userType.",
+        result: null,
+      };
+    }
+    return {
+      status: true,
+      message: "OTP verified successfully",
+      result: {
+        otp_verified: true,
+        ...getUserData.googleAuthenticateOTPVerified,
+      },
+    };
+  } catch (error) {
+    return {
+      status: false,
+      message: "Error in verifyGoogleAuthOTP API ",
+      result: error,
+    };
+  }
 });
 
 exports.isAdmin = functions.https.onCall(async (data) => {
