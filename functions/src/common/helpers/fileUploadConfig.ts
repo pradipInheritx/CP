@@ -133,9 +133,8 @@ export const avatarUploadFunction = async (req: any, res: any) => {
       // console.log("file path : ", filepath)
       // const fileUpload = bucket.file(filepath); 
 
-
-      const getFileExtension = fileMeta.filename.split('.').pop();
-      const filepath = `UsersAvatar/${fileMeta?.filename}-${Date.now()}.${getFileExtension}`;
+      const splitFileName = fileMeta.filename.split('.');
+      const filepath = `UsersAvatar/${splitFileName[0]}-${Date.now()}.${splitFileName[1]}`;
       console.log("file path : ", filepath);
 
       const fileUpload = bucket.file(filepath);
