@@ -7,6 +7,9 @@ import env from "./env/env.json";
 import cors from "cors";
 import * as bodyParser from "body-parser";
 import speakeasy from "speakeasy";
+import * as jwt from "jsonwebtoken"; // For JSON Web Token
+
+
 import {
   Colors,
   isAdmin,
@@ -27,6 +30,14 @@ import { updateAndGetPaxDistribution } from "./common/models/PAX";
 import { getCurrentPaxDistribution } from "./common/models/PAX";
 import { avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
+import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
+import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
+import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
+import { JwtPayload } from "./common/interfaces/Admin.interface";
+import { sendEmail } from "./common/services/emailServices"
+
+
+
 import {
   calculateOffset,
   updateVotesTotal,
@@ -110,6 +121,45 @@ main.use(bodyParser.urlencoded({ extended: false, limit: "100mb" }));
 main.use("/v1", app);
 
 app.post("/generic/user/uploadAvatar/:userId", avatarUploadFunction);
+
+app.get("/user/verified", async (req: any, res: any) => {
+  try {
+    const { token } = req.query;
+    const auth = admin.auth();
+    if (!token) {
+      return res.status(400).send({
+        status: false,
+        message: "Token is required",
+        result: null,
+      });
+    }
+
+    // Verify the JWT token
+    const decodedToken: any = (await jwt.verify(
+      token,
+      env.JWT_AUTH_SECRET
+    )) as JwtPayload;
+
+    // Use the UID from the decoded token to verify the user in Firebase Authentication
+    console.log("decode token : ", decodedToken);
+    console.log("decodedToken.uid : ", decodedToken.uid)
+    auth
+      .updateUser(decodedToken.uid, { emailVerified: true })
+      .then((userRecord) => {
+        console.log("User successfully verified:", userRecord.toJSON());
+        let userData: any = userRecord.toJSON()
+        if (userData?.emailVerified == true) {
+          const successTemplate = newUserVerifySuccessTemplate();
+          res.send(successTemplate);
+        }
+      })
+  }
+  catch (error: any) {
+    console.error("Error verifying user:", error);
+    const failureTemplate = newUserVerifyFailureTemplate();
+    return res.status(400).send(failureTemplate);
+  }
+});
 
 app.get("/calculateCoinCPVI", async (req, res) => {
   await cpviTaskCoin((result) => res.status(200).json(result));
@@ -205,9 +255,44 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     return false;
   }
 });
-import { addNewKeysInCollection } from "./common/models/User";
+
+exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
+  const { email } = data;
+
+  try {
+    console.log("user email : ", email);
+    // Get user data from Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log("user record : ", userRecord)
+
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
+    );
+
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL}/api/v1/user/verify?token=${token}`;
+
+    if (email && verificationLink) {
+      await sendEmail(
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
+    }
+
+    console.log("Verification link:", verificationLink);
+    return { verificationLink }
+  } catch (error) {
+    console.error("Error sending verification link:", error);
+    return { error }
+  }
+});
 
 // temporarily used to add add keys to the collection
+import { addNewKeysInCollection } from "./common/models/User";
 exports.addNewKeysInCollection = functions.https.onCall((data) => {
   const { keyName, keyValue, collectionName } = data;
   console.log(
