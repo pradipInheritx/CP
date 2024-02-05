@@ -125,7 +125,7 @@ const AvatarsModal = ({ onSubmit, onClose }: AvatarsModalProps) => {
     if (compressedImage.size < maxSizeInBytes && file.size < maxSizeInBytes) {
       setImageError("")
       // @ts-ignore
-      setImagepPath(compressedImage)
+      setImagepPath(e.target.files[0])
       const reader = new FileReader();
       reader.onloadend = () => {
         // @ts-ignore
