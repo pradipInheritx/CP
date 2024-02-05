@@ -191,7 +191,7 @@ app.get("/user/verified", async (req: any, res: any) => {
         if (userData?.emailVerified == true) {
           const successTemplate = newUserVerifySuccessTemplate();
           res.send(successTemplate);
-        } 
+        }
       })
   }
   catch (error: any) {
@@ -280,9 +280,9 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
 });
 
 
-exports.pushNotificationOnCallbackURL = functions.https.onCall(async () => {
-  const getResponseFromPushNotificationcallBackURL = await createPushNotificationOnCallbackURL
-  console.info("getResponseFromPushNotificationcallBackURL", getResponseFromPushNotificationcallBackURL)
+exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
+  await createPushNotificationOnCallbackURL(data);
+  return { data }
 })
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
