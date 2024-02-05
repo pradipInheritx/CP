@@ -21,10 +21,10 @@ import ImageCompressor from 'image-compressor.js';
 import { texts } from "Components/LoginComponent/texts";
 
 type AvatarsModalProps = {
-    onSubmit: (type: AvatarType) => Promise<void>;
-    onClose: () => void;
-    setFirstTimeAvatarSelection?: React.Dispatch<React.SetStateAction<boolean>>
-    setShowMenuBar?: React.Dispatch<React.SetStateAction<boolean>>
+  onSubmit: (type: AvatarType) => Promise<void>;
+  onClose: () => void;
+  setFirstTimeAvatarSelection?: React.Dispatch<React.SetStateAction<boolean>>
+  setShowMenuBar?: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const Title = styled.div`
@@ -39,16 +39,14 @@ const Title = styled.div`
   font-weight:400 !important;
 `;
 
-// grid-template-columns: repeat(
-//     ${(props: { width?: number }) =>
-//         props.width && props.width > 767 ? "5" : "2"},
-//     1fr
-//   );
-
 const Flex = styled.div`
-  display: grid;
- 
-  grid-gap: 10px;
+  // display: grid;
+  grid-template-columns: repeat(
+    ${(props: { width?: number }) =>
+    props.width && props.width > 767 ? "5" : "2"},
+    1fr
+  );
+  // grid-gap: 10px;
   align-items: center;
 
   > div {
@@ -64,7 +62,6 @@ width:${window.screen.width > 979 ? '350px' : ''}
 const Container = styled.div`
   background: var(--color-d4d0f3) 0 0% no-repeat padding-box;
   padding: ${window.screen.width > 767 ? "10px" : "0px"};      
-  width: ${window.screen.width > 767 ? "30%" : "80%"};
 `;
 const CloseIcon = styled.span`
 color: var(--color-6352e8);
@@ -101,196 +98,206 @@ margin-bottom:10px;
 `;
 
 const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
-    const { setFirstTimeAvatarSelection, setShowMenuBar, avatarImage, setAvatarImage, backgrounHide, setBackgrounHide } = useContext(AppContext);
-    const translate = useTranslation();
-    const { width } = useWindowSize();
-    const { userInfo, user } = useContext(UserContext);
-    const [selectedAvatar, setSelectedAvatar] = useState('');
-    const [image, setImage] = useState(null);
-    const [imagePath, setImagepPath] = useState(null);
-    const [imageUrl, setImageUrl] = useState("");
-    const [bio, setBio] = useState("");
-    const fileInputRef = useRef(null);
-    const [imageError, setImageError] = useState("");
-    const pathname = window.location.pathname;
-    const [isLoading, setIsLoading] = useState(false);
-    const handleAvatarClick = () => {
+  const { setFirstTimeAvatarSelection, setShowMenuBar, avatarImage, setAvatarImage, backgrounHide, setBackgrounHide } = useContext(AppContext);
+  const translate = useTranslation();
+  const { width } = useWindowSize();
+  const { userInfo,user } = useContext(UserContext);
+  const [selectedAvatar, setSelectedAvatar] = useState('');
+  const [image, setImage] = useState(null);
+  const [imagePath, setImagepPath] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [bio, setBio] = useState("");
+  const fileInputRef = useRef(null);
+  const [imageError, setImageError] = useState("");  
+  const pathname = window.location.pathname;
+  const [isLoading, setIsLoading] = useState(false);
+  const handleAvatarClick = () => {
+    // @ts-ignore
+    fileInputRef.current!.click();
+  };
+
+  const handleImageChange = async(e:any) => {
+    const file = e.target.files[0];
+    setImagepPath(e.target.files[0])  
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      // @ts-ignore
+      setImage(reader.result);
+      // @ts-ignore
+      setImageUrl(URL.createObjectURL(e.target.files[0]))
+    };
+    reader.readAsDataURL(file);
+    const maxSizeInBytes = 11* 1024 * 1024; // 2 MB 
+    const imageCompressor = new ImageCompressor();
+    const compressedImage = await imageCompressor.compress(file, {      
+      quality: 0.6,
+    });       
+    if (compressedImage.size < maxSizeInBytes && file.size < maxSizeInBytes) {
+      setImageError("")
+      // @ts-ignore
+      setImagepPath(e.target.files[0])      
+      const reader = new FileReader();
+      reader.onloadend = () => {
         // @ts-ignore
-        fileInputRef.current!.click();
-    };
-
-    const handleImageChange = async (e: any) => {
-        const file = e.target.files[0];
-        const maxSizeInBytes = 11 * 1024 * 1024; // 2 MB 
-        const imageCompressor = new ImageCompressor();
-        const compressedImage = await imageCompressor.compress(file, {
-            quality: 0.6,
-        });
-        if (compressedImage.size < maxSizeInBytes && file.size < maxSizeInBytes) {
-            setImageError("")
-            // @ts-ignore
-            setImagepPath(compressedImage)
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // @ts-ignore
-                setImage(reader.result);
-                // @ts-ignore
-                setImageUrl(URL.createObjectURL(e.target.files[0]))
-            };
-            reader.readAsDataURL(file);
-        } else {
-            setImageError('Image size allowed limit (10 MB)');
-            return;
-        }
-    };
-
-    const handleUpload = async () => {
-        if (imagePath) {
-            setIsLoading(true)
-            // setBackgrounHide(true)
-            setAvatarImage(imageUrl)
-            try {
-                const formData = new FormData();
-                formData.append('file', imagePath);
-                // @ts-ignore
-                const response = await axios.post(`/generic/user/uploadAvatar/${user?.uid}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                if (response.data.status) {
-                    showToast(response.data.message, ToastType.SUCCESS);
-                    setIsLoading(false)
-                    // setBackgrounHide(false)
-                    onClose()
-                } else {
-                    showToast(response.data.message, ToastType.ERROR);
-                    setAvatarImage("")
-                    setIsLoading(false)
-                    // setBackgrounHide(false)
-                }
-            } catch (error) {
-                showToast("Error uploading image", ToastType.ERROR);
-                setAvatarImage("")
-                setIsLoading(false)
-                // setBackgrounHide(false)
-            }
-        }
-    };
-
-    const UpdateBio = async () => {
-        if (user?.uid) {
-            const userRef = doc(db, "users", user?.uid);
-            await setDoc(userRef, { bio: bio }, { merge: true });
-        }
+        setImage(reader.result);
+        // @ts-ignore
+        setImageUrl(URL.createObjectURL(e.target.files[0]))
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImageError('Image size allowed limit (10 MB)');
+      return;
     }
+  };
+  
+  const handleUpload = async () => {
+    if (imagePath) {
+      setIsLoading(true)
+      // setBackgrounHide (true)
+      setAvatarImage(imageUrl)
+      try {
+        const formData = new FormData();
+        formData.append('file', imagePath);
+        // @ts-ignore
+        const response = await axios.post(`/generic/user/uploadAvatar/${user?.uid}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });        
+        if (response.data.status) {
+          showToast(response.data.message, ToastType.SUCCESS);
+          setIsLoading(false)
+          // setBackgrounHide(false)
+          onClose()
+        } else {          
+          showToast(response.data.message, ToastType.ERROR);
+          setAvatarImage("")
+          setIsLoading(false)
+          // setBackgrounHide(false)
+        }
+      } catch (error) {        
+        showToast("Error uploading image", ToastType.ERROR);
+        setAvatarImage("")
+        setIsLoading(false)
+        // setBackgrounHide(false)
+      }
+    }
+  };
 
-    return (
-        <Container className="position-relative" >
+  const UpdateBio = async () => {
+    if (user?.uid) {      
+      const userRef = doc(db, "users", user?.uid);
+      await setDoc(userRef, {bio:bio}, { merge: true });
+    }
+}
 
-            {isLoading && <div style={{
-                position: 'fixed',
-                height: '100%',
-                display: 'flex',
-                textAlign: 'center',
-                justifyContent: 'center',
-                top: '0px',
-                right: '0px',
-                bottom: '0px',
-                zIndex: '109999',
-                overflow: 'hidden',
-                width: '100%',
-                alignItems: 'center',
-                backgroundColor: "rgba(0,0,0,0.8)"
-            }}>
-                <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em', marginTop: "50px" }}>
-                    {texts.waitForIt}
-                </span>
-            </div>}
-            <div className="position-absolute top-0" style={{ right: 0 }}>
-                {pathname.includes('profile') && <div className="p-2 pl-0 close" role="button" onClick={onClose}>
-                    <CloseIcon aria-hidden="true">&times;</CloseIcon>
-                </div>}
-            </div>
-            {!selectedAvatar && (<>
-                <Title>{translate("Select Your Avatar")}</Title>
-                <Flex {...{ width }}>
-                    {Object.values(AvatarType).map((type, i) => {
-                        return <>
-                            {
-                                type == "Custom" ?
-                                    <>
-                                        <CustomBox className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between align-items-center flex-column`}>
-                                            <span className="mt-2" style={{
-                                                color: "rgb(110, 83, 255)"
-                                            }}>Custom Avatar</span>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleImageChange}
-                                                style={{ display: 'none' }}
-                                                ref={fileInputRef}
-                                            />
+  return (
+    <Container className="position-relative ">
+      
+      {isLoading && <div style={{
+        position: 'fixed',
+        height: '100%',
+        display: 'flex',
+        textAlign: 'center',
+        justifyContent: 'center',
+        top: '0px',
+        right: '0px',
+        bottom: '0px',
+        zIndex: '109999',
+        overflow: 'hidden',
+        width: '100%',
+        alignItems: 'center',
+        backgroundColor: "rgba(0,0,0,0.8)"
 
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: 'center',
-                                                    width: "140px",
-                                                    height: "140px",
-                                                    borderRadius: "70px",
-                                                    overflow: "hidden",
-                                                    position: "relative",
-                                                }}
+      }}>
+        <span className="loading" style={{ color: "White", zIndex: "2220px", fontSize: '1.5em', marginTop: "50px" }}>
+          {texts.waitForIt}
+        </span>
+      </div>}
+      <div className="position-absolute top-0" style={{ right: 0 }}>
+        {pathname.includes('profile') && <div className="p-2 pl-0 close" role="button" onClick={onClose}>
+          <CloseIcon aria-hidden="true">&times;</CloseIcon>
+        </div>}
+      </div>
+      {!selectedAvatar && (<>
+        <Title>{translate("Select Your Avatar")}</Title>
+        <Flex style={{display:"flex",justifyContent:"center"}}>
+          {Object.values(AvatarType).map((type, i) => {
+            return <>
+              {
+                type == "Custom" ?
+                  <>                    
+                    <CustomBox className={`${window.screen.width > 767 ? "" : ""} d-flex justify-content-between align-items-center flex-column`}>
+                      <span className="mt-2" style={{
+                        color:"rgb(110, 83, 255)"
+                      }}>Custom Avatar</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          style={{ display: 'none' }}
+                          ref={fileInputRef}
+                        />
 
-                                            >
-                                                <Image
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            width: "140px",
+                            height: "140px",
+                            borderRadius: "70px",
+                            overflow: "hidden",
+                            position: "relative",
+                          }}
 
-                                                    src={image || UploadImg}
-                                                    alt="Avatar"
-                                                    onClick={handleAvatarClick}
-                                                    className="img-fluid Homeimg"
-                                                    style={{ cursor: 'pointer' }}
-                                                />
-                                            </div>
-                                            {imageError != "" && <span style={{ color: "red", fontSize: "10px" }}>{imageError}</span>}
-                                            <ButtonBox
-                                                style={{
-                                                    opacity: `${imageError == "" ? "1" : "0.6"}`
-                                                }}
-                                                onClick={() => {
-                                                    if (imageError == "")
-                                                        handleUpload()
-                                                }}
-                                                disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
-                                                Upload
-                                            </ButtonBox>
-                                        </CustomBox>
-                                    </>
-                                    :
-                                    <>
-                                        {/* <AvatarRadio
-                                            maxWidth={window.screen.width > 767 ? 183 : 165}
-                                            key={i}
-                                            type={type}
-                                            checked={type === (userInfo?.avatar || defaultAvatar)}
-                                            name={"avatars"}
-                                            id={"avatar-" + type}
-                                            onSubmit={() => onSubmit(type)}
-                                            onClick={(id: string) => {
-                                                // showModal(<NFT id={id} />);
-                                                if (!selectedAvatar) setSelectedAvatar(id)
-                                            }}
-                                        /> */}
-                                    </>
-                            }
-                        </>
-                    })}
-                </Flex>
+                        >
+                          <Image
 
+                          src={image || UploadImg}
+                            alt="Avatar"
+                            onClick={handleAvatarClick}
+                            className="img-fluid Homeimg"
+                            style={{ cursor: 'pointer' }}
+                          />
+                      </div>
+                      {imageError != "" && <span style={{ color: "red", fontSize: "10px" }}>{imageError}</span>}
+                      <ButtonBox
+                        style={{
+                          opacity: `${imageError == "" ? "1" : "0.6"}`
+                        }}
+                        onClick={() => {
+                          if (imageError == "")
+                            handleUpload()
+                        }}                        
+                        disabled={!image} className={`${window.screen.width < 767 ? "mt-3" : "mx-2"}`}>
+                          Upload
+                        </ButtonBox>
+                      </CustomBox>                                          
+                  </>
+                  :
+                  <>
+                    {/* <AvatarRadio
+                      maxWidth={window.screen.width > 767 ? 183 :165}
+                      key={i}
+                      type={type}
+                      checked={type === (userInfo?.avatar || defaultAvatar)}
+                      name={"avatars"}
+                      id={"avatar-" + type}
+                      onSubmit={() => onSubmit(type)}
+                      onClick={(id: string) => {
+                        // showModal(<NFT id={id} />);
+                        if (!selectedAvatar) setSelectedAvatar(id)
+                      }}
+                    /> */}
+                  </>                  
+              }              
+              </>    
+          })}
+        </Flex>
 
-                {/* <div className="d-flex justify-content-center text-center mt-4">
+        
+        {/* <div className="d-flex justify-content-center text-center mt-4">
           <span style={{ fontSize: '2em', color: '#6e53ff', cursor: 'pointer' }} onClick={() => {
             if (!userInfo?.avatar) {
               onSubmit(defaultAvatar);
@@ -299,12 +306,12 @@ const UpdateAvatars = ({ onSubmit, onClose }: AvatarsModalProps) => {
             setShowMenuBar(false);
           }}>{image !=null ?"Next":"Skip"}</span>
         </div> */}
-            </>)}
-            <div className="d-flex justify-content-center">
-                {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
-            </div>
-        </Container>
-    );
+      </>)}
+      <div className="d-flex justify-content-center">
+      {selectedAvatar && (<ModelWrapper style={{ left: window.screen.width > 979 ? "38%" : "auto" }} ><NFT setSelectedAvatar={setSelectedAvatar} id={selectedAvatar} /></ModelWrapper>)}
+      </div>
+    </Container>
+  );
 };
 
 export default UpdateAvatars;

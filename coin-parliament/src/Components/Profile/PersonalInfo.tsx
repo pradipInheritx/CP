@@ -196,9 +196,9 @@ const PersonalInfo = () => {
           //   console.log(phone?.phone,"phone?.phone")
           //   setPhoneErr(true)
           // }          
-          else if (bio.length < 5 || bio.length > 401 || bio === "") {
-            setBioErr(true);
-          }
+          // else if (bio.length < 5 || bio.length > 401 || bio === "") {
+          //   setBioErr(true);
+          // }
           else if (email === user?.email) {
             console.log("i am working234234345")
             setUserInfo(newUserInfo);
