@@ -38,7 +38,7 @@ export const sendNotification = async ({
 export const createPushNotificationOnCallbackURL = async (req: any, res: any) => {
   try {
     await firestore()
-      .collection("userPushNotificationCallbackURL").add({ userId: "", PushNotificationDetails: "", callbackURL: "", serverTimestamp: firestore.FieldValue.serverTimestamp() });
+      .collection("userPushNotificationCallbackURL").add({ userId: "", PushNotificationDetails: "", callbackURL: "", payloadKey: "", uniqueId: "", childUserEmail: "", notificationType: "", amount: "", currency: "", commission: "", serverTimestamp: firestore.FieldValue.serverTimestamp() });
 
     res.status(200).send({
       status: true,
