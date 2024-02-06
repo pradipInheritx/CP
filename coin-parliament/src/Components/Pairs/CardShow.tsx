@@ -197,7 +197,7 @@ function CardShow() {
           >
            
            <ImgName>
-            <img src={cardData.img1} alt=""  width={"75px"}/>
+            <img src={cardData.img1} alt=""  width={"80px"} height={"75px"} />
              <CoinText>{cardData.name1}</CoinText>
              {/* <CoinPrice>{cardData.price1}</CoinPrice> */}
           </ImgName>
@@ -221,7 +221,7 @@ function CardShow() {
               </div>  
               
            <ImgName>
-             <img src={cardData.img2} alt=""  width={"75px"}/>
+             <img src={cardData.img2} alt=""  width={"80px"} height={"75px"}/>
                 <CoinText>{cardData.name2}</CoinText>
                 {/* <CoinPrice>{cardData.price2}</CoinPrice> */}
               </ImgName>  
@@ -315,7 +315,7 @@ function CardShow() {
               }}
                  onClick={() => {                  
                   //  setShowSpdometer(true)
-                  setVoteDirection(2)  
+                  setVoteDirection(2)
                    setClickedOption0(true);
                    setTimeout(() => {
                      setClickedOption0(false)
@@ -352,7 +352,7 @@ function CardShow() {
               border: "1px solid #6352e8",
                 borderRadius: "10px",
                 // display: "flex",
-
+                
                 // justifyContent: "center",
           boxShadow: "0 3px 6px #00000029"
               }}> 
@@ -399,10 +399,10 @@ function CardShow() {
         {
           showPopUp == true ?
             <>
-              <ModalForResult
-              voteDirection = {voteDirection }    
+              <ModalForResult   
+voteDirection = {voteDirection }    
             // @ts-ignore 
-                showPopUp={showPopUp}
+                                showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}
               />
             </>

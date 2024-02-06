@@ -68,24 +68,24 @@ export const voteProcedure = ({vote, sound, setConfetti}: {
 
 export const listData = [
   {
-    name1: "ABC",
-    name2: "BCA",
+    name1: "NVIDIA",
+    name2: "TESLA",
     price1: "123.002",
     price2: "232.003",
     img1: EXTRA,
     img2: EXTRA1,
   },
   {
-    name1: "XYZ",
-    name2: "ZYX",
+    name1: "ALPHABET",
+    name2: "META",
     price1: "213.001",
     price2: "423.001",
     img1: EXTRA2,
     img2: EXTRA3,
   },
   {
-    name1: "DEF",
-    name2: "FDE",
+    name1: "AMAZON",
+    name2: "APPLE",
     price1: "324.012",
     price2: "132.103",
     img1: EXTRA4,
