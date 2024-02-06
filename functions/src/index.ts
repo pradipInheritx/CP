@@ -16,6 +16,7 @@ import {
   userConverter,
   UserProps,
   UserTypeProps,
+  sendEmailVerificationLink
 } from "./common/models/User";
 import serviceAccount from "./serviceAccounts/votetoearn.json";
 import { getPrice } from "./common/models/Rate";
@@ -30,6 +31,7 @@ import { updateAndGetPaxDistribution } from "./common/models/PAX";
 import { getCurrentPaxDistribution } from "./common/models/PAX";
 import { avatarUploadFunction } from "./common/helpers/fileUploadConfig";
 // import {getLeaderUsers, getLeaderUsersByIds, setLeaders} from "./common/models/Calculation";
+// import { userWelcomeEmailTemplate } from "./common/emailTemplates/userWelcomeEmailTemplate.ts";
 import { newUserVerifySuccessTemplate } from "./common/emailTemplates/newUserVerifySuccessTemplate";
 import { newUserVerifyFailureTemplate } from "./common/emailTemplates/newUserVerifyFailureTemplate";
 import { userVerifyEmailTemplate } from "./common/emailTemplates/userVerifyEmailTemplate";
@@ -246,12 +248,28 @@ exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
     referalReceiveType: { name: "", amount: "", days: "", limitType: "" }
   };
   try {
-    return await admin
+    const newUser = await admin
       .firestore()
       .collection("users")
       .doc(user.uid)
       .set(userData);
+
+    //Send Welcome Mail To User
+    // await sendEmail(
+    //   userData.email,
+    //   "Welcome To Coin Parliament!",
+    //   userWelcomeEmailTemplate(`${userData.displayName ? userData.displayName : 'user'}`, env.BASE_SITE_URL)
+    // );
+
+    const getUserEmail: any = (
+      await admin.firestore().collection("users").doc(user.uid).get()
+    ).data();
+    console.log("new user email  : ", getUserEmail.email);
+    await sendEmailVerificationLink(getUserEmail.email);
+
+    return newUser;
   } catch (e) {
+    console.log("create user Error....", e);
     return false;
   }
 });

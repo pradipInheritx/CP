@@ -1,4 +1,11 @@
 import { firestore } from "firebase-admin";
+import admin from "firebase-admin";
+import * as jwt from "jsonwebtoken";
+
+import env from "../../env/env.json";
+import { sendEmail } from "../services/emailServices";
+import { userVerifyEmailTemplate } from "../emailTemplates/userVerifyEmailTemplate";
+
 import FirestoreDataConverter = firestore.FirestoreDataConverter;
 // import {DictionaryKeys} from "./Dictionary";
 
@@ -187,3 +194,36 @@ export const addNewKeysInCollection = async (
     };
   }
 };
+
+export const sendEmailVerificationLink = async (email:string)=>{
+  try {
+    console.log("user email : ", email);
+    // Get user data from Firebase Authentication
+    const userRecord = await admin.auth().getUserByEmail(email);
+    console.log("user record : ", userRecord)
+
+    // Create a JWT token with user data
+    const token = jwt.sign(
+      { uid: userRecord.uid, email: userRecord.email },
+      env.JWT_AUTH_SECRET
+    );
+
+    // Construct the verification link with the JWT token
+    const verificationLink = `${env.USER_VERIFICATION_BASE_URL_VOTETOEARN}/api/v1/user/verified?token=${token}`;
+
+    if (email && verificationLink) {
+      await sendEmail(
+        email,
+        "Verify Your Account",
+        userVerifyEmailTemplate(email, verificationLink, "Your account has been created. Please verify your email for login.")
+      );
+      console.info("Send Email Successfully");
+    }
+
+    console.log("Verification link:", verificationLink);
+    return { verificationLink }
+  } catch (error) {
+    console.error("Error sending verification link:", error);
+    return { error }
+  }
+}
