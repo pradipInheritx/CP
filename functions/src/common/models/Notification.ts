@@ -35,21 +35,23 @@ export const sendNotification = async ({
 };
 
 
-export const createPushNotificationOnCallbackURL = async (req: any, res: any) => {
+export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
   try {
-    await firestore()
-      .collection("userPushNotificationCallbackURL").add({ userId: "", PushNotificationDetails: "", callbackURL: "", serverTimestamp: firestore.FieldValue.serverTimestamp() });
+    if (requestBody.pushNotificationCallbackUrl && requestBody.userId) {
+      console.info("Request Body", requestBody);
 
-    res.status(200).send({
-      status: true,
-      message: "Push Notification Callback URL Created Successfully",
-      result: "",
-    });
+      await firestore()
+        .collection("userPushNotificationCallbackURL").add({ userId: "", payloadKey: "", uniqueId: "", childUserEmail: "", notificationType: "", amount: "", currency: "", commission: "", serverTimestamp: firestore.FieldValue.serverTimestamp() });
+      return "Push Notification Send Successfully";
+    } else {
+      return "UserId & Callback URL not found";
+    }
   } catch (error) {
-    res.status(500).send({
-      status: false,
-      message: "Something went wrong",
-      result: error,
-    });
+    return error;
+    // res.status(500).send({
+    //   status: false,
+    //   message: "Something went wrong",
+    //   result: error,
+    // });
   }
 }

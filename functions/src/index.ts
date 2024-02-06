@@ -64,7 +64,7 @@ import {
 } from "./common/models/PAX";
 import {
   claimReward,
-  addReward,
+  // addReward,
   cardHolderListing,
   // sendMintForPaxToAdmin,
   // sendMintForPaxToUser
@@ -280,9 +280,9 @@ exports.sendEmailVerificationLink = functions.https.onCall(async (data) => {
 });
 
 
-exports.pushNotificationOnCallbackURL = functions.https.onCall(async () => {
-  const getResponseFromPushNotificationcallBackURL = await createPushNotificationOnCallbackURL
-  console.info("getResponseFromPushNotificationcallBackURL", getResponseFromPushNotificationcallBackURL)
+exports.pushNotificationOnCallbackURL = functions.https.onCall(async (data) => {
+  await createPushNotificationOnCallbackURL(data);
+  return { data }
 })
 // create user
 exports.onCreateUser = functions.auth.user().onCreate(async (user) => {
@@ -786,7 +786,8 @@ exports.onUpdateUser = functions.firestore
     console.info("after", after)
     console.info("Send Email Successfully")
 
-    await addReward(snapshot.after.id, before, after);
+    // for testing purposes, we comment this
+    // await addReward(snapshot.after.id, before, after);
 
     const [should, amount] = shouldHaveTransaction(before, after);
     if (!should || !amount) {

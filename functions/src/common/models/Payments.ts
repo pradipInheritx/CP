@@ -130,44 +130,45 @@ export const callbackFromServer = async (req: any, res: any) => {
   }
 };
 
-// export const updateUserAfterPayment = async (req: any, res: any) => {
-//   console.info("get request body", req.body);
-//   const {
-//     userId,
-//     walletType,
-//     userEmail,
-//     amount,
-//     network,
-//     origincurrency,
-//     token,
-//     transactionType,
-//     numberOfVotes,
-//     paymentDetails,
-//   } = req.body;
-//   await storeInDBOfPayment({
-//     userId,
-//     userEmail,
-//     walletType,
-//     amount,
-//     network,
-//     origincurrency,
-//     token,
-//     transactionType,
-//     numberOfVotes,
-//     paymentDetails,
+export const updateUserAfterPayment = async (req: any, res: any) => {
+  console.info("get request body", req.body);
+  const {
+    userId,
+    walletType,
+    userEmail,
+    amount,
+    network,
+    origincurrency,
+    token,
+    transactionType,
+    numberOfVotes,
+    paymentDetails,
+  } = req.body;
+  await storeInDBOfPayment({
+    userId,
+    userEmail,
+    walletType,
+    amount,
+    network,
+    origincurrency,
+    token,
+    transactionType,
+    numberOfVotes,
+    paymentDetails,
+  });
+  console.log("start parent payment");
+  // const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
+  //   req.body
+  // );
 
-//   });
-//   console.log("start parent payment");
-//   const getResponseAfterParentPayment = await isParentExistAndGetReferalAmount(
-//     req.body
-//   );
-//   console.info("getResponseAfterParentPayment", getResponseAfterParentPayment);
-//   res.status(200).send({
-//     status: true,
-//     message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
-//     data: req.body,
-//   });
-// };
+  const getResponseAfterParentPayment = {};
+  console.info("getResponseAfterParentPayment", getResponseAfterParentPayment);
+  res.status(200).send({
+    status: true,
+    message: parentConst.MESSAGE_REFERAL_PAYMENT_INIT_SUCCESS,
+    data: req.body,
+  });
+};
 
 export const makePayment = async (req: any, res: any) => {
   const {
