@@ -196,7 +196,7 @@ function CardShow() {
           >
            
            <ImgName>
-            <img src={cardData.img1} alt=""  width={"75px"}/>
+            <img src={cardData.img1} alt=""  width={"90px"} height={"90px"} style={{objectFit:"contain"}}/>
              <CoinText>{cardData.name1}</CoinText>
              {/* <CoinPrice>{cardData.price1}</CoinPrice> */}
           </ImgName>
@@ -220,7 +220,7 @@ function CardShow() {
               </div>  
               
            <ImgName>
-             <img src={cardData.img2} alt=""  width={"75px"}/>
+             <img src={cardData.img2} alt=""   width={"90px"} height={"90px"} style={{objectFit:"contain"}}/>
                 <CoinText>{cardData.name2}</CoinText>
                 {/* <CoinPrice>{cardData.price2}</CoinPrice> */}
               </ImgName>  
