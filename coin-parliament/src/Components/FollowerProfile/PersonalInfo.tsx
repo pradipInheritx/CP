@@ -87,7 +87,7 @@ const handleClose=()=>{
       }
       // await login(e, callback);
     }}>
-      <Buttons.Primary style={{maxWidth:'100px', placeSelf:'end', margin:'20px', marginBottom:'0px'}} >{edit?'SAVE':'EDIT'}</Buttons.Primary>
+      {/* <Buttons.Primary style={{maxWidth:'100px', placeSelf:'end', margin:'20px', marginBottom:'0px'}} >{edit?'SAVE':'EDIT'}</Buttons.Primary> */}
       <Container>
       
         <Row >
