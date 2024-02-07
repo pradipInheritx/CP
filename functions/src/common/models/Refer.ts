@@ -102,10 +102,16 @@ class Refer {
     const parentData = parent.data();
     const parentVoteStatistics = parentData?.voteStatistics;
     const commission = Number(score * pctReferralActivity) / 100;
+    console.log("Score ",score)
+    console.log("parentVoteStatistics : ",parentVoteStatistics)
+    console.log("parent commission :",commission)
+
     if (parentData?.parent) {
+      console.log("it go to parent of parent")
       const refer = new Refer(parentData.parent, parent.id);
       await refer.payParent(commission);
     }
+    
     await this.parentRef.update({
       voteStatistics: {
         successful: Number(parentVoteStatistics?.successful || 0),
