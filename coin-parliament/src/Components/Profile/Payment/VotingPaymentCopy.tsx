@@ -24,9 +24,9 @@ import Gift from "assets/images/gift.png"
 import BGOBJECTS from "assets/images/BGOBJECTS.png"
 import { useNavigate } from "react-router-dom";
 import firebase from "firebase/compat/app";
-import { auth, firestore } from "../../../firebase";
+import { auth, db, firestore } from "../../../firebase";
 import Swal from "sweetalert2";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import PaymentFail from "./PaymentFail";
 import PaymentSuccess from "./PaymentSuccess";
 import upgrade from "../../../assets/images/upgrade_small.png";
@@ -38,6 +38,9 @@ import { doc, getDoc } from "firebase/firestore";
 import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount, useWeb3ModalProvider, useWeb3ModalError } from '@web3modal/ethers5/react';
 import { ethers } from "ethers";
 import { showToast } from "../../../App";
+import { texts } from "Components/LoginComponent/texts";
+import { collection, onSnapshot } from "firebase/firestore";
+
 
 const H2 = styled.h2`
 width: 100%;
@@ -284,7 +287,7 @@ const Opctiondiv = styled.div`
   border-radius:10px;
     padding:25px 15px;
     display:flex;    
-    width:${window.screen.width > 767 ? "230px" : "250px"};
+    width:${window.screen.width > 767 ? "244px" : "250px"};
   }
 `;
 
@@ -414,15 +417,17 @@ const VotingPaymentCopy: React.FC<{
   setShowOptionList,
   cardPayment,
 }) => {
+  
     const translate = useTranslation();
     const { user, userInfo } = useContext(UserContext);
     const { login, firstTimeLogin, setLogin, setLoginRedirectMessage } =
       useContext(AppContext);
     const { showModal } = useContext(NotificationContext);
     const { quotes } = useContext(ContentContext);
-    const { width } = useWindowSize();
+  const { width } = useWindowSize();
+  const [isLoading, setIsLoading] = useState(false)
     const [coinsList, setCoinsList] = useState([])
-    const [selectPayment, setSelectPayment] = useState(0);
+    const [selectPayment, setSelectPayment] = useState(0);    
 
     const [payamount, setPayamount] = useState(0);
     const [payType, setPayType] = useState();
@@ -430,6 +435,7 @@ const VotingPaymentCopy: React.FC<{
     const [extraPer, setExtraPer] = useState(0);
   const [showText, setShowText] = useState(false);
   const [comingSoon, setComingSoon] = useState(false);
+  const [paymentCurruntTime, setPaymentCurruntTime] = useState <any>();
 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
@@ -460,6 +466,7 @@ const VotingPaymentCopy: React.FC<{
       })
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
+      console.log(AllInfo,"AllInfo")
       setPayamount(AllInfo[0])
       setPayType(AllInfo[1])
       setExtraVote(AllInfo[2])
@@ -509,9 +516,13 @@ const VotingPaymentCopy: React.FC<{
     };
 
     const startAgainAction = () => {
-      setShowOptionList(false)
+      // setShowOptionList(false)
+      // setSelectCoin("none");
+      // setSelectPayment(2)
+      // setPaymentStatus({ type: "", message: '' });
+      // console.log("yes i am calling")
+      navigate(-1)
       setSelectCoin("none");
-      setPaymentStatus({ type: "", message: '' });
     }
 
     const paymentSuccessAction = () => {
@@ -548,7 +559,7 @@ const VotingPaymentCopy: React.FC<{
       // send a tx
       const transaction = {
         chainId: chainId,
-        to: '0xFB77A51d879FB3F79Dd31DB55D51d792e619051f',
+        to: '0xFB77A51d879FB3F79Dd31DBdb55D51d792e619051f',
         value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
       };
 
@@ -573,10 +584,95 @@ const VotingPaymentCopy: React.FC<{
       setPayButton(false);
     }
   }
+  useEffect(() => {
+    if (userInfo?.uid && paymentCurruntTime) {      
+      const colRef = collection(db, "callbackHistory")
+      //real time update    
+      console.log(userInfo, "userInfodata")
+      
+      onSnapshot(colRef, (snapshot) => {
+        snapshot.docs.forEach((doc) => {
+          // setTestData((prev) => [...prev, doc.data()])
+          console.log(doc.data()?.data?.p1 == userInfo?.uid ? doc.data()?.data?.p2:"" , "useralldata")   
+          if (doc.data()?.data?.p1 == userInfo?.uid && doc.data()?.data?.p2 == paymentCurruntTime) {  
+            console.log(doc.data()?.data,"livepaymentdata")            
+            if (doc.data()?.data?.order_status == "Approved" || doc.data()?.data?.order_status == "Completed") {                            
+              setIsLoading(false)
+              window.scrollTo({ top: 650, behavior: 'smooth' }); 
+              setPaymentStatus({ type: "success", message: '' }); 
+            }
+            if (doc.data()?.data?.order_status == "Declined") {
+              console.log(doc.data()?.data, "DeclinedData")
+              window.scrollTo({ top: 650, behavior: 'smooth' }); 
+              setIsLoading(false)
+              setPaymentStatus({ type: "error", message: '' });   
+            }
+          } else {
+            // console.log(doc.data(),"doc.data()")
+          }
+        })
+      })
+    }
+  }, [userInfo?.uid, paymentCurruntTime])
+  
+  const getPayment = () => {
+    const data = {
+      userId: userInfo?.uid,
+      email: userInfo?.email,      
+      amount: payamount,      
+      transactionType: payType,
+      numberOfVotes: extraVote,      
+      timestamp: (new Date().getTime()).toString(),
+    }
+    console.log(data,"datacehck")
+    const headers = {
+      "accept": "application/json",
+    }
+    axios.post(`/payment/make/createTempPaymentTransaction/onCreditCard`, data,
+      {
+        headers: headers
+      }).then(async (response) => {
+        console.log(response,"getresponse")
+        window.open(`${response.data?.redirectUrl}`, '_blank');  
+        const regex = /p2=([^&]*)/;
+        const match = response?.data?.redirectUrl.match(regex);
 
+        if (match) {
+          const valueAfterP2 = match[1];
+          setPaymentCurruntTime(valueAfterP2)
+          console.log("P2 value" ,valueAfterP2)
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 
     return (
       <>
+        {isLoading && <div style={{
+          position: 'fixed',
+          height: '90%',
+          // border: "2px solid red",
+          display: 'flex',
+          textAlign: 'center',
+          justifyContent: 'center',
+          // top: '0px',
+          right: '0px',
+          bottom: '0px',
+          zIndex: '9999',
+          overflow: 'hidden',
+          width: '100%',
+          alignItems: 'center',
+          backgroundColor: "rgba(0,0,0,0.6)"
+        }}>
+          <span className="loading" style={{
+            color: "White", zIndex: "2220px", fontSize: '1.5em',
+            // marginTop: "50px"
+          }}>
+            {texts.waitForIt}
+          </span>
+        </div>}
         {payType == "EXTRAVOTES" && <H2
           style={{
             zIndex: 1,
@@ -704,7 +800,7 @@ const VotingPaymentCopy: React.FC<{
               }}
             >
               <Opctiondiv className="">
-                <div
+                {/* <div
                   style={{
                     cursor: "pointer",
                     // borderBottom: "1px solid white",
@@ -717,7 +813,7 @@ const VotingPaymentCopy: React.FC<{
                 >
                   <i className="bi bi-coin"></i>
                   <p className="mx-2">Cryptocurrency</p>
-                </div>
+                </div> */}
                 <div
                   style={{
                     cursor: "pointer",
@@ -725,7 +821,13 @@ const VotingPaymentCopy: React.FC<{
                   }}
                   onClick={() => {
                     if (payamount > 24) {                      
-                      setSelectPayment(2)
+                      // setSelectPayment(2)
+                         
+                        window.scrollTo({ top: 100, behavior: 'smooth' });  
+                        setIsLoading(true)    
+                        getPayment()
+                        // setPaymentCurruntTime(new Date().getTime())
+                        
                     }
                     else {                      
                       setComingSoon(true)                      
@@ -733,7 +835,8 @@ const VotingPaymentCopy: React.FC<{
                   }}
                 >
                   <i className="bi bi-credit-card-fill "></i>
-                  <p className="mx-2">Debit & Credit cards</p>
+                  {/* <p className="mx-2">Debit & Credit cards</p> */}
+                  <p className="mx-2">No Crypto? No problem. <br /> Buy Crypto</p>
                 </div>
               </Opctiondiv>
             </Boxdiv>
@@ -917,22 +1020,26 @@ const VotingPaymentCopy: React.FC<{
                     <div
                         className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
                   >
-                    <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}`}
+                    {/* <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime() , payType,payamount}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
                       }}
-                    >
-                        <ButttonDiv className="mt-1">
+                    > */}
+                        {/* <ButttonDiv className="mt-1">
                           <button
                             disabled={payButton}                                              
-                          onClick={() => {                            
+                          onClick={() => {    
+                            window.scrollTo({ top: 100, behavior: 'smooth' });  
+                            setIsLoading(true)    
+                            getPayment()
+                            // setPaymentCurruntTime(new Date().getTime())
                             }}
                           >
-                            {payButton ? "PAY NOW..." : 'PAY NOW !'}
+                            {payButton ? "BUY NOW..." : 'BUY NOW !'}
                           </button>
-                      </ButttonDiv>
-                    </a> 
+                      </ButttonDiv> */}
+                    {/* </a>  */}
                      
                     </div >                  
                 }
@@ -941,15 +1048,20 @@ const VotingPaymentCopy: React.FC<{
                   <>
                   <div
                     className={`${window.screen.width > 767 ? "" : "mt-3"} d-flex justify-content-center`}
-                  ><a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}`}
+                  >
+                    {/* <a href={`https://direct.palaris.io/api?ref_id=${2}&email=${userInfo?.email}&ftype=${1}&famount=${payamount}&ctype=${2}&p1=${userInfo?.uid}&p2=${new Date().getTime(), payType, payamount}`}
                       target="_blank"
                       style={{
                         textDecoration:"none",
                       }}
-                    >                      
-                    <ButttonDivSec className="mt-1">
+                    >                       */}
+                    {/* <ButttonDivSec className="mt-1">
                       <button
-                        onClick={() => {
+                          onClick={() => {
+                            window.scrollTo({ top: 100, behavior: 'smooth' });  
+                            setIsLoading(true)
+                            getPayment()
+                            // setPaymentCurruntTime(new Date().getTime())
                         }}
                       >
                         <div className='d-flex justify-content-around' >
@@ -971,8 +1083,8 @@ const VotingPaymentCopy: React.FC<{
 
 
                       </button>
-                    </ButttonDivSec>
-                    </a> 
+                    </ButttonDivSec> */}
+                    {/* </a>  */}
                   </div>
                   </>
                 }

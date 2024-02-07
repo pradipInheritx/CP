@@ -41,17 +41,20 @@ const Wallet = () => {
   const searchParams = new URLSearchParams(useLocation().search);
 
   // console.log(searchParams.get('name'),"window.location.search")
-  useEffect(() => {
-    // @ts-ignore    
-    if (userInfo?.mfa !== undefined && !userInfo?.mfa) {
-      handleModleShow()
-    }  
-  }, [])  
+  // useEffect(() => {
+  //   // @ts-ignore    
+  //   if (userInfo?.mfa !== undefined && !userInfo?.mfa) {
+  //     handleModleShow()
+  //   }  
+  // }, [])  
     
   
   return (    
     <>      
-      {userInfo?.mfa == true && <Tabs
+      
+      {
+      // userInfo?.mfa == true &&
+       <Tabs
         defaultActiveKey={walletTab}
         id="Wallet"
         onSelect={() => setIndex(1)}
@@ -71,7 +74,8 @@ const Wallet = () => {
             title: "setting",
             pane: (         
               <>
-                {userInfo?.mfa &&
+                {
+                // userInfo?.mfa &&
                   <WalletInfo/>
               }
               </>
@@ -87,7 +91,7 @@ const Wallet = () => {
         } */}
 
 
-      {userInfo?.mfa == false &&
+      {/* {userInfo?.mfa == false &&
       //   <WalletValidation
       //   setMfaLogin={setMfaLogin}
         // />    
@@ -118,7 +122,7 @@ const Wallet = () => {
           >Enable</Buttons.Primary>
         </div >
       </div>
-      }
+      } */}
         
 
       <div>

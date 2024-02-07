@@ -50,7 +50,7 @@ const TextAera = styled.textarea`
 `;
 
 const PersonalInfo = () => {
-  const {avatarImage, setAvatarImage } = useContext(AppContext);
+  const { avatarImage, setAvatarImage } = useContext(AppContext);
   const { userInfo, user: u, setUserInfo, setUser } = useContext(UserContext);
   const { showToast } = useContext(NotificationContext);
   const [edit, setEdit] = useState(false)
@@ -152,6 +152,7 @@ const PersonalInfo = () => {
       const userRef = doc(db, "users", u?.uid);
       try {
         await setDoc(userRef, { avatar: type }, { merge: true });
+        setAvatarImage("")
         showToast(translate(texts.UserInfoUpdate));
         setAvatarMode(false)
         toast.dismiss();        
@@ -190,9 +191,9 @@ const PersonalInfo = () => {
           //   console.log(phone?.phone,"phone?.phone")
           //   setPhoneErr(true)
           // }          
-          else if (bio.length < 5 || bio.length > 401 || bio === "") {
-            setBioErr(true);
-          }  
+          // else if (bio.length < 5 || bio.length > 401 || bio === "") {
+          //   setBioErr(true);
+          // }  
           else if (email === user?.email) {
             console.log("i am working234234345")
             setUserInfo(newUserInfo);
@@ -311,7 +312,7 @@ const PersonalInfo = () => {
               >
                 <TextAera                                  
                   name="Bio"                  
-                  placeholder= "Add bio 5 to 400 characters"
+                  placeholder= "Bio"
                   value= {bio || ""}
                 onChange={(e) => {
                   setBio(e.target.value)

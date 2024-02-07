@@ -46,7 +46,8 @@ const PoolMiningCard = ({ user }: PoolMiningCardProps) => {
             backgroundColor: `${isUserUpgraded && "#FAE481"}`,    
           }}
             roundedCircle={true}
-            src={avatar?importFile(`./The${avatar}`).default : importFile("./mystery", "png").default}
+            // src={avatar?importFile(`./The${avatar}`).default : importFile("./mystery", "png").default}
+            src = {(avatar && !avatar.includes('http')) ? importFile(`./The${avatar}`).default: avatar}
             alt="avatar"
             className="avatar_sm"
            

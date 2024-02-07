@@ -126,7 +126,7 @@ function PaymentHistory() {
                         }}
                       >
                         <RewardList>
-                          {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4):"NA"}
+                          {item?.paymentDetails?.transaction_id ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.transaction_id.slice(-4) : item?.paymentDetails?.p2 ? "VTE-" + getCenterText(item?.transactionType) + item?.paymentDetails?.p2.slice(-4) : "NA"}
                           {/* {item?.paymentDetails?.transaction_id || "NA"} */}
                         </RewardList>
                       </div>
@@ -164,7 +164,7 @@ function PaymentHistory() {
                         }}
                       >
                         <RewardList>
-                          {item?.token || "-"}
+                          {item?.token ? item?.token : item?.walletType ? item?.walletType : "-"}
                         </RewardList>
                       </div>
                       <div

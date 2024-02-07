@@ -105,6 +105,7 @@ function WalletInfo() {
         address: "",
     }]);
     const [tooltipShow, setTooltipShow] = React.useState(false);
+    const [tooltipShow5, setTooltipShow5] = React.useState(false);
     const [tooltipShowPax, setTooltipShowPax] = React.useState(false);
     const [tooltipShowCard, setTooltipShowCard] = React.useState(false);
     const [tooltipShow2, setTooltipShow2] = React.useState(false);
@@ -750,7 +751,12 @@ function WalletInfo() {
                             onClick={() => {
                                 // updateAddress()
                                 setAddType("CARDADDADDERS")
-                                handleModleShow()
+                                // handleModleShow()
+                                if (userInfo?.mfa == true) {                                    
+                                    handleModleShow()
+                                } else {
+                                    UpdateFunction()
+                                }
 
                             }}>
                             {saveCardAddress ? <span className="loading">ADD..</span> : 'ADD'}
@@ -877,7 +883,12 @@ function WalletInfo() {
                             onClick={() => {
                                 // updateAddress()
                                 setAddType("PAXADDADDERS")
-                                handleModleShow()
+                                // handleModleShow()
+                                if (userInfo?.mfa == true) {                                    
+                                    handleModleShow()
+                                } else {
+                                    UpdateFunction()
+                                }
 
                             }}>
                             {savePaxAddress ? <span className="loading">ADD..</span> : 'ADD'}
@@ -1006,7 +1017,7 @@ function WalletInfo() {
                         >
                             <div className="newtooltip"
                                 style={{
-                                    // right: "0%",
+                                    
                                     width: `${window.screen.width > 767 ? "50%" : "78%"}`,
                                     marginLeft: `${window.screen.width > 767 ? "2.50%" : ""}`,
                                     marginTop: `${window.screen.width > 767 ? "1%" : "1%"}`,
@@ -1419,15 +1430,69 @@ function WalletInfo() {
                                 // @ts-ignore
                                 if ((userInfo?.referalReceiveType?.name !== selectRadio) || (selectRadio == "LIMIT") || userInfo?.wellDAddress?.length != walletDetailsObj?.length) {                                    
                                     setAddType("UPDATESETTING")
-                                    handleModleShow()
+                                    // handleModleShow()
+                                    if (userInfo?.mfa == true) {                                    
+                                        handleModleShow()
+                                    } else {
+                                        UpdateFunction()
+                                    }
                                 }
                             }}
                         >
                             {savePaymentMethod  ? <span className="loading"> UPDATE...</span> : 'UPDATE'}
                         </Buttons.Primary>
                     </div>
-                </div>
             </div>
+            </div>
+           { !userInfo?.mfa && <div>
+                <div className="d-flex justify-content-center" >
+                     <hr style={{color:"rgb(99,82,232)",border:"1px solid",width:"25%"}}/>
+                 </div>
+                 <div className="justify-content-center" style={{display:"grid"}}>
+                    
+                    <SelectTextfield name="Stay on the safe side">
+                        <span>STAY ON THE SAFE SIDE<span className='bi bi-info-circle' 
+                        style={{padding:"10px"}}
+                            onMouseDown={(e) => {
+                                setTooltipShow5(false)
+                            }}
+                            onMouseUp={(e) => {
+                                setTooltipShow5(true)
+                            }}
+                            onMouseEnter={() => setTooltipShow5(true)}
+                            onMouseLeave={() => setTooltipShow5(false)}
+                        ></span>  </span>
+                    {
+                        walletDetailsObj.length < 1 && tooltipShow5 &&
+                        <div>
+                            <div className="newtooltip"
+                                style={{
+
+                                    
+                                    width: `${window.screen.width > 767 ? "180%" : "180%"}`,
+                                    marginLeft: `${window.screen.width > 767 ? "-216%" : "-155%"}`,
+                                    marginTop: `${window.screen.width > 767 ? "18%" : "17%"}`,
+                                }}
+                            >
+                                {/* <p>Your CMP count</p> */}
+                                    <p className="mt-1 text-end lh-base">We strongly advise activating two-factor authentication (2FA) for enhanced security. With 2FA, your account's security is bolstered, ensuring that even if someone guesses your password, they won't gain access to your account. Please note that we cannot be held responsible for any pending funds.</p>                                                              
+                            </div>
+                        </div>
+                    }
+                    {/* <div className=''> */}
+                       
+                    {/* </div> */}
+                    </SelectTextfield>
+                     <Buttons.Primary
+                     className='TwoFA'
+                onClick={() => {
+              navigate("/profile/password")
+                }}
+            >ENABLE 2FA
+
+                      </Buttons.Primary>
+                 </div>
+                 </div>}
             <div>
                 <Modal
                     className=""

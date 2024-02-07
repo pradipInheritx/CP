@@ -95,6 +95,10 @@ export const HeaderCenterMob = styled.div`
   display: flex;
   justify-content:space-around;
   // align-items: center;
+
+  @media (min-width: 768px) and (max-width: 1000px) {
+		width:9rem
+	}
 `;
 export const MemberText = styled.span`
   text-transform: uppercase;
@@ -102,7 +106,7 @@ export const MemberText = styled.span`
   background: #d4d0f3;
   color: #6352e8;
   border-radius: 10px;
-  font-size: 10px;
+  font-size: 9px;
 `;
 
 export const PlusButton = styled.div`
@@ -542,7 +546,8 @@ const Header = ({
 									className="d-flex"
 									style={{
 										position: "relative",
-										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "100%"}`,
+										margin: '0 auto',
+										width: `${showReward == 2 && inOutReward == 2 ? "220px" : "fit-content"}`,
 										transform: `${showReward == 2 && inOutReward == 2 ? "scale(1.3)" : ""}`,
 										transformOrigin: `${showReward == 2 && inOutReward == 2 ? "40% 0%" : ""}`,
 										transition: `${showReward == 2 && inOutReward == 2 ? "transform 3s ease" : ""}`,
@@ -692,14 +697,26 @@ const Header = ({
 										>
 											{/* <p>{"unique_Username"}</p> */}
 
-											{
-												(followerPage && followerInfo != "") ?
-													<></> :
-															<span className={`${userInfo?.displayName ? "" :"mt-2"} mb-1 d-block`} 
-															style={{ fontSize: "13px" }}>
-														{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
-													</span>
-											}											
+											<div  className="d-flex">
+												{
+													(followerPage && followerInfo != "") ?
+														<></> :
+																<span className={`${userInfo?.displayName ? "" :"mt-2"} mb-1`} 
+																style={{
+																	fontSize: "13px",
+																	width:"3.2rem",
+																	display: 'inline-block',
+																	textOverflow: 'ellipsis',
+																	overflow: 'hidden',
+																	}}>
+															{`${(userInfo?.displayName /* && !userInfo.firstTimeLogin */) ? userInfo?.displayName : ''}`}
+														</span>
+												}					
+												<span style={{marginLeft:"2px"}}>
+												{(!!userInfo?.status?.name && !followerPage) && <MemberText
+													>{userInfo?.status?.name}</MemberText>}
+												</span>
+											</div>						
 											{!!followerInfo && <div className="d-flex"
 											>
 												{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
@@ -743,13 +760,13 @@ const Header = ({
 													</>
 												}
 											</div>}
-													{(!!userInfo?.status?.name && !followerPage) && <MemberText
+													{/* {(!!userInfo?.status?.name && !followerPage) && <MemberText
 														style={{
 															marginLeft: `${!userInfo?.isUserUpgraded && "-40px"}`
-																}}
-													>{userInfo?.status?.name}</MemberText>}
+														}}
+													>{userInfo?.status?.name}</MemberText>} */}
 
-													{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText className="mx-2" style={{ background: "#ff9700", color: "black" }}
+													{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText style={{ background: "#ff9700", color: "black",wordBreak:"break-word"}}
 														onClick={() => {
 															if (!showMenubar) {
 																handleSoundClick()
@@ -981,14 +998,26 @@ const Header = ({
 															{userInfo?.displayName && userInfo?.displayName}
 														</span>
 													}													 */}
-													{
-														(followerPage && followerInfo != "") ?
-															<></> :
-															<span className={`${userInfo?.displayName ? "" : "mt-4"} mb-1 d-block`}
-																			style={{ fontSize: "13px" }}>
-																{`${(userInfo?.displayName /* && !userInfo?.firstTimeLogin */) ? userInfo?.displayName : ''}`}
-															</span>
-													}
+													<div className="d-flex">
+														{
+															(followerPage && followerInfo != "") ?
+																<></> :
+																<span className={`${userInfo?.displayName ? "" : "mt-4"} mb-1`}
+																				style={{
+																				fontSize: "13px",
+																				display: 'inline-block',
+																				textOverflow: 'ellipsis',
+																				overflow: 'hidden',
+																				}}>
+																	{`${(userInfo?.displayName ) ? userInfo?.displayName : ''}`}
+																</span>
+														}
+														<span style={{marginLeft:"1px"}}>
+														{(!!userInfo?.status?.name && !followerPage) && <MemberText
+														>{userInfo?.status?.name}</MemberText>}
+														</span>
+													</div>
+
 													{!!followerInfo && <div className="d-flex"													
 													>												
 														{(!!followerInfo?.status?.name && followerPage) && <MemberText>{followerInfo?.status?.name}</MemberText>}
@@ -1032,12 +1061,12 @@ const Header = ({
 														}
 													</div>}
 													
-																{(!!userInfo?.status?.name && !followerPage) && <MemberText
+																{/* {(!!userInfo?.status?.name && !followerPage) && <MemberText
 																	style={{
 																		marginLeft: `${!userInfo?.isUserUpgraded && "-55px"}`
 																	}}
-																>{userInfo?.status?.name}</MemberText>}
-																{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText className="mx-2" style={{ background: "#ff9700", color: "black" }}
+																>{userInfo?.status?.name}</MemberText>} */}
+																{(!!userInfo?.status?.name && !followerPage) && !userInfo?.isUserUpgraded && <MemberText style={{ background: "#ff9700", color: "black" }}
 																	onClick={() => {
 																		if (!showMenubar) {
 																			handleSoundClick()

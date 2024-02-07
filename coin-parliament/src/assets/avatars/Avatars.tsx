@@ -4,12 +4,13 @@ import React from "react";
 import { Image } from "react-bootstrap";
 
 export enum AvatarType {
-  Angel = "Angel",
+  Custom = "Custom",
   Founder = "Founder",
   Hodler = "Hodler",
   Investor = "Investor",
   Trader = "Trader",
-  Custom = "Custom",
+  Angel = "Angel",
+  
 }
 export const defaultAvatar = AvatarType.Founder;
 
