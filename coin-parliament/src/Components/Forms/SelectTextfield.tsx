@@ -73,7 +73,7 @@ const SelectTextfield = ({
           </Col>
         </Row>
         <Row style={{justifyContent:'center'}}>
-          <Col style={{maxWidth:window.screen.width>979?'40%':''}}>
+          <Col style={{maxWidth:window.screen.width>979&& name !== "Stay on the safe side"?'40%':''}}>
           <GroupInput className="mb-3">
               {children}
           </GroupInput>

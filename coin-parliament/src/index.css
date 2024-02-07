@@ -1472,3 +1472,8 @@ iframe[style^="position"]{
   .stayInGamePopupStyle .swal2-close:hover {
     color: grey !important;
   }
+
+  .TwoFA{
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
