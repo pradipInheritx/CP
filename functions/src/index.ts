@@ -1480,3 +1480,23 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 //   });
 
 // ******************* END CRON JOBS ****************
+
+// only testing purposes
+exports.getAllUserOnlyTotalAndScore = async (data: any) => {
+  try {
+    const getAllUser = (await admin.firestore().collection('users').get()).docs.map((user) => user.data());
+    const getTotalAndScore: any = getAllUser.map((user) => {
+      return {
+        id: user?.uid,
+        name: user?.displayName,
+        score: user?.voteStatistics?.score,
+        total: user?.rewardStatistics?.total,
+        email: user?.email
+      }
+    })
+    console.log("user only total : ", getTotalAndScore);
+    return getTotalAndScore
+  } catch (error) {
+    return error
+  }
+}
