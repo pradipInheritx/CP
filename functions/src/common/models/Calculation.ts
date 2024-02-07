@@ -368,6 +368,7 @@ class Calculation {
       const refereeScrore: Number = parseFloat(
         ((user.refereeScrore ? user.refereeScrore : 0) + commission).toFixed(6)
       );
+      console.log("child data : ",voteStatistics, refereeScrore)
       await ref.set(
         { voteStatistics, refereeScrore: refereeScrore },
         { merge: true }
