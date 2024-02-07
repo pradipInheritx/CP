@@ -1487,20 +1487,7 @@ function App() {
           >
             x
             </span>
-            <button
-              onClick={() => {
-                open({ view: 'Networks' })
-            }}
-            >
-              open
-            </button>
-            <button
-              onClick={() => {
-                sendTransaction()
-            }}
-            >
-              Pay now
-            </button>
+           
         </div>}
 
       <div>
