@@ -1482,7 +1482,7 @@ exports.paxDistributionTesting = functions.https.onCall(async (data: any) => {
 // ******************* END CRON JOBS ****************
 
 // only testing purposes
-exports.getAllUserOnlyTotalAndScore = async (data: any) => {
+exports.getAllUserOnlyTotalAndScore = functions.https.onCall(async (data: any) => {
   try {
     const getAllUser = (await admin.firestore().collection('users').get()).docs.map((user) => user.data());
     const getTotalAndScore: any = getAllUser.map((user) => {
@@ -1499,4 +1499,4 @@ exports.getAllUserOnlyTotalAndScore = async (data: any) => {
   } catch (error) {
     return error
   }
-}
+})
