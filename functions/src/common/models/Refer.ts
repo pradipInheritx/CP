@@ -101,7 +101,8 @@ class Refer {
     const {pctReferralActivity} = CPMSettings;
     const parentData = parent.data();
     const parentVoteStatistics = parentData?.voteStatistics;
-    const commission = Number(score * pctReferralActivity) / 100;
+    const getCommissionNumber = (Number(score * pctReferralActivity) / 100).toFixed(4);
+    const commission = parseFloat(getCommissionNumber)
     const newScore = Number(parentVoteStatistics?.score || 0) + commission
     const newCommission = Number(parentVoteStatistics?.commission || 0) + commission
     console.log("Score ",score)
