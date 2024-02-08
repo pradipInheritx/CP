@@ -1,5 +1,6 @@
 import { UserProps } from "../interfaces/User.interface";
 import { firestore } from "firebase-admin";
+import { Timestamp } from "firebase-admin/firestore";
 import { errorLogging } from "../helpers/commonFunction.helper"
 import { paxTransactionObj } from "../interfaces/Pax.interface";
 import * as constants from "../consts/payment.const.json";
@@ -37,6 +38,7 @@ export enum PaxTransactionType {
 }
 
 export const addPaxTransactionWithPendingStatus = async (paxTransactionData: any) => {
+  console.log("Time stamp : ",Timestamp.now())
   const getParentPendingPaymentReference = await firestore().collection("paxTransaction").add(
     {
       ...paxTransactionData,
@@ -90,7 +92,7 @@ export const addCpmTransaction: (
     type: CpmTransactionType.REWARD,
     blocks: Math.floor(amount / 100),
     totalBlocksGivenUntilNow: paxData.data()?.blocksGiven || 0,
-    transactionTime: firestore.FieldValue.serverTimestamp(),
+    transactionTime: Timestamp.now(),
     user,
   };
   await firestore().collection("cpm_transactions").doc().set(obj);
