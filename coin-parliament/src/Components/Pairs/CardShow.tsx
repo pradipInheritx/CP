@@ -54,7 +54,7 @@ const ChildDiv = styled.div`
 }
   }
 `;
-const CoinText = styled.p`
+export const CoinText = styled.p`
 color:white;
 font-size:15px;
 font-weight:bold;
@@ -159,6 +159,7 @@ function CardShow({coins}: any) {
   const [voteLastPrice, setVoteLastPrice] = useState(0);
   const prevCountRef = useRef(currentPrice)
   const [lastvalue,setLastValue] = useState()
+  const[startprice,setStartPrice]=useState(0)
 
   const [allBUtton, setAllBUtton] = useState<any>([
     {
@@ -192,7 +193,7 @@ function CardShow({coins}: any) {
     setCurrentPrice(coins)
   }
 
-  console.log(coins,"SportParliamentFE")
+  // console.log(coins,"SportParliamentFE")
 
   const ChangeStatus = (active:any, index:number ) => {
     const alldata = [...allBUtton]
@@ -220,9 +221,16 @@ useEffect(() => {
 }, [coins,activeTime,allBUtton])
   
   const getLastPrice = () => {
-    // console.log("yes i am calling")
+    console.log(startprice,coins,"yes i am calling")
     setVoteLastPrice(coins)
   }
+
+  const getstartprice = () =>{
+    setStartPrice(coins)
+  }
+  // console.log(startprice,"startprivee")
+
+  // console.log(voteLastPrice,"last")
   
 // @ts-ignore
     return (
@@ -309,7 +317,8 @@ useEffect(() => {
               }}
                 onClick={() => {                  
                   setClickedOption1(true);
-                  console.log(coins,"786 firstvalue")
+                  getstartprice()
+                  // console.log(coins,"786 firstvalue")
                   setTimeout(() => {
                     setVoteDirection(1)  
                     setShowSpdometer(true)
@@ -344,9 +353,11 @@ useEffect(() => {
                  borderRadius:"0px 60px 60px 60px"
               }}
                  onClick={() => {    
-                  setVoteDirection(2)                
+                                 
                    setClickedOption0(true);
+                   getstartprice()
                    setTimeout(() => {
+                    setVoteDirection(2)
                      setClickedOption0(false)
                      setShowSpdometer(true)
                    }, 600
@@ -416,6 +427,8 @@ useEffect(() => {
                 setShowPopUp={setShowPopUp}
                 coins={coins}
                 voteLastPrice={voteLastPrice}
+                startprice={startprice}
+                activeTime={activeTime}
               />
             </>
             : ""

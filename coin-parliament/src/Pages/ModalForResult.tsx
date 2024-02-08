@@ -15,6 +15,7 @@ import { Prev } from 'react-bootstrap/esm/PageItem';
 import { listData } from '../Components/Pairs/utils';
 import UserContext from '../Contexts/User';
 import { VoteButton } from '../common/utils/SoundClick';
+import {CoinText} from "../../src/Components/Pairs/CardShow"
 // const silent = require("../assets/sounds/silent.mp3").default;
 const CoinContainer = styled.div`
   border-top-color: ${(props: { winner: boolean }) =>
@@ -51,16 +52,19 @@ interface ChildComponentProps {
   voteDirection?: number;
   coins?: number;
   voteLastPrice?:any
+  startprice?:any
+  activeTime?:any
 }
 
-const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp, coins, voteLastPrice }) => {
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp, coins, voteLastPrice,voteDirection,startprice,activeTime }) => {
 // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
   // const { user } = useContext(UserContext);
   // const { setLogin, } = useContext(AppContext);
   // const navigate = useNavigate();
 //   const setVoteDetails = useContext(VoteDispatchContext);
 //   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
-  console.log(voteLastPrice,"786")
+  // console.log(voteLastPrice,"786")
+  // console.log(voteDirection,"1234")
 useEffect(() => {
     if (showPopUp) {
       handleShow();    
@@ -79,7 +83,7 @@ useEffect(() => {
   let params = useParams();
   const {id} = params;
 // @ts-ignore
-  const cardData = { ...listData[id] }
+  const cardData = { ...listData[0] }
   return (
     <div>      
       <Modal show={show} onHide={handleClose}
@@ -180,25 +184,20 @@ useEffect(() => {
                   </div> */}
             </div>    
             <div style={{ minHeight: "100%" }} className=" text-center">
-              
+              {console.log("difference :: ",startprice,voteLastPrice,voteDirection)
+                    }
                   <div className=''
                     style={{ fontSize: "12px" }}
                   >
-                    <p>VOTE RESULT</p>
-                    <p>
-                      {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
-                      {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
-                    </p>
-                    <p>Vote impact : HIGH </p>
+                    <img src={cardData.img1} alt=""  width={"80px"} style={{height:"50px"}} />
+                    <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"20px"}}>{"Bitcoin"}</p>
+                    <p style={{marginBottom:"0rem",fontSize:"15px"}}>{"BTC"}</p>
+                    <p style={{marginBottom:"0rem",fontWeight:"Bold",fontSize:"20px"}}>{Math.floor(activeTime / 1000) + "Sec"}</p>
+                    <p style={{fontSize:"20px"}}>{voteDirection === 1 ? "Bull " : "Bear "}{'$'+startprice}</p>
+                    <p  style={{marginBottom:"0rem",fontSize:"20px"}}>{"Vote Result"}</p>
+                    <p style={{fontSize:"20px"}}>{voteDirection === 1 ? "Bull " : "Bear "}{'$'+voteLastPrice}</p>
+                    {/* <p>Vote impact : HIGH </p> */}
                   </div>
-                  <CoinVoteTimer>
-                    {/* {vote?.valueExpirationTime && vote?.score && ( */}
-                      <>
-                        {/* <strong>You progressed - {2.5}</strong> <span>CMP</span> */}
-                      </>
-
-                    {/* )} */}
-                  </CoinVoteTimer>
                 </div>
 
             {/* <Col className="text-center">                  
