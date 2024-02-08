@@ -191,7 +191,7 @@ export const addRewardTransaction: (
       user,
       winningTime,
       winData,
-      transactionTime: firestore.FieldValue.serverTimestamp(),
+      transactionTime: firestore.Timestamp.now(),
     };
     console.log("addRewardTransaction.......", obj);
     await firestore().collection("reward_transactions").add(obj);

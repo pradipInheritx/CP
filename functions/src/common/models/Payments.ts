@@ -65,7 +65,7 @@ export const callbackFromServer = async (req: any, res: any) => {
     if (req.body.order_buyer) {
       if (req.body.order_status !== "Open") {
         await firestore()
-          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+          .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.Timestamp.now() });
 
         const getTempPaymentTransaction = await firestore().collection("tempPaymentTransaction")
           .where("timestamp", "==", req.body.p2)
@@ -111,7 +111,7 @@ export const callbackFromServer = async (req: any, res: any) => {
 
       }
       await firestore()
-        .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.FieldValue.serverTimestamp() });
+        .collection("callbackHistory").add({ data: req.body, event: req.body.order_status, callbackFrom: "CREDITCARD", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
@@ -119,7 +119,7 @@ export const callbackFromServer = async (req: any, res: any) => {
       });
     } else {
       await firestore()
-        .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.FieldValue.serverTimestamp() });
+        .collection("callbackHistory").add({ ...req.body, callbackFrom: "WELLDAPP", timestamp: firestore.Timestamp.now() });
       res.status(200).send({
         status: true,
         message: "Transaction logged in DB on transaction details",
@@ -318,7 +318,7 @@ export const addIsUpgradedValue = async (userId: string) => {
       secondRewardExtraVotes: parentConst.UPGRADE_USER_VOTE,
       thirdRewardDiamonds: parentConst.UPGRADE_USER_COIN,
     },
-    transactionTime: firestore.FieldValue.serverTimestamp(),
+    transactionTime: firestore.Timestamp.now(),
     user: userId,
     winningTime: rewardStatistics.claimed,
     isUserUpgraded: true
@@ -519,7 +519,7 @@ export const getInstantReferalAmount = async (req: any, res: any) => {
           parentPendingPaymentId: null,
           address: parentConst.PAYMENT_ADDRESS_NO_ADDRESS_FOUND,
           receiveType: getParentUserData.referalReceiveType.name,
-          timestamp: firestore.FieldValue.serverTimestamp(),
+          timestamp: firestore.Timestamp.now(),
         };
         console.info("storeInParentData", storeInParentData);
         await firestore().collection("parentPayment").add(storeInParentData);
@@ -673,7 +673,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
     const getUpdatedData: any = (await firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).get()).data();
 
     //TODO Get the data and store in payment collection 
-    const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: firestore.FieldValue.serverTimestamp() });
+    const addNewPayment = await firestore().collection('payments').add({ ...getUpdatedData, timestamp: firestore.Timestamp.now() });
 
     if (addNewPayment.id) {
       firestore().collection("callbackHistory").doc(getTransactionFromCreditCard[getTransactionFromCreditCard.length - 1].id).delete().then(() => {
@@ -784,7 +784,7 @@ export const paymentStatusOnUserFromCreditCardFunction = async (requestBody: any
 export const createPaymentOnTempTransactionOnCreditCard = async (req: any, res: any) => {
   try {
     await firestore()
-      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.FieldValue.serverTimestamp() });
+      .collection("tempPaymentTransaction").add({ ...req.body, serverTimestamp: firestore.Timestamp.now() });
 
     res.status(200).send({
       status: true,

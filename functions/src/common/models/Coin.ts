@@ -580,7 +580,7 @@ export const prepareCPVI = async (hours: number, table: string) => {
             direction0,
             direction1,
             coin: collection.id,
-            timestamp: firestore.FieldValue.serverTimestamp(),
+            timestamp: firestore.Timestamp.now(),
           },
           { merge: true }
         );
