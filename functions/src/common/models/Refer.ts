@@ -101,8 +101,9 @@ class Refer {
     const {pctReferralActivity} = CPMSettings;
     const parentData = parent.data();
     const parentVoteStatistics = parentData?.voteStatistics;
-    const commission = Number(score * pctReferralActivity) / 100;
-    const newScore = Number(parentVoteStatistics?.score || 0) + commission
+    const getCommissionNumber = (Number(score * pctReferralActivity) / 100).toFixed(4);
+    const commission = parseFloat(getCommissionNumber)
+    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(2)
     const newCommission = Number(parentVoteStatistics?.commission || 0) + commission
     console.log("Score ",score)
     console.log("parentVoteStatistics : ",parentVoteStatistics)
@@ -121,7 +122,7 @@ class Refer {
         successful: Number(parentVoteStatistics?.successful || 0),
         rank: Number(parentVoteStatistics?.rank || 0),
         total: Number(parentVoteStatistics?.total || 0),
-        score: newScore,
+        score: parseFloat(newScore),
         commission: newCommission,
       },
     });
