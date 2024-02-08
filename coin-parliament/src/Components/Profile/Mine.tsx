@@ -70,7 +70,7 @@ const I = styled.i`
 
 const Mine = () => {
   const { userInfo, user } = useContext(UserContext);
-  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward, setAlbumOpen } = useContext(AppContext);
+  const { userTypes, showBack, setShowBack, showReward, setShowReward, inOutReward, setInOutReward, setAlbumOpen, addPaxWalletPop, setAddPaxWalletPop, } = useContext(AppContext);
   const { showModal, showToast } = useContext(NotificationContext);
   const { width = 0 } = useWindowSize();
   const translate = useTranslation();
@@ -430,13 +430,15 @@ const Mine = () => {
           >
             {/* continue voting */}
             {/* @ts-ignore */}
-            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} setCardsDetails={setCardsDetails} />
+            <NFTCard openpopup={openpopup} setRewardTimer={setRewardTimer} setCountShow={setCountShow} handleShareModleShow={handleShareModleShow} handleCardClose={handleCardClose} cardType={rewardTimer?.data?.firstRewardCardType} rewardTimer={rewardTimer} setBefornotShow={setBefornotShow} befornotShow={befornotShow} setCardsDetails={setCardsDetails} setAddPaxWalletPop={setAddPaxWalletPop} />
           </Modal.Body>
         </Modal>
       </CardDiv>
 
       {/* Share Link */}
-      <ShareModal shareModalShow={shareModalShow} setShareModalShow={setShareModalShow} url={url} shareText={shareText} />
+      <ShareModal shareModalShow={shareModalShow} setShareModalShow={setShareModalShow} url={url} shareText={shareText}
+        setAddPaxWalletPop={setAddPaxWalletPop}
+      />
 
     </div >
   );

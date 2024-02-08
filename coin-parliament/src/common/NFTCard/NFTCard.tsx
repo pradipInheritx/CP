@@ -46,6 +46,7 @@ type MintingProps = {
   setBefornotShow?: any;
   befornotShow?: any;
   setCardsDetails?: any;
+  setAddPaxWalletPop?: any;
 };
 
 
@@ -81,7 +82,7 @@ const ScratchCard = styled.canvas`
 `;
 
 
-function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow, setBefornotShow, befornotShow, setCardsDetails }: MintingProps) {
+function NFTCard({ cardType = "legendary", setRewardTimer, openpopup, handleShareModleShow, handleCardClose, rewardTimer, setCountShow, setBefornotShow, befornotShow, setCardsDetails, setAddPaxWalletPop }: MintingProps) {
   const classname = `card shadow ${cardType.toLowerCase()} `;
   const [isDrawing, setisDrawing] = useState<any>(false)
   const [startX, setStartX] = useState<any>(0)

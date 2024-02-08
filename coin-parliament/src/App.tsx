@@ -362,6 +362,7 @@ function App() {
   const [transactionId, setTransactionId] = useState({});
   const [withLoginV2e, setWithLoginV2e] = useState(false)
   const [paxDistribution, setPaxDistribution] = useState(0)
+  const [addPaxWalletPop, setAddPaxWalletPop] = useState(false)
   const [walletTab, setWalletTab] = useState("Balance")
   // @ts-ignore  
   const getCoinPrice = localStorage.getItem('CoinsPrice') ? JSON.parse(localStorage.getItem('CoinsPrice')) : {}
@@ -1498,6 +1499,8 @@ function App() {
             >
               <AppContext.Provider
                   value={{
+                    addPaxWalletPop,
+                    setAddPaxWalletPop,
                     walletTab,
                     setWalletTab,
                     avatarImage,
