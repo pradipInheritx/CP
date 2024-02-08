@@ -4,8 +4,8 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "site": "coinparliament-51ae1",
-    "public": "public",
+    "site": "coinparliamentstaging",
+    "public": "./coin-parliament/build",
     "rewrites": [
       {
         "source": "**",

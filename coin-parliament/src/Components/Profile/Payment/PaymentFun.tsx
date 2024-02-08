@@ -82,130 +82,130 @@ function PaymentFun({ isVotingPayment }: any) {
   
 
 
-  const payNow = (detail?: any) => {
-    const headers = {
-      // 'Content-Type': 'application/json',
-      "accept": "application/json",
-      // @ts-ignore
-      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
-      "content-type": "application/json"
-    }
+  // const payNow = (detail?: any) => {
+  //   const headers = {
+  //     // 'Content-Type': 'application/json',
+  //     "accept": "application/json",
+  //     // @ts-ignore
+  //     "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+  //     "content-type": "application/json"
+  //   }
     
-    const data = {
-      // userId: `${user?.uid}`,
-      userEmail: `${sessionStorage.getItem("wldp_user")}`,     
-      // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
-      // amount: 0.0001,
-      // @ts-ignore
-      network: `${networkCode[coinInfo?.name] || ""}`,
-      // @ts-ignore
-      originCurrency: `${coinInfo?.symbol.toLowerCase()}`,      
-      token: `${coinInfo?.name}`,
-      // transactionType: payType,
-      // numberOfVotes: extraVote,
-      // paymentDetails: detail,
+  //   const data = {
+  //     // userId: `${user?.uid}`,
+  //     userEmail: `${sessionStorage.getItem("wldp_user")}`,     
+  //     // walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+  //     amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+  //     // amount: 0.0001,
+  //     // @ts-ignore
+  //     network: `${networkCode[coinInfo?.name] || ""}`,
+  //     // @ts-ignore
+  //     originCurrency: `${coinInfo?.symbol.toLowerCase()}`,      
+  //     token: `${coinInfo?.name}`,
+  //     // transactionType: payType,
+  //     // numberOfVotes: extraVote,
+  //     // paymentDetails: detail,
 
-    }
+  //   }
 
-    axios.post(`/payment/makePayment/toServer`, data,
-      {
-        headers: headers
-      }).then(async (response) => {
-        setApiCalling(false)
-        // console.log(,"response.data.data")
-        console.log(response.data, "response.data")
-        transactionId.current = response.data
+  //   axios.post(`/payment/makePayment/toServer`, data,
+  //     {
+  //       headers: headers
+  //     }).then(async (response) => {
+  //       setApiCalling(false)
+  //       // console.log(,"response.data.data")
+  //       console.log(response.data, "response.data")
+  //       transactionId.current = response.data
         
-        setShowForWait(true)
-      })
-      .catch((error) => {
-        // setPaymentStatus({ type: 'error', message: '' });
-        console.log(error, "response.data")
-        // setShowForWait(true)
-        setApiCalling(false)
-        setPayButton(false)
-      })
-  }
+  //       setShowForWait(true)
+  //     })
+  //     .catch((error) => {
+  //       // setPaymentStatus({ type: 'error', message: '' });
+  //       console.log(error, "response.data")
+  //       // setShowForWait(true)
+  //       setApiCalling(false)
+  //       setPayButton(false)
+  //     })
+  // }
 
 
-  const afterPayment = (detail?: any) => {
-    console.log(transactionId.current, "transactionId123")
-    const headers = {
-      // 'Content-Type': 'application/json',
-      "accept": "application/json",
-      // @ts-ignore
-      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
-      "content-type": "application/json"
-    }
-    const data = {
-      userId: `${user?.uid}`,
-      userEmail: `${sessionStorage.getItem("wldp_user")}`,
-      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount:payamount,
-      // network: "11155111",
-      // @ts-ignore
-      network: `${networkCode[coinInfo?.name] || ""}`,
-      // @ts-ignore
-      origincurrency: `${coinInfo?.symbol?.toLowerCase()}`,
-      token: `${coinInfo?.name}`,
-      transactionType: payType,
-      numberOfVotes: extraVote,
-      paymentDetails: { ...detail, ...transactionId.current },
+  // const afterPayment = (detail?: any) => {
+  //   console.log(transactionId.current, "transactionId123")
+  //   const headers = {
+  //     // 'Content-Type': 'application/json',
+  //     "accept": "application/json",
+  //     // @ts-ignore
+  //     "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+  //     "content-type": "application/json"
+  //   }
+  //   const data = {
+  //     userId: `${user?.uid}`,
+  //     userEmail: `${sessionStorage.getItem("wldp_user")}`,
+  //     walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+  //     amount:payamount,
+  //     // network: "11155111",
+  //     // @ts-ignore
+  //     network: `${networkCode[coinInfo?.name] || ""}`,
+  //     // @ts-ignore
+  //     origincurrency: `${coinInfo?.symbol?.toLowerCase()}`,
+  //     token: `${coinInfo?.name}`,
+  //     transactionType: payType,
+  //     numberOfVotes: extraVote,
+  //     paymentDetails: { ...detail, ...transactionId.current },
 
-    }
-    axios.post(`/payment/update/user/afterVote`, data,
-      {
-        headers: headers
-      }).then(async (response) => {
-        setApiCalling(false)
-      })
-      .catch((error) => {
-        // setPaymentStatus({ type: 'error', message: '' });
-        setApiCalling(false)
-        setPayButton(false)
-      })
-
-
-  }
-
-  const PaymentWait = () => {    
-    const headers = {
-      "accept": "application/json",      
-    }
-    const data = {   
-      userId: userInfo?.uid,
-      userEmail: `${sessionStorage.getItem("wldp_user")}`,
-      walletType: `${localStorage.getItem("wldp-cache-provider")}`,
-      amount: payamount,
-      // amount: 0.01,
-      // network: "11155111",
-      // @ts-ignore
-      network: `${networkCode[coinInfo?.name] || ""}`,
-      // @ts-ignore
-      origincurrency: `${coinInfo?.symbol?.toLowerCase()}`,
-      token: `${coinInfo?.name}`,
-      transactionType: payType,
-      numberOfVotes: extraVote,      
-      initiated: "FE"
-    }
-    console.log(data, "PaymentWaitData")
-    // @ts-ignore
-    const transactionIdSet = transactionId?.current?.transaction_id
-    axios.post(`/payment/update/paymentStatusOnTransaction/${transactionIdSet}`, data,
-      {        
-        headers: headers
-      }).then(async (response) => {
-        setApiCalling(false)
-      })
-      .catch((error) => {
-        // setPaymentStatus({ type: 'error', message: '' });
-        setApiCalling(false)
-        setPayButton(false)
-      })
+  //   }
+  //   axios.post(`/payment/update/user/afterVote`, data,
+  //     {
+  //       headers: headers
+  //     }).then(async (response) => {
+  //       setApiCalling(false)
+  //     })
+  //     .catch((error) => {
+  //       // setPaymentStatus({ type: 'error', message: '' });
+  //       setApiCalling(false)
+  //       setPayButton(false)
+  //     })
 
 
-  }
+  // }
+
+  // const PaymentWait = () => {    
+  //   const headers = {
+  //     "accept": "application/json",      
+  //   }
+  //   const data = {   
+  //     userId: userInfo?.uid,
+  //     userEmail: `${sessionStorage.getItem("wldp_user")}`,
+  //     walletType: `${localStorage.getItem("wldp-cache-provider")}`,
+  //     amount: payamount,
+  //     // amount: 0.01,
+  //     // network: "11155111",
+  //     // @ts-ignore
+  //     network: `${networkCode[coinInfo?.name] || ""}`,
+  //     // @ts-ignore
+  //     origincurrency: `${coinInfo?.symbol?.toLowerCase()}`,
+  //     token: `${coinInfo?.name}`,
+  //     transactionType: payType,
+  //     numberOfVotes: extraVote,      
+  //     initiated: "FE"
+  //   }
+  //   console.log(data, "PaymentWaitData")
+  //   // @ts-ignore
+  //   const transactionIdSet = transactionId?.current?.transaction_id
+  //   axios.post(`/payment/update/paymentStatusOnTransaction/${transactionIdSet}`, data,
+  //     {        
+  //       headers: headers
+  //     }).then(async (response) => {
+  //       setApiCalling(false)
+  //     })
+  //     .catch((error) => {
+  //       // setPaymentStatus({ type: 'error', message: '' });
+  //       setApiCalling(false)
+  //       setPayButton(false)
+  //     })
+
+
+  // }
   // useEffect(() => {
   
   //   const WLDPHandler = (e: any) => {

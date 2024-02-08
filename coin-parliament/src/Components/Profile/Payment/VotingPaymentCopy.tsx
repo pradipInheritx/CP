@@ -389,7 +389,38 @@ line-height: 101.5%;
 
 `;
 
+const mainnet = [
+  {
+    chainId: 1,
+    name: 'Ethereum',
+    currency: 'ETH',
+    explorerUrl: 'https://etherscan.io',
+    rpcUrl: 'https://cloudflare-eth.com'
+  },
 
+  {
+    chainId: 56,
+    name: 'Binance',
+    currency: 'BNB',
+    explorerUrl: 'https://bscscan.com',
+    rpcUrl: 'https://bsc-dataseed.binance.org'
+  },
+  {
+    chainId: 137,
+    name: 'Polygon (MATIC)',
+    currency: 'MATIC',
+    explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'https://polygon-pokt.nodies.app'
+  },
+  {
+    chainId: 11155111,
+    name: 'Sepolia Test Netwok',
+    currency: 'SepoliaETH',
+    explorerUrl: ' https://sepolia.etherscan.io/',
+    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/[YOUR-API-KEY]'
+  }
+
+]
 const VotingPaymentCopy: React.FC<{
   checkAndPay: Function,
   setPaymentStatus: React.Dispatch<React.SetStateAction<{ type: string, message: string }>>,
@@ -436,7 +467,8 @@ const VotingPaymentCopy: React.FC<{
   const [showText, setShowText] = useState(false);
   const [comingSoon, setComingSoon] = useState(false);
   const [paymentCurruntTime, setPaymentCurruntTime] = useState <any>();
-
+  
+// const 
     const screenWidth = () => (window.screen.width > 979 ? "25%" : "30%");
     const screenHeight = () => (window.screen.width > 979 ? "650px" : "730px");
     const flexType = () => (window.screen.width > 979 ? "end" : "space-around");
@@ -461,9 +493,9 @@ const VotingPaymentCopy: React.FC<{
 
 
     useEffect(() => {
-      (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
-        console.log(data, "senduid")
-      })
+      // (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
+      //   console.log(data, "senduid")
+      // })
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
       console.log(AllInfo,"AllInfo")
@@ -534,11 +566,64 @@ const VotingPaymentCopy: React.FC<{
   const { address, chainId, isConnected } = useWeb3ModalAccount()
   const { walletProvider } = useWeb3ModalProvider()
   
+  useEffect(() => {
+    if(address && chainId && isConnected){
+      const data = mainnet?.find(network=>network?.chainId==chainId)
+      if(!data) return
+      setSelectCoin(data?.name)
+      setCoinInfo(data)
+    }
+  
+  }, [address ,chainId ,isConnected])
   
   console.log(address, chainId, isConnected, "address,chainId,isConnected")
-  
-  async function sendTransaction() {
+  const payNow = (detail?: any) => {
+    const headers = {
+      // 'Content-Type': 'application/json',
+      "accept": "application/json",
+      // @ts-ignore
+      "Authorization": `Bearer ${auth?.currentUser?.accessToken}`,
+      "content-type": "application/json"
+    }
+    
+    const data = {
+      userId: `${user?.uid}`,
+      userEmail: `${user?.email}`,     
+      walletType: `wallet connect`,
+      // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
+      amount: 0.0001,
+      // @ts-ignore
+      network: `${coinInfo.chainId || ""}`,
+      // @ts-ignore
+      originCurrency: `${coinInfo?.currency.toLowerCase()}`,      
+      token: `${coinInfo?.name}`,
+      transactionType: payType,
+      numberOfVotes: extraVote,
+      paymentDetails: detail,
 
+    }
+
+    axios.post(`${process.env.REACT_APP_API}/payment/update/user/afterPayment`, data,
+      {
+        headers: headers
+      }).then(async (response) => {
+        // setApiCalling(false)
+        // console.log(,"response.data.data")
+        console.log(response.data, "response.data")
+        // transactionId.current = response.data
+        
+        // setShowForWait(true)
+      })
+      .catch((error) => {
+        // setPaymentStatus({ type: 'error', message: '' });
+        console.log(error, "response.data")
+        // setShowForWait(true)
+        // setApiCalling(false)
+        // setPayButton(false)
+      })
+  }
+  async function sendTransaction() {
+    setIsLoading(true) 
     let ethereum = (window as any).ethereum;
 
     // if (!ethereum) {
@@ -557,9 +642,10 @@ const VotingPaymentCopy: React.FC<{
       // Create a wallet signer
       const wallet = provider.getSigner();
       // send a tx
+      // amount: Number(payamount && Number(payamount)/coins[`${coinInfo?.symbol}`].price).toFixed(18),
       const transaction = {
         chainId: chainId,
-        to: '0xFB77A51d879FB3F79Dd31DBdb55D51d792e619051f',
+        to: process.env.REACT_APP_TESTETH_ACCOUNT_KEY,
         value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
       };
 
@@ -567,23 +653,36 @@ const VotingPaymentCopy: React.FC<{
 
       // Handle the transaction response
       console.log('Transaction hash:', txResponse.hash);
-      await txResponse.wait();
-      setPaymentStatus({ type:"success", message: "" })
+      if(txResponse.hash){
+        
+        payNow(txResponse)
+        setIsLoading(false) 
+        setPaymentStatus({ type:"success", message: "" })
       setShowText(false)      
       
       setPayButton(false);
+      }
+      // await txResponse.wait();
+      // setPaymentStatus({ type:"success", message: "" })
+      // setShowText(false)      
+      
+      // setPayButton(false);
       console.log('Transaction mined!');
 
     } catch (error: any) {
+      console.log('errorror',error)
       const errorMessageWithoutTextAfterBracket = error.message.split('[')[0];
       // console.log(errorMessageWithoutTextAfterBracket);
-      showToast(errorMessageWithoutTextAfterBracket, ToastType.ERROR);
-      console.log((error as Error).message, 'Hello');
+      // showToast(errorMessageWithoutTextAfterBracket, ToastType.ERROR);
+      // console.log((error as Error).message, 'Hello');
+      setIsLoading(false) 
       setShowText(false)
       // setPaymentStatus({ type: "", message: '' });
       setPayButton(false);
+      setPaymentStatus({ type:"error", message: errorMessageWithoutTextAfterBracket?.includes('user rejected transaction')?'user rejected transaction':errorMessageWithoutTextAfterBracket })
     }
   }
+
   useEffect(() => {
     if (userInfo?.uid && paymentCurruntTime) {      
       const colRef = collection(db, "callbackHistory")
@@ -800,9 +899,10 @@ const VotingPaymentCopy: React.FC<{
               }}
             >
               <Opctiondiv className="">
-                {/* <div
+                <div
                   style={{
                     cursor: "pointer",
+                    marginBottom:'10px',
                     // borderBottom: "1px solid white",
                     background: `${selectPayment==1 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
                   }}
@@ -813,14 +913,14 @@ const VotingPaymentCopy: React.FC<{
                 >
                   <i className="bi bi-coin"></i>
                   <p className="mx-2">Cryptocurrency</p>
-                </div> */}
-                <div
+                </div>
+                {!!(payamount>24) && <div
                   style={{
                     cursor: "pointer",
                     background: `${selectPayment==2 && "linear-gradient(180.07deg, #543CD6 0.05%, #361F86 48.96%, #160133 99.94%)"}`,
                   }}
                   onClick={() => {
-                    if (payamount > 24) {                      
+                    if (payamount > 0) {                      
                       // setSelectPayment(2)
                          
                         window.scrollTo({ top: 100, behavior: 'smooth' });  
@@ -837,7 +937,7 @@ const VotingPaymentCopy: React.FC<{
                   <i className="bi bi-credit-card-fill "></i>
                   {/* <p className="mx-2">Debit & Credit cards</p> */}
                   <p className="mx-2">No Crypto? No problem. <br /> Buy Crypto</p>
-                </div>
+                </div>}
               </Opctiondiv>
             </Boxdiv>
 
@@ -850,26 +950,42 @@ const VotingPaymentCopy: React.FC<{
                   flexDirection:"column",                  
                 }}
               >
-                {/* <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
+                <Sidediv style={{ display: 'flex', justifyContent: 'center' }}>
                   
                   <div className={`pay-custom-select-container mb-3`} style={{
                     width: '23em',
                     zIndex: 4,                    
                   }} >
+                   {selectCoin != "none" && <div
+                   style={{marginBottom:'10px', cursor:'pointer'}}
+                      className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" :  "pay-selected-text text-center"}
+                      onClick={() => {
+                        if (payButton) {
+                          return 
+                        }         
+                        open({ view: 'Networks' })               
+                        // setShowOptionList(prev => !prev)
+                      }
+
+                      }
+                    >
+                       Change coin
+                    </div>}
                     <div
                       className={showOptionList ? " pay-selected-text text-center" : selectCoin !== "none" ? "pay-selected-textv2 text-center" :  "pay-selected-text text-center"}
                       onClick={() => {
                         if (payButton) {
                           return 
-                        }                        
-                        setShowOptionList(prev => !prev)
+                        }         
+                        open({ view: 'Networks' })               
+                        // setShowOptionList(prev => !prev)
                       }
 
                       }
                     >
                       {!showOptionList && selectCoin != "none" ? `Pay $${payamount} using ${selectCoin}` : "Select coin"}
                     </div>
-                    {showOptionList && (
+                    {/* {showOptionList && (
                       <ul className="pay-select-options"
                         style={{
 
@@ -905,10 +1021,10 @@ const VotingPaymentCopy: React.FC<{
                           
                         })}
                       </ul>
-                    )}
+                    )} */}
                   </div>
-                </Sidediv> */}
-                <Divbutton>
+                </Sidediv>
+                {/* <Divbutton>
                   <button
                     style={{
                       background: "#543cd6",
@@ -920,7 +1036,7 @@ const VotingPaymentCopy: React.FC<{
                     open({ view: 'Networks' })
                 }}
                 >Select Coin</button>
-                </Divbutton>
+                </Divbutton> */}
                 
 
                 {/* {selectPayment == 1 && showText == false && window.screen.width < 767 && <p
@@ -931,7 +1047,7 @@ const VotingPaymentCopy: React.FC<{
                   }}
                 >Please select the desired network in your wallet before initiating any payments.</p>} */}
 
-                {address&& chainId&& isConnected &&
+                {/* {address&& chainId&& isConnected &&
                   <Divbutton>
                     <button
                       style={{
@@ -946,7 +1062,7 @@ const VotingPaymentCopy: React.FC<{
                       }}
                     >{payButton ? <span className="">Pay Now...</span> : 'Pay Now'}</button>
                   </Divbutton>
-                }
+                } */}
                 
                 {
                   payType == "EXTRAVOTES" && selectCoin != "none" && 
@@ -962,7 +1078,7 @@ const VotingPaymentCopy: React.FC<{
                               // opacity: `${payButton ? "0.6" : "1"}`
                             }}
                             onClick={() => {
-                              // handleClick()
+                              handleClick()
                             }}
                           >
 

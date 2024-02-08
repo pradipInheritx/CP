@@ -163,7 +163,7 @@ import SelectBio from "Components/LoginComponent/SelectBio";
 import axios from "axios";
 import { afterpaxDistributionToUser } from "common/utils/helper";
 import SingleCardDetails from "Pages/album/SingleCardDetails";
-import { createWeb3Modal, defaultConfig, useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers5/react'
+import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react'
 import { ethers } from "ethers";
 
 const projectId = '1556d7953ee6f664810aacaad77addb1'
@@ -182,21 +182,41 @@ const mainnet = [
     currency: 'BNB',
     explorerUrl: 'https://bscscan.com',
     rpcUrl: 'https://bsc-dataseed.binance.org'
+  },
+  {
+    chainId: 137,
+    name: 'Polygon (MATIC)',
+    currency: 'MATIC',
+    explorerUrl: 'https://polygonscan.com/',
+    rpcUrl: 'https://polygon-pokt.nodies.app'
+  },
+  {
+    chainId: 11155111,
+    name: 'Sepolia Test Netwok',
+    currency: 'SepoliaETH',
+    explorerUrl: ' https://sepolia.etherscan.io/',
+    rpcUrl: 'https://1rpc.io/sepolia'
   }
+
 ]
 
 // 3. Create modal
 const metadata = {
-  name: 'My Website',
-  description: 'My Website description',
-  url: 'https://mywebsite.com',
-  icons: ['https://avatars.mywebsite.com/']
+  name: 'Coin parliament',
+  description: 'Coin parliament',
+  url: 'https://coinparliamentstaging.firebaseapp.com',
+  icons: ['https://coinparliament.com/static/media/logoiconxbig2.7f0c3f73.png']
 }
 
 createWeb3Modal({
   ethersConfig: defaultConfig({ metadata }),
   chains: mainnet,
-  projectId
+  projectId,
+  themeVariables: {
+    // '--w3m-color-mix': '#160133',
+    // '--w3m-color-mix-strength': 40,
+    '--w3m-z-index':1000
+  }
 })
 // import FoundationData from "Components/Profile/FoundationData";
 
@@ -1404,47 +1424,7 @@ function App() {
     }
   }, [searchParams]);
 
-  async function sendTransaction() {
-    let ethereum = (window as any).ethereum;
 
-    if (!ethereum) {
-      ethereum = (window as any).web3?.currentProvider;
-    }
-
-    if (!ethereum) {
-      console.error("No Ethereum provider found");
-      return;
-    }
-    try {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-
-      // Request access to MetaMask
-      await ethereum?.request({ method: 'eth_requestAccounts' });
-
-      // Create a wallet signer
-      const wallet = provider.getSigner();
-
-      // send a tx
-      const transaction = {
-        // chainId: 56,
-        to: '0xFB77A51d879FB3F79Dd31DB55D51d792e619051f',
-        value: ethers.utils.parseEther('.0001'), // Sending 0.0001 MATIC
-      };
-
-      const txResponse = await wallet.sendTransaction(transaction);
-
-      // Handle the transaction response
-      console.log('Transaction hash:', txResponse.hash);
-      await txResponse.wait();
-
-      console.log('Transaction mined!');
-
-    } catch (error) {
-      console.log(error, 'Hello');
-    }
-  }
-
-  const{open,close} =useWeb3Modal()
 
   return loader ? (
     <div

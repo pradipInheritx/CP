@@ -35,9 +35,10 @@ const PaymentSuccess: React.FC<{ paymentSuccessAction: () => void, message?: str
                     <div className="swal2-success-circular-line-right" style={{ backgroundColor: "rgb(255, 255, 255)" }}></div>
                 </div>
                 <div style={{
-                    fontSize: '1.875em',
+                    fontSize: '1.575em',
                     fontWeight: '600',
                     textAlign: 'center',
+                    marginTop:'10px'
                 }}>Payment Successful</div>
                 {AllInfo[1] == "EXTRAVOTES" && <div style={{
                     fontSize: '1.125em',
