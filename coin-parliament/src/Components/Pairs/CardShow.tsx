@@ -196,7 +196,7 @@ function CardShow() {
           >
            
            <ImgName>
-            <img src={cardData.img1} alt=""  width={"85px"} height={"75px"} style={{border:"1px solid #b70afd",borderRadius:"50%"}}/>
+            <img src={cardData.img1} alt=""  width={"85px"} height={"75px"} />
              <CoinText>{cardData.name1}</CoinText>
              {/* <CoinPrice>{cardData.price1}</CoinPrice> */}
           </ImgName>
@@ -220,7 +220,7 @@ function CardShow() {
               </div>  
               
            <ImgName>
-             <img src={cardData.img2} alt=""  width={"85px"} height={"75px"} style={{border:"1px solid #b70afd",borderRadius:"50%"}}/>
+             <img src={cardData.img2} alt=""  width={"85px"} height={"75px"}/>
                 <CoinText>{cardData.name2}</CoinText>
                 {/* <CoinPrice>{cardData.price2}</CoinPrice> */}
               </ImgName>  
