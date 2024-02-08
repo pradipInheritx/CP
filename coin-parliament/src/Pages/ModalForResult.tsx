@@ -123,7 +123,7 @@ useEffect(() => {
                       <div className=" ">
                         <div className='p-2'>
                           {/* @ts-ignore */}                                          
-                          <img src={cardData.img1} alt="" width="50px" />
+                          <img src={cardData.img1} alt="" width="60px" height="70px" className='object-fit-contain' />
                         </div>
                         <div className="" style={{ lineHeight: '20px' }}>
                       <div                        
@@ -167,7 +167,7 @@ useEffect(() => {
                 >
                       <div className="">
                         <div className='p-2'>                          
-                            <img src={cardData.img2} alt="" width="50px" />
+                            <img src={cardData.img2} alt="" width="60px" height="70px" className='object-fit-contain' />
                         </div>
                         <div className="" style={{ lineHeight: '20px' }}>
                           <div>
