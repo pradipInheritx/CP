@@ -156,6 +156,7 @@ function CardShow({coins}: any) {
   const [changeColor, setChangeColor] = useState<string>("black");
   const [currentPrice, setCurrentPrice] = useState<any>(0)
   const [voteDirection, setVoteDirection] = useState(0);
+  const [voteLastPrice, setVoteLastPrice] = useState(0);
   const prevCountRef = useRef(currentPrice)
   const [lastvalue,setLastValue] = useState()
 
@@ -191,7 +192,7 @@ function CardShow({coins}: any) {
     setCurrentPrice(coins)
   }
 
-
+  console.log(coins,"SportParliamentFE")
 
   const ChangeStatus = (active:any, index:number ) => {
     const alldata = [...allBUtton]
@@ -217,6 +218,11 @@ useEffect(() => {
   prevCountRef.current = currentPrice;
   OnlyCheckColor()
 }, [coins,activeTime,allBUtton])
+  
+  const getLastPrice = () => {
+    // console.log("yes i am calling")
+    setVoteLastPrice(coins)
+  }
   
 // @ts-ignore
     return (
@@ -312,7 +318,7 @@ useEffect(() => {
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false)
-                    console.log(coins,"last786")
+                    getLastPrice()
                   },activeTime
                   );
                 }
@@ -347,7 +353,8 @@ useEffect(() => {
                    );
                   setTimeout(() => {
                     setShowPopUp(true)
-                    setShowSpdometer(false)                    
+                    setShowSpdometer(false) 
+                    getLastPrice()
                   }, activeTime);
                 }
                 }
@@ -408,6 +415,7 @@ useEffect(() => {
                 showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}
                 coins={coins}
+                voteLastPrice={voteLastPrice}
               />
             </>
             : ""

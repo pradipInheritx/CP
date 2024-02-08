@@ -49,17 +49,18 @@ interface ChildComponentProps {
   showPopUp?: any;
   setShowPopUp?: any;
   voteDirection?: number;
-  coins?:number;
+  coins?: number;
+  voteLastPrice?:any
 }
 
-const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp,coins}) => {
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp, coins, voteLastPrice }) => {
 // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
   // const { user } = useContext(UserContext);
   // const { setLogin, } = useContext(AppContext);
   // const navigate = useNavigate();
 //   const setVoteDetails = useContext(VoteDispatchContext);
 //   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
-console.log(coins,"786")
+  console.log(voteLastPrice,"786")
 useEffect(() => {
     if (showPopUp) {
       handleShow();    
