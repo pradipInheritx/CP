@@ -595,7 +595,7 @@ const VotingPaymentCopy: React.FC<{
       // @ts-ignore
       network: `${coinInfo.chainId || ""}`,
       // @ts-ignore
-      originCurrency: `${coinInfo?.currency.toLowerCase()}`,      
+      origincurrency: `${coinInfo?.currency.toLowerCase()}`,      
       token: `${coinInfo?.name}`,
       transactionType: payType,
       numberOfVotes: extraVote,
@@ -655,7 +655,7 @@ const VotingPaymentCopy: React.FC<{
       console.log('Transaction hash:', txResponse.hash);
       if(txResponse.hash){
         
-        payNow(txResponse)
+        payNow({...txResponse, orderId:`VTE-${(payType||'')?.substring(0, 2)}-${txResponse.hash?.substring(0, 4)}`})
         setIsLoading(false) 
         setPaymentStatus({ type:"success", message: "" })
       setShowText(false)      

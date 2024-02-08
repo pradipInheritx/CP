@@ -17,7 +17,7 @@ const Pool = () => {
   const [children, setChildren] = useState<Leader[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const childrenActivity = Number(
-    Number(userInfo?.voteStatistics?.commission || 0).toFixed(3) || 0
+    Number(userInfo?.voteStatistics?.commission || 0).toFixed(4) || 0
   );
   console.log(userInfo?.userName, userInfo,"userInfo?.userName")
 
