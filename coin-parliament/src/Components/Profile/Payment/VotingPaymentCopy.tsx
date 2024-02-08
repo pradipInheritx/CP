@@ -587,6 +587,7 @@ const VotingPaymentCopy: React.FC<{
     }
     
     const data = {
+      
       userId: `${user?.uid}`,
       userEmail: `${user?.email}`,     
       walletType: `wallet connect`,
@@ -597,6 +598,7 @@ const VotingPaymentCopy: React.FC<{
       // @ts-ignore
       origincurrency: `${coinInfo?.currency.toLowerCase()}`,      
       token: `${coinInfo?.name}`,
+      event:'Approved',
       transactionType: payType,
       numberOfVotes: extraVote,
       paymentDetails: detail,
