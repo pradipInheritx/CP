@@ -369,7 +369,7 @@ const [comingSoon, setComingSoon] = useState(false)
                   <button
                     onClick={() => {
                       handleSoundClick()
-                      if (item.vote > 24) {                        
+                      if (item.vote > 0) {                        
                         getExtraVote(item.value, item.vote, item.Extra)
                       } else {
                       setComingSoon(true)
@@ -485,7 +485,7 @@ const [comingSoon, setComingSoon] = useState(false)
                 <ButttonDivMob className="mt-1">
                   <button
                     onClick={() => {
-                      if (item.vote > 24) {
+                      if (item.vote > 0) {
                         getExtraVote(item.value, item.vote, item.Extra)
                       } else {
                         setComingSoon(true)

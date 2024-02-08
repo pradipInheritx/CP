@@ -167,7 +167,7 @@ const CoinsList: React.FC<{
     useEffect(() => {
       // if (localStorage.getItem("wldp-cache-provider")) {   
       // @ts-ignore
-      setWalletName(localStorage.getItem("wldp-cache-provider"))
+      // setWalletName(localStorage.getItem("wldp-cache-provider"))
       // }
     }, [connectOrNot])
 
@@ -181,9 +181,9 @@ const CoinsList: React.FC<{
     //  For put email in userid 
 
     useEffect(() => {
-      (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
-        console.log(data, "username")
-      })
+      // (window as any)?.wldp?.send_uid(`${user?.email}`).then((data: any) => {
+      //   console.log(data, "username")
+      // })
       // @ts-ignore
       let AllInfo = JSON.parse(localStorage.getItem("PayAmount"))
       setPayamount(AllInfo[0])
@@ -191,7 +191,7 @@ const CoinsList: React.FC<{
       setExtraVote(AllInfo[2])
     }, [])
 
-    const mybtn = (window as any)?.wldp?.connectionWallet
+    // const mybtn = (window as any)?.wldp?.connectionWallet
 
     //  for do payment 
 
