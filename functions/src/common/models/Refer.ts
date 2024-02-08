@@ -103,7 +103,7 @@ class Refer {
     const parentVoteStatistics = parentData?.voteStatistics;
     const getCommissionNumber = (Number(score * pctReferralActivity) / 100).toFixed(4);
     const commission = parseFloat(getCommissionNumber)
-    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(2)
+    const newScore = (Number(parentVoteStatistics?.score || 0) + commission).toFixed(4)
     const newCommission = Number(parentVoteStatistics?.commission || 0) + commission
     console.log("Score ",score)
     console.log("parentVoteStatistics : ",parentVoteStatistics)
