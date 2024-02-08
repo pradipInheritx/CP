@@ -52,7 +52,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                           <td align="center" valign="bottom" style="padding: 40px 10px 0px 0px;">
                              <a href="#" target="_blank"
                                 style="color:#000;text-decoration:none; display:inline-block;">
-                                <img src="images/hpbanner.png" alt="Coin Parliament Vote To Earn" class="inx_img"
+                                <img src="../assets/hpbanner.png" alt="Coin Parliament Vote To Earn" class="inx_img"
                                    width="600" height="184" border="0"
                                    style="display:block;font-family: 'Poppins', Arial, sans-serif;color:#ffffff;font-weight:bold;font-size:24px;max-width:600px;" />
                              </a>
@@ -285,7 +285,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://twitter.com/CoinParliament" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="images/x-twitter.svg" alt="X Twitter" width="30" height="30"
+                                                     src="../assets/x-twitter.svg" alt="X Twitter" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
@@ -293,7 +293,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://www.facebook.com/CoinParliament/" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="images/facebook.svg" alt="facebook" width="30" height="30"
+                                                     src="../assets/facebook.svg" alt="facebook" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
@@ -301,7 +301,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://www.instagram.com/coinparliament/" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="images/instagram.svg" alt="instagram" width="30" height="30"
+                                                     src="../assets/instagram.svg" alt="instagram" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
@@ -309,7 +309,7 @@ export const userWelcomeEmailTemplate = (userName: any, appLink: any) => {
                                             <td align="left" valign="middle" width="30" height="30">
                                                <a href="https://www.tiktok.com/@coinparliament" target="_blank"
                                                   style="text-decoration:none; display:inline-block;"><img
-                                                     src="images/tiktok.svg" alt="tiktok" width="30" height="30"
+                                                     src="../assets/tiktok.svg" alt="tiktok" width="30" height="30"
                                                      border="0"
                                                      style="display:block;color: #ffffff;font-family: 'Poppins', Arial, sans-serif;font-size: 16px;line-height: 20px;"></a>
                                             </td>
