@@ -40,7 +40,7 @@ const MainDiv = styled.div`
 const MidDiv = styled.div`
   
     // border:1px solid red;
-    width:${window.screen.width> 767? "50%" : "100%"};
+    width:${window.screen.width> 1280? "70%" : "100%"};
     margin:auto;
     //  flex-wrap: wrap;
     display:flex;
