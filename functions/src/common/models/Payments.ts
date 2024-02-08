@@ -234,12 +234,13 @@ export const storeInDBOfPayment = async (metaData: any) => {
     console.info("STORE in DB", metaData)
     if (
       metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE &&
-      metaData?.userId
+      metaData?.userId && (metaData.event === parentConst.PAYMENT_STATUS_APPROVED || metaData.event === parentConst.PAYMENT_STATUS_CONFIRMED)
     ) {
       console.info("For Account Upgrade", metaData.userId);
       await addIsUpgradedValue(metaData.userId);
     }
-    if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+    if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES &&
+      metaData?.userId && (metaData.event === parentConst.PAYMENT_STATUS_APPROVED || metaData.event === parentConst.PAYMENT_STATUS_CONFIRMED)) {
       console.info("For Vote Purchase", metaData);
       await addIsExtraVotePurchase(metaData);
     }
@@ -564,7 +565,7 @@ export const getTransactionHistory = async (req: any, res: any) => {
         userId: transaction.userId,
         walletType: transaction.walletType,
         paymentDetails: transaction.paymentDetails,
-        event: transaction && transaction.event ? transaction.event : "failed"
+        event: transaction && transaction.event ? transaction.event : "Failed"
       });
     });
 
