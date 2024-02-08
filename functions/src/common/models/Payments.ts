@@ -1,4 +1,6 @@
 import { firestore } from "firebase-admin";
+import { Timestamp } from 'firebase-admin/firestore';
+
 //import fetch from "node-fetch";
 import { log } from "firebase-functions/logger";
 import {
@@ -228,21 +230,28 @@ export const makePayment = async (req: any, res: any) => {
 };
 
 export const storeInDBOfPayment = async (metaData: any) => {
-  console.info("STORE in DB", metaData)
-  if (
-    metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE &&
-    metaData?.userId
-  ) {
-    console.info("For Account Upgrade", metaData.userId);
-    await addIsUpgradedValue(metaData.userId);
+  try {
+    console.info("STORE in DB", metaData)
+    if (
+      metaData.transactionType === parentConst.TRANSACTION_TYPE_UPGRADE &&
+      metaData?.userId
+    ) {
+      console.info("For Account Upgrade", metaData.userId);
+      await addIsUpgradedValue(metaData.userId);
+    }
+    if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
+      console.info("For Vote Purchase", metaData);
+      await addIsExtraVotePurchase(metaData);
+    }
+
+    console.info("Time", Timestamp.now())
+    await firestore()
+      .collection("payments")
+      .add({ ...metaData, timestamp: Timestamp.now() });
+
+  } catch (error) {
+    console.log("Error While Store In DB", error)
   }
-  if (metaData.transactionType === parentConst.TRANSACTION_TYPE_EXTRA_VOTES) {
-    console.info("For Vote Purchase", metaData);
-    await addIsExtraVotePurchase(metaData);
-  }
-  await firestore()
-    .collection("payments")
-    .add({ ...metaData, timestamp: firestore.FieldValue.serverTimestamp() });
 };
 
 export const addIsExtraVotePurchase = async (metaData: any) => {
