@@ -4,6 +4,8 @@ import Countdown from 'react-countdown';
 
 const CountDown = ({activeTime}:{activeTime:number}) => {
     return (
+        <>
+            {/* @ts-ignore */}
         <Countdown date={Date.now() + activeTime}
             renderer={({ hours, minutes, seconds, completed }) => {
                 // console.log("Countdown Renderer - Hours:", hours, "Minutes:", minutes, "Seconds:", seconds, "Completed:", completed);
@@ -20,7 +22,8 @@ const CountDown = ({activeTime}:{activeTime:number}) => {
                     </span>
                 );
             }}
-        />
+            />
+        </>
     )
 }
 

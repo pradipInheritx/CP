@@ -6,7 +6,6 @@ import { VoteResultProps } from "../../common/models/Vote";
 
 
 
-
 interface SpeedProps {
   value: number;
 }
@@ -224,39 +223,70 @@ export default function SpeedTest(
     vote,
     coins,
     symbol1,
-    symbol2
+    symbol2,
+    voteDirection,
   }: {
     // lastTenSec?: any
     vote?: VoteResultProps;
-    coins?: { [symbol: string]: Coin };
+    coins?: any;
     activeTime?:any;
     symbol1?: string;
-    symbol2?: string;
+      symbol2?: string;
+      voteDirection?: any;
   }
 ) {
   // const { value } = useSpeedTest();
   // const value = 10;
   const [value, setValue] = useState(1);
-  useEffect(() => {
-    const generateRandomNumber = () => {
-      const min = 1;
-      const max = 100;
-      const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-      // setValue(randomNum);
-      if (100>value) {
-      setValue(prev=>prev+1);
+  const [currentPrice, setCurrentPrice] = useState<any>(0)
+  const prevCountRef = useRef(value)
+  console.log(voteDirection, "voteDirection")
+  
+  const getCoinValue = () => {
+    let tempNewValue = parseFloat(coins) * 100;
+    let tempOldValue = prevCountRef.current *100;
+    console.log(tempNewValue - tempOldValue, "tempOldValue")
+    if (tempNewValue === tempOldValue) {
+      
+      setValue(50);
+    } else if (voteDirection == 1) {
+      const temp = (tempNewValue - tempOldValue);
+      setValue(50 + temp);
+    }
+    else {
+      const temp = (tempOldValue - tempNewValue);
+      setValue(50 + temp);
+    }
+    setCurrentPrice(coins)
+}
+
+  useEffect(() => {    
+    prevCountRef.current = currentPrice;
+    getCoinValue()
+  }, [coins]);
+  
+
+  console.log(value,"allvalue")
+  // useEffect(() => {
+  //   const generateRandomNumber = () => {
+  //     const min = 1;
+  //     const max = 100;
+  //     const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+  //     // setValue(randomNum);
+  //     if (100>value) {
+  //     setValue(prev=>prev+1);
         
-      }
-    };
+  //     }
+  //   };
 
-    // Generate a random number every second
-    const intervalId = setInterval(generateRandomNumber, 80);
+  //   // Generate a random number every second
+  //   const intervalId = setInterval(generateRandomNumber, 80);
 
-    // Clean up the interval when the component unmounts
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+  //   // Clean up the interval when the component unmounts
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, []);
 
 
   const [persentValue, setPersentValue] = useReducer((state: number, action: number) => {

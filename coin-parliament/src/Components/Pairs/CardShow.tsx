@@ -379,7 +379,11 @@ useEffect(() => {
                 >YOUR CURRENT VOTE IMPACT</p>
               </div>
             
-              <RangeSilder coins={coins} activeTime={activeTime}  />
+              <RangeSilder
+                coins={coins}
+                activeTime={activeTime}
+                voteDirection={voteDirection}  
+              />
               <div
                 style={{
                 position:"relative"
@@ -395,7 +399,7 @@ useEffect(() => {
           showPopUp == true ?
             <>
               <ModalForResult   
-                voteDirection = {voteDirection }  
+                voteDirection = {voteDirection}  
             // @ts-ignore 
                 showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}
