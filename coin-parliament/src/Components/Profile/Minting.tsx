@@ -203,7 +203,7 @@ const Minting = ({
   const translate = useTranslation();
   const { user, userInfo } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
-  const { showReward, setShowReward, rewardExtraVote,setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack, setIsVirtualCall, walletTab ,setWalletTab } = useContext(AppContext);
+  const { showReward, setShowReward, rewardExtraVote, setRewardExtraVote, albumOpen, setAlbumOpen, inOutReward, setInOutReward, setHeaderExtraVote, showBack, setShowBack, setIsVirtualCall, walletTab, setWalletTab, setAddPaxWalletPop, addPaxWalletPop } = useContext(AppContext);
   const [resultData, setResultData] = React.useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const [tooltipShow, setTooltipShow] = React.useState(false);
@@ -580,11 +580,11 @@ const Minting = ({
                   handleUpgraeShow()
                   return;
                 }
-                else if (userInfo?.isUserUpgraded && !userInfo?.paxAddress?.address && pendingPax > 0) {
-                  handleCmpPopupClose()
-                  setPaxAddShow(true)
-                  return;
-                }
+                // else if (userInfo?.isUserUpgraded && !userInfo?.paxAddress?.address && pendingPax > 0) {
+                //   handleCmpPopupClose()
+                //   // setAddPaxWalletPop(true)
+                //   return;
+                // }
                 else {
                   claimRewardHandler();
                   handleCmpPopupClose();
@@ -596,7 +596,7 @@ const Minting = ({
             () => {              
               if (userInfo?.isUserUpgraded && !userInfo?.paxAddress?.address && pendingPax > 0) {                
                 handleCmpPopupClose()
-                setPaxAddShow(true)
+                // setAddPaxWalletPop(true)
                   return;
               }
               else {
@@ -693,12 +693,12 @@ const Minting = ({
           </div>
         </Modal>
 
-{/* This popup show for add pax data */}
+        {/* This popup show for add pax data */}        
         <div>
           <Modal
             show={
-              paxAddShow
-            } onHide={() => { setPaxAddShow(false) }}
+              addPaxWalletPop
+            } onHide={() => { setAddPaxWalletPop(false) }}
             backdrop="static"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -706,7 +706,7 @@ const Minting = ({
             <div className="d-flex justify-content-end" style={{ zIndex: 100 }}>
               <button type="button" className="btn-close " aria-label="Close" onClick={() => {
 
-                setPaxAddShow(false)
+                setAddPaxWalletPop(false)
 
               }
               }></button>
@@ -724,6 +724,7 @@ const Minting = ({
               }}
               onClick={async () => {
                 // setPendingVoteShow(false)
+                setAddPaxWalletPop(false)
                 setWalletTab("setting")
                 navigate(`/profile/wallet`)
               }}
