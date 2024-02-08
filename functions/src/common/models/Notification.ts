@@ -27,7 +27,7 @@ export const sendNotification = async ({
         title,
         body,
       },
-      time: firestore.FieldValue.serverTimestamp(),
+      time: firestore.Timestamp.now(),
     });
   } catch (e) {
     console.log("Error sending message:", e, token);
@@ -41,7 +41,7 @@ export const createPushNotificationOnCallbackURL = async (requestBody: any) => {
       console.info("Request Body", requestBody);
 
       await firestore()
-        .collection("userPushNotificationCallbackURL").add({ userId: "", payloadKey: "", uniqueId: "", childUserEmail: "", notificationType: "", amount: "", currency: "", commission: "", serverTimestamp: firestore.FieldValue.serverTimestamp() });
+        .collection("userPushNotificationCallbackURL").add({ userId: "", payloadKey: "", uniqueId: "", childUserEmail: "", notificationType: "", amount: "", currency: "", commission: "", serverTimestamp: firestore.Timestamp.now() });
       return "Push Notification Send Successfully";
     } else {
       return "UserId & Callback URL not found";
