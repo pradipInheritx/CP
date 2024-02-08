@@ -30,7 +30,7 @@ function Speed(props: SpeedProps) {
   useEffect(() => {
 
     if (!needle.points.toString().includes('e')) needleAnimatePoint.current = needle.points
-    console.log('needle points', value, needle.points.toString().includes('e'), needle.points)
+    // console.log('needle points', value, needle.points.toString().includes('e'), needle.points)
   }, [value])
   // 1.4695761589768238e-15
   // 6.000000000000002,-10.392304845413264 174.2050807568878,98.26794919243098 172.2050807568878,101.73205080756874 -5.999999999999997,10.392304845413264
@@ -240,12 +240,12 @@ export default function SpeedTest(
   const [value, setValue] = useState(1);
   const [currentPrice, setCurrentPrice] = useState<any>(0)
   const prevCountRef = useRef(value)
-  console.log(voteDirection, "voteDirection")
+  // console.log(voteDirection, "voteDirection")
   
   const getCoinValue = () => {
     let tempNewValue = parseFloat(coins) * 100;
     let tempOldValue = prevCountRef.current *100;
-    console.log(tempNewValue - tempOldValue, "tempOldValue")
+    // console.log(tempNewValue - tempOldValue, "tempOldValue")
     if (tempNewValue === tempOldValue) {
       
       setValue(50);
@@ -266,7 +266,7 @@ export default function SpeedTest(
   }, [coins]);
   
 
-  console.log(value,"allvalue")
+  // console.log(value,"allvalue")
   // useEffect(() => {
   //   const generateRandomNumber = () => {
   //     const min = 1;

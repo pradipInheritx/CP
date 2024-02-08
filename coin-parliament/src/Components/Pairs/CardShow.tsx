@@ -157,6 +157,7 @@ function CardShow({coins}: any) {
   const [currentPrice, setCurrentPrice] = useState<any>(0)
   const [voteDirection, setVoteDirection] = useState(0);
   const prevCountRef = useRef(currentPrice)
+  const [lastvalue,setLastValue] = useState()
 
   const [allBUtton, setAllBUtton] = useState<any>([
     {
@@ -211,7 +212,7 @@ function CardShow({coins}: any) {
 
 const activeTime = useMemo(()=>getActiveTime(allBUtton) || 7000,[allBUtton]);
 
-console.log("activeTime.....", activeTime,typeof activeTime);
+// console.log("activeTime.....", activeTime,typeof activeTime);
 useEffect(() => {
   prevCountRef.current = currentPrice;
   OnlyCheckColor()
@@ -243,7 +244,7 @@ useEffect(() => {
              <CoinPrice style={{marginBottom:"0rem",color: `${changeColor}` }}> {coins !== null ? "$"+parseFloat(coins).toFixed(2) : "Loading..."}</CoinPrice>
           </ImgName>
 
-              <div className='' style={{
+              {/* <div className='' style={{
             position: "relative"            
             }}>
             <span className="bi bi-heart" style={{
@@ -254,7 +255,7 @@ useEffect(() => {
                   left:"14px",
                 fontSize: "18px"
             }}></span>              
-           </div>
+           </div> */}
         </ChildDiv>
           </div>          
         </CoinsShow>
@@ -302,6 +303,7 @@ useEffect(() => {
               }}
                 onClick={() => {                  
                   setClickedOption1(true);
+                  console.log(coins,"786 firstvalue")
                   setTimeout(() => {
                     setVoteDirection(1)  
                     setShowSpdometer(true)
@@ -310,7 +312,9 @@ useEffect(() => {
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false)
-                  }, activeTime);
+                    console.log(coins,"last786")
+                  },activeTime
+                  );
                 }
                 }
               >
@@ -390,7 +394,7 @@ useEffect(() => {
               }}
               >
 
-            <CountDown activeTime={activeTime} />
+            <CountDown activeTime={activeTime} setLastValue={setLastValue}/>
             </div>
             </div>
             </div>
@@ -403,6 +407,7 @@ useEffect(() => {
             // @ts-ignore 
                 showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}
+                coins={coins}
               />
             </>
             : ""

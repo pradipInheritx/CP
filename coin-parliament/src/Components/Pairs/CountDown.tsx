@@ -2,14 +2,17 @@ import React from 'react'
 import Countdown from 'react-countdown';
 
 
-const CountDown = ({activeTime}:{activeTime:number}) => {
+const CountDown = ({activeTime,setLastValue}:{activeTime:number,setLastValue:any}) => {
     return (
         <>
             {/* @ts-ignore */}
         <Countdown date={Date.now() + activeTime}
             renderer={({ hours, minutes, seconds, completed }) => {
+                if(completed){
+                  return  console.log("notcomple")
+                }
                 // console.log("Countdown Renderer - Hours:", hours, "Minutes:", minutes, "Seconds:", seconds, "Completed:", completed);
-                return (
+               return (
                     <span className="text-uppercase" style={{
                         color: '#6352e8', fontSize: '20px', fontWeight: 100, lineHeight: "10%", position: "absolute",
                         left: "42%",

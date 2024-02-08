@@ -49,15 +49,17 @@ interface ChildComponentProps {
   showPopUp?: any;
   setShowPopUp?: any;
   voteDirection?: number;
+  coins?:number;
 }
 
-const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp}) => {
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp,coins}) => {
 // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
   // const { user } = useContext(UserContext);
   // const { setLogin, } = useContext(AppContext);
   // const navigate = useNavigate();
 //   const setVoteDetails = useContext(VoteDispatchContext);
 //   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
+console.log(coins,"786")
 useEffect(() => {
     if (showPopUp) {
       handleShow();    
@@ -84,11 +86,11 @@ useEffect(() => {
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
-        style={{ zIndex: 100 }}
+        style={{ zIndex: 1060 }}
         animation={false}
       >
         <div className='d-flex justify-content-between'>
-          <div></div>
+          {/* <div></div> */}
           <div className='text-center mb-2' style={{
             color: "#6352e8",
             fontWeight: "300",
@@ -117,31 +119,27 @@ useEffect(() => {
                   className={`${window.screen.width < 767 ? "" : ""}  d-flex justify-content-between`}
 
                 >
-                  <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
+                  {/* <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
                   winner={true}>
                       <div className=" ">
                         <div className='p-2'>
-                          {/* @ts-ignore */}                                          
                           <img src={cardData.img1} alt="" width="50px" />
                         </div>
                         <div className="" style={{ lineHeight: '20px' }}>
                       <div                        
                       >             
-                        {/* @ts-ignore */}
                             <strong>{cardData.name1}</strong>
                       </div>  
                       <div>
-                            {/* @ts-ignore */}
-                            {/* <strong>{cardData.price1}</strong> */}
                           </div>
                         </div>
                       </div>
                     </CoinContainer>
-                  </div>
+                  </div> */}
 
 
-                  <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
+                  {/* <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                     <Col className="">
                       <div className="">
                         <LineImg>
@@ -159,9 +157,9 @@ useEffect(() => {
 
                       </div>
                     </Col>
-                  </div>
+                  </div> */}
 
-                  <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
+                  {/* <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
                   winner={false}                    
                 >
@@ -171,19 +169,17 @@ useEffect(() => {
                         </div>
                         <div className="" style={{ lineHeight: '20px' }}>
                           <div>
-                            {/* @ts-ignore */}
                             <strong>{cardData.name2}</strong>
                           </div>
                           <div>
-                            {/* @ts-ignore */}
-                            {/* <strong>{cardData.price2}</strong> */}
                           </div>
                         </div>
                       </div>
                     </CoinContainer>
-                  </div>
+                  </div> */}
             </div>    
             <div style={{ minHeight: "100%" }} className=" text-center">
+              
                   <div className=''
                     style={{ fontSize: "12px" }}
                   >

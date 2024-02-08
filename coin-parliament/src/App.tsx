@@ -17,13 +17,11 @@ const App = () => {
     const socket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@trade");
 
     socket.onopen = () => {
-      console.log("111111111")
       setSocketConnect(true)
     };   
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("2222222")
       // console.log("Received message:", data);
       setCoins(data?.p)
           };
@@ -31,7 +29,6 @@ const App = () => {
     socket.onclose = (event: any) => {
      
       setSocketConnect(false);
-      console.log("3333333")
       // console.log('WebSocket connection closed', event);
       if (event.code !== 1000) {
         // console.log('WebSocket Attempting to reconnect in 5 seconds...');
