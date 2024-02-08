@@ -1,15 +1,9 @@
 import React, { useEffect, useState, useContext, useRef, useReducer } from "react";
-// import color from 'color';
-// import cc from "classcat";
 import { useGauge } from "use-gauge";
 import { motion, MotionConfig } from "framer-motion";
 import { Coin } from "../../common/models/Coin";
 import { VoteResultProps } from "../../common/models/Vote";
-import CoinsContext from "../../Contexts/CoinsContext";
-import { decimal } from "../Profile/utils";
-// import { VoteDispatchContext } from "Contexts/VoteProvider";
-// import * as Motion from 'framer-motion';
-// const { motion, MotionConfig }= Motion
+
 
 
 
@@ -216,25 +210,7 @@ function Speed(props: SpeedProps) {
                 animate={{ x1: needle.base.cx, x2: needle.tip.cx, y1: needle.base.cy, y2: needle.tip.cy }}
               />
             </g>
-            {/* <g id="needle" fill={"#2d2966"}>
-              <motion.circle
-                animate={{
-                  cx: needle.base.cx,
-                  cy: needle.base.cy
-                }}
-                r={2}
-              />
-              <motion.circle
-                animate={{
-                  cx: needle.base.cx,
-                  cy: needle.base.cy
-                }}
-                r={15}
-              />
-              <motion.polyline className="fill-gray-700" animate={{
-                points: needle.points
-              }} />
-            </g> */}
+           
           </svg>
         </div>
       </div>
@@ -253,15 +229,14 @@ export default function SpeedTest(
     // lastTenSec?: any
     vote?: VoteResultProps;
     coins?: { [symbol: string]: Coin };
+    activeTime?:any;
     symbol1?: string;
     symbol2?: string;
   }
 ) {
   // const { value } = useSpeedTest();
   // const value = 10;
-
   const [value, setValue] = useState(1);
-
   useEffect(() => {
     const generateRandomNumber = () => {
       const min = 1;
@@ -290,109 +265,9 @@ export default function SpeedTest(
     }
     return action < 0 ? 0 : action;
   }, 50)
-  // const { allCoinsSetting } = useContext(CoinsContext)
-  // const [priceRange, setPriceRange] = useState(1);
-  // const { value } = useSpeedTest(priceRange);
-  // const [randomDecimal, setRandomDecimal] = useState(0)
+
   const setVoteDetails = "";
-  // useContext(VoteDispatchContext);
-  // useEffect(() => {
-  //   setVoteDetails((prev) => {
-  //     let voteImpact: number = (persentValue < 40 ? 0 :
-  //       (persentValue >= 40 && persentValue <= 60 ? 2 : 1)
-  //     )
-  //     return {
-  //       ...prev, voteImpact: {
-  //         timeFrame: prev?.voteImpact?.timeFrame,
-  //         impact: voteImpact
-  //       }
-  //     }
-  //   })
-  // }, [persentValue]);
-  // const getBorderColor = () => {
-  //   if (vote?.expiration < new Date().getTime()) {
-  //     return;
-  //   }
 
-  //   if (symbol2 !== undefined) {
-  //     // range bar for pair
-  //     let bothLivePrice = [coins[symbol1]?.price, coins[symbol2]?.price];
-  //     if (!vote?.valueVotingTime) {
-  //       setPersentValue(50)
-  //       return false
-  //     }
-  //     let bothCurrentPrice = Array.isArray(vote?.valueVotingTime) ? [...vote?.valueVotingTime] : [0, 0]
-  //     // const newPairPrice = [(((bothLivePrice[0] * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - bothCurrentPrice[0] * decimal[symbol1].multiply) / priceRange, (((bothLivePrice[1] * decimal[symbol2].multiply) + Number(coins[symbol2]?.randomDecimal)) - bothCurrentPrice[1] * decimal[symbol2].multiply) / priceRange]
-  //     const diffPer = [bothLivePrice[0] - bothCurrentPrice[0], bothLivePrice[1] - bothCurrentPrice[1]]
-  //     const getPer = [(diffPer[0] * 1000) / bothCurrentPrice[0] + priceRange, (diffPer[1] * 1000) / bothCurrentPrice[1] + priceRange]
-
-  //     let diff = [
-  //       bothCurrentPrice[0] / bothLivePrice[0],
-  //       bothCurrentPrice[1] / bothLivePrice[1],
-  //     ];
-
-  //     let winner = diff[0] < diff[1] ? 1 : 0;
-  //     const averageValue = Math.abs(diff[0] - diff[1]) * 100;
-
-  //     if ((averageValue == averageValue)) {
-  //       if (50 - (newPairPrice[0] - newPairPrice[1]) < 0) {
-  //         setPersentValue(0)
-  //         return
-  //       }
-  //       if (50 + (newPairPrice[0] - newPairPrice[1]) > 100) {
-  //         setPersentValue(100)
-  //         return
-  //       }
-  //       setPersentValue(vote?.direction == 1 ? 50 - (newPairPrice[0] - newPairPrice[1]) : 50 + (newPairPrice[0] - newPairPrice[1]))
-  //     } else {
-  //       if (vote?.direction == 1) {
-  //         winner == vote?.direction
-  //           ?
-  //           setPersentValue(25 + getPer[1] > 0 ? 25 + getPer[1] : 0)
-  //           :
-  //           setPersentValue(75 + getPer[1] > 100 ? 100 : 75 + getPer[1])
-
-  //       } else if (vote?.direction == 0) {
-  //         winner != vote?.direction
-  //           ?
-  //           setPersentValue(25 + getPer[0] > 0 ? 25 + getPer[0] : 0)
-  //           :
-  //           setPersentValue(75 + getPer[0] > 100 ? 100 : 75 + getPer[0])
-
-  //       }
-  //     }
-  //   } else if (symbol2 == undefined) {
-  //     // range bar for single coin
-  //     if (!vote?.valueVotingTime) {
-  //       setPersentValue(50)
-  //       return false
-  //     }
-
-  //     // console.log('newprice',((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)+Number(coins[symbol1]?.randomDecimal)))
-  //     let newPrice = 0;
-  //     if (['BTS', 'ETH'].includes(symbol1)) {
-  //       newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
-  //     } else {
-  //       newPrice = (((Number(coins[symbol1]?.price) * decimal[symbol1].multiply) + Number(coins[symbol1]?.randomDecimal)) - (Number(vote?.valueVotingTime) * decimal[symbol1].multiply)) / priceRange
-  //     }
-  //     if (50 + newPrice > 100) {
-  //       setPersentValue(100);
-  //       return
-  //     }
-  //     if (50 - newPrice < 0) {
-  //       setPersentValue(0);
-  //       return
-  //     }
-  //     if (vote?.direction == 0) setPersentValue(50 + newPrice);
-  //     else setPersentValue(50 - newPrice);
-
-  //   }
-  // };
-
-
-  // useEffect(() => {
-  //   getBorderColor()
-  // }, [coins[symbol1]?.price, coins[symbol2]?.price, vote?.valueVotingTime, coins[symbol1]?.randomDecimal, coins[symbol1]?.randomDecimal])
   useEffect(() => {
     
     // let timer1  = setTimeout(() => setValue(Math.floor((Math.random()*100)+1)), 1000)
@@ -402,12 +277,6 @@ export default function SpeedTest(
     
   }, [value])
 
-console.log(value,"checkvalue")
-
-  // useEffect(() => {
-  //   if (!symbol1) return
-  //   setPriceRange(allCoinsSetting?.find((item: any) => item?.symbol == symbol1)?.voteBarRange[`${vote?.timeframe?.index}`])
-  // }, [symbol1, allCoinsSetting, vote?.voteTime])
   return (
     <MotionConfig transition={{ type: "tween", ease: "linear" }} >
       <Speed value={value} />{/* // low<mid 40-60>high */}

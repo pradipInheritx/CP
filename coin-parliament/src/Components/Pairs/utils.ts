@@ -2,8 +2,8 @@ import {Coin} from "../../common/models/Coin";
 import { flatMap, throttle } from "lodash";
 
 
-import EXTRA from "../../assets/images/EXTRA.png";
-import EXTRA1 from "../../assets/images/EXTRA1.png";
+import EXTRA from "../../assets/logos/BTC.svg";
+import EXTRA1 from "../../assets/logos/BTC.svg";
 import EXTRA2 from "../../assets/images/EXTRA2.png";
 import EXTRA3 from "../../assets/images/EXTRA3.png";
 import EXTRA4 from "../../assets/images/EXTRA4.png";
@@ -68,27 +68,27 @@ export const voteProcedure = ({vote, sound, setConfetti}: {
 
 export const listData = [
   {
-    name1: "Michael  Jordan",
-    name2: "Roger Federer",
+    name1: "BULL",
+    name2: "BEAR",
     price1: "123.002",
     price2: "232.003",
     img1: EXTRA,
-    img2: EXTRA1,
-  },
-  {
-    name1: "Rafael Nadal",
-    name2: "Lionel Messi",
-    price1: "213.001",
-    price2: "423.001",
-    img1: EXTRA2,
-    img2: EXTRA3,
-  },
-  {
-    name1: "Cristiano Ronaldo",
-    name2: "LeBron James",
-    price1: "324.012",
-    price2: "132.103",
-    img1: EXTRA4,
-    img2: EXTRA5,
-  }
+    img2: EXTRA1,}
+  // },
+  // {
+  //   name1: "XYZ",
+  //   name2: "ZYX",
+  //   price1: "213.001",
+  //   price2: "423.001",
+  //   img1: EXTRA2,
+  //   img2: EXTRA3,
+  // },
+  // {
+  //   name1: "DEF",
+  //   name2: "FDE",
+  //   price1: "324.012",
+  //   price2: "132.103",
+  //   img1: EXTRA4,
+  //   img2: EXTRA5,
+  // }
 ]

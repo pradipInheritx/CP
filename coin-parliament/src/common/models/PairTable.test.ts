@@ -1,6 +1,6 @@
 import { getChosenPairs } from "../../Components/Pairs/utils";
 import { coins, totals } from "../../Components/Pairs/testData";
-import { getFilteredData, getFilteredDataByFav, getPairs } from './PairTable';
+import { getFilteredData, getFilteredDataByFav, getPairs } from "./PairTable";
 
 const allPairs = [
   ["BTC", "ETH"],

@@ -1,11 +1,16 @@
-import React, { Component, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from "styled-components";
 import { listData } from './utils';
-import { count } from 'console';
 import RangeSilder from '../Users/RangeSilder';
 import ModalForResult from '../../Pages/ModalForResult';
 import Countdown from 'react-countdown';
+import CountDown from './CountDown';
+
+const Price = styled.div`
+  min-width: 56px;
+  font-family: var(--font-family-poppins);
+  font-weight: 400;
+  color: ${(props: { single: boolean }) => props.single ? "var(--white)" : "#23036a"}`;
 
 const MainDiv = styled.div`
   height:100vh;
@@ -18,11 +23,11 @@ const MainDiv = styled.div`
 `;
 const CoinsShow = styled.div`  
 border-radius:0px 0px 120px 0px;
-
   // border:1px solid red;
   padding:0px;
   margin:0;
-  // height:100px;
+  align-items:center;
+  height:270px;
 `;
 
 
@@ -30,7 +35,8 @@ const ChildDiv = styled.div`
 // background-color:white;
   // border:1px solid green;
   border-radius:10px;
-  width:${window.screen.width>767? "25%" :"100%"};
+  margin-top:7rem;
+  width:${window.screen.width>767? "8%" :"20%"};
   display:flex;
   justify-content: space-between;
   &:hover{
@@ -56,13 +62,15 @@ text-align:center;
 `;
 const CoinPrice = styled.p`
 color:white;
+
+font-size: 16px;
+text-align: center;
 font-size:16px;
 // font-weight:bold;
 text-align:center;
 `;
 
 const ImgName = styled.div`
-padding:30px 25px 20px 25px;
 `;
 
 const ButtonDiv = styled.div`
@@ -93,6 +101,7 @@ cursor:pointer;
 display:flex;
 justify-content: center;
 overflow:hidden;
+gap:10px;
 `;
 
 const Option = css`
@@ -106,10 +115,7 @@ const Option = css`
   transition: all .2s ease;
 
   `;
-  // & svg g path {
-  //   stroke: ${(props: { borderColor: string; selected: boolean }) =>
-  //   props.selected ? colors[1] : colors[0]};
-  // }
+ 
 const VoteDiv = styled.div`
   ${Option};
     text-align:center;
@@ -140,35 +146,51 @@ top: 2px;
 
 
 
-function CardShow() {
-    let params = useParams();
-  const {id} = params;
+function CardShow({coins}: any) {
 // @ts-ignore
-  const cardData = { ...listData[id] }
+  const cardData = { ...listData[0] }
   const [ShowSpdometer, setShowSpdometer] = useState(false) 
   const [showPopUp, setShowPopUp] = useState<any>(false) 
   const [clickedOption1, setClickedOption1] = useState(false);
-  const [clickedOption0, setClickedOption0] = useState(false);
+  const [clickedOption0, setClickedOption0] = useState(false);  
+  const [changeColor, setChangeColor] = useState<string>("black");
+  const [currentPrice, setCurrentPrice] = useState<any>(0)
   const [voteDirection, setVoteDirection] = useState(0);
+  const prevCountRef = useRef(currentPrice)
+
   const [allBUtton, setAllBUtton] = useState<any>([
     {
-    time: "15 Sec",
+    time: "7 Sec",
     Active:true,    
+    },
+    {
+    time: "15 Sec",
+    Active:false,    
     },
     {
     time: "30 Sec",
     Active:false,    
     },
     {
-    time: "1 Min",
-    Active:false,    
-    },
-    {
-    time: "15 Min",
+    time: "60 Sec",
     Active:false,    
     }
   ])
-  
+
+  const OnlyCheckColor = () => {
+    if (coins == prevCountRef.current) {
+      setChangeColor("white")
+    }
+    else if (coins> prevCountRef.current) {
+      setChangeColor("Green")
+    }
+    else if (coins < prevCountRef.current) {
+      setChangeColor("Red")
+    }
+    setCurrentPrice(coins)
+  }
+
+
 
   const ChangeStatus = (active:any, index:number ) => {
     const alldata = [...allBUtton]
@@ -176,19 +198,38 @@ function CardShow() {
     alldata[index].Active = !active
     setAllBUtton(alldata)
   }
+
+  function getActiveTime(arr:any) {
+    for (const obj of arr) {
+        if (obj.Active) {
+            let selectedTime = obj.time
+            return selectedTime.split(' ')[0] * 1000;
+        }
+    }
+    return null; // Return null if no active time is found
+}
+
+const activeTime = useMemo(()=>getActiveTime(allBUtton) || 7000,[allBUtton]);
+
+console.log("activeTime.....", activeTime,typeof activeTime);
+useEffect(() => {
+  prevCountRef.current = currentPrice;
+  OnlyCheckColor()
+}, [coins,activeTime,allBUtton])
+  
 // @ts-ignore
     return (
       <MainDiv className=''
       >
         <CoinsShow
-          className='d-flex justify-content-center'
+          className='d-flex justify-content-center '
           style={{
           backgroundColor:"#160133",
         }}
         >
-          <div className='d-flex justify-content-center w-75'>
+          <div className='d-flex justify-content-center  w-75'>
             <ChildDiv
-          
+      
             onClick={() => {
               // navigate(`/CardShow/${index}`);
               // console.log(`/pairs/${index}`,"url")
@@ -196,35 +237,12 @@ function CardShow() {
           >
            
            <ImgName>
-            <img src={cardData.img1} alt=""  width={"90px"} height={"90px"} style={{objectFit:"contain"}}/>
-             <CoinText>{cardData.name1}</CoinText>
-             {/* <CoinPrice>{cardData.price1}</CoinPrice> */}
+            <img src={cardData.img1} alt=""  width={"80px"} />
+             <CoinText style={{marginBottom:"0rem"}}>{"Bitcoin"}</CoinText>
+             <CoinText style={{marginBottom:"0rem"}}>{"BTC"}</CoinText>
+             <CoinPrice style={{marginBottom:"0rem",color: `${changeColor}` }}> {coins !== null ? "$"+parseFloat(coins).toFixed(2) : "Loading..."}</CoinPrice>
           </ImgName>
-           <div className="w-25 d-flex flex-column  justify-content-center align-items-center"
-              >
-                <p style={{color:"#6352e8"}}>VS</p>            
-             <div className=""
-               style={{
-                 border: "1px solid #6352e8",
-                 width:"10px",
-                 height: "1px"
-             }}
-                ></div>
-                <div className=""
-               style={{
-                 borderLeft: "2px solid #6352e8",
-                 height: "50px"
-             }}
-             ></div>
-             
-              </div>  
-              
-           <ImgName>
-             <img src={cardData.img2} alt=""   width={"90px"} height={"90px"} style={{objectFit:"contain"}}/>
-                <CoinText>{cardData.name2}</CoinText>
-                {/* <CoinPrice>{cardData.price2}</CoinPrice> */}
-              </ImgName>  
-              
+
               <div className='' style={{
             position: "relative"            
             }}>
@@ -232,7 +250,8 @@ function CardShow() {
               color: "#6352e8",
               // padding: "20px",
                 position: "absolute",                              
-                  top: "15px",
+                  top: "-14px",
+                  left:"14px",
                 fontSize: "18px"
             }}></span>              
            </div>
@@ -240,11 +259,14 @@ function CardShow() {
           </div>          
         </CoinsShow>
       
-        {/* <ButtonDiv className=''>
+        {ShowSpdometer == false ?(
+        <>
+        <ButtonDiv className=''>
           {allBUtton.map((item:any,index:number) => {
             return (<TimeButton
               style={{
               background:`${item.Active==true ? "#6352e8" :"white"}`
+              
               }}
               onClick={(e) => {
                 ChangeStatus(item.Active ,index)
@@ -252,25 +274,26 @@ function CardShow() {
             >            
               <p
                 style={{
-              color:`${item.Active==true ? "white" :"#6352e8"}`
+              color:`${item.Active==true ? "white" :"#6352e8"}`,marginBottom:"0rem"
             }}
               >{item.time}</p>
             </TimeButton>)
           })}
-        </ButtonDiv> */}
+        </ButtonDiv>
+        </>
+        ):("")}
+      
         {ShowSpdometer == false ? 
           <>
             
-            <div className='text-center mt-5'>
+            <div className='text-center mt-2'>
               <p
                 style={{ color:"#6352e8"}}
               >
                 Who gets your vote?
               </p>
             </div>
-            <VoteButton className='mt-3'
-              
-            >
+            <VoteButton className='mt-3'>
               {/* @ts-ignore */}
               <VoteDiv              
                 className={`${clickedOption1 ? "animate" : ""} confetti-button svg-button`}
@@ -287,22 +310,20 @@ function CardShow() {
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false)
-                  }, 7700);
+                  }, activeTime);
                 }
                 }
               >
-                <p>Vote</p> 
                 <p>{cardData.name1}</p>
                 </VoteDiv>
               <div>  
-                <div>VS</div>
-                <div
+                {/* <div
                   style={{
                   
                 }}
                 >
 
-                </div>
+                </div> */}
               </div>
               {/* @ts-ignore */}
               <VoteDiv
@@ -312,9 +333,8 @@ function CardShow() {
                   animation: "bull_shake_right 2s ease 2s 3 alternate forwards",
                  borderRadius:"0px 60px 60px 60px"
               }}
-                 onClick={() => {                  
-                  //  setShowSpdometer(true)
-                  setVoteDirection(2)  
+                 onClick={() => {    
+                  setVoteDirection(2)                
                    setClickedOption0(true);
                    setTimeout(() => {
                      setClickedOption0(false)
@@ -324,17 +344,13 @@ function CardShow() {
                   setTimeout(() => {
                     setShowPopUp(true)
                     setShowSpdometer(false)                    
-                  }, 7700);
+                  }, activeTime);
                 }
                 }
               >
-                <p>Vote</p>
                 <p>{cardData.name2}</p>
                 </VoteDiv>
             </VoteButton>
-
-
-
           </> :
           <div
             className='d-flex justify-content-center ml-3 mt-5'
@@ -348,11 +364,8 @@ function CardShow() {
               width: "300px",
               height: "250px",
               border: "1px solid #6352e8",
-                borderRadius: "10px",
-                // display: "flex",
-
-                // justifyContent: "center",
-          boxShadow: "0 3px 6px #00000029"
+              borderRadius: "10px",
+              boxShadow: "0 3px 6px #00000029"
               }}> 
               <div
                 style={{
@@ -366,31 +379,15 @@ function CardShow() {
                 >YOUR CURRENT VOTE IMPACT</p>
               </div>
             
-              <RangeSilder />
+              <RangeSilder coins={coins} activeTime={activeTime}  />
               <div
-              
                 style={{
                 position:"relative"
               }}
               >
-                <Countdown date={Date.now() + 7000}
-                      renderer={({ hours, minutes, seconds, completed }) => {
-                        return (
-                          <span className="text-uppercase" style={{
-                            color: '#6352e8', fontSize: '20px', fontWeight: 100, lineHeight: "10%", position: "absolute",
-                            left:"42%",
-                            top:"-25px",
-                          }}>																				
-                            {hours < 1 ? null : `${hours} :`}
-                            {minutes < 10 ? `0${minutes}` : minutes}:
-                
-                            {seconds < 10 ? `0${seconds}` : seconds} 																				
-                          </span>
-                        );
 
-                      }}
-										/>
-              </div>
+            <CountDown activeTime={activeTime} />
+            </div>
             </div>
             </div>
         }
@@ -398,7 +395,7 @@ function CardShow() {
           showPopUp == true ?
             <>
               <ModalForResult   
-              voteDirection = {voteDirection }   
+                voteDirection = {voteDirection }  
             // @ts-ignore 
                 showPopUp={showPopUp}
                 setShowPopUp={setShowPopUp}

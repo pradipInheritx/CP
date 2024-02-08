@@ -51,11 +51,11 @@ interface ChildComponentProps {
   voteDirection?: number;
 }
 
-const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp,  voteDirection }) => {
+const ModalForResult: React.FC<ChildComponentProps> = ({ showPopUp, setShowPopUp}) => {
 // function ModalForResult(showPopUp?: any, setShowPopUp?:any) {
-  const { user } = useContext(UserContext);
-  const { setLogin, } = useContext(AppContext);
-  const navigate = useNavigate();
+  // const { user } = useContext(UserContext);
+  // const { setLogin, } = useContext(AppContext);
+  // const navigate = useNavigate();
 //   const setVoteDetails = useContext(VoteDispatchContext);
 //   const setLessTimeVoteDetails = useContext(lessTimeVoteDispatchContext);
 useEffect(() => {
@@ -119,7 +119,7 @@ useEffect(() => {
                 >
                   <div className=' text-center' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
-                  winner={voteDirection === 1}>
+                  winner={true}>
                       <div className=" ">
                         <div className='p-2'>
                           {/* @ts-ignore */}                                          
@@ -163,7 +163,7 @@ useEffect(() => {
 
                   <div className=' text-center ' style={{ width: `${window.screen.width < 767 ? "100%" : "30%"}` }}>
                 <CoinContainer
-                  winner={voteDirection === 2}                   
+                  winner={false}                    
                 >
                       <div className="">
                         <div className='p-2'>                          
@@ -192,7 +192,6 @@ useEffect(() => {
                       {/* {vote?.direction === 1 ? paircoin[1]?.symbol + "-" + vote?.valueExpirationTime[1] : paircoin[0]?.symbol - vote?.valueExpirationTime[0]} */}
                       {/* {vote?.coin?.split("-")[vote?.valueExpirationTime[0] - vote.valueVotingTime[0] < vote?.valueExpirationTime[1] - vote.valueVotingTime[1] ? 1 : 0]} {" "} - ${vote?.direction === 1 ? vote?.valueExpirationTime[1] : vote?.valueExpirationTime[0]} */}
                     </p>
-                    <p> YOUR VOTE FOR: {cardData[`name${voteDirection}`]} </p>
                     <p>Vote impact : HIGH </p>
                   </div>
                   <CoinVoteTimer>
@@ -220,16 +219,15 @@ useEffect(() => {
 
             
           </div>  
-          {!user?.uid && <div className='d-flex justify-content-center mt-2'>
+        <div className='d-flex justify-content-center mt-2'>
             <Buttons.Primary
               onClick={() => {
-                setLogin(true)
-                handleClose()
+                // setLogin(true)
             }}
             >
             Join The Parliament
           </Buttons.Primary>
-          </div>}
+          </div>
         </Modal.Body>      
       </Modal>
     </div>

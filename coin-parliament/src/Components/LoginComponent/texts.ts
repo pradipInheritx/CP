@@ -1,5 +1,5 @@
 export const texts = {
-  continueWith: "Continue with",
+  continueWith: "continue with".toUpperCase(),
   facebook: "facebook",
   google: "google",
   twitter: "twitter",

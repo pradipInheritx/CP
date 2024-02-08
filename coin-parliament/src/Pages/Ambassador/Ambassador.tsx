@@ -48,9 +48,9 @@ const
     Ambassador = () => {
         const translate = useTranslation();
         const { showToast } = useContext(NotificationContext);
-        const { user ,userInfo} = useContext(UserContext);
+        const { user } = useContext(UserContext);
         const { setLogin } = useContext(AppContext)
-        const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${userInfo?.userName}`;
+        const referralUrl = `${document.location.protocol}//${document.location.host}/?refer=${user?.uid}`;
         const url = referralUrl
         const shareText = `Hey,%0ajoin me on Sport Parliament and earn rewards for your opinion!%0aLet's vote together!`
         const [showShare, setShowShare] = useState(false);

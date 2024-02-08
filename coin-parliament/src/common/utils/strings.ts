@@ -1,14 +1,12 @@
 import randomWords from "random-words";
-import { faker } from '@faker-js/faker';
+
 export const generateUsername = () => {
-  let username = "";
-  do {
-    username = faker.internet.userName().replaceAll('.', '').replaceAll('-', '').replace(/[0-9]/g, '');
-  }
-  while (username.length < 8 || username.length > 10);
-
-  return username;
-
+  // return 'abc'
+  return randomWords({
+    exactly: 1,
+    wordsPerString: 2,
+    join: "",
+    min:8,
+    maxLength: 4
+  });
 };
-
-
