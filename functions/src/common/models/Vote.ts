@@ -264,14 +264,14 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
       // try to update the user total and claim instead of addRewards function
       const newTotal = getUser?.rewardStatistics?.total + 1;
       const newClaimed = getUser?.rewardStatistics?.claimed || 0;
-      console.log("newTotal || newClaimed : ", newTotal, " || ",newClaimed);
+      console.log("newTotal || newClaimed : ", newTotal, " || ", newClaimed);
       admin.firestore()
         .collection("users")
         .doc(paxDetails.userId)
         .set(
           {
             rewardStatistics: {
-              total:newTotal,
+              total: newTotal,
               claimed: newClaimed,
             },
           },
@@ -281,7 +281,7 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
         }).catch(() => {
           console.error("Failed to update the total and claimed");
         });
-        // end testing purposes code
+      // end testing purposes code
       if (paxDetails.isUserUpgraded === true) {
         // Call to user mintFor Address
         getResultAfterSentPaxToUser = await sendMintForPaxToUser(paxDetails);
@@ -300,5 +300,50 @@ export const getUserAndCalculatePax = async (paxDetails: any, currentVoteCMP: nu
 
   } catch (error) {
     return errorLogging("getUserAndCalculatePax", "ERROR", error);
+  }
+}
+
+export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
+  try {
+    console.log("start addVoteResultForCPVI")
+    const cpviCollectionReference = admin.firestore().collection('voteResultForCPVI').doc(voteData.coin);
+    const getDocument = await cpviCollectionReference.get();
+
+    const userVote = voteData.direction == 0 ? "bull" : "bear";
+
+    const incrementKeyValue: any = {};
+    incrementKeyValue[userVote] = admin.firestore.FieldValue.increment(1)
+    console.log("incrementKeyValue : ", incrementKeyValue);
+
+    // check document already exist or not
+    if (getDocument.exists) {
+      const cpviData = getDocument.data();
+      const getTimeStamp = cpviData?.timestamp;
+      const after7daysTimeStamp = getTimeStamp.seconds + (7 * 24 * 3600); //get after 7 days seconds
+      const currentTimestamp = (Date.now() / 1000); // convert into seconds
+      // check timestamp
+      if (after7daysTimeStamp < currentTimestamp) {
+        incrementKeyValue['timestamp'] = admin.firestore.Timestamp.now();
+        console.log("incrementKeyValue : ", incrementKeyValue);
+        cpviCollectionReference.set(incrementKeyValue, { merge: true })
+      } else {
+        await cpviCollectionReference.update(incrementKeyValue)
+      }
+    } else {
+      const newCPVI = voteData.direction ? {
+        bull: 1,
+        bear: 0,
+        timestamp: admin.firestore.Timestamp.now()
+      } : {
+        bull: 0,
+        bear: 1,
+        timestamp: admin.firestore.Timestamp.now()
+      }
+      await cpviCollectionReference.set(newCPVI);
+    }
+    console.log("End addVoteResultForCPVI")
+    return null
+  } catch (error) {
+    return errorLogging("addVoteResultForCPVI","Error", error);
   }
 }
