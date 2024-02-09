@@ -314,21 +314,14 @@ export const addVoteResultForCPVI = async (voteData: VoteResultProps) => {
     const incrementKeyValue: any = {};
     incrementKeyValue[userVote] = admin.firestore.FieldValue.increment(1)
     console.log("incrementKeyValue : ", incrementKeyValue);
-
-    // check document already exist or not
-    if (getDocument.exists) {
-      const cpviData = getDocument.data();
-      const getTimeStamp = cpviData?.timestamp;
-      const after7daysTimeStamp = getTimeStamp.seconds + (7 * 24 * 3600); //get after 7 days seconds
-      const currentTimestamp = (Date.now() / 1000); // convert into seconds
-      // check timestamp
-      if (after7daysTimeStamp < currentTimestamp) {
-        incrementKeyValue['timestamp'] = admin.firestore.Timestamp.now();
-        console.log("incrementKeyValue : ", incrementKeyValue);
-        cpviCollectionReference.set(incrementKeyValue, { merge: true })
-      } else {
+    const cpviData = getDocument.data();
+    const getTimeStamp = cpviData?.timestamp;
+    const after7daysTimeStamp = getTimeStamp.seconds + (7 * 24 * 3600); //get after 7 days seconds
+    const currentTimestamp = (Date.now() / 1000); 
+    
+    // check document already exist or not and check timestamp to will be not cross the after 7 days
+    if (getDocument.exists && after7daysTimeStamp < currentTimestamp) {
         await cpviCollectionReference.update(incrementKeyValue)
-      }
     } else {
       const newCPVI = voteData.direction ? {
         bull: 1,
